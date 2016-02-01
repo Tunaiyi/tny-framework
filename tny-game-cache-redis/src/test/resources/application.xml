@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+
+
+
+
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+
+    <context:component-scan base-package="com.tny">
+        <context:include-filter type="annotation"
+                                expression="com.tny.game.cache.annotation.ToCache"/>
+    </context:component-scan>
+
+    <bean name="cacheHodlerFactory"
+          class="com.tny.game.cache.spring.SpringToCacheClassHolderFactory"/>
+
+    <bean name="pool" class="redis.clients.jedis.JedisPool">
+    </bean>
+
+    <bean name="client" class="com.tny.game.cache.redis.RedisClient">
+        <constructor-arg ref="pool"/>
+    </bean>
+
+    <bean name="cached" class="com.tny.game.cache.DirectCache">
+        <constructor-arg ref="client"/>
+    </bean>
+
+    <bean name="syncDBExecutor" class="com.tny.game.asyndb.impl.AverageRateSyncDBExecutor">
+        <constructor-arg value="20"/>
+        <constructor-arg value="20"/>
+        <constructor-arg value="5000"/>
+        <constructor-arg value="3"/>
+    </bean>
+
+    <bean name="synchronizerHolder" class="com.tny.game.asyndb.spring.SpringSynchronizerHolder"/>
+
+    <bean name="objectPool" class="com.tny.game.asyndb.LocalAsyncDBObjectPool">
+        <constructor-arg ref="syncDBExecutor"></constructor-arg>
+        <constructor-arg ref="synchronizerHolder"></constructor-arg>
+        <constructor-arg value="10000"></constructor-arg>
+    </bean>
+
+    <bean name="asynGameCache" class="com.tny.game.cache.async.AsyncCache">
+        <constructor-arg ref="cacheHodlerFactory"></constructor-arg>
+        <constructor-arg ref="objectPool"></constructor-arg>
+    </bean>
+
+    <bean name="cacheSynchronizer" class="com.tny.game.cache.async.CacheSynchronizer">
+        <constructor-arg ref="cached"/>
+    </bean>
+
+</beans>

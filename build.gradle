@@ -1,0 +1,144 @@
+apply from: "dependency.gradle"
+
+def getPomPackaging() {
+    return hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
+}
+
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+            : "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+
+def getRepositoryUsername() {
+    return hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ""
+}
+
+def getRepositoryPassword() {
+    return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
+}
+
+allprojects {
+
+    group "com.tny.game"
+    apply plugin: "idea"
+
+    ext.pj_version = "2.0.x-SNAPSHOT"
+    version = pj_version
+
+    ext {
+        project_jdk = "1.8"
+    }
+
+}
+
+subprojects {
+
+    apply plugin: "java"
+    apply plugin: "maven"
+
+    sourceCompatibility = project_jdk
+    targetCompatibility = project_jdk
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+    task createJavaProject << {
+        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+    }
+
+    task copyDependencies(type: Copy) {
+        from configurations.runtime
+        into 'build/libs' // 目标位置
+    }
+
+    configurations {
+        provided
+    }
+
+    sourceSets {
+        main {
+            compileClasspath += configurations.provided
+        }
+        test {
+            compileClasspath += configurations.provided
+            runtimeClasspath += configurations.provided
+        }
+    }
+
+    idea.module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+
+    jar {
+        exclude("**.sql", "**.xml", "**.properties")
+    }
+
+    repositories {
+        mavenLocal()        //使用本地仓库
+        mavenCentral()
+//        maven {
+//            url "http://nexus.coolfunny.net/nexus/content/groups/public"
+//        }
+    }
+
+    dependencies {
+
+        testCompile(
+                "junit:junit:${vers.junit}",
+                "org.jmock:jmock-junit4:${vers.jmock}",
+                "net.sourceforge.groboutils:groboutils-core:5",
+                libs.'spring-test',
+        )
+
+        compile(
+                libs.'slf4j-api',
+                libs.'log4j-over-slf4j',
+        )
+
+    }
+
+
+    uploadArchives {
+
+        repositories {
+
+            mavenDeployer {
+
+                pom.groupId = project.group
+                pom.artifactId = project.name
+                pom.version = project.version
+
+                pom.project {
+                    name = project.name
+                    packaging = getPomPackaging()
+                    description = hasProperty("POM_DESCRIPTION") ? POM_DESCRIPTION : "";
+                    url = hasProperty("POM_URL") ? POM_URL : "";
+                }
+
+                repository(url: getReleaseRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+            }
+        }
+    }
+
+}
+
+idea {
+    module {
+        downloadSources = true
+    }
+    project {
+        jdkName = project_jdk
+        languageLevel = project_jdk
+//        vcs = "Git"
+    }
+}

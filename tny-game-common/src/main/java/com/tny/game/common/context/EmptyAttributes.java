@@ -1,0 +1,85 @@
+package com.tny.game.common.context;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
+class EmptyAttributes implements Attributes {
+
+    public EmptyAttributes() {
+        super();
+    }
+
+    @Override
+    public <T> T getAttribute(AttrKey<? extends T> key) {
+        return null;
+    }
+
+    @Override
+    public <T> T getAttribute(AttrKey<? extends T> key, T defaultValue) {
+        return null;
+    }
+
+    @Override
+    public <T> T removeAttribute(AttrKey<? extends T> key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> void setAttribute(AttrKey<? extends T> key, T value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setAttribute(Map<AttrKey<?>, ?> map) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setAttribute(AttributeEntry<?> entry) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setAttribute(Collection<AttributeEntry<?>> entries) {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public void setAttribute(AttributeEntry<?>... entries) {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public void removeAttribute(Collection<AttrKey<?>> keys) {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public Map<AttrKey<?>, Object> getAttributeMap() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public void clearAttribute() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T setAttributeIfNoKey(AttrKey<? extends T> key, T value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T setAttributeIfNoKey(AttributeEntry<T> entry) {
+        throw new UnsupportedOperationException();
+    }
+}

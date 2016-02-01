@@ -1,0 +1,63 @@
+package com.tny.game.doc.holder;
+
+import com.tny.game.doc.annotation.ClassDoc;
+import org.apache.commons.lang3.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class EnumDocHolder {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDocHolder.class);
+
+    private ClassDoc classDoc;
+
+    private Class<?> entityClass;
+
+    private List<FieldDocHolder> enumList;
+
+    public static <E extends Enum<E>> EnumDocHolder create(Class<E> clazz) {
+        ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
+        if (classDoc == null) {
+            LOGGER.warn("{} is not classDoc", clazz);
+            return null;
+        }
+        EnumDocHolder holder = new EnumDocHolder();
+        holder.classDoc = classDoc;
+        holder.entityClass = clazz;
+        holder.enumList = Collections.unmodifiableList(createFieldList(clazz));
+        return holder;
+    }
+
+    private static <E extends Enum<E>> List<FieldDocHolder> createFieldList(Class<E> clazz) {
+        List<FieldDocHolder> list = new ArrayList<>();
+        for (Enum<?> enumObject : EnumUtils.getEnumList(clazz)) {
+            try {
+                Field enumField = clazz.getDeclaredField(enumObject.name());
+                FieldDocHolder fieldDocHolder = FieldDocHolder.create(enumField);
+                if (fieldDocHolder != null)
+                    list.add(fieldDocHolder);
+            } catch (SecurityException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    public ClassDoc getClassDoc() {
+        return classDoc;
+    }
+
+    public Class<?> getEntityClass() {
+        return entityClass;
+    }
+
+    public List<FieldDocHolder> getEnumList() {
+        return enumList;
+    }
+
+}

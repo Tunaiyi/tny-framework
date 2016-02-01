@@ -1,0 +1,90 @@
+package com.tny.game.protoex.field;
+
+import com.tny.game.common.reflect.Wraper;
+import com.tny.game.protoex.ProtoExType;
+import com.tny.game.protoex.annotations.TypeEncode;
+
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
+/**
+ * 跟对象编码方式
+ *
+ * @param <T>
+ * @author KGTny
+ */
+public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfiger<T>, RepeatIOConfiger<T> {
+
+    private IOConfiger<?> elementConfiger;
+    private IOConfiger<?> keyConfiger;
+    private IOConfiger<?> valueConfiger;
+
+    public static <T> IOConfiger<T> createNomalConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+        return new RootIOConfiger<T>(protoExType, type, packed, typeEncode, format);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static RootIOConfiger<Collection<?>> createRepeatConfiger(Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+        Class<?> type = Collections.emptyList().getClass();
+        return new RootIOConfiger<Collection<?>>((Class<Collection<?>>) type, elementType, packed, elTypeEncode, elFormat);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static IOConfiger<Map<?, ?>> createMapConfiger(
+            Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+            Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+        Class<Map<?, ?>> type = (Class<Map<?, ?>>) Collections.emptyMap().getClass();
+        return new RootIOConfiger<Map<?, ?>>(type, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private RootIOConfiger(Class<T> type,
+                           Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+                           Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+        this(ProtoExType.REPEAT, type, false, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
+        Class<Object> keyClass = (Class<Object>) keyType;
+        Class<Object> valueClass = (Class<Object>) valueType;
+        this.keyConfiger = new SimpleIOConfiger<Object>(EntryType.KEY, keyClass, keyTypeEncode, keyFormat);
+        this.valueConfiger = new SimpleIOConfiger<Object>(EntryType.VALUE, valueClass, valueTypeEncode, valueFormat);
+    }
+
+    @SuppressWarnings({"unchecked",})
+    private RootIOConfiger(Class<T> clazz, Class<?> elementType, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+        this(ProtoExType.REPEAT, clazz, packed, TypeEncode.DEFAULT, format);
+        boolean primitive = Wraper.getPrimitive(elementType).isPrimitive();
+        this.elementConfiger = new SimpleIOConfiger<Object>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
+        this.packed = packed;
+        if (primitive) {
+            this.packed = true;
+        } else if (Modifier.isAbstract(elementType.getModifiers()) || elementType == Object.class) {
+            this.packed = false;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private RootIOConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+        this(protoExType, (Class<T>) type.getClass(), packed, typeEncode, format);
+    }
+
+    private RootIOConfiger(ProtoExType protoExType, Class<T> type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+        super(protoExType, type, "root", 0, packed, typeEncode, format);
+    }
+
+    @Override
+    public IOConfiger<?> getKeyConfiger() {
+        return this.keyConfiger;
+    }
+
+    @Override
+    public IOConfiger<?> getValueConfiger() {
+        return this.valueConfiger;
+    }
+
+    @Override
+    public IOConfiger<?> getElementConfiger() {
+        return this.elementConfiger;
+    }
+
+}

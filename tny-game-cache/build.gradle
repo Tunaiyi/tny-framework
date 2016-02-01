@@ -1,0 +1,13 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            libs.'spring-context-support',
+
+            project(":tny-game-asyndb"),
+    )
+
+}

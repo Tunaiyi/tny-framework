@@ -1,0 +1,171 @@
+package com.tny.game.net.dispatcher.session.mobile;
+
+import com.tny.game.common.context.AttrKey;
+import com.tny.game.common.context.AttributeUtils;
+import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.dispatcher.*;
+import com.tny.game.net.dispatcher.exception.ValidatorFailException;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class MobileSessionHolder extends BaseSessionHolder {
+
+    public static AttrKey<MobileAttach> MOBILE_ATTACH = AttributeUtils.key(MobileSessionHolder.class, "MOBILE_ATTACH_KEY");
+
+    public ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("MobileSessionRecycleThread"));
+
+    private int responseCacheSize = 10;
+    private long offlineWait = 1000 * 60 * 120;
+    private long leaveWait = 1000 * 60 * 30;
+
+    private Set<Object> mobileUserGroups = new HashSet<>();
+
+    public MobileSessionHolder() {
+        this(Collections.emptySet());
+        this.mobileUserGroups.add(Session.DEFAULT_USER_GROUP);
+    }
+
+    public void setOfflineWait(long offlineWait) {
+        this.offlineWait = offlineWait;
+    }
+
+    public void setLeaveWait(long leaveWait) {
+        this.leaveWait = leaveWait;
+    }
+
+    public void setResponseCacheSize(int responseCacheSize) {
+        this.responseCacheSize = responseCacheSize;
+    }
+
+    public MobileSessionHolder(Collection<Object> mobileUserGroup) {
+        this.mobileUserGroups.addAll(mobileUserGroup);
+        this.mobileUserGroups.add(Session.DEFAULT_USER_GROUP);
+        this.executorService.schedule(new Runnable() {
+
+            @Override
+            public void run() {
+                MobileSessionHolder holder = MobileSessionHolder.this;
+                try {
+                    for (Object mobileGroup : MobileSessionHolder.this.mobileUserGroups) {
+                        ConcurrentMap<Object, ServerSession> map = holder.getSessionMap(mobileGroup);
+                        if (map == null)
+                            continue;
+                        for (Session session : map.values()) {
+                            try {
+                                MobileAttach attach = MobileSessionHolder.this.getMobileAttach(session);
+                                if (attach == null || attach.isOfflineTimeout() && attach.invalid()) {
+                                    holder.invalid(session);
+                                }
+                            } catch (Exception e) {
+                                BaseSessionHolder.LOG.error("MobileSession [{} - {}]recycle exception", session.getGroup(), session.getUID(), e);
+                            }
+                        }
+                    }
+                } finally {
+                    MobileSessionHolder.this.executorService.schedule(this, 5, TimeUnit.SECONDS);
+                }
+            }
+
+        }, 5, TimeUnit.SECONDS);
+    }
+
+    protected ConcurrentMap<Object, ServerSession> getSessionMap(Object mobileGroup) {
+        return this.sessionMap.get(mobileGroup);
+    }
+
+    private MobileAttach getMobileAttach(Session session) {
+        return session.attributes().getAttribute(MobileSessionHolder.MOBILE_ATTACH);
+    }
+
+    private void invalid(Session session) {
+        super.offline(session);
+    }
+
+    @Override
+    public void offline(Session session) {
+        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
+        if (userGroupSessionMap == null)
+            return;
+        MobileAttach attach = this.getMobileAttach(session);
+        if (attach == null) {
+            super.offline(session);
+        } else {
+            Session current = userGroupSessionMap.get(session.getUID());
+            if (!current.equals(session))
+                return;
+            attach.offline();
+            if (session.isConnect())
+                this.disconnect(session);
+        }
+    }
+
+    protected void setMobileAttach(NetSession session, MobileAttach attach) {
+        session.attributes().setAttribute(MobileSessionHolder.MOBILE_ATTACH, attach);
+    }
+
+    @Override
+    protected boolean online(ServerSession session, LoginCertificate loginInfo) throws ValidatorFailException {
+        if (!loginInfo.isLogin())
+            return false;
+        ServerSession addSession;
+        if (this.mobileUserGroups.contains(loginInfo.getUserGroup())) {
+            ProxyServerSession current = (ProxyServerSession) this.getSession(loginInfo.getUserGroup(), loginInfo.getUserID());
+            if (current == null || !loginInfo.isRelogin()) {
+                current = new ProxyServerSession(session);
+                this.setMobileAttach(current, new MobileAttach(this.responseCacheSize, this.leaveWait, this.offlineWait));
+            } else {
+                MobileAttach attach = this.getMobileAttach(current);
+                if (attach != null && (attach.getSessionState() == MobileSessionState.ONLINE || attach.online())) {
+                    Session old = current.setSession(session);
+                    if (old != null && old != session)
+                        this.disconnect(old);
+                    this.setMobileAttach(current, attach);
+                } else {
+                    String account = loginInfo.getUserGroup() + "-" + loginInfo.getUserID();
+                    throw new ValidatorFailException(account, session.getHostName(), "会话失效");
+                }
+            }
+            addSession = current;
+        } else {
+            addSession = session;
+        }
+        if (addSession != null)
+            return super.online(addSession, loginInfo);
+        return false;
+    }
+
+    public int getActiveSize(Object group) {
+        ConcurrentMap<Object, ServerSession> map = this.getSessionMap(group);
+        if (map == null)
+            return 0;
+        int size = 0;
+        long now = System.currentTimeMillis();
+        for (Session session : map.values()) {
+            MobileAttach attach = this.getMobileAttach(session);
+            if (attach != null && !attach.isLeaveTimeout(now))
+                size++;
+        }
+        return size;
+    }
+
+    public int getConnectSize(Object group) {
+        ConcurrentMap<Object, ServerSession> map = this.getSessionMap(group);
+        if (map == null)
+            return 0;
+        int size = 0;
+        for (Session session : map.values()) {
+            if (session.isConnect())
+                size++;
+        }
+        return size;
+    }
+
+}

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER"
+        "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd hh:mm:ss}:%p %t %c - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileRecive" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/recive.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileSend" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/send.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileChat" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/chat.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileMonitor" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/monitor.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileLogin" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/login.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="userLogin" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/sftxuserlogin.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileMoney" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/money.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="fileWarn" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/warn.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="warInfo" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/warInfo.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="sftxref" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/sftxinfo.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="playerCopper" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/sftx_player_copper.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="playerFood" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/sftx_player_food.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="newUserGuide" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/newUserGuide.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="campaignLog" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${log4jdir}/campaign.log"/>
+        <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yy-MM-dd HH:mm:ss} %m %n"/>
+        </layout>
+    </appender>
+
+    <logger name="sftx.player.copper" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="playerCopper"/>
+    </logger>
+
+    <logger name="sftx.player.food" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="playerFood"/>
+    </logger>
+
+    <logger name="xn.core.socket.GameServerHandler" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileRecive"/>
+    </logger>
+
+    <logger name="xn.core.online.ChatOnlineUser" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileChat"/>
+    </logger>
+
+    <logger name="xn.core.Monitor" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileMonitor"/>
+    </logger>
+
+    <logger name="xn.sftx.handle.SystemHandler" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileLogin"/>
+    </logger>
+
+    <logger name="xn.sftx.user.Login" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="userLogin"/>
+    </logger>
+
+    <logger name="xn.sftx.service.impl.PlayerServiceImpl" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileMoney"/>
+    </logger>
+
+    <logger name="xn.service.CloseService" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="fileMonitor"/>
+    </logger>
+
+    <logger name="xn.core.CommandDispatcher" additivity="false">
+        <level value="warn"/>
+        <appender-ref ref="fileWarn"/>
+    </logger>
+
+    <logger name="xn.sftx.service.impl.WarServiceImpl" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.war.WarTask" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.war.WarExcutor" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.war.ArmyWarSystem" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.war.AreaWarSystem" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.listener.ArmyWarExcuteListener" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="xn.sftx.domain.fight.listener.AreaWarExcuteListener" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="warInfo"/>
+    </logger>
+
+    <logger name="sftxinfo">
+        <level value="info"/>
+        <appender-ref ref="sftxref"/>
+    </logger>
+
+    <logger name="xn.sftx.service.NewPlayerLogin" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="newUserGuide"/>
+    </logger>
+
+    <logger name="xn.sftx.campaign.log" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="campaignLog"/>
+    </logger>
+
+    <root>
+        <level value="warn"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+</log4j:configuration>
+

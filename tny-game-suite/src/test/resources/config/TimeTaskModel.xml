@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- | - TimeTaskModels 时间任务模型列表 Arrays | - TimeTaskModel 时间任务模型 | - timeExpression 
+	时间触发表达式 String | - handlerList 处理器名称列表 | - handle 处理器 String -->
+<TimeTaskModels>
+
+    <!--<TimeTaskModel>-->
+    <!--<timeExpression><![CDATA[59 59 23 * * ?]]></timeExpression>-->
+    <!--<handlerList>-->
+    <!--<handler>resourcesReset</handler>-->
+    <!--<handler>unionElectChairmanTask</handler>-->
+    <!--<handler>campaignReset</handler>-->
+    <!--<handler>blackMarketShopReset</handler>-->
+    <!--<handler>colosseoShopReset</handler>-->
+    <!--<handler>expeditionShopReset</handler>-->
+    <!--<handler>mysticalShopReset</handler>-->
+    <!--<handler>normalShopReset</handler>-->
+    <!--<handler>totemShopReset</handler>-->
+    <!--<handler>awakenShopReset</handler>-->
+    <!--<handler>unionShopReset</handler>-->
+    <!--<handler>totemSecretResetTask</handler>-->
+    <!--<handler>unionBuildTask</handler>-->
+    <!--<handler>expeditionReset</handler>-->
+    <!--</handlerList>-->
+    <!--</TimeTaskModel>-->
+
+</TimeTaskModels>

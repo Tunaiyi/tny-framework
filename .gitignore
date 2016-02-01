@@ -1,0 +1,15 @@
+# Package Files #
+*.class
+*.jar
+*.war
+*.ear
+*.settings/
+*/build
+*.classpath
+*.project
+*/sg.iml
+*.iml
+*.idea/
+.externalToolBuilders
+.gradle
+*client_code

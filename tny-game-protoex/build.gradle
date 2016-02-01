@@ -1,0 +1,16 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    testCompile 'com.google.protobuf:protobuf-java:2.6.1'
+
+    compile(
+            'io.netty:netty-all:5.0.0.Alpha2',
+            libs.'commons-lang3',
+
+            project(":tny-game-common"),
+    )
+
+}

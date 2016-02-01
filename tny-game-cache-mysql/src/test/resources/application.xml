@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+
+
+
+
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:jdbc-param.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="net.paoding.rose.jade.context.spring.JadeBeanFactoryPostProcessor">
+    </bean>
+
+    <context:component-scan base-package="com.tny">
+        <context:include-filter type="annotation" expression="net.paoding.rose.jade.annotation.DAO"/>
+        <context:include-filter type="annotation" expression="com.tny.game.cache.annotation.ToCache"/>
+    </context:component-scan>
+
+    <bean class="com.tny.game.cache.spring.SpringToCacheClassHolderFactory"/>
+
+    <bean id="cacheShardInterpreter" class="com.tny.game.cache.mysql.TestShardInterpreter"/>
+
+    <!-- autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;failOverReadOnly=false&amp;rewriteBatchedStatements=true -->
+    <!-- autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8 -->
+
+    <bean id="jade.dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.datasource.driverClassName}"/>
+        <property name="url" value="${jdbc.datasource.url}"/>
+        <property name="username" value="${jdbc.datasource.username}"/>
+        <property name="password" value="${jdbc.datasource.password}"/>
+        <property name="initialSize" value="${jdbc.datasource.param.initialSize}"/>
+        <property name="maxTotal" value="${jdbc.datasource.param.maxTotal}"/>
+        <property name="maxIdle" value="${jdbc.datasource.param.maxIdle}"/>
+        <property name="minIdle" value="${jdbc.datasource.param.minIdle}"/>
+        <property name="maxWaitMillis" value="${jdbc.datasource.param.maxWaitMillis}"/>
+        <property name="testWhileIdle" value="${jdbc.datasource.param.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.datasource.param.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.datasource.param.minEvictableIdleTimeMillis}"/>
+        <property name="logAbandoned" value="${jdbc.datasource.param.logAbandoned}"/>
+        <property name="removeAbandonedOnMaintenance" value="${jdbc.datasource.param.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${jdbc.datasource.param.removeAbandonedTimeout}"/>
+        <property name="poolPreparedStatements" value="${jdbc.datasource.param.poolPreparedStatements}"/>
+    </bean>
+    <!--
+        <bean id="jade.dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+            <property name="driverClass" value="com.mysql.jdbc.Driver" />
+            <property name="url" value="${jdbc.datasource.url}" />
+            <property name="username" value="${jdbc.datasource.username}" />
+            <property name="password" value="${jdbc.datasource.password}" />
+        </bean>
+
+        <bean id="cacheDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+            <property name="driverClass" value="org.h2.Driver"></property> <property
+            name="url" value="jdbc:h2:mem:kv_test?autoReconnect=true&amp;useUnicode=true"></property>
+            <property name="username" value="SA"></property> <property name="password"
+            value=""></property> </bean> <jdbc:initialize-database data-source="cacheDataSource"
+            ignore-failures="DROPS"> <jdbc:script location="classpath:h2-db/h2-init.sql"
+            /> </jdbc:initialize-database> -->
+
+
+    <bean id="dbclient" class="com.tny.game.cache.mysql.DBCacheClient"/>
+
+    <bean id="dbcache" class="com.tny.game.cache.DirectCache">
+        <constructor-arg ref="dbclient"/>
+    </bean>
+
+</beans>

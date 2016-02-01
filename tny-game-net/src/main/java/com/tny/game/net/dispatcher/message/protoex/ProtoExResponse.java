@@ -1,0 +1,108 @@
+package com.tny.game.net.dispatcher.message.protoex;
+
+import com.tny.game.net.base.MessageType;
+import com.tny.game.net.dispatcher.NetResponse;
+import com.tny.game.protoex.annotations.ProtoEx;
+import com.tny.game.protoex.annotations.ProtoExConf;
+import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.protoex.annotations.TypeEncode;
+
+/**
+ * @author KGTny
+ * @ClassName: NomalResponse
+ * @Description: 相应对象
+ * @date 2011-9-19 上午10:03:54
+ * <p>
+ * 请求响应对象
+ * <p>
+ * 请求响应对象,可附加信息<br>
+ */
+@ProtoEx(ProtoExMessageCoder.RESPONSE_ID)
+public class ProtoExResponse extends NetResponse {
+
+    @ProtoExField(1)
+    protected int ID;
+
+    @ProtoExField(2)
+    protected Integer protocol = -1;
+
+    @ProtoExField(3)
+    protected int result;
+
+    @ProtoExField(value = 4, conf = @ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
+    protected Object body;
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public int getID() {
+        return this.ID;
+    }
+
+    @Override
+    public int getResult() {
+        return this.result;
+    }
+
+    @Override
+    public int getProtocol() {
+        return this.protocol;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getBody(Class<T> clazz) {
+        Object msg = this.getBody();
+        if (msg == null)
+            return null;
+        if (!clazz.isInstance(msg))
+            return null;
+        return (T) msg;
+    }
+
+    @Override
+    protected Object getBody() {
+        return this.body;
+    }
+
+    @Override
+    protected void setBody(Object body) {
+        this.body = body;
+    }
+
+    protected void setResult(int result) {
+        this.result = result;
+    }
+
+    protected void setID(int id) {
+        this.ID = id;
+    }
+
+    protected void setProtocol(int protocol) {
+        this.protocol = protocol;
+    }
+
+    //	@Override
+    //	public void putBody(CommandResult result) {
+    //		this.result = result.getResultCode();
+    //		Object body = result.getBody();
+    //		if (body != null) {
+    //			ProtoExWriter writer = new ProtoExWriter();
+    //			writer.writeMessage(result.getBody(), TypeEncode.EXPLICIT);
+    //			this.body = writer.getByteBuffer();
+    //		}
+    //
+    //	}
+
+    @Override
+    public MessageType getMessage() {
+        return MessageType.RESPONSE;
+    }
+
+    @Override
+    public String toString() {
+        return "ProtoResponse [ID=" + this.ID + ", protocol=" + this.protocol + ", result=" + this.result
+                + ", message=" + this.body + "]";
+    }
+
+}

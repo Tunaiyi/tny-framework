@@ -1,0 +1,21 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+//sourceSets {
+//    main {
+//        groovy.srcDirs += ["src/main/groovy"]
+//    }
+//}
+
+dependencies {
+//    groovy localGroovy()
+
+    compile(
+//            gradleApi(),
+//            libs.'groovy-all',
+            project(":tny-game-net"),
+            project(":tny-game-scanning"),
+    )
+
+}

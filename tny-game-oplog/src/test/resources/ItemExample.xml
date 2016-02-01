@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<itemList>
+    <!-- 对象事物 -->
+    <item>
+        <id>1</id>
+        <alias>testObject</alias>
+        <!-- 行为列表 -->
+        <behaviorPlanList>
+            <behavioPlan>
+                <!-- 行为条件参数列表 -->
+                <behavior>UPGRATE</behavior>
+                <!-- 行为条件 -->
+                <demandList>
+                    <demand>
+                        <!-- 参数id -->
+                        <itemAlias>testObject</itemAlias>
+                        <!-- 条件类型 -->
+                        <demandType>PLAYER_LEVEL</demandType>
+                        <!-- 条件所需值 -->
+                        <expect><![CDATA[4]]></expect>
+                        <!-- 条件 -->
+                        <fx><![CDATA[12>=expect]]></fx>
+                    </demand>
+                </demandList>
+                <optionMap>
+                    <actionOption>
+                        <option>CD</option>
+                        <formula><![CDATA[10]]></formula>
+                    </actionOption>
+                    <actionOption>
+                        <option>DEFEND_CD</option>
+                        <formula><![CDATA[300]]></formula>
+                    </actionOption>
+                </optionMap>
+                <!-- 操作列表 -->
+                <actionPlanList>
+                    <actionPlan>
+                        <!-- 操作 -->
+                        <action>NOMAL_UPGRADE</action>
+                        <!-- 操作条件列表 -->
+                        <demandList>
+                            <demand>
+                                <!-- 参数id -->
+                                <itemAlias>testObject</itemAlias>
+                                <!-- 条件类型 -->
+                                <demandType>PLAYER_ONLINE</demandType>
+                                <!-- 条件所需值 -->
+                                <expect><![CDATA[5]]></expect>
+                                <!-- 条件 -->
+                                <fx><![CDATA[19>=expect]]></fx>
+                            </demand>
+                        </demandList>
+                        <optionMap>
+                            <actionOption>
+                                <option>CD</option>
+                                <formula><![CDATA[1000]]></formula>
+                            </actionOption>
+                            <actionOption>
+                                <option>ATTACK_CD</option>
+                                <formula><![CDATA[200]]></formula>
+                            </actionOption>
+                        </optionMap>
+                        <!-- 交易奖励／消耗 -->
+                        <costPlan>
+                            <costList>
+                                <cost>
+                                    <itemAlias>testObject</itemAlias>
+                                    <fx><![CDATA[7200]]></fx>
+                                </cost>
+                            </costList>
+                        </costPlan>
+                        <awardPlan>
+                            <awardGroupSet>
+                                <awardGroup>
+                                    <probability>30</probability>
+                                    <awardList>
+                                        <award>
+                                            <itemAlias>testObject</itemAlias>
+                                            <fx><![CDATA[7200]]></fx>
+                                        </award>
+                                    </awardList>
+                                </awardGroup>
+                                <awardGroup>
+                                    <probability>50</probability>
+                                    <awardList>
+                                        <award>
+                                            <itemAlias>testObject</itemAlias>
+                                            <fx><![CDATA[7200]]></fx>
+                                        </award>
+                                    </awardList>
+                                </awardGroup>
+                                <awardGroup>
+                                    <probability>100</probability>
+                                    <awardList>
+                                        <award>
+                                            <itemAlias>testObject</itemAlias>
+                                            <fx><![CDATA[7200]]></fx>
+                                        </award>
+                                    </awardList>
+                                </awardGroup>
+                            </awardGroupSet>
+                        </awardPlan>
+                    </actionPlan>
+                </actionPlanList>
+            </behavioPlan>
+        </behaviorPlanList>
+        <abilityMap>
+            <itemAbility>
+                <ability>DEFEND</ability>
+                <formula><![CDATA[toInt(73*pow(1.039,self.level))]]></formula>
+            </itemAbility>
+        </abilityMap>
+    </item>
+</itemList>

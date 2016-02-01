@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <import>
+        <file>game.xml</file>
+        <file>game.xml</file>
+        <file>game.xml</file>
+        <file>game.xml</file>
+    </import>
+
+    <path>E:/Eclipse/T-Game/game-framework/target/resources</path>
+    <interval>10000</interval>
+
+    <bind>
+        <key>5dcd73d391c90e8769618d42a916ea10</key>
+        <ipLst>
+            <ip>
+                <host>192.168.15.83</host>
+                <port>[200,300]</port>
+            </ip>
+        </ipLst>
+    </bind>
+
+    <system>
+        <ipContent>
+            <name>loginSystem</name>
+            <key>5dcd73d391c90e8769618d42a916ea3a</key>
+            <ipList>
+                <host>192.168.14.112</host>
+                <host>192.168.14.113</host>
+                <host>192.168.14.114</host>
+            </ipList>
+        </ipContent>
+        <ipContent>
+            <name>giftSystem</name>
+            <key>5dcd73d391c90e8769618d42a916ea3b</key>
+            <ipList>
+                <host>192.168.14.112</host>
+                <host>192.168.14.113</host>
+                <host>192.168.14.114</host>
+            </ipList>
+        </ipContent>
+        <ipContent>
+            <name>dataSystem</name>
+            <key>5dcd73d391c90e8769618d42a916ea3c</key>
+            <ipList>
+                <host>192.168.14.112</host>
+                <host>192.168.14.113</host>
+                <host>192.168.14.114</host>
+            </ipList>
+        </ipContent>
+    </system>
+
+    <params>
+        <param>
+            <key></key>
+            <value></value>
+        </param>
+    </params>
+
+</server>

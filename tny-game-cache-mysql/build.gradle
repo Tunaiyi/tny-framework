@@ -1,0 +1,27 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    testCompile project(":tny-game-cache-test")
+
+    compile(
+            libs.'spring-context-support',
+            libs.'spring-jdbc',
+            libs.'spring-tx',
+            libs.'spring-core',
+            libs.'spring-beans',
+
+            libs.'commons-dbcp2',
+            libs.'commons-pool2',
+
+            libs.'mysql-connector',
+            libs.'jade',
+
+            'com.jolbox:bonecp:0.8.0.RELEASE',
+
+            project(":tny-game-cache"),
+    )
+
+}

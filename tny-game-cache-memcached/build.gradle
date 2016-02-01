@@ -1,0 +1,18 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    testCompile project(":tny-game-cache-test")
+
+    compile(
+            libs.'commons-pool2',
+            libs.'spring-context-support',
+            libs.'memcached-java-client',
+
+            project(":tny-game-common"),
+            project(":tny-game-cache"),
+    )
+
+}

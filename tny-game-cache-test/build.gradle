@@ -1,0 +1,16 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    testCompile project(":tny-game-cache-test")
+
+    compile(
+            "junit:junit:${vers.junit}",
+            "org.jmock:jmock-junit4:${vers.jmock}",
+
+            project(":tny-game-cache"),
+    )
+
+}

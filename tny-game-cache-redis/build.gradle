@@ -1,0 +1,17 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    testCompile project(":tny-game-cache-test")
+
+    compile(
+            libs.'spring-context-support',
+
+            libs.'jedis',
+
+            project(":tny-game-cache"),
+    )
+
+}

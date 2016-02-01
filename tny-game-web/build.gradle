@@ -1,0 +1,24 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    provided libs.'javaee'
+
+    compile(
+            libs.'aspectjrt',
+            libs.'spring-webmvc',
+            libs.'spring-aspects',
+            libs.'spring-orm',
+            libs.'guava',
+
+            project(":tny-game-protoex"),
+            project(":tny-game-base"),
+    )
+
+    compile(libs.'shiro') {
+        exclude module: 'guava'
+    }
+
+}

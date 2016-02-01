@@ -1,0 +1,30 @@
+//option java_package = "com.lq.sg.proto";
+option java_package = "com.tny.game.suite.proto";
+
+message TimeTaskProto {
+    required uint64 executTime = 1;
+    repeated string handlerList = 2;
+}
+
+message TaskReceiverProto {
+    required int64 playerID = 1;
+    required string group = 2;
+    required uint64 lastHandlerTime = 3;
+    optional uint64 actualLastHandlerTime = 4;
+}
+
+message SchedulerBackupProto {
+    required int64 stopTime = 1;
+    repeated TimeTaskProto timeTaskQueue = 2;
+}
+
+message AwardProto {
+    required int32 itemID = 1;
+    required int32 number = 2;
+}
+
+message TradeProto {
+    optional int32 action = 1;
+    repeated AwardProto item = 2;
+    optional int32 tradeType = 3;
+}

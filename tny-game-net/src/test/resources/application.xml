@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+
+
+
+
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+
+    <context:component-scan base-package="com.tny.game"/>
+
+    <bean name="checker" class="com.tny.game.net.TestRequetChecker"/>
+
+    <bean name="testSessionHoslder" class="com.tny.game.net.dispatcher.DefaultSessionHolder">
+    </bean>
+
+    <bean name="authProvider" class="test.Handler.SessionAuthProviderImpl"/>
+
+    <bean name="dispatcher" class="com.tny.game.net.dispatcher.spring.SpringMessageDispatcher">
+        <constructor-arg value="true"></constructor-arg>
+    </bean>
+
+    <bean name="serverAppContext" class="com.tny.game.net.base.simple.ServerAppContext">
+        <property name="authProviders">
+            <list>
+                <ref bean="authProvider"/>
+            </list>
+        </property>
+        <property name="checker" ref="checker"/>
+        <property name="messageDispatcher" ref="dispatcher"/>
+    </bean>
+
+    <bean name="gameServer" class="com.tny.game.net.NetServer">
+        <constructor-arg ref="serverAppContext"/>
+    </bean>
+
+    <context:component-scan base-package="com.tny.game">
+        <context:include-filter type="annotation" expression="com.tny.game.annotation.Controller"/>
+    </context:component-scan>
+
+</beans>

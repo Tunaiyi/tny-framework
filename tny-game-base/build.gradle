@@ -1,0 +1,14 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            libs.'xstream',
+            libs.'spring-context-support',
+
+            project(":tny-game-common"),
+    )
+
+}

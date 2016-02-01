@@ -1,0 +1,148 @@
+package com.tny.game.suite.core;
+
+import com.thoughtworks.xstream.XStream;
+import com.tny.game.LogUtils;
+import com.tny.game.base.log.LogName;
+import com.tny.game.common.RunningChecker;
+import com.tny.game.common.config.ConfigLoader;
+import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.suite.login.IDUtils;
+import com.tny.game.suite.utils.Configs;
+import com.tny.game.suite.utils.DateTimeConverter;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+public class GameInfo {
+
+    private static GameInfo GAMES_INFO;
+
+    private final static DateTime startAt = DateTime.now();
+
+    protected static ScopeType scopeType;
+
+    private static Map<Integer, GameInfo> GAMES_INFO_MAP;
+
+    private DateTime openDate;
+
+    protected int serverID;
+
+    private boolean mainServer = false;
+
+    private boolean register;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
+
+    static {
+        String serverTypeStr = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_SCOPE);
+        GameInfo.scopeType = ScopeTypes.of(serverTypeStr.toUpperCase());
+        LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
+        XStream xStream = new XStream();
+        RunningChecker.start(GameInfo.class);
+        xStream.autodetectAnnotations(true);
+        xStream.alias("servers", ArrayList.class);
+        xStream.alias("server", GameInfo.class);
+        xStream.registerLocalConverter(GameInfo.class, "openDate", new DateTimeConverter(DateTimeHelper.SIMPLE_DATE_TIME_FORMAT));
+        Map<Integer, GameInfo> map = new HashMap<>();
+        try (InputStream inputStream = ConfigLoader.loadInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
+            LOGGER.info("#itemModelManager# 解析 <{}> xml ......", GameInfo.class.getName());
+            @SuppressWarnings("unchecked")
+            List<GameInfo> list = (List<GameInfo>) xStream.fromXML(inputStream);
+            for (GameInfo info : list) {
+                if (info.isMainServer()) {
+                    if (GAMES_INFO != null)
+                        throw new IllegalArgumentException(LogUtils.format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getServerID(), info.getServerID()));
+                    GAMES_INFO = info;
+                }
+                if (map.put(info.getServerID(), info) != null)
+                    throw new IllegalArgumentException(LogUtils.format("发现有重复 serverID {} 的服务器", info.getServerID()));
+            }
+            if (GAMES_INFO == null)
+                throw new IllegalArgumentException(LogUtils.format("未发现主服务器"));
+            LOGGER.info("#itemModelManager# 解析 <{}> xml完成! ", GameInfo.class.getName());
+        } catch (IOException e) {
+            LOGGER.error("", e);
+            throw new RuntimeException(e);
+        }
+        GameInfo.GAMES_INFO_MAP = Collections.unmodifiableMap(map);
+        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunningChecker.end(GameInfo.class).cost());
+    }
+
+    public static Collection<GameInfo> getAllGamesInfo() {
+        return GAMES_INFO_MAP.values();
+    }
+
+    public int getServerID() {
+        return this.serverID;
+    }
+
+    public ServerType getServerType() {
+        return GameInfo.scopeType.getServerType();
+    }
+
+    public ScopeType getScopeType() {
+        return GameInfo.scopeType;
+    }
+
+    public static GameInfo getMainInfo() {
+        return GAMES_INFO;
+    }
+
+    public static GameInfo getGamesInfo(int serverID) {
+        return GAMES_INFO_MAP.get(serverID);
+    }
+
+    public boolean isTypeOf(ServerType serverType) {
+        return GameInfo.scopeType == serverType;
+    }
+
+    public DateTime getOpenDate() {
+        return this.openDate;
+    }
+
+    public DateTime getStartAt() {
+        return GameInfo.startAt;
+    }
+
+    public String getVersion() {
+        return Configs.VERSION_CONFIG.getStr(Configs.VERSION_KEY);
+    }
+
+    public int getVersionNumber() {
+        return Configs.VERSION_CONFIG.getInt(Configs.VERSION_NO);
+    }
+
+    public boolean isMainServer() {
+        return this.mainServer;
+    }
+
+    public boolean isRegister() {
+        return this.register;
+    }
+
+    public static long getSystemID() {
+        return getMainInfo().getServerID();
+    }
+
+    public static int getMainServerID() {
+        return getMainInfo().getServerID();
+    }
+
+    public static boolean isHasServer(int serverID) {
+        return GAMES_INFO_MAP.containsKey(serverID);
+    }
+
+    public static boolean isOwnUser(long userID) {
+        int serverID = IDUtils.userID2SID(userID);
+        return GAMES_INFO_MAP.containsKey(serverID);
+    }
+
+    public static boolean isSystemID(long id) {
+        return id < 10000000;
+    }
+
+}
