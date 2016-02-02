@@ -15,7 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class AbstractWarehouse<O extends Owner>
@@ -64,7 +70,7 @@ public abstract class AbstractWarehouse<O extends Owner>
 
     @Override
     public <I extends Item<?>> I getItemByID(ItemType itemType, long id, Class<I> clazz) {
-        Owner<?, ?> owner = this.getOwner(itemType, ownerClass);
+        Owner<?> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return null;
         return (I) owner.getItemByID(id);
@@ -72,13 +78,13 @@ public abstract class AbstractWarehouse<O extends Owner>
 
     @Override
     public <I extends Item<?>> List<I> getItemByItemID(ItemType itemType, int itemID, Class<I> clazz) {
-        List<I> list = new ArrayList<>();
-        Owner<?, ?> owner = this.getOwner(itemType, ownerClass);
+        Owner<Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
-            return list;
-        for (Item<?> item : owner.getItemByItemID(itemID))
-            list.add((I) item);
-        return list;
+            return Collections.emptyList();
+        return owner.getItemByItemID(itemID)
+                .stream()
+                .map(item -> (I) item)
+                .collect(Collectors.toList());
     }
 
     protected DealedResult consume(Trade result, AttributeEntry<?>... entries) {
@@ -163,7 +169,7 @@ public abstract class AbstractWarehouse<O extends Owner>
 
         private List<DealedItem<?>> dealedItemList = new ArrayList<>();
 
-        private Set<Owner<?, ?>> changeOwnerSet = new HashSet<>();
+        private Set<Owner<?>> changeOwnerSet = new HashSet<>();
 
         private Set<Stuff<?>> changeStuffSet = new HashSet<>();
 
@@ -177,7 +183,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         }
 
         @Override
-        public Set<Owner<?, ?>> getChangeOwnerSet() {
+        public Set<Owner<?>> getChangeOwnerSet() {
             return Collections.unmodifiableSet(this.changeOwnerSet);
         }
 

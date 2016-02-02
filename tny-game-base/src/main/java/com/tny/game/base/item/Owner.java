@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * <br>
  */
-public interface Owner<IM extends ItemModel, S extends Stuff<?>> {
+public interface Owner<S extends Stuff<?>> {
 
     /**
      * 获取事物拥有者ID <br>

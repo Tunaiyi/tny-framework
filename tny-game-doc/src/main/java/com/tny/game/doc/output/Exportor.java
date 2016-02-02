@@ -40,8 +40,15 @@ public class Exportor {
 
     private TableAttributeCreator creator;
 
+    private ClassLoader classLoader;
+
     public Exportor setBasePackage(String basePackage) {
         this.basePackage = basePackage;
+        return this;
+    }
+
+    public Exportor setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         return this;
     }
 
@@ -168,7 +175,7 @@ public class Exportor {
                 e.printStackTrace();
             }
         }
-        ClassScanner scanner = new ClassScanner();
+        ClassScanner scanner = new ClassScanner(classLoader);
         scanner.addFilter(filters);
         Set<Class<?>> classSet = scanner.getClasses(basePackage);
         Set<Class<?>> tempSet = new TreeSet<>((o1, o2) -> o1.getCanonicalName().compareTo(o2.getCanonicalName()));

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <S>
  * @author KGTny
  */
-public abstract class StuffOwner<IM extends ItemModel, S extends Stuff<IM>> implements Owner<IM, S> {
+public abstract class StuffOwner<IM extends ItemModel, S extends Stuff<IM>> implements Owner<S> {
 
     /**
      * 玩家id

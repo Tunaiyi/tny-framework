@@ -31,7 +31,7 @@ public interface DealedResult {
      *
      * @return
      */
-    public Set<Owner<?, ?>> getChangeOwnerSet();
+    public Set<Owner<?>> getChangeOwnerSet();
 
     /**
      * 获取改变的item

@@ -123,7 +123,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected TryToDoResult doTryToDo(long playerID, Item<?> item, Action action, boolean award, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -137,23 +137,23 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected List<DemandResult> doCountDemandResult(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        List<DemandResult> resultList = new ArrayList<DemandResult>();
+        List<DemandResult> resultList = new ArrayList<>();
         resultList.addAll(behaviorPlan.countDemandResult(playerID, attributeMap));
         resultList.addAll(behaviorPlan.getActionPlan(action).countDemandResult(playerID, attributeMap));
         return resultList;
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerID, Item<?> item, Behavior behavior, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByBehavior(behavior);
         List<DemandResult> resultList = behaviorPlan.countDemandResult(playerID, attributeMap);
-        Map<Action, ActionResult> actionResultMap = new HashMap<Action, ActionResult>();
+        Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : behaviorPlan.getActionPlanMap().entrySet()) {
             ActionPlan actionPlan = entry.getValue();
             actionResultMap.put(entry.getKey(), actionPlan.getActionResult(playerID, attributeMap));
@@ -162,7 +162,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected Trade doCountCostTrade(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -170,7 +170,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected AwardList doGetAwardList(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -178,7 +178,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected CostList doGetCostList(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -186,7 +186,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected ActionResult doCountActionResult(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -194,7 +194,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected Trade doCountTradeAward(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
@@ -206,11 +206,10 @@ public abstract class AbstractItemModel implements ItemModel {
         if (formula == null) {
             return null;
         }
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        A value = formula.createFormula().putAll(attributeMap).execute(null);
-        return value;
+        return formula.createFormula().putAll(attributeMap).execute(null);
     }
 
     @Override
@@ -240,7 +239,7 @@ public abstract class AbstractItemModel implements ItemModel {
             return null;
             //			throw new GameRuningException(option, ItemResultCode.OPTION_NO_EXIST, action, option);
         }
-        Map<String, Object> attributeMap = new HashMap<String, Object>();
+        Map<String, Object> attributeMap = new HashMap<>();
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
         return behaviorPlan.countOption(playerID, action, option, attributeMap);
@@ -376,7 +375,7 @@ public abstract class AbstractItemModel implements ItemModel {
 
     @Override
     public <A> Map<Ability, A> getAblilityByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes) {
-        Map<Ability, A> valueMap = new HashMap<Ability, A>();
+        Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
             if (abilityClass.isInstance(ability)) {
@@ -393,7 +392,7 @@ public abstract class AbstractItemModel implements ItemModel {
 
     @Override
     public <A> Map<Ability, A> getAblilityByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes) {
-        Map<Ability, A> valueMap = new HashMap<Ability, A>();
+        Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
             if (abilityClass.isInstance(ability)) {
@@ -494,7 +493,7 @@ public abstract class AbstractItemModel implements ItemModel {
 
     @Override
     public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClasses) {
-        Set<Ability> abilitySet = new HashSet<Ability>();
+        Set<Ability> abilitySet = new HashSet<>();
         for (Ability ability : this.abilityMap.keySet()) {
             for (Class<? extends Ability> clazz : abilityClasses) {
                 if (clazz.isInstance(ability))

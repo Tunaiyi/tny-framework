@@ -40,6 +40,15 @@ public class ClassScanner {
         return readerFactory;
     }
 
+    public ClassLoader classLoader;
+
+    public ClassScanner() {
+    }
+
+    public ClassScanner(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public ClassScanner addFilter(ClassFilter... filters) {
         for (ClassFilter fileFilter : filters)
             this.filters.add(fileFilter);
@@ -78,7 +87,9 @@ public class ClassScanner {
             // 定义一个枚举的集合 并进行循环来处理这个目录下的things
             Enumeration<URL> dirs;
             try {
-                dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
+                if (classLoader == null)
+                    classLoader = Thread.currentThread().getContextClassLoader();
+                dirs = classLoader.getResources(packageDirName);
                 // 循环迭代下去
                 while (dirs.hasMoreElements()) {
                     // 获取下一个元素

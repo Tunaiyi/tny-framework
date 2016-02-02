@@ -9,7 +9,7 @@ package com.tny.game.base.item;
  * <p>
  * <br>
  */
-public interface CountableStuffOwner<IM extends ItemModel, S extends CountableStuff<?>> extends Owner<IM, S> {
+public interface CountableStuffOwner<IM extends ItemModel, S extends CountableStuff<?>> extends Owner<S> {
 
     /**
      * 检测是否满了

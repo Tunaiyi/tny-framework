@@ -31,7 +31,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
         } else if (object instanceof Identifiable) {
             playerID = ((Identifiable) object).getPlayerID();
         } else if (object instanceof Owner) {
-            playerID = ((Owner<?, ?>) object).getPlayerID();
+            playerID = ((Owner<?>) object).getPlayerID();
         }
         return new LoginTimeStrategy(object, playerID);
     }
