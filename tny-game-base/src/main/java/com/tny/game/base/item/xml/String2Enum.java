@@ -38,7 +38,8 @@ public class String2Enum<T extends Enum<T>> extends AbstractSingleValueConverter
         this.enumClassList.addAll(enumClasses);
     }
 
-    public String2Enum(@SuppressWarnings("unchecked") Class<T>... enumClasses) {
+    @SuppressWarnings("unchecked")
+    public String2Enum(Class<T>... enumClasses) {
         super();
         for (Class<T> clazz : enumClasses) {
             if (clazz == null)

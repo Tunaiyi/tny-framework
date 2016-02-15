@@ -26,7 +26,7 @@ public class TimeTaskSchedulerService implements ServerPreStart {
             this.checkPlayerTask(GameInfo.getSystemID(), ReceiverType.SYSTEM);
             TransactionManager.close();
         } catch (Throwable e) {
-            TransactionManager.rollback();
+            TransactionManager.rollback(e);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.tny.game.suite.initer;
 
-import com.tny.game.event.EventDispatcher;
+import com.tny.game.event.GlobalListenerHolder;
 import com.tny.game.event.annotation.Listener;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
@@ -33,7 +33,7 @@ public class EventDispatcherIniter implements ApplicationContextAware, ServerPre
             Listener l2 = o2.getClass().getAnnotation(Listener.class);
             return l1.level() - l2.level();
         });
-        EventDispatcher.getDispatcher().addAllListener(listenerList);
+        listenerList.forEach(GlobalListenerHolder.getInstance()::addListener);
     }
 
     @Override

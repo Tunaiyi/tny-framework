@@ -3,8 +3,7 @@ package com.tny.game.base.item;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.listener.TradeEvent;
-import com.tny.game.base.item.listener.TradeEvent.TradeEventType;
+import com.tny.game.base.item.listener.TradeEvents;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.context.AttributeEntry;
 import com.tny.game.common.context.Attributes;
@@ -93,14 +92,15 @@ public abstract class AbstractWarehouse<O extends Owner>
         for (TradeItem tradeItem : result.getAllTradeItem()) {
             this.consume0(dealedResult, tradeItem, result.getAction(), attributes);
         }
-        TradeEvent.dispatch(this, result.getAction(), TradeEventType.CONSUME, result, dealedResult, entries);
+        TradeEvents.CONSUME_EVENT.notify(this, result.getAction(), result, dealedResult, attributes);
         return dealedResult;
     }
 
     protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
-        this.consume0(dealedResult, tradeItem, action, ContextAttributes.create(entries));
-        TradeEvent.dispatch(this, action, TradeEventType.CONSUME, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, entries);
+        Attributes attributes = ContextAttributes.create(entries);
+        this.consume0(dealedResult, tradeItem, action, attributes);
+        TradeEvents.CONSUME_EVENT.notify(this, action,  new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
         return dealedResult;
     }
 
@@ -110,14 +110,15 @@ public abstract class AbstractWarehouse<O extends Owner>
         for (TradeItem tradeItem : result.getAllTradeItem()) {
             this.receive0(dealedResult, tradeItem, result.getAction(), attributes);
         }
-        TradeEvent.dispatch(this, result.getAction(), TradeEventType.RECEVIE, result, dealedResult, entries);
+        TradeEvents.RECEIVE_EVENT.notify(this, result.getAction(), result, dealedResult, attributes);
         return dealedResult;
     }
 
     protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
-        this.receive0(dealedResult, tradeItem, action, ContextAttributes.create(entries));
-        TradeEvent.dispatch(this, action, TradeEventType.RECEVIE, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, entries);
+        Attributes attributes = ContextAttributes.create(entries);
+        this.receive0(dealedResult, tradeItem, action, attributes);
+        TradeEvents.RECEIVE_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
         return dealedResult;
     }
 

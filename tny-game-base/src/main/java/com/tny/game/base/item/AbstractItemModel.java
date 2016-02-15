@@ -492,7 +492,8 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClasses) {
+    @SuppressWarnings("unchecked")
+    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClasses) {
         Set<Ability> abilitySet = new HashSet<>();
         for (Ability ability : this.abilityMap.keySet()) {
             for (Class<? extends Ability> clazz : abilityClasses) {

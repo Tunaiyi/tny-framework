@@ -125,7 +125,8 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
-    public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClass) {
+    @SuppressWarnings("unchecked")
+    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass) {
         return this.getModel().getOwnAbilityBy(abilityClass);
     }
 

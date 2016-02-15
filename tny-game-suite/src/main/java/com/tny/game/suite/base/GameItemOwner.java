@@ -7,7 +7,7 @@ import com.tny.game.common.context.Attributes;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public abstract class GameItemOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<SM>> extends GameItem<IM> implements Owner<S> {
+public abstract class GameItemOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<?>> extends GameItem<IM> implements Owner<S> {
 
     /**
      * 扣除事物

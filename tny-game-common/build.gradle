@@ -20,6 +20,7 @@ dependencies {
             libs.'xstream',
             libs.'javassist',
             libs.'cglib-nodep',
+            libs.'guava',
 
             libs.'protobuf-java',
 

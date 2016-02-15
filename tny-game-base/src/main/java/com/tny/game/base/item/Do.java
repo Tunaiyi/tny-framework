@@ -29,6 +29,7 @@ public class Do {
         return new DefaultDone<>(value);
     }
 
+    @SuppressWarnings("unchecked")
     public static <M> Done<M> fail() {
         return (Done<M>) FAILED;
     }

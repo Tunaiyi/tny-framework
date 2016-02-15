@@ -26,19 +26,16 @@ public interface ClassFilterHelper {
     }
 
     static boolean matchAnnotation(MetadataReader reader, Class<? extends Annotation>... annotations) {
-        for (Class<? extends Annotation> clazz : annotations) {
-            AnnotationMetadata annotationMetadata = reader.getAnnotationMetadata();
-            Set<String> annotationStrings = annotationMetadata.getAnnotationTypes();
-            return annotationStrings.contains(clazz.getName());
-        }
-        return false;
+        List<Class<? extends Annotation>> annos = Arrays.asList(annotations);
+        return matchAnnotation(reader, annos);
     }
 
     static boolean matchAnnotation(MetadataReader reader, Iterable<Class<? extends Annotation>> annotations) {
         for (Class<? extends Annotation> clazz : annotations) {
             AnnotationMetadata annotationMetadata = reader.getAnnotationMetadata();
             Set<String> annotationStrings = annotationMetadata.getAnnotationTypes();
-            return annotationStrings.contains(clazz.getName());
+            if (annotationStrings.contains(clazz.getName()))
+                return true;
         }
         return false;
     }
@@ -60,14 +57,16 @@ public interface ClassFilterHelper {
                     return true;
                 }
                 MetadataReaderFactory factory = ClassScanner.getReaderFactory();
-                MetadataReader superClassReader = factory.getMetadataReader(superName);
-                if (matchSuper(superClassReader, classes)) {
-                    return true;
-                }
                 for (String name : interfaceNames) {
                     MetadataReader interfaceReader = factory.getMetadataReader(name);
                     if (matchSuper(interfaceReader, classes))
                         return true;
+                }
+                if (superName == null || superName.equals(Object.class.getName()))
+                    return false;
+                MetadataReader superClassReader = factory.getMetadataReader(superName);
+                if (matchSuper(superClassReader, classes)) {
+                    return true;
                 }
             }
             return false;

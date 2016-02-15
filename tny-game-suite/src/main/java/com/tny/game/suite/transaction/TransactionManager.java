@@ -25,10 +25,10 @@ public class TransactionManager {
         return transThreadLocal.get();
     }
 
-    public static void rollback() {
+    public static void rollback(Throwable cause) {
         GameTransaction transaction = transThreadLocal.get();
         if (transaction != null && transaction.isOpen())
-            transaction.rollback();
+            transaction.rollback(cause);
     }
 
     public static void close() {

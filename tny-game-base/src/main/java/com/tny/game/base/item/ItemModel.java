@@ -317,7 +317,8 @@ public interface ItemModel extends Model {
 
     public boolean hasAblility(Ability ability);
 
-    public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClass);
+    @SuppressWarnings("unchecked")
+    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
 
     public boolean hasBehavior(Behavior behavior);
 

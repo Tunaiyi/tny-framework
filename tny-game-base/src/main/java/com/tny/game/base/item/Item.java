@@ -135,7 +135,8 @@ public interface Item<M extends ItemModel> extends Identifiable {
 
     public boolean hasAction(Action action);
 
-    public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClass);
+    @SuppressWarnings("unchecked")
+    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
 
     public Behavior getBehaviorByAction(Action action);
 

@@ -1,8 +1,9 @@
 package com.tny.game.doc.enums;
 
 import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.EnumDocHolder;
 import com.tny.game.doc.table.TableAttribute;
+
+import static com.tny.game.doc.holder.EnumDocHolder.*;
 
 public class EnumTableAttribute implements TableAttribute {
 
@@ -15,24 +16,24 @@ public class EnumTableAttribute implements TableAttribute {
         this.enumConfigerClass = enumConfigerClass;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public EnumTableAttribute(Class<Enum> clazz, Class<? extends EnumConfiger> enumConfigerClass) {
         super();
         try {
             this.enumConfigerClass = enumConfigerClass;
             this.enumeration = this.enumConfigerClass.newInstance();
-            this.enumeration.setEnumDocHolder(EnumDocHolder.create(clazz));
+            this.enumeration.setEnumDocHolder(create(clazz));
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         try {
             this.enumeration = this.enumConfigerClass.newInstance();
-            this.enumeration.setEnumDocHolder(EnumDocHolder.create((Class<Enum>) clazz));
+            this.enumeration.setEnumDocHolder(create((Class<Enum>) clazz));
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -133,7 +133,8 @@ public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> im
     }
 
     @Override
-    public Set<Ability> getOwnAbilityBy(@SuppressWarnings("unchecked") Class<? extends Ability>... abilityClass) {
+    @SuppressWarnings("unchecked")
+    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass) {
         return this.item.getOwnAbilityBy(abilityClass);
     }
 

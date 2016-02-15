@@ -10,11 +10,14 @@ import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.event.annotation.Listener;
 import com.tny.game.net.dispatcher.CurrentCMD;
 import com.tny.game.suite.auto.AutoMethodHolder;
-import com.tny.game.suite.auto.persistent.annotation.*;
+import com.tny.game.suite.auto.persistent.annotation.AutoDB;
+import com.tny.game.suite.auto.persistent.annotation.AutoDBBy;
+import com.tny.game.suite.auto.persistent.annotation.AutoDBParam;
+import com.tny.game.suite.auto.persistent.annotation.AutoDBReturn;
+import com.tny.game.suite.auto.persistent.annotation.AutoOP;
 import com.tny.game.suite.base.GameExplorer;
 import com.tny.game.suite.transaction.Transaction;
 import com.tny.game.suite.transaction.TransactionManager;
-import com.tny.game.suite.transaction.listener.TransactionEvent;
 import com.tny.game.suite.transaction.listener.TransactionListener;
 import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
@@ -140,7 +143,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     @Override
     @Listener
-    public void handleOpen(TransactionEvent event) {
+    public void handleOpen(Transaction source) {
     }
 
     private void toDB(Transaction transaction) {
@@ -190,8 +193,8 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     @Override
     @Listener
-    public void handleClose(TransactionEvent event) {
-        Transaction transaction = event.getSource();
+    public void handleClose(Transaction source) {
+        Transaction transaction = source;
         try {
             this.toDB(transaction);
         } catch (Throwable e) {
@@ -204,8 +207,8 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     @Override
     @Listener
-    public void handleRollback(TransactionEvent event) {
-        Transaction transaction = event.getSource();
+    public void handleRollback(Transaction source, Throwable cause) {
+        Transaction transaction = source;
         try {
             this.toDB(transaction);
         } catch (Throwable e) {

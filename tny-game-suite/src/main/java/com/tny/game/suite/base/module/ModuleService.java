@@ -115,6 +115,7 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
         return dto;
     }
 
+    @SuppressWarnings("unchecked")
     private void doUpdateDTO(GameModuleHandler handler, FeatureExplorer featureExplorer, DTO dto) {
         try {
             if (LOGGER.isDebugEnabled())

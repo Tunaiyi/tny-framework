@@ -3,8 +3,7 @@ package com.tny.game.suite.transaction;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.suite.transaction.listener.TransactionEvent;
-import com.tny.game.suite.transaction.listener.TransactionEvent.TransactionEventType;
+import com.tny.game.suite.transaction.listener.TransactionEvents;
 
 public class GameTransaction implements Transaction {
 
@@ -15,7 +14,7 @@ public class GameTransaction implements Transaction {
     protected boolean open() {
         if (!working) {
             this.working = true;
-            TransactionEvent.dispatch(TransactionEventType.OPEN, this);
+            TransactionEvents.OPEN_EVENT.notify(this);
             return true;
         }
         return false;
@@ -24,17 +23,17 @@ public class GameTransaction implements Transaction {
     protected boolean close() {
         if (working) {
             this.working = false;
-            TransactionEvent.dispatch(TransactionEventType.CLOSE, this);
+            TransactionEvents.CLOSE_EVENT.notify(this);
             this.attributes.clearAttribute();
             return true;
         }
         return false;
     }
 
-    protected boolean rollback() {
+    protected boolean rollback(Throwable cause) {
         if (working) {
             this.working = false;
-            TransactionEvent.dispatch(TransactionEventType.ROLLBACK, this);
+            TransactionEvents.ROLLBACK_EVENT.notify(this, cause);
             this.attributes.clearAttribute();
             return true;
         }

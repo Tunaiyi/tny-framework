@@ -1,7 +1,5 @@
 package com.tny.game.event;
 
-import com.tny.game.common.context.AbstractAttributes;
-
 /**
  * @author KGTny
  * @ClassName: Event
@@ -12,7 +10,7 @@ import com.tny.game.common.context.AbstractAttributes;
  * <p>
  * EventDispatcher派发器派发事件的抽象基础类<br>
  */
-public abstract class Event<T> extends AbstractAttributes {
+public abstract class Event<T> {
 
     /**
      * 事件源
@@ -21,30 +19,8 @@ public abstract class Event<T> extends AbstractAttributes {
      */
     protected final T source;
 
-    /**
-     * 事件处理器名称
-     *
-     * @uml.property name="handler"
-     */
-    protected final String handler;
-
-    /**
-     * 分发器
-     */
-    private EventDispatcher dispatcher = EventDispatcher.getDispatcher();
-
-    public Event(String handler, T source) {
-        super(false);
-        this.handler = handler;
+    public Event(T source) {
         this.source = source;
-    }
-
-    public Event(String handler, T source, EventDispatcher dispatcher) {
-        super(false);
-        this.handler = handler;
-        this.source = source;
-        if (dispatcher != null)
-            this.dispatcher = dispatcher;
     }
 
     /**
@@ -57,22 +33,6 @@ public abstract class Event<T> extends AbstractAttributes {
      */
     public T getSource() {
         return source;
-    }
-
-    /**
-     * 获取事件处理器名称
-     * <p>
-     * 获取事件处理器名称<br>
-     *
-     * @return 返回事件处理器名称
-     * @uml.property name="handler"
-     */
-    public String getHandler() {
-        return handler;
-    }
-
-    public void dispatch() {
-        dispatcher.dispatch(this);
     }
 
 }
