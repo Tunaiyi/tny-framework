@@ -5,7 +5,11 @@ import com.tny.game.common.result.ResultCodeType;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.*;
+import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.Message;
+import com.tny.game.net.base.Protocol;
+import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
@@ -14,7 +18,6 @@ import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
 import com.tny.game.worker.command.Command;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -315,7 +318,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 // this.appContext.getSessionHolder().offline(this.session);
                 result = ResultFactory.create(e.getResultCode(), null);
             } catch (InvocationTargetException e) {
-                ex = e instanceof Exception ? e.getTargetException() : e;
+                ex = e.getTargetException();
                 result = this.handleException(ex);
             } catch (Throwable e) {
                 result = this.handleException(e);
@@ -325,14 +328,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (result != null) {
                 ChannelFuture future = this.session.response(this.message, result.getResultCode(), result.getBody());
                 if (future != null && result.getResultCode().getType() == ResultCodeType.ERROR) {
-                    future.addListener(new ChannelFutureListener() {
-
-                        @Override
-                        public void operationComplete(ChannelFuture future) throws Exception {
-                            RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session);
-                        }
-
-                    });
+                    future.addListener(future1 -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session));
                 }
             }
             return result;

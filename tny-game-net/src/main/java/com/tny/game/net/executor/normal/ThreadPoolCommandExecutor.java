@@ -46,7 +46,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
     }
 
     @Override
-    public void sumit(DispatcherCommand<?> command) {
+    public void submit(DispatcherCommand<?> command) {
         Session session = command.getSession();
         ChildExecutor executor = session.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
         if (executor == null) {

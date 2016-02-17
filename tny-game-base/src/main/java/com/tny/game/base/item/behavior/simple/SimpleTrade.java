@@ -1,17 +1,27 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.*;
+import com.tny.game.base.item.AlterType;
+import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.ItemType;
+import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SimpleTrade implements Trade {
 
     protected Action action;
     protected TradeType tradeType;
-    protected List<TradeItem<ItemModel>> tradeItemList = new ArrayList<TradeItem<ItemModel>>();
+    protected List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
 
     public SimpleTrade(Action action, TradeType tradeType) {
         this.action = action;
@@ -32,11 +42,11 @@ public class SimpleTrade implements Trade {
     }
 
     public void addIteam(ItemModel itemModel, int number, AlterType alertType) {
-        this.tradeItemList.add(new SimpleTradeItem<ItemModel>(itemModel, number, alertType));
+        this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number, alertType));
     }
 
     public void addIteam(ItemModel itemModel, int number) {
-        this.tradeItemList.add(new SimpleTradeItem<ItemModel>(itemModel, number));
+        this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number));
     }
 
     @SuppressWarnings("unchecked")
@@ -44,10 +54,7 @@ public class SimpleTrade implements Trade {
         this.action = action;
         this.tradeType = tradeType;
         if (tradeItemList != null && tradeItemList.size() > 0) {
-            for (TradeItem<?> item : tradeItemList) {
-                if (item.getNumber() > 0)
-                    this.tradeItemList.add((TradeItem<ItemModel>) item);
-            }
+            this.tradeItemList.addAll(tradeItemList.stream().filter(item -> item.getNumber() > 0).map(item -> (TradeItem<ItemModel>) item).collect(Collectors.toList()));
         }
         this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
     }
@@ -58,7 +65,7 @@ public class SimpleTrade implements Trade {
     }
 
     @Override
-    public int getNumber(ItemModel model) {
+    public long getNumber(ItemModel model) {
         int number = 0;
         for (TradeItem<ItemModel> item : this.tradeItemList) {
             if (item.getItemModel().equals(model))
@@ -102,28 +109,23 @@ public class SimpleTrade implements Trade {
 
     @Override
     public Collection<TradeItem<ItemModel>> getTradeItemBy(Collection<ItemType> itemType) {
-        List<TradeItem<ItemModel>> tradeItemList = new ArrayList<TradeItem<ItemModel>>();
-        for (TradeItem<ItemModel> tradeItem : this.getAllTradeItem()) {
-            if (itemType.contains(tradeItem.getItemModel().getItemType())) {
-                tradeItemList.add(tradeItem);
-            }
-        }
+        List<TradeItem<ItemModel>> tradeItemList = this.getAllTradeItem().stream().filter(tradeItem -> itemType.contains(tradeItem.getItemModel().getItemType())).collect(Collectors.toList());
         return tradeItemList;
     }
 
     @Override
     public void merge() {
-        Map<ItemModel, Integer> itemNumMap = new HashMap<ItemModel, Integer>();
+        Map<ItemModel, Long> itemNumMap = new HashMap<>();
         for (TradeItem<ItemModel> item : this.tradeItemList) {
-            Integer value = itemNumMap.get(item.getItemModel());
+            Long value = itemNumMap.get(item.getItemModel());
             if (value == null)
-                value = 0;
+                value = 0L;
             value += item.getNumber();
             itemNumMap.put(item.getItemModel(), value);
         }
-        List<TradeItem<ItemModel>> tradeItemList = new ArrayList<TradeItem<ItemModel>>();
-        for (Entry<ItemModel, Integer> entry : itemNumMap.entrySet())
-            tradeItemList.add(new SimpleTradeItem<ItemModel>(entry.getKey(), entry.getValue()));
+        List<TradeItem<ItemModel>> tradeItemList = itemNumMap.entrySet().stream()
+                .map(entry -> new SimpleTradeItem<>(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
         this.tradeItemList = tradeItemList;
     }
 

@@ -23,14 +23,14 @@ public @interface ToCache {
      *
      * @return 返回key前缀
      */
-    public String prefix() default "";
+    String prefix() default "";
 
     /**
      * 关联对象的处理器类型
      *
      * @return 处理器类型
      */
-    public Class<? extends CacheTrigger<?, ?, ?>>[] triggers() default {};
+    Class<? extends CacheTrigger<?, ?, ?>>[] triggers() default {};
 
     /**
      * 构成key的方法名称数组 如: key = getID() + "_" + getName();
@@ -39,12 +39,12 @@ public @interface ToCache {
      *
      * @return
      */
-    public String[] cacheKeys();
+    String[] cacheKeys();
 
     /**
      * 数据源
      *
      * @return
      */
-    public String source() default "";
+    String source() default "";
 }

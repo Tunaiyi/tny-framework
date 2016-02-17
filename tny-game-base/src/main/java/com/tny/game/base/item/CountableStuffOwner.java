@@ -18,7 +18,7 @@ public interface CountableStuffOwner<IM extends ItemModel, S extends CountableSt
      * @param number
      * @return
      */
-    boolean isOverUpperLimit(IM model, AlterType type, int number);
+    boolean isOverUpperLimit(IM model, AlterType type, long number);
 
     /**
      * 检测是否足够
@@ -27,6 +27,6 @@ public interface CountableStuffOwner<IM extends ItemModel, S extends CountableSt
      * @param number
      * @return
      */
-    boolean isOverLowerLimit(IM model, AlterType type, int number);
+    boolean isOverLowerLimit(IM model, AlterType type, long number);
 
 }

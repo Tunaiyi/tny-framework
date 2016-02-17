@@ -11,7 +11,7 @@ public interface CacheClient {
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * 获取指定key集合的对象<br>
@@ -19,7 +19,7 @@ public interface CacheClient {
      * @param key 指定key
      * @return 返回获取的指定key对象
      */
-    public Object get(String key);
+    Object get(String key);
 
     /**
      * 获取指定key集合的对象集合<br>
@@ -27,7 +27,7 @@ public interface CacheClient {
      * @param keys 指定key集合
      * @return 返回获取的指定key集合对象集合
      */
-    public Collection<Object> getMultis(Collection<String> keys);
+    Collection<Object> getMultis(Collection<String> keys);
 
     /**
      * 获取指定key集合的对象Map<br>
@@ -35,7 +35,7 @@ public interface CacheClient {
      * @param keys 指定key集合
      * @return 返回获取的指定key集合对象Map
      */
-    public Map<String, Object> getMultiMap(Collection<String> keys);
+    Map<String, Object> getMultiMap(Collection<String> keys);
 
     /**
      * 获取带版本的缓存项<br>
@@ -43,7 +43,7 @@ public interface CacheClient {
      * @param key 指定key
      * @return 返回带版本的缓存项
      */
-    public CasItem<?> gets(String key);
+    CasItem<?> gets(String key);
 
     /**
      * 增加键值,若有缓存中已存在指定的key则增加失败,若无则添加成功<br>
@@ -53,7 +53,7 @@ public interface CacheClient {
      * @param millisecond 有效期 毫秒
      * @return 添加成功返回true 失败返回false
      */
-    public boolean add(String key, Object value, long millisecond);
+    boolean add(String key, Object value, long millisecond);
 
     /**
      * 批量增加键值cacheItems,若有缓存中已存在指定的key则增加失败,若无则添加成功<br>
@@ -61,7 +61,7 @@ public interface CacheClient {
      * @param cacheItems
      * @return 返回失败列表
      */
-    public <C extends CacheItem<?>> List<C> addMultis(Collection<C> cacheItems);
+    <C extends CacheItem<?>> List<C> addMultis(Collection<C> cacheItems);
 
     /**
      * 批量增加键值valueMap,若有缓存中已存在指定的key则增加失败,若无则添加成功<br>
@@ -70,7 +70,7 @@ public interface CacheClient {
      * @param millisecond
      * @return 返回失败列表
      */
-    public <T> List<CacheItem<T>> addMultis(Map<String, T> valueMap, long millisecond);
+    <T> List<CacheItem<T>> addMultis(Map<String, T> valueMap, long millisecond);
 
     /**
      * 设置键值,若有缓存中已存在指定的key则覆盖其value,若无则添加成功<br>
@@ -80,7 +80,7 @@ public interface CacheClient {
      * @param millisecond 有效期 毫秒
      * @return 设置成功返回true 失败返回false
      */
-    public boolean set(String key, Object value, long millisecond);
+    boolean set(String key, Object value, long millisecond);
 
     /**
      * 批量设置键值cacheItems,若有缓存中已存在指定的key则覆盖其value,若无则添加成功<br>
@@ -88,7 +88,7 @@ public interface CacheClient {
      * @param cacheItems
      * @return 返回失败列表
      */
-    public <C extends CacheItem<?>> List<C> setMultis(Collection<C> cacheItems);
+    <C extends CacheItem<?>> List<C> setMultis(Collection<C> cacheItems);
 
     /**
      * 批量设置键值valueMap,若有缓存中已存在指定的key则覆盖其value,若无则添加成功<br>
@@ -97,7 +97,7 @@ public interface CacheClient {
      * @param millisecond
      * @return 返回失败列表
      */
-    public <T> List<CacheItem<T>> setMultis(Map<String, T> valueMap, long millisecond);
+    <T> List<CacheItem<T>> setMultis(Map<String, T> valueMap, long millisecond);
 
     /**
      * 替换键值
@@ -110,7 +110,7 @@ public interface CacheClient {
      * @param millisecond 有效期 毫秒
      * @return 替换返回true 失败返回false
      */
-    public boolean update(String key, Object value, long millisecond);
+    boolean update(String key, Object value, long millisecond);
 
     /**
      * 批量替换键值
@@ -121,7 +121,7 @@ public interface CacheClient {
      * @param cacheItems
      * @return 返回失败列表
      */
-    public <C extends CacheItem<?>> List<C> updateMultis(Collection<C> cacheItems);
+    <C extends CacheItem<?>> List<C> updateMultis(Collection<C> cacheItems);
 
     /**
      * 批量替换键值
@@ -133,14 +133,14 @@ public interface CacheClient {
      * @param millisecond
      * @return 返回失败列表
      */
-    public <T> List<CacheItem<T>> updateMultis(Map<String, T> valueMap, long millisecond);
+    <T> List<CacheItem<T>> updateMultis(Map<String, T> valueMap, long millisecond);
 
     /**
      * 删除指定Key的对象<br>
      *
      * @param key 指定的Key
      */
-    public boolean delete(String key);
+    boolean delete(String key);
 
     /**
      * 批量删除指定keys的对象<br>
@@ -148,7 +148,7 @@ public interface CacheClient {
      * @param keys
      * @return 返回失败列表
      */
-    public List<String> deleteMultis(Collection<String> keys);
+    List<String> deleteMultis(Collection<String> keys);
 
     /**
      * 通过cas的方式更新item的value
@@ -162,10 +162,10 @@ public interface CacheClient {
      * @param version     版本号
      * @return 更新返回true 失败返回false
      */
-    public boolean cas(CasItem<?> item, long millisecond);
+    boolean cas(CasItem<?> item, long millisecond);
 
     /**
      * 关闭连接<br>
      */
-    public void shutdown();
+    void shutdown();
 }

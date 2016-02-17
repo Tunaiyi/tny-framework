@@ -60,7 +60,7 @@ public class CollectionTrade implements Trade {
     }
 
     @Override
-    public int getNumber(ItemModel model) {
+    public long getNumber(ItemModel model) {
         TradeItem<ItemModel> tradeItem = this.tradeMap.get(model.getID());
         if (tradeItem == null)
             return 0;

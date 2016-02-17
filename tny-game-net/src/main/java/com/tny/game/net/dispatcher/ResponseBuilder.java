@@ -24,15 +24,15 @@ public interface ResponseBuilder {
      * @param id 响应ID
      * @return 返回构建器本身
      */
-    public ResponseBuilder setID(int id);
+    ResponseBuilder setID(int id);
 
     /**
      * 设置响应模块
      *
-     * @param module 响应模块名
+     * @param protocol 响应模块名
      * @return 返回构建器本身
      */
-    public ResponseBuilder setProtocol(Protocol protocol);
+    ResponseBuilder setProtocol(Protocol protocol);
 
     //	/**
     //	 * 设置用户ID
@@ -49,7 +49,7 @@ public interface ResponseBuilder {
      * @param protocol 操作名称
      * @return 返回构建器本身
      */
-    public ResponseBuilder setProtocol(int protocol);
+    ResponseBuilder setProtocol(int protocol);
 
     /**
      * 设置结果码
@@ -57,15 +57,15 @@ public interface ResponseBuilder {
      * @param result
      * @return
      */
-    public ResponseBuilder setResult(int result);
+    ResponseBuilder setResult(int result);
 
     /**
      * 设置结果码
      *
-     * @param result
+     * @param responseCode
      * @return
      */
-    public ResponseBuilder setResult(ResultCode responseCode);
+    ResponseBuilder setResult(ResultCode responseCode);
 
     /**
      * 设置命令结果
@@ -73,7 +73,7 @@ public interface ResponseBuilder {
      * @param result
      * @return
      */
-    public ResponseBuilder setCommandResult(CommandResult result);
+    ResponseBuilder setCommandResult(CommandResult result);
 
     /**
      * 设置响应消息
@@ -81,12 +81,12 @@ public interface ResponseBuilder {
      * @param message
      * @return
      */
-    public ResponseBuilder setBody(Object message);
+    ResponseBuilder setBody(Object message);
 
     /**
      * 构建响应
      *
      * @return 返回构建的响应
      */
-    public Response build();
+    Response build();
 }

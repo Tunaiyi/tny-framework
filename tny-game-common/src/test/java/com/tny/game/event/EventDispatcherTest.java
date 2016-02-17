@@ -48,6 +48,10 @@ public class EventDispatcherTest {
         CREATE_EVENT.addListener(listener);
         UPGRADE_EVENT.addListener(listener);
 
+//        listener::handleUpgrade
+//        UPGRADE_EVENT.add(listener::handleUpgrade);
+//        UPGRADE_EVENT.remove(listener::handleUpgrade);
+
         context.checking(new Expectations() {{
             oneOf(listener).handleCreate(SOURCE);
             never(listener).handleUpgrade(SOURCE, null);

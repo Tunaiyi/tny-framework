@@ -233,12 +233,12 @@ public class Account implements Identifiable {
         this.setCreateRole(dateTime);
     }
 
-    private void setCreate(DateTime dateTime) {
+    protected void setCreate(DateTime dateTime) {
         this.createAt = dateTime;
         this.createDate = new LocalDate(this.createAt);
     }
 
-    private void setCreateRole(DateTime dateTime) {
+    protected void setCreateRole(DateTime dateTime) {
         this.level = 1;
         this.createRoleAt = dateTime;
         this.createRoleDate = new LocalDate(this.createRoleAt);

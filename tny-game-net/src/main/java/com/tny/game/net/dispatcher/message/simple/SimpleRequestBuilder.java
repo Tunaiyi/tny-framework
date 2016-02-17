@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher.message.simple;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.dispatcher.AbstactRequestBuilder;
+import com.tny.game.net.dispatcher.AbstractRequestBuilder;
 import com.tny.game.net.dispatcher.Request;
 
 /**
@@ -9,7 +9,7 @@ import com.tny.game.net.dispatcher.Request;
  *
  * @author Kun.y
  */
-public class SimpleRequestBuilder extends AbstactRequestBuilder {
+public class SimpleRequestBuilder extends AbstractRequestBuilder {
 
     private Attributes attributes;
 

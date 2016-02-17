@@ -14,7 +14,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
 
     private I itemModel;
 
-    private int number;
+    private long number;
 
     private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
 
@@ -32,7 +32,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
         }
     }
 
-    public SimpleDealedtem(I itemModel, int number, DemandParamEntry<?>... entries) {
+    public SimpleDealedtem(I itemModel, long number, DemandParamEntry<?>... entries) {
         super();
         this.itemModel = itemModel;
         this.number = number;
@@ -41,7 +41,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
         }
     }
 
-    public SimpleDealedtem(DealedItem<I> item, int number) {
+    public SimpleDealedtem(DealedItem<I> item, long number) {
         super();
         this.itemModel = item.getItemModel();
         this.number = number;
@@ -56,7 +56,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
     }
 
     @Override
-    public int getNumber() {
+    public long getNumber() {
         return number;
     }
 

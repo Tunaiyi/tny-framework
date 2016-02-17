@@ -37,6 +37,11 @@ public class SimpleResponse extends NetResponse {
      */
     protected Object operation;
 
+    /**
+     * 是否是推送
+     */
+    protected boolean push = true;
+
     private static final long serialVersionUID = 1L;
 
     public SimpleResponse() {
@@ -123,6 +128,11 @@ public class SimpleResponse extends NetResponse {
         return this.result;
     }
 
+    @Override
+    public boolean isPush() {
+        return false;
+    }
+
     public Object getModule() {
         return this.module;
     }
@@ -151,6 +161,10 @@ public class SimpleResponse extends NetResponse {
 
     public void setOperation(Object operation) {
         this.operation = operation;
+    }
+
+    public void setPush(boolean push) {
+        this.push = push;
     }
 
     @Override

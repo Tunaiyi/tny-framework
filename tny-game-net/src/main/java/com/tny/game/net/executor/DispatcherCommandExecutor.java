@@ -7,8 +7,8 @@ import com.tny.game.net.dispatcher.DispatcherCommand;
  */
 public interface DispatcherCommandExecutor {
 
-    public void shutdown();
+    void shutdown();
 
-    public void sumit(DispatcherCommand<?> command);
+    void submit(DispatcherCommand<?> command);
 
 }

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ChannelServerSession extends AbstractServerSession {
 
@@ -27,6 +28,11 @@ public abstract class ChannelServerSession extends AbstractServerSession {
      * 通道
      */
     private transient Channel channel;
+
+    /**
+     * 推送ID创建器
+     */
+    private AtomicInteger pushIDCreator = new AtomicInteger(0);
 
     public ChannelServerSession(Channel channel, LoginCertificate loginInfo) {
         super(loginInfo);
@@ -66,7 +72,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     public void disconnect() {
         if (this.isConnect()) {
             if (ChannelServerSession.LOG.isInfoEnabled()) {
-                LOG.info("Session主动断开##通道 {} ==> {}", new Object[]{this.channel.remoteAddress(), this.channel.localAddress(), new Date()});
+                LOG.info("Session主动断开##通道 {} ==> {}", this.channel.remoteAddress(), this.channel.localAddress(), new Date());
             }
             this.channel.disconnect();
         }
@@ -97,12 +103,13 @@ public abstract class ChannelServerSession extends AbstractServerSession {
 
     @Override
     public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
-        Object data = null;
+        Object data;
         if (body instanceof ByteBuf || body instanceof byte[]) {
             data = body;
         } else {
             Response response = this.getMessageBuilderFactory()
                     .newResponseBuilder()
+                    .setID(protocol.isPush() ? pushIDCreator.incrementAndGet() : Session.DEFAULT_RESPONSE_ID)
                     .setProtocol(protocol)
                     .setResult(code)
                     .setBody(body)

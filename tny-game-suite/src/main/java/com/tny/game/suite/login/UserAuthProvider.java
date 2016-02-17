@@ -39,7 +39,7 @@ public abstract class UserAuthProvider extends GameAuthProvider {
     protected GameTicket getTicket(Request request, String openID, String openKey, String ticketWord) throws ValidatorFailException {
         GameTicket ticket;
         try {
-            if (this.isProvider()) {
+            if (this.isAuth()) {
                 if (ticketWord == null)
                     throw new ValidatorFailException(openID, request.getHostName(), "无登录票据");
                 ticket = GameTickeHelper.decryptTicket(ticketWord);

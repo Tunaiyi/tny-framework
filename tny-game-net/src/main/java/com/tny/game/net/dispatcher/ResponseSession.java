@@ -6,8 +6,8 @@ import io.netty.channel.ChannelFuture;
 
 public interface ResponseSession extends Session {
 
-    public ChannelFuture response(Protocol protocol, Object body);
+    ChannelFuture response(Protocol protocol, Object body);
 
-    public ChannelFuture response(Protocol protocol, ResultCode code, Object body);
+    ChannelFuture response(Protocol protocol, ResultCode code, Object body);
 
 }

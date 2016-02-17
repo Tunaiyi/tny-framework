@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Kun.y
  */
-public abstract class AbstactRequestBuilder implements RequestBuilder {
+public abstract class AbstractRequestBuilder implements RequestBuilder {
 
     protected int id;
 
@@ -25,7 +25,7 @@ public abstract class AbstactRequestBuilder implements RequestBuilder {
 
     protected List<Object> paramList = new ArrayList<Object>();
 
-    protected AbstactRequestBuilder() {
+    protected AbstractRequestBuilder() {
     }
 
     /**
@@ -41,9 +41,9 @@ public abstract class AbstactRequestBuilder implements RequestBuilder {
     }
 
     /**
-     * 设置请求模块
+     * 设置请求协议
      *
-     * @param module 请求模块名
+     * @param protocol 请求协议名
      * @return 返回构建器本身
      */
     @Override

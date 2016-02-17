@@ -32,6 +32,9 @@ public class ProtoExResponse extends NetResponse {
     @ProtoExField(value = 4, conf = @ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
     protected Object body;
 
+    @ProtoExField(5)
+    protected boolean push;
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -47,6 +50,11 @@ public class ProtoExResponse extends NetResponse {
     @Override
     public int getProtocol() {
         return this.protocol;
+    }
+
+    @Override
+    public boolean isPush() {
+        return push;
     }
 
     @Override
@@ -80,6 +88,10 @@ public class ProtoExResponse extends NetResponse {
 
     protected void setProtocol(int protocol) {
         this.protocol = protocol;
+    }
+
+    protected void setPush(boolean push) {
+        this.push = push;
     }
 
     //	@Override

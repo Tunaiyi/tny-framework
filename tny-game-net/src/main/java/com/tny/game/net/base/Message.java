@@ -7,13 +7,13 @@ public interface Message extends Protocol {
      *
      * @return 返回请求Id
      */
-    public int getID();
+    int getID();
 
     /**
      * 传输类型 请求|响应
      *
      * @return
      */
-    public MessageType getMessage();
+    MessageType getMessage();
 
 }

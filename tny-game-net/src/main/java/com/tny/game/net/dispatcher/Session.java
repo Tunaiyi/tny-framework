@@ -10,17 +10,17 @@ import com.tny.game.net.LoginCertificate;
  */
 public interface Session {
 
-    public static final int PUSH_RESPONSE_ID = -1;
-    public static final long UN_LOGIN_UID = 0;
-    public static final String DEFAULT_USER_GROUP = "USER";
-    public static final String UNLOGIN_USER_GROUP = "UNLOGIN";
+    int DEFAULT_RESPONSE_ID = -1;
+    long UN_LOGIN_UID = 0;
+    String DEFAULT_USER_GROUP = "USER";
+    String UNLOGIN_USER_GROUP = "UNLOGIN";
 
     /**
      * 客户端用户ID
      *
      * @return
      */
-    public long getUID();
+    long getUID();
 
     /**
      * 客户端用户组名称
@@ -30,14 +30,14 @@ public interface Session {
      *
      * @return
      */
-    public String getGroup();
+    String getGroup();
 
     /**
      * 客户端登陆时间
      *
      * @return
      */
-    public long getLoginAt();
+    long getLoginAt();
 
     /**
      * 客户端是否登錄
@@ -47,7 +47,7 @@ public interface Session {
      *
      * @return
      */
-    public boolean isAskerLogin();
+    boolean isAskerLogin();
 
     /**
      * 獲取响应的IP地址
@@ -57,31 +57,31 @@ public interface Session {
      *
      * @return 返回IP地址
      */
-    public String getHostName();
+    String getHostName();
 
     /**
      * 获取会话属性
      *
      * @return
      */
-    public Attributes attributes();
+    Attributes attributes();
 
     /**
      * 是否已连接
      *
      * @return 连接返回true 否则返回false
      */
-    public boolean isConnect();
+    boolean isConnect();
 
     /**
      * 获取信息构建器工厂
      *
      * @return
      */
-    public MessageBuilderFactory getMessageBuilderFactory();
+    MessageBuilderFactory getMessageBuilderFactory();
 
-    public LoginCertificate getCertificate();
+    LoginCertificate getCertificate();
 
-    public boolean isOnline();
+    boolean isOnline();
 
 }

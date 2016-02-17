@@ -10,6 +10,6 @@ public interface DispatcherCommand<M> extends UserCommand<M>, CommandTask<M> {
      *
      * @return
      */
-    public Session getSession();
+    Session getSession();
 
 }

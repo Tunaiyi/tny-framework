@@ -45,6 +45,7 @@ public class GameMD5Checker extends MD5RequestChecker {
         if (directProtocols.contains(request.getProtocol()))
             return super.match(request);
         if (request.getID() > 10) {
+            //TODO 是否缓存,不适合在这里进行处理
             MobileAttach attach = session.attributes().getAttribute(MobileSessionHolder.MOBILE_ATTACH);
             if (attach != null && !attach.checkAndUpdate(request)) {
                 request.attributes().setAttribute(SessionKeys.GET_CACHED_RESPONSE, true);
@@ -76,7 +77,6 @@ public class GameMD5Checker extends MD5RequestChecker {
             openKey = openKey == null ? "" : openKey;
             checkKeyBuilder.append(openID)
                     .append(openKey)
-                    .append(request.getProtocol() / 100)
                     .append(request.getProtocol())
                     .append(request.getTime())
                     .append(key)
@@ -88,7 +88,6 @@ public class GameMD5Checker extends MD5RequestChecker {
             checkKeyBuilder.append(serverID)
                     .append(userGroup)
                     .append(password)
-                    .append(request.getProtocol() / 100)
                     .append(request.getProtocol())
                     .append(request.getTime());
         }

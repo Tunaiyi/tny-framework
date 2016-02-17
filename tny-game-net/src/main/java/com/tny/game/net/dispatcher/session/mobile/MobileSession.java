@@ -27,7 +27,7 @@ public class MobileSession extends ChannelServerSession {
         MobileAttach attach = this.getMobileAttach();
         if (attach != null && protocol instanceof Request) {
             Request request = (Request) protocol;
-            if (request.getID() > Session.PUSH_RESPONSE_ID) {
+            if (request.getID() > Session.DEFAULT_RESPONSE_ID) {
                 if (attach.exsist(request.getID()))
                     return;
                 attach.push(new ResponseItem(request.getID(), code, body));

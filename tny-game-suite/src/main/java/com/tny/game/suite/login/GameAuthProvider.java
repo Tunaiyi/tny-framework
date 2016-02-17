@@ -30,7 +30,7 @@ public abstract class GameAuthProvider implements AuthProvider {
         return name;
     }
 
-    protected boolean isProvider() {
+    protected boolean isAuth() {
         return Configs.DEVELOP_CONFIG.getBoolean(Configs.DEVELOP_AUTH_CHECK, true);
     }
 }

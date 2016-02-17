@@ -115,19 +115,19 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
         try {
             DispatcherCommand<?> command = null;
             if (msg.getMessage() == MessageType.REQUEST) {
-                command = requsetCommand(channel, msg);
+                command = requestCommand(channel, msg);
             }
             if (msg.getMessage() == MessageType.RESPONSE) {
                 command = responseCommand(channel, msg);
             }
             if (command != null)
-                this.commandExecutor.sumit(command);
+                this.commandExecutor.submit(command);
         } catch (Throwable ex) {
             MessageHandler.LOG.error("#GameServerHandler#接受请求异常", ex);
         }
     }
 
-    private DispatcherCommand<?> requsetCommand(Channel channel, Message message) {
+    private DispatcherCommand<?> requestCommand(Channel channel, Message message) {
         AppContext appContext = channel.attr(NetAttributeKey.CONTEXT).get();
         ServerSession session = channel.attr(NetAttributeKey.SERVER_SEESSION).get();
         try {

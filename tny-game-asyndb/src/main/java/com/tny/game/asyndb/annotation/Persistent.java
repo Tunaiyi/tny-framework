@@ -20,7 +20,7 @@ public @interface Persistent {
      *
      * @return
      */
-    public boolean asyn() default true;
+    boolean asyn() default true;
 
     /**
      * 如果更新的对象不是同一个时是否替换
@@ -31,14 +31,13 @@ public @interface Persistent {
      *
      * @return
      */
-    public boolean replaceObject() default false;
+    boolean replaceObject() default false;
 
     /**
      * 获取数据库同步器类型
      *
      * @return
      */
-    @SuppressWarnings("rawtypes")
-    public Class<? extends Synchronizer> synchronizerClass();
+    @SuppressWarnings("rawtypes") Class<? extends Synchronizer> synchronizerClass();
 
 }

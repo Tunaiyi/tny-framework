@@ -56,6 +56,15 @@ subprojects {
         into 'build/libs' // 目标位置
     }
 
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
     configurations {
         provided
     }
@@ -115,7 +124,7 @@ subprojects {
 
                 pom.project {
                     name = project.name
-                    packaging = getPomPackaging()
+                    packaging = hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
                     description = hasProperty("POM_DESCRIPTION") ? POM_DESCRIPTION : "";
                     url = hasProperty("POM_URL") ? POM_URL : "";
                 }
@@ -128,6 +137,7 @@ subprojects {
                 }
             }
         }
+
     }
 
 }

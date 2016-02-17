@@ -1,9 +1,9 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
-import com.tny.game.net.dispatcher.AbstactRequestBuilder;
+import com.tny.game.net.dispatcher.AbstractRequestBuilder;
 import com.tny.game.net.dispatcher.Request;
 
-public class ProtoExRequestBuilder extends AbstactRequestBuilder {
+public class ProtoExRequestBuilder extends AbstractRequestBuilder {
 
     /**
      * 构建请求
@@ -12,16 +12,16 @@ public class ProtoExRequestBuilder extends AbstactRequestBuilder {
      */
     @Override
     public Request build() {
-        ProtoExRequest requset = new ProtoExRequest();
-        requset.setID(this.id);
+        ProtoExRequest request = new ProtoExRequest();
+        request.setID(this.id);
         if (this.protocol == 0)
             throw new NullPointerException("protocol is 0");
-        requset.setProtocol(this.protocol);
-        requset.setParamList(this.paramList);
-        requset.setTime(System.currentTimeMillis());
+        request.setProtocol(this.protocol);
+        request.setParamList(this.paramList);
+        request.setTime(System.currentTimeMillis());
         if (this.checker != null)
-            requset.setCheckKey(this.checker.generate(requset));
-        return requset;
+            request.setCheckKey(this.checker.generate(request));
+        return request;
     }
 
 }

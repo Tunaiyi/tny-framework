@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -147,7 +148,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     }
 
     private void toDB(Transaction transaction) {
-        Map<Object, String> opDBMap = transaction.attributes().getAttribute(OP_DB_MAP);
+        Map<Object, String> opDBMap = transaction.attributes().getAttribute(OP_DB_MAP, Collections.emptyMap());
         for (Entry<Object, String> object : opDBMap.entrySet()) {
             this.toDB(object.getKey(), object.getValue());
         }

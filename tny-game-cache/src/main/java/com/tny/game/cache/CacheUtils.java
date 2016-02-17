@@ -1,5 +1,7 @@
 package com.tny.game.cache;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CacheUtils {
 
     /**
@@ -32,4 +34,12 @@ public class CacheUtils {
         }
         return builder.toString();
     }
+
+
+    public static String [] key2Params(String key) {
+        return StringUtils.split(key, getSeparator());
+    }
+
+
+
 }

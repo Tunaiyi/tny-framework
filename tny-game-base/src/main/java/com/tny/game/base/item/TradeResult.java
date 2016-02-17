@@ -31,14 +31,14 @@ public class TradeResult {
         this.tradeStuffSet = Collections.unmodifiableSet(this.tradeStuffSet);
     }
 
-    private TradeResult(ItemModel model, int alert, DemandParamEntry<?>... entrise) {
+    private TradeResult(ItemModel model, long alert, DemandParamEntry<?>... entrise) {
         super();
         this.tradedItemList.add(new SimpleDealedtem<ItemModel>(model, alert, entrise));
         this.tradedItemList = Collections.unmodifiableList(this.tradedItemList);
         this.tradeStuffSet = Collections.unmodifiableSet(this.tradeStuffSet);
     }
 
-    private TradeResult(Stuff<?> stuff, int alert) {
+    private TradeResult(Stuff<?> stuff, long alert) {
         super();
         this.tradedItemList.add(new SimpleTradeItem<ItemModel>(stuff.getModel(), alert));
         this.tradeStuffSet.add(stuff);
@@ -58,7 +58,7 @@ public class TradeResult {
     }
 
     public boolean isTrade(ItemModel model) {
-        Integer value = 0;
+        Long value = null;
         for (DealedItem<?> item : this.tradedItemList) {
             if (item.getItemModel().equals(model)) {
                 value = item.getNumber();
@@ -86,11 +86,11 @@ public class TradeResult {
         return new TradeResult(items);
     }
 
-    public static TradeResult create(Stuff<?> stuff, int alert) {
+    public static TradeResult create(Stuff<?> stuff, long alert) {
         return new TradeResult(stuff, alert);
     }
 
-    public static TradeResult create(ItemModel model, int alert) {
+    public static TradeResult create(ItemModel model, long alert) {
         return new TradeResult(model, alert);
     }
 

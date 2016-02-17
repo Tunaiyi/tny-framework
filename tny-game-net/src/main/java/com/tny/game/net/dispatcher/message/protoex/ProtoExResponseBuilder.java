@@ -21,6 +21,7 @@ public class ProtoExResponseBuilder extends AbstractResponseBuilder {
         response.setID(id);
         if (this.protocol == 0)
             throw new NullPointerException("protocol is 0");
+        response.setPush(push);
         response.setProtocol(protocol);
         response.setResult(result);
         response.setBody(message);

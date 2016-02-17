@@ -59,7 +59,7 @@ public class MobileAttach {
     }
 
     protected void push(ResponseItem response) {
-        if (response.getID() <= Session.PUSH_RESPONSE_ID)
+        if (response.getID() <= Session.DEFAULT_RESPONSE_ID)
             return;
         this.writeLock.lock();
         try {

@@ -33,6 +33,7 @@ public class ProtoExSchemaIniter implements ServerPreStart {
     }
 
     @PostConstruct
+    @SuppressWarnings("unchecked")
     public void initSchemaAsync() {
         LOGGER.info("启动初始化ProtoSchema任务!");
         Runnable task = new Runnable() {
@@ -47,7 +48,7 @@ public class ProtoExSchemaIniter implements ServerPreStart {
                     classes.addAll(scanner.getClasses(scanPaths.toArray(new String[scanPaths.size()])));
                     RunningChecker.start(this.getClass());
                     LOGGER.info("开始初始化 ProtoSchema .......");
-                    Map<Integer, Class<?>> classMap = new HashMap<Integer, Class<?>>();
+                    Map<Integer, Class<?>> classMap = new HashMap<>();
                     RuntimeProtoExSchema.getProtoSchema(ProtoExRequest.class);
                     RuntimeProtoExSchema.getProtoSchema(ProtoExResponse.class);
                     for (Class<?> cl : classes) {

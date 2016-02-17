@@ -13,7 +13,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     /**
      * 响应的响应Id
      */
-    protected int id = Session.PUSH_RESPONSE_ID;
+    protected int id = Session.DEFAULT_RESPONSE_ID;
     /**
      * 返回信息
      */
@@ -26,6 +26,10 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      * 响应操作
      */
     protected int protocol;
+    /**
+     * 推送
+     */
+    protected boolean push;
 
     /**
      * 创建构建器
@@ -49,9 +53,9 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     }
 
     /**
-     * 设置响应模块
+     * 设置响应协议
      *
-     * @param module 响应模块名
+     * @param protocol 响应协议名
      * @return 返回构建器本身
      */
     @Override
@@ -59,6 +63,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
         if (protocol instanceof Request) {
             this.id = ((Request) protocol).getID();
         }
+        this.push = protocol.isPush();
         this.protocol = protocol.getProtocol();
         return this;
     }
@@ -78,8 +83,8 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     /**
      * 设置结果码
      *
-     * @param result
-     * @return
+     * @param result 结果码
+     * @return self
      */
     @Override
     public ResponseBuilder setResult(int result) {
@@ -90,20 +95,20 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     /**
      * 设置结果码
      *
-     * @param result
-     * @return
+     * @param result 结果码
+     * @return self
      */
     @Override
-    public ResponseBuilder setResult(ResultCode resultCode) {
-        this.result = resultCode.getCode();
+    public ResponseBuilder setResult(ResultCode result) {
+        this.result = result.getCode();
         return this;
     }
 
     /**
      * 设置命令结果
      *
-     * @param result
-     * @return
+     * @param result 结果码
+     * @return self
      */
     @Override
     public ResponseBuilder setCommandResult(CommandResult result) {
@@ -115,8 +120,8 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     /**
      * 设置响应消息
      *
-     * @param message
-     * @return
+     * @param message 响应消息
+     * @return self
      */
     @Override
     public ResponseBuilder setBody(Object message) {

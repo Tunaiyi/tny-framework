@@ -1,7 +1,14 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.exception.TryToDoException;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.ActionResult;
+import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.BehaviorResult;
+import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.behavior.Option;
+import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.formula.FormulaHolder;
 
 import java.util.Collection;
@@ -20,70 +27,70 @@ public interface ItemModel extends Model {
      *
      * @return
      */
-    public String getDesc();
+    String getDesc();
 
     /**
      * 事物类型
      *
      * @return
      */
-    public <IT extends ItemType> IT getItemType();
+    <IT extends ItemType> IT getItemType();
 
     /**
      * 尝试让某事物做某事
      *
-     * @param item      事物对象
-     * @param action    操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param item       事物对象
+     * @param action     操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      * @throws TryToDoException
      */
-    public TryToDoResult tryToDo(Item<?> item, Action action, Object... attributes);
+    TryToDoResult tryToDo(Item<?> item, Action action, Object... attributes);
 
     /**
      * 尝试让某事物做某事
      *
-     * @param item      事物对象
-     * @param action    操作
-     * @param award     是否创建奖励
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param item       事物对象
+     * @param action     操作
+     * @param award      是否创建奖励
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      * @throws TryToDoException
      */
-    public TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes);
+    TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes);
 
     /**
      * 尝试让某事物做某事
      *
-     * @param item      事物对象
-     * @param action    操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param playerID   玩家ID
+     * @param action     操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      * @throws TryToDoException
      */
-    public TryToDoResult tryToDo(long playerID, Action action, Object... attributes);
+    TryToDoResult tryToDo(long playerID, Action action, Object... attributes);
 
     /**
      * 尝试让某事物做某事
      *
-     * @param item      事物对象
-     * @param action    操作
-     * @param award     是否创建奖励
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param playerID   玩家ID
+     * @param action     操作
+     * @param award      是否创建奖励
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      * @throws TryToDoException
      */
-    public TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
+    TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
 
     /**
      * 获取操作结果
      *
-     * @param item
-     * @param action
-     * @param attributes
-     * @return
+     * @param item       事物对象
+     * @param action     操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
      */
-    public ActionResult getActionResult(Item<?> item, Action action, Object... attributes);
+    ActionResult getActionResult(Item<?> item, Action action, Object... attributes);
 
     /**
      * 获取错做结果
@@ -93,243 +100,290 @@ public interface ItemModel extends Model {
      * @param attributes
      * @return
      */
-    public ActionResult getActionResult(long playerID, Action action, Object... attributes);
+    ActionResult getActionResult(long playerID, Action action, Object... attributes);
 
     /**
      * 获取事物对象某操作的条件结果集
      *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param item       事物对象
+     * @param behavior   要执行的行为
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回该操作的条件结果
      */
-    public BehaviorResult getBehaviorResult(Item<?> item, Behavior behavior, Object... attributes);
+    BehaviorResult getBehaviorResult(Item<?> item, Behavior behavior, Object... attributes);
 
     /**
      * 获取事物对象某操作的条件结果集
      *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param playerID   玩家ID
+     * @param behavior   要执行的行为
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回该操作的条件结果
      */
-    public BehaviorResult getBehaviorResult(long playerID, Behavior behavior, Object... attributes);
+    BehaviorResult getBehaviorResult(long playerID, Behavior behavior, Object... attributes);
 
     /**
      * 获取奖励列表
      *
-     * @param item
-     * @param action
-     * @param attributes
-     * @return
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 奖励列表
      */
-    public AwardList getAwardList(Item<?> item, Action action, Object... attributes);
+    AwardList getAwardList(Item<?> item, Action action, Object... attributes);
 
     /**
      * 获取奖励列表
      *
-     * @param playerID
-     * @param action
-     * @param attributes
-     * @return
+     * @param playerID   玩家ID
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 奖励列表
      */
-    public AwardList getAwardList(long playerID, Action action, Object... attributes);
+    AwardList getAwardList(long playerID, Action action, Object... attributes);
 
     /**
      * 获取奖励列表
      *
-     * @param item
-     * @param action
-     * @param attributes
-     * @return
+     * @param item       事物对象
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 消耗列表
      */
-    public CostList getCostList(Item<?> item, Action action, Object... attributes);
+    CostList getCostList(Item<?> item, Action action, Object... attributes);
 
     /**
      * 获取奖励列表
      *
-     * @param playerID
-     * @param action
-     * @param attributes
-     * @return
+     * @param playerID   玩家ID
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 消耗列表
      */
-    public CostList getCostList(long playerID, Action action, Object... attributes);
+    CostList getCostList(long playerID, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的消费
      *
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回获得
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回获得消耗交易对象
      */
-    public Trade createCostTrade(Item<?> item, Action action, Object... attributes);
+    Trade createCostTrade(Item<?> item, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
      *
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回获得
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回获得奖励交易对象
      */
-    public Trade createAwardTrade(Item<?> item, Action action, Object... attributes);
+    Trade createAwardTrade(Item<?> item, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的消费
      *
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回获得
+     * @param playerID   玩家ID
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回获得消耗交易对象
      */
-    public Trade createCostTrade(long playerID, Action action, Object... attributes);
+    Trade createCostTrade(long playerID, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
      *
-     * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回获得
+     * @param playerID   玩家ID
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回获得奖励交易对象
      */
-    public Trade createAwardTrade(long playerID, Action action, Object... attributes);
+    Trade createAwardTrade(long playerID, Action action, Object... attributes);
+
+    /**
+     * 计算某事物某操作的选项值
+     *
+     * @param playerID   玩家ID
+     * @param action     要执行的操作
+     * @param option     选项类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作选项值
+     */
+    <O> O getActionOption(long playerID, Action action, Option option, Object... attributes);
+
+    /**
+     * 计算某事物某操作的选项值
+     *
+     * @param playerID   玩家ID
+     * @param defaultNum 默认值
+     * @param action     要执行的操作
+     * @param option     选项类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作选项值
+     */
+    <O> O getActionOption(long playerID, O defaultNum, Action action, Option option, Object... attributes);
 
     /**
      * 计算某事物某操作的选项
      *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param option    选项类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回能力值
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param option     选项类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作选项值
      */
-    public <O> O getActionOption(long playerID, Action action, Option option, Object... attributes);
+    <O> O getActionOption(Item<?> item, Action action, Option option, Object... attributes);
 
     /**
-     * 计算某事物某操作的选项
+     * 计算某事物某操作的选项值
      *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param option    选项类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回能力值
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param option     选项类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作选项值
      */
-    public <O> O getActionOption(long playerID, O defaultNum, Action action, Option option, Object... attributes);
-
-    /**
-     * 计算某事物某操作的选项
-     *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param option    选项类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回能力值
-     */
-    public <O> O getActionOption(Item<?> item, Action action, Option option, Object... attributes);
-
-    /**
-     * 计算某事物某操作的选项
-     *
-     * @param item      事物对象
-     * @param action    要执行的操作
-     * @param option    选项类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
-     * @return 返回能力值
-     */
-    public <O> O getActionOption(Item<?> item, O defaultNum, Action action, Option option, Object... attributes);
+    <O> O getActionOption(Item<?> item, O defaultNum, Action action, Option option, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param item      事物对象
-     * @param ability   能力值类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param playerID   玩家ID
+     * @param ability    能力值类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    public <A> A getAbility(long playerID, Ability ability, Object... attributes);
+    <A> A getAbility(long playerID, Ability ability, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param item      事物对象
-     * @param ability   能力值类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param playerID      玩家ID
+     * @param defaultObject 默认值
+     * @param ability       能力值类型
+     * @param attributes    附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    public <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes);
+    <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param item      事物对象
-     * @param ability   能力值类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param item       事物对象
+     * @param ability    能力值类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    public <A> A getAbility(Item<?> item, Ability ability, Object... attributes);
+    <A> A getAbility(Item<?> item, Ability ability, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param item      事物对象
-     * @param ability   能力值类型
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param item          事物对象
+     * @param defaultObject 默认值
+     * @param ability       能力值类型
+     * @param attributes    附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes);
+    <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes);
 
     /**
      * 获取指定ability列表的的能力值
      *
-     * @param item
-     * @param abilityCollection
-     * @param attributes
-     * @return
+     * @param item              事物对象
+     * @param abilityCollection 能力值类型列表
+     * @param attributes        附加参数 ["key1", object1, "key2", object2]
+     * @return 返回指定ability列表的的能力值
      */
-    public <A> Map<Ability, A> getAblilitys(Item<?> item, Collection<Ability> abilityCollection, Object... attributes);
+    <A> Map<Ability, A> getAbilities(Item<?> item, Collection<Ability> abilityCollection, Object... attributes);
 
     /**
      * 获取指定ability列表的的能力值
      *
-     * @param item
-     * @param abilityCollection
-     * @param attributes
-     * @return
+     * @param playerID          玩家ID
+     * @param abilityCollection 能力值类型列表
+     * @param attributes        附加参数 ["key1", object1, "key2", object2]
+     * @return 返回指定ability列表的的能力值
      */
-    public <A> Map<Ability, A> getAblilitys(long playerID, Collection<Ability> abilityCollection, Object... attributes);
+    <A> Map<Ability, A> getAbilities(long playerID, Collection<Ability> abilityCollection, Object... attributes);
 
     /**
      * 获取指定类型的能力值
      *
-     * @param item
-     * @param abilityClass
-     * @param attributes
-     * @return
+     * @param item         事物对象
+     * @param abilityClass 能力值类型Class
+     * @param attributes   附加参数 ["key1", object1, "key2", object2]
+     * @return 返回指定ability class的的能力值
      */
-    public <A> Map<Ability, A> getAblilityByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes);
+    <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes);
 
     /**
      * 获取指定类型的能力值
      *
-     * @param item
-     * @param abilityClass
-     * @param attributes
-     * @return
+     * @param playerID     玩家ID
+     * @param abilityClass 能力值类型Class
+     * @param attributes   附加参数 ["key1", object1, "key2", object2]
+     * @return 返回指定ability class的的能力值
      */
-    public <A> Map<Ability, A> getAblilityByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes);
+    <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes);
 
-    public boolean hasAblility(Ability ability);
+    /**
+     * 是否存在Ability
+     *
+     * @param ability 指定ability
+     * @return true存在 false不存在
+     */
+    boolean hasAbility(Ability ability);
 
+    /**
+     * 获取指定类型的Ability类型
+     *
+     * @param abilityClass 指定的Ability
+     * @return 指定类型的Ability类型
+     */
     @SuppressWarnings("unchecked")
-    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
+    Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
 
-    public boolean hasBehavior(Behavior behavior);
+    /**
+     * 是否存在行为
+     *
+     * @param behavior 指定行为
+     * @return true存在 false不存在
+     */
+    boolean hasBehavior(Behavior behavior);
 
-    public boolean hasAction(Action action);
+    /**
+     * 是否存在操作
+     *
+     * @param action 指定操作
+     * @return true存在 false不存在
+     */
+    boolean hasAction(Action action);
 
-    public Behavior getBehaviorByAction(Action action);
+    /**
+     * 获取指定Action的Behavior
+     *
+     * @param action 指定Action
+     * @return 返回Behavior
+     */
+    Behavior getBehaviorByAction(Action action);
 
-    public boolean hasOption(Action action, Option option);
+    /**
+     * 是否存在操作选项
+     *
+     * @param action 指定操作
+     * @param option 指定操作选项
+     * @return true存在 false不存在
+     */
+    boolean hasOption(Action action, Option option);
 
-    public String getItemName();
-
-    public FormulaHolder currentFormula();
+    /**
+     * 当前值公式
+     *
+     * @return 返回当前值公式
+     */
+    FormulaHolder currentFormula();
 
 }

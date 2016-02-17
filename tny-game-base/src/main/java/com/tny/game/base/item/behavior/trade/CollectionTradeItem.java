@@ -15,7 +15,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
 
     private ItemModel itemModel;
 
-    private int number;
+    private long number;
 
     private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
 
@@ -46,7 +46,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
     }
 
     @Override
-    public int getNumber() {
+    public long getNumber() {
         return this.number;
     }
 

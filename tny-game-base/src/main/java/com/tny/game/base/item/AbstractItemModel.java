@@ -48,10 +48,10 @@ public abstract class AbstractItemModel implements ItemModel {
      */
     protected String desc;
 
-    /**
-     * 名字
-     */
-    protected String itemName;
+//    /**
+//     * 名字
+//     */
+//    protected String itemName;
 
     /**
      * 行为 － 行为方案map
@@ -95,10 +95,10 @@ public abstract class AbstractItemModel implements ItemModel {
         return this.alias;
     }
 
-    @Override
-    public String getItemName() {
-        return this.itemName;
-    }
+//    @Override
+//    public String getItemName() {
+//        return this.itemName;
+//    }
 
     @Override
     public String getDesc() {
@@ -213,7 +213,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public boolean hasAblility(Ability ability) {
+    public boolean hasAbility(Ability ability) {
         return this.abilityMap.containsKey(ability);
     }
 
@@ -344,11 +344,11 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAblilitys(Item<?> item, Collection<Ability> abilityCollection, Object... attributes) {
+    public <A> Map<Ability, A> getAbilities(Item<?> item, Collection<Ability> abilityCollection, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : abilityCollection) {
             A object = null;
-            if (!this.hasAblility(ability)) {
+            if (!this.hasAbility(ability)) {
                 valueMap.put(ability, null);
             } else {
                 object = this.doCountAbility(item.getPlayerID(), item, ability, attributes);
@@ -359,11 +359,11 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAblilitys(long playerID, Collection<Ability> abilityCollection, Object... attributes) {
+    public <A> Map<Ability, A> getAbilities(long playerID, Collection<Ability> abilityCollection, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : abilityCollection) {
             A object = null;
-            if (!this.hasAblility(ability)) {
+            if (!this.hasAbility(ability)) {
                 valueMap.put(ability, null);
             } else {
                 object = this.doCountAbility(playerID, null, ability, attributes);
@@ -374,12 +374,12 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAblilityByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes) {
+    public <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
             if (abilityClass.isInstance(ability)) {
-                if (!this.hasAblility(ability)) {
+                if (!this.hasAbility(ability)) {
                     valueMap.put(ability, null);
                 } else {
                     object = this.doCountAbility(item.getPlayerID(), item, ability, attributes);
@@ -391,12 +391,12 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAblilityByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes) {
+    public <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
             if (abilityClass.isInstance(ability)) {
-                if (!this.hasAblility(ability)) {
+                if (!this.hasAbility(ability)) {
                     valueMap.put(ability, null);
                 } else {
                     object = this.doCountAbility(playerID, null, ability, attributes);

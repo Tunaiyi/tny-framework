@@ -51,7 +51,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     @Override
     public boolean hasAblility(Ability ability) {
-        return this.getModel().hasAblility(ability);
+        return this.getModel().hasAbility(ability);
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     @Override
     public <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes) {
-        return this.getModel().getAblilitys(this, abilityCollection, attributes);
+        return this.getModel().getAbilities(this, abilityCollection, attributes);
     }
 
     @Override
@@ -121,7 +121,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     @Override
     public <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes) {
-        return this.getModel().getAblilityByType(this, abilityClass, attributes);
+        return this.getModel().getAbilitiesByType(this, abilityClass, attributes);
     }
 
     @Override
