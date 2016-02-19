@@ -98,4 +98,11 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "DTOConfiger{" +
+                "className='" + className + '\'' +
+                ", des='" + des + '\'' +
+                '}';
+    }
 }

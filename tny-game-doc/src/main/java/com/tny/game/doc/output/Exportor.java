@@ -8,13 +8,20 @@ import com.tny.game.doc.table.TableAttributeCreator;
 import com.tny.game.doc.table.XMLTable;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.filter.ClassFilter;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static org.apache.commons.io.FileUtils.*;
 
 /**
  * 导出器
@@ -35,6 +42,8 @@ public class Exportor {
     private Pather outputPath;
 
     private TypeFormatter formatter;
+
+    private String headMessage;
 
     private List<ClassFilter> filters = new ArrayList<>();
 
@@ -112,19 +121,24 @@ public class Exportor {
         return this;
     }
 
+    public Exportor setHeadMessage(String headMessage) {
+        this.headMessage = headMessage;
+        return this;
+    }
+
     public Exportor clean() throws IOException {
         if (this.baseDir.exists()) {
             System.out.println(LogUtils.format("正在清空 [{}] 文件夹......", this.baseDir));
-            FileUtils.deleteDirectory(this.baseDir);
+            deleteDirectory(this.baseDir);
             System.out.println(LogUtils.format("清空 [{}] 文件夹完成", this.baseDir));
         }
         return this;
     }
 
-    public void exportAll() {
+    public void exportAll() throws IOException {
         if (!baseDir.exists()) {
             try {
-                FileUtils.forceMkdir(baseDir);
+                forceMkdir(baseDir);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -146,17 +160,15 @@ public class Exportor {
         for (Class<?> clazz : classSet) {
             try {
                 XMLTable table = createTable(clazz);
-                FileOutputStream output = null;
-                try {
-                    File outputFile = new File(baseDir, outputPath.getPath(clazz));
-                    output = FileUtils.openOutputStream(outputFile);
+                File outputFile = new File(baseDir, outputPath.getPath(clazz));
+                try (FileOutputStream output = openOutputStream(outputFile);
+                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"))) {
                     System.out.println(LogUtils.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
-                    IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", output);
-                    xstream.toXML(table, output);
+                    IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", writer);
+                    IOUtils.write(headMessage, writer);
+                    IOUtils.write(xstream.toXML(table), writer);
                     System.out.println(LogUtils.format("导出 {} 完成", outputFile.getAbsoluteFile()));
                     count++;
-                } catch (Exception e) {
-                    IOUtils.closeQuietly(output);
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -167,10 +179,10 @@ public class Exportor {
         System.out.println(LogUtils.format("{} 包中,一共导出 {} 个文件到 {} 文件夹下", basePackage, count, baseDir.getAbsoluteFile()));
     }
 
-    public void export2One() {
+    public void export2One() throws IOException {
         if (!baseDir.exists()) {
             try {
-                FileUtils.forceMkdir(baseDir);
+                forceMkdir(baseDir);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -186,13 +198,14 @@ public class Exportor {
         xstream.aliasSystemAttribute(null, "class");
         XMLTable table = createTable(classSet);
         File outputFile = new File(baseDir, outputPath.getPath(null));
-        FileOutputStream output = null;
-        try {
-            output = FileUtils.openOutputStream(outputFile);
-            IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", output);
-            xstream.toXML(table, output);
-        } catch (Exception e) {
-            IOUtils.closeQuietly(output);
+        System.out.println(LogUtils.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
+        try (FileOutputStream output = openOutputStream(outputFile);
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"))) {
+            IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", writer);
+            if (headMessage != null)
+                IOUtils.write(headMessage, writer);
+            IOUtils.write(xstream.toXML(table), writer);
+//            xstream.toXML(table, writer);
         }
         System.out.println(LogUtils.format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, classSet.size(), outputFile.getAbsoluteFile()));
     }

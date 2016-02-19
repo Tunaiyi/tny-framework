@@ -26,4 +26,10 @@ public class DTOTableAttribute implements TableAttribute {
         this.dto = new DTOConfiger(DTODocHolder.create(clazz), typeFormatter);
     }
 
+    @Override
+    public String toString() {
+        return "DTOTableAttribute{" +
+                "dto=" + dto +
+                '}';
+    }
 }

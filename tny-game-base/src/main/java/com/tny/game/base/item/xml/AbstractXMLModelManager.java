@@ -2,8 +2,18 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.Ability;
+import com.tny.game.base.item.AbstractModelManager;
+import com.tny.game.base.item.ItemExplorer;
+import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.Model;
+import com.tny.game.base.item.behavior.AbstractAwardPlan;
+import com.tny.game.base.item.behavior.AbstractCostPlan;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.DemandParam;
+import com.tny.game.base.item.behavior.DemandType;
+import com.tny.game.base.item.behavior.Option;
 import com.tny.game.base.item.behavior.plan.SimpleAwardGroup;
 import com.tny.game.base.item.behavior.plan.SimpleAwardPlan;
 import com.tny.game.base.item.behavior.plan.SimpleCostPlan;
@@ -23,8 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -198,7 +214,11 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
                 }
             }
             if (!find) {
-                List<Class<? extends Enum>> list = map.get(this.getClass());
+                List<Class<? extends Enum>> list = map.get(clazz);
+                if (list == null) {
+                    list = new ArrayList<>();
+                    map.put(clazz, list);
+                }
                 list.add(clazz);
             }
         }
