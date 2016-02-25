@@ -2,7 +2,6 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.ItemType;
 import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,7 +14,7 @@ public class ItemTypes extends AutoImport {
     protected static EnumeratorHolder<ItemType> holder = new EnumeratorHolder<ItemType>() {
         @Override
         protected void postRegister(ItemType object) {
-            putAndCheck(object.getAliasHead(), object);
+            putAndCheck("$" + object.getAliasHead(), object);
         }
     };
 
@@ -41,7 +40,7 @@ public class ItemTypes extends AutoImport {
 
     public static <T extends ItemType> T ofAlias(String alias) {
         String[] heads = StringUtils.split(alias, '$');
-        return holder.ofAndCheck(heads[0], "获取 别名前缀 {} 的 ItemType 不存在", heads[0]);
+        return holder.ofAndCheck("$" + heads[0], "获取 别名前缀 {} 的 ItemType 不存在", heads[0]);
     }
 
     public static <T extends ItemType> T of(String key) {
@@ -52,7 +51,7 @@ public class ItemTypes extends AutoImport {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 ItemType 不存在", id);
     }
 
-    public static <T extends ScopeType> T ofItemID(int itemID) {
+    public static <T extends ItemType> T ofItemID(int itemID) {
         int typeID = itemID / 1000000 * 1000000;
         return of(typeID);
     }

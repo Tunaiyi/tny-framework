@@ -45,8 +45,10 @@ public class EnumeratorHolder<O> {
         if (object.getClass().isEnum()) {
             putAndCheck(((Enum<?>) object).name(), object);
         }
-        if (object instanceof EnumID)
+        if (object instanceof EnumID) {
             putAndCheck(((EnumID) object).getID(), object);
+        }
+        postRegister(object);
     }
 
     protected void postRegister(O object) {

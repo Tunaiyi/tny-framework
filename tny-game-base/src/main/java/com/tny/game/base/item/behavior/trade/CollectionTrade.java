@@ -6,8 +6,14 @@ import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
+import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CollectionTrade implements Trade {
 
@@ -20,20 +26,28 @@ public class CollectionTrade implements Trade {
     public CollectionTrade(Action action, TradeType tradeType) {
         this.action = action;
         this.tradeType = tradeType;
-        this.tradeMap = new HashMap<Integer, CollectionTradeItem>();
+        this.tradeMap = new HashMap<>();
     }
 
     public CollectionTrade(Action action, TradeType tradeType, Trade... trades) {
-        this.tradeMap = new HashMap<Integer, CollectionTradeItem>();
+        this.tradeMap = new HashMap<>();
         this.action = action;
         this.tradeType = tradeType;
         for (Trade trade : trades) {
-            this.addTrade(trade);
+            this.collectTrade(trade);
         }
     }
 
-    private void mergerItem(Collection<TradeItem<ItemModel>> tradeItemCollection) {
-        for (TradeItem<ItemModel> tradeItem : tradeItemCollection) {
+    public void collectItem(ItemModel model, long number) {
+        this.collectItem(new SimpleTradeItem<>(model, number));
+    }
+
+    public void collectItem(TradeItem<?>... tradeItems) {
+        this.collectItem(Arrays.asList(tradeItems));
+    }
+
+    private void collectItem(Collection<? extends TradeItem<?>> tradeItemCollection) {
+        for (TradeItem<?> tradeItem : tradeItemCollection) {
             CollectionTradeItem item = this.tradeMap.get(tradeItem.getItemModel().getID());
             if (item != null) {
                 item.collect(tradeItem);
@@ -43,9 +57,9 @@ public class CollectionTrade implements Trade {
         }
     }
 
-    public void addTrade(Trade trade) {
+    public void collectTrade(Trade trade) {
         if (trade.getTradeType() == this.tradeType) {
-            this.mergerItem(trade.getAllTradeItem());
+            this.collectItem(trade.getAllTradeItem());
         }
     }
 
@@ -74,7 +88,7 @@ public class CollectionTrade implements Trade {
 
     @Override
     public List<TradeItem<ItemModel>> getAllTradeItem() {
-        return new ArrayList<TradeItem<ItemModel>>(this.tradeMap.values());
+        return new ArrayList<>(this.tradeMap.values());
     }
 
     @Override
@@ -89,7 +103,7 @@ public class CollectionTrade implements Trade {
 
     @Override
     public Collection<TradeItem<ItemModel>> getTradeItemBy(Collection<ItemType> itemType) {
-        List<TradeItem<ItemModel>> tradeItemList = new ArrayList<TradeItem<ItemModel>>();
+        List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItem<ItemModel> tradeItem : this.getAllTradeItem()) {
             if (tradeItem.getItemModel().getItemType() == itemType) {
                 tradeItemList.add(tradeItem);

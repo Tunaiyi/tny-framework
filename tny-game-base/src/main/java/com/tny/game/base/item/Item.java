@@ -1,6 +1,13 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.ActionResult;
+import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.BehaviorResult;
+import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.behavior.Option;
+import com.tny.game.base.item.behavior.TryToDoResult;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,35 +26,35 @@ public interface Item<M extends ItemModel> extends Identifiable {
      *
      * @return
      */
-    public long getID();
+    long getID();
 
     /**
      * 获取对象别名
      *
      * @return
      */
-    public String getAlias();
+    String getAlias();
 
     /**
      * 获取该事物对象ID
      *
      * @return
      */
-    public int getItemID();
+    int getItemID();
 
     /**
      * 获取该事物对象的模型
      *
      * @return
      */
-    public M getModel();
+    M getModel();
 
     /**
      * 获取该事物对象所属类型
      *
      * @return
      */
-    public <IT extends ItemType> IT getItemType();
+    <IT extends ItemType> IT getItemType();
 
     /**
      * 尝试让该事物对象执行某指定操作
@@ -56,7 +63,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    public TryToDoResult tryToDo(Action action, Object... attributes);
+    TryToDoResult tryToDo(Action action, Object... attributes);
 
     /**
      * 尝试让该事物对象执行某指定操作
@@ -66,7 +73,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    public TryToDoResult tryToDo(boolean award, Action action, Object... attributes);
+    TryToDoResult tryToDo(boolean award, Action action, Object... attributes);
 
     /**
      * 获取指定action的奖励列表
@@ -75,7 +82,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes
      * @return
      */
-    public AwardList getAwardList(Action action, Object... attributes);
+    AwardList getAwardList(Action action, Object... attributes);
 
     /**
      * 获取指定action的奖励列表
@@ -84,7 +91,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes
      * @return
      */
-    public CostList getCostList(Action action, Object... attributes);
+    CostList getCostList(Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的消费
@@ -93,7 +100,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    public Trade createCost(Action action, Object... attributes);
+    Trade createCost(Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
@@ -102,7 +109,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    public Trade createAward(Action action, Object... attributes);
+    Trade createAward(Action action, Object... attributes);
 
     /**
      * 获对该事物执行某种行为所需要的行为结果，包括条件，消耗奖励物品
@@ -111,33 +118,33 @@ public interface Item<M extends ItemModel> extends Identifiable {
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回奖励列表
      */
-    public BehaviorResult getBehaviorResult(Behavior behavior, Object... attributes);
+    BehaviorResult getBehaviorResult(Behavior behavior, Object... attributes);
 
-    public boolean hasAblility(Ability ability);
+    boolean hasAblility(Ability ability);
 
-    public boolean hasOption(Action action, Option option);
+    boolean hasOption(Action action, Option option);
 
-    public <A> A getAbility(Ability ability, Object... attributes);
+    <A> A getAbility(Ability ability, Object... attributes);
 
-    public <A> A getAbility(A defaultObject, Ability ability, Object... attributes);
+    <A> A getAbility(A defaultObject, Ability ability, Object... attributes);
 
-    public <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes);
+    <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes);
 
-    public <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes);
+    <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes);
 
-    public <O> O getActionOption(Action action, Option option, Object... attributes);
+    <O> O getActionOption(Action action, Option option, Object... attributes);
 
-    public <O> O getActionOption(Action action, O defaultNum, Option option, Object... attributes);
+    <O> O getActionOption(Action action, O defaultNum, Option option, Object... attributes);
 
-    public ActionResult getActionResult(Action action, Object... attributes);
+    ActionResult getActionResult(Action action, Object... attributes);
 
-    public boolean hasBehavior(Behavior behavior);
+    boolean hasBehavior(Behavior behavior);
 
-    public boolean hasAction(Action action);
+    boolean hasAction(Action action);
 
     @SuppressWarnings("unchecked")
-    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
+    Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass);
 
-    public Behavior getBehaviorByAction(Action action);
+    Behavior getBehaviorByAction(Action action);
 
 }

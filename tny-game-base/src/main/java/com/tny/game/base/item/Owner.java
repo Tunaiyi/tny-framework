@@ -31,7 +31,7 @@ public interface Owner<S extends Stuff<?>> {
     /**
      * 获取某事物的信息 <br>
      *
-     * @param id 物品ID
+     * @param itemID 物品ID
      * @return 物品信息
      */
     List<S> getItemByItemID(int itemID);

@@ -21,11 +21,11 @@ public abstract class AbstractTimeTaskHandlerHolder implements TimeTaskHandlerHo
      * @uml.property name="handlerHashMap"
      * @uml.associationEnd qualifier="name:java.lang.String cndw.framework.time.TimeTaskHandler"
      */
-    protected ConcurrentMap<String, TimeTaskHandler> handlerHashMap = new ConcurrentHashMap<String, TimeTaskHandler>();
+    protected ConcurrentMap<String, TimeTaskHandler> handlerHashMap = new ConcurrentHashMap<>();
 
     @Override
     public List<TimeTaskHandler> getHandlerList(Object group, Collection<String> nameColl) {
-        List<TimeTaskHandler> handlerList = new ArrayList<TimeTaskHandler>(nameColl.size());
+        List<TimeTaskHandler> handlerList = new ArrayList<>(nameColl.size());
         for (String name : nameColl) {
             TimeTaskHandler handler = this.getHandler(name);
             if (handler == null) {

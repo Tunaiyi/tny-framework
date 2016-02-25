@@ -1,10 +1,17 @@
 package com.tny.game.common.formula;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MathEx {
@@ -128,7 +135,7 @@ public class MathEx {
      * 在 权重为1的"a" 和 权重为2的"b" 的范围内进行抽签
      * 返回抽中的"a"或"b"
      *
-     * @param randomMap 抽签参数
+     * @param randomItemList 内容
      * @return
      */
     public static Object lot(List<Object> randomItemList) {
@@ -155,9 +162,8 @@ public class MathEx {
      * 抽中"b"的范围为 100-199
      * 返回抽中的"a"或"b" 若无对象抽中返回 null
      *
-     * @param randomMap 抽签参数
-     * @param number    随机范围
-     * @param randomMap 随机内容
+     * @param number         随机范围
+     * @param randomItemList 随机内容
      * @return
      */
     public static Object rand(final int number, List<Object> randomItemList) {
@@ -171,10 +177,9 @@ public class MathEx {
      * 抽中"b"的范围为 100-199
      * 返回抽中的"a"或"b" 若无对象抽中返回 defaultObject
      *
-     * @param randomMap     抽签参数
-     * @param number        随机范围
-     * @param randomMap     随机内容
-     * @param defaultObject 随机不到对象 返回的默认值
+     * @param number         随机范围
+     * @param randomItemList 随机内容
+     * @param defaultObject  随机不到对象 返回的默认值
      * @return
      */
     public static Object rand(final int number, List<Object> randomItemList, Object defaultObject) {
@@ -201,7 +206,6 @@ public class MathEx {
      * 抽中"b"的范围为 100-199
      * 返回抽中的"a"或"b" 若无对象抽中返回 null
      *
-     * @param randomMap 抽签参数
      * @param number    随机范围
      * @param randomMap 随机内容
      * @return
@@ -217,7 +221,6 @@ public class MathEx {
      * 抽中"b"的范围为 100-199
      * 返回抽中的"a"或"b" 若无对象抽中返回 defaultObject
      *
-     * @param randomMap     抽签参数
      * @param number        随机范围
      * @param randomMap     随机内容
      * @param defaultObject 随机不到对象 返回的默认值
@@ -235,10 +238,7 @@ public class MathEx {
     }
 
     /**
-     * 随机 from 到 to 范围的随机数
-     *
-     * @param randomMap
-     * @return
+     * @return 随机 from 到 to 范围的随机数
      */
     public static int rand(final int from, final int to) {
         if (to < from)
@@ -263,11 +263,11 @@ public class MathEx {
     /**
      * 限制time次出num个数量的随机器
      *
-     * @param time        监控次数
-     * @param num         监控次数出现的num
-     * @param prob        随机概率列表
-     * @param currentTime 当前次数
-     * @param currentNum  当前出现数量
+     * @param time          监控次数
+     * @param num           监控次数出现的num
+     * @param timesProbsMap 随机概率列表
+     * @param currentTime   当前次数
+     * @param currentNum    当前出现数量
      * @return 是否出现
      */
     public static boolean randLimited(int time, int num, Map<Integer, Integer> timesProbsMap, int currentTime, int currentNum) {
@@ -277,12 +277,12 @@ public class MathEx {
     /**
      * 限制time次出num个数量的随机器
      *
-     * @param time        监控次数
-     * @param num         监控次数出现的num
-     * @param probs       n次的概率列表 {3:30, 9:20, 20:10000} 没伦监控第n次概率
-     * @param extra       额外次数 够监控次数后的额外次数
-     * @param currentTime 当前次数
-     * @param currentNum  当前出现数量
+     * @param time          监控次数
+     * @param num           监控次数出现的num
+     * @param timesProbsMap n次的概率列表 {3:30, 9:20, 20:10000} 没伦监控第n次概率
+     * @param extra         额外次数 够监控次数后的额外次数
+     * @param currentTime   当前次数
+     * @param currentNum    当前出现数量
      * @return 是否出现
      */
     public static boolean randLimited(int time, int num, Map<Integer, Integer> timesProbsMap, int extra, int currentTime, int currentNum) {
@@ -319,7 +319,6 @@ public class MathEx {
      *
      * @param time        监控次数
      * @param num         监控次数出现的num
-     * @param probs       n次的概率列表 [30, 20, 10] 没伦监控第n次概率
      * @param extra       额外次数 够监控次数后的额外次数
      * @param currentTime 当前次数
      * @param currentNum  当前出现数量
@@ -396,7 +395,7 @@ public class MathEx {
      */
     @Deprecated
     public static DateTime currentDateTime() {
-        return new DateTime();
+        return DateTime.now();
     }
 
     /**
