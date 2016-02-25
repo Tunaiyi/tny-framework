@@ -66,11 +66,11 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
     }
 
     public TimeTrigger<C> build() {
-        return new CycleTimeTrigger<>(previousTime == null ? DateTime.now() : null, endTime, timeCycle, speedMills, stop);
+        return new CycleTimeTrigger<>(previousTime == null ? previousTime : DateTime.now(), endTime, timeCycle, speedMills, stop);
     }
 
     public TimeTrigger<C> buildStoped() {
-        return new CycleTimeTrigger<>(previousTime == null ? DateTime.now() : null,  endTime, timeCycle, speedMills, true);
+        return new CycleTimeTrigger<>(previousTime == null ? previousTime : DateTime.now(),  endTime, timeCycle, speedMills, true);
     }
 
 }
