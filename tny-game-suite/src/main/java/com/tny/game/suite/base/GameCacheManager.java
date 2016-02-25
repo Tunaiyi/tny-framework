@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameCacheManager<O> extends GameManager<O> {
+public abstract class GameCacheManager<O> extends GameManager<O> {
 
     @Autowired
     @Qualifier("asyncCache")

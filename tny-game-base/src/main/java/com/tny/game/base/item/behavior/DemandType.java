@@ -5,6 +5,15 @@ import com.tny.game.common.result.ResultCode;
 
 /**
  * 条件类型接口
+ * <p>
+ * 枚举命名规则
+ * <p>
+ * EQ : =
+ * NE : !=
+ * GE : >=
+ * LE : <=
+ * GR : >
+ * LE : <
  *
  * @author KGTny
  */

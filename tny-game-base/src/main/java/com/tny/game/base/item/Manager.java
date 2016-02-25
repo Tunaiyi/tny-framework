@@ -10,32 +10,32 @@ import java.util.Collection;
  */
 public interface Manager<O> {
 
-    public boolean save(O item);
+    boolean save(O item);
 
     /**
      * @param itemCollection
      * @return 返回存储失败的列表
      */
-    public Collection<O> save(Collection<O> itemCollection);
+    Collection<O> save(Collection<O> itemCollection);
 
-    public boolean update(O item);
+    boolean update(O item);
 
     /**
      * @param itemCollection
      * @return 返回更新失败的列表
      */
-    public Collection<O> update(Collection<O> itemCollection);
+    Collection<O> update(Collection<O> itemCollection);
 
-    public boolean insert(O item);
+    boolean insert(O item);
 
     /**
      * @param itemCollection
      * @return 返回插入失败的列表
      */
-    public Collection<O> insert(Collection<O> itemCollection);
+    Collection<O> insert(Collection<O> itemCollection);
 
-    public boolean delect(O item);
+    boolean delect(O item);
 
-    public Collection<O> delect(Collection<O> itemCollection);
+    Collection<O> delect(Collection<O> itemCollection);
 
 }

@@ -44,6 +44,11 @@ subprojects {
     sourceCompatibility = project_jdk
     targetCompatibility = project_jdk
 
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
     task createJavaProject << {
