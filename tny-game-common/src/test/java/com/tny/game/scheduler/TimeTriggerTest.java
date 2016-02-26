@@ -17,6 +17,7 @@ public class TimeTriggerTest {
     private long restartAt = at + 1000;
 
     private DateTime atTime = new DateTime(at);
+
     private DateTime restartAtTime = new DateTime(restartAt);
     private DateTime endTime = new DateTime(at + 3010);
 
@@ -25,40 +26,39 @@ public class TimeTriggerTest {
 
     private TimeTrigger<TimeCycle> startNoEndTrigger = TimeTriggerBuilder.newBuilder()
             .setTimeCycle(CYCLE_1000)
-            .setPreviousTime(new DateTime(at))
-            .build();
+            .setStartTime(atTime)
+            .buildStart();
 
     private TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
             .setTimeCycle(CYCLE_1000)
-            .setPreviousTime(new DateTime(at))
-            .setStop()
-            .build();
+            .setStartTime(atTime)
+            .buildStoped();
 
     private TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
             .setTimeCycle(CYCLE_1000)
-            .setPreviousTime(new DateTime(at))
+            .setStartTime(atTime)
             .setEndTime(endTime)
-            .build();
+            .buildStart();
 
     @Before
     public void setUp() throws Exception {
 
-        startNoEndTrigger = TimeTriggerBuilder.newBuilder()
-                .setTimeCycle(CYCLE_1000)
-                .setPreviousTime(new DateTime(at))
-                .build();
 
-        stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
+        TimeTrigger<TimeCycle> startNoEndTrigger = TimeTriggerBuilder.newBuilder()
                 .setTimeCycle(CYCLE_1000)
-                .setPreviousTime(new DateTime(at))
-                .setStop()
-                .build();
+                .setStartTime(atTime)
+                .buildStart();
 
-        startEndTrigger = TimeTriggerBuilder.newBuilder()
+        TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
                 .setTimeCycle(CYCLE_1000)
-                .setPreviousTime(new DateTime(at))
+                .setStartTime(atTime)
+                .buildStoped();
+
+        TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
+                .setTimeCycle(CYCLE_1000)
+                .setStartTime(atTime)
                 .setEndTime(endTime)
-                .build();
+                .buildStart();
 
     }
 
@@ -66,29 +66,31 @@ public class TimeTriggerTest {
     public void getNextTime() throws Exception {
         Assert.assertEquals(at + CYCLE_1000.getDuration().getMillis(), startNoEndTrigger.getNextTime().getMillis());
         Assert.assertNull(stopNoEndTrigger.getNextTime());
+        Assert.assertEquals(atTime, stopNoEndTrigger.getStartTime());
+        Assert.assertEquals(atTime, startNoEndTrigger.getStartTime());
     }
 
     @Test
     public void getPreviousTime() throws Exception {
         Assert.assertEquals(at, startNoEndTrigger.getPreviousTime().getMillis());
-        Assert.assertEquals(at, stopNoEndTrigger.getPreviousTime().getMillis());
+        Assert.assertNull(stopNoEndTrigger.getPreviousTime());
     }
 
     @Test
     public void stop() throws Exception {
-        Assert.assertTrue(stopNoEndTrigger.isStop());
+        Assert.assertTrue(stopNoEndTrigger.isFinish());
         startNoEndTrigger.stop();
-        Assert.assertTrue(startNoEndTrigger.isStop());
+        Assert.assertTrue(startNoEndTrigger.isFinish());
     }
 
     @Test
     public void restartAt() throws Exception {
-        if (!startNoEndTrigger.isStop())
+        if (!startNoEndTrigger.isFinish())
             startNoEndTrigger.stop();
-        startNoEndTrigger.restartAt(restartAt);
+        startNoEndTrigger.restart(restartAt);
         Assert.assertEquals(restartAtTime.plus(CYCLE_1000.getDuration()), startNoEndTrigger.getNextTime());
 
-        startNoEndTrigger.restartAt(CYCLE_2000, restartAt);
+        startNoEndTrigger.restart(CYCLE_2000, restartAt);
         Assert.assertEquals(restartAtTime.plus(CYCLE_2000.getDuration()), startNoEndTrigger.getNextTime());
     }
 

@@ -9,10 +9,10 @@ import org.joda.time.DateTime;
 public class TimeTriggerBuilder<C extends TimeCycle> {
 
     private C timeCycle = null;
+    private DateTime startTime = null;
     private DateTime previousTime = null;
     private DateTime endTime = null;
     private long speedMills = 0;
-    private boolean stop = false;
 
     private TimeTriggerBuilder() {
     }
@@ -32,6 +32,16 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
 
     public TimeTriggerBuilder<C> setPreviousTime(DateTime previousTime) {
         this.previousTime = previousTime;
+        return this;
+    }
+
+    public TimeTriggerBuilder<C> setStartTime(long StartTimeMills) {
+        this.startTime = new DateTime(StartTimeMills);
+        return this;
+    }
+
+    public TimeTriggerBuilder<C> setStartTime(DateTime startTime) {
+        this.startTime = startTime;
         return this;
     }
 
@@ -55,22 +65,12 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
         return this;
     }
 
-    public TimeTriggerBuilder<C> setStop() {
-        this.stop = true;
-        return this;
-    }
-
-    public TimeTriggerBuilder<C> setStop(boolean stop) {
-        this.stop = stop;
-        return this;
-    }
-
-    public TimeTrigger<C> build() {
-        return new CycleTimeTrigger<>(previousTime == null ? previousTime : DateTime.now(), endTime, timeCycle, speedMills, stop);
+    public TimeTrigger<C> buildStart() {
+        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, timeCycle, speedMills, true);
     }
 
     public TimeTrigger<C> buildStoped() {
-        return new CycleTimeTrigger<>(previousTime == null ? previousTime : DateTime.now(),  endTime, timeCycle, speedMills, true);
+        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, timeCycle, speedMills, false);
     }
 
 }

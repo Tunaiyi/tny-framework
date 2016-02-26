@@ -4,18 +4,29 @@ import com.tny.game.common.ExceptionUtils;
 import com.tny.game.scheduler.cycle.TimeCycle;
 import org.joda.time.DateTime;
 
-class CycleTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
+class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     private C timeCycle = null;
     private DateTime endTime = null;
     private DateTime nextTime = null;
+    private DateTime startTime = null;
     private DateTime previousTime = null;
     private long speedMills = 0;
 
-    protected CycleTimeTrigger(DateTime previousTime, DateTime endTime, C timeCycle, long speedMills, boolean stop) {
+    protected DefaultTimeTrigger(DateTime startTime, DateTime previousTime, DateTime endTime, C timeCycle, long speedMills, boolean start) {
+        this.startTime = startTime;
+        this.timeCycle = timeCycle;
+        this.previousTime = previousTime;
         this.endTime = endTime;
         this.speedMills = speedMills;
-        operate(timeCycle, previousTime, stop);
+        if (start && isCanStart())
+            this.start();
+    }
+
+
+    @Override
+    public DateTime getStartTime() {
+        return startTime;
     }
 
     @Override
@@ -53,17 +64,51 @@ class CycleTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         return false;
     }
 
+    public boolean isCanStart() {
+        return this.nextTime == null && this.startTime != null && this.timeCycle != null;
+    }
+
     @Override
-    public void restartAt(C timeCycle, DateTime time, DateTime endTime) {
+    public boolean start(C timeCycle, DateTime startTime, DateTime endTime) {
+        if (this.nextTime != null)
+            return false;
+        if (startTime == null && this.startTime == null)
+            throw new NullPointerException("startTime is null");
+        if (timeCycle == null && this.timeCycle == null)
+            throw new NullPointerException("timeCycle is null");
         if (endTime != null) {
-            ExceptionUtils.checkArgument(endTime.isAfter(time));
+            ExceptionUtils.checkArgument(endTime.isAfter(startTime));
             this.endTime = endTime;
             this.speedMills = 0;
         }
-        operate(timeCycle, time, false);
+        if (timeCycle != null)
+            this.timeCycle = timeCycle;
+        if (startTime != null) {
+            this.startTime = startTime;
+            this.previousTime = startTime;
+        }
+        if (this.previousTime == null)
+            this.previousTime = this.startTime;
+        triggerNext(timeCycle, this.previousTime, false);
+        return !this.isFinish();
     }
 
-    private void operate(C timeCycle, DateTime time, boolean stop) {
+    @Override
+    public void restart(C timeCycle, DateTime startTime, DateTime endTime) {
+        if (startTime == null && this.startTime == null)
+            throw new NullPointerException("startTime is null");
+        if (timeCycle == null && this.timeCycle == null)
+            throw new NullPointerException("timeCycle is null");
+        if (endTime != null) {
+            ExceptionUtils.checkArgument(endTime.isAfter(startTime));
+            this.endTime = endTime;
+            this.speedMills = 0;
+        }
+        this.startTime = startTime;
+        triggerNext(timeCycle, startTime, false);
+    }
+
+    private void triggerNext(C timeCycle, DateTime time, boolean stop) {
         if (timeCycle != null)
             this.timeCycle = timeCycle;
         this.previousTime = time;
