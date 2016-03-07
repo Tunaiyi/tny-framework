@@ -114,23 +114,23 @@ public interface Item<M extends ItemModel> extends Identifiable {
     /**
      * 获对该事物执行某种行为所需要的行为结果，包括条件，消耗奖励物品
      *
-     * @param action     要执行的操作
+     * @param behavior     要执行的操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回奖励列表
      */
     BehaviorResult getBehaviorResult(Behavior behavior, Object... attributes);
 
-    boolean hasAblility(Ability ability);
+    boolean hasAbility(Ability ability);
 
     boolean hasOption(Action action, Option option);
 
-    <A> A getAbility(Ability ability, Object... attributes);
+    <A> A getAbility(Ability ability, Class<A> clazz, Object... attributes);
 
     <A> A getAbility(A defaultObject, Ability ability, Object... attributes);
 
-    <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes);
+    <A> Map<Ability, A> getAbilities(Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes);
 
-    <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes);
+    <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes);
 
     <O> O getActionOption(Action action, Option option, Object... attributes);
 

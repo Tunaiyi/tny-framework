@@ -364,7 +364,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}执行业务", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            CommandResult result = this.methodHolder.exectue(this.message);
+            CommandResult result = this.methodHolder.execute(this.message);
 
             // 执行结束触发命令执行完成事件
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())

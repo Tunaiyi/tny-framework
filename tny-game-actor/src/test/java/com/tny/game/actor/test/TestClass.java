@@ -74,11 +74,6 @@ public class TestClass {
         System.out.println(duration.getSeconds());
     }
 
-    @Test
-    public void testNull() {
-        String value = null;
-        System.out.println(value.toString());
-    }
 
 }
 

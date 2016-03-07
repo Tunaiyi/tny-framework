@@ -19,7 +19,7 @@ public class XMLDemand extends AbstractDemand {
 
     public enum TradeDemandType implements DemandType {
 
-        COST_DEMAND(1) {
+        COST_DEMAND_GE(1) {
             @Override
             public ResultCode getResultCode() {
                 return ItemResultCode.TRY_TO_DO_FAIL;
@@ -83,7 +83,7 @@ public class XMLDemand extends AbstractDemand {
         }
 
         if (this.demandType == null)
-            this.demandType = TradeDemandType.COST_DEMAND;
+            this.demandType = TradeDemandType.COST_DEMAND_GE;
 
         if (this.itemAlias == null) {
             if (this.itemAliasFx == null) {

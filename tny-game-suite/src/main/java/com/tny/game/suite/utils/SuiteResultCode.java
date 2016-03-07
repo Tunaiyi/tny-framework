@@ -7,12 +7,12 @@ import com.tny.game.common.result.ResultCodeType;
 public enum SuiteResultCode implements ResultCode {
 
     // 系统错误 用户登录相关
-    AUTH_USER_LOGIN_ERROR_SID(1000, "登录服务器ID错误", ResultCodeType.ERROR),
-    AUTH_USER_IS_FULL(1001, "登录服务器ID错误", ResultCodeType.ERROR),
-    AUTH_SERVER_IS_OFFLINE(1002, "服务器正在维护请稍后再试", ResultCodeType.ERROR),
+    AUTH_USER_LOGIN_ERROR_SID(2000, "登录服务器ID错误", ResultCodeType.ERROR),
+    AUTH_USER_IS_FULL(2001, "登录服务器ID错误", ResultCodeType.ERROR),
+    AUTH_SERVER_IS_OFFLINE(2002, "服务器正在维护请稍后再试", ResultCodeType.ERROR),
 
-    ITEM_WAREHOUSE_NO_EXIST(1010, "目标不存在"),
-    ITEM_WAREHOUSE_TRADE_FAILED(1011, "交易失败"),
+    ITEM_WAREHOUSE_NO_EXIST(2010, "目标不存在"),
+    ITEM_WAREHOUSE_TRADE_FAILED(2011, "交易失败"),
 
 
     //region 杨焜 == 开发ID 1000_000 - 1200_000

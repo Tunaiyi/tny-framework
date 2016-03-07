@@ -201,7 +201,7 @@ public abstract class AbstractItemModel implements ItemModel {
         return behaviorPlan.countAwardResult(playerID, action, attributeMap);
     }
 
-    protected <A> A doCountAbility(long playerID, Item<?> item, Ability ability, Object... attributes) {
+    protected <A> A doCountAbility(long playerID, Item<?> item, Ability ability, Class<A> clazz, Object... attributes) {
         FormulaHolder formula = this.abilityMap.get(ability);
         if (formula == null) {
             return null;
@@ -209,7 +209,7 @@ public abstract class AbstractItemModel implements ItemModel {
         Map<String, Object> attributeMap = new HashMap<>();
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        return formula.createFormula().putAll(attributeMap).execute(null);
+        return formula.createFormula().putAll(attributeMap).execute(clazz);
     }
 
     @Override
@@ -344,14 +344,14 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilities(Item<?> item, Collection<Ability> abilityCollection, Object... attributes) {
+    public <A> Map<Ability, A> getAbilities(Item<?> item, Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : abilityCollection) {
             A object = null;
             if (!this.hasAbility(ability)) {
                 valueMap.put(ability, null);
             } else {
-                object = this.doCountAbility(item.getPlayerID(), item, ability, attributes);
+                object = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
             }
             valueMap.put(ability, object);
         }
@@ -359,14 +359,14 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilities(long playerID, Collection<Ability> abilityCollection, Object... attributes) {
+    public <A> Map<Ability, A> getAbilities(long playerID, Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : abilityCollection) {
             A object = null;
             if (!this.hasAbility(ability)) {
                 valueMap.put(ability, null);
             } else {
-                object = this.doCountAbility(playerID, null, ability, attributes);
+                object = this.doCountAbility(playerID, null, ability, clazz, attributes);
             }
             valueMap.put(ability, object);
         }
@@ -374,7 +374,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Object... attributes) {
+    public <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
@@ -382,7 +382,7 @@ public abstract class AbstractItemModel implements ItemModel {
                 if (!this.hasAbility(ability)) {
                     valueMap.put(ability, null);
                 } else {
-                    object = this.doCountAbility(item.getPlayerID(), item, ability, attributes);
+                    object = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
                 }
                 valueMap.put(ability, object);
             }
@@ -391,7 +391,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Object... attributes) {
+    public <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
             A object = null;
@@ -399,7 +399,7 @@ public abstract class AbstractItemModel implements ItemModel {
                 if (!this.hasAbility(ability)) {
                     valueMap.put(ability, null);
                 } else {
-                    object = this.doCountAbility(playerID, null, ability, attributes);
+                    object = this.doCountAbility(playerID, null, ability, clazz, attributes);
                 }
                 valueMap.put(ability, object);
             }
@@ -430,24 +430,26 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
-    public <A> A getAbility(Item<?> item, Ability ability, Object... attributes) {
-        return this.doCountAbility(item.getPlayerID(), item, ability, attributes);
+    public <A> A getAbility(Item<?> item, Ability ability, Class<A> clazz, Object... attributes) {
+        return this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
     }
 
     @Override
-    public <A> A getAbility(long playerID, Ability ability, Object... attributes) {
-        return this.doCountAbility(playerID, null, ability, attributes);
+    public <A> A getAbility(long playerID, Ability ability, Class<A> clazz, Object... attributes) {
+        return this.doCountAbility(playerID, null, ability, clazz, attributes);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(item.getPlayerID(), item, ability, attributes);
+        A value = this.doCountAbility(item.getPlayerID(), item, ability, (Class<A>) defaultObject.getClass(), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(playerID, null, ability, attributes);
+        A value = this.doCountAbility(playerID, null, ability, (Class<A>) defaultObject.getClass(), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 

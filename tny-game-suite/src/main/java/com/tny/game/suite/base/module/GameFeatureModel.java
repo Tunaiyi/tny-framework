@@ -6,7 +6,7 @@ import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.OpenMode;
 
-public class GameFeatureModel implements FeatureModel, Model, Comparable<GameFeatureModel> {
+public class GameFeatureModel implements FeatureModel, Model {
 
     private int id;
 
@@ -79,10 +79,4 @@ public class GameFeatureModel implements FeatureModel, Model, Comparable<GameFea
                 '}';
     }
 
-    @Override
-    public int compareTo(GameFeatureModel o) {
-        int levelComp = 0;
-        return (levelComp = this.openLevel - o.openLevel) == 0 ?
-                this.getPriority() - o.getPriority() : levelComp;
-    }
 }

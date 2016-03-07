@@ -4,6 +4,7 @@ import com.tny.game.annotation.Controller;
 import com.tny.game.annotation.Plugin;
 import com.tny.game.annotation.UserID;
 import com.tny.game.common.reflect.GMethod;
+import com.tny.game.net.DevUtils;
 import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
@@ -23,6 +24,8 @@ import java.util.*;
  * <br>
  */
 public final class MethodHolder extends AbstractControllerHolder {
+
+    private static final String DEV_TIMEOUT_CHECK = "tny.server.dev.timeout.check";
 
     private static enum FirstParamType {
         PARAM,
@@ -55,17 +58,17 @@ public final class MethodHolder extends AbstractControllerHolder {
      */
     private Class<?>[] requestParameterClass;
     /**
-     * 是否需要requset对象
+     * 是否需要request对象
      */
     private FirstParamType firstParamType;
     /**
      * 参数上的注解
      */
-    private List<List<Annotation>> paramAnnatationsList;
+    private List<List<Annotation>> paramAnnotationsList;
     /**
      * 注解列表
      */
-    private Map<Class<?>, List<Annotation>> annatationsMap;
+    private Map<Class<?>, List<Annotation>> annotationsMap;
     /**
      * 执行list
      */
@@ -111,23 +114,23 @@ public final class MethodHolder extends AbstractControllerHolder {
         }
         this.initMethodAnnotation(method.getJavaMethod().getAnnotations());
         Annotation[][] paramAnnotationsArray = method.getJavaMethod().getParameterAnnotations();
-        List<List<Annotation>> paramAnnatationsList0 = new ArrayList<List<Annotation>>();
-        Map<Class<?>, List<Annotation>> annatationsMap0 = new HashMap<Class<?>, List<Annotation>>();
+        List<List<Annotation>> paramAnnotationsList0 = new ArrayList<List<Annotation>>();
+        Map<Class<?>, List<Annotation>> annotationsMap0 = new HashMap<Class<?>, List<Annotation>>();
         Set<Class<?>> annotationClassSet = new HashSet<Class<?>>();
-        for (Annotation[] parmAnnotations : paramAnnotationsArray) {
+        for (Annotation[] paramAnnotations : paramAnnotationsArray) {
             List<Annotation> paramAnnotationList = new ArrayList<Annotation>();
-            for (Annotation paramAnnotation : parmAnnotations) {
+            for (Annotation paramAnnotation : paramAnnotations) {
                 paramAnnotationList.add(paramAnnotation);
                 if (paramAnnotation != null)
                     annotationClassSet.add(paramAnnotation.annotationType());
             }
-            paramAnnatationsList0.add(Collections.unmodifiableList(paramAnnotationList));
+            paramAnnotationsList0.add(Collections.unmodifiableList(paramAnnotationList));
         }
         for (Class<?> clazz : annotationClassSet) {
             List<Annotation> indexAnnotationList = new ArrayList<Annotation>();
-            for (Annotation[] parmAnnotations : paramAnnotationsArray) {
+            for (Annotation[] paramAnnotations : paramAnnotationsArray) {
                 Annotation select = null;
-                for (Annotation paramAnnotation : parmAnnotations) {
+                for (Annotation paramAnnotation : paramAnnotations) {
                     if (clazz.isInstance(paramAnnotation)) {
                         select = paramAnnotation;
                         break;
@@ -135,10 +138,10 @@ public final class MethodHolder extends AbstractControllerHolder {
                 }
                 indexAnnotationList.add(select);
             }
-            annatationsMap0.put(clazz, Collections.unmodifiableList(indexAnnotationList));
+            annotationsMap0.put(clazz, Collections.unmodifiableList(indexAnnotationList));
         }
-        this.paramAnnatationsList = Collections.unmodifiableList(paramAnnatationsList0);
-        this.annatationsMap = Collections.unmodifiableMap(annatationsMap0);
+        this.paramAnnotationsList = Collections.unmodifiableList(paramAnnotationsList0);
+        this.annotationsMap = Collections.unmodifiableMap(annotationsMap0);
         for (ControllerPlugin plugin : this.getControllerPluginBeforeList())
             this.putPlugin(plugin);
         this.putPlugin(new MethodControllerPlugin(this));
@@ -174,19 +177,19 @@ public final class MethodHolder extends AbstractControllerHolder {
         @Override
         public CommandResult execute(Request request, CommandResult result, PluginContext context) throws Exception {
             // 获取调用方法的参数类型
-            Class<?>[] requsetParamClasses = this.methodHolder.getRequestParameterClass();
-            // 获取requset的对象的参数
-            Object[] requsetParam = request.getParameters(requsetParamClasses);
+            Class<?>[] requestParameterClass = this.methodHolder.getRequestParameterClass();
+            // 获取request的对象的参数
+            Object[] requestParam = request.getParameters(requestParameterClass);
             Object[] param = null;
             if (this.methodHolder.getFirstParamType() == FirstParamType.PARAM) {
-                param = requsetParam;
+                param = requestParam;
             } else {
-                param = new Object[requsetParam.length + 1];
+                param = new Object[requestParam.length + 1];
                 if (this.methodHolder.getFirstParamType() == FirstParamType.UID)
                     param[0] = request.getUserID();
                 else
                     param[0] = request;
-                System.arraycopy(requsetParam, 0, param, 1, requsetParam.length);
+                System.arraycopy(requestParam, 0, param, 1, requestParam.length);
             }
             // 设置第一个为请求对象
 
@@ -218,10 +221,10 @@ public final class MethodHolder extends AbstractControllerHolder {
      */
     @Override
     public String getName() {
-        final String opeartionName = this.controller != null ? this.controller.name() : null;
-        if (opeartionName == null || opeartionName.equals(""))
+        final String operationName = this.controller != null ? this.controller.name() : null;
+        if (operationName == null || operationName.equals(""))
             return this.methodName;
-        return opeartionName;
+        return operationName;
     }
 
     @Override
@@ -298,19 +301,21 @@ public final class MethodHolder extends AbstractControllerHolder {
     }
 
     public boolean isTimeOut() {
+        if (!DevUtils.DEV_CONFIG.getBoolean(DEV_TIMEOUT_CHECK, true))
+            return false;
         return this.controller != null ? this.controller.timeOut() : this.controllerHolder.isTimeOut();
     }
 
     @SuppressWarnings("unchecked")
     public <A extends Annotation> List<A> getParamAnnotationsByType(Class<A> clazz) {
-        List<Annotation> annotations = this.annatationsMap.get(clazz);
+        List<Annotation> annotations = this.annotationsMap.get(clazz);
         if (annotations == null)
             return new ArrayList<>();
         return (List<A>) annotations;
     }
 
     public boolean isExistParamAnnotation(Class<? extends Annotation> clazz) {
-        return this.annatationsMap.containsKey(clazz);
+        return this.annotationsMap.containsKey(clazz);
     }
 
     /**
@@ -321,11 +326,11 @@ public final class MethodHolder extends AbstractControllerHolder {
      * : [] 获取 2 : [@A]
      */
     public List<Annotation> getParamAnnotationsByIndex(int index) {
-        return this.paramAnnatationsList.get(index);
+        return this.paramAnnotationsList.get(index);
     }
 
     public Set<Class<?>> getParamAnnotationClass() {
-        return this.annatationsMap.keySet();
+        return this.annotationsMap.keySet();
     }
 
     /**
@@ -339,7 +344,7 @@ public final class MethodHolder extends AbstractControllerHolder {
     @SuppressWarnings("unchecked")
     public <A extends Annotation> List<A> getParamAnnotationsByIndex(Class<A> annotationClass) {
         List<A> annotationList = new ArrayList<>();
-        for (List<Annotation> indexAnnotationList : this.paramAnnatationsList) {
+        for (List<Annotation> indexAnnotationList : this.paramAnnotationsList) {
             A aClassAnnotation = null;
             for (Annotation annotation : indexAnnotationList) {
                 if (annotationClass.isInstance(annotation))
@@ -361,7 +366,7 @@ public final class MethodHolder extends AbstractControllerHolder {
     //	public boolean isNeedRequest() {
     //		return needRequest;
     //	}
-    public CommandResult exectue(Request request) throws Exception {
+    public CommandResult execute(Request request) throws Exception {
         return this.pluginContext.passToNext(request, null);
     }
 

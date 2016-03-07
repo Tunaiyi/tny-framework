@@ -1,6 +1,13 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.ActionResult;
+import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.BehaviorResult;
+import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.behavior.Option;
+import com.tny.game.base.item.behavior.TryToDoResult;
 
 import java.util.Collection;
 import java.util.Map;
@@ -50,7 +57,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
-    public boolean hasAblility(Ability ability) {
+    public boolean hasAbility(Ability ability) {
         return this.getModel().hasAbility(ability);
     }
 
@@ -95,18 +102,23 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
-    public <A> A getAbility(Ability ability, Object... attributes) {
-        return this.getModel().getAbility(this, ability, attributes);
+    public <A> Map<Ability, A> getAbilities(Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes) {
+        return this.getModel().getAbilities(this, abilityCollection, clazz, attributes);
+    }
+
+    @Override
+    public <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
+        return this.getModel().getAbilitiesByType(this, abilityClass, clazz, attributes);
+    }
+
+    @Override
+    public <A> A getAbility(Ability ability, Class<A> clazz, Object... attributes) {
+        return this.getModel().getAbility(this, ability, clazz, attributes);
     }
 
     @Override
     public <A> A getAbility(A defaultObject, Ability ability, Object... attributes) {
         return this.getModel().getAbility(this, defaultObject, ability, attributes);
-    }
-
-    @Override
-    public <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes) {
-        return this.getModel().getAbilities(this, abilityCollection, attributes);
     }
 
     @Override
@@ -117,11 +129,6 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     @Override
     public <O> O getActionOption(Action action, O defaultNum, Option option, Object... attributes) {
         return this.getModel().getActionOption(this, defaultNum, action, option, attributes);
-    }
-
-    @Override
-    public <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes) {
-        return this.getModel().getAbilitiesByType(this, abilityClass, attributes);
     }
 
     @Override

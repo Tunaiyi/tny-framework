@@ -1,6 +1,13 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.ActionResult;
+import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.BehaviorResult;
+import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.behavior.Option;
+import com.tny.game.base.item.behavior.TryToDoResult;
 
 import java.util.Collection;
 import java.util.Map;
@@ -78,8 +85,8 @@ public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> im
     }
 
     @Override
-    public boolean hasAblility(Ability ability) {
-        return this.item.hasAblility(ability);
+    public boolean hasAbility(Ability ability) {
+        return this.item.hasAbility(ability);
     }
 
     @Override
@@ -88,8 +95,13 @@ public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> im
     }
 
     @Override
-    public <A> A getAbility(Ability ability, Object... attributes) {
-        return this.item.getAbility(ability, attributes);
+    public <A> Map<Ability, A> getAbilities(Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes) {
+        return this.item.getAbilities(abilityCollection, clazz, attributes);
+    }
+
+    @Override
+    public <A> A getAbility(Ability ability, Class<A> clazz, Object... attributes) {
+        return this.item.getAbility(ability, clazz, attributes);
     }
 
     @Override
@@ -98,13 +110,8 @@ public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> im
     }
 
     @Override
-    public <A> Map<Ability, A> getAblilitys(Collection<Ability> abilityCollection, Object... attributes) {
-        return this.item.getAblilitys(abilityCollection, attributes);
-    }
-
-    @Override
-    public <A> Map<Ability, A> getAblilityByType(Class<? extends Ability> abilityClass, Object... attributes) {
-        return this.item.getAblilityByType(abilityClass, attributes);
+    public <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
+        return this.item.getAbilitiesByType(abilityClass, clazz, attributes);
     }
 
     @Override

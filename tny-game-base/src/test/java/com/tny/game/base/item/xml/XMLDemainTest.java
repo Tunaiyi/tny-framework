@@ -125,7 +125,7 @@ public class XMLDemainTest {
     @Test
     public void testGetDemandType() {
         Assert.assertEquals(this.demandType, this.demand.getDemandType());
-        Assert.assertEquals(XMLDemand.TradeDemandType.COST_DEMAND, this.stuffDemand.getDemandType());
+        Assert.assertEquals(XMLDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
     }
 
     MapRef<String, Object> ref = new MapRef<String, Object>() {
