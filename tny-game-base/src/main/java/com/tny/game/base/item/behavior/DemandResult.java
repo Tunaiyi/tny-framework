@@ -1,6 +1,7 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
+import com.tny.game.common.reflect.ObjectUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -111,9 +112,7 @@ public class DemandResult {
     public <V> V getExpectValue(Class<V> clazz) {
         if (expectValue == null)
             return null;
-        if (clazz.isInstance(expectValue))
-            return (V) expectValue;
-        throw new ClassCastException(expectValue + "is not " + clazz + "instance");
+        return ObjectUtils.as(expectValue, clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -121,9 +120,7 @@ public class DemandResult {
         Object value = this.paramMap.get(param);
         if (param == null)
             return null;
-        if (clazz.isInstance(value))
-            return (P) value;
-        throw new ClassCastException(value + "is not " + clazz + "instance");
+        return ObjectUtils.as(value, clazz);
     }
 
     @SuppressWarnings("unchecked")

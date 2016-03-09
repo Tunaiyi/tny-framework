@@ -1,5 +1,7 @@
 package com.tny.game.number;
 
+import com.tny.game.LogUtils;
+
 /**
  * Created by Kun Yang on 16/2/17.
  */
@@ -22,6 +24,29 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             value = source.byteValue();
         else
             value = source.intValue();
+        return (N) value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <N extends Number> N changeAs(Object source, Class<N> clazz) {
+        Number value;
+        if (!(source instanceof Number))
+            throw new ClassCastException(LogUtils.format("{} {} 不属于 {}", source, source.getClass(), Number.class));
+        value = (Number) source;
+        if (Integer.class == clazz)
+            value = value.intValue();
+        else if (Long.class == clazz)
+            value = value.longValue();
+        else if (Float.class == clazz)
+            value = value.floatValue();
+        else if (Double.class == clazz)
+            value = value.doubleValue();
+        else if (Short.class == clazz)
+            value = value.shortValue();
+        else if (Byte.class == clazz)
+            value = value.byteValue();
+        else
+            value = value.intValue();
         return (N) value;
     }
 
