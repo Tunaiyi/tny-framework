@@ -7,6 +7,7 @@ import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
+import com.tny.game.number.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.tny.game.number.NumberUtils.*;
 
 public class SimpleTrade implements Trade {
 
@@ -34,7 +37,7 @@ public class SimpleTrade implements Trade {
         this.tradeType = tradeType;
         if (tradeItemList != null && tradeItemList.length > 0) {
             for (TradeItem<?> item : tradeItemList) {
-                if (item.getNumber() > 0)
+                if (greater(item.getNumber(), 0))
                     this.tradeItemList.add((TradeItem<ItemModel>) item);
             }
         }
@@ -54,7 +57,7 @@ public class SimpleTrade implements Trade {
         this.action = action;
         this.tradeType = tradeType;
         if (tradeItemList != null && tradeItemList.size() > 0) {
-            this.tradeItemList.addAll(tradeItemList.stream().filter(item -> item.getNumber() > 0).map(item -> (TradeItem<ItemModel>) item).collect(Collectors.toList()));
+            this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<ItemModel>) item).collect(Collectors.toList()));
         }
         this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
     }
@@ -65,18 +68,18 @@ public class SimpleTrade implements Trade {
     }
 
     @Override
-    public long getNumber(ItemModel model) {
-        int number = 0;
+    public Number getNumber(ItemModel model) {
+        Number number = 0;
         for (TradeItem<ItemModel> item : this.tradeItemList) {
             if (item.getItemModel().equals(model))
-                number += item.getNumber();
+                number = add(number, item.getNumber());
         }
         return number;
     }
 
     @Override
     public boolean isNeedTrade(ItemModel model) {
-        return this.getNumber(model) > 0;
+        return greater(this.getNumber(model), 0);
     }
 
     @Override
@@ -97,7 +100,7 @@ public class SimpleTrade implements Trade {
     @Override
     public boolean isEmpty() {
         for (TradeItem<?> item : this.tradeItemList)
-            if (item.getNumber() > 0)
+            if (greater(item.getNumber(), 0))
                 return false;
         return true;
     }
@@ -115,12 +118,12 @@ public class SimpleTrade implements Trade {
 
     @Override
     public void merge() {
-        Map<ItemModel, Long> itemNumMap = new HashMap<>();
+        Map<ItemModel, Number> itemNumMap = new HashMap<>();
         for (TradeItem<ItemModel> item : this.tradeItemList) {
-            Long value = itemNumMap.get(item.getItemModel());
+            Number value = itemNumMap.get(item.getItemModel());
             if (value == null)
                 value = 0L;
-            value += item.getNumber();
+            value = add(value, item.getNumber());
             itemNumMap.put(item.getItemModel(), value);
         }
         List<TradeItem<ItemModel>> tradeItemList = itemNumMap.entrySet().stream()

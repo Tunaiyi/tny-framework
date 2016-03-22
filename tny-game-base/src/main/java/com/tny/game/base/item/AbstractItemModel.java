@@ -9,29 +9,24 @@ import com.tny.game.base.item.behavior.simple.SimpleTryToDoResult;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
+import com.tny.game.common.reflect.ObjectUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 抽象事物模型
  *
  * @author KGTny
  */
-public abstract class AbstractItemModel implements ItemModel {
-
-    /**
-     * 事物对象在有自己相关的行为和操作中所代表的引用名字
-     */
-    public static final String ACTION_ITEM_NAME = "self";
-    /**
-     * 事物对象在有自己相关的行为和操作中所代表的引用名字
-     */
-    public static final String ACTION_ITEM_MODEL_NAME = "model";
-    /**
-     * 事物对象在有自己相关的行为和操作中所代表的引用名字
-     */
-    public static final String ACTION_AWARD_MODEL_NAME = "awModel";
+public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     /**
      * 事物模型id
@@ -374,6 +369,21 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     @Override
+    public <A extends Ability> Set<A> getAbilityTypes(Class<A> typeClass) {
+        Set<A> types = new HashSet<>();
+        for (Ability ability : this.abilityMap.keySet()) {
+            if (typeClass.isInstance(ability))
+                types.add(ObjectUtils.as(ability, typeClass));
+        }
+        return types;
+    }
+
+    @Override
+    public Set<Ability> getAbilityTypes() {
+        return Collections.unmodifiableSet(this.abilityMap.keySet());
+    }
+
+    @Override
     public <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
         Map<Ability, A> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
@@ -546,7 +556,7 @@ public abstract class AbstractItemModel implements ItemModel {
     }
 
     protected String getCurrentFormula() {
-        return Demand.DEMAND_ITEM + " == null ? 0 : " + Demand.DEMAND_ITEM + ".number";
+        return DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number";
     }
 
     /*

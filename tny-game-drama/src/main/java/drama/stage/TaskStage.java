@@ -1,7 +1,15 @@
 package drama.stage;
 
-import com.tny.game.actor.task.invok.*;
 import com.tny.game.base.item.Done;
+import drama.stage.invok.AcceptDone;
+import drama.stage.invok.ApplyDone;
+import drama.stage.invok.CatcherSupplier;
+import drama.stage.invok.TaskAcceptDone;
+import drama.stage.invok.TaskApplyDone;
+import drama.stage.invok.TaskCatcherSupplier;
+import drama.stage.invok.TaskConsumer;
+import drama.stage.invok.TaskFunction;
+import drama.stage.invok.TaskPredicate;
 
 import java.time.Duration;
 import java.util.function.Consumer;

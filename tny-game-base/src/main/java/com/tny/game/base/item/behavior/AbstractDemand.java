@@ -6,6 +6,7 @@ import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ItemsImportKey;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.formula.FormulaHolder;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import java.util.Map.Entry;
  *
  * @author KGTny
  */
-public abstract class AbstractDemand implements Demand {
+public abstract class AbstractDemand implements Demand, ItemsImportKey {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
 
@@ -70,8 +71,8 @@ public abstract class AbstractDemand implements Demand {
     protected ItemModelExplorer itemModelExplorer;
 
     @Override
-    public String getItemAlias(Map<String, Object> atrributeMap) {
-        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(atrributeMap).execute(String.class)
+    public String getItemAlias(Map<String, Object> attributeMap) {
+        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
                 : this.itemAlias;
     }
 
@@ -124,7 +125,7 @@ public abstract class AbstractDemand implements Demand {
         if (alias == null)
             return null;
         long id = 0;
-        ItemModel demandModel = this.getItemMoel(alias);
+        ItemModel demandModel = this.getItemModel(alias);
         this.setAttrMap(playerID, alias, attributeMap);
         Object current = null;
         Object expect = null;
@@ -145,7 +146,7 @@ public abstract class AbstractDemand implements Demand {
         if (this.paramMap == null || this.paramMap.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
+        Map<DemandParam, Object> paramMap = new HashMap<>();
         for (Entry<DemandParam, FormulaHolder> entry : this.paramMap.entrySet()) {
             try {
                 paramMap.put(entry.getKey(), entry.getValue().createFormula().putAll(attributeMap).execute(Object.class));
@@ -156,7 +157,7 @@ public abstract class AbstractDemand implements Demand {
         return paramMap;
     }
 
-    private ItemModel getItemMoel(String alias) {
+    private ItemModel getItemModel(String alias) {
         ItemModel model = this.itemModelExplorer.getItemModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
@@ -164,8 +165,8 @@ public abstract class AbstractDemand implements Demand {
     }
 
     private ItemModel setAttrMap(long playerID, String alias, Map<String, Object> attributeMap) {
-        ItemModel model = this.getItemMoel(alias);
-        Item<?> item = null;
+        ItemModel model = this.getItemModel(alias);
+        Item<?> item;
         attributeMap.put(DEMAND_MODEL, model);
         if (model.getItemType().hasEntity()) {
             item = this.itemExplorer.getItem(playerID, model.getID());

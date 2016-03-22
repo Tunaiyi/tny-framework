@@ -13,13 +13,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> implements Item<IM> {
+public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM>> extends AbstractItem<IM> implements Item<IM> {
 
-    private Item<IM> item;
+    protected I item;
 
     @SuppressWarnings("unchecked")
-    protected WrapItem(Item<? extends IM> item) {
-        this.item = (Item<IM>) item;
+    protected WrapItem(I item) {
+        this.item = item;
         this.playerID = item.getPlayerID();
         this.model = item.getModel();
     }
@@ -149,5 +149,7 @@ public abstract class WrapItem<IM extends ItemModel> extends AbstractItem<IM> im
     public Behavior getBehaviorByAction(Action action) {
         return this.item.getBehaviorByAction(action);
     }
+
+
 
 }

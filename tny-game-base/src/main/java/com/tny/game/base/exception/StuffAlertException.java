@@ -11,32 +11,32 @@ public class StuffAlertException extends GameRuningException {
      */
     private static final long serialVersionUID = 1L;
 
-    private long number;
+    private Number number;
 
-    private long stuffID;
+    private Number stuffID;
 
-    private long alertNumber;
+    private Number alertNumber;
 
-    public StuffAlertException(ResultCode code, long playerID, ItemModel model, long number, long alert, Object... messages) {
+    public StuffAlertException(ResultCode code, long playerID, ItemModel model, Number number, Number alert, Object... messages) {
         super(code, messages);
         this.number = number;
         this.stuffID = model.getID();
         this.alertNumber = alert;
     }
 
-    public StuffAlertException(ResultCode code, CountableStuff<?> stuff, long alert, Object... messages) {
+    public StuffAlertException(ResultCode code, CountableStuff<?, ?> stuff, Number alert, Object... messages) {
         this(code, stuff.getPlayerID(), stuff.getModel(), stuff.getNumber(), alert, messages);
     }
 
-    public long getNumber() {
+    public Number getNumber() {
         return this.number;
     }
 
-    public long getStuffID() {
+    public Number getStuffID() {
         return this.stuffID;
     }
 
-    public long getAlertNumber() {
+    public Number getAlertNumber() {
         return this.alertNumber;
     }
 

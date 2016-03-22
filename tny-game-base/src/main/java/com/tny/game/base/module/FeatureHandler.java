@@ -12,7 +12,7 @@ public interface FeatureHandler {
     /**
      * 开启模块
      *
-     * @param owner
+     * @param explorer
      * @return
      */
     boolean openFeature(FeatureExplorer explorer);

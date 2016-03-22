@@ -1,18 +1,26 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.simple.SimpleDealedtem;
+import com.tny.game.base.item.behavior.simple.SimpleDealedItem;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import static com.tny.game.number.NumberUtils.*;
 
 public class TradeResult {
 
     private static final TradeResult EMPTY = new TradeResult();
 
-    private List<DealedItem<?>> tradedItemList = new ArrayList<DealedItem<?>>();
+    private List<DealedItem<?>> tradedItemList = new ArrayList<>();
 
-    private Set<Stuff<?>> tradeStuffSet = new HashSet<Stuff<?>>();
+    private Set<Stuff<?>> tradeStuffSet = new HashSet<>();
 
     private TradeResult() {
     }
@@ -29,16 +37,16 @@ public class TradeResult {
         this.tradedItemList.addAll(items);
         this.tradedItemList = Collections.unmodifiableList(this.tradedItemList);
         this.tradeStuffSet = Collections.unmodifiableSet(this.tradeStuffSet);
-    }
+   }
 
-    private TradeResult(ItemModel model, long alert, DemandParamEntry<?>... entrise) {
+    private TradeResult(ItemModel model, Number alert, DemandParamEntry<?>... entries) {
         super();
-        this.tradedItemList.add(new SimpleDealedtem<ItemModel>(model, alert, entrise));
+        this.tradedItemList.add(new SimpleDealedItem<>(model, alert, entries));
         this.tradedItemList = Collections.unmodifiableList(this.tradedItemList);
         this.tradeStuffSet = Collections.unmodifiableSet(this.tradeStuffSet);
     }
 
-    private TradeResult(Stuff<?> stuff, long alert) {
+    private TradeResult(Stuff<?> stuff, Number alert) {
         super();
         this.tradedItemList.add(new SimpleTradeItem<ItemModel>(stuff.getModel(), alert));
         this.tradeStuffSet.add(stuff);
@@ -46,9 +54,9 @@ public class TradeResult {
         this.tradeStuffSet = Collections.unmodifiableSet(this.tradeStuffSet);
     }
 
-    private TradeResult(Map<? extends Stuff<?>, Integer> tradeStuffMap) {
+    private TradeResult(Map<? extends Stuff<?>, Number> tradeStuffMap) {
         super();
-        for (Entry<? extends Stuff<?>, Integer> entry : tradeStuffMap.entrySet()) {
+        for (Entry<? extends Stuff<?>, Number> entry : tradeStuffMap.entrySet()) {
             Stuff<?> stuff = entry.getKey();
             this.tradedItemList.add(new SimpleTradeItem<ItemModel>(stuff.getModel(), entry.getValue()));
             this.tradeStuffSet.add(stuff);
@@ -58,15 +66,15 @@ public class TradeResult {
     }
 
     public boolean isTrade(ItemModel model) {
-        Long value = null;
+        Number value = null;
         for (DealedItem<?> item : this.tradedItemList) {
             if (item.getItemModel().equals(model)) {
                 value = item.getNumber();
-                if (value > 0)
+                if (greater(value, 0))
                     break;
             }
         }
-        return value != null && value > 0;
+        return value != null && greater(value, 0);
     }
 
     public List<DealedItem<?>> getTradedList() {
@@ -86,15 +94,15 @@ public class TradeResult {
         return new TradeResult(items);
     }
 
-    public static TradeResult create(Stuff<?> stuff, long alert) {
+    public static TradeResult create(Stuff<?> stuff, Number alert) {
         return new TradeResult(stuff, alert);
     }
 
-    public static TradeResult create(ItemModel model, long alert) {
+    public static TradeResult create(ItemModel model, Number alert) {
         return new TradeResult(model, alert);
     }
 
-    public static TradeResult create(Map<? extends Stuff<?>, Integer> tradeStuffMap) {
+    public static TradeResult create(Map<? extends Stuff<?>, Number> tradeStuffMap) {
         return new TradeResult(tradeStuffMap);
     }
 

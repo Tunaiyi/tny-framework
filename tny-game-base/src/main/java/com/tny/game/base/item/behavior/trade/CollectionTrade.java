@@ -1,5 +1,6 @@
 package com.tny.game.base.item.behavior.trade;
 
+import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.Trade;
@@ -7,6 +8,7 @@ import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
+import com.tny.game.number.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +40,12 @@ public class CollectionTrade implements Trade {
         }
     }
 
-    public void collectItem(ItemModel model, long number) {
+    public void collectItem(ItemModel model, Number number) {
         this.collectItem(new SimpleTradeItem<>(model, number));
+    }
+
+    public void collectItem(ItemModel model, Number number, AlterType alertType) {
+        this.collectItem(new SimpleTradeItem<>(model, number, alertType));
     }
 
     public void collectItem(TradeItem<?>... tradeItems) {
@@ -74,7 +80,7 @@ public class CollectionTrade implements Trade {
     }
 
     @Override
-    public long getNumber(ItemModel model) {
+    public Number getNumber(ItemModel model) {
         TradeItem<ItemModel> tradeItem = this.tradeMap.get(model.getID());
         if (tradeItem == null)
             return 0;
@@ -83,7 +89,7 @@ public class CollectionTrade implements Trade {
 
     @Override
     public boolean isNeedTrade(ItemModel model) {
-        return this.getNumber(model) > 0;
+        return NumberUtils.greater(this.getNumber(model), 0);
     }
 
     @Override

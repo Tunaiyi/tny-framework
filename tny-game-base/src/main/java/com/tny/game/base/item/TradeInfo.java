@@ -32,7 +32,7 @@ public interface TradeInfo {
      * @param model 消耗的物品
      * @return 返回消耗物品的数量
      */
-    long getNumber(ItemModel model);
+    Number getNumber(ItemModel model);
 
     /**
      * 是否需要消耗指定的model物品 <br>

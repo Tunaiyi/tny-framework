@@ -107,14 +107,14 @@ public class XMLAwardPlanTest {
     public void testCreateTradeResult() {
         this.NUMBER = 1;
         Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertTrue(result.getNumber(this.award1) > 0);
+        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
         this.NUMBER = 30;
         result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertTrue(result.getNumber(this.award1) > 0);
+        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
         this.NUMBER = 100;
         result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertFalse(result.getNumber(this.award1) > 0);
-        Assert.assertFalse(result.getNumber(this.award2) > 0);
+        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
+        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
     }
 
     public static void main(String[] args) {

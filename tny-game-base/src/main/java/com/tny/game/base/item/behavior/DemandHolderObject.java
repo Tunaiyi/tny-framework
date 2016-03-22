@@ -66,7 +66,7 @@ public abstract class DemandHolderObject {
     protected List<DemandResult> countDemandResultList(long playerID, List<AbstractDemand> demandList,
                                                        Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
-        List<DemandResult> demandResults = new ArrayList<DemandResult>();
+        List<DemandResult> demandResults = new ArrayList<>();
         for (Demand demand : demandList) {
             DemandResult result = demand.checkDemandResult(playerID, attributeMap);
             if (result != null)
@@ -79,9 +79,9 @@ public abstract class DemandHolderObject {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.demandList == null)
-            this.demandList = new ArrayList<AbstractDemand>();
+            this.demandList = new ArrayList<>();
         if (this.attrAliasSet == null)
-            this.attrAliasSet = new HashSet<String>(0);
+            this.attrAliasSet = new HashSet<>(0);
 
         for (AbstractDemand demand : this.demandList) {
             demand.init(itemModel, itemExplorer, itemModelExplorer);

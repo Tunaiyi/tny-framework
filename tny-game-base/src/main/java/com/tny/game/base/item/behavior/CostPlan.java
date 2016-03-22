@@ -16,7 +16,7 @@ public interface CostPlan extends TradePlan {
      * @param atrributeMap
      * @return
      */
-    public List<DemandResult> countDemandResultList(long playerID, Map<String, Object> atrributeMap);
+    List<DemandResult> countDemandResultList(long playerID, Map<String, Object> atrributeMap);
 
     /**
      * 尝试做某事
@@ -25,7 +25,7 @@ public interface CostPlan extends TradePlan {
      * @param attributes
      * @return
      */
-    public DemandResult tryToDo(long playerID, Map<String, Object> attributes);
+    DemandResult tryToDo(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取消耗列表
@@ -33,5 +33,5 @@ public interface CostPlan extends TradePlan {
      * @param atrributeMap 计算参数
      * @return 返回奖励列表
      */
-    public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap);
+    CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap);
 }

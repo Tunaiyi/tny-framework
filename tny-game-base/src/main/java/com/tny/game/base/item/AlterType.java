@@ -6,6 +6,8 @@ import com.tny.game.base.exception.StuffAlertException;
 
 import java.text.MessageFormat;
 
+import static com.tny.game.number.NumberUtils.*;
+
 /**
  * 数量改变策略枚举
  *
@@ -18,7 +20,7 @@ public enum AlterType {
      */
     CHECK(1) {
         @Override
-        public long consume(long playerID, ItemModel model, long number, long alertNum) {
+        public Number consume(long playerID, ItemModel model, Number number, Number alertNum) {
             if (this.overLowerLimit(model, number, alertNum))
                 throw new StuffAlertException(
                         ItemResultCode.LACK_NUMBER,
@@ -27,15 +29,15 @@ public enum AlterType {
                         number,
                         alertNum,
                         LogUtils.format("玩家({}) 物品[{}]数量为 {1},不够扣除 {2}", playerID, model.getID(), number, alertNum));
-            long countNumber, currentNum;
+            Number countNumber, currentNum;
             countNumber = currentNum = number;
-            countNumber -= alertNum;
-            countNumber = countNumber < 0 ? 0 : countNumber;
-            return currentNum - countNumber;
+            countNumber = sub(countNumber, alertNum);
+            countNumber = less(countNumber, 0) ? as(0, number.getClass()) : countNumber;
+            return sub(currentNum, countNumber);
         }
 
         @Override
-        public long receive(long playerID, ItemModel model, long limit, long number, long alertNum) {
+        public Number receive(long playerID, ItemModel model, Number limit, Number number, Number alertNum) {
             if (this.overUpperLimit(model, limit, number, alertNum))
                 throw new StuffAlertException(
                         ItemResultCode.FULL_NUMBER,
@@ -48,17 +50,17 @@ public enum AlterType {
         }
 
         @Override
-        public boolean overLowerLimit(ItemModel model, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}扣除物品数量{1}小于0", model.getID(), alertNum));
-            return alertNum > number;
+            return greater(alertNum, number);
         }
 
         @Override
-        public boolean overUpperLimit(ItemModel model, long limit, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}接受物品数量{1}小于0", model.getID(), alertNum));
-            return limit > -1 && alertNum + number > limit;
+            return greater(limit, -1) && greater(add(alertNum, number), limit);
         }
 
     },
@@ -67,31 +69,31 @@ public enum AlterType {
      */
     UNCHECK(2) {
         @Override
-        public long consume(long playerID, ItemModel model, long number, long alertNum) {
+        public Number consume(long playerID, ItemModel model, Number number, Number alertNum) {
             this.overLowerLimit(model, number, alertNum);
-            long countNumber, currentNum;
+            Number countNumber, currentNum;
             countNumber = currentNum = number;
-            countNumber -= alertNum;
-            countNumber = countNumber < 0 ? 0 : countNumber;
-            return currentNum - countNumber;
+            countNumber = sub(countNumber, alertNum);
+            countNumber = less(countNumber, 0) ? add(0, number) : countNumber;
+            return sub(currentNum, countNumber);
         }
 
         @Override
-        public long receive(long playerID, ItemModel model, long limit, long number, long alertNum) {
+        public Number receive(long playerID, ItemModel model, Number limit, Number number, Number alertNum) {
             this.overUpperLimit(model, limit, number, alertNum);
             return alertNum;
         }
 
         @Override
-        public boolean overLowerLimit(ItemModel model, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}扣除物品数量{1}小于0", model.getID(), alertNum));
             return false;
         }
 
         @Override
-        public boolean overUpperLimit(ItemModel model, long limit, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}接受物品数量{1}小于0", model.getID(), alertNum));
             return false;
         }
@@ -101,51 +103,51 @@ public enum AlterType {
      */
     IGNORE(3) {
         @Override
-        public long consume(long playerID, ItemModel model, long number, long alertNum) {
+        public Number consume(long playerID, ItemModel model, Number number, Number alertNum) {
             this.overLowerLimit(model, number, alertNum);
-            long countNumber, currentNum;
+            Number countNumber, currentNum;
             countNumber = currentNum = number;
-            countNumber -= alertNum;
-            countNumber = countNumber < 0 ? 0 : countNumber;
-            return currentNum - countNumber;
+            countNumber = sub(countNumber, alertNum);
+            countNumber = less(countNumber, 0) ? as(0, number) : countNumber;
+            return sub(currentNum, countNumber);
         }
 
         @Override
-        public long receive(long playerID, ItemModel model, long limit, long number, long alertNum) {
+        public Number receive(long playerID, ItemModel model, Number limit, Number number, Number alertNum) {
             this.overUpperLimit(model, limit, number, alertNum);
-            long countNumber = number;
-            countNumber += alertNum;
-            countNumber = limit > CountableStuff.UNLIMINT && countNumber > limit ? limit : countNumber;
-            long result = countNumber - number;
-            return result <= 0 ? 0 : result;
+            Number countNumber = number;
+            countNumber = add(countNumber, alertNum);
+            countNumber = greater(limit, CountableStuff.UNLIMITED) && greater(countNumber, limit) ? limit : countNumber;
+            Number result = sub(countNumber, number);
+            return lessEqual(result, 0) ? as(0, number) : result;
         }
 
         @Override
-        public boolean overLowerLimit(ItemModel model, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}扣除物品数量{1}小于0", model.getID(), alertNum));
             return false;
         }
 
         @Override
-        public boolean overUpperLimit(ItemModel model, long limit, long number, long alertNum) {
-            if (alertNum < 0)
+        public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
+            if (less(alertNum, 0))
                 throw new IllegalArgumentException(MessageFormat.format("{0}接受物品数量{1}小于0", model.getID(), alertNum));
             return false;
         }
     };
 
-    private final long ID;
+    private final int ID;
 
-    private AlterType(long iD) {
+    AlterType(int iD) {
         this.ID = iD;
     }
 
-    public long getID() {
+    public int getID() {
         return this.ID;
     }
 
-    public static AlterType valueOf(long value) {
+    public static AlterType valueOf(int value) {
         for (AlterType type : AlterType.values()) {
             if (type.ID == value)
                 return type;
@@ -154,27 +156,27 @@ public enum AlterType {
                 "ID 为 {} 的 {} 不能存在", value, AlterType.class));
     }
 
-    public abstract long consume(long playerID, ItemModel model, long number, long alertNum);
+    public abstract Number consume(long playerID, ItemModel model, Number number, Number alertNum);
 
-    public abstract long receive(long playerID, ItemModel model, long limit, long number, long alertNum);
+    public abstract Number receive(long playerID, ItemModel model, Number limit, Number number, Number alertNum);
 
-    public abstract boolean overLowerLimit(ItemModel model, long number, long alertNum);
+    public abstract boolean overLowerLimit(ItemModel model, Number number, Number alertNum);
 
-    public abstract boolean overUpperLimit(ItemModel model, long limit, long number, long alertNum);
+    public abstract boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum);
 
-    public long consume(CountableStuff<?> stuff, long alertNum) {
+    public Number consume(CountableStuff<?, ?> stuff, Number alertNum) {
         return this.consume(stuff.getPlayerID(), stuff.getModel(), stuff.getNumber(), alertNum);
     }
 
-    public long receive(CountableStuff<?> stuff, long alertNum) {
+    public Number receive(CountableStuff<?, ?> stuff, Number alertNum) {
         return this.receive(stuff.getPlayerID(), stuff.getModel(), stuff.getNumberLimit(), stuff.getNumber(), alertNum);
     }
 
-    public boolean overLowerLimit(CountableStuff<?> stuff, long alertNum) {
+    public boolean overLowerLimit(CountableStuff<?, ?> stuff, Number alertNum) {
         return this.overLowerLimit(stuff.getModel(), stuff.getNumber(), alertNum);
     }
 
-    public boolean overUpperLimit(CountableStuff<?> stuff, long alertNum) {
+    public boolean overUpperLimit(CountableStuff<?, ?> stuff, Number alertNum) {
         return this.overUpperLimit(stuff.getModel(), stuff.getNumberLimit(), stuff.getNumber(), alertNum);
     }
 }

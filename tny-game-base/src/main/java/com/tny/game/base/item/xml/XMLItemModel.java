@@ -1,13 +1,20 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.*;
+import com.tny.game.base.item.Ability;
+import com.tny.game.base.item.AbstractItemModel;
+import com.tny.game.base.item.ItemExplorer;
+import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.Behavior;
 import com.tny.game.base.item.behavior.BehaviorPlan;
-import com.tny.game.base.item.behavior.Demand;
 import com.tny.game.common.formula.FormulaHolder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * 抽象xml映射事物模型
@@ -35,7 +42,7 @@ public abstract class XMLItemModel extends AbstractItemModel {
 
     @Override
     protected String getCurrentFormula() {
-        return this.currentFormula == null ? (Demand.DEMAND_ITEM + " == null ? 0 : " + Demand.DEMAND_ITEM + ".number") : this.currentFormula;
+        return this.currentFormula == null ? (DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number") : this.currentFormula;
     }
 
     protected void init(ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {

@@ -18,6 +18,12 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
 
     private ItemType itemType;
 
+    protected GameOwnerManager(Class<? extends O> entityClass, ItemType itemType, Class<?>... classCollection) {
+        super(entityClass);
+        this.itemType = itemType;
+        this.saveItemClasses = classCollection;
+    }
+
     protected GameOwnerManager(Class<? extends O> entityClass, ItemType itemType, Collection<? extends Class<?>> classCollection) {
         super(entityClass);
         this.itemType = itemType;
@@ -38,11 +44,11 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
     @Override
     public boolean save(O item) {
         if (this.entityClass.isInstance(item))
-            return super.save((O) item);
+            return super.save(item);
         if (!this.isSaveItem(item))
             return false;
         if (item instanceof Item) {
-            O owner = this.getOwner(((Item<?>)item).getPlayerID());
+            O owner = this.getOwner(((Item<?>) item).getPlayerID());
             if (owner != null)
                 return super.save(owner);
         }
@@ -58,7 +64,7 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
             if (!this.isSaveItem(item))
                 continue;
             if (item instanceof Item) {
-                O owner = this.getOwner(((Item<?>)item).getPlayerID());
+                O owner = this.getOwner(((Item<?>) item).getPlayerID());
                 if (owner != null)
                     saveCollection.add(item);
             }

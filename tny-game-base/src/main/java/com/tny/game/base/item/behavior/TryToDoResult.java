@@ -14,34 +14,34 @@ public interface TryToDoResult {
      *
      * @return
      */
-    public Action getAction();
+    Action getAction();
 
     /**
      * 尝试是否成功成功
      *
      * @return 尝试成功返回true失败返回false
      */
-    public boolean isSatisfy();
+    boolean isSatisfy();
 
     /**
      * 尝试失败的原因
      *
      * @return 尝试失败的原因，成功返回null
      */
-    public DemandResult getUnsatisfyResult();
+    DemandResult getUnsatisfyResult();
 
     /**
      * 获取奖励交易对象
      *
      * @return
      */
-    public Trade getAwardTrade();
+    Trade getAwardTrade();
 
     /**
      * 获取扣除交易对象
      *
      * @return
      */
-    public Trade getCostTrade();
+    Trade getCostTrade();
 
 }

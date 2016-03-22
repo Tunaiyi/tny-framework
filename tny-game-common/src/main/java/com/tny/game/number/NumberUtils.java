@@ -8,7 +8,7 @@ import com.tny.game.LogUtils;
 public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
 
     @SuppressWarnings("unchecked")
-    public static <N extends Number> N changeAs(Number source, N target) {
+    public static <N extends Number> N as(Number source, N target) {
         Number value;
         if (target instanceof Integer)
             value = source.intValue();
@@ -28,7 +28,7 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <N extends Number> N changeAs(Object source, Class<N> clazz) {
+    public static <N extends Number> N as(Object source, Class<N> clazz) {
         Number value;
         if (!(source instanceof Number))
             throw new ClassCastException(LogUtils.format("{} {} 不属于 {}", source, source.getClass(), Number.class));
@@ -129,5 +129,94 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one.byteValue() % other.byteValue();
         return one.doubleValue() % other.doubleValue();
     }
+
+    public static boolean less(Number one, Number other) {
+        if (one instanceof Integer)
+            return one.intValue() < other.intValue();
+        if (one instanceof Long)
+            return one.longValue() < other.longValue();
+        if (one instanceof Float)
+            return one.floatValue() < other.floatValue();
+        if (one instanceof Double)
+            return one.doubleValue() < other.doubleValue();
+        if (one instanceof Short)
+            return one.shortValue() < other.shortValue();
+        if (one instanceof Byte)
+            return one.byteValue() < other.byteValue();
+        return one.doubleValue() < other.doubleValue();
+    }
+
+
+    public static boolean lessEqual(Number one, Number other) {
+        if (one instanceof Integer)
+            return one.intValue() <= other.intValue();
+        if (one instanceof Long)
+            return one.longValue() <= other.longValue();
+        if (one instanceof Float)
+            return one.floatValue() <= other.floatValue();
+        if (one instanceof Double)
+            return one.doubleValue() <= other.doubleValue();
+        if (one instanceof Short)
+            return one.shortValue() <= other.shortValue();
+        if (one instanceof Byte)
+            return one.byteValue() <= other.byteValue();
+        return one.doubleValue() <= other.doubleValue();
+    }
+
+
+    public static boolean greater(Number one, Number other) {
+        if (one instanceof Integer)
+            return one.intValue() > other.intValue();
+        if (one instanceof Long)
+            return one.longValue() > other.longValue();
+        if (one instanceof Float)
+            return one.floatValue() > other.floatValue();
+        if (one instanceof Double)
+            return one.doubleValue() > other.doubleValue();
+        if (one instanceof Short)
+            return one.shortValue() > other.shortValue();
+        if (one instanceof Byte)
+            return one.byteValue() > other.byteValue();
+        return one.doubleValue() > other.doubleValue();
+    }
+
+    public static boolean greaterEqual(Number one, Number other) {
+        if (one instanceof Integer)
+            return one.intValue() >= other.intValue();
+        if (one instanceof Long)
+            return one.longValue() >= other.longValue();
+        if (one instanceof Float)
+            return one.floatValue() >= other.floatValue();
+        if (one instanceof Double)
+            return one.doubleValue() >= other.doubleValue();
+        if (one instanceof Short)
+            return one.shortValue() >= other.shortValue();
+        if (one instanceof Byte)
+            return one.byteValue() >= other.byteValue();
+        return one.doubleValue() >= other.doubleValue();
+    }
+
+
+    public static boolean equal(Number one, Number other) {
+        if (one instanceof Integer)
+            return one.intValue() == other.intValue();
+        if (one instanceof Long)
+            return one.longValue() == other.longValue();
+        if (one instanceof Float)
+            return one.floatValue() == other.floatValue();
+        if (one instanceof Double)
+            return one.doubleValue() == other.doubleValue();
+        if (one instanceof Short)
+            return one.shortValue() == other.shortValue();
+        if (one instanceof Byte)
+            return one.byteValue() == other.byteValue();
+        return one.doubleValue() == other.doubleValue();
+    }
+
+
+    public static boolean notEqual(Number one, Number other) {
+        return !equal(one, other);
+    }
+
 
 }

@@ -55,12 +55,12 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public DemandResult tryToDo(long playerID, Action action, Map<String, Object> atttributeMap) {
+    public DemandResult tryToDo(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        DemandResult demandResult = this.checkResult(playerID, this.demandList, atttributeMap);
+        DemandResult demandResult = this.checkResult(playerID, this.demandList, attributeMap);
         if (demandResult != null)
             return demandResult;
-        return actionPlan.tryToDo(playerID, atttributeMap);
+        return actionPlan.tryToDo(playerID, attributeMap);
     }
 
     @Override

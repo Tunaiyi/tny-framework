@@ -69,7 +69,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     protected TradeProto trade2Proto(Trade trade) {
         List<AwardProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
-            list.add(AwardProto.newBuilder().setItemID(item.getItemModel().getID()).setNumber(item.getNumber()).build());
+            list.add(AwardProto.newBuilder().setItemID(item.getItemModel().getID()).setNumber(item.getNumber().longValue()).build());
         }
         return TradeProto.newBuilder().setAction(trade.getAction().getID())
                 .addAllItem(list)

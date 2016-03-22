@@ -52,7 +52,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      * @return
      */
     public I build() {
-        I entity = creatItem();
+        I entity = createItem();
         entity.setPlayerID(playerID);
         entity.setModel(itemModel);
         afterModelItem(entity);
@@ -73,6 +73,6 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      *
      * @return
      */
-    protected abstract I creatItem();
+    protected abstract I createItem();
 
 }

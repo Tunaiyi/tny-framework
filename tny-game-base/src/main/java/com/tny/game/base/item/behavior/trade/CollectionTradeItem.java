@@ -9,13 +9,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tny.game.number.NumberUtils.add;
+
 public class CollectionTradeItem implements TradeItem<ItemModel> {
 
     private AlterType alertType;
 
     private ItemModel itemModel;
 
-    private long number;
+    private Number number;
 
     private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
 
@@ -36,7 +38,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
 
     protected void collect(TradeItem<?> item) {
         if (this.getItemModel().getID() == item.getItemModel().getID()) {
-            this.number += item.getNumber();
+            this.number = add(this.number,item.getNumber());
         }
     }
 
@@ -46,7 +48,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
     }
 
     @Override
-    public long getNumber() {
+    public Number getNumber() {
         return this.number;
     }
 

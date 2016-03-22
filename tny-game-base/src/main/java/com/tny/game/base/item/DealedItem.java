@@ -8,7 +8,7 @@ public interface DealedItem<I extends ItemModel> {
 
     I getItemModel();
 
-    long getNumber();
+    Number getNumber();
 
     Map<DemandParam, Object> getParamMap();
 

@@ -17,9 +17,9 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
 
     private I itemModel;
 
-    private long number;
+    private Number number;
 
-    private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
+    private Map<DemandParam, Object> paramMap = new HashMap<>();
 
     public SimpleTradeItem() {
         super();
@@ -36,7 +36,7 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
         }
     }
 
-    public SimpleTradeItem(AlterType alertType, I itemModel, long number, Map<DemandParam, Object> paramMap) {
+    public SimpleTradeItem(AlterType alertType, I itemModel, Number number, Map<DemandParam, Object> paramMap) {
         super();
         this.alertType = alertType;
         this.itemModel = itemModel;
@@ -46,7 +46,7 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
         }
     }
 
-    public SimpleTradeItem(TradeItem<I> item, long number) {
+    public SimpleTradeItem(TradeItem<I> item, Number number) {
         super();
         this.itemModel = item.getItemModel();
         this.number = number;
@@ -56,18 +56,18 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
         }
     }
 
-    public SimpleTradeItem(I model, long number, AlterType alertType) {
+    public SimpleTradeItem(I model, Number number, AlterType alertType) {
         super();
         this.itemModel = model;
         this.number = number;
         this.alertType = alertType;
     }
 
-    public SimpleTradeItem(I model, long number) {
+    public SimpleTradeItem(I model, Number number) {
         this(model, number, AlterType.CHECK);
     }
 
-    public SimpleTradeItem(I itemModel, AlterType alertType, long number, Map<DemandParam, Object> paramMap) {
+    public SimpleTradeItem(I itemModel, AlterType alertType, Number number, Map<DemandParam, Object> paramMap) {
         super();
         this.itemModel = itemModel;
         this.number = number;
@@ -88,7 +88,7 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
     }
 
     @Override
-    public long getNumber() {
+    public Number getNumber() {
         return number;
     }
 

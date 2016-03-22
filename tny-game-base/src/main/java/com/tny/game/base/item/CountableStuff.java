@@ -1,8 +1,8 @@
 package com.tny.game.base.item;
 
-public interface CountableStuff<IM extends ItemModel> extends Stuff<IM> {
+public interface CountableStuff<IM extends ItemModel, N extends Number> extends Stuff<IM> {
 
-    int UNLIMINT = -1;
+    int UNLIMITED = -1;
 
     /**
      * 是否有上限 <br>
@@ -16,14 +16,14 @@ public interface CountableStuff<IM extends ItemModel> extends Stuff<IM> {
      *
      * @return
      */
-    long getNumberLimit();
+    N getNumberLimit();
 
     /**
      * 物品数量 <br>
      *
      * @return
      */
-    long getNumber();
+    N getNumber();
 
     /**
      * 判断是否足够

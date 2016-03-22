@@ -12,24 +12,24 @@ public interface ModuleHandler {
     /**
      * 开启模块
      *
-     * @param featureExplorer
+     * @param explorer
      * @return
      */
-    boolean openModule(FeatureExplorer featureExplorer);
+    boolean openModule(FeatureExplorer explorer);
 
     /**
      * 加载模块
      *
-     * @param featureExplorer
+     * @param explorer
      */
-    void loadModule(FeatureExplorer featureExplorer);
+    void loadModule(FeatureExplorer explorer);
 
     /**
      * 删除模块
      *
-     * @param featureExplorer
+     * @param explorer
      */
-    void removeModule(FeatureExplorer featureExplorer);
+    void removeModule(FeatureExplorer explorer);
 
     //	/**
     //	 * 获取模块信息数据

@@ -200,6 +200,8 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("demandParam", Entry.class);
         xStream.alias("param", DemandParam.class);
 
+        xStream.alias("entry", Entry.class);
+
         this.initXStream(xStream);
 
         Map<Class<?>, List<Class<? extends Enum>>> map = this.createEnumClassMap();

@@ -9,7 +9,7 @@ package com.tny.game.base.item;
  * <p>
  * <br>
  */
-public interface CountableStuffOwner<IM extends ItemModel, S extends CountableStuff<?>> extends Owner<S> {
+public interface CountableStuffOwner<IM extends ItemModel, S extends CountableStuff<?, ?>> extends Owner<S> {
 
     /**
      * 检测是否满了
@@ -18,7 +18,7 @@ public interface CountableStuffOwner<IM extends ItemModel, S extends CountableSt
      * @param number
      * @return
      */
-    boolean isOverUpperLimit(IM model, AlterType type, long number);
+    boolean isOverUpperLimit(IM model, AlterType type, Number number);
 
     /**
      * 检测是否足够
@@ -27,6 +27,6 @@ public interface CountableStuffOwner<IM extends ItemModel, S extends CountableSt
      * @param number
      * @return
      */
-    boolean isOverLowerLimit(IM model, AlterType type, long number);
+    boolean isOverLowerLimit(IM model, AlterType type, Number number);
 
 }

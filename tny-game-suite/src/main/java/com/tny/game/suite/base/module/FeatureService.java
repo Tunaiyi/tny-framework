@@ -7,11 +7,14 @@ import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.*;
 
-public abstract class FeatureService<DTO> implements ServerPreStart {
+public abstract class FeatureService<DTO> implements ServerPreStart, ApplicationContextAware {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 
@@ -25,6 +28,8 @@ public abstract class FeatureService<DTO> implements ServerPreStart {
 
     @Autowired
     protected FeatureModelManager featureModelManager;
+
+    private ApplicationContext applicationContext;
 
     private Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
 
@@ -80,8 +85,8 @@ public abstract class FeatureService<DTO> implements ServerPreStart {
         List<Feature> okList = new ArrayList<>();
         for (FeatureHandler handler : this.handlerList) {
             FeatureModel featureModel = getModel(handler.getFeature());
-            if (featureModel.getOpenLevel() > explorer.getLevel())
-                break;
+            if (!featureModel.isEffect() || featureModel.getOpenLevel() > explorer.getLevel())
+                continue;
             if (!featureModel.isCanOpen(explorer, openMode))
                 continue;
             Feature feature = handler.getFeature();
@@ -127,12 +132,21 @@ public abstract class FeatureService<DTO> implements ServerPreStart {
     }
 
     @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
     public InitLevel getInitLevel() {
         return InitLevel.LEVEL_5;
     }
 
     @Override
     public void initialize() throws Exception {
+        List<GameFeatureHandler> featureHandlers = new ArrayList<>(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
+        for (GameFeatureHandler feature : featureHandlers) {
+            this.handlerMap.put(feature.getFeature(), feature);
+        }
         for (Feature feature : Features.values()) { //TODO AA 临时注释掉的
             if (feature.isHasHandler()) {
                 if (!this.handlerMap.containsKey(feature))

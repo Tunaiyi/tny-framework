@@ -1,6 +1,6 @@
 package drama.stage;
 
-import com.tny.game.actor.task.Stages.JoinFragment;
+import drama.stage.Stages.JoinFragment;
 
 /**
  * Created by Kun Yang on 16/1/22.

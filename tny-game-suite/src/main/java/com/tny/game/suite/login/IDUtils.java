@@ -6,6 +6,8 @@ import com.google.common.collect.Range;
 
 public class IDUtils {
 
+    public static final long SYSTEM_PLAYER_ID = 0;
+
     public static final long PLAYER_ID_OFFSET = 10000000;
 
     public static boolean isSystem(long id) {

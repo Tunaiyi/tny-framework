@@ -1,6 +1,6 @@
 package drama.stage.invok;
 
-import com.tny.game.actor.task.TaskContext;
+import drama.stage.TaskContext;
 
 /**
  * Created by Kun Yang on 16/1/22.

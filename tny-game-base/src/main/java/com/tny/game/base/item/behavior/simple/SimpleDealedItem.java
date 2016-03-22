@@ -10,20 +10,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
+public class SimpleDealedItem<I extends ItemModel> implements DealedItem<I> {
 
     private I itemModel;
 
-    private long number;
+    private Number number;
 
     private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
 
-    public SimpleDealedtem() {
+    public SimpleDealedItem() {
         super();
     }
 
     @SuppressWarnings("unchecked")
-    public SimpleDealedtem(DemandResult result, DemandParamEntry<?>... entries) {
+    public SimpleDealedItem(DemandResult result, DemandParamEntry<?>... entries) {
         super();
         this.itemModel = (I) result.getItemModel();
         this.number = result.getExpectValue(Integer.class);
@@ -32,7 +32,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
         }
     }
 
-    public SimpleDealedtem(I itemModel, long number, DemandParamEntry<?>... entries) {
+    public SimpleDealedItem(I itemModel, Number number, DemandParamEntry<?>... entries) {
         super();
         this.itemModel = itemModel;
         this.number = number;
@@ -41,7 +41,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
         }
     }
 
-    public SimpleDealedtem(DealedItem<I> item, long number) {
+    public SimpleDealedItem(DealedItem<I> item, Number number) {
         super();
         this.itemModel = item.getItemModel();
         this.number = number;
@@ -56,7 +56,7 @@ public class SimpleDealedtem<I extends ItemModel> implements DealedItem<I> {
     }
 
     @Override
-    public long getNumber() {
+    public Number getNumber() {
         return number;
     }
 

@@ -10,47 +10,26 @@ import java.util.Map;
 public interface Demand {
 
     /**
-     * 当前值在公式中所表示的名字
-     */
-    public static final String CURRENT_VALUE = "current";
-    /**
-     * 期望值在公式中所表示的名字
-     */
-    public static final String EXPECT_VALUE = "expect";
-    /**
-     * 当前条件相关item对象
-     */
-    public static final String DEMAND_ITEM = "demandItem";
-    /**
-     * 当前条件相关item对象
-     */
-    public static final String DEMAND_MODEL = "demandModel";
-    /**
-     * 计算是否符合消耗物品的条件
-     */
-    public static final String FX_FORMULA = CURRENT_VALUE + " >= " + EXPECT_VALUE;
-
-    /**
      * 获取条件相关的Item ID
      *
-     * @param atrributeMap
+     * @param attributeMap
      * @return
      */
-    public String getItemAlias(Map<String, Object> atrributeMap);
+    String getItemAlias(Map<String, Object> attributeMap);
 
     /**
      * 获取条件类型
      *
      * @return
      */
-    public DemandType getDemandType();
+    DemandType getDemandType();
 
     /**
      * ItemID的别名
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * 是否能达到条件
@@ -58,7 +37,7 @@ public interface Demand {
      * @param attribute 条件计算参数
      * @return 成功返回true 失败返回false
      */
-    public boolean isSatisfy(long playerID, Map<String, Object> attribute);
+    boolean isSatisfy(long playerID, Map<String, Object> attribute);
 
     /**
      * 计算条件期望值
@@ -66,7 +45,7 @@ public interface Demand {
      * @param attribute 条件值期望值计算参数
      * @return 返回条件期望值
      */
-    public Object countExpectValue(long playerID, Map<String, Object> attribute);
+    Object countExpectValue(long playerID, Map<String, Object> attribute);
 
     /**
      * 计算当前值
@@ -74,7 +53,7 @@ public interface Demand {
      * @param attribute 当前值计算参数
      * @return 返回当前值
      */
-    public Object countCurrentValue(long playerID, Map<String, Object> attribute);
+    Object countCurrentValue(long playerID, Map<String, Object> attribute);
 
 //	/**
 //	 * 获取条件结果集
@@ -85,7 +64,7 @@ public interface Demand {
 //	 */
 //	public DemandDetail createDemandDetail(long playerID, Map<String, Object> attribute);
 
-    public DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
+    DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
 
 
 }

@@ -290,6 +290,18 @@ public interface ItemModel extends Model {
     <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes);
 
     /**
+     * @return 获取所有Ability类型列表
+     */
+    Set<Ability> getAbilityTypes();
+
+    /**
+     * 获取指定的typeClass的Ability类型列表
+     * @param typeClass 指定Ability类
+     * @return 返回typeClass的Ability类型列表
+     */
+    <A extends Ability> Set<A> getAbilityTypes(Class<A> typeClass);
+
+    /**
      * 获取指定ability列表的的能力值
      *
      * @param item              事物对象

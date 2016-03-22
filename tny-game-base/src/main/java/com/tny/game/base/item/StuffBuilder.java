@@ -15,9 +15,9 @@ public abstract class StuffBuilder<S extends AbstractItem<SM>, SM extends Counta
     protected int number;
 
     /**
-     * 设置玩家ID <br>
+     * 设置number <br>
      *
-     * @param playerID 玩家id
+     * @param number 数量
      * @return 构建器
      */
     public B setNumber(int number) {
