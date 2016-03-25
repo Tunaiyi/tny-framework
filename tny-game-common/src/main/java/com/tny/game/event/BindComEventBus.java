@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class BindComEventBus<L, E extends Event<?>> extends BindEventBus<L, ComEventInvoker<L, E>, ComEventDelegate<E>> {
 
-    public BindComEventBus(Class<L> bindWith, ComEventInvoker<L, E> invoker, boolean global) {
-        super(bindWith, invoker, global);
+    public BindComEventBus(Class<L> bindWith, ComEventInvoker<L, E> invoker, List<ComEventDelegate<E>> listeners, boolean global) {
+        super(bindWith, invoker, listeners, global);
     }
 
     @Override

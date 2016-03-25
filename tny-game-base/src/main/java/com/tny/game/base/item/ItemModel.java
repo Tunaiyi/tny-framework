@@ -329,7 +329,7 @@ public interface ItemModel extends Model {
      * @param attributes   附加参数 ["key1", object1, "key2", object2]
      * @return 返回指定ability class的的能力值
      */
-    <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes);
+    <A extends Ability, V> Map<A, V> getAbilitiesByType(Item<?> item, Class<A> abilityClass, Class<V> clazz, Object... attributes);
 
     /**
      * 获取指定类型的能力值
@@ -339,7 +339,7 @@ public interface ItemModel extends Model {
      * @param attributes   附加参数 ["key1", object1, "key2", object2]
      * @return 返回指定ability class的的能力值
      */
-    <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes);
+    <A extends Ability, V> Map<A, V> getAbilitiesByType(long playerID, Class<A> abilityClass, Class<V> clazz, Object... attributes);
 
     /**
      * 是否存在Ability

@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class BindVoidEventBus<L, S> extends BindEventBus<L, VoidEventInvoker<L, S>, VoidEventDelegate<S>> {
 
-    public BindVoidEventBus(Class<L> bindWith, VoidEventInvoker<L, S> invoker, boolean global) {
-        super(bindWith, invoker, global);
+    public BindVoidEventBus(Class<L> bindWith, VoidEventInvoker<L, S> invoker, List<VoidEventDelegate<S>> listeners, boolean global) {
+        super(bindWith, invoker, listeners, global);
     }
 
     @Override

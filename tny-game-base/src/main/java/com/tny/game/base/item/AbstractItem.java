@@ -107,7 +107,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
+    public <A extends Ability, V> Map<A, V> getAbilitiesByType(Class<A> abilityClass, Class<V> clazz, Object... attributes) {
         return this.getModel().getAbilitiesByType(this, abilityClass, clazz, attributes);
     }
 

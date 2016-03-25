@@ -384,34 +384,30 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(Item<?> item, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
-        Map<Ability, A> valueMap = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    public <A extends Ability, V> Map<A, V> getAbilitiesByType(Item<?> item, Class<A> abilityClass, Class<V> clazz, Object... attributes) {
+        Map<A, V> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
-            A object = null;
+            V object = null;
             if (abilityClass.isInstance(ability)) {
-                if (!this.hasAbility(ability)) {
-                    valueMap.put(ability, null);
-                } else {
+                if (this.hasAbility(ability))
                     object = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
-                }
-                valueMap.put(ability, object);
+                valueMap.put((A) ability, object);
             }
         }
         return valueMap;
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(long playerID, Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
-        Map<Ability, A> valueMap = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    public <A extends Ability, V> Map<A, V> getAbilitiesByType(long playerID, Class<A> abilityClass, Class<V> clazz, Object... attributes) {
+        Map<A, V> valueMap = new HashMap<>();
         for (Ability ability : this.abilityMap.keySet()) {
-            A object = null;
+            V object = null;
             if (abilityClass.isInstance(ability)) {
-                if (!this.hasAbility(ability)) {
-                    valueMap.put(ability, null);
-                } else {
+                if (this.hasAbility(ability))
                     object = this.doCountAbility(playerID, null, ability, clazz, attributes);
-                }
-                valueMap.put(ability, object);
+                valueMap.put((A) ability, object);
             }
         }
         return valueMap;

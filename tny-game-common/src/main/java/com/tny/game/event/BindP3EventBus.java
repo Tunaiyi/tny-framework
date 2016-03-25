@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class BindP3EventBus<L, S, A1, A2, A3> extends BindEventBus<L, P3EventInvoker<L, S, A1, A2, A3>, P3EventDelegate<S, A1, A2, A3>> {
 
-    public BindP3EventBus(Class<L> bindWith, P3EventInvoker<L, S, A1, A2, A3> invoker, boolean global) {
-        super(bindWith, invoker, global);
+    public BindP3EventBus(Class<L> bindWith, P3EventInvoker<L, S, A1, A2, A3> invoker, List<P3EventDelegate<S, A1, A2, A3>> listeners, boolean global) {
+        super(bindWith, invoker, listeners, global);
     }
 
     @Override

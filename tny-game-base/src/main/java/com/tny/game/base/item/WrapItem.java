@@ -110,7 +110,7 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     }
 
     @Override
-    public <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes) {
+    public <A extends Ability, V> Map<A, V> getAbilitiesByType(Class<A> abilityClass, Class<V> clazz, Object... attributes) {
         return this.item.getAbilitiesByType(abilityClass, clazz, attributes);
     }
 

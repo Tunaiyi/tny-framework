@@ -1,11 +1,11 @@
 package com.tny.game.event;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
 
 /**
  * Created by Kun Yang on 16/2/4.
  */
-abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
+public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
 
     protected H invoker;
 
@@ -13,8 +13,8 @@ abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
 
     protected boolean global;
 
-    public BindEventBus(Class<L> bindWith, H invoker, boolean global) {
-        super(new CopyOnWriteArrayList<>());
+    public BindEventBus(Class<L> bindWith, H invoker, List<D> listeners, boolean global) {
+        super(listeners);
         this.bindWith = bindWith;
         this.invoker = invoker;
         this.global = global;
@@ -24,6 +24,10 @@ abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
     public abstract void addListener(L handler);
 
     public abstract void removeListener(L handler);
+
+    public Class<L> getBindWith() {
+        return bindWith;
+    }
 
     protected class BindHandler<L> {
 

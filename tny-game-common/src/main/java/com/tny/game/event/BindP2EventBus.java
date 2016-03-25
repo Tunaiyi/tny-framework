@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class BindP2EventBus<L, S, A1, A2> extends BindEventBus<L, P2EventInvoker<L, S, A1, A2>, P2EventDelegate<S, A1, A2>> {
 
-    public BindP2EventBus(Class<L> bindWith, P2EventInvoker<L, S, A1, A2> invoker, boolean global) {
-        super(bindWith, invoker, global);
+    public BindP2EventBus(Class<L> bindWith, P2EventInvoker<L, S, A1, A2> invoker, List<P2EventDelegate<S, A1, A2>> listeners, boolean global) {
+        super(bindWith, invoker, listeners, global);
     }
 
     @Override

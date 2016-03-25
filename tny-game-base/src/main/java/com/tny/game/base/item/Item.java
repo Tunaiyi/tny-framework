@@ -114,7 +114,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
     /**
      * 获对该事物执行某种行为所需要的行为结果，包括条件，消耗奖励物品
      *
-     * @param behavior     要执行的操作
+     * @param behavior   要执行的操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回奖励列表
      */
@@ -130,7 +130,7 @@ public interface Item<M extends ItemModel> extends Identifiable {
 
     <A> Map<Ability, A> getAbilities(Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes);
 
-    <A> Map<Ability, A> getAbilitiesByType(Class<? extends Ability> abilityClass, Class<A> clazz, Object... attributes);
+    <A extends Ability, V> Map<A, V> getAbilitiesByType(Class<A> abilityClass, Class<V> clazz, Object... attributes);
 
     <O> O getActionOption(Action action, Option option, Object... attributes);
 
