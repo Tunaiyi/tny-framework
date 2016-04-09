@@ -7,6 +7,4 @@ package drama.actor;
  */
 public abstract class ActorContext<AR extends ActorRef<?>> implements ActorRefFactory<AR> {
 
-
-
 }

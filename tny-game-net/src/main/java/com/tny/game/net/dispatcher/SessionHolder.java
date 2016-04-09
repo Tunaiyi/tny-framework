@@ -27,7 +27,7 @@ public interface SessionHolder {
      * @param key 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    public abstract Session getSession(String userGroup, Object key);
+    Session getSession(String userGroup, Object key);
 
     /**
      * <p>
@@ -37,7 +37,7 @@ public interface SessionHolder {
      * @param key 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    public abstract boolean isOnline(String userGroup, Object key);
+    boolean isOnline(String userGroup, Object key);
 
     /**
      * 创建会话组,无则创建,无则不操作 <br>
@@ -45,7 +45,7 @@ public interface SessionHolder {
      * @param object 会话标识
      * @return 成功返回true
      */
-    public abstract boolean createChannel(String userGroup, Object channelID);
+    boolean createChannel(String userGroup, Object channelID);
 
     /**
      * 删除会话标识对应会话 <br>
@@ -53,7 +53,7 @@ public interface SessionHolder {
      * @param object 会话标识
      * @return 成功返回true 失败返回false
      */
-    public abstract boolean removeChannel(String userGroup, Object channelID);
+    boolean removeChannel(String userGroup, Object channelID);
 
     /**
      * 是否存在会话组 <br>
@@ -61,7 +61,7 @@ public interface SessionHolder {
      * @param object 标识的会话
      * @return 存在返回true 失败返回false
      */
-    public abstract boolean isExsitChannel(String userGroup, Object channelID);
+    boolean isExsitChannel(String userGroup, Object channelID);
 
     /**
      * 添加用户到指定的会话组 <br>
@@ -70,7 +70,7 @@ public interface SessionHolder {
      * @param uid    用户ID
      * @return 添加成功返回ture 失败返回false
      */
-    public abstract boolean addChannelUser(String userGroup, Object channelID, Object uid);
+    boolean addChannelUser(String userGroup, Object channelID, Object uid);
 
     /**
      * 获取会话组人数 <br>
@@ -78,7 +78,7 @@ public interface SessionHolder {
      * @param groupID 会话组
      * @return 返回会话组人数
      */
-    public abstract int getChannelSize(String userGroup, Object channelID);
+    int getChannelSize(String userGroup, Object channelID);
 
     /**
      * 添加用户集合到指定的会话组 <br>
@@ -87,14 +87,14 @@ public interface SessionHolder {
      * @param uid    用户ID集合
      * @return 添加成功的数量
      */
-    public abstract int addChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
+    int addChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
 
     /**
      * 用户是否在指定的会话组 <br>
      *
      * @return 是否存在, 存在返回true 不存在返回false
      */
-    public abstract boolean isInChannel(String userGroup, Object channelID, Object uid);
+    boolean isInChannel(String userGroup, Object channelID, Object uid);
 
     /**
      * 移除指定会话组的用户 <br>
@@ -103,7 +103,7 @@ public interface SessionHolder {
      * @param uid    用户ID
      * @return 是否移除成功, 成功返回true, 失败返回false
      */
-    public abstract boolean removeChannelUser(String userGroup, Object channelID, Object uid);
+    boolean removeChannelUser(String userGroup, Object channelID, Object uid);
 
     /**
      * 移除指定会话组的用户集合 <br>
@@ -112,14 +112,14 @@ public interface SessionHolder {
      * @param uid    用户集合ID
      * @return 返回成功删除的数量
      */
-    public abstract int removeChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
+    int removeChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
 
     /**
      * 移除指定会话的所有用户 <br>
      *
      * @param object 指定会话的标识
      */
-    public abstract void clearChannelUser(String userGroup, Object channelID);
+    void clearChannelUser(String userGroup, Object channelID);
 
     /**
      * 发信息给用户 <br>
@@ -127,7 +127,7 @@ public interface SessionHolder {
      * @param uid 用户ID
      * @return 返回是否成功
      */
-    public abstract boolean send2User(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
+    boolean send2User(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
 
     /**
      * 发信息给用户 <br>
@@ -135,7 +135,7 @@ public interface SessionHolder {
      * @param uid 用户ID
      * @return 返回是否成功
      */
-    public abstract boolean send2Channel(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
+    boolean send2Channel(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
 
     /**
      * 发信息给用户集合 <br>
@@ -143,7 +143,7 @@ public interface SessionHolder {
      * @param uid 用户ID集合
      * @return 返回成功的数量
      */
-    public abstract int send2User(String userGroup, Collection<?> uidColl, Protocol protocol, ResultCode code, Object body);
+    int send2User(String userGroup, Collection<?> uidColl, Protocol protocol, ResultCode code, Object body);
 
     /**
      * 发送给所有在线的用户 <br>
@@ -151,12 +151,12 @@ public interface SessionHolder {
      * @param response 消息
      * @return 返回发送的人数
      */
-    public abstract int send2AllOnline(String userGroup, Protocol protocol, ResultCode code, Object body);
+    int send2AllOnline(String userGroup, Protocol protocol, ResultCode code, Object body);
 
     /**
      * 计算在线人数
      */
-    public abstract int countOnline(String userGroup);
+    int countOnline(String userGroup);
 
     /**
      * <p>
@@ -165,7 +165,7 @@ public interface SessionHolder {
      *
      * @param session 指定的session
      */
-    public abstract void offline(Session session);
+    void offline(Session session);
 
     /**
      * T下线
@@ -173,28 +173,28 @@ public interface SessionHolder {
      * @param key
      * @return
      */
-    public abstract Session offline(String userGroup, Object key);
+    Session offline(String userGroup, Object key);
 
     /**
      * 全部T下线
      */
-    public abstract void offlineAll(String userGroup);
+    void offlineAll(String userGroup);
 
     /**
      * 全部T下线
      */
-    public abstract void offlineAll();
+    void offlineAll();
 
-    public abstract int size();
+    int size();
 
-    public Map<Object, Session> getSessionMapByGroup(String userGroup);
+    Map<Object, Session> getSessionMapByGroup(String userGroup);
 
-    public void addSessionListener(SessionListener listener);
+    void addSessionListener(SessionListener listener);
 
-    public void addSessionListener(Collection<SessionListener> listeners);
+    void addSessionListener(Collection<SessionListener> listeners);
 
-    public void removeSessionListener(SessionListener listener);
+    void removeSessionListener(SessionListener listener);
 
-    public void clearSessionListener();
+    void clearSessionListener();
 
 }

@@ -43,7 +43,7 @@ public class SimpleTryToDoResult implements TryToDoResult {
     }
 
     @Override
-    public DemandResult getUnsatisfyResult() {
+    public DemandResult getFailResult() {
         return unsatisfyDemandResult;
     }
 

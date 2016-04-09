@@ -86,14 +86,14 @@ public interface Attributes {
      *
      * @param entry
      */
-    public <T> T setAttributeIfNoKey(AttributeEntry<T> entry);
+    public <T> T setAttributeIfNoKey(AttrEntry<T> entry);
 
     /**
      * 设置key和属性<br>
      *
      * @param entry
      */
-    public void setAttribute(AttributeEntry<?> entry);
+    public void setAttribute(AttrEntry<?> entry);
 
     /**
      * 批量设置属性
@@ -103,7 +103,7 @@ public interface Attributes {
      *
      * @param map 设置的属性Map
      */
-    public void setAttribute(Collection<AttributeEntry<?>> entries);
+    public void setAttribute(Collection<AttrEntry<?>> entries);
 
     /**
      * 批量设置属性
@@ -113,7 +113,7 @@ public interface Attributes {
      *
      * @param map 设置的属性Map
      */
-    public void setAttribute(AttributeEntry<?>... entries);
+    public void setAttribute(AttrEntry<?>... entries);
 
     /**
      * 删除指定key集合的属性

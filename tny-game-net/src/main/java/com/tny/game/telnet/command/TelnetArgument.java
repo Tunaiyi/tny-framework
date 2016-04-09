@@ -9,7 +9,7 @@ public class TelnetArgument {
     private List<String> argumentList;
 
     public TelnetArgument(String[] args) {
-        this.argumentList = new ArrayList<String>(args.length);
+        this.argumentList = new ArrayList<>(args.length);
         int index = 0;
         for (String arg : args) {
             if (index++ != 0)

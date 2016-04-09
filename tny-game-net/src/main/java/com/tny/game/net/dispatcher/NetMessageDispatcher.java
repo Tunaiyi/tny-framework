@@ -308,7 +308,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
         @Override
         public CommandResult execute() {
-            Throwable ex = null;
+            Throwable ex;
             CommandResult result = null;
             try {
                 result = this.doExecute();

@@ -12,11 +12,11 @@ public class ContextAttributes extends AbstractAttributes {
         return new ContextAttributes();
     }
 
-    public static Attributes create(AttributeEntry<?>... entries) {
+    public static Attributes create(AttrEntry<?>... entries) {
         return new ContextAttributes(entries);
     }
 
-    private ContextAttributes(AttributeEntry<?>... entries) {
+    private ContextAttributes(AttrEntry<?>... entries) {
         super(false);
         this.setAttribute(entries);
     }

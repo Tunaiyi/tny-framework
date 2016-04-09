@@ -1,5 +1,6 @@
 package com.tny.game.telnet.spring;
 
+import com.tny.game.telnet.command.BaseTelnetCommandHolder;
 import com.tny.game.telnet.command.CommandType;
 import com.tny.game.telnet.command.TelnetCommand;
 import com.tny.game.telnet.command.TelnetCommandHolder;
@@ -7,26 +8,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class SpringCommandHolder implements TelnetCommandHolder, ApplicationContextAware {
-
-    private Map<CommandType, List<TelnetCommand>> commandTypeMap = new HashMap<CommandType, List<TelnetCommand>>();
-
-    private Map<String, TelnetCommand> commandMap = new HashMap<String, TelnetCommand>();
-
-    @Override
-    public List<TelnetCommand> getCommandByType(CommandType commandType) {
-        List<TelnetCommand> telnetCommands = commandTypeMap.get(commandType);
-        if (telnetCommands == null)
-            return Collections.emptyList();
-        return telnetCommands;
-    }
-
-    @Override
-    public TelnetCommand getCommand(String name) {
-        return commandMap.get(name);
-    }
+public class SpringCommandHolder extends BaseTelnetCommandHolder implements TelnetCommandHolder, ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -14,9 +14,9 @@ public class DefaultRandomCreatorFactory implements RandomCreatorFactory {
     private static final RandomCreator<Probability> DEFAULT = new RandomCreator<Probability>() {
 
         @Override
-        public List<Probability> random(int range, int number, Collection<? extends Probability> probabiliySet, Map<String, Object> attributeMap) {
+        public List<Probability> random(int range, int number, Collection<? extends Probability> probabilityList, Map<String, Object> attributeMap) {
             ArrayList<Probability> proList = new ArrayList<Probability>(number);
-            for (Probability p : probabiliySet) {
+            for (Probability p : probabilityList) {
                 if (p instanceof AwardGroup && !((AwardGroup) p).isEffect(attributeMap))
                     continue;
                 proList.add(p);

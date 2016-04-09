@@ -1,6 +1,7 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.result.ResultCode;
 
 /**
@@ -32,6 +33,11 @@ public class DoneResult<M> extends Done<M> {
         return new DoneResult<M>(null, code);
     }
 
+    public static <M> DoneResult<M> fail(DoneResult code) {
+        ExceptionUtils.checkArgument(code.isFail(), "code [{}] is success", code.getCode());
+        return DoneResult.fail(code.getCode());
+    }
+
     protected DoneResult(M returnValue, ResultCode code) {
         this.code = code;
         this.returnValue = returnValue;
@@ -54,6 +60,15 @@ public class DoneResult<M> extends Done<M> {
      */
     public boolean isSuccess() {
         return ResultUtils.isSucc(this.code);
+    }
+
+    /**
+     * 是否成功 code != ItemResultCode.SUCCESS
+     *
+     * @return
+     */
+    public boolean isFail() {
+        return !ResultUtils.isSucc(this.code);
     }
 
     /**

@@ -3,7 +3,7 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.item.AbstractItemModel;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemType;
-import com.tny.game.base.item.behavior.Demand;
+import com.tny.game.base.item.ItemsImportKey;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.collection.MapBuilder;
@@ -103,7 +103,7 @@ public class XMLDemainTest {
     XMLDemand demand = new XMLDemand("pl$player", null, this.demandType,
             "pl$player != null ? pl$player.level : 0",
             "10",
-            "pl$player != null && pl$player.level >= " + Demand.EXPECT_VALUE);
+            "pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE);
 
     {
         this.demand.init(this.model, this.explorer, this.explorer);

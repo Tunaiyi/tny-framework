@@ -2,6 +2,7 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.result.ResultCode;
 
 import java.util.Collections;
 import java.util.Map;
@@ -56,43 +57,44 @@ public class DemandResult {
     }
 
     /**
-     * 条件对应Item的ID
-     *
-     * @return
+     * @return 条件对应Item的ID
      */
     public long getID() {
         return id;
     }
 
     /**
-     * 获取条件涉及的itemID
-     *
-     * @return
+     * @return 获取条件涉及的itemID
      */
     public int getItemID() {
         return itemModel.getID();
     }
 
     /**
-     * @return the itemModel
+     * @return* the itemModel
      */
     public ItemModel getItemModel() {
         return itemModel;
     }
 
     /**
-     * 条件类型
-     *
-     * @return
+     * @return 条件类型
      */
     public DemandType getDemandType() {
         return demandType;
     }
 
     /**
-     * 获取当前值
-     *
-     * @return
+     * @return 获取结果码
+     */
+    public ResultCode getResultCode() {
+        if (satisfy)
+            return ResultCode.SUCCESS;
+        return this.demandType.getResultCode();
+    }
+
+    /**
+     * @return 获取当前值
      */
     @SuppressWarnings("unchecked")
     public <V> V getCurrentValue(Class<V> clazz) {
@@ -104,9 +106,7 @@ public class DemandResult {
     }
 
     /**
-     * 获取期望值
-     *
-     * @return
+     * @return 获取期望值
      */
     @SuppressWarnings("unchecked")
     public <V> V getExpectValue(Class<V> clazz) {
@@ -134,9 +134,7 @@ public class DemandResult {
     }
 
     /**
-     * 是否满足该条件
-     *
-     * @return
+     * @return 是否满足该条件
      */
     public boolean isSatisfy() {
         return satisfy;

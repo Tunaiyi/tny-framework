@@ -2,7 +2,7 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.context.AttributeEntry;
+import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.context.Attributes;
 
 public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements Identifiable {
@@ -49,22 +49,22 @@ public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements I
     }
 
     @Override
-    protected DealedResult consume(Trade result, AttributeEntry<?>... entries) {
+    protected DealedResult consume(Trade result, AttrEntry<?>... entries) {
         return super.consume(result, entries);
     }
 
     @Override
-    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
+    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         return super.consume(tradeItem, action, entries);
     }
 
     @Override
-    protected DealedResult receive(Trade result, AttributeEntry<?>... entries) {
+    protected DealedResult receive(Trade result, AttrEntry<?>... entries) {
         return super.receive(result, entries);
     }
 
     @Override
-    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
+    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         return super.receive(tradeItem, action, entries);
     }
 

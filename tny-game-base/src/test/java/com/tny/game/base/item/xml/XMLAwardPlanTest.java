@@ -19,8 +19,8 @@ public class XMLAwardPlanTest {
     RandomCreator<AwardGroup> randomer = new RandomCreator<AwardGroup>() {
 
         @Override
-        public List<AwardGroup> random(int range, int number, Collection<? extends AwardGroup> probabiliySet, Map<String, Object> attributeMap) {
-            for (AwardGroup p : probabiliySet)
+        public List<AwardGroup> random(int range, int number, Collection<? extends AwardGroup> probabilityList, Map<String, Object> attributeMap) {
+            for (AwardGroup p : probabilityList)
                 if (XMLAwardPlanTest.this.NUMBER < p.getProbability())
                     return Arrays.asList(p);
             return null;

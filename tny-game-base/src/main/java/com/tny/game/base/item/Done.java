@@ -1,5 +1,7 @@
 package com.tny.game.base.item;
 
+import java.util.function.Supplier;
+
 /**
  * 做完的结果
  *
@@ -30,5 +32,15 @@ public abstract class Done<M> {
      * @return
      */
     public abstract M get();
+
+    public M orElse(M other) {
+        M object = get();
+        return object != null ? object : other;
+    }
+
+    public M orElseGet(Supplier<? extends M> other) {
+        M object = get();
+        return object != null ? object : other.get();
+    }
 
 }

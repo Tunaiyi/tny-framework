@@ -40,6 +40,9 @@ public interface ActorRef<M> {
      */
     <V> Answer<V> ask(Object message, ActorRef sender, Answer<V> answer);
 
+    /**
+     * @return 是否关闭
+     */
     boolean isTerminated();
 
 }

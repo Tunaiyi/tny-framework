@@ -12,6 +12,7 @@ import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.launcher.exception.ServerInitException;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.telnet.TelnetServer;
+import com.tny.game.telnet.command.TelnetCommandHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,13 +124,29 @@ public class ServerLauncher {
     }
 
     public void waitForConsole(String closeKey) {
+        Map<String, TelnetCommandHolder> map = this.context.getBeansOfType(TelnetCommandHolder.class);
+        TelnetCommandHolder commandHolder = null;
+        for (TelnetCommandHolder holder : map.values()) {
+            commandHolder = holder;
+            break;
+        }
         try (InputStreamReader systemIn = new InputStreamReader(System.in);
              BufferedReader inputReader = new BufferedReader(systemIn)) {
             while (true) {
-                System.out.println("输入 " + closeKey + " 关闭服务器");
+                System.out.println("输入命令 (" + closeKey + " 关闭服务器) :");
                 String command = inputReader.readLine();
-                if (command != null && command.toLowerCase().equals("q"))
-                    System.exit(0);
+                try {
+                    if (command != null && command.toLowerCase().equals("q"))
+                        System.exit(0);
+                    String[] commands = StringUtils.split(command, " ");
+                    if (commandHolder != null && commands.length >= 1) {
+                        System.out.println(commandHolder.execute(commands));
+                    } else {
+                        System.out.println("命令无效!!");
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

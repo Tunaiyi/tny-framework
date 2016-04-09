@@ -18,7 +18,7 @@ public interface Award extends Probability {
      *
      * @return
      */
-    public String getItemAlias(Map<String, Object> atrributeMap);
+    String getItemAlias(Map<String, Object> atrributeMap);
 
     /**
      * 计算奖励的数量
@@ -26,14 +26,14 @@ public interface Award extends Probability {
      * @param attributes 附加参数
      * @return 返回奖励数量
      */
-    public int countNumber(ItemModel awardModel, Map<String, Object> attributes);
+    int countNumber(ItemModel awardModel, Map<String, Object> attributes);
 
     /**
      * 获取改变方式
      *
      * @return
      */
-    public AlterType getAlterType();
+    AlterType getAlterType();
 
     /**
      * 计算附加参数
@@ -41,6 +41,6 @@ public interface Award extends Probability {
      * @param attributeMap
      * @return
      */
-    public Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap);
+    Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap);
 
 }

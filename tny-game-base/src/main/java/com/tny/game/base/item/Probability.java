@@ -12,13 +12,13 @@ public interface Probability extends Comparable<Probability> {
      *
      * @return 概率范围
      */
-    public int getProbability();
+    int getProbability();
 
     /**
      * 优先级
      *
      * @return
      */
-    public int getPriority();
+    int getPriority();
 
 }

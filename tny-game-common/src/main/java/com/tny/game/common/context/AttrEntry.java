@@ -1,12 +1,12 @@
 package com.tny.game.common.context;
 
-public class AttributeEntry<T> {
+public class AttrEntry<T> {
 
     protected AttrKey<? extends T> key;
 
     protected T value;
 
-    protected AttributeEntry(AttrKey<? extends T> key, T value) {
+    protected AttrEntry(AttrKey<? extends T> key, T value) {
         this.key = key;
         this.value = value;
     }

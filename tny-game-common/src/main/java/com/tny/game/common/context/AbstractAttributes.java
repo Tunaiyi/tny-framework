@@ -138,12 +138,12 @@ public abstract class AbstractAttributes implements Attributes {
     }
 
     @Override
-    public <T> T setAttributeIfNoKey(AttributeEntry<T> entry) {
+    public <T> T setAttributeIfNoKey(AttrEntry<T> entry) {
         return this.setAttributeIfNoKey(entry.getKey(), entry.getValue());
     }
 
     @Override
-    public void setAttribute(AttributeEntry<?> entry) {
+    public void setAttribute(AttrEntry<?> entry) {
         if (entry == null)
             return;
         this.writeLock();
@@ -155,12 +155,12 @@ public abstract class AbstractAttributes implements Attributes {
     }
 
     @Override
-    public void setAttribute(Collection<AttributeEntry<?>> entries) {
+    public void setAttribute(Collection<AttrEntry<?>> entries) {
         if (entries == null || entries.isEmpty())
             return;
         this.writeLock();
         try {
-            for (AttributeEntry<?> entry : entries)
+            for (AttrEntry<?> entry : entries)
                 this.getMap().put(entry.getKey(), entry.getValue());
         } finally {
             this.writeUnlock();
@@ -168,12 +168,12 @@ public abstract class AbstractAttributes implements Attributes {
     }
 
     @Override
-    public void setAttribute(AttributeEntry<?>... entries) {
+    public void setAttribute(AttrEntry<?>... entries) {
         if (entries.length == 0)
             return;
         this.writeLock();
         try {
-            for (AttributeEntry<?> entry : entries)
+            for (AttrEntry<?> entry : entries)
                 this.getMap().put(entry.getKey(), entry.getValue());
         } finally {
             this.writeUnlock();

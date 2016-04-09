@@ -4,7 +4,11 @@ import com.tny.game.LogUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 语言转换器
@@ -56,8 +60,8 @@ public enum LangFormatter implements TypeFormatter {
         public String format(Type type) {
             if (type instanceof Class) {
                 Class<?> javaType = (Class<?>) type;
-                if (javaType.isEnum()) {
-                    return "String";
+                if (javaType.isEnum() || String.class.isAssignableFrom(javaType)) {
+                    return "string";
                 } else if (javaType == Long.class || javaType == long.class) {
                     return "long";
                 } else if (javaType == Integer.class || javaType == int.class) {

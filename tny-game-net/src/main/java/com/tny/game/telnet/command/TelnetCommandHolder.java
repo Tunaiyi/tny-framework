@@ -4,8 +4,9 @@ import java.util.List;
 
 public interface TelnetCommandHolder {
 
-    public List<TelnetCommand> getCommandByType(CommandType commandType);
+    List<TelnetCommand> getCommandByType(CommandType commandType);
 
-    public TelnetCommand getCommand(String name);
+    TelnetCommand getCommand(String name);
 
+    String execute(String[] split);
 }

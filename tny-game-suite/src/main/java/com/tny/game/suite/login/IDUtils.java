@@ -2,6 +2,7 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import com.tny.game.suite.core.GameInfo;
 
 
 public class IDUtils {
@@ -23,6 +24,8 @@ public class IDUtils {
     }
 
     public static int userID2SID(long playerID) {
+        if (playerID <= 0)
+            return GameInfo.getMainServerID();
         return (int) (playerID / PLAYER_ID_OFFSET);
     }
 

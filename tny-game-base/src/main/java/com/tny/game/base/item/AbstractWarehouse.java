@@ -5,7 +5,7 @@ import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 import com.tny.game.base.item.listener.TradeEvents;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.context.AttributeEntry;
+import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
@@ -86,7 +86,7 @@ public abstract class AbstractWarehouse<O extends Owner>
                 .collect(Collectors.toList());
     }
 
-    protected DealedResult consume(Trade result, AttributeEntry<?>... entries) {
+    protected DealedResult consume(Trade result, AttrEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(result.getAction());
         Attributes attributes = ContextAttributes.create(entries);
         for (TradeItem tradeItem : result.getAllTradeItem()) {
@@ -96,7 +96,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         return dealedResult;
     }
 
-    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
+    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
         Attributes attributes = ContextAttributes.create(entries);
         this.consume0(dealedResult, tradeItem, action, attributes);
@@ -104,7 +104,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         return dealedResult;
     }
 
-    protected DealedResult receive(Trade result, AttributeEntry<?>... entries) {
+    protected DealedResult receive(Trade result, AttrEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(result.getAction());
         Attributes attributes = ContextAttributes.create(entries);
         for (TradeItem tradeItem : result.getAllTradeItem()) {
@@ -114,7 +114,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         return dealedResult;
     }
 
-    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttributeEntry<?>... entries) {
+    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
         Attributes attributes = ContextAttributes.create(entries);
         this.receive0(dealedResult, tradeItem, action, attributes);

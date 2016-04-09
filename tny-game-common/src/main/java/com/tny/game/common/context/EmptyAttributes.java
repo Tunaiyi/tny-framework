@@ -36,18 +36,18 @@ class EmptyAttributes implements Attributes {
     }
 
     @Override
-    public void setAttribute(AttributeEntry<?> entry) {
+    public void setAttribute(AttrEntry<?> entry) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setAttribute(Collection<AttributeEntry<?>> entries) {
+    public void setAttribute(Collection<AttrEntry<?>> entries) {
         throw new UnsupportedOperationException();
 
     }
 
     @Override
-    public void setAttribute(AttributeEntry<?>... entries) {
+    public void setAttribute(AttrEntry<?>... entries) {
         throw new UnsupportedOperationException();
 
     }
@@ -79,7 +79,7 @@ class EmptyAttributes implements Attributes {
     }
 
     @Override
-    public <T> T setAttributeIfNoKey(AttributeEntry<T> entry) {
+    public <T> T setAttributeIfNoKey(AttrEntry<T> entry) {
         throw new UnsupportedOperationException();
     }
 }

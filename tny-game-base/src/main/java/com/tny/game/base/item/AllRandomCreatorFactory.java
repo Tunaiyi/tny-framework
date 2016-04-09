@@ -12,8 +12,8 @@ public class AllRandomCreatorFactory implements RandomCreatorFactory {
     private static final RandomCreator<Probability> ALL_CREATOR = new RandomCreator<Probability>() {
 
         @Override
-        public List<Probability> random(int range, int number, Collection<? extends Probability> probabiliySet, Map<String, Object> attributeMap) {
-            return new ArrayList<Probability>(probabiliySet);
+        public List<Probability> random(int range, int number, Collection<? extends Probability> probabilityList, Map<String, Object> attributeMap) {
+            return new ArrayList<Probability>(probabilityList);
         }
 
     };

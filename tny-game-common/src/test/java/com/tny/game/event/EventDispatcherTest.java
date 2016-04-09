@@ -11,7 +11,7 @@ public class EventDispatcherTest {
 
     Mockery context = new JUnit4Mockery();
 
-    public class TaskEvent extends Event<Integer> {
+    public class TaskEvent extends BaseEvent<Integer> {
 
         public TaskEvent(String handler, Integer source) {
             super(source);

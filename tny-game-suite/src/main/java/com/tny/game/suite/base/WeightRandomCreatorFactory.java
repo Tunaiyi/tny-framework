@@ -7,7 +7,11 @@ import com.tny.game.base.item.behavior.AwardGroup;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
@@ -19,22 +23,22 @@ public class WeightRandomCreatorFactory implements RandomCreatorFactory {
     private static class WeightRandom<P extends Probability> implements RandomCreator<P> {
 
         @Override
-        public List<P> random(int range, int number, Collection<? extends P> probabiliySet, Map<String, Object> attributeMap) {
-            List<P> awardList = new ArrayList<P>();
-            if (probabiliySet.isEmpty()) {
+        public List<P> random(int range, int number, Collection<? extends P> probabilityList, Map<String, Object> attributeMap) {
+            List<P> awardList = new ArrayList<>();
+            if (probabilityList.isEmpty()) {
                 return awardList;
             }
-            int totle = 0;
-            for (P p : probabiliySet) {
+            int total = 0;
+            for (P p : probabilityList) {
                 if (p.getProbability() > 0) {
-                    totle += p.getProbability();
+                    total += p.getProbability();
                 }
             }
             HashSet<P> ignoreSet = new HashSet<>();
             for (int index = 0; index < number; index++) {
                 int priorityRange = 0;
-                int rand = ThreadLocalRandom.current().nextInt(totle);
-                for (P awardGroup : probabiliySet) {
+                int rand = ThreadLocalRandom.current().nextInt(total);
+                for (P awardGroup : probabilityList) {
                     if (awardGroup instanceof AwardGroup && !((AwardGroup) awardGroup).isEffect(attributeMap))
                         continue;
                     if (!ignoreSet.contains(awardGroup) && awardGroup.getProbability() < 0) {
@@ -55,7 +59,7 @@ public class WeightRandomCreatorFactory implements RandomCreatorFactory {
 
     @Override
     public <P extends Probability> RandomCreator<P> getRandomCreator() {
-        return new WeightRandom<P>();
+        return new WeightRandom<>();
     }
 
     @Override

@@ -7,9 +7,9 @@ import java.util.Map;
 
 public abstract class BaseTelnetCommandHolder implements TelnetCommandHolder {
 
-    private Map<CommandType, List<TelnetCommand>> commandTypeMap = new HashMap<CommandType, List<TelnetCommand>>();
+    protected Map<CommandType, List<TelnetCommand>> commandTypeMap = new HashMap<CommandType, List<TelnetCommand>>();
 
-    private Map<String, TelnetCommand> commandMap = new HashMap<String, TelnetCommand>();
+    protected Map<String, TelnetCommand> commandMap = new HashMap<String, TelnetCommand>();
 
     @Override
     public List<TelnetCommand> getCommandByType(CommandType commandType) {
@@ -22,6 +22,14 @@ public abstract class BaseTelnetCommandHolder implements TelnetCommandHolder {
     @Override
     public TelnetCommand getCommand(String name) {
         return commandMap.get(name);
+    }
+
+    @Override
+    public String execute(String[] commands) {
+        TelnetCommand command = getCommand(commands[0]);
+        if (command == null)
+            return commands[0] + " is not exist!";
+        return command.handlerCommand(null, new TelnetArgument(commands));
     }
 
 }

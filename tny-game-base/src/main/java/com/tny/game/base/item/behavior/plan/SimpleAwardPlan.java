@@ -45,7 +45,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     public SimpleAwardPlan(RandomCreator<AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
         this.randomer = randomer;
-        this.awardGroupSet = new ArrayList<AwardGroup>(treeSet);
+        this.awardGroupSet = new ArrayList<>(treeSet);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     @Override
     public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
         DemandHolderObject.setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        List<AwardDetail> resultList = new ArrayList<AwardDetail>();
+        List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
             AwardDetail detail = new AwardDetail(group.getProbability(), group.countAwardNumber(attributeMap));
             resultList.add(detail);
@@ -76,7 +76,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.awardGroupSet == null)
-            this.awardGroupSet = new ArrayList<AwardGroup>();
+            this.awardGroupSet = new ArrayList<>();
         for (AwardGroup awardGroup : this.awardGroupSet) {
             if (awardGroup instanceof AbstractAwardGroup)
                 ((AbstractAwardGroup) awardGroup).init(itemExplorer, itemModelExplorer);
@@ -85,7 +85,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         this.awardGroupSet = Collections.unmodifiableList(this.awardGroupSet);
 
         if (this.attrAliasSet == null)
-            this.attrAliasSet = new HashSet<String>(0);
+            this.attrAliasSet = new HashSet<>(0);
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
     }
 

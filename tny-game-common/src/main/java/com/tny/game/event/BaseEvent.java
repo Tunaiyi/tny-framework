@@ -10,7 +10,18 @@ package com.tny.game.event;
  * <p>
  * EventDispatcher派发器派发事件的抽象基础类<br>
  */
-public interface Event<T> {
+public abstract class BaseEvent<T> implements Event<T> {
+
+    /**
+     * 事件源
+     *
+     * @uml.property name="source"
+     */
+    protected final T source;
+
+    public BaseEvent(T source) {
+        this.source = source;
+    }
 
     /**
      * 获取事件源
@@ -20,6 +31,8 @@ public interface Event<T> {
      *
      * @return 返回事件源
      */
-    T getSource();
+    public T getSource() {
+        return source;
+    }
 
 }
