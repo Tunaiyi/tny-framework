@@ -34,11 +34,11 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        final Object attachment = channel.attr(NetAttributeKey.TELNET_SEESSION).get();
+        final Object attachment = channel.attr(NetAttributeKey.TELNET_SESSION).get();
         TelnetSession session = null;
         if (attachment == null) {
             session = new TelnetSession(this.uid.incrementAndGet(), channel);
-            ctx.attr(NetAttributeKey.TELNET_SEESSION).set(session);
+            ctx.attr(NetAttributeKey.TELNET_SESSION).set(session);
         }
         this.handleCommand(CommandType.CONNECT, session);
     }
@@ -54,7 +54,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
-        final Object attachment = channel.attr(NetAttributeKey.TELNET_SEESSION).get();
+        final Object attachment = channel.attr(NetAttributeKey.TELNET_SESSION).get();
         TelnetSession session = null;
         if (TelnetSession.class.isInstance(attachment))
             session = (TelnetSession) attachment;

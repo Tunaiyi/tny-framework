@@ -1,6 +1,7 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.context.Attributes;
 
 public abstract class BaseCountableStuff<SM extends CountableStuffModel, N extends Number> extends AbstractItem<SM> implements CountableStuff<SM, N> {
 
@@ -31,17 +32,17 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
         return alterType.overLowerLimit(this, receiveNum);
     }
 
-    protected abstract TradeResult consume(Action action, TradeItem<? extends SM> tradeItem);
+    protected abstract TradeResult consume(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
-    protected abstract TradeResult receive(Action action, TradeItem<? extends SM> tradeItem);
+    protected abstract TradeResult receive(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
     protected abstract void setNumber(N number);
 
-    protected AlterType getReceiveAlterType(TradeItem<? extends SM> item) {
+    protected AlterType getReceiveAlterType(TradeItem<SM> item) {
         return item.getAlertType();
     }
 
-    protected AlterType getConsumeAlterType(TradeItem<? extends SM> item) {
+    protected AlterType getConsumeAlterType(TradeItem<SM> item) {
         return item.getAlertType();
     }
 
@@ -53,7 +54,7 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
      * @param current
      * @param action
      */
-    protected abstract TradeResult postConsume(N alter, N oldNumber, N current, Action action);
+    protected abstract TradeResult postConsume(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
     /**
      * 执行增加
@@ -63,6 +64,6 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
      * @param current
      * @param action
      */
-    protected abstract TradeResult postReceive(N alter, N oldNumber, N current, Action action);
+    protected abstract TradeResult postReceive(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
 }

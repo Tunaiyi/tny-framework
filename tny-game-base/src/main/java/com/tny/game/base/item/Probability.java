@@ -1,24 +1,19 @@
 package com.tny.game.base.item;
 
+import java.util.Map;
+
 /**
  * 概率接口
  *
  * @author KGTny
  */
-public interface Probability extends Comparable<Probability> {
+public interface Probability {
 
     /**
      * 获取影响的概率范围
      *
      * @return 概率范围
      */
-    int getProbability();
-
-    /**
-     * 优先级
-     *
-     * @return
-     */
-    int getPriority();
+    int getProbability(Map<String, Object> attributeMap);
 
 }

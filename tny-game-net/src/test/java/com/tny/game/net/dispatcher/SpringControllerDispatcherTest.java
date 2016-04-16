@@ -83,8 +83,8 @@ public class SpringControllerDispatcherTest {
     @Before
     public void setUp() throws Exception {
         this.context.initContext(null);
-        this.channel.attr(NetAttributeKey.MSG_BUILDER_FACTORT).set(new SimpleMessageBuilderFactory());
-        this.channel.attr(NetAttributeKey.REQUSET_CHECKER).set(this.checker);
+        this.channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).set(new SimpleMessageBuilderFactory());
+        this.channel.attr(NetAttributeKey.REQUEST_CHECKER).set(this.checker);
     }
 
     @After

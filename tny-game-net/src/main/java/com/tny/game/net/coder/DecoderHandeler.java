@@ -34,7 +34,7 @@ public class DecoderHandeler extends ByteToMessageDecoder {
             Channel channel = null;
             if (ctx != null) {
                 channel = ctx.channel();
-                session = channel.attr(NetAttributeKey.SEESSION).get();
+                session = channel.attr(NetAttributeKey.SESSION).get();
             }
             LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, session == null ? "SOME ONE UNLOGION!" : session.getUID(), exception);
             if (exception instanceof PacketHeadException)

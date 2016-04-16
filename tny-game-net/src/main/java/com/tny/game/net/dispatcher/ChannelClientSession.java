@@ -44,9 +44,9 @@ public abstract class ChannelClientSession extends AbstractClientSession {
             this.channel = channel;
             SocketAddress address = channel.remoteAddress();
             this.hostName = channel == null || address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
-            channel.attr(NetAttributeKey.SEESSION).set(this);
-            channel.attr(NetAttributeKey.CLIENT_SEESSION).set(this);
-            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTORT).get();
+            channel.attr(NetAttributeKey.SESSION).set(this);
+            channel.attr(NetAttributeKey.CLIENT_SESSION).set(this);
+            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
         }
     }
 

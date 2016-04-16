@@ -177,6 +177,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("behaviorPlan", XMLBehaviorPlan.class);
 
         xStream.alias("actionPlan", XMLActionPlan.class);
+        xStream.alias("action", Action.class);
 
         xStream.alias("actionOption", Entry.class);
         xStream.alias("option", Option.class);

@@ -17,7 +17,7 @@ public abstract class GameItemOwner<IM extends ItemModel, SM extends ItemModel, 
      * @param attributes 参数
      * @return 返回交易结果
      */
-    protected abstract TradeResult consume(TradeItem<? extends SM> tradeItem, Action action, Attributes attributes);
+    protected abstract TradeResult consume(TradeItem<SM> tradeItem, Action action, Attributes attributes);
 
     /**
      * 添加事物
@@ -27,7 +27,7 @@ public abstract class GameItemOwner<IM extends ItemModel, SM extends ItemModel, 
      * @param attributes 参数
      * @return 返回交易结果
      */
-    protected abstract TradeResult receive(TradeItem<? extends SM> tradeItem, Action action, Attributes attributes);
+    protected abstract TradeResult receive(TradeItem<SM> tradeItem, Action action, Attributes attributes);
 
 
 }

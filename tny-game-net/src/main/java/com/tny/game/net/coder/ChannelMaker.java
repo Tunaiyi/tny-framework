@@ -44,13 +44,13 @@ public abstract class ChannelMaker<C extends Channel> {
         channelPipeline.addLast("frameDecoder", new DecoderHandeler(this.decoder));
         channelPipeline.addLast("encoder", new EncodeHandler(this.encoder));
         this.postAddCoder(channelPipeline);
-        channel.attr(NetAttributeKey.MSG_BUILDER_FACTORT)
+        channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR)
                 .set(this.messageBuilderFactory);
         channel.attr(NetAttributeKey.DATA_PACKET_DECODER)
                 .set(this.decoder);
         channel.attr(NetAttributeKey.DATA_PACKET_ENCODER)
                 .set(this.encoder);
-        channel.attr(NetAttributeKey.REQUSET_CHECKER)
+        channel.attr(NetAttributeKey.REQUEST_CHECKER)
                 .set(this.checker);
         this.postInitChannel(channel);
     }

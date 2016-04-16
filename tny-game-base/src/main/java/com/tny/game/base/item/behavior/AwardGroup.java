@@ -21,7 +21,7 @@ public interface AwardGroup extends Probability {
      *
      * @return
      */
-    public Set<ItemModel> getAwardSet(Map<String, Object> attributeMap);
+    Set<ItemModel> getAwardSet(Map<String, Object> attributeMap);
 
     /**
      * 计算该组奖励物品和数量
@@ -29,17 +29,17 @@ public interface AwardGroup extends Probability {
      * @param attributeMap 计算参数
      * @return 返回奖励的物品和数量
      */
-    public List<TradeItem<ItemModel>> countAwardNumber(Map<String, Object> attributeMap);
+    List<TradeItem<ItemModel>> countAwardNumber(Map<String, Object> attributeMap);
 
     /**
      * 创建奖励结果集
      *
+     * @param playerID     玩家id
      * @param action       奖励的操作类型
-     * @param alertType    奖励的方式
      * @param attributeMap 附加参数
      * @return 返回结果集
      */
-    public Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap);
+    Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap);
 
     /**
      * 是否生效
@@ -47,6 +47,6 @@ public interface AwardGroup extends Probability {
      * @param attributeMap
      * @return
      */
-    public boolean isEffect(Map<String, Object> attributeMap);
+    boolean isEffect(Map<String, Object> attributeMap);
 
 }

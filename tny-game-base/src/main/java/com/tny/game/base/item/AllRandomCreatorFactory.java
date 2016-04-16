@@ -13,7 +13,7 @@ public class AllRandomCreatorFactory implements RandomCreatorFactory {
 
         @Override
         public List<Probability> random(int range, int number, Collection<? extends Probability> probabilityList, Map<String, Object> attributeMap) {
-            return new ArrayList<Probability>(probabilityList);
+            return new ArrayList<>(probabilityList);
         }
 
     };

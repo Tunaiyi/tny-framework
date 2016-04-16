@@ -51,8 +51,9 @@ public class SimpleDealedItem<I extends ItemModel> implements DealedItem<I> {
     }
 
     @Override
-    public I getItemModel() {
-        return itemModel;
+    @SuppressWarnings("unchecked")
+    public <SI extends I> SI getItemModel() {
+        return (SI) itemModel;
     }
 
     @Override

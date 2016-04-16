@@ -11,7 +11,7 @@ public interface Formula {
      * @param value 值
      * @return 表达式本身
      */
-    public Formula put(final String key, final Object value);
+    Formula put(final String key, final Object value);
 
     /**
      * 设置属性Map <br>
@@ -19,14 +19,14 @@ public interface Formula {
      * @param attribute 属性Map
      * @return 表达式本身
      */
-    public Formula putAll(final Map<String, Object> attribute);
+    Formula putAll(final Map<String, Object> attribute);
 
     /**
      * 清除所有属性 <br>
      *
      * @return 表达式本身
      */
-    public Formula clear();
+    Formula clear();
 
     /**
      * 移除指定键对应的属性 <br>
@@ -34,7 +34,7 @@ public interface Formula {
      * @param key 指定键
      * @return 表达式本身
      */
-    public Formula remove(final String key);
+    Formula remove(final String key);
 
     /**
      * 执行表达式计算,返回结果 <br>
@@ -42,6 +42,6 @@ public interface Formula {
      * @param clazz 返回类型
      * @return 返回结果
      */
-    public <T> T execute(final Class<T> clazz);
+    <T> T execute(final Class<T> clazz);
 
 }

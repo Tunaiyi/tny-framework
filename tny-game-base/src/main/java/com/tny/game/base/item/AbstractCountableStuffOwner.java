@@ -1,6 +1,7 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.context.Attributes;
 
 /**
  * 抽象物品管理器
@@ -11,12 +12,12 @@ import com.tny.game.base.item.behavior.Action;
  */
 public abstract class AbstractCountableStuffOwner<SM extends CountableStuffModel, S extends BaseCountableStuff<SM, ?>> extends StuffOwner<SM, S> {
 
-    protected void doConsume(S stuff, Action action, TradeItem<? extends SM> tradeItem) {
-        stuff.consume(action, tradeItem);
+    protected void doConsume(S stuff, Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+        stuff.consume(action, tradeItem, attributes);
     }
 
-    protected void doReceive(S stuff, Action action, TradeItem<? extends SM> tradeItem) {
-        stuff.receive(action, tradeItem);
+    protected void doReceive(S stuff, Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+        stuff.receive(action, tradeItem, attributes);
     }
 
     /**

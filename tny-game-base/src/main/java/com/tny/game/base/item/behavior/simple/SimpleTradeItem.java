@@ -83,8 +83,9 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
     }
 
     @Override
-    public I getItemModel() {
-        return itemModel;
+    @SuppressWarnings("unchecked")
+    public <SI extends I> SI getItemModel() {
+        return (SI) itemModel;
     }
 
     @Override

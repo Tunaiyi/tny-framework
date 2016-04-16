@@ -43,8 +43,9 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
     }
 
     @Override
-    public ItemModel getItemModel() {
-        return this.itemModel;
+    @SuppressWarnings("unchecked")
+    public <SI extends ItemModel> SI getItemModel() {
+        return (SI)this.itemModel;
     }
 
     @Override

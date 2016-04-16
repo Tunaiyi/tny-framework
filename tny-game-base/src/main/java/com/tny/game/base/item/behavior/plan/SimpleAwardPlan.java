@@ -1,11 +1,29 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.ItemExplorer;
+import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.RandomCreator;
+import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.behavior.AbstractAwardGroup;
+import com.tny.game.base.item.behavior.AbstractAwardPlan;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.AwardDetail;
+import com.tny.game.base.item.behavior.AwardGroup;
+import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.DemandHolderObject;
+import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 抽象奖励方案
@@ -62,7 +80,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         DemandHolderObject.setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
-            AwardDetail detail = new AwardDetail(group.getProbability(), group.countAwardNumber(attributeMap));
+            AwardDetail detail = new AwardDetail(group.countAwardNumber(attributeMap));
             resultList.add(detail);
         }
         return new SimpleAwardList(action, resultList);
@@ -81,7 +99,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
             if (awardGroup instanceof AbstractAwardGroup)
                 ((AbstractAwardGroup) awardGroup).init(itemExplorer, itemModelExplorer);
         }
-        Collections.sort(this.awardGroupSet);
+        //        Collections.sort(this.awardGroupSet);
         this.awardGroupSet = Collections.unmodifiableList(this.awardGroupSet);
 
         if (this.attrAliasSet == null)

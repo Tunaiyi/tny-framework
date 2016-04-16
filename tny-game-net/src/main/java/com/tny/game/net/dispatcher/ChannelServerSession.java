@@ -55,11 +55,11 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     protected void setChannel(Channel channel) {
         if (this.channel == null && channel != null) {
             this.channel = channel;
-            channel.attr(NetAttributeKey.SEESSION).set(this);
-            channel.attr(NetAttributeKey.SERVER_SEESSION).set(this);
+            channel.attr(NetAttributeKey.SESSION).set(this);
+            channel.attr(NetAttributeKey.SERVER_SESSION).set(this);
             this.encoder = channel.attr(NetAttributeKey.DATA_PACKET_ENCODER).get();
-            this.checker = channel.attr(NetAttributeKey.REQUSET_CHECKER).get();
-            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTORT).get();
+            this.checker = channel.attr(NetAttributeKey.REQUEST_CHECKER).get();
+            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
         }
     }
 

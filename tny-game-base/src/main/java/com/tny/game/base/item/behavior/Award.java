@@ -18,7 +18,7 @@ public interface Award extends Probability {
      *
      * @return
      */
-    String getItemAlias(Map<String, Object> atrributeMap);
+    String getItemAlias(Map<String, Object> attributeMap);
 
     /**
      * 计算奖励的数量

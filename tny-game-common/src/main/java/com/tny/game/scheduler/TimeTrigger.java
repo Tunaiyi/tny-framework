@@ -3,19 +3,7 @@ package com.tny.game.scheduler;
 import com.tny.game.scheduler.cycle.TimeCycle;
 import org.joda.time.DateTime;
 
-public interface TimeTrigger<C extends TimeCycle> {
-
-    DateTime getStartTime();
-
-    DateTime getNextTime();
-
-    DateTime getPreviousTime();
-
-    DateTime getEndTime();
-
-    long getSpeedMills();
-
-    C getTimeCycle();
+public interface TimeTrigger<C extends TimeCycle> extends TimeMeter<C> {
 
     boolean stop();
 
@@ -99,43 +87,6 @@ public interface TimeTrigger<C extends TimeCycle> {
 
     boolean trigger(long timeMillis);
 
-    default boolean isFinish() {
-        return this.getNextTime() == null;
-    }
-
-    default long countRemainMills() {
-        return countRemainMills(System.currentTimeMillis());
-    }
-
     void speedUp(long timeMills);
-
-    default long getAllDuration() {
-        DateTime dateTime = this.getStartTime();
-        DateTime endTime = this.getEndTime();
-        if (endTime == null)
-            return -1L;
-        return Math.max(endTime.getMillis() - dateTime.getMillis(), 0L);
-    }
-
-    default long countRemainMills(long timeMillis) {
-        DateTime next = this.getNextTime();
-        if (next == null)
-            return -1;
-        return Math.max(next.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
-    }
-
-    default long countEndRemainMills() {
-        return countEndRemainMills(System.currentTimeMillis());
-    }
-
-    default long countEndRemainMills(long timeMillis) {
-        DateTime next = this.getNextTime();
-        if (next == null)
-            return -1;
-        DateTime end = this.getEndTime();
-        if (end == null)
-            return -1;
-        return Math.max(end.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
-    }
 
 }

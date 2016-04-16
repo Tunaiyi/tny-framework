@@ -12,6 +12,7 @@ import com.tny.game.common.formula.FormulaHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 操作方案
@@ -24,6 +25,11 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
      * 操作行为
      */
     protected Action action;
+
+    /**
+     * 操作行为
+     */
+    protected Set<Action> actions;
 
     /**
      * 奖励方案
@@ -41,8 +47,8 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     protected Map<Option, FormulaHolder> optionMap;
 
     @Override
-    public Action getAction() {
-        return this.action;
+    public Set<Action> getActions() {
+        return actions;
     }
 
     @Override

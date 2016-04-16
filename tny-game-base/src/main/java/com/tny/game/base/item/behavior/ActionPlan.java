@@ -19,21 +19,21 @@ public interface ActionPlan {
      *
      * @return
      */
-    public Set<String> getAttributesAliasSet();
+    Set<String> getAttributesAliasSet();
 
     /**
      * 获取该操作的操作类
      *
      * @return
      */
-    public Action getAction();
+    Set<Action> getActions();
 
     /**
      * 获取该操作的条件列表
      *
      * @return
      */
-    public List<DemandResult> countDemandResult(long playerID, Map<String, Object> map);
+    List<DemandResult> countDemandResult(long playerID, Map<String, Object> map);
 
     /**
      * 尝试做该操作,一遇到失败的条件则马上返回
@@ -43,28 +43,28 @@ public interface ActionPlan {
      * @return 返回未达到条件的结果集, 若尝试成功则返回null
      * @throws TryToDoException
      */
-    public DemandResult tryToDo(long playerID, Map<String, Object> attributes);
+    DemandResult tryToDo(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取操作结果
      *
      * @return
      */
-    public ActionResult getActionResult(long playerID, Map<String, Object> attributes);
+    ActionResult getActionResult(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    public AwardList getAwardList(long playerID, Map<String, Object> attributes);
+    AwardList getAwardList(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    public CostList getCostList(long playerID, Map<String, Object> attributes);
+    CostList getCostList(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
@@ -72,7 +72,7 @@ public interface ActionPlan {
      * @param attribute
      * @return
      */
-    public Trade createAward(long playerID, Map<String, Object> attributes);
+    Trade createAward(long playerID, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
@@ -80,7 +80,7 @@ public interface ActionPlan {
      * @param attribute
      * @return
      */
-    public Trade createCost(long playerID, Map<String, Object> attributes);
+    Trade createCost(long playerID, Map<String, Object> attributes);
 
     /**
      * 计算选项
@@ -89,7 +89,7 @@ public interface ActionPlan {
      * @param attributes
      * @return
      */
-    public <O> O countOption(long playerID, Option option, Map<String, Object> attributes);
+    <O> O countOption(long playerID, Option option, Map<String, Object> attributes);
 
     /**
      * 是否存在选项
@@ -97,6 +97,6 @@ public interface ActionPlan {
      * @param option
      * @return
      */
-    public boolean isHasOption(Option option);
+    boolean isHasOption(Option option);
 
 }

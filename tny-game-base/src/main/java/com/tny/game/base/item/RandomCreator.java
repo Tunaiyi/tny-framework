@@ -11,6 +11,6 @@ import java.util.Map;
  */
 public interface RandomCreator<P extends Probability> {
 
-    public List<P> random(int range, int number, Collection<? extends P> probabilityList, Map<String, Object> attributeMap);
+    List<P> random(int range, int number, Collection<? extends P> probabilityList, Map<String, Object> attributeMap);
 
 }

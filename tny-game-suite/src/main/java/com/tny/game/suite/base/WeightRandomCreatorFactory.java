@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
@@ -25,33 +27,28 @@ public class WeightRandomCreatorFactory implements RandomCreatorFactory {
         @Override
         public List<P> random(int range, int number, Collection<? extends P> probabilityList, Map<String, Object> attributeMap) {
             List<P> awardList = new ArrayList<>();
-            if (probabilityList.isEmpty()) {
+            if (probabilityList.isEmpty())
                 return awardList;
-            }
+            TreeMap<Integer, P> proMap = new TreeMap<>();
             int total = 0;
             for (P p : probabilityList) {
-                if (p.getProbability() > 0) {
-                    total += p.getProbability();
+                if (p instanceof AwardGroup && !((AwardGroup) p).isEffect(attributeMap))
+                    continue;
+                int probability = p.getProbability(attributeMap);
+                if (probability > 0) {
+                    total += probability;
+                    proMap.put(total, p);
                 }
             }
-            HashSet<P> ignoreSet = new HashSet<>();
-            for (int index = 0; index < number; index++) {
-                int priorityRange = 0;
-                int rand = ThreadLocalRandom.current().nextInt(total);
-                for (P awardGroup : probabilityList) {
-                    if (awardGroup instanceof AwardGroup && !((AwardGroup) awardGroup).isEffect(attributeMap))
-                        continue;
-                    if (!ignoreSet.contains(awardGroup) && awardGroup.getProbability() < 0) {
-                        awardList.add(awardGroup);
-                        ignoreSet.add(awardGroup);
-                        break;
-                    }
-                    priorityRange += awardGroup.getProbability();
-                    if (priorityRange > rand) {
-                        awardList.add(awardGroup);
-                        break;
-                    }
-                }
+            if (proMap.isEmpty())
+                return awardList;
+            Random random = ThreadLocalRandom.current();
+            while (awardList.size() < number) {
+                int rand = random.nextInt(total);
+                Entry<Integer, P> entry = proMap.higherEntry(rand);
+                if (entry == null)
+                    continue;
+                awardList.add(entry.getValue());
             }
             return awardList;
         }

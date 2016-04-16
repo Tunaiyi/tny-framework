@@ -11,20 +11,14 @@ public class AwardDetail {
 
     private List<TradeItem<ItemModel>> itemList = new ArrayList<TradeItem<ItemModel>>();
 
-    protected int probability;
 
-    public AwardDetail(int probability, List<TradeItem<ItemModel>> itemList) {
+    public AwardDetail(List<TradeItem<ItemModel>> itemList) {
         this.itemList.addAll(itemList);
-        this.probability = probability;
         this.itemList = Collections.unmodifiableList(this.itemList);
     }
 
     public List<TradeItem<ItemModel>> getAllTradeItemList() {
         return itemList;
-    }
-
-    public int getProbability() {
-        return probability;
     }
 
 }

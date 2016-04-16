@@ -129,12 +129,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     private DispatcherCommand<?> requestCommand(Channel channel, Message message) {
         AppContext appContext = channel.attr(NetAttributeKey.CONTEXT).get();
-        ServerSession session = channel.attr(NetAttributeKey.SERVER_SEESSION).get();
+        ServerSession session = channel.attr(NetAttributeKey.SERVER_SESSION).get();
         try {
             if (session == null) {
                 session = this.sessionFactory.createSession(channel);
-                channel.attr(NetAttributeKey.SEESSION).set(session);
-                channel.attr(NetAttributeKey.SERVER_SEESSION).set(session);
+                channel.attr(NetAttributeKey.SESSION).set(session);
+                channel.attr(NetAttributeKey.SERVER_SESSION).set(session);
             }
             Request request = (Request) message;
             request.requsetBy(session);
@@ -155,7 +155,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     private DispatcherCommand<?> responseCommand(Channel channel, Message message) {
         AppContext appContext = channel.attr(NetAttributeKey.CONTEXT).get();
         try {
-            ClientSession session = channel.attr(NetAttributeKey.CLIENT_SEESSION).get();
+            ClientSession session = channel.attr(NetAttributeKey.CLIENT_SESSION).get();
             ExceptionUtils.checkNotNull(session, "session 为空");
             Response response = (Response) message;
             CoreLogger.log(session, response);
@@ -169,7 +169,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NetSession session = channel.attr(NetAttributeKey.SEESSION).get();
+        NetSession session = channel.attr(NetAttributeKey.SESSION).get();
         if (session != null) {
             if (this.sessionHolder != null) {
                 this.sessionHolder.offline(session);
@@ -187,7 +187,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             Channel channel = ctx.channel();
-            Session session = channel.attr(NetAttributeKey.SEESSION).get();
+            Session session = channel.attr(NetAttributeKey.SESSION).get();
             if (session != null) {
                 String op = "空闲超时";
                 switch (event.state()) {

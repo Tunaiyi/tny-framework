@@ -3,7 +3,6 @@ package com.tny.game.base.item.behavior.plan;
 import com.tny.game.base.item.AbstractItemModel;
 import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Probability;
 import com.tny.game.base.item.behavior.AbstractAward;
 import com.tny.game.base.item.behavior.DemandParam;
 import com.tny.game.base.item.xml.AliasCollectUtils;
@@ -29,7 +28,7 @@ public class SimpleAward extends AbstractAward {
     /**
      * 获得概率
      */
-    public int probability;
+    public FormulaHolder probability;
 
     /**
      * 奖励物品id
@@ -52,8 +51,8 @@ public class SimpleAward extends AbstractAward {
     protected Map<DemandParam, FormulaHolder> paramMap;
 
     @Override
-    public String getItemAlias(Map<String, Object> atrributeMap) {
-        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(atrributeMap).execute(String.class)
+    public String getItemAlias(Map<String, Object> attributeMap) {
+        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
                 : this.itemAlias;
     }
 
@@ -98,17 +97,19 @@ public class SimpleAward extends AbstractAward {
     }
 
     @Override
-    public int getProbability() {
-        return this.probability;
+    public int getProbability(Map<String, Object> attributeMap) {
+        return this.probability.createFormula()
+                .putAll(attributeMap)
+                .execute(Integer.class);
     }
 
-    @Override
-    public int compareTo(Probability o) {
-        return this.getProbability() - o.getProbability();
-    }
+//    @Override
+//    public int compareTo(Probability o) {
+//        return this.getProbability() - o.getProbability();
+//    }
 
-    @Override
-    public int getPriority() {
-        return 0;
-    }
+//    @Override
+//    public int getPriority() {
+//        return 0;
+//    }
 }

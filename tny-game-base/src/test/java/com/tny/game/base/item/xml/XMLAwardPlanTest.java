@@ -1,6 +1,9 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.*;
+import com.tny.game.base.item.AlterType;
+import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.RandomCreator;
+import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.Award;
 import com.tny.game.base.item.behavior.AwardGroup;
 import com.tny.game.base.item.behavior.AwardPlan;
@@ -10,7 +13,12 @@ import com.tny.game.base.item.behavior.plan.SimpleAwardPlan;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class XMLAwardPlanTest {
 
@@ -21,7 +29,7 @@ public class XMLAwardPlanTest {
         @Override
         public List<AwardGroup> random(int range, int number, Collection<? extends AwardGroup> probabilityList, Map<String, Object> attributeMap) {
             for (AwardGroup p : probabilityList)
-                if (XMLAwardPlanTest.this.NUMBER < p.getProbability())
+                if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap))
                     return Arrays.asList(p);
             return null;
         }
@@ -53,22 +61,17 @@ public class XMLAwardPlanTest {
         }
 
         @Override
-        public int getProbability() {
+        public int getProbability(Map<String, Object> attributeMap) {
             return 0;
         }
 
-        @Override
-        public int getPriority() {
-            return 0;
-        }
+//        @Override
+//        public int compareTo(Probability o) {
+//            return 0;
+//        }
 
         @Override
-        public int compareTo(Probability o) {
-            return 0;
-        }
-
-        @Override
-        public String getItemAlias(Map<String, Object> atrributeMap) {
+        public String getItemAlias(Map<String, Object> attributeMap) {
             return this.alias;
         }
 
@@ -83,6 +86,8 @@ public class XMLAwardPlanTest {
 
     class TestAwardGroup extends SimpleAwardGroup {
 
+        private int probability;
+
         private TestAwardGroup(int id, int probability, Award... awards) {
             super();
             this.probability = probability;
@@ -92,6 +97,10 @@ public class XMLAwardPlanTest {
             this.itemModelExplorer = XMLAwardPlanTest.this.explorer;
         }
 
+        @Override
+        public int getProbability(Map<String, Object> attributeMap) {
+            return probability;
+        }
     }
 
     TreeSet<AwardGroup> treeSet = new TreeSet<AwardGroup>();

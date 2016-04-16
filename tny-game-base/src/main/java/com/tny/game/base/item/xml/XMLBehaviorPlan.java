@@ -5,6 +5,7 @@ import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemModelExplorer;
 import com.tny.game.base.item.behavior.AbstractActionPlan;
 import com.tny.game.base.item.behavior.AbstractBehaviorPlan;
+import com.tny.game.base.item.behavior.Action;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +34,9 @@ public class XMLBehaviorPlan extends AbstractBehaviorPlan {
 
         for (AbstractActionPlan actionPlan : actionPlanList) {
             actionPlan.init(itemModel, itemExplorer, itemModelExplorer);
-            actionPlanMap.put(actionPlan.getAction(), actionPlan);
+            for (Action action : actionPlan.getActions()) {
+                actionPlanMap.put(action, actionPlan);
+            }
         }
         actionPlanList = Collections.unmodifiableList(actionPlanList);
         actionPlanMap = Collections.unmodifiableMap(actionPlanMap);

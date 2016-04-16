@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface DealedItem<I extends ItemModel> {
 
-    I getItemModel();
+    <SI extends I> SI getItemModel();
 
     Number getNumber();
 

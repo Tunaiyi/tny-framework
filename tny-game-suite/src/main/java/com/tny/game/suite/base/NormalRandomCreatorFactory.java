@@ -4,11 +4,13 @@ import com.tny.game.base.item.Probability;
 import com.tny.game.base.item.RandomCreator;
 import com.tny.game.base.item.RandomCreatorFactory;
 import com.tny.game.base.item.behavior.AwardGroup;
-import com.tny.game.common.utils.collection.ThreadLocalRandom;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.TreeMap;
 
 @Component
 @Profile({"suite.auto", "suite.all"})
@@ -20,17 +22,27 @@ public class NormalRandomCreatorFactory implements RandomCreatorFactory {
         ArrayList<Probability> awardList = new ArrayList<>();
         if (range == 0)
             range = 10000;
-        for (int index = 0; index < number; index++) {
-            int rand = ThreadLocalRandom.current().nextInt(range);
-            for (Probability awardGroup : probabilitySet) {
-                if (awardGroup instanceof AwardGroup && !((AwardGroup) awardGroup).isEffect(attributeMap))
-                    continue;
-                if (awardGroup.getProbability() > rand)
-                    awardList.add(awardGroup);
-            }
+        TreeMap<Integer, Probability> proMap = new TreeMap<>();
+        for (Probability p : probabilitySet) {
+            if (p instanceof AwardGroup && !((AwardGroup) p).isEffect(attributeMap))
+                continue;
+            int probability = p.getProbability(attributeMap);
+            if (probability > 0)
+                proMap.put(probability, p);
+        }
+        if (proMap.isEmpty())
+            return awardList;
+        Random random = java.util.concurrent.ThreadLocalRandom.current();
+        while (awardList.size() < number) {
+            int rand = random.nextInt(range);
+            Entry<Integer, Probability> entry = proMap.higherEntry(rand);
+            if (entry == null)
+                continue;
+            awardList.add(entry.getValue());
         }
         return awardList;
     };
+
 
     @Override
     @SuppressWarnings("unchecked")

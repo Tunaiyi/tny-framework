@@ -104,18 +104,18 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         return null;
     }
 
-    protected <V> V toWrite(V value, V nullValue) {
+    public static <V> V toWrite(V value, V nullValue) {
         return value == null ? nullValue : value;
     }
 
-    protected <V> V toRead(V value, V nullValue) {
+    public static <V> V toRead(V value, V nullValue) {
         return toRead(value, nullValue, null);
     }
 
-    protected <V> V toRead(V value, V nullValue, V defValue) {
+    public static <V> V toRead(V value, V nullValue, V defValue) {
         if (value == null || value.equals(nullValue))
-            return null;
-        return value == null ? defValue : value;
+            return defValue;
+        return value;
     }
 
 }
