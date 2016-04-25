@@ -4,8 +4,8 @@ import com.tny.game.worker.command.Command;
 
 public interface UserCommand<T> extends Command<T> {
 
-    public long getUserID();
+    long getUserID();
 
-    public int getProtocol();
+    int getProtocol();
 
 }

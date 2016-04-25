@@ -7,7 +7,7 @@ public class Task {
 
     private boolean finish;
 
-    private TaskStage fragments;
+    private TypeTaskStage fragments;
 
     boolean isFinish() {
         return finish;

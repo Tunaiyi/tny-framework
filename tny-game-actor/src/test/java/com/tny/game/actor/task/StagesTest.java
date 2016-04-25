@@ -1,9 +1,6 @@
 package com.tny.game.actor.task;
 
 import com.google.common.base.Supplier;
-import com.tny.game.actor.task.invok.TaskBooleanSupplier;
-import com.tny.game.actor.task.invok.TaskRunnable;
-import com.tny.game.actor.task.invok.TaskSupplier;
 import com.tny.game.base.item.Do;
 import com.tny.game.base.item.Done;
 import org.jmock.Expectations;
@@ -14,8 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 16/1/25.
@@ -28,19 +24,6 @@ public class StagesTest extends TaskStageTestUnits {
         final Runnable fn = context.mock(Runnable.class);
         context.checking(new Expectations() {{
             oneOf(fn).run();
-        }});
-        checkStage(
-                Stages.run(fn::run)
-                , true
-        );
-        context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testRun1() throws Exception {
-        final TaskRunnable fn = context.mock(TaskRunnable.class);
-        context.checking(new Expectations() {{
-            oneOf(fn).run(null);
         }});
         checkStage(
                 Stages.run(fn::run)
@@ -63,22 +46,6 @@ public class StagesTest extends TaskStageTestUnits {
                 , true, value
         );
         context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testSupply1() throws Exception {
-        final TaskSupplier<String> fn = context.mock(TaskSupplier.class);
-        String value = "10000";
-        context.checking(new Expectations() {{
-            oneOf(fn).get(null);
-            will(returnValue(value));
-        }});
-        checkStage(
-                Stages.supply(fn::get)
-                , true, value
-        );
-        context.assertIsSatisfied();
-
     }
 
     @Test
@@ -105,35 +72,7 @@ public class StagesTest extends TaskStageTestUnits {
                 Stages.awaitRun(() -> false, Duration.ofMillis(10))
                 , false
         );
-        assertNotNull(stage.getFirstCause());
-        context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testAwaitRun2() throws Exception {
-        final TaskBooleanSupplier fn = context.mock(TaskBooleanSupplier.class);
-        context.checking(new Expectations() {{
-            exactly(3).of(fn).getAsBoolean(null);
-            will(onConsecutiveCalls(
-                    returnValue(false),
-                    returnValue(false),
-                    returnValue(true)
-            ));
-        }});
-        checkStage(
-                Stages.awaitRun(fn::getAsBoolean)
-                , true
-        );
-        context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testAwaitRun3() throws Exception {
-        VoidTaskStage stage = checkStage(
-                Stages.awaitRun((context) -> false, Duration.ofMillis(10))
-                , false
-        );
-        assertNotNull(stage.getFirstCause());
+        assertNotNull(stage.getCause());
         context.assertIsSatisfied();
     }
 
@@ -158,39 +97,11 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        TaskStage<String> stage = checkStage(
+        TypeTaskStage<String> stage = checkStage(
                 Stages.awaitSupply(Do::fail, TIME_100)
                 , false, null
         );
-        assertNotNull(stage.getFirstCause());
-        context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testAwaitSupply2() throws Exception {
-        final TaskSupplier<Done<String>> fn = context.mock(TaskSupplier.class);
-        context.checking(new Expectations() {{
-            exactly(3).of(fn).get(null);
-            will(onConsecutiveCalls(
-                    returnValue(Do.fail()),
-                    returnValue(Do.fail()),
-                    returnValue(Do.succ(value))
-            ));
-        }});
-        checkStage(
-                Stages.awaitSupply(fn)
-                , true, value
-        );
-        context.assertIsSatisfied();
-    }
-
-    @Test
-    public void testAwaitSupply3() throws Exception {
-        TaskStage<String> stage = checkStage(
-                Stages.awaitSupply((context) -> Do.fail(), TIME_100)
-                , false, null
-        );
-        assertNotNull(stage.getFirstCause());
+        assertNotNull(stage.getCause());
         context.assertIsSatisfied();
     }
 
@@ -216,12 +127,12 @@ public class StagesTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
 
-        TaskStage<String> stage = checkStage(
+        TypeTaskStage<String> stage = checkStage(
                 Stages.yieldForFuture(future, TIME_100)
                 , false, null
         );
 
-        assertNotNull(stage.getFirstCause());
+        assertNotNull(stage.getCause());
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
         context.assertIsSatisfied();
 

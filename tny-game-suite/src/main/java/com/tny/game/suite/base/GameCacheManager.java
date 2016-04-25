@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,21 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
     protected Collection<O> getObjects(long playerID, Collection<?> ids) {
         List<String> keys = ids.stream().map(id -> this.cache.getKey(this.entityClass, playerID, id)).collect(Collectors.toList());
         return (Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<O> getObjects(String... keys) {
+        return (Collection<O>) this.cache.getObjectsByKeys(this.entityClass, Arrays.asList(keys));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<O> getObjects(Collection<String> keys) {
+        return (Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected O getObject(String key) {
+        return this.cache.getObjectByKey(this.entityClass, key);
     }
 
     protected O getByCache(Object... objects) {

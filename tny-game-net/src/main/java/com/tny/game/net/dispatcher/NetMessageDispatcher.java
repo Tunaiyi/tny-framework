@@ -16,7 +16,6 @@ import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
-import com.tny.game.worker.command.Command;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 抽象请求派发器
  *
  * @author KGTny
- * @ClassName: AbstractControllerDispatcher
- * @Description:
- * @date 2011-9-13 下午1:38:26
  * <p>
  * 抽象请求派发器
  * <p>
@@ -47,16 +43,16 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
     /**
      * Controller Map
      */
-    protected final Map<Integer, MethodHolder> methodHolder = new CopyOnWriteMap<>();
+    final Map<Integer, MethodHolder> methodHolder = new CopyOnWriteMap<>();
 
-    protected boolean checkTimeOut = true;
+    private boolean checkTimeOut = true;
 
     /**
      * 派发错误监听器
      */
-    protected final List<DispatcherRequestListener> listeners = new CopyOnWriteArrayList<DispatcherRequestListener>();
+    protected final List<DispatcherRequestListener> listeners = new CopyOnWriteArrayList<>();
 
-    public NetMessageDispatcher(boolean checkTimeOut) {
+    NetMessageDispatcher(boolean checkTimeOut) {
         this.checkTimeOut = checkTimeOut;
     }
 
@@ -183,12 +179,12 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     private static abstract class AbstractDispatcherCommand<S extends NetSession, H extends Message, O> implements DispatcherCommand<O> {
 
-        protected final AppContext appContext;
+        final AppContext appContext;
         protected H message;
         protected S session;
-        protected boolean executed = false;
+        boolean executed = false;
 
-        public AbstractDispatcherCommand(AppContext appContext, H message, S session) {
+        private AbstractDispatcherCommand(AppContext appContext, H message, S session) {
             this.appContext = appContext;
             this.message = message;
             this.session = session;
@@ -210,32 +206,13 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         }
 
         @Override
-        public void run() {
-            this.execute();
-        }
-
-        @Override
-        public boolean isWorking() {
+        public boolean isDone() {
             return true;
         }
 
         @Override
         public boolean isCompleted() {
             return this.executed;
-        }
-
-        @Override
-        public boolean isCanExecute() {
-            return true;
-        }
-
-        @Override
-        public Command<O> getCommand() {
-            return this;
-        }
-
-        @Override
-        public void fail(boolean excuted) {
         }
 
         @Override
@@ -249,7 +226,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
         private MessageFuture<?> future;
 
-        public ResponseDispatcherCommand(AppContext appContext, Response response, ClientSession session, MessageFuture<?> future) {
+        private ResponseDispatcherCommand(AppContext appContext, Response response, ClientSession session, MessageFuture<?> future) {
             super(appContext, response, session);
             this.future = future;
         }
@@ -263,28 +240,26 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (body == null)
                 return null;
             List<ResponseMonitor<?>> monitors = new ArrayList<>();//this.session.getResponseMonitors(body);
-            if (monitors != null) {
-                for (ResponseMonitor<?> mon : monitors) {
-                    ResponseMonitor<Object> monitor = (ResponseMonitor<Object>) mon;
-                    if (monitor.getMonitorType().isHandle(this.message.getID())) {
-                        try {
-                            List<Protocol> includes = monitor.includeController();
-                            if (!this.match(this.message, includes, true))
-                                continue;
-                            List<Protocol> excludes = monitor.excludeController();
-                            if (this.match(this.message, excludes, false))
-                                continue;
-                            monitor.handle(this.session, this.message, this.message.getBody(Object.class));
-                        } catch (Throwable e) {
-                            NetMessageDispatcher.DISPATCHER_LOG.error("call monitor handle {}", monitor.getClass(), e);
-                        }
+            for (ResponseMonitor<?> mon : monitors) {
+                ResponseMonitor<Object> monitor = (ResponseMonitor<Object>) mon;
+                if (monitor.getMonitorType().isHandle(this.message.getID())) {
+                    try {
+                        List<Protocol> includes = monitor.includeController();
+                        if (!this.match(this.message, includes, true))
+                            continue;
+                        List<Protocol> excludes = monitor.excludeController();
+                        if (this.match(this.message, excludes, false))
+                            continue;
+                        monitor.handle(this.session, this.message, this.message.getBody(Object.class));
+                    } catch (Throwable e) {
+                        NetMessageDispatcher.DISPATCHER_LOG.error("call monitor handle {}", monitor.getClass(), e);
                     }
                 }
             }
             return null;
         }
 
-        public boolean match(Message message, List<Protocol> filters, boolean defResult) {
+        private boolean match(Message message, List<Protocol> filters, boolean defResult) {
             if (filters != null && !filters.isEmpty()) {
                 for (Protocol controller : filters) {
                     if (controller.isOwn(message)) {
@@ -301,7 +276,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
         private final MethodHolder methodHolder;
 
-        public RequestDispatcherCommand(AppContext appContext, MethodHolder methodHolder, Request request, ServerSession session) {
+        private RequestDispatcherCommand(AppContext appContext, MethodHolder methodHolder, Request request, ServerSession session) {
             super(appContext, request, session);
             this.methodHolder = methodHolder;
         }
@@ -334,12 +309,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             return result;
         }
 
-        @Override
-        public void run() {
-            this.execute();
-        }
-
-        public CommandResult handleException(Throwable ex) {
+        private CommandResult handleException(Throwable ex) {
             NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", ex);
             DispatcherRequestErrorEvent event = new DispatcherRequestErrorEvent(this.message, this.methodHolder, ex);
             NetMessageDispatcher.this.fireExecuteException(event);
@@ -351,7 +321,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             }
         }
 
-        public CommandResult doExecute() throws Exception {
+        private CommandResult doExecute() throws Exception {
 
             this.checkExecutable();
 
@@ -381,7 +351,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             return result;
         }
 
-        public void checkExecutable() throws DispatchException {
+        private void checkExecutable() throws DispatchException {
 
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("检测请求 {}.{} 业务方法超时", this.methodHolder.getMethodClass(), this.methodHolder.getName());
@@ -427,7 +397,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                     NetMessageDispatcher.DISPATCHER_LOG.debug("获取校验码秘钥");
                 // 检测请求的正确性
-                if (checker != null && !checker.match(this.message)) {
+                if (!checker.match(this.message)) {
                     NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 请求被篡改", this.methodHolder.getMethodClass(), this.methodHolder.getName());
                     throw new DispatchException(CoreResponseCode.FALSIFY);
                 }

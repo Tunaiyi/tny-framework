@@ -48,7 +48,7 @@ public class String2Enum<T extends Enum<T>> extends AbstractSingleValueConverter
     @SuppressWarnings({"rawtypes", "unchecked"})
     public boolean canConvert(Class clazz) {
         for (Class<T> enumClass : this.enumClassList) {
-            if (clazz.isAssignableFrom(enumClass))
+            if (clazz != Object.class && clazz.isAssignableFrom(enumClass))
                 return true;
         }
         return false;

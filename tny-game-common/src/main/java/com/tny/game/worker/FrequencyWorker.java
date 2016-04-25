@@ -34,7 +34,7 @@ public class FrequencyWorker implements WorldWorker {
      */
     protected Thread currentThread;
 
-    protected CommandBox commandBox = new CoppyWorkerCommandBox();
+    protected CommandBox commandBox = new CopyWorkerCommandBox();
 
     protected Queue<CommandBox> commandBoxList = new ConcurrentLinkedQueue<CommandBox>();
 

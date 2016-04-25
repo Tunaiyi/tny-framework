@@ -18,10 +18,10 @@ public abstract class GameModuleHandler<M extends Module, DTO> implements Module
         return this.moduleType;
     }
 
-    public abstract DTO updateDTO(FeatureExplorer featureExplorer, DTO dto);
+    public abstract DTO updateDTO(FeatureExplorer explorer, DTO dto);
 
     @Override
-    public void removeModule(FeatureExplorer featureExplorer) {
+    public void removeModule(FeatureExplorer explorer) {
     }
 
     @Override

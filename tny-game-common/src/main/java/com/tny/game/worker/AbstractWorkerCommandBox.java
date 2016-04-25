@@ -2,7 +2,6 @@ package com.tny.game.worker;
 
 import com.tny.game.LogUtils;
 import com.tny.game.worker.command.Command;
-import com.tny.game.worker.command.CommandTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,32 +11,33 @@ public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected volatile Queue<CommandTask<?>> queue;
+    protected volatile Queue<Command<?>> queue;
 
-    public AbstractWorkerCommandBox(Queue<CommandTask<?>> queue) {
+    public AbstractWorkerCommandBox(Queue<Command<?>> queue) {
         super();
         this.queue = queue;
     }
 
-    protected abstract Queue<CommandTask<?>> acceptQueue();
+    protected abstract Queue<Command<?>> acceptQueue();
 
-    protected Queue<CommandTask<?>> getQueue() {
+    protected Queue<Command<?>> getQueue() {
         return queue;
     }
 
     protected <T> boolean executeIfCurrent0(Command<T> command, Callback<T> callBacks) {
-        CommandTask<T> commandTask = new DefaultCommandTask<T, Command<T>>(command, callBacks);
-        if (this.worker != null && this.worker.getWorkerThread() == Thread.currentThread() && commandTask.getCommand().isCanExecute()) {
-            commandTask.run();
+        if (callBacks != null)
+            command = new ProxyCommand<>(command, callBacks);
+        if (this.worker != null && this.worker.getWorkerThread() == Thread.currentThread()) {
+            command.execute();
         }
-        if (!commandTask.getCommand().isCompleted()) {
-            addTask(commandTask);
+        if (!command.isCompleted()) {
+            addCommand(command);
         }
         return true;
     }
 
-    protected void addTask(CommandTask<?> futureTask) {
-        this.queue.add(futureTask);
+    protected void addCommand(Command<?> command) {
+        this.queue.add(command);
     }
 
     @Override

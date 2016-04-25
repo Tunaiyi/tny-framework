@@ -2,13 +2,13 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.dispatcher.command.UserCommand;
 import com.tny.game.worker.Callback;
-import com.tny.game.worker.DefaultCommandTask;
+import com.tny.game.worker.ProxyCommand;
 
-public class DispatchCommandTask<T> extends DefaultCommandTask<T, UserCommand<T>> {
+public class DispatchCommand<T> extends ProxyCommand<T, UserCommand<T>> {
 
     //	private ControllerDispatcherInfo dispatcherInfo;
 
-    public DispatchCommandTask(UserCommand<T> command, Callback<T> callback) {
+    public DispatchCommand(UserCommand<T> command, Callback<T> callback) {
         super(command, callback);
     }
 

@@ -5,6 +5,7 @@ import net.paoding.rose.jade.annotation.SQLParam;
 import net.paoding.rose.jade.annotation.ShardBy;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface CacheDAO {
 
@@ -33,5 +34,9 @@ public interface CacheDAO {
     int[] delete(@ShardBy @SQLParam("k") Collection<String> keys);
 
     void flushAll(@ShardBy @SQLParam("hash") Object hash);
+
+    List<String> getAllKeys(@ShardBy @SQLParam("hash") Object hash);
+
+    List<String> getKeys(@SQLParam("uid") long uid, @ShardBy @SQLParam("hash") Object hash);
 
 }

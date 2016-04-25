@@ -34,11 +34,10 @@ public abstract class BaseTaskStage<R> implements InnerTaskStage<R> {
         this.head = head;
     }
 
-
     @Override
-    public <T extends CommonTaskStage> T setNext(T next, TaskStageKey key) {
+    public <T extends TaskStage> T setNext(T next, TaskStageKey key) {
         Stages.checkKey(key);
-        this.next = next;
+        this.next = StageUtils.as(next);
         return next;
     }
 

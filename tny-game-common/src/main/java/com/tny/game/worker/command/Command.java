@@ -9,38 +9,25 @@ package com.tny.game.worker.command;
 public interface Command<O> {
 
     /**
-     * 执行返回
-     *
-     * @return
+     * @return 执行返回
      */
-    public abstract O execute();
+    O execute();
 
     /**
-     * 获取执行延迟时间
-     *
-     * @return
+     * @return 是否处理完成(包括成功, 失效)
      */
-    public boolean isCanExecute();
+    boolean isDone();
 
     /**
-     * 获取命令名字
-     *
-     * @return
+     * @return 是否成功完成
      */
-    public String getName();
+    boolean isCompleted();
 
     /**
-     * 是否有效
-     *
-     * @return
+     * @return 获取命令名字
      */
-    public boolean isWorking();
-
-    /**
-     * 是否完成
-     *
-     * @return
-     */
-    public boolean isCompleted();
+    default String getName() {
+        return this.getClass().getName();
+    }
 
 }

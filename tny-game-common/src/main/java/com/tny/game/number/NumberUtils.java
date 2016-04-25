@@ -51,6 +51,10 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     public static Number add(Number one, Number other) {
+        if (one == null)
+            return other;
+        if (other == null)
+            return one;
         if (one instanceof Integer)
             return one.intValue() + other.intValue();
         if (one instanceof Long)
@@ -67,6 +71,10 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     public static Number sub(Number one, Number other) {
+        if (one == null)
+            return other;
+        if (other == null)
+            return one;
         if (one instanceof Integer)
             return one.intValue() - other.intValue();
         if (one instanceof Long)
@@ -83,6 +91,10 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     public static Number multiply(Number one, Number other) {
+        if (one == null)
+            return other;
+        if (other == null)
+            return one;
         if (one instanceof Integer)
             return one.intValue() * other.intValue();
         if (one instanceof Long)
@@ -99,6 +111,10 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     public static Number divide(Number one, Number other) {
+        if (one == null)
+            return other;
+        if (other == null)
+            return one;
         if (one instanceof Integer)
             return one.intValue() / other.intValue();
         if (one instanceof Long)
@@ -115,6 +131,10 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
     }
 
     public static Number mod(Number one, Number other) {
+        if (one == null)
+            return other;
+        if (other == null)
+            return one;
         if (one instanceof Integer)
             return one.intValue() % other.intValue();
         if (one instanceof Long)

@@ -19,9 +19,9 @@ public abstract class CommandBox {
 
     public abstract boolean unbindWorker();
 
-    public abstract boolean register(CommandBox commandBox);
+    protected abstract boolean register(CommandBox commandBox);
 
-    public abstract boolean unregister(CommandBox commandBox);
+    protected abstract boolean unregister(CommandBox commandBox);
 
     public abstract int getRunSize();
 

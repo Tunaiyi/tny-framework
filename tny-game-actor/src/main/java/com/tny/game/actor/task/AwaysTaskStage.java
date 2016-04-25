@@ -3,12 +3,12 @@ package com.tny.game.actor.task;
 /**
  * Created by Kun Yang on 16/1/22.
  */
-class AwaysVoidTaskStage extends BaseTaskStage<Void> {
+class AwaysTaskStage extends BaseTaskStage<Void> {
 
     protected TaskFragment<Object, Object> fragment;
 
     @SuppressWarnings("unchecked")
-    public AwaysVoidTaskStage(CommonTaskStage head, TaskFragment<?, ?> fragment) {
+    public AwaysTaskStage(CommonTaskStage head, TaskFragment<?, ?> fragment) {
         super(head);
         this.fragment = (TaskFragment<Object, Object>) fragment;
     }

@@ -1,7 +1,7 @@
 package com.tny.game.worker;
 
 import com.tny.game.LogUtils;
-import com.tny.game.worker.command.CommandTask;
+import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,30 +9,30 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CoppyWorkerCommandBox extends AbstractWorkerCommandBox {
+public class CopyWorkerCommandBox extends AbstractWorkerCommandBox {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected Queue<CommandTask<?>> fromQueue;
+    protected Queue<Command<?>> fromQueue;
 
-    protected Queue<CommandTask<?>> toQueue;
+    protected Queue<Command<?>> toQueue;
 
     protected AtomicBoolean accpetState = new AtomicBoolean(false);
 
-    public CoppyWorkerCommandBox(Queue<CommandTask<?>> fromQueue, Queue<CommandTask<?>> toQueue) {
-        super(new ConcurrentLinkedQueue<CommandTask<?>>());
+    public CopyWorkerCommandBox(Queue<Command<?>> fromQueue, Queue<Command<?>> toQueue) {
+        super(new ConcurrentLinkedQueue<>());
         this.fromQueue = fromQueue;
         this.toQueue = toQueue;
         this.queue = fromQueue;
     }
 
-    public CoppyWorkerCommandBox() {
-        this(new ConcurrentLinkedQueue<CommandTask<?>>(), new ConcurrentLinkedQueue<CommandTask<?>>());
+    public CopyWorkerCommandBox() {
+        this(new ConcurrentLinkedQueue<>(), new ConcurrentLinkedQueue<>());
     }
 
-    protected Queue<CommandTask<?>> acceptQueue() {
+    protected Queue<Command<?>> acceptQueue() {
         synchronized (this) {
-            Queue<CommandTask<?>> accQueue = this.queue;
+            Queue<Command<?>> accQueue = this.queue;
             this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
             this.queue = accQueue;
             return accQueue;
@@ -54,25 +54,19 @@ public class CoppyWorkerCommandBox extends AbstractWorkerCommandBox {
     }
 
     public void run() {
-        Queue<CommandTask<?>> currentRunQueue = this.acceptQueue();
+        Queue<Command<?>> currentRunQueue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         runSize = 0;
-        CommandTask<?> task = currentRunQueue.poll();
-        while (task != null) {
-            if (task.getCommand().isWorking()) {
-                if (task.getCommand().isCanExecute()) {
-                    task.run();
-                    runSize++;
-                    if (!task.getCommand().isCompleted()) {
-                        this.queue.add(task);
-                    }
-                } else {
-                    this.queue.add(task);
+        Command<?> command = currentRunQueue.poll();
+        while (command != null) {
+            if (command.isDone()) {
+                command.execute();
+                runSize++;
+                if (!command.isCompleted()) {
+                    this.queue.add(command);
                 }
-            } else {
-                task.fail(false);
             }
-            task = currentRunQueue.poll();
+            command = currentRunQueue.poll();
         }
         for (CommandBox commandBox : commandBoxList) {
             commandBox.run();

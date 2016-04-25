@@ -1,43 +1,39 @@
 package com.tny.game.worker;
 
-import com.tny.game.worker.command.CommandTask;
+import com.tny.game.worker.command.Command;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SimpleWorkerCommandBox extends AbstractWorkerCommandBox {
 
-    public SimpleWorkerCommandBox(Queue<CommandTask<?>> queue) {
+    public SimpleWorkerCommandBox(Queue<Command<?>> queue) {
         super(queue);
     }
 
     public SimpleWorkerCommandBox() {
-        super(new ConcurrentLinkedQueue<CommandTask<?>>());
+        super(new ConcurrentLinkedQueue<>());
     }
 
     @Override
-    protected Queue<CommandTask<?>> acceptQueue() {
+    protected Queue<Command<?>> acceptQueue() {
         return queue;
     }
 
     public void run() {
-        Queue<CommandTask<?>> queue = this.acceptQueue();
+        Queue<Command<?>> queue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         runSize = 0;
-        for (CommandTask<?> task : queue) {
-            if (!task.getCommand().isWorking()) {
-                task.fail(false);
+        for (Command<?> task : queue) {
+            if (!task.isDone()) {
                 queue.remove(task);
                 continue;
             }
-            if (task.getCommand().isCanExecute()) {
-                task.run();
-                runSize++;
-                if (!task.getCommand().isCompleted()) {
-                    continue;
-                }
-            }
-            if (task.getCommand().isCompleted()) {
+            task.execute();
+            runSize++;
+            if (!task.isCompleted()) {
+                continue;
+            } else {
                 queue.remove(task);
             }
         }

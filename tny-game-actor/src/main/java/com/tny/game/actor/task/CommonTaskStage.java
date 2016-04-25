@@ -3,15 +3,11 @@ package com.tny.game.actor.task;
 /**
  * Created by Kun Yang on 16/1/22.
  */
-public interface CommonTaskStage {
+public interface CommonTaskStage extends TaskStage {
 
     CommonTaskStage getHead();
 
     CommonTaskStage getNext();
-
-    default Object getFinalResult() {
-        return this.getHead().getTailResult();
-    }
 
     default Object getTailResult() {
         CommonTaskStage next = getNext();
@@ -27,7 +23,7 @@ public interface CommonTaskStage {
 
     void setHead(CommonTaskStage head, TaskStageKey key);
 
-    <T extends CommonTaskStage> T setNext(T next, TaskStageKey key);
+    <T extends TaskStage> T setNext(T next, TaskStageKey key);
 
     boolean isNoneParam();
 
@@ -88,26 +84,28 @@ public interface CommonTaskStage {
 
     void start();
 
-    default boolean isDone() {
+    default boolean isCurrnetDone() {
         return getTaskFragment().isDone();
     }
 
-    default boolean isFinalDone() {
+    default boolean isDone() {
         return this.getHead().isAllDone();
     }
 
-    default boolean isFinalFailed() {
+    default boolean isFailed() {
         return this.getHead().isAllFailed();
     }
 
-    default boolean isFinalSuccess() {
+    default boolean isSuccess() {
         return this.getHead().isAllSuccess();
     }
 
-
-    default Throwable getFinalCause() {
+    default Throwable getCause() {
         return this.getHead().getFirstCause();
     }
 
+    default Object getResult() {
+        return this.getHead().getTailResult();
+    }
 
 }

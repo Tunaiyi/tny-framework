@@ -1,20 +1,44 @@
 package com.tny.game.actor.task;
 
 import com.tny.game.actor.task.Stages.*;
-import com.tny.game.actor.task.invok.*;
+import com.tny.game.actor.task.invok.AcceptDone;
+import com.tny.game.actor.task.invok.ApplyDone;
+import com.tny.game.actor.task.invok.CatcherRun;
+import com.tny.game.actor.task.invok.CatcherSupplier;
+import com.tny.game.actor.task.invok.RunDone;
+import com.tny.game.actor.task.invok.SupplyDone;
 import com.tny.game.base.item.Done;
 import com.tny.game.common.ExceptionUtils;
 
 import java.time.Duration;
-import java.util.function.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Created by Kun Yang on 16/1/22.
  */
-interface InnerTaskStage<R> extends TaskStage<R> {
+interface InnerTaskStage<R> extends CommonTaskStage, TypeTaskStage<R> {
 
-    default boolean isFinalSuccess() {
-        return this.getHead().isAllSuccess();
+    @Override
+    default boolean isDone() {
+        return CommonTaskStage.super.isDone();
+    }
+
+    @Override
+    default boolean isFailed() {
+        return CommonTaskStage.super.isFailed();
+    }
+
+    default boolean isSuccess() {
+        return CommonTaskStage.super.isSuccess();
+    }
+
+    @Override
+    default Throwable getCause() {
+        return CommonTaskStage.super.getCause();
     }
 
     default boolean isNoneParam() {
@@ -27,45 +51,32 @@ interface InnerTaskStage<R> extends TaskStage<R> {
 
     //region Join 链接另一个fn返回的代码段
 
+    @Override
     default VoidTaskStage joinSupply(Supplier<? extends VoidTaskStage> fn) {
         checkNextExist();
         return setNext(new JoinTaskStage<>(this.getHead(), new JoinSupplyFragment<>(fn)), Stages.KEY);
     }
 
-    default VoidTaskStage joinSupplyWith(TaskSupplier<? extends VoidTaskStage> fn) {
-        checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new TaskJoinSupplyFragment<>(fn)), Stages.KEY);
-    }
-
+    @Override
     default VoidTaskStage joinAccept(Function<R, ? extends VoidTaskStage> fn) {
         checkNextExist();
         return setNext(new JoinTaskStage<>(this.getHead(), new JoinApplyFragment<>(fn)), Stages.KEY);
     }
 
-    default VoidTaskStage joinAcceptWith(TaskFunction<R, ? extends VoidTaskStage> fn) {
-        checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new TaskJoinApplyFragment<>(fn)), Stages.KEY);
-    }
-
-    default <T> TaskStage<T> joinRun(Supplier<? extends TaskStage<T>> fn) {
+    default <T> TypeTaskStage<T> joinRun(Supplier<? extends TypeTaskStage<T>> fn) {
         checkNextExist();
         return setNext(new JoinTaskStage<>(this.getHead(), new JoinSupplyFragment<>(fn)), Stages.KEY);
     }
 
-    default <T> TaskStage<T> joinRunWith(TaskSupplier<? extends TaskStage<T>> fn) {
-        checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new TaskJoinSupplyFragment<>(fn)), Stages.KEY);
-    }
-
     @Override
-    default <NR> TaskStage<NR> joinApply(Function<R, TaskStage<NR>> fn) {
+    default <NR> TypeTaskStage<NR> joinApply(Function<R, ? extends TypeTaskStage<NR>> fn) {
         checkNextExist();
         return setNext(new JoinTaskStage<>(this.getHead(), new JoinApplyFragment<>(fn)), Stages.KEY);
     }
 
-    default <NR> TaskStage<NR> joinApplyWith(TaskFunction<R, TaskStage<NR>> fn) {
-        checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new TaskJoinApplyFragment<>(fn)), Stages.KEY);
+    @Override
+    default Object getResult() {
+        return CommonTaskStage.super.getResult();
     }
 
     //endregion
@@ -78,142 +89,75 @@ interface InnerTaskStage<R> extends TaskStage<R> {
     }
 
     @Override
-    default VoidTaskStage thenRunWith(TaskRunnable fn) {
-        checkNextExist();
-        VoidTaskStage stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskRunFragment(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> thenSupply(Supplier<T> fn) {
+    default <T> TypeTaskStage<T> thenSupply(Supplier<T> fn) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new SupplyFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
-    @Override
-    default <T> TaskStage<T> thenSupplyWith(TaskSupplier<T> fn) {
-        checkNextExist();
-        InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskSupplyFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
 
     @Override
-    default <N> TaskStage<N> thenApply(Function<R, N> fn) {
+    default <N> TypeTaskStage<N> thenApply(Function<R, N> fn) {
         checkNextExist();
         InnerTaskStage<N> stage = new ThenSuccessTaskStage<>(this.getHead(), new ApplyFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default <N> TaskStage<N> thenApplyWith(TaskFunction<R, N> fn) {
-        checkNextExist();
-        InnerTaskStage<N> stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskApplyFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
     default VoidTaskStage thenAccept(Consumer<R> fn) {
         checkNextExist();
-        VoidTaskStage stage = new ThenSuccessTaskStage<>(this.getHead(), new AcceptFragment<>(fn));
+        InnerTaskStage<Void> stage = new ThenSuccessTaskStage<>(this.getHead(), new AcceptFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
-    @Override
-    default VoidTaskStage thenAcceptWith(TaskConsumer<R> fn) {
-        checkNextExist();
-        VoidTaskStage stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskAcceptFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
     //endregion
 
     //region done 完成时(无论是否成功)处理
     @Override
     default VoidTaskStage doneRun(RunDone fn) {
         checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new DoneRunFragment(fn));
+        InnerTaskStage<Void> stage = new ThenDoneTaskStage<>(this.getHead(), new DoneRunFragment(fn));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default VoidTaskStage doneRunWith(TaskRunDone fn) {
-        checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new TaskDoneRunFragment(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> doneSupply(SupplyDone<T> fn) {
+    default <T> TypeTaskStage<T> doneSupply(SupplyDone<T> fn) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenDoneTaskStage<>(this.getHead(), new DoneSupplyFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default <T> TaskStage<T> doneSupplyWith(TaskSupplyDone<T> fn) {
-        checkNextExist();
-        InnerTaskStage<T> stage = new ThenDoneTaskStage<>(this.getHead(), new TaskDoneSupplyFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> doneApply(ApplyDone<R, T> fn) {
+    default <T> TypeTaskStage<T> doneApply(ApplyDone<R, T> fn) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenDoneTaskStage<>(this.getHead(), new DoneApplyFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default <T> TaskStage<T> doneApplyWith(TaskApplyDone<R, T> fn) {
-        checkNextExist();
-        InnerTaskStage<T> stage = new ThenDoneTaskStage<>(this.getHead(), new TaskDoneApplyFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
     default VoidTaskStage doneAccept(AcceptDone<R> fn) {
         checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new DoneAcceptFragment<>(fn));
+        InnerTaskStage<Void> stage = new ThenDoneTaskStage<>(this.getHead(), new DoneAcceptFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
-    @Override
-    default VoidTaskStage doneAcceptWith(TaskAcceptDone<R> fn) {
-        checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new TaskDoneAcceptFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
     //endregion
 
     //region throw 异常时处理
     @Override
     default VoidTaskStage thenThrow(CatcherRun fn) {
         checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new ThrowRunFragment(fn));
+        InnerTaskStage<Void> stage = new ThenDoneTaskStage<>(this.getHead(), new ThrowRunFragment(fn));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default VoidTaskStage thenThrow(TaskCatcherRun fn) {
-        checkNextExist();
-        VoidTaskStage stage = new ThenDoneTaskStage<>(this.getHead(), new TaskThrowRunFragment(fn));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default TaskStage<R> thenThrow(CatcherSupplier<R> fn) {
+    default TypeTaskStage<R> thenThrow(CatcherSupplier<R> fn) {
         checkNextExist();
         InnerTaskStage<R> stage = new ThenDoneTaskStage<>(this.getHead(), new ThrowSupplyFragment<>(fn));
         return setNext(stage, Stages.KEY);
     }
 
-
-    @Override
-    default TaskStage<R> thenThrow(TaskCatcherSupplier<R> fn) {
-        checkNextExist();
-        InnerTaskStage<R> stage = new ThenDoneTaskStage<>(this.getHead(), new TaskThrowSupplyFragment<>(fn));
-        return setNext(stage, Stages.KEY);
-    }
     //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
@@ -225,67 +169,31 @@ interface InnerTaskStage<R> extends TaskStage<R> {
     @Override
     default VoidTaskStage awaitRun(BooleanSupplier fn, Duration timeout) {
         checkNextExist();
-        VoidTaskStage stage = new AwaysVoidTaskStage(this.getHead(), new WaitRunFragment(fn, timeout));
+        InnerTaskStage<Void> stage = new AwaysTaskStage(this.getHead(), new WaitRunFragment(fn, timeout));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default VoidTaskStage awaitRunWith(TaskBooleanSupplier fn) {
-        return this.awaitRunWith(fn, null);
-    }
-
-    @Override
-    default VoidTaskStage awaitRunWith(TaskBooleanSupplier fn, Duration timeout) {
-        checkNextExist();
-        VoidTaskStage stage = new AwaysVoidTaskStage(this.getHead(), new TaskWaitRunFragment(fn, timeout));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> awaitSupply(Supplier<Done<T>> fn) {
+    default <T> TypeTaskStage<T> awaitSupply(Supplier<Done<T>> fn) {
         return this.awaitSupply(fn, null);
     }
 
     @Override
-    default <T> TaskStage<T> awaitSupply(Supplier<Done<T>> fn, Duration timeout) {
+    default <T> TypeTaskStage<T> awaitSupply(Supplier<Done<T>> fn, Duration timeout) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new WaitSupplyFragment<>(fn, timeout));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default <T> TaskStage<T> awaitSupplyWith(TaskSupplier<Done<T>> fn) {
-        return this.awaitSupplyWith(fn, null);
-    }
-
-    @Override
-    default <T> TaskStage<T> awaitSupplyWith(TaskSupplier<Done<T>> fn, Duration timeout) {
-        checkNextExist();
-        InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskWaitSupplyFragment<>(fn, timeout));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> awaitApply(Function<R, Done<T>> fn) {
+    default <T> TypeTaskStage<T> awaitApply(Function<R, Done<T>> fn) {
         return this.awaitApply(fn, null);
     }
 
     @Override
-    default <T> TaskStage<T> awaitApply(Function<R, Done<T>> fn, Duration timeout) {
+    default <T> TypeTaskStage<T> awaitApply(Function<R, Done<T>> fn, Duration timeout) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new WaitApplyFragment<>(fn, timeout));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default <T> TaskStage<T> awaitApplyWith(TaskFunction<R, Done<T>> fn) {
-        return this.awaitApplyWith(fn, null);
-    }
-
-    @Override
-    default <T> TaskStage<T> awaitApplyWith(TaskFunction<R, Done<T>> fn, Duration timeout) {
-        checkNextExist();
-        InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new TaskWaitApplyFragment<>(fn, timeout));
         return setNext(stage, Stages.KEY);
     }
 
@@ -297,19 +205,7 @@ interface InnerTaskStage<R> extends TaskStage<R> {
     @Override
     default VoidTaskStage awaitAccept(Predicate<R> fn, Duration timeout) {
         checkNextExist();
-        VoidTaskStage stage = new AwaysVoidTaskStage(this.getHead(), new WaitAcceptFragment<>(fn, timeout));
-        return setNext(stage, Stages.KEY);
-    }
-
-    @Override
-    default VoidTaskStage awaitAcceptWith(TaskPredicate<R> fn) {
-        return this.awaitAcceptWith(fn, null);
-    }
-
-    @Override
-    default VoidTaskStage awaitAcceptWith(TaskPredicate<R> fn, Duration timeout) {
-        checkNextExist();
-        VoidTaskStage stage = new AwaysVoidTaskStage(this.getHead(), new TaskWaitAcceptFragment<>(fn, timeout));
+        InnerTaskStage<Void> stage = new AwaysTaskStage(this.getHead(), new WaitAcceptFragment<>(fn, timeout));
         return setNext(stage, Stages.KEY);
     }
     //endregion

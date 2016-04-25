@@ -9,16 +9,15 @@ import java.util.Map;
 
 public abstract class AutoMethod<I extends Annotation, R extends Annotation, P extends Annotation> {
 
-    private I autoInvoke;
+    protected I autoInvoke;
 
-    private R autoReturn;
+    protected R autoReturn;
 
-    private Map<Integer, P> autoParamMap;
+    protected Map<Integer, P> autoParamMap;
 
     protected AutoMethod(Method method, Class<I> iClass, Class<R> rClass, Class<P> pClass) {
         this.initAutoSave(method, iClass, rClass, pClass);
     }
-
 
     @SuppressWarnings("unchecked")
     protected void initAutoSave(Method method, Class<I> iClass, Class<R> rClass, Class<P> pClass) {

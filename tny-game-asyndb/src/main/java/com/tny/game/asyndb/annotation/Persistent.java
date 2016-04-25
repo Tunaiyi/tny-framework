@@ -23,17 +23,6 @@ public @interface Persistent {
     boolean asyn() default true;
 
     /**
-     * 如果更新的对象不是同一个时是否替换
-     * replaceObject = true :
-     * 更新对象直接替换内存对象
-     * replaceObject = false
-     * 更新对象不是内存对象则刨出异常
-     *
-     * @return
-     */
-    boolean replaceObject() default false;
-
-    /**
      * 获取数据库同步器类型
      *
      * @return

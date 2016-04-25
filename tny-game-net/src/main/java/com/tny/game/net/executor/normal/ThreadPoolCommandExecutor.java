@@ -5,7 +5,7 @@ import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.collection.LinkedTransferQueue;
 import com.tny.game.log.CoreLogger;
-import com.tny.game.net.dispatcher.DispatchCommandTask;
+import com.tny.game.net.dispatcher.DispatchCommand;
 import com.tny.game.net.dispatcher.DispatcherCommand;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.Session;
@@ -13,7 +13,7 @@ import com.tny.game.net.dispatcher.command.UserCommand;
 import com.tny.game.net.dispatcher.command.UserCommandBox;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
 import com.tny.game.worker.Callback;
-import com.tny.game.worker.command.CommandTask;
+import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +36,12 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         int corePoolSize = Integer.parseInt(System.getProperty("tny.server.executor.corePoolSize", "4"));
         int maximumPoolSize = Integer.parseInt(System.getProperty("tny.server.executor.maximumPoolSize", "8"));
         long keepAliveTime = Integer.parseInt(System.getProperty("tny.server.executor.keepAliveTime", "720000"));
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedTransferQueue<Runnable>(), new CoreThreadFactory(
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedTransferQueue<>(), new CoreThreadFactory(
                 "ThreadPoolCommandExecutorPool"));
     }
 
     public ThreadPoolCommandExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime) {
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedTransferQueue<Runnable>(), new CoreThreadFactory(
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedTransferQueue<>(), new CoreThreadFactory(
                 "ThreadPoolCommandExecutorPool"));
     }
 
@@ -64,7 +64,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
 
     private static class ChildExecutor implements UserCommandBox, Runnable {
 
-        private final Queue<CommandTask<?>> commandQueue = new ConcurrentLinkedQueue<CommandTask<?>>();
+        private final Queue<Command<?>> commandQueue = new ConcurrentLinkedQueue<>();
 
         private final ExecutorService executorService;
 
@@ -92,24 +92,11 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         }
 
         @Override
-        public boolean addCommand(UserCommand<?> command) {
-            if (!this.executorService.isShutdown()) {
-                CommandTask<?> commandTask = new DispatchCommandTask<>(command, null);
-                this.commandQueue.offer(commandTask);
-                if (this.start.compareAndSet(false, true)) {
-                    this.executorService.submit(this);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        @Override
         public <T> boolean appoint(UserCommand<T> command, Callback<T> callback) {
             if (!this.executorService.isShutdown()) {
-                CommandTask<?> commandTask = new DispatchCommandTask<T>(command, callback);
-                if (this.thread != null && this.thread == Thread.currentThread() && commandTask.getCommand().isCanExecute()) {
-                    commandTask.run();
+                Command<?> commandTask = new DispatchCommand<>(command, callback);
+                if (this.thread != null && this.thread == Thread.currentThread()) {
+                    commandTask.execute();
                 } else {
                     this.commandQueue.offer(commandTask);
                     if (this.start.compareAndSet(false, true)) {
@@ -125,12 +112,12 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         public void run() {
             this.thread = Thread.currentThread();
             for (; ; ) {
-                CommandTask<?> task = this.commandQueue.poll();
-                if (task != null && task.getCommand().isCanExecute()) {
+                Command<?> task = this.commandQueue.poll();
+                if (task != null) {
                     try {
-                        task.run();
+                        task.execute();
                     } catch (Exception e) {
-                        LOG_NET.error("run command task {} exception", task.getCommand().getName(), e);
+                        LOG_NET.error("run command task {} exception", task.getName(), e);
                     }
                 } else {
                     if (this.start.compareAndSet(true, false)) {
@@ -149,18 +136,6 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         public int size() {
             return this.commandQueue.size();
         }
-
-        //		public String getName() {
-        //			return name;
-        //		}
-        //
-        //		public Thread getWorkerThread() {
-        //			return thread;
-        //		}
-        //
-        //		public boolean isRunning() {
-        //			return thread != null;
-        //		}
 
         @Override
         public boolean isEmpty() {

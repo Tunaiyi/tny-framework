@@ -16,4 +16,8 @@ public class AutoDBMethod extends AutoMethod<AutoDB, AutoDBReturn, AutoDBParam> 
         super(method, AutoDB.class, AutoDBReturn.class, AutoDBParam.class);
     }
 
+    @Override
+    public boolean isHandleInvoke() {
+        return super.isHandleInvoke() && this.autoInvoke.value();
+    }
 }

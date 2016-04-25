@@ -9,11 +9,11 @@ import net.paoding.rose.jade.annotation.SQLParam;
 import net.paoding.rose.jade.annotation.ShardBy;
 
 import java.util.Collection;
+import java.util.List;
 
 @DAO
 public interface GameCacheDAO extends CacheDAO, ShardCacheDAO {
 
-    String TABLE_PLACEHOLDER = "$T";
     String TABLE = "`" + TABLE_PLACEHOLDER + "`";
     String FIELD = "`key`, `flags`, `data`, `expire`, `saveAt`";
     String FULL_FIELD = FIELD + ", `uid`, `itemID`, `number`";
@@ -70,5 +70,13 @@ public interface GameCacheDAO extends CacheDAO, ShardCacheDAO {
     @Override
     @SQL("TRUNCATE TABLE " + TABLE)
     void flushAll(@ShardBy @SQLParam("hash") Object hash);
+
+    @Override
+    @SQL("SELECT `key` FROM " + TABLE)
+    List<String> getAllKeys(@ShardBy @SQLParam("hash") Object hash);
+
+    @Override
+    @SQL("SELECT `key` FROM " + TABLE + " WHERE `UID` = :uid")
+    List<String> getKeys(@SQLParam("uid") long uid, @ShardBy @SQLParam("hash") Object hash);
 
 }

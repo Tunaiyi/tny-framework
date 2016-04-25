@@ -24,6 +24,8 @@ public abstract class BaseCommand<O> implements Command<O> {
 
     @Override
     public O execute() {
+        if(isCanExecute())
+            return null;
         try {
             return this.action();
         } catch (Exception exception) {
@@ -64,10 +66,9 @@ public abstract class BaseCommand<O> implements Command<O> {
 
     @Override
     public boolean isCompleted() {
-        return this.executed && !this.isWorking();
+        return this.executed && !this.isDone();
     }
 
-    @Override
     public boolean isCanExecute() {
         return getDelay() <= 0;
     }

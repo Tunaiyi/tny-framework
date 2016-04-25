@@ -2,7 +2,6 @@ package com.tny.game.worker;
 
 import com.tny.game.LogUtils;
 import com.tny.game.worker.command.Command;
-import com.tny.game.worker.command.CommandTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +18,9 @@ public abstract class WorkerCommandBox extends CommandBox {
 
     protected int runSize;
 
-    protected abstract Queue<CommandTask<?>> acceptQueue();
+    protected volatile Queue<CommandBox> commandBoxList;
 
-    protected Queue<CommandBox> commandBoxList = new ConcurrentLinkedQueue<CommandBox>();
+    protected abstract Queue<Command<?>> acceptQueue();
 
     protected abstract <T> boolean executeIfCurrent0(Command<T> command, Callback<T> callBack);
 
@@ -47,11 +46,19 @@ public abstract class WorkerCommandBox extends CommandBox {
         return worker;
     }
 
+    private Queue<CommandBox> boxes() {
+        if (commandBoxList != null)
+            return commandBoxList;
+        synchronized (this) {
+            this.commandBoxList = new ConcurrentLinkedQueue<>();
+        }
+        return this.commandBoxList;
+    }
+
     @Override
     public boolean register(CommandBox commandBox) {
         if (commandBox.bindWorker(this.worker)) {
-            CommandBox workerCommandBox = (WorkerCommandBox) commandBox;
-            this.commandBoxList.add(workerCommandBox);
+            boxes().add(commandBox);
             return true;
         }
         return false;
@@ -60,7 +67,7 @@ public abstract class WorkerCommandBox extends CommandBox {
     @Override
     public boolean unregister(CommandBox commandBox) {
         if (commandBox.unbindWorker()) {
-            return this.commandBoxList.remove(commandBox);
+            return boxes().remove(commandBox);
         }
         return false;
     }

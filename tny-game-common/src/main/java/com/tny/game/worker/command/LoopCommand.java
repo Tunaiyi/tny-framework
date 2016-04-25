@@ -23,16 +23,16 @@ public abstract class LoopCommand extends BaseCommand<Object> {
             long delay = nextInterval();
             if (delay <= STOP_LOOP) {
                 executed = true;
-            } else if (isWorking()) {
+            } else if (isDone()) {
                 delay(delay);
                 executed = false;
             }
         } catch (Exception e) {
-            if (isWorking()) {
+            if (isDone()) {
                 long delay = nextInterval();
                 if (delay <= STOP_LOOP) {
                     executed = true;
-                } else if (isWorking()) {
+                } else if (isDone()) {
                     delay(delay);
                     executed = false;
                 }

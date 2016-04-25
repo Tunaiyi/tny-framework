@@ -29,35 +29,33 @@ public class TaskStageTestUnits {
     static final Duration TIME_200 = Duration.ofMillis(200);
 
     public <TS extends VoidTaskStage> TS checkStage(TS stage, boolean success) {
-        while (!stage.isFinalDone()) {
-            stage.start();
+        while (!stage.isDone()) {
+            StageUtils.run(stage);
         }
-        boolean result = stage.isFinalSuccess();
+        boolean result = stage.isSuccess();
         if (!result && success) {
             System.out.println("TaskStage异常");
-            stage.getFinalCause().printStackTrace();
-            assertEquals(exception, stage.getFirstCause());
-        } else {
-            assertNull(stage.getFinalResult());
+            stage.getCause().printStackTrace();
+            assertEquals(exception, stage.getCause());
         }
         assertEquals("TaskStage 结果 : ", success, result);
         return stage;
     }
 
-    public <T, TS extends TaskStage<T>> TS checkStage(TS stage, boolean success, T object) {
-        while (!stage.isFinalDone()) {
-            stage.start();
+    public <T, TS extends TypeTaskStage<T>> TS checkStage(TS stage, boolean success, T object) {
+        while (!stage.isDone()) {
+            StageUtils.run(stage);
         }
-        boolean result = stage.isFinalSuccess();
+        boolean result = stage.isSuccess();
         if (!result && success) {
             System.out.println("TaskStage异常");
-            stage.getFinalCause().printStackTrace();
+            stage.getCause().printStackTrace();
         }
         assertEquals("TaskStage 结果 : ", success, result);
         if (object == null)
-            assertNull(stage.getFinalResult());
+            assertNull(stage.getResult());
         else
-            assertEquals("TaskStage 结果 : ", object, stage.getFinalResult());
+            assertEquals("TaskStage 结果 : ", object, stage.getResult());
         return stage;
     }
 

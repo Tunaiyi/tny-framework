@@ -4,20 +4,18 @@ import com.tny.game.worker.Callback;
 
 public interface UserCommandBox {
 
-    public boolean appoint(UserCommand<?> command);
+    boolean appoint(UserCommand<?> command);
 
-    public <T> boolean appoint(UserCommand<T> command, Callback<T> callback);
+    <T> boolean appoint(UserCommand<T> command, Callback<T> callback);
 
-    public boolean addCommand(UserCommand<?> command);
+    boolean isEmpty();
 
-    public abstract boolean isEmpty();
+    int size();
 
-    public abstract int size();
+    void clear();
 
-    public abstract void clear();
+    int getRunSize();
 
-    public abstract int getRunSize();
-
-    public abstract long getRunUseTime();
+    long getRunUseTime();
 
 }

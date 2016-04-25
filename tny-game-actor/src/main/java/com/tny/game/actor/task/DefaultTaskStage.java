@@ -52,13 +52,13 @@ abstract class DefaultTaskStage<R> extends BaseTaskStage<R> {
         }).awaitRun(Stages.time(Duration.ofSeconds(3)))
                 .thenRun(() -> System.out.println("OK"));
 
-        while (!stage.isFinalDone()) {
-            stage.start();
+        while (!stage.isDone()) {
+            StageUtils.run(stage);
         }
 
-        if (stage.isFinalFailed()) {
-            System.out.println("stage.isFinalFailed() = " + stage.isFinalFailed());
-            stage.getFinalCause().printStackTrace();
+        if (stage.isFailed()) {
+            System.out.println("stage.isFinalFailed() = " + stage.isFailed());
+            stage.getCause().printStackTrace();
         }
     }
 
