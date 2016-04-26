@@ -2,8 +2,8 @@ package com.tny.game.web;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.base.item.DoneResult;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.utils.DoneResult;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)

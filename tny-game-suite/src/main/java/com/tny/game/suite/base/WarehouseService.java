@@ -1,12 +1,12 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.DealedResult;
-import com.tny.game.base.item.DoneResult;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.context.AttrEntry;
+import com.tny.game.common.utils.DoneResult;
 
 public interface WarehouseService {
 

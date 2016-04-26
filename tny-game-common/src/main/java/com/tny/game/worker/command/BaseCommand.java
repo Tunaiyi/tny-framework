@@ -1,33 +1,24 @@
 package com.tny.game.worker.command;
 
 
-public abstract class BaseCommand<O> implements Command<O> {
-
-    private volatile long executeTime;
+public abstract class BaseCommand implements Command {
 
     protected final String name;
 
     protected boolean executed = false;
 
+    public BaseCommand() {
+        this(null);
+    }
+
     public BaseCommand(String name) {
-        this(name, System.currentTimeMillis());
-    }
-
-    public BaseCommand(String name, int delay) {
-        this(name, System.currentTimeMillis() + delay);
-    }
-
-    public BaseCommand(String name, long executeTime) {
         this.name = name;
-        this.executeTime = executeTime;
     }
 
     @Override
-    public O execute() {
-        if(isCanExecute())
-            return null;
+    public void execute() {
         try {
-            return this.action();
+            this.action();
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         } finally {
@@ -35,42 +26,18 @@ public abstract class BaseCommand<O> implements Command<O> {
         }
     }
 
-    protected abstract O action();
+    protected abstract void action();
 
     @Override
     public String getName() {
+        if (this.name == null)
+            return Command.super.getName();
         return name;
     }
 
-    protected void immediately() {
-        this.executeTime = System.currentTimeMillis();
-    }
-
-    protected void delay(long delay) {
-        this.executeTime = System.currentTimeMillis() + delay;
-    }
-
-    protected void runAt(long time) {
-        this.executeTime = time;
-    }
-
-    public long getExecuteTime() {
-        return executeTime;
-    }
-
-    //	@Override
-    protected long getDelay() {
-        long delay = executeTime - System.currentTimeMillis();
-        return delay < 0 ? 0L : delay;
-    }
-
     @Override
-    public boolean isCompleted() {
-        return this.executed && !this.isDone();
-    }
-
-    public boolean isCanExecute() {
-        return getDelay() <= 0;
+    public boolean isDone() {
+        return this.executed && !this.isWork();
     }
 
 }

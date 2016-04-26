@@ -1,6 +1,6 @@
 package drama.stage;
 
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Done;
 import com.tny.game.common.ExceptionUtils;
 import drama.stage.exception.TaskTimeoutException;
 import drama.stage.invok.*;

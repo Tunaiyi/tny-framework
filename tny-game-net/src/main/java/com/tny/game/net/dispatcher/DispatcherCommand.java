@@ -1,8 +1,14 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.dispatcher.command.UserCommand;
+public interface DispatcherCommand<T> {
 
-public interface DispatcherCommand<M> extends UserCommand<M> {
+    T invoke();
+
+    long getUserID();
+
+    int getProtocol();
+
+    String getName();
 
     /**
      * 获取命令所属Session

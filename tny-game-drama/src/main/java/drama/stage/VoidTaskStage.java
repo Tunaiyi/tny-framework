@@ -1,6 +1,6 @@
 package drama.stage;
 
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Done;
 import drama.stage.invok.CatcherRun;
 import drama.stage.invok.RunDone;
 import drama.stage.invok.SupplyDone;

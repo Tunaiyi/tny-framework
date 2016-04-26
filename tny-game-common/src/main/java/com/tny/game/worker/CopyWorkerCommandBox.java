@@ -7,19 +7,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class CopyWorkerCommandBox extends AbstractWorkerCommandBox {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected Queue<Command<?>> fromQueue;
+    protected Queue<Command> fromQueue;
 
-    protected Queue<Command<?>> toQueue;
+    protected Queue<Command> toQueue;
 
-    protected AtomicBoolean accpetState = new AtomicBoolean(false);
+    private Lock lock = new ReentrantLock();
 
-    public CopyWorkerCommandBox(Queue<Command<?>> fromQueue, Queue<Command<?>> toQueue) {
+    public CopyWorkerCommandBox(Queue<Command> fromQueue, Queue<Command> toQueue) {
         super(new ConcurrentLinkedQueue<>());
         this.fromQueue = fromQueue;
         this.toQueue = toQueue;
@@ -30,12 +31,16 @@ public class CopyWorkerCommandBox extends AbstractWorkerCommandBox {
         this(new ConcurrentLinkedQueue<>(), new ConcurrentLinkedQueue<>());
     }
 
-    protected Queue<Command<?>> acceptQueue() {
-        synchronized (this) {
-            Queue<Command<?>> accQueue = this.queue;
-            this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
-            this.queue = accQueue;
-            return accQueue;
+    protected Queue<Command> acceptQueue() {
+        while (true) {
+            if (lock.tryLock()) {
+                Queue<Command> accQueue = this.queue;
+                this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
+                this.queue = accQueue;
+                return accQueue;
+            } else {
+                Thread.yield();
+            }
         }
     }
 
@@ -54,19 +59,19 @@ public class CopyWorkerCommandBox extends AbstractWorkerCommandBox {
     }
 
     public void run() {
-        Queue<Command<?>> currentRunQueue = this.acceptQueue();
+        Queue<Command> currentRunQueue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         runSize = 0;
-        Command<?> command = currentRunQueue.poll();
-        while (command != null) {
-            if (command.isDone()) {
-                command.execute();
+        Command cmd = currentRunQueue.poll();
+        while (cmd != null) {
+            if (cmd.isWork()) {
+                executeCommand(cmd);
                 runSize++;
-                if (!command.isCompleted()) {
-                    this.queue.add(command);
+                if (!cmd.isDone()) {
+                    this.queue.add(cmd);
                 }
             }
-            command = currentRunQueue.poll();
+            cmd = currentRunQueue.poll();
         }
         for (CommandBox commandBox : commandBoxList) {
             commandBox.run();

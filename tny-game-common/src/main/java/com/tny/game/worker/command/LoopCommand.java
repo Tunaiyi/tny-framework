@@ -1,6 +1,6 @@
 package com.tny.game.worker.command;
 
-public abstract class LoopCommand extends BaseCommand<Object> {
+public abstract class LoopCommand extends DelayCommand {
 
     public static final long STOP_LOOP = -1;
 
@@ -17,29 +17,28 @@ public abstract class LoopCommand extends BaseCommand<Object> {
     }
 
     @Override
-    public Object action() {
+    public void action() {
         try {
             run();
             long delay = nextInterval();
             if (delay <= STOP_LOOP) {
                 executed = true;
-            } else if (isDone()) {
+            } else if (isWork()) {
                 delay(delay);
                 executed = false;
             }
         } catch (Exception e) {
-            if (isDone()) {
+            if (isWork()) {
                 long delay = nextInterval();
                 if (delay <= STOP_LOOP) {
                     executed = true;
-                } else if (isDone()) {
+                } else if (isWork()) {
                     delay(delay);
                     executed = false;
                 }
             }
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**

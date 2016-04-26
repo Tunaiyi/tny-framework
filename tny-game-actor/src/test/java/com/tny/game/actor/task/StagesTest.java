@@ -1,8 +1,8 @@
 package com.tny.game.actor.task;
 
 import com.google.common.base.Supplier;
-import com.tny.game.base.item.Do;
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.Done;
 import org.jmock.Expectations;
 import org.junit.Test;
 

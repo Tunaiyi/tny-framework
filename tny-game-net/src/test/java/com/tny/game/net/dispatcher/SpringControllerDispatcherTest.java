@@ -95,7 +95,7 @@ public class SpringControllerDispatcherTest {
     public void testDispatchUnlogin() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createUnLogin());
         SimpleRequest request = this.request(test1, session, "ddd", 171772272);
-        CommandResult response = this.dispatcher.dispatch(request, session, this.context).execute();
+        CommandResult response = this.dispatcher.dispatch(request, session, this.context).invoke();
         Assert.assertEquals(response.getResultCode(), CoreResponseCode.UNLOGIN);
     }
 
@@ -103,7 +103,7 @@ public class SpringControllerDispatcherTest {
     public void testDispatchNoPermissions() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "giftSystem"));
         SimpleRequest request = this.request(test2, session, "ddd", 171772272);
-        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).execute().getResultCode(), CoreResponseCode.NO_PERMISSIONS);
+        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).invoke().getResultCode(), CoreResponseCode.NO_PERMISSIONS);
     }
 
     @Test
@@ -111,14 +111,14 @@ public class SpringControllerDispatcherTest {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "loginSystem"));
         SimpleRequest request = this.request(test3, session, null, 171772272);
         // request.setKeyBytes(new byte [1]);
-        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).execute().getResultCode(), CoreResponseCode.FALSIFY);
+        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).invoke().getResultCode(), CoreResponseCode.FALSIFY);
     }
 
     @Test
     public void testDispatchException() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, Session.DEFAULT_USER_GROUP));
         SimpleRequest request = this.request(test4, session, "ddd", 171772272);
-        CommandResult response = this.dispatcher.dispatch(request, session, this.context).execute();
+        CommandResult response = this.dispatcher.dispatch(request, session, this.context).invoke();
         Assert.assertEquals(response.getResultCode(), CoreResponseCode.EXCUTE_EXCEPTION);
     }
 
@@ -126,21 +126,21 @@ public class SpringControllerDispatcherTest {
     public void testDispatchNomalUnlogin() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createUnLogin());
         SimpleRequest request = this.request(nomalUnlogin, session, "ddd", 171772272, SpringControllerDispatcherTest.number++);
-        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).execute().getResultCode(), CoreResponseCode.UNLOGIN);
+        Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).invoke().getResultCode(), CoreResponseCode.UNLOGIN);
     }
 
     @Test
     public void testDispatchNomalLogin() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, Session.DEFAULT_USER_GROUP));
         SimpleRequest request = this.request(nomalLogin, session, "ddd", 171772272, SpringControllerDispatcherTest.number++);
-        this.dispatcher.dispatch(request, session, this.context).execute();
+        this.dispatcher.dispatch(request, session, this.context).invoke();
     }
 
     @Test
     public void testDispatchSystemLogin() throws DispatchException {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "loginSystem"));
         SimpleRequest request = this.request(systemLogin, session, "ddd", 171772272, SpringControllerDispatcherTest.number++);
-        this.dispatcher.dispatch(request, session, this.context).execute();
+        this.dispatcher.dispatch(request, session, this.context).invoke();
     }
 
     public SimpleRequest request(int protocol, String key, Object... objects) {

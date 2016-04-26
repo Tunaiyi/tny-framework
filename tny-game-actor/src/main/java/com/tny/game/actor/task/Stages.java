@@ -7,7 +7,7 @@ import com.tny.game.actor.task.invok.CatcherRun;
 import com.tny.game.actor.task.invok.CatcherSupplier;
 import com.tny.game.actor.task.invok.RunDone;
 import com.tny.game.actor.task.invok.SupplyDone;
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Done;
 import com.tny.game.common.ExceptionUtils;
 
 import java.time.Duration;

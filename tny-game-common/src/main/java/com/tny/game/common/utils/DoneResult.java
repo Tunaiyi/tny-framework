@@ -1,8 +1,8 @@
-package com.tny.game.base.item;
+package com.tny.game.common.utils;
 
-import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.ResultUtils;
 
 /**
  * 做完的结果
@@ -22,7 +22,7 @@ public class DoneResult<M> extends Done<M> {
      * @return
      */
     public static <M, MC extends M> DoneResult<M> succ(MC value) {
-        return new DoneResult<M>(value, ItemResultCode.SUCCESS);
+        return new DoneResult<M>(value, ResultCode.SUCCESS);
     }
 
     public static <M, MC extends M> DoneResult<M> done(MC value, ResultCode code) {
@@ -49,12 +49,12 @@ public class DoneResult<M> extends Done<M> {
     }
 
     protected DoneResult(M returnValue) {
-        this.code = ItemResultCode.SUCCESS;
+        this.code = ResultCode.SUCCESS;
         this.returnValue = returnValue;
     }
 
     /**
-     * 是否成功 code == ItemResultCode.SUCCESS
+     * 是否成功 code == ResultCode.SUCCESS
      *
      * @return
      */
@@ -63,7 +63,7 @@ public class DoneResult<M> extends Done<M> {
     }
 
     /**
-     * 是否成功 code != ItemResultCode.SUCCESS
+     * 是否成功 code != ResultCode.SUCCESS
      *
      * @return
      */

@@ -3,7 +3,7 @@ package com.tny.game.actor.task;
 import com.tny.game.actor.task.invok.CatcherRun;
 import com.tny.game.actor.task.invok.RunDone;
 import com.tny.game.actor.task.invok.SupplyDone;
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
 import java.util.function.BooleanSupplier;

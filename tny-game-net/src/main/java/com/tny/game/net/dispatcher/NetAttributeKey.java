@@ -7,7 +7,7 @@ import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.client.nio.NetClient;
 import com.tny.game.net.coder.DataPacketDecoder;
 import com.tny.game.net.coder.DataPacketEncoder;
-import com.tny.game.net.dispatcher.command.UserCommandBox;
+import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
 import com.tny.game.telnet.TelnetSession;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -29,7 +29,7 @@ public class NetAttributeKey {
 
     public static final AttrKey<AtomicBoolean> CLEAR_KEY = AttributeUtils.key(NetClient.class.getName() + "CLEAR_KEY");
 
-    public static final AttrKey<UserCommandBox> USER_COMMAND_BOX = AttributeUtils.key(Session.class.getName() + "USER_COMMAND_BOX");
+    public static final AttrKey<DispatcherCommandBox> USER_COMMAND_BOX = AttributeUtils.key(Session.class.getName() + "USER_COMMAND_BOX");
 
     public static final AttributeKey<MessageBuilderFactory> MSG_BUILDER_FACTOR = AttributeKey.valueOf(NetAttributeKey.class + "MSG_BUILDER_FACTOR");
     public static final AttributeKey<RequestChecker> REQUEST_CHECKER = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKER");

@@ -1,7 +1,7 @@
 package drama.stage;
 
 
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Done;
 import com.tny.game.common.ExceptionUtils;
 import drama.stage.Stages.*;
 import drama.stage.invok.*;

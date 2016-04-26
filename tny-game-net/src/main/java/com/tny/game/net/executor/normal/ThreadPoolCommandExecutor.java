@@ -9,8 +9,7 @@ import com.tny.game.net.dispatcher.DispatchCommand;
 import com.tny.game.net.dispatcher.DispatcherCommand;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.Session;
-import com.tny.game.net.dispatcher.command.UserCommand;
-import com.tny.game.net.dispatcher.command.UserCommandBox;
+import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
 import com.tny.game.worker.Callback;
 import com.tny.game.worker.command.Command;
@@ -54,7 +53,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
             session.attributes().setAttribute(COMMAND_CHILD_EXECUTOR, executor);
             session.attributes().setAttribute(NetAttributeKey.USER_COMMAND_BOX, executor);
         }
-        executor.add(command);
+        executor.appoint(command);
     }
 
     @Override
@@ -62,9 +61,9 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         this.executorService.shutdown();
     }
 
-    private static class ChildExecutor implements UserCommandBox, Runnable {
+    private static class ChildExecutor implements DispatcherCommandBox, Runnable {
 
-        private final Queue<Command<?>> commandQueue = new ConcurrentLinkedQueue<>();
+        private final Queue<DispatchCommand<?>> commandQueue = new ConcurrentLinkedQueue<>();
 
         private final ExecutorService executorService;
 
@@ -77,24 +76,15 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
             this.executorService = executorService;
         }
 
-        public void add(final DispatcherCommand<?> command) {
-            if (!this.executorService.isShutdown()) {
-                this.commandQueue.offer(command);
-                if (this.start.compareAndSet(false, true)) {
-                    this.executorService.submit(this);
-                }
-            }
-        }
-
         @Override
-        public boolean appoint(UserCommand<?> command) {
+        public boolean appoint(DispatcherCommand<?> command) {
             return this.appoint(command, null);
         }
 
         @Override
-        public <T> boolean appoint(UserCommand<T> command, Callback<T> callback) {
+        public <T> boolean appoint(DispatcherCommand<T> command, Callback<T> callback) {
             if (!this.executorService.isShutdown()) {
-                Command<?> commandTask = new DispatchCommand<>(command, callback);
+                DispatchCommand<?> commandTask = new DispatchCommand<>(command, callback);
                 if (this.thread != null && this.thread == Thread.currentThread()) {
                     commandTask.execute();
                 } else {
@@ -112,7 +102,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         public void run() {
             this.thread = Thread.currentThread();
             for (; ; ) {
-                Command<?> task = this.commandQueue.poll();
+                Command task = this.commandQueue.poll();
                 if (task != null) {
                     try {
                         task.execute();

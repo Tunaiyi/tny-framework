@@ -3,15 +3,12 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.RandomCreator;
-import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.Award;
 import com.tny.game.base.item.behavior.AwardGroup;
 import com.tny.game.base.item.behavior.AwardPlan;
 import com.tny.game.base.item.behavior.DemandParam;
 import com.tny.game.base.item.behavior.plan.SimpleAwardGroup;
 import com.tny.game.base.item.behavior.plan.SimpleAwardPlan;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,19 +109,19 @@ public class XMLAwardPlanTest {
 
     AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);
 
-    @Test
-    public void testCreateTradeResult() {
-        this.NUMBER = 1;
-        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-        this.NUMBER = 30;
-        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-        this.NUMBER = 100;
-        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
-        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
-    }
+//    @Test
+//    public void testCreateTradeResult() {
+//        this.NUMBER = 1;
+//        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+//        this.NUMBER = 30;
+//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+//        this.NUMBER = 100;
+//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+//        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
+//        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
+//    }
 
     public static void main(String[] args) {
         System.out.println(Integer.MAX_VALUE);

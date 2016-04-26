@@ -1,4 +1,4 @@
-package com.tny.game.base.item;
+package com.tny.game.common.utils;
 
 import java.util.function.Supplier;
 

@@ -5,9 +5,7 @@ import com.tny.game.worker.command.Command;
 
 public abstract class CommandBox {
 
-    public abstract boolean appoint(Command<?> command);
-
-    public abstract <T> boolean appoint(Command<T> command, Callback<T> callback);
+    public abstract boolean appoint(Command command);
 
     public abstract boolean isEmpty();
 

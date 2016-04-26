@@ -11,34 +11,29 @@ public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected volatile Queue<Command<?>> queue;
+    protected volatile Queue<Command> queue;
 
-    public AbstractWorkerCommandBox(Queue<Command<?>> queue) {
+    public AbstractWorkerCommandBox(Queue<Command> queue) {
         super();
         this.queue = queue;
     }
 
-    protected abstract Queue<Command<?>> acceptQueue();
+    protected abstract Queue<Command> acceptQueue();
 
-    protected Queue<Command<?>> getQueue() {
+    protected Queue<Command> getQueue() {
         return queue;
     }
 
-    protected <T> boolean executeIfCurrent0(Command<T> command, Callback<T> callBacks) {
-        if (callBacks != null)
-            command = new ProxyCommand<>(command, callBacks);
+    protected <T> boolean executeIfCurrent0(Command command) {
         if (this.worker != null && this.worker.getWorkerThread() == Thread.currentThread()) {
             command.execute();
         }
-        if (!command.isCompleted()) {
-            addCommand(command);
+        if (!command.isDone()) {
+            this.queue.add(command);
         }
         return true;
     }
 
-    protected void addCommand(Command<?> command) {
-        this.queue.add(command);
-    }
 
     @Override
     public synchronized boolean bindWorker(WorldWorker worker) {
@@ -71,6 +66,10 @@ public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
 
     public int size() {
         return queue.size();
+    }
+
+    protected void executeCommand(Command command) {
+        command.execute();
     }
 
 }

@@ -206,16 +206,6 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         }
 
         @Override
-        public boolean isDone() {
-            return true;
-        }
-
-        @Override
-        public boolean isCompleted() {
-            return this.executed;
-        }
-
-        @Override
         public Session getSession() {
             return this.session;
         }
@@ -233,7 +223,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
         @Override
         @SuppressWarnings("unchecked")
-        public Void execute() {
+        public Void invoke() {
             if (this.future != null)
                 this.future.setResponse(this.message);
             Object body = this.message.getBody(Object.class);
@@ -282,7 +272,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         }
 
         @Override
-        public CommandResult execute() {
+        public CommandResult invoke() {
             Throwable ex;
             CommandResult result = null;
             try {

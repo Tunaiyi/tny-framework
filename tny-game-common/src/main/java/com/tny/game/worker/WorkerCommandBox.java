@@ -20,19 +20,19 @@ public abstract class WorkerCommandBox extends CommandBox {
 
     protected volatile Queue<CommandBox> commandBoxList;
 
-    protected abstract Queue<Command<?>> acceptQueue();
+    protected abstract Queue<Command> acceptQueue();
 
-    protected abstract <T> boolean executeIfCurrent0(Command<T> command, Callback<T> callBack);
-
-    @Override
-    public boolean appoint(Command<?> command) {
-        return executeIfCurrent0(command, null);
-    }
+    protected abstract <T> boolean executeIfCurrent0(Command command);
 
     @Override
-    public <T> boolean appoint(Command<T> command, Callback<T> callBacks) {
-        return executeIfCurrent0(command, callBacks);
+    public boolean appoint(Command command) {
+        return executeIfCurrent0(command);
     }
+
+//    @Override
+//    public <T> boolean appoint(Command<T> command, Callback<T> callBacks) {
+//        return executeIfCurrent0(command, callBacks);
+//    }
 
     public long getRunUseTime() {
         return runUseTime;

@@ -29,7 +29,7 @@ public abstract class NetRMIService implements RMIService {
         ServerSession session = null;
         try {
             session = this.createSession(request);
-            CommandResult result = this.messageDispatcher.dispatch(request, session, this.context).execute();
+            CommandResult result = this.messageDispatcher.dispatch(request, session, this.context).invoke();
             if (result != null) {
                 return session.getMessageBuilderFactory()
                         .newResponseBuilder()

@@ -1,8 +1,8 @@
 package com.tny.game.actor.task;
 
 import com.tny.game.actor.task.exception.TaskException;
-import com.tny.game.base.item.Do;
-import com.tny.game.base.item.Done;
+import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.Done;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
