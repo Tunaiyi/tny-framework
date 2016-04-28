@@ -8,31 +8,26 @@ import org.slf4j.LoggerFactory;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class WorkerCommandBox extends CommandBox {
+public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox> extends CommandBox<C> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected WorldWorker worker;
+    protected volatile CommandWorker worker;
 
     protected long runUseTime;
 
     protected int runSize;
 
-    protected volatile Queue<CommandBox> commandBoxList;
+    protected volatile Queue<CB> commandBoxList;
 
-    protected abstract Queue<Command> acceptQueue();
+    protected abstract Queue<C> acceptQueue();
 
-    protected abstract <T> boolean executeIfCurrent0(Command command);
+    protected abstract boolean executeIfCurrent(C command);
 
     @Override
-    public boolean appoint(Command command) {
-        return executeIfCurrent0(command);
+    public boolean accept(C command) {
+        return executeIfCurrent(command);
     }
-
-//    @Override
-//    public <T> boolean appoint(Command<T> command, Callback<T> callBacks) {
-//        return executeIfCurrent0(command, callBacks);
-//    }
 
     public long getRunUseTime() {
         return runUseTime;
@@ -42,11 +37,15 @@ public abstract class WorkerCommandBox extends CommandBox {
         return runSize;
     }
 
-    protected WorldWorker getWorldWorker() {
-        return worker;
+    @Override
+    public boolean isOnCurrentThread() {
+        CommandWorker worker = this.worker;
+        if (worker != null)
+            worker.isOnCurrentThread();
+        return false;
     }
 
-    private Queue<CommandBox> boxes() {
+    private Queue<CB> boxes() {
         if (commandBoxList != null)
             return commandBoxList;
         synchronized (this) {
@@ -56,9 +55,10 @@ public abstract class WorkerCommandBox extends CommandBox {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean register(CommandBox commandBox) {
-        if (commandBox.bindWorker(this.worker)) {
-            boxes().add(commandBox);
+        if (commandBox.bindWorker(this)) {
+            boxes().add((CB) commandBox);
             return true;
         }
         return false;
@@ -71,7 +71,5 @@ public abstract class WorkerCommandBox extends CommandBox {
         }
         return false;
     }
-
-    public abstract void run();
 
 }

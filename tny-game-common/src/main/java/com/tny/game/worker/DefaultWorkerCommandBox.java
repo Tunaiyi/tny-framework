@@ -5,9 +5,9 @@ import com.tny.game.worker.command.Command;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DefaultWorkerCommandBox extends AbstractWorkerCommandBox {
+public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  extends AbstractWorkerCommandBox<C, CB> {
 
-    public DefaultWorkerCommandBox(Queue<Command> queue) {
+    public DefaultWorkerCommandBox(Queue<C> queue) {
         super(queue);
     }
 
@@ -16,16 +16,16 @@ public class DefaultWorkerCommandBox extends AbstractWorkerCommandBox {
     }
 
     @Override
-    protected Queue<Command> acceptQueue() {
+    protected Queue<C> acceptQueue() {
         return queue;
     }
 
     public void run() {
-        Queue<Command> queue = this.acceptQueue();
+        Queue<C> queue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         int currentSize = queue.size();
         runSize = 0;
-        for (Command cmd : queue) {
+        for (C cmd : queue) {
             currentSize++;
             if (runSize > currentSize)
                 break;

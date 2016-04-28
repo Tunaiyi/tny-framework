@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class FrequencyWorker implements WorldWorker {
+public class FrequencyCommandExecutor implements CommandExecutor {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
@@ -34,9 +34,7 @@ public class FrequencyWorker implements WorldWorker {
      */
     protected Thread currentThread;
 
-    protected CommandBox commandBox = new CopyWorkerCommandBox();
-
-    protected Queue<CommandBox> commandBoxList = new ConcurrentLinkedQueue<CommandBox>();
+    protected Queue<CommandBox> commandBoxList = new ConcurrentLinkedQueue<>();
 
     private ExecutorService executor;
 
@@ -56,9 +54,27 @@ public class FrequencyWorker implements WorldWorker {
 
     private volatile int continueTime;
 
-    public FrequencyWorker(String name) {
+    private CommandWorker worker = new CommandWorker() {
+
+        @Override
+        public boolean isOnCurrentThread() {
+            return currentThread == Thread.currentThread();
+        }
+
+        @Override
+        public boolean register(CommandBox commandBox) {
+            return FrequencyCommandExecutor.this.register(commandBox);
+        }
+
+        @Override
+        public boolean unregister(CommandBox commandBox) {
+            return FrequencyCommandExecutor.this.register(commandBox);
+        }
+
+    };
+
+    public FrequencyCommandExecutor(String name) {
         this.name = name;
-        this.register(commandBox);
     }
 
     public void stop() {
@@ -68,78 +84,74 @@ public class FrequencyWorker implements WorldWorker {
         stopTime = System.currentTimeMillis();
     }
 
+
     @Override
     public void start() {
         this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name));
-        this.executor.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                nextRunningTime = System.currentTimeMillis();
-                currentThread = Thread.currentThread();
-                while (true) {
-                    try {
-                        if (executor.isShutdown())
-                            break;
-                        long currentTime = System.currentTimeMillis();
-                        int currentRunSize = 0;
-                        int currentContinueTime = 0;
-                        while (currentTime >= nextRunningTime) {
-                            for (CommandBox commandBox : commandBoxList) {
-                                commandBox.run();
-                                commandBox.getRunUseTime();
-                                currentRunSize += commandBox.getRunSize();
-                            }
-                            nextRunningTime += 100L;
-                            currentContinueTime++;
-                            currentTime = System.currentTimeMillis();
+        this.executor.execute(() -> {
+            nextRunningTime = System.currentTimeMillis();
+            currentThread = Thread.currentThread();
+            while (true) {
+                try {
+                    if (executor.isShutdown())
+                        break;
+                    long currentTime = System.currentTimeMillis();
+                    int currentRunSize = 0;
+                    int currentContinueTime = 0;
+                    while (currentTime >= nextRunningTime) {
+                        for (CommandBox box : commandBoxList) {
+                            this.worker.run(box);
+                            box.getRunUseTime();
+                            currentRunSize += box.getRunSize();
                         }
-                        if (commandBoxList.isEmpty() && !working)
-                            return;
-
-                        continueTime = currentContinueTime;
-                        runSize = currentRunSize;
-                        totalRunSize += runSize;
-                        if (totalRunSize < 0)
-                            totalRunSize = 0;
-
-                        long stopTime = System.currentTimeMillis();
-                        runningTime = stopTime - currentTime;
-
-                        sleepTime = nextRunningTime - stopTime;
-                        sleepTime = sleepTime < 0 ? 0 : sleepTime;
-
-                        totalRunningTime += runningTime;
-                        totalSleepTime += sleepTime;
-                        if (sleepTime > 0) {
-                            Thread.sleep(sleepTime);
-                        }
-                    } catch (InterruptedException e) {
-                        LOGGER.warn("InterruptedException by FrequencyWorker " + Thread.currentThread().getName(), e);
-                    } catch (Exception e) {
-                        LOGGER.warn("Exception by FrequencyWorker " + Thread.currentThread().getName(), e);
+                        nextRunningTime += 100L;
+                        currentContinueTime++;
+                        currentTime = System.currentTimeMillis();
                     }
+                    if (commandBoxList.isEmpty() && !working)
+                        return;
+
+                    continueTime = currentContinueTime;
+                    runSize = currentRunSize;
+                    totalRunSize += runSize;
+                    if (totalRunSize < 0)
+                        totalRunSize = 0;
+
+                    long stopTime1 = System.currentTimeMillis();
+                    runningTime = stopTime1 - currentTime;
+
+                    sleepTime = nextRunningTime - stopTime1;
+                    sleepTime = sleepTime < 0 ? 0 : sleepTime;
+
+                    totalRunningTime += runningTime;
+                    totalSleepTime += sleepTime;
+                    if (sleepTime > 0) {
+                        Thread.sleep(sleepTime);
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.warn("InterruptedException by FrequencyWorker " + Thread.currentThread().getName(), e);
+                } catch (Exception e) {
+                    LOGGER.warn("Exception by FrequencyWorker " + Thread.currentThread().getName(), e);
                 }
             }
-
         });
     }
 
     @Override
-    public void release() {
+    public void shutdown() {
         stop();
         executor.shutdown();
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(100);
         long totalSleepTime = this.totalSleepTime;
         long totalRunningTime = this.totalRunningTime;
         long sleepTime = this.sleepTime;
         long runningTime = this.runningTime;
         int continueTime = this.continueTime;
-        return builder.append(this.getName())
+        return new StringBuilder()
+                .append(this.getName())
                 .append(" #任务数量: ")
                 .append(size())
                 .append(" #附加任务箱数量: ")
@@ -174,12 +186,18 @@ public class FrequencyWorker implements WorldWorker {
     }
 
     @Override
+    public boolean isOnCurrentThread() {
+        return this.currentThread == Thread.currentThread();
+    }
+
+    @Override
     public boolean register(CommandBox commandBox) {
         if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox workerCommandBox = (WorkerCommandBox) commandBox;
-            workerCommandBox.bindWorker(this);
-            this.commandBoxList.add(workerCommandBox);
-            return true;
+            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
+            if (workerCommandBox.bindWorker(this.worker)) {
+                this.commandBoxList.add(workerCommandBox);
+                return true;
+            }
         }
         return false;
     }
@@ -187,21 +205,13 @@ public class FrequencyWorker implements WorldWorker {
     @Override
     public boolean unregister(CommandBox commandBox) {
         if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox workerCommandBox = (WorkerCommandBox) commandBox;
-            workerCommandBox.unbindWorker();
-            return this.commandBoxList.remove(workerCommandBox);
+            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
+            if (this.commandBoxList.remove(workerCommandBox)) {
+                workerCommandBox.unbindWorker();
+                return true;
+            }
         }
         return false;
-    }
-
-    @Override
-    public CommandBox getCommandBox() {
-        return commandBox;
-    }
-
-    @Override
-    public Thread getWorkerThread() {
-        return currentThread;
     }
 
     @Override

@@ -7,25 +7,26 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 
-public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
+public abstract class AbstractWorkerCommandBox<C extends Command, CB extends CommandBox> extends WorkerCommandBox<C, CB> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
-    protected volatile Queue<Command> queue;
+    protected volatile Queue<C> queue;
 
-    public AbstractWorkerCommandBox(Queue<Command> queue) {
+    public AbstractWorkerCommandBox(Queue<C> queue) {
         super();
         this.queue = queue;
     }
 
-    protected abstract Queue<Command> acceptQueue();
+    protected abstract Queue<C> acceptQueue();
 
-    protected Queue<Command> getQueue() {
+    protected Queue<C> getQueue() {
         return queue;
     }
 
-    protected <T> boolean executeIfCurrent0(Command command) {
-        if (this.worker != null && this.worker.getWorkerThread() == Thread.currentThread()) {
+    protected boolean executeIfCurrent(C command) {
+        CommandWorker worker = this.worker;
+        if (worker != null && worker.isOnCurrentThread()) {
             command.execute();
         }
         if (!command.isDone()) {
@@ -36,23 +37,48 @@ public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
 
 
     @Override
-    public synchronized boolean bindWorker(WorldWorker worker) {
+    protected boolean bindWorker(CommandWorker worker) {
         if (this.worker != null)
             return false;
-        this.worker = worker;
-        for (CommandBox box : commandBoxList)
-            box.bindWorker(worker);
-        return true;
+        synchronized (this) {
+            if (this.worker != null)
+                return false;
+            this.preBind();
+            this.worker = worker;
+            this.postBind();
+            for (CommandBox box : commandBoxList)
+                box.bindWorker(worker);
+            return true;
+        }
     }
 
     @Override
-    public synchronized boolean unbindWorker() {
-        if (this.worker == null)
+    protected boolean unbindWorker() {
+        CommandWorker worker = this.worker;
+        if (worker == null)
             return false;
-        this.worker = null;
-        for (CommandBox box : commandBoxList)
-            box.unbindWorker();
-        return true;
+        synchronized (this) {
+            if (this.worker != worker)
+                return false;
+            this.preUnbind();
+            this.worker = null;
+            this.postUnbind();
+            for (CommandBox box : commandBoxList)
+                box.unbindWorker();
+            return true;
+        }
+    }
+
+    protected void preBind() {
+    }
+
+    protected void preUnbind() {
+    }
+
+    protected void postBind() {
+    }
+
+    protected void postUnbind() {
     }
 
     @Override
@@ -68,7 +94,7 @@ public abstract class AbstractWorkerCommandBox extends WorkerCommandBox {
         return queue.size();
     }
 
-    protected void executeCommand(Command command) {
+    protected void executeCommand(C command) {
         command.execute();
     }
 

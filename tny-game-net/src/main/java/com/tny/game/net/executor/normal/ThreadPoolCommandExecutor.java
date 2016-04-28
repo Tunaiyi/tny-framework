@@ -12,7 +12,6 @@ import com.tny.game.net.dispatcher.Session;
 import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
 import com.tny.game.worker.Callback;
-import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,12 +101,17 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         public void run() {
             this.thread = Thread.currentThread();
             for (; ; ) {
-                Command task = this.commandQueue.poll();
-                if (task != null) {
+                DispatchCommand<?> cmd = this.commandQueue.peek();
+                if (cmd != null) {
                     try {
-                        task.execute();
+                        cmd.execute();
                     } catch (Exception e) {
-                        LOG_NET.error("run command task {} exception", task.getName(), e);
+                        LOG_NET.error("run command task {} exception", cmd.getName(), e);
+                    }
+                    if (!cmd.isDone()) {
+                        break;
+                    } else {
+                        this.commandQueue.poll();
                     }
                 } else {
                     if (this.start.compareAndSet(true, false)) {
@@ -120,6 +124,11 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
                 }
             }
             this.thread = null;
+            if (!this.commandQueue.isEmpty()) {
+                if (this.start.compareAndSet(false, true)) {
+                    this.executorService.submit(this);
+                }
+            }
         }
 
         @Override
