@@ -7,6 +7,7 @@ import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleCostList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
+import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.formula.FormulaHolder;
 
 import java.util.ArrayList;
@@ -51,6 +52,13 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         return actions;
     }
 
+    private Action checkAction(Action action) {
+        if (actions.contains(action))
+            return action;
+        ExceptionUtils.checkNotNull(null, "{] action is null", action);
+        return null;
+    }
+
     @Override
     public DemandResult tryToDo(long playerID, Map<String, Object> attributeMap) {
         DemandResult result = this.checkResult(playerID, this.demandList, attributeMap);
@@ -67,44 +75,48 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     }
 
     @Override
-    public ActionResult getActionResult(long playerID, Map<String, Object> attributeMap) {
+    public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
         List<DemandResult> resultList = this.countDemandResultList(playerID, this.demandList, attributeMap);
         List<DemandResult> costResultList = this.costPlan == null ?
-                new ArrayList<DemandResult>() :
+                new ArrayList<>() :
                 this.costPlan.countDemandResultList(playerID, attributeMap);
-        return new SimpleActionResult(this.action, resultList, costResultList, this.doAwardList(playerID, attributeMap));
+        return new SimpleActionResult(checkAction(action), resultList, costResultList, this.doAwardList(playerID, attributeMap));
     }
 
     @Override
-    public AwardList getAwardList(long playerID, Map<String, Object> attributeMap) {
+    public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
+        action = checkAction(action);
         if (this.awardPlan == null)
-            return new SimpleAwardList(this.action);
+            return new SimpleAwardList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return this.awardPlan.getAwardList(playerID, this.action, attributeMap);
+        return this.awardPlan.getAwardList(playerID, action, attributeMap);
     }
 
     @Override
-    public CostList getCostList(long playerID, Map<String, Object> attributeMap) {
+    public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
+        action = checkAction(action);
         if (this.costPlan == null)
-            return new SimpleCostList(this.action);
+            return new SimpleCostList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return this.costPlan.getCostList(playerID, this.action, attributeMap);
+        return this.costPlan.getCostList(playerID, action, attributeMap);
     }
 
     @Override
-    public Trade createAward(long playerID, Map<String, Object> attributes) {
+    public Trade createAward(long playerID, Action action, Map<String, Object> attributes) {
+        action = checkAction(action);
         if (this.awardPlan == null)
-            return new SimpleTrade(this.action, TradeType.AWARD);
+            return new SimpleTrade(action, TradeType.AWARD);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        return this.awardPlan.createTrade(playerID, this.action, attributes);
+        return this.awardPlan.createTrade(playerID, action, attributes);
     }
 
     @Override
-    public Trade createCost(long playerID, Map<String, Object> attributes) {
+    public Trade createCost(long playerID, Action action, Map<String, Object> attributes) {
+        action = checkAction(action);
         if (this.costPlan == null)
-            return new SimpleTrade(this.action, TradeType.COST);
+            return new SimpleTrade(action, TradeType.COST);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        return this.costPlan.createTrade(playerID, this.action, attributes);
+        return this.costPlan.createTrade(playerID, action, attributes);
     }
 
     @Override
@@ -114,9 +126,9 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
 
     private AwardList doAwardList(long playerID, Map<String, Object> attributes) {
         if (this.awardPlan == null)
-            return new SimpleAwardList(this.action);
+            return new SimpleAwardList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        return this.awardPlan.getAwardList(playerID, this.action, attributes);
+        return this.awardPlan.getAwardList(playerID, action, attributes);
     }
 
     @Override

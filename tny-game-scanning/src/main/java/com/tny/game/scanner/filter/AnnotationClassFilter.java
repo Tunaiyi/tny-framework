@@ -17,6 +17,7 @@ public class AnnotationClassFilter implements ClassFilter {
         return new AnnotationClassFilter(includes, null);
     }
 
+    @SafeVarargs
     public static ClassFilter ofInclude(Class<? extends Annotation>... includes) {
         return new AnnotationClassFilter(Arrays.asList(includes), null);
     }
@@ -25,6 +26,7 @@ public class AnnotationClassFilter implements ClassFilter {
         return new AnnotationClassFilter(excludes, null);
     }
 
+    @SafeVarargs
     public static ClassFilter ofExclude(Class<? extends Annotation>... excludes) {
         return new AnnotationClassFilter(Arrays.asList(excludes), null);
     }

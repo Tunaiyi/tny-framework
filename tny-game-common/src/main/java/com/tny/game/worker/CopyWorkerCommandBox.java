@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox>  extends AbstractWorkerCommandBox<C, CB> {
+public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
@@ -58,7 +58,7 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox>  ext
         return toQueue.size() + fromQueue.size();
     }
 
-    public void run() {
+    public void process() {
         Queue<C> currentRunQueue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         runSize = 0;
@@ -73,9 +73,9 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox>  ext
             }
             cmd = currentRunQueue.poll();
         }
-        for (CommandBox commandBox : commandBoxList) {
-            this.worker.run(commandBox);
-            runSize += commandBox.getRunSize();
+        for (CommandBox commandBox : boxes()) {
+            this.worker.submit(commandBox);
+            runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;

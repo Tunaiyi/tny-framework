@@ -5,11 +5,9 @@ package com.tny.game.worker;
  *
  * @author KGTny
  */
-public interface CommandExecutor extends CommandWorker {
+public interface CommandExecutor extends CommandBoxProcessor {
 
     String getName();
-
-    boolean isRunning();
 
     void stop();
 

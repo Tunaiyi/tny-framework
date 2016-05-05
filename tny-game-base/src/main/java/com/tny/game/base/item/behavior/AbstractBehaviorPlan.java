@@ -67,14 +67,14 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public Trade countCostResult(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return actionPlan.createCost(playerID, attributeMap);
+        return actionPlan.createCost(playerID, action, attributeMap);
     }
 
     @Override
     public Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return actionPlan.createAward(playerID, attributeMap);
+        return actionPlan.createAward(playerID, action, attributeMap);
     }
 
     @Override
@@ -82,7 +82,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         List<DemandResult> resultList = this.countDemandResultList(playerID, this.demandList, attributeMap);
         ActionPlan actionPlan = this.getActionPlan0(action);
-        ActionResult actionResult = actionPlan.getActionResult(playerID, attributeMap);
+        ActionResult actionResult = actionPlan.getActionResult(playerID, action, attributeMap);
         return new SimpleActionResult(action, resultList, actionResult);
     }
 
@@ -90,22 +90,23 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return actionPlan.getAwardList(playerID, attributeMap);
+        return actionPlan.getAwardList(playerID, action, attributeMap);
     }
 
     @Override
     public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        return actionPlan.getCostList(playerID, attributeMap);
+        return actionPlan.getCostList(playerID, action, attributeMap);
     }
 
     @Override
-    public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> atttributeMap) {
-        List<DemandResult> behaviorDemandResults = this.countDemandResultList(playerID, this.demandList, atttributeMap);
-        Map<Action, ActionResult> actionResultMap = new HashMap<Action, ActionResult>();
+    public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap) {
+        List<DemandResult> behaviorDemandResults = this.countDemandResultList(playerID, this.demandList, attributeMap);
+        Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : this.actionPlanMap.entrySet()) {
-            actionResultMap.put(entry.getKey(), entry.getValue().getActionResult(playerID, atttributeMap));
+            for (Action action : entry.getValue().getActions())
+                actionResultMap.put(entry.getKey(), entry.getValue().getActionResult(playerID, action, attributeMap));
         }
         return new SimpleBehaviorResult(behaviorDemandResults, actionResultMap);
     }
@@ -126,7 +127,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     @Override
     public boolean isHasOption(Action action, Option option) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        return actionPlan.isHasOption(option) ? true : this.optionMap.containsKey(option);
+        return actionPlan.isHasOption(option) || this.optionMap.containsKey(option);
     }
 
     private ActionPlan getActionPlan0(Action action) {

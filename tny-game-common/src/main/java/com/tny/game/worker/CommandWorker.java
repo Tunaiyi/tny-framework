@@ -5,20 +5,22 @@ package com.tny.game.worker;
  *
  * @author KGTny
  */
-public interface CommandWorker {
+public interface CommandWorker extends CommandBoxProcessor {
 
     boolean isOnCurrentThread();
 
+    @Override
     default boolean register(CommandBox commandBox) {
         return commandBox.bindWorker(this);
     }
 
+    @Override
     default boolean unregister(CommandBox commandBox) {
         return commandBox.unbindWorker();
     }
 
-    default void run(CommandBox box) {
-        box.run();
+    default void submit(CommandBox commandBox) {
+        commandBox.process();
     }
 
 }

@@ -3,24 +3,24 @@ package com.tny.game.worker;
 import com.tny.game.worker.command.Command;
 
 
-public abstract class CommandBox<C extends Command> implements CommandWorker {
+public interface CommandBox<C extends Command> extends CommandWorker {
 
-    public abstract boolean accept(C command);
+    boolean isEmpty();
 
-    public abstract boolean isEmpty();
+    int size();
 
-    public abstract int size();
+    void clear();
 
-    public abstract void clear();
+    int getProcessSize();
 
-    public abstract int getRunSize();
+    long getProcessUseTime();
 
-    public abstract long getRunUseTime();
+    boolean accept(C command);
 
-    protected abstract boolean bindWorker(CommandWorker worker);
+    boolean bindWorker(CommandWorker worker);
 
-    protected abstract boolean unbindWorker();
+    boolean unbindWorker();
 
-    protected abstract void run();
+    void process();
 
 }

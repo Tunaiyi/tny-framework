@@ -14,6 +14,8 @@ public class Do {
 
     private static Done<?> FAILED = new DefaultDone<>();
 
+    private static Done<?> NULLABLE = new DefaultDone<>(null);
+
     /**
      * 返回一个成功的结果, value 不能为null
      *
@@ -25,7 +27,10 @@ public class Do {
         return new DefaultDone<>(value);
     }
 
+    @SuppressWarnings("unchecked")
     public static <M, MC extends M> Done<M> succNullable(MC value) {
+        if (value == null)
+            return (Done<M>) NULLABLE;
         return new DefaultDone<>(value);
     }
 

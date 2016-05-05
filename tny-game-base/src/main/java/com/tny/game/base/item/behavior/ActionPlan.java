@@ -50,37 +50,37 @@ public interface ActionPlan {
      *
      * @return
      */
-    ActionResult getActionResult(long playerID, Map<String, Object> attributes);
+    ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    AwardList getAwardList(long playerID, Map<String, Object> attributes);
+    AwardList getAwardList(long playerID, Action action, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    CostList getCostList(long playerID, Map<String, Object> attributes);
+    CostList getCostList(long playerID, Action action, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
      *
-     * @param attribute
+     * @param attributes
      * @return
      */
-    Trade createAward(long playerID, Map<String, Object> attributes);
+    Trade createAward(long playerID, Action action, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
      *
-     * @param attribute
+     * @param attributes
      * @return
      */
-    Trade createCost(long playerID, Map<String, Object> attributes);
+    Trade createCost(long playerID, Action action, Map<String, Object> attributes);
 
     /**
      * 计算选项

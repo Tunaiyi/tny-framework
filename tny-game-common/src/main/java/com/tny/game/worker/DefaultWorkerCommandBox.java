@@ -20,7 +20,7 @@ public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  
         return queue;
     }
 
-    public void run() {
+    public void process() {
         Queue<C> queue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         int currentSize = queue.size();
@@ -41,9 +41,9 @@ public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  
                 queue.remove(cmd);
             }
         }
-        for (CommandBox commandBox : commandBoxList) {
-            commandBox.run();
-            runSize += commandBox.getRunSize();
+        for (CommandBox commandBox : boxes()) {
+            commandBox.process();
+            runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;

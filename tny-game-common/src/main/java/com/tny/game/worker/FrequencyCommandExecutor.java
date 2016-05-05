@@ -62,6 +62,11 @@ public class FrequencyCommandExecutor implements CommandExecutor {
         }
 
         @Override
+        public boolean isWorking() {
+            return FrequencyCommandExecutor.this.isWorking();
+        }
+
+        @Override
         public boolean register(CommandBox commandBox) {
             return FrequencyCommandExecutor.this.register(commandBox);
         }
@@ -100,9 +105,9 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                     int currentContinueTime = 0;
                     while (currentTime >= nextRunningTime) {
                         for (CommandBox box : commandBoxList) {
-                            this.worker.run(box);
-                            box.getRunUseTime();
-                            currentRunSize += box.getRunSize();
+                            this.worker.submit(box);
+                            box.getProcessUseTime();
+                            currentRunSize += box.getProcessSize();
                         }
                         nextRunningTime += 100L;
                         currentContinueTime++;
@@ -186,11 +191,6 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean isOnCurrentThread() {
-        return this.currentThread == Thread.currentThread();
-    }
-
-    @Override
     public boolean register(CommandBox commandBox) {
         if (commandBox instanceof WorkerCommandBox) {
             WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
@@ -215,8 +215,8 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean isRunning() {
-        return working;
+    public boolean isWorking() {
+        return this.working;
     }
 
     @Override

@@ -26,18 +26,25 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     protected boolean executeIfCurrent(C command) {
         CommandWorker worker = this.worker;
-        if (worker != null && worker.isOnCurrentThread()) {
-            command.execute();
-        }
+        if (worker != null && worker.isOnCurrentThread())
+            executeCommand(command);
         if (!command.isDone()) {
             this.queue.add(command);
+            postAcceptIntoQueue(command);
         }
+        postAccept(command);
         return true;
     }
 
+    protected void postAccept(C command) {
+    }
+
+    protected void postAcceptIntoQueue(C command) {
+
+    }
 
     @Override
-    protected boolean bindWorker(CommandWorker worker) {
+    public boolean bindWorker(CommandWorker worker) {
         if (this.worker != null)
             return false;
         synchronized (this) {
@@ -46,14 +53,14 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
             this.preBind();
             this.worker = worker;
             this.postBind();
-            for (CommandBox box : commandBoxList)
+            for (CB box : boxes())
                 box.bindWorker(worker);
             return true;
         }
     }
 
     @Override
-    protected boolean unbindWorker() {
+    public boolean unbindWorker() {
         CommandWorker worker = this.worker;
         if (worker == null)
             return false;
@@ -63,7 +70,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
             this.preUnbind();
             this.worker = null;
             this.postUnbind();
-            for (CommandBox box : commandBoxList)
+            for (CB box : boxes())
                 box.unbindWorker();
             return true;
         }

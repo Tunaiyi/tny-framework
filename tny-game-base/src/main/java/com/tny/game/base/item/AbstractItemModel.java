@@ -151,7 +151,8 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : behaviorPlan.getActionPlanMap().entrySet()) {
             ActionPlan actionPlan = entry.getValue();
-            actionResultMap.put(entry.getKey(), actionPlan.getActionResult(playerID, attributeMap));
+            for (Action action : actionPlan.getActions())
+                actionResultMap.put(entry.getKey(), actionPlan.getActionResult(playerID, action, attributeMap));
         }
         return new SimpleBehaviorResult(resultList, actionResultMap);
     }

@@ -1,6 +1,10 @@
 package com.tny.game.common.concurrent;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 public abstract class AbstractFuture<V> implements Future<V> {
@@ -130,6 +134,14 @@ public abstract class AbstractFuture<V> implements Future<V> {
         return sync.setException(throwable);
     }
 
+    protected V getRawValue() {
+        return sync.value;
+    }
+
+    protected Throwable getRawCause() {
+        return sync.exception;
+    }
+
     /**
      * <p>Following the contract of {@link AbstractQueuedSynchronizer} we create a
      * private subclass to hold the synchronizer.  This synchronizer is used to
@@ -239,7 +251,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
         }
 
         /**
-         * Checks if the state is {@link #COMPLETED}, {@link #CANCELLED}, or {@link INTERRUPTED}.
+         * Checks if the state is {@link #COMPLETED}, {@link #CANCELLED}, or {@link }.
          */
         boolean isDone() {
             return (getState() & (COMPLETED | CANCELLED | INTERRUPTED)) != 0;

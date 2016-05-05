@@ -25,6 +25,7 @@ public interface ClassFilterHelper {
         return predicate::test;
     }
 
+    @SafeVarargs
     static boolean matchAnnotation(MetadataReader reader, Class<? extends Annotation>... annotations) {
         List<Class<? extends Annotation>> annos = Arrays.asList(annotations);
         return matchAnnotation(reader, annos);

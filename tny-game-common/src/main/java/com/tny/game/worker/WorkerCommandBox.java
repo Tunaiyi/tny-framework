@@ -1,14 +1,16 @@
 package com.tny.game.worker;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.LogUtils;
 import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox> extends CommandBox<C> {
+public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox> implements CommandBox<C> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
@@ -18,7 +20,7 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
 
     protected int runSize;
 
-    protected volatile Queue<CB> commandBoxList;
+    private volatile Queue<CB> commandBoxList;
 
     protected abstract Queue<C> acceptQueue();
 
@@ -29,11 +31,11 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
         return executeIfCurrent(command);
     }
 
-    public long getRunUseTime() {
+    public long getProcessUseTime() {
         return runUseTime;
     }
 
-    public int getRunSize() {
+    public int getProcessSize() {
         return runSize;
     }
 
@@ -45,7 +47,14 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
         return false;
     }
 
-    private Queue<CB> boxes() {
+    protected Collection<CB> boxes() {
+        Queue<CB> boxes = commandBoxList;
+        if (boxes != null)
+            return boxes;
+        return ImmutableList.of();
+    }
+
+    protected Queue<CB> createAndGetBox() {
         if (commandBoxList != null)
             return commandBoxList;
         synchronized (this) {
@@ -58,7 +67,7 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
     @SuppressWarnings("unchecked")
     public boolean register(CommandBox commandBox) {
         if (commandBox.bindWorker(this)) {
-            boxes().add((CB) commandBox);
+            createAndGetBox().add((CB) commandBox);
             return true;
         }
         return false;
@@ -66,10 +75,14 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
 
     @Override
     public boolean unregister(CommandBox commandBox) {
-        if (commandBox.unbindWorker()) {
-            return boxes().remove(commandBox);
+        if (boxes().remove(commandBox)) {
+            return commandBox.unbindWorker();
         }
         return false;
     }
 
+    @Override
+    public boolean isWorking() {
+        return this.worker != null && this.worker.isWorking();
+    }
 }

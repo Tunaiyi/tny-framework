@@ -30,7 +30,7 @@ public interface CostPlan extends TradePlan {
     /**
      * 获取消耗列表
      *
-     * @param atrributeMap 计算参数
+     * @param attributeMap 计算参数
      * @return 返回奖励列表
      */
     CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap);
