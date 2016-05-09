@@ -11,7 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 @Profile({"suite.server", "suite.all"})
@@ -37,7 +43,7 @@ public class SessionService {
                 Session.DEFAULT_USER_GROUP,
                 gamer.getPlayerID(),
                 ProtocolUtils.PUSH,
-                ResultCode.SUCCESS,
+                message.getResultCode(),
                 message.getBody());
     }
 
@@ -47,6 +53,24 @@ public class SessionService {
                 gamer.getPlayerID(),
                 ProtocolUtils.PUSH,
                 ResultCode.SUCCESS,
+                message);
+    }
+
+    public void sendResponse2User(Identifiable gamer, ResultCode resultCode) {
+        this.sessionHolder.send2User(
+                Session.DEFAULT_USER_GROUP,
+                gamer.getPlayerID(),
+                ProtocolUtils.PUSH,
+                resultCode,
+                null);
+    }
+
+    public void sendResponse2User(Identifiable gamer, ResultCode resultCode, Object message) {
+        this.sessionHolder.send2User(
+                Session.DEFAULT_USER_GROUP,
+                gamer.getPlayerID(),
+                ProtocolUtils.PUSH,
+                resultCode,
                 message);
     }
 

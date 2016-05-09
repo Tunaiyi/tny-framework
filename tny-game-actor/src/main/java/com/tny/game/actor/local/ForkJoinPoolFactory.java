@@ -3,12 +3,10 @@ package com.tny.game.actor.local;
 import java.util.concurrent.ForkJoinPool;
 
 /**
- * ForkJoinPool工厂方法
- * Created by Kun Yang on 16/1/19.
+ * Created by Kun Yang on 16/4/26.
  */
 public interface ForkJoinPoolFactory {
 
     ForkJoinPool createForkJoinPool();
 
 }
-

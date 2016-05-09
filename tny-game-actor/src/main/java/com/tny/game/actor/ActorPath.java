@@ -61,7 +61,7 @@ public abstract class ActorPath {
     /**
      * @return 获取根节点
      */
-    public abstract RootActorPath root();
+    public abstract ActorPath root();
 
     /**
      * 是否是根

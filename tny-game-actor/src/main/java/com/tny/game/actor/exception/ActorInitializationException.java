@@ -1,6 +1,7 @@
 package com.tny.game.actor.exception;
 
-import com.tny.game.actor.ActorRef;
+
+import com.tny.game.actor.Actor;
 
 /**
  * Actor初始化异常
@@ -17,19 +18,19 @@ public class ActorInitializationException extends ActorException {
 	/**
 	 * 相关的ActorRef
 	 */
-	private ActorRef actorRef;
+	private Actor<?, ?> actor;
 
-	public ActorInitializationException(ActorRef actorRef, String message, Throwable cause) {
+	public ActorInitializationException(Actor<?, ?> actor, String message, Throwable cause) {
 		super(message, cause);
-		this.actorRef = actorRef;
+		this.actor = actor;
 	}
 
 	/**
 	 * 获取相关ActorRef
 	 * @return ActorRef
 	 */
-	public ActorRef getActorRef() {
-		return actorRef;
+	public Actor<?, ?> getActorRef() {
+		return actor;
 	}
 
 }

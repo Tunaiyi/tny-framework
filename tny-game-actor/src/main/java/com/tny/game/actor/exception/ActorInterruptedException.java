@@ -6,6 +6,10 @@ package com.tny.game.actor.exception;
  */
 public class ActorInterruptedException extends ActorException {
 
+    public ActorInterruptedException(String message) {
+        super(message);
+    }
+
     public ActorInterruptedException(Throwable cause) {
         super(cause.getMessage(), cause);
     }

@@ -1,41 +1,71 @@
 package com.tny.game.actor;
 
-import java.util.Optional;
 
 /**
- * Actor对象,负责处理消息.
+ * Actor的引用,开发过程中,无法获取到实际的Actor对象,只能获取到对应的Actor引用,
+ * 可以通过actor引用进行消息发送.
  *
  * @author KGTny
  */
-public interface Actor<M> {
+public interface Actor<ID, M> {
 
-    void aroundReceive(M message);
+    /**
+     * @return 获取Actor ID
+     */
+    ID getActorID();
 
-    void preStart();
+    /**
+     * 获取Actor的路径信息对象
+     *
+     * @return 路径信息对象
+     */
+    ActorPath getPath();
 
-    void postStart();
+    /**
+     * @return 是否终止
+     */
+    boolean isTerminated();
 
-    void aroundPreRestart(Throwable cause, Optional<Object> optionalMessage);
+    /**
+     * @return 是否被接管
+     */
+    boolean isTakenOver();
 
-    void aroundPostRestart(Throwable cause);
+    /**
+     * @return 是否是本地
+     */
+    boolean isLocal();
 
-    void preResume(Throwable reason, M message);
+    /**
+     * 向当前Actor发送消息, 发送者为noSender
+     *
+     * @param message 发送的消息
+     */
+    void tell(M message);
 
-    void postResume(Throwable reason);
+    /**
+     * sender发送消息给当前Actor,
+     *
+     * @param message 发送消息
+     * @param sender  发送者
+     */
+    void tell(M message, Actor sender);
 
-    void aroundPostStop();
+    /**
+     * sender发送消息给当前Actor,
+     *
+     * @param message 发送消息
+     * @return 返回一个等待结果的Answer
+     */
+    <V> Answer<V> ask(M message);
 
-    void preStop();
-
-    void proStop();
-
-    void receiver(M receiver);
-
-    ActorContext getContext();
-
-    boolean resetActor(ActorContext context, ActorRef replace);
-
-    SupervisorStrategy getSupervisorStrategy();
-
+    /**
+     * sender发送消息给当前Actor,
+     *
+     * @param message 发送消息
+     * @param sender  发送者
+     * @return 返回一个等待结果的Answer
+     */
+    <V> Answer<V> ask(M message, Actor sender);
 
 }
