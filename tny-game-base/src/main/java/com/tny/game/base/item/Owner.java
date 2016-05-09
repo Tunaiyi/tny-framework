@@ -1,5 +1,7 @@
 package com.tny.game.base.item;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
 /**
@@ -34,7 +36,21 @@ public interface Owner<S extends Stuff<?>> {
      * @param itemID 物品ID
      * @return 物品信息
      */
-    List<S> getItemByItemID(int itemID);
+    default List<S> getItemsByItemID(int itemID) {
+        S stuff = getItemByItemID(itemID);
+        if (stuff != null) {
+            return ImmutableList.of(stuff);
+        }
+        return ImmutableList.of();
+    }
+
+    /**
+     * 获取某事物的信息 <br>
+     *
+     * @param itemID 物品ID
+     * @return 物品信息
+     */
+    S getItemByItemID(int itemID);
 
     /**
      * 获取持有的事物Model类型 <br>

@@ -80,7 +80,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         Owner<Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return Collections.emptyList();
-        return owner.getItemByItemID(itemID)
+        return owner.getItemsByItemID(itemID)
                 .stream()
                 .map(item -> (I) item)
                 .collect(Collectors.toList());

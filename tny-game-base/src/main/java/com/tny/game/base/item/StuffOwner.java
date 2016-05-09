@@ -1,11 +1,10 @@
 package com.tny.game.base.item;
 
-import java.util.ArrayList;
+import com.tny.game.common.utils.collection.CopyOnWriteMap;
+
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 /**
  * 抽象事物拥有者对象
@@ -34,7 +33,7 @@ public abstract class StuffOwner<IM extends ItemModel, S extends Stuff<IM>> impl
      * 拥有的item模型
      */
     //	@Link(name = "itemCollection", ignore = true, ignoreOperation = { Operation.SAVE, Operation.DELETE, Operation.UPDATE })
-    protected ConcurrentMap<Long, S> itemMap = new ConcurrentHashMap<Long, S>();
+    protected Map<Long, S> itemMap = new CopyOnWriteMap<>();
 
     @Override
     public long getPlayerID() {
@@ -47,22 +46,14 @@ public abstract class StuffOwner<IM extends ItemModel, S extends Stuff<IM>> impl
     }
 
     @Override
-    public List<S> getItemByItemID(int id) {
-        List<S> stuffList = new ArrayList<S>();
-        S stuff = itemMap.get((long) id);
-        if (stuff != null)
-            stuffList.add(stuff);
-        return stuffList;
+    public S getItemByItemID(int itemID) {
+        return itemMap.get((long) itemID);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <IT extends ItemType> IT getOwnerItemType() {
         return (IT) ownItemType;
-    }
-
-    public Collection<S> getAllItemCollection() {
-        return Collections.unmodifiableCollection(itemMap.values());
     }
 
     protected Collection<S> getItemCollection() {
