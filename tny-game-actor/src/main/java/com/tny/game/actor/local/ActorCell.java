@@ -3,20 +3,12 @@ package com.tny.game.actor.local;
 import com.tny.game.actor.Actor;
 import com.tny.game.actor.ActorPath;
 import com.tny.game.actor.Answer;
-import com.tny.game.actor.exception.ActorTerminatedException;
-import com.tny.game.worker.CommandBox;
-import com.tny.game.worker.CommandWorker;
-
-import java.util.Queue;
 
 /**
  * Actor单元,负责管理与当前Actor相关的对象
  * Created by Kun Yang on 16/4/25.
  */
-class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
-
-    private static final ActorLifeCycle DEFAULT_LIFE_CYCLE = new ActorLifeCycle() {
-    };
+class ActorCell implements ActorDispatcher {
 
     private ActorPath actorPath;
 
@@ -24,7 +16,9 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
 
     private ActorHandler<?> handler = (mail) -> null;
 
-    private ActorLifeCycle lifeCycle = DEFAULT_LIFE_CYCLE;
+    private ActorCommandBox commandBox;
+
+    private ActorLifeCycle lifeCycle;
 
     private volatile boolean terminated = false;
 
@@ -33,8 +27,8 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
         this.handler = props.getActorHandler();
         this.handler = this.handler != null ? handler : (mail) -> null;
         this.lifeCycle = props.getLifeCycle();
-        this.lifeCycle = lifeCycle != null ? new ProxyActorLifeCycle(lifeCycle) : DEFAULT_LIFE_CYCLE;
         this.actor = new LocalTypeActor<>(id, this);
+        this.commandBox = props.getCommandBoxFactory().create(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -47,7 +41,7 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
     }
 
     boolean detach() {
-        return this.worker != null && this.worker.unregister(this);
+        return commandBox.detach();
     }
 
     /**
@@ -97,27 +91,21 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
     @Override
     @SuppressWarnings("unchecked")
     public <V, A extends Answer<V>> A sendMessage(Object message, Actor sender, boolean needAnswer) {
-        this.checkTerminated();
         if (!needAnswer) {
             if (message instanceof ActorCommand)
-                this.accept((ActorCommand<?, ?, ?>) message);
+                this.commandBox.accept((ActorCommand<?, ?, ?>) message);
             else
-                this.accept(new ActorMailCommand<>(this, message, sender));
+                this.commandBox.accept(new ActorMailCommand<>(this, message, sender));
             return null;
         } else {
             ActorAnswerCommand<V, ?, ?> command = null;
             if (message instanceof ActorAnswerCommand)
-                this.accept(command = (ActorAnswerCommand) message);
+                this.commandBox.accept(command = (ActorAnswerCommand) message);
             else
-                this.accept(new ActorMailCommand<>(this, message, sender, new LocalTypeAnswer<>()));
+                this.commandBox.accept(new ActorMailCommand<>(this, message, sender, new LocalTypeAnswer<>()));
             return command != null ? (A) command.getAnswer() : null;
         }
 
-    }
-
-    private void checkTerminated() {
-        if (this.isTerminated())
-            throw new ActorTerminatedException(actor);
     }
 
     boolean isTerminated() {
@@ -125,19 +113,7 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
     }
 
     private void doTerminate() {
-        if (this.terminated)
-            return;
-        this.terminated = true;
-        Queue<ActorCommand<?, ?, ?>> queue = this.acceptQueue();
-        while (!queue.isEmpty()) {
-            ActorCommand<?, ?, ?> cmd = queue.poll();
-            if (!cmd.isWork())
-                continue;
-            cmd.cancel();
-            this.executeCommand(cmd);
-        }
-        for (ActorCell cell : boxes())
-            cell.terminate();
+        this.commandBox.terminate();
     }
 
     public ActorPath getActorPath() {
@@ -145,28 +121,11 @@ class ActorCell extends ActorCommandBox<ActorCell> implements ActorDispatcher {
     }
 
     boolean isTakenOver() {
-        return this.isWorking();
+        return this.commandBox.isWorking();
     }
 
-    @Override
-    public boolean accept(ActorCommand<?, ?, ?> command) {
-        this.checkTerminated();
-        return super.accept(command);
-    }
-
-    @Override
-    public boolean bindWorker(CommandWorker worker) {
-        return !this.isTerminated() && super.bindWorker(worker);
-    }
-
-    @Override
-    public boolean unbindWorker() {
-        return super.unbindWorker();
-    }
-
-    @Override
-    public boolean register(CommandBox commandBox) {
-        return !this.terminated && super.register(commandBox);
+    ActorCommandBox getCommandBox() {
+        return commandBox;
     }
 
 }

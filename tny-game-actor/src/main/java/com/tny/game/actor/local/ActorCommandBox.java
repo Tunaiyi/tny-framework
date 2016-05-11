@@ -1,6 +1,7 @@
 package com.tny.game.actor.local;
 
 
+import com.tny.game.actor.exception.ActorTerminatedException;
 import com.tny.game.actor.local.ActorCommandExecutor.ActorCommandWorker;
 import com.tny.game.worker.AbstractWorkerCommandBox;
 import com.tny.game.worker.CommandBox;
@@ -14,14 +15,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Actor 命令箱子
  * Created by Kun Yang on 16/4/25.
  */
-public abstract class ActorCommandBox<ACB extends ActorCommandBox> extends AbstractWorkerCommandBox<ActorCommand<?, ?, ?>, ACB> implements Runnable {
+public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorCommand<?, ?, ?>, ActorCommandBox> implements Runnable {
 
-//    private int handleTimes = 0;
+    private ActorCell actorCell;
+
+    private volatile boolean terminated;
 
     private AtomicBoolean submit = new AtomicBoolean(false);
 
-    public ActorCommandBox() {
+    public ActorCommandBox(ActorCell actorCell) {
         super(new ConcurrentLinkedQueue<>());
+        this.actorCell = actorCell;
     }
 
     @Override
@@ -43,42 +47,67 @@ public abstract class ActorCommandBox<ACB extends ActorCommandBox> extends Abstr
     }
 
     @Override
-    public void process() {
-//        System.out.println(++handleTimes);
-        ActorCommand<?, ?, ?> delimiter = null;
-        Queue<ActorCommand<?, ?, ?>> queue = this.acceptQueue();
-        long startTime = System.currentTimeMillis();
-        this.runSize = 0;
-        while (!queue.isEmpty()) {
-            ActorCommand<?, ?, ?> cmd = queue.peek();
-            if (cmd == delimiter)
-                break;
-            queue.poll();
-            if (!cmd.isWork()) {
-                continue;
-            }
-            this.executeCommand(cmd);
-            this.runSize++;
-            if (!cmd.isDone()) {
-                if (delimiter == null)
-                    delimiter = cmd;
-                queue.add(cmd);
-            }
-        }
-        for (CommandBox commandBox : boxes()) {
-            this.worker.submit(commandBox);
-            this.runSize += commandBox.getProcessSize();
-        }
-        long finishTime = System.currentTimeMillis();
-        this.runUseTime = finishTime - startTime;
-    }
-
-    @Override
     protected void postAcceptIntoQueue(ActorCommand<?, ?, ?> command) {
         CommandWorker worker = this.worker;
         if (worker != null && worker instanceof ActorCommandWorker) {
             ((ActorCommandWorker) worker).trySubmit(this);
         }
     }
+
+
+    protected void terminate() {
+        if (this.terminated)
+            return;
+        this.terminated = true;
+        Queue<ActorCommand<?, ?, ?>> queue = this.acceptQueue();
+        while (!queue.isEmpty()) {
+            ActorCommand<?, ?, ?> cmd = queue.poll();
+            if (!cmd.isWork())
+                continue;
+            cmd.cancel();
+            this.executeCommand(cmd);
+        }
+        for (ActorCommandBox box : boxes())
+            box.getActorCell().terminate();
+    }
+
+    boolean isTerminated() {
+        return this.terminated;
+    }
+
+    boolean detach() {
+        return this.worker != null && this.worker.unregister(this);
+    }
+
+    private ActorCell getActorCell() {
+        return actorCell;
+    }
+
+    private void checkTerminated() {
+        if (this.isTerminated())
+            throw new ActorTerminatedException(this.actorCell.getActor());
+    }
+
+    @Override
+    public boolean accept(ActorCommand<?, ?, ?> command) {
+        this.checkTerminated();
+        return super.accept(command);
+    }
+
+    @Override
+    public boolean bindWorker(CommandWorker worker) {
+        return !this.isTerminated() && super.bindWorker(worker);
+    }
+
+    @Override
+    public boolean unbindWorker() {
+        return super.unbindWorker();
+    }
+
+    @Override
+    public boolean register(CommandBox commandBox) {
+        return !this.terminated && super.register(commandBox);
+    }
+
 
 }

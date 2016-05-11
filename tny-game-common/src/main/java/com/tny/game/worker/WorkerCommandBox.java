@@ -85,4 +85,6 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
     public boolean isWorking() {
         return this.worker != null && this.worker.isWorking();
     }
+
+
 }

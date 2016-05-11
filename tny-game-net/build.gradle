@@ -10,6 +10,7 @@ dependencies {
 
             project(":tny-game-common"),
             project(":tny-game-protoex"),
+            project(":tny-game-actor"),
     )
 
 }

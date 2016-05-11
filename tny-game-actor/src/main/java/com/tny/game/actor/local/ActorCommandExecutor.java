@@ -119,7 +119,7 @@ class ActorCommandExecutor implements CommandExecutor, ActorWorker {
 
     @Override
     public boolean takeOver(LocalActor<?, ?> actor) {
-        return register(actor.cell());
+        return register(actor.cell().getCommandBox());
     }
 
     @Override

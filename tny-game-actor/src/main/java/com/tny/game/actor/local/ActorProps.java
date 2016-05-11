@@ -6,11 +6,18 @@ package com.tny.game.actor.local;
  */
 public class ActorProps {
 
+    private final static ActorCommandBoxFactory DEFAULT_BOX_FACTORY = new DefaultActorCommandBoxFactory();
+
+    private static final ActorLifeCycle DEFAULT_LIFE_CYCLE = new ActorLifeCycle() {
+    };
+
     private ActorLifeCycle lifeCycle;
 
     private ActorHandler<?> actorHandler;
 
     private ActorTheatre actorTheatre;
+
+    private ActorCommandBoxFactory commandBoxFactory;
 
     private ActorProps() {
     }
@@ -23,10 +30,13 @@ public class ActorProps {
         return of()
                 .setLifeCycle(defaultProps.getLifeCycle())
                 .setActorHandler(defaultProps.getActorHandler())
-                .setActorTheatre(defaultProps.getActorTheatre());
+                .setActorTheatre(defaultProps.getActorTheatre())
+                .setCommandBoxFactory(defaultProps.getCommandBoxFactory());
     }
 
     public ActorLifeCycle getLifeCycle() {
+        if (this.lifeCycle == null)
+            this.lifeCycle = DEFAULT_LIFE_CYCLE;
         return lifeCycle;
     }
 
@@ -38,6 +48,11 @@ public class ActorProps {
         return actorHandler;
     }
 
+    public ActorCommandBoxFactory getCommandBoxFactory() {
+        if (this.commandBoxFactory == null)
+            this.commandBoxFactory = DEFAULT_BOX_FACTORY;
+        return commandBoxFactory;
+    }
 
     public ActorProps setActorHandler(ActorHandler<?> actorHandler) {
         this.actorHandler = actorHandler;
@@ -45,12 +60,17 @@ public class ActorProps {
     }
 
     public ActorProps setLifeCycle(ActorLifeCycle lifeCycle) {
-        this.lifeCycle = lifeCycle;
+        this.lifeCycle = new ProxyActorLifeCycle(lifeCycle);
         return this;
     }
 
     public ActorProps setActorTheatre(ActorTheatre actorTheatre) {
         this.actorTheatre = actorTheatre;
+        return this;
+    }
+
+    public ActorProps setCommandBoxFactory(ActorCommandBoxFactory commandBoxFactory) {
+        this.commandBoxFactory = commandBoxFactory;
         return this;
     }
 

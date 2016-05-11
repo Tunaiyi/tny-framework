@@ -57,7 +57,7 @@ class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
 
     @Override
     public boolean takeOver(LocalActor<?, ?> actor) {
-        return actorCell.register((actor).cell());
+        return actorCell.getCommandBox().register((actor).cell().getCommandBox());
     }
 
 
