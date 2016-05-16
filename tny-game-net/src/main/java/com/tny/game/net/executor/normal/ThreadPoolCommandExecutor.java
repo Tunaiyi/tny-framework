@@ -5,7 +5,6 @@ import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.collection.LinkedTransferQueue;
 import com.tny.game.log.CoreLogger;
-import com.tny.game.net.dispatcher.DispatchCommand;
 import com.tny.game.net.dispatcher.DispatcherCommand;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.Session;
@@ -62,7 +61,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
 
     private static class ChildExecutor implements DispatcherCommandBox, Runnable {
 
-        private final Queue<DispatchCommand<?>> commandQueue = new ConcurrentLinkedQueue<>();
+        private final Queue<DispatcherCommand<?>> commandQueue = new ConcurrentLinkedQueue<>();
 
         private final ExecutorService executorService;
 
@@ -83,11 +82,14 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         @Override
         public <T> boolean appoint(DispatcherCommand<T> command, Callback<T> callback) {
             if (!this.executorService.isShutdown()) {
-                DispatchCommand<?> commandTask = new DispatchCommand<>(command, callback);
+                if (callback != null)
+                    command.setCallback(callback);
                 if (this.thread != null && this.thread == Thread.currentThread()) {
-                    commandTask.execute();
+                    command.execute();
+                    if (!command.isDone())
+                        this.commandQueue.offer(command);
                 } else {
-                    this.commandQueue.offer(commandTask);
+                    this.commandQueue.offer(command);
                     if (this.start.compareAndSet(false, true)) {
                         this.executorService.submit(this);
                     }
@@ -101,17 +103,18 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
         public void run() {
             this.thread = Thread.currentThread();
             for (; ; ) {
-                DispatchCommand<?> cmd = this.commandQueue.peek();
+                DispatcherCommand<?> cmd = this.commandQueue.peek();
                 if (cmd != null) {
                     try {
                         cmd.execute();
                     } catch (Exception e) {
                         LOG_NET.error("run command task {} exception", cmd.getName(), e);
                     }
-                    if (!cmd.isDone()) {
-                        break;
-                    } else {
+                    if (cmd.isDone()) {
                         this.commandQueue.poll();
+                    } else {
+                        this.executorService.submit(this);
+                        break;
                     }
                 } else {
                     if (this.start.compareAndSet(true, false)) {
@@ -124,11 +127,11 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
                 }
             }
             this.thread = null;
-            if (!this.commandQueue.isEmpty()) {
-                if (this.start.compareAndSet(false, true)) {
-                    this.executorService.submit(this);
-                }
-            }
+//            if (!this.commandQueue.isEmpty()) {
+//                if (this.start.compareAndSet(false, true)) {
+//                    this.executorService.submit(this);
+//                }
+//            }
         }
 
         @Override

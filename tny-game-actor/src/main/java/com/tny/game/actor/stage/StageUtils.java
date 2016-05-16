@@ -31,4 +31,16 @@ public class StageUtils {
         return Do.fail();
     }
 
+    public static <T> Done<T> getCause(TaskStage stage) {
+        if (!stage.isDone())
+            return Do.fail();
+        if (stage instanceof TypeTaskStage) {
+            TypeTaskStage<T> typeStage = (TypeTaskStage<T>) stage;
+            return Do.succNullable(typeStage.getResult());
+        } else if (stage instanceof VoidTaskStage) {
+            return Do.succNullable(null);
+        }
+        return Do.fail();
+    }
+
 }

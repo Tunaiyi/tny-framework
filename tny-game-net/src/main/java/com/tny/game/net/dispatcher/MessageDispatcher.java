@@ -26,7 +26,7 @@ public interface MessageDispatcher {
      * @param request 请求
      * @param session 通道
      */
-    public DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException;
+    DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException;
 
     /**
      * 派发请求
@@ -37,7 +37,7 @@ public interface MessageDispatcher {
      * @param response 请求
      * @param session  通道
      */
-    public DispatcherCommand<Void> dispatch(Response response, ClientSession session, AppContext context) throws DispatchException;
+    DispatcherCommand<Void> dispatch(Response response, ClientSession session, AppContext context) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器
@@ -47,7 +47,7 @@ public interface MessageDispatcher {
      *
      * @param listener 添加的请求派发错误监听器
      */
-    public void addDispatcherRequestListener(DispatcherRequestListener listener);
+    void addDispatcherRequestListener(DispatcherRequestListener listener);
 
     /**
      * 移除请求派发错误监听器
@@ -57,7 +57,7 @@ public interface MessageDispatcher {
      *
      * @param listener 移除的请求派发错误监听器
      */
-    public void removeDispatcherRequestListener(DispatcherRequestListener listener);
+    void removeDispatcherRequestListener(DispatcherRequestListener listener);
 
     /**
      * 清除请求派发错误监听器
@@ -65,6 +65,6 @@ public interface MessageDispatcher {
      * <p>
      * 清除所有请求派发错误监听器<br>
      */
-    public void clearDispatcherRequestListener();
+    void clearDispatcherRequestListener();
 
 }

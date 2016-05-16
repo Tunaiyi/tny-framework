@@ -1,6 +1,9 @@
 package com.tny.game.net.dispatcher;
 
-public interface DispatcherCommand<T> {
+import com.tny.game.worker.Callback;
+import com.tny.game.worker.command.Command;
+
+public interface DispatcherCommand<T> extends Command {
 
     T invoke();
 
@@ -16,5 +19,8 @@ public interface DispatcherCommand<T> {
      * @return
      */
     Session getSession();
+
+
+    void setCallback(Callback<?> callback);
 
 }

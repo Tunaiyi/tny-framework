@@ -9,4 +9,8 @@ import java.util.concurrent.Future;
  */
 public interface Answer<V> extends Future<V> {
 
+    boolean isFail();
+
+    Throwable getCause();
+
 }

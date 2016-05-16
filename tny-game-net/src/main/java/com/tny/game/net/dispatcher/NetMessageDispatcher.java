@@ -1,6 +1,12 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.LogUtils;
+import com.tny.game.actor.Answer;
+import com.tny.game.actor.TypeAnswer;
+import com.tny.game.actor.VoidAnswer;
+import com.tny.game.actor.stage.StageUtils;
+import com.tny.game.actor.stage.TaskStage;
+import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.log.CoreLogger;
@@ -16,6 +22,7 @@ import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
+import com.tny.game.worker.Callback;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +37,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 抽象请求派发器
  *
  * @author KGTny
- * <p>
- * 抽象请求派发器
- * <p>
- * <p>
- * 实现对controllerMap的初始化,派发请求流程<br>
+ *         <p>
+ *         抽象请求派发器
+ *         <p>
+ *         <p>
+ *         实现对controllerMap的初始化,派发请求流程<br>
  */
 public abstract class NetMessageDispatcher implements MessageDispatcher {
 
@@ -182,12 +189,19 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         final AppContext appContext;
         protected H message;
         protected S session;
-        boolean executed = false;
+
+        Callback<Object> callback;
+        boolean done;
 
         private AbstractDispatcherCommand(AppContext appContext, H message, S session) {
             this.appContext = appContext;
             this.message = message;
             this.session = session;
+        }
+
+        @SuppressWarnings("unchecked")
+        public void setCallback(Callback<?> callback) {
+            this.callback = (Callback<Object>) callback;
         }
 
         @Override
@@ -208,6 +222,11 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         @Override
         public Session getSession() {
             return this.session;
+        }
+
+        @Override
+        public boolean isDone() {
+            return done;
         }
 
     }
@@ -260,62 +279,211 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             }
             return defResult;
         }
+
+        @Override
+        public void execute() {
+            invoke();
+            this.done = true;
+        }
+
+    }
+
+    private interface CommandFuture {
+
+        boolean isDone();
+
+        boolean isSuccess();
+
+        Throwable getCause();
+
+        Object getResult();
+
+    }
+
+    private static class TaskStageCommandFuture implements CommandFuture {
+
+        private TaskStage stage;
+
+        TaskStageCommandFuture(TaskStage stage) {
+            this.stage = stage;
+        }
+
+        @Override
+        public boolean isDone() {
+            return stage.isDone();
+        }
+
+        @Override
+        public boolean isSuccess() {
+            return stage.isSuccess();
+        }
+
+        @Override
+        public Throwable getCause() {
+            return stage.getCause();
+        }
+
+        @Override
+        public Object getResult() {
+            return StageUtils.getCause(stage);
+        }
+
+    }
+
+    private static class AnswerCommandFuture implements CommandFuture {
+
+        private Answer<?> answer;
+
+        AnswerCommandFuture(Answer<?> answer) {
+            this.answer = answer;
+        }
+
+        @Override
+        public boolean isDone() {
+            return answer.isDone();
+        }
+
+        @Override
+        public boolean isSuccess() {
+            return !answer.isFail();
+        }
+
+        @Override
+        public Throwable getCause() {
+            return answer.getCause();
+        }
+
+        @Override
+        public Object getResult() {
+            if (this.answer instanceof VoidAnswer) {
+                return null;
+            } else if (this.answer instanceof TypeAnswer) {
+                return ((TypeAnswer) this.answer).result().get();
+            }
+            return null;
+        }
+
     }
 
     private class RequestDispatcherCommand extends AbstractDispatcherCommand<ServerSession, Request, CommandResult> {
 
         private final MethodHolder methodHolder;
 
+        private CommandFuture commandFuture;
+
+        private boolean executed;
+
         private RequestDispatcherCommand(AppContext appContext, MethodHolder methodHolder, Request request, ServerSession session) {
             super(appContext, request, session);
             this.methodHolder = methodHolder;
         }
 
+        private CommandFuture getCommandFuture(Object value) {
+            if (value instanceof TaskStage)
+                return new TaskStageCommandFuture((TaskStage) value);
+            else if (value instanceof Answer)
+                return new AnswerCommandFuture((Answer<?>) value);
+            return null;
+        }
+
+        private void handleResult(ResultCode code, Object value) {
+            if (callback != null) {
+                try {
+                    callback.callback(code, value);
+                } catch (Throwable e) {
+                    DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", this.getClass(), this.getName(), callback.getClass(), e);
+                }
+            }
+            ChannelFuture future = this.session.response(this.message, code, value);
+            if (future != null && code.getType() == ResultCodeType.ERROR) {
+                future.addListener(future1 -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session));
+            }
+        }
+
+        @Override
+        public void execute() {
+            CurrentCMD.setCurrent(this.message.getUserID(), this.message.getProtocol());
+            if (done)
+                return;
+            if (!executed) {
+                CommandResult result = invoke();
+                Object value = result.getBody();
+                this.commandFuture = getCommandFuture(value);
+                if (this.commandFuture == null) {
+                    try {
+                        this.handleResult(result.getResultCode(), result.getBody());
+                    } finally {
+                        this.done = true;
+                    }
+                }
+            }
+            if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
+                try {
+                    try {
+                        if (this.commandFuture.isSuccess()) {
+                            Object value = this.commandFuture.getResult();
+                            this.handleResult(ResultCode.SUCCESS, value);
+                        } else {
+                            CommandResult result = handleException(this.commandFuture.getCause());
+                            this.handleResult(result.getResultCode(), result.getBody());
+                        }
+                    } finally {
+                        this.done = true;
+                    }
+                } catch (Throwable e) {
+                    try {
+                        CommandResult result = handleException(e);
+                        handleResult(result.getResultCode(), result.getBody());
+                    } finally {
+                        this.done = true;
+                    }
+                }
+            }
+        }
+
         @Override
         public CommandResult invoke() {
-            Throwable ex;
+            if (this.executed)
+                return null;
             CommandResult result = null;
             try {
                 result = this.doExecute();
-            } catch (DispatchException e) {
-                NetMessageDispatcher.DISPATCHER_LOG.error(e.getMessage(), e);
-                NetMessageDispatcher.this.fireExecuteDispatchException(new DispatchExceptionEvent(this.message, this.methodHolder, e));
-                // this.appContext.getSessionHolder().offline(this.session);
-                result = ResultFactory.create(e.getResultCode(), null);
-            } catch (InvocationTargetException e) {
-                ex = e.getTargetException();
-                result = this.handleException(ex);
             } catch (Throwable e) {
-                result = this.handleException(e);
+                result = handleException(e);
             } finally {
                 this.executed = true;
             }
-            if (result != null) {
-                ChannelFuture future = this.session.response(this.message, result.getResultCode(), result.getBody());
-                if (future != null && result.getResultCode().getType() == ResultCodeType.ERROR) {
-                    future.addListener(future1 -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session));
+            return result;
+        }
+
+        private CommandResult handleException(Throwable e) {
+            CommandResult result;
+            if (e instanceof DispatchException) {
+                DispatchException dex = (DispatchException) e;
+                NetMessageDispatcher.DISPATCHER_LOG.error(dex.getMessage(), dex);
+                NetMessageDispatcher.this.fireExecuteDispatchException(new DispatchExceptionEvent(this.message, this.methodHolder, dex));
+                result = ResultFactory.create(dex.getResultCode(), null);
+            } else if (e instanceof InvocationTargetException) {
+                NetMessageDispatcher.DISPATCHER_LOG.error("", e);
+                Throwable ex = ((InvocationTargetException) e).getTargetException();
+                result = this.handleException(ex);
+            } else {
+                NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", e);
+                DispatcherRequestErrorEvent event = new DispatcherRequestErrorEvent(this.message, this.methodHolder, e);
+                NetMessageDispatcher.this.fireExecuteException(event);
+                result = event.getResult();
+                if (result != null) {
+                    return result;
+                } else {
+                    return ResultFactory.create(CoreResponseCode.EXCUTE_EXCEPTION, null);
                 }
             }
             return result;
         }
 
-        private CommandResult handleException(Throwable ex) {
-            NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", ex);
-            DispatcherRequestErrorEvent event = new DispatcherRequestErrorEvent(this.message, this.methodHolder, ex);
-            NetMessageDispatcher.this.fireExecuteException(event);
-            CommandResult result = event.getResult();
-            if (result != null) {
-                return result;
-            } else {
-                return ResultFactory.create(CoreResponseCode.EXCUTE_EXCEPTION, null);
-            }
-        }
-
         private CommandResult doExecute() throws Exception {
 
             this.checkExecutable();
-
-            CurrentCMD.setCurrent(this.message.getUserID(), this.message.getProtocol());
 
             // 调用方法
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
@@ -339,6 +507,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (result == null)
                 result = ResultFactory.SUCC;
             return result;
+
         }
 
         private void checkExecutable() throws DispatchException {

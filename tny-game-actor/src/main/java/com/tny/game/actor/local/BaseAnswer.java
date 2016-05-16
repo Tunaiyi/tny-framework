@@ -34,4 +34,13 @@ abstract class BaseAnswer<T, TS extends TaskStage> extends AbstractFuture<T> imp
 
     protected abstract void fire();
 
+    @Override
+    public Throwable getCause() {
+        return this.getRawCause();
+    }
+
+    @Override
+    public boolean isFail() {
+        return isDone() && this.getRawCause() != null;
+    }
 }

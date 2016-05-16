@@ -22,7 +22,7 @@ public interface CommandResult {
      *
      * @return 返回结果状态码
      */
-    public ResultCode getResultCode();
+    ResultCode getResultCode();
 
     /**
      * 获取响应消息体
@@ -32,6 +32,6 @@ public interface CommandResult {
      *
      * @return 返回响应消息体
      */
-    public Object getBody();
+    Object getBody();
 
 }

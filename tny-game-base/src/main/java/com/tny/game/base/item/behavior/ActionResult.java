@@ -9,27 +9,27 @@ import java.util.List;
  */
 public interface ActionResult {
 
-    public Action getAction();
+    Action getAction();
 
     /**
      * 获取该操作涉及的非消耗的条件结果
      *
      * @return
      */
-    public List<DemandResult> getDemandResultList();
+    List<DemandResult> getDemandResultList();
 
     /**
      * 获取该操作设计的消耗条件结果
      *
      * @return
      */
-    public List<DemandResult> getCostDemandResultList();
+    List<DemandResult> getCostDemandResultList();
 
     /**
      * 获取该操作的奖励列表
      *
      * @return
      */
-    public AwardList getAwardList();
+    AwardList getAwardList();
 
 }

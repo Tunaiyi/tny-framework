@@ -1,7 +1,9 @@
 package com.tny.game.worker;
 
+import com.tny.game.common.result.ResultCode;
+
 public interface Callback<M> {
 
-    public void callback(boolean success, boolean executed, M message);
+    void callback(ResultCode code, M message);
 
 }
