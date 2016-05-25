@@ -4,7 +4,7 @@ import com.tny.game.base.item.behavior.Action;
 
 import java.util.List;
 
-public interface OperateLog extends Logable {
+public interface OperateLog extends Loggable {
 
     int getActionID();
 

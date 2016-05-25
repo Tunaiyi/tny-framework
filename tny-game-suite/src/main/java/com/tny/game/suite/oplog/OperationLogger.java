@@ -5,16 +5,26 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
-import com.tny.game.oplog.*;
+import com.tny.game.oplog.AbstractOpLogger;
+import com.tny.game.oplog.ActionLog;
+import com.tny.game.oplog.OpLog;
+import com.tny.game.oplog.OpLogger;
+import com.tny.game.oplog.Snapper;
+import com.tny.game.oplog.SnapperType;
+import com.tny.game.oplog.Snapshot;
+import com.tny.game.oplog.UserOpLog;
 import com.tny.game.oplog.annotation.SnapBy;
+import com.tny.game.oplog.log4j2.LogMessage;
 import com.tny.game.suite.oplog.dto.OperateLogDTO;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +32,9 @@ import java.util.Map;
  * 操作日志记录器
  * Created by Kun Yang on 16/1/30.
  */
-public abstract class OperationLogger extends AbstractOpLogger implements ServerPreStart, ApplicationContextAware {
+@Component
+@Profile({"suite.base", "suite.all"})
+public class OperationLogger extends AbstractOpLogger implements ServerPreStart, ApplicationContextAware {
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");
 
@@ -31,17 +43,28 @@ public abstract class OperationLogger extends AbstractOpLogger implements Server
 
     private static OpLogger instance;
 
+    @Autowired
+    private OpLogFactory opLogFactory;
+
+    @Autowired
+    private UserOpLogFactory userOpLogFactory;
+
     private ApplicationContext applicationContext;
 
     public static final OpLogger logger() {
         return instance;
     }
 
-    @PostConstruct
-    private void init() {
-        OperationLogger.instance = this;
+    public OperationLogger() {
+        if (OperationLogger.instance != null)
+            OperationLogger.instance = this;
     }
 
+    public OperationLogger(OpLogFactory opLogFactory, UserOpLogFactory userOpLogFactory) {
+        this();
+        this.opLogFactory = opLogFactory;
+        this.userOpLogFactory = userOpLogFactory;
+    }
 
     @Override
     protected void doLogSnapshot(Action action, Identifiable item, SnapperType type) {
@@ -103,9 +126,8 @@ public abstract class OperationLogger extends AbstractOpLogger implements Server
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
                     OperateLogDTO dto = new OperateLogDTO(log, userOpLog, actionLog);
-                    handleSubmit(dto);
-//					LogMessage message = new LogMessage(dto);
-//					oplogLogger.info(message);
+                    LogMessage message = new LogMessage(dto);
+                    oplogLogger.info(message);
                 } catch (Exception e) {
                     LOGGER.error("", e);
                 }
@@ -113,7 +135,15 @@ public abstract class OperationLogger extends AbstractOpLogger implements Server
         }
     }
 
-    protected abstract void handleSubmit(OperateLog log);
+    @Override
+    protected UserOpLog createUserOpLog(long playerID) {
+        return userOpLogFactory.create(playerID);
+    }
+
+    @Override
+    protected OpLog createLog() {
+        return opLogFactory.createLog();
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

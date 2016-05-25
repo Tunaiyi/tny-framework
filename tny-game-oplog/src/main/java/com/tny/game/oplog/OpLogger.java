@@ -13,9 +13,13 @@ public interface OpLogger {
 
     OpLogger logReceive(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum);
 
+    OpLogger logReceive(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum);
+
     OpLogger logConsume(Item<?> item, Action action, int oldNum, int alter, int newNum);
 
     OpLogger logConsume(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum);
+
+    OpLogger logConsume(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum);
 
     OpLogger logSnapshot(Identifiable item, Action action, SnapperType... types);
 

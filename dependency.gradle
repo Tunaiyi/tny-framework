@@ -93,4 +93,6 @@ ext.libs = [
         'druid'                 : 'com.alibaba:druid:1.0.16',
         'protobuf-java'         : 'com.google.protobuf:protobuf-java:2.6.1',
 
+        'kafka-clients'         : 'org.apache.kafka:kafka-clients:0.9.0.1',
+        'kafka_2.11'            : 'org.apache.kafka:kafka_2.11:0.9.0.1',
 ]

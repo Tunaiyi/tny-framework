@@ -41,26 +41,26 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     @Override
     public OpLogger logReceive(Item<?> item, Action action, int oldNum, int alter, int newNum) {
-        try {
-            action = this.transAction(action);
-            UserOpLog log = this.getUserLogger(item.getPlayerID());
-            if (log == null)
-                return this;
-            log.logReceive(item.getID(), item.getItemID(), action, oldNum, alter, newNum);
-        } catch (Exception e) {
-            LOGGER.error("{} | {} | logReceive exception", item.getPlayerID(), action, e);
-        }
-        return this;
+        if (item == null)
+            return this;
+       return logReceive(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
     }
 
     @Override
     public OpLogger logReceive(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum) {
+        if (model == null)
+            return this;
+        return logReceive(playerID, id, model.getID(), action, oldNum, alter, newNum);
+    }
+
+    @Override
+    public OpLogger logReceive(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum) {
         try {
             action = this.transAction(action);
             UserOpLog log = this.getUserLogger(playerID);
             if (log == null)
                 return this;
-            log.logReceive(id, model.getID(), action, oldNum, alter, newNum);
+            log.logReceive(id, itemID, action, oldNum, alter, newNum);
         } catch (Exception e) {
             LOGGER.error("{} | {} | logReceive exception", playerID, action, e);
         }
@@ -69,27 +69,26 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     @Override
     public OpLogger logConsume(Item<?> item, Action action, int oldNum, int alter, int newNum) {
-        try {
-            action = this.transAction(action);
-            UserOpLog log = this.getUserLogger(item.getPlayerID());
-            if (log == null)
-                return this;
-            log.logConsume(item.getID(), item.getItemID(), action, oldNum, alter, newNum);
-        } catch (Exception e) {
-            LOGGER.error("{} | {} | logConsume exception", item.getPlayerID(), action, e);
-        }
-        return this;
-
+        if (item == null)
+            return this;
+       return logConsume(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
     }
 
     @Override
     public OpLogger logConsume(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum) {
+        if (model == null)
+            return this;
+        return logConsume(playerID, id, model.getID(), action, oldNum, alter, newNum);
+    }
+
+    @Override
+    public OpLogger logConsume(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum) {
         try {
             action = this.transAction(action);
             UserOpLog log = this.getUserLogger(playerID);
             if (log == null)
                 return this;
-            log.logConsume(id, model.getID(), action, oldNum, alter, newNum);
+            log.logConsume(id, itemID, action, oldNum, alter, newNum);
         } catch (Exception e) {
             LOGGER.error("{} | {} | logConsume exception", playerID, action, e);
         }

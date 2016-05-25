@@ -36,7 +36,7 @@ public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner
     @Override
     protected S get(long playerID, Object... object) {
         O owner = this.getSaveObject(playerID);
-        return owner.getItemByID((long) object[0]);
+        return owner.getItemByID(((Number) object[0]).longValue());
     }
 
     @Override

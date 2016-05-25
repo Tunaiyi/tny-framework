@@ -2,6 +2,7 @@ package com.tny.game.suite.core;
 
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;
+import com.tny.game.net.dispatcher.SessionPushOption;
 import com.tny.game.suite.login.Account;
 import com.tny.game.suite.login.GameTicket;
 

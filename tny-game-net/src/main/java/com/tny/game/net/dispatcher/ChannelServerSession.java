@@ -1,9 +1,11 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.LogUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
+import com.tny.game.net.dispatcher.exception.SessionException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -103,6 +105,14 @@ public abstract class ChannelServerSession extends AbstractServerSession {
 
     @Override
     public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
+        if (protocol.isPush()) {
+            SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
+            if (!option.isPush()) {
+                if (option.isThrowable())
+                    throw new SessionException(LogUtils.format("Session {} [{}] 无法推送", this.getCertificate(), this.channel.remoteAddress()));
+                return null;
+            }
+        }
         Object data;
         if (body instanceof ByteBuf || body instanceof byte[]) {
             data = body;
