@@ -1,4 +1,4 @@
-import com.tny.game.zookeeper.GameKeeper;
+import com.tny.game.zookeeper.ZKClient;
 import org.apache.zookeeper.AsyncCallback.DataCallback;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -13,7 +13,7 @@ public class GameKeeperTest {
 
         final Object lock = new Object();
 
-        GameKeeper keeper = new GameKeeper("192.168.20.180:2201,192.168.20.180:2202,192.168.20.180:2203", 1200000, null);
+        ZKClient keeper = new ZKClient("192.168.20.180:2201,192.168.20.180:2202,192.168.20.180:2203", 1200000, null);
         //		GameKeeperMonitor monitor = new GameKeeperMonitor(keeper);
         keeper.start();
         //		monitor.monitorExists("/gkeeper", new MonitorHandler() {

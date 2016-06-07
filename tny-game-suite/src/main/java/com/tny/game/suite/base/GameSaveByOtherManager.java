@@ -94,12 +94,12 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
     }
 
     @Override
-    public boolean delect(O item) {
+    public boolean delete(O item) {
         return true;
     }
 
     @Override
-    public Collection<O> delect(Collection<O> itemCollection) {
+    public Collection<O> delete(Collection<O> itemCollection) {
         return Collections.emptyList();
     }
 

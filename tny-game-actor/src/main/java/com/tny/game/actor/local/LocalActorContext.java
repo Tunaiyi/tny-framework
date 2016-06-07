@@ -34,8 +34,10 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
 
     public LocalActorContext(ActorPath rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
         this.rootPath = rootPath;
-        this.defaultTheatre = defaultTheatre;
-        this.defaultProps = defaultProps;
+        if (defaultTheatre != null)
+            this.defaultTheatre = defaultTheatre;
+        if (defaultProps != null)
+            this.defaultProps = defaultProps;
         if (this.defaultTheatre == null)
             this.defaultTheatre = ActorTheatres.getDefault();
         if (this.defaultProps == null)
@@ -58,17 +60,17 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
     }
 
     public LocalTypeActor<ID, M> actorOf(ID id, ActorPath path, ActorTheatre theatre) {
-        return actorOf(id, path, ActorProps.of().setActorTheatre(theatre));
+        return actorOf(id, path, ActorProps.of(defaultProps).setActorTheatre(theatre));
     }
 
     @Override
     public LocalTypeActor<ID, M> actorOf(ID id, ActorPath path) {
-        return actorOf(id, path, ActorProps.of());
+        return actorOf(id, path, (ActorProps) null);
     }
 
     @Override
     public LocalTypeActor<ID, M> actorOf(ID id) {
-        return actorOf(id, null, ActorProps.of());
+        return actorOf(id, null, this.defaultProps);
     }
 
     protected boolean isExist(Actor<?, ?> actor) {

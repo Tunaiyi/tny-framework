@@ -2,6 +2,7 @@ package com.tny.game.oplog.simple;
 
 import com.tny.game.oplog.OpLog;
 import com.tny.game.oplog.UserOpLog;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,7 @@ public class SimpleOpLog extends OpLog {
 
     private Object protocol;
 
-    private long createAt;
+    private DateTime createAt;
 
     private String threadName;
 
@@ -20,7 +21,7 @@ public class SimpleOpLog extends OpLog {
     public SimpleOpLog(Object protocol) {
         super();
         this.protocol = protocol;
-        this.createAt = System.currentTimeMillis();
+        this.createAt = DateTime.now();
         this.threadName = Thread.currentThread().getName();
     }
 
@@ -54,7 +55,7 @@ public class SimpleOpLog extends OpLog {
     }
 
     @Override
-    public long getCreateAt() {
+    public DateTime getCreateAt() {
         return this.createAt;
     }
 

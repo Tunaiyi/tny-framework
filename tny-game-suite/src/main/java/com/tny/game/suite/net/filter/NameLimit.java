@@ -8,11 +8,13 @@ import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
 @Component
+@Profile({"suite.server", "suite.all"})
 public class NameLimit extends AbstractParamFilter<NameFilter, String> {
 
     @Autowired

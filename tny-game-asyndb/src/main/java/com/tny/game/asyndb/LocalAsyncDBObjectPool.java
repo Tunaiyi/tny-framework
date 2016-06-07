@@ -137,11 +137,11 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         Synchronizer<Object> synchronizer = this.getSynchronizer(holder);
         Map<String, ?> objectsMap = synchronizer.get(clazz, noCacheKeys);
         for (Entry<String, ?> entry : objectsMap.entrySet()) {
-            Object velue = entry.getValue();
-            if (velue == null)
+            Object value = entry.getValue();
+            if (value == null)
                 continue;
-            this.put(entry.getKey(), velue);
-            returnMap.put(entry.getKey(), (T) velue);
+            this.put(entry.getKey(), value);
+            returnMap.put(entry.getKey(), (T) value);
         }
         return returnMap;
     }
@@ -264,7 +264,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         }
         Object currentObject = asyncDBEntity.getValue();
         if (!asyncDBEntity.isDelete() && !asyncDBEntity.isCanReplace() && asyncDBEntity.getValue() != object)
-            throw new IllegalArgumentException(LogUtils.format("对象执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", operation, currentObject, object));
+            throw new IllegalArgumentException(LogUtils.format("对象 [key:{}] 执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", key, operation, currentObject, object));
         try {
             LOGGER.debug("#LoaclAsynBDObjectPool#提交更改对象池中{} 状态: {} -> {}", asyncDBEntity, asyncDBEntity.getState(), operation);
             boolean submit = asyncDBEntity.mark(operation, object);

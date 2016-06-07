@@ -1,19 +1,19 @@
 package com.tny.game.zookeeper;
 
-import com.tny.game.zookeeper.GameKeeperMonitor.MonitorOperation;
+import com.tny.game.zookeeper.ZKMonitorClient.MonitorOperation;
 
 public interface MonitorTask {
 
-    public RetryPolicy getPolicy();
+    RetryPolicy getPolicy();
 
-    public String getPath();
+    String getPath();
 
-    public MonitorState getState();
+    MonitorState getState();
 
-    public MonitorOperation getOperation();
+    MonitorOperation getOperation();
 
-    public void cancel();
+    void cancel();
 
-    public boolean isWorking();
+    boolean isWorking();
 
 }

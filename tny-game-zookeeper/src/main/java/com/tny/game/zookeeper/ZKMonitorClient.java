@@ -25,20 +25,20 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameKeeperMonitor {
+public class ZKMonitorClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameKeeperMonitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZKMonitorClient.class);
 
-    private GameKeeper keeper;
+    private ZKClient keeper;
 
     protected ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1, new CoreThreadFactory("GameKeeperMonitor-retrey-thread-"));
 
-    public GameKeeperMonitor(GameKeeper keeper) {
+    public ZKMonitorClient(ZKClient keeper) {
         super();
         this.keeper = keeper;
     }
 
-    public static enum MonitorOperation {
+    public enum MonitorOperation {
 
         STAT(EnumSet.of(Code.OK, Code.NONODE)) {
             @Override
@@ -47,7 +47,7 @@ public class GameKeeperMonitor {
             }
 
             @Override
-            public void addWatcher(GameKeeper keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
+            public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
                 keeper.exists(path, watcher, (StatCallback) cb, ctx);
             }
         },
@@ -60,7 +60,7 @@ public class GameKeeperMonitor {
             }
 
             @Override
-            public void addWatcher(GameKeeper keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
+            public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
                 keeper.getChildren(path, watcher, (ChildrenCallback) cb, ctx);
             }
 
@@ -74,7 +74,7 @@ public class GameKeeperMonitor {
             }
 
             @Override
-            public void addWatcher(GameKeeper keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
+            public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
                 keeper.getChildren2(path, watcher, (Children2Callback) cb, ctx);
             }
 
@@ -87,20 +87,20 @@ public class GameKeeperMonitor {
             }
 
             @Override
-            public void addWatcher(GameKeeper keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
+            public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
                 keeper.getData(path, watcher, (DataCallback) cb, ctx);
             }
         };
 
         private final Set<KeeperException.Code> ADD_WATCHER_SUCC_SET;
 
-        private MonitorOperation(Set<Code> ADD_WATCHER_SUCC_SET) {
+        MonitorOperation(Set<Code> ADD_WATCHER_SUCC_SET) {
             this.ADD_WATCHER_SUCC_SET = Collections.unmodifiableSet(ADD_WATCHER_SUCC_SET);
         }
 
         public abstract void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat);
 
-        public abstract void addWatcher(GameKeeper keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx);
+        public abstract void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx);
 
     }
 
@@ -161,7 +161,7 @@ public class GameKeeperMonitor {
 
         protected boolean retry() {
             if (this.policy.hasNext() && this.working) {
-                GameKeeperMonitor.this.executorService.schedule(this, this.policy.getDelayTime(), TimeUnit.MILLISECONDS);
+                ZKMonitorClient.this.executorService.schedule(this, this.policy.getDelayTime(), TimeUnit.MILLISECONDS);
                 return true;
             }
             return false;
@@ -170,7 +170,7 @@ public class GameKeeperMonitor {
         @Override
         public void run() {
             LOGGER.debug("{} 第{}次尝试监听 {} 变化, monitor状态:{}", this.path, this.time.incrementAndGet(), this.operation, this.state);
-            this.operation.addWatcher(GameKeeperMonitor.this.keeper, this.path, this, this, this.ctx);
+            this.operation.addWatcher(ZKMonitorClient.this.keeper, this.path, this, this, this.ctx);
         }
 
         protected void setState(MonitorState state) {
@@ -182,7 +182,7 @@ public class GameKeeperMonitor {
             KeeperState state = event.getState();
             if (state == KeeperState.SyncConnected || state == KeeperState.Expired) {
                 this.setState(MonitorState.UNWATCH);
-                this.policy.resset();
+                this.policy.reset();
                 LOGGER.debug("{} 第{}次监听到 {} 发生变化, monitor状态:{}, keeperState: {}", this.path, this.time.get(), this.operation, this.state, state);
                 if (this.handler != null)
                     this.handler.process(event);

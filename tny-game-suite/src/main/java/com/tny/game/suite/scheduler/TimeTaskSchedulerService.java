@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
 public class TimeTaskSchedulerService implements ServerPreStart {
 
     @Autowired

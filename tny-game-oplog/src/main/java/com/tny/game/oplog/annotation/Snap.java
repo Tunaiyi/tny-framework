@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Snapshot {
+public @interface Snap {
 
     Class<? extends Snapper>[] value() default {};
 

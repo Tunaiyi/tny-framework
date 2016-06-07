@@ -40,21 +40,21 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logReceive(Item<?> item, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logReceive(Item<?> item, Action action, long oldNum, long alter, long newNum) {
         if (item == null)
             return this;
-       return logReceive(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
+        return logReceive(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logReceive(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logReceive(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
         return logReceive(playerID, id, model.getID(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logReceive(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logReceive(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         try {
             action = this.transAction(action);
             UserOpLog log = this.getUserLogger(playerID);
@@ -68,21 +68,21 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logConsume(Item<?> item, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logConsume(Item<?> item, Action action, long oldNum, long alter, long newNum) {
         if (item == null)
             return this;
-       return logConsume(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
+        return logConsume(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logConsume(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logConsume(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
         return logConsume(playerID, id, model.getID(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logConsume(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum) {
+    public OpLogger logConsume(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         try {
             action = this.transAction(action);
             UserOpLog log = this.getUserLogger(playerID);
@@ -110,6 +110,21 @@ public abstract class AbstractOpLogger implements OpLogger {
         return this;
     }
 
+    @Override
+    public OpLogger logSnapShot(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
+        try {
+            action = this.transAction(action);
+            if (snapperTypes.length == 0)
+                this.doLogSnapshot(action, item);
+            for (Class<? extends Snapper> type : snapperTypes) {
+                this.doLogSnapshot(action, item, type);
+            }
+        } catch (Exception e) {
+            LOGGER.error("{} | {} | logSnapshot exception", item, action, e);
+        }
+        return this;
+    }
+
     protected boolean logSnapshot(Action action, Snapshot snapshot) {
         action = this.transAction(action);
         UserOpLog log = this.getUserLogger(snapshot.getPlayerID());
@@ -128,6 +143,8 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     protected abstract void doLogSnapshot(Action action, Identifiable item, SnapperType type);
+
+    protected abstract void doLogSnapshot(Action action, Identifiable item, Class<? extends Snapper> type);
 
     protected abstract void doLogSnapshot(Action action, Identifiable item);
 

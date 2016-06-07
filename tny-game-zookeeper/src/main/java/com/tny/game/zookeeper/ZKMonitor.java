@@ -1,33 +1,28 @@
-package com.tny.game.monitor;
+package com.tny.game.zookeeper;
 
-import com.tny.game.zookeeper.GameKeeper;
-import com.tny.game.zookeeper.GameKeeperMonitor;
-import com.tny.game.zookeeper.MonitorTask;
-import com.tny.game.zookeeper.RenewTask;
 import com.tny.game.zookeeper.retry.UntilSuccRetryPolicy;
 import org.apache.zookeeper.AsyncCallback.ChildrenCallback;
-import org.apache.zookeeper.AsyncCallback.DataCallback;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
-import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class RemoteMonitor {
+public class ZKMonitor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteMonitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZKMonitor.class);
 
     private static final byte[] NOTE_DATE = new byte[0];
 
@@ -36,46 +31,36 @@ public class RemoteMonitor {
     /**
      * keeper
      */
-    private GameKeeper keeper;
+    private ZKClient keeper;
 
     /**
      * 节点监视器
      */
-    private GameKeeperMonitor monitor;
-
-    /**
-     * 服务节点变化监听器
-     */
-    private List<NodeHandler<?>> childHandlerList = new CopyOnWriteArrayList<NodeHandler<?>>();
+    private ZKMonitorClient monitor;
 
     /**
      * 服务节点监视器集合
      */
-    private ConcurrentMap<String, MonitoredNode<?>> monitoredNodeMap = new ConcurrentHashMap<String, MonitoredNode<?>>();
+    private ConcurrentMap<String, MonitoredNode<?>> monitoredNodeMap = new ConcurrentHashMap<>();
 
     /**
      * 节点数据
      */
-    private volatile ConcurrentHashMap<String, RemoteNode<?>> nodeMap = new ConcurrentHashMap<String, RemoteNode<?>>();
+    private volatile ConcurrentHashMap<String, ZKMonitorNode<?>> nodeMap = new ConcurrentHashMap<>();
 
-    public RemoteMonitor(String keeperIP, NodeDataFormatter defaultFormatter) throws IOException {
+    public ZKMonitor(String keeperIP, NodeDataFormatter defaultFormatter) throws IOException {
         super();
         this.defaultFormatter = defaultFormatter;
-        this.keeper = new GameKeeper(keeperIP, 2000, null);
+        this.keeper = new ZKClient(keeperIP, 2000, null);
         //断线重新执行注册任务
-        this.keeper.addRenewTask(new RenewTask() {
-
-            @Override
-            public void renew(KeeperState state, GameKeeper gameKeeper) {
-                List<RemoteNode<?>> node = new ArrayList<RemoteNode<?>>(RemoteMonitor.this.nodeMap.values());
-                RemoteMonitor.this.nodeMap.clear();
-                while (!RemoteMonitor.this.putNodeData(node)) {
-                }
+        this.keeper.addRenewTask((state, ZKClient) -> {
+            List<ZKMonitorNode<?>> node = new ArrayList<>(ZKMonitor.this.nodeMap.values());
+            ZKMonitor.this.nodeMap.clear();
+            while (!ZKMonitor.this.putNodeData(node)) {
             }
-
         });
         this.keeper.start();
-        this.monitor = new GameKeeperMonitor(this.keeper);
+        this.monitor = new ZKMonitorClient(this.keeper);
     }
 
     /**
@@ -83,8 +68,8 @@ public class RemoteMonitor {
      *
      * @return
      */
-    private synchronized boolean putNodeData(Collection<RemoteNode<?>> nodeCollection) {
-        for (RemoteNode<?> node : nodeCollection) {
+    private synchronized boolean putNodeData(Collection<ZKMonitorNode<?>> nodeCollection) {
+        for (ZKMonitorNode<?> node : nodeCollection) {
             if (!this.putNodeData(node))
                 return false;
         }
@@ -92,12 +77,12 @@ public class RemoteMonitor {
     }
 
     public synchronized boolean putNodeData(CreateMode createMode, Object data, String path) {
-        RemoteNode<Object> node = new RemoteNode<Object>(createMode, data, path, this.defaultFormatter);
+        ZKMonitorNode<Object> node = new ZKMonitorNode<>(createMode, data, path, this.defaultFormatter);
         return this.putNodeData(node);
     }
 
     public synchronized boolean putNodeData(CreateMode createMode, Object data, String path, NodeDataFormatter formatter) {
-        RemoteNode<Object> node = new RemoteNode<Object>(createMode, data, path, formatter == null ? this.defaultFormatter : formatter);
+        ZKMonitorNode<Object> node = new ZKMonitorNode<>(createMode, data, path, formatter == null ? this.defaultFormatter : formatter);
         return this.putNodeData(node);
     }
 
@@ -107,7 +92,7 @@ public class RemoteMonitor {
 
     @SuppressWarnings("unchecked")
     public <T> T getNodeData(String path, CreateMode createMode, NodeDataFormatter formatter) {
-        RemoteNode<T> node = (RemoteNode<T>) this.nodeMap.get(path);
+        ZKMonitorNode<T> node = (ZKMonitorNode<T>) this.nodeMap.get(path);
         if (node != null)
             return node.getData();
         Stat stat = new Stat();
@@ -124,16 +109,16 @@ public class RemoteMonitor {
         if (bytes == null || bytes.length == 0)
             return null;
         T data = formatter.bytes2Data(bytes);
-        node = new RemoteNode<T>(createMode, data, path, formatter);
-        RemoteNode<T> lastOne = null;
-        if ((lastOne = (RemoteNode<T>) this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
+        node = new ZKMonitorNode<>(createMode, data, path, formatter);
+        ZKMonitorNode<T> lastOne = null;
+        if ((lastOne = (ZKMonitorNode<T>) this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
             return data;
         } else {
             return lastOne.getData();
         }
     }
 
-    private synchronized boolean putNodeData(RemoteNode<?> node) {
+    private synchronized boolean putNodeData(ZKMonitorNode<?> node) {
         if (this.nodeMap.putIfAbsent(node.getPath(), node) == null) {
             Stat stat = this.createFullPath(node.getPath(), node.getDataBytes(), node.getCreateMode(), true);
             if (stat == null)
@@ -146,7 +131,7 @@ public class RemoteMonitor {
 
     @SuppressWarnings("unchecked")
     public synchronized boolean syncNode(String path, Object data) {
-        final RemoteNode<Object> node = (RemoteNode<Object>) this.nodeMap.get(path);
+        final ZKMonitorNode<Object> node = (ZKMonitorNode<Object>) this.nodeMap.get(path);
         if (node == null)
             return false;
         node.change(data);
@@ -170,7 +155,7 @@ public class RemoteMonitor {
     }
 
     public synchronized void removeNodeData(String path) {
-        final RemoteNode<?> node = this.nodeMap.get(path);
+        final ZKMonitorNode<?> node = this.nodeMap.get(path);
         if (node != null) {
             try {
                 this.keeper.delete(node.getPath(), node.getKeeperStat().getVersion());
@@ -196,17 +181,17 @@ public class RemoteMonitor {
         return this.createFullPath(path, this.object2Bytes(leafValue, null), mode, setIfExist);
     }
 
-    public Stat createFullNode(String path, Object leafValue, CreateMode mode, boolean setIfExist, NodeDataFormatter formater) {
-        return this.createFullPath(path, this.object2Bytes(leafValue, formater), mode, setIfExist);
+    public Stat createFullNode(String path, Object leafValue, CreateMode mode, boolean setIfExist, NodeDataFormatter formatter) {
+        return this.createFullPath(path, this.object2Bytes(leafValue, formatter), mode, setIfExist);
     }
 
     /**
      * 创建全路径
      *
-     * @param path      路径
-     * @param nodeValue 节点值
-     * @param leafValue 叶子值
-     * @param mode      叶子节点创建模式
+     * @param path       路径
+     * @param leafValue  叶子值
+     * @param mode       叶子节点创建模式
+     * @param setIfExist 如果存在是否覆盖
      * @return
      */
     private Stat createFullPath(String path, byte[] leafValue, CreateMode mode, boolean setIfExist) {
@@ -281,73 +266,57 @@ public class RemoteMonitor {
         }
     }
 
-    public void monitorChildren(String nodePath) {
-        this.monitorChildren(nodePath, this.defaultFormatter);
+    public void monitorChildren(String nodePath, NodeWatcher<?> watcher) {
+        this.monitorChildren(nodePath, this.defaultFormatter, watcher);
     }
 
-    private void monitorChidren(String rootPath, List<String> children, NodeDataFormatter formatter) {
+    private void monitorChildren(String rootPath, List<String> children, NodeDataFormatter formatter, NodeWatcher<?> watcher) {
         for (String child : children) {
             String childPath = rootPath + "/" + child;
             if (!this.monitoredNodeMap.containsKey(childPath)) {
-                MonitoredNode<?> node = new MonitoredNode<Object>(formatter);
-                RemoteMonitor.this.doMonitorNode(node, childPath);
+                MonitoredNode<?> node = new MonitoredNode<>(formatter, watcher);
+                ZKMonitor.this.doMonitorNode(node, childPath);
             }
         }
     }
 
-    public void monitorChildren(String nodePath, final NodeDataFormatter formatter) {
-        MonitoredNode<?> current = RemoteMonitor.this.monitoredNodeMap.get(nodePath);
+    public void monitorChildren(String nodePath, final NodeDataFormatter formatter, NodeWatcher<?> watcher) {
+        MonitoredNode<?> current = ZKMonitor.this.monitoredNodeMap.get(nodePath);
         if (current != null)
             return;
         this.createFullPath(nodePath, NOTE_DATE, CreateMode.PERSISTENT, false);
-        final ChildrenCallback callback = new ChildrenCallback() {
-
-            @Override
-            public void processResult(int rc, String path, Object ctx, List<String> children) {
-                Code code = KeeperException.Code.get(rc);
-                if (code == Code.OK) {
-                    RemoteMonitor.this.monitorChidren(path, children, formatter);
-                }
-            }
-
+        final ChildrenCallback callback = (rc, path, ctx, children) -> {
+            Code code = Code.get(rc);
+            if (code == Code.OK)
+                monitorChildren(path, children, formatter, watcher);
         };
-        RemoteMonitor.this.monitor.monitorChildren(nodePath, null, callback, null);
+        ZKMonitor.this.monitor.monitorChildren(nodePath, null, callback, null);
     }
 
-    public void monitorNode(String nodePath) {
-        this.monitorNode(nodePath, this.defaultFormatter);
+    public void monitorNode(String nodePath, NodeWatcher<?> watcher) {
+        this.monitorNode(nodePath, this.defaultFormatter, watcher);
     }
 
-    public void monitorNode(String nodePath, final NodeDataFormatter formatter) {
-        MonitoredNode<?> node = new MonitoredNode<Object>(formatter);
+    public void monitorNode(String nodePath, final NodeDataFormatter formatter, NodeWatcher<?> watcher) {
+        MonitoredNode<?> node = new MonitoredNode<>(formatter, watcher);
         this.doMonitorNode(node, nodePath);
     }
 
     private void doMonitorNode(MonitoredNode<?> current, final String nodePath) {
-        MonitoredNode<?> oldNode = RemoteMonitor.this.monitoredNodeMap.putIfAbsent(nodePath, current);
+        MonitoredNode<?> oldNode = ZKMonitor.this.monitoredNodeMap.putIfAbsent(nodePath, current);
         if (oldNode == null) {
-            final MonitorTask task = this.monitor.monitorData(nodePath, new Watcher() {
-
-                @Override
-                public void process(WatchedEvent event) {
-                    EventType eventType = event.getType();
-                    if (eventType == EventType.NodeDeleted) {
-                        RemoteMonitor.this.removeMonitorNode(nodePath);
-                    }
+            final MonitorTask task = this.monitor.monitorData(nodePath, event -> {
+                EventType eventType = event.getType();
+                if (eventType == EventType.NodeDeleted) {
+                    ZKMonitor.this.removeMonitorNode(nodePath);
                 }
-
-            }, new DataCallback() {
-
-                @Override
-                public void processResult(int rc, String path, Object ctx, byte[] data, Stat stat) {
-                    Code code = Code.get(rc);
-                    if (code == Code.OK) {
-                        RemoteMonitor.this.notifyNodeChange(nodePath, data);
-                    } else if (code == Code.NONODE) {
-                        RemoteMonitor.this.removeMonitorNode(nodePath);
-                    }
+            }, (rc, path, ctx, data, stat) -> {
+                Code code = Code.get(rc);
+                if (code == Code.OK) {
+                    ZKMonitor.this.notifyNodeChange(nodePath, data);
+                } else if (code == Code.NONODE) {
+                    ZKMonitor.this.removeMonitorNode(nodePath);
                 }
-
             }, null, new UntilSuccRetryPolicy(1000));
             current.setMonitorTask(task);
         }
@@ -355,12 +324,9 @@ public class RemoteMonitor {
 
     @SuppressWarnings("unchecked")
     private void removeMonitorNode(String nodePath) {
-        MonitoredNode<?> node = RemoteMonitor.this.monitoredNodeMap.remove(nodePath);
-        if (node != null) {
-            node.getMonitorTask().cancel();
-            LOGGER.debug("移除监听服务器节点 {}", nodePath);
-            this.fireNodeDelected(new NodeEvent<Object>(nodePath, (MonitoredNode<Object>) node));
-        }
+        MonitoredNode<?> node = ZKMonitor.this.monitoredNodeMap.remove(nodePath);
+        if (node != null)
+            node.remove();
     }
 
     private void notifyNodeChange(String nodePath, byte[] data) {
@@ -371,104 +337,21 @@ public class RemoteMonitor {
             } catch (Throwable e) {
                 LOGGER.error("解析 {} 节点数据错误", nodePath, e);
             }
-            if (node.isMonitor()) {
-                this.fireNodeChange(new NodeEvent<Object>(nodePath, node));
-            } else {
-                node.monitored();
-                this.fireNodeCreaate(new NodeEvent<Object>(nodePath, node));
-            }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void fireNodeChange(NodeEvent<Object> event) {
-        for (NodeHandler<?> handler : this.childHandlerList) {
-            try {
-                if (handler.isCanHandle(event.getPath()))
-                    ((NodeHandler<Object>) handler).notifyNodeChange(event);
-            } catch (Exception e) {
-                LOGGER.error("{} 处理器执行 {} 路径 ChildChange 事件异常 |", handler.getClass(), event.getPath(), e);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void fireNodeCreaate(NodeEvent<Object> event) {
-        for (NodeHandler<?> handler : this.childHandlerList) {
-            try {
-                if (handler.isCanHandle(event.getPath()))
-                    ((NodeHandler<Object>) handler).notifyNodeCreaate(event);
-            } catch (Exception e) {
-                LOGGER.error("{} 处理器执行 {} 路径 ChildCreaate 事件异常 |", handler.getClass(), event.getPath(), e);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void fireNodeDelected(NodeEvent<Object> event) {
-        for (NodeHandler<?> handler : this.childHandlerList) {
-            try {
-                if (handler.isCanHandle(event.getPath()))
-                    ((NodeHandler<Object>) handler).notifyNodeDelected(event);
-            } catch (Exception e) {
-                LOGGER.error("{} 处理器执行 {} 路径 ChildDelected 事件异常 |", handler.getClass(), event.getPath(), e);
-            }
-        }
-    }
 
     public Map<String, MonitoredNode<?>> getMonitoredNodeMap() {
         return Collections.unmodifiableMap(this.monitoredNodeMap);
     }
 
-    /**
-     * 添加服务节点监听器
-     *
-     * @param listener
-     */
-    public void addChildListener(NodeHandler<?> listener) {
-        this.childHandlerList.add(listener);
-    }
-
-    /**
-     * 添加服务节点监听器
-     *
-     * @param listener
-     */
-    public void addChildListener(Collection<NodeHandler<?>> listener) {
-        this.childHandlerList.addAll(listener);
-    }
-
-    /**
-     * 移除服务节点监听器
-     *
-     * @param listener
-     */
-    public void removeChildListener(NodeHandler<?> listener) {
-        this.childHandlerList.remove(listener);
-    }
-
-    /**
-     * 清楚服务器节点监听
-     */
-    public void clearChildListener() {
-        this.childHandlerList.clear();
-    }
-
-    public GameKeeper getKeeper() {
-        return this.keeper;
-    }
-
-    public GameKeeperMonitor getMonitor() {
-        return this.monitor;
-    }
-
-    private byte[] object2Bytes(Object object, NodeDataFormatter formater) {
+    private byte[] object2Bytes(Object object, NodeDataFormatter formatter) {
         if (object == null)
             return null;
-        if (formater == null)
-            formater = this.defaultFormatter;
-        if (formater != null)
-            return formater.data2Bytes(object);
+        if (formatter == null)
+            formatter = this.defaultFormatter;
+        if (formatter != null)
+            return formatter.data2Bytes(object);
         return (byte[]) object;
     }
 

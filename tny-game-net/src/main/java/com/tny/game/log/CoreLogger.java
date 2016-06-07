@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class CoreLogger {
 
-    private static final Logger LOG_RESPONE = LoggerFactory.getLogger(CoreLogger.RESPONSE);
+    private static final Logger LOG_RESPONSE = LoggerFactory.getLogger(CoreLogger.RESPONSE);
 
     private static final Logger LOG_REQUEST = LoggerFactory.getLogger(CoreLogger.REQUEST);
 
@@ -30,8 +30,8 @@ public class CoreLogger {
     public static final String EXECUTOR = "executor";
 
     public static void log(Session session, Response response) {
-        if (LOG_RESPONE.isDebugEnabled())
-            LOG_RESPONE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
+        if (LOG_RESPONSE.isDebugEnabled())
+            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
                     session.getGroup(), session.getHostName(), session.getUID(),
                     response.getID(), response.getProtocol(),
                     response.getResult(), response.getBody(Object.class));
@@ -46,8 +46,8 @@ public class CoreLogger {
     }
 
     public static void log(Session session, Protocol protocol, ResultCode code, Object body) {
-        if (LOG_RESPONE.isDebugEnabled())
-            LOG_RESPONE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
+        if (LOG_RESPONSE.isDebugEnabled())
+            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
                     session.getGroup(), session.getHostName(), session.getUID(),
                     0, protocol.getProtocol(),
                     code.getCode(), body);
@@ -55,7 +55,7 @@ public class CoreLogger {
 
     public static void log(Session session, Protocol protocol, int code, Object body) {
         if (LOG_REQUEST.isDebugEnabled())
-            LOG_RESPONE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
+            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
                     session.getGroup(), session.getHostName(), session.getUID(),
                     0, protocol.getProtocol(),
                     code, body);

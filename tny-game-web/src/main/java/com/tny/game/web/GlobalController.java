@@ -20,10 +20,9 @@ public class GlobalController {
      *
      * @return
      */
-    @ExceptionHandler({Throwable.class})
-    public
     @ResponseBody
-    Object exception(HttpServletRequest request, Throwable e) {
+    @ExceptionHandler({Throwable.class})
+    public Object exception(HttpServletRequest request, Throwable e) {
         LOGGER.error("处理 : {} 异常", request, e);
         return HttpUtils.status(HttpStatus.INTERNAL_SERVER_ERROR);
     }

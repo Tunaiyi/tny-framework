@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoID;
+import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.core.ScopeTypes;
 import com.tny.game.suite.core.ServerType;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-@ProtoEx(SuiteProtoID.AUTH_$SERVE_TICKET)
+@ProtoEx(SuiteProtoIDs.AUTH_$SERVE_TICKET)
 public class ServeTicket implements Serializable {
 
     /**

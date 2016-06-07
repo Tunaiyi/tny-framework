@@ -19,6 +19,7 @@ dependencies {
             project(":tny-game-cache"),
             project(":tny-game-oplog"),
             project(":tny-game-scanning"),
+            project(":tny-game-zookeeper"),
             project(":tny-game-cache-mysql"),
             project(":tny-game-oplog-log4j2kafka"),
     )

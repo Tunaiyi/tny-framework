@@ -25,13 +25,13 @@ public class ReceiveLogDTO implements StuffLog {
      */
 
     @JsonProperty(index = 3)
-    private int ronum;
+    private long ronum;
 
     @JsonProperty(index = 4)
-    private int rnnum;
+    private long rnnum;
 
     @JsonProperty(index = 5)
-    private Integer ralter;
+    private Long ralter;
 
     public ReceiveLogDTO() {
     }
@@ -55,26 +55,26 @@ public class ReceiveLogDTO implements StuffLog {
     }
 
     @Override
-    public int getOldNum() {
+    public long getOldNum() {
         return this.ronum;
     }
 
     @Override
-    public int getNewNum() {
+    public long getNewNum() {
         return this.rnnum;
     }
 
-    public int getNum() {
+    public long getNum() {
         if (this.ralter == null)
             return this.rnnum - this.ronum;
         return this.ralter;
     }
 
-    public Integer getRalter() {
+    public Long getRalter() {
         return ralter;
     }
 
-    public void setRalter(Integer ralter) {
+    public void setRalter(Long ralter) {
         this.ralter = ralter;
     }
 
@@ -94,7 +94,7 @@ public class ReceiveLogDTO implements StuffLog {
         this.riid = riid;
     }
 
-    public int getRnnum() {
+    public long getRnnum() {
         return rnnum;
     }
 
@@ -102,7 +102,7 @@ public class ReceiveLogDTO implements StuffLog {
         this.rnnum = rnnum;
     }
 
-    public int getRonum() {
+    public long getRonum() {
         return ronum;
     }
 

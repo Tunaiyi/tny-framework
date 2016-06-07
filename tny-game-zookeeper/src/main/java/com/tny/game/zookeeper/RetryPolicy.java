@@ -8,7 +8,7 @@ public abstract class RetryPolicy {
 
     protected abstract void success();
 
-    protected abstract void resset();
+    protected abstract void reset();
 
     public abstract long getDelayTime();
 

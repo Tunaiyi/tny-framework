@@ -1,5 +1,7 @@
 package com.tny.game.oplog;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 public abstract class OpLog {
@@ -24,7 +26,7 @@ public abstract class OpLog {
      *
      * @return
      */
-    public abstract long getCreateAt();
+    public abstract DateTime getCreateAt();
 
     /**
      * 创建线程名字

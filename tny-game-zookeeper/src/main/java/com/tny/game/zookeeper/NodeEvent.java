@@ -1,4 +1,4 @@
-package com.tny.game.monitor;
+package com.tny.game.zookeeper;
 
 public class NodeEvent<T> {
 

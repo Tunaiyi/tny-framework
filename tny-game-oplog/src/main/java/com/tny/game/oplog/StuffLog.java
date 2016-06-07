@@ -6,8 +6,8 @@ public interface StuffLog {
 
     int getItemID();
 
-    int getOldNum();
+    long getOldNum();
 
-    int getNewNum();
+    long getNewNum();
 
 }

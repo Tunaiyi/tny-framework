@@ -1,15 +1,9 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.LogUtils;
 import com.tny.game.net.NetServer;
 import com.tny.game.net.base.listener.SessionListener;
 import com.tny.game.net.dispatcher.SessionHolder;
-import com.tny.game.net.initer.ServerIniter;
-import com.tny.game.net.initer.ServerPostStart;
-import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.net.listener.ServerClosedListener;
-import com.tny.game.suite.initer.ProtoExSchemaIniter;
-import com.tny.game.suite.launcher.exception.ServerInitException;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.telnet.TelnetServer;
 import com.tny.game.telnet.command.TelnetCommandHolder;
@@ -23,9 +17,6 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -68,13 +59,15 @@ public class ServerLauncher {
     }
 
     public ServerLauncher start() throws Throwable {
+        ServerIniterProcessor processor = new ServerIniterProcessor();
+        processor.setApplicationContext(this.context);
         //per initServer
         runPoint(beforeInitServer);
         NetServer server = this.initServer();
         runPoint(afterInitServer);
         //post initServer
 
-        this.processIniter(ServerPreStart.class);
+        processor.initPreStart();
         LOG.info("服务器启动服务器!");
 
         // per start
@@ -88,10 +81,7 @@ public class ServerLauncher {
             if (telnetServer != null)
                 telnetServer.start();
         }
-        ProtoExSchemaIniter schemaIniter = this.context.getBean(ProtoExSchemaIniter.class);
-        if (!schemaIniter.waitInitialized())
-            throw schemaIniter.getException();
-        this.processIniter(ServerPostStart.class);
+        processor.initPostStart();
 
         // complete
         runPoint(complete);
@@ -160,28 +150,6 @@ public class ServerLauncher {
         sessionHolder.addSessionListener(this.context.getBeansOfType(SessionListener.class).values());
         LOG.info("服务器实例化完成!");
         return server;
-    }
-
-    private void processIniter(Class<? extends ServerIniter> initerClass) throws Throwable {
-        String[] names = StringUtils.split(initerClass.getName(), ".");
-        String name = names[names.length - 1];
-        LOG.info("初始化服务器启动 {} 初始化器......", name);
-        Map<String, ? extends ServerIniter> initerMap = this.context.getBeansOfType(initerClass);
-        List<ServerIniter> initers = new ArrayList<>();
-        initers.addAll(initerMap.values());
-        Collections.sort(initers, (o1, o2) -> 0 - (o1.getInitLevel().priority - o2.getInitLevel().priority));
-        for (ServerIniter initer : initers) {
-            long current = System.currentTimeMillis();
-            LOG.info("初始化 服务器启动 {} 初始化器 : {}", name, initer.getClass());
-            initer.initialize();
-            LOG.info("初始化 服务器启动 {} 初始化器 : 耗时 {} -> {} 完成", name, System.currentTimeMillis() - current, initer.getClass());
-        }
-        for (ServerIniter initer : initers) {
-            if (!initer.waitInitialized()) {
-                throw new ServerInitException(LogUtils.format("{} 初始化失败", initer.getClass()));
-            }
-        }
-        LOG.info("初始化服务器启动 {} 初始化器!", name);
     }
 
     private void runPoint(Consumer<ApplicationContext> fn) {

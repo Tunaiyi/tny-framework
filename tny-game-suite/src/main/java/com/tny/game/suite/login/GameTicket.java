@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoID;
+import com.tny.game.suite.SuiteProtoIDs;
 import org.apache.commons.lang3.StringUtils;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-@ProtoEx(SuiteProtoID.AUTH_$GAMES_TICKET)
+@ProtoEx(SuiteProtoIDs.AUTH_$GAMES_TICKET)
 public class GameTicket {
 
     @JsonProperty

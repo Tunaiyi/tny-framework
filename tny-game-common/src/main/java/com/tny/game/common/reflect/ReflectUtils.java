@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -222,6 +224,31 @@ public class ReflectUtils {
         if (Modifier.isStatic(method.getModifiers()) || method.getDeclaringClass() == Object.class)
             return false;
         return true;
+    }
+
+    public static List<Class<?>> getComponentType(Class<?> clazz, Class<?> genericClass) {
+        List<Class<?>> classes = new ArrayList<>();
+        if (genericClass.isInterface()) {
+            for (Type type : clazz.getGenericInterfaces()) {
+                if (!(type instanceof ParameterizedType))
+                    continue;
+                ParameterizedType paramType = (ParameterizedType) type;
+                if (paramType.getRawType() != genericClass)
+                    continue;
+                for (Type t : paramType.getActualTypeArguments())
+                    classes.add((Class<?>) t);
+            }
+        } else {
+            Type type = clazz.getGenericSuperclass();
+            if (!(type instanceof ParameterizedType))
+                return classes;
+            ParameterizedType paramType = (ParameterizedType) type;
+            if (paramType.getRawType() != genericClass)
+                return classes;
+            for (Type t : paramType.getActualTypeArguments())
+                classes.add((Class<?>) t);
+        }
+        return classes;
     }
 
 }

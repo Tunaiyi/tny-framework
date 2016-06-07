@@ -2,6 +2,7 @@ package com.tny.game.suite.oplog;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.utils.IDCreator;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
@@ -38,6 +39,8 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");
 
+    private static IDCreator creator = new IDCreator(16);
+
     private Map<Object, Snapper<Identifiable, Snapshot>> snapperMap = new CopyOnWriteMap<>();
     private Map<Class<?>, Snapper<Identifiable, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
 
@@ -56,7 +59,7 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
     }
 
     public OperationLogger() {
-        if (OperationLogger.instance != null)
+        if (OperationLogger.instance == null)
             OperationLogger.instance = this;
     }
 
@@ -68,6 +71,12 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
 
     @Override
     protected void doLogSnapshot(Action action, Identifiable item, SnapperType type) {
+        Snapper<Identifiable, Snapshot> snapper = this.getSnapper(type);
+        this.doSnapshot(action, item, snapper);
+    }
+
+    @Override
+    protected void doLogSnapshot(Action action, Identifiable item, Class<? extends Snapper> type) {
         Snapper<Identifiable, Snapshot> snapper = this.getSnapper(type);
         this.doSnapshot(action, item, snapper);
     }
@@ -125,7 +134,7 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
         for (UserOpLog userOpLog : log.getUserLogs()) {
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
-                    OperateLogDTO dto = new OperateLogDTO(log, userOpLog, actionLog);
+                    OperateLogDTO dto = new OperateLogDTO(creator.getHexID(), log, userOpLog, actionLog);
                     LogMessage message = new LogMessage(dto);
                     oplogLogger.info(message);
                 } catch (Exception e) {

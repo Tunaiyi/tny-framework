@@ -11,10 +11,12 @@ public class AutoImport {
 
     protected static void loadClass(String key) {
         try {
-            String classesName = Configs.SUITE_CONFIG.getStr(key);
-            String[] classNames = StringUtils.split(classesName, ",");
-            for (String className : classNames)
-                Class.forName(className);
+            String classesName = Configs.SUITE_CONFIG.getStr(key, "");
+            if (StringUtils.isNotBlank(classesName)) {
+                String[] classNames = StringUtils.split(classesName, ",");
+                for (String className : classNames)
+                    Class.forName(className);
+            }
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

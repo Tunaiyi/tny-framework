@@ -173,7 +173,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             }
             switch (operation) {
                 case AutoOP.DELETE:
-                    manager.delect(object);
+                    manager.delete(object);
                     break;
                 case AutoOP.SAVE:
                     manager.save(object);

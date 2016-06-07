@@ -25,16 +25,16 @@ public class ConsumeLogDTO implements StuffLog {
      */
 
     @JsonProperty(index = 3)
-    private int conum;
+    private long conum;
 
     /**
      * new Number
      */
     @JsonProperty(index = 4)
-    private int cnnum;
+    private long cnnum;
 
     @JsonProperty(index = 5)
-    private Integer calter;
+    private Long calter;
 
     public ConsumeLogDTO() {
     }
@@ -58,26 +58,26 @@ public class ConsumeLogDTO implements StuffLog {
     }
 
     @Override
-    public int getOldNum() {
+    public long getOldNum() {
         return this.conum;
     }
 
     @Override
-    public int getNewNum() {
+    public long getNewNum() {
         return this.cnnum;
     }
 
-    public int getNum() {
+    public long getNum() {
         if (this.calter == null)
             return this.cnnum - this.conum;
         return this.calter;
     }
 
-    public Integer getCalter() {
+    public Long getCalter() {
         return calter;
     }
 
-    public void setCalter(Integer calter) {
+    public void setCalter(Long calter) {
         this.calter = calter;
     }
 
@@ -97,19 +97,19 @@ public class ConsumeLogDTO implements StuffLog {
         this.ciid = ciid;
     }
 
-    public int getCnnum() {
+    public long getCnnum() {
         return cnnum;
     }
 
-    public void setCnnum(int cnnum) {
+    public void setCnnum(long cnnum) {
         this.cnnum = cnnum;
     }
 
-    public int getConum() {
+    public long getConum() {
         return conum;
     }
 
-    public void setConum(int conum) {
+    public void setConum(long conum) {
         this.conum = conum;
     }
 }

@@ -39,9 +39,9 @@ public abstract class ActionLog {
      */
     public abstract Collection<Snapshot> getSnapshots();
 
-    protected abstract ActionLog logReceive(long id, int itemID, int oldNum, int alter, int newNum);
+    protected abstract ActionLog logReceive(long id, int itemID, long oldNum, long alter, long newNum);
 
-    protected abstract ActionLog logConsume(long id, int itemID, int oldNum, int alter, int newNum);
+    protected abstract ActionLog logConsume(long id, int itemID, long oldNum, long alter, long newNum);
 
     protected abstract ActionLog logSnapshot(Snapshot snapshots);
 

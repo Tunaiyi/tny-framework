@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store"})
 public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte[]> {
 
     /**

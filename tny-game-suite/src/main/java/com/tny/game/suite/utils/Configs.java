@@ -28,7 +28,7 @@ public interface Configs {
     Config SUITE_CONFIG = ConfigLib.getConfigExist(SUITE_CONFIG_PATH);
     String SUITE_SCAN_PATHS /*                      */ = "tny.server.suite.scan_paths";
     String SUITE_WORD_FILTER_CONFIG_PATH /*         */ = "tny.server.suite.word.filter_path";
-    String SUITE_WORD_REPLACE_SYMBOL /*              */ = "tny.server.suite.word.replace_symbol";
+    String SUITE_WORD_REPLACE_SYMBOL /*             */ = "tny.server.suite.word.replace_symbol";
     String SUITE_SERVER_TYPE_CLASS /*               */ = "tny.server.suite.server.server_type_class";
     String SUITE_SCOPE_TYPE_CLASS /*                */ = "tny.server.suite.server.scope_type_class";
     String SUITE_SESSION_OFFLINE_WAIT /*            */ = "tny.server.suite.session.offline_wait";
@@ -85,13 +85,18 @@ public interface Configs {
     //region 服务器配置 service.properties
     String SERVICE_CONFIG_PATH = "service.properties";
     Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
-    String SERVER_ID /*         */ = "tny.server.id";
-    String SERVER_SCOPE /*      */ = "tny.server.scope";
+    String SERVER_ID /*                 */ = "tny.server.id";
+    String SERVER_SCOPE /*              */ = "tny.server.scope";
+    String PUBLIC_HOST /*               */ = "tny.server.public_host";
+    String PRIVATE_HOST /*              */ = "tny.server.private_host";
+    String RMI_PORT /*                  */ = "tny.server.rmi.registryPort";
+    String SERVICE_CONFIG_WEB_SERVICE_HOST = "tny.web_service.server.host";
+    String SERVICE_CONFIG_WEB_SERVICE_PORT = "tny.web_service.server.port";
     //endregion
 
     //region 授权认证配置 authz.properties
     String AUTHZ_CONFIG_PATH = "authz.properties";
-    Config AUTH_CONFIG = ConfigLib.getConfig(Configs.AUTHZ_CONFIG_PATH);
+    Config AUTH_CONFIG = ConfigLib.getConfigExist(Configs.AUTHZ_CONFIG_PATH);
     String AUTH_GAME_TICKET_PUBLIC_KEY /*       */ = "tny.server.auth.game.ticket.pub_key";
     String AUTH_GAME_TICKET_PRIVATE_KEY /*      */ = "tny.server.auth.game.ticket.pri_key";
     String AUTH_PF_TOKEN_KEY /*                 */ = "tny.server.auth.game.pf_token_key";
@@ -108,6 +113,11 @@ public interface Configs {
     static String createAuthKey(ServerType serverType) {
         return AUTH_SERVER_HEAD + "." + serverType.getName() + "." + AUTH_PASSWORD_KEY;
     }
+    //endregion
+
+    //region 服务器监控 monitor.properties
+    String MONITOR_CONFIG_PATH = "monitor.properties";
+    Config MONITOR_CONFIG = ConfigLib.getConfigExist(MONITOR_CONFIG_PATH);
     //endregion
 
     //region 版本配置 version.properties

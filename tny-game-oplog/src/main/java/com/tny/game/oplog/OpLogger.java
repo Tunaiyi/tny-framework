@@ -9,19 +9,21 @@ public interface OpLogger {
 
     void submit();
 
-    OpLogger logReceive(Item<?> item, Action action, int oldNum, int alter, int newNum);
+    OpLogger logReceive(Item<?> item, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logReceive(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum);
+    OpLogger logReceive(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logReceive(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum);
+    OpLogger logReceive(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logConsume(Item<?> item, Action action, int oldNum, int alter, int newNum);
+    OpLogger logConsume(Item<?> item, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logConsume(long playerID, long id, ItemModel model, Action action, int oldNum, int alter, int newNum);
+    OpLogger logConsume(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logConsume(long playerID, long id, int itemID, Action action, int oldNum, int alter, int newNum);
+    OpLogger logConsume(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum);
 
     OpLogger logSnapshot(Identifiable item, Action action, SnapperType... types);
+
+    OpLogger logSnapShot(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes);
 
     boolean isLogging();
 

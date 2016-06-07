@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store", "suite.scheduler", "suite.all"})
 public class TaskReceiverSchedulerPlugin implements ControllerPlugin {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);

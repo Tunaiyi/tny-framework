@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store"})
 public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheSchedulerBackup, byte[]> {
 
     /**

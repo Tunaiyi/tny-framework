@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component("timeTaskHandlerHolder")
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
 public class SpringTimeTaskHandlerHolder extends AbstractTimeTaskHandlerHolder implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;

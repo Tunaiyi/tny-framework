@@ -14,7 +14,6 @@ import com.tny.game.net.dispatcher.session.mobile.MobileSessionFactory;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionHolder;
 import com.tny.game.net.dispatcher.spring.SpringMessageDispatcher;
 import com.tny.game.net.executor.normal.ThreadPoolCommandExecutor;
-import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.login.GameMD5Checker;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.ArrayUtils;
@@ -99,11 +98,6 @@ public class ServerConfiguration {
     @Bean(name = "pluginHolder")
     public PluginHolder pluginHolder() {
         return new SpringPluginHolder();
-    }
-
-    @Bean
-    public ProtoExSchemaIniter protoExSchemaIniter() {
-        return new ProtoExSchemaIniter(Configs.getScanPaths());
     }
 
     @Bean

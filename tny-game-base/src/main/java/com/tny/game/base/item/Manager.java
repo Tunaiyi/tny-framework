@@ -34,8 +34,8 @@ public interface Manager<O> {
      */
     Collection<O> insert(Collection<O> itemCollection);
 
-    boolean delect(O item);
+    boolean delete(O item);
 
-    Collection<O> delect(Collection<O> itemCollection);
+    Collection<O> delete(Collection<O> itemCollection);
 
 }

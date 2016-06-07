@@ -1,0 +1,111 @@
+package com.tny.game.suite.cluster;
+
+import com.tny.game.suite.core.ServerType;
+import com.tny.game.zookeeper.NodeWatcher;
+import com.tny.game.zookeeper.ZKMonitor;
+import org.apache.zookeeper.KeeperException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+public abstract class BaseCluster {
+
+    protected final static Logger LOGGER = LoggerFactory.getLogger(BaseCluster.class);
+
+    protected ZKMonitor remoteMonitor;
+
+    protected final byte[] NOTHING = new byte[0];
+
+    protected Set<ServerType> monitorServerTypes = new HashSet<>();
+
+    protected ConcurrentMap<ServerType, WebServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
+
+    public BaseCluster(ServerType... monitorServerTypes) {
+        this(Arrays.asList(monitorServerTypes));
+    }
+
+    public BaseCluster(Collection<ServerType> monitorServerTypes) {
+        this.monitorServerTypes.addAll(monitorServerTypes);
+    }
+
+    public Collection<WebServiceNodeHolder> getAllWebHolders() {
+        return this.webHolderMap.values();
+    }
+
+    public String selectWebUrl(ServerType type, String path) {
+        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        if (holder == null)
+            return null;
+        return holder.selectUrl() + path;
+    }
+
+    public String selectWebUrl(ServerType type, int id, String path) {
+        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        if (holder == null)
+            return null;
+        WebServiceNode node = holder.getNode(id);
+        if (node == null)
+            return null;
+        return node.getUrl() + path;
+    }
+
+    protected void init() throws IOException, KeeperException, InterruptedException {
+        this.monitor();
+    }
+
+    protected void doMonitor() {
+    }
+
+    protected void monitor() throws IOException, KeeperException, InterruptedException {
+        if (this.remoteMonitor == null) {
+            String ips = System.getProperty(ClusterUtils.IP_LIST);
+            if (ips == null)
+                throw new NullPointerException("RemoteMonitor IP is null");
+            this.remoteMonitor = new ZKMonitor(ips, ClusterUtils.PROTO_FORMATTER);
+            for (ServerType serverType : this.monitorServerTypes) {
+                WebServiceNodeHolder holder = new WebServiceNodeHolder(serverType);
+                String path = ClusterUtils.getWebNodesPath(serverType);
+                this.webHolderMap.put(serverType, holder);
+                this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType.toString(), holder));
+            }
+            this.doMonitor();
+        }
+
+    }
+
+    private NodeWatcher<WebServiceNode> createWebServerWatcher(String name, WebServiceNodeHolder holder) {
+        return (path, state, old, data) -> {
+            switch (state) {
+                case CREATE:
+                    if (data == null)
+                        return;
+                    holder.addNode(data);
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerID(), data.getUrl());
+                    break;
+                case CHANGE:
+                    if (data == null)
+                        return;
+                    holder.addNode(data);
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerID(), data.getUrl());
+                    break;
+                case DELETE:
+                    if (old == null)
+                        return;
+                    holder.removeNode(old.getServerID());
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("path : {} | {} 服务器 {} 下线! {} ", path, name, data.getServerID(), data.getUrl());
+                    break;
+            }
+        };
+    }
+
+}

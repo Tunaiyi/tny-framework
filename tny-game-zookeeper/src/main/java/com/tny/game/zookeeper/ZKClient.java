@@ -16,9 +16,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GameKeeper {
+public class ZKClient {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GameKeeper.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ZKClient.class);
 
     private ZooKeeper zooKeeper;
 
@@ -44,34 +44,34 @@ public class GameKeeper {
             try {
                 if (eventType == EventType.None) {
                     if (state == KeeperState.Disconnected) {
-                        GameKeeper.this.connected.set(false);
+                        ZKClient.this.connected.set(false);
                     } else if (state == KeeperState.SyncConnected) {
-                        GameKeeper.this.LOGGER.info("zookeeper 链接成功 {}", state);
-                        GameKeeper.this.latch.countDown();
+                        ZKClient.this.LOGGER.info("zookeeper 链接成功 {}", state);
+                        ZKClient.this.latch.countDown();
                     } else if (state == KeeperState.Expired) {
-                        GameKeeper.this.LOGGER.warn("keeper state {}", state);
-                        GameKeeper.this.close();
-                        GameKeeper.this.start();
-                        for (RenewTask task : GameKeeper.this.renewTaskList)
-                            task.renew(state, GameKeeper.this);
+                        ZKClient.this.LOGGER.warn("keeper state {}", state);
+                        ZKClient.this.close();
+                        ZKClient.this.start();
+                        for (RenewTask task : ZKClient.this.renewTaskList)
+                            task.renew(state, ZKClient.this);
                     }
                 }
-                if (GameKeeper.this.childWatcher != null)
-                    GameKeeper.this.childWatcher.process(event);
+                if (ZKClient.this.childWatcher != null)
+                    ZKClient.this.childWatcher.process(event);
             } catch (IOException e) {
-                GameKeeper.this.LOGGER.error("ConnectedWatch process {} {} IOException ", eventType, state, e);
+                ZKClient.this.LOGGER.error("ConnectedWatch process {} {} IOException ", eventType, state, e);
             } catch (Exception e) {
-                GameKeeper.this.LOGGER.error("ConnectedWatch process {} {} exception ", eventType, state, e);
+                ZKClient.this.LOGGER.error("ConnectedWatch process {} {} exception ", eventType, state, e);
             }
         }
 
     }
 
-    public GameKeeper(String connectString, int sessionTimeout, Watcher watcher) {
+    public ZKClient(String connectString, int sessionTimeout, Watcher watcher) {
         this(connectString, sessionTimeout, watcher, null);
     }
 
-    public GameKeeper(String connectString, int sessionTimeout, Watcher watcher, RenewTask task) {
+    public ZKClient(String connectString, int sessionTimeout, Watcher watcher, RenewTask task) {
         this.connectString = connectString;
         this.sessionTimeout = sessionTimeout;
         this.childWatcher = watcher;

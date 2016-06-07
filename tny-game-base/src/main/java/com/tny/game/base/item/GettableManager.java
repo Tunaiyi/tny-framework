@@ -8,13 +8,12 @@ import java.util.Collection;
  * @param <O>
  * @author KGTny
  */
-public abstract class GetableManager<O> implements Manager<O> {
+public abstract class GettableManager<O> implements Manager<O> {
 
     /**
      * 获取玩家的对象
      *
      * @param playerID 玩家id
-     * @param itemID   itemID
      * @param object   附加参数
      * @return 返回对象
      */
@@ -25,9 +24,8 @@ public abstract class GetableManager<O> implements Manager<O> {
      *
      * @param playerID 玩家id
      * @param itemIDs  id列表
-     * @param object   附加参数
      * @return 返回对象集合
      */
-    protected abstract Collection<O> getObjects(long playerID, Collection<?> itemIDs);
+    protected abstract Collection<O> gets(long playerID, Collection<?> itemIDs);
 
 }

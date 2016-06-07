@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
@@ -40,6 +41,9 @@ public class OpLogMapperIniter implements ServerPreStart {
                         ));
                 Set<Class<?>> classes = scanner.getClasses(Configs.getScanPathArray());
                 for (Class<?> cl : classes) {
+                    int modifier = cl.getModifiers();
+                    if (Modifier.isAbstract(modifier))
+                        continue;
                     Snapshot snapShot = (Snapshot) cl.newInstance();
                     OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapShot.getType().toString()));
                 }

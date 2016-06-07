@@ -96,7 +96,6 @@ public class ProtoExSchemaIniter implements ServerPreStart {
 
     @Override
     public void initialize() throws Exception {
-
     }
 
     @Override

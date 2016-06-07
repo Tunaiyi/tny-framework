@@ -25,7 +25,7 @@ public class UntilSuccRetryPolicy extends RetryPolicy {
     }
 
     @Override
-    protected void resset() {
+    protected void reset() {
         fail = false;
     }
 

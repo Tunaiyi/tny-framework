@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Created by Kun Yang on 16/1/28.
  */
 @Component
-@Profile({"suite.scheduler", "suite.all"})
+@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
 public class SpringTimeTaskScheduler extends TimeTaskScheduler {
 
     @Autowired

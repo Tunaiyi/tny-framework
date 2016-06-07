@@ -13,10 +13,10 @@ public interface TradeLog {
 
     int getItemID();
 
-    int getOldNum();
+    long getOldNum();
 
-    int getNewNum();
+    long getNewNum();
 
-    int getAlter();
+    long getAlter();
 
 }

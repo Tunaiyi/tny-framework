@@ -78,6 +78,10 @@ public class ConfigLib {
         return old != null ? old : config;
     }
 
+    public static Config newConfig(Properties properties) {
+        return new PropertiesConfig(properties);
+    }
+
     private static class ConfigFileListener extends FileAlterationListenerAdaptor {
 
         private final String path;

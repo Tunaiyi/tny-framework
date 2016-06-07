@@ -62,9 +62,9 @@ public class KafkaOplogManager extends AbstractManager {
         }
     }
 
-    public void send(final String key, final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
+    public void send(final Integer serverID, final String key, final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            producer.send(new ProducerRecord<>(this.topic + ObjectUtils.defaultIfNull(key, ""), key, msg))
+            producer.send(new ProducerRecord<>(this.topic + ObjectUtils.defaultIfNull(serverID, ""), key, msg))
                     .get(timeoutMillis, TimeUnit.MILLISECONDS);
         }
     }

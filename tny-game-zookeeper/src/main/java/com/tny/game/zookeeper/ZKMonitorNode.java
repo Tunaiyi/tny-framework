@@ -1,12 +1,11 @@
-package com.tny.game.monitor;
+package com.tny.game.zookeeper;
 
-import com.tny.game.zookeeper.SyncStat;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-public class RemoteNode<D> {
+public class ZKMonitorNode<D> {
 
     private static final byte[] EMPTY_BYTES = new byte[0];
 
@@ -23,9 +22,9 @@ public class RemoteNode<D> {
     private NodeDataFormatter formatter;
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<RemoteNode, SyncStat> stateUpdater = AtomicReferenceFieldUpdater.newUpdater(RemoteNode.class, SyncStat.class, "syncStat");
+    private static final AtomicReferenceFieldUpdater<ZKMonitorNode, SyncStat> stateUpdater = AtomicReferenceFieldUpdater.newUpdater(ZKMonitorNode.class, SyncStat.class, "syncStat");
 
-    public RemoteNode(CreateMode createMode, D data, String path, NodeDataFormatter formatter) {
+    public ZKMonitorNode(CreateMode createMode, D data, String path, NodeDataFormatter formatter) {
         super();
         this.createMode = createMode;
         this.data = data;

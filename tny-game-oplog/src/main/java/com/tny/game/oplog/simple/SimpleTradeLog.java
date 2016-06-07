@@ -12,13 +12,13 @@ public class SimpleTradeLog implements TradeLog {
 
     private int itemID;
 
-    private int oldNum;
+    private long oldNum;
 
-    private int alter;
+    private long alter;
 
-    private int newNum;
+    private long newNum;
 
-    public SimpleTradeLog(Item<?> item, OpTradeType tradeType, int oldNumber, int alter, int newNumber) {
+    public SimpleTradeLog(Item<?> item, OpTradeType tradeType, long oldNumber, long alter, long newNumber) {
         super();
         this.tradeType = tradeType.ID;
         this.id = item.getID();
@@ -28,7 +28,7 @@ public class SimpleTradeLog implements TradeLog {
         this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
     }
 
-    public SimpleTradeLog(long id, int itemID, OpTradeType tradeType, int oldNum, int alter, int newNum) {
+    public SimpleTradeLog(long id, int itemID, OpTradeType tradeType, long oldNum, long alter, long newNum) {
         super();
         this.tradeType = tradeType.ID;
         this.id = id;
@@ -38,7 +38,7 @@ public class SimpleTradeLog implements TradeLog {
         this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
     }
 
-    public void merge(int alter, int newNum) {
+    public void merge(long alter, long newNum) {
         if (this.tradeType == OpTradeType.CONSUME.ID) {
             this.alter -= alter;
         } else {
@@ -63,17 +63,17 @@ public class SimpleTradeLog implements TradeLog {
     }
 
     @Override
-    public int getAlter() {
+    public long getAlter() {
         return this.alter;
     }
 
     @Override
-    public int getOldNum() {
+    public long getOldNum() {
         return this.oldNum;
     }
 
     @Override
-    public int getNewNum() {
+    public long getNewNum() {
         return this.newNum;
     }
 

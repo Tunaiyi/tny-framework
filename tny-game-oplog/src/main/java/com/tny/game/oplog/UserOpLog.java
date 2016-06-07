@@ -56,13 +56,13 @@ public abstract class UserOpLog {
 
     protected abstract ActionLog getBaseActionLog(Action action);
 
-    protected UserOpLog logReceive(long id, int itemID, Action action, int oldNum, int alter, int newNum) {
+    protected UserOpLog logReceive(long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         ActionLog log = this.getBaseActionLog(action);
         log.logReceive(id, itemID, oldNum, alter, newNum);
         return this;
     }
 
-    protected UserOpLog logConsume(long id, int itemID, Action action, int oldNum, int alter, int newNum) {
+    protected UserOpLog logConsume(long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         ActionLog log = this.getBaseActionLog(action);
         log.logConsume(id, itemID, oldNum, alter, newNum);
         return this;

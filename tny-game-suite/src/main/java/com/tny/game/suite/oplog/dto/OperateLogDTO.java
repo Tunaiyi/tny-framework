@@ -6,10 +6,19 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.Behavior;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.Module;
-import com.tny.game.oplog.*;
+import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.oplog.ActionLog;
+import com.tny.game.oplog.OpLog;
+import com.tny.game.oplog.OperateLog;
+import com.tny.game.oplog.Snapshot;
+import com.tny.game.oplog.SnapshotType;
+import com.tny.game.oplog.StuffLog;
+import com.tny.game.oplog.TradeLog;
+import com.tny.game.oplog.UserOpLog;
 import com.tny.game.suite.base.Actions;
 import com.tny.game.suite.base.Behaviors;
 import com.tny.game.suite.base.module.Features;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,18 +62,27 @@ public class OperateLogDTO implements OperateLog {
 
     private Action action;
 
+    private String logID;
+
+    private String type = "oplog";
+
+    private int date;
+
     public OperateLogDTO() {
     }
 
     @SuppressWarnings("unchecked")
-    public OperateLogDTO(OpLog log, UserOpLog userOpLog, ActionLog actionLog) {
+    public OperateLogDTO(String logID, OpLog log, UserOpLog userOpLog, ActionLog actionLog) {
+        this.logID = logID;
         this.uid = userOpLog.getUserID();
         this.name = userOpLog.getName();
         this.lv = userOpLog.getLevel();
         this.sid = userOpLog.getCreateSID();
         //		this.mod = log.getModule();
         this.op = log.getProtocol();
-        this.at = log.getCreateAt();
+        DateTime dateTime = log.getCreateAt();
+        this.at = dateTime.getMillis();
+        this.date = DateTimeHelper.date2Int(dateTime);
         this.acid = actionLog.getActionID();
         for (TradeLog tradeLog : actionLog.getReceiveLogs()) {
             if (this.revs == null)
@@ -93,6 +111,11 @@ public class OperateLogDTO implements OperateLog {
     }
 
     @Override
+    public int getDate() {
+        return this.date;
+    }
+
+    @Override
     public int getActionID() {
         return this.acid;
     }
@@ -115,6 +138,11 @@ public class OperateLogDTO implements OperateLog {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override
@@ -142,6 +170,11 @@ public class OperateLogDTO implements OperateLog {
         return "OperateLogDTO [uid=" + this.uid + ", name=" + this.name + ", acid=" + this.acid + ", sid=" + this.sid + ", at=" + this.at + ", op=" + this.op
                 + ", lv=" + this.lv
                 + ", revs=" + this.revs + ", coss=" + this.coss + ", snaps=" + this.snaps + "]";
+    }
+
+    @Override
+    public String getLogID() {
+        return logID;
     }
 
     @Override

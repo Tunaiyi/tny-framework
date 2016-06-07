@@ -57,7 +57,7 @@ public class SimpleActionLog extends ActionLog {
     }
 
     @Override
-    protected ActionLog logReceive(long id, int itemID, int oldNum, int alter, int newNum) {
+    protected ActionLog logReceive(long id, int itemID, long oldNum, long alter, long newNum) {
         if (alter == 0)
             return this;
         SimpleTradeLog log = this.findTradeLog(this.receiveLogs, id);
@@ -71,7 +71,7 @@ public class SimpleActionLog extends ActionLog {
     }
 
     @Override
-    protected ActionLog logConsume(long id, int itemID, int oldNum, int alter, int newNum) {
+    protected ActionLog logConsume(long id, int itemID, long oldNum, long alter, long newNum) {
         if (alter == 0)
             return this;
         SimpleTradeLog log = this.findTradeLog(this.consumeLogs, id);

@@ -45,7 +45,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
         GameManager<Object> manager = this.getItemManager(itemID);
         if (manager == null)
             return null;
-        return (I) manager.getObject(playerID, params);
+        return (I) manager.get(playerID, params);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
             GameManager<Object> manager = this.getItemManager(item.getItemID());
             if (manager == null)
                 return true;
-            if (!manager.delect(item))
+            if (!manager.delete(item))
                 result = false;
         }
         return result;
@@ -150,7 +150,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
         GameManager<Object> manager = this.getOwnerManager(itemID);
         if (manager == null)
             return null;
-        return (O) manager.getObject(playerID, params);
+        return (O) manager.get(playerID, params);
     }
 
     @Override
@@ -231,7 +231,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
             GameManager<Object> manager = this.getOwnerManager(owner.getOwnerItemType().getID());
             if (manager == null)
                 return true;
-            if (!manager.delect(owner))
+            if (!manager.delete(owner))
                 result = false;
         }
         return result;
