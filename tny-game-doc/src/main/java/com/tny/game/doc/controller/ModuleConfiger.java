@@ -3,17 +3,22 @@ package com.tny.game.doc.controller;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.tny.game.LogUtils;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.ClassDocHolder;
 import com.tny.game.doc.holder.FunDocHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @XStreamAlias("module")
 public class ModuleConfiger {
+
+    private static Map<Integer, ModuleConfiger> configerMap = new ConcurrentHashMap<>();
 
     @XStreamAsAttribute
     private String className;
@@ -37,28 +42,50 @@ public class ModuleConfiger {
         private String type = "list";
 
         @XStreamImplicit(itemFieldName = "operation")
-        private List<OperationConifger> operationList;
+        private List<OperationConfiger> operationList;
 
     }
 
-    public ModuleConfiger(ClassDocHolder holder, TypeFormatter typeFormatter) {
+    public static ModuleConfiger create(ClassDocHolder holder, TypeFormatter typeFormatter) {
+        int id = holder.getModuleID();
+        if (id > 0) {
+            ModuleConfiger configer = configerMap.get(holder.getModuleID());
+            ModuleConfiger old;
+            if (configer != null) {
+                if (configer.getClassName().equals(holder.getEntityClass().getSimpleName()))
+                    return configer;
+                throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
+            } else {
+                configer = new ModuleConfiger(holder, typeFormatter);
+                old = configerMap.putIfAbsent(configer.getModuleID(), configer);
+                if (old != null) {
+                    throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
+                } else {
+                    return configer;
+                }
+            }
+        }
+        throw new IllegalArgumentException(LogUtils.format("{} ModuleID 不存在", holder.getEntityClass()));
+    }
+
+    private ModuleConfiger(ClassDocHolder holder, TypeFormatter typeFormatter) {
         this.className = holder.getEntityClass().getSimpleName();
         this.packageName = holder.getEntityClass().getPackage().getName();
         this.des = holder.getClassDoc().value();
         this.moduleID = holder.getModuleID();
         this.operationList = new OperationList();
-        List<OperationConifger> operationList = new ArrayList<OperationConifger>();
+        Map<Integer, OperationConfiger> fieldMap = new HashMap<>();
+        List<OperationConfiger> operationList = new ArrayList<>();
         for (FunDocHolder funDocHolder : holder.getFunList()) {
-            operationList.add(new OperationConifger(funDocHolder, typeFormatter));
-        }
-        Collections.sort(operationList, new Comparator<OperationConifger>() {
-
-            @Override
-            public int compare(OperationConifger o1, OperationConifger o2) {
-                return o1.getMethodName().compareTo(o2.getMethodName());
+            OperationConfiger configer = new OperationConfiger(funDocHolder, typeFormatter);
+            operationList.add(configer);
+            OperationConfiger old = fieldMap.put(configer.getOpID(), configer);
+            if (old != null) {
+                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} 字段 OpID 都为 {}",
+                        holder.getEntityClass(), configer.getMethodName(), old.getMethodName(), configer.getOpID()));
             }
-
-        });
+        }
+        Collections.sort(operationList, (o1, o2) -> o1.getMethodName().compareTo(o2.getMethodName()));
         this.operationList.operationList = Collections.unmodifiableList(operationList);
     }
 
@@ -78,7 +105,7 @@ public class ModuleConfiger {
         return packageName;
     }
 
-    public List<OperationConifger> getOperationList() {
+    public List<OperationConfiger> getOperationList() {
         return operationList.operationList;
     }
 

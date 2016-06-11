@@ -38,6 +38,14 @@ public class ResultFactory {
         return new CommandResultImpl(CoreResponseCode.SUCCESS, message);
     }
 
+    public static CommandResult result(ResultCode code) {
+        if (code.isSuccess())
+            return success();
+        else
+            return fail(code);
+    }
+
+
     /**
      * 创建成功响应结果
      * <p>

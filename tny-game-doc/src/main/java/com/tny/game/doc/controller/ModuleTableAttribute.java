@@ -14,12 +14,12 @@ public class ModuleTableAttribute implements TableAttribute {
 
     public ModuleTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         super();
-        this.module = new ModuleConfiger(ClassDocHolder.create(clazz), typeFormatter);
+        this.module = ModuleConfiger.create(ClassDocHolder.create(clazz), typeFormatter);
     }
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
-        this.module = new ModuleConfiger(ClassDocHolder.create(clazz), typeFormatter);
+        this.module = ModuleConfiger.create(ClassDocHolder.create(clazz), typeFormatter);
     }
 
     public ModuleConfiger getModule() {

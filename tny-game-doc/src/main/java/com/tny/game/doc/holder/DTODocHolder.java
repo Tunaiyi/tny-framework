@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DTODocHolder {
 
@@ -22,6 +23,8 @@ public class DTODocHolder {
     private Class<?> entityClass;
 
     private List<FieldDocHolder> fieldList;
+
+    private Map<Integer, FieldDocHolder> fieldMap;
 
     public static DTODocHolder create(Class<?> clazz) {
         DTODoc dtoDoc = clazz.getAnnotation(DTODoc.class);

@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @XStreamAlias("operation")
-public class OperationConifger {
+public class OperationConfiger {
 
     @XStreamAsAttribute
     private String methodName;
@@ -43,7 +43,7 @@ public class OperationConifger {
 
     }
 
-    public OperationConifger(FunDocHolder holder, TypeFormatter typeFormatter) {
+    public OperationConfiger(FunDocHolder holder, TypeFormatter typeFormatter) {
         this.opID = holder.getOpID();
         this.des = holder.getFunDoc().des();
         this.returnType = holder.getFunDoc().returnType().getSimpleName();

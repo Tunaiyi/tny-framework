@@ -3,16 +3,22 @@ package com.tny.game.doc.dto;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.tny.game.LogUtils;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.DTODocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @XStreamAlias("dto")
 public class DTOConfiger implements Comparable<DTOConfiger> {
+
+    private static Map<Integer, DTOConfiger> configerMap = new ConcurrentHashMap<>();
 
     @XStreamAsAttribute
     private String superClassName;
@@ -46,7 +52,29 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
 
     }
 
-    public DTOConfiger(DTODocHolder holder, TypeFormatter typeFormatter) {
+    public static DTOConfiger create(DTODocHolder holder, TypeFormatter typeFormatter) {
+        int id = holder.getID();
+        if (id > 0) {
+            DTOConfiger configer = configerMap.get(holder.getID());
+            DTOConfiger old = null;
+            if (configer != null) {
+                if (configer.getClassName().equals(holder.getEntityClass().getSimpleName()))
+                    return configer;
+                throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
+            } else {
+                configer = new DTOConfiger(holder, typeFormatter);
+                old = configerMap.putIfAbsent(configer.getID(), configer);
+                if (old != null) {
+                    throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
+                } else {
+                    return configer;
+                }
+            }
+        }
+        throw new IllegalArgumentException(LogUtils.format("{} id 不存在", holder.getEntityClass()));
+    }
+
+    private DTOConfiger(DTODocHolder holder, TypeFormatter typeFormatter) {
         super();
         this.className = holder.getEntityClass().getSimpleName();
         this.packageName = holder.getEntityClass().getPackage().getName();
@@ -55,9 +83,16 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
         this.push = holder.getDTODoc().push();
         this.id = holder.getID();
         this.fieldList = new FieldList();
-        List<FieldConfiger> fieldList = new ArrayList<FieldConfiger>();
+        Map<Integer, FieldConfiger> fieldMap = new HashMap<>();
+        List<FieldConfiger> fieldList = new ArrayList<>();
         for (FieldDocHolder fieldDocHolder : holder.getFieldList()) {
-            fieldList.add(new FieldConfiger(fieldDocHolder, typeFormatter));
+            FieldConfiger configer = new FieldConfiger(fieldDocHolder, typeFormatter);
+            fieldList.add(configer);
+            FieldConfiger old = fieldMap.put(configer.getFieldID(), configer);
+            if (old != null) {
+                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} 字段 ID 都为 {}",
+                        holder.getEntityClass(), configer.getFieldName(), old.getFieldName(), configer.getFieldID()));
+            }
         }
         this.fieldList.fieldList = Collections.unmodifiableList(fieldList);
     }

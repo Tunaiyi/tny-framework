@@ -14,7 +14,7 @@ public class DTOTableAttribute implements TableAttribute {
 
     public DTOTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         super();
-        this.dto = new DTOConfiger(DTODocHolder.create(clazz), typeFormatter);
+        this.dto = DTOConfiger.create(DTODocHolder.create(clazz), typeFormatter);
     }
 
     public DTOConfiger getDto() {
@@ -23,7 +23,7 @@ public class DTOTableAttribute implements TableAttribute {
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
-        this.dto = new DTOConfiger(DTODocHolder.create(clazz), typeFormatter);
+        this.dto = DTOConfiger.create(DTODocHolder.create(clazz), typeFormatter);
     }
 
     @Override
