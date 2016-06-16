@@ -8,20 +8,23 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class KafkaOplogManager extends AbstractManager {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(KafkaOplogManager.class);
 
     public static final String DEFAULT_TIMEOUT_MILLIS = "30000";
 
     /**
      * package-private access for testing.
      */
-    static KafkaOpLogProducerFactory producerFactory = new DefaultKafkaOpLogProducerFactory();
+    private static KafkaOpLogProducerFactory producerFactory = new DefaultKafkaOpLogProducerFactory();
 
     private final Properties config = new Properties();
     private Producer<String, byte[]> producer = null;
@@ -64,8 +67,10 @@ public class KafkaOplogManager extends AbstractManager {
 
     public void send(final Integer serverID, final String key, final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
-            producer.send(new ProducerRecord<>(this.topic + ObjectUtils.defaultIfNull(serverID, ""), key, msg))
-                    .get(timeoutMillis, TimeUnit.MILLISECONDS);
+            producer.send(new ProducerRecord<>(this.topic + ObjectUtils.defaultIfNull(serverID, ""), key, msg), (metadata, exception) -> {
+                if (exception != null)
+                    LOGGER.error("", exception);
+            });
         }
     }
 

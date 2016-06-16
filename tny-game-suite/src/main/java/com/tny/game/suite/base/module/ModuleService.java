@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationContextAware {
 
@@ -56,7 +60,7 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
     }
 
     private List<Module> doOpenModule(GameFeatureExplorer explorer, Collection<Module> moduleTypes) {
-        List<Module> succList = new ArrayList<Module>();
+        List<Module> succList = new ArrayList<>();
         for (Module module : moduleTypes) {
             if (!module.isValid() || explorer.isModuleOpened(module))
                 continue;
@@ -81,7 +85,18 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
         return succList;
     }
 
-    protected abstract void doLoadModule(final FeatureExplorer explorer, final Collection<Module> modules);
+    protected void doLoadModule(final FeatureExplorer explorer, final Collection<Module> modules) {
+        for (Module moduleType : modules) {
+            try {
+                if (moduleType.isValid() && explorer.isModuleOpened(moduleType)) {
+                    GameModuleHandler module = this.handlerMap.get(moduleType);
+                    module.loadModule(explorer);
+                }
+            } catch (Exception e) {
+                LOGGER.error("玩家[{}] 预加载 {} 模块异常", explorer.getPlayerID(), moduleType, e);
+            }
+        }
+    }
 
     protected DTO updateDTO(FeatureExplorer featureExplorer, Collection<? extends Module> modules, DTO dto) {
         for (Module moduleType : modules) {

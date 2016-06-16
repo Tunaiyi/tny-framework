@@ -7,7 +7,6 @@ import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.core.GameInfo;
-import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -16,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -100,21 +103,21 @@ public class AccountService implements ServerPreStart {
 
     public void updateOfflineAt(Account account) {
         try {
-            DateTime dateTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, DateTime.now());
-            int dateInt = DateTimeHelper.date2Int(dateTime);
-            this.accountManager.updateOfflineAt(account.getPlayerID(), dateInt, dateTime.getMillis());
-        } catch (Exception e) {
-            LOGGER.error("accountDAO.updateCreateRole exception", e);
+            account.offline();
+            DateTime dateTime = account.getOfflineTime();
+            this.accountManager.updateOfflineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
+        } catch (Throwable e) {
+            LOGGER.error("accountDAO.updateOfflineAt exception", e);
         }
     }
 
     public void updateOnlineAt(Account account, String ip) {
         try {
             account.online(ip);
-            DateTime dateTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, DateTime.now());
+            DateTime dateTime = account.getOnlineTime();
             this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
-        } catch (Exception e) {
-            LOGGER.error("accountDAO.updateCreateRole exception", e);
+        } catch (Throwable e) {
+            LOGGER.error("accountDAO.updateOnlineAt exception", e);
         }
     }
 

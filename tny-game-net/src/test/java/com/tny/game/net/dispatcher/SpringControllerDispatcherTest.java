@@ -119,7 +119,7 @@ public class SpringControllerDispatcherTest {
         ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, Session.DEFAULT_USER_GROUP));
         SimpleRequest request = this.request(test4, session, "ddd", 171772272);
         CommandResult response = this.dispatcher.dispatch(request, session, this.context).invoke();
-        Assert.assertEquals(response.getResultCode(), CoreResponseCode.EXCUTE_EXCEPTION);
+        Assert.assertEquals(response.getResultCode(), CoreResponseCode.EXECUTE_EXCEPTION);
     }
 
     @Test

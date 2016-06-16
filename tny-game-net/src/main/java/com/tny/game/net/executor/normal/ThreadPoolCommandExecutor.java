@@ -7,6 +7,7 @@ import com.tny.game.common.utils.collection.LinkedTransferQueue;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.dispatcher.DispatcherCommand;
 import com.tny.game.net.dispatcher.NetAttributeKey;
+import com.tny.game.net.dispatcher.RunnableDispatcherCommand;
 import com.tny.game.net.dispatcher.Session;
 import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
 
-    public static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttributeUtils.key(Session.class + "COMMAND_CHILD_EXECUTOR");
+    private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttributeUtils.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(CoreLogger.EXECUTOR);
 
@@ -43,8 +44,7 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
     }
 
     @Override
-    public void submit(DispatcherCommand<?> command) {
-        Session session = command.getSession();
+    public void submit(Session session, DispatcherCommand<?> command) {
         ChildExecutor executor = session.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
         if (executor == null) {
             executor = new ChildExecutor(this.executorService);
@@ -84,19 +84,28 @@ public class ThreadPoolCommandExecutor implements DispatcherCommandExecutor {
             if (!this.executorService.isShutdown()) {
                 if (callback != null)
                     command.setCallback(callback);
-                if (this.thread != null && this.thread == Thread.currentThread()) {
-                    command.execute();
-                    if (!command.isDone())
-                        this.commandQueue.offer(command);
-                } else {
-                    this.commandQueue.offer(command);
-                    if (this.start.compareAndSet(false, true)) {
-                        this.executorService.submit(this);
-                    }
-                }
+                submit(command);
                 return true;
             }
             return false;
+        }
+
+        private <T> void submit(DispatcherCommand<T> command) {
+            if (this.thread != null && this.thread == Thread.currentThread()) {
+                command.execute();
+                if (!command.isDone())
+                    this.commandQueue.offer(command);
+            } else {
+                this.commandQueue.offer(command);
+                if (this.start.compareAndSet(false, true)) {
+                    this.executorService.submit(this);
+                }
+            }
+        }
+
+        @Override
+        public boolean appoint(Runnable runnable) {
+            return appoint(new RunnableDispatcherCommand(runnable), null);
         }
 
         @Override

@@ -9,6 +9,8 @@ public interface DispatcherCommandBox {
 
     <T> boolean appoint(DispatcherCommand<T> command, Callback<T> callback);
 
+    boolean appoint(Runnable runnable);
+
     boolean isEmpty();
 
     int size();

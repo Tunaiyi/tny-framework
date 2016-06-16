@@ -26,6 +26,10 @@ public class Account implements Identifiable {
 
     private volatile LocalDate createRoleDate;
 
+    protected volatile DateTime onlineTime;
+
+    protected volatile DateTime offlineTime;
+
     private String device;
 
     private String deviceID;
@@ -225,10 +229,6 @@ public class Account implements Identifiable {
         this.deviceID = ticket.getDeviceID();
     }
 
-    void online(String ip) {
-        this.ip = ip;
-    }
-
     void createRole(DateTime dateTime) {
         this.setCreateRole(dateTime);
     }
@@ -242,6 +242,37 @@ public class Account implements Identifiable {
         this.level = 1;
         this.createRoleAt = dateTime;
         this.createRoleDate = new LocalDate(this.createRoleAt);
+    }
+
+    boolean online(String ip) {
+        if (isOnline())
+            return false;
+        this.ip = ip;
+        this.onlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_ONLINE_AT, DateTime.now());
+        return true;
+    }
+
+    boolean offline() {
+        if (!isOnline())
+            return false;
+        this.offlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, DateTime.now());
+        return true;
+    }
+
+    public boolean isOnline() {
+        if (this.onlineTime == null)
+            return false;
+        if (this.offlineTime == null)
+            return true;
+        return this.offlineTime.isAfter(this.offlineTime);
+    }
+
+    public DateTime getOfflineTime() {
+        return offlineTime;
+    }
+
+    public DateTime getOnlineTime() {
+        return onlineTime;
     }
 
     @Override

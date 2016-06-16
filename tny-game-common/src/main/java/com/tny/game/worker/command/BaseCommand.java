@@ -37,7 +37,7 @@ public abstract class BaseCommand implements Command {
 
     @Override
     public boolean isDone() {
-        return this.executed && !this.isWork();
+        return this.executed || !this.isWork();
     }
 
 }

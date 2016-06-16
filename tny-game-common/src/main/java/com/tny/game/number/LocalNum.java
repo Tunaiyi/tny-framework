@@ -8,6 +8,10 @@ public class LocalNum<N extends Number> extends Number {
 
     private N number;
 
+    public LocalNum(N number) {
+        this.number = number;
+    }
+
     public N add(int num) {
         int value = this.number.intValue() + num;
         return number = NumberUtils.as(value, this.number);

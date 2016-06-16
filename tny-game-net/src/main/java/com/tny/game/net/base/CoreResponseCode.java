@@ -12,11 +12,11 @@ public enum CoreResponseCode implements ResultCode {
     /**
      * 服务端接受请求异常
      */
-    RECIVE_ERROR(200, "服务端接受请求异常", ResultCodeType.WARN),
+    RECEIVE_ERROR(200, "服务端接受请求异常", ResultCodeType.WARN),
     /**
      * 服务端执行业务异常
      */
-    EXCUTE_EXCEPTION(201, "服务端执行业务异常", ResultCodeType.GENERAL),
+    EXECUTE_EXCEPTION(201, "服务端执行业务异常", ResultCodeType.GENERAL),
     /**
      * 服务端接受请求解码格式错误
      */

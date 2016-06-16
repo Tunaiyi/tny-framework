@@ -9,17 +9,9 @@ public interface DispatcherCommand<T> extends Command {
 
     long getUserID();
 
-    int getProtocol();
-
-    String getName();
-
-    /**
-     * 获取命令所属Session
-     *
-     * @return
-     */
-    Session getSession();
-
+    default String getName() {
+        return this.getClass().getName();
+    }
 
     void setCallback(Callback<?> callback);
 

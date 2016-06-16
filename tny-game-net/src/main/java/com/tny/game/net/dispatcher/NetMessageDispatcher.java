@@ -210,18 +210,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         }
 
         @Override
-        public int getProtocol() {
-            return this.message.getProtocol();
-        }
-
-        @Override
         public String getName() {
             return this.getClass() + "#" + this.message.getProtocol();
-        }
-
-        @Override
-        public Session getSession() {
-            return this.session;
         }
 
         @Override
@@ -386,10 +376,10 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             return null;
         }
 
-        private void handleResult(ResultCode code, Object value) {
+        private void handleResult(ResultCode code, Object value, Throwable cause) {
             if (callback != null) {
                 try {
-                    callback.callback(code, value);
+                    callback.callback(code, value, cause);
                 } catch (Throwable e) {
                     DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", this.getClass(), this.getName(), callback.getClass(), e);
                 }
@@ -411,7 +401,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 this.commandFuture = getCommandFuture(value);
                 if (this.commandFuture == null) {
                     try {
-                        this.handleResult(result.getResultCode(), result.getBody());
+                        this.handleResult(result.getResultCode(), result.getBody(), null);
                     } finally {
                         this.done = true;
                     }
@@ -422,10 +412,10 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     try {
                         if (this.commandFuture.isSuccess()) {
                             Object value = this.commandFuture.getResult();
-                            this.handleResult(ResultCode.SUCCESS, value);
+                            this.handleResult(ResultCode.SUCCESS, value, null);
                         } else {
                             CommandResult result = handleException(this.commandFuture.getCause());
-                            this.handleResult(result.getResultCode(), result.getBody());
+                            this.handleResult(result.getResultCode(), result.getBody(), this.commandFuture.getCause());
                         }
                     } finally {
                         this.done = true;
@@ -433,7 +423,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 } catch (Throwable e) {
                     try {
                         CommandResult result = handleException(e);
-                        handleResult(result.getResultCode(), result.getBody());
+                        handleResult(result.getResultCode(), result.getBody(), e);
                     } finally {
                         this.done = true;
                     }
@@ -475,7 +465,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 if (result != null) {
                     return result;
                 } else {
-                    return ResultFactory.create(CoreResponseCode.EXCUTE_EXCEPTION, null);
+                    return ResultFactory.create(CoreResponseCode.EXECUTE_EXCEPTION, null);
                 }
             }
             return result;

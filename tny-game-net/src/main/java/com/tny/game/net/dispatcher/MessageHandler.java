@@ -113,15 +113,19 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
         //TODO 客户端没有serverContext
 
         try {
+            Session session = null;
             DispatcherCommand<?> command = null;
             if (msg.getMessage() == MessageType.REQUEST) {
                 command = requestCommand(channel, msg);
+                session = channel.attr(NetAttributeKey.SERVER_SESSION).get();
             }
             if (msg.getMessage() == MessageType.RESPONSE) {
                 command = responseCommand(channel, msg);
+                session = channel.attr(NetAttributeKey.CLIENT_SESSION).get();
             }
-            if (command != null)
-                this.commandExecutor.submit(command);
+            if (command != null) {
+                this.commandExecutor.submit(session, command);
+            }
         } catch (Throwable ex) {
             MessageHandler.LOG.error("#GameServerHandler#接受请求异常", ex);
         }
@@ -146,7 +150,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
                         session.getMessageBuilderFactory()
                                 .newResponseBuilder()
                                 .setProtocol(message.getProtocol())
-                                .setResult(CoreResponseCode.RECIVE_ERROR));
+                                .setResult(CoreResponseCode.RECEIVE_ERROR));
             MessageHandler.LOG.error("#GameServerHandler#接受请求异常", ex);
         }
         return null;
