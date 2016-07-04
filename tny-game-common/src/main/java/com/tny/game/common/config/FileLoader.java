@@ -26,17 +26,21 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
         this.MODEL_PATH = MODEL_PATH;
     }
 
+    protected String getPath() {
+        return MODEL_PATH;
+    }
+
     public void load() throws Exception {
         InputStream input = ConfigLoader.loadInputStream(this.MODEL_PATH, new FileListener(this));
         if (input == null)
             throw new FileNotFoundException(this.MODEL_PATH);
-        this.readConfig(input);
+        this.readConfig(input, false);
         this.load = true;
     }
 
-    private void readConfig(InputStream inputStream) throws Exception {
+    private void readConfig(InputStream inputStream, boolean reload) throws Exception {
         if (inputStream != null)
-            this.doLoad(inputStream);
+            this.doLoad(inputStream, reload);
     }
 
     @Override
@@ -45,7 +49,7 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
             InputStream input = ConfigLoader.loadInputStream(this.MODEL_PATH);
             if (input == null)
                 throw new FileNotFoundException(this.MODEL_PATH);
-            this.readConfig(input);
+            this.readConfig(input, true);
             for (Reloadable loader : this.loadAfterList)
                 loader.reload();
         } catch (Exception e) {
@@ -72,7 +76,7 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
         this.loadAfterList.clear();
     }
 
-    protected abstract void doLoad(InputStream inputStream) throws Exception;
+    protected abstract void doLoad(InputStream inputStream, boolean reload) throws Exception;
 
     /**
      * @author KGTny

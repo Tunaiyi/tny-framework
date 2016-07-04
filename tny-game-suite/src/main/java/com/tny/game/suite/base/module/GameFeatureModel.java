@@ -1,12 +1,11 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.item.Model;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.OpenMode;
 
-public class GameFeatureModel implements FeatureModel, Model {
+public class GameFeatureModel implements FeatureModel {
 
     private int id;
 

@@ -32,22 +32,20 @@ public class Expression extends AbstractMvelFormula {
     /**
      * @uml.property name="expressionStr"
      */
-    protected final String expressionStr;
+    protected String expressionStr;
 
     private Number number;
 
     protected Expression(String expression, ParserContext parserContext, boolean lazy) {
-        expression = StringUtils.replace(expression, "\n", "");
-        this.expressionStr = expression;
         if (StringUtils.isNumeric(expression)) {
             this.number = NumberUtils.createNumber(expression);
         } else {
+            this.expressionStr = expression;
             if (parserContext == null) {
-                this.parserContext = parserContext = new ParserContext();
+                this.parserContext = createParserContext();
             } else {
                 this.parserContext = parserContext;
             }
-            this.init(parserContext);
             this.expression = lazy ? null : this.getExpression();
             // System.out.println(lazy + " " + (this.expression == null) + " " +
             // (this.number == null));
@@ -56,11 +54,11 @@ public class Expression extends AbstractMvelFormula {
 
     protected Expression(String expression, Map<String, Object> context, boolean lazy) {
         expression = StringUtils.replace(expression, "\n", "");
-        this.expressionStr = expression;
         if (StringUtils.isNumeric(expression)) {
             this.number = NumberUtils.createNumber(expression);
         } else {
-            this.parserContext = new ParserContext();
+            this.expressionStr = expression;
+            this.parserContext = createParserContext();
             if (context != null) {
                 for (Entry<String, Object> entry : context.entrySet()) {
                     Object value = entry.getValue();
@@ -72,16 +70,15 @@ public class Expression extends AbstractMvelFormula {
                         this.parserContext.addImport(entry.getKey(), (MethodStub) value);
                 }
             }
-            this.init(this.parserContext);
             this.expression = lazy ? null : this.getExpression();
         }
     }
 
     private Expression(final Expression expression) {
-        this.expressionStr = expression.expressionStr;
         if (expression.number != null) {
             this.number = expression.number;
         } else {
+            this.expressionStr = expression.expressionStr;
             this.expression = expression.getExpression();
         }
     }
@@ -106,6 +103,8 @@ public class Expression extends AbstractMvelFormula {
                 if (this.expression != null)
                     return this.expression;
                 this.expression = MVEL.compileExpression(this.expressionStr, this.parserContext);
+                if (!MvelFormulaFactory.EXPR_INFO)
+                    this.expressionStr = null;
                 this.parserContext = null;
             }
         }
@@ -130,7 +129,7 @@ public class Expression extends AbstractMvelFormula {
 
     @Override
     public String toString() {
-        return "Expression [expressionStr=" + this.expressionStr + "]";
+        return "Expression [expressionStr=" + (this.number != null ? this.number : this.expressionStr) + "]";
     }
 
 }

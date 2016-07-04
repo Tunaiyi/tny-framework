@@ -41,7 +41,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
         Node node = this.rootNode;
         if (node == null)
             return content;
-        List<String> word = new ArrayList<String>();
+        List<String> word = new ArrayList<>();
         while (a < chars.length) {
             node = node.findNode(chars[a]);
             if (node == null) {
@@ -76,7 +76,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
         Node node = this.rootNode;
         if (node == null)
             return false;
-        List<String> word = new ArrayList<String>();
+        List<String> word = new ArrayList<>();
         while (a < chars.length) {
             node = node.findNode(chars[a]);
             if (node == null) {
@@ -108,7 +108,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     private class Node implements Comparable<Node> {
         private char c;
         private int flag;
-        private Set<Node> nodes = new TreeSet<Node>();
+        private Set<Node> nodes = new TreeSet<>();
 
         private Node findNode(char c) {
             for (Node n : this.nodes) {
@@ -137,15 +137,15 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     }
 
     @Override
-    protected void doLoad(InputStream inputStream) {
-        List<String> badwords = new ArrayList<String>();
+    protected void doLoad(InputStream inputStream, boolean reload) {
+        List<String> badWords = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(inputStream));
             String line;
             line = reader.readLine();
             while (line != null) {
-                badwords.add(line);
+                badWords.add(line);
                 line = reader.readLine();
             }
         } catch (FileNotFoundException e) {
@@ -154,7 +154,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
             e.printStackTrace();
         }
         Node node = new Node('R');
-        for (String str : badwords) {
+        for (String str : badWords) {
             if (str != null && str.length() > 0) {
                 char[] chars = str.toCharArray();
                 if (chars.length > 0)

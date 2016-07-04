@@ -3,12 +3,16 @@ package com.tny.game.base.item;
 import com.tny.game.base.exception.GameRuningException;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.log.LogName;
+import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 抽象事物模型管理器
@@ -23,12 +27,12 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
     /**
      * 管理的事物模型
      */
-    protected ConcurrentMap<Integer, M> modelMap = new ConcurrentHashMap<Integer, M>();
+    protected Map<Integer, M> modelMap = new CopyOnWriteMap<>();
 
     /**
      * 管理的事物模型
      */
-    protected ConcurrentMap<String, M> modelAliasMap = new ConcurrentHashMap<String, M>();
+    protected Map<String, M> modelAliasMap = new CopyOnWriteMap<>();
 
     @Override
     public M getModel(int id) {
@@ -64,7 +68,7 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
 
     @Override
     public Map<Integer, M> getModelMap(Collection<Integer> idCollection) {
-        Map<Integer, M> modelMap = new HashMap<Integer, M>(idCollection.size());
+        Map<Integer, M> modelMap = new HashMap<>(idCollection.size());
         for (Integer id : idCollection)
             modelMap.put(id, this.getModel(id));
         return modelMap;
@@ -72,7 +76,7 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
 
     @Override
     public Collection<M> getModelCollection(Collection<Integer> idCollection) {
-        List<M> modelList = new ArrayList<M>(idCollection.size());
+        List<M> modelList = new ArrayList<>(idCollection.size());
         for (Integer id : idCollection)
             modelList.add(this.getModel(id));
         return modelList;

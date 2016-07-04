@@ -129,11 +129,11 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         this.setAttrMap(playerID, alias, attributeMap);
         Object current = null;
         Object expect = null;
-        if (this.demandType.isCost()) {
-            current = demandModel.currentFormula().createFormula().putAll(attributeMap).execute(Object.class);
+        if (this.current != null) {
+            current = this.current.createFormula().putAll(attributeMap).execute(Object.class);
         } else {
-            if (this.current != null)
-                current = this.current.createFormula().putAll(attributeMap).execute(Object.class);
+            if (this.demandType.isCost())
+                current = demandModel.currentFormula().createFormula().putAll(attributeMap).execute(Object.class);
         }
         if (this.expect != null)
             expect = this.expect.createFormula().putAll(attributeMap).execute(Object.class);

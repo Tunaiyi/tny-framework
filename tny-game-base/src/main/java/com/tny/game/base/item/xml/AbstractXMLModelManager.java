@@ -2,6 +2,11 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.converters.collections.MapConverter;
+import com.thoughtworks.xstream.io.xml.Xpp3DomDriver;
+import com.thoughtworks.xstream.mapper.DefaultImplementationsMapper;
+import com.thoughtworks.xstream.mapper.Mapper;
 import com.tny.game.base.item.Ability;
 import com.tny.game.base.item.AbstractModelManager;
 import com.tny.game.base.item.ItemExplorer;
@@ -24,8 +29,12 @@ import com.tny.game.base.module.OpenMode;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.config.FileLoader;
 import com.tny.game.common.formula.FormulaHolder;
-import com.tny.game.common.reflect.proxy.WraperProxyFactory;
 import com.tny.game.common.reflect.proxy.WrapperProxy;
+import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
+import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.collection.EmptyImmutableList;
+import com.tny.game.common.utils.collection.EmptyImmutableMap;
+import com.tny.game.common.utils.collection.EmptyImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +43,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +51,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * xml映射事物模型管理器
@@ -81,7 +89,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     /**
      * 模型代理处理器Map
      */
-    protected ConcurrentMap<Integer, WrapperProxy<M>> handlerMap = new ConcurrentHashMap<>();
+    protected Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
 
     private Set<Class<? extends Enum>> enumClassSet = new HashSet<>();
 
@@ -103,6 +111,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         super();
         LOGGER.info("创建 {} 对象, 调用构造方法!!", this.getClass());
         this.modelClass = modelClass;
+        WrapperProxyFactory.getWrapperProxyClass(this.modelClass);
         this.fileLoaderList = new ArrayList<>();
         for (String path : paths) {
             this.fileLoaderList.add(new XMLFileLoader(path));
@@ -153,15 +162,48 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
     @PostConstruct
     protected void initManager() throws Exception {
-        for (FileLoader loader : this.fileLoaderList) {
-            loader.load();
+        this.fileLoaderList.parallelStream().forEach(loader -> {
+            try {
+                loader.load();
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
+        synchronized (this) {
+            this.parseAllComplete();
         }
     }
 
+    protected XStream createXStream() {
+        return new XStream(new Xpp3DomDriver());
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void loadAndInitModel(InputStream inputStream) throws IOException, InstantiationException, IllegalAccessException {
+    protected void loadAndInitModel(String path, InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
         LOGGER.info("# {} 创建 {} xstream 对象 ", this.getClass().getName(), this.modelClass.getName());
-        XStream xStream = new XStream();
+        XStream xStream = createXStream();
+        Mapper mapper = xStream.getMapper().lookupMapperOfType(DefaultImplementationsMapper.class);
+        xStream.addDefaultImplementation(EmptyImmutableList.class, List.class);
+        xStream.addDefaultImplementation(EmptyImmutableList.class, Collection.class);
+        xStream.addDefaultImplementation(EmptyImmutableSet.class, Set.class);
+        xStream.addDefaultImplementation(EmptyImmutableMap.class, Map.class);
+
+        xStream.registerConverter(new CollectionConverter(mapper) {
+            @Override
+            public boolean canConvert(Class type) {
+                if (!super.canConvert(type))
+                    return type.equals(EmptyImmutableSet.class) || type.equals(EmptyImmutableList.class);
+                return true;
+            }
+        });
+        xStream.registerConverter(new MapConverter(mapper) {
+            @Override
+            public boolean canConvert(Class type) {
+                if (!super.canConvert(type))
+                    return type.equals(EmptyImmutableMap.class);
+                return true;
+            }
+        });
 
         RunningChecker.start(this.getClass());
 
@@ -230,11 +272,17 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             xStream.registerConverter(new String2Enum(classList));
         }
 
-        LOGGER.info("#itemModelManager# 解析 <{}> xml ......", this.modelClass.getName());
+        LOGGER.info("#itemModelManager# 解析 <{}> xml ......", path);
         List<? extends M> list = this.parseModel(xStream, inputStream);
-        LOGGER.info("#itemModelManager# 解析 <{}> xml完成! ", this.modelClass.getName());
+        LOGGER.info("#itemModelManager# 解析 <{}> xml 完成! ", path);
 
-        LOGGER.info("#itemModelManager# 装载 <{}> model ......", this.modelClass.getName());
+        LOGGER.info("#itemModelManager# 装载 <{}> model [{}] ......", path, this.modelClass.getName());
+        List<M> models = new ArrayList<>();
+
+        Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
+        Map<Integer, M> modelMap = new HashMap<>();
+        Map<String, M> modelAliasMap = new HashMap<>();
+
         for (M model : list) {
             if (model instanceof XMLItemModel) {
                 ((XMLItemModel) model).init(this.itemExplorer, this.itemModelExplorer);
@@ -243,21 +291,33 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             }
             WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getID());
             if (wrapperModel == null) {
-                wrapperModel = WraperProxyFactory.createWraper(model);
-                M proxyModel = wrapperModel.get$Wraper();
-                this.handlerMap.put(model.getID(), wrapperModel);
-                this.modelMap.put(proxyModel.getID(), proxyModel);
+                wrapperModel = WrapperProxyFactory.createWrapper(model);
+                M proxyModel = wrapperModel.get$Wrapper();
+                handlerMap.put(model.getID(), wrapperModel);
+                modelMap.put(proxyModel.getID(), proxyModel);
                 if (proxyModel.getAlias() != null) {
-                    if (this.modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
+                    if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
                         repeatAliasList.add(proxyModel.getAlias());
                     }
                 }
             } else {
-                wrapperModel.set$Proxyed(model);
+                wrapperModel.set$Proxied(model);
+            }
+            models.add(wrapperModel.get$Wrapper());
+        }
+        if (!handlerMap.isEmpty())
+            this.handlerMap.putAll(handlerMap);
+        if (!modelMap.isEmpty())
+            this.modelMap.putAll(modelMap);
+        if (!modelAliasMap.isEmpty())
+            this.modelAliasMap.putAll(modelAliasMap);
+        this.parseComplete(models);
+        if (reload) {
+            synchronized (this) {
+                this.parseAllComplete();
             }
         }
-        this.parseComplete();
-        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", this.modelClass.getName(), RunningChecker.end(this.getClass()).cost());
+        LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(), RunningChecker.end(this.getClass()).cost());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -265,16 +325,19 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         return (List<M>) xStream.fromXML(input);
     }
 
-    protected abstract void initXStream(XStream xStream);
+    protected void initXStream(XStream xStream) {
+    }
 
-    protected void parseComplete() {
+    protected void parseComplete(List<M> models) {
+    }
+
+    protected void parseAllComplete() {
     }
 
     public static void checkRepeatAlias() {
         repeatAliasList.forEach(System.out::println);
         if (!repeatAliasList.isEmpty())
             throw new IllegalArgumentException("别名出现重复");
-
     }
 
     protected abstract SingleValueConverter getFormulaConverter();
@@ -288,8 +351,8 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         }
 
         @Override
-        protected void doLoad(InputStream inputStream) throws IOException, InstantiationException, IllegalAccessException {
-            AbstractXMLModelManager.this.loadAndInitModel(inputStream);
+        protected void doLoad(InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
+            AbstractXMLModelManager.this.loadAndInitModel(this.getPath(), inputStream, reload);
         }
 
     }

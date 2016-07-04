@@ -23,15 +23,15 @@ public abstract class BaseCluster {
 
     protected final byte[] NOTHING = new byte[0];
 
-    protected Set<ServerType> monitorServerTypes = new HashSet<>();
+    protected Set<String> monitorServerTypes = new HashSet<>();
 
-    protected ConcurrentMap<ServerType, WebServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
+    protected ConcurrentMap<String, WebServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
 
-    public BaseCluster(ServerType... monitorServerTypes) {
+    public BaseCluster(String... monitorServerTypes) {
         this(Arrays.asList(monitorServerTypes));
     }
 
-    public BaseCluster(Collection<ServerType> monitorServerTypes) {
+    public BaseCluster(Collection<String> monitorServerTypes) {
         this.monitorServerTypes.addAll(monitorServerTypes);
     }
 
@@ -69,7 +69,7 @@ public abstract class BaseCluster {
             if (ips == null)
                 throw new NullPointerException("RemoteMonitor IP is null");
             this.remoteMonitor = new ZKMonitor(ips, ClusterUtils.PROTO_FORMATTER);
-            for (ServerType serverType : this.monitorServerTypes) {
+            for (String serverType : this.monitorServerTypes) {
                 WebServiceNodeHolder holder = new WebServiceNodeHolder(serverType);
                 String path = ClusterUtils.getWebNodesPath(serverType);
                 this.webHolderMap.put(serverType, holder);

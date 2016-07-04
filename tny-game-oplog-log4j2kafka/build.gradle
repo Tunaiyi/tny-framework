@@ -9,7 +9,7 @@ dependencies {
             libs.'log4j-api',
             libs.'log4j-core',
             libs.'kafka-clients',
-            libs.'kafka_2.11',
+//            libs.'kafka_2.11',
             project(":tny-game-common"),
             project(":tny-game-oplog"),
     )

@@ -4,13 +4,12 @@ import com.tny.game.suite.cache.ShardDataSourceFactory;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import com.tny.game.suite.cluster.game.ServerState;
-import com.tny.game.suite.core.ServerType;
 
 public abstract class ShardDataSourceCluster extends WebServerCluster {
 
 	private ShardDataSourceFactory dataSourceFactory;
 
-	public ShardDataSourceCluster(ServerType serverType, int webServerID, ShardDataSourceFactory dataSourceFactory) {
+	public ShardDataSourceCluster(String serverType, int webServerID, ShardDataSourceFactory dataSourceFactory) {
 		super(serverType,  webServerID, true);
 		this.dataSourceFactory = dataSourceFactory;
 		this.webServerID = webServerID;

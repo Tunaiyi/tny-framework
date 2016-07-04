@@ -462,10 +462,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     protected void setAttrMap(long playerID, Map<String, Object> attributeMap, Item<?> item, Object... attributes) {
         String key = null;
-        //		if (item == null) {
-        //			if (this.getItemType().hasEntity())
-        //				item = itemExplorer.getItem(playerID, this.getID());
-        //		}
+        if (item == null) {
+            if (this.getItemType().hasEntity())
+                item = itemExplorer.getItem(playerID, this.getID());
+        }
         attributeMap.put(ACTION_ITEM_NAME, item);
         attributeMap.put(ACTION_ITEM_MODEL_NAME, this);
         for (Object object : attributes) {

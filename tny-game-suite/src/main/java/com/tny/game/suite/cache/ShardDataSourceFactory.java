@@ -39,7 +39,7 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
         FileLoader loader = new FileLoader(path) {
 
             @Override
-            protected void doLoad(InputStream inputStream) throws Exception {
+            protected void doLoad(InputStream inputStream, boolean reload) throws Exception {
                 Properties properties = new Properties();
                 properties.load(inputStream);
                 ShardDataSourceFactory.this.properties = properties;

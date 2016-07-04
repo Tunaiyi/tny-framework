@@ -5,7 +5,13 @@ import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.BeforeAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
 import com.tny.game.common.reflect.javassist.InvokerFactory;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,24 +24,24 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class WraperProxyFactory {
+public class WrapperProxyFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WraperProxyFactory.class);
-    private final static ConcurrentMap<Class<?>, Class<?>> WRAPER_CLASS_MAP = new ConcurrentHashMap<Class<?>, Class<?>>();
-    private final static String PROXY_CLASS_NAME = ".WraperProxy$$";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WrapperProxyFactory.class);
+    private final static ConcurrentMap<Class<?>, Class<?>> WRAPPER_CLASS_MAP = new ConcurrentHashMap<>();
+    private final static String PROXY_CLASS_NAME = ".WrapperProxy$$";
 
-    public static <T> WrapperProxy<T> createWraper(T proxyed) throws InstantiationException, IllegalAccessException {
-        Class<WrapperProxy<T>> wraperClazz = getWraperProxyClass(proxyed.getClass());
-        WrapperProxy<T> wrapperProxy = wraperClazz.newInstance();
-        wrapperProxy.set$Proxyed(proxyed);
+    public static <T> WrapperProxy<T> createWrapper(T proxied) throws InstantiationException, IllegalAccessException {
+        Class<WrapperProxy<T>> wrapperClazz = getWrapperProxyClass(proxied.getClass());
+        WrapperProxy<T> wrapperProxy = wrapperClazz.newInstance();
+        wrapperProxy.set$Proxied(proxied);
         return wrapperProxy;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Class<WrapperProxy<T>> getWraperProxyClass(Class<?> targetClass) {
-        Class<?> wraperClass = WRAPER_CLASS_MAP.get(targetClass);
-        if (wraperClass != null)
-            return (Class<WrapperProxy<T>>) wraperClass;
+    public static <T> Class<WrapperProxy<T>> getWrapperProxyClass(Class<?> targetClass) {
+        Class<?> wrapperClass = WRAPPER_CLASS_MAP.get(targetClass);
+        if (wrapperClass != null)
+            return (Class<WrapperProxy<T>>) wrapperClass;
         ClassPool pool = ClassPool.getDefault();
         try {
             String proxyClassName = targetClass.getPackage().getName() + PROXY_CLASS_NAME + targetClass.getSimpleName();
@@ -46,18 +52,18 @@ public class WraperProxyFactory {
             CtConstructor ctConstructor = new CtConstructor(new CtClass[]{}, proxyClass);
             ctConstructor.setBody("{super();}");
             proxyClass.addConstructor(ctConstructor);
-            implementWraperProxy(pool, targetClass, proxyClass);
+            implementWrapperProxy(pool, targetClass, proxyClass);
 
-            Set<CtMethod> methodSet = new HashSet<CtMethod>();
+            Set<CtMethod> methodSet = new HashSet<>();
             for (Method method : ReflectUtils.getDeepMethod(targetClass)) {
                 int modifiers = method.getModifiers();
                 if (!Modifier.isPublic(modifiers) || Modifier.isStatic(modifiers) || Modifier.isFinal(modifiers))
                     continue;
                 proxyMethod(pool, proxyClass, method, methodSet);
             }
-            wraperClass = proxyClass.toClass();
-            Class<?> old = WRAPER_CLASS_MAP.putIfAbsent(targetClass, wraperClass);
-            return (Class<WrapperProxy<T>>) (old != null ? old : wraperClass);
+            wrapperClass = proxyClass.toClass();
+            Class<?> old = WRAPPER_CLASS_MAP.putIfAbsent(targetClass, wrapperClass);
+            return (Class<WrapperProxy<T>>) (old != null ? old : wrapperClass);
         } catch (Exception e) {
             LOGGER.error("生成 {} 代理类错误", targetClass, e);
         }
@@ -67,41 +73,40 @@ public class WraperProxyFactory {
     private static CtMethod createCtMethod(ClassPool pool, CtClass cc, Method method) throws NotFoundException {
         Class<?> returnClazz = method.getReturnType();
         CtClass returnCC = returnClazz != null ? pool.get(returnClazz.getCanonicalName()) : null;
-        List<CtClass> paramCCs = new ArrayList<CtClass>();
+        List<CtClass> paramCCs = new ArrayList<>();
         for (Class<?> paramClass : method.getParameterTypes()) {
             paramCCs.add(pool.get(paramClass.getCanonicalName()));
         }
         return new CtMethod(returnCC, method.getName(), paramCCs.toArray(new CtClass[0]), cc);
     }
 
-    private static void implementWraperProxy(ClassPool pool, Class<?> targetClazz, CtClass cc) throws NotFoundException, CannotCompileException {
+    private static void implementWrapperProxy(ClassPool pool, Class<?> targetClazz, CtClass cc) throws NotFoundException, CannotCompileException {
 
         cc.setInterfaces(new CtClass[]{pool.get(WrapperProxy.class.getCanonicalName())});
 
-        CtField beforeAdvice = CtField.make("private " + BeforeAdvice.class.getCanonicalName() + " _wraper$beforeAdvice;", cc);
+        CtField beforeAdvice = CtField.make("private " + BeforeAdvice.class.getCanonicalName() + " _wrapper$beforeAdvice;", cc);
         cc.addField(beforeAdvice);
-        CtField afterReturningAdvice = CtField.make("private " + AfterReturningAdvice.class.getCanonicalName() + " _wraper$afterReturningAdvice;", cc);
+        CtField afterReturningAdvice = CtField.make("private " + AfterReturningAdvice.class.getCanonicalName() + " _wrapper$afterReturningAdvice;", cc);
         cc.addField(afterReturningAdvice);
-        CtField throwsAdvice = CtField.make("private " + ThrowsAdvice.class.getCanonicalName() + " _wraper$throwsAdvice;", cc);
+        CtField throwsAdvice = CtField.make("private " + ThrowsAdvice.class.getCanonicalName() + " _wrapper$throwsAdvice;", cc);
         cc.addField(throwsAdvice);
-        CtField target = CtField.make("private " + targetClazz.getCanonicalName() + " _wraper$target;", cc);
+        CtField target = CtField.make("private " + targetClazz.getCanonicalName() + " _wrapper$target;", cc);
         cc.addField(target);
 
-        CtMethod setBeforeAdvice = CtMethod.make("public void set$Avice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._wraper$beforeAdvice = advice;}", cc);
+        CtMethod setBeforeAdvice = CtMethod.make("public void set$Advice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._wrapper$beforeAdvice = advice;}", cc);
         cc.addMethod(setBeforeAdvice);
-        CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Avice(" + AfterReturningAdvice.class.getCanonicalName() + " advice) {this._wraper$afterReturningAdvice = advice;}", cc);
+        CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Advice(" + AfterReturningAdvice.class.getCanonicalName() + " advice) {this._wrapper$afterReturningAdvice = advice;}", cc);
         cc.addMethod(setAfterReturningAdvice);
-        CtMethod setThrowsAdvice = CtMethod.make("public void set$Avice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._wraper$throwsAdvice = advice;}", cc);
+        CtMethod setThrowsAdvice = CtMethod.make("public void set$Advice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._wrapper$throwsAdvice = advice;}", cc);
         cc.addMethod(setThrowsAdvice);
-        CtMethod getWraper = CtMethod.make("public " + Object.class.getCanonicalName() + " get$Wraper() {return this;}", cc);
-        cc.addMethod(getWraper);
-        StringBuilder setProxyedCode = new StringBuilder();
-        setProxyedCode.append("public void set$Proxyed(Object proxyed) {")
-                .append("this._wraper$target = ")
-                .append(InvokerFactory.generateCast("proxyed", Object.class, targetClazz))
-                .append(";}");
-        CtMethod setProxyed = CtMethod.make(setProxyedCode.toString(), cc);
-        cc.addMethod(setProxyed);
+        CtMethod getWrapper = CtMethod.make("public " + Object.class.getCanonicalName() + " get$Wrapper() {return this;}", cc);
+        cc.addMethod(getWrapper);
+        String setProxiedCode = "public void set$Proxied(Object proxied) {" +
+                "this._wrapper$target = " +
+                InvokerFactory.generateCast("proxied", Object.class, targetClazz) +
+                ";}";
+        CtMethod setProxied = CtMethod.make(setProxiedCode, cc);
+        cc.addMethod(setProxied);
     }
 
     private static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, Set<CtMethod> methodSet) throws NotFoundException, CannotCompileException {
@@ -112,24 +117,24 @@ public class WraperProxyFactory {
             return false;
         StringBuilder bodyCode = new StringBuilder();
         bodyCode.append("{");
-        StringBuilder invorkeCode = new StringBuilder();
-        invorkeCode.append("_wraper$target.")
+        StringBuilder invokeCode = new StringBuilder();
+        invokeCode.append("_wrapper$target.")
                 .append(method.getName())
                 .append("(");
         for (int paramIndex = 1; paramIndex < paramSize + 1; paramIndex++) {
-            invorkeCode.append("$").append(paramIndex);
+            invokeCode.append("$").append(paramIndex);
             if (paramIndex != paramSize)
-                invorkeCode.append(",");
+                invokeCode.append(",");
         }
-        invorkeCode.append(")");
+        invokeCode.append(")");
         if (returnClazz != void.class) {
             bodyCode.append("Object returnValue = ")
-                    .append(InvokerFactory.generateCast(invorkeCode.toString(), returnClazz, Object.class))
+                    .append(InvokerFactory.generateCast(invokeCode.toString(), returnClazz, Object.class))
                     .append(";")
                     .append("return ")
                     .append(InvokerFactory.generateCast("returnValue", Object.class, method.getReturnType()));
         } else {
-            bodyCode.append(invorkeCode.toString());
+            bodyCode.append(invokeCode.toString());
         }
         bodyCode.append(";}");
         //		bodyCode.append(";}");

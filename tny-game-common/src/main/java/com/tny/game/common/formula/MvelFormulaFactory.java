@@ -2,6 +2,7 @@ package com.tny.game.common.formula;
 
 import com.tny.game.common.config.ConfigLoader;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mvel2.ParserContext;
 
 import java.io.IOException;
@@ -22,27 +23,31 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class MvelFormulaFactory {
 
-    public static final String LAZY_COMPILE_KEY = "com.sd.formula.mvel.lazy";
+    private static final String LAZY_KEY = "tny.common.formula.mvel.lazy";
+    private static final String CACHED_KEY = "tny.common.formula.mvel.cached";
+    private static final String EXPR_INFO_KEY = "tny.common.formula.mvel.info";
+
+    private static final boolean LAZY = System.getProperty(LAZY_KEY, "false").equals("true");
+    private static final boolean CACHED = System.getProperty(CACHED_KEY, "true").equals("true");
+    public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
 
     private static ConcurrentMap<String, Expression> expressionMap = new ConcurrentHashMap<String, Expression>();
 
     /**
      * 创建表达式 <br>
      *
-     * @param formula 表达式内容
-     * @param type    表达式类型
+     * @param path 表达式内容
+     * @param type 表达式类型
      * @return 表达式
      * @throws IOException
      */
     public static FormulaHolder load(final String path, final FormulaType type) throws IOException {
-        String value = System.getProperty(LAZY_COMPILE_KEY);
-        boolean lazy = value != null && value.toLowerCase().equals("true");
         Map<String, Object> context = Collections.emptyMap();
         try (InputStream input = ConfigLoader.loadInputStream(path)) {
             byte[] data = new byte[input.available()];
             IOUtils.readFully(input, data);
             String formula = new String(data);
-            return create(formula, type, context, lazy);
+            return create(formula, type, context, LAZY);
         }
     }
 
@@ -54,10 +59,8 @@ public class MvelFormulaFactory {
      * @return 表达式
      */
     public static FormulaHolder create(final String formula, final FormulaType type) {
-        String value = System.getProperty(LAZY_COMPILE_KEY);
-        boolean lazy = value != null && value.toLowerCase().equals("true");
         Map<String, Object> context = Collections.emptyMap();
-        return create(formula, type, context, lazy);
+        return create(formula, type, context, LAZY);
     }
 
     /**
@@ -80,20 +83,28 @@ public class MvelFormulaFactory {
     }
 
     private static Expression getExpression(String expression, ParserContext parserContext, boolean lazy) {
-        Expression exp = expressionMap.get(expression);
-        if (exp != null)
-            return exp;
+        expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
+        Expression exp;
+        if (CACHED) {
+            exp = expressionMap.get(expression);
+            if (exp != null)
+                return exp;
+        }
         exp = new Expression(expression, parserContext, lazy);
-        Expression oldExpression = expressionMap.putIfAbsent(expression, exp);
+        Expression oldExpression = CACHED ? expressionMap.putIfAbsent(expression, exp) : null;
         return oldExpression != null ? oldExpression : exp;
     }
 
     private static Expression getExpression(String expression, Map<String, Object> context, boolean lazy) {
-        Expression exp = expressionMap.get(expression);
-        if (exp != null)
-            return exp;
+        expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
+        Expression exp;
+        if (CACHED) {
+            exp = expressionMap.get(expression);
+            if (exp != null)
+                return exp;
+        }
         exp = new Expression(expression, context, lazy);
-        Expression oldExpression = expressionMap.putIfAbsent(expression, exp);
+        Expression oldExpression = CACHED ? expressionMap.putIfAbsent(expression, exp) : null;
         return oldExpression != null ? oldExpression : exp;
     }
 

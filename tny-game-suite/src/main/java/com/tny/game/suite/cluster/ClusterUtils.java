@@ -2,7 +2,6 @@ package com.tny.game.suite.cluster;
 
 
 import com.tny.game.LogUtils;
-import com.tny.game.suite.core.ServerType;
 import com.tny.game.zookeeper.NodeDataFormatter;
 
 import static com.tny.game.suite.utils.Configs.*;
@@ -39,15 +38,15 @@ public class ClusterUtils {
         return GAMES_LAUNCH_PATH + "/" + serverID;
     }
 
-    public static String getWebNodePath(ServerType serverType, int serverID) {
+    public static String getWebNodePath(String serverType, int serverID) {
         String path = getWebNodesPath(serverType);
         if (path == null)
             throw new NullPointerException(LogUtils.format("{} web 服务没有zookeeper节点路径", serverType));
         return path + "/" + serverID;
     }
 
-    public static String getWebNodesPath(ServerType serverType) {
-        String path = MONITOR_CONFIG.getStr("tny.server.monitor.ws." + serverType.getName() + ".list");
+    public static String getWebNodesPath(String serverType) {
+        String path = MONITOR_CONFIG.getStr("tny.server.monitor.ws." + serverType.toLowerCase() + ".list");
         if (path == null)
             throw new NullPointerException(LogUtils.format("{} web 服务没有zookeeper节点路径", serverType));
         return path;
@@ -67,7 +66,7 @@ public class ClusterUtils {
         }
 
     };
-    
+
     public static final NodeDataFormatter NO_FORMATTER = new NodeDataFormatter() {
 
         @Override

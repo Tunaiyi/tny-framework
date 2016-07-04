@@ -1,6 +1,7 @@
 package com.tny.game.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
+import com.tny.game.common.formula.AbstractMvelFormula;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
@@ -20,7 +21,7 @@ public abstract class MvelFormulaConverter extends AbstractSingleValueConverter 
 
     protected Map<String, Object> formulaContext = new HashMap<String, Object>();
 
-    protected ParserContext parserContext = new ParserContext();
+    protected ParserContext parserContext = AbstractMvelFormula.createParserContext();
 
     private FormulaType type;
 
@@ -29,7 +30,6 @@ public abstract class MvelFormulaConverter extends AbstractSingleValueConverter 
     }
 
     protected void init() {
-        this.parserContext = new ParserContext();
         if (this.formulaContext != null) {
             for (Entry<String, Object> entry : this.formulaContext.entrySet()) {
                 Object value = entry.getValue();

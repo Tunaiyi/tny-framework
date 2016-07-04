@@ -1,7 +1,12 @@
 package com.tny.game.suite.base.module;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.LogUtils;
-import com.tny.game.base.module.*;
+import com.tny.game.base.module.Feature;
+import com.tny.game.base.module.FeatureHandler;
+import com.tny.game.base.module.FeatureModel;
+import com.tny.game.base.module.Module;
+import com.tny.game.base.module.OpenMode;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.utils.SuiteLog;
@@ -12,7 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public abstract class FeatureService<DTO> implements ServerPreStart, ApplicationContextAware {
 
@@ -27,14 +37,13 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     private ModuleService<DTO> moduleService;
 
     @Autowired
-    protected FeatureModelManager featureModelManager;
+    protected FeatureModelManager<? extends FeatureModel> featureModelManager;
 
     private ApplicationContext applicationContext;
 
     private Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
 
-    private List<FeatureHandler> handlerList = null;
-
+    private Map<OpenMode, List<FeatureHandler>> handlersMap = new HashMap<>();
 
     public FeatureService() {
         FUNC_SYS_SERVICE = this;
@@ -56,16 +65,16 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     // return MODULE_SERVICE.doOpenModule(explorer, null, moduleType, enforce, checkOpened).contains(moduleType);
     // }
 
-    public void openFeature(GameFeatureExplorer explorer, OpenMode openMode) {
-        this.doOpenFeature(explorer, openMode);
-    }
-
     public static boolean isFeatureOpened(long explorerID, Feature feature) {
         return FUNC_SYS_SERVICE.doIsOpen(explorerID, feature);
     }
 
     public boolean isOpened(long explorerID, Feature feature) {
         return this.doIsOpen(explorerID, feature);
+    }
+
+    public <C> void openFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
+        this.doOpenFeature(explorer, openMode, context);
     }
 
     public void loadFeature(GameFeatureExplorer explorer) {
@@ -81,11 +90,13 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
         return featureModelManager.getAndCheckModelBy(feature);
     }
 
-    private List<Feature> doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode) {
+    @SuppressWarnings("unchecked")
+    private <C> List<Feature> doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
         List<Feature> okList = new ArrayList<>();
-        for (FeatureHandler handler : this.handlerList) {
+        List<FeatureHandler> handlers = this.handlersMap.getOrDefault(openMode, ImmutableList.of());
+        for (FeatureHandler handler : handlers) {
             FeatureModel featureModel = getModel(handler.getFeature());
-            if (!featureModel.isEffect() || featureModel.getOpenLevel() > explorer.getLevel())
+            if (!featureModel.isEffect() || !openMode.check(explorer, featureModel, context))
                 continue;
             if (!featureModel.isCanOpen(explorer, openMode))
                 continue;
@@ -156,13 +167,18 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
                 this.handlerMap.put(feature, handler);
             }
         }
-        this.handlerList = new ArrayList<>();
-        for (FeatureModel model : this.featureModelManager.getFeatureOpenList()) {
-            FeatureHandler handler = this.handlerMap.get(model.getFeature());
-            if (handler == null)
-                throw new NullPointerException(LogUtils.format("{} feature handler is null", model.getFeature()));
-            this.handlerList.add(handler);
-        }
+        this.featureModelManager.getModelsMap().forEach(
+                (openMode, featureModels) -> {
+                    ArrayList<FeatureHandler> handlers = new ArrayList<>();
+                    for (FeatureModel model : featureModels) {
+                        FeatureHandler handler = this.handlerMap.get(model.getFeature());
+                        if (handler == null)
+                            throw new NullPointerException(LogUtils.format("{} feature handler is null", model.getFeature()));
+                        handlers.add(handler);
+                    }
+                    this.handlersMap.put(openMode, handlers);
+                }
+        );
     }
 
     @Override

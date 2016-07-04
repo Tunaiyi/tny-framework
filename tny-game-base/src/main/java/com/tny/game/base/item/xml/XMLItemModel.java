@@ -1,19 +1,15 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.Ability;
 import com.tny.game.base.item.AbstractItemModel;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModelExplorer;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.item.behavior.BehaviorPlan;
-import com.tny.game.common.formula.FormulaHolder;
+import com.tny.game.common.utils.collection.EmptyImmutableList;
+import com.tny.game.common.utils.collection.EmptyImmutableMap;
+import com.tny.game.common.utils.collection.EmptyImmutableSet;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -51,18 +47,18 @@ public abstract class XMLItemModel extends AbstractItemModel {
         if (this.init)
             return;
         if (this.behaviorPlanList == null)
-            this.behaviorPlanList = new ArrayList<XMLBehaviorPlan>(0);
+            this.behaviorPlanList = new EmptyImmutableList<>();
         if (this.behaviorPlanMap == null)
-            this.behaviorPlanMap = new HashMap<Behavior, BehaviorPlan>();
+            this.behaviorPlanMap = new EmptyImmutableMap<>();
 
         if (this.attrAliasSet == null)
-            this.attrAliasSet = new HashSet<String>(0);
+            this.attrAliasSet = new EmptyImmutableSet<>();
 
         if (this.abilityMap == null)
-            this.abilityMap = new HashMap<Ability, FormulaHolder>(1);
+            this.abilityMap = new EmptyImmutableMap<>();
 
         if (this.actionBehaviorPlanMap == null)
-            this.actionBehaviorPlanMap = new HashMap<Action, BehaviorPlan>();
+            this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
 
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
         this.behaviorPlanList = Collections.unmodifiableList(this.behaviorPlanList);

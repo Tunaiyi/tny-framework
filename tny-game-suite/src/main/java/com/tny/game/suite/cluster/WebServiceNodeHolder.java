@@ -1,7 +1,5 @@
 package com.tny.game.suite.cluster;
 
-import com.tny.game.suite.core.ServerType;
-
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -14,14 +12,14 @@ public class WebServiceNodeHolder {
 
     private volatile Integer lastKey = null;
 
-    private ServerType serverType;
+    private String serverType;
 
-    public WebServiceNodeHolder(ServerType serverType) {
+    public WebServiceNodeHolder(String serverType) {
         super();
         this.serverType = serverType;
     }
 
-    public ServerType getServerType() {
+    public String getServerType() {
         return serverType;
     }
 

@@ -4,7 +4,6 @@ package com.tny.game.suite.cluster;
 import com.tny.game.suite.cluster.game.ServerLaunch;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
-import com.tny.game.suite.core.ServerType;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
@@ -25,13 +24,12 @@ import java.util.concurrent.ConcurrentMap;
 
 public abstract class WebServerCluster extends BaseCluster {
 
-
     @Autowired
     private ProtoExSchemaIniter protoExSchemaIniter;
 
     protected int webServerID;
 
-    protected ServerType serverType;
+    protected String serverType;
 
     protected boolean watchSetting;
 
@@ -127,11 +125,11 @@ public abstract class WebServerCluster extends BaseCluster {
             super.monitor();
     }
 
-    public WebServerCluster(ServerType serverType, int webServerID, boolean watchSetting, ServerType... monitorWebTypes) {
+    public WebServerCluster(String serverType, int webServerID, boolean watchSetting, String... monitorWebTypes) {
         this(serverType, webServerID, watchSetting, Arrays.asList(monitorWebTypes));
     }
 
-    public WebServerCluster(ServerType serverType, int webServerID, boolean watchSetting, Collection<ServerType> monitorWebTypes) {
+    public WebServerCluster(String serverType, int webServerID, boolean watchSetting, Collection<String> monitorWebTypes) {
         super(monitorWebTypes);
         this.serverType = serverType;
         this.watchSetting = watchSetting;
