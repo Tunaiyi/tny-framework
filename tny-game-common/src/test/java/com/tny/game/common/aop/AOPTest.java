@@ -4,8 +4,8 @@ import com.tny.game.common.reflect.aop.AOPerBuilder;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.BeforeAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
 import com.tny.game.common.reflect.proxy.WrapperProxy;
+import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
@@ -44,12 +44,12 @@ public class AOPTest {
         }
 
         WrapperProxy<Player> wrapperProxy = WrapperProxyFactory.createWrapper(player);
-        Player wraperPlayer = wrapperProxy.get$Wrapper();
-        wraperPlayer.callName();
-        wraperPlayer.getName();
-        wraperPlayer.friend(20, player, 100L);
+        Player wrapperPlayer = wrapperProxy.get$Wrapper();
+        wrapperPlayer.callName();
+        wrapperPlayer.getName();
+        wrapperPlayer.friend(20, player, 100L);
         try {
-            wraperPlayer.tryException();
+            wrapperPlayer.tryException();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("wraperPlayer " + e);

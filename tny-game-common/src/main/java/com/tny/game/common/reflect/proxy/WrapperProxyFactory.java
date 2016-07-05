@@ -57,7 +57,9 @@ public class WrapperProxyFactory {
             Set<CtMethod> methodSet = new HashSet<>();
             for (Method method : ReflectUtils.getDeepMethod(targetClass)) {
                 int modifiers = method.getModifiers();
-                if (!Modifier.isPublic(modifiers) || Modifier.isStatic(modifiers) || Modifier.isFinal(modifiers))
+                if (Modifier.isPrivate(modifiers) || Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers) || Modifier.isFinal(modifiers))
+                    continue;
+                if (!Modifier.isPublic(modifiers) && method.getDeclaringClass().getPackage() != targetClass.getPackage())
                     continue;
                 proxyMethod(pool, proxyClass, method, methodSet);
             }

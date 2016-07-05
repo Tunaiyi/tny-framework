@@ -12,14 +12,14 @@ public interface GClass {
      *
      * @return
      */
-    public Class<?> getJavaClass();
+    Class<?> getJavaClass();
 
     /**
      * 获取类名称
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * 创建新实例
@@ -28,14 +28,14 @@ public interface GClass {
      * @throws InvocationTargetException
      * @throws InstantiationException
      */
-    public Object newInstance() throws InvocationTargetException, InstantiationException;
+    Object newInstance() throws InvocationTargetException, InstantiationException;
 
     /**
      * 获取方法列表
      *
      * @return
      */
-    public List<GMethod> getGMethodList();
+    List<GMethod> getGMethodList();
 
     /**
      * 通过指定方法获取方法
@@ -43,7 +43,7 @@ public interface GClass {
      * @param method
      * @return
      */
-    public GMethod getMethod(Method method);
+    GMethod getMethod(Method method);
 
     /**
      * 通过名字和参数获取方法
@@ -52,12 +52,12 @@ public interface GClass {
      * @param parameterTypes
      * @return
      */
-    public GMethod getMethod(String name, Class<?>... parameterTypes);
+    GMethod getMethod(String name, Class<?>... parameterTypes);
 
-    public Map<String, GPropertyAccessor> getAccessorMap();
+    Map<String, GPropertyAccessor> getAccessorMap();
 
-    public GPropertyAccessor getProperty(String name);
+    GPropertyAccessor getProperty(String name);
 
-    public GPropertyAccessor getProperty(String name, Class<?> clazz);
+    GPropertyAccessor getProperty(String name, Class<?> clazz);
 
 }
