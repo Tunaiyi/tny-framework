@@ -41,7 +41,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         if (channel != null) {
             this.setChannel(channel);
             SocketAddress address = channel.remoteAddress();
-            this.hostName = channel == null || address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
+            this.hostName = address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         if (channel != null) {
             this.setChannel(channel);
             SocketAddress address = channel.remoteAddress();
-            this.hostName = channel == null || address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
+            this.hostName = address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
         }
     }
 
@@ -76,15 +76,14 @@ public abstract class ChannelServerSession extends AbstractServerSession {
             if (ChannelServerSession.LOG.isInfoEnabled()) {
                 LOG.info("Session主动断开##通道 {} ==> {}", this.channel.remoteAddress(), this.channel.localAddress(), new Date());
             }
+            this.channel.flush();
             this.channel.disconnect();
         }
     }
 
     @Override
     public boolean isConnect() {
-        if (this.channel == null)
-            return false;
-        return this.channel.isActive();
+        return this.channel != null && this.channel.isActive();
     }
 
     protected ChannelFuture write(Object data) {
@@ -176,9 +175,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
                 return false;
         } else if (!this.getGroup().equals(other.getGroup()))
             return false;
-        if (this.getUID() != other.getUID())
-            return false;
-        return true;
+        return this.getUID() == other.getUID();
     }
 
 }

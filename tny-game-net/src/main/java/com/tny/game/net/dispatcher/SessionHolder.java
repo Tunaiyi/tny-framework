@@ -61,7 +61,7 @@ public interface SessionHolder {
      * @param object 标识的会话
      * @return 存在返回true 失败返回false
      */
-    boolean isExsitChannel(String userGroup, Object channelID);
+    boolean isExistChannel(String userGroup, Object channelID);
 
     /**
      * 添加用户到指定的会话组 <br>

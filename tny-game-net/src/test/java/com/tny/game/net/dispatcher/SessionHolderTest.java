@@ -74,18 +74,18 @@ public class SessionHolderTest {
 
     @Test
     public void testCreateGroup() {
-        Assert.assertFalse(this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, 1));
+        Assert.assertFalse(this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, 1));
         Assert.assertTrue(this.sessionHolder.createChannel(Session.DEFAULT_USER_GROUP, 1));
-        Assert.assertTrue(this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, 1));
+        Assert.assertTrue(this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, 1));
     }
 
     @Test
     public void testRemoveGroup() {
-        Assert.assertFalse(this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, 1));
+        Assert.assertFalse(this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, 1));
         Assert.assertTrue(this.sessionHolder.createChannel(Session.DEFAULT_USER_GROUP, 1));
-        Assert.assertTrue(this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, 1));
+        Assert.assertTrue(this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, 1));
         Assert.assertTrue(this.sessionHolder.removeChannel(Session.DEFAULT_USER_GROUP, 1));
-        Assert.assertFalse(this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, 1));
+        Assert.assertFalse(this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, 1));
     }
 
     @Test

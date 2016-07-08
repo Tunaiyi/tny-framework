@@ -63,16 +63,14 @@ public class ServerConfiguration {
         String randomWords = config.getStr(Configs.SUITE_REQ_CHECKER_RANDOM_SEQ);
         List<Integer> ports = new ArrayList<>();
         if (protsWords != null) {
-            ports = Arrays.asList(StringUtils.split(protsWords, ","))
-                    .stream()
+            ports = Arrays.stream(StringUtils.split(protsWords, ","))
                     .map(NumberUtils::toInt)
                     .collect(Collectors.toList());
         }
         short[] randomKey = new short[0];
         if (randomWords != null) {
             randomKey = ArrayUtils.toPrimitive(
-                    Arrays.asList(StringUtils.split(randomWords, ","))
-                            .stream()
+                    Arrays.stream(StringUtils.split(randomWords, ","))
                             .map(NumberUtils::toShort)
                             .collect(Collectors.toList())
                             .toArray(new Short[0]));

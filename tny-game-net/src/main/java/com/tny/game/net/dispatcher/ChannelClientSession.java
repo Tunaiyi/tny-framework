@@ -43,7 +43,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
         if (this.channel == null && channel != null) {
             this.channel = channel;
             SocketAddress address = channel.remoteAddress();
-            this.hostName = channel == null || address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
+            this.hostName = address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
             channel.attr(NetAttributeKey.SESSION).set(this);
             channel.attr(NetAttributeKey.CLIENT_SESSION).set(this);
             this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
@@ -59,7 +59,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     public void disconnect() {
         if (this.isConnect()) {
             if (ChannelClientSession.LOG.isInfoEnabled()) {
-                LOG.info("Session主动断开##通道 {} ==> {}", new Object[]{this.channel.remoteAddress(), this.channel.localAddress(), new Date()});
+                LOG.info("Session主动断开##通道 {} ==> {}", this.channel.remoteAddress(), this.channel.localAddress(), new Date());
             }
             this.channel.disconnect();
             this.clearFuture();
@@ -68,9 +68,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
 
     @Override
     public boolean isConnect() {
-        if (this.channel == null)
-            return false;
-        return this.channel.isActive();
+        return this.channel != null && this.channel.isActive();
     }
 
     protected ChannelFuture write(Object data) {
@@ -84,7 +82,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
         return null;
     }
 
-    protected ChannelFuture writeRequset(Request request, final MessageFuture<?> future) {
+    protected ChannelFuture writeRequest(Request request, final MessageFuture<?> future) {
         try {
             if (this.channel.isActive()) {
                 if (future == null) {
@@ -100,13 +98,12 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     }
 
     @Override
-    public ChannelFuture requset(Protocol protocol, Object... params) {
-        MessageFuture<?> future = null;
-        return this.requset(protocol, future, params);
+    public ChannelFuture request(Protocol protocol, Object... params) {
+        return this.request(protocol, (MessageFuture<?>) null, params);
     }
 
     @Override
-    public <B> ChannelFuture requset(Protocol protocol, MessageFuture<B> future, Object... params) {
+    public <B> ChannelFuture request(Protocol protocol, MessageFuture<B> future, Object... params) {
         Request request = this.getMessageBuilderFactory()
                 .newRequestBuilder()
                 .setID(this.requestIDCreator.getAndIncrement())
@@ -118,14 +115,14 @@ public abstract class ChannelClientSession extends AbstractClientSession {
             future.setRequestID(request)
                     .setSession(this);
         }
-        return this.writeRequset(request, future);
+        return this.writeRequest(request, future);
     }
 
     @Override
-    public <B> ChannelFuture requset(Protocol protocol, MessageAction<B> action, Object... params) {
-        MessageFuture<B> future = new MessageFuture<B>();
+    public <B> ChannelFuture request(Protocol protocol, MessageAction<B> action, Object... params) {
+        MessageFuture<B> future = new MessageFuture<>();
         future.setResponseAction(action);
-        return this.requset(protocol, future, params);
+        return this.request(protocol, future, params);
     }
 
     @Override

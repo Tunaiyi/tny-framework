@@ -36,11 +36,11 @@ public class MobileAttach {
 
     public MobileAttach(int size, long leaveWait, long offlineWait) {
         this.offlineWait = offlineWait;
-        this.leaveWait = Math.min(this.offlineWait, this.leaveWait);
+        this.leaveWait = Math.min(this.offlineWait, leaveWait);
         this.sentResponseCache = new FixLinkedHashMap<>(size);
     }
 
-    public boolean exsist(int id) {
+    public boolean exist(int id) {
         this.readLock.lock();
         try {
             return this.sentResponseCache.containsKey(id);

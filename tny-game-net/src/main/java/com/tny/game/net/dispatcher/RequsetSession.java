@@ -5,10 +5,10 @@ import io.netty.channel.ChannelFuture;
 
 public interface RequsetSession extends Session {
 
-    public ChannelFuture requset(Protocol protocol, Object... params);
+    public ChannelFuture request(Protocol protocol, Object... params);
 
-    public <B> ChannelFuture requset(Protocol protocol, MessageAction<B> action, Object... params);
+    public <B> ChannelFuture request(Protocol protocol, MessageAction<B> action, Object... params);
 
-    public <B> ChannelFuture requset(Protocol protocol, MessageFuture<B> future, Object... params);
+    public <B> ChannelFuture request(Protocol protocol, MessageFuture<B> future, Object... params);
 
 }

@@ -32,7 +32,7 @@ public class TimeTriggerTest {
     private TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
             .setTimeCycle(CYCLE_1000)
             .setStartTime(atTime)
-            .buildStoped();
+            .buildStop();
 
     private TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
             .setTimeCycle(CYCLE_1000)
@@ -52,7 +52,7 @@ public class TimeTriggerTest {
         TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
                 .setTimeCycle(CYCLE_1000)
                 .setStartTime(atTime)
-                .buildStoped();
+                .buildStop();
 
         TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
                 .setTimeCycle(CYCLE_1000)
@@ -152,6 +152,53 @@ public class TimeTriggerTest {
         Assert.assertEquals(0, startNoEndTrigger.countRemainMills(at + duration + 100));
         startNoEndTrigger.stop();
         Assert.assertEquals(-1, startNoEndTrigger.countRemainMills(at + duration + 100));
+    }
+
+    @Test
+    public void resume() throws Exception {
+    }
+
+    @Test
+    public void suspend() throws Exception {
+        DateTime checkAt;
+        long duration = CYCLE_1000.getDuration().getMillis();
+        DateTime suspendTime = atTime.plusMillis(500);
+        Assert.assertTrue(startNoEndTrigger.suspend(suspendTime));
+        Assert.assertTrue(startNoEndTrigger.isSuspend());
+        Assert.assertFalse(startNoEndTrigger.isWorking());
+
+        long cost = 100;
+        checkAt = atTime.plus(100);
+        Assert.assertEquals(duration - cost, startNoEndTrigger.countRemainMills(checkAt.getMillis()));
+
+        cost = 500;
+        checkAt = atTime.plus(30000);
+        Assert.assertEquals(duration - cost, startNoEndTrigger.countRemainMills(checkAt.getMillis()));
+
+
+        DateTime resumeTime = atTime.plusMillis(200);
+        Assert.assertFalse(startNoEndTrigger.resume(resumeTime));
+        Assert.assertTrue(startNoEndTrigger.isSuspend());
+        Assert.assertFalse(startNoEndTrigger.isWorking());
+
+        resumeTime = atTime.plusMillis(3000);
+        Assert.assertTrue(startNoEndTrigger.resume(resumeTime));
+        Assert.assertFalse(startNoEndTrigger.isSuspend());
+        Assert.assertTrue(startNoEndTrigger.isWorking());
+
+        Assert.assertEquals(duration + 100, startNoEndTrigger.countRemainMills(resumeTime.plusMillis(-100).getMillis()));
+        Assert.assertEquals(duration - cost, startNoEndTrigger.countRemainMills(resumeTime.getMillis()));
+        resumeTime = atTime.plusMillis(3200);
+        Assert.assertEquals(duration - cost - 200, startNoEndTrigger.countRemainMills(resumeTime.getMillis()));
+    }
+
+    @Test
+    public void lengthen() throws Exception {
+        long lengthenTime = 2000;
+        long duration = CYCLE_1000.getDuration().getMillis();
+        startNoEndTrigger.lengthen(lengthenTime);
+        DateTime checkAt = atTime;
+        Assert.assertEquals(duration + 2000, startNoEndTrigger.countRemainMills(checkAt.getMillis()));
     }
 
 }

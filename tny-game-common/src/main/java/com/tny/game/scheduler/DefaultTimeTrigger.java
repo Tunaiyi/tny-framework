@@ -7,22 +7,23 @@ import org.joda.time.DateTime;
 class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     private C timeCycle = null;
-    private DateTime endTime = null;
-    private DateTime nextTime = null;
     private DateTime startTime = null;
     private DateTime previousTime = null;
+    private DateTime nextTime = null;
+    private DateTime endTime = null;
     private long speedMills = 0;
+    private DateTime suspendTime = null;
 
-    protected DefaultTimeTrigger(DateTime startTime, DateTime previousTime, DateTime endTime, C timeCycle, long speedMills, boolean start) {
+    protected DefaultTimeTrigger(DateTime startTime, DateTime previousTime, DateTime endTime, DateTime suspendTime, C timeCycle, long speedMills, boolean start) {
         this.startTime = startTime;
         this.timeCycle = timeCycle;
         this.previousTime = previousTime;
         this.endTime = endTime;
         this.speedMills = speedMills;
+        this.suspendTime = suspendTime;
         if (start && isCanStart())
             this.start();
     }
-
 
     @Override
     public DateTime getStartTime() {
@@ -79,7 +80,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         if (endTime != null) {
             ExceptionUtils.checkArgument(endTime.isAfter(startTime));
             this.endTime = endTime;
-            this.speedMills = 0;
+            this.reset();
         }
         if (timeCycle != null)
             this.timeCycle = timeCycle;
@@ -89,8 +90,13 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         }
         if (this.previousTime == null)
             this.previousTime = this.startTime;
-        triggerNext(timeCycle, this.previousTime, false);
+        setup(timeCycle, this.previousTime, false);
         return !this.isFinish();
+    }
+
+    private void reset() {
+        this.suspendTime = null;
+        this.speedMills = 0;
     }
 
     @Override
@@ -102,13 +108,13 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         if (endTime != null) {
             ExceptionUtils.checkArgument(endTime.isAfter(startTime));
             this.endTime = endTime;
-            this.speedMills = 0;
+            this.reset();
         }
         this.startTime = startTime;
-        triggerNext(timeCycle, startTime, false);
+        setup(timeCycle, startTime, false);
     }
 
-    private void triggerNext(C timeCycle, DateTime time, boolean stop) {
+    private void setup(C timeCycle, DateTime time, boolean stop) {
         if (timeCycle != null)
             this.timeCycle = timeCycle;
         this.previousTime = time;
@@ -119,7 +125,8 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     @Override
     public boolean trigger(long timeMillis) {
         DateTime next = this.nextTime;
-        if (next != null && getCheckMills(timeMillis) >= next.getMillis()) {
+        DateTime suspend = this.suspendTime;
+        if (next != null && suspend == null && getCheckMills(timeMillis) >= next.getMillis()) {
             this.previousTime = next;
             this.nextTime = getNextTimeAfter(this.previousTime);
             return true;
@@ -128,8 +135,11 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     }
 
     @Override
-    public void speedUp(long timeMills) {
+    public boolean speedUp(long timeMills) {
+        if (!isWorking() || timeMills <= 0)
+            return false;
         this.speedMills = Math.max(this.speedMills + timeMills, 0L);
+        return true;
     }
 
     @Override
@@ -156,6 +166,48 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     private long getCheckMills(long mills) {
         return this.speedMills + mills;
+    }
+
+
+    @Override
+    public DateTime getSuspendTime() {
+        return this.suspendTime;
+    }
+
+    @Override
+    public boolean resume(DateTime time) {
+        DateTime nextTime = this.nextTime;
+        DateTime suspendTime = this.suspendTime;
+        if (nextTime == null || suspendTime == null || suspendTime.isAfter(time))
+            return false;
+        long suspendMills = Math.max(time.getMillis() - suspendTime.getMillis(), 0);
+        this.nextTime = nextTime.plusMillis((int) suspendMills);
+        DateTime endTime = this.endTime;
+        if (endTime != null)
+            this.endTime = endTime.plusMillis((int) suspendMills);
+        this.suspendTime = null;
+        return true;
+    }
+
+    @Override
+    public boolean suspend(DateTime time) {
+        if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
+                .isAfter(this.getNextTime()))
+            return false;
+        this.suspendTime = time;
+        return true;
+    }
+
+    @Override
+    public boolean lengthen(long timeMillis) {
+        if (isFinish() || timeMillis <= 0)
+            return false;
+        DateTime nextTime = this.nextTime;
+        DateTime endTime = this.endTime;
+        this.nextTime = nextTime.plusMillis((int) timeMillis);
+        if (endTime != null)
+            this.endTime = endTime.plusMillis((int) timeMillis);
+        return false;
     }
 
 }

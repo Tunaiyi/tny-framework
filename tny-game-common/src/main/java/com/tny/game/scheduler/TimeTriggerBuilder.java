@@ -4,6 +4,7 @@ import com.tny.game.scheduler.cycle.TimeCycle;
 import org.joda.time.DateTime;
 
 /**
+ * 时间触发器构建器
  * Created by Kun Yang on 16/2/25.
  */
 public class TimeTriggerBuilder<C extends TimeCycle> {
@@ -13,6 +14,7 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
     private DateTime previousTime = null;
     private DateTime endTime = null;
     private long speedMills = 0;
+    private DateTime suspendTime = null;
 
     private TimeTriggerBuilder() {
     }
@@ -55,6 +57,16 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
         return this;
     }
 
+    public TimeTriggerBuilder<C> setSuspendTime(DateTime suspendTime) {
+        this.suspendTime = suspendTime;
+        return this;
+    }
+
+    public TimeTriggerBuilder<C> setSuspendTime(long suspendTime) {
+        this.suspendTime = new DateTime(suspendTime);
+        return this;
+    }
+
     public TimeTriggerBuilder<C> setSpeedMills(long speedMills) {
         this.speedMills = speedMills;
         return this;
@@ -66,11 +78,11 @@ public class TimeTriggerBuilder<C extends TimeCycle> {
     }
 
     public TimeTrigger<C> buildStart() {
-        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, timeCycle, speedMills, true);
+        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, suspendTime, timeCycle, speedMills, true);
     }
 
-    public TimeTrigger<C> buildStoped() {
-        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, timeCycle, speedMills, false);
+    public TimeTrigger<C> buildStop() {
+        return new DefaultTimeTrigger<>(startTime, previousTime, endTime, suspendTime, timeCycle, speedMills, false);
     }
 
 }

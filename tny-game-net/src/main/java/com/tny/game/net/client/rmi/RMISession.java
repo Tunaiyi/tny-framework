@@ -38,12 +38,12 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public ChannelFuture requset(Protocol protocol, Object... params) {
+    public ChannelFuture request(Protocol protocol, Object... params) {
         return null;
     }
 
     @Override
-    public <B> ChannelFuture requset(Protocol protocol, MessageAction<B> action, Object... params) {
+    public <B> ChannelFuture request(Protocol protocol, MessageAction<B> action, Object... params) {
         return null;
     }
 
@@ -58,7 +58,7 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public <B> ChannelFuture requset(Protocol protocol, MessageFuture<B> future, Object... params) {
+    public <B> ChannelFuture request(Protocol protocol, MessageFuture<B> future, Object... params) {
         return null;
     }
 

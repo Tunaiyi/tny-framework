@@ -17,12 +17,22 @@ public interface TimeMeter<C extends TimeCycle> {
 
     DateTime getEndTime();
 
+    DateTime getSuspendTime();
+
     long getSpeedMills();
 
     C getTimeCycle();
 
     default long countRemainMills() {
         return countRemainMills(System.currentTimeMillis());
+    }
+
+    default boolean isSuspend() {
+        return this.getNextTime() != null && this.getSuspendTime() != null;
+    }
+
+    default boolean isWorking() {
+        return this.getNextTime() != null && this.getSuspendTime() == null;
     }
 
     default boolean isFinish() {
@@ -69,6 +79,9 @@ public interface TimeMeter<C extends TimeCycle> {
         DateTime next = this.getNextTime();
         if (next == null)
             return -1;
+        DateTime suspendTime = this.getSuspendTime();
+        if (suspendTime != null && suspendTime.getMillis() < timeMillis + this.getSpeedMills())
+            timeMillis = suspendTime.getMillis();
         return Math.max(next.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
     }
 
@@ -83,6 +96,9 @@ public interface TimeMeter<C extends TimeCycle> {
         DateTime end = this.getEndTime();
         if (end == null)
             return -1;
+        DateTime suspendTime = this.getSuspendTime();
+        if (suspendTime != null && suspendTime.getMillis() > timeMillis)
+            timeMillis = suspendTime.getMillis();
         return Math.max(end.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
     }
 

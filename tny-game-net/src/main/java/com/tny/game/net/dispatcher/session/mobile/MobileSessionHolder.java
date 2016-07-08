@@ -4,7 +4,11 @@ import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.*;
+import com.tny.game.net.dispatcher.BaseSessionHolder;
+import com.tny.game.net.dispatcher.NetSession;
+import com.tny.game.net.dispatcher.ProxyServerSession;
+import com.tny.game.net.dispatcher.ServerSession;
+import com.tny.game.net.dispatcher.Session;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 
 import java.util.Collection;
@@ -137,9 +141,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
         } else {
             addSession = session;
         }
-        if (addSession != null)
-            return super.online(addSession, loginInfo);
-        return false;
+        return addSession != null && super.online(addSession, loginInfo);
     }
 
     public int getActiveSize(Object group) {

@@ -148,7 +148,7 @@ public class SessionService {
      * @return 存在返回true 失败返回false
      */
     public boolean isExsitGroup(Object groupID) {
-        return this.sessionHolder.isExsitChannel(Session.DEFAULT_USER_GROUP, groupID);
+        return this.sessionHolder.isExistChannel(Session.DEFAULT_USER_GROUP, groupID);
     }
 
     /**

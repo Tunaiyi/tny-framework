@@ -146,11 +146,10 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
             return this.messageDispatcher.dispatch(request, session, appContext);
         } catch (Throwable ex) {
             if (session != null)
-                channel.writeAndFlush(
-                        session.getMessageBuilderFactory()
-                                .newResponseBuilder()
-                                .setProtocol(message.getProtocol())
-                                .setResult(CoreResponseCode.RECEIVE_ERROR));
+                channel.writeAndFlush(session.getMessageBuilderFactory()
+                        .newResponseBuilder()
+                        .setProtocol(message.getProtocol())
+                        .setResult(CoreResponseCode.RECEIVE_ERROR));
             MessageHandler.LOG.error("#GameServerHandler#接受请求异常", ex);
         }
         return null;

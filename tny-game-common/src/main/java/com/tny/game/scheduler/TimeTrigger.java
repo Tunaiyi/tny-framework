@@ -87,6 +87,20 @@ public interface TimeTrigger<C extends TimeCycle> extends TimeMeter<C> {
 
     boolean trigger(long timeMillis);
 
-    void speedUp(long timeMills);
+    boolean speedUp(long timeMills);
+
+    boolean resume(DateTime time);
+
+    boolean suspend(DateTime time);
+
+    default boolean resume() {
+        return resume(DateTime.now());
+    }
+
+    default boolean suspend() {
+        return suspend(DateTime.now());
+    }
+
+    boolean lengthen(long timeMillis);
 
 }
