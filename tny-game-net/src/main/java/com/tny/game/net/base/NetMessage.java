@@ -6,4 +6,7 @@ public abstract class NetMessage implements Message {
     public boolean isOwn(Message message) {
         return this.getProtocol() == message.getProtocol();
     }
+
+
+
 }

@@ -1,7 +1,9 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.common.context.Attributes;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifyChecker;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public interface RequestBuilder {
      * @param id 请求ID
      * @return 返回构建器本身
      */
-    public RequestBuilder setID(int id);
+    RequestBuilder setID(int id);
 
     /**
      * 设置请求模块
@@ -26,7 +28,7 @@ public interface RequestBuilder {
      * @param module 请求模块名
      * @return 返回构建器本身
      */
-    public RequestBuilder setProtocol(Protocol protocol);
+    RequestBuilder setProtocol(Protocol protocol);
 
     /**
      * 设置请求交验编码器
@@ -34,7 +36,7 @@ public interface RequestBuilder {
      * @param checker 请求交验编码器
      * @return 返回构建器本身
      */
-    public RequestBuilder setRequestChecker(RequestChecker checker);
+    RequestBuilder setRequestChecker(RequestVerifyChecker checker);
 
     //	/**
     //	 * 设置用户ID
@@ -51,7 +53,7 @@ public interface RequestBuilder {
      * @param protocol 操作名称
      * @return 返回构建器本身
      */
-    public RequestBuilder setProtocol(int protocol);
+    RequestBuilder setProtocol(int protocol);
 
     /**
      * 增加请求参数
@@ -60,7 +62,7 @@ public interface RequestBuilder {
      * @param parameter 参数
      * @return 返回构建器本身
      */
-    public RequestBuilder addParameter(int index, Object parameter);
+    RequestBuilder addParameter(int index, Object parameter);
 
     /**
      * 添加指定参数
@@ -68,7 +70,7 @@ public interface RequestBuilder {
      * @param parameter 指定参数
      * @return 返回构建器本身
      */
-    public RequestBuilder addParameter(Object parameter);
+    RequestBuilder addParameter(Object parameter);
 
     /**
      * 添加指定的参数列表
@@ -76,7 +78,7 @@ public interface RequestBuilder {
      * @param parameterList 指定参数列表
      * @return 返回构建器本身
      */
-    public RequestBuilder addParameter(List<Object> parameterList);
+    RequestBuilder addParameter(List<Object> parameterList);
 
     /**
      * 添加指定的参数数组
@@ -84,20 +86,13 @@ public interface RequestBuilder {
      * @param parameters 指定参数数组
      * @return 返回构建器本身
      */
-    public RequestBuilder addParameter(Object... parameters);
-
-    /**
-     * 清除参数列表
-     *
-     * @return 返回构建器本身
-     */
-    public RequestBuilder clearParameter();
+    RequestBuilder addParameter(Object... parameters);
 
     /**
      * 构建请求
      *
      * @return 返回构建的请求
      */
-    public Request build();
+    Request build();
 
 }

@@ -1,11 +1,8 @@
 package com.tny.game.net.dispatcher.session.mobile;
 
-import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.ChannelServerSession;
-import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.dispatcher.Response;
 import io.netty.channel.Channel;
 
 public class MobileSession extends ChannelServerSession {
@@ -23,16 +20,16 @@ public class MobileSession extends ChannelServerSession {
     }
 
     @Override
-    protected void prepareWriteResponse(Protocol protocol, ResultCode code, Object body) {
+    protected int createResponseNumber() {
         MobileAttach attach = this.getMobileAttach();
-        if (attach != null && protocol instanceof Request) {
-            Request request = (Request) protocol;
-            if (request.getID() > Session.DEFAULT_RESPONSE_ID) {
-                if (attach.exist(request.getID()))
-                    return;
-                attach.push(new ResponseItem(request.getID(), code, body));
-            }
-        }
+        return attach.createResponseNumber();
+    }
+
+    @Override
+    protected void prepareWriteResponse(Response response) {
+        MobileAttach attach = this.getMobileAttach();
+        if (attach != null)
+            attach.push(response);
     }
 
 }

@@ -5,7 +5,6 @@ import com.tny.game.actor.Actor;
 import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.local.LocalActor;
 import com.tny.game.actor.local.LocalActorContext;
-import com.tny.game.actor.stage.StageUtils;
 
 /**
  * Created by Kun Yang on 16/4/30.
@@ -40,27 +39,25 @@ public class ActorTestMain {
 
 
         System.out.println(Thread.currentThread());
-        VoidAnswer answer =
-                actor1.tellToAccept(service::tell)
-                        .stage((stage) -> stage
-                                .joinBy(() -> actor2.askToAnswer(service::askName).ask())
-                                .joinBy((name) -> actor2.askToAnswer(service::askAge).ask(name))
-                                .thenAccept((message) -> {
-                                    actor2.tellToAccept(service::tell).tell();
-                                    System.out.println(message);
-//                                    return message;
-                                }))
-                        .tellOf();
+        VoidAnswer answer = actor1.asTeller(service::tell)
+                .then((stage) -> stage
+                        .joinGet(() -> actor2.asAsker(service::askName).ask())
+                        .joinApply((name) -> actor2.asAsker(service::askAge).ask(name))
+                        .thenAccept((message) -> {
+                            actor2.asTeller(service::tell).tell();
+                            System.out.println(message);
+                        }))
+                .tellOf();
 
         while (!answer.isDone()) {
             Thread.sleep(10);
         }
-        System.out.println(StageUtils.getResult(answer.stage()).get());
+        // System.out.println(StageUtils.getResult(answer.stage()).get());
 
         long time = System.currentTimeMillis() + 5000;
 
         answer = actor1.tellUntil(() -> System.currentTimeMillis() > time)
-                .stage(
+                .then(
                         stage -> stage.thenRun(() -> System.out.println("finish tell until"))
                 )
                 .tellOf();

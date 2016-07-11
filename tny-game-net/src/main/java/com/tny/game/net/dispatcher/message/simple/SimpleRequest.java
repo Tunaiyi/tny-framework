@@ -14,15 +14,13 @@ public class SimpleRequest extends NetRequest {
 
     protected int ID;
 
-    protected Object module;
-
-    protected Object operation;
+    protected int proto;
 
     protected String checkKey;
 
     protected long time;
 
-    protected List<Object> paramList = new ArrayList<Object>();
+    protected List<Object> paramList = new ArrayList<>();
 
     public SimpleRequest() {
     }
@@ -56,14 +54,6 @@ public class SimpleRequest extends NetRequest {
         return this.checkKey;
     }
 
-    public Object getModule() {
-        return this.module;
-    }
-
-    public Object getOperation() {
-        return this.operation;
-    }
-
     @Override
     public List<Object> getParamList() {
         return Collections.unmodifiableList(this.paramList);
@@ -73,42 +63,57 @@ public class SimpleRequest extends NetRequest {
         this.paramList.addAll(paramList);
     }
 
-    public void setModule(Object module) {
-        this.module = module;
+    @Override
+    protected void setProtocol(int protocol) {
+        this.proto = protocol;
     }
 
     protected void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
 
-    public void setOperation(Object operation) {
-        this.operation = operation;
-    }
-
+    @Override
     public void setCheckKey(String checkKey) {
         this.checkKey = checkKey;
     }
 
+    @Override
     public void setTime(long time) {
         this.time = time;
+    }
+
+    @Override
+    protected void addParam(int index, Object parameter) {
+        this.paramList.add(index, parameter);
+    }
+
+    @Override
+    protected void addParam(Object parameter) {
+        this.paramList.add(parameter);
+    }
+
+    @Override
+    protected void addAllParam(List<Object> parameterList) {
+        this.paramList.addAll(parameterList);
     }
 
     public Object[] getParams() {
         return this.paramList.toArray(new Object[0]);
     }
 
-    public void setID(int id) {
+    @Override
+    protected void setID(int id) {
         this.ID = id;
     }
 
     @Override
     public int getProtocol() {
-        return (Integer) operation;
+        return proto;
     }
 
     @Override
     public String toString() {
-        return "SimpleRequest [id=" + this.ID + ", hostName=" + this.getID() + ", module=" + this.module + ", operation=" + this.operation + ", checkKey=" + this.checkKey + ", time=" + this.time
+        return "SimpleRequest [id=" + this.ID + ", hostName=" + this.getID() + ", proto=" + this.proto + ", checkKey=" + this.checkKey + ", time=" + this.time
                 + ", paramList=" + this.paramList + "]";
     }
 

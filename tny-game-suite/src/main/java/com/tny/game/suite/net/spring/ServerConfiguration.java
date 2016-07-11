@@ -3,18 +3,19 @@ package com.tny.game.suite.net.spring;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.word.LocalWordsFilter;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.checker.md5.MD5RequestChecker;
+import com.tny.game.net.checker.md5.MD5VerifyChecker;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
 import com.tny.game.net.dispatcher.ServerSessionFactory;
 import com.tny.game.net.dispatcher.SessionHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.dispatcher.plugin.spring.SpringPluginHolder;
+import com.tny.game.net.dispatcher.session.mobile.MobileRequestIDChecker;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionFactory;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionHolder;
 import com.tny.game.net.dispatcher.spring.SpringMessageDispatcher;
 import com.tny.game.net.executor.normal.ThreadPoolCommandExecutor;
-import com.tny.game.suite.login.GameMD5Checker;
+import com.tny.game.suite.login.GameMD5VerifyChecker;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,16 +58,16 @@ public class ServerConfiguration {
     }
 
     @Bean(name = "checker")
-    public MD5RequestChecker requestChecker() {
+    public MD5VerifyChecker requestChecker() {
         Config config = Configs.SUITE_CONFIG;
-        String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
+        // String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
+        // List<Integer> ports = new ArrayList<>();
+        // if (protsWords != null) {
+        //     ports = Arrays.stream(StringUtils.split(protsWords, ","))
+        //             .map(NumberUtils::toInt)
+        //             .collect(Collectors.toList());
+        // }
         String randomWords = config.getStr(Configs.SUITE_REQ_CHECKER_RANDOM_SEQ);
-        List<Integer> ports = new ArrayList<>();
-        if (protsWords != null) {
-            ports = Arrays.stream(StringUtils.split(protsWords, ","))
-                    .map(NumberUtils::toInt)
-                    .collect(Collectors.toList());
-        }
         short[] randomKey = new short[0];
         if (randomWords != null) {
             randomKey = ArrayUtils.toPrimitive(
@@ -75,7 +76,20 @@ public class ServerConfiguration {
                             .collect(Collectors.toList())
                             .toArray(new Short[0]));
         }
-        return new GameMD5Checker(ports, randomKey);
+        return new GameMD5VerifyChecker(randomKey);
+    }
+
+    @Bean(name = "idChecker")
+    public MobileRequestIDChecker requestIDChecker() {
+        Config config = Configs.SUITE_CONFIG;
+        String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
+        List<Integer> ports = new ArrayList<>();
+        if (protsWords != null) {
+            ports = Arrays.stream(StringUtils.split(protsWords, ","))
+                    .map(NumberUtils::toInt)
+                    .collect(Collectors.toList());
+        }
+        return new MobileRequestIDChecker(ports);
     }
 
     @Bean(name = "messageDispatcher")

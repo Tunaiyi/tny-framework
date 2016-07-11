@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class NetClient extends ChannelClientSession {
 
     private static final int CLOSE = 1;
-    private static final int UNCONNECT = 2;
-    private static final int CONNECTIONG = 3;
+    private static final int UNCONNECTED = 2;
+    private static final int CONNECTING = 3;
     private static final int CONNECTED = 4;
 
     private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NIO_CLIENT);
@@ -37,7 +37,7 @@ public class NetClient extends ChannelClientSession {
 
     protected ConnectedCallback connectedCallback;
 
-    protected AtomicInteger state = new AtomicInteger(NetClient.UNCONNECT);
+    protected AtomicInteger state = new AtomicInteger(NetClient.UNCONNECTED);
 
     protected String hostName;
 
@@ -101,7 +101,7 @@ public class NetClient extends ChannelClientSession {
         public void operationComplete(ChannelFuture future) throws Exception {
             int stateValue = NetClient.this.state.get();
             if (stateValue != NetClient.CLOSE) {
-                NetClient.this.state.set(NetClient.UNCONNECT);
+                NetClient.this.state.set(NetClient.UNCONNECTED);
                 NetClient.this.connect();
             }
         }
@@ -117,7 +117,7 @@ public class NetClient extends ChannelClientSession {
                 channel.closeFuture().addListener(NetClient.this.reconnetter);
                 if (future.isSuccess()) {
                     int stateValue = NetClient.this.state.get();
-                    if (stateValue == NetClient.CONNECTIONG && NetClient.this.state.compareAndSet(stateValue, NetClient.CONNECTED)) {
+                    if (stateValue == NetClient.CONNECTING && NetClient.this.state.compareAndSet(stateValue, NetClient.CONNECTED)) {
                         NetClient.this.setChannel(channel);
                         NetClient.LOG.debug("连接 {} ", NetClient.this.remoteAddress);
                     } else {
@@ -141,12 +141,12 @@ public class NetClient extends ChannelClientSession {
             IOException exception = new IOException("客户端已经关闭,无法重连! " + this.remoteAddress + "失败");
             throw exception;
         }
-        if (stateValue != NetClient.UNCONNECT || this.isConnect()) {
+        if (stateValue != NetClient.UNCONNECTED || this.isConnect()) {
             IOException exception = new IOException("客户端已连接! " + this.remoteAddress + "失败");
             throw exception;
         }
 
-        if (this.state.compareAndSet(NetClient.UNCONNECT, NetClient.CONNECTIONG)) {
+        if (this.state.compareAndSet(NetClient.UNCONNECTED, NetClient.CONNECTING)) {
             ChannelFuture future = null;
             future = this.bootstrap.connect(this.remoteAddress);
             future.addListener(this.conneteder);

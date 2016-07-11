@@ -2,6 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.Actor;
+import com.tny.game.actor.Available;
 import com.tny.game.actor.TypeAnswer;
 import com.tny.game.actor.invoke.*;
 import com.tny.game.actor.stage.Stages;
@@ -13,7 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>> {
+class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>, Available<R> {
 
     protected ActorCommand<R, TypeTaskStage<R>, LocalTypeAnswer<R>> command;
 
@@ -23,14 +24,15 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>> 
 
     protected C caller;
 
-    private Done<R> getHandleResult() {
+    @Override
+    public Done<R> achieve() {
         return command.getHandleResult();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AK stage(Consumer<TypeTaskStage<R>> initStage) {
-        this.stage = Stages.waitFor(this::getHandleResult);
+    public AK then(Consumer<TypeTaskStage<R>> initStage) {
+        this.stage = Stages.waitFor(this);
         initStage.accept(this.stage);
         return (AK) this;
     }

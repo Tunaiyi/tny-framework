@@ -1,9 +1,10 @@
 package com.tny.game.actor.stage;
 
 
+import com.tny.game.actor.CallAvailable;
+import com.tny.game.actor.CallBeFinished;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
-import com.tny.game.actor.stage.invok.ApplyStageable;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
 import com.tny.game.common.utils.Done;
 
@@ -19,7 +20,9 @@ public interface TypeTaskStage<R> extends TaskStage {
 
     R getResult();
 
-    <TS extends TaskStage> TS joinBy(ApplyStageable<R, TS> fn);
+    VoidTaskStage joinAccept(CallBeFinished<R> fn);
+
+    <T> TypeTaskStage<T> joinApply(CallAvailable<R, T> fn);
 
     <TS extends TaskStage> TS join(Function<R, TS> fn);
 

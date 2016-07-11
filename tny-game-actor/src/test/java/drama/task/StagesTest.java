@@ -1,5 +1,6 @@
 package drama.task;
 
+import com.tny.game.actor.Available;
 import com.tny.game.actor.stage.Stages;
 import com.tny.game.actor.stage.TypeTaskStage;
 import com.tny.game.actor.stage.VoidTaskStage;
@@ -100,7 +101,7 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        Supplier<Done<String>> fn = Do::fail;
+        Available<String> fn = Do::fail;
         TypeTaskStage<String> stage = checkStage(
                 Stages.waitFor(fn, TIME_100)
                 , false, null

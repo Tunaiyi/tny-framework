@@ -5,8 +5,10 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.RequestChecker;
-import com.tny.game.net.coder.DataPacketEncoder;
 import io.netty.channel.ChannelFuture;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ProxyServerSession implements ServerSession {
 
@@ -52,21 +54,6 @@ public class ProxyServerSession implements ServerSession {
     }
 
     @Override
-    public MessageBuilderFactory getMessageBuilderFactory() {
-        return this.session.getMessageBuilderFactory();
-    }
-
-    @Override
-    public DataPacketEncoder getEncoder() {
-        return this.session.getEncoder();
-    }
-
-    @Override
-    public RequestChecker getChecker() {
-        return this.session.getChecker();
-    }
-
-    @Override
     public void login(LoginCertificate loginInfo) {
         this.session.login(loginInfo);
     }
@@ -93,12 +80,17 @@ public class ProxyServerSession implements ServerSession {
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, Object body) {
+    public List<RequestChecker> getCheckers() {
+        return this.session.getCheckers();
+    }
+
+    @Override
+    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
         return this.session.response(protocol, body);
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
         return this.session.response(protocol, code, body);
     }
 

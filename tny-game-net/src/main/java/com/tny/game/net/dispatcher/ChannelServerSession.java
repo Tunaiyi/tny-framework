@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ChannelServerSession extends AbstractServerSession {
 
@@ -31,10 +32,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
      */
     private transient Channel channel;
 
-    /**
-     * 推送ID创建器
-     */
-    private AtomicInteger pushIDCreator = new AtomicInteger(0);
+    private AtomicBoolean lock = new AtomicBoolean(false);
 
     public ChannelServerSession(Channel channel, LoginCertificate loginInfo) {
         super(loginInfo);
@@ -55,12 +53,13 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     }
 
     protected void setChannel(Channel channel) {
-        if (this.channel == null && channel != null) {
+        Channel old = this.channel;
+        if (old == null && channel != null) {
             this.channel = channel;
             channel.attr(NetAttributeKey.SESSION).set(this);
             channel.attr(NetAttributeKey.SERVER_SESSION).set(this);
             this.encoder = channel.attr(NetAttributeKey.DATA_PACKET_ENCODER).get();
-            this.checker = channel.attr(NetAttributeKey.REQUEST_CHECKER).get();
+            this.checkers = channel.attr(NetAttributeKey.REQUEST_CHECKERS).get();
             this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
         }
     }
@@ -73,71 +72,89 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     @Override
     public void disconnect() {
         if (this.isConnect()) {
+            Channel channel = this.channel;
+            if (channel == null)
+                return;
             if (ChannelServerSession.LOG.isInfoEnabled()) {
-                LOG.info("Session主动断开##通道 {} ==> {}", this.channel.remoteAddress(), this.channel.localAddress(), new Date());
+                LOG.info("Session主动断开##通道 {} ==> {}", channel.remoteAddress(), channel.localAddress(), new Date());
             }
-            this.channel.flush();
-            this.channel.disconnect();
+            channel.flush();
+            channel.disconnect();
+            this.channel = null;
         }
     }
 
     @Override
     public boolean isConnect() {
-        return this.channel != null && this.channel.isActive();
+        Channel channel = this.channel;
+        return channel != null && channel.isActive();
     }
 
-    protected ChannelFuture write(Object data) {
+    protected Optional<ChannelFuture> write(Object data) {
         try {
-            if (this.channel.isActive()) {
-                return this.channel.writeAndFlush(data);
-            }
+            Channel channel = this.channel;
+            if (channel != null && channel.isActive())
+                return Optional.ofNullable(channel.writeAndFlush(data));
+            return Optional.empty();
         } catch (Exception e) {
             ChannelServerSession.LOG.error("#Session#sendMessage 异常", e);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
         return this.response(protocol, ResultCode.SUCCESS, body);
     }
 
+    protected abstract int createResponseNumber();
+
     @Override
-    public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
         if (protocol.isPush()) {
             SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
             if (!option.isPush()) {
                 if (option.isThrowable())
                     throw new SessionException(LogUtils.format("Session {} [{}] 无法推送", this.getCertificate(), this.channel.remoteAddress()));
-                return null;
+                return Optional.empty();
             }
         }
         Object data;
-        if (body instanceof ByteBuf || body instanceof byte[]) {
+        if (body instanceof ByteBuf || body instanceof byte[] || body instanceof Response) {
             data = body;
+            return this.write(data);
         } else {
-            Response response = this.getMessageBuilderFactory()
+            Optional<ChannelFuture> optional = Optional.empty();
+            NetResponse response = (NetResponse) this.getMessageBuilderFactory()
                     .newResponseBuilder()
-                    .setID(protocol.isPush() ? pushIDCreator.incrementAndGet() : Session.DEFAULT_RESPONSE_ID)
+                    .setID(protocol.isPush() ? 0 : Session.DEFAULT_RESPONSE_ID)
                     .setProtocol(protocol)
                     .setResult(code)
                     .setBody(body)
                     .build();
             CoreLogger.log(this, response);
-            data = response;
+            while (lock.compareAndSet(false, true)) {
+                try {
+                    response.setNumber(createResponseNumber());
+                    data = response;
+                    this.prepareWriteResponse(response);
+                    optional = this.write(data);
+                    if (optional.isPresent())
+                        this.postWriteResponse(response, optional.get());
+                    break;
+                } finally {
+                    lock.set(false);
+                }
+            }
+            return optional;
         }
-        this.prepareWriteResponse(protocol, code, body);
-        ChannelFuture future = this.write(data);
-        if (future != null)
-            this.postWriteResponse(protocol, code, body, future);
-        return future;
     }
 
-    protected void prepareWriteResponse(Protocol protocol, ResultCode code, Object body) {
+    protected void prepareWriteResponse(Response response) {
 
     }
 
-    protected void postWriteResponse(Protocol protocol, ResultCode code, Object body, ChannelFuture future) {
+    protected void postWriteResponse(Response response, ChannelFuture future) {
 
     }
 
@@ -150,7 +167,7 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.channel == null) ? 0 : this.channel.hashCode());
+        // result = prime * result + ((this.channel == null) ? 0 : this.channel.hashCode());
         result = prime * result + ((this.getGroup() == null) ? 0 : this.getGroup().hashCode());
         result = prime * result + (int) (this.getUID() ^ (this.getUID() >>> 32));
         return result;
@@ -165,10 +182,12 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         if (this.getClass() != obj.getClass())
             return false;
         ChannelServerSession other = (ChannelServerSession) obj;
-        if (this.channel == null) {
-            if (other.channel != null)
+        Channel channel = this.channel;
+        Channel otherChannel = other.channel;
+        if (channel == null) {
+            if (otherChannel != null)
                 return false;
-        } else if (!this.channel.equals(other.channel))
+        } else if (!channel.equals(otherChannel))
             return false;
         if (this.getGroup() == null) {
             if (other.getGroup() != null)

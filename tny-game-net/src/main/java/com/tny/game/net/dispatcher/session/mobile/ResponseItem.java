@@ -1,32 +1,32 @@
 package com.tny.game.net.dispatcher.session.mobile;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.net.dispatcher.Response;
 
 public class ResponseItem {
 
     private int id;
 
-    private ResultCode code;
+    private int number;
 
-    private Object body;
+    private Response response;
 
-    public ResponseItem(int id, ResultCode code, Object body) {
+    public ResponseItem(int id, Response response) {
         super();
         this.id = id;
-        this.code = code;
-        this.body = body;
+        this.number = response.getNumber();
+        this.response = response;
     }
 
     public int getID() {
         return this.id;
     }
 
-    public ResultCode getResultCode() {
-        return this.code;
+    public Response getResponse() {
+        return this.response;
     }
 
-    public Object getBody() {
-        return this.body;
+    public int getNumber() {
+        return number;
     }
 
 }

@@ -4,7 +4,7 @@ import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.dispatcher.MessageHandler;
-import com.tny.game.net.dispatcher.RequsetSession;
+import com.tny.game.net.dispatcher.RequestSession;
 import com.tny.game.net.dispatcher.SessionHolder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -51,31 +51,31 @@ public class NetConnecter {
         this.addShutdownHook(workerGroup);
     }
 
-    public RequsetSession connect(String host, int port) throws IOException {
+    public RequestSession connect(String host, int port) throws IOException {
         return connect(host, port, null);
     }
 
-    public RequsetSession connect(String host, int port, ConnectedCallback callback) throws IOException {
+    public RequestSession connect(String host, int port, ConnectedCallback callback) throws IOException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.connect();
         return client;
     }
 
-    public RequsetSession awaitConnect(String host, int port) throws IOException, InterruptedException {
+    public RequestSession awaitConnect(String host, int port) throws IOException, InterruptedException {
         return awaitConnect(host, port, null);
     }
 
-    public RequsetSession awaitConnect(String host, int port, ConnectedCallback callback) throws IOException, InterruptedException {
+    public RequestSession awaitConnect(String host, int port, ConnectedCallback callback) throws IOException, InterruptedException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.awaitConnect();
         return client;
     }
 
-    public RequsetSession awaitConnect(String host, int port, long timeoutMillis) throws IOException, InterruptedException {
+    public RequestSession awaitConnect(String host, int port, long timeoutMillis) throws IOException, InterruptedException {
         return awaitConnect(host, port, timeoutMillis, null);
     }
 
-    public RequsetSession awaitConnect(String host, int port, long timeoutMillis, ConnectedCallback callback) throws IOException, InterruptedException {
+    public RequestSession awaitConnect(String host, int port, long timeoutMillis, ConnectedCallback callback) throws IOException, InterruptedException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.awaitConnect(timeoutMillis);
         return client;

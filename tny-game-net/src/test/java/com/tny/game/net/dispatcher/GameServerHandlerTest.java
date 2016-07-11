@@ -88,7 +88,7 @@ public class GameServerHandlerTest {
                 .addParameter(Arrays.asList(objects))
                 .build();
         if (session != null)
-            request.requsetBy(session);
+            request.requestBy(session);
         return request;
     }
 

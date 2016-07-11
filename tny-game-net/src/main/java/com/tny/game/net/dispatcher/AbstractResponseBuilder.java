@@ -14,22 +14,29 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      * 响应的响应Id
      */
     protected int id = Session.DEFAULT_RESPONSE_ID;
-    /**
-     * 返回信息
-     */
-    protected Object message;
-    /**
-     * 错误码
-     */
-    protected int result;
-    /**
-     * 响应操作
-     */
-    protected int protocol;
-    /**
-     * 推送
-     */
-    protected boolean push;
+    // /**
+    //  * 返回信息
+    //  */
+    // protected Object message;
+    // /**
+    //  * 错误码
+    //  */
+    // protected int result;
+    // /**
+    //  * 响应操作
+    //  */
+    // protected int protocol;
+    // /**
+    //  * 推送
+    //  */
+    // protected boolean push;
+    //
+    // /**
+    //  * 序号
+    //  */
+    // protected int number;
+
+    protected NetResponse response;
 
     /**
      * 创建构建器
@@ -37,7 +44,8 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      * @return 返沪构建器
      */
 
-    protected AbstractResponseBuilder() {
+    protected AbstractResponseBuilder(NetResponse response) {
+        this.response = response;
     }
 
     /**
@@ -48,7 +56,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      */
     @Override
     public ResponseBuilder setID(int id) {
-        this.id = id;
+        response.setID(id);
         return this;
     }
 
@@ -61,10 +69,10 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
     @Override
     public ResponseBuilder setProtocol(Protocol protocol) {
         if (protocol instanceof Request) {
-            this.id = ((Request) protocol).getID();
+            response.setID(((Request) protocol).getID());
         }
-        this.push = protocol.isPush();
-        this.protocol = protocol.getProtocol();
+        response.setPush(protocol.isPush());
+        response.setProtocol(protocol.getProtocol());
         return this;
     }
 
@@ -76,7 +84,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      */
     @Override
     public ResponseBuilder setProtocol(int protocol) {
-        this.protocol = protocol;
+        response.setProtocol(protocol);
         return this;
     }
 
@@ -88,7 +96,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      */
     @Override
     public ResponseBuilder setResult(int result) {
-        this.result = result;
+        response.setResult(result);
         return this;
     }
 
@@ -100,7 +108,7 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      */
     @Override
     public ResponseBuilder setResult(ResultCode result) {
-        this.result = result.getCode();
+        response.setResult(result.getCode());
         return this;
     }
 
@@ -112,20 +120,26 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      */
     @Override
     public ResponseBuilder setCommandResult(CommandResult result) {
-        this.result = result.getResultCode().getCode();
-        this.message = result.getBody();
+        response.setResult(result.getResultCode().getCode());
+        response.setBody(result.getBody());
         return this;
     }
 
     /**
      * 设置响应消息
      *
-     * @param message 响应消息
+     * @param body 响应消息
      * @return self
      */
     @Override
-    public ResponseBuilder setBody(Object message) {
-        this.message = message;
+    public ResponseBuilder setBody(Object body) {
+        response.setBody(body);
+        return this;
+    }
+
+    @Override
+    public ResponseBuilder setNumber(int number) {
+        response.setNumber(number);
         return this;
     }
 

@@ -31,11 +31,12 @@ public class SimpleResponse extends NetResponse {
     /**
      * 响应模块
      */
-    protected Object module;
+    protected int protocol;
+
     /**
-     * 响应操作
+     * 序号
      */
-    protected Object operation;
+    protected int number;
 
     /**
      * 是否是推送
@@ -49,8 +50,6 @@ public class SimpleResponse extends NetResponse {
 
     protected SimpleResponse(final ResultCode resultCode) {
         this.ID = 0;
-        this.module = null;
-        this.operation = null;
         this.body = null;
         this.result = resultCode.getCode();
     }
@@ -133,14 +132,6 @@ public class SimpleResponse extends NetResponse {
         return false;
     }
 
-    public Object getModule() {
-        return this.module;
-    }
-
-    public Object getOperation() {
-        return this.operation;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getBody(Class<T> clazz) {
@@ -155,14 +146,12 @@ public class SimpleResponse extends NetResponse {
         this.ID = id;
     }
 
-    public void setModule(Object module) {
-        this.module = module;
+    @Override
+    protected void setProtocol(int protocol) {
+        this.protocol = protocol;
     }
 
-    public void setOperation(Object operation) {
-        this.operation = operation;
-    }
-
+    @Override
     public void setPush(boolean push) {
         this.push = push;
     }
@@ -177,8 +166,19 @@ public class SimpleResponse extends NetResponse {
         this.body = message;
     }
 
+    @Override
     public void setResult(int result) {
         this.result = result;
+    }
+
+    @Override
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    @Override
+    public int getNumber() {
+        return number;
     }
 
     //	@Override
@@ -194,12 +194,12 @@ public class SimpleResponse extends NetResponse {
 
     @Override
     public String toString() {
-        return "SimpleResponse [id=" + this.ID + ", result=" + this.result + ", module=" + this.module + ", operation=" + this.operation + ", message=" + this.body + "]";
+        return "SimpleResponse [id=" + this.ID + ", result=" + this.result + ", protocol=" + this.protocol + ", message=" + this.body + "]";
     }
 
     @Override
     public int getProtocol() {
-        return (Integer) operation;
+        return protocol;
     }
 
 }

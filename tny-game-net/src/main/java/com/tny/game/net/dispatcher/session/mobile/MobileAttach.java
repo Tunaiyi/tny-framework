@@ -1,117 +1,123 @@
 package com.tny.game.net.dispatcher.session.mobile;
 
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.dispatcher.Response;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.StampedLock;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class MobileAttach {
 
-    private AtomicReference<MobileSessionState> sessionState = new AtomicReference<>(MobileSessionState.ONLINE);
+    private AtomicInteger sessionState = new AtomicInteger(MobileSessionState.ONLINE.getId());
 
     private int requestIDCounter = -1;
+    private AtomicInteger number = new AtomicInteger(0);
+    private CircularFifoQueue<ResponseItem> responseCache;
+    private volatile long offlineTimeout = -1;
 
-    private Map<Integer, ResponseItem> sentResponseCache;//= new HashMap<Integer, Response>();
+    private StampedLock lock = new StampedLock();
 
-    private long offlineWait;
-
-    private long offlineTimeout = -1;
-
-    private long leaveWait;
-
-    private long leaveTimeout = -1;
-
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
-    private Lock readLock = this.lock.readLock();
-    private Lock writeLock = this.lock.writeLock();
-
-    public MobileAttach(int size, long leaveWait, long offlineWait, MobileAttach attach) {
-        this(size, leaveWait, offlineWait);
-        this.sentResponseCache.putAll(attach.sentResponseCache);
+    public MobileAttach(int size, MobileAttach attach) {
+        this(size);
+        this.responseCache.addAll(attach.responseCache);
     }
 
-    public MobileAttach(int size, long leaveWait, long offlineWait) {
-        this.offlineWait = offlineWait;
-        this.leaveWait = Math.min(this.offlineWait, leaveWait);
-        this.sentResponseCache = new FixLinkedHashMap<>(size);
+    public MobileAttach(int size) {
+        this.responseCache = new CircularFifoQueue<>(size);
     }
 
-    public boolean exist(int id) {
-        this.readLock.lock();
+    public boolean isState(MobileSessionState state) {
+        return this.sessionState.get() == state.getId();
+    }
+
+    public List<ResponseItem> getAll() {
+        long stamp = lock.readLock();
         try {
-            return this.sentResponseCache.containsKey(id);
+            return new ArrayList<>(this.responseCache);
         } finally {
-            this.readLock.unlock();
+            lock.unlock(stamp);
         }
     }
 
     public ResponseItem get(int id) {
-        this.readLock.lock();
+        long stamp = lock.readLock();
         try {
-            return this.sentResponseCache.get(id);
+            return this.responseCache.stream()
+                    .filter(r -> r.getID() == id)
+                    .findFirst()
+                    .orElse(null);
         } finally {
-            this.readLock.unlock();
+            lock.unlock(stamp);
         }
     }
 
-    protected void push(ResponseItem response) {
-        if (response.getID() <= Session.DEFAULT_RESPONSE_ID)
-            return;
-        this.writeLock.lock();
+    public void asStream(Consumer<Stream<ResponseItem>> consumer) {
+        long stamp = lock.readLock();
         try {
-            this.sentResponseCache.put(response.getID(), response);
+            consumer.accept(this.responseCache.stream());
         } finally {
-            this.writeLock.unlock();
+            lock.unlock(stamp);
         }
     }
 
-    public MobileSessionState getSessionState() {
-        return this.sessionState.get();
+    protected void push(Response response) {
+        long stamp = lock.readLock();
+        try {
+            while (true) {
+                if (!responseCache.isEmpty()) {
+                    ResponseItem item = responseCache.get(responseCache.size() - 1);
+                    if (item != null && item.getNumber() >= response.getNumber())
+                        return;
+                }
+                long writeStamp = lock.tryConvertToWriteLock(stamp);
+                if (writeStamp != 0L) {
+                    stamp = writeStamp;
+                    this.responseCache.add(new ResponseItem(response.getID(), response));
+                    return;
+                } else {
+                    lock.unlockRead(stamp);
+                    stamp = lock.writeLock();
+                }
+            }
+        } finally {
+            lock.unlock(stamp);
+        }
     }
 
-    public boolean isOfflineTimeout() {
-        return this.offlineTimeout > 0 && System.currentTimeMillis() >= this.offlineTimeout;
-    }
-
-    public boolean isLeaveTimeout() {
-        return this.leaveTimeout > 0 && System.currentTimeMillis() >= this.leaveTimeout;
-    }
-
-    public boolean isLeaveTimeout(long now) {
-        return this.leaveTimeout > 0 && now >= this.leaveTimeout;
+    public boolean isOfflineTimeout(long time) {
+        return this.offlineTimeout > 0 && time >= this.offlineTimeout;
     }
 
     protected boolean online() {
-        if (this.sessionState.compareAndSet(MobileSessionState.OFFLINE, MobileSessionState.ONLINE)) {
-            this.offlineWait = -1;
+        if (this.sessionState.compareAndSet(MobileSessionState.OFFLINE.getId(), MobileSessionState.ONLINE.getId())) {
+            this.offlineTimeout = -1;
             return true;
         }
         return false;
     }
 
-    protected boolean offline() {
-        if (this.sessionState.compareAndSet(MobileSessionState.ONLINE, MobileSessionState.OFFLINE)) {
-            long now = System.currentTimeMillis();
-            this.offlineTimeout = now + this.offlineWait;
-            this.leaveTimeout = now + this.leaveWait;
+    protected boolean offline(long offlineWaitMills) {
+        if (this.sessionState.compareAndSet(MobileSessionState.ONLINE.getId(), MobileSessionState.OFFLINE.getId())) {
+            this.offlineTimeout = System.currentTimeMillis() + offlineWaitMills;
             return true;
         }
         return false;
     }
 
     protected boolean invalid() {
-        return this.sessionState.compareAndSet(MobileSessionState.OFFLINE, MobileSessionState.INVALID);
+        return this.sessionState.compareAndSet(MobileSessionState.OFFLINE.getId(), MobileSessionState.INVALID.getId());
     }
 
-    public int getRequestIDCounter() {
-        return this.requestIDCounter;
+    int createResponseNumber() {
+        return number.incrementAndGet();
     }
 
-    public boolean checkAndUpdate(Request request) {
+    protected boolean checkAndUpdate(Request request) {
         if (request.getID() > this.requestIDCounter) {
             this.requestIDCounter = request.getID();
             return true;

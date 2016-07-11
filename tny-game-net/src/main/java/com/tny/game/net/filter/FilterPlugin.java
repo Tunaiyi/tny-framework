@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class FilterPlugin implements ControllerPlugin, ApplicationContextAware {
 
-    private Map<Class<?>, ParamFilter> filterMap = new ConcurrentHashMap<Class<?>, ParamFilter>();
+    private Map<Class<?>, ParamFilter> filterMap = new ConcurrentHashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

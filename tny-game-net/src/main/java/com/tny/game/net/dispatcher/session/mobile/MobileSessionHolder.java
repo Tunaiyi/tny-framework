@@ -28,7 +28,6 @@ public class MobileSessionHolder extends BaseSessionHolder {
 
     private int responseCacheSize = 10;
     private long offlineWait = 1000 * 60 * 120;
-    private long leaveWait = 1000 * 60 * 30;
 
     private Set<Object> mobileUserGroups = new HashSet<>();
 
@@ -39,10 +38,6 @@ public class MobileSessionHolder extends BaseSessionHolder {
 
     public void setOfflineWait(long offlineWait) {
         this.offlineWait = offlineWait;
-    }
-
-    public void setLeaveWait(long leaveWait) {
-        this.leaveWait = leaveWait;
     }
 
     public void setResponseCacheSize(int responseCacheSize) {
@@ -57,6 +52,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
             @Override
             public void run() {
                 MobileSessionHolder holder = MobileSessionHolder.this;
+                long now = System.currentTimeMillis();
                 try {
                     for (Object mobileGroup : MobileSessionHolder.this.mobileUserGroups) {
                         ConcurrentMap<Object, ServerSession> map = holder.getSessionMap(mobileGroup);
@@ -65,7 +61,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
                         for (Session session : map.values()) {
                             try {
                                 MobileAttach attach = MobileSessionHolder.this.getMobileAttach(session);
-                                if (attach == null || attach.isOfflineTimeout() && attach.invalid()) {
+                                if (attach == null || attach.isOfflineTimeout(now) && attach.invalid()) {
                                     holder.invalid(session);
                                 }
                             } catch (Exception e) {
@@ -105,7 +101,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
             Session current = userGroupSessionMap.get(session.getUID());
             if (!current.equals(session))
                 return;
-            attach.offline();
+            attach.offline(this.offlineWait);
             if (session.isConnect())
                 this.disconnect(session);
         }
@@ -124,10 +120,10 @@ public class MobileSessionHolder extends BaseSessionHolder {
             ProxyServerSession current = (ProxyServerSession) this.getSession(loginInfo.getUserGroup(), loginInfo.getUserID());
             if (current == null || !loginInfo.isRelogin()) {
                 current = new ProxyServerSession(session);
-                this.setMobileAttach(current, new MobileAttach(this.responseCacheSize, this.leaveWait, this.offlineWait));
+                this.setMobileAttach(current, new MobileAttach(this.responseCacheSize));
             } else {
                 MobileAttach attach = this.getMobileAttach(current);
-                if (attach != null && (attach.getSessionState() == MobileSessionState.ONLINE || attach.online())) {
+                if (attach != null && (attach.isState(MobileSessionState.ONLINE) || attach.online())) {
                     Session old = current.setSession(session);
                     if (old != null && old != session)
                         this.disconnect(old);
@@ -152,7 +148,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
         long now = System.currentTimeMillis();
         for (Session session : map.values()) {
             MobileAttach attach = this.getMobileAttach(session);
-            if (attach != null && !attach.isLeaveTimeout(now))
+            if (attach != null && !attach.isOfflineTimeout(now))
                 size++;
         }
         return size;

@@ -141,6 +141,6 @@ public abstract class Request extends NetMessage implements Serializable {
      *
      * @param session
      */
-    protected abstract void requsetBy(Session session);
+    protected abstract void requestBy(Session session);
 
 }

@@ -1,12 +1,12 @@
 package com.tny.game.net.dispatcher;
 
 
-public interface ClientSession extends NetSession, RequsetSession {
+public interface ClientSession extends NetSession, RequestSession {
 
-    public MessageFuture<?> takeFuture(int id);
+    MessageFuture<?> takeFuture(int id);
 
-    public void putFuture(MessageFuture<?> future);
+    void putFuture(MessageFuture<?> future);
 
-    public void clearFuture();
+    void clearFuture();
 
 }

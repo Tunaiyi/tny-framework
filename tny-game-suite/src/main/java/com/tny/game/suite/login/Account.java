@@ -121,6 +121,28 @@ public class Account implements Identifiable {
         }
     }
 
+    public Long getOfflineAt() {
+        if (offlineTime == null)
+            return null;
+        return offlineTime.getMillis();
+    }
+
+    public Long getOnlineAt() {
+        if (onlineTime == null)
+            return null;
+        return onlineTime.getMillis();
+    }
+
+    public void setOfflineAt(Long offlineTime) {
+        if (offlineTime != null)
+            this.offlineTime = new DateTime(this.offlineTime);
+    }
+
+    public void setOnlineAt(Long onlineTime) {
+        if (onlineTime != null)
+            this.onlineTime = new DateTime(this.onlineTime);
+    }
+
     public Integer getCreateDate() {
         if (this.createAt == null)
             return null;

@@ -11,20 +11,25 @@ import com.tny.game.net.dispatcher.Response;
 public class ProtoExResponseBuilder extends AbstractResponseBuilder {
 
     /**
+     * 创建构建器
+     *
+     * @return 返沪构建器s
+     */
+    protected ProtoExResponseBuilder() {
+        super(new ProtoExResponse());
+    }
+
+    /**
      * 构建响应
      *
      * @return 返回构建的响应
      */
     @Override
     public Response build() {
-        ProtoExResponse response = new ProtoExResponse();
-        response.setID(id);
-        if (this.protocol == 0)
+        Response response = this.response;
+        if (response.getProtocol() == 0)
             throw new NullPointerException("protocol is 0");
-        response.setPush(push);
-        response.setProtocol(protocol);
-        response.setResult(result);
-        response.setBody(message);
+        this.response = new ProtoExResponse();
         return response;
     }
 

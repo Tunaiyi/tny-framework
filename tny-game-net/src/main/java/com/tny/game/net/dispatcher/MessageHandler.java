@@ -86,7 +86,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
             } else if (cause instanceof WriteTimeoutException) {
                 LOG.info("{}##通道 {} ==> {} 在 {} 时断开链接", "写出数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
             } else if (cause instanceof ReadTimeoutException) {
-                System.out.println(channel.isActive());
                 LOG.info("{}##通道 {} ==> {} 在 {} 时断开链接", "读取数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
             } else {
                 MessageHandler.LOG.warn(this.getClass().getName() + ".exceptionCaught() 截获异常 : ", cause.getCause());
@@ -141,15 +140,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
                 channel.attr(NetAttributeKey.SERVER_SESSION).set(session);
             }
             Request request = (Request) message;
-            request.requsetBy(session);
+            request.requestBy(session);
             CoreLogger.log(session, request);
             return this.messageDispatcher.dispatch(request, session, appContext);
         } catch (Throwable ex) {
             if (session != null)
-                channel.writeAndFlush(session.getMessageBuilderFactory()
-                        .newResponseBuilder()
-                        .setProtocol(message.getProtocol())
-                        .setResult(CoreResponseCode.RECEIVE_ERROR));
+                session.response(message, CoreResponseCode.RECEIVE_ERROR, null);
             MessageHandler.LOG.error("#GameServerHandler#接受请求异常", ex);
         }
         return null;

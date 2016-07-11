@@ -2,13 +2,14 @@ package com.tny.game.suite.net.rmi;
 
 import com.tny.game.common.utils.json.JSONUtils;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifyChecker;
 import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.client.rmi.RMIClient;
 import com.tny.game.net.client.rmi.RMIService;
+import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.dispatcher.message.simple.SimpleRequestBuilder;
+import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.login.ServeTicket;
@@ -34,7 +35,9 @@ public class GameRMIClient extends RMIClient {
 
     private TicketMaker<ServeTicket> maker;
 
-    public GameRMIClient(ScopeType scopeType, int serverID, int userID, String rmiUrl, RMIService rmiService, RequestChecker checker) {
+    private MessageBuilderFactory messageBuilderFactory;
+
+    public GameRMIClient(ScopeType scopeType, int serverID, int userID, String rmiUrl, RMIService rmiService, RequestVerifyChecker checker) {
         super(rmiService, checker);
         String key = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(scopeType.getServerType().getName()), "");
         this.attributes().setAttribute(SessionKeys.SYSTEM_USER_ID, this.clientID);
@@ -45,6 +48,7 @@ public class GameRMIClient extends RMIClient {
         this.scopeType = scopeType;
         this.rmiUrl = rmiUrl;
         this.maker = new ServeTicketMaker();
+        this.messageBuilderFactory = new SimpleMessageBuilderFactory();
     }
 
     public String getRmiUrl() {
@@ -56,10 +60,11 @@ public class GameRMIClient extends RMIClient {
     }
 
     @Override
-    public Response sendRequset(int protocol, Object... params) throws ClientException {
+    public Response sendRequest(int protocol, Object... params) throws ClientException {
         ServeTicket ticket = new ServeTicket(this.scopeType, this.clientID, this.maker);
         String ticketWord = JSONUtils.toJson(ticket);
-        Request request = new SimpleRequestBuilder()
+        Request request = messageBuilderFactory
+                .newRequestBuilder()
                 .setID(this.requestIDCreator.incrementAndGet())
                 .setRequestChecker(this.checker)
                 .setProtocol(protocol)

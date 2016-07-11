@@ -1,19 +1,22 @@
 package com.tny.game.actor.stage;
 
+import com.tny.game.actor.Available;
+import com.tny.game.actor.BeFinished;
+import com.tny.game.actor.CallAvailable;
+import com.tny.game.actor.CallBeFinished;
+import com.tny.game.actor.SupplyAvailable;
+import com.tny.game.actor.SupplyBeFinished;
 import com.tny.game.actor.stage.Stages.*;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
-import com.tny.game.actor.stage.invok.ApplyStageable;
 import com.tny.game.actor.stage.invok.CatcherRun;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
 import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
-import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,19 +59,30 @@ interface InnerTaskStage<R> extends CommonTaskStage, TypeTaskStage<R>, VoidTaskS
 
     //region Join 链接另一个fn返回的代码段
 
-
     @Override
     @SuppressWarnings("unchecked")
-    default <TS extends TaskStage> TS joinBy(SupplyStageable<TS> fn) {
+    default <T> TypeTaskStage<T> joinGet(SupplyAvailable<T> fn) {
         checkNextExist();
-        return setNext((TS) new JoinTaskStage<>(this.getHead(), new JoinSupplyStageableFragment<>(fn)), Stages.KEY);
+        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinSupplyAvailableFragment<>(fn)), Stages.KEY);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    default <TS extends TaskStage> TS joinBy(ApplyStageable<R, TS> fn) {
+    default <T> TypeTaskStage<T> joinApply(CallAvailable<R, T> fn) {
         checkNextExist();
-        return setNext((TS) new JoinTaskStage<>(this.getHead(), new JoinApplyStageableFragment<>(fn)), Stages.KEY);
+        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinCallAvailableFragment<>(fn)), Stages.KEY);
+    }
+
+    @Override
+    default VoidTaskStage joinRun(SupplyBeFinished fn) {
+        checkNextExist();
+        return setNext(new JoinTaskStage<>(this.getHead(), new JoinSupplyBeFinishedFragment<>(fn)), Stages.KEY);
+    }
+
+    @Override
+    default VoidTaskStage joinAccept(CallBeFinished<R> fn) {
+        checkNextExist();
+        return setNext(new JoinTaskStage<>(this.getHead(), new JoinCallBeFinishedFragment<>(fn)), Stages.KEY);
     }
 
     @Override
@@ -174,24 +188,24 @@ interface InnerTaskStage<R> extends CommonTaskStage, TypeTaskStage<R>, VoidTaskS
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
     @Override
-    default VoidTaskStage waitUntil(BooleanSupplier fn) {
+    default VoidTaskStage waitUntil(BeFinished fn) {
         return this.waitUntil(fn, null);
     }
 
     @Override
-    default VoidTaskStage waitUntil(BooleanSupplier fn, Duration timeout) {
+    default VoidTaskStage waitUntil(BeFinished fn, Duration timeout) {
         checkNextExist();
         InnerTaskStage<Void> stage = new AwaysTaskStage(this.getHead(), new WaitRunFragment(fn, timeout));
         return setNext(stage, Stages.KEY);
     }
 
     @Override
-    default <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn) {
+    default <T> TypeTaskStage<T> waitFor(Available<T> fn) {
         return this.waitFor(fn, null);
     }
 
     @Override
-    default <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn, Duration timeout) {
+    default <T> TypeTaskStage<T> waitFor(Available<T> fn, Duration timeout) {
         checkNextExist();
         InnerTaskStage<T> stage = new ThenSuccessTaskStage<>(this.getHead(), new WaitSupplyFragment<>(fn, timeout));
         return setNext(stage, Stages.KEY);

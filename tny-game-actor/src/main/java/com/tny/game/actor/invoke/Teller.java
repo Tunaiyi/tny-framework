@@ -7,6 +7,6 @@ import java.util.function.Consumer;
 
 public interface Teller<TE> {
 
-    TE stage(Consumer<VoidTaskStage> stage);
+    TE then(Consumer<VoidTaskStage> stage);
 
 }

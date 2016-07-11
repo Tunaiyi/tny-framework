@@ -13,9 +13,10 @@ public interface SessionKeys {
 
     AttrKey<String> OPEN_ID_KEY = AttributeUtils.key(SessionKeys.class, "OPEN_ID_KEY");
     AttrKey<String> OPEN_KEY_KEY = AttributeUtils.key(SessionKeys.class, "OPEN_KEY_KEY");
-    AttrKey<Boolean> GET_CACHED_RESPONSE = AttributeUtils.key(SessionKeys.class, "GET_CACHED_RESPONSE");
     AttrKey<Account> ACCOUNT_KEY = AttributeUtils.key(SessionKeys.class, "ACCOUNT_KEY");
     AttrKey<GameTicket> TICKET_KEY = AttributeUtils.key(SessionKeys.class, "TICKET_KEY");
+    AttrKey<Boolean> GET_CACHED_RESPONSE = AttributeUtils.key(SessionKeys.class, "GET_CACHED_RESPONSE");
+    AttrKey<Integer> REQUEST_ID_COUNTER = AttributeUtils.key(SessionKeys.class, "REQUEST_ID_COUNTER");
 
     AttrKey<Object> SYSTEM_USER_ID = AttributeUtils.key(SessionKeys.class, "SYSTEM_USER_ID");
     AttrKey<String> SYSTEM_USER_USER_GROUP = AttributeUtils.key(SessionKeys.class, "SYSTEM_USER_USER_GROUP");

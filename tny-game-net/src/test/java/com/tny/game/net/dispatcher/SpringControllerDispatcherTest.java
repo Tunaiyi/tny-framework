@@ -1,9 +1,11 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifyChecker;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
@@ -84,7 +86,7 @@ public class SpringControllerDispatcherTest {
     public void setUp() throws Exception {
         this.context.initContext(null);
         this.channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).set(new SimpleMessageBuilderFactory());
-        this.channel.attr(NetAttributeKey.REQUEST_CHECKER).set(this.checker);
+        this.channel.attr(NetAttributeKey.REQUEST_CHECKERS).set(Arrays.asList(this.checker));
     }
 
     @After
@@ -151,20 +153,21 @@ public class SpringControllerDispatcherTest {
         SimpleRequest request = (SimpleRequest) SpringControllerDispatcherTest.messageBuilderFactory.newRequestBuilder()
                 .setProtocol(protocol)
                 .addParameter(Arrays.asList(objects))
-                .setRequestChecker(key != null ? new RequestChecker() {
+                .setRequestChecker(key != null ? new RequestVerifyChecker() {
 
                     @Override
-                    public boolean match(Request request) {
-                        return request.getCheckKey().equals("ddd");
+                    public ResultCode match(Request request) {
+                        return request.getCheckKey().equals("ddd") ? ResultCode.SUCCESS : CoreResponseCode.FALSIFY;
                     }
 
                     @Override
                     public String generate(Request Request) {
                         return "ddd";
                     }
+                    
                 } : null).build();
         if (session != null)
-            request.requsetBy(session);
+            request.requestBy(session);
         return request;
     }
 

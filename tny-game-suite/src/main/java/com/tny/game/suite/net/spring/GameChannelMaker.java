@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -17,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 public class GameChannelMaker<C extends Channel> extends ChannelMaker<C> {
 
     @Autowired
-    public GameChannelMaker(RequestChecker checker) {
-        super(checker);
+    public GameChannelMaker(List<RequestChecker> checkers) {
+        super(checkers);
     }
 
     @Override

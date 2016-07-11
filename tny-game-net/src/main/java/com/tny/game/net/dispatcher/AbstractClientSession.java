@@ -13,8 +13,6 @@ public abstract class AbstractClientSession implements ClientSession {
 
     protected MessageBuilderFactory messageBuilderFactory;
 
-    protected ResponseMonitorHolder monitorHolder;
-
     protected AtomicBoolean futureMapLock = new AtomicBoolean(false);
 
     private volatile HashMap<Integer, MessageFuture<?>> futureMap;
@@ -57,7 +55,6 @@ public abstract class AbstractClientSession implements ClientSession {
         return this.certificate.getLoginAt();
     }
 
-    @Override
     public MessageBuilderFactory getMessageBuilderFactory() {
         return this.messageBuilderFactory;
     }

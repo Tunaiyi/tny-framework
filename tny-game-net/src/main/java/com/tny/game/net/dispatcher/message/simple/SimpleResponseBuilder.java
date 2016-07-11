@@ -11,20 +11,25 @@ import com.tny.game.net.dispatcher.Response;
 public class SimpleResponseBuilder extends AbstractResponseBuilder {
 
     /**
+     * 创建构建器
+     *
+     * @return 返沪构建器
+     */
+    protected SimpleResponseBuilder() {
+        super(new SimpleResponse());
+    }
+
+    /**
      * 构建响应
      *
      * @return 返回构建的响应
      */
     @Override
     public Response build() {
-        SimpleResponse response = new SimpleResponse();
-        response.setID(id);
-        if (this.protocol == 0)
-            throw new NullPointerException("protocol is null");
-        response.setModule(this.protocol / 100);
-        response.setOperation(this.protocol);
-        response.setResult(result);
-        response.setBody(message);
+        Response response = this.response;
+        if (response.getProtocol() == 0)
+            throw new NullPointerException("protocol is 0");
+        this.response = new SimpleResponse();
         return response;
     }
 

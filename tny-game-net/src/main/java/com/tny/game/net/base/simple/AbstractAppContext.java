@@ -6,7 +6,13 @@ import com.tny.game.net.base.AppContext;
 import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.coder.SimpleChannelMaker;
-import com.tny.game.net.dispatcher.*;
+import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.dispatcher.DefaultMessageDispatcher;
+import com.tny.game.net.dispatcher.DefaultSessionHolder;
+import com.tny.game.net.dispatcher.MessageDispatcher;
+import com.tny.game.net.dispatcher.NetMessageDispatcher;
+import com.tny.game.net.dispatcher.NetSessionHolder;
+import com.tny.game.net.dispatcher.ServerSessionFactory;
 import com.tny.game.net.dispatcher.plugin.DefaultPluginHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
@@ -26,7 +32,7 @@ public abstract class AbstractAppContext implements AppContext {
 
     private PluginHolder pluginHolder;
 
-    private RequestChecker checker;
+    private List<RequestChecker> checkers;
 
     private List<AuthProvider> authProviders = new ArrayList<>();
 
@@ -59,7 +65,7 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public ChannelMaker<Channel> getChannelMaker() {
         if (this.channelMaker == null)
-            this.channelMaker = new SimpleChannelMaker<>(this.checker);
+            this.channelMaker = new SimpleChannelMaker<>(this.checkers);
         return this.channelMaker;
     }
 
@@ -70,8 +76,8 @@ public abstract class AbstractAppContext implements AppContext {
         return this.pluginHolder;
     }
 
-    public RequestChecker getChecker() {
-        return this.checker;
+    public List<RequestChecker> getCheckers() {
+        return this.checkers;
     }
 
     @Override
@@ -119,8 +125,8 @@ public abstract class AbstractAppContext implements AppContext {
         this.pluginHolder = pluginHolder;
     }
 
-    public void setChecker(RequestChecker checker) {
-        this.checker = checker;
+    public void setCheckers(List<RequestChecker> checkers) {
+        this.checkers = checkers;
     }
 
     public void setAuthProviders(List<AuthProvider> authProviders) {

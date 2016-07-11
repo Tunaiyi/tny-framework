@@ -19,12 +19,12 @@ public class LocalVoidAnswer extends BaseAnswer<Void, VoidTaskStage> implements 
         this.listeners.add(listener);
     }
 
-    @Override
-    public VoidTaskStage stage() {
-        if (this.stage == null)
-            this.stage = VoidAnswer.super.stage();
-        return this.stage;
-    }
+    // @Override
+    // public VoidTaskStage stage() {
+    //     if (this.stage == null)
+    //         this.stage = VoidAnswer.super.stage();
+    //     return this.stage;
+    // }
 
     protected void fire() {
         if (this.listeners == null)

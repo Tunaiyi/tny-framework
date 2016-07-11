@@ -35,6 +35,9 @@ public class ProtoExResponse extends NetResponse {
     @ProtoExField(5)
     protected boolean push;
 
+    @ProtoExField(6)
+    protected int number;
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -74,37 +77,39 @@ public class ProtoExResponse extends NetResponse {
     }
 
     @Override
+    public int getNumber() {
+        return number;
+    }
+
+    @Override
     protected void setBody(Object body) {
         this.body = body;
     }
 
+    @Override
     protected void setResult(int result) {
         this.result = result;
     }
 
+    @Override
     protected void setID(int id) {
         this.ID = id;
     }
 
+    @Override
     protected void setProtocol(int protocol) {
         this.protocol = protocol;
     }
 
+    @Override
     protected void setPush(boolean push) {
         this.push = push;
     }
 
-    //	@Override
-    //	public void putBody(CommandResult result) {
-    //		this.result = result.getResultCode();
-    //		Object body = result.getBody();
-    //		if (body != null) {
-    //			ProtoExWriter writer = new ProtoExWriter();
-    //			writer.writeMessage(result.getBody(), TypeEncode.EXPLICIT);
-    //			this.body = writer.getByteBuffer();
-    //		}
-    //
-    //	}
+    @Override
+    protected void setNumber(int number) {
+        this.number = number;
+    }
 
     @Override
     public MessageType getMessage() {

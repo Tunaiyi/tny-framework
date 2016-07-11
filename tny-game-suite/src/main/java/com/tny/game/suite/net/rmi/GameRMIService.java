@@ -6,7 +6,6 @@ import com.tny.game.net.base.AppContext;
 import com.tny.game.net.client.rmi.NetRMIService;
 import com.tny.game.net.client.rmi.RMISession;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.ServerSession;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.ServerPreStart;
@@ -30,7 +29,7 @@ public class GameRMIService extends NetRMIService implements ServerPreStart {
     }
 
     @Override
-    protected ServerSession createSession(Request request) throws DispatchException {
+    protected RMISession createSession(Request request) throws DispatchException {
         try {
             if (this.host == null)
                 this.host = RemoteServer.getClientHost();

@@ -2,6 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.Actor;
+import com.tny.game.actor.BeFinished;
 import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.invoke.*;
 import com.tny.game.actor.stage.Stages;
@@ -12,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-class LocalTeller<TE extends Teller, R> implements Teller<TE> {
+class LocalTeller<TE extends Teller, R> implements Teller<TE>, BeFinished {
 
     protected ActorCommand<Void, VoidTaskStage, LocalVoidAnswer> command;
 
@@ -22,17 +23,19 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE> {
 
     protected R runner;
 
-    private boolean isHandled() {
+    @Override
+    public boolean isFinished() {
         return command.isHandled();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public TE stage(Consumer<VoidTaskStage> initStage) {
-        this.stage = Stages.waitUntil(this::isHandled);
+    public TE then(Consumer<VoidTaskStage> initStage) {
+        this.stage = Stages.waitUntil(this);
         initStage.accept(this.stage);
         return (TE) this;
     }
+
 
     static class LocalUntilTeller extends LocalTeller<A0Teller, Supplier<Boolean>> implements A0Teller {
 
@@ -53,6 +56,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE> {
             this.actorCell.tell(command = new ActorRunUntilCommand<>(actorCell, (actor) -> runner.get(), this.stage), null);
         }
 
+
         @Override
         public VoidAnswer tellOf() {
             return this.actorCell.ask(command = new ActorRunUntilCommand<>(actorCell, (actor) -> runner.get(), new LocalVoidAnswer(), this.stage), null);
@@ -71,6 +75,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE> {
             this.actorCell = actorCell;
             this.runner = () -> acceptor.accept(this.actorCell.getActor());
         }
+
 
         @Override
         public void tell() {

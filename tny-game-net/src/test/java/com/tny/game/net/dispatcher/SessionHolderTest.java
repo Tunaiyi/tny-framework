@@ -8,7 +8,12 @@ import com.tny.game.net.base.ProtocolUtils;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -203,6 +208,11 @@ public class SessionHolderTest {
         @Override
         public boolean isConnect() {
             return true;
+        }
+
+        @Override
+        protected int createResponseNumber() {
+            return 0;
         }
 
         @Override

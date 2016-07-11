@@ -1,9 +1,8 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifyChecker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,19 +12,13 @@ import java.util.List;
  */
 public abstract class AbstractRequestBuilder implements RequestBuilder {
 
-    protected int id;
+    protected RequestVerifyChecker checker;
 
-    protected int protocol;
+    protected NetRequest request;
 
-    protected long time;
-
-    protected String ip;
-
-    protected RequestChecker checker;
-
-    protected List<Object> paramList = new ArrayList<Object>();
-
-    protected AbstractRequestBuilder() {
+    protected AbstractRequestBuilder(NetRequest request) {
+        this.request = request;
+        this.request.setTime(System.currentTimeMillis());
     }
 
     /**
@@ -36,7 +29,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder setID(int id) {
-        this.id = id;
+        request.setID(id);
         return this;
     }
 
@@ -48,7 +41,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder setProtocol(Protocol protocol) {
-        this.protocol = protocol.getProtocol();
+        request.setProtocol(protocol.getProtocol());
         return this;
     }
 
@@ -59,7 +52,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      * @return 返回构建器本身
      */
     @Override
-    public RequestBuilder setRequestChecker(RequestChecker checker) {
+    public RequestBuilder setRequestChecker(RequestVerifyChecker checker) {
         this.checker = checker;
         return this;
     }
@@ -72,7 +65,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder setProtocol(int protocol) {
-        this.protocol = protocol;
+        this.request.setProtocol(protocol);
         return this;
     }
 
@@ -85,7 +78,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder addParameter(int index, Object parameter) {
-        this.paramList.add(index, parameter);
+        this.request.addParam(index, parameter);
         return this;
     }
 
@@ -97,7 +90,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder addParameter(Object parameter) {
-        this.paramList.add(parameter);
+        this.request.addParam(parameter);
         return this;
     }
 
@@ -109,7 +102,7 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
      */
     @Override
     public RequestBuilder addParameter(List<Object> parameterList) {
-        this.paramList.addAll(parameterList);
+        this.request.addAllParam(parameterList);
         return this;
     }
 
@@ -122,19 +115,12 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
     @Override
     public RequestBuilder addParameter(Object... parameters) {
         for (Object parameter : parameters)
-            this.paramList.add(parameter);
+            this.request.addParam(parameter);
         return this;
     }
 
-    /**
-     * 清除参数列表
-     *
-     * @return 返回构建器本身
-     */
-    @Override
-    public RequestBuilder clearParameter() {
-        this.paramList.clear();
-        return this;
+    protected void setCheckKey() {
+        request.setCheckKey(this.checker.generate(request));
     }
 
 }

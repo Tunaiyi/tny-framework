@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.tny.game.net.coder.CoderContent.FRAME_MAGIC;
+import static com.tny.game.net.coder.CoderContent.*;
 
 public class SimpleDataPacketEncoder implements DataPacketEncoder {
 
@@ -32,17 +32,16 @@ public class SimpleDataPacketEncoder implements DataPacketEncoder {
             out.writeBytes((byte[]) msg);
             return;
         }
-        byte[] data = null;
+        byte[] data;
         try {
             boolean response = Message.class.isInstance(msg);
             data = this.coder.doEncode(msg);
-            boolean compress = this.compress ? data.length > 1024 : false;
+            boolean compress = this.compress && data.length > 1024;
             if (compress) {
                 data = CompressUtils.compressBytes(data);
             }
             out.writeBytes(FRAME_MAGIC);
-            out.writeByte(0
-                    | (compress ? CoderContent.COMPRESS_OPTION : 0)
+            out.writeByte((compress ? CoderContent.COMPRESS_OPTION : 0)
                     | (response ? CoderContent.RESPONSE_OPTION : 0));
             out.writeInt(data.length);
             out.writeBytes(data);

@@ -7,6 +7,6 @@ import java.util.function.Consumer;
 
 public interface Asker<AK extends Asker, TS extends TaskStage> {
 
-    AK stage(Consumer<TS> stage);
+    AK then(Consumer<TS> stage);
 
 }

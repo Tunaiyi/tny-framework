@@ -1,31 +1,25 @@
 package com.tny.game.suite.login;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.checker.md5.MD5RequestChecker;
+import com.tny.game.common.result.ResultCode;
+import com.tny.game.net.checker.md5.MD5VerifyChecker;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Session;
-import com.tny.game.net.dispatcher.session.mobile.MobileAttach;
-import com.tny.game.net.dispatcher.session.mobile.MobileSessionHolder;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.utils.Configs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class GameMD5Checker extends MD5RequestChecker {
+public class GameMD5VerifyChecker extends MD5VerifyChecker {
 
     private short[] randomKey;
 
-    private List<Integer> directProtocols = new ArrayList<>();
 
     public Object getRandomKey(Request request) {
         return randomKey.length > 0 ? randomKey[request.getID() % randomKey.length] : "";
     }
 
-    public GameMD5Checker(List<Integer> directProtocols, short[] randomKey) {
-        if (directProtocols != null)
-            this.directProtocols.addAll(directProtocols);
+    public GameMD5VerifyChecker(short[] randomKey) {
         if (randomKey == null)
             this.randomKey = new short[0];
         else
@@ -38,21 +32,10 @@ public class GameMD5Checker extends MD5RequestChecker {
     }
 
     @Override
-    public boolean match(Request request) {
+    public ResultCode match(Request request) {
         if (!this.isCheck())
-            return true;
-        Session session = request.getSession();
-        if (directProtocols.contains(request.getProtocol()))
-            return super.match(request);
-        if (request.getID() > 10) {
-            //TODO 是否缓存,不适合在这里进行处理
-            MobileAttach attach = session.attributes().getAttribute(MobileSessionHolder.MOBILE_ATTACH);
-            if (attach != null && !attach.checkAndUpdate(request)) {
-                request.attributes().setAttribute(SessionKeys.GET_CACHED_RESPONSE, true);
-            }
-            return super.match(request);
-        }
-        return false;
+            return ResultCode.SUCCESS;
+        return super.match(request);
     }
 
     private Attributes attributes(Request request) {

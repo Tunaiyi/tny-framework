@@ -1,6 +1,12 @@
 package com.tny.game.actor.stage;
 
 
+import com.tny.game.actor.Available;
+import com.tny.game.actor.BeFinished;
+import com.tny.game.actor.CallAvailable;
+import com.tny.game.actor.CallBeFinished;
+import com.tny.game.actor.SupplyAvailable;
+import com.tny.game.actor.SupplyBeFinished;
 import com.tny.game.actor.stage.exception.TaskTimeoutException;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
@@ -19,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -38,11 +43,11 @@ public class Stages {
         ExceptionUtils.checkNotNull(key, "TaskStageKey is null");
     }
 
-    public static BooleanSupplier time(Duration duration) {
+    public static BeFinished time(Duration duration) {
         return new TimeAwait(duration)::get;
     }
 
-    public static <T> Supplier<Done<T>> time(T object, Duration duration) {
+    public static <T> Available<T> time(T object, Duration duration) {
         return new TimeAwaitWith<>(object, duration)::get;
     }
 
@@ -58,19 +63,19 @@ public class Stages {
     //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
-    public static VoidTaskStage waitUntil(Iterable<? extends BooleanSupplier> fns) {
+    public static VoidTaskStage waitUntil(Iterable<? extends BeFinished> fns) {
         return waitUntil(fns, null);
     }
 
-    public static VoidTaskStage waitUntil(Iterable<? extends BooleanSupplier> fns, Duration timeout) {
+    public static VoidTaskStage waitUntil(Iterable<? extends BeFinished> fns, Duration timeout) {
         return new AwaysTaskStage(null, new WaitRunFragment(fns, timeout));
     }
 
-    public static VoidTaskStage waitUntil(BooleanSupplier fn) {
+    public static VoidTaskStage waitUntil(BeFinished fn) {
         return waitUntil(fn, null);
     }
 
-    public static VoidTaskStage waitUntil(BooleanSupplier fn, Duration timeout) {
+    public static VoidTaskStage waitUntil(BeFinished fn, Duration timeout) {
         return new AwaysTaskStage(null, new WaitRunFragment(fn, timeout));
     }
 
@@ -82,11 +87,11 @@ public class Stages {
         return waitFor(new TimeAwaitWith<>(object, duration)::get, null);
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn) {
+    public static <T> TypeTaskStage<T> waitFor(Available<T> fn) {
         return waitFor(fn, null);
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn, Duration timeout) {
+    public static <T> TypeTaskStage<T> waitFor(Available<T> fn, Duration timeout) {
         return new ThenSuccessTaskStage<>(null, new WaitSupplyFragment<>(fn, timeout));
     }
 
@@ -274,6 +279,60 @@ public class Stages {
         protected TS invoke(T returnVal, Throwable e) {
             return fn.stageable(returnVal).stage();
         }
+
+    }
+
+    static class JoinSupplyAvailableFragment<T> extends VoidJoinFragment<SupplyAvailable<T>, TypeTaskStage<T>> {
+
+        JoinSupplyAvailableFragment(SupplyAvailable<T> fn) {
+            super(fn);
+        }
+
+        @Override
+        protected TypeTaskStage<T> invoke(Void returnVal, Throwable e) {
+            return waitFor(fn.get());
+        }
+
+    }
+
+    static class JoinSupplyBeFinishedFragment<T> extends VoidJoinFragment<SupplyBeFinished, VoidTaskStage> {
+
+        JoinSupplyBeFinishedFragment(SupplyBeFinished fn) {
+            super(fn);
+        }
+
+        @Override
+        protected VoidTaskStage invoke(Void returnVal, Throwable e) {
+            return waitUntil(fn.get());
+        }
+
+    }
+
+    static class JoinCallBeFinishedFragment<R> extends JoinFragment<CallBeFinished<R>, R, VoidTaskStage> {
+
+        JoinCallBeFinishedFragment(CallBeFinished<R> fn) {
+            super(fn);
+        }
+
+        @Override
+        protected VoidTaskStage invoke(R returnVal, Throwable e) {
+            return waitUntil(fn.apply(returnVal));
+        }
+
+
+    }
+
+    static class JoinCallAvailableFragment<T, R> extends JoinFragment<CallAvailable<R, T>, R, TypeTaskStage<T>> {
+
+        JoinCallAvailableFragment(CallAvailable<R, T> fn) {
+            super(fn);
+        }
+
+        @Override
+        protected TypeTaskStage<T> invoke(R returnVal, Throwable e) {
+            return waitFor(fn.apply(returnVal));
+        }
+
 
     }
 
@@ -559,16 +618,16 @@ public class Stages {
 
     }
 
-    static class WaitRunFragment extends VoidWaitFragment<BooleanSupplier, Boolean> {
+    static class WaitRunFragment extends VoidWaitFragment<BeFinished, Boolean> {
 
-        WaitRunFragment(BooleanSupplier fn, Duration timeout) {
+        WaitRunFragment(BeFinished fn, Duration timeout) {
             super(fn, timeout);
         }
 
-        WaitRunFragment(Iterable<? extends BooleanSupplier> fns, Duration timeout) {
+        WaitRunFragment(Iterable<? extends BeFinished> fns, Duration timeout) {
             super(() -> {
-                for (BooleanSupplier fn : fns)
-                    if (!fn.getAsBoolean())
+                for (BeFinished fn : fns)
+                    if (!fn.isFinished())
                         return false;
                 return true;
             }, timeout);
@@ -576,20 +635,20 @@ public class Stages {
 
         @Override
         protected Boolean invoke(Void returnVal, Throwable e) {
-            return checkBoolean(fn.getAsBoolean());
+            return checkBoolean(fn.isFinished());
         }
 
     }
 
-    static class WaitSupplyFragment<R> extends VoidWaitFragment<Supplier<Done<R>>, R> {
+    static class WaitSupplyFragment<R> extends VoidWaitFragment<Available<R>, R> {
 
-        WaitSupplyFragment(Supplier<Done<R>> fn, Duration timeout) {
+        WaitSupplyFragment(Available<R> fn, Duration timeout) {
             super(fn, timeout);
         }
 
         @Override
         protected R invoke(Void returnVal, Throwable e) {
-            return checkDone(fn.get());
+            return checkDone(fn.achieve());
         }
 
     }

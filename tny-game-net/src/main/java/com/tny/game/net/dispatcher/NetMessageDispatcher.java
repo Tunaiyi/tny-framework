@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -65,7 +66,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     @Override
     public DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException {
-        request.requsetBy(session);
+        request.requestBy(session);
 
         // 获取方法持有器
         final MethodHolder methodHolder = this.methodHolder.get(request.getProtocol());
@@ -348,7 +349,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (this.answer instanceof VoidAnswer) {
                 return null;
             } else if (this.answer instanceof TypeAnswer) {
-                return ((TypeAnswer) this.answer).result().get();
+                return ((TypeAnswer) this.answer).achieve().get();
             }
             return null;
         }
@@ -384,9 +385,11 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", this.getClass(), this.getName(), callback.getClass(), e);
                 }
             }
-            ChannelFuture future = this.session.response(this.message, code, value);
+            Optional<ChannelFuture> future = this.session.response(this.message, code, value);
             if (future != null && code.getType() == ResultCodeType.ERROR) {
-                future.addListener(future1 -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session));
+                future.ifPresent(result ->
+                        result.addListener(f -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session))
+                );
             }
         }
 
@@ -540,15 +543,18 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("检测调用 {}.{} 请求是否被篡改", this.methodHolder.getMethodClass(), this.methodHolder.getName());
 
-            RequestChecker checker = this.session.getChecker();
-            if (this.methodHolder.isCheck() && checker != null) {
-                // 获取普通调用的校验码密钥
-                if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                    NetMessageDispatcher.DISPATCHER_LOG.debug("获取校验码秘钥");
+            List<RequestChecker> checkers = this.session.getCheckers();
+            if (this.methodHolder.isCheck() && !checkers.isEmpty()) {
                 // 检测请求的正确性
-                if (!checker.match(this.message)) {
-                    NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 请求被篡改", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-                    throw new DispatchException(CoreResponseCode.FALSIFY);
+                for (RequestChecker checker : checkers) {
+                    // 获取普通调用的校验码密钥
+                    if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                        NetMessageDispatcher.DISPATCHER_LOG.debug("调用 {}.{} 检测Request - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass());
+                    ResultCode resultCode;
+                    if ((resultCode = checker.match(this.message)).isFailure()) {
+                        NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 检测Request - {} 失败原因: {} - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass(), resultCode, resultCode.getMessage());
+                        throw new DispatchException(CoreResponseCode.FALSIFY);
+                    }
                 }
             }
 

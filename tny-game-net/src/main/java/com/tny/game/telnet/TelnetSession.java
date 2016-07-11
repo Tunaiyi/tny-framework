@@ -8,6 +8,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 
 import java.net.InetSocketAddress;
+import java.util.Optional;
 
 public class TelnetSession extends ChannelServerSession {
 
@@ -23,6 +24,11 @@ public class TelnetSession extends ChannelServerSession {
         return this.hostName;
     }
 
+    @Override
+    protected int createResponseNumber() {
+        return 0;
+    }
+
     public TelnetSession(int userId, Channel channel) {
         super(channel, LoginCertificate.createLogin(userId, TelnetSession.TELNET_USER_GROUP, false));
         this.hostName = channel == null || channel.remoteAddress() == null ? null : ((InetSocketAddress) channel
@@ -30,7 +36,7 @@ public class TelnetSession extends ChannelServerSession {
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
         return this.write(body + "\r\n");
     }
 

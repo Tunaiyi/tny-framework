@@ -4,28 +4,17 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.checker.RequestChecker;
-import com.tny.game.net.coder.DataPacketEncoder;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractNetSession implements ServerSession, ClientSession {
 
     protected LoginCertificate certificate;
 
-    /**
-     * 编码器
-     */
-    protected DataPacketEncoder encoder;
-
     protected RequestChecker checker;
 
     protected MessageBuilderFactory messageBuilderFactory;
-
-    protected ResponseMonitorHolder monitorHolder;
-
-    protected AtomicInteger requestIDCreator = new AtomicInteger(1);
 
     private AtomicBoolean futureMapLock = new AtomicBoolean(false);
 
@@ -75,23 +64,12 @@ public abstract class AbstractNetSession implements ServerSession, ClientSession
     }
 
     @Override
-    public DataPacketEncoder getEncoder() {
-        return this.encoder;
-    }
-
-    @Override
-    public MessageBuilderFactory getMessageBuilderFactory() {
-        return this.messageBuilderFactory;
-    }
-
-    @Override
     public void login(LoginCertificate certificate) {
         this.certificate = certificate;
     }
 
-    @Override
-    public RequestChecker getChecker() {
-        return this.checker;
+    protected MessageBuilderFactory getMessageBuilderFactory() {
+        return this.messageBuilderFactory;
     }
 
     @Override

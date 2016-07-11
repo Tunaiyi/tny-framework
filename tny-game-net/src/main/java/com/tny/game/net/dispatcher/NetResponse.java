@@ -34,6 +34,16 @@ public abstract class NetResponse extends Response {
 
     protected abstract void setBody(Object message);
 
+    protected abstract void setResult(int result);
+
+    protected abstract void setID(int id);
+
+    protected abstract void setProtocol(int protocol);
+
+    protected abstract void setPush(boolean push);
+
+    protected abstract void setNumber(int number);
+
     @Override
     public MessageType getMessage() {
         return MessageType.RESPONSE;

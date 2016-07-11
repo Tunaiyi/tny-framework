@@ -4,11 +4,11 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifyChecker;
 import com.tny.game.net.client.exception.ClientException;
+import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.dispatcher.message.simple.SimpleRequestBuilder;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,13 +17,15 @@ public class RMIClient {
 
     protected RMIService rmiService;
 
-    protected RequestChecker checker;
+    protected RequestVerifyChecker checker;
 
     protected AtomicInteger requestIDCreator = new AtomicInteger(1);
 
+    protected MessageBuilderFactory messageBuilderFactory;
+
     private volatile transient Attributes attributes;
 
-    public RMIClient(RMIService rmiService, RequestChecker checker) {
+    public RMIClient(RMIService rmiService, RequestVerifyChecker checker) {
         this.checker = checker;
         this.rmiService = rmiService;
     }
@@ -38,8 +40,8 @@ public class RMIClient {
         }
     }
 
-    public Response sendRequset(Protocol protocol, Object... requestParams) throws ClientException {
-        return this.sendRequset(protocol.getProtocol(), requestParams);
+    public Response sendRequest(Protocol protocol, Object... requestParams) throws ClientException {
+        return this.sendRequest(protocol.getProtocol(), requestParams);
     }
 
     /**
@@ -50,9 +52,10 @@ public class RMIClient {
      * @return 响应结果
      * @throws ClientException
      */
-    public Response sendRequset(int protocol, Object... params) throws ClientException {
-        Request request = new SimpleRequestBuilder()
-                .setAttributes(this.attributes())
+    public Response sendRequest(int protocol, Object... params) throws ClientException {
+        Request request = messageBuilderFactory
+                .newRequestBuilder()
+                // .setAttributes(this.attributes())
                 .setID(this.requestIDCreator.getAndIncrement())
                 .setRequestChecker(this.checker)
                 .setProtocol(protocol)

@@ -31,7 +31,9 @@ public class AccountManager {
                 ticket.getAd(),
                 ticket.getServer(),
                 accountObj.getCreateDate(),
-                accountObj.getCreateAt());
+                accountObj.getCreateAt(),
+                accountObj.getOnlineAt(),
+                accountObj.getOfflineAt());
     }
 
     public void updateOfflineAt(long uid, int dateInt, long millis) {

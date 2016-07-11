@@ -13,7 +13,7 @@
 
     <context:component-scan base-package="com.tny.game"/>
 
-    <bean name="checker" class="com.tny.game.net.TestRequetChecker"/>
+    <bean name="checker" class="com.tny.game.net.TestRequestChecker"/>
 
     <bean name="testSessionHoslder" class="com.tny.game.net.dispatcher.DefaultSessionHolder">
     </bean>
@@ -30,7 +30,7 @@
                 <ref bean="authProvider"/>
             </list>
         </property>
-        <property name="checker" ref="checker"/>
+        <property name="checkers" ref="checker"/>
         <property name="messageDispatcher" ref="dispatcher"/>
     </bean>
 

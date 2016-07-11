@@ -12,6 +12,7 @@ import com.tny.game.telnet.TelnetSession;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NetAttributeKey {
@@ -32,7 +33,7 @@ public class NetAttributeKey {
     public static final AttrKey<DispatcherCommandBox> USER_COMMAND_BOX = AttributeUtils.key(Session.class.getName() + "USER_COMMAND_BOX");
 
     public static final AttributeKey<MessageBuilderFactory> MSG_BUILDER_FACTOR = AttributeKey.valueOf(NetAttributeKey.class + "MSG_BUILDER_FACTOR");
-    public static final AttributeKey<RequestChecker> REQUEST_CHECKER = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKER");
+    public static final AttributeKey<List<RequestChecker>> REQUEST_CHECKERS = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKERS");
     public static final AttributeKey<DataPacketEncoder> DATA_PACKET_ENCODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_ENCODER");
     public static final AttributeKey<DataPacketDecoder> DATA_PACKET_DECODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_DECODER");
     public static final AttributeKey<ResponseMonitorHolder> RESPONSE_HANDLER = AttributeKey.valueOf(NetAttributeKey.class + "RESPONSE_HANDLER");

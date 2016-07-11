@@ -5,6 +5,6 @@ import io.netty.buffer.ByteBuf;
 
 public interface DataPacketEncoder {
 
-    public void encodeObject(Object msg, ByteBuf out) throws Exception;
+    void encodeObject(Object msg, ByteBuf out) throws Exception;
 
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class NetRequest extends Request {
@@ -59,7 +60,7 @@ public abstract class NetRequest extends Request {
     }
 
     @Override
-    protected void requsetBy(Session session) {
+    protected void requestBy(Session session) {
         this.session = session;
     }
 
@@ -174,6 +175,22 @@ public abstract class NetRequest extends Request {
                 .append(this.getUserGroup(), rhs.getUserGroup())
                 .isEquals();
     }
+
+    protected abstract void setCheckKey(String checkKey);
+
+    protected abstract void setID(int id);
+
+    protected abstract void setParamList(List<?> paramList);
+
+    protected abstract void setProtocol(int protocol);
+
+    protected abstract void setTime(long time);
+
+    protected abstract void addParam(int index, Object parameter);
+
+    protected abstract void addParam(Object parameter);
+
+    protected abstract void addAllParam(List<Object> parameterList);
 
     @Override
     public String toString() {

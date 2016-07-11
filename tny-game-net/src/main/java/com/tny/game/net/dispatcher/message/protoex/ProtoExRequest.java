@@ -3,7 +3,12 @@ package com.tny.game.net.dispatcher.message.protoex;
 import com.tny.game.net.dispatcher.NetRequest;
 import com.tny.game.net.dispatcher.Session;
 import com.tny.game.protoex.ProtoExEnum;
-import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.annotations.Packed;
+import com.tny.game.protoex.annotations.ProtoEx;
+import com.tny.game.protoex.annotations.ProtoExConf;
+import com.tny.game.protoex.annotations.ProtoExElement;
+import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.protoex.annotations.TypeEncode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +34,7 @@ public class ProtoExRequest extends NetRequest {
     @ProtoExField(5)
     @Packed(false)
     @ProtoExElement(@ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
-    protected List<Object> paramList = new ArrayList<Object>();
+    protected List<Object> paramList = new ArrayList<>();
 
     public ProtoExRequest() {
     }
@@ -81,18 +86,6 @@ public class ProtoExRequest extends NetRequest {
         return this.getParamList().toArray(new Object[0]);
     }
 
-    protected void setID(int id) {
-        this.ID = id;
-    }
-
-    protected void setParamList(List<?> paramList) {
-        this.paramList.addAll(paramList);
-    }
-
-    protected void setProtocol(int protocol) {
-        this.protocol = protocol;
-    }
-
     @Override
     protected <T> T parseParam(int index, Class<T> clazz, Object object) {
         if (object instanceof Number && ProtoExEnum.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
@@ -104,12 +97,44 @@ public class ProtoExRequest extends NetRequest {
         return super.parseParam(index, clazz, object);
     }
 
+    @Override
     protected void setCheckKey(String checkKey) {
         this.checkKey = checkKey;
     }
 
+    @Override
+    protected void setID(int id) {
+        this.ID = id;
+    }
+
+    @Override
+    protected void setParamList(List<?> paramList) {
+        this.paramList.addAll(paramList);
+    }
+
+    @Override
+    protected void setProtocol(int protocol) {
+        this.protocol = protocol;
+    }
+
+    @Override
     protected void setTime(long time) {
         this.time = time;
+    }
+
+    @Override
+    protected void addParam(int index, Object parameter) {
+        this.paramList.add(index, parameter);
+    }
+
+    @Override
+    protected void addParam(Object parameter) {
+        this.paramList.add(parameter);
+    }
+
+    @Override
+    protected void addAllParam(List<Object> parameterList) {
+        this.paramList.addAll(parameterList);
     }
 
     @Override

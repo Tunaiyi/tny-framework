@@ -1,14 +1,19 @@
 package com.tny.game.net.client.rmi;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
+import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.dispatcher.AbstractNetSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.MessageFuture;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import io.netty.channel.ChannelFuture;
+
+import java.util.List;
+import java.util.Optional;
 
 public class RMISession extends AbstractNetSession {
 
@@ -25,6 +30,11 @@ public class RMISession extends AbstractNetSession {
     @Override
     public void disconnect() {
 
+    }
+
+    @Override
+    protected MessageBuilderFactory getMessageBuilderFactory() {
+        return super.getMessageBuilderFactory();
     }
 
     @Override
@@ -48,12 +58,12 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
         return null;
     }
 
     @Override
-    public ChannelFuture response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
         return null;
     }
 
@@ -67,4 +77,8 @@ public class RMISession extends AbstractNetSession {
         return false;
     }
 
+    @Override
+    public List<RequestChecker> getCheckers() {
+        return ImmutableList.of();
+    }
 }

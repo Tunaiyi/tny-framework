@@ -11,12 +11,19 @@ import io.netty.channel.Channel;
  */
 public class SimpleChannelServerSession extends ChannelServerSession {
 
+    private int number = 0;
+
     public SimpleChannelServerSession(Channel channel) {
         super(channel);
     }
 
     public SimpleChannelServerSession(Channel channel, LoginCertificate loginInfo) {
         super(channel, loginInfo);
+    }
+
+    @Override
+    protected int createResponseNumber() {
+        return number++;
     }
 
 }

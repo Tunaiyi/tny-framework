@@ -4,11 +4,18 @@ import com.tny.game.net.LoginCertificate;
 
 public interface NetSession extends Session {
 
-    public void login(LoginCertificate loginInfo);
+    void login(LoginCertificate loginInfo);
 
     /**
      * 断开连接
      */
-    public void disconnect();
+    void disconnect();
+
+    // /**
+    //  * 获取信息构建器工厂
+    //  *
+    //  * @return
+    //  */
+    // MessageBuilderFactory getMessageBuilderFactory();
 
 }

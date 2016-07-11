@@ -10,14 +10,6 @@ import com.tny.game.net.base.Protocol;
  */
 public interface ResponseBuilder {
 
-    //	/**
-    //	 * 通过Request 设置Response
-    //	 *
-    //	 * @param request
-    //	 * @return
-    //	 */
-    //	public ResponseBuilder setByRequset(final Request request);
-
     /**
      * 设置响应ID
      *
@@ -84,9 +76,18 @@ public interface ResponseBuilder {
     ResponseBuilder setBody(Object message);
 
     /**
+     * 设置序号
+     *
+     * @param number
+     * @return
+     */
+    ResponseBuilder setNumber(int number);
+
+    /**
      * 构建响应
      *
      * @return 返回构建的响应
      */
     Response build();
+
 }

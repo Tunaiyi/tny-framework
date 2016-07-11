@@ -26,4 +26,9 @@ public abstract class Response extends NetMessage implements Serializable {
      */
     public abstract int getResult();
 
+    /**
+     * @return 获取序号
+     */
+    public abstract int getNumber();
+
 }

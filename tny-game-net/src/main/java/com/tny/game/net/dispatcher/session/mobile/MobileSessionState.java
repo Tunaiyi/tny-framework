@@ -1,11 +1,20 @@
 package com.tny.game.net.dispatcher.session.mobile;
 
-public enum MobileSessionState {
+enum MobileSessionState {
 
-    ONLINE,
+    ONLINE(1),
 
-    OFFLINE,
+    OFFLINE(2),
 
-    INVALID;
+    INVALID(0);
 
+    private final int id;
+
+    MobileSessionState(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

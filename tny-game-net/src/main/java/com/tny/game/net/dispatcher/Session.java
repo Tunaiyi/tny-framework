@@ -73,13 +73,6 @@ public interface Session {
      */
     boolean isConnect();
 
-    /**
-     * 获取信息构建器工厂
-     *
-     * @return
-     */
-    MessageBuilderFactory getMessageBuilderFactory();
-
     LoginCertificate getCertificate();
 
     boolean isOnline();

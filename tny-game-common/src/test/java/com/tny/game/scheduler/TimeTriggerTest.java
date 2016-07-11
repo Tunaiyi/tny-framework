@@ -186,7 +186,7 @@ public class TimeTriggerTest {
         Assert.assertFalse(startNoEndTrigger.isSuspend());
         Assert.assertTrue(startNoEndTrigger.isWorking());
 
-        Assert.assertEquals(duration + 100, startNoEndTrigger.countRemainMills(resumeTime.plusMillis(-100).getMillis()));
+        Assert.assertEquals(cost + 100, startNoEndTrigger.countRemainMills(resumeTime.plusMillis(-100).getMillis()));
         Assert.assertEquals(duration - cost, startNoEndTrigger.countRemainMills(resumeTime.getMillis()));
         resumeTime = atTime.plusMillis(3200);
         Assert.assertEquals(duration - cost - 200, startNoEndTrigger.countRemainMills(resumeTime.getMillis()));

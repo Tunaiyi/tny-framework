@@ -2,7 +2,10 @@ package com.tny.game.net.client.rmi;
 
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.dispatcher.*;
+import com.tny.game.net.dispatcher.CommandResult;
+import com.tny.game.net.dispatcher.MessageDispatcher;
+import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.dispatcher.Response;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 
 public abstract class NetRMIService implements RMIService {
@@ -26,7 +29,7 @@ public abstract class NetRMIService implements RMIService {
 
     @Override
     public Response send(Request request) {
-        ServerSession session = null;
+        RMISession session = null;
         try {
             session = this.createSession(request);
             CommandResult result = this.messageDispatcher.dispatch(request, session, this.context).invoke();
@@ -49,6 +52,6 @@ public abstract class NetRMIService implements RMIService {
         return null;
     }
 
-    protected abstract ServerSession createSession(Request request) throws DispatchException;
+    protected abstract RMISession createSession(Request request) throws DispatchException;
 
 }

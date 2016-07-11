@@ -6,6 +6,8 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.coder.DataPacketEncoder;
 
+import java.util.List;
+
 public abstract class AbstractServerSession implements ServerSession {
 
     protected LoginCertificate certificate;
@@ -15,7 +17,7 @@ public abstract class AbstractServerSession implements ServerSession {
      */
     protected DataPacketEncoder encoder;
 
-    protected RequestChecker checker;
+    protected List<RequestChecker> checkers;
 
     protected MessageBuilderFactory messageBuilderFactory;
 
@@ -62,13 +64,7 @@ public abstract class AbstractServerSession implements ServerSession {
         return this.certificate.getLoginAt();
     }
 
-    @Override
-    public DataPacketEncoder getEncoder() {
-        return this.encoder;
-    }
-
-    @Override
-    public MessageBuilderFactory getMessageBuilderFactory() {
+    protected MessageBuilderFactory getMessageBuilderFactory() {
         return this.messageBuilderFactory;
     }
 
@@ -78,8 +74,8 @@ public abstract class AbstractServerSession implements ServerSession {
     }
 
     @Override
-    public RequestChecker getChecker() {
-        return this.checker;
+    public List<RequestChecker> getCheckers() {
+        return this.checkers;
     }
 
     /**

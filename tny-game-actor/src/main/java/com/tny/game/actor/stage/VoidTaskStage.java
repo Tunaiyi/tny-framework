@@ -1,14 +1,15 @@
 package com.tny.game.actor.stage;
 
 
+import com.tny.game.actor.Available;
+import com.tny.game.actor.BeFinished;
+import com.tny.game.actor.SupplyAvailable;
+import com.tny.game.actor.SupplyBeFinished;
 import com.tny.game.actor.stage.invok.CatcherRun;
 import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
-import com.tny.game.actor.stage.invok.SupplyStageable;
-import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -16,7 +17,9 @@ import java.util.function.Supplier;
  */
 public interface VoidTaskStage extends TaskStage {
 
-    <TS extends TaskStage> TS joinBy(SupplyStageable<TS> fn);
+    VoidTaskStage joinRun(SupplyBeFinished fn);
+
+    <T> TypeTaskStage<T> joinGet(SupplyAvailable<T> fn);
 
     <TS extends TaskStage> TS join(Supplier<TS> fn);
 
@@ -30,12 +33,12 @@ public interface VoidTaskStage extends TaskStage {
 
     VoidTaskStage thenThrow(CatcherRun catcher);
 
-    VoidTaskStage waitUntil(BooleanSupplier fn);
+    VoidTaskStage waitUntil(BeFinished fn);
 
-    VoidTaskStage waitUntil(BooleanSupplier fn, Duration timeout);
+    VoidTaskStage waitUntil(BeFinished fn, Duration timeout);
 
-    <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn);
+    <T> TypeTaskStage<T> waitFor(Available<T> fn);
 
-    <T> TypeTaskStage<T> waitFor(Supplier<Done<T>> fn, Duration timeout);
+    <T> TypeTaskStage<T> waitFor(Available<T> fn, Duration timeout);
 
 }

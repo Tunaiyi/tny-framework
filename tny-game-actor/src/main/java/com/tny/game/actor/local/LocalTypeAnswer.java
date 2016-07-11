@@ -22,18 +22,18 @@ class LocalTypeAnswer<T> extends BaseAnswer<T, TypeTaskStage<T>> implements Type
     }
 
     @Override
-    public Done<T> result() {
+    public Done<T> achieve() {
         if (!this.isDone())
             return Do.fail();
         return Do.succNullable(this.getRawValue());
     }
 
-    @Override
-    public TypeTaskStage<T> stage() {
-        if (this.stage == null)
-            this.stage = TypeAnswer.super.stage();
-        return this.stage;
-    }
+    // @Override
+    // public TypeTaskStage<T> stage() {
+    //     if (this.stage == null)
+    //         this.stage = TypeAnswer.super.stage();
+    //     return this.stage;
+    // }
 
     protected void fire() {
         if (this.listeners == null)
