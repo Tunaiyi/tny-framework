@@ -44,9 +44,9 @@ public interface AccountDAO extends AccountDBFields {
             + "`ad`=:ad, "
             + "`createSID`=:createSID, "
             + "`createDate`=:createDate, "
-            + "`createAt`=:createAt "
-            + "`onlineAt`=:onlineAt"
-            + "`offlineAt`=:offlineAt"
+            + "`createAt`=:createAt, "
+            + "`onlineAt`=:onlineAt, "
+            + "`offlineAt`=:offlineAt "
             + "where `uid` = :uid and `account` is null")
     int update(@SQLParam("uid") long uid,
                @SQLParam("account") String account,
@@ -63,13 +63,13 @@ public interface AccountDAO extends AccountDBFields {
                @SQLParam("onlineAt") Long onlineAt,
                @SQLParam("offlineAt") Long offlineAt);
 
-    @SQL("update " + TABLE + " set `createRoleDate`=:createRoleDate, `createRoleAt`=:createRoleAt, `onlineTime`=:createRoleAt, `level`=1 where `uid` = :uid")
+    @SQL("update " + TABLE + " set `createRoleDate`=:createRoleDate, `createRoleAt`=:createRoleAt, `onlineAt`=:createRoleAt, `level`=1 where `uid` = :uid")
     int updateCreateRole(@SQLParam("uid") long uid, @SQLParam("createRoleDate") int createRoleDate, @SQLParam("createRoleAt") long createRoleAt);
 
-    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `onlineTime`=:actionAt where `uid` = :uid")
+    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `onlineAt`=:actionAt where `uid` = :uid")
     int updateOnlineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int activeDate, @SQLParam("actionAt") long onlineAt);
 
-    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `offlineTime`=:actionAt where `uid` = :uid")
+    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `offlineAt`=:actionAt where `uid` = :uid")
     int updateOfflineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int actionDate, @SQLParam("actionAt") long offlineAt);
 
 }

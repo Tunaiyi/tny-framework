@@ -37,23 +37,12 @@ public final class ControllerHolder extends AbstractControllerHolder {
         this.initMethodHolder(executor);
     }
 
-    private static final MethodFilter FILTER = new MethodFilter() {
-
-        @Override
-        public boolean filter(Method method) {
-            if (OBJECT_METHOD_LIST.indexOf(method) > -1)
-                return true;
-            if (Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()))
-                return false;
-            //			Class<?>[] parameterClass = method.getParameterTypes();
-            //			if (parameterClass.length <= 0)
-            //				return true;
-            //			if (!Request.class.isAssignableFrom(parameterClass[0]) &&
-            //					parameterClass[0] != int.class && parameterClass[0] != Integer.class)
-            //				return true;
+    private static final MethodFilter FILTER = method -> {
+        if (OBJECT_METHOD_LIST.indexOf(method) > -1)
             return true;
-        }
-
+        if (Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()))
+            return false;
+        return true;
     };
 
     protected void initMethodHolder(final Object executor) {
@@ -89,7 +78,7 @@ public final class ControllerHolder extends AbstractControllerHolder {
     @Override
     public String getName() {
         final String controlName = this.controller.name();
-        if (controlName == null || controlName.equals("")) {
+        if (controlName.equals("")) {
             final String className = this.clazz.getName();
             final String[] paths = className.split("\\.");
             return paths[paths.length - 1];

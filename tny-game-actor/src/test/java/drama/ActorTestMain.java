@@ -2,9 +2,9 @@ package drama;
 
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.local.LocalActor;
 import com.tny.game.actor.local.LocalActorContext;
+import com.tny.game.actor.stage.TaskStage;
 
 /**
  * Created by Kun Yang on 16/4/30.
@@ -39,30 +39,27 @@ public class ActorTestMain {
 
 
         System.out.println(Thread.currentThread());
-        VoidAnswer answer = actor1.asTeller(service::tell)
-                .then((stage) -> stage
-                        .joinGet(() -> actor2.asAsker(service::askName).ask())
-                        .joinApply((name) -> actor2.asAsker(service::askAge).ask(name))
-                        .thenAccept((message) -> {
-                            actor2.asTeller(service::tell).tell();
-                            System.out.println(message);
-                        }))
-                .tellOf();
+        TaskStage doStage = actor1.asTeller(service::tell).then((stage) -> stage
+                .joinFor(() -> actor2.asAsker(service::askName).ask())
+                .joinFor((name) -> actor2.asAsker(service::askAge).ask(name))
+                .thenAccept((message) -> {
+                    actor2.asTeller(service::tell).tell();
+                    System.out.println(message);
+                }))
+                .telling();
 
-        while (!answer.isDone()) {
+        while (!doStage.isDone()) {
             Thread.sleep(10);
         }
         // System.out.println(StageUtils.getResult(answer.stage()).get());
 
         long time = System.currentTimeMillis() + 5000;
 
-        answer = actor1.tellUntil(() -> System.currentTimeMillis() > time)
-                .then(
-                        stage -> stage.thenRun(() -> System.out.println("finish tell until"))
-                )
-                .tellOf();
+        doStage = actor1.tellUntil(() -> System.currentTimeMillis() > time).then(stage -> stage
+                .thenRun(() -> System.out.println("finish tell until")))
+                .telling();
 
-        while (!answer.isDone()) {
+        while (!doStage.isDone()) {
             Thread.sleep(10);
         }
 

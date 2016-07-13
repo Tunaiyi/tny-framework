@@ -1,8 +1,8 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.CallAvailable;
-import com.tny.game.actor.CallBeFinished;
+import com.tny.game.actor.Available;
+import com.tny.game.actor.Completable;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
@@ -14,15 +14,16 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
+ * 有类型阶段
  * Created by Kun Yang on 16/1/22.
  */
 public interface TypeTaskStage<R> extends TaskStage {
 
     R getResult();
 
-    VoidTaskStage joinAccept(CallBeFinished<R> fn);
+    VoidTaskStage joinUntil(Function<R, Completable> fn);
 
-    <T> TypeTaskStage<T> joinApply(CallAvailable<R, T> fn);
+    <T> TypeTaskStage<T> joinFor(Function<R, Available<T>> fn);
 
     <TS extends TaskStage> TS join(Function<R, TS> fn);
 

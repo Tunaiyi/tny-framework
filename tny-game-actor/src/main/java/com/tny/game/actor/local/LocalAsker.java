@@ -6,6 +6,7 @@ import com.tny.game.actor.Available;
 import com.tny.game.actor.TypeAnswer;
 import com.tny.game.actor.invoke.*;
 import com.tny.game.actor.stage.Stages;
+import com.tny.game.actor.stage.TaskStage;
 import com.tny.game.actor.stage.TypeTaskStage;
 import com.tny.game.common.utils.Done;
 
@@ -37,6 +38,13 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         return (AK) this;
     }
 
+    protected TypeTaskStage<R> stage() {
+        if (this.stage == null)
+            this.stage = Stages.waitFor(this);
+        return this.stage;
+    }
+
+
     static class LocalUntilAsker<R> extends LocalAsker<R, A0Asker, Supplier<Done<R>>> implements A0Asker<R, TypeTaskStage<R>> {
 
 
@@ -53,6 +61,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         @Override
         public TypeAnswer<R> ask() {
             return this.actorCell.ask(command = new ActorCallUntilCommand<>(actorCell, (actor) -> caller.get(), new LocalTypeAnswer<>(), this.stage), null);
+        }
+
+        @Override
+        public TaskStage asking() {
+            this.ask();
+            return this.stage();
         }
 
     }
@@ -74,6 +88,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
             return this.actorCell.ask(command = new ActorCallCommand<>(actorCell, () -> caller.call(), new LocalTypeAnswer<>(), this.stage), null);
         }
 
+        @Override
+        public TaskStage asking() {
+            this.ask();
+            return this.stage();
+        }
+
     }
 
     static class LocalA1Asker<R, A1> extends LocalAsker<R, A1Asker, A1Caller<R, A1>> implements A1Asker<R, TypeTaskStage<R>, A1> {
@@ -91,6 +111,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         @Override
         public TypeAnswer<R> ask(A1 a1) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1), new LocalTypeAnswer<>(), this.stage), null);
+        }
+
+        @Override
+        public TaskStage asking(A1 arg1) {
+            this.ask(arg1);
+            return this.stage();
         }
     }
 
@@ -110,6 +136,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         public TypeAnswer<R> ask(A1 a1, A2 a2) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2), new LocalTypeAnswer<>(), this.stage), null);
         }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2) {
+            this.ask(arg1, arg2);
+            return this.stage();
+        }
     }
 
     static class LocalA3Asker<R, A1, A2, A3> extends LocalAsker<R, A3Asker, A3Caller<R, A1, A2, A3>> implements A3Asker<R, TypeTaskStage<R>, A1, A2, A3> {
@@ -127,6 +159,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         @Override
         public TypeAnswer<R> ask(A1 a1, A2 a2, A3 a3) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2, a3), new LocalTypeAnswer<>(), this.stage), null);
+        }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2, A3 arg3) {
+            this.ask(arg1, arg2, arg3);
+            return this.stage();
         }
     }
 
@@ -147,6 +185,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         public TypeAnswer<R> ask(A1 a1, A2 a2, A3 a3, A4 a4) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2, a3, a4), new LocalTypeAnswer<>(), this.stage), null);
         }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2, A3 arg3, A4 arg4) {
+            this.ask(arg1, arg2, arg3, arg4);
+            return this.stage();
+        }
     }
 
 
@@ -165,6 +209,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         @Override
         public TypeAnswer<R> ask(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2, a3, a4, a5), new LocalTypeAnswer<>(), this.stage), null);
+        }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5) {
+            this.ask(arg1, arg2, arg3, arg4, arg5);
+            return this.stage();
         }
     }
 
@@ -185,6 +235,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         public TypeAnswer<R> ask(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2, a3, a4, a5, a6), new LocalTypeAnswer<>(), this.stage), null);
         }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6) {
+            this.ask(arg1, arg2, arg3, arg4, arg5, arg6);
+            return this.stage();
+        }
     }
 
 
@@ -203,6 +259,12 @@ class LocalAsker<R, AK extends Asker, C> implements Asker<AK, TypeTaskStage<R>>,
         @Override
         public TypeAnswer<R> ask(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) {
             return this.actorCell.ask(command = new ActorCallCommand(actorCell, () -> caller.call(a1, a2, a3, a4, a5, a6, a7), new LocalTypeAnswer<>(), this.stage), null);
+        }
+
+        @Override
+        public TaskStage asking(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6, A7 arg7) {
+            this.asking(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            return this.stage();
         }
     }
 

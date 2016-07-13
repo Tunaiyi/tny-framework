@@ -2,11 +2,7 @@ package com.tny.game.actor.stage;
 
 
 import com.tny.game.actor.Available;
-import com.tny.game.actor.BeFinished;
-import com.tny.game.actor.CallAvailable;
-import com.tny.game.actor.CallBeFinished;
-import com.tny.game.actor.SupplyAvailable;
-import com.tny.game.actor.SupplyBeFinished;
+import com.tny.game.actor.Completable;
 import com.tny.game.actor.stage.exception.TaskTimeoutException;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
@@ -43,7 +39,7 @@ public class Stages {
         ExceptionUtils.checkNotNull(key, "TaskStageKey is null");
     }
 
-    public static BeFinished time(Duration duration) {
+    public static Completable time(Duration duration) {
         return new TimeAwait(duration)::get;
     }
 
@@ -63,19 +59,19 @@ public class Stages {
     //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
-    public static VoidTaskStage waitUntil(Iterable<? extends BeFinished> fns) {
+    public static VoidTaskStage waitUntil(Iterable<? extends Completable> fns) {
         return waitUntil(fns, null);
     }
 
-    public static VoidTaskStage waitUntil(Iterable<? extends BeFinished> fns, Duration timeout) {
+    public static VoidTaskStage waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
         return new AwaysTaskStage(null, new WaitRunFragment(fns, timeout));
     }
 
-    public static VoidTaskStage waitUntil(BeFinished fn) {
+    public static VoidTaskStage waitUntil(Completable fn) {
         return waitUntil(fn, null);
     }
 
-    public static VoidTaskStage waitUntil(BeFinished fn, Duration timeout) {
+    public static VoidTaskStage waitUntil(Completable fn, Duration timeout) {
         return new AwaysTaskStage(null, new WaitRunFragment(fn, timeout));
     }
 
@@ -282,9 +278,9 @@ public class Stages {
 
     }
 
-    static class JoinSupplyAvailableFragment<T> extends VoidJoinFragment<SupplyAvailable<T>, TypeTaskStage<T>> {
+    static class JoinSupplierAvailableFragment<T> extends VoidJoinFragment<Supplier<Available<T>>, TypeTaskStage<T>> {
 
-        JoinSupplyAvailableFragment(SupplyAvailable<T> fn) {
+        JoinSupplierAvailableFragment(Supplier<Available<T>> fn) {
             super(fn);
         }
 
@@ -295,9 +291,9 @@ public class Stages {
 
     }
 
-    static class JoinSupplyBeFinishedFragment<T> extends VoidJoinFragment<SupplyBeFinished, VoidTaskStage> {
+    static class JoinSupplierCompletableFragment<T> extends VoidJoinFragment<Supplier<Completable>, VoidTaskStage> {
 
-        JoinSupplyBeFinishedFragment(SupplyBeFinished fn) {
+        JoinSupplierCompletableFragment(Supplier<Completable> fn) {
             super(fn);
         }
 
@@ -308,9 +304,9 @@ public class Stages {
 
     }
 
-    static class JoinCallBeFinishedFragment<R> extends JoinFragment<CallBeFinished<R>, R, VoidTaskStage> {
+    static class JoinApplyCompletableFragment<R> extends JoinFragment<Function<R, Completable>, R, VoidTaskStage> {
 
-        JoinCallBeFinishedFragment(CallBeFinished<R> fn) {
+        JoinApplyCompletableFragment(Function<R, Completable> fn) {
             super(fn);
         }
 
@@ -322,9 +318,9 @@ public class Stages {
 
     }
 
-    static class JoinCallAvailableFragment<T, R> extends JoinFragment<CallAvailable<R, T>, R, TypeTaskStage<T>> {
+    static class JoinApplyAvailableFragment<T, R> extends JoinFragment<Function<R, Available<T>>, R, TypeTaskStage<T>> {
 
-        JoinCallAvailableFragment(CallAvailable<R, T> fn) {
+        JoinApplyAvailableFragment(Function<R, Available<T>> fn) {
             super(fn);
         }
 
@@ -618,16 +614,16 @@ public class Stages {
 
     }
 
-    static class WaitRunFragment extends VoidWaitFragment<BeFinished, Boolean> {
+    static class WaitRunFragment extends VoidWaitFragment<Completable, Boolean> {
 
-        WaitRunFragment(BeFinished fn, Duration timeout) {
+        WaitRunFragment(Completable fn, Duration timeout) {
             super(fn, timeout);
         }
 
-        WaitRunFragment(Iterable<? extends BeFinished> fns, Duration timeout) {
+        WaitRunFragment(Iterable<? extends Completable> fns, Duration timeout) {
             super(() -> {
-                for (BeFinished fn : fns)
-                    if (!fn.isFinished())
+                for (Completable fn : fns)
+                    if (!fn.isCompleted())
                         return false;
                 return true;
             }, timeout);
@@ -635,7 +631,7 @@ public class Stages {
 
         @Override
         protected Boolean invoke(Void returnVal, Throwable e) {
-            return checkBoolean(fn.isFinished());
+            return checkBoolean(fn.isCompleted());
         }
 
     }

@@ -382,7 +382,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 try {
                     callback.callback(code, value, cause);
                 } catch (Throwable e) {
-                    DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", this.getClass(), this.getName(), callback.getClass(), e);
+                    DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", methodHolder.getMethodClass(), methodHolder.getName(), callback.getClass(), e);
                 }
             }
             Optional<ChannelFuture> future = this.session.response(this.message, code, value);
@@ -417,7 +417,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                             Object value = this.commandFuture.getResult();
                             this.handleResult(ResultCode.SUCCESS, value, null);
                         } else {
-                            CommandResult result = handleException(this.commandFuture.getCause());
+                            CommandResult result = handleDispatchException(this.commandFuture.getCause());
+                            DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
                             this.handleResult(result.getResultCode(), result.getBody(), this.commandFuture.getCause());
                         }
                     } finally {
@@ -425,8 +426,9 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     }
                 } catch (Throwable e) {
                     try {
-                        CommandResult result = handleException(e);
-                        handleResult(result.getResultCode(), result.getBody(), e);
+                        CommandResult result = handleDispatchException(e);
+                        DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
+                        this.handleResult(result.getResultCode(), result.getBody(), e);
                     } finally {
                         this.done = true;
                     }
@@ -442,14 +444,15 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             try {
                 result = this.doExecute();
             } catch (Throwable e) {
-                result = handleException(e);
+                result = this.handleDispatchException(e);
+                DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行方法异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
             } finally {
                 this.executed = true;
             }
             return result;
         }
 
-        private CommandResult handleException(Throwable e) {
+        private CommandResult handleDispatchException(Throwable e) {
             CommandResult result;
             if (e instanceof DispatchException) {
                 DispatchException dex = (DispatchException) e;
@@ -459,7 +462,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             } else if (e instanceof InvocationTargetException) {
                 NetMessageDispatcher.DISPATCHER_LOG.error("", e);
                 Throwable ex = ((InvocationTargetException) e).getTargetException();
-                result = this.handleException(ex);
+                result = this.handleDispatchException(ex);
             } else {
                 NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", e);
                 DispatcherRequestErrorEvent event = new DispatcherRequestErrorEvent(this.message, this.methodHolder, e);

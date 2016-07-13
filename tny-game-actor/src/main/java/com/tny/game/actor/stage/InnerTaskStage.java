@@ -1,11 +1,7 @@
 package com.tny.game.actor.stage;
 
 import com.tny.game.actor.Available;
-import com.tny.game.actor.BeFinished;
-import com.tny.game.actor.CallAvailable;
-import com.tny.game.actor.CallBeFinished;
-import com.tny.game.actor.SupplyAvailable;
-import com.tny.game.actor.SupplyBeFinished;
+import com.tny.game.actor.Completable;
 import com.tny.game.actor.stage.Stages.*;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
@@ -61,28 +57,28 @@ interface InnerTaskStage<R> extends CommonTaskStage, TypeTaskStage<R>, VoidTaskS
 
     @Override
     @SuppressWarnings("unchecked")
-    default <T> TypeTaskStage<T> joinGet(SupplyAvailable<T> fn) {
+    default <T> TypeTaskStage<T> joinFor(Supplier<Available<T>> fn) {
         checkNextExist();
-        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinSupplyAvailableFragment<>(fn)), Stages.KEY);
+        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinSupplierAvailableFragment<>(fn)), Stages.KEY);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    default <T> TypeTaskStage<T> joinApply(CallAvailable<R, T> fn) {
+    default <T> TypeTaskStage<T> joinFor(Function<R, Available<T>> fn) {
         checkNextExist();
-        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinCallAvailableFragment<>(fn)), Stages.KEY);
+        return setNext((TypeTaskStage<T>) new JoinTaskStage<>(this.getHead(), new JoinApplyAvailableFragment<>(fn)), Stages.KEY);
     }
 
     @Override
-    default VoidTaskStage joinRun(SupplyBeFinished fn) {
+    default VoidTaskStage joinUntil(Supplier<Completable> fn) {
         checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new JoinSupplyBeFinishedFragment<>(fn)), Stages.KEY);
+        return setNext(new JoinTaskStage<>(this.getHead(), new JoinSupplierCompletableFragment<>(fn)), Stages.KEY);
     }
 
     @Override
-    default VoidTaskStage joinAccept(CallBeFinished<R> fn) {
+    default VoidTaskStage joinUntil(Function<R, Completable> fn) {
         checkNextExist();
-        return setNext(new JoinTaskStage<>(this.getHead(), new JoinCallBeFinishedFragment<>(fn)), Stages.KEY);
+        return setNext(new JoinTaskStage<>(this.getHead(), new JoinApplyCompletableFragment<>(fn)), Stages.KEY);
     }
 
     @Override
@@ -188,12 +184,12 @@ interface InnerTaskStage<R> extends CommonTaskStage, TypeTaskStage<R>, VoidTaskS
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
     @Override
-    default VoidTaskStage waitUntil(BeFinished fn) {
+    default VoidTaskStage waitUntil(Completable fn) {
         return this.waitUntil(fn, null);
     }
 
     @Override
-    default VoidTaskStage waitUntil(BeFinished fn, Duration timeout) {
+    default VoidTaskStage waitUntil(Completable fn, Duration timeout) {
         checkNextExist();
         InnerTaskStage<Void> stage = new AwaysTaskStage(this.getHead(), new WaitRunFragment(fn, timeout));
         return setNext(stage, Stages.KEY);

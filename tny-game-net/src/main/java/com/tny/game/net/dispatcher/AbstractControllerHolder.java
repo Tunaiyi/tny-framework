@@ -61,16 +61,12 @@ abstract class AbstractControllerHolder {
         this.controller = controller;
         ExceptionUtils.checkNotNull(pluginHolder, "{} pluginHolder is null", this.clazz);
         this.pluginHolder = pluginHolder;
-        this.userGroupList = new ArrayList<String>();
-        this.serverTypeList = new ArrayList<String>();
-        this.pluginBeforeList = new ArrayList<ControllerPlugin>();
-        this.pluginAfterList = new ArrayList<ControllerPlugin>();
-        if (this.controller != null) {
-            this.userGroupList.addAll(Arrays.asList(this.controller.userGroup()));
-        }
-        if (this.controller != null) {
-            this.serverTypeList.addAll(Arrays.asList(this.controller.serverType()));
-        }
+        this.userGroupList = new ArrayList<>();
+        this.serverTypeList = new ArrayList<>();
+        this.pluginBeforeList = new ArrayList<>();
+        this.pluginAfterList = new ArrayList<>();
+        this.userGroupList.addAll(Arrays.asList(this.controller.userGroup()));
+        this.serverTypeList.addAll(Arrays.asList(this.controller.serverType()));
         this.plugin = plugin;
         if (this.plugin != null) {
             this.initPlugin(plugin.before(), this.pluginBeforeList);
@@ -95,7 +91,7 @@ abstract class AbstractControllerHolder {
     }
 
     protected void initMethodAnnotation(Annotation[] annotations) {
-        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
         for (Annotation annotation : annotations)
             annotationMap.put(annotation.getClass(), annotation);
         this.methodAnnotation = Collections.unmodifiableMap(annotationMap);

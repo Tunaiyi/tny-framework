@@ -8,4 +8,6 @@ public interface A6Asker<R, TS extends TaskStage, A1, A2, A3, A4, A5, A6> extend
 
     TypeAnswer<R> ask(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6);
 
+    TaskStage asking(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6);
+
 }

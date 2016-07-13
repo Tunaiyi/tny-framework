@@ -8,4 +8,6 @@ public interface A2Asker<R, TS extends TaskStage, A1, A2> extends Asker<A2Asker,
 
     TypeAnswer<R> ask(A1 arg1, A2 arg2);
 
+    TaskStage asking(A1 arg1, A2 arg2);
+
 }
