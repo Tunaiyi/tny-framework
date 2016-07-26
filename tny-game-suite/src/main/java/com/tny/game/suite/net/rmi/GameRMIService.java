@@ -8,6 +8,7 @@ import com.tny.game.net.client.rmi.RMISession;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.login.ServeTicket;
@@ -56,8 +57,8 @@ public class GameRMIService extends NetRMIService implements ServerPreStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_1;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
     }
 
     @Override

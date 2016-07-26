@@ -3,6 +3,7 @@ package com.tny.game.suite.initer;
 import com.tny.game.event.GlobalListenerHolder;
 import com.tny.game.event.annotation.Listener;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -37,8 +38,7 @@ public class EventDispatcherIniter implements ApplicationContextAware, ServerPre
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_7;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_7);
     }
-
 }

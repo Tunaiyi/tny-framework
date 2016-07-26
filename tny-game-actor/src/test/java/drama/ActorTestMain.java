@@ -55,7 +55,7 @@ public class ActorTestMain {
 
         long time = System.currentTimeMillis() + 5000;
 
-        doStage = actor1.tellUntil(() -> System.currentTimeMillis() > time).then(stage -> stage
+        doStage = actor1.asWaitTeller(() -> System.currentTimeMillis() > time).then(stage -> stage
                 .thenRun(() -> System.out.println("finish tell until")))
                 .telling();
 

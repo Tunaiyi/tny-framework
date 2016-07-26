@@ -5,6 +5,7 @@ import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.ModuleHandler;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
@@ -147,8 +148,8 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_4;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_4);
     }
 
     @Override

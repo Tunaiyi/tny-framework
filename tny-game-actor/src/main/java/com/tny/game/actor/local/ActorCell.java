@@ -22,6 +22,8 @@ class ActorCell implements ActorDispatcher {
 
     private volatile boolean terminated = false;
 
+    private int stepSize;
+
     ActorCell(Object id, ActorPath path, ActorProps props) {
         this.actorPath = path;
         this.handler = props.getActorHandler();
@@ -29,6 +31,7 @@ class ActorCell implements ActorDispatcher {
         this.lifeCycle = props.getLifeCycle();
         this.actor = new LocalTypeActor<>(id, this);
         this.commandBox = props.getCommandBoxFactory().create(this);
+        this.stepSize = props.getStepSize();
     }
 
     @SuppressWarnings("unchecked")
@@ -128,4 +131,7 @@ class ActorCell implements ActorDispatcher {
         return commandBox;
     }
 
+    public int getStepSize() {
+        return stepSize;
+    }
 }

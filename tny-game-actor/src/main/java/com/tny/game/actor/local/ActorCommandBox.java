@@ -88,6 +88,10 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
             throw new ActorTerminatedException(this.actorCell.getActor());
     }
 
+    public int getStepSize() {
+        return this.actorCell.getStepSize();
+    }
+
     @Override
     public boolean accept(ActorCommand<?, ?, ?> command) {
         this.checkTerminated();

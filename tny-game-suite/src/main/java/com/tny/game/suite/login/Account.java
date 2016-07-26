@@ -135,12 +135,12 @@ public class Account implements Identifiable {
 
     public void setOfflineAt(Long offlineTime) {
         if (offlineTime != null)
-            this.offlineTime = new DateTime(this.offlineTime);
+            this.offlineTime = new DateTime(offlineTime);
     }
 
     public void setOnlineAt(Long onlineTime) {
         if (onlineTime != null)
-            this.onlineTime = new DateTime(this.onlineTime);
+            this.onlineTime = new DateTime(onlineTime);
     }
 
     public Integer getCreateDate() {
@@ -286,7 +286,7 @@ public class Account implements Identifiable {
             return false;
         if (this.offlineTime == null)
             return true;
-        return this.offlineTime.isAfter(this.offlineTime);
+        return this.offlineTime.isBefore(this.onlineTime);
     }
 
     public DateTime getOfflineTime() {

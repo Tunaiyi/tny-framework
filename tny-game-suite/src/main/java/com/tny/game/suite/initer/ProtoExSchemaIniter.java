@@ -5,6 +5,7 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExRequest;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExResponse;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -15,7 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 public class ProtoExSchemaIniter implements ServerPreStart {
@@ -90,8 +96,8 @@ public class ProtoExSchemaIniter implements ServerPreStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_10;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tny.game.suite.scheduler;
 
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.scheduler.TimeTaskScheduler;
@@ -55,8 +56,8 @@ public class TimeTaskSchedulerService implements ServerPreStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_1;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
     }
 
 }

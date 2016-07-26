@@ -5,6 +5,7 @@ import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
@@ -228,8 +229,8 @@ public class AccountService implements ServerPreStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_1;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
     }
 
     @Override

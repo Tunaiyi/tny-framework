@@ -5,6 +5,7 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.utils.IDCreator;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.oplog.AbstractOpLogger;
 import com.tny.game.oplog.ActionLog;
@@ -160,8 +161,8 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_10;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
     }
 
     @Override

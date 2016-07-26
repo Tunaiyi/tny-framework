@@ -4,6 +4,11 @@ import com.tny.game.base.item.behavior.DemandParam;
 
 import java.util.Map;
 
+/**
+ * 交易到的Item信息
+ *
+ * @param <I> ItemModel类型
+ */
 public interface DealedItem<I extends ItemModel> {
 
     <SI extends I> SI getItemModel();

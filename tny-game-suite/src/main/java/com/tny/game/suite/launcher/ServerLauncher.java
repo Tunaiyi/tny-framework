@@ -129,6 +129,8 @@ public class ServerLauncher {
                     if (command != null && command.toLowerCase().equals("q"))
                         System.exit(0);
                     String[] commands = StringUtils.split(command, " ");
+                    if (commands == null)
+                        break;
                     if (commandHolder != null && commands.length >= 1) {
                         System.out.println(commandHolder.execute(commands));
                     } else {

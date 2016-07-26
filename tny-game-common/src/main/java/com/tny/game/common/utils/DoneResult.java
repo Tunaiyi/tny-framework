@@ -4,6 +4,9 @@ import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultUtils;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 /**
  * 做完的结果
  *
@@ -78,6 +81,20 @@ public class DoneResult<M> extends Done<M> {
      */
     public boolean isPresent() {
         return this.returnValue != null;
+    }
+
+    public void ifSuccess(Consumer<? super M> consumer) {
+        if (this.isSuccess())
+            consumer.accept(get());
+    }
+
+    public void ifFailed(BiConsumer<ResultCode, ? super M> consumer) {
+        if (!this.isSuccess())
+            consumer.accept(this.code, get());
+    }
+
+    public void ifResult(BiConsumer<ResultCode, ? super M> consumer) {
+        consumer.accept(this.code, get());
     }
 
     /**

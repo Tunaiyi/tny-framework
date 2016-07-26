@@ -1,12 +1,17 @@
 package com.tny.game.suite.cache.spring;
 
 import com.tny.game.LogUtils;
-import com.tny.game.cache.*;
+import com.tny.game.cache.CacheTrigger;
+import com.tny.game.cache.CacheTriggerFactory;
+import com.tny.game.cache.ToCacheClassHolder;
+import com.tny.game.cache.ToCacheClassHolderFactory;
+import com.tny.game.cache.TriggerHolder;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.cache.annotation.Trigger;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
@@ -17,7 +22,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, ServerPreStart {
@@ -132,8 +141,8 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_10;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
     }
 
     @Override

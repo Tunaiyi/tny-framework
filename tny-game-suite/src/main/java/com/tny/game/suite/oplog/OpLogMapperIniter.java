@@ -3,6 +3,7 @@ package com.tny.game.suite.oplog;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.LogUtils;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.log4j2.OpLogMapper;
@@ -59,8 +60,8 @@ public class OpLogMapperIniter implements ServerPreStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_10;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
     }
 
     @Override

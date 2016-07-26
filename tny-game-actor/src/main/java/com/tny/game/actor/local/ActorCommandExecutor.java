@@ -54,10 +54,8 @@ class ActorCommandExecutor implements CommandExecutor, ActorWorker {
                 try {
                     if (executor.isShutdown())
                         break;
-                    for (ActorCommandBox box : commandBoxList) {
-                        trySubmit(box);
-                    }
-                    nextRunningTime += 10L;
+                    commandBoxList.forEach(this::trySubmit);
+                    nextRunningTime += 100L;
 
                     long finishAt = System.currentTimeMillis();
 

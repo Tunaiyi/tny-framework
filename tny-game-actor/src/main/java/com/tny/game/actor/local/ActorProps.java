@@ -17,6 +17,8 @@ public class ActorProps {
 
     private ActorTheatre actorTheatre;
 
+    private int stepSize = -1;
+
     private ActorCommandBoxFactory commandBoxFactory;
 
     private ActorProps() {
@@ -31,7 +33,8 @@ public class ActorProps {
                 .setLifeCycle(defaultProps.getLifeCycle())
                 .setActorHandler(defaultProps.getActorHandler())
                 .setActorTheatre(defaultProps.getActorTheatre())
-                .setCommandBoxFactory(defaultProps.getCommandBoxFactory());
+                .setCommandBoxFactory(defaultProps.getCommandBoxFactory())
+                .setStepSize(defaultProps.getStepSize());
     }
 
     public ActorLifeCycle getLifeCycle() {
@@ -74,4 +77,12 @@ public class ActorProps {
         return this;
     }
 
+    public ActorProps setStepSize(int stepSize) {
+        this.stepSize = stepSize;
+        return this;
+    }
+
+    public int getStepSize() {
+        return stepSize;
+    }
 }

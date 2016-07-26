@@ -2,6 +2,7 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -334,8 +335,8 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_7;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_7);
     }
 
 }

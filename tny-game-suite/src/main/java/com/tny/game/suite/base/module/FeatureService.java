@@ -8,6 +8,7 @@ import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
@@ -148,8 +149,8 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_5;
+    public PerIniter getIniter() {
+        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_5);
     }
 
     @Override

@@ -120,22 +120,22 @@ class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
 
 
     @Override
-    public A0Teller tellUntil(Supplier<Boolean> supplier) {
+    public A0Teller asWaitTeller(Supplier<Boolean> supplier) {
         return new LocalUntilTeller(actorCell, supplier);
     }
 
     @Override
-    public A0Teller tellUntil(Predicate<LocalActor> predicate) {
+    public A0Teller asWaitTeller(Predicate<LocalActor> predicate) {
         return new LocalUntilTeller(actorCell, predicate);
     }
 
     @Override
-    public <T> A0Asker<T, TypeTaskStage<T>> askUntil(Supplier<Done<T>> supplier) {
+    public <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Supplier<Done<T>> supplier) {
         return new LocalUntilAsker<>(actorCell, supplier);
     }
 
     @Override
-    public <T> A0Asker<T, TypeTaskStage<T>> askUntil(Function<LocalActor, Done<T>> function) {
+    public <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Function<LocalActor, Done<T>> function) {
         return new LocalUntilAsker<>(actorCell, function);
     }
 

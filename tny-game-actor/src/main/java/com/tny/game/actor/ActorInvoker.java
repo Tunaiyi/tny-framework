@@ -15,13 +15,13 @@ import java.util.function.Supplier;
  */
 public interface ActorInvoker<ID, ACT extends Actor<ID, ?>> {
 
-    A0Teller tellUntil(Supplier<Boolean> supplier);
+    A0Teller asWaitTeller(Supplier<Boolean> supplier);
 
-    A0Teller tellUntil(Predicate<LocalActor> predicate);
+    A0Teller asWaitTeller(Predicate<LocalActor> predicate);
 
-    <T> A0Asker<T, TypeTaskStage<T>> askUntil(Supplier<Done<T>> supplier);
+    <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Supplier<Done<T>> supplier);
 
-    <T> A0Asker<T, TypeTaskStage<T>> askUntil(Function<LocalActor, Done<T>> predicate);
+    <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Function<LocalActor, Done<T>> predicate);
 
     A0Teller asTeller(A0Acceptor<ACT> acceptor);
 

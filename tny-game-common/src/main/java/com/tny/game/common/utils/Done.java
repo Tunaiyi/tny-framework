@@ -1,5 +1,6 @@
 package com.tny.game.common.utils;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -41,6 +42,31 @@ public abstract class Done<M> {
     public M orElseGet(Supplier<? extends M> other) {
         M object = get();
         return object != null ? object : other.get();
+    }
+
+    public <X extends Throwable> M orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        M object = get();
+        if (object != null) {
+            return object;
+        } else {
+            throw exceptionSupplier.get();
+        }
+    }
+
+    public void ifPresent(Consumer<? super M> consumer) {
+        M object = get();
+        if (object != null)
+            consumer.accept(object);
+    }
+
+    public void isSuccess(Consumer<? super M> consumer) {
+        if (this.isSuccess())
+            consumer.accept(get());
+    }
+
+    public void isFailed(Consumer<? super M> consumer) {
+        if (!this.isSuccess())
+            consumer.accept(get());
     }
 
 }

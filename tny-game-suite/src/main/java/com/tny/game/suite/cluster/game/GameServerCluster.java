@@ -8,6 +8,7 @@ import com.tny.game.net.config.BindIp;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.initer.InitLevel;
+import com.tny.game.net.initer.PostIniter;
 import com.tny.game.net.initer.ServerPostStart;
 import com.tny.game.number.NumberUtils;
 import com.tny.game.suite.cluster.BaseCluster;
@@ -135,8 +136,8 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
     }
 
     @Override
-    public InitLevel getInitLevel() {
-        return InitLevel.LEVEL_1;
+    public PostIniter getIniter() {
+        return PostIniter.initer(this.getClass(), InitLevel.LEVEL_1);
     }
 
     @Override
