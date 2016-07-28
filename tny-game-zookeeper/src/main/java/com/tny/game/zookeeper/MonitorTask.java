@@ -16,4 +16,6 @@ public interface MonitorTask {
 
     boolean isWorking();
 
+    void start();
+
 }

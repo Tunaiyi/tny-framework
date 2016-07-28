@@ -1,15 +1,15 @@
 package com.tny.game.suite.cache;
 
 import com.tny.game.base.item.Item;
-import com.tny.game.cache.mysql.AlterDBItem;
+import com.tny.game.cache.mysql.DBCacheItem;
 
-public class ItemAlterDBItem<R> extends AlterDBItem<R> {
+public class DomainDBItem<R> extends DBCacheItem<R> {
 
     private Long uid;
     private Integer itemID;
     private Integer number;
 
-    public ItemAlterDBItem(String key, Object data, long version, long millisecond) {
+    public DomainDBItem(String key, Object data, long version, long millisecond) {
         super(key, data, version, millisecond);
     }
 

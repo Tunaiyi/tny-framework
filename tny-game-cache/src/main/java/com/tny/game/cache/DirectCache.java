@@ -1,8 +1,7 @@
 package com.tny.game.cache;
 
-import com.tny.game.cache.simple.SimpleAlterCacheItemFactory;
+import com.tny.game.cache.simple.SimpleCacheItemFactory;
 import com.tny.game.cache.simple.SimpleCasItem;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,20 +13,16 @@ import java.util.Map.Entry;
 
 /**
  * @author KGTny
- * @ClassName: AbstrectCache
- * @Description: 缓存抽象实体
- * @date 2011-10-8 下午4:57:02
- * <p>
- * 缓存抽象实体
- * <p>
- * 提供缓存锁的实现<br>
+ *         <p>
+ *         缓存抽象实体
+ *         <p>
+ *         提供缓存锁的实现<br>
  */
 public class DirectCache implements Cache {
 
     /**
      * 关联item类信息缓存
      */
-    @Autowired
     private ToCacheClassHolderFactory toCCHolderFactory;
 
     /**
@@ -35,20 +30,16 @@ public class DirectCache implements Cache {
      */
     protected CacheClient client;
 
-    protected AlterCacheItemFactory cacheItemFactory;
+    private RawCacheItemFactory cacheItemFactory;
 
-    public DirectCache() {
-        this.cacheItemFactory = new SimpleAlterCacheItemFactory();
+    public DirectCache(CacheClient client, ToCacheClassHolderFactory toCCHolderFactory) {
+        this(client, new SimpleCacheItemFactory(), toCCHolderFactory);
     }
 
-    public DirectCache(CacheClient client) {
-        this.client = client;
-        this.cacheItemFactory = new SimpleAlterCacheItemFactory();
-    }
-
-    public DirectCache(CacheClient client, AlterCacheItemFactory cacheItemFactory) {
+    public DirectCache(CacheClient client, RawCacheItemFactory cacheItemFactory, ToCacheClassHolderFactory toCCHolderFactory) {
         this.client = client;
         this.cacheItemFactory = cacheItemFactory;
+        this.toCCHolderFactory = toCCHolderFactory;
     }
 
     @Override
@@ -89,13 +80,13 @@ public class DirectCache implements Cache {
     }
 
     @Override
-    public <T extends Object> boolean casObject(CasItem<T> item) {
+    public <T> boolean casObject(CasItem<T> item) {
         return this.casObject(item, 0L);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Object> boolean casObject(CasItem<T> item, long millisecond) {
+    public <T> boolean casObject(CasItem<T> item, long millisecond) {
         T object = (T) this.getObjectByKey(item.getData().getClass(), item.getKey());
         if (object == null)
             return false;
@@ -182,7 +173,7 @@ public class DirectCache implements Cache {
         TriggerHolder triggerHolder = this.toCCHolderFactory.getTriggerHolder(clazz);
         Object loadObject = triggerHolder.triggerLoad(key, object);
         if (loadObject == null)
-            return  null;
+            return null;
         if (!clazz.isInstance(loadObject))
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
         return (T) loadObject;
@@ -239,11 +230,11 @@ public class DirectCache implements Cache {
     public <T> List<T> addObject(Collection<T> objectCollection, long millisecond) {
         if (objectCollection.isEmpty())
             return Collections.emptyList();
-        List<AlterCacheItem<T, ?>> items = CacheHelper.objects2CacheItems(
+        List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
-                objectCollection, CacheHelper.OPERATION_ADD, millisecond);
-        List<AlterCacheItem<T, ?>> failds = this.client.addMultis(items);
-        return CacheHelper.cacheItem2Object(failds);
+                objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);
+        List<RawCacheItem<T, ?>> failed = this.client.addMultis(items);
+        return CacheItemHelper.cacheItem2Object(failed);
     }
 
     @Override
@@ -268,11 +259,11 @@ public class DirectCache implements Cache {
     public <T> List<T> setObject(Collection<T> objectCollection, long millisecond) {
         if (objectCollection.isEmpty())
             return Collections.emptyList();
-        List<AlterCacheItem<T, ?>> items = CacheHelper.objects2CacheItems(
+        List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
-                objectCollection, CacheHelper.OPERATION_ADD, millisecond);
-        List<AlterCacheItem<T, ?>> failds = this.client.setMultis(items);
-        return CacheHelper.cacheItem2Object(failds);
+                objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);
+        List<RawCacheItem<T, ?>> failed = this.client.setMultis(items);
+        return CacheItemHelper.cacheItem2Object(failed);
     }
 
     @Override
@@ -297,11 +288,11 @@ public class DirectCache implements Cache {
     public <T> List<T> updateObject(Collection<T> objectCollection, long millisecond) {
         if (objectCollection.isEmpty())
             return Collections.emptyList();
-        List<AlterCacheItem<T, ?>> items = CacheHelper.objects2CacheItems(
+        List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
-                objectCollection, CacheHelper.OPERATION_ADD, millisecond);
-        List<AlterCacheItem<T, ?>> failds = this.client.updateMultis(items);
-        return CacheHelper.cacheItem2Object(failds);
+                objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);
+        List<RawCacheItem<T, ?>> failed = this.client.updateMultis(items);
+        return CacheItemHelper.cacheItem2Object(failed);
     }
 
     @Override
@@ -312,15 +303,13 @@ public class DirectCache implements Cache {
     @Override
     public String getKey(Object object) {
         ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(object.getClass());
-        String key = holder.getKey(object);
-        return key;
+        return holder.getKey(object);
     }
 
     @Override
     public String getKey(Class<?> clazz, Object... keyValues) {
         ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(clazz);
-        String key = holder.getKey(keyValues);
-        return key;
+        return holder.getKey(keyValues);
     }
 
 }

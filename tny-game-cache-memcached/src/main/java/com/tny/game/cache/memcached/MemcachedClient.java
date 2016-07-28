@@ -2,7 +2,7 @@ package com.tny.game.cache.memcached;
 
 import com.schooner.MemCached.MemcachedItem;
 import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheHelper;
+import com.tny.game.cache.CacheItemHelper;
 import com.tny.game.cache.CacheItem;
 import com.tny.game.cache.CasItem;
 import com.tny.game.cache.simple.SimpleCacheItem;
@@ -200,10 +200,10 @@ public class MemcachedClient implements CacheClient {
         for (Object object : objects) {
             if (object == null)
                 continue;
-            result = CacheHelper.getAndCreate(result);
+            result = CacheItemHelper.getAndCreate(result);
             result.add(object);
         }
-        return CacheHelper.checkEmpty(result);
+        return CacheItemHelper.checkEmpty(result);
     }
 
     @Override
@@ -226,11 +226,11 @@ public class MemcachedClient implements CacheClient {
         List<C> fails = null;
         for (C item : cacheItems) {
             if (!this.client.add(item.getKey(), item.getData(), new Date(item.getExpire()))) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(item);
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -238,11 +238,11 @@ public class MemcachedClient implements CacheClient {
         List<CacheItem<T>> fails = null;
         for (Entry<String, T> entry : valueMap.entrySet()) {
             if (!this.client.add(entry.getKey(), entry.getValue(), new Date(millisecond))) {
-                fails = CacheHelper.getAndCreate(fails);
-                fails.add(new SimpleCacheItem<T>(entry.getKey(), entry.getValue(), millisecond));
+                fails = CacheItemHelper.getAndCreate(fails);
+                fails.add(new SimpleCacheItem<>(entry.getKey(), entry.getValue(), millisecond));
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -255,11 +255,11 @@ public class MemcachedClient implements CacheClient {
         List<C> fails = null;
         for (C item : cacheItems) {
             if (!this.client.set(item.getKey(), item.getData(), new Date(item.getExpire()))) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(item);
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -267,11 +267,11 @@ public class MemcachedClient implements CacheClient {
         List<CacheItem<T>> fails = null;
         for (Entry<String, T> entry : valueMap.entrySet()) {
             if (!this.client.set(entry.getKey(), entry.getValue(), new Date(millisecond))) {
-                fails = CacheHelper.getAndCreate(fails);
-                fails.add(new SimpleCacheItem<T>(entry.getKey(), entry.getValue(), millisecond));
+                fails = CacheItemHelper.getAndCreate(fails);
+                fails.add(new SimpleCacheItem<>(entry.getKey(), entry.getValue(), millisecond));
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -284,11 +284,11 @@ public class MemcachedClient implements CacheClient {
         List<C> fails = null;
         for (C item : cacheItems) {
             if (!this.client.replace(item.getKey(), item.getData(), new Date(item.getExpire()))) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(item);
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -296,11 +296,11 @@ public class MemcachedClient implements CacheClient {
         List<CacheItem<T>> fails = null;
         for (Entry<String, T> entry : valueMap.entrySet()) {
             if (!this.client.replace(entry.getKey(), entry.getValue(), new Date(millisecond))) {
-                fails = CacheHelper.getAndCreate(fails);
-                fails.add(new SimpleCacheItem<T>(entry.getKey(), entry.getValue(), millisecond));
+                fails = CacheItemHelper.getAndCreate(fails);
+                fails.add(new SimpleCacheItem<>(entry.getKey(), entry.getValue(), millisecond));
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -313,18 +313,18 @@ public class MemcachedClient implements CacheClient {
         List<String> fails = null;
         for (String key : keys) {
             if (!this.client.delete(key)) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(key);
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
     public CasItem<?> gets(String key) {
         MemcachedItem item = this.client.gets(key);
         if (item != null)
-            return new SimpleCasItem<Object>(key, item.getValue(), item.getCasUnique());
+            return new SimpleCasItem<>(key, item.getValue(), item.getCasUnique());
         return null;
     }
 

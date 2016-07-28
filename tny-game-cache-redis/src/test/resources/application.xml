@@ -23,7 +23,7 @@
     <bean name="pool" class="redis.clients.jedis.JedisPool">
     </bean>
 
-    <bean name="client" class="com.tny.game.cache.redis.RedisClient">
+    <bean name="client" class="com.tny.game.cache.redis.RedisCacheClient">
         <constructor-arg ref="pool"/>
     </bean>
 

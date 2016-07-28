@@ -25,15 +25,23 @@ public class DoneResult<M> extends Done<M> {
      * @return
      */
     public static <M, MC extends M> DoneResult<M> succ(MC value) {
-        return new DoneResult<M>(value, ResultCode.SUCCESS);
+        return new DoneResult<>(value, ResultCode.SUCCESS);
     }
 
     public static <M, MC extends M> DoneResult<M> done(MC value, ResultCode code) {
-        return new DoneResult<M>(value, code);
+        return new DoneResult<>(value, code);
+    }
+
+    public static <M, MC extends M> DoneResult<M> ifPresentElse(MC value, ResultCode elseCode) {
+        if (value != null) {
+            return succ(value);
+        } else {
+            return fail(elseCode);
+        }
     }
 
     public static <M> DoneResult<M> fail(ResultCode code) {
-        return new DoneResult<M>(null, code);
+        return new DoneResult<>(null, code);
     }
 
     public static <M> DoneResult<M> fail(DoneResult code) {

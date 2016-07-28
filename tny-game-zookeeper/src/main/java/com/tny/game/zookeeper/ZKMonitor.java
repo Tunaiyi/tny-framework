@@ -290,7 +290,7 @@ public class ZKMonitor {
             if (code == Code.OK)
                 monitorChildren(path, children, formatter, watcher);
         };
-        ZKMonitor.this.monitor.monitorChildren(nodePath, null, callback, null);
+        ZKMonitor.this.monitor.monitorChildren(nodePath, null, callback, null).start();
     }
 
     public void monitorNode(String nodePath, NodeWatcher<?> watcher) {
@@ -319,6 +319,7 @@ public class ZKMonitor {
                 }
             }, null, new UntilSuccRetryPolicy(1000));
             current.setMonitorTask(task);
+            task.start();
         }
     }
 

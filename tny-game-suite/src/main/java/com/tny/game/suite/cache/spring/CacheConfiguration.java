@@ -5,11 +5,10 @@ import com.tny.game.asyndb.SyncDBExecutor;
 import com.tny.game.asyndb.SynchronizerHolder;
 import com.tny.game.asyndb.impl.AverageRateBatchSyncDBExecutor;
 import com.tny.game.asyndb.spring.SpringSynchronizerHolder;
-import com.tny.game.cache.AlterCacheItemFactory;
-import com.tny.game.cache.mysql.DBItemFactory;
+import com.tny.game.cache.RawCacheItemFactory;
 import com.tny.game.cache.shard.CacheKeyShardInterpreter;
 import com.tny.game.common.config.Config;
-import com.tny.game.suite.cache.ItemAlterDBItemFactroy;
+import com.tny.game.suite.cache.DomainItemDBItemFactory;
 import com.tny.game.suite.utils.Configs;
 import net.paoding.rose.jade.shard.ShardInterpreter;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,7 @@ import java.time.Duration;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({"suite.cache", "suite.all"})
+@Profile({"suite.cache", "suite.cache.db", "suite.all"})
 public class CacheConfiguration {
 
     @Bean
@@ -36,14 +35,9 @@ public class CacheConfiguration {
         return new CacheKeyShardInterpreter();
     }
 
-    @Bean
-    public AlterCacheItemFactory cacheItemFactory() {
-        return new ItemAlterDBItemFactroy();
-    }
-
-    @Bean
-    public DBItemFactory dbItemFactory() {
-        return new ItemAlterDBItemFactroy();
+    @Bean(name = "dbItemFactory")
+    public RawCacheItemFactory dbItemFactory() {
+        return new DomainItemDBItemFactory();
     }
 
     @Bean

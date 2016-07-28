@@ -8,9 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 本地内存异步持久化对象对象池
@@ -69,9 +78,10 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
             public void run() {
                 int size = LocalAsyncDBObjectPool.this.entityMap.size();
                 int removeSize = 0;
+                long releaseAt = System.currentTimeMillis();
                 for (Entry<String, AsyncDBEntity> entry : LocalAsyncDBObjectPool.this.entityMap.entrySet()) {
                     try {
-                        if (entry.getValue().release()) {
+                        if (entry.getValue().release(releaseAt)) {
                             LocalAsyncDBObjectPool.this.entityMap.remove(entry.getKey(), entry.getValue());
                             removeSize++;
                             POOL_LOGGER.debug("释放 {} ", entry.getKey());
@@ -173,11 +183,11 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         Synchronizer<Object> synchronizer = this.getSynchronizer(holder);
         Map<String, ?> objectsMap = synchronizer.get(clazz, noCacheKeys);
         for (Entry<String, ?> entry : objectsMap.entrySet()) {
-            Object velue = entry.getValue();
-            if (velue == null)
+            Object value = entry.getValue();
+            if (value == null)
                 continue;
-            this.put(entry.getKey(), velue);
-            returnCollection.add((T) velue);
+            this.put(entry.getKey(), value);
+            returnCollection.add((T) value);
         }
         return returnCollection;
     }
@@ -185,7 +195,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
     //	@Override
     private Object put(String key, Object object) {
         AsynDBClassHolder holder = this.getAsynDBClassHolder(object.getClass());
-        return this.getAndCreateAsynDBEntity(key, object, AsyncDBState.NORMAL, this.getSynchronizer(holder)).visit();
+        return this.getAndCreateAsynDBEntity(key, object, AsyncDBState.NORMAL, holder).visit();
     }
 
     @Override
@@ -194,7 +204,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         if (holder.persistent.asyn()) {
             AsyncDBEntity asyncDBEntity = this.getAsynDBEntity(key);
             if (asyncDBEntity == null) {
-                ReleaseStrategy strategy = this.releaseStrategyFactory.createStrategy(object);
+                ReleaseStrategy strategy = this.releaseStrategyFactory.createStrategy(object, System.currentTimeMillis());
                 asyncDBEntity = new AsyncDBEntity(object, this.getSynchronizer(holder), AsyncDBState.DELETED, strategy);
                 try {
                     asyncDBEntity.mark(Operation.INSERT, object);
@@ -226,7 +236,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
     public boolean update(String key, Object object) {
         AsynDBClassHolder holder = this.getAsynDBClassHolder(object.getClass());
         if (holder.persistent.asyn())
-            return this.doOperation(key, object, Operation.UPDATE, this.getSynchronizer(holder), true);
+            return this.doOperation(key, object, Operation.UPDATE, holder, true);
         return this.getSynchronizer(holder).update(object);
     }
 
@@ -234,7 +244,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
     public boolean save(String key, Object object) {
         AsynDBClassHolder holder = this.getAsynDBClassHolder(object.getClass());
         if (holder.persistent.asyn())
-            return this.doOperation(key, object, Operation.SAVE, this.getSynchronizer(holder), false);
+            return this.doOperation(key, object, Operation.SAVE, holder, false);
         return this.getSynchronizer(holder).save(object);
     }
 
@@ -242,7 +252,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
     public boolean delete(String key, Object object) {
         AsynDBClassHolder holder = this.getAsynDBClassHolder(object.getClass());
         if (holder.persistent.asyn())
-            return this.doOperation(key, object, Operation.DELETE, this.getSynchronizer(holder), true);
+            return this.doOperation(key, object, Operation.DELETE, holder, true);
         return this.getSynchronizer(holder).delete(object);
     }
 
@@ -252,14 +262,14 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         return true;
     }
 
-    private boolean doOperation(String key, Object object, Operation operation, Synchronizer<?> synchronizer, boolean checkNull) {
+    private boolean doOperation(String key, Object object, Operation operation, AsynDBClassHolder holder, boolean checkNull) {
         AsyncDBEntity asyncDBEntity = this.getAsynDBEntity(key);
         if (asyncDBEntity == null || asyncDBEntity.isDelete()) {
             if (checkNull) {
                 return false;
             } else {
                 if (asyncDBEntity == null)
-                    asyncDBEntity = this.getAndCreateAsynDBEntity(key, object, AsyncDBState.NORMAL, synchronizer);
+                    asyncDBEntity = this.getAndCreateAsynDBEntity(key, object, AsyncDBState.NORMAL, holder);
             }
         }
         Object currentObject = asyncDBEntity.getValue();
@@ -285,14 +295,14 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         return false;
     }
 
-    private AsyncDBEntity getAndCreateAsynDBEntity(String key, Object object, AsyncDBState asyncDBState, Synchronizer<?> synchronizer) {
-        return this.getAndCreateAsynDBEntity(key, new AsyncDBEntity(object, synchronizer, asyncDBState, this.releaseStrategyFactory.createStrategy(object)));
+    private AsyncDBEntity getAndCreateAsynDBEntity(String key, Object object, AsyncDBState asyncDBState, AsynDBClassHolder holder) {
+        return this.getAndCreateAsynDBEntity(key, new AsyncDBEntity(object, this.getSynchronizer(holder), asyncDBState, this.releaseStrategyFactory.createStrategy(object, holder.persistent.lifeTime())));
     }
 
     private AsyncDBEntity getAndCreateAsynDBEntity(String key, AsyncDBEntity asyncDBEntity) {
-        AsyncDBEntity exsistEntity = this.getAsynDBEntity(key);
-        if (exsistEntity != null && !exsistEntity.isDelete()) {
-            return exsistEntity;
+        AsyncDBEntity existEntity = this.getAsynDBEntity(key);
+        if (existEntity != null && !existEntity.isDelete()) {
+            return existEntity;
         }
         while (true) {
             AsyncDBEntity oldAsyncDBEntity = this.entityMap.putIfAbsent(key, asyncDBEntity);

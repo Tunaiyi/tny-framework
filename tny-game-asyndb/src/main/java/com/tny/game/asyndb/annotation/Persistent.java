@@ -2,7 +2,12 @@ package com.tny.game.asyndb.annotation;
 
 import com.tny.game.asyndb.Synchronizer;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 持久化注解
@@ -16,17 +21,18 @@ import java.lang.annotation.*;
 public @interface Persistent {
 
     /**
-     * 是否是异步持久化，默认是true
-     *
-     * @return
+     * @return 是否是异步持久化，默认是true
      */
     boolean asyn() default true;
 
     /**
-     * 获取数据库同步器类型
-     *
-     * @return
+     * @return 获取数据库同步器类型
      */
-    @SuppressWarnings("rawtypes") Class<? extends Synchronizer> synchronizerClass();
+    Class<? extends Synchronizer> synchronizerClass();
+
+    /**
+     * @return 每次访问生命周期
+     */
+    long lifeTime() default Long.MIN_VALUE;
 
 }

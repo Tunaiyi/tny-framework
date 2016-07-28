@@ -11,29 +11,29 @@ public class CacheSynchronizer<T> implements Synchronizer<T> {
 
     //	private final static Logger logger = LoggerFactory.getLogger(LogName.CACHE_SYNCHRONIZER);
 
-    private DirectCache cameCache;
+    private DirectCache cache;
 
     private boolean toDB = true;
 
-    public CacheSynchronizer(DirectCache cameCache) {
+    public CacheSynchronizer(DirectCache cache) {
         super();
-        this.cameCache = cameCache;
+        this.cache = cache;
     }
 
     @Override
     public T get(Class<? extends T> clazz, String key) {
-        return this.cameCache.getObjectByKey(clazz, key);
+        return this.cache.getObjectByKey(clazz, key);
     }
 
     @Override
     public Map<String, ? extends T> get(Class<? extends T> clazz, Collection<String> keyValues) {
-        return this.cameCache.getObjectMapByKeys(clazz, keyValues);
+        return this.cache.getObjectMapByKeys(clazz, keyValues);
     }
 
     //	@Override
     //	public T get_(Class<? extends T> clazz, String key) {
     //		try {
-    //			return this.cameCache.getObject(clazz, key);
+    //			return this.cache.getObject(clazz, key);
     //		} catch (Exception e) {
     //			logger.error("", e);
     //			return null;
@@ -44,28 +44,28 @@ public class CacheSynchronizer<T> implements Synchronizer<T> {
     public boolean insert(T object) {
         if (!this.toDB)
             return true;
-        return this.cameCache.addObject(object);
+        return this.cache.addObject(object);
     }
 
     @Override
     public boolean update(T object) {
         if (!this.toDB)
             return true;
-        return this.cameCache.updateObject(object);
+        return this.cache.updateObject(object);
     }
 
     @Override
     public boolean delete(T object) {
         if (!this.toDB)
             return true;
-        return this.cameCache.deleteObject(object);
+        return this.cache.deleteObject(object);
     }
 
     @Override
     public boolean save(T object) {
         if (!this.toDB)
             return true;
-        return this.cameCache.setObject(object);
+        return this.cache.setObject(object);
     }
 
     public void setToDB(boolean toDB) {
@@ -76,28 +76,28 @@ public class CacheSynchronizer<T> implements Synchronizer<T> {
     public Collection<T> insert(Collection<T> objects) {
         if (!this.toDB)
             return Collections.emptyList();
-        return this.cameCache.addObject(objects);
+        return this.cache.addObject(objects);
     }
 
     @Override
     public Collection<T> update(Collection<T> objects) {
         if (!this.toDB)
             return Collections.emptyList();
-        return this.cameCache.updateObject(objects);
+        return this.cache.updateObject(objects);
     }
 
     @Override
     public Collection<T> delete(Collection<T> objects) {
         if (!this.toDB)
             return Collections.emptyList();
-        return this.cameCache.deleteObject(objects);
+        return this.cache.deleteObject(objects);
     }
 
     @Override
     public Collection<T> save(Collection<T> objects) {
         if (!this.toDB)
             return Collections.emptyList();
-        return this.cameCache.setObject(objects);
+        return this.cache.setObject(objects);
     }
 
 }

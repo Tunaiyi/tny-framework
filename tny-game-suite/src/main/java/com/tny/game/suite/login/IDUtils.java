@@ -15,6 +15,10 @@ public class IDUtils {
         return id < PLAYER_ID_OFFSET;
     }
 
+    public static boolean isPlayer(long id) {
+        return id > PLAYER_ID_OFFSET;
+    }
+
     public static Range<Long> createUIDRange(int serverID) {
         return Range.range(serverID * PLAYER_ID_OFFSET, BoundType.CLOSED, serverID * PLAYER_ID_OFFSET + PLAYER_ID_OFFSET - 1, BoundType.CLOSED);
     }

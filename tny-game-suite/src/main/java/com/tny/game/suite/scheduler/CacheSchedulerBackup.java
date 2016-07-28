@@ -2,16 +2,16 @@ package com.tny.game.suite.scheduler;
 
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.cache.async.CacheSynchronizer;
 import com.tny.game.scheduler.SchedulerBackup;
 import com.tny.game.scheduler.TimeTask;
 import com.tny.game.scheduler.TimeTaskQueue;
 import com.tny.game.scheduler.TimeTaskScheduler;
 import com.tny.game.suite.SuiteDBHead;
+import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 
 import java.util.Collection;
 
-@Persistent(asyn = false, synchronizerClass = CacheSynchronizer.class)
+@Persistent(asyn = false, synchronizerClass = DBCacheSynchronizer.class)
 @ToCache(prefix = SuiteDBHead.CACHE_KEY_GAME_SERVER, triggers = CacheSchedulerBackupFormatter.class,
         cacheKeys = {"key"})
 public class CacheSchedulerBackup extends SchedulerBackup {

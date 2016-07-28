@@ -2,39 +2,19 @@ package com.tny.game.asyndb;
 
 public class DefaultReleaseStrategyFactory implements ReleaseStrategyFactory {
 
-    private final long addLife;
+    private final long defaultLifeTime;
 
     public DefaultReleaseStrategyFactory() {
-        this.addLife = 1000 * 60 * 60;
+        this.defaultLifeTime = 1000 * 60 * 60;
     }
-
-    ;
 
     public DefaultReleaseStrategyFactory(long life) {
-        this.addLife = life;
+        this.defaultLifeTime = life;
     }
-
-    ;
 
     @Override
-    public ReleaseStrategy createStrategy(Object object) {
-        return new TimeReleaseStrategy();
-    }
-
-    private class TimeReleaseStrategy implements ReleaseStrategy {
-
-        private volatile long timeOut = System.currentTimeMillis() + addLife;
-
-        @Override
-        public boolean release(AsyncDBEntity entity) {
-            return System.currentTimeMillis() > timeOut;
-        }
-
-        @Override
-        public void update() {
-            timeOut += addLife;
-        }
-
+    public ReleaseStrategy createStrategy(Object object, long addLife) {
+        return new TimeoutReleaseStrategy(addLife == Long.MIN_VALUE ? defaultLifeTime : addLife);
     }
 
 }

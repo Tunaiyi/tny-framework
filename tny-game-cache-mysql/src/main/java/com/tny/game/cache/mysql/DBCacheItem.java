@@ -1,6 +1,7 @@
 package com.tny.game.cache.mysql;
 
 import com.tny.game.cache.CacheItem;
+import com.tny.game.cache.RawCacheItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-public class DBItem implements CacheItem<Blob> {
+public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,9 +29,13 @@ public class DBItem implements CacheItem<Blob> {
     private long version;
     private long saveAt;
 
-    private volatile Object realObject;
+    private volatile Object dataObject;
 
-    protected DBItem(String key, Object data, long version, long expire) {
+    protected DBCacheItem(CacheItem<?> item) {
+        this(item.getKey(), item.getData(), item.getVersion(), item.getExpire());
+    }
+
+    protected DBCacheItem(String key, Object data, long version, long expire) {
         this.key = key;
         this.version = version;
         this.expire = expire <= 0L ? 0L : System.currentTimeMillis() + expire;
@@ -38,7 +43,7 @@ public class DBItem implements CacheItem<Blob> {
         this.format(data);
     }
 
-    public DBItem() {
+    public DBCacheItem() {
     }
 
     protected void format(Object data) {
@@ -79,24 +84,24 @@ public class DBItem implements CacheItem<Blob> {
         return this.data;
     }
 
-    public Object getRealData() {
+    public Object getObject() {
         if (this.data == null)
             return null;
-        if (this.realObject != null)
-            return this.realObject;
+        if (this.dataObject != null)
+            return this.dataObject;
         synchronized (this) {
-            if (this.realObject != null)
-                return this.realObject;
+            if (this.dataObject != null)
+                return this.dataObject;
             if (this.flags == OBJECT) {
-                this.realObject = this.bytes2Object();
+                this.dataObject = this.bytes2Object();
             } else {
                 try {
-                    this.realObject = this.data.getBytes(1, (int) this.data.length());
+                    this.dataObject = this.data.getBytes(1, (int) this.data.length());
                 } catch (SQLException e) {
                     logger.error("SerialBlob getBytes exception", e);
                 }
             }
-            return this.realObject;
+            return this.dataObject;
         }
     }
 

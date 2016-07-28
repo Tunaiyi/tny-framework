@@ -3,12 +3,12 @@ package com.tny.game.suite.scheduler;
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.cache.async.CacheSynchronizer;
 import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.suite.SuiteDBHead;
+import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 import com.tny.game.suite.login.IDUtils;
 
-@Persistent(synchronizerClass = CacheSynchronizer.class)
+@Persistent(synchronizerClass = DBCacheSynchronizer.class)
 @ToCache(prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,
         cacheKeys = "playerID")
 public class GameTaskReceiver extends TaskReceiver implements Identifiable {

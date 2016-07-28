@@ -10,17 +10,12 @@ public class SimpleCasItem<T> implements CasItem<T> {
     private static final long serialVersionUID = 1L;
     private String key;
     private T data;
-    private long vesion;
+    private long version;
 
-    public SimpleCasItem() {
-    }
-
-    ;
-
-    public SimpleCasItem(String key, T data, long vesion) {
+    public SimpleCasItem(String key, T data, long version) {
         this.key = key;
         this.data = data;
-        this.vesion = vesion;
+        this.version = version;
     }
 
     public SimpleCasItem(CasItem<?> mItem, T newData) {
@@ -30,12 +25,12 @@ public class SimpleCasItem<T> implements CasItem<T> {
     private void init(CasItem<?> mItem, T newValue) {
         this.key = mItem.getKey();
         this.data = newValue;
-        this.vesion = mItem.getVersion();
+        this.version = mItem.getVersion();
     }
 
     @Override
     public long getVersion() {
-        return this.vesion;
+        return this.version;
     }
 
     @Override
@@ -48,12 +43,8 @@ public class SimpleCasItem<T> implements CasItem<T> {
         return this.data;
     }
 
-    protected void updateValue(T value) {
-        this.data = value;
-    }
-
     protected void update() {
-        this.vesion++;
+        this.version++;
     }
 
     public static void main(String[] args) {

@@ -17,12 +17,12 @@ public class SpringSynchronizerHolder implements SynchronizerHolder, Application
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Synchronizer<Object> getSynchronizer(Class<? extends Synchronizer> synchClass) {
-        Synchronizer<Object> synchronizer = this.synchronizerMap.get(synchClass);
+    public Synchronizer<Object> getSynchronizer(Class<? extends Synchronizer> syncClass) {
+        Synchronizer<Object> synchronizer = this.synchronizerMap.get(syncClass);
         if (synchronizer == null) {
-            synchronizer = this.context.getBean(synchClass);
+            synchronizer = this.context.getBean(syncClass);
             if (synchronizer != null) {
-                this.synchronizerMap.put(synchClass, synchronizer);
+                this.synchronizerMap.put(syncClass, synchronizer);
             }
         }
         return synchronizer;

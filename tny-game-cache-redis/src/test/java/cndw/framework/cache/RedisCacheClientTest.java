@@ -1,6 +1,6 @@
 package cndw.framework.cache;
 
-import com.tny.game.cache.redis.RedisClient;
+import com.tny.game.cache.redis.RedisCacheClient;
 import com.tny.game.cache.testclass.ClientTestTask;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +18,7 @@ public class RedisCacheClientTest {
 
     @Autowired
     @Qualifier("client")
-    private RedisClient client;
+    private RedisCacheClient client;
 
     private static ClientTestTask task;
 

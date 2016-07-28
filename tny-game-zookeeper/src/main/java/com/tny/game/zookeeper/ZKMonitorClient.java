@@ -124,6 +124,8 @@ public class ZKMonitorClient {
 
         protected volatile boolean working = true;
 
+        protected volatile boolean start = false;
+
         private MonitorWatcher(String path, MonitorOperation operation, Watcher handler, RetryPolicy policy, AsyncCallback callback, Object ctx) {
             super();
             this.handler = handler;
@@ -132,7 +134,6 @@ public class ZKMonitorClient {
             this.ctx = ctx;
             this.path = path;
             this.policy = policy == null ? new UntilSuccRetryPolicy(3000) : policy;
-            this.run();
         }
 
         private void checkAndDoCallback(int rc, String path, Object ctx, Object value, Stat stat) {
@@ -171,6 +172,19 @@ public class ZKMonitorClient {
         public void run() {
             LOGGER.debug("{} 第{}次尝试监听 {} 变化, monitor状态:{}", this.path, this.time.incrementAndGet(), this.operation, this.state);
             this.operation.addWatcher(ZKMonitorClient.this.keeper, this.path, this, this, this.ctx);
+        }
+
+        @Override
+        public void start() {
+            if (start)
+                return;
+            synchronized (this) {
+                if (start)
+                    return;
+                LOGGER.debug("{} 第{}次尝试监听 {} 变化, monitor状态:{}", this.path, this.time.incrementAndGet(), this.operation, this.state);
+                this.operation.addWatcher(ZKMonitorClient.this.keeper, this.path, this, this, this.ctx);
+                this.start = true;
+            }
         }
 
         protected void setState(MonitorState state) {

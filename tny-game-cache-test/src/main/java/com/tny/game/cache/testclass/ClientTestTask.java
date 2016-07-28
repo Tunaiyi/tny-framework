@@ -6,10 +6,13 @@ import com.tny.game.cache.CasItem;
 import com.tny.game.cache.simple.SimpleCacheItem;
 import com.tny.game.cache.simple.SimpleCasItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public abstract class ClientTestTask {
 
@@ -18,13 +21,13 @@ public abstract class ClientTestTask {
     private static int size = 100;
     private static Person p1 = new Person(1, "2", 2, 1);
     private static Person p2 = new Person(1, "2", 2, 2);
-    private static List<CacheItem<Person>> personItemList = new ArrayList<CacheItem<Person>>();
-    private static List<CacheItem<Person>> changePersonItemList = new ArrayList<CacheItem<Person>>();
-    private static Map<String, Person> personMap = new HashMap<String, Person>();
-    private static Map<String, Person> changePersonMap = new HashMap<String, Person>();
-    private static List<Person> personList = new ArrayList<Person>();
-    private static List<Person> changePersonList = new ArrayList<Person>();
-    private static List<String> keyList = new ArrayList<String>();
+    private static List<CacheItem<Person>> personItemList = new ArrayList<>();
+    private static List<CacheItem<Person>> changePersonItemList = new ArrayList<>();
+    private static Map<String, Person> personMap = new HashMap<>();
+    private static Map<String, Person> changePersonMap = new HashMap<>();
+    private static List<Person> personList = new ArrayList<>();
+    private static List<Person> changePersonList = new ArrayList<>();
+    private static List<String> keyList = new ArrayList<>();
 
     static {
         ClientTestTask.init();
@@ -41,23 +44,23 @@ public abstract class ClientTestTask {
     protected static void init() {
         p1 = new Person(1, "2", 2, 1);
         p2 = new Person(1, "2", 2, 2);
-        personItemList = new ArrayList<CacheItem<Person>>();
-        changePersonItemList = new ArrayList<CacheItem<Person>>();
-        personMap = new HashMap<String, Person>();
-        changePersonMap = new HashMap<String, Person>();
-        personList = new ArrayList<Person>();
-        changePersonList = new ArrayList<Person>();
-        keyList = new ArrayList<String>();
+        personItemList = new ArrayList<>();
+        changePersonItemList = new ArrayList<>();
+        personMap = new HashMap<>();
+        changePersonMap = new HashMap<>();
+        personList = new ArrayList<>();
+        changePersonList = new ArrayList<>();
+        keyList = new ArrayList<>();
         for (int index = 0; index < size; index++) {
             keyList.add("CPlayer" + index);
             Person person = new Person(index, "CPlayer" + index, index, index);
             Person change = new Person(index, "CPlayer" + index, 200 + index, 200 + index);
             personList.add(person);
-            personItemList.add(new SimpleCacheItem<Person>(person.getName(), person));
+            personItemList.add(new SimpleCacheItem<>(person.getName(), person));
             personMap.put(person.getName(), person);
             changePersonList.add(change);
             changePersonMap.put(change.getName(), change);
-            changePersonItemList.add(new SimpleCacheItem<Person>(change.getName(), change));
+            changePersonItemList.add(new SimpleCacheItem<>(change.getName(), change));
         }
     }
 
@@ -283,7 +286,7 @@ public abstract class ClientTestTask {
         CasItem<Person> item = (CasItem<Person>) this.cacheClient.gets("Test");
         long currentVersion = item.getVersion();
         assertEquals(item.getData(), p1);
-        item = new SimpleCasItem<Person>(item, p2);
+        item = new SimpleCasItem<>(item, p2);
         assertEquals(this.cacheClient.get("Test"), p1);
         assertEquals(this.cacheClient.cas(item, 0L), true);
         item = (CasItem<Person>) this.cacheClient.gets("Test");

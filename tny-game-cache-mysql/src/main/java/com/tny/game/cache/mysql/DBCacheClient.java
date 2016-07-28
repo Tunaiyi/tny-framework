@@ -1,19 +1,24 @@
 package com.tny.game.cache.mysql;
 
 import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheHelper;
 import com.tny.game.cache.CacheItem;
+import com.tny.game.cache.CacheItemHelper;
 import com.tny.game.cache.CasItem;
+import com.tny.game.cache.RawCacheItemFactory;
 import com.tny.game.cache.mysql.dao.CacheDAO;
 import com.tny.game.cache.simple.SimpleCasItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.BadSqlGrammarException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // @SuppressWarnings("restriction")
 public class DBCacheClient implements CacheClient {
@@ -22,24 +27,21 @@ public class DBCacheClient implements CacheClient {
 
     private String name = "default";
 
-    @Autowired
     private CacheDAO dao;
 
-    private DBItemFactory dbItemFactory;
+    private RawCacheItemFactory<Object, ? extends DBCacheItem<?>> dbCacheItemFactory;
 
-    public DBCacheClient() {
-        this.dbItemFactory = new DBAlterCacheItemFactory();
+    public DBCacheClient(CacheDAO dao, RawCacheItemFactory<?, ? extends DBCacheItem<?>> dbCacheItemFactory) {
+        this(null, dao, dbCacheItemFactory);
     }
 
-    public DBCacheClient(DBItemFactory dbItemFactory) {
-        this(null, dbItemFactory);
-    }
-
-    public DBCacheClient(String name, DBItemFactory dbItemFactory) {
+    @SuppressWarnings("unchecked")
+    public DBCacheClient(String name, CacheDAO dao, RawCacheItemFactory<?, ? extends DBCacheItem<?>> dbCacheItemFactory) {
         if (name == null)
             this.name = "default";
         this.name = name;
-        this.dbItemFactory = dbItemFactory;
+        this.dao = dao;
+        this.dbCacheItemFactory = (RawCacheItemFactory<Object, ? extends DBCacheItem<?>>) dbCacheItemFactory;
     }
 
     @Override
@@ -49,13 +51,13 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public Object get(String key) {
-        DBItem item = this.dao.get(key);
+        DBCacheItem item = this.dao.get(key);
         if (item != null) {
             if (item.isItemExpire() || item.getData() == null) {
                 this.dao.delete(key);
                 return null;
             }
-            return item.getRealData();
+            return item.getObject();
         }
         return null;
     }
@@ -64,10 +66,10 @@ public class DBCacheClient implements CacheClient {
     public Collection<Object> getMultis(Collection<String> keys) {
         if (keys == null || keys.isEmpty())
             return Collections.emptyList();
-        Collection<DBItem> items = this.dao.get(keys);
-        List<Object> objects = new ArrayList<Object>();
-        for (DBItem item : items)
-            objects.add(item.getRealData());
+        Collection<DBCacheItem> items = this.dao.get(keys);
+        List<Object> objects = new ArrayList<>();
+        for (DBCacheItem item : items)
+            objects.add(item.getObject());
         return objects;
     }
 
@@ -75,22 +77,22 @@ public class DBCacheClient implements CacheClient {
     public Map<String, Object> getMultiMap(Collection<String> keys) {
         if (keys == null || keys.isEmpty())
             return Collections.emptyMap();
-        Collection<DBItem> items = this.dao.get(keys);
-        Map<String, Object> data = new HashMap<String, Object>();
-        for (DBItem item : items)
-            data.put(item.getKey(), item.getRealData());
+        Collection<DBCacheItem> items = this.dao.get(keys);
+        Map<String, Object> data = new HashMap<>();
+        for (DBCacheItem item : items)
+            data.put(item.getKey(), item.getObject());
         return data;
     }
 
     @Override
     public CasItem<?> gets(String key) {
-        DBItem item = this.dao.get(key);
+        DBCacheItem item = this.dao.get(key);
         if (item == null || item.isItemExpire() || item.getData() == null) {
             this.dao.delete(key);
             return null;
         }
-        Object object = item.getRealData();
-        return object == null ? null : new SimpleCasItem<Object>(key, object, item.getVersion());
+        Object object = item.getObject();
+        return object == null ? null : new SimpleCasItem<>(key, object, item.getVersion());
     }
 
     @Override
@@ -99,7 +101,7 @@ public class DBCacheClient implements CacheClient {
             Object object = this.get(key);
             if (object != null)
                 return false;
-            return this.dao.add(this.dbItemFactory.create(key, value, 0L, millisecond)) > 0;
+            return this.dao.add(this.dbCacheItemFactory.create(key, value, 0L, millisecond)) > 0;
         } catch (DataIntegrityViolationException e) {
             logger.error("add", e);
             return false;
@@ -110,25 +112,25 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public <C extends CacheItem<?>> List<C> addMultis(Collection<C> cacheItems) {
-        List<AlterDBItem<Object>> items = ClientHelper.cacheItem2Item(cacheItems);
+        List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.add(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
     public <T> List<CacheItem<T>> addMultis(Map<String, T> valueMap, long millisecond) {
-        List<AlterDBItem<T>> items = ClientHelper.map2Item(valueMap, millisecond);
+        List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.add(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
     public boolean set(String key, Object value, long millisecond) {
-        DBItem item = this.dbItemFactory.create(key, value, 0L, millisecond);
+        DBCacheItem item = this.dbCacheItemFactory.create(key, value, 0L, millisecond);
         try {
             return this.dao.set(item) > 0;
         } catch (BadSqlGrammarException e) {
@@ -145,43 +147,43 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public <C extends CacheItem<?>> List<C> setMultis(Collection<C> cacheItems) {
-        List<AlterDBItem<Object>> items = ClientHelper.cacheItem2Item(cacheItems);
+        List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.set(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
     public <T> List<CacheItem<T>> setMultis(Map<String, T> valueMap, long millisecond) {
-        List<AlterDBItem<T>> items = ClientHelper.map2Item(valueMap, millisecond);
+        List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.set(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
     public boolean update(String key, Object value, long millisecond) {
-        return this.dao.update(this.dbItemFactory.create(key, value, 0L, millisecond)) > 0;
+        return this.dao.update(this.dbCacheItemFactory.create(key, value, 0L, millisecond)) > 0;
     }
 
     @Override
     public <C extends CacheItem<?>> List<C> updateMultis(Collection<C> cacheItems) {
-        List<AlterDBItem<Object>> items = ClientHelper.cacheItem2Item(cacheItems);
+        List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.update(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
     public <T> List<CacheItem<T>> updateMultis(Map<String, T> valueMap, long millisecond) {
-        List<AlterDBItem<T>> items = ClientHelper.map2Item(valueMap, millisecond);
+        List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
         if (items.isEmpty())
             return Collections.emptyList();
         int[] results = this.dao.update(items);
-        return ClientHelper.checkResult(items, results);
+        return DBCacheItemHelper.checkResult(items, results);
     }
 
     @Override
@@ -191,11 +193,11 @@ public class DBCacheClient implements CacheClient {
         int index = 0;
         for (String key : keys) {
             if (results[index] <= 0 && results[index] != java.sql.Statement.SUCCESS_NO_INFO) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(key);
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     @Override
@@ -205,7 +207,7 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public boolean cas(CasItem<?> item, long millisecond) {
-        return this.dao.cas(this.dbItemFactory.create(item.getKey(), item.getData(), item.getVersion(), millisecond)) > 0;
+        return this.dao.cas(this.dbCacheItemFactory.create(item.getKey(), item.getData(), item.getVersion(), millisecond)) > 0;
     }
 
     @Override

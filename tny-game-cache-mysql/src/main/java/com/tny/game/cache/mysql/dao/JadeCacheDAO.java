@@ -1,6 +1,6 @@
 package com.tny.game.cache.mysql.dao;
 
-import com.tny.game.cache.mysql.DBItem;
+import com.tny.game.cache.mysql.DBCacheItem;
 import net.paoding.rose.jade.annotation.DAO;
 import net.paoding.rose.jade.annotation.SQL;
 import net.paoding.rose.jade.annotation.SQLParam;
@@ -18,43 +18,43 @@ public interface JadeCacheDAO extends CacheDAO, ShardCacheDAO {
 
     @Override
     @SQL("SELECT " + FIELD_VERSION + " FROM " + TABLE + " WHERE `key` = :k")
-    DBItem get(@ShardBy @SQLParam("k") String key);
+    DBCacheItem get(@ShardBy @SQLParam("k") String key);
 
     @Override
     @SQL("SELECT " + FIELD_VERSION + " FROM " + TABLE + " WHERE `key` IN (:k)")
-    Collection<DBItem> get(@ShardBy @SQLParam("k") Collection<String> keys);
+    Collection<DBCacheItem> get(@ShardBy @SQLParam("k") Collection<String> keys);
 
     @Override
     @SQL("INSERT IGNORE INTO " + TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
-    int add(@ShardBy("key") @SQLParam("i") DBItem item);
+    int add(@ShardBy("key") @SQLParam("i") DBCacheItem item);
 
     @Override
     @SQL("INSERT IGNORE INTO " + TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
-    int[] add(@ShardBy("key") @SQLParam("i") Collection<? extends DBItem> items);
+    int[] add(@ShardBy("key") @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
     @SQL("REPLACE INTO " + TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
-    int set(@ShardBy("key") @SQLParam("i") DBItem item);
+    int set(@ShardBy("key") @SQLParam("i") DBCacheItem item);
 
     @Override
     @SQL("REPLACE INTO " + TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
-    int[] set(@ShardBy("key") @SQLParam("i") Collection<? extends DBItem> items);
+    int[] set(@ShardBy("key") @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
     @SQL("UPDATE " + TABLE + " SET  `data`=:i.data, `flags`=:i.flags, `expire`=:i.expire, `saveAt`=:i.saveAt WHERE `key` = :i.key")
-    int update(@ShardBy("key") @SQLParam("i") DBItem item);
+    int update(@ShardBy("key") @SQLParam("i") DBCacheItem item);
 
     @Override
     @SQL("UPDATE " + TABLE + " SET  `data`=:i.data, `flags`=:i.flags, `expire`=:i.expire, `saveAt`=:i.saveAt WHERE `key` = :i.key")
-    int[] update(@ShardBy("key") @SQLParam("i") Collection<? extends DBItem> items);
+    int[] update(@ShardBy("key") @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
     @SQL("UPDATE " + TABLE + " SET `data`=:i.data, `flags`=:i.flags, `expire`=:i.expire, `saveAt`=:i.saveAt, `version`=:i.version + 1 WHERE `key` = :i.key and `version` = :i.version")
-    int cas(@ShardBy("key") @SQLParam("i") DBItem item);
+    int cas(@ShardBy("key") @SQLParam("i") DBCacheItem item);
 
     @Override
     @SQL("UPDATE " + TABLE + " SET `data`=:i.data, `flags`=:i.flags, `expire`=:i.expire, `saveAt`=:i.saveAt, `version`=:i.version + 1 WHERE `key` = :i.key and `version` = :i.version")
-    int cas(@ShardBy("key") @SQLParam("i") Collection<? extends DBItem> items);
+    int cas(@ShardBy("key") @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
     @SQL("DELETE FROM " + TABLE + " WHERE `key` = :k")

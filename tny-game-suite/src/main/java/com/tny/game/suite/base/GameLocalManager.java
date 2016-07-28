@@ -9,9 +9,9 @@ import java.util.Collections;
  * @param <O>
  * @author KGTny
  */
-public abstract class GameNoCacheManager<O> extends GameManager<O> {
+public abstract class GameLocalManager<O> extends GameManager<O> {
 
-    protected GameNoCacheManager(Class<? extends O> entityClass) {
+    protected GameLocalManager(Class<? extends O> entityClass) {
         super(entityClass);
     }
 

@@ -54,7 +54,7 @@ public class AsyncDBEntity implements Synchronizable {
 
     private Replace replace;
 
-    protected AsyncDBEntity(Object value, Synchronizer<?> synchronizer, AsyncDBState state, ReleaseStrategy releaseStrategy) {
+    AsyncDBEntity(Object value, Synchronizer<?> synchronizer, AsyncDBState state, ReleaseStrategy releaseStrategy) {
         if (value == null)
             throw new NullPointerException();
         this.setValue(value);
@@ -67,13 +67,12 @@ public class AsyncDBEntity implements Synchronizable {
 
     private void setValue(Object value) {
         this.replace = value.getClass().getAnnotation(Replace.class);
-        this.value = new WeakReference<Object>(value);
+        this.value = new WeakReference<>(value);
     }
 
     /**
      * 尝试同步数据库
      *
-     * @param maxTime 失败后尝试次数
      * @return 成功返回true
      */
     @Override
@@ -120,23 +119,24 @@ public class AsyncDBEntity implements Synchronizable {
     }
 
     /**
-     * @param value
-     * @param operation
-     * @param life
+     * @param operation 操作
+     * @param object    操作的对象
      * @return 返回是否需要提交
+     * @throws AsyncDBReleaseException     对象已经施放时抛出异常
+     * @throws SubmitAtWrongStateException 对象提交状态错误异常
      */
-    public boolean mark(Operation operation, Object object) throws AsyncDBReleaseException, SubmitAtWrongStateException {
-        if (this.release())
-            throw new AsyncDBReleaseException(LogUtils.format("[{}] sumit exception", this.value));
+    boolean mark(Operation operation, Object object) throws AsyncDBReleaseException, SubmitAtWrongStateException {
+        if (this.release(System.currentTimeMillis()))
+            throw new AsyncDBReleaseException(LogUtils.format("[{}] submit exception", this.value));
         AsyncDBState currentState = this.state;
         // 判断操作是否能在当前状态操作
         if (!operation.isCanOperationAt(currentState))
-            throw new SubmitAtWrongStateException(LogUtils.format("[{}] sumit exception", this.value), currentState, operation);
+            throw new SubmitAtWrongStateException(LogUtils.format("[{}] submit exception", this.value), currentState, operation);
         this.lock.lock();
         try {
             currentState = this.state;
             if (!operation.isCanOperationAt(currentState))
-                throw new SubmitAtWrongStateException(LogUtils.format("[{}] sumit exception", this.value), currentState, operation);
+                throw new SubmitAtWrongStateException(LogUtils.format("[{}] submit exception", this.value), currentState, operation);
             Object currentObject = this.value.get();
             this.state = operation.getChangeTo(currentState, currentState);
             if ((currentState.isDelete() && object != null) ||
@@ -158,21 +158,20 @@ public class AsyncDBEntity implements Synchronizable {
     }
 
     /**
-     * 尝试反问对象
+     * 尝试访问对象
      *
-     * @return
+     * @return 访问成功返回true 失败为false
      */
-    public boolean tryVisit() {
+    boolean tryVisit() {
         return this.visit() != null;
     }
 
     /**
      * 访问对象
      *
-     * @param life 延长生命值
      * @return 返回生命值
      */
-    public Object visit() {
+    Object visit() {
         Object returnObject = this.value.get();
         if (returnObject != null) {
             this.releaseStrategy.update();
@@ -181,7 +180,7 @@ public class AsyncDBEntity implements Synchronizable {
         return returnObject;
     }
 
-    public boolean isCanReplace() {
+    boolean isCanReplace() {
         return this.replace != null;
     }
 
@@ -190,10 +189,10 @@ public class AsyncDBEntity implements Synchronizable {
      *
      * @return 释放成功返回true，失败返回false
      */
-    public boolean release() {
+    boolean release(long releaseAt) {
         AsyncDBState currentState = this.state;
         Object object = this.holdObject;
-        if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this)) || currentState == AsyncDBState.DELETED) {
+        if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) || currentState == AsyncDBState.DELETED) {
             this.holdObject = null;
             this.syncObject = null;
         }

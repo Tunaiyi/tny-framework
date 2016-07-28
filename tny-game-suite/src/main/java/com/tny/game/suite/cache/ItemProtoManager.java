@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.cache.mysql.DBItem;
+import com.tny.game.cache.mysql.DBCacheItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +28,13 @@ public class ItemProtoManager {
         return this.findDAO.getUIDRange(table);
     }
 
-    public List<DBItem> findAll(ShardTable table) {
-        List<DBItem> dbItems = this.findDAO.findAll(table);
+    public List<DBCacheItem> findAll(ShardTable table) {
+        List<DBCacheItem> dbItems = this.findDAO.findAll(table);
         return dbItems;
     }
 
-    public List<DBItem> findByItemID(ShardTable table, Integer... itemID) {
-        List<DBItem> dbItems = Collections.emptyList();
+    public List<DBCacheItem> findByItemID(ShardTable table, Integer... itemID) {
+        List<DBCacheItem> dbItems = Collections.emptyList();
         switch (itemID.length) {
             case 0:
                 dbItems = this.findDAO.findAll(table);
@@ -49,8 +49,8 @@ public class ItemProtoManager {
         return dbItems;
     }
 
-    public List<DBItem> findByUID(ShardTable table, long uid, Integer... itemIDs) {
-        List<DBItem> dbItems = Collections.emptyList();
+    public List<DBCacheItem> findByUID(ShardTable table, long uid, Integer... itemIDs) {
+        List<DBCacheItem> dbItems = Collections.emptyList();
         switch (itemIDs.length) {
             case 0:
                 dbItems = this.findDAO.findByUID(table, uid);
@@ -65,8 +65,8 @@ public class ItemProtoManager {
         return dbItems;
     }
 
-    public List<DBItem> findByUIDs(ShardTable table, List<Long> uids, Integer... itemIDs) {
-        List<DBItem> dbItems = Collections.emptyList();
+    public List<DBCacheItem> findByUIDs(ShardTable table, List<Long> uids, Integer... itemIDs) {
+        List<DBCacheItem> dbItems = Collections.emptyList();
         switch (itemIDs.length) {
             case 0:
                 dbItems = this.findDAO.findByUIDs(table, uids);
@@ -81,8 +81,8 @@ public class ItemProtoManager {
         return dbItems;
     }
 
-    public List<DBItem> findByUIDRange(ShardTable table, long startUID, long endUID, Integer... itemIDs) {
-        List<DBItem> dbItems = Collections.emptyList();
+    public List<DBCacheItem> findByUIDRange(ShardTable table, long startUID, long endUID, Integer... itemIDs) {
+        List<DBCacheItem> dbItems = Collections.emptyList();
         switch (itemIDs.length) {
             case 0:
                 dbItems = this.findDAO.findByUIDRange(table, startUID, endUID);

@@ -1,7 +1,7 @@
 package com.tny.game.cache.redis;
 
 import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheHelper;
+import com.tny.game.cache.CacheItemHelper;
 import com.tny.game.cache.CacheItem;
 import com.tny.game.cache.CasItem;
 import com.tny.game.cache.simple.SimpleCacheItem;
@@ -12,8 +12,16 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +35,9 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * 对memcached客户端进行封装<br>
  */
-public class RedisClient implements CacheClient {
+public class RedisCacheClient implements CacheClient {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(RedisClient.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheClient.class);
 
     private static final String NX = "NX";
     private static final byte[] NX_BYTES = NX.getBytes();
@@ -53,11 +61,11 @@ public class RedisClient implements CacheClient {
         return this.name;
     }
 
-    public RedisClient(JedisPool client) throws IOException {
+    public RedisCacheClient(JedisPool client) throws IOException {
         this(null, client);
     }
 
-    public RedisClient(String name, JedisPool client) throws IOException {
+    public RedisCacheClient(String name, JedisPool client) throws IOException {
         if (name == null)
             this.name = "default";
         this.name = name;
@@ -85,18 +93,18 @@ public class RedisClient implements CacheClient {
     public Collection<Object> getMultis(Collection<String> keyCollection) {
         if (keyCollection == null || keyCollection.isEmpty())
             return Collections.emptyList();
-        List<byte[]> objects = Collections.emptyList();
+        List<byte[]> objects;
         try (Jedis jedis = this.pool.getResource()) {
-            objects = jedis.mget(CacheHelper.strings2Bytes(keyCollection));
+            objects = jedis.mget(CacheItemHelper.strings2Bytes(keyCollection));
         }
         List<Object> result = null;
         for (byte[] object : objects) {
             if (object == null)
                 continue;
-            result = CacheHelper.getAndCreate(result);
+            result = CacheItemHelper.getAndCreate(result);
             result.add(bytes2Object(object));
         }
-        return CacheHelper.checkEmpty(result);
+        return CacheItemHelper.checkEmpty(result);
     }
 
     @Override
@@ -118,7 +126,7 @@ public class RedisClient implements CacheClient {
             byte[] object = response.get();
             if (object == null)
                 continue;
-            result = CacheHelper.getAndCreate(result);
+            result = CacheItemHelper.getAndCreate(result);
             result.put(entry.getKey(), bytes2Object(object));
         }
         return result;
@@ -305,22 +313,22 @@ public class RedisClient implements CacheClient {
         for (Entry<C, Response<Long>> entry : responseMap.entrySet()) {
             Long rs = entry.getValue().get();
             if (rs == null || rs == 0) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(entry.getKey());
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
     private <C> List<C> checkResponse(Map<C, Response<String>> responseMap) {
         List<C> fails = null;
         for (Entry<C, Response<String>> entry : responseMap.entrySet()) {
             if (entry.getValue().get() == null) {
-                fails = CacheHelper.getAndCreate(fails);
+                fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(entry.getKey());
             }
         }
-        return CacheHelper.checkEmpty(fails);
+        return CacheItemHelper.checkEmpty(fails);
     }
 
 
@@ -347,7 +355,7 @@ public class RedisClient implements CacheClient {
         try (ByteArrayInputStream byteIn = new ByteArrayInputStream(data);
              ObjectInputStream objectIn = new ObjectInputStream(byteIn)) {
             byte flag = objectIn.readByte();
-            Object result = null;
+            Object result;
             if (flag == 0) {
                 byte[] value = new byte[objectIn.available()];
                 result = objectIn.read(value);
