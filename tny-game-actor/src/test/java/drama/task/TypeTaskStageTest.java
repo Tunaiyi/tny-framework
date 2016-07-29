@@ -6,7 +6,7 @@ import com.tny.game.actor.stage.TypeTaskStage;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import org.jmock.Expectations;
 import org.junit.Test;
 
@@ -292,9 +292,9 @@ public class TypeTaskStageTest extends TaskStageTestUnits {
                             assertEquals(value, TaskStageTestUnits.value);
                             times.getAndIncrement();
                             if (System.currentTimeMillis() < time + TIME_100.toMillis())
-                                return Do.fail();
+                                return DoneUtils.fail();
                             else
-                                return Do.succ(other);
+                                return DoneUtils.succ(other);
                         })
                         .thenApply(tfn)
                 , true, other
@@ -322,9 +322,9 @@ public class TypeTaskStageTest extends TaskStageTestUnits {
                             assertEquals(value, TaskStageTestUnits.value);
                             times1.getAndIncrement();
                             if (System.currentTimeMillis() < time1 + TIME_100.toMillis())
-                                return Do.fail();
+                                return DoneUtils.fail();
                             else
-                                return Do.succ(other);
+                                return DoneUtils.succ(other);
                         }, TIME_200)
                         .thenApply(tfn)
                 , true, other
@@ -344,9 +344,9 @@ public class TypeTaskStageTest extends TaskStageTestUnits {
                         .waitFor((value) -> {
                             times2.getAndIncrement();
                             if (System.currentTimeMillis() < time2 + TIME_200.toMillis())
-                                return Do.fail();
+                                return DoneUtils.fail();
                             else
-                                return Do.succ(other);
+                                return DoneUtils.succ(other);
                         }, TIME_100)
                         .thenApply(tfn)
                 , false

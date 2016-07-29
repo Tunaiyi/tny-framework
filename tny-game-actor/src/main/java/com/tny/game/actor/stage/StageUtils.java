@@ -1,6 +1,6 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 @SuppressWarnings("unchecked")
@@ -21,26 +21,26 @@ public class StageUtils {
 
     public static <T> Done<T> getResult(TaskStage stage) {
         if (!stage.isDone())
-            return Do.fail();
+            return DoneUtils.fail();
         if (stage instanceof TypeTaskStage) {
             TypeTaskStage<T> typeStage = (TypeTaskStage<T>) stage;
-            return Do.succNullable(typeStage.getResult());
+            return DoneUtils.succNullable(typeStage.getResult());
         } else if (stage instanceof VoidTaskStage) {
-            return Do.succNullable(null);
+            return DoneUtils.succNullable(null);
         }
-        return Do.fail();
+        return DoneUtils.fail();
     }
 
     public static <T> Done<T> getCause(TaskStage stage) {
         if (!stage.isDone())
-            return Do.fail();
+            return DoneUtils.fail();
         if (stage instanceof TypeTaskStage) {
             TypeTaskStage<T> typeStage = (TypeTaskStage<T>) stage;
-            return Do.succNullable(typeStage.getResult());
+            return DoneUtils.succNullable(typeStage.getResult());
         } else if (stage instanceof VoidTaskStage) {
-            return Do.succNullable(null);
+            return DoneUtils.succNullable(null);
         }
-        return Do.fail();
+        return DoneUtils.fail();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultUtils;
 
@@ -13,54 +12,13 @@ import java.util.function.Consumer;
  * @param <M>
  * @author KGTny
  */
-public class DoneResult<M> extends Done<M> {
+public class DoneResult<M> implements Done<M> {
 
-    private ResultCode code;
-    private M returnValue;
-
-    /**
-     * 返回一个成功的结果, value 不能为null
-     *
-     * @param value
-     * @return
-     */
-    public static <M, MC extends M> DoneResult<M> succ(MC value) {
-        return new DoneResult<>(value, ResultCode.SUCCESS);
-    }
-
-    public static <M, MC extends M> DoneResult<M> done(MC value, ResultCode code) {
-        return new DoneResult<>(value, code);
-    }
-
-    public static <M, MC extends M> DoneResult<M> ifPresentElse(MC value, ResultCode elseCode) {
-        if (value != null) {
-            return succ(value);
-        } else {
-            return fail(elseCode);
-        }
-    }
-
-    public static <M> DoneResult<M> fail(ResultCode code) {
-        return new DoneResult<>(null, code);
-    }
-
-    public static <M> DoneResult<M> fail(DoneResult code) {
-        ExceptionUtils.checkArgument(code.isFail(), "code [{}] is success", code.getCode());
-        return DoneResult.fail(code.getCode());
-    }
+    protected ResultCode code;
+    protected M returnValue;
 
     protected DoneResult(M returnValue, ResultCode code) {
         this.code = code;
-        this.returnValue = returnValue;
-    }
-
-    protected DoneResult(ResultCode code) {
-        this.code = code;
-        this.returnValue = null;
-    }
-
-    protected DoneResult(M returnValue) {
-        this.code = ResultCode.SUCCESS;
         this.returnValue = returnValue;
     }
 
@@ -69,6 +27,7 @@ public class DoneResult<M> extends Done<M> {
      *
      * @return
      */
+    @Override
     public boolean isSuccess() {
         return ResultUtils.isSucc(this.code);
     }
@@ -87,6 +46,7 @@ public class DoneResult<M> extends Done<M> {
      *
      * @return
      */
+    @Override
     public boolean isPresent() {
         return this.returnValue != null;
     }
@@ -119,6 +79,7 @@ public class DoneResult<M> extends Done<M> {
      *
      * @return
      */
+    @Override
     public M get() {
         return this.returnValue;
     }

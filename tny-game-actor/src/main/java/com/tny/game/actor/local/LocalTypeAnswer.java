@@ -4,7 +4,7 @@ package com.tny.game.actor.local;
 import com.tny.game.actor.AnswerListener;
 import com.tny.game.actor.TypeAnswer;
 import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 import java.util.List;
@@ -24,8 +24,8 @@ class LocalTypeAnswer<T> extends BaseAnswer<T, TypeTaskStage<T>> implements Type
     @Override
     public Done<T> achieve() {
         if (!this.isDone())
-            return Do.fail();
-        return Do.succNullable(this.getRawValue());
+            return DoneUtils.fail();
+        return DoneUtils.succNullable(this.getRawValue());
     }
 
     // @Override

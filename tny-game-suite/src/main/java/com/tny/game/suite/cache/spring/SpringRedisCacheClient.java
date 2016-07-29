@@ -16,8 +16,8 @@ import java.io.IOException;
 public class SpringRedisCacheClient extends RedisCacheClient {
 
     @Autowired
-    public SpringRedisCacheClient(JedisPool client) throws IOException {
-        super(client);
+    public SpringRedisCacheClient(JedisPool pool) throws IOException {
+        super(pool);
     }
 
 }

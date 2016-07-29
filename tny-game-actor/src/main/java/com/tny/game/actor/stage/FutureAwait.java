@@ -3,7 +3,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.Available;
 import com.tny.game.actor.stage.exception.TaskException;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 import java.util.concurrent.ExecutionException;
@@ -24,10 +24,10 @@ public class FutureAwait<T> implements Available<T> {
     @Override
     public Done<T> achieve() {
         if (!future.isDone()) {
-            return Do.fail();
+            return DoneUtils.fail();
         } else {
             try {
-                return Do.succ(future.get());
+                return DoneUtils.succ(future.get());
             } catch (ExecutionException e) {
                 throw new TaskException(e.getCause());
             } catch (InterruptedException e) {

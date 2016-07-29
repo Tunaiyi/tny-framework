@@ -9,21 +9,21 @@ import java.util.function.Supplier;
  * @param <M>
  * @author KGTny
  */
-public abstract class Done<M> {
+public interface Done<M> {
 
     /**
      * 是否成功 code == ItemResultCode.SUCCESS
      *
      * @return
      */
-    public abstract boolean isSuccess();
+    boolean isSuccess();
 
     /**
      * 是否有结果值呈现
      *
      * @return
      */
-    public boolean isPresent() {
+    default boolean isPresent() {
         return this.get() != null;
     }
 
@@ -32,19 +32,19 @@ public abstract class Done<M> {
      *
      * @return
      */
-    public abstract M get();
+    M get();
 
-    public M orElse(M other) {
+    default M orElse(M other) {
         M object = get();
         return object != null ? object : other;
     }
 
-    public M orElseGet(Supplier<? extends M> other) {
+    default M orElseGet(Supplier<? extends M> other) {
         M object = get();
         return object != null ? object : other.get();
     }
 
-    public <X extends Throwable> M orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+    default <X extends Throwable> M orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         M object = get();
         if (object != null) {
             return object;
@@ -53,18 +53,18 @@ public abstract class Done<M> {
         }
     }
 
-    public void ifPresent(Consumer<? super M> consumer) {
+    default void ifPresent(Consumer<? super M> consumer) {
         M object = get();
         if (object != null)
             consumer.accept(object);
     }
 
-    public void isSuccess(Consumer<? super M> consumer) {
+    default void isSuccess(Consumer<? super M> consumer) {
         if (this.isSuccess())
             consumer.accept(get());
     }
 
-    public void isFailed(Consumer<? super M> consumer) {
+    default void isFailed(Consumer<? super M> consumer) {
         if (!this.isSuccess())
             consumer.accept(get());
     }

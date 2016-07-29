@@ -13,7 +13,7 @@ import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.ExceptionUtils;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
@@ -657,11 +657,11 @@ public class Stages {
                 for (Supplier<Done<R>> fn : fns) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return Do.fail();
+                        return DoneUtils.fail();
                     else
                         result.add(done.get());
                 }
-                return Do.succ(result);
+                return DoneUtils.succ(result);
             }, timeout);
         }
 
@@ -679,9 +679,9 @@ public class Stages {
                 for (Supplier<Done<R>> fn : fns.values()) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return Do.fail();
+                        return DoneUtils.fail();
                 }
-                return Do.succ(fns.entrySet().stream()
+                return DoneUtils.succ(fns.entrySet().stream()
                         .collect(Collectors.toMap(
                                 e -> e.getKey(),
                                 e -> e.getValue().get().get()

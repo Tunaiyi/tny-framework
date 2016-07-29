@@ -3,7 +3,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
 import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 /**
@@ -29,7 +29,7 @@ class ActorMailCommand<T, A extends BaseAnswer<T, TypeTaskStage<T>>> extends Act
 
     @Override
     protected Done<Object> doHandle() {
-        return Do.succNullable(actorCell.handle(this));
+        return DoneUtils.succNullable(actorCell.handle(this));
     }
 
     @Override

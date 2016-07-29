@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.stage.VoidTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 /**
@@ -25,7 +25,7 @@ public class ActorRunCommand<A extends BaseAnswer<Void, VoidTaskStage>> extends 
     @Override
     protected Done<Object> doHandle() {
         this.runnable.run();
-        return Do.succNullable(null);
+        return DoneUtils.succNullable(null);
     }
 
 }

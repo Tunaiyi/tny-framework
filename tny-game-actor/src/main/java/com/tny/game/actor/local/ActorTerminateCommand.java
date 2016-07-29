@@ -3,7 +3,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Answer;
 import com.tny.game.actor.stage.VoidTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 /**
@@ -21,7 +21,7 @@ class ActorTerminateCommand extends ActorCommand<Void, VoidTaskStage, Answer<Voi
 
     @Override
     protected Done<Object> doHandle() {
-        return Do.succNullable(actorCell.handle(this.message));
+        return DoneUtils.succNullable(actorCell.handle(this.message));
     }
 
 }

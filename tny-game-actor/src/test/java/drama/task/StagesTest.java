@@ -4,7 +4,7 @@ import com.tny.game.actor.Available;
 import com.tny.game.actor.stage.Stages;
 import com.tny.game.actor.stage.TypeTaskStage;
 import com.tny.game.actor.stage.VoidTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 import org.jmock.Expectations;
 import org.junit.Test;
@@ -86,9 +86,9 @@ public class StagesTest extends TaskStageTestUnits {
         context.checking(new Expectations() {{
             exactly(3).of(fn).get();
             will(onConsecutiveCalls(
-                    returnValue(Do.fail()),
-                    returnValue(Do.fail()),
-                    returnValue(Do.succ(value))
+                    returnValue(DoneUtils.fail()),
+                    returnValue(DoneUtils.fail()),
+                    returnValue(DoneUtils.succ(value))
             ));
         }});
         checkStage(
@@ -101,7 +101,7 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        Available<String> fn = Do::fail;
+        Available<String> fn = DoneUtils::fail;
         TypeTaskStage<String> stage = checkStage(
                 Stages.waitFor(fn, TIME_100)
                 , false, null

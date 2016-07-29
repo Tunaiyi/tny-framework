@@ -1,6 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.utils.DoneResult;
 import com.tny.game.net.dispatcher.CommandResult;
 
 /**
@@ -99,6 +100,16 @@ public class ResultFactory {
      */
     public static CommandResult fail(ResultCode code) {
         return new CommandResultImpl(code, null);
+    }
+
+    /**
+     * 根据done创建响应结果
+     *
+     * @param done 错误结果
+     * @return 返回响应结果
+     */
+    public static CommandResult fail(DoneResult<?> done) {
+        return fail(done.getCode(), null);
     }
 
     private static class CommandResultImpl implements CommandResult {

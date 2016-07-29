@@ -3,12 +3,9 @@ package com.tny.game.common.result;
 public interface ResultCode {
 
     int SUCCESS_CODE = 100;
+    int FAILURE_CODE = 101;
 
     ResultCode SUCCESS = new ResultCode() {
-
-        private int code = ResultCode.SUCCESS_CODE;
-        private String message = "成功";
-        private ResultCodeType type = ResultCodeType.GENERAL;
 
         {
             this.registerSelf();
@@ -16,7 +13,7 @@ public interface ResultCode {
 
         @Override
         public int getCode() {
-            return code;
+            return ResultCode.SUCCESS_CODE;
         }
 
         @Override
@@ -26,15 +23,45 @@ public interface ResultCode {
 
         @Override
         public String getMessage() {
-            return message;
+            return "成功";
         }
 
         @Override
         public ResultCodeType getType() {
-            return type;
+            return ResultCodeType.GENERAL;
         }
 
     };
+
+
+    ResultCode FAILURE = new ResultCode() {
+
+        {
+            this.registerSelf();
+        }
+
+        @Override
+        public int getCode() {
+            return ResultCode.FAILURE_CODE;
+        }
+
+        @Override
+        public boolean isSuccess() {
+            return false;
+        }
+
+        @Override
+        public String getMessage() {
+            return "失败";
+        }
+
+        @Override
+        public ResultCodeType getType() {
+            return ResultCodeType.GENERAL;
+        }
+
+    };
+
 
     int getCode();
 

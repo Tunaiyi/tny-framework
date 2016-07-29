@@ -7,7 +7,7 @@ import com.tny.game.actor.stage.StageUtils;
 import com.tny.game.actor.stage.TaskStage;
 import com.tny.game.actor.stage.TypeTaskStage;
 import com.tny.game.actor.stage.exception.TaskInterruptedException;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 import com.tny.game.worker.command.Command;
 
@@ -22,9 +22,9 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
 
     protected TS stage;
 
-    private Done<Object> result = Do.fail();
+    private Done<Object> result = DoneUtils.fail();
 
-    private Done<T> handleResult = Do.fail();
+    private Done<T> handleResult = DoneUtils.fail();
 
     private volatile boolean done = false;
 
@@ -114,7 +114,7 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
     protected void success(T result) {
         if (!done) {
             this.done = true;
-            this.result = Do.succNullable(result);
+            this.result = DoneUtils.succNullable(result);
             this.cause = null;
             this.postSuccess(result);
         }
@@ -148,7 +148,7 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
     protected void fail(Throwable cause, boolean cancelled) throws Throwable {
         if (!done) {
             this.done = true;
-            this.result = Do.succNullable(null);
+            this.result = DoneUtils.succNullable(null);
             this.cause = new ActorCommandExecuteException(this, cause);
             if (cancelled)
                 this.postCancel();

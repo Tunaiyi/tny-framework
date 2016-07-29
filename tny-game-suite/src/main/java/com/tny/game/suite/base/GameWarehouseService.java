@@ -13,6 +13,7 @@ import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.utils.DoneResult;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,7 @@ public class GameWarehouseService implements WarehouseService {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
         if (warehouse != null)
             return this.doHandleTrade(playerID, trade, warehouse::consume, entries);
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class GameWarehouseService implements WarehouseService {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
         if (warehouse != null)
             doHandleTrade(playerID, tradeItem, action, COST, warehouse::consume, entries);
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class GameWarehouseService implements WarehouseService {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
         if (warehouse != null)
             return this.doHandleTrade(playerID, trade, warehouse::receive, entries);
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class GameWarehouseService implements WarehouseService {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
         if (warehouse != null)
             doHandleTrade(playerID, tradeItem, action, AWARD, warehouse::receive, entries);
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     @Override
@@ -119,7 +120,7 @@ public class GameWarehouseService implements WarehouseService {
                     return this.doHandleTrade(playerID, trade, warehouse::consume, entries);
             }
         }
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     @Override
@@ -129,28 +130,28 @@ public class GameWarehouseService implements WarehouseService {
             this.doHandleTrade(playerID, result.getCostTrade(), warehouse::consume, entries);
             this.doHandleTrade(playerID, result.getAwardTrade(), warehouse::receive, entries);
         }
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     private DoneResult<DealedResult> doHandleTrade(long playerID, TradeItem<?> tradeItem, Action action, TradeType tradeType, TradeWithTradeItem fn, AttrEntry<?>... entries) {
         try {
             DealedResult dealedResult = fn.trade(tradeItem, action, entries);
-            return DoneResult.succ(dealedResult);
+            return DoneUtils.succ(dealedResult);
         } catch (Exception e) {
             LOGGER.error("玩家 {} {} {}物品 {} 异常", playerID, action, tradeType, tradeItem, e);
         }
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_TRADE_FAILED);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_TRADE_FAILED);
     }
 
 
     private DoneResult<DealedResult> doHandleTrade(long playerID, Trade trade, BiFunction<Trade, AttrEntry<?>[], DealedResult> fn, AttrEntry<?>... entries) {
         try {
             DealedResult dealedResult = fn.apply(trade, entries);
-            return DoneResult.succ(dealedResult);
+            return DoneUtils.succ(dealedResult);
         } catch (Exception e) {
             LOGGER.error("玩家 {} {} {}物品 {} 异常", playerID, trade.getAction(), trade.getTradeType(), trade, e);
         }
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_TRADE_FAILED);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_TRADE_FAILED);
     }
 
 
@@ -163,26 +164,24 @@ public class GameWarehouseService implements WarehouseService {
             for (TradeItem<ItemModel> item : trade.getAllTradeItem()) {
                 if (!(item.getItemModel() instanceof CountableStuffModel))
                     continue;
-                CountableStuffModel stuffModel = (CountableStuffModel) item.getItemModel();
+                CountableStuffModel stuffModel = item.getItemModel();
                 if (stuffModel.isNumberLimit()) {
                     CountableStuffOwner owner = warehouse.getOwner(stuffModel.getItemType(), GameCountableStuffOwner.class);
                     if (award) {
                         if (owner.isOverUpperLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneResult.fail(ItemResultCode.FULL_NUMBER);
+                            return DoneUtils.fail(ItemResultCode.FULL_NUMBER);
                     } else {
                         if (owner.isOverLowerLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneResult.fail(ItemResultCode.LACK_NUMBER);
+                            return DoneUtils.fail(ItemResultCode.LACK_NUMBER);
                     }
-                } else {
-                    continue;
                 }
             }
-            return DoneResult.succ(true);
+            return DoneUtils.succ(true);
         }
-        return DoneResult.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
-    static interface TradeWithTradeItem {
+    interface TradeWithTradeItem {
 
         DealedResult trade(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries);
 

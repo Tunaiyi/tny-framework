@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.common.utils.Do;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
 
 import java.util.concurrent.Callable;
@@ -26,7 +26,7 @@ class ActorCallCommand<T, A extends BaseAnswer<T, TypeTaskStage<T>>> extends Act
 
     @Override
     protected Done<Object> doHandle() throws Exception {
-        return Do.succNullable(this.callable.call());
+        return DoneUtils.succNullable(this.callable.call());
     }
 
 }
