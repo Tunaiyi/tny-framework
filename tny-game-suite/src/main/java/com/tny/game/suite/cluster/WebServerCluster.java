@@ -144,6 +144,10 @@ public abstract class WebServerCluster extends BaseCluster {
         return this.nodeMap.get(serverID);
     }
 
+    protected void updateSetting(ServerNode node, ServerSetting setting) {
+        node.setSetting(setting);
+    }
+
     @Override
     public void doMonitor() {
         this.remoteMonitor.createFullNode(ClusterUtils.OUTLINE_LIST_PATH, this.NOTHING, CreateMode.PERSISTENT, false);

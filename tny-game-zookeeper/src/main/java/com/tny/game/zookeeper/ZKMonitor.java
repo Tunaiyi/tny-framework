@@ -48,6 +48,10 @@ public class ZKMonitor {
      */
     private volatile ConcurrentHashMap<String, ZKMonitorNode<?>> nodeMap = new ConcurrentHashMap<>();
 
+    public ZKClient getClient() {
+        return keeper;
+    }
+
     public ZKMonitor(String keeperIP, NodeDataFormatter defaultFormatter) throws IOException {
         super();
         this.defaultFormatter = defaultFormatter;
@@ -490,4 +494,5 @@ public class ZKMonitor {
         //			object.wait();
         //		}
     }
+
 }

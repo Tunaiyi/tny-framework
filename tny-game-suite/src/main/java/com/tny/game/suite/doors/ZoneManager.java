@@ -40,7 +40,7 @@ public class ZoneManager {
     protected EntryDAO entryDAO;
 
     @Autowired
-    protected DoorCluster doorCluster;
+    protected DoorsCluster doorCluster;
 
     @PostConstruct
     private void init() {
