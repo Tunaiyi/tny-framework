@@ -1,8 +1,8 @@
 package com.tny.game.cache.redis;
 
 import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheItemHelper;
 import com.tny.game.cache.CacheItem;
+import com.tny.game.cache.CacheItemHelper;
 import com.tny.game.cache.CasItem;
 import com.tny.game.cache.simple.SimpleCacheItem;
 import org.slf4j.Logger;
@@ -12,6 +12,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -285,7 +286,6 @@ public class RedisCacheClient implements CacheClient {
 
     @Override
     public List<String> deleteMultis(Collection<String> keys) {
-        List<String> fails = null;
         Map<String, Response<Long>> responseMap = new HashMap<>();
         try (Jedis jedis = this.pool.getResource()) {
             Pipeline pipeline = jedis.pipelined();
@@ -332,16 +332,26 @@ public class RedisCacheClient implements CacheClient {
     }
 
 
-    public static byte[] object2Bytes(Object object) {
+    private static byte[] object2Bytes(Object object) {
         try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
              ObjectOutputStream objectOut = new ObjectOutputStream(byteOut)) {
             if (object instanceof byte[]) {
                 objectOut.writeByte(0);
                 objectOut.write((byte[]) object);
+            } else if (object instanceof SerialBlob) {
+                SerialBlob blob = (SerialBlob) object;
+                try {
+                    byte[] data = blob.getBytes(1, (int) blob.length());
+                    objectOut.writeByte(0);
+                    objectOut.write(data);
+                } catch (Throwable throwable) {
+                    return null;
+                }
             } else {
                 objectOut.writeByte(1);
                 objectOut.writeObject(object);
             }
+            objectOut.flush();
             return byteOut.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
@@ -349,7 +359,7 @@ public class RedisCacheClient implements CacheClient {
         }
     }
 
-    public static Object bytes2Object(byte[] data) {
+    private static Object bytes2Object(byte[] data) {
         if (data == null)
             return null;
         try (ByteArrayInputStream byteIn = new ByteArrayInputStream(data);
@@ -358,7 +368,8 @@ public class RedisCacheClient implements CacheClient {
             Object result;
             if (flag == 0) {
                 byte[] value = new byte[objectIn.available()];
-                result = objectIn.read(value);
+                objectIn.read(value);
+                result = value;
             } else {
                 result = objectIn.readObject();
             }
