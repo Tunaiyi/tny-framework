@@ -27,7 +27,7 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
     public Object format2Save(String key, CacheSchedulerBackup backup) {
         Collection<TimeTask> taskCollection = backup.getTimeTaskList();
         List<TimeTaskProto> taskList = taskCollection.stream().map(task -> TimeTaskProto.newBuilder()
-                .setExecutTime(task.getExecutTime())
+                .setExecutTime(task.getExecuteTime())
                 .addAllHandlerList(task.getHandlerList())
                 .build()).collect(Collectors.toList());
         return SchedulerBackupProto.newBuilder()

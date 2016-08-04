@@ -25,6 +25,7 @@ import java.time.Duration;
 @Profile({"suite.cache", "suite.cache.db", "suite.all"})
 public class CacheConfiguration {
 
+
     @Bean
     public SynchronizerHolder synchronizerHolder() {
         return new SpringSynchronizerHolder();

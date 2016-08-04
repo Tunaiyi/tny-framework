@@ -12,8 +12,16 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -340,7 +348,7 @@ public class TimeTaskScheduler {
         if (this.taskModelSet.isEmpty())
             return null;
         TimeTask timeTask = null;
-        TimeTaskModel taskModel = null;
+        TimeTaskModel taskModel;
         do {
             taskModel = this.taskModelSet.pollFirst();
             if (timeTask == null)
@@ -350,11 +358,8 @@ public class TimeTaskScheduler {
             taskModel.trigger();
             this.taskModelSet.add(taskModel);
             taskModel = this.taskModelSet.first();
-        }
-        while (taskModel != null && timeTask != null && timeTask.getExecutTime() == taskModel.nextFireTime().getTime() / 1000L * 1000L);
-        if (timeTask != null)
-            return new CreateTimeTaskRunnable(timeTask);
-        return null;
+        } while (taskModel != null && timeTask.getExecuteTime() == taskModel.nextFireTime().getTime() / 1000L * 1000L);
+        return new CreateTimeTaskRunnable(timeTask);
     }
 
     private void execute(CreateTimeTaskRunnable runnable) {
@@ -418,7 +423,7 @@ public class TimeTaskScheduler {
         }
 
         public long getRemainTime() {
-            long time = this.timeTask.getExecutTime() - System.currentTimeMillis();
+            long time = this.timeTask.getExecuteTime() - System.currentTimeMillis();
             return time < 0 ? 0 : time;
         }
     }

@@ -4,6 +4,7 @@ import com.tny.game.net.NetServer;
 import com.tny.game.net.base.listener.SessionListener;
 import com.tny.game.net.dispatcher.SessionHolder;
 import com.tny.game.net.listener.ServerClosedListener;
+import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.telnet.TelnetServer;
 import com.tny.game.telnet.command.TelnetCommandHolder;
@@ -59,6 +60,7 @@ public class ServerLauncher {
     }
 
     public ServerLauncher start() throws Throwable {
+        TransactionManager.open();
         ServerIniterProcessor processor = new ServerIniterProcessor();
         processor.setApplicationContext(this.context);
         //per initServer
@@ -85,6 +87,7 @@ public class ServerLauncher {
 
         // complete
         runPoint(complete);
+        TransactionManager.close();
         return this;
     }
 

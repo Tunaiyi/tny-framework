@@ -7,6 +7,7 @@ import com.tny.game.base.module.FeatureHandler;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
+import com.tny.game.common.RunningChecker;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
@@ -95,6 +96,12 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     private <C> List<Feature> doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
         List<Feature> okList = new ArrayList<>();
         List<FeatureHandler> handlers = this.handlersMap.getOrDefault(openMode, ImmutableList.of());
+        // String alRunningCheck = null;
+        // if (LOGGER.isInfoEnabled()) {
+        //     alRunningCheck = explorer.getPlayerID() + "-" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+        //     RunningChecker.start("doOpenFeature");
+        //     LOGGER.info("{} 玩家尝试开启功能", explorer.getPlayerID());
+        // }
         for (FeatureHandler handler : handlers) {
             FeatureModel featureModel = getModel(handler.getFeature());
             if (!featureModel.isEffect() || !openMode.check(explorer, featureModel, context))
@@ -106,17 +113,28 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
                 synchronized (explorer) {
                     if (explorer.isFeatureOpened(feature))
                         continue;
-                    LOGGER.debug("{} 玩家开启 {} 功能", explorer.getPlayerID(), feature);
+                    if (LOGGER.isInfoEnabled()) {
+                        RunningChecker.start(featureModel.getFeature());
+                        LOGGER.info("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
+                    }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) &&
                             handler.openFeature(explorer)) {
                         explorer.open(feature);
                         okList.add(feature);
+                    }
+                    if (LOGGER.isInfoEnabled()) {
+                        long time = RunningChecker.end(featureModel.getFeature()).cost();
+                        LOGGER.info("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerID(), feature, time);
                     }
                 }
             } catch (Exception e) {
                 LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerID(), feature, e);
             }
         }
+        // if (LOGGER.isInfoEnabled() && alRunningCheck != null) {
+        //     long time = RunningChecker.end(alRunningCheck).cost();
+        //     LOGGER.info("{} 玩家尝试开启功能完成! 总耗时 {} ms", explorer.getPlayerID(), time);
+        // }
         return okList;
     }
 

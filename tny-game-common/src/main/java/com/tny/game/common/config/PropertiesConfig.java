@@ -4,8 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.tny.game.common.utils.json.JSONUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
@@ -80,8 +88,9 @@ class PropertiesConfig implements Config {
     public String getStr(String key) {
         Object object = this.configMap.get(key);
         if (object != null)
-            return object.toString();
-        return null;
+            return String.valueOf(object);
+        else
+            return null;
     }
 
     @Override

@@ -62,9 +62,9 @@ public class TimeTaskQueue implements Serializable {
     public List<TimeTask> getTimeTaskHandlerByLast(long last) {
         List<TimeTask> list = new LinkedList<TimeTask>();
         for (TimeTask holder : this.handlerList) {
-            boolean canExe = holder.getExecutTime() > last;
+            boolean canExe = holder.getExecuteTime() > last;
             if (LOG.isDebugEnabled()) {
-                LOG.debug("reciver 最后执行时间 {} | 当前获取队列任务执行时间点为 {} | 结果 {}", new Date(last), new Date(holder.getExecutTime()), canExe);
+                LOG.debug("reciver 最后执行时间 {} | 当前获取队列任务执行时间点为 {} | 结果 {}", new Date(last), new Date(holder.getExecuteTime()), canExe);
             }
             if (canExe) {
                 list.add(0, holder);

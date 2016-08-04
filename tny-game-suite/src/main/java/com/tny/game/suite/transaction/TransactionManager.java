@@ -3,7 +3,7 @@ package com.tny.game.suite.transaction;
 
 public class TransactionManager {
 
-    private static final ThreadLocal<GameTransaction> transThreadLocal = new ThreadLocal<GameTransaction>();
+    private static final ThreadLocal<GameTransaction> transThreadLocal = new ThreadLocal<>();
 
     public static void open() {
         GameTransaction transaction = transThreadLocal.get();

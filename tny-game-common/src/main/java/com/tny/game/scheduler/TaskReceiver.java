@@ -69,7 +69,7 @@ public abstract class TaskReceiver {
         Set<String> runSet = new HashSet<String>();
         for (TimeTaskEvent event : events) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecutTime()) + "  执行 " + event.getTimeTask().getHandlerList());
+                LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " + event.getTimeTask().getHandlerList());
             }
             for (TimeTaskHandler handler : event.getHandlerList()) {
                 try {
@@ -79,7 +79,7 @@ public abstract class TaskReceiver {
                     LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getHandlerName(), e);
                 }
             }
-            this.lastHandlerTime = event.getTimeTask().getExecutTime();
+            this.lastHandlerTime = event.getTimeTask().getExecuteTime();
             this.actualLastHandlerTime = System.currentTimeMillis();
         }
     }

@@ -7,11 +7,9 @@ import com.tny.game.suite.cluster.WebServerCluster;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
 import java.util.Collection;
@@ -86,20 +84,20 @@ public class DoorsCluster extends WebServerCluster {
     }
 
     public void notifyZoneChange() {
-        this.remoteMonitor.syncNode(ClusterUtils.ZONE_CHENGE_PATH, this.zoneChangeVersion.incrementAndGet() + "");
+        this.remoteMonitor.syncNode(ClusterUtils.ZONE_CHANGE_PATH, this.zoneChangeVersion.incrementAndGet() + "");
     }
 
     @Override
     public void doMonitor() {
         super.doMonitor();
-        try {
-            this.remoteMonitor.getClient().delete(ClusterUtils.ZONE_CHENGE_PATH, -1);
-        } catch (InterruptedException | KeeperException e) {
-            e.printStackTrace();
-        }
-        this.remoteMonitor.createFullNode(ClusterUtils.ZONE_CHENGE_PATH, "", CreateMode.PERSISTENT, false);
+        // try {
+        //     this.remoteMonitor.getClient().delete(ClusterUtils.ZONE_CHANGE_PATH, -1);
+        // } catch (InterruptedException | KeeperException e) {
+        //     e.printStackTrace();
+        // }
+        this.remoteMonitor.createFullNode(ClusterUtils.ZONE_CHANGE_PATH, "", CreateMode.PERSISTENT, false);
         this.remoteMonitor.createFullNode(ClusterUtils.VERSION_PATH, this.versionHolder, CreateMode.PERSISTENT, false);
-        this.remoteMonitor.getNodeData(ClusterUtils.ZONE_CHENGE_PATH, CreateMode.PERSISTENT);
+        this.remoteMonitor.getNodeData(ClusterUtils.ZONE_CHANGE_PATH, CreateMode.PERSISTENT);
         this.versionHolder = this.remoteMonitor.getNodeData(ClusterUtils.VERSION_PATH, CreateMode.PERSISTENT);
     }
 
