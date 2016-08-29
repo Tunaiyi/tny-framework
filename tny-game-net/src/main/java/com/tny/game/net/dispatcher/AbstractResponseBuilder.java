@@ -3,40 +3,23 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.Protocol;
 
+import java.util.function.Supplier;
+
 /**
  * 客户端响应构建器
  *
  * @author Kun.y
  */
-public abstract class AbstractResponseBuilder implements ResponseBuilder {
+public abstract class AbstractResponseBuilder<RP extends NetResponse> implements ResponseBuilder {
 
     /**
      * 响应的响应Id
      */
     protected int id = Session.DEFAULT_RESPONSE_ID;
-    // /**
-    //  * 返回信息
-    //  */
-    // protected Object message;
-    // /**
-    //  * 错误码
-    //  */
-    // protected int result;
-    // /**
-    //  * 响应操作
-    //  */
-    // protected int protocol;
-    // /**
-    //  * 推送
-    //  */
-    // protected boolean push;
-    //
-    // /**
-    //  * 序号
-    //  */
-    // protected int number;
 
-    protected NetResponse response;
+    protected RP response;
+
+    protected Supplier<RP> creator;
 
     /**
      * 创建构建器
@@ -44,8 +27,9 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
      * @return 返沪构建器
      */
 
-    protected AbstractResponseBuilder(NetResponse response) {
-        this.response = response;
+    protected AbstractResponseBuilder(Supplier<RP> creator) {
+        this.creator = creator;
+        this.response = creator.get();
     }
 
     /**
@@ -142,5 +126,23 @@ public abstract class AbstractResponseBuilder implements ResponseBuilder {
         response.setNumber(number);
         return this;
     }
+
+    /**
+     * 构建响应
+     *
+     * @return 返回构建的响应
+     */
+    @Override
+    public Response build() {
+        RP response = this.response;
+        if (response.getProtocol() == 0)
+            throw new NullPointerException("protocol is 0");
+        doBuild(response);
+        this.response = creator.get();
+        return response;
+    }
+
+    protected abstract void doBuild(RP request);
+
 
 }

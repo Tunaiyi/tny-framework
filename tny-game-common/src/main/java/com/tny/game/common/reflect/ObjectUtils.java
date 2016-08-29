@@ -7,6 +7,10 @@ import com.tny.game.number.NumberUtils;
  */
 public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
 
+    public static <T> T self(T object) {
+        return object;
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object, Class<T> clazz) {
         if (Number.class.isAssignableFrom(clazz)) {

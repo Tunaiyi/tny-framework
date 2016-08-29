@@ -8,6 +8,8 @@ public interface Protocol {
         return false;
     }
 
-    boolean isOwn(Message message);
+    default boolean isOwn(Message message) {
+        return this.getProtocol() == message.getProtocol();
+    }
 
 }

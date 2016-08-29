@@ -1,5 +1,6 @@
 package com.tny.game.suite.login;
 
+import com.google.common.collect.Range;
 import com.tny.game.common.utils.json.JSONUtils;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.Request;
@@ -10,15 +11,31 @@ import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.Set;
 
 public class ServeAuthProvider extends GameAuthProvider {
 
     @Autowired
     private ServeTicketMaker maker;
 
-    public ServeAuthProvider(List<Integer> authProtocols) {
-        super("serve-auth-provider", authProtocols);
+    public ServeAuthProvider(Set<Integer> includes) {
+        this(includes, null);
+    }
+
+    public ServeAuthProvider(Range<Integer> includeRange) {
+        this(includeRange, null);
+    }
+
+    public ServeAuthProvider(Range<Integer> includeRange, Range<Integer> excludeRange) {
+        this(null, null, includeRange, excludeRange);
+    }
+
+    public ServeAuthProvider(Set<Integer> includes, Set<Integer> excludes) {
+        this(includes, excludes, null, null);
+    }
+
+    public ServeAuthProvider(Set<Integer> includes, Set<Integer> excludes, Range<Integer> includeRange, Range<Integer> excludeRange) {
+        super("server-auth-provider", includes, excludes, includeRange, excludeRange);
     }
 
     @Override
@@ -30,7 +47,7 @@ public class ServeAuthProvider extends GameAuthProvider {
         String ticketWord = request.getParameter(0, String.class);
         ServeTicket ticket = JSONUtils.toObject(ticketWord, ServeTicket.class);
         ServerType serverType = ticket.asScopeType().getServerType();
-        if (this.maker.make(ticket).equals(ticket.getTicket())) {
+        if (this.maker.make(ticket).equals(ticket.getSecret())) {
             LoginCertificate info = LoginCertificate.createLogin(ticket.getServerID(), serverType.getName(), false);
             String truePWD = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(serverType), "");
             request.getSession().attributes().setAttribute(SessionKeys.SYSTEM_USER_ID, ticket.getServerID());

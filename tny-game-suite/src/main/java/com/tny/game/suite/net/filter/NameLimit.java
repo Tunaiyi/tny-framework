@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.server", "suite.all"})
+@Profile({SERVER, GAME})
 public class NameLimit extends AbstractParamFilter<NameFilter, String> {
 
     @Autowired

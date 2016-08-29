@@ -20,6 +20,8 @@ import com.tny.game.protoex.annotations.TypeEncode;
 @ProtoEx(ProtoExMessageCoder.RESPONSE_ID)
 public class ProtoExResponse extends NetResponse {
 
+    private static final long serialVersionUID = 1L;
+
     @ProtoExField(1)
     protected int ID;
 
@@ -37,8 +39,6 @@ public class ProtoExResponse extends NetResponse {
 
     @ProtoExField(6)
     protected int number;
-
-    private static final long serialVersionUID = 1L;
 
     @Override
     public int getID() {

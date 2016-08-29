@@ -55,6 +55,9 @@ public class ServerOutline {
     @ProtoExField(13)
     private int followServer;
 
+    @ProtoExField(14)
+    private String serverScope;
+
     public ServerOutline() {
     }
 
@@ -90,58 +93,67 @@ public class ServerOutline {
         return this.rmiPort;
     }
 
-    public ServerOutline setServerID(int serverID) {
+    public String getServerScope() {
+        return serverScope;
+    }
+
+    ServerOutline setServerID(int serverID) {
         this.serverID = serverID;
         return this;
     }
 
-    public ServerOutline setPublicIP(String publicIP) {
+    ServerOutline setPublicIP(String publicIP) {
         this.publicIP = publicIP;
         return this;
     }
 
-    public ServerOutline setPrivateIP(String privateIP) {
+    ServerOutline setPrivateIP(String privateIP) {
         this.privateIP = privateIP;
         return this;
     }
 
-    public ServerOutline setServerPort(int serverPort) {
+    ServerOutline setServerPort(int serverPort) {
         this.serverPort = serverPort;
         return this;
     }
 
-    public ServerOutline setRmiPort(int rmiPort) {
+    ServerOutline setRmiPort(int rmiPort) {
         this.rmiPort = rmiPort;
         return this;
     }
 
-    protected ServerOutline setDbHost(String dbHost) {
+    ServerOutline setDbHost(String dbHost) {
         this.dbHost = dbHost;
         return this;
     }
 
-    protected ServerOutline setServerType(String serverType) {
+    ServerOutline setServerType(String serverType) {
         this.serverType = serverType;
         return this;
     }
 
-    protected ServerOutline setDbPort(int dbPort) {
+    ServerOutline setDbPort(int dbPort) {
         this.dbPort = dbPort;
         return this;
     }
 
-    protected ServerOutline setDb(String db) {
+    ServerOutline setDb(String db) {
         this.db = db;
         return this;
     }
 
-    protected ServerOutline setMain(boolean main) {
+    ServerOutline setMain(boolean main) {
         this.main = main;
         return this;
     }
 
-    protected ServerOutline setFollowServer(int followServer) {
+    ServerOutline setFollowServer(int followServer) {
         this.followServer = followServer;
+        return this;
+    }
+
+    ServerOutline setServerScope(String serverScope) {
+        this.serverScope = serverScope;
         return this;
     }
 

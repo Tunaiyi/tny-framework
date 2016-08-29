@@ -233,10 +233,8 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
         return one.doubleValue() == other.doubleValue();
     }
 
-
     public static boolean notEqual(Number one, Number other) {
         return !equal(one, other);
     }
-
 
 }

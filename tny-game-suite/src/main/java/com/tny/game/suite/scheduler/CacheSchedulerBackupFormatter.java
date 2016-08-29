@@ -14,8 +14,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.scheduler.cache_store"})
+@Profile({SCHEDULER_CACHE, GAME})
 public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheSchedulerBackup, byte[]> {
 
     /**

@@ -12,6 +12,9 @@ dependencies {
             libs.'spring-aspects',
             libs.'spring-orm',
             libs.'guava',
+            libs.'poi',
+            libs.'poi-ooxml',
+            libs.'poi-ooxml-schemas',
 
             project(":tny-game-protoex"),
             project(":tny-game-common"),

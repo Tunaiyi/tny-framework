@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.tny.game.net.coder.CoderContent.*;
+import static com.tny.game.net.coder.CoderContent.FRAME_MAGIC;
 
 public class SimpleDataPacketEncoder implements DataPacketEncoder {
 

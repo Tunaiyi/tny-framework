@@ -11,9 +11,10 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ChannelClientSession extends AbstractClientSession {
+public abstract class ChannelClientSession extends AbstractCallbackClientSession {
 
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
 
@@ -58,7 +59,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     @Override
     public void disconnect() {
         if (this.isConnect()) {
-            if (ChannelClientSession.LOG.isInfoEnabled()) {
+            if (LOG.isInfoEnabled()) {
                 LOG.info("Session主动断开##通道 {} ==> {}", this.channel.remoteAddress(), this.channel.localAddress(), new Date());
             }
             this.channel.disconnect();
@@ -71,41 +72,43 @@ public abstract class ChannelClientSession extends AbstractClientSession {
         return this.channel != null && this.channel.isActive();
     }
 
-    protected ChannelFuture write(Object data) {
+    protected Optional<ChannelFuture> write(Object data) {
         try {
             if (this.channel.isActive()) {
-                return this.channel.writeAndFlush(data);
+                return Optional.ofNullable(this.channel.writeAndFlush(data));
             }
         } catch (Exception e) {
-            ChannelClientSession.LOG.error("#Session#sendMessage 异常", e);
+            LOG.error("#Session#sendMessage 异常", e);
         }
-        return null;
+        return Optional.empty();
     }
 
-    protected ChannelFuture writeRequest(Request request, final MessageFuture<?> future) {
+    protected Optional<NetFuture> writeRequest(Request request, final MessageFuture<?> future) {
         try {
             if (this.channel.isActive()) {
                 if (future == null) {
-                    return this.channel.writeAndFlush(request);
+                    ChannelFuture channelFuture = this.channel.writeAndFlush(request);
+                    return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
                 } else {
-                    return this.channel.writeAndFlush(request, new NetChannelPromise(this, future, channel));
+                    ChannelFuture channelFuture = this.channel.writeAndFlush(request, new NetChannelPromise(this, future, channel));
+                    return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
                 }
             }
         } catch (Exception e) {
-            ChannelClientSession.LOG.error("#Session#sendMessage 异常", e);
+            LOG.error("#Session#sendMessage 异常", e);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public ChannelFuture request(Protocol protocol, Object... params) {
+    public Optional<NetFuture> request(Protocol protocol, Object... params) {
         return this.request(protocol, (MessageFuture<?>) null, params);
     }
 
     @Override
-    public <B> ChannelFuture request(Protocol protocol, MessageFuture<B> future, Object... params) {
+    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
         Request request = this.getMessageBuilderFactory()
-                .newRequestBuilder()
+                .newRequestBuilder(this)
                 .setID(this.requestIDCreator.getAndIncrement())
                 .setProtocol(protocol)
                 .addParameter(params)
@@ -119,8 +122,8 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     }
 
     @Override
-    public <B> ChannelFuture request(Protocol protocol, MessageAction<B> action, Object... params) {
-        MessageFuture<B> future = new MessageFuture<>();
+    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
+        MessageFuture<?> future = new MessageFuture<>();
         future.setResponseAction(action);
         return this.request(protocol, future, params);
     }

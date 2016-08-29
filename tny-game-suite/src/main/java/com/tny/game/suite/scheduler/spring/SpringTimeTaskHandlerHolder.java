@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component("timeTaskHandlerHolder")
-@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
+@Profile({SCHEDULER, GAME})
 public class SpringTimeTaskHandlerHolder extends AbstractTimeTaskHandlerHolder implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;

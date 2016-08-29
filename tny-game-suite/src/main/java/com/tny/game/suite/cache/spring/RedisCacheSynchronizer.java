@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
 @Component("redisCacheSynchronizer")
-@Profile({"suite.cache", "suite.cache.redis", "suite.all"})
+@Profile({CACHE_REDIS, GAME})
 public class RedisCacheSynchronizer extends CacheSynchronizer {
 
     @Autowired

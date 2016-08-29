@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -10,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
-@Profile({"suite.auto", "suite.all"})
 public class HHSSDateConverter extends AbstractSingleValueConverter {
 
     private DateFormat format = new SimpleDateFormat("HH:mm");

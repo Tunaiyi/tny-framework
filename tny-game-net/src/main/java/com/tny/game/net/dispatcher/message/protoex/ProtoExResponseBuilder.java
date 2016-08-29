@@ -1,14 +1,17 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
 import com.tny.game.net.dispatcher.AbstractResponseBuilder;
-import com.tny.game.net.dispatcher.Response;
+
+import java.util.function.Supplier;
 
 /**
  * 客户端响应构建器
  *
  * @author Kun.y
  */
-public class ProtoExResponseBuilder extends AbstractResponseBuilder {
+public class ProtoExResponseBuilder extends AbstractResponseBuilder<ProtoExResponse> {
+
+    private static Supplier<ProtoExResponse> CREATOR = ProtoExResponse::new;
 
     /**
      * 创建构建器
@@ -16,21 +19,11 @@ public class ProtoExResponseBuilder extends AbstractResponseBuilder {
      * @return 返沪构建器s
      */
     protected ProtoExResponseBuilder() {
-        super(new ProtoExResponse());
+        super(CREATOR);
     }
 
-    /**
-     * 构建响应
-     *
-     * @return 返回构建的响应
-     */
     @Override
-    public Response build() {
-        Response response = this.response;
-        if (response.getProtocol() == 0)
-            throw new NullPointerException("protocol is 0");
-        this.response = new ProtoExResponse();
-        return response;
+    protected void doBuild(ProtoExResponse request) {
     }
 
 }

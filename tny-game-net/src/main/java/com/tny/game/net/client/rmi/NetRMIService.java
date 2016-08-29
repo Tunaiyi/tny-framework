@@ -35,14 +35,14 @@ public abstract class NetRMIService implements RMIService {
             CommandResult result = this.messageDispatcher.dispatch(request, session, this.context).invoke();
             if (result != null) {
                 return session.getMessageBuilderFactory()
-                        .newResponseBuilder()
+                        .newResponseBuilder(session)
                         .setProtocol(request)
                         .setCommandResult(result)
                         .build();
             }
         } catch (DispatchException e) {
             Response response = session.getMessageBuilderFactory()
-                    .newResponseBuilder()
+                    .newResponseBuilder(session)
                     .setProtocol(request)
                     .setResult(e.getResultCode())
                     .build();

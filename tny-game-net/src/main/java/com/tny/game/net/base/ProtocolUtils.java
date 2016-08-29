@@ -22,11 +22,6 @@ public class ProtocolUtils {
         }
 
         @Override
-        public boolean isOwn(Message message) {
-            return this.protocol == message.getProtocol();
-        }
-
-        @Override
         public boolean isPush() {
             return true;
         }

@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 
 @Component
-@Profile({"suite.scheduler.cache_store"})
+@Profile({SCHEDULER, GAME})
 public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte[]> {
 
     /**

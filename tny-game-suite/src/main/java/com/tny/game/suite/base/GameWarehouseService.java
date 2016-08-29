@@ -24,9 +24,10 @@ import org.springframework.stereotype.Component;
 import java.util.function.BiFunction;
 
 import static com.tny.game.base.item.behavior.TradeType.*;
+import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
-@Profile({"suite.base", "suite.all"})
+@Profile({ITEM, GAME})
 public class GameWarehouseService implements WarehouseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameWarehouseService.class);

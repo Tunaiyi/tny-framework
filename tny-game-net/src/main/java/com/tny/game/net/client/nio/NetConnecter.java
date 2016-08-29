@@ -2,6 +2,7 @@ package com.tny.game.net.client.nio;
 
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.dispatcher.MessageHandler;
 import com.tny.game.net.dispatcher.RequestSession;
@@ -30,7 +31,7 @@ public class NetConnecter {
 
     private AppContext appContext;
 
-    public NetConnecter(AppContext appContext) {
+    public NetConnecter(NetAppContext appContext) {
         this.bootstrap = new Bootstrap();
         this.channelMaker = appContext.getChannelMaker();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

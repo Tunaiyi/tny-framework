@@ -97,7 +97,7 @@ public interface TimeMeter<C extends TimeCycle> {
         if (end == null)
             return -1;
         DateTime suspendTime = this.getSuspendTime();
-        if (suspendTime != null && suspendTime.getMillis() > timeMillis)
+        if (suspendTime != null && suspendTime.getMillis() <= timeMillis)
             timeMillis = suspendTime.getMillis();
         return Math.max(end.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
     }

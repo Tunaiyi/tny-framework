@@ -26,7 +26,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(4)
-    private int zone;
+    private long zone;
 
     @JsonProperty
     @ProtoExField(5)
@@ -54,7 +54,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(11)
-    private String ticket;
+    private String secret;
 
     @JsonProperty
     @ProtoExField(12)
@@ -62,7 +62,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(13)
-    private String pfAccount;
+    private String account;
 
     @JsonProperty
     @ProtoExField(14)
@@ -76,8 +76,8 @@ public class GameTicket {
         super();
     }
 
-    public GameTicket(long tokenID, int server, String pfAccount, String openID, String openKey,
-                      String pf, int zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
+    public GameTicket(long tokenID, int server, String openID, String openKey,
+                      String pf, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
         super();
         this.tokenID = tokenID;
         this.pf = pf;
@@ -89,10 +89,9 @@ public class GameTicket {
         this.time = time;
         this.openID = openID;
         this.openKey = openKey;
-        this.pfAccount = pfAccount;
         this.interior = false;
         if (maker != null)
-            this.ticket = maker.make(this);
+            this.secret = maker.make(this);
     }
 
     public String getPf() {
@@ -107,7 +106,7 @@ public class GameTicket {
         return this.server;
     }
 
-    public int getZone() {
+    public long getZone() {
         return this.zone;
     }
 
@@ -139,16 +138,16 @@ public class GameTicket {
         return this.pwdKey;
     }
 
-    public String getTicket() {
-        return this.ticket;
+    public String getSecret() {
+        return this.secret;
     }
 
     public long getTokenID() {
         return this.tokenID;
     }
 
-    public String getPfAccount() {
-        return this.pfAccount;
+    public String getAccount() {
+        return this.account;
     }
 
     public boolean isInterior() {
@@ -195,16 +194,16 @@ public class GameTicket {
         this.pwdKey = pwdKey;
     }
 
-    protected void setTicket(String ticket) {
-        this.ticket = ticket;
+    protected void setSecret(String secret) {
+        this.secret = secret;
     }
 
     protected void setTokenID(long tokenID) {
         this.tokenID = tokenID;
     }
 
-    protected void setPfAccount(String pfAccount) {
-        this.pfAccount = pfAccount;
+    protected void setAccount(String account) {
+        this.account = account;
     }
 
     protected void setInterior(boolean interior) {
@@ -215,7 +214,7 @@ public class GameTicket {
     public String toString() {
         return "GamesTicket [pf=" + this.pf + ", ad=" + this.ad + ", server=" + this.server + ", zone=" + this.zone + ", entry=" + this.entry + ", device=" + this.device + ", openID=" + this.openID
                 + ", openKey=" + this.openKey + ", time="
-                + this.time + ", pwdKey=" + this.pwdKey + ", ticket=" + this.ticket + "]";
+                + this.time + ", pwdKey=" + this.pwdKey + ", secret=" + this.secret + "]";
     }
 
 }

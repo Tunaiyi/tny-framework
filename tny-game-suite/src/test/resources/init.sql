@@ -1,7 +1,7 @@
 CREATE TABLE Account (
   `uid`            BIGINT(20) NOT NULL,
   `account`        VARCHAR(50),
-  `pfAccount`      VARCHAR(50),
+  `account`      VARCHAR(50),
   `device`         VARCHAR(128),
   `deviceID`       VARCHAR(128),
   `pf`             VARCHAR(45),

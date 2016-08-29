@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@ProtoEx(ProtoExMessageCoder.REQUSET_ID)
+@ProtoEx(ProtoExMessageCoder.REQUEST_ID)
 public class ProtoExRequest extends NetRequest {
 
     private static final long serialVersionUID = 1L;

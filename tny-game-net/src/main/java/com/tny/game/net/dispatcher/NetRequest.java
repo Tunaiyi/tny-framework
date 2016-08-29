@@ -126,11 +126,11 @@ public abstract class NetRequest extends Request {
 
     @Override
     public Object[] getParameters(final Class<?>[] clazzs) {
-        int clazzsSize = clazzs == null ? 0 : clazzs.length;
-        if (this.size() < clazzsSize)
-            throw new IllegalArgumentException("clazzs size is : " + clazzsSize + " is not equals with paramList's size " + this.size());
-        final Object[] objects = new Object[clazzsSize];
-        for (int oIndex = 0; oIndex < clazzsSize; oIndex++)
+        int classesSize = clazzs == null ? 0 : clazzs.length;
+        if (this.size() < classesSize)
+            throw new IllegalArgumentException("classes size is : " + classesSize + " is not equals with paramList's size " + this.size());
+        final Object[] objects = new Object[classesSize];
+        for (int oIndex = 0; oIndex < classesSize; oIndex++)
             objects[oIndex] = this.getParameter(oIndex, clazzs[oIndex]);
         return objects;
     }

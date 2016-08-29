@@ -15,7 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameInfo {
 
@@ -96,8 +101,12 @@ public class GameInfo {
         return GAMES_INFO_MAP.get(serverID);
     }
 
-    public boolean isTypeOf(ServerType serverType) {
+    public boolean isType(ServerType serverType) {
         return GameInfo.scopeType == serverType;
+    }
+
+    public boolean isScope(ScopeType scopeType) {
+        return GameInfo.scopeType == scopeType;
     }
 
     public DateTime getOpenDate() {

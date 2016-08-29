@@ -5,18 +5,18 @@
 <servers>
 
     <server>
-        <serverID>200</serverID>
+        <remoteID>200</remoteID>
         <openDate>2015-09-09 10:00</openDate>
         <mainServer>true</mainServer>
         <register>true</register>
     </server>
     <server>
-        <serverID>100</serverID>
+        <remoteID>100</remoteID>
         <openDate>2015-08-19 10:00</openDate>
         <register>false</register>
     </server>
     <server>
-        <serverID>101</serverID>
+        <remoteID>101</remoteID>
         <openDate>2015-08-19 10:00</openDate>
         <register>false</register>
     </server>

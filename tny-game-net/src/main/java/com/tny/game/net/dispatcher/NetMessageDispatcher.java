@@ -23,12 +23,10 @@ import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
 import com.tny.game.worker.Callback;
-import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -239,15 +237,17 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             Object body = this.message.getBody(Object.class);
             if (body == null)
                 return null;
-            List<ResponseMonitor<?>> monitors = new ArrayList<>();//this.session.getResponseMonitors(body);
-            for (ResponseMonitor<?> mon : monitors) {
-                ResponseMonitor<Object> monitor = (ResponseMonitor<Object>) mon;
+            ResponseHandlerHolder handlerHolder = appContext.getResponseHandlerHolder();
+            if (handlerHolder == null)
+                return null;
+            for (ResponseHandler<?> mon : handlerHolder.getMonitorHolderList(body)) {
+                ResponseHandler<Object> monitor = (ResponseHandler<Object>) mon;
                 if (monitor.getMonitorType().isHandle(this.message.getID())) {
                     try {
-                        List<Protocol> includes = monitor.includeController();
+                        List<Protocol> includes = monitor.includeProtocols();
                         if (!this.match(this.message, includes, true))
                             continue;
-                        List<Protocol> excludes = monitor.excludeController();
+                        List<Protocol> excludes = monitor.excludeProtocols();
                         if (this.match(this.message, excludes, false))
                             continue;
                         monitor.handle(this.session, this.message, this.message.getBody(Object.class));
@@ -385,11 +385,9 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", methodHolder.getMethodClass(), methodHolder.getName(), callback.getClass(), e);
                 }
             }
-            Optional<ChannelFuture> future = this.session.response(this.message, code, value);
+            Optional<NetFuture> future = this.session.response(this.message, code, value);
             if (future != null && code.getType() == ResultCodeType.ERROR) {
-                future.ifPresent(result ->
-                        result.addListener(f -> RequestDispatcherCommand.this.appContext.getSessionHolder().offline(RequestDispatcherCommand.this.session))
-                );
+                future.ifPresent(result -> result.addListener(f -> this.appContext.getSessionHolder().offline(result.getSession())));
             }
         }
 
@@ -554,6 +552,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                         NetMessageDispatcher.DISPATCHER_LOG.debug("调用 {}.{} 检测Request - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass());
                     ResultCode resultCode;
+                    if (!checker.isCheck(this.message))
+                        continue;
                     if ((resultCode = checker.match(this.message)).isFailure()) {
                         NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 检测Request - {} 失败原因: {} - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass(), resultCode, resultCode.getMessage());
                         throw new DispatchException(CoreResponseCode.FALSIFY);

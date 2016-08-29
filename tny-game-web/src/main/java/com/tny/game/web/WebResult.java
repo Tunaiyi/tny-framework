@@ -10,23 +10,23 @@ import com.tny.game.common.utils.DoneResult;
 public class WebResult {
 
     @JsonProperty
-    private int result;
+    private int code;
 
     @JsonProperty
-    private Object message;
+    private String message;
 
     @JsonProperty
     private Object body;
 
     //	public static WebResult fail(ResultCode code) {
-    //		WebResult result = new WebResult();
-    //		result.result = code.getCode();
-    //		return result;
+    //		WebResult code = new WebResult();
+    //		code.code = code.getCode();
+    //		return code;
     //	}
 
     public static WebResult fail(ResultCode code) {
         WebResult result = new WebResult();
-        result.result = code.getCode();
+        result.code = code.getCode();
         result.message = code.getMessage();
         return result;
     }
@@ -34,7 +34,7 @@ public class WebResult {
     public static WebResult as(DoneResult<?> done) {
         WebResult result = new WebResult();
         ResultCode code = done.getCode();
-        result.result = code.getCode();
+        result.code = code.getCode();
         result.message = code.getMessage();
         result.body = done.get();
         return result;
@@ -42,15 +42,15 @@ public class WebResult {
 
     public static WebResult fail(ResultCode code, Object body) {
         WebResult result = new WebResult();
-        result.result = code.getCode();
+        result.code = code.getCode();
         result.message = code.getMessage();
         result.body = body;
         return result;
     }
 
-    public static WebResult succ(Object message, Object body) {
+    public static WebResult succ(String message, Object body) {
         WebResult result = new WebResult();
-        result.result = ResultCode.SUCCESS_CODE;
+        result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
         result.message = message;
         return result;
@@ -58,35 +58,35 @@ public class WebResult {
 
     public static WebResult succ(Object body) {
         WebResult result = new WebResult();
-        result.result = ResultCode.SUCCESS_CODE;
+        result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
-//		result.message = body;
+//		code.message = body;
         return result;
     }
 
     //	public static WebResult fail(ResultCode code, Object body) {
-    //		WebResult result = new WebResult();
-    //		result.result = code.getCode();
-    //		result.message = code.getMessage();
-    //		result.body = body;
-    //		return result;
+    //		WebResult code = new WebResult();
+    //		code.code = code.getCode();
+    //		code.message = code.getMessage();
+    //		code.body = body;
+    //		return code;
     //	}
 
-    public int getResult() {
-        return this.result;
+    public int getCode() {
+        return this.code;
     }
 
     public Object getBody() {
         return this.body;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return this.message;
     }
 
     @Override
     public String toString() {
-        return "WebResult [result=" + result + ", message=" + message + ", body=" + body + "]";
+        return "WebResult [code=" + code + ", message=" + message + ", body=" + body + "]";
     }
 
 }

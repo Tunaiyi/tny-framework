@@ -1,8 +1,8 @@
 package com.tny.game.net.context.impl;
 
+import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.SystemIp;
-import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
 import org.junit.*;
 
 import java.net.InetSocketAddress;

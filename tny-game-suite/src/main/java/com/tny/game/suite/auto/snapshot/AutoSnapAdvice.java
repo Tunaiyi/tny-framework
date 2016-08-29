@@ -23,9 +23,11 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Listener
 @Component
-@Profile({"suite.auto", "suite.all"})
+@Profile({AUTO, GAME})
 public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice, BeforeAdvice, ThrowsAdvice {
 
     @Autowired

@@ -27,8 +27,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.game_auth", "suite.all"})
+@Profile({GAME})
 public class AccountService implements ServerPreStart {
 
     @Autowired
@@ -65,11 +67,8 @@ public class AccountService implements ServerPreStart {
                 AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenID(), playerID);
                 accountObj = new Account(playerID, account, ticket);
                 int result = this.accountManager.update(accountObj, ticket);
-                if (result > 0) {
+                if (result > 0)
                     return accountObj;
-                } else {
-                    continue;
-                }
             } catch (Throwable e) {
                 AccountService.LOGGER.error("创建帐号出错", e);
                 return null;

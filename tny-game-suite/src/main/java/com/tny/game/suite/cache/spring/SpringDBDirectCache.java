@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
 @Component("dbCache")
-@Profile({"suite.cache", "suite.cache.db", "suite.all"})
+@Profile({CACHE_DB, GAME})
 public class SpringDBDirectCache extends DirectCache {
 
     @Autowired

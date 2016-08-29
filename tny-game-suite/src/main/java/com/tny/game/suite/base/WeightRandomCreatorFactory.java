@@ -16,8 +16,10 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.auto", "suite.all"})
+@Profile({ITEM, GAME})
 public class WeightRandomCreatorFactory implements RandomCreatorFactory {
 
     private static final String NAME = "weight";

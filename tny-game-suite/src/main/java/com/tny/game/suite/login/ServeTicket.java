@@ -42,7 +42,7 @@ public class ServeTicket implements Serializable {
 
     @JsonProperty
     @ProtoExField(5)
-    private String ticket;
+    private String secret;
 
     public ServeTicket() {
         super();
@@ -55,7 +55,7 @@ public class ServeTicket implements Serializable {
         this.serverID = server;
         this.time = System.currentTimeMillis();
         if (maker != null)
-            this.ticket = maker.make(this);
+            this.secret = maker.make(this);
     }
 
     public String getScopeType() {
@@ -90,14 +90,13 @@ public class ServeTicket implements Serializable {
         this.time = time;
     }
 
-    public String getTicket() {
-        return this.ticket;
+    public String getSecret() {
+        return this.secret;
     }
 
-    protected void setTicket(String ticket) {
-        this.ticket = ticket;
+    protected void setSecret(String secret) {
+        this.secret = secret;
     }
-
 
     public ServerType asServerType() {
         return ServerTypes.of(serverType);
@@ -126,7 +125,7 @@ public class ServeTicket implements Serializable {
         if (serverID != serveTicket.serverID) return false;
         if (time != serveTicket.time) return false;
         if (!scopeType.equals(serveTicket.scopeType)) return false;
-        return ticket.equals(serveTicket.ticket);
+        return secret.equals(serveTicket.secret);
 
     }
 
@@ -135,7 +134,7 @@ public class ServeTicket implements Serializable {
         int result = scopeType.hashCode();
         result = 31 * result + serverID;
         result = 31 * result + (int) (time ^ (time >>> 32));
-        result = 31 * result + ticket.hashCode();
+        result = 31 * result + secret.hashCode();
         return result;
     }
 
@@ -145,7 +144,7 @@ public class ServeTicket implements Serializable {
                 "scopeType=" + scopeType +
                 ", serverID=" + serverID +
                 ", time=" + time +
-                ", ticket='" + ticket + '\'' +
+                ", secret='" + secret + '\'' +
                 '}';
     }
 }

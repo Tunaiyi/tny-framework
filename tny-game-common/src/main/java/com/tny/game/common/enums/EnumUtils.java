@@ -2,6 +2,8 @@ package com.tny.game.common.enums;
 
 import com.tny.game.LogUtils;
 
+import java.util.stream.Stream;
+
 /**
  * Created by Kun Yang on 16/2/3.
  */
@@ -13,6 +15,14 @@ public class EnumUtils extends org.apache.commons.lang3.EnumUtils {
                 return e;
         }
         throw new NullPointerException(LogUtils.format("ID 为 {} 的 {} 枚举实例不存在", id, enumClass));
+    }
+
+    public static <E extends Enum<E>> boolean isIn(E value, E... elements) {
+        return Stream.of(elements).anyMatch(v -> v == value);
+    }
+
+    public static <E extends Enum<E>> boolean isOut(E value, E... elements) {
+        return !Stream.of(elements).anyMatch(v -> v == value);
     }
 
 }

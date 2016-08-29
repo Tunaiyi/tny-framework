@@ -40,7 +40,7 @@ public class Account implements Identifiable {
 
     private int entry;
 
-    private int zone;
+    private long zone;
 
     public Account() {
         super();
@@ -218,11 +218,11 @@ public class Account implements Identifiable {
         this.entry = entry;
     }
 
-    public int getZone() {
+    public long getZone() {
         return this.zone;
     }
 
-    protected void setZone(int zoneID) {
+    protected void setZone(long zoneID) {
         this.zone = zoneID;
     }
 

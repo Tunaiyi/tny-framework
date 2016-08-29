@@ -1,5 +1,6 @@
 package com.tny.game.suite.login;
 
+import com.google.common.collect.Range;
 import com.tny.game.common.utils.md5.MD5;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.Request;
@@ -14,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.Set;
 
 public abstract class UserAuthProvider extends GameAuthProvider {
 
@@ -28,9 +29,26 @@ public abstract class UserAuthProvider extends GameAuthProvider {
 
     private volatile boolean online = true;
 
-    public UserAuthProvider(String name, List<Integer> authProtocols) {
-        super(name, authProtocols);
+    public UserAuthProvider(String name, Set<Integer> includes) {
+        this(name, includes, null);
     }
+
+    public UserAuthProvider(String name, Range<Integer> includeRange) {
+        this(name, includeRange, null);
+    }
+
+    public UserAuthProvider(String name, Range<Integer> includeRange, Range<Integer> excludeRange) {
+        this(name, null, null, includeRange, excludeRange);
+    }
+
+    public UserAuthProvider(String name, Set<Integer> includes, Set<Integer> excludes) {
+        this(name, includes, excludes, null, null);
+    }
+
+    public UserAuthProvider(String name, Set<Integer> includes, Set<Integer> excludes, Range<Integer> includeRange, Range<Integer> excludeRange) {
+        super(name, includes, excludes, includeRange, excludeRange);
+    }
+
 
     public boolean isOnline() {
         return online;
@@ -43,11 +61,11 @@ public abstract class UserAuthProvider extends GameAuthProvider {
                 if (ticketWord == null)
                     throw new ValidatorFailException(openID, request.getHostName(), "无登录票据");
                 ticket = GameTickeHelper.decryptTicket(ticketWord);
-                if (!this.isOnline() && (!ticket.getPf().equals("lingqu") || !ticket.isInterior()))
+                if (!this.isOnline() && (!ticket.getPf().equals("inside") || !ticket.isInterior()))
                     throw new DispatchException(SuiteResultCode.AUTH_SERVER_IS_OFFLINE, "服务器正在维护");
-                // 维护时候只有pf为funsdev才可以进入
+                // 维护时候只有pf为inside才可以进入
                 String checkKey = this.ticketMaker.make(ticket);
-                if (!checkKey.equals(ticket.getTicket()))
+                if (!checkKey.equals(ticket.getSecret()))
                     throw new ValidatorFailException(openID, request.getHostName(), "票据验证失败");
             } else {
                 if (ticketWord == null || ticketWord.equals("{}") || ticketWord.isEmpty()) {
@@ -61,11 +79,11 @@ public abstract class UserAuthProvider extends GameAuthProvider {
                         pf = pfs[1];
                     }
                     long time = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, System.currentTimeMillis());
-                    ticket = new GameTicket(System.currentTimeMillis(), serverID, openID, openID, openKey, pf, zoneID, entryID, null, null, time, null);
+                    ticket = new GameTicket(System.currentTimeMillis(), serverID, openID, openKey, pf, zoneID, entryID, null, null, time, null);
                 } else {
                     ticket = GameTickeHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
-                    if (!checkKey.equals(ticket.getTicket()))
+                    if (!checkKey.equals(ticket.getSecret()))
                         throw new ValidatorFailException(openID, request.getHostName(), "票据验证失败");
                 }
             }

@@ -6,8 +6,6 @@ import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.tny.game.net.coder.CoderContent.*;
-
 public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
     private static final Logger DECODER_LOG = LoggerFactory.getLogger(CoreLogger.CODER);
@@ -22,12 +20,12 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
     @Override
     public final Object decodeObject(final ByteBuf buffer) throws Exception {
 
-        if (buffer.readableBytes() < FRAME_MAGIC.length + MESSAGE_LENGTH_SIZE + OPTION_SIZE)
+        if (buffer.readableBytes() < CoderContent.FRAME_MAGIC.length + CoderContent.MESSAGE_LENGTH_SIZE + CoderContent.OPTION_SIZE)
             return null;
         // 检验消息头
         if (DECODER_LOG.isDebugEnabled())
             DECODER_LOG.debug("read head");
-        final byte[] magics = new byte[FRAME_MAGIC.length];
+        final byte[] magics = new byte[CoderContent.FRAME_MAGIC.length];
         buffer.readBytes(magics);
         if (!this.isMagic(magics))
             throw new PacketHeadException("非法包头");
@@ -42,7 +40,7 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
         // 读取请求信息体
         if (buffer.readableBytes() < messageBodySize) {
-            buffer.readerIndex(buffer.readerIndex() - (FRAME_MAGIC.length + MESSAGE_LENGTH_SIZE + OPTION_SIZE));
+            buffer.readerIndex(buffer.readerIndex() - (CoderContent.FRAME_MAGIC.length + CoderContent.MESSAGE_LENGTH_SIZE + CoderContent.OPTION_SIZE));
             return null;
         }
 
@@ -69,7 +67,7 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
      */
     private boolean isMagic(final byte[] magics) {
         for (int index = 0; index < magics.length; index++) {
-            if (FRAME_MAGIC[index] != magics[index])
+            if (CoderContent.FRAME_MAGIC[index] != magics[index])
                 return false;
         }
         return true;

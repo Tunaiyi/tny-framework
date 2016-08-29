@@ -2,10 +2,10 @@ package com.tny.game.net.client.rmi;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
+import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestVerifyChecker;
-import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
@@ -17,7 +17,7 @@ public class RMIClient {
 
     protected RMIService rmiService;
 
-    protected RequestVerifyChecker checker;
+    protected RequestVerifier verifier;
 
     protected AtomicInteger requestIDCreator = new AtomicInteger(1);
 
@@ -25,8 +25,8 @@ public class RMIClient {
 
     private volatile transient Attributes attributes;
 
-    public RMIClient(RMIService rmiService, RequestVerifyChecker checker) {
-        this.checker = checker;
+    public RMIClient(RMIService rmiService, RequestVerifier verifier) {
+        this.verifier = verifier;
         this.rmiService = rmiService;
     }
 
@@ -54,10 +54,10 @@ public class RMIClient {
      */
     public Response sendRequest(int protocol, Object... params) throws ClientException {
         Request request = messageBuilderFactory
-                .newRequestBuilder()
+                .newRequestBuilder(null)
                 // .setAttributes(this.attributes())
                 .setID(this.requestIDCreator.getAndIncrement())
-                .setRequestChecker(this.checker)
+                .setRequestVerifier(this.verifier)
                 .setProtocol(protocol)
                 .addParameter(params)
                 .build();

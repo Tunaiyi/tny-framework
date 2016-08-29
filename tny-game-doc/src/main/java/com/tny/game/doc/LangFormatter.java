@@ -16,6 +16,13 @@ import java.util.Set;
  */
 public enum LangFormatter implements TypeFormatter {
 
+    RAW {
+        @Override
+        public String format(Type type) {
+            return type.getTypeName();
+        }
+    },
+
     AS3 {
 
         Set<Class<?>> intClassSet = new HashSet<>(Arrays.asList(new Class<?>[]{

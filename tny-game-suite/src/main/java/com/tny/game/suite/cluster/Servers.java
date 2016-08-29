@@ -3,10 +3,11 @@ package com.tny.game.suite.cluster;
 public interface Servers {
 
     String GAME = "game";
-    String DOORS = "doors";
-    String ADMIN = "admin";
+    String GM = "gm";
     String ACCESS = "access";
     String LOG = "log";
-    String API = "api";
+    String DOORS = "doors";
+    String ADMIN = "admin";
+    String GIFT = "gift";
 
 }

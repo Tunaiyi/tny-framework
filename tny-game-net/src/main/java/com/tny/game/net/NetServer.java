@@ -2,14 +2,18 @@ package com.tny.game.net;
 
 import com.tny.game.flash.FlashPolicyServer;
 import com.tny.game.log.CoreLogger;
-import com.tny.game.net.base.ServerContext;
+import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.dispatcher.MessageHandler;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.listener.ServerClosedListener;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -19,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NetServer {
@@ -39,7 +47,7 @@ public class NetServer {
 
     private ChannelMaker<Channel> channelMaker;
 
-    private ServerContext appContext;
+    private NetServerAppContext appContext;
 
     private List<Channel> serverChannels = new ArrayList<>();
 
@@ -51,15 +59,15 @@ public class NetServer {
     public NetServer() {
     }
 
-    public NetServer(ServerContext appContext) {
+    public NetServer(NetServerAppContext appContext) {
         this(null, appContext);
     }
 
-    public NetServer(String name, ServerContext appContext) {
+    public NetServer(String name, NetServerAppContext appContext) {
         this(name, appContext, new MessageHandler());
     }
 
-    public NetServer(String name, ServerContext appContext, MessageHandler handler) {
+    public NetServer(String name, NetServerAppContext appContext, MessageHandler handler) {
         super();
         this.name = name;
         this.appContext = appContext;

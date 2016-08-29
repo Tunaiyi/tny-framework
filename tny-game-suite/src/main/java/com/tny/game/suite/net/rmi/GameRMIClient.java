@@ -2,7 +2,7 @@ package com.tny.game.suite.net.rmi;
 
 import com.tny.game.common.utils.json.JSONUtils;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestVerifyChecker;
+import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.client.rmi.RMIClient;
 import com.tny.game.net.client.rmi.RMIService;
@@ -37,7 +37,7 @@ public class GameRMIClient extends RMIClient {
 
     private MessageBuilderFactory messageBuilderFactory;
 
-    public GameRMIClient(ScopeType scopeType, int serverID, int userID, String rmiUrl, RMIService rmiService, RequestVerifyChecker checker) {
+    public GameRMIClient(ScopeType scopeType, int serverID, int userID, String rmiUrl, RMIService rmiService, RequestVerifier checker) {
         super(rmiService, checker);
         String key = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(scopeType.getServerType().getName()), "");
         this.attributes().setAttribute(SessionKeys.SYSTEM_USER_ID, this.clientID);
@@ -64,9 +64,9 @@ public class GameRMIClient extends RMIClient {
         ServeTicket ticket = new ServeTicket(this.scopeType, this.clientID, this.maker);
         String ticketWord = JSONUtils.toJson(ticket);
         Request request = messageBuilderFactory
-                .newRequestBuilder()
+                .newRequestBuilder(null)
                 .setID(this.requestIDCreator.incrementAndGet())
-                .setRequestChecker(this.checker)
+                .setRequestVerifier(this.verifier)
                 .setProtocol(protocol)
                 .addParameter(params)
                 .addParameter(ticketWord)

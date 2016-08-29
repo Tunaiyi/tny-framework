@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
+@Profile({SCHEDULER, GAME})
 public class TimeTaskSchedulerService implements ServerPreStart {
 
     @Autowired

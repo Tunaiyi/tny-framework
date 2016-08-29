@@ -20,8 +20,10 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.base", "suite.all"})
+@Profile({ITEM_OPLOG, GAME})
 public class OpLogMapperIniter implements ServerPreStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogMapperIniter.class);

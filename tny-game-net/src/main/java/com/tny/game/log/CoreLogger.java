@@ -20,7 +20,7 @@ public class CoreLogger {
     public static final String CONTEXT = "context";
     private static final String REQUEST = "request";
     private static final String RESPONSE = "response";
-    public static final String CHECKER = "checker";
+    public static final String CHECKER = "verifier";
     public static final String DISPATCHER = "dispatcher";
     public static final String NET = "coreLogger";
     public static final String NIO_CLIENT = "nioClient";

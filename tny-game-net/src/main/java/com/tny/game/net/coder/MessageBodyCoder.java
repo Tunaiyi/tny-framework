@@ -2,8 +2,8 @@ package com.tny.game.net.coder;
 
 public interface MessageBodyCoder {
 
-    public Object doDecoder(final byte[] array, boolean isRequset) throws Exception;
+    Object doDecoder(final byte[] array, boolean isRequest) throws Exception;
 
-    public byte[] doEncode(Object message) throws Exception;
+    byte[] doEncode(Object message) throws Exception;
 
 }

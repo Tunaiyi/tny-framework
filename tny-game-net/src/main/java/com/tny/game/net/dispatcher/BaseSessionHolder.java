@@ -129,6 +129,13 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
     }
 
     @Override
+    public boolean send2User(Session session, Protocol protocol, ResultCode code, Object body) {
+        if (session instanceof ServerSession)
+            return ((ServerSession) session).response(protocol, code, body) != null;
+        return false;
+    }
+
+    @Override
     public boolean send2Channel(String userGroup, Object channelID, Protocol protocol, ResultCode code, Object body) {
         ChannelGroup group = this.getChannelGroup(userGroup, channelID);
         if (group == null)

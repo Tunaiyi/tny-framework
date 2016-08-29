@@ -4,8 +4,8 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.ChannelServerSession;
+import com.tny.game.net.dispatcher.NetFuture;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 
 import java.net.InetSocketAddress;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class TelnetSession extends ChannelServerSession {
     }
 
     @Override
-    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
         return this.write(body + "\r\n");
     }
 

@@ -1,0 +1,12 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            libs.'kafka-clients',
+            project(":tny-game-net")
+    )
+
+}

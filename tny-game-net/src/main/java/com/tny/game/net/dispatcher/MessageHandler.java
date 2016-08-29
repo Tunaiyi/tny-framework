@@ -3,10 +3,11 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Message;
 import com.tny.game.net.base.MessageType;
+import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
+import com.tny.game.net.base.CoreResponseCode;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,17 +50,17 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * session工厂
      */
-    protected ServerSessionFactory sessionFactory;
+    protected ChannelServerSessionFactory sessionFactory;
 
     public MessageHandler() {
 
     }
 
-    public MessageHandler(AppContext appContext) {
+    public MessageHandler(NetAppContext appContext) {
         this.setAppContext(appContext);
     }
 
-    public void setAppContext(AppContext appContext) {
+    public void setAppContext(NetAppContext appContext) {
         this.commandExecutor = appContext.getCommandExecutor();
         this.messageDispatcher = appContext.getMessageDispatcher();
         this.sessionHolder = appContext.getSessionHolder();

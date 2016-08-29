@@ -6,8 +6,10 @@ import com.tny.game.suite.core.GameInfo;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.scheduler.cache_store"})
+@Profile({SCHEDULER, GAME})
 public class CacheTaskReceiverManager extends GameCacheManager<TaskReceiver> implements TaskReceiverManager {
 
     protected CacheTaskReceiverManager() {

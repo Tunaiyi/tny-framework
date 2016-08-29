@@ -1,8 +1,8 @@
 package com.tny.game.net.filter.string;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.filter.string.annotation.PatternMatch;

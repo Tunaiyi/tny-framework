@@ -12,6 +12,7 @@ import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.tny.game.suite.utils.Configs.*;
+
 public abstract class WebServerCluster extends BaseCluster {
 
     @Autowired
     private ProtoExSchemaIniter protoExSchemaIniter;
+
+    @Autowired
+    private ServletContext servletContext;
 
     protected int webServerID;
 
@@ -125,15 +131,16 @@ public abstract class WebServerCluster extends BaseCluster {
             super.monitor();
     }
 
-    public WebServerCluster(String serverType, int webServerID, boolean watchSetting, String... monitorWebTypes) {
-        this(serverType, webServerID, watchSetting, Arrays.asList(monitorWebTypes));
+    public WebServerCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
+        this(serverType, watchSetting, Arrays.asList(monitorWebTypes));
     }
 
-    public WebServerCluster(String serverType, int webServerID, boolean watchSetting, Collection<String> monitorWebTypes) {
+    public WebServerCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
         super(monitorWebTypes);
+        int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID);
         this.serverType = serverType;
         this.watchSetting = watchSetting;
-        this.webServerID = webServerID;
+        this.webServerID = serverID;
     }
 
     public List<ServerNode> getAllServerNodes() {
@@ -144,9 +151,6 @@ public abstract class WebServerCluster extends BaseCluster {
         return this.nodeMap.get(serverID);
     }
 
-    protected void updateSetting(ServerNode node, ServerSetting setting) {
-        node.setSetting(setting);
-    }
 
     @Override
     public void doMonitor() {
@@ -158,14 +162,19 @@ public abstract class WebServerCluster extends BaseCluster {
         if (this.watchSetting)
             this.remoteMonitor.monitorChildren(ClusterUtils.SETTING_LIST_PATH, this.settingHandler);
 
-        String host = Configs.SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
-        String port = Configs.SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_PORT);
+        this.postWebMonitor();
+
+        String host = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
+        String port = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_PORT);
         String part = this.getWebServiceNodePath();
         String url = "http://" + host + ":" + port + part;
         WebServiceNode node = new WebServiceNode(this.webServerID, url);
         String nodePath = ClusterUtils.getWebNodePath(this.serverType, this.webServerID);
         this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, node, nodePath);
         LOGGER.info("注册 {} web service url [ {} ] 到 {}", this.serverType, url, nodePath);
+    }
+
+    protected void postWebMonitor() {
     }
 
     public int getWebServerID() {
@@ -195,7 +204,9 @@ public abstract class WebServerCluster extends BaseCluster {
         return mains;
     }
 
-    public abstract String getWebServiceNodePath();
+    public String getWebServiceNodePath() {
+        return this.servletContext.getContextPath();
+    }
 
     private ServerNode setOutline(ServerOutline outline) {
         ServerNode node = this.nodeMap().get(outline.getServerID());
@@ -237,6 +248,10 @@ public abstract class WebServerCluster extends BaseCluster {
         return node;
     }
 
+
+    protected void updateSetting(ServerNode node, ServerSetting setting) {
+        node.setSetting(setting);
+    }
 
     private ServerNode setSetting(int serverID, ServerSetting setting, boolean create) {
         ServerNode node = this.nodeMap().get(serverID);

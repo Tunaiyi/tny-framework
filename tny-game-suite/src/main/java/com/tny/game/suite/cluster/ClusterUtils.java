@@ -14,14 +14,16 @@ public class ClusterUtils {
     private static final String GAMES_OUTLINE_LIST = "tny.server.monitor.games.outline_list";
     private static final String GAMES_LAUNCH_LIST = "tny.server.monitor.games.launch_list";
     private static final String GAMES_SETTING_LIST = "tny.server.monitor.games.setting_list";
-    private static final String VERSION_LIST = "tny.server.monitor.doors.client_version_change";
-    private static final String DOORS_CHANGE = "tny.server.monitor.doors.zone_change";
+    private static final String CLIENT_VERSION_CHANGE = "tny.server.monitor.doors.client_version_change";
+
+    private static final String ZONE_CHANGE = "tny.server.monitor.doors.zone_change";
 
     public static final String OUTLINE_LIST_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_OUTLINE_LIST);
     public static final String GAMES_LAUNCH_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_LAUNCH_LIST);
     public static final String SETTING_LIST_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_SETTING_LIST);
-    public static final String ZONE_CHANGE_PATH = MONITOR_CONFIG.getStr(ClusterUtils.DOORS_CHANGE);
-    public static final String VERSION_PATH = MONITOR_CONFIG.getStr(ClusterUtils.VERSION_LIST);
+    public static final String VERSION_PATH = MONITOR_CONFIG.getStr(ClusterUtils.CLIENT_VERSION_CHANGE);
+    public static final String ZONE_CHANGE_PATH = MONITOR_CONFIG.getStr(ClusterUtils.ZONE_CHANGE);
+
 
     public static final NodeDataFormatter PROTO_FORMATTER = new ProtoNodeDataFormatter();
 

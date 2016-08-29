@@ -25,15 +25,6 @@ public class ItemTypes extends AutoImport {
     private ItemTypes() {
     }
 
-    static {
-        try {
-            Class.forName(Configs.SUITE_CONFIG.getStr(Configs.SUITE_BASE_ITEM_TYPE_CLASS));
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     static void register(ItemType value) {
         holder.register(value);
     }

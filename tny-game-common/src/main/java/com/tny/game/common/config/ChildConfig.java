@@ -28,7 +28,7 @@ class ChildConfig implements Config {
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
-        this.parentHeadKey += parentKey + del;
+        this.parentHeadKey = parentKey + del;
     }
 
 

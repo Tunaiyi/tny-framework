@@ -1,12 +1,7 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.LogUtils;
-import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
-import com.tny.game.net.dispatcher.exception.SessionException;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
@@ -16,7 +11,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ChannelServerSession extends AbstractServerSession {
 
@@ -31,8 +25,6 @@ public abstract class ChannelServerSession extends AbstractServerSession {
      * 通道
      */
     private transient Channel channel;
-
-    private AtomicBoolean lock = new AtomicBoolean(false);
 
     public ChannelServerSession(Channel channel, LoginCertificate loginInfo) {
         super(loginInfo);
@@ -58,7 +50,6 @@ public abstract class ChannelServerSession extends AbstractServerSession {
             this.channel = channel;
             channel.attr(NetAttributeKey.SESSION).set(this);
             channel.attr(NetAttributeKey.SERVER_SESSION).set(this);
-            this.encoder = channel.attr(NetAttributeKey.DATA_PACKET_ENCODER).get();
             this.checkers = channel.attr(NetAttributeKey.REQUEST_CHECKERS).get();
             this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
         }
@@ -90,11 +81,14 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         return channel != null && channel.isActive();
     }
 
-    protected Optional<ChannelFuture> write(Object data) {
+    @Override
+    protected Optional<NetFuture> write(Object data) {
         try {
             Channel channel = this.channel;
-            if (channel != null && channel.isActive())
-                return Optional.ofNullable(channel.writeAndFlush(data));
+            if (channel != null && channel.isActive()) {
+                ChannelFuture channelFuture = channel.writeAndFlush(data);
+                return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
+            }
             return Optional.empty();
         } catch (Exception e) {
             ChannelServerSession.LOG.error("#Session#sendMessage 异常", e);
@@ -102,61 +96,6 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         return Optional.empty();
     }
 
-    @Override
-    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
-        return this.response(protocol, ResultCode.SUCCESS, body);
-    }
-
-    protected abstract int createResponseNumber();
-
-    @Override
-    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
-        if (protocol.isPush()) {
-            SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
-            if (!option.isPush()) {
-                if (option.isThrowable())
-                    throw new SessionException(LogUtils.format("Session {} [{}] 无法推送", this.getCertificate(), this.channel.remoteAddress()));
-                return Optional.empty();
-            }
-        }
-        Object data;
-        if (body instanceof ByteBuf || body instanceof byte[] || body instanceof Response) {
-            data = body;
-            return this.write(data);
-        } else {
-            Optional<ChannelFuture> optional = Optional.empty();
-            NetResponse response = (NetResponse) this.getMessageBuilderFactory()
-                    .newResponseBuilder()
-                    .setID(protocol.isPush() ? 0 : Session.DEFAULT_RESPONSE_ID)
-                    .setProtocol(protocol)
-                    .setResult(code)
-                    .setBody(body)
-                    .build();
-            CoreLogger.log(this, response);
-            while (lock.compareAndSet(false, true)) {
-                try {
-                    response.setNumber(createResponseNumber());
-                    data = response;
-                    this.prepareWriteResponse(response);
-                    optional = this.write(data);
-                    if (optional.isPresent())
-                        this.postWriteResponse(response, optional.get());
-                    break;
-                } finally {
-                    lock.set(false);
-                }
-            }
-            return optional;
-        }
-    }
-
-    protected void prepareWriteResponse(Response response) {
-
-    }
-
-    protected void postWriteResponse(Response response, ChannelFuture future) {
-
-    }
 
     @Override
     public boolean isOnline() {

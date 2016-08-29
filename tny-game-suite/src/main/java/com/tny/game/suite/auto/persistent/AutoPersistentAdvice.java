@@ -1,5 +1,6 @@
 package com.tny.game.suite.auto.persistent;
 
+import com.google.common.collect.ImmutableMap;
 import com.tny.game.LogUtils;
 import com.tny.game.base.item.Manager;
 import com.tny.game.common.context.AttrKey;
@@ -29,13 +30,14 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Listener
 @Component
-@Profile({"suite.auto", "suite.all"})
+@Profile({AUTO, GAME})
 public class AutoPersistentAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
 
     @Autowired
@@ -148,11 +150,12 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     }
 
     private void toDB(Transaction transaction) {
-        Map<Object, String> opDBMap = transaction.attributes().getAttribute(OP_DB_MAP, Collections.emptyMap());
+        Map<Object, String> opDBMap = transaction.attributes().getAttribute(OP_DB_MAP, ImmutableMap.of());
         for (Entry<Object, String> object : opDBMap.entrySet()) {
             this.toDB(object.getKey(), object.getValue());
         }
-        opDBMap.clear();
+        if (!opDBMap.isEmpty())
+            opDBMap.clear();
     }
 
     @SuppressWarnings("unchecked")
@@ -200,7 +203,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             this.toDB(transaction);
         } catch (Throwable e) {
             CurrentCMD cmd = CurrentCMD.getCurrent();
-            LOGGER.error("协议[{}] handleClose 异常", cmd.getProtocol(), e);
+            LOGGER.error("{} 协议[{}] handleClose 异常", transaction, cmd.getProtocol(), e);
         } finally {
             transaction.attributes().removeAttribute(OP_DB_MAP);
         }
@@ -214,7 +217,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             this.toDB(transaction);
         } catch (Throwable e) {
             CurrentCMD cmd = CurrentCMD.getCurrent();
-            LOGGER.error("协议[{}] handleRollback 异常", cmd.getProtocol(), e);
+            LOGGER.error("{} 协议[{}] handleRollback 异常", transaction, cmd.getProtocol(), e);
         }
     }
 }

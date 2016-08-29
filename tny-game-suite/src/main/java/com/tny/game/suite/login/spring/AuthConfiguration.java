@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.tny.game.suite.SuiteProfiles.*;
 
 /**
  * Game Suite 的默认配置
@@ -23,32 +25,29 @@ import java.util.List;
 public class AuthConfiguration {
 
     @Bean
-    @Profile({"suite.game_auth", "suite.all"})
+    @Profile({GAME})
     public AuthProvider userLoginAuthProvider() {
         return new UserLoginAuthProvider(getAuthProtocols(Configs.SUITE_AUTH_USER_LOGIN_PROTOCOLS));
     }
 
     @Bean
-    @Profile({"suite.game_auth", "suite.all"})
+    @Profile({GAME})
     public AuthProvider userReloginAuthProvider() {
         return new UserReloginAuthProvider(getAuthProtocols(Configs.SUITE_AUTH_USER_RELOGIN_PROTOCOLS));
     }
 
     @Bean
-    @Profile({"suite.serve_auth", "suite.all"})
+    @Profile({GAME, SERVER_AUTH})
     public AuthProvider serveAuthProvider() {
         return new ServeAuthProvider(getAuthProtocols(Configs.SUITE_AUTH_SERV_LOGIN_PROTOCOLS));
     }
 
-    private List<Integer> getAuthProtocols(String key) {
-        List<Integer> prots = new ArrayList<>();
+    private Set<Integer> getAuthProtocols(String key) {
+        Set<Integer> prots = new HashSet<>();
         String protsWord = Configs.SUITE_CONFIG.getStr(key);
         ExceptionUtils.checkNotNull(protsWord);
-        if (protsWord != null) {
-            String[] ps = StringUtils.split(protsWord, ",");
-            for (String port : StringUtils.split(protsWord, ","))
-                prots.add(NumberUtils.toInt(port));
-        }
+        for (String port : StringUtils.split(protsWord, ","))
+            prots.add(NumberUtils.toInt(port));
         return prots;
     }
 

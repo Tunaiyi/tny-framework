@@ -57,7 +57,7 @@ public class ServerConfiguration {
 
     public void setChecker(RequestChecker checker) {
         if (checker != null)
-            throw new IllegalArgumentException(LogUtils.format("{} 与 {} checker 冲突", this.checker.getClass(), checker.getClass()));
+            throw new IllegalArgumentException(LogUtils.format("{} 与 {} verifier 冲突", this.checker.getClass(), checker.getClass()));
         this.checker = checker;
     }
 

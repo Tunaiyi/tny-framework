@@ -1,12 +1,12 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.Protocol;
 import com.tny.game.net.base.ProtocolUtils;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -187,7 +187,7 @@ public class SessionHolderTest {
     private static class TestSession extends ChannelServerSession {
 
         private TestSession(long userId) {
-            super(new TestChannel(), LoginCertificate.createLogin(userId, Session.DEFAULT_USER_GROUP, false));
+            super(new TestChannel(), LoginCertificate.createLogin(userId, DEFAULT_USER_GROUP, false));
             this.messageBuilderFactory = new ProtoExMessageBuilderFactory();
         }
 

@@ -9,10 +9,21 @@ import javax.crypto.IllegalBlockSizeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.*;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class RSAUtils {
 
@@ -174,8 +185,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param privateKey 密钥
+     * @param data       待签名数据
+     * @param privateKeyWord 密钥
      * @return byte[] 数字签名
      */
     public static String sign(String data, String privateKeyWord) throws Exception {
@@ -185,8 +196,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param privateKey 密钥
+     * @param data       待签名数据
+     * @param privateKeyWord 密钥
      * @return byte[] 数字签名
      */
     public static String sign(String data, String privateKeyWord, String algorithm) throws Exception {
@@ -197,7 +208,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data       待签名数据
      * @param privateKey 密钥
      * @return byte[] 数字签名
      */
@@ -208,7 +219,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data       待签名数据
      * @param privateKey 密钥
      * @return byte[] 数字签名
      */
@@ -219,7 +230,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data       待签名数据
      * @param privateKey 密钥
      * @return byte[] 数字签名
      */
@@ -230,7 +241,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data       待签名数据
      * @param privateKey 密钥
      * @return byte[] 数字签名
      */
@@ -244,7 +255,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data      待签名数据
      * @param publicKey 密钥
      * @return byte[] 数字签名
      */
@@ -255,8 +266,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param privateKey 密钥
+     * @param data       待签名数据
+     * @param publicKey 密钥
      * @return byte[] 数字签名
      */
     public static boolean verify(byte[] sign, byte[] data, PublicKey publicKey, String algorithm) throws Exception {
@@ -269,7 +280,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
+     * @param data      待签名数据
      * @param publicKey 密钥
      * @return byte[] 数字签名
      */
@@ -280,8 +291,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param privateKey 密钥
+     * @param data       待签名数据
+     * @param publicKey 密钥
      * @return byte[] 数字签名
      */
     public static boolean verify(String sign, String data, PublicKey publicKey, String algorithm) throws Exception {
@@ -294,8 +305,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param publicKey 密钥
+     * @param data      待签名数据
+     * @param publicKeyWord 密钥
      * @return byte[] 数字签名
      */
     public static boolean verify(String sign, String data, String publicKeyWord) throws Exception {
@@ -305,8 +316,8 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data待签名数据
-     * @param privateKey 密钥
+     * @param data       待签名数据
+     * @param publicKeyWord 密钥
      * @return byte[] 数字签名
      */
     public static boolean verify(String sign, String data, String publicKeyWord, String algorithm) throws Exception {
@@ -314,20 +325,6 @@ public class RSAUtils {
         return verify(sign, data, publicKey, algorithm);
     }
 
-    /**
-     * 校验数字签名
-     *
-     * @param data      待校验数据
-     * @param publicKey 公钥
-     * @param sign      数字签名
-     * @return boolean 校验成功返回true，失败返回false
-     */
-    //	public static boolean verify(byte[] data, PublicKey publicKey, byte[] sign) throws Exception {
-    //		Signature signature = Signature.getInstance(SIGN_MD5_ALGORITHM);
-    //		signature.initVerify(publicKey);
-    //		signature.update(data);
-    //		return signature.verify(sign);
-    //	}
     public static RSAKeyPair getKeyPair(int size) throws Exception {
         if (size % 64 != 0)
             throw new IllegalArgumentException(LogUtils.format("密码长度 {} 不为64的倍数", size));
@@ -395,13 +392,15 @@ public class RSAUtils {
 
     public static void main(String[] args) throws Exception {
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-        keyPairGen.initialize(2048);
+        keyPairGen.initialize(512);
         KeyPair keyPair = keyPairGen.generateKeyPair();
         RSAPublicKey publicKey1 = (RSAPublicKey) keyPair.getPublic();
         byte[] pubKeyBytes1 = publicKey1.getEncoded();
+        System.out.println("public Key: ");
         System.out.println(Base64.encodeBase64String(pubKeyBytes1));
         RSAPrivateKey privateKey1 = (RSAPrivateKey) keyPair.getPrivate();
         byte[] priKeyBytes1 = privateKey1.getEncoded();
+        System.out.println("private Key: ");
         System.out.println(Base64.encodeBase64String(priKeyBytes1));
 
         String context = "你是猴子请来的逗逼吗?";
@@ -410,9 +409,11 @@ public class RSAUtils {
         keyPair = keyPairGen.generateKeyPair();
         publicKey1 = (RSAPublicKey) keyPair.getPublic();
         pubKeyBytes1 = publicKey1.getEncoded();
+        System.out.println("public Key: ");
         System.out.println(Base64.encodeBase64String(pubKeyBytes1));
         privateKey1 = (RSAPrivateKey) keyPair.getPrivate();
         priKeyBytes1 = privateKey1.getEncoded();
+        System.out.println("private Key: ");
         System.out.println(Base64.encodeBase64String(priKeyBytes1));
         byte[] publicRsaData = encrypt(context.getBytes(), publicKey1);
         byte[] privateRsaData = encrypt(context.getBytes(), privateKey1);

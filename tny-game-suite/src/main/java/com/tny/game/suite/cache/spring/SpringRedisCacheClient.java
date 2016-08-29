@@ -8,11 +8,13 @@ import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
 @Component("redisClient")
-@Profile({"suite.cache", "suite.cache.redis", "suite.all"})
+@Profile({CACHE_REDIS, GAME})
 public class SpringRedisCacheClient extends RedisCacheClient {
 
     @Autowired

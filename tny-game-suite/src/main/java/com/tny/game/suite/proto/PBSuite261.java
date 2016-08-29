@@ -33,7 +33,7 @@ public final class PBSuite261 {
     /**
      * <code>repeated string handlerList = 2;</code>
      */
-    String getHandlerList(int index);
+    java.lang.String getHandlerList(int index);
     /**
      * <code>repeated string handlerList = 2;</code>
      */
@@ -64,7 +64,7 @@ public final class PBSuite261 {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -126,7 +126,7 @@ public final class PBSuite261 {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TimeTaskProto_descriptor;
     }
 
-    protected FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TimeTaskProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -143,7 +143,7 @@ public final class PBSuite261 {
       }
     };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<TimeTaskProto> getParserForType() {
       return PARSER;
     }
@@ -182,7 +182,7 @@ public final class PBSuite261 {
     /**
      * <code>repeated string handlerList = 2;</code>
      */
-    public String getHandlerList(int index) {
+    public java.lang.String getHandlerList(int index) {
       return handlerList_.get(index);
     }
     /**
@@ -248,8 +248,8 @@ public final class PBSuite261 {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
@@ -314,9 +314,9 @@ public final class PBSuite261 {
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-        BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -332,7 +332,7 @@ public final class PBSuite261 {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TimeTaskProto_descriptor;
       }
 
-      protected FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TimeTaskProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -345,7 +345,7 @@ public final class PBSuite261 {
       }
 
       private Builder(
-          BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -435,7 +435,7 @@ public final class PBSuite261 {
 
       public final boolean isInitialized() {
         if (!hasExecutTime()) {
-
+          
           return false;
         }
         return true;
@@ -515,7 +515,7 @@ public final class PBSuite261 {
       /**
        * <code>repeated string handlerList = 2;</code>
        */
-      public String getHandlerList(int index) {
+      public java.lang.String getHandlerList(int index) {
         return handlerList_.get(index);
       }
       /**
@@ -529,7 +529,7 @@ public final class PBSuite261 {
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder setHandlerList(
-          int index, String value) {
+          int index, java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -542,7 +542,7 @@ public final class PBSuite261 {
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder addHandlerList(
-          String value) {
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -555,7 +555,7 @@ public final class PBSuite261 {
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder addAllHandlerList(
-          Iterable<String> values) {
+          java.lang.Iterable<java.lang.String> values) {
         ensureHandlerListIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
             values, handlerList_);
@@ -616,7 +616,7 @@ public final class PBSuite261 {
     /**
      * <code>required string group = 2;</code>
      */
-    String getGroup();
+    java.lang.String getGroup();
     /**
      * <code>required string group = 2;</code>
      */
@@ -665,7 +665,7 @@ public final class PBSuite261 {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -731,7 +731,7 @@ public final class PBSuite261 {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TaskReceiverProto_descriptor;
     }
 
-    protected FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TaskReceiverProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -748,7 +748,7 @@ public final class PBSuite261 {
       }
     };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<TaskReceiverProto> getParserForType() {
       return PARSER;
     }
@@ -770,7 +770,7 @@ public final class PBSuite261 {
     }
 
     public static final int GROUP_FIELD_NUMBER = 2;
-    private Object group_;
+    private java.lang.Object group_;
     /**
      * <code>required string group = 2;</code>
      */
@@ -780,14 +780,14 @@ public final class PBSuite261 {
     /**
      * <code>required string group = 2;</code>
      */
-    public String getGroup() {
-      Object ref = group_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getGroup() {
+      java.lang.Object ref = group_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
+        com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
+        java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           group_ = s;
         }
@@ -799,11 +799,11 @@ public final class PBSuite261 {
      */
     public com.google.protobuf.ByteString
         getGroupBytes() {
-      Object ref = group_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+      java.lang.Object ref = group_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
+                (java.lang.String) ref);
         group_ = b;
         return b;
       } else {
@@ -915,8 +915,8 @@ public final class PBSuite261 {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
@@ -981,9 +981,9 @@ public final class PBSuite261 {
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-        BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -999,7 +999,7 @@ public final class PBSuite261 {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TaskReceiverProto_descriptor;
       }
 
-      protected FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TaskReceiverProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1012,7 +1012,7 @@ public final class PBSuite261 {
       }
 
       private Builder(
-          BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1114,15 +1114,15 @@ public final class PBSuite261 {
 
       public final boolean isInitialized() {
         if (!hasPlayerID()) {
-
+          
           return false;
         }
         if (!hasGroup()) {
-
+          
           return false;
         }
         if (!hasLastHandlerTime()) {
-
+          
           return false;
         }
         return true;
@@ -1179,7 +1179,7 @@ public final class PBSuite261 {
         return this;
       }
 
-      private Object group_ = "";
+      private java.lang.Object group_ = "";
       /**
        * <code>required string group = 2;</code>
        */
@@ -1189,18 +1189,18 @@ public final class PBSuite261 {
       /**
        * <code>required string group = 2;</code>
        */
-      public String getGroup() {
-        Object ref = group_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getGroup() {
+        java.lang.Object ref = group_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
+          java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
             group_ = s;
           }
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
@@ -1208,11 +1208,11 @@ public final class PBSuite261 {
        */
       public com.google.protobuf.ByteString
           getGroupBytes() {
-        Object ref = group_;
+        java.lang.Object ref = group_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
+          com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
+                  (java.lang.String) ref);
           group_ = b;
           return b;
         } else {
@@ -1223,7 +1223,7 @@ public final class PBSuite261 {
        * <code>required string group = 2;</code>
        */
       public Builder setGroup(
-          String value) {
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1346,7 +1346,7 @@ public final class PBSuite261 {
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
-    java.util.List<TimeTaskProto>
+    java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto> 
         getTimeTaskQueueList();
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
@@ -1359,13 +1359,13 @@ public final class PBSuite261 {
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
-    java.util.List<? extends TimeTaskProtoOrBuilder>
+    java.util.List<? extends com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder> 
         getTimeTaskQueueOrBuilderList();
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
     com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder getTimeTaskQueueOrBuilder(
-            int index);
+        int index);
   }
   /**
    * Protobuf type {@code SchedulerBackupProto}
@@ -1391,7 +1391,7 @@ public final class PBSuite261 {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -1426,7 +1426,7 @@ public final class PBSuite261 {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                timeTaskQueue_ = new java.util.ArrayList<TimeTaskProto>();
+                timeTaskQueue_ = new java.util.ArrayList<com.tny.game.suite.proto.PBSuite261.TimeTaskProto>();
                 mutable_bitField0_ |= 0x00000002;
               }
               timeTaskQueue_.add(input.readMessage(com.tny.game.suite.proto.PBSuite261.TimeTaskProto.PARSER, extensionRegistry));
@@ -1452,7 +1452,7 @@ public final class PBSuite261 {
       return com.tny.game.suite.proto.PBSuite261.internal_static_SchedulerBackupProto_descriptor;
     }
 
-    protected FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.suite.proto.PBSuite261.internal_static_SchedulerBackupProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -1469,7 +1469,7 @@ public final class PBSuite261 {
       }
     };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<SchedulerBackupProto> getParserForType() {
       return PARSER;
     }
@@ -1491,17 +1491,17 @@ public final class PBSuite261 {
     }
 
     public static final int TIMETASKQUEUE_FIELD_NUMBER = 2;
-    private java.util.List<TimeTaskProto> timeTaskQueue_;
+    private java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto> timeTaskQueue_;
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
-    public java.util.List<TimeTaskProto> getTimeTaskQueueList() {
+    public java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto> getTimeTaskQueueList() {
       return timeTaskQueue_;
     }
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
-    public java.util.List<? extends TimeTaskProtoOrBuilder>
+    public java.util.List<? extends com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder> 
         getTimeTaskQueueOrBuilderList() {
       return timeTaskQueue_;
     }
@@ -1581,8 +1581,8 @@ public final class PBSuite261 {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
@@ -1647,9 +1647,9 @@ public final class PBSuite261 {
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-        BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1665,7 +1665,7 @@ public final class PBSuite261 {
         return com.tny.game.suite.proto.PBSuite261.internal_static_SchedulerBackupProto_descriptor;
       }
 
-      protected FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.suite.proto.PBSuite261.internal_static_SchedulerBackupProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1678,7 +1678,7 @@ public final class PBSuite261 {
       }
 
       private Builder(
-          BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1779,7 +1779,7 @@ public final class PBSuite261 {
               timeTaskQueueBuilder_ = null;
               timeTaskQueue_ = other.timeTaskQueue_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              timeTaskQueueBuilder_ =
+              timeTaskQueueBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTimeTaskQueueFieldBuilder() : null;
             } else {
@@ -1793,12 +1793,12 @@ public final class PBSuite261 {
 
       public final boolean isInitialized() {
         if (!hasStopTime()) {
-
+          
           return false;
         }
         for (int i = 0; i < getTimeTaskQueueCount(); i++) {
           if (!getTimeTaskQueue(i).isInitialized()) {
-
+            
             return false;
           }
         }
@@ -1856,22 +1856,22 @@ public final class PBSuite261 {
         return this;
       }
 
-      private java.util.List<TimeTaskProto> timeTaskQueue_ =
+      private java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto> timeTaskQueue_ =
         java.util.Collections.emptyList();
       private void ensureTimeTaskQueueIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          timeTaskQueue_ = new java.util.ArrayList<TimeTaskProto>(timeTaskQueue_);
+          timeTaskQueue_ = new java.util.ArrayList<com.tny.game.suite.proto.PBSuite261.TimeTaskProto>(timeTaskQueue_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          TimeTaskProto, TimeTaskProto.Builder, TimeTaskProtoOrBuilder> timeTaskQueueBuilder_;
+          com.tny.game.suite.proto.PBSuite261.TimeTaskProto, com.tny.game.suite.proto.PBSuite261.TimeTaskProto.Builder, com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder> timeTaskQueueBuilder_;
 
       /**
        * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
        */
-      public java.util.List<TimeTaskProto> getTimeTaskQueueList() {
+      public java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto> getTimeTaskQueueList() {
         if (timeTaskQueueBuilder_ == null) {
           return java.util.Collections.unmodifiableList(timeTaskQueue_);
         } else {
@@ -1994,7 +1994,7 @@ public final class PBSuite261 {
        * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
        */
       public Builder addAllTimeTaskQueue(
-          Iterable<? extends TimeTaskProto> values) {
+          java.lang.Iterable<? extends com.tny.game.suite.proto.PBSuite261.TimeTaskProto> values) {
         if (timeTaskQueueBuilder_ == null) {
           ensureTimeTaskQueueIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2051,7 +2051,7 @@ public final class PBSuite261 {
       /**
        * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
        */
-      public java.util.List<? extends TimeTaskProtoOrBuilder>
+      public java.util.List<? extends com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder> 
            getTimeTaskQueueOrBuilderList() {
         if (timeTaskQueueBuilder_ != null) {
           return timeTaskQueueBuilder_.getMessageOrBuilderList();
@@ -2077,16 +2077,16 @@ public final class PBSuite261 {
       /**
        * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
        */
-      public java.util.List<TimeTaskProto.Builder>
+      public java.util.List<com.tny.game.suite.proto.PBSuite261.TimeTaskProto.Builder> 
            getTimeTaskQueueBuilderList() {
         return getTimeTaskQueueFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          TimeTaskProto, TimeTaskProto.Builder, TimeTaskProtoOrBuilder>
+          com.tny.game.suite.proto.PBSuite261.TimeTaskProto, com.tny.game.suite.proto.PBSuite261.TimeTaskProto.Builder, com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder> 
           getTimeTaskQueueFieldBuilder() {
         if (timeTaskQueueBuilder_ == null) {
           timeTaskQueueBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              TimeTaskProto, TimeTaskProto.Builder, TimeTaskProtoOrBuilder>(
+              com.tny.game.suite.proto.PBSuite261.TimeTaskProto, com.tny.game.suite.proto.PBSuite261.TimeTaskProto.Builder, com.tny.game.suite.proto.PBSuite261.TimeTaskProtoOrBuilder>(
                   timeTaskQueue_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
@@ -2153,7 +2153,7 @@ public final class PBSuite261 {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -2208,7 +2208,7 @@ public final class PBSuite261 {
       return com.tny.game.suite.proto.PBSuite261.internal_static_AwardProto_descriptor;
     }
 
-    protected FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.suite.proto.PBSuite261.internal_static_AwardProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -2225,7 +2225,7 @@ public final class PBSuite261 {
       }
     };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<AwardProto> getParserForType() {
       return PARSER;
     }
@@ -2315,8 +2315,8 @@ public final class PBSuite261 {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
@@ -2381,9 +2381,9 @@ public final class PBSuite261 {
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-        BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2399,7 +2399,7 @@ public final class PBSuite261 {
         return com.tny.game.suite.proto.PBSuite261.internal_static_AwardProto_descriptor;
       }
 
-      protected FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.suite.proto.PBSuite261.internal_static_AwardProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2412,7 +2412,7 @@ public final class PBSuite261 {
       }
 
       private Builder(
-          BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2494,11 +2494,11 @@ public final class PBSuite261 {
 
       public final boolean isInitialized() {
         if (!hasItemID()) {
-
+          
           return false;
         }
         if (!hasNumber()) {
-
+          
           return false;
         }
         return true;
@@ -2614,7 +2614,7 @@ public final class PBSuite261 {
     /**
      * <code>repeated .AwardProto item = 2;</code>
      */
-    java.util.List<AwardProto>
+    java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto> 
         getItemList();
     /**
      * <code>repeated .AwardProto item = 2;</code>
@@ -2627,13 +2627,13 @@ public final class PBSuite261 {
     /**
      * <code>repeated .AwardProto item = 2;</code>
      */
-    java.util.List<? extends AwardProtoOrBuilder>
+    java.util.List<? extends com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder> 
         getItemOrBuilderList();
     /**
      * <code>repeated .AwardProto item = 2;</code>
      */
     com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder getItemOrBuilder(
-            int index);
+        int index);
 
     /**
      * <code>optional int32 tradeType = 3;</code>
@@ -2668,7 +2668,7 @@ public final class PBSuite261 {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -2703,7 +2703,7 @@ public final class PBSuite261 {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                item_ = new java.util.ArrayList<AwardProto>();
+                item_ = new java.util.ArrayList<com.tny.game.suite.proto.PBSuite261.AwardProto>();
                 mutable_bitField0_ |= 0x00000002;
               }
               item_.add(input.readMessage(com.tny.game.suite.proto.PBSuite261.AwardProto.PARSER, extensionRegistry));
@@ -2734,7 +2734,7 @@ public final class PBSuite261 {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TradeProto_descriptor;
     }
 
-    protected FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.suite.proto.PBSuite261.internal_static_TradeProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -2751,7 +2751,7 @@ public final class PBSuite261 {
       }
     };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<TradeProto> getParserForType() {
       return PARSER;
     }
@@ -2773,17 +2773,17 @@ public final class PBSuite261 {
     }
 
     public static final int ITEM_FIELD_NUMBER = 2;
-    private java.util.List<AwardProto> item_;
+    private java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto> item_;
     /**
      * <code>repeated .AwardProto item = 2;</code>
      */
-    public java.util.List<AwardProto> getItemList() {
+    public java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto> getItemList() {
       return item_;
     }
     /**
      * <code>repeated .AwardProto item = 2;</code>
      */
-    public java.util.List<? extends AwardProtoOrBuilder>
+    public java.util.List<? extends com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder> 
         getItemOrBuilderList() {
       return item_;
     }
@@ -2882,8 +2882,8 @@ public final class PBSuite261 {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
@@ -2948,9 +2948,9 @@ public final class PBSuite261 {
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-        BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2966,7 +2966,7 @@ public final class PBSuite261 {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TradeProto_descriptor;
       }
 
-      protected FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.suite.proto.PBSuite261.internal_static_TradeProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2979,7 +2979,7 @@ public final class PBSuite261 {
       }
 
       private Builder(
-          BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -3086,7 +3086,7 @@ public final class PBSuite261 {
               itemBuilder_ = null;
               item_ = other.item_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              itemBuilder_ =
+              itemBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getItemFieldBuilder() : null;
             } else {
@@ -3104,7 +3104,7 @@ public final class PBSuite261 {
       public final boolean isInitialized() {
         for (int i = 0; i < getItemCount(); i++) {
           if (!getItem(i).isInitialized()) {
-
+            
             return false;
           }
         }
@@ -3162,22 +3162,22 @@ public final class PBSuite261 {
         return this;
       }
 
-      private java.util.List<AwardProto> item_ =
+      private java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto> item_ =
         java.util.Collections.emptyList();
       private void ensureItemIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          item_ = new java.util.ArrayList<AwardProto>(item_);
+          item_ = new java.util.ArrayList<com.tny.game.suite.proto.PBSuite261.AwardProto>(item_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          AwardProto, AwardProto.Builder, AwardProtoOrBuilder> itemBuilder_;
+          com.tny.game.suite.proto.PBSuite261.AwardProto, com.tny.game.suite.proto.PBSuite261.AwardProto.Builder, com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder> itemBuilder_;
 
       /**
        * <code>repeated .AwardProto item = 2;</code>
        */
-      public java.util.List<AwardProto> getItemList() {
+      public java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto> getItemList() {
         if (itemBuilder_ == null) {
           return java.util.Collections.unmodifiableList(item_);
         } else {
@@ -3300,7 +3300,7 @@ public final class PBSuite261 {
        * <code>repeated .AwardProto item = 2;</code>
        */
       public Builder addAllItem(
-          Iterable<? extends AwardProto> values) {
+          java.lang.Iterable<? extends com.tny.game.suite.proto.PBSuite261.AwardProto> values) {
         if (itemBuilder_ == null) {
           ensureItemIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -3357,7 +3357,7 @@ public final class PBSuite261 {
       /**
        * <code>repeated .AwardProto item = 2;</code>
        */
-      public java.util.List<? extends AwardProtoOrBuilder>
+      public java.util.List<? extends com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder> 
            getItemOrBuilderList() {
         if (itemBuilder_ != null) {
           return itemBuilder_.getMessageOrBuilderList();
@@ -3383,16 +3383,16 @@ public final class PBSuite261 {
       /**
        * <code>repeated .AwardProto item = 2;</code>
        */
-      public java.util.List<AwardProto.Builder>
+      public java.util.List<com.tny.game.suite.proto.PBSuite261.AwardProto.Builder> 
            getItemBuilderList() {
         return getItemFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          AwardProto, AwardProto.Builder, AwardProtoOrBuilder>
+          com.tny.game.suite.proto.PBSuite261.AwardProto, com.tny.game.suite.proto.PBSuite261.AwardProto.Builder, com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder> 
           getItemFieldBuilder() {
         if (itemBuilder_ == null) {
           itemBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              AwardProto, AwardProto.Builder, AwardProtoOrBuilder>(
+              com.tny.game.suite.proto.PBSuite261.AwardProto, com.tny.game.suite.proto.PBSuite261.AwardProto.Builder, com.tny.game.suite.proto.PBSuite261.AwardProtoOrBuilder>(
                   item_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
@@ -3478,7 +3478,7 @@ public final class PBSuite261 {
   private static com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    String[] descriptorData = {
+    java.lang.String[] descriptorData = {
       "\n\022PBSuite2_6_1.proto\"8\n\rTimeTaskProto\022\022\n" +
       "\nexecutTime\030\001 \002(\004\022\023\n\013handlerList\030\002 \003(\t\"l" +
       "\n\021TaskReceiverProto\022\020\n\010playerID\030\001 \002(\003\022\r\n" +
@@ -3508,31 +3508,31 @@ public final class PBSuite261 {
     internal_static_TimeTaskProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_TimeTaskProto_descriptor,
-        new String[] { "ExecutTime", "HandlerList", });
+        new java.lang.String[] { "ExecutTime", "HandlerList", });
     internal_static_TaskReceiverProto_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_TaskReceiverProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_TaskReceiverProto_descriptor,
-        new String[] { "PlayerID", "Group", "LastHandlerTime", "ActualLastHandlerTime", });
+        new java.lang.String[] { "PlayerID", "Group", "LastHandlerTime", "ActualLastHandlerTime", });
     internal_static_SchedulerBackupProto_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_SchedulerBackupProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_SchedulerBackupProto_descriptor,
-        new String[] { "StopTime", "TimeTaskQueue", });
+        new java.lang.String[] { "StopTime", "TimeTaskQueue", });
     internal_static_AwardProto_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_AwardProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_AwardProto_descriptor,
-        new String[] { "ItemID", "Number", });
+        new java.lang.String[] { "ItemID", "Number", });
     internal_static_TradeProto_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_TradeProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_TradeProto_descriptor,
-        new String[] { "Action", "Item", "TradeType", });
+        new java.lang.String[] { "Action", "Item", "TradeType", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

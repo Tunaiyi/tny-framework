@@ -43,9 +43,8 @@ public class GameRMIService extends NetRMIService implements ServerPreStart {
         ServeTicket ticket = JSONUtils.toObject(ticketWord, ServeTicket.class);
         if (ticket == null)
             throw new IllegalArgumentException(LogUtils.format("{} 请求 协议[{}] 没有附带验证票据", this.host, request.getProtocol()));
-        String scopeType = ticket.getScopeType();
         String serverType = ticket.getServerType();
-        if (maker.make(ticket).equals(ticket.getTicket())) {
+        if (maker.make(ticket).equals(ticket.getSecret())) {
             RMISession session = new RMISession(ticket.getServerID(), serverType, this.host);
             String password = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(serverType), "");
             session.attributes().setAttribute(SessionKeys.SYSTEM_USER_ID, ticket.getServerID());

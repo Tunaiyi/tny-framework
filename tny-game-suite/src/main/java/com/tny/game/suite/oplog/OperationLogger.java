@@ -30,12 +30,14 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * 操作日志记录器
  * Created by Kun Yang on 16/1/30.
  */
 @Component
-@Profile({"suite.base", "suite.all"})
+@Profile({ITEM_OPLOG, GAME})
 public class OperationLogger extends AbstractOpLogger implements ServerPreStart, ApplicationContextAware {
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");

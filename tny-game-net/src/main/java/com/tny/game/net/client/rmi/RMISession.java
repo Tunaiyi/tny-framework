@@ -9,8 +9,8 @@ import com.tny.game.net.dispatcher.AbstractNetSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.MessageFuture;
+import com.tny.game.net.dispatcher.NetFuture;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
-import io.netty.channel.ChannelFuture;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,28 +48,23 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public ChannelFuture request(Protocol protocol, Object... params) {
-        return null;
+    public Optional<NetFuture> request(Protocol protocol, Object... params) {
+        return Optional.empty();
     }
 
     @Override
-    public <B> ChannelFuture request(Protocol protocol, MessageAction<B> action, Object... params) {
-        return null;
+    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
-        return null;
+    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
-        return null;
-    }
-
-    @Override
-    public <B> ChannelFuture request(Protocol protocol, MessageFuture<B> future, Object... params) {
-        return null;
+    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
+        return Optional.empty();
     }
 
     @Override

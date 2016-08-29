@@ -1,11 +1,16 @@
 package com.tny.game.telnet;
 
 import com.tny.game.log.CoreLogger;
-import com.tny.game.net.base.ServerContext;
+import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.listener.ServerClosedListener;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
@@ -34,7 +39,7 @@ public class TelnetServer implements ServerClosedListener {
 
     private Channel channel;
 
-    public TelnetServer(ServerContext appContext, TelnetHandler telnetHandler) {
+    public TelnetServer(NetServerAppContext appContext, TelnetHandler telnetHandler) {
         this.telnetHandler = telnetHandler;
         this.serverContext = appContext.getServerConfig();
         this.channelInitializer = new ChannelInitializer<Channel>() {

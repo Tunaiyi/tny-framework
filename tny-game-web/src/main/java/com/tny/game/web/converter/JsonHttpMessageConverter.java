@@ -16,21 +16,33 @@
 
 package com.tny.game.web.converter;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.IOUtils;
+import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonInputMessage;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.TypeUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implementation of {@link org.springframework.http.converter.HttpMessageConverter HttpMessageConverter} that can read and write JSON using <a href="http://jackson.codehaus.org/">Jackson 2's</a> {@link ObjectMapper}.
@@ -70,6 +82,49 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
 
 
     @Override
+    public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
+        JavaType javaType = getJavaType(type, contextClass);
+        if (!logger.isWarnEnabled()) {
+            return (this.objectMapper.canDeserialize(javaType) && canRead(mediaType));
+        }
+        AtomicReference<Throwable> causeRef = new AtomicReference<>();
+        if (this.objectMapper.canDeserialize(javaType, causeRef) && canRead(mediaType)) {
+            return true;
+        }
+        Throwable cause = causeRef.get();
+        if (cause != null) {
+            String msg = "Failed to evaluate deserialization for type " + javaType;
+            if (logger.isDebugEnabled()) {
+                logger.warn(msg, cause);
+            } else {
+                logger.warn(msg + ": " + cause);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+        if (!logger.isWarnEnabled()) {
+            return (this.objectMapper.canSerialize(clazz) && canWrite(mediaType));
+        }
+        AtomicReference<Throwable> causeRef = new AtomicReference<>();
+        if (this.objectMapper.canSerialize(clazz, causeRef) && canWrite(mediaType)) {
+            return true;
+        }
+        Throwable cause = causeRef.get();
+        if (cause != null) {
+            String msg = "Failed to evaluate serialization for type [" + clazz + "]";
+            if (logger.isDebugEnabled()) {
+                logger.warn(msg, cause);
+            } else {
+                logger.warn(msg + ": " + cause);
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         JavaType javaType = this.getJavaType(type, contextClass);
@@ -86,6 +141,13 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                 for (String line : lines)
                     builder.append(line);
                 return builder.toString();
+            } else if (inputMessage instanceof MappingJacksonInputMessage) {
+                Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
+                if (deserializationView != null) {
+                    return this.objectMapper.readerWithView(deserializationView)
+                            .withType(javaType)
+                            .readValue(inputMessage.getBody());
+                }
             }
             return this.getObjectMapper().readValue(inputMessage.getBody(), javaType);
         } catch (IOException ex) {
@@ -98,7 +160,43 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
         if (object instanceof String) {
             IOUtils.write(object.toString(), outputMessage.getBody());
         } else {
-            super.writeInternal(object, type, outputMessage);
+            JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders().getContentType());
+            JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(), encoding);
+            try {
+                writePrefix(generator, object);
+
+                Class<?> serializationView = null;
+                FilterProvider filters = null;
+                Object value = object;
+                JavaType javaType = null;
+                if (object instanceof MappingJacksonValue) {
+                    MappingJacksonValue container = (MappingJacksonValue) object;
+                    value = container.getValue();
+                    serializationView = container.getSerializationView();
+                    filters = container.getFilters();
+                }
+                if (type != null && value != null && TypeUtils.isAssignable(type, value.getClass())) {
+                    javaType = getJavaType(type, null);
+                }
+                ObjectWriter objectWriter;
+                if (serializationView != null) {
+                    objectWriter = this.objectMapper.writerWithView(serializationView);
+                } else if (filters != null) {
+                    objectWriter = this.objectMapper.writer(filters);
+                } else {
+                    objectWriter = this.objectMapper.writer();
+                }
+                if (javaType != null && javaType.isContainerType()) {
+                    objectWriter = objectWriter.forType(javaType);
+                }
+                objectWriter.writeValue(generator, value);
+
+                writeSuffix(generator, object);
+                generator.flush();
+
+            } catch (JsonProcessingException ex) {
+                throw new HttpMessageNotWritableException("Could not write content: " + ex.getMessage(), ex);
+            }
         }
         //		else if (object instanceof Message) {
         //			IOUtils.write(JsonFormat.printToString((Message) object), outputMessage.getBody());
@@ -118,4 +216,40 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
         //			super.writeInternal(object, outputMessage);
         //		}
     }
+
+
+    @Override
+    protected JavaType getJavaType(Type type, Class<?> contextClass) {
+        TypeFactory typeFactory = this.objectMapper.getTypeFactory();
+        if (type instanceof TypeVariable && contextClass != null) {
+            ResolvableType resolvedType = resolveVariable(
+                    (TypeVariable<?>) type, ResolvableType.forClass(contextClass));
+            if (resolvedType != ResolvableType.NONE) {
+                return typeFactory.constructType(resolvedType.resolve());
+            }
+        }
+        return typeFactory.constructType(type);
+    }
+
+    private ResolvableType resolveVariable(TypeVariable<?> typeVariable, ResolvableType contextType) {
+        ResolvableType resolvedType;
+        if (contextType.hasGenerics()) {
+            resolvedType = ResolvableType.forType(typeVariable, contextType);
+            if (resolvedType.resolve() != null) {
+                return resolvedType;
+            }
+        }
+        resolvedType = resolveVariable(typeVariable, contextType.getSuperType());
+        if (resolvedType.resolve() != null) {
+            return resolvedType;
+        }
+        for (ResolvableType ifc : contextType.getInterfaces()) {
+            resolvedType = resolveVariable(typeVariable, ifc);
+            if (resolvedType.resolve() != null) {
+                return resolvedType;
+            }
+        }
+        return ResolvableType.NONE;
+    }
+
 }

@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.game_auth", "suite.all"})
+@Profile({GAME})
 public class AccountManager {
 
     @Autowired
@@ -22,7 +24,7 @@ public class AccountManager {
         return this.accountDAO.update(
                 accountObj.getUid(),
                 accountObj.getAccount(),
-                ticket.getPfAccount(),
+                ticket.getAccount(),
                 ticket.getDevice(),
                 ticket.getDeviceID(),
                 ticket.getPf(),

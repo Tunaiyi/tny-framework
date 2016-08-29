@@ -1,23 +1,29 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestVerifyChecker;
+import com.tny.game.net.checker.RequestVerifier;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 客户端请求构建器
  *
  * @author Kun.y
  */
-public abstract class AbstractRequestBuilder implements RequestBuilder {
+public abstract class AbstractRequestBuilder<RQ extends NetRequest> implements RequestBuilder {
 
-    protected RequestVerifyChecker checker;
+    protected RequestVerifier verifier;
 
-    protected NetRequest request;
+    protected RQ request;
 
-    protected AbstractRequestBuilder(NetRequest request) {
-        this.request = request;
+    protected Session session;
+
+    protected Supplier<RQ> creator;
+
+    protected AbstractRequestBuilder(Supplier<RQ> creator) {
+        this.creator = creator;
+        this.request = creator.get();
         this.request.setTime(System.currentTimeMillis());
     }
 
@@ -48,12 +54,18 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
     /**
      * 设置请求交验编码器
      *
-     * @param checker 请求交验编码器
+     * @param verifier 请求交验编码器
      * @return 返回构建器本身
      */
     @Override
-    public RequestBuilder setRequestChecker(RequestVerifyChecker checker) {
-        this.checker = checker;
+    public RequestBuilder setRequestVerifier(RequestVerifier verifier) {
+        this.verifier = verifier;
+        return this;
+    }
+
+    @Override
+    public RequestBuilder setSession(Session session) {
+        this.session = session;
         return this;
     }
 
@@ -120,7 +132,28 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
     }
 
     protected void setCheckKey() {
-        request.setCheckKey(this.checker.generate(request));
+        request.setCheckKey(this.verifier.generate(request));
     }
+
+
+    /**
+     * 构建请求
+     *
+     * @return 返回构建的请求
+     */
+    @Override
+    public Request build() {
+        RQ request = this.request;
+        if (request.getProtocol() == 0)
+            throw new NullPointerException("protocol is 0");
+        request.requestBy(session);
+        if (this.verifier != null)
+            this.setCheckKey();
+        doBuild(request);
+        this.request = creator.get();
+        return request;
+    }
+
+    protected abstract void doBuild(RQ request);
 
 }

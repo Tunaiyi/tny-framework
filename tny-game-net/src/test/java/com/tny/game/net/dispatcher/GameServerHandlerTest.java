@@ -1,6 +1,6 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
 import io.netty.buffer.ByteBufAllocator;
@@ -20,15 +20,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.net.SocketAddress;
 import java.util.Arrays;
 
-import static com.tny.game.net.dispatcher.TestContorl.login;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         "classpath:/application.xml"})
 public class GameServerHandlerTest {
 
     @Autowired
-    private AppContext appContext;
+    private NetAppContext appContext;
 
     private MessageHandler handler;
 
@@ -58,7 +56,7 @@ public class GameServerHandlerTest {
     // * ip String
     @Test
     public void testMessageReceivedChannelHandlerContextMessageEvent() throws Exception {
-        SimpleRequest request = this.request(login, 171772272L, "User", "", "127.0.0.1");
+        SimpleRequest request = this.request(TestContorl.login, 171772272L, "User", "", "127.0.0.1");
         this.handler.messageReceived(this.channelContext, request);
         try {
             Thread.sleep(2000);
@@ -69,7 +67,7 @@ public class GameServerHandlerTest {
 
     @Test
     public void testMessageReceivedChannelHandlerContextMessageEventUnlogin() throws Exception {
-        SimpleRequest request = this.request(login, 1L, "User", "", "127.0.0.1");
+        SimpleRequest request = this.request(TestContorl.login, 1L, "User", "", "127.0.0.1");
         this.handler.messageReceived(this.channelContext, request);
         try {
             Thread.sleep(2000);
@@ -83,7 +81,8 @@ public class GameServerHandlerTest {
     }
 
     public SimpleRequest request(int protocol, NetSession session, Object... objects) {
-        SimpleRequest request = (SimpleRequest) GameServerHandlerTest.messageBuilderFactory.newRequestBuilder()
+        SimpleRequest request = (SimpleRequest) GameServerHandlerTest.messageBuilderFactory
+                .newRequestBuilder(session)
                 .setProtocol(protocol)
                 .addParameter(Arrays.asList(objects))
                 .build();

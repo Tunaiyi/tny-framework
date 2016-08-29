@@ -4,8 +4,10 @@ import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.serve_auth", "suite.all"})
+@Profile({SERVER_AUTH, GAME})
 public class ServeTicketMaker implements TicketMaker<ServeTicket> {
 
     @Override

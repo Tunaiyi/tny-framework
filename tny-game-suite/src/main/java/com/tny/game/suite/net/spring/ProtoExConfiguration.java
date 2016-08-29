@@ -6,12 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({"suite.server", "suite.all", "suite.protoex"})
+@Profile({PROTOEX, SERVER, SERVER_KAFKA, GAME_KAFKA, GAME})
 public class ProtoExConfiguration {
 
     @Bean

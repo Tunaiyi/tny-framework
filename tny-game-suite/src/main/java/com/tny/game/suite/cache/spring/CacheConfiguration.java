@@ -17,12 +17,14 @@ import org.springframework.context.annotation.Profile;
 
 import java.time.Duration;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({"suite.cache", "suite.cache.db", "suite.all"})
+@Profile({CACHE_DB, GAME})
 public class CacheConfiguration {
 
 

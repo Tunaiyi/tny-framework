@@ -11,9 +11,16 @@ public class GameTransaction implements Transaction {
 
     private boolean working;
 
+    private Thread thread;
+
+    public GameTransaction() {
+        this.thread = Thread.currentThread();
+    }
+
     protected boolean open() {
         if (!working) {
             this.working = true;
+            this.attributes.clearAttribute();
             TransactionEvents.OPEN_EVENT.notify(this);
             return true;
         }
@@ -51,4 +58,9 @@ public class GameTransaction implements Transaction {
         return attributes;
     }
 
+
+    @Override
+    public String toString() {
+        return "GameTransaction{thread=" + thread + '}';
+    }
 }

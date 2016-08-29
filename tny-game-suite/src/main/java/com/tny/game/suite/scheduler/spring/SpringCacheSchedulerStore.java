@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component("schedulerStore")
-@Profile({"suite.scheduler.cache_store"})
+@Profile({SCHEDULER_CACHE, GAME})
 public class SpringCacheSchedulerStore implements SchedulerStore {
 
     @Autowired

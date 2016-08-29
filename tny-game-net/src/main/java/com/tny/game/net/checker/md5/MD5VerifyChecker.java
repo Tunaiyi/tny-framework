@@ -1,11 +1,10 @@
 package com.tny.game.net.checker.md5;
 
-import com.tny.game.common.config.Config;
-import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestVerifyChecker;
+import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.Request;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -13,17 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 
-public abstract class MD5VerifyChecker implements RequestVerifyChecker {
-
-    public static final Config DEVELOP_CONFIG = ConfigLib.getConfigExist("develop.properties");
-
-    private static final String DEVELOP_CHECK = "tny.develop.core.check";
-
-    protected boolean check = true;
+public abstract class MD5VerifyChecker implements RequestChecker, RequestVerifier {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(CoreLogger.CHECKER);
-
-    protected abstract boolean isCheck();
 
     @Override
     public ResultCode match(Request request) {
@@ -37,8 +28,6 @@ public abstract class MD5VerifyChecker implements RequestVerifyChecker {
                     LOGGER.debug("请求MD5key:{} 请求内容:{} 校验MD5key:{}", request.getCheckKey(), requestStr, checkKey);
                 if (!checkKey.equals(request.getCheckKey())) {
                     LOGGER.warn("请求MD5key:{} 请求内容:{} | 校验MD5key:{} | 请求校验失败!", request.getCheckKey(), requestStr, checkKey);
-                    if (!this.isCheck())
-                        return ResultCode.SUCCESS;
                     return CoreResponseCode.FALSIFY;
                 }
                 return ResultCode.SUCCESS;

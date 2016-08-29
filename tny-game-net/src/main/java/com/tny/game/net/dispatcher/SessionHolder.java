@@ -42,7 +42,6 @@ public interface SessionHolder {
     /**
      * 创建会话组,无则创建,无则不操作 <br>
      *
-     * @param object 会话标识
      * @return 成功返回true
      */
     boolean createChannel(String userGroup, Object channelID);
@@ -50,7 +49,6 @@ public interface SessionHolder {
     /**
      * 删除会话标识对应会话 <br>
      *
-     * @param object 会话标识
      * @return 成功返回true 失败返回false
      */
     boolean removeChannel(String userGroup, Object channelID);
@@ -58,7 +56,6 @@ public interface SessionHolder {
     /**
      * 是否存在会话组 <br>
      *
-     * @param object 标识的会话
      * @return 存在返回true 失败返回false
      */
     boolean isExistChannel(String userGroup, Object channelID);
@@ -66,8 +63,7 @@ public interface SessionHolder {
     /**
      * 添加用户到指定的会话组 <br>
      *
-     * @param object 指定的会话组
-     * @param uid    用户ID
+     * @param uid 用户ID
      * @return 添加成功返回ture 失败返回false
      */
     boolean addChannelUser(String userGroup, Object channelID, Object uid);
@@ -75,7 +71,6 @@ public interface SessionHolder {
     /**
      * 获取会话组人数 <br>
      *
-     * @param groupID 会话组
      * @return 返回会话组人数
      */
     int getChannelSize(String userGroup, Object channelID);
@@ -83,8 +78,6 @@ public interface SessionHolder {
     /**
      * 添加用户集合到指定的会话组 <br>
      *
-     * @param object 指定的会话组
-     * @param uid    用户ID集合
      * @return 添加成功的数量
      */
     int addChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
@@ -99,8 +92,7 @@ public interface SessionHolder {
     /**
      * 移除指定会话组的用户 <br>
      *
-     * @param object 指定的会话标识
-     * @param uid    用户ID
+     * @param uid 用户ID
      * @return 是否移除成功, 成功返回true, 失败返回false
      */
     boolean removeChannelUser(String userGroup, Object channelID, Object uid);
@@ -108,16 +100,12 @@ public interface SessionHolder {
     /**
      * 移除指定会话组的用户集合 <br>
      *
-     * @param object 指定的会话标识
-     * @param uid    用户集合ID
      * @return 返回成功删除的数量
      */
     int removeChannelUser(String userGroup, Object channelID, Collection<?> uidColl);
 
     /**
      * 移除指定会话的所有用户 <br>
-     *
-     * @param object 指定会话的标识
      */
     void clearChannelUser(String userGroup, Object channelID);
 
@@ -130,6 +118,17 @@ public interface SessionHolder {
     boolean send2User(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
 
     /**
+     * 发信息给Session对应的用户 <br>
+     *
+     * @param session  会话
+     * @param protocol 协议
+     * @param code     结果码
+     * @param body     消息体
+     * @return 返回是否发送成功
+     */
+    boolean send2User(Session session, Protocol protocol, ResultCode code, Object body);
+
+    /**
      * 发信息给用户 <br>
      *
      * @param uid 用户ID
@@ -140,7 +139,6 @@ public interface SessionHolder {
     /**
      * 发信息给用户集合 <br>
      *
-     * @param uid 用户ID集合
      * @return 返回成功的数量
      */
     int send2User(String userGroup, Collection<?> uidColl, Protocol protocol, ResultCode code, Object body);
@@ -148,7 +146,6 @@ public interface SessionHolder {
     /**
      * 发送给所有在线的用户 <br>
      *
-     * @param response 消息
      * @return 返回发送的人数
      */
     int send2AllOnline(String userGroup, Protocol protocol, ResultCode code, Object body);

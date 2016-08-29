@@ -1,9 +1,7 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.common.context.Attributes;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
-import com.tny.game.net.checker.RequestVerifyChecker;
+import com.tny.game.net.checker.RequestVerifier;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ public interface RequestBuilder {
     /**
      * 设置请求模块
      *
-     * @param module 请求模块名
+     * @param protocol 请求协议
      * @return 返回构建器本身
      */
     RequestBuilder setProtocol(Protocol protocol);
@@ -36,7 +34,7 @@ public interface RequestBuilder {
      * @param checker 请求交验编码器
      * @return 返回构建器本身
      */
-    RequestBuilder setRequestChecker(RequestVerifyChecker checker);
+    RequestBuilder setRequestVerifier(RequestVerifier checker);
 
     //	/**
     //	 * 设置用户ID
@@ -54,6 +52,14 @@ public interface RequestBuilder {
      * @return 返回构建器本身
      */
     RequestBuilder setProtocol(int protocol);
+
+    /**
+     * 设置Session
+     *
+     * @param session 会话
+     * @return 返回构建器本身
+     */
+    RequestBuilder setSession(Session session);
 
     /**
      * 增加请求参数

@@ -54,7 +54,7 @@ public interface AccountDAO extends AccountDBFields {
                @SQLParam("device") String device,
                @SQLParam("deviceID") String deviceID,
                @SQLParam("pf") String pf,
-               @SQLParam("zone") int zone,
+               @SQLParam("zone") long zone,
                @SQLParam("entry") int entry,
                @SQLParam("ad") String ad,
                @SQLParam("createSID") int createSID,

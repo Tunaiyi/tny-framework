@@ -13,7 +13,7 @@
 
     <context:component-scan base-package="com.tny.game"/>
 
-    <bean name="checker" class="com.tny.game.net.TestRequestChecker"/>
+    <bean name="verifier" class="com.tny.game.net.TestRequestChecker"/>
 
     <bean name="testSessionHoslder" class="com.tny.game.net.dispatcher.DefaultSessionHolder">
     </bean>
@@ -21,16 +21,16 @@
     <bean name="authProvider" class="test.Handler.SessionAuthProviderImpl"/>
 
     <bean name="dispatcher" class="com.tny.game.net.dispatcher.spring.SpringMessageDispatcher">
-        <constructor-arg value="true"></constructor-arg>
+        <constructor-arg value="true"/>
     </bean>
 
-    <bean name="serverAppContext" class="com.tny.game.net.base.simple.ServerAppContext">
+    <bean name="serverAppContext" class="com.tny.game.net.base.simple.SimpleNetServerAppContext">
         <property name="authProviders">
             <list>
                 <ref bean="authProvider"/>
             </list>
         </property>
-        <property name="checkers" ref="checker"/>
+        <property name="checkers" ref="verifier"/>
         <property name="messageDispatcher" ref="dispatcher"/>
     </bean>
 

@@ -18,3 +18,5 @@ include 'tny-game-access'
 include 'tny-game-zookeeper'
 include 'tny-game-suite'
 include 'tny-game-oplog-log4j2kafka'
+include 'tny-game-net-kafka'
+

@@ -9,11 +9,11 @@ import java.io.IOException;
 
 public class ProtoExMessageCoder implements MessageBodyCoder {
 
-    public final static int REQUSET_ID = 1;
+    public final static int REQUEST_ID = 1;
     public final static int RESPONSE_ID = 2;
 
     @Override
-    public Object doDecoder(final byte[] array, boolean isRequset) throws Exception {
+    public Object doDecoder(final byte[] array, boolean isRequest) throws Exception {
         ProtoExReader reader = new ProtoExReader(array);
         return reader.readMessage();
     }

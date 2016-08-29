@@ -28,8 +28,10 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.game"})
+@Profile({GAME})
 public class GameServerCluster extends BaseCluster implements ServerPostStart {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GameServerCluster.class);
@@ -119,6 +121,7 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
             Config config = context.getConfig();
             ServerOutline outline = new ServerOutline()
                     .setServerID(info.getServerID())
+                    .setServerScope(info.getScopeType().getName())
                     .setServerType(info.getScopeType().getServerType().getName())
                     .setMain(info.isMainServer())
                     .setOpenDate(info.getOpenDate())

@@ -16,8 +16,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.base", "suite.all"})
+@Profile({ITEM, GAME})
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplorer, ApplicationContextAware, ServerPreStart {
 

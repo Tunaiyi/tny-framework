@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-@Profile({"suite.auto", "suite.all"})
-public class DefaultItemModelManager extends GameItemModelManager<DefaultItemModel> {
+import static com.tny.game.suite.SuiteProfiles.*;
 
-    //	private static final EnumSet<GameItemType> SIMPLE_ITEM_TYPE_SET = EnumSet.of(GameItemType.MISSION_REGISTRT, GameItemType.EARTH, GameItemType.PLAYER_INFO, GameItemType.USER_POLICY);
+@Component
+@Profile({ITEM, GAME})
+public class DefaultItemModelManager extends GameItemModelManager<DefaultItemModel> {
 
     private Map<ItemType, DefaultItemModel> typeMap = new CopyOnWriteMap<>();
 

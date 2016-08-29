@@ -19,8 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.server", "suite.all"})
+@Profile({SERVER, GAME_KAFKA, SERVER_KAFKA, GAME})
 public class SessionService {
 
     @Autowired

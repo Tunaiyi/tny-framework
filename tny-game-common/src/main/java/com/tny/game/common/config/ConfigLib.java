@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Properties;
@@ -31,7 +32,7 @@ public class ConfigLib {
                 inputStream = ConfigLoader.loadInputStream(path);
             if (inputStream == null)
                 throw new NullPointerException(MessageFormat.format("＃初始化 ConfigLib＃打开 {0} inputStream 为 null", path));
-            properties.load(inputStream);
+            properties.load(new InputStreamReader(inputStream, "UTF-8"));
         } catch (IOException e) {
             LOG.error("#ConfigLib#初始化#读取 {} inputStream 抛出异常", path, e);
         } finally {

@@ -5,7 +5,6 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.RequestChecker;
-import io.netty.channel.ChannelFuture;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,12 +84,7 @@ public class ProxyServerSession implements ServerSession {
     }
 
     @Override
-    public Optional<ChannelFuture> response(Protocol protocol, Object body) {
-        return this.session.response(protocol, body);
-    }
-
-    @Override
-    public Optional<ChannelFuture> response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
         return this.session.response(protocol, code, body);
     }
 

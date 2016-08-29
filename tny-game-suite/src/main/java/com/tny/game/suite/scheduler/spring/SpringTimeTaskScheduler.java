@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
 @Component
-@Profile({"suite.scheduler.cache_store", "suite.scheduler"})
+@Profile({SCHEDULER, GAME})
 public class SpringTimeTaskScheduler extends TimeTaskScheduler {
 
     @Autowired

@@ -13,7 +13,7 @@ public class DateTimeHelper {
     public static final DateTimeFormatter SIMPLE_TIME_FORMAT = DateTimeFormat.forPattern("H:mm");
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    public static final DateTimeFormatter DATE_TIME_ORDER_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    public static final DateTimeFormatter DATE_TIME_2_NUMBER_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmmss");
     public static final DateTimeFormatter SIMPLE_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
 

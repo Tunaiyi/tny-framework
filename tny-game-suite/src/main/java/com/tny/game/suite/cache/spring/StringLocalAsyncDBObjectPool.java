@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
 @Component("objectPool")
-@Profile({"suite.cache", "suite.all"})
+@Profile({CACHE_ASYNC, GAME})
 public class StringLocalAsyncDBObjectPool extends LocalAsyncDBObjectPool {
 
     @Autowired

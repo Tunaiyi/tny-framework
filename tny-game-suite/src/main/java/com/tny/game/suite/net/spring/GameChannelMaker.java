@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.server", "suite.all"})
+@Profile({SERVER, GAME})
 public class GameChannelMaker<C extends Channel> extends ChannelMaker<C> {
 
     @Autowired

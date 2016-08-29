@@ -23,43 +23,59 @@ public interface Configs {
     String FEATURE_MODEL_CONFIG_PATH = "config/base/FeatureModel.xml";
     String WORD_FILTER_CONFIG_PATH = "words.txt";
 
+    //region Kafka配置 kafka.properties
+    String KAFKA_CONFIG_PATH = "kafka.properties";
+    Config KAFKA_CONFIG = ConfigLib.getConfigExist(KAFKA_CONFIG_PATH);
+    //endregion
+
+    //region cluster.IP配置 cluster.properties
+    String CLUSTER_CONFIG_PATH = "cluster.properties";
+    Config CLUSTER_CONFIG = ConfigLib.getConfigExist(CLUSTER_CONFIG_PATH);
+    String CLUSTER_KAFKA_PRODUCER_IP_LIST = "tny.kafka.producer.ip_list";
+    String CLUSTER_KAFKA_CONSUMER_IP_LIST = "tny.kafka.consumer.ip_list";
+    //endregion
+
     //region 套件配置 suite.properties
     String SUITE_CONFIG_PATH = "suite.properties";
     Config SUITE_CONFIG = ConfigLib.getConfigExist(SUITE_CONFIG_PATH);
-    String SUITE_SCAN_PATHS /*                      */ = "tny.server.suite.scan_paths";
-    String SUITE_WORD_FILTER_CONFIG_PATH /*         */ = "tny.server.suite.word.filter_path";
-    String SUITE_WORD_REPLACE_SYMBOL /*             */ = "tny.server.suite.word.replace_symbol";
-    String SUITE_SERVER_TYPE_CLASS /*               */ = "tny.server.suite.server.server_type_class";
-    String SUITE_SCOPE_TYPE_CLASS /*                */ = "tny.server.suite.server.scope_type_class";
-    String SUITE_SESSION_OFFLINE_WAIT /*            */ = "tny.server.suite.session.offline_wait";
-    String SUITE_SESSION_CACHE_RESP_SIZE /*         */ = "tny.server.suite.session.cache_resp_size";
-    String SUITE_EXECUTOR_THREAD_SIZE /*            */ = "tny.server.suite.executor.thread_size";
-    String SUITE_EXECUTOR_THREAD_MAX_SIZE /*        */ = "tny.server.suite.executor.thread_max_size";
-    String SUITE_EXECUTOR_KEEP_ALIVE_TIME /*        */ = "tny.server.suite.executor.keep_alive_time";
-    String SUITE_REQ_CHECKER_DIRECT_PROTS /*        */ = "tny.server.suite.req_checker.direct_ports";
-    String SUITE_REQ_CHECKER_RANDOM_SEQ /*          */ = "tny.server.suite.req_checker.random_seq";
-    String SUITE_AUTH_USER_LOGIN_PROTOCOLS /*       */ = "tny.server.suite.auth.user_login.protocols";
-    String SUITE_AUTH_USER_RELOGIN_PROTOCOLS /*     */ = "tny.server.suite.auth.user_relogin.protocols";
-    String SUITE_AUTH_SERV_LOGIN_PROTOCOLS /*       */ = "tny.server.suite.auth.serv_login.protocols";
-    String SUITE_LAUNCHER_PROFILES /*               */ = "tny.server.suite.launcher.profiles";
-    String SUITE_ASYNC_DB_EXE_STEP /*               */ = "tny.server.suite.async_db.executor.step";
-    String SUITE_ASYNC_DB_EXE_WAIT_TIME /*          */ = "tny.server.suite.async_db.executor.wait_time";
-    String SUITE_ASYNC_DB_EXE_TRY_TIME /*           */ = "tny.server.suite.async_db.executor.try_time";
-    String SUITE_ASYNC_DB_EXE_THREAD_SIZE /*        */ = "tny.server.suite.async_db.executor.thread_size";
-    String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*        */ = "tny.server.suite.async_db.object_pool.keep_time";
-    String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*     */ = "tny.server.suite.async_db.object_pool.recycle_time";
-    String SUITE_TIME_TASK_PATH /*                  */ = "tny.server.suite.time_task.path";
-    String SUITE_FEATURE_MODEL_CONFIG_PATH /*       */ = "tny.server.suite.base.default_item_model.path";
-    String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*    */ = "tny.server.suite.base.default_item_model.path";
-    String SUITE_BASE_ITEM_TYPE_CLASS /*            */ = "tny.server.suite.base.item_type_class";
-    String SUITE_BASE_ABILITY_CLASS /*              */ = "tny.server.suite.base.ability_class";
-    String SUITE_BASE_ACTION_CLASS /*               */ = "tny.server.suite.base.action_class";
-    String SUITE_BASE_BEHAVIOR_CLASS /*             */ = "tny.server.suite.base.behavior_class";
-    String SUITE_BASE_DEMAND_TYPE_CLASS /*          */ = "tny.server.suite.base.demand_type_class";
-    String SUITE_BASE_DEMAND_PARAM_CLASS /*         */ = "tny.server.suite.base.demand_param_class";
-    String SUITE_BASE_MODULE_CLASS /*               */ = "tny.server.suite.base.module_class";
-    String SUITE_BASE_FEATURE_CLASS /*              */ = "tny.server.suite.base.feature_class";
-    String SUITE_BASE_OPEN_MODE_CLASS /*            */ = "tny.server.suite.base.open_mode_class";
+    String SUITE_SCAN_PATHS /*                          */ = "tny.server.suite.scan_paths";
+    String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
+    String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
+    String SUITE_SERVER_TYPE_CLASS /*                   */ = "tny.server.suite.server.server_type_class";
+    String SUITE_SCOPE_TYPE_CLASS /*                    */ = "tny.server.suite.server.scope_type_class";
+    String SUITE_SESSION_OFFLINE_WAIT /*                */ = "tny.server.suite.session.offline_wait";
+    String SUITE_SESSION_CACHE_RESP_SIZE /*             */ = "tny.server.suite.session.cache_resp_size";
+    String SUITE_EXECUTOR_THREAD_SIZE /*                */ = "tny.server.suite.executor.thread_size";
+    String SUITE_EXECUTOR_THREAD_MAX_SIZE /*            */ = "tny.server.suite.executor.thread_max_size";
+    String SUITE_EXECUTOR_KEEP_ALIVE_TIME /*            */ = "tny.server.suite.executor.keep_alive_time";
+    String SUITE_REQ_CHECKER_DIRECT_PROTS /*            */ = "tny.server.suite.req_checker.direct_ports";
+    String SUITE_REQ_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.req_checker.random_seq";
+    String SUITE_AUTH_USER_LOGIN_PROTOCOLS /*           */ = "tny.server.suite.auth.user_login.protocols";
+    String SUITE_AUTH_USER_RELOGIN_PROTOCOLS /*         */ = "tny.server.suite.auth.user_relogin.protocols";
+    String SUITE_AUTH_SERV_LOGIN_PROTOCOLS /*           */ = "tny.server.suite.auth.serv_login.protocols";
+    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC /*      */ = "tny.server.suite.auth.kafka_login.protocols.inc";
+    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC /*      */ = "tny.server.suite.auth.kafka_login.protocols.exc";
+    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.inc_rg";
+    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.exc_rg";
+    String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";
+    String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.server.suite.async_db.executor.step";
+    String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.server.suite.async_db.executor.wait_time";
+    String SUITE_ASYNC_DB_EXE_TRY_TIME /*               */ = "tny.server.suite.async_db.executor.try_time";
+    String SUITE_ASYNC_DB_EXE_THREAD_SIZE /*            */ = "tny.server.suite.async_db.executor.thread_size";
+    String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*            */ = "tny.server.suite.async_db.object_pool.keep_time";
+    String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*         */ = "tny.server.suite.async_db.object_pool.recycle_time";
+    String SUITE_TIME_TASK_PATH /*                      */ = "tny.server.suite.time_task.path";
+    String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.server.suite.base.default_item_model.path";
+    String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.server.suite.base.default_item_model.path";
+    String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.server.suite.base.item_type_class";
+    String SUITE_BASE_ABILITY_CLASS /*                  */ = "tny.server.suite.base.ability_class";
+    String SUITE_BASE_ACTION_CLASS /*                   */ = "tny.server.suite.base.action_class";
+    String SUITE_BASE_BEHAVIOR_CLASS /*                 */ = "tny.server.suite.base.behavior_class";
+    String SUITE_BASE_DEMAND_TYPE_CLASS /*              */ = "tny.server.suite.base.demand_type_class";
+    String SUITE_BASE_DEMAND_PARAM_CLASS /*             */ = "tny.server.suite.base.demand_param_class";
+    String SUITE_BASE_MODULE_CLASS /*                   */ = "tny.server.suite.base.module_class";
+    String SUITE_BASE_FEATURE_CLASS /*                  */ = "tny.server.suite.base.feature_class";
+    String SUITE_BASE_OPEN_MODE_CLASS /*                */ = "tny.server.suite.base.open_mode_class";
 
     static List<String> getScanPaths() {
         List<String> paths = new ArrayList<>();
@@ -87,9 +103,12 @@ public interface Configs {
     Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
     String SERVER_ID /*                 */ = "tny.server.id";
     String SERVER_SCOPE /*              */ = "tny.server.scope";
+    String SERVER_TYPE /*               */ = "tny.server.type";
     String PUBLIC_HOST /*               */ = "tny.server.public_host";
     String PRIVATE_HOST /*              */ = "tny.server.private_host";
     String RMI_PORT /*                  */ = "tny.server.rmi.registryPort";
+    String PROJECT_NAME /*              */ = "tny.server.project_name";
+    String PROJECT /*                   */ = "tny.server.project";
     String SERVICE_CONFIG_WEB_SERVICE_HOST = "tny.web_service.server.host";
     String SERVICE_CONFIG_WEB_SERVICE_PORT = "tny.web_service.server.port";
     //endregion
@@ -104,14 +123,14 @@ public interface Configs {
     String AUTH_CLIENT_MESSAGE_KEY /*           */ = "tny.server.auth.game.client.message_key";
     String AUTH_SERVER_HEAD /*                  */ = "tny.server.auth.";
     String AUTH_PASSWORD_KEY /*                 */ = "password";
-
+    String AUTH_PAY_BILL_KEY /*                 */ = "tny.server.auth.sdker.pay_bill_key";
 
     static String createAuthKey(String serverType) {
-        return AUTH_SERVER_HEAD + "." + serverType + "." + AUTH_PASSWORD_KEY;
+        return AUTH_SERVER_HEAD + serverType + "." + AUTH_PASSWORD_KEY;
     }
 
     static String createAuthKey(ServerType serverType) {
-        return AUTH_SERVER_HEAD + "." + serverType.getName() + "." + AUTH_PASSWORD_KEY;
+        return AUTH_SERVER_HEAD + serverType.getName() + "." + AUTH_PASSWORD_KEY;
     }
     //endregion
 
@@ -141,6 +160,7 @@ public interface Configs {
     String DEVELOP_AUTH_CREATE_AT /*        */ = "tny.server.dev.auth.create_at";
     String DEVELOP_AUTH_PF /*               */ = "tny.server.dev.auth.pf";
     String DEVELOP_VERIFY_CHECK /*          */ = "tny.server.dev.verify.check";
+    String DEVELOP_PAY_PRICE /*             */ = "tny.server.dev.pay.pay_price";
 
 
     static LocalDate devDate(String key, LocalDate... defaultValue) {

@@ -4,10 +4,10 @@ import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.checker.RequestChecker;
-import com.tny.game.net.client.nio.NetClient;
 import com.tny.game.net.coder.DataPacketDecoder;
 import com.tny.game.net.coder.DataPacketEncoder;
 import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
+import com.tny.game.net.client.nio.NetClient;
 import com.tny.game.telnet.TelnetSession;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -36,6 +36,6 @@ public class NetAttributeKey {
     public static final AttributeKey<List<RequestChecker>> REQUEST_CHECKERS = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKERS");
     public static final AttributeKey<DataPacketEncoder> DATA_PACKET_ENCODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_ENCODER");
     public static final AttributeKey<DataPacketDecoder> DATA_PACKET_DECODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_DECODER");
-    public static final AttributeKey<ResponseMonitorHolder> RESPONSE_HANDLER = AttributeKey.valueOf(NetAttributeKey.class + "RESPONSE_HANDLER");
+    public static final AttributeKey<ResponseHandlerHolder> RESPONSE_HANDLER = AttributeKey.valueOf(NetAttributeKey.class + "RESPONSE_HANDLER");
 
 }

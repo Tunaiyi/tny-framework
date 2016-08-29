@@ -21,7 +21,7 @@
     <bean name="serverContextFactory"
           class="cndw.framework.net.context.properties.PropertiesServiceContextFactory"/>
 
-    <bean name="checker" class="cndw.framework.net.TestRequetChecker"/>
+    <bean name="verifier" class="cndw.framework.net.TestRequetChecker"/>
 
     <bean name="sessionHolder" class="cndw.framework.net.dispatcher.GameSessionHolder"/>
 

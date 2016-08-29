@@ -12,9 +12,7 @@ dependencies {
             libs.'druid',
             libs.'protobuf-java',
             libs.'guava',
-
             project(":tny-game-common"),
-            project(":tny-game-net"),
             project(":tny-game-base"),
             project(":tny-game-doc"),
             project(":tny-game-cache"),
@@ -24,6 +22,7 @@ dependencies {
             project(":tny-game-cache-mysql"),
             project(":tny-game-cache-redis"),
             project(":tny-game-oplog-log4j2kafka"),
+            project(":tny-game-net-kafka")
     )
 
 }

@@ -12,8 +12,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.auto", "suite.all"})
+@Profile({ITEM, GAME})
 public class NormalRandomCreatorFactory implements RandomCreatorFactory {
 
     private static final String NAME = "NORMAL";

@@ -2,10 +2,10 @@ package com.tny.game.net.coder;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.checker.RequestChecker;
-import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageCoder;
+import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 

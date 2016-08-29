@@ -1,7 +1,7 @@
 package com.tny.game.net.context.impl;
 
-import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
+import com.tny.game.net.config.ServerConfigFactory;
 import org.junit.*;
 
 

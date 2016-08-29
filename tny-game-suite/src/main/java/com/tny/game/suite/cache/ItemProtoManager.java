@@ -11,8 +11,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Component
-@Profile({"suite.cache", "suite.all"})
+@Profile({ITEM_CACHE, GAME})
 public class ItemProtoManager {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ItemProtoManager.class);
