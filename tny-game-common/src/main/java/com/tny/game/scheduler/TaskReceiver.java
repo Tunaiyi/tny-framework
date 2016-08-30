@@ -75,7 +75,7 @@ public abstract class TaskReceiver {
                 try {
                     if (handler.getHandleType() != HandleType.ONCE || runSet.add(handler.getHandlerName()))
                         handler.handle(this);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getHandlerName(), e);
                 }
             }

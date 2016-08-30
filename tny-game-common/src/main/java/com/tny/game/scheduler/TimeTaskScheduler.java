@@ -410,14 +410,17 @@ public class TimeTaskScheduler {
         @Override
         public void run() {
             if (this.timeTask != null) {
-                TimeTaskScheduler.this.writeLock.lock();
                 try {
-                    TimeTaskScheduler.this.timeTaskQueue.put(this.timeTask);
+                    TimeTaskScheduler.this.writeLock.lock();
+                    try {
+                        TimeTaskScheduler.this.timeTaskQueue.put(this.timeTask);
+                    } finally {
+                        TimeTaskScheduler.this.writeLock.unlock();
+                    }
+                    TimeTaskScheduler.this.fireTrigger(this.timeTask);
                 } finally {
-                    TimeTaskScheduler.this.writeLock.unlock();
+                    TimeTaskScheduler.this.save();
                 }
-                TimeTaskScheduler.this.save();
-                TimeTaskScheduler.this.fireTrigger(this.timeTask);
             }
             TimeTaskScheduler.this.executeCreateTimeTaskRunnable();
         }

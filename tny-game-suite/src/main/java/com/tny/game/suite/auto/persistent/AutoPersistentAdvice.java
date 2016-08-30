@@ -1,6 +1,5 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.google.common.collect.ImmutableMap;
 import com.tny.game.LogUtils;
 import com.tny.game.base.item.Manager;
 import com.tny.game.common.context.AttrKey;
@@ -150,7 +149,9 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     }
 
     private void toDB(Transaction transaction) {
-        Map<Object, String> opDBMap = transaction.attributes().getAttribute(OP_DB_MAP, ImmutableMap.of());
+        Map<Object, String> opDBMap = transaction.attributes().removeAttribute(OP_DB_MAP);
+        if (opDBMap == null)
+            return;
         for (Entry<Object, String> object : opDBMap.entrySet()) {
             this.toDB(object.getKey(), object.getValue());
         }

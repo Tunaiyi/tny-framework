@@ -7,6 +7,8 @@ import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.scheduler.TimeTaskScheduler;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.transaction.TransactionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Component
 @Profile({SCHEDULER, GAME})
 public class TimeTaskSchedulerService implements ServerPreStart {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(TimeTaskSchedulerService.class);
 
     @Autowired
     private TimeTaskScheduler scheduler;
@@ -30,6 +34,7 @@ public class TimeTaskSchedulerService implements ServerPreStart {
             TransactionManager.close();
         } catch (Throwable e) {
             TransactionManager.rollback(e);
+            LOGGER.error("checkSystemTask", e);
         }
     }
 
@@ -51,9 +56,7 @@ public class TimeTaskSchedulerService implements ServerPreStart {
 
     @Override
     public void initialize() throws Exception {
-        this.scheduler.addListener(timeTask -> {
-            this.checkSystemTask();
-        });
+        this.scheduler.addListener(timeTask -> this.checkSystemTask());
         this.scheduler.start();
     }
 

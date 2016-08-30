@@ -26,15 +26,23 @@ public class TransactionManager {
     }
 
     public static void rollback(Throwable cause) {
-        GameTransaction transaction = transThreadLocal.get();
-        if (transaction != null && transaction.isOpen())
-            transaction.rollback(cause);
+        try {
+            GameTransaction transaction = transThreadLocal.get();
+            if (transaction != null && transaction.isOpen())
+                transaction.rollback(cause);
+        } finally {
+            transThreadLocal.remove();
+        }
     }
 
     public static void close() {
-        GameTransaction transaction = transThreadLocal.get();
-        if (transaction != null && transaction.isOpen())
-            transaction.close();
+        try {
+            GameTransaction transaction = transThreadLocal.get();
+            if (transaction != null && transaction.isOpen())
+                transaction.close();
+        } finally {
+            transThreadLocal.remove();
+        }
     }
 
 }

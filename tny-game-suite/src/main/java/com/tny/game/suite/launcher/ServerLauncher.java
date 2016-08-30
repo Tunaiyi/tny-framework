@@ -61,33 +61,36 @@ public class ServerLauncher {
 
     public ServerLauncher start() throws Throwable {
         TransactionManager.open();
-        ServerIniterProcessor processor = new ServerIniterProcessor();
-        processor.setApplicationContext(this.context);
-        //per initServer
-        runPoint(beforeInitServer);
-        NetServer server = this.initServer();
-        runPoint(afterInitServer);
-        //post initServer
+        try {
+            ServerIniterProcessor processor = new ServerIniterProcessor();
+            processor.setApplicationContext(this.context);
+            //per initServer
+            runPoint(beforeInitServer);
+            NetServer server = this.initServer();
+            runPoint(afterInitServer);
+            //post initServer
 
-        processor.initPreStart();
-        LOG.info("服务器启动服务器!");
+            processor.initPreStart();
+            LOG.info("服务器启动服务器!");
 
-        // per start
-        runPoint(beforeStartServer);
-        server.start();
-        runPoint(afterStartServer);
-        // post start
+            // per start
+            runPoint(beforeStartServer);
+            server.start();
+            runPoint(afterStartServer);
+            // post start
 
-        if (this.context.getBeanNamesForType(TelnetServer.class).length > 0) {
-            TelnetServer telnetServer = this.context.getBean(TelnetServer.class);
-            if (telnetServer != null)
-                telnetServer.start();
+            if (this.context.getBeanNamesForType(TelnetServer.class).length > 0) {
+                TelnetServer telnetServer = this.context.getBean(TelnetServer.class);
+                if (telnetServer != null)
+                    telnetServer.start();
+            }
+            processor.initPostStart();
+
+            // complete
+            runPoint(complete);
+        } finally {
+            TransactionManager.close();
         }
-        processor.initPostStart();
-
-        // complete
-        runPoint(complete);
-        TransactionManager.close();
         return this;
     }
 

@@ -28,16 +28,24 @@ public class UUIDCreator {
     private volatile long lastTimestamp = -1;
     private final StampedLock lock = new StampedLock();
 
-    public static final long workerID(long id) {
-        return workerID(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
+    public static final long parseWorkerID(long id) {
+        return parseWorkerID(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
     }
 
-    public static final long workerID(long id, long workIDBit) {
-        return workerID(id, workIDBit, WORKER_SEQUENCE_BITS - workIDBit);
+    public static final long parseWorkerID(long id, long workIDBit) {
+        return parseWorkerID(id, workIDBit, WORKER_SEQUENCE_BITS - workIDBit);
     }
 
-    public static final long workerID(long id, long workIDBit, long sequenceBits) {
+    public static final long parseWorkerID(long id, long workIDBit, long sequenceBits) {
         return id >> sequenceBits & (~(-1L << workIDBit));
+    }
+
+    public static final long parseTime(long id) {
+        return BASE_TIME + (id >> WORKER_SEQUENCE_BITS);
+    }
+
+    public static final long parseTime(long id, long workIDBit, long sequenceBits) {
+        return BASE_TIME + (id >> workIDBit + sequenceBits);
     }
 
     public UUIDCreator(long workerID) {
@@ -114,5 +122,12 @@ public class UUIDCreator {
         return System.currentTimeMillis();
     }
 
+
+    public static void main(String[] args) {
+        UUIDCreator creator = new UUIDCreator(10);
+        long id = creator.createID();
+        System.out.println(System.currentTimeMillis());
+        System.out.println(UUIDCreator.parseTime(id));
+    }
 
 }
