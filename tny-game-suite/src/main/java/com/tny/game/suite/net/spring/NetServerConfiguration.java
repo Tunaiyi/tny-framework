@@ -84,7 +84,7 @@ public class NetServerConfiguration {
         return new GameMD5VerifyChecker(randomKey, ImmutableSet.of());
     }
 
-    @Bean(name = "idChecker")
+    // @Bean(name = "idChecker")
     public MobileRequestIDChecker requestIDChecker() {
         Config config = Configs.SUITE_CONFIG;
         String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);

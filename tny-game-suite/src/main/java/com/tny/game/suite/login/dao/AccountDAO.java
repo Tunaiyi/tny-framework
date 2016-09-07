@@ -35,7 +35,7 @@ public interface AccountDAO extends AccountDBFields {
 
     @SQL("update " + TABLE + " set "
             + "`account`=:account, "
-            + "`pfAccount`=:pfAccount, "
+            + "`openID`=:openID, "
             + "`device`=:device, "
             + "`deviceID`=:deviceID, "
             + "`pf`=:pf, "
@@ -50,7 +50,7 @@ public interface AccountDAO extends AccountDBFields {
             + "where `uid` = :uid and `account` is null")
     int update(@SQLParam("uid") long uid,
                @SQLParam("account") String account,
-               @SQLParam("pfAccount") String pfAccount,
+               @SQLParam("openID") String openID,
                @SQLParam("device") String device,
                @SQLParam("deviceID") String deviceID,
                @SQLParam("pf") String pf,

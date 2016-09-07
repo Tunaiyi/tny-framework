@@ -65,6 +65,7 @@ public interface Configs {
     String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*            */ = "tny.server.suite.async_db.object_pool.keep_time";
     String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*         */ = "tny.server.suite.async_db.object_pool.recycle_time";
     String SUITE_TIME_TASK_PATH /*                      */ = "tny.server.suite.time_task.path";
+    String SUITE_CLUSTER_GAME_MONITOR_SERVER_TYPES /*   */ = "tny.server.suite.cluster.game.monitor_server_types ";
     String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.server.suite.base.default_item_model.path";
     String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.server.suite.base.default_item_model.path";
     String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.server.suite.base.item_type_class";

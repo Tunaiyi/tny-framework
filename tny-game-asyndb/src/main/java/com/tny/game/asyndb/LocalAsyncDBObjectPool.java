@@ -279,7 +279,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
             LOGGER.debug("#LoaclAsynBDObjectPool#提交更改对象池中{} 状态: {} -> {}", asyncDBEntity, asyncDBEntity.getState(), operation);
             boolean submit = asyncDBEntity.mark(operation, object);
             if (submit) {
-                LOGGER.debug("#LoaclAsynBDObjectPool#将要提交{}到同步队列" + asyncDBEntity);
+                LOGGER.debug("#LoaclAsynBDObjectPool#将要提交{}到同步队列", asyncDBEntity);
                 boolean result = this.syncDBExecutor.sumit(asyncDBEntity);
                 LOGGER.debug("#LoaclAsynBDObjectPool#提交{}[状态:{}]同步队列结果{}", asyncDBEntity, asyncDBEntity.getState(), submit);
                 return result;

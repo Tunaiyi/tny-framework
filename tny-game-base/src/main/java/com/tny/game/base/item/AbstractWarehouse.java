@@ -100,7 +100,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
         Attributes attributes = ContextAttributes.create(entries);
         this.consume0(dealedResult, tradeItem, action, attributes);
-        TradeEvents.CONSUME_EVENT.notify(this, action,  new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
+        TradeEvents.CONSUME_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
         return dealedResult;
     }
 
@@ -132,31 +132,39 @@ public abstract class AbstractWarehouse<O extends Owner>
 
     private void consume0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
         ItemModel model = tradeItem.getItemModel();
-        O owner = this.getOwner(model.getItemType(), ownerClass);
-        if (owner != null) {
-            synchronized (owner) {
-                dealedResult.changeOwnerSet.add(owner);
-                TradeResult tradeResult = this.doConsume(owner, tradeItem, action, attributes);
-                dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
-                dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+        try {
+            O owner = this.getOwner(model.getItemType(), ownerClass);
+            if (owner != null) {
+                synchronized (owner) {
+                    dealedResult.changeOwnerSet.add(owner);
+                    TradeResult tradeResult = this.doConsume(owner, tradeItem, action, attributes);
+                    dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
+                    dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+                }
+            } else {
+                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
             }
-        } else {
-            throw new NullPointerException(MessageFormat.format("{0}玩家没有 {1} Owner对象", this.playerID, model.getItemType()));
+        } catch (Throwable e) {
+            LOGGER.error("{}玩家 consume {} - {}", this.playerID, model.getItemType(), model.getID(), e);
         }
     }
 
     private void receive0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
         ItemModel model = tradeItem.getItemModel();
-        O owner = this.getOwner(model.getItemType(), ownerClass);
-        if (owner != null) {
-            synchronized (owner) {
-                dealedResult.changeOwnerSet.add(owner);
-                TradeResult tradeResult = this.doReceive(owner, tradeItem, action, attributes);
-                dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
-                dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+        try {
+            O owner = this.getOwner(model.getItemType(), ownerClass);
+            if (owner != null) {
+                synchronized (owner) {
+                    dealedResult.changeOwnerSet.add(owner);
+                    TradeResult tradeResult = this.doReceive(owner, tradeItem, action, attributes);
+                    dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
+                    dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+                }
+            } else {
+                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
             }
-        } else {
-            throw new NullPointerException(MessageFormat.format("{0}玩家没有 {1} Owner对象", this.playerID, model.getItemType()));
+        } catch (Throwable e) {
+            LOGGER.error("{}玩家 consume {} - {}", this.playerID, model.getItemType(), model.getID(), e);
         }
     }
 

@@ -24,7 +24,7 @@ public class AccountManager {
         return this.accountDAO.update(
                 accountObj.getUid(),
                 accountObj.getAccount(),
-                ticket.getAccount(),
+                ticket.getOpenID(),
                 ticket.getDevice(),
                 ticket.getDeviceID(),
                 ticket.getPf(),

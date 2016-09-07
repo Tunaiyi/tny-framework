@@ -9,6 +9,7 @@ public interface SuiteProfiles {
     String DOORS = "suite.doors";
     String ACCESS = "suite.access";
     String GM = "suite.gm";
+    String LOG = "suite.log";
 
     String AUTO = "suite.auto";
     String PROTOEX = "suite.protoex";

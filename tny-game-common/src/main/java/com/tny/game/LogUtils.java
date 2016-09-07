@@ -1,9 +1,14 @@
 package com.tny.game;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LogUtils {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.class);
 
     public static final String LOADER = "configLoader";
     public static final String EVENT = "commonEvent";
@@ -18,6 +23,155 @@ public class LogUtils {
 
     public static Object[] msg(Object... objects) {
         return objects;
+    }
+
+    public static byte trace(byte value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static byte trace(Logger logger, byte value) {
+        return trace(logger, null, value);
+    }
+
+    public static byte trace(Object key, byte value) {
+        return trace(LOGGER, key, value);
+    }
+
+
+    public static byte trace(Logger logger, Object key, byte value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static short trace(short value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static short trace(Logger logger, short value) {
+        return trace(logger, null, value);
+    }
+
+    public static short trace(Object key, short value) {
+        return trace(LOGGER, key, value);
+    }
+
+
+    public static short trace(Logger logger, Object key, short value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static int trace(int value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static int trace(Logger logger, int value) {
+        return trace(logger, null, value);
+    }
+
+    public static int trace(Object key, int value) {
+        return trace(LOGGER, key, value);
+    }
+
+    public static int trace(Logger logger, Object key, int value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static long trace(long value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static long trace(Logger logger, long value) {
+        return trace(logger, null, value);
+    }
+
+    public static long trace(Object key, long value) {
+        return trace(LOGGER, key, value);
+    }
+
+    public static long trace(Logger logger, Object key, long value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static float trace(float value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static float trace(Logger logger, float value) {
+        return trace(logger, null, value);
+    }
+
+    public static float trace(Object key, float value) {
+        return trace(LOGGER, key, value);
+    }
+
+
+    public static float trace(Logger logger, Object key, float value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+
+    public static double trace(double value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static double trace(Logger logger, double value) {
+        return trace(logger, null, value);
+    }
+
+    public static double trace(Object key, double value) {
+        return trace(LOGGER, key, value);
+    }
+
+
+    public static double trace(Logger logger, Object key, double value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static boolean trace(boolean value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static boolean trace(Logger logger, boolean value) {
+        return trace(logger, null, value);
+    }
+
+    public static boolean trace(Object key, boolean value) {
+        return trace(LOGGER, key, value);
+    }
+
+    public static boolean trace(Logger logger, Object key, boolean value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
+    }
+
+    public static <T> T trace(T value) {
+        return trace(LOGGER, null, value);
+    }
+
+    public static <T> T trace(Logger logger, T value) {
+        return trace(logger, null, value);
+    }
+
+    public static <T> T trace(Object key, T value) {
+        return trace(LOGGER, key, value);
+    }
+
+    public static <T> T trace(Logger logger, Object key, T value) {
+        if (logger.isDebugEnabled())
+            logger.debug(key == null ? "{}" : key + " = {}", value);
+        return value;
     }
 
     public static String format(final String messagePattern, final Object... argArray) {
@@ -239,7 +393,7 @@ public class LogUtils {
         }
         sbuf.append(']');
     }
-    //	public static String format(String message, Object ... values) {
+    //	public static String format(Object key, Object ... values) {
     //		StringBuilder builder = new StringBuilder();
     //		String [] value = StringUtils.split(message,"{}");
     //	}

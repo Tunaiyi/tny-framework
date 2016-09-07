@@ -83,6 +83,26 @@ public interface ItemModel extends Model {
     TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
 
     /**
+     * 获取奖励&扣除列表
+     *
+     * @param item       事物对象
+     * @param action     要执行的操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 奖励列表
+     */
+    ActionTrades createActionTrades(Item<?> item, Action action, Object... attributes);
+
+    /**
+     * 获取奖励&扣除列表
+     *
+     * @param playerID   玩家ID
+     * @param action     要执行的才注意
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 奖励列表
+     */
+    ActionTrades createActionTrades(long playerID, Action action, Object... attributes);
+
+    /**
      * 获取操作结果
      *
      * @param item       事物对象
@@ -296,6 +316,7 @@ public interface ItemModel extends Model {
 
     /**
      * 获取指定的typeClass的Ability类型列表
+     *
      * @param typeClass 指定Ability类
      * @return 返回typeClass的Ability类型列表
      */

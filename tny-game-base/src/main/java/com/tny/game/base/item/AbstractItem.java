@@ -152,6 +152,11 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
         return this.getModel().getActionResult(this, action, attributes);
     }
 
+    @Override
+    public ActionTrades createActionTrades(Action action, Object... attributes) {
+        return this.getModel().createActionTrades(this, action, attributes);
+    }
+
     protected void setPlayerID(long playerID) {
         this.playerID = playerID;
     }

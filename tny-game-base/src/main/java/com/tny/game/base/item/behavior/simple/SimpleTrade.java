@@ -7,7 +7,6 @@ import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.number.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +43,11 @@ public class SimpleTrade implements Trade {
         //		this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
     }
 
-    public void addIteam(ItemModel itemModel, int number, AlterType alertType) {
+    public void addIteam(ItemModel itemModel, Number number, AlterType alertType) {
         this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number, alertType));
     }
 
-    public void addIteam(ItemModel itemModel, int number) {
+    public void addIteam(ItemModel itemModel, Number number) {
         this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number));
     }
 

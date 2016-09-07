@@ -1,6 +1,7 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.TryToDoException;
+import com.tny.game.base.item.ActionTrades;
 import com.tny.game.base.item.Trade;
 
 import java.util.List;
@@ -81,6 +82,15 @@ public interface ActionPlan {
      * @return
      */
     Trade createCost(long playerID, Action action, Map<String, Object> attributes);
+
+    /**
+     * 获取该操作的奖励&扣除结果
+     *
+     * @param action       指定操作类型
+     * @param attributeMap 附加参数
+     * @return 返回奖励列表
+     */
+    ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算选项

@@ -2,11 +2,23 @@ package com.tny.game.suite.login;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.event.BindVoidEventBus;
+import com.tny.game.event.EventBuses;
+import com.tny.game.suite.login.event.AccountListener;
 import com.tny.game.suite.utils.Configs;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 public class Account implements Identifiable {
+
+    private static BindVoidEventBus<AccountListener, Account> ON_CREATE =
+            EventBuses.of(AccountListener.class, AccountListener::onCreate);
+    private static BindVoidEventBus<AccountListener, Account> ON_ONLINE =
+            EventBuses.of(AccountListener.class, AccountListener::onOnline);
+    private static BindVoidEventBus<AccountListener, Account> ON_OFFLINE =
+            EventBuses.of(AccountListener.class, AccountListener::onOffline);
+    private static BindVoidEventBus<AccountListener, Account> ON_CREATE_ROLE =
+            EventBuses.of(AccountListener.class, AccountListener::onCreateRole);
 
     private long uid;
 
@@ -251,8 +263,8 @@ public class Account implements Identifiable {
         this.deviceID = ticket.getDeviceID();
     }
 
-    void createRole(DateTime dateTime) {
-        this.setCreateRole(dateTime);
+    void onCreate() {
+        ON_CREATE.notify(this);
     }
 
     protected void setCreate(DateTime dateTime) {
@@ -266,11 +278,17 @@ public class Account implements Identifiable {
         this.createRoleDate = new LocalDate(this.createRoleAt);
     }
 
+    void createRole(DateTime dateTime) {
+        this.setCreateRole(dateTime);
+        ON_CREATE_ROLE.notify(this);
+    }
+
     boolean online(String ip) {
         if (isOnline())
             return false;
         this.ip = ip;
         this.onlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_ONLINE_AT, DateTime.now());
+        ON_ONLINE.notify(this);
         return true;
     }
 
@@ -278,6 +296,7 @@ public class Account implements Identifiable {
         if (!isOnline())
             return false;
         this.offlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, DateTime.now());
+        ON_OFFLINE.notify(this);
         return true;
     }
 

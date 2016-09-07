@@ -112,6 +112,15 @@ public interface Item<M extends ItemModel> extends Identifiable {
     Trade createAward(Action action, Object... attributes);
 
     /**
+     * 生产奖励&扣除信息
+     *
+     * @param action     要执行的操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回获得
+     */
+    ActionTrades createActionTrades(Action action, Object... attributes);
+
+    /**
      * 获对该事物执行某种行为所需要的行为结果，包括条件，消耗奖励物品
      *
      * @param behavior   要执行的操作

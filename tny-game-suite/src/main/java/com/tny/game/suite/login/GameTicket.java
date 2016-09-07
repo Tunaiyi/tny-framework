@@ -61,10 +61,6 @@ public class GameTicket {
     private long tokenID;
 
     @JsonProperty
-    @ProtoExField(13)
-    private String account;
-
-    @JsonProperty
     @ProtoExField(14)
     private boolean interior = false;
 
@@ -80,15 +76,15 @@ public class GameTicket {
                       String pf, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
         super();
         this.tokenID = tokenID;
+        this.openID = openID;
+        this.openKey = openKey;
+        this.server = server;
+        this.time = time;
         this.pf = pf;
         this.zone = zone;
         this.entry = entry;
         this.device = StringUtils.isBlank(deviceID) ? "NONE" : device;
         this.deviceID = StringUtils.isBlank(deviceID) ? openID : deviceID;
-        this.server = server;
-        this.time = time;
-        this.openID = openID;
-        this.openKey = openKey;
         this.interior = false;
         if (maker != null)
             this.secret = maker.make(this);
@@ -146,9 +142,6 @@ public class GameTicket {
         return this.tokenID;
     }
 
-    public String getAccount() {
-        return this.account;
-    }
 
     public boolean isInterior() {
         return this.interior;
@@ -202,9 +195,6 @@ public class GameTicket {
         this.tokenID = tokenID;
     }
 
-    protected void setAccount(String account) {
-        this.account = account;
-    }
 
     protected void setInterior(boolean interior) {
         this.interior = interior;

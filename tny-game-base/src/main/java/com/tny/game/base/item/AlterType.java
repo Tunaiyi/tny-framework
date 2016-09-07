@@ -74,7 +74,7 @@ public enum AlterType {
             Number countNumber, currentNum;
             countNumber = currentNum = number;
             countNumber = sub(countNumber, alertNum);
-            countNumber = less(countNumber, 0) ? add(0, number) : countNumber;
+            countNumber = less(countNumber, 0) ? as(0, number.getClass()) : countNumber;
             return sub(currentNum, countNumber);
         }
 

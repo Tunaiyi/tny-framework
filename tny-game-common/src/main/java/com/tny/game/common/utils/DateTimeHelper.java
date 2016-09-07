@@ -38,7 +38,7 @@ public class DateTimeHelper {
 
         public DateRange() {
             this.date = LocalDate.now();
-            DateTime dateTime = new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(), 0, 0);
+            DateTime dateTime = new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(), 0, 0, 0, 0);
             this.start = dateTime.getMillis();
             this.end = dateTime.plusDays(1).getMillis();
         }
@@ -52,12 +52,12 @@ public class DateTimeHelper {
 
     private static volatile DateRange NOW_RANGE = new DateRange();
 
-    public static LocalDate now() {
-        DateRange ranage = NOW_RANGE;
-        if (ranage.isSameDate())
-            return ranage.date;
-        NOW_RANGE = ranage = new DateRange();
-        return ranage.date;
+    public static LocalDate today() {
+        DateRange range = NOW_RANGE;
+        if (range.isSameDate())
+            return range.date;
+        NOW_RANGE = range = new DateRange();
+        return range.date;
     }
 
     public static LocalDate int2Date(int dateInt) {

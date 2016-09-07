@@ -63,7 +63,7 @@ public abstract class WebServerCluster extends BaseCluster {
                     return;
                 node = this.removeLaunch(old.getServerID());
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, node.getServerID());
+                    LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerID());
                 break;
         }
     };
@@ -90,7 +90,7 @@ public abstract class WebServerCluster extends BaseCluster {
                     return;
                 node = removeOutline(old.getServerID());
                 if (node != null && LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Outline 删除!", path, node.getServerID());
+                    LOGGER.debug("path : {} | 服务器 {} Outline 删除!", path, old.getServerID());
                 break;
         }
     };
@@ -119,7 +119,7 @@ public abstract class WebServerCluster extends BaseCluster {
                     return;
                 node = removeSetting(old.getServerID());
                 if (node != null && LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Setting 删除!", path, node.getServerID());
+                    LOGGER.debug("path : {} | 服务器 {} Setting 删除!", path, old.getServerID());
                 break;
         }
     };
@@ -240,7 +240,7 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode removeLaunch(int serverID) {
-        ServerNode node = this.nodeMap().remove(serverID);
+        ServerNode node = this.nodeMap().get(serverID);
         if (node != null) {
             node.setLaunch(null);
             this.postRemoveLaunch(node);

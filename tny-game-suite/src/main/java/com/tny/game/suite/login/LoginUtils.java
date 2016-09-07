@@ -34,19 +34,19 @@ public class LoginUtils {
     }
 
     public static String ticket2MD5(GameTicket ticket, String key) {
-        StringBuffer ticketBuffer = new StringBuffer(100);
-        ticketBuffer.append(ticket.getTokenID());
-        ticketBuffer.append(ticket.getOpenID());
-        ticketBuffer.append(ticket.getOpenKey());
-        ticketBuffer.append(ticket.getServer());
-        ticketBuffer.append(ticket.getTime());
-        ticketBuffer.append(ticket.getDevice());
-        ticketBuffer.append(ticket.getDeviceID());
-        ticketBuffer.append(ticket.getPf());
-        ticketBuffer.append(ticket.getAccount());
-        ticketBuffer.append(ticket.isInterior());
-        ticketBuffer.append(key);
-        return MD5.md5(ticketBuffer.toString());
+        String ticketStr = String.valueOf(ticket.getTokenID()) +
+                ticket.getOpenID() +
+                ticket.getOpenKey() +
+                ticket.getServer() +
+                ticket.getTime() +
+                ticket.getPf() +
+                ticket.getZone() +
+                ticket.getEntry() +
+                ticket.getDevice() +
+                ticket.getDeviceID() +
+                ticket.isInterior() +
+                key;
+        return MD5.md5(ticketStr);
     }
 
     public static void setTicketMD5(GameTicket ticket, String key) {

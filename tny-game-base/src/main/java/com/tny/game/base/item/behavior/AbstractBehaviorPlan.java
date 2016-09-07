@@ -2,6 +2,7 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.GameRuningException;
 import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.item.ActionTrades;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
@@ -64,17 +65,24 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public Trade countCostResult(long playerID, Action action, Map<String, Object> attributeMap) {
+    public Trade countCost(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         return actionPlan.createCost(playerID, action, attributeMap);
     }
 
     @Override
-    public Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap) {
+    public Trade countAward(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         return actionPlan.createAward(playerID, action, attributeMap);
+    }
+
+    @Override
+    public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap) {
+        ActionPlan actionPlan = this.getActionPlan0(action);
+        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        return actionPlan.countTrades(playerID, action, attributeMap);
     }
 
     @Override

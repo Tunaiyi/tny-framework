@@ -126,9 +126,9 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         if (demandResult != null)
             return new SimpleTryToDoResult(action, demandResult);
         return new SimpleTryToDoResult(action, award ?
-                behaviorPlan.countAwardResult(playerID, action, attributeMap) :
+                behaviorPlan.countAward(playerID, action, attributeMap) :
                 new SimpleTrade(action, TradeType.AWARD),
-                behaviorPlan.countCostResult(playerID, action, attributeMap));
+                behaviorPlan.countCost(playerID, action, attributeMap));
     }
 
     protected List<DemandResult> doCountDemandResult(long playerID, Item<?> item, Action action, Object... attributes) {
@@ -157,12 +157,22 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return new SimpleBehaviorResult(resultList, actionResultMap);
     }
 
+    protected ActionTrades doCreateActionTrades(long playerID, Item<?> item, Action action, Object... attributes) {
+        Map<String, Object> attributeMap = new HashMap<>();
+        BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
+        this.setAttrMap(playerID, attributeMap, item, attributes);
+        this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        Trade award = behaviorPlan.countAward(playerID, action, attributeMap);
+        Trade cost = behaviorPlan.countCost(playerID, action, attributeMap);
+        return new ActionTrades(action, award, cost);
+    }
+
     protected Trade doCountCostTrade(long playerID, Item<?> item, Action action, Object... attributes) {
         Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        return behaviorPlan.countCostResult(playerID, action, attributeMap);
+        return behaviorPlan.countCost(playerID, action, attributeMap);
     }
 
     protected AwardList doGetAwardList(long playerID, Item<?> item, Action action, Object... attributes) {
@@ -194,7 +204,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        return behaviorPlan.countAwardResult(playerID, action, attributeMap);
+        return behaviorPlan.countAward(playerID, action, attributeMap);
     }
 
     protected <A> A doCountAbility(long playerID, Item<?> item, Ability ability, Class<A> clazz, Object... attributes) {
@@ -294,10 +304,15 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return this.doTryToDo(playerID, null, action, award, attributes);
     }
 
-    //	@Override
-    //	public List<DemandResult> countDemandResult(long playerID, Action action, Object... attributes) {
-    //		return doCountDemandResult(playerID, null, action, attributes);
-    //	}
+    @Override
+    public ActionTrades createActionTrades(Item<?> item, Action action, Object... attributes) {
+        return this.doCreateActionTrades(item.getPlayerID(), item, action, attributes);
+    }
+
+    @Override
+    public ActionTrades createActionTrades(long playerID, Action action, Object... attributes) {
+        return this.doCreateActionTrades(playerID, null, action, attributes);
+    }
 
     @Override
     public BehaviorResult getBehaviorResult(long playerID, Behavior behavior, Object... attributes) {

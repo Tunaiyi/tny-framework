@@ -67,8 +67,10 @@ public class AccountService implements ServerPreStart {
                 AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenID(), playerID);
                 accountObj = new Account(playerID, account, ticket);
                 int result = this.accountManager.update(accountObj, ticket);
-                if (result > 0)
+                if (result > 0) {
+                    accountObj.onCreate();
                     return accountObj;
+                }
             } catch (Throwable e) {
                 AccountService.LOGGER.error("创建帐号出错", e);
                 return null;

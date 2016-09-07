@@ -12,12 +12,12 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.Blob;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -357,53 +357,56 @@ public abstract class BaseRedisCacheClient implements CacheClient {
     protected abstract Response<?> jedisSetPX(Pipeline pipeline, byte[] key, byte[] value, long time);
 
 
-    protected static byte[] object2Bytes(Object object) {
-        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-             ObjectOutputStream objectOut = new ObjectOutputStream(byteOut)) {
+    private static byte[] object2Bytes(Object object) {
+        try {
             if (object instanceof byte[]) {
-                objectOut.writeByte(0);
-                objectOut.write((byte[]) object);
-            } else if (object instanceof SerialBlob) {
-                SerialBlob blob = (SerialBlob) object;
-                try {
-                    byte[] data = blob.getBytes(1, (int) blob.length());
-                    objectOut.writeByte(0);
-                    objectOut.write(data);
-                } catch (Throwable throwable) {
-                    return null;
-                }
+                byte[] bytes = (byte[]) object;
+                byte[] data = new byte[bytes.length + 1];
+                data[0] = 0;
+                System.arraycopy(bytes, 0, data, 1, bytes.length);
+                return data;
+            } else if (object instanceof Blob) {
+                Blob blob = (Blob) object;
+                byte[] bytes = blob.getBytes(1, (int) blob.length());
+                byte[] data = new byte[bytes.length + 1];
+                data[0] = 0;
+                System.arraycopy(bytes, 0, data, 1, bytes.length);
+                return data;
             } else {
-                objectOut.writeByte(1);
-                objectOut.writeObject(object);
+                try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+                     ObjectOutputStream objectOut = new ObjectOutputStream(byteOut)) {
+                    objectOut.writeByte(1);
+                    objectOut.writeObject(object);
+                    objectOut.flush();
+                    return byteOut.toByteArray();
+                }
             }
-            objectOut.flush();
-            return byteOut.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            LOGGER.error("object2Bytes", e);
             return null;
         }
+
     }
 
-    protected static Object bytes2Object(byte[] data) {
+    private static Object bytes2Object(byte[] data) {
         if (data == null)
             return null;
-        try (ByteArrayInputStream byteIn = new ByteArrayInputStream(data);
-             ObjectInputStream objectIn = new ObjectInputStream(byteIn)) {
-            byte flag = objectIn.readByte();
-            Object result;
+        try {
+            byte flag = data[0];
             if (flag == 0) {
-                byte[] value = new byte[objectIn.available()];
-                objectIn.read(value);
-                result = value;
+                byte[] bytes = new byte[data.length - 1];
+                System.arraycopy(data, 1, bytes, 0, bytes.length);
+                return bytes;
             } else {
-                result = objectIn.readObject();
+                try (ByteArrayInputStream byteIn = new ByteArrayInputStream(data);
+                     ObjectInputStream objectIn = new ObjectInputStream(byteIn)) {
+                    return objectIn.readObject();
+                }
             }
-            return result;
         } catch (Exception e) {
             LOGGER.error("item2Object", e);
             return null;
         }
     }
-
 
 }

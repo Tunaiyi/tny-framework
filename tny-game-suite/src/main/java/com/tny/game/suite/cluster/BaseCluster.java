@@ -1,6 +1,5 @@
 package com.tny.game.suite.cluster;
 
-import com.tny.game.suite.core.ServerType;
 import com.tny.game.zookeeper.NodeWatcher;
 import com.tny.game.zookeeper.ZKMonitor;
 import org.apache.zookeeper.KeeperException;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public abstract class BaseCluster {
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(BaseCluster.class);
+    protected final Logger LOGGER;
 
     protected ZKMonitor remoteMonitor;
 
@@ -32,6 +31,7 @@ public abstract class BaseCluster {
     }
 
     public BaseCluster(Collection<String> monitorServerTypes) {
+        this.LOGGER = LoggerFactory.getLogger(this.getClass());
         this.monitorServerTypes.addAll(monitorServerTypes);
     }
 
@@ -39,14 +39,14 @@ public abstract class BaseCluster {
         return this.webHolderMap.values();
     }
 
-    public String selectWebUrl(ServerType type, String path) {
+    public String selectWebUrl(String type, String path) {
         WebServiceNodeHolder holder = this.webHolderMap.get(type);
         if (holder == null)
             return null;
         return holder.selectUrl() + path;
     }
 
-    public String selectWebUrl(ServerType type, int id, String path) {
+    public String selectWebUrl(String type, int id, String path) {
         WebServiceNodeHolder holder = this.webHolderMap.get(type);
         if (holder == null)
             return null;
@@ -102,7 +102,7 @@ public abstract class BaseCluster {
                         return;
                     holder.removeNode(old.getServerID());
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 下线! {} ", path, name, data.getServerID(), data.getUrl());
+                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerID(), old.getUrl());
                     break;
             }
         };

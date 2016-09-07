@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -57,11 +59,15 @@ public class KafkaNetBootstrap {
 
     private Set<String> topics = new CopyOnWriteArraySet<>();
 
+    private CountDownLatch shutdownLatch = new CountDownLatch(1);
+
     private KafkaAppContext appContext;
 
     private KafkaSessionMap<ClientSession> clientSessionMap = new KafkaSessionMap<>();
 
     private KafkaSessionMap<ServerSession> serverSessionMap = new KafkaSessionMap<>();
+
+    private Set<Throwable> shutdownExceptions = new CopyOnWriteArraySet<>();
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor(new CoreThreadFactory("KafkaNetBootstrap"));
 
@@ -121,26 +127,34 @@ public class KafkaNetBootstrap {
         }
     }
 
-    public void shutdown() {
+    public void shutdown() throws Throwable {
         if (shutdown.compareAndSet(false, true)) {
             try {
-                consumer.close();
+                shutdownLatch.await(3, TimeUnit.MILLISECONDS);
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }
-            try {
-                producer.close();
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
+            for (Throwable throwable : this.shutdownExceptions)
+                throw throwable;
         }
     }
 
     private void loop() {
         while (true) {
             try {
-                if (shutdown.get())
-                    break;
+                if (shutdown.get()) {
+                    try {
+                        consumer.close();
+                    } catch (Throwable e) {
+                        shutdownExceptions.add(e);
+                    }
+                    try {
+                        producer.close();
+                    } catch (Throwable e) {
+                        shutdownExceptions.add(e);
+                    }
+                    this.shutdownLatch.countDown();
+                }
                 if (topics.isEmpty()) {
                     Thread.sleep(3000);
                 } else {

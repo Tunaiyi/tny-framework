@@ -86,7 +86,7 @@ public class ServerNode {
         if (outline == null)
             return false;
         LocalDate data = outline.getOpenLocalDate();
-        LocalDate now = DateTimeHelper.now();
+        LocalDate now = DateTimeHelper.today();
         return !now.isBefore(data);
     }
 

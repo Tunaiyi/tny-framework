@@ -1,5 +1,6 @@
 package com.tny.game.base.item.behavior;
 
+import com.tny.game.base.item.ActionTrades;
 import com.tny.game.base.item.Trade;
 
 import java.util.List;
@@ -48,19 +49,28 @@ public interface BehaviorPlan {
      * 计算对该事物进行某操作对象操作的消费
      *
      * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param attributeMap 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    public Trade countCostResult(long playerID, Action action, Map<String, Object> attributeMap);
+    public Trade countCost(long playerID, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
      *
      * @param action    要执行的操作
-     * @param attribute 附加参数 ["key1", object1, "key2", object2]
+     * @param attributeMap 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    public Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap);
+    public Trade countAward(long playerID, Action action, Map<String, Object> attributeMap);
+
+    /**
+     * 计算对该事物进行某操作对象操作的奖励&扣除
+     *
+     * @param action       指定操作类型
+     * @param attributeMap 附加参数
+     * @return 返回奖励列表
+     */
+    public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap);
 
     /**
      * 获取制定操作类型的奖励列表

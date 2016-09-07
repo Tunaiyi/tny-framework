@@ -13,6 +13,7 @@ import com.tny.game.net.initer.ServerPostStart;
 import com.tny.game.number.NumberUtils;
 import com.tny.game.suite.cluster.BaseCluster;
 import com.tny.game.suite.cluster.ClusterUtils;
+import com.tny.game.suite.cluster.Servers;
 import com.tny.game.suite.cluster.event.GameServerClusterListener;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
@@ -71,7 +72,7 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
     };
 
     public GameServerCluster() {
-        super();
+        super(Servers.GIFT);
     }
 
     @Override

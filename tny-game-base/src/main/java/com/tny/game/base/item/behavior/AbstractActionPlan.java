@@ -2,6 +2,7 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.GameRuningException;
 import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.item.ActionTrades;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
@@ -99,6 +100,19 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
             return new SimpleCostList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         return this.costPlan.getCostList(playerID, action, attributeMap);
+    }
+
+    @Override
+    public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributes) {
+        action = checkAction(action);
+        Trade award = null;
+        Trade cost = null;
+        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        if (this.awardPlan != null)
+            award = this.awardPlan.createTrade(playerID, action, attributes);
+        if (this.costPlan != null)
+            cost = this.costPlan.createTrade(playerID, action, attributes);
+        return new ActionTrades(action, award, cost);
     }
 
     @Override
