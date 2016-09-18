@@ -1,8 +1,11 @@
-package com.tny.game.suite.scheduler;
+package com.tny.game.suite.scheduler.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tny.game.cache.CacheFormatter;
 import com.tny.game.suite.proto.PBSuite261.TaskReceiverProto;
+import com.tny.game.suite.scheduler.GameTaskReceiver;
+import com.tny.game.suite.scheduler.ReceiverType;
+import com.tny.game.suite.scheduler.TaskReceiverBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -12,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 
 @Component
-@Profile({SCHEDULER, GAME})
+@Profile({SCHEDULER_CACHE, SCHEDULER_DB, GAME})
 public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte[]> {
 
     /**

@@ -10,16 +10,14 @@ import java.util.stream.IntStream;
 public class JedisTest {
 
     public static void main(String[] args) {
-        StringBuffer in = new StringBuffer();
-        IntStream.range(0, 1024).forEach(i -> in.append("a"));
         try (Pool<Jedis> dataSource = new JedisPool("127.0.0.1")) {
             try (Jedis jedis = dataSource.getResource()) {
-                System.out.println(jedis.del("test"));
+                System.out.println(jedis.del("test:*"));
                 // RBtlRpt:10015704484dec1
-                jedis.hset("ltest", "test", in.toString());
-                String value = jedis.hget("ltest", "test");
-                System.out.println(value);
-                System.out.println(value.length());
+                IntStream.range(0, 10).forEach(i -> jedis.hset("test:" + i, "test", i + ""));
+                IntStream.range(0, 10).forEach(i -> System.out.println(jedis.hget("test:" + i, "test")));
+                System.out.println(jedis.del(jedis.keys("test:*").toArray(new String[0])));
+                IntStream.range(0, 10).forEach(i -> System.out.println(jedis.hget("test:" + i, "test")));
             } catch (JedisConnectionException e) {
                 e.printStackTrace();
             }

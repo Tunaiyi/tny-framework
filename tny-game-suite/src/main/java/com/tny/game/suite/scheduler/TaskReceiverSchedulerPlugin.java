@@ -7,9 +7,10 @@ import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
@@ -19,7 +20,7 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);
 
-    @Autowired
+    @Resource
     private TimeTaskSchedulerService taskSchedulerService;
 
     @Override

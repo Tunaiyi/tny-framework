@@ -19,7 +19,8 @@ public interface SuiteProfiles {
     String CACHE_REDIS = "suite.cache.redis";
 
     String SCHEDULER = "suite.scheduler";
-    String SCHEDULER_CACHE = "suite.scheduler_CACHE";
+    String SCHEDULER_CACHE = "suite.scheduler_cache";
+    String SCHEDULER_DB = "suite.scheduler_db";
     String ITEM = "suite.item";
     String ITEM_CACHE = "suite.item.cache";
     String ITEM_OPLOG = "suite.item.oplog";

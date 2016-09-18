@@ -1,14 +1,21 @@
 package com.tny.game.number;
 
+import com.tny.game.common.ExceptionUtils;
+
 /**
  * 本地变量
  * Created by Kun Yang on 16/2/21.
  */
 public class LocalNum<N extends Number> extends Number {
 
-    private N number;
+    private volatile N number;
 
     public LocalNum(N number) {
+        this.number = number;
+    }
+
+    public void set(N number) {
+        ExceptionUtils.checkNotNull(number, "number is null");
         this.number = number;
     }
 

@@ -1,9 +1,12 @@
 package com.tny.game.common.utils.collection;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Supplier;
 
-public class CollectionUtil {
+public class CollectionUtils {
 
     public final static char[] CHAR_EMPTY_ARRAY = new char[0];
     public final static byte[] BYTE_EMPTY_ARRAY = new byte[0];
@@ -42,6 +45,16 @@ public class CollectionUtil {
             Array.set(message, index++, value);
         }
         return message;
+    }
+
+    public static <K, T> T loadOrPut(Map<K, T> map, K key, Supplier<T> creator) {
+        T value = map.get(key);
+        if (value == null) {
+            value = creator.get();
+            value = ObjectUtils.defaultIfNull(
+                    map.putIfAbsent(key, value), value);
+        }
+        return value;
     }
 
     public static Map<String, Object> attributes2Map(Object... objects) {

@@ -1,4 +1,4 @@
-package com.tny.game.suite.scheduler;
+package com.tny.game.suite.scheduler.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tny.game.cache.CacheFormatter;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
-@Profile({SCHEDULER_CACHE, GAME})
+@Profile({SCHEDULER_CACHE, SCHEDULER_DB, GAME})
 public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheSchedulerBackup, byte[]> {
 
     /**

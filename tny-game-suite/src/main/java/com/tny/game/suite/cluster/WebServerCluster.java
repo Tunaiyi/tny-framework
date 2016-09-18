@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import static com.tny.game.suite.utils.Configs.*;
 
@@ -145,6 +146,12 @@ public abstract class WebServerCluster extends BaseCluster {
 
     public List<ServerNode> getAllServerNodes() {
         return new ArrayList<>(this.nodeMap.values());
+    }
+
+    public List<ServerNode> getValidServerNodes() {
+        return this.nodeMap.values().stream()
+                .filter(node -> node.isWork() && node.isInOpenDate() && node.getOutline() != null)
+                .collect(Collectors.toList());
     }
 
     public ServerNode getServerNode(int serverID) {

@@ -1,5 +1,6 @@
 package com.tny.game.suite.net.spring;
 
+import com.tny.game.suite.initer.EnumCheckerIniter;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +14,17 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({PROTOEX, SERVER, SERVER_KAFKA, GAME_KAFKA, GAME})
-public class ProtoExConfiguration {
+public class IniterConfiguration {
 
     @Bean
+    @Profile({PROTOEX, SERVER, SERVER_KAFKA, GAME_KAFKA, GAME})
     public ProtoExSchemaIniter protoExSchemaIniter() {
         return new ProtoExSchemaIniter(Configs.getScanPaths());
+    }
+
+    @Bean
+    public EnumCheckerIniter enumCheckerIniter() {
+        return new EnumCheckerIniter(Configs.getScanPaths());
     }
 
 }

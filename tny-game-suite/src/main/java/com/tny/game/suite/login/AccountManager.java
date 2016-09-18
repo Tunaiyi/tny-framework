@@ -46,8 +46,12 @@ public class AccountManager {
         this.accountDAO.updateOnlineAt(uid, dateInt, millis);
     }
 
-    public void updateCreateRole(long uid, int dateInt, long millis) {
-        this.accountDAO.updateCreateRole(uid, dateInt, millis);
+    public void updateCreateRole(long uid, String name, int dateInt, long millis) {
+        this.accountDAO.updateCreateRole(uid, name, dateInt, millis);
+    }
+
+    public void updateName(long uid, String name) {
+        this.accountDAO.updateName(uid, name);
     }
 
     public List<Long> findEmptyUID(Long min, Long max) {

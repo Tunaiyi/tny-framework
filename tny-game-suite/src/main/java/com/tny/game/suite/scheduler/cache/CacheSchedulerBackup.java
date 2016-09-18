@@ -1,4 +1,4 @@
-package com.tny.game.suite.scheduler;
+package com.tny.game.suite.scheduler.cache;
 
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.cache.annotation.ToCache;
@@ -56,28 +56,5 @@ public class CacheSchedulerBackup extends SchedulerBackup {
             this.timeTaskQueue.put(task);
         }
     }
-
-    //	public byte[] saveTo() {
-    //		List<TimeTaskProto> taskList = new ArrayList<TimeTaskProto>(this.timeTaskQueue.size());
-    //		for (TimeTask task : this.timeTaskQueue.getTimeTaskList()) {
-    //			taskList.add(TimeTaskProto.newBuilder()
-    //					.setExecutTime(task.getExecutTime())
-    //					.addAllHandlerList(task.getHandlerList())
-    //					.build());
-    //		}
-    //		return SchedulerBackupProto.newBuilder()
-    //				.setStopTime(this.getStopTime())
-    //				.addAllTimeTaskQueue(taskList)
-    //				.build().toByteArray();
-    //	}
-    //
-    //	public void loadFrom(byte[] bytes) throws InvalidProtocolBufferException {
-    //		SchedulerBackupProto proto = SchedulerBackupProto.parseFrom(bytes);
-    //		this.stopTime = proto.getStopTime();
-    //		this.timeTaskQueue = new TimeTaskQueue();
-    //		for (TimeTaskProto taskProto : proto.getTimeTaskQueueList()) {
-    //			this.timeTaskQueue.put(new TimeTask(taskProto.getHandlerListList(), taskProto.getExecutTime()));
-    //		}
-    //	}
 
 }

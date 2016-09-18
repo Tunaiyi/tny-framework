@@ -14,7 +14,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/28.
  */
 @Component
-@Profile({SCHEDULER, GAME})
+@Profile({SCHEDULER_DB, GAME})
 public class SpringTimeTaskScheduler extends TimeTaskScheduler {
 
     @Autowired

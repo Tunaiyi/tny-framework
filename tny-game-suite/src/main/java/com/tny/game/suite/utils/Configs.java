@@ -154,11 +154,11 @@ public interface Configs {
     String DEVELOP_AUTH_CHECK /*            */ = "tny.server.dev.auth.check";
     String DEVELOP_AUTH_OFFLINE_AT /*       */ = "tny.server.dev.auth.offline_at";
     String DEVELOP_AUTH_ONLINE_AT /*        */ = "tny.server.dev.auth.online_at";
+    String DEVELOP_AUTH_CREATE_AT /*        */ = "tny.server.dev.auth.create_at";
     String DEVELOP_AUTH_CREATE_ROLE_AT /*   */ = "tny.server.dev.auth.create_role_at";
     String DEVELOP_AUTH_SERVER_ID /*        */ = "tny.server.dev.auth.server_id";
     String DEVELOP_AUTH_ZONE_ID /*          */ = "tny.server.dev.auth.zone_id";
     String DEVELOP_AUTH_ENTRY_ID /*         */ = "tny.server.dev.auth.entry_id";
-    String DEVELOP_AUTH_CREATE_AT /*        */ = "tny.server.dev.auth.create_at";
     String DEVELOP_AUTH_PF /*               */ = "tny.server.dev.auth.pf";
     String DEVELOP_VERIFY_CHECK /*          */ = "tny.server.dev.verify.check";
     String DEVELOP_PAY_PRICE /*             */ = "tny.server.dev.pay.pay_price";

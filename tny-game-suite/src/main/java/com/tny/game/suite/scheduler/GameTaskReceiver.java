@@ -7,6 +7,7 @@ import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.suite.SuiteDBHead;
 import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 import com.tny.game.suite.login.IDUtils;
+import com.tny.game.suite.scheduler.cache.TaskReceiverFormatter;
 
 @Persistent(synchronizerClass = DBCacheSynchronizer.class)
 @ToCache(prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,

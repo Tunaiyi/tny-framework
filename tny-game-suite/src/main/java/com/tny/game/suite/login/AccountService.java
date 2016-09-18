@@ -123,15 +123,24 @@ public class AccountService implements ServerPreStart {
         }
     }
 
-    public void updateCreateRole(Account account, DateTime dateTime) {
+    public void updateCreateRole(Account account, String name, DateTime dateTime) {
         try {
+            account.setName(name);
             account.createRole(dateTime);
-            account.getCreateRoleDateTime();
             if (dateTime != null) {
-                this.accountManager.updateCreateRole(account.getUid(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
+                this.accountManager.updateCreateRole(account.getUid(), name, DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
             }
         } catch (Exception e) {
             LOGGER.error("accountDAO.updateCreateRole exception", e);
+        }
+    }
+
+    public void updateName(Account account, String name) {
+        try {
+            account.setName(name);
+            this.accountManager.updateName(account.getUid(), name);
+        } catch (Exception e) {
+            LOGGER.error("accountDAO.updateName exception", e);
         }
     }
 

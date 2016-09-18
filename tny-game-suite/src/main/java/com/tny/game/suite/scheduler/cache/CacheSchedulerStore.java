@@ -1,20 +1,19 @@
-package com.tny.game.suite.scheduler.spring;
+package com.tny.game.suite.scheduler.cache;
 
 import com.tny.game.cache.async.AsyncCache;
 import com.tny.game.scheduler.SchedulerBackup;
 import com.tny.game.scheduler.SchedulerStore;
 import com.tny.game.scheduler.TimeTaskScheduler;
 import com.tny.game.suite.core.GameInfo;
-import com.tny.game.suite.scheduler.CacheSchedulerBackup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
-@Component("schedulerStore")
+@Component
 @Profile({SCHEDULER_CACHE, GAME})
-public class SpringCacheSchedulerStore implements SchedulerStore {
+public class CacheSchedulerStore implements SchedulerStore {
 
     @Autowired
     protected AsyncCache cache;
