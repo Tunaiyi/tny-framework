@@ -1,6 +1,12 @@
 package com.tny.game.worker;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
@@ -27,7 +33,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @author Doug Lea
  * @since 1.5
  */
-public class AbstactFuture<V> implements Future<V> {
+public class AbstractFuture<V> implements Future<V> {
     /**
      * Synchronization control for FutureTask
      */
@@ -40,7 +46,7 @@ public class AbstactFuture<V> implements Future<V> {
      * @param callable the callable task
      * @throws NullPointerException if callable is null
      */
-    public AbstactFuture() {
+    public AbstractFuture() {
         sync = new Sync();
     }
 

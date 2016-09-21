@@ -12,6 +12,8 @@ public abstract class AbstractClientSession implements ClientSession {
 
     private volatile transient Attributes attributes;
 
+    private MessageFutureHolder messageFutureHolder = new MessageFutureHolder();
+
     @Override
     public Attributes attributes() {
         if (this.attributes != null)
@@ -62,6 +64,21 @@ public abstract class AbstractClientSession implements ClientSession {
      */
     @Override
     public abstract void disconnect();
+
+    @Override
+    public MessageFuture<?> takeFuture(int id) {
+        return messageFutureHolder.takeFuture(id);
+    }
+
+    @Override
+    public void putFuture(MessageFuture<?> future) {
+        messageFutureHolder.putFuture(future);
+    }
+
+    @Override
+    public void clearFuture() {
+        messageFutureHolder.clearFuture();
+    }
 
 //	@Override
 //	public void registerMonitorHolder(ResponseMonitorHolder monitorHolder) {

@@ -7,7 +7,7 @@ import com.tny.game.common.utils.DoneResult;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class WebResult {
+public class WebResult<O> {
 
     @JsonProperty
     private int code;
@@ -16,7 +16,7 @@ public class WebResult {
     private String message;
 
     @JsonProperty
-    private Object body;
+    private O body;
 
     //	public static WebResult fail(ResultCode code) {
     //		WebResult code = new WebResult();
@@ -24,15 +24,15 @@ public class WebResult {
     //		return code;
     //	}
 
-    public static WebResult fail(ResultCode code) {
-        WebResult result = new WebResult();
+    public static <O> WebResult<O> fail(ResultCode code) {
+        WebResult<O> result = new WebResult<>();
         result.code = code.getCode();
         result.message = code.getMessage();
         return result;
     }
 
-    public static WebResult as(DoneResult<?> done) {
-        WebResult result = new WebResult();
+    public static <O> WebResult<O> as(DoneResult<O> done) {
+        WebResult<O> result = new WebResult<>();
         ResultCode code = done.getCode();
         result.code = code.getCode();
         result.message = code.getMessage();
@@ -40,24 +40,24 @@ public class WebResult {
         return result;
     }
 
-    public static WebResult fail(ResultCode code, Object body) {
-        WebResult result = new WebResult();
+    public static <O> WebResult<O> fail(ResultCode code, O body) {
+        WebResult<O> result = new WebResult<>();
         result.code = code.getCode();
         result.message = code.getMessage();
         result.body = body;
         return result;
     }
 
-    public static WebResult succ(String message, Object body) {
-        WebResult result = new WebResult();
+    public static <O> WebResult<O> succ(String message, O body) {
+        WebResult<O> result = new WebResult<>();
         result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
         result.message = message;
         return result;
     }
 
-    public static WebResult succ(Object body) {
-        WebResult result = new WebResult();
+    public static <O> WebResult<O> succ(O body) {
+        WebResult<O> result = new WebResult<>();
         result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
 //		code.message = body;

@@ -4,7 +4,7 @@ package com.tny.game.actor.invoke;
 import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.stage.TaskStage;
 
-public interface A1Teller<A1> extends Teller<A1Teller> {
+public interface A1Teller<A1> extends Teller<A1Teller<A1>> {
 
     void tell(A1 arg1);
 

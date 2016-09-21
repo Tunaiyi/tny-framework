@@ -58,12 +58,17 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
         return Optional.empty();
     }
 
     @Override
     public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
         return Optional.empty();
     }
 

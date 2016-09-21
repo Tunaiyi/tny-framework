@@ -17,6 +17,10 @@ public interface Topics {
         return certificate.getUserGroup() + TOPIC_SEPARATOR + certificate.getUserID() + TOPIC_SEPARATOR + RESPONSE_PATH;
     }
 
+    static String responseTopic(KafkaServerInfo kafkaServerInfo) {
+        return kafkaServerInfo.getServerType() + TOPIC_SEPARATOR + kafkaServerInfo.getID() + TOPIC_SEPARATOR + RESPONSE_PATH;
+    }
+
     static String requestTopic(KafkaServerInfo kafkaServerInfo) {
         return kafkaServerInfo.getServerType() + TOPIC_SEPARATOR + kafkaServerInfo.getID() + TOPIC_SEPARATOR + REQUEST_PATH;
     }

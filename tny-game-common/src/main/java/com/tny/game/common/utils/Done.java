@@ -59,12 +59,16 @@ public interface Done<M> {
             consumer.accept(object);
     }
 
-    default void isSuccess(Consumer<? super M> consumer) {
+    default void ifSuccess(Consumer<? super M> consumer) {
         if (this.isSuccess())
             consumer.accept(get());
     }
 
-    default void isFailed(Consumer<? super M> consumer) {
+    default boolean isFailed() {
+        return !this.isSuccess();
+    }
+
+    default void ifFailed(Consumer<? super M> consumer) {
         if (!this.isSuccess())
             consumer.accept(get());
     }

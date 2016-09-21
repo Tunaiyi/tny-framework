@@ -232,8 +232,6 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         @Override
         @SuppressWarnings("unchecked")
         public Void invoke() {
-            if (this.future != null)
-                this.future.setResponse(this.message);
             Object body = this.message.getBody(Object.class);
             if (body == null)
                 return null;
@@ -256,6 +254,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     }
                 }
             }
+            if (this.future != null)
+                this.future.setResponse(this.message);
             return null;
         }
 

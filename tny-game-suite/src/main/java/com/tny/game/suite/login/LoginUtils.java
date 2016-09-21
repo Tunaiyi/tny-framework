@@ -22,6 +22,7 @@ public class LoginUtils {
     }
 
     public static String webSign(String serverType, SortedMap<String, String> param) {
+        param.put("timeout", String.valueOf(System.currentTimeMillis() + 60000 * 3));
         StringBuilder builder = new StringBuilder(128);
         for (Entry<String, String> entry : param.entrySet()) {
             if (entry.getKey().equals("sign"))

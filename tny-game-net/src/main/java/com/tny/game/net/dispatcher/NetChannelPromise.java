@@ -32,4 +32,11 @@ public class NetChannelPromise extends DefaultChannelPromise {
         return this;
     }
 
+    @Override
+    public ChannelPromise setFailure(Throwable cause) {
+        if (future != null)
+            future.cancel(true);
+        return this;
+    }
+
 }

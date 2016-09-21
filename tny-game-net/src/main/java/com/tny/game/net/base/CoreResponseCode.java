@@ -96,7 +96,14 @@ public enum CoreResponseCode implements ResultCode {
     /**
      * 客户端请求服务端无响应
      */
-    REMOTE_NO_RESPONSE(305, "服务端无响应", ResultCodeType.WARN),;
+    REMOTE_NO_RESPONSE(305, "服务端无响应", ResultCodeType.WARN),
+    /**
+     * 客户端请求失败
+     */
+    REQUEST_FAILED(306, "客户端请求失败", ResultCodeType.WARN),
+
+    //
+    ;
 
 
     private int code;

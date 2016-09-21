@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import static com.tny.game.net.base.CoreResponseCode.*;
 
@@ -75,9 +74,13 @@ public class KafkaNetBootstrap {
         this.appContext = context;
         this.producer = producer;
         this.consumer = consumer;
-        List<String> topics = context.getServers().stream()
+        List<String> topics = new ArrayList<>();
+        context.getServers().stream()
                 .map(Topics::requestTopic)
-                .collect(Collectors.toList());
+                .forEach(topics::add);
+        context.getServers().stream()
+                .map(Topics::responseTopic)
+                .forEach(topics::add);
         LOGGER.info("KafkaNet 注册 Request 主题: {}", topics);
         this.addTopics(topics);
         this.localSerID = context.getLocalServerID();
@@ -114,9 +117,9 @@ public class KafkaNetBootstrap {
                     ObjectUtils.defaultIfNull(messageBuilderFactory, appContext.getMessageBuilderFactory()),
                     ObjectUtils.defaultIfNull(verifier, appContext.getVerifier()));
             session = clientSessionMap.put(remoteType, remoteUID, session);
-            String topic = Topics.responseTopic(cer);
-            addTopic(topic);
-            LOGGER.info("KafkaNet 注册 Response 主题: {}", topic);
+            // String topic = Topics.responseTopic(cer);
+            // addTopic(topic);
+            // LOGGER.info("KafkaNet 注册 Response 主题: {}", topic);
         }
         return session;
     }

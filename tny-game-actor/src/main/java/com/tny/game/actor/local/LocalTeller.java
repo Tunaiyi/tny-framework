@@ -108,7 +108,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
 
     }
 
-    static class LocalA1Teller<A1> extends LocalTeller<A1Teller, A1Runner<A1>> implements A1Teller<A1> {
+    static class LocalA1Teller<A1> extends LocalTeller<A1Teller<A1>, A1Runner<A1>> implements A1Teller<A1> {
 
         LocalA1Teller(ActorCell actorCell, A1Runner runner) {
             this.actorCell = actorCell;
@@ -137,7 +137,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
     }
 
-    static class LocalA2Teller<A1, A2> extends LocalTeller<A2Teller, A2Runner<A1, A2>> implements A2Teller<A1, A2> {
+    static class LocalA2Teller<A1, A2> extends LocalTeller<A2Teller<A1, A2>, A2Runner<A1, A2>> implements A2Teller<A1, A2> {
 
         LocalA2Teller(ActorCell actorCell, A2Runner runner) {
             this.actorCell = actorCell;
@@ -166,7 +166,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
     }
 
-    static class LocalA3Teller<A1, A2, A3> extends LocalTeller<A3Teller, A3Runner<A1, A2, A3>> implements A3Teller<A1, A2, A3> {
+    static class LocalA3Teller<A1, A2, A3> extends LocalTeller<A3Teller<A1, A2, A3>, A3Runner<A1, A2, A3>> implements A3Teller<A1, A2, A3> {
 
         LocalA3Teller(ActorCell actorCell, A3Runner runner) {
             this.actorCell = actorCell;
@@ -196,7 +196,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
     }
 
 
-    static class LocalA4Teller<A1, A2, A3, A4> extends LocalTeller<A4Teller, A4Runner<A1, A2, A3, A4>> implements A4Teller<A1, A2, A3, A4> {
+    static class LocalA4Teller<A1, A2, A3, A4> extends LocalTeller<A4Teller<A1, A2, A3, A4>, A4Runner<A1, A2, A3, A4>> implements A4Teller<A1, A2, A3, A4> {
 
         LocalA4Teller(ActorCell actorCell, A4Runner runner) {
             this.actorCell = actorCell;
@@ -226,7 +226,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
     }
 
 
-    static class LocalA5Teller<A1, A2, A3, A4, A5> extends LocalTeller<A5Teller, A5Runner<A1, A2, A3, A4, A5>> implements A5Teller<A1, A2, A3, A4, A5> {
+    static class LocalA5Teller<A1, A2, A3, A4, A5> extends LocalTeller<A5Teller<A1, A2, A3, A4, A5>, A5Runner<A1, A2, A3, A4, A5>> implements A5Teller<A1, A2, A3, A4, A5> {
 
         LocalA5Teller(ActorCell actorCell, A5Runner runner) {
             this.actorCell = actorCell;
@@ -256,7 +256,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
     }
 
 
-    static class LocalA6Teller<A1, A2, A3, A4, A5, A6> extends LocalTeller<A6Teller, A6Runner<A1, A2, A3, A4, A5, A6>> implements A6Teller<A1, A2, A3, A4, A5, A6> {
+    static class LocalA6Teller<A1, A2, A3, A4, A5, A6> extends LocalTeller<A6Teller<A1, A2, A3, A4, A5, A6>, A6Runner<A1, A2, A3, A4, A5, A6>> implements A6Teller<A1, A2, A3, A4, A5, A6> {
 
         LocalA6Teller(ActorCell actorCell, A6Runner runner) {
             this.actorCell = actorCell;
@@ -286,7 +286,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
     }
 
 
-    static class LocalA7Teller<A1, A2, A3, A4, A5, A6, A7> extends LocalTeller<A7Teller, A7Runner<A1, A2, A3, A4, A5, A6, A7>> implements A7Teller<A1, A2, A3, A4, A5, A6, A7> {
+    static class LocalA7Teller<A1, A2, A3, A4, A5, A6, A7> extends LocalTeller<A7Teller<A1, A2, A3, A4, A5, A6, A7>, A7Runner<A1, A2, A3, A4, A5, A6, A7>> implements A7Teller<A1, A2, A3, A4, A5, A6, A7> {
 
         LocalA7Teller(ActorCell actorCell, A7Runner runner) {
             this.actorCell = actorCell;

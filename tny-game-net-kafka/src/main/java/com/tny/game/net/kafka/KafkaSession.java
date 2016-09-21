@@ -12,6 +12,7 @@ import com.tny.game.net.dispatcher.AbstractServerSession;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageFuture;
+import com.tny.game.net.dispatcher.MessageFutureHolder;
 import com.tny.game.net.dispatcher.NetFuture;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
@@ -35,6 +36,8 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
     public static final Logger LOGGER = LoggerFactory.getLogger(KafkaSession.class);
 
     private Producer<String, KafkaMessage> producer;
+
+    private MessageFutureHolder futureHolder = new MessageFutureHolder();
 
     private AtomicInteger responseNumberCreator = new AtomicInteger();
     private AtomicInteger requestIDCreator = new AtomicInteger();
@@ -100,6 +103,10 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     @Override
     protected Optional<NetFuture> write(Object data) {
+        return write(data, null);
+    }
+
+    protected Optional<NetFuture> write(Object data, MessageFuture<?> future) {
         if (!(data instanceof KafkaMessage)) {
             LOGGER.error("KafkaSession 无法发送 {} 类型的消息", data.getClass());
             return Optional.empty();
@@ -111,12 +118,23 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
             ExceptionUtils.checkArgument(this.model.isCanSend(message), "SessionModel {} 无法发送 {} 信息", this.model, message.getMessage());
             if (data instanceof Response) {
                 Response response = (Response) data;
-                Topics.messageKey(topic, loginKey, response.getNumber());
+                key = Topics.messageKey(topic, loginKey, response.getNumber());
             } else if (data instanceof Request) {
                 Request request = (Request) data;
-                Topics.messageKey(topic, loginKey, request.getID());
+                key = Topics.messageKey(topic, loginKey, request.getID());
+                future.setRequest(request)
+                        .setSession(this);
             }
-            producer.send(new ProducerRecord<>(topic, key, message));
+            ProducerRecord<String, KafkaMessage> record = new ProducerRecord<>(topic, key, message);
+            if (future != null)
+                producer.send(record, (r, e) -> {
+                    if (e == null)
+                        this.putFuture(future);
+                    else
+                        future.cancel(true);
+                });
+            else
+                producer.send(record);
             return Optional.empty();
         } catch (Exception e) {
             LOGGER.error("#Session#sendMessage 异常", e);
@@ -152,6 +170,17 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     @Override
     public Optional<NetFuture> request(Protocol protocol, Object... params) {
+        return this.request(protocol, (MessageFuture<?>) null, params);
+    }
+
+    @Override
+    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
+        MessageFuture<?> future = new MessageFuture<>(action, timeout);
+        return this.request(protocol, future, params);
+    }
+
+    @Override
+    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
         Request request = this.getMessageBuilderFactory()
                 .newRequestBuilder(this)
                 .setID(this.requestIDCreator.getAndIncrement())
@@ -160,22 +189,16 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
                 .addParameter(params)
                 .build();
         CoreLogger.log(this, request);
-        return this.write(request);
-    }
-
-    @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
-        throw new UnsupportedOperationException();
+        if (future != null) {
+            future.setRequest(request)
+                    .setSession(this);
+        }
+        return this.write(request, future);
     }
 
     @Override
     public MessageFuture<?> takeFuture(int id) {
-        return null;
+        return futureHolder.takeFuture(id);
     }
 
     public KafkaServerInfo getServerInfo() {
@@ -184,10 +207,12 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     @Override
     public void putFuture(MessageFuture<?> future) {
+        futureHolder.putFuture(future);
     }
 
     @Override
     public void clearFuture() {
+        futureHolder.clearFuture();
     }
 
 }

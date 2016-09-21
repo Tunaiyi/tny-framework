@@ -1,8 +1,10 @@
 package com.tny.game.net.dispatcher;
 
 
+import com.tny.game.common.result.ResultCode;
+
 public interface MessageAction<M> {
 
-    public void handle(Session session, int code, M body);
+    void handle(Session session, Request request, ResultCode code, M body);
 
 }

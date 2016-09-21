@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ChannelClientSession extends AbstractCallbackClientSession {
+public abstract class ChannelClientSession extends AbstractClientSession {
 
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
 
@@ -115,16 +115,15 @@ public abstract class ChannelClientSession extends AbstractCallbackClientSession
                 .build();
         CoreLogger.log(this, request);
         if (future != null) {
-            future.setRequestID(request)
+            future.setRequest(request)
                     .setSession(this);
         }
         return this.writeRequest(request, future);
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
-        MessageFuture<?> future = new MessageFuture<>();
-        future.setResponseAction(action);
+    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
+        MessageFuture<?> future = new MessageFuture<>(action, timeout);
         return this.request(protocol, future, params);
     }
 
