@@ -14,3 +14,4 @@ log
 .externalToolBuilders
 .gradle
 *client_code
+/build
