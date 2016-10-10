@@ -21,4 +21,9 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
         throw new ClassCastException(object + "is not " + clazz + "instance");
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T as(Object object) {
+        return (T) object;
+    }
+
 }

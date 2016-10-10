@@ -96,8 +96,9 @@ ext.libs = [
         'kafka-clients'         : 'org.apache.kafka:kafka-clients:0.9.0.1',
         'kafka_2.11'            : 'org.apache.kafka:kafka_2.11:0.9.0.1',
 
-        'poi'                       : 'org.apache.poi:poi:3.14',
-        'poi-ooxml'                 : 'org.apache.poi:poi-ooxml:3.14',
-        'poi-ooxml-schemas'         : 'org.apache.poi:poi-ooxml-schemas:3.14',
+        'poi'                   : 'org.apache.poi:poi:3.14',
+        'poi-ooxml'             : 'org.apache.poi:poi-ooxml:3.14',
+        'poi-ooxml-schemas'     : 'org.apache.poi:poi-ooxml-schemas:3.14',
+        'baratine'              : 'io.baratine:baratine:1.0.1',
 
 ]

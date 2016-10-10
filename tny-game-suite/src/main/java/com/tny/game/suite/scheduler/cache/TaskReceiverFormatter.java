@@ -41,7 +41,7 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
     }
 
     @Override
-    public Object format4Load(String key, byte[] data) {
+    public Object format2Load(String key, byte[] data) {
         TaskReceiverProto proto;
         try {
             proto = TaskReceiverProto.parseFrom(data);

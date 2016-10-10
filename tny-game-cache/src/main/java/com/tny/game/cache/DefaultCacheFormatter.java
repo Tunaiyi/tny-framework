@@ -8,7 +8,7 @@ public final class DefaultCacheFormatter extends CacheFormatter<Object, Object> 
     }
 
     @Override
-    public Object format4Load(String key, Object object) {
+    public Object format2Load(String key, Object object) {
         return object;
     }
 

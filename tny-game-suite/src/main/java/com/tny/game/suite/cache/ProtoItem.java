@@ -10,10 +10,13 @@ public class ProtoItem {
 
     private Integer number;
 
-    public ProtoItem(byte[] item, Item<?> itemObject, Integer number) {
+    private int state;
+
+    public ProtoItem(byte[] item, Item<?> itemObject, Integer number, int state) {
         this.item = item;
         this.itemObject = itemObject;
         this.number = number;
+        this.state = state;
     }
 
     public byte[] getItem() {

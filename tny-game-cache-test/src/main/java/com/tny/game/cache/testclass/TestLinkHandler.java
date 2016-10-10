@@ -32,7 +32,7 @@ public class TestLinkHandler extends CacheFormatter<Object, Object> {
     }
 
     @Override
-    public Object format4Load(String key, Object bytes) {
+    public Object format2Load(String key, Object bytes) {
         if (bytes == null)
             return null;
         ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.decodeBase64((String) bytes));

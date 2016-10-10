@@ -3,9 +3,6 @@ package com.tny.game.suite.oplog.dto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.Module;
 import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;
@@ -15,14 +12,10 @@ import com.tny.game.oplog.SnapshotType;
 import com.tny.game.oplog.StuffLog;
 import com.tny.game.oplog.TradeLog;
 import com.tny.game.oplog.UserOpLog;
-import com.tny.game.suite.base.Actions;
-import com.tny.game.suite.base.Behaviors;
-import com.tny.game.suite.base.module.Features;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @JsonAutoDetect(
@@ -177,44 +170,44 @@ public class OperateLogDTO implements OperateLog {
         return logID;
     }
 
-    @Override
-    public Action getAction() {
-        if (this.action != null)
-            return this.action;
-        this.action = Actions.of(this.acid);
-        if (this.action == null)
-            this.action = new UnknowAction(this.acid);
-        return this.action;
-    }
+    // @Override
+    // public Action getAction() {
+    //     if (this.action != null)
+    //         return this.action;
+    //     this.action = Actions.of(this.acid);
+    //     if (this.action == null)
+    //         this.action = new UnknowAction(this.acid);
+    //     return this.action;
+    // }
+    //
+    // @Override
+    // public String getFuncSysDesc() {
+    //     Action action = this.getAction();
+    //     return action.getFeature().getDesc();
+    // }
+    //
+    // @Override
+    // public String getBehaviorDesc() {
+    //     Action action = this.getAction();
+    //     return action.getBehavior().getDesc();
+    // }
+    //
+    // @Override
+    // public String getActionDesc() {
+    //     Action action = this.getAction();
+    //     return action.getDesc();
+    // }
 
-    @Override
-    public String getFuncSysDesc() {
-        Action action = this.getAction();
-        return action.getFeature().getDesc();
-    }
-
-    @Override
-    public String getBehaviorDesc() {
-        Action action = this.getAction();
-        return action.getBehavior().getDesc();
-    }
-
-    @Override
-    public String getActionDesc() {
-        Action action = this.getAction();
-        return action.getDesc();
-    }
-
-    public String getActionTitle() {
-        Action action = this.getAction();
-        String text = "";
-        if (action instanceof UnknowAction) {
-            text = action.getDesc();
-        } else {
-            text = action.getDesc();
-        }
-        return text;
-    }
+    // public String getActionTitle() {
+    //     Action action = this.getAction();
+    //     String text = "";
+    //     if (action instanceof UnknowAction) {
+    //         text = action.getDesc();
+    //     } else {
+    //         text = action.getDesc();
+    //     }
+    //     return text;
+    // }
 
     public List<Snapshot> getSnapshotsByType(SnapshotType type) {
         List<Snapshot> snapshots = new ArrayList<>();
@@ -223,148 +216,6 @@ public class OperateLogDTO implements OperateLog {
                 snapshots.add(snapshot);
         }
         return snapshots;
-    }
-
-    private static final class UnknowAction implements Action {
-
-        private int ID;
-
-        private Behavior behavior;
-
-        private String name;
-
-        private String desc;
-
-        protected UnknowAction(int ID) {
-            this.ID = ID;
-            this.name = "UNKNOW_ACTION_" + this.ID;
-            int behaviorID = this.ID / 1000;
-            this.behavior = Behaviors.of(behaviorID);
-            if (this.behavior == null) {
-                this.behavior = new UnknowBehavior(behaviorID);
-            }
-            this.desc = this.behavior.getDesc() + "-未知操作( " + this.ID + " )";
-        }
-
-        @Override
-        public Integer getID() {
-            return this.ID;
-        }
-
-        @Override
-        public Behavior getBehavior() {
-            return this.behavior;
-        }
-
-        @Override
-        public Feature getFeature() {
-            return this.behavior.getFeature();
-        }
-
-        @Override
-        public String name() {
-            return this.name;
-        }
-
-        @Override
-        public String getDesc() {
-            return this.desc;
-        }
-
-    }
-
-    private static final class UnknowBehavior implements Behavior {
-
-        private int ID;
-
-        private Feature feature;
-
-        private String name;
-
-        private String desc;
-
-        protected UnknowBehavior(int ID) {
-            this.ID = ID;
-            this.name = "UNKNOW_BEHAVIOR_" + this.ID;
-            int featureID = this.ID / 1000;
-            this.feature = Features.ofUncheck(featureID);
-            if (this.feature == null) {
-                this.feature = new UnknowFeature(featureID);
-            }
-            this.desc = this.feature.getDesc() + "-未知行为( " + this.ID + " )";
-        }
-
-        @Override
-        public Integer getID() {
-            return this.ID;
-        }
-
-        @Override
-        public Feature getFeature() {
-            return feature;
-        }
-
-        @Override
-        public String name() {
-            return this.name;
-        }
-
-        @Override
-        public String getDesc() {
-            return this.desc;
-        }
-
-        @Override
-        public Action forAction(Object value) {
-            return null;
-        }
-
-    }
-
-    private static final class UnknowFeature implements Feature {
-
-        private int ID;
-
-        private String name;
-
-        private String desc;
-
-        protected UnknowFeature(int ID) {
-            this.ID = ID;
-            this.name = "UNKNOW_FEATURE_" + this.ID;
-            this.desc = "未知系统( " + this.ID + " )";
-        }
-
-        @Override
-        public Integer getID() {
-            return this.ID;
-        }
-
-        @Override
-        public String name() {
-            return this.name;
-        }
-
-        @Override
-        public Collection<Module> dependModules() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String getDesc() {
-            return this.desc;
-        }
-
-        @Override
-        public boolean isValid() {
-            return false;
-        }
-
-        @Override
-        public boolean isHasHandler() {
-            return false;
-        }
-
     }
 
 }

@@ -9,7 +9,7 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
 
     public abstract Object format2Save(String key, O object);
 
-    public abstract Object format4Load(String key, D data);
+    public abstract Object format2Load(String key, D data);
 
     @Override
     public O triggerLoad(String key, D rawDate, Object newValue) {
@@ -40,11 +40,11 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
             Collection<D> objects = (Collection<D>) object;
             List<Object> list = new ArrayList<>();
             for (D value : objects) {
-                list.add(this.format4Load(key, value));
+                list.add(this.format2Load(key, value));
             }
             return objects;
         } else {
-            return this.format4Load(key, object);
+            return this.format2Load(key, object);
         }
     }
 

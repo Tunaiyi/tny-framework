@@ -39,7 +39,7 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
     }
 
     @Override
-    public Object format4Load(String key, byte[] data) {
+    public Object format2Load(String key, byte[] data) {
         SchedulerBackupProto proto;
         try {
             proto = SchedulerBackupProto.parseFrom(data);

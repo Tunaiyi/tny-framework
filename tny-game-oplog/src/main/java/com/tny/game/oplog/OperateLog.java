@@ -1,7 +1,5 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.behavior.Action;
-
 import java.util.List;
 
 public interface OperateLog extends Loggable {
@@ -14,14 +12,6 @@ public interface OperateLog extends Loggable {
 
     String getName();
 
-    Action getAction();
-
-    String getFuncSysDesc();
-
-    String getBehaviorDesc();
-
-    String getActionDesc();
-
     int getLevel();
 
     List<? extends StuffLog> getRevs();
@@ -30,4 +20,11 @@ public interface OperateLog extends Loggable {
 
     List<? extends Snapshot> getSnaps();
 
+    // Action getAction();
+    //
+    // String getFuncSysDesc();
+    //
+    // String getBehaviorDesc();
+    //
+    // String getActionDesc();
 }

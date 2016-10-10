@@ -122,8 +122,9 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
             } else if (data instanceof Request) {
                 Request request = (Request) data;
                 key = Topics.messageKey(topic, loginKey, request.getID());
-                future.setRequest(request)
-                        .setSession(this);
+                if (future != null)
+                    future.setRequest(request)
+                            .setSession(this);
             }
             ProducerRecord<String, KafkaMessage> record = new ProducerRecord<>(topic, key, message);
             if (future != null)

@@ -38,14 +38,14 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
             return null;
         if (object instanceof Item) {
             Item<?> item = (Item<?>) object;
-            return new ProtoItem(proto.toByteArray(), item, this.getNumber(object));
+            return new ProtoItem(proto.toByteArray(), item, this.getNumber(object), this.getState(object));
         } else {
             return proto.toByteArray();
         }
     }
 
     @Override
-    public Object format4Load(String key, Object data) {
+    public Object format2Load(String key, Object data) {
         try {
             P proto = this.bytes2Proto((byte[]) data);
             return this.proto2Object(key, proto);
@@ -53,6 +53,10 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
             LOG.error("{}解析异常", this.getClass().getName(), e);
         }
         return null;
+    }
+
+    protected int getState(I object) {
+        return 0;
     }
 
     protected Trade proto2Trade(TradeProto tradeProto) {

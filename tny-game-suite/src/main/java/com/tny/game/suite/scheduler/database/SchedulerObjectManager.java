@@ -49,7 +49,7 @@ public class SchedulerObjectManager {
 		if (blob != null) {
 			try {
 				byte[] data = blob.getBytes(1, (int) blob.length());
-				return (CacheSchedulerBackup) this.backupFormatter.format4Load(null, data);
+				return (CacheSchedulerBackup) this.backupFormatter.format2Load(null, data);
 			} catch (SQLException e) {
 				logger.error("", e);
 			}
@@ -73,7 +73,7 @@ public class SchedulerObjectManager {
 		if (blob != null) {
 			try {
 				byte[] data = blob.getBytes(1, (int) blob.length());
-				return (TaskReceiver) this.receiverFormatter.format4Load(null, data);
+				return (TaskReceiver) this.receiverFormatter.format2Load(null, data);
 			} catch (SQLException e) {
 				logger.error("", e);
 			}
