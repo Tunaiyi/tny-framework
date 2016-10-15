@@ -3,7 +3,7 @@ package com.tny.game.base.item.behavior.plan;
 import com.tny.game.base.item.DefaultRandomCreatorFactory;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.AbstractAwardGroup;
@@ -59,7 +59,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     protected ItemExplorer itemExplorer;
 
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
     public SimpleAwardPlan(RandomCreator<AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
         this.randomer = randomer;
@@ -88,7 +88,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         if (this.randomer == null)
             this.randomer = DefaultRandomCreatorFactory.getInstance();
         this.itemExplorer = itemExplorer;

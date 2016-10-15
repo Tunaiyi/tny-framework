@@ -63,7 +63,7 @@ public class SimpleCostPlan extends AbstractCostPlan {
 //	}
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         super.init(itemModel, itemExplorer, itemModelExplorer);
         if (this.costList == null)
             this.costList = new ArrayList<AbstractDemand>(0);

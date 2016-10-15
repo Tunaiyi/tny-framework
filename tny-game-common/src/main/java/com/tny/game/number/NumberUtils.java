@@ -20,6 +20,7 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             value = source.doubleValue();
         else if (target instanceof Short)
             value = source.shortValue();
+
         else if (target instanceof Byte)
             value = source.byteValue();
         else
@@ -50,104 +51,104 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
         return (N) value;
     }
 
-    public static Number add(Number one, Number other) {
+    public static <N extends Number> N add(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
         if (one instanceof Integer)
-            return one.intValue() + other.intValue();
+            return as(one.intValue() + other.intValue(), one);
         if (one instanceof Long)
-            return one.longValue() + other.longValue();
+            return as(one.longValue() + other.longValue(), one);
         if (one instanceof Float)
-            return one.floatValue() + other.floatValue();
+            return as(one.floatValue() + other.floatValue(), one);
         if (one instanceof Double)
-            return one.doubleValue() + other.doubleValue();
+            return as(one.doubleValue() + other.doubleValue(), one);
         if (one instanceof Short)
-            return one.shortValue() + other.shortValue();
+            return as(one.shortValue() + other.shortValue(), one);
         if (one instanceof Byte)
-            return one.byteValue() + other.byteValue();
-        return one.doubleValue() + other.doubleValue();
+            return as(one.byteValue() + other.byteValue(), one);
+        return as(one.doubleValue() + other.doubleValue(), one);
     }
 
-    public static Number sub(Number one, Number other) {
+    public static <N extends Number> N sub(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
         if (one instanceof Integer)
-            return one.intValue() - other.intValue();
+            return as(one.intValue() - other.intValue(), one);
         if (one instanceof Long)
-            return one.longValue() - other.longValue();
+            return as(one.longValue() - other.longValue(), one);
         if (one instanceof Float)
-            return one.floatValue() - other.floatValue();
+            return as(one.floatValue() - other.floatValue(), one);
         if (one instanceof Double)
-            return one.doubleValue() - other.doubleValue();
+            return as(one.doubleValue() - other.doubleValue(), one);
         if (one instanceof Short)
-            return one.shortValue() - other.shortValue();
+            return as(one.shortValue() - other.shortValue(), one);
         if (one instanceof Byte)
-            return one.byteValue() - other.byteValue();
-        return one.doubleValue() - other.doubleValue();
+            return as(one.byteValue() - other.byteValue(), one);
+        return as(one.doubleValue() - other.doubleValue(), one);
     }
 
-    public static Number multiply(Number one, Number other) {
+    public static <N extends Number> N multiply(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
         if (one instanceof Integer)
-            return one.intValue() * other.intValue();
+            return as(one.intValue() * other.intValue(), one);
         if (one instanceof Long)
-            return one.longValue() * other.longValue();
+            return as(one.longValue() * other.longValue(), one);
         if (one instanceof Float)
-            return one.floatValue() * other.floatValue();
+            return as(one.floatValue() * other.floatValue(), one);
         if (one instanceof Double)
-            return one.doubleValue() * other.doubleValue();
+            return as(one.doubleValue() * other.doubleValue(), one);
         if (one instanceof Short)
-            return one.shortValue() * other.shortValue();
+            return as(one.shortValue() * other.shortValue(), one);
         if (one instanceof Byte)
-            return one.byteValue() * other.byteValue();
-        return one.doubleValue() * other.doubleValue();
+            return as(one.byteValue() * other.byteValue(), one);
+        return as(one.doubleValue() * other.doubleValue(), one);
     }
 
-    public static Number divide(Number one, Number other) {
+    public static <N extends Number> N divide(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
         if (one instanceof Integer)
-            return one.intValue() / other.intValue();
+            return as(one.intValue() / other.intValue(), one);
         if (one instanceof Long)
-            return one.longValue() / other.longValue();
+            return as(one.longValue() / other.longValue(), one);
         if (one instanceof Float)
-            return one.floatValue() / other.floatValue();
+            return as(one.floatValue() / other.floatValue(), one);
         if (one instanceof Double)
-            return one.doubleValue() / other.doubleValue();
+            return as(one.doubleValue() / other.doubleValue(), one);
         if (one instanceof Short)
-            return one.shortValue() / other.shortValue();
+            return as(one.shortValue() / other.shortValue(), one);
         if (one instanceof Byte)
-            return one.byteValue() / other.byteValue();
-        return one.doubleValue() / other.doubleValue();
+            return as(one.byteValue() / other.byteValue(), one);
+        return as(one.doubleValue() / other.doubleValue(), one);
     }
 
-    public static Number mod(Number one, Number other) {
+    public static <N extends Number> N mod(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
         if (one instanceof Integer)
-            return one.intValue() % other.intValue();
+            return as(one.intValue() % other.intValue(), one);
         if (one instanceof Long)
-            return one.longValue() % other.longValue();
+            return as(one.longValue() % other.longValue(), one);
         if (one instanceof Float)
-            return one.floatValue() % other.floatValue();
+            return as(one.floatValue() % other.floatValue(), one);
         if (one instanceof Double)
-            return one.doubleValue() % other.doubleValue();
+            return as(one.doubleValue() % other.doubleValue(), one);
         if (one instanceof Short)
-            return one.shortValue() % other.shortValue();
+            return as(one.shortValue() % other.shortValue(), one);
         if (one instanceof Byte)
-            return one.byteValue() % other.byteValue();
-        return one.doubleValue() % other.doubleValue();
+            return as(one.byteValue() % other.byteValue(), one);
+        return as(one.doubleValue() % other.doubleValue(), one);
     }
 
     public static boolean less(Number one, Number other) {

@@ -9,22 +9,22 @@ import java.util.Collection;
  */
 public interface ItemExplorer {
 
-    public <I extends Item<?>> I getItem(long playerID, int id, Object... object);
+    <I extends Any<?>> I getItem(long playerID, int id, Object... object);
 
-    public boolean inserItem(Item<?>... items);
+    boolean insertItem(Any<?>... items);
 
-    public <I extends Item<?>> Collection<I> inserItem(Collection<I> itemCollection);
+    <I extends Any<?>> Collection<I> insertItem(Collection<I> itemCollection);
 
-    public boolean updateItem(Item<?>... items);
+    boolean updateItem(Any<?>... items);
 
-    public <I extends Item<?>> Collection<I> updateItem(Collection<I> itemCollection);
+    <I extends Any<?>> Collection<I> updateItem(Collection<I> itemCollection);
 
-    public boolean saveItem(Item<?>... items);
+    boolean saveItem(Any<?>... items);
 
-    public <I extends Item<?>> Collection<I> saveItem(Collection<I> itemCollection);
+    <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection);
 
-    public boolean deleteItem(Item<?>... items);
+    boolean deleteItem(Any<?>... items);
 
-    public <I extends Item<?>> Collection<I> deleteItem(Collection<I> itemCollection);
+    <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection);
 
 }

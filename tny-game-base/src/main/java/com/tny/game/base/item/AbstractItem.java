@@ -38,7 +38,12 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     @Override
     public int getItemID() {
-        return this.getModel().getID();
+        return model.getID();
+    }
+
+    @Override
+    public String getAlias() {
+        return model.getAlias();
     }
 
     @Override
@@ -49,11 +54,6 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     @Override
     public IM getModel() {
         return this.model;
-    }
-
-    @Override
-    public String getAlias() {
-        return this.getModel().getAlias();
     }
 
     @Override

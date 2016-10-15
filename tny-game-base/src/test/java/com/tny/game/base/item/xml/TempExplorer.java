@@ -3,14 +3,14 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class TempExplorer implements ItemExplorer, ItemModelExplorer {
+public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     private Map<String, ItemModel> model = new HashMap<String, ItemModel>();
     private Item<?> item;
@@ -47,7 +47,7 @@ public class TempExplorer implements ItemExplorer, ItemModelExplorer {
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> inserItem(Collection<I> itemCollection) {
+    public <I extends Item<?>> Collection<I> insertItem(Collection<I> itemCollection) {
 
         return null;
     }
@@ -65,7 +65,7 @@ public class TempExplorer implements ItemExplorer, ItemModelExplorer {
     }
 
     @Override
-    public boolean inserItem(Item<?>... items) {
+    public boolean insertItem(Item<?>... items) {
 
         return false;
     }

@@ -88,7 +88,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
             this.stop = true;
             LOGGER.info("#SyncDBExecutor#同步线程池shutdown....");
             this.sumitSyncDBTaskExecutor.shutdown();
-            while (!this.sumitSyncDBTaskExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+            while (!this.sumitSyncDBTaskExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
             }
             LOGGER.info("#SyncDBExecutor#同步线程池停止!");
             LOGGER.info("#SyncDBExecutor#同步执行器关闭!");

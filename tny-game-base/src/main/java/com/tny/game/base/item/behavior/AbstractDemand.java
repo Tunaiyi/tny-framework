@@ -5,7 +5,7 @@ import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.ItemsImportKey;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.formula.FormulaHolder;
@@ -68,7 +68,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
 
     protected ItemExplorer itemExplorer;
 
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
@@ -158,7 +158,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
     }
 
     private ItemModel getItemModel(String alias) {
-        ItemModel model = this.itemModelExplorer.getItemModelByAlias(alias);
+        ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         return model;
@@ -178,7 +178,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         return model;
     }
 
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.itemAlias == null) {

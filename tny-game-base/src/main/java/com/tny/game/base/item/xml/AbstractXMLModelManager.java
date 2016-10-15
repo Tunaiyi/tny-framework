@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
 import com.tny.game.base.item.Ability;
 import com.tny.game.base.item.AbstractModelManager;
 import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.Model;
 import com.tny.game.base.item.behavior.AbstractAwardPlan;
 import com.tny.game.base.item.behavior.AbstractCostPlan;
@@ -79,7 +79,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
      * 事物对象模型管理器
      */
     @Autowired
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
     /**
      * 文件读取器

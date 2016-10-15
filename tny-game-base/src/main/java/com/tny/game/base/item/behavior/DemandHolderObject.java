@@ -5,7 +5,7 @@ import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 
 import java.util.*;
 
@@ -29,15 +29,15 @@ public abstract class DemandHolderObject {
     /**
      * 事物模型总管理器
      */
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
-    public static void setAttrMap(long playerID, Collection<String> aliasList, ItemModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
+    public static void setAttrMap(long playerID, Collection<String> aliasList, ModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
         for (String alias : aliasList)
             setAttrMap(playerID, alias, itemModelExplorer, itemExplorer, attributeMap);
     }
 
-    public static Item<?> setAttrMap(long playerID, String alias, ItemModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
-        ItemModel model = itemModelExplorer.getItemModelByAlias(alias);
+    public static Item<?> setAttrMap(long playerID, String alias, ModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
+        ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         Item<?> item = null;
@@ -75,7 +75,7 @@ public abstract class DemandHolderObject {
         return demandResults;
     }
 
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.demandList == null)

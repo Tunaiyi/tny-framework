@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.AbstractActionPlan;
 import com.tny.game.base.item.behavior.AbstractBehaviorPlan;
 import com.tny.game.base.item.behavior.Action;
@@ -25,7 +25,7 @@ public class XMLBehaviorPlan extends AbstractBehaviorPlan {
     protected List<AbstractActionPlan> actionPlanList;
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         super.init(itemModel, itemExplorer, itemModelExplorer);
         if (actionPlanList == null)
             actionPlanList = new ArrayList<>(0);

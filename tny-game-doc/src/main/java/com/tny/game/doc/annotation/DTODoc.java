@@ -7,8 +7,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface DTODoc {
 
-    public String value();
+    String value();
 
-    public boolean push() default false;
+    boolean push() default false;
 
 }

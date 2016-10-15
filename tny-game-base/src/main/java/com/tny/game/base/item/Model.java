@@ -16,4 +16,11 @@ public interface Model {
      */
     public String getAlias();
 
+    /**
+     * 获取描述
+     *
+     * @return
+     */
+    String getDesc();
+
 }

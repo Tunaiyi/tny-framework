@@ -12,6 +12,7 @@ import com.tny.game.oplog.SnapshotType;
 import com.tny.game.oplog.StuffLog;
 import com.tny.game.oplog.TradeLog;
 import com.tny.game.oplog.UserOpLog;
+import com.tny.game.suite.auto.snapshot.BaseSnapshot;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -51,7 +52,10 @@ public class OperateLogDTO implements OperateLog {
     private List<ConsumeLogDTO> coss;
 
     @JsonProperty(index = 12)
-    private List<Snapshot> snaps;
+    private List<BaseSnapshot> snaps;
+
+    @JsonProperty(index = 13)
+    private int i;
 
     private Action action;
 
@@ -65,7 +69,7 @@ public class OperateLogDTO implements OperateLog {
     }
 
     @SuppressWarnings("unchecked")
-    public OperateLogDTO(String logID, OpLog log, UserOpLog userOpLog, ActionLog actionLog) {
+    public OperateLogDTO(String logID, OpLog log, UserOpLog userOpLog, ActionLog actionLog, int index) {
         this.logID = logID;
         this.uid = userOpLog.getUserID();
         this.name = userOpLog.getName();
@@ -77,6 +81,7 @@ public class OperateLogDTO implements OperateLog {
         this.at = dateTime.getMillis();
         this.date = DateTimeHelper.date2Int(dateTime);
         this.acid = actionLog.getActionID();
+        this.i = index;
         for (TradeLog tradeLog : actionLog.getReceiveLogs()) {
             if (this.revs == null)
                 this.revs = new ArrayList<>();
@@ -89,7 +94,11 @@ public class OperateLogDTO implements OperateLog {
         }
         Collection<Snapshot> snaps = actionLog.getSnapshots();
         if (snaps != null && !snaps.isEmpty()) {
-            this.snaps = new ArrayList<>(snaps);
+            this.snaps = new ArrayList<>();
+            snaps.forEach(snap -> {
+                if (snap instanceof BaseSnapshot)
+                    this.snaps.add((BaseSnapshot) snap);
+            });
         }
     }
 

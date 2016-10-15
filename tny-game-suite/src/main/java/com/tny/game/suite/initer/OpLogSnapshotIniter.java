@@ -1,39 +1,35 @@
 package com.tny.game.suite.initer;
 
-import com.tny.game.LogUtils;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.net.dispatcher.message.protoex.ProtoExRequest;
-import com.tny.game.net.dispatcher.message.protoex.ProtoExResponse;
 import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
-import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.field.runtime.RuntimeProtoExSchema;
+import com.tny.game.oplog.Snapshot;
+import com.tny.game.oplog.log4j2.OpLogMapper;
 import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.filter.AnnotationClassFilter;
+import com.tny.game.scanner.filter.ClassIncludeFilter;
+import com.tny.game.scanner.filter.SubOfClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
-public class ProtoExSchemaIniter implements ServerPreStart {
+public class OpLogSnapshotIniter implements ServerPreStart {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("proto");
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpLogSnapshotIniter.class);
 
     private ForkJoinTask<?> forkJoinTask;
 
     private List<String> scanPaths = new ArrayList<>();
 
-    public ProtoExSchemaIniter(List<String> scanPaths) {
+    public OpLogSnapshotIniter(List<String> scanPaths) {
         this.scanPaths.addAll(scanPaths);
     }
 
@@ -42,29 +38,27 @@ public class ProtoExSchemaIniter implements ServerPreStart {
     public void initSchemaAsync() {
         LOGGER.info("启动初始化ProtoSchema任务!");
         forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
-            Class<?> clazz;
+
             // try {
-            ClassScanner scanner = new ClassScanner().
-                    addFilter(AnnotationClassFilter.ofInclude(ProtoEx.class));
+            ClassScanner scanner = new ClassScanner()
+                    .addFilter(SubOfClassFilter.ofInclude(Snapshot.class))
+                    .addFilter(ClassIncludeFilter.of(r -> !r.getClassMetadata().isAbstract()));
             Set<Class<?>> classes = new HashSet<>();
             classes.addAll(scanner.getClasses(scanPaths.toArray(new String[scanPaths.size()])));
             RunningChecker.start(this.getClass());
-            LOGGER.info("开始初始化 ProtoSchema .......");
-            Map<Integer, Class<?>> classMap = new HashMap<>();
-            RuntimeProtoExSchema.getProtoSchema(ProtoExRequest.class);
-            RuntimeProtoExSchema.getProtoSchema(ProtoExResponse.class);
+            LOGGER.info("开始初始化 OpLogSnapshot .......");
             for (Class<?> cl : classes) {
-                clazz = cl;
-                ProtoExSchema<?> schema = RuntimeProtoExSchema.getProtoSchema(clazz);
-                if (schema == null) {
-                    throw new NullPointerException(LogUtils.format("{} 找不到对应的schema", clazz));
-                }
-                Class<?> old = classMap.put(schema.getProtoExID(), clazz);
-                if (old != null) {
-                    throw new IllegalArgumentException(LogUtils.format("{} protoID 与 {} protoID 都为 {}", clazz, old, schema.getProtoExID()));
+                if (Snapshot.class.isAssignableFrom(cl)) {
+                    Snapshot snapshot;
+                    try {
+                        snapshot = (Snapshot) cl.newInstance();
+                        OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapshot.getType().toString()));
+                    } catch (Throwable e) {
+                        LOGGER.error("", e);
+                    }
                 }
             }
-            LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
+            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         });
     }
 

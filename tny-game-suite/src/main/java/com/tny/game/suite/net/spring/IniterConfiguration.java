@@ -1,6 +1,7 @@
 package com.tny.game.suite.net.spring;
 
 import com.tny.game.suite.initer.EnumCheckerIniter;
+import com.tny.game.suite.initer.OpLogSnapshotIniter;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,11 @@ public class IniterConfiguration {
     @Bean
     public EnumCheckerIniter enumCheckerIniter() {
         return new EnumCheckerIniter(Configs.getScanPaths());
+    }
+
+    @Bean
+    public OpLogSnapshotIniter opLogSnapshotIniter() {
+        return new OpLogSnapshotIniter(Configs.getScanPaths());
     }
 
 }

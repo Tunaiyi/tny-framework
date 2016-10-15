@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.tny.game.base.item.AbstractItemModel;
 import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.utils.collection.EmptyImmutableList;
@@ -41,7 +41,7 @@ public abstract class XMLItemModel extends AbstractItemModel {
         return this.currentFormula == null ? (DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number") : this.currentFormula;
     }
 
-    protected void init(ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.init)

@@ -96,7 +96,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshot(Identifiable item, Action action, SnapperType... types) {
+    public OpLogger logSnapshotByType(Identifiable item, Action action, SnapperType... types) {
         try {
             action = this.transAction(action);
             if (types.length == 0)
@@ -111,7 +111,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapShot(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
+    public OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
         try {
             action = this.transAction(action);
             if (snapperTypes.length == 0)
@@ -122,6 +122,13 @@ public abstract class AbstractOpLogger implements OpLogger {
         } catch (Exception e) {
             LOGGER.error("{} | {} | logSnapshot exception", item, action, e);
         }
+        return this;
+    }
+
+    @Override
+    public OpLogger logSnapshot(Identifiable item, Action action) {
+        action = this.transAction(action);
+        this.doLogSnapshot(action, item);
         return this;
     }
 

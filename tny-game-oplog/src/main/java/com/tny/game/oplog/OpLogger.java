@@ -21,9 +21,11 @@ public interface OpLogger {
 
     OpLogger logConsume(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum);
 
-    OpLogger logSnapshot(Identifiable item, Action action, SnapperType... types);
+    OpLogger logSnapshotByType(Identifiable item, Action action, SnapperType... types);
 
-    OpLogger logSnapShot(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes);
+    OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes);
+
+    OpLogger logSnapshot(Identifiable item, Action action);
 
     boolean isLogging();
 

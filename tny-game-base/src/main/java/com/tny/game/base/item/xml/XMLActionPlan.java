@@ -3,7 +3,7 @@ package com.tny.game.base.item.xml;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.AbstractActionPlan;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class XMLActionPlan extends AbstractActionPlan {
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         super.init(itemModel, itemExplorer, itemModelExplorer);
         if (optionMap == null)
             optionMap = new HashMap<>();

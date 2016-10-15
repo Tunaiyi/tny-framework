@@ -66,7 +66,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     /**
      * 事物模型总管理器
      */
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
     /**
      * 对象计算附加参数列表
@@ -106,7 +106,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     protected Item<?> setAttrMap(long playerID, String alias, Map<String, Object> attributeMap) {
-        ItemModel model = this.itemModelExplorer.getItemModelByAlias(alias);
+        ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         if (model.getItemType().hasEntity()) {

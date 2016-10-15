@@ -23,13 +23,6 @@ import java.util.Set;
 public interface ItemModel extends Model {
 
     /**
-     * 获取描述
-     *
-     * @return
-     */
-    String getDesc();
-
-    /**
      * 事物类型
      *
      * @return

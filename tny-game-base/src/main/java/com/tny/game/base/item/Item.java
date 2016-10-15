@@ -19,35 +19,7 @@ import java.util.Set;
  * @param <M>
  * @author KGTny
  */
-public interface Item<M extends ItemModel> extends Identifiable {
-
-    /**
-     * 获取对象ID
-     *
-     * @return
-     */
-    long getID();
-
-    /**
-     * 获取对象别名
-     *
-     * @return
-     */
-    String getAlias();
-
-    /**
-     * 获取该事物对象ID
-     *
-     * @return
-     */
-    int getItemID();
-
-    /**
-     * 获取该事物对象的模型
-     *
-     * @return
-     */
-    M getModel();
+public interface Item<M extends ItemModel> extends Any<M> {
 
     /**
      * 获取该事物对象所属类型

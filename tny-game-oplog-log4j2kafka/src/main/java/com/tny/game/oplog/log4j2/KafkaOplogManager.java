@@ -48,7 +48,10 @@ public class KafkaOplogManager extends AbstractManager {
     public void releaseSub() {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Thread closeThread = new Log4jThread(() -> producer.close());
+            final Thread closeThread = new Log4jThread(() -> {
+                producer.flush();
+                producer.close();
+            });
             closeThread.setName("KafkaManager-CloseThread");
             closeThread.setDaemon(true); // avoid blocking JVM shutdown
             closeThread.start();

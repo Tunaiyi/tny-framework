@@ -4,7 +4,7 @@ import com.tny.game.base.item.AllRandomCreatorFactory;
 import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
@@ -67,7 +67,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     /**
      * item模型浏览器
      */
-    protected ItemModelExplorer itemModelExplorer;
+    protected ModelExplorer itemModelExplorer;
 
     @Override
     public int getProbability(Map<String, Object> attributeMap) {
@@ -103,7 +103,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
         List<Award> awardList = this.randomer.random(10000, awardNum, this.awardList, attributeMap);
         for (Award award : awardList) {
             String awModelAlias = award.getItemAlias(attributeMap);
-            ItemModel awardModel = this.itemModelExplorer.getItemModelByAlias(awModelAlias);
+            ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
             if (awardModel == null)
                 continue;
             AlterType type = award.getAlterType();
@@ -125,7 +125,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     private Map<String, ItemModel> getAwardAliasModelMap(Map<String, Object> attributeMap) {
         Map<String, ItemModel> map = new HashMap<>();
         for (Award award : this.awardList) {
-            ItemModel model = this.itemModelExplorer.getItemModelByAlias(award.getItemAlias(attributeMap));
+            ItemModel model = this.itemModelExplorer.getModelByAlias(award.getItemAlias(attributeMap));
             map.put(model.getAlias(), model);
         }
         return Collections.unmodifiableMap(map);
@@ -138,7 +138,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
                 .execute(Boolean.class);
     }
 
-    public void init(ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         this.itemModelExplorer = itemModelExplorer;
         if (this.randomer == null)
             this.randomer = AllRandomCreatorFactory.getInstance();

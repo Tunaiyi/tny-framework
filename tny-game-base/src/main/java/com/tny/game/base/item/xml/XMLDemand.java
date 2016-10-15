@@ -3,7 +3,7 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemModelExplorer;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.AbstractDemand;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.common.formula.FormulaType;
@@ -76,7 +76,7 @@ public class XMLDemand extends AbstractDemand {
     }
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ItemModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         super.init(itemModel, itemExplorer, itemModelExplorer);
         if (this.itemAlias == null) {
             this.itemAlias = itemModel.getAlias();

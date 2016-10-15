@@ -135,9 +135,10 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
     @Override
     protected void doSubmit(OpLog log) {
         for (UserOpLog userOpLog : log.getUserLogs()) {
+            int index = 0;
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
-                    OperateLogDTO dto = new OperateLogDTO(creator.getHexID(), log, userOpLog, actionLog);
+                    OperateLogDTO dto = new OperateLogDTO(creator.getHexID(), log, userOpLog, actionLog, index++);
                     LogMessage message = new LogMessage(dto);
                     oplogLogger.info(message);
                 } catch (Exception e) {

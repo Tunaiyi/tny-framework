@@ -10,12 +10,14 @@ import java.util.Set;
 
 public abstract class AbstractMvelFormula extends AbstractFormula {
 
-    protected final static Set<Method> methodSet = new HashSet<Method>();
+    protected final static Set<Method> methodSet = new HashSet<>();
 
     static {
         for (final Method method : Math.class.getMethods())
             methodSet.add(method);
         for (final Method method : MathEx.class.getMethods())
+            methodSet.add(method);
+        for (final Method method : DateTimeEx.class.getMethods())
             methodSet.add(method);
     }
 

@@ -21,26 +21,26 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Component
 @Profile({ITEM, GAME})
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplorer, ApplicationContextAware, ServerPreStart {
+public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, ServerPreStart {
 
     private final Map<Class<?>, GameManager<Object>> managerMap = new HashMap<>();
 
-    private final Map<Class<?>, ModelManager<ItemModel>> modelManagerMap = new HashMap<>();
+    private final Map<Class<?>, ModelManager<Model>> modelManagerMap = new HashMap<>();
 
     private ApplicationContext applicationContext;
 
     @Override
-    public <IM extends ItemModel> IM getItemModel(int itemID) {
+    public <IM extends Model> IM getModel(int itemID) {
         return (IM) this.getModelManager(itemID).getModel(itemID);
     }
 
     @Override
-    public <IM extends ItemModel> IM getItemModelByAlias(String itemAlias) {
+    public <IM extends Model> IM getModelByAlias(String itemAlias) {
         return (IM) this.getModelManager(itemAlias).getModelByAlias(itemAlias);
     }
 
     @Override
-    public <I extends Item<?>> I getItem(long playerID, int itemID, Object... object) {
+    public <I extends Any<?>> I getItem(long playerID, int itemID, Object... object) {
         Object[] params = new Object[object.length + 1];
         params[0] = itemID;
         if (object.length > 0)
@@ -52,9 +52,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public boolean inserItem(Item<?>... items) {
+    public boolean insertItem(Any<?>... items) {
         boolean result = true;
-        for (Item<?> item : items) {
+        for (Any<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemID());
             if (manager == null)
                 return true;
@@ -65,20 +65,20 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> inserItem(
+    public <I extends Any<?>> Collection<I> insertItem(
             Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
-            if (!this.inserItem(item))
+            if (!this.insertItem(item))
                 fail.add(item);
         }
         return fail;
     }
 
     @Override
-    public boolean updateItem(Item<?>... items) {
+    public boolean updateItem(Any<?>... items) {
         boolean result = true;
-        for (Item<?> item : items) {
+        for (Any<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemID());
             if (manager == null)
                 return true;
@@ -89,7 +89,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> updateItem(
+    public <I extends Any<?>> Collection<I> updateItem(
             Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
@@ -100,9 +100,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public boolean saveItem(Item<?>... items) {
+    public boolean saveItem(Any<?>... items) {
         boolean result = true;
-        for (Item<?> item : items) {
+        for (Any<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemID());
             if (manager == null)
                 return true;
@@ -113,7 +113,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> saveItem(Collection<I> itemCollection) {
+    public <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
             if (!this.saveItem(item))
@@ -123,9 +123,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public boolean deleteItem(Item<?>... items) {
+    public boolean deleteItem(Any<?>... items) {
         boolean result = true;
-        for (Item<?> item : items) {
+        for (Any<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemID());
             if (manager == null)
                 return true;
@@ -136,7 +136,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
+    public <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
             if (!this.deleteItem(item))
@@ -281,13 +281,13 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
         return manager;
     }
 
-    private ModelManager<ItemModel> getModelManager(int itemID) {
+    private ModelManager<Model> getModelManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemID(itemID);
         return this.getModelManager(itemType);
     }
 
-    public ModelManager<ItemModel> getModelManager(ItemType itemType) {
-        ModelManager<ItemModel> manager = this.modelManagerMap
+    public ModelManager<Model> getModelManager(ItemType itemType) {
+        ModelManager<Model> manager = this.modelManagerMap
                 .get(itemType.getItemModelManagerClass());
         if (itemType.getItemModelManagerClass() == null)
             return null;
@@ -298,9 +298,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
         return manager;
     }
 
-    private ModelManager<ItemModel> getModelManager(String alias) {
+    private ModelManager<Model> getModelManager(String alias) {
         ItemType itemType = ItemTypes.ofAlias(alias);
-        ModelManager<ItemModel> manager = this.modelManagerMap
+        ModelManager<Model> manager = this.modelManagerMap
                 .get(itemType.getItemModelManagerClass());
         if (manager == null)
             throw new NullPointerException(MessageFormat.format(
@@ -331,7 +331,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ItemModelExplo
         }
         Map<String, ModelManager> modelMap = this.applicationContext
                 .getBeansOfType(ModelManager.class);
-        for (ModelManager<ItemModel> manager : modelMap.values()) {
+        for (ModelManager<Model> manager : modelMap.values()) {
             this.modelManagerMap.put(manager.getClass(), manager);
         }
     }
