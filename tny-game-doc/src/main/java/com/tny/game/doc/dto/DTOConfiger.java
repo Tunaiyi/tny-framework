@@ -7,6 +7,7 @@ import com.tny.game.LogUtils;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.DTODocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,9 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
 
     @XStreamAsAttribute
     private String des;
+
+    @XStreamAsAttribute
+    private String text;
 
     @XStreamAsAttribute
     private int id;
@@ -56,7 +60,7 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
         int id = holder.getID();
         if (id > 0) {
             DTOConfiger configer = configerMap.get(holder.getID());
-            DTOConfiger old = null;
+            DTOConfiger old;
             if (configer != null) {
                 if (configer.getClassName().equals(holder.getEntityClass().getSimpleName()))
                     return configer;
@@ -83,6 +87,9 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
         this.push = holder.getDTODoc().push();
         this.id = holder.getID();
         this.fieldList = new FieldList();
+        this.text = holder.getDTODoc().text();
+        if (StringUtils.isBlank(this.text))
+            this.text = this.des;
         Map<Integer, FieldConfiger> fieldMap = new HashMap<>();
         List<FieldConfiger> fieldList = new ArrayList<>();
         for (FieldDocHolder fieldDocHolder : holder.getFieldList()) {

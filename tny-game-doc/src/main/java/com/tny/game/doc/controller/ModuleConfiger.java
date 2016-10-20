@@ -7,9 +7,11 @@ import com.tny.game.LogUtils;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.ClassDocHolder;
 import com.tny.game.doc.holder.FunDocHolder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,9 @@ public class ModuleConfiger {
 
     @XStreamAsAttribute
     private String des;
+
+    @XStreamAsAttribute
+    private String text;
 
     @XStreamAsAttribute
     private String packageName;
@@ -71,9 +76,12 @@ public class ModuleConfiger {
     private ModuleConfiger(ClassDocHolder holder, TypeFormatter typeFormatter) {
         this.className = holder.getEntityClass().getSimpleName();
         this.packageName = holder.getEntityClass().getPackage().getName();
-        this.des = holder.getClassDoc().value();
         this.moduleID = holder.getModuleID();
         this.operationList = new OperationList();
+        this.des = holder.getClassDoc().value();
+        this.text = holder.getClassDoc().text();
+        if (StringUtils.isBlank(this.text))
+            this.text = this.des;
         Map<Integer, OperationConfiger> fieldMap = new HashMap<>();
         List<OperationConfiger> operationList = new ArrayList<>();
         for (FunDocHolder funDocHolder : holder.getFunList()) {
@@ -85,7 +93,7 @@ public class ModuleConfiger {
                         holder.getEntityClass(), configer.getMethodName(), old.getMethodName(), configer.getOpID()));
             }
         }
-        Collections.sort(operationList, (o1, o2) -> o1.getMethodName().compareTo(o2.getMethodName()));
+        Collections.sort(operationList, Comparator.comparing(OperationConfiger::getMethodName));
         this.operationList.operationList = Collections.unmodifiableList(operationList);
     }
 

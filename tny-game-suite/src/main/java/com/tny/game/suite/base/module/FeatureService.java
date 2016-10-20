@@ -3,6 +3,7 @@ package com.tny.game.suite.base.module;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.LogUtils;
 import com.tny.game.base.module.Feature;
+import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.FeatureHandler;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
@@ -127,7 +128,7 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
                         LOGGER.info("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerID(), feature, time);
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerID(), feature, e);
             }
         }
@@ -141,10 +142,27 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     private void doLoadFeature(final GameFeatureExplorer explorer) {
         HashSet<Module> moduleSet = new HashSet<>();
         for (Feature feature : explorer.getOpenedFeatures()) {
-            if (explorer.isFeatureOpened(feature))
-                moduleSet.addAll(feature.dependModules());
+            if (explorer.isFeatureOpened(feature)) {
+                for (Module module : feature.dependModules()) {
+                    if (!moduleSet.add(module))
+                        continue;
+                    moduleService.doLoadModule(explorer, module);
+                }
+                if (feature.isValid())
+                    doLoadFeature(explorer, feature);
+            }
         }
-        moduleService.loadModule(explorer, moduleSet);
+    }
+
+    private void doLoadFeature(final FeatureExplorer explorer, final Feature feature) {
+        try {
+            if (feature.isValid()) {
+                FeatureHandler featureHandler = handlerMap.get(feature);
+                featureHandler.loadFeature(explorer);
+            }
+        } catch (Throwable e) {
+            LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerID(), feature, e);
+        }
     }
 
     protected abstract DTO createDTO();

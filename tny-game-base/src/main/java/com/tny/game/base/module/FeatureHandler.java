@@ -17,4 +17,7 @@ public interface FeatureHandler {
      */
     boolean openFeature(FeatureExplorer explorer);
 
+    default void loadFeature(FeatureExplorer explorer) {
+    }
+
 }

@@ -9,6 +9,8 @@ public @interface DTODoc {
 
     String value();
 
+    String text() default "";
+
     boolean push() default false;
 
 }

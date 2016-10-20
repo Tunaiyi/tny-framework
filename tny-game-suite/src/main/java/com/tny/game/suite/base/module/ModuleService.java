@@ -79,7 +79,7 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerID(), module, e);
             }
         }
@@ -87,15 +87,19 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
     }
 
     protected void doLoadModule(final FeatureExplorer explorer, final Collection<Module> modules) {
-        for (Module moduleType : modules) {
-            try {
-                if (moduleType.isValid() && explorer.isModuleOpened(moduleType)) {
-                    GameModuleHandler module = this.handlerMap.get(moduleType);
-                    module.loadModule(explorer);
-                }
-            } catch (Exception e) {
-                LOGGER.error("玩家[{}] 预加载 {} 模块异常", explorer.getPlayerID(), moduleType, e);
+        for (Module module : modules) {
+            doLoadModule(explorer, module);
+        }
+    }
+
+    protected void doLoadModule(final FeatureExplorer explorer, final Module module) {
+        try {
+            if (module.isValid() && explorer.isModuleOpened(module)) {
+                GameModuleHandler moduleHandler = this.handlerMap.get(module);
+                moduleHandler.loadModule(explorer);
             }
+        } catch (Throwable e) {
+            LOGGER.error("玩家[{}] 预加载 {} 模块异常", explorer.getPlayerID(), module, e);
         }
     }
 
@@ -106,7 +110,7 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
                     GameModuleHandler module = this.handlerMap.get(moduleType);
                     doUpdateDTO(module, featureExplorer, dto);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerID(), moduleType, e);
             }
         }
@@ -137,7 +141,7 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("读取 {} 玩家 {} 模块获取重新登录信息", featureExplorer.getPlayerID(), handler.getModule());
             handler.updateDTO(featureExplorer, dto);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerID(), handler.getModule(), e);
         }
     }

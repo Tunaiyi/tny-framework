@@ -9,10 +9,12 @@ import java.lang.annotation.*;
 @Documented
 public @interface FunDoc {
 
-    public String des();
+    String des();
 
-    public Class<?> returnType() default Null.class;
+    String text() default "";
 
-    public String returnDes() default "";
+    Class<?> returnType() default Null.class;
+
+    String returnDes() default "";
 
 }

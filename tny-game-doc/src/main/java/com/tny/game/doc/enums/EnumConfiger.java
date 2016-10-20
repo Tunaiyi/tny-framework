@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.tny.game.LogUtils;
 import com.tny.game.doc.holder.EnumDocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,9 @@ public class EnumConfiger {
 
     @XStreamAsAttribute
     private String des;
+
+    @XStreamAsAttribute
+    private String text;
 
     @XStreamAsAttribute
     private String packageName;
@@ -44,9 +48,11 @@ public class EnumConfiger {
 
     public void setEnumDocHolder(EnumDocHolder holder) {
         this.className = holder.getEntityClass().getSimpleName();
-        this.des = holder.getClassDoc().value();
         this.packageName = holder.getEntityClass().getPackage().getName();
-
+        this.des = holder.getClassDoc().value();
+        this.text = holder.getClassDoc().text();
+        if (StringUtils.isBlank(this.text))
+            this.text = this.des;
         Map<String, EnumerConfiger> fieldMap = new HashMap<>();
         for (FieldDocHolder fieldDocHolder : holder.getEnumList()) {
             EnumerConfiger configer = this.createEnumerConfiger(fieldDocHolder);

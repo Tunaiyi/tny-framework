@@ -191,7 +191,7 @@ public class KafkaNetBootstrap {
                         continue;
                     for (TopicPartition partition : records.partitions()) {
                         List<ConsumerRecord<String, KafkaMessage>> rs = records.records(partition);
-                        LOGGER.info("ConsumerLoop [{}] 获取 {} 条Records", partition.topic(), rs.size());
+                        LOGGER.debug("ConsumerLoop [{}] 获取 {} 条Records", partition.topic(), rs.size());
                         for (ConsumerRecord<String, KafkaMessage> record : records) {
                             Message message = record.value();
                             if (message == null)

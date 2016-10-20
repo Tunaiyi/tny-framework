@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.tny.game.LogUtils;
 import com.tny.game.doc.holder.DTODocHolder;
+import org.apache.commons.lang3.StringUtils;
 
 @XStreamAlias("dtoImport")
 public class PushDTOInfo implements Comparable<PushDTOInfo> {
@@ -13,6 +14,9 @@ public class PushDTOInfo implements Comparable<PushDTOInfo> {
 
     @XStreamAsAttribute
     private String des;
+
+    @XStreamAsAttribute
+    private String text;
 
     @XStreamAsAttribute
     private String packageName;
@@ -26,6 +30,9 @@ public class PushDTOInfo implements Comparable<PushDTOInfo> {
         this.packageName = clazz.getPackage().getName();
         this.className = clazz.getSimpleName();
         this.des = holder.getDTODoc().value();
+        this.text = holder.getDTODoc().text();
+        if (StringUtils.isBlank(this.text))
+            this.text = this.des;
         this.handlerName = LogUtils.format("public function $send{}$S(dto : {}):void{}", clazz.getSimpleName(), clazz.getSimpleName());
     }
 

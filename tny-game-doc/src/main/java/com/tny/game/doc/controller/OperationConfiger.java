@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.FunDocHolder;
 import com.tny.game.doc.holder.VarDocHolder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,9 @@ public class OperationConfiger {
 
     @XStreamAsAttribute
     private String des;
+
+    @XStreamAsAttribute
+    private String text;
 
     @XStreamAsAttribute
     private String returnType;
@@ -45,11 +49,14 @@ public class OperationConfiger {
 
     public OperationConfiger(FunDocHolder holder, TypeFormatter typeFormatter) {
         this.opID = holder.getOpID();
-        this.des = holder.getFunDoc().des();
         this.returnType = holder.getFunDoc().returnType().getSimpleName();
         this.returnDes = holder.getFunDoc().returnDes();
         this.methodName = holder.getMethod().getName();
         this.paramList = new ParamList();
+        this.des = holder.getFunDoc().des();
+        this.text = holder.getFunDoc().text();
+        if (StringUtils.isBlank(this.text))
+            this.text = this.des;
         List<VarConfiger> paramList = new ArrayList<VarConfiger>();
         for (VarDocHolder varDocHolder : holder.getParamList()) {
             paramList.add(new VarConfiger(varDocHolder, typeFormatter));

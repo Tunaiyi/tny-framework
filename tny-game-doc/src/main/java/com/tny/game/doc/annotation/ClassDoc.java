@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface ClassDoc {
 
-    public String value();
+    String value();
+
+    String text() default "";
 
 }

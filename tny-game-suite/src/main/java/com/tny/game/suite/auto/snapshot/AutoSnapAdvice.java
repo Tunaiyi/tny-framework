@@ -10,6 +10,7 @@ import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.event.annotation.Listener;
 import com.tny.game.oplog.OpLogger;
 import com.tny.game.suite.auto.AutoMethodHolder;
+import com.tny.game.suite.auto.snapshot.AutoSnapMethod.SnapParamEntry;
 import com.tny.game.suite.base.GameExplorer;
 import com.tny.game.suite.oplog.OperationLogger;
 import com.tny.game.suite.transaction.Transaction;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -69,8 +71,12 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
             AutoSnapMethod snapMethod = methodHolder.getInstance(method);
             if (snapMethod.isCanSnapShot()) {
                 Action action = snapMethod.getAction(args);
-                if (action != null)
-                    OperationLogger.logger().logSnapshotByClass((Identifiable) target, action, snapMethod.getSnapShotTypes());
+                Collection<SnapParamEntry> params = snapMethod.getSnapParams(args);
+                if (action != null) {
+                    OperationLogger.logger().logSnapshotByClass((Identifiable) target, action, snapMethod.getSnapshotTypes());
+                    for (SnapParamEntry param : params)
+                        OperationLogger.logger().logSnapshotByClass((Identifiable) param.getObject(), action, param.getSnapshotTypes());
+                }
             }
         } catch (Throwable e) {
             LOGGER.error("{}", method, e);

@@ -1,6 +1,7 @@
 package com.tny.game.suite.auto.snapshot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tny.game.base.item.Item;
 import com.tny.game.oplog.SnapshotType;
 
 public abstract class ItemSnapshot extends BaseSnapshot {
@@ -28,12 +29,17 @@ public abstract class ItemSnapshot extends BaseSnapshot {
         return this.pid;
     }
 
-    protected void setIDs(int itemID, long id) {
+    public void setItem(Item<?> item) {
+        this.setIDs(item.getItemID(), item.getID());
+        this.setPid(item.getPlayerID());
+    }
+
+    public void setIDs(int itemID, long id) {
         this.iid = itemID;
         this.id = itemID == id ? null : id;
     }
 
-    protected void setPid(long pid) {
+    public void setPid(long pid) {
         this.pid = pid;
     }
 
