@@ -25,5 +25,4 @@ public interface SuiteProtoIDs {
     int CLUSTER_$PF_TOKEN = 1_01_15;
     int CLUSTER_$PAY_PLAN_ORDER = 1_01_16;
 
-
 }

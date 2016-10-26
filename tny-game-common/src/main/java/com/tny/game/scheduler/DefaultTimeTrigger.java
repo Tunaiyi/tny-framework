@@ -146,7 +146,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     public boolean triggerForce() {
         DateTime next = this.nextTime;
         if (next != null) {
-            this.previousTime = next;
+            this.previousTime = DateTime.now();
             this.nextTime = getNextTimeAfter(this.previousTime);
             return true;
         }

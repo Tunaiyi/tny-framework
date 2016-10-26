@@ -23,6 +23,10 @@ public interface Configs {
     String FEATURE_MODEL_CONFIG_PATH = "config/base/FeatureModel.xml";
     String WORD_FILTER_CONFIG_PATH = "words.txt";
 
+    String SNAP_REASON_PATH = "snap_reason.properties";
+    String SNAP_REASON_SYS_KEY = "tny.oplog.reason.path";
+    Config SNAP_REASON_CONFIG = ConfigLib.getConfigExist(System.getProperty(SNAP_REASON_SYS_KEY, SNAP_REASON_PATH));
+
     //region Kafka配置 kafka.properties
     String KAFKA_CONFIG_PATH = "kafka.properties";
     Config KAFKA_CONFIG = ConfigLib.getConfigExist(KAFKA_CONFIG_PATH);

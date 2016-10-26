@@ -2,12 +2,14 @@ package com.tny.game.suite.auto.snapshot;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.config.Config;
 import com.tny.game.oplog.Snapper;
 import com.tny.game.oplog.annotation.Snap;
 import com.tny.game.oplog.annotation.SnapReason;
 import com.tny.game.suite.auto.AutoMethod;
 import com.tny.game.suite.auto.annotation.None;
 import com.tny.game.suite.base.Actions;
+import com.tny.game.suite.utils.Configs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,8 @@ public class AutoSnapMethod extends AutoMethod<Snap, None, None> {
 
     private List<SnapParamHolder> paramSnapsHolders;
 
+    private static Config CONFIG = Configs.SNAP_REASON_CONFIG;
+
     protected AutoSnapMethod(Method method) {
         super(method, Snap.class, null, null);
         Class<? extends Snapper>[] snapShotTypes = this.autoInvoke.value();
@@ -52,13 +56,18 @@ public class AutoSnapMethod extends AutoMethod<Snap, None, None> {
         }
         this.paramSnapsHolders = paramSnapsHolders.isEmpty() ? ImmutableList.of() : paramSnapsHolders;
         if (reason != null) {
-            this.action = Actions.of(reason.value());
+            String actionStr;
+            if (CONFIG != null)
+                actionStr = CONFIG.getStr(reason.value(), reason.value());
+            else
+                actionStr = reason.value();
+            this.action = Actions.of(actionStr);
             this.snapShotTypes = snapShotTypes;
         } else {
             int actionIndex = -1;
             int index = 0;
             for (Class<?> param : method.getParameterTypes()) {
-                if (Action.class.isAssignableFrom(param) && actionIndex == -1) {
+                if (Action.class.isAssignableFrom(param)) {
                     actionIndex = index;
                     break;
                 }
