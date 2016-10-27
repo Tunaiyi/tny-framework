@@ -112,6 +112,7 @@ public abstract class AbstractServerSession implements ServerSession {
                             break;
                         } catch (Throwable e) {
                             LOGGER.error("send response exception", e);
+                            break;
                         } finally {
                             lock.set(false);
                         }
