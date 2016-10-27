@@ -31,9 +31,9 @@ public class CoreLogger {
 
     public static void log(Session session, Response response) {
         if (LOG_RESPONSE.isDebugEnabled())
-            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
+            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - Protocol : {} 请求[{}] \n##响应No.: {}\n##响应码 : {} \n##响应消息体 : {}",
                     session.getGroup(), session.getHostName(), session.getUID(),
-                    response.getID(), response.getProtocol(),
+                    response.getID(), response.getProtocol(), response.getNumber(),
                     response.getResult(), response.getBody(Object.class));
     }
 

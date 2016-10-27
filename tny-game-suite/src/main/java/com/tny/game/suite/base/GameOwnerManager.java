@@ -2,6 +2,9 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemType;
+import com.tny.game.suite.base.exception.WrongClassException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +16,8 @@ import java.util.Collection;
  * @author KGTny
  */
 public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(GameOwnerManager.class);
 
     private Class<?>[] saveItemClasses = new Class<?>[0];
 
@@ -45,8 +50,10 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
     public boolean save(O item) {
         if (this.entityClass.isInstance(item))
             return super.save(item);
-        if (!this.isSaveItem(item))
+        if (!this.isSaveItem(item)) {
+            LOGGER.error("{} 无法存储 {} 类型对象", this.getClass(), item.getClass(), new WrongClassException());
             return false;
+        }
         if (item instanceof Item) {
             O owner = this.getOwner(((Item<?>) item).getPlayerID());
             if (owner != null)
@@ -61,8 +68,10 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
         for (O item : itemCollection) {
             if (this.entityClass.isInstance(item))
                 saveCollection.add(item);
-            if (!this.isSaveItem(item))
+            if (!this.isSaveItem(item)) {
+                LOGGER.error("{} 无法存储 {} 类型对象", this.getClass(), item.getClass(), new WrongClassException());
                 continue;
+            }
             if (item instanceof Item) {
                 O owner = this.getOwner(((Item<?>) item).getPlayerID());
                 if (owner != null)

@@ -1,8 +1,8 @@
 package com.tny.game.base.exception;
 
+import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.DemandResult;
 
-import java.awt.Desktop.Action;
 
 public class TryToDoException extends GameException {
 

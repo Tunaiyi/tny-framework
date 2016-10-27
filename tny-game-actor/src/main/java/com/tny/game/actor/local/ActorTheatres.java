@@ -13,4 +13,8 @@ public class ActorTheatres {
         return defaultTheatre;
     }
 
+    public static ActorTheatre createActorTheatres(String name, ForkJoinPool pool) {
+        return new ActorCommandExecutor(name, pool);
+    }
+
 }

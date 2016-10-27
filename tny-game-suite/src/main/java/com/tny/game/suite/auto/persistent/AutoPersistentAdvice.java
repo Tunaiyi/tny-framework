@@ -73,7 +73,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     private void addSaveList(Method method, Object target, Object returnValue, Object[] args) {
         AutoDBMethod holder = methodHolder.getInstance(method);
         if (holder.isAutoHandle()) {
-            Transaction transaction = TransactionManager.getTransaction();
+            Transaction transaction = TransactionManager.currentTransaction();
             if (transaction != null) {
                 Map<Object, String> opDBMap = loadOrCreate(transaction);
                 if (holder.isHandleInvoke()) {
@@ -199,26 +199,24 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     @Override
     @Listener
     public void handleClose(Transaction source) {
-        Transaction transaction = source;
         try {
-            this.toDB(transaction);
+            this.toDB(source);
         } catch (Throwable e) {
             CurrentCMD cmd = CurrentCMD.getCurrent();
-            LOGGER.error("{} 协议[{}] handleClose 异常", transaction, cmd.getProtocol(), e);
+            LOGGER.error("{} 协议[{}] handleClose 异常", source, cmd.getProtocol(), e);
         } finally {
-            transaction.attributes().removeAttribute(OP_DB_MAP);
+            source.attributes().removeAttribute(OP_DB_MAP);
         }
     }
 
     @Override
     @Listener
     public void handleRollback(Transaction source, Throwable cause) {
-        Transaction transaction = source;
         try {
-            this.toDB(transaction);
+            this.toDB(source);
         } catch (Throwable e) {
             CurrentCMD cmd = CurrentCMD.getCurrent();
-            LOGGER.error("{} 协议[{}] handleRollback 异常", transaction, cmd.getProtocol(), e);
+            LOGGER.error("{} 协议[{}] handleRollback 异常", source, cmd.getProtocol(), e);
         }
     }
 }

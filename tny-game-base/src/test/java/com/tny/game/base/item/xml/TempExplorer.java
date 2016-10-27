@@ -1,8 +1,10 @@
 package com.tny.game.base.item.xml;
 
+import com.tny.game.base.item.Any;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.Model;
 import com.tny.game.base.item.ModelExplorer;
 
 import java.util.Collection;
@@ -27,71 +29,57 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     }
 
     @Override
-    public <I extends Item<?>> I getItem(long playerID, int itemID, Object... object) {
-        return (I) item;
-    }
-
-    public TempExplorer(Map<String, ItemModel> modelMap, Item<?> item) {
-        this.model = modelMap;
-        this.item = item;
-    }
-
-    @Override
-    public <IM extends ItemModel> IM getItemModel(int itemID) {
+    public <IM extends Model> IM getModel(int itemID) {
         return null;
     }
 
     @Override
-    public <IM extends ItemModel> IM getItemModelByAlias(String itemAlias) {
-        return (IM) this.model.get(itemAlias);
-    }
-
-    @Override
-    public <I extends Item<?>> Collection<I> insertItem(Collection<I> itemCollection) {
-
+    public <IM extends Model> IM getModelByAlias(String itemAlias) {
         return null;
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> updateItem(Collection<I> itemCollection) {
-
+    public <I extends Any<?>> I getItem(long playerID, int id, Object... object) {
         return null;
     }
 
     @Override
-    public <I extends Item<?>> Collection<I> saveItem(Collection<I> itemCollection) {
-
-        return null;
-    }
-
-    @Override
-    public boolean insertItem(Item<?>... items) {
-
+    public boolean insertItem(Any<?>[] items) {
         return false;
     }
 
     @Override
-    public boolean updateItem(Item<?>... items) {
-
-        return false;
-    }
-
-    @Override
-    public boolean saveItem(Item<?>... items) {
-
-        return false;
-    }
-
-    @Override
-    public boolean deleteItem(Item<?>... items) {
-
-        return false;
-    }
-
-    @Override
-    public <I extends Item<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
-
+    public <I extends Any<?>> Collection<I> insertItem(Collection<I> itemCollection) {
         return null;
     }
 
+    @Override
+    public boolean updateItem(Any<?>[] items) {
+        return false;
+    }
+
+    @Override
+    public <I extends Any<?>> Collection<I> updateItem(Collection<I> itemCollection) {
+        return null;
+    }
+
+    @Override
+    public boolean saveItem(Any<?>[] items) {
+        return false;
+    }
+
+    @Override
+    public <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteItem(Any<?>[] items) {
+        return false;
+    }
+
+    @Override
+    public <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
+        return null;
+    }
 }

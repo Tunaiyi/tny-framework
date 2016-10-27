@@ -10,6 +10,8 @@ import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.RequestChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import io.netty.buffer.ByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,8 @@ public abstract class AbstractServerSession implements ServerSession {
     protected MessageBuilderFactory messageBuilderFactory;
 
     private AtomicBoolean lock = new AtomicBoolean(false);
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(CoreLogger.SESSION);
 
     private volatile transient Attributes attributes;
 
@@ -88,29 +92,37 @@ public abstract class AbstractServerSession implements ServerSession {
             data = body;
             return this.write(data);
         } else {
-            Optional<NetFuture> optional = Optional.empty();
-            NetResponse response = (NetResponse) this.getMessageBuilderFactory()
-                    .newResponseBuilder(this)
-                    .setID(protocol.isPush() ? 0 : DEFAULT_RESPONSE_ID)
-                    .setProtocol(protocol)
-                    .setResult(code)
-                    .setBody(body)
-                    .build();
-            CoreLogger.log(this, response);
-            while (lock.compareAndSet(false, true)) {
-                try {
-                    response.setNumber(createResponseNumber());
-                    data = response;
-                    this.prepareWriteResponse(response);
-                    optional = this.write(data);
-                    break;
-                } finally {
-                    lock.set(false);
+            try {
+                Optional<NetFuture> optional = Optional.empty();
+                NetResponse response = (NetResponse) this.getMessageBuilderFactory()
+                        .newResponseBuilder(this)
+                        .setID(protocol.isPush() ? 0 : DEFAULT_RESPONSE_ID)
+                        .setProtocol(protocol)
+                        .setResult(code)
+                        .setBody(body)
+                        .build();
+                while (true) {
+                    if (lock.compareAndSet(false, true)) {
+                        try {
+                            response.setNumber(createResponseNumber());
+                            data = response;
+                            this.prepareWriteResponse(response);
+                            CoreLogger.log(this, response);
+                            optional = this.write(data);
+                            break;
+                        } catch (Throwable e) {
+                            LOGGER.error("send response exception", e);
+                        } finally {
+                            lock.set(false);
+                        }
+                    }
                 }
+                optional.ifPresent(netFuture -> this.postWriteResponse(response, netFuture));
+                return optional;
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                return Optional.empty();
             }
-            if (optional.isPresent())
-                this.postWriteResponse(response, optional.get());
-            return optional;
         }
     }
 

@@ -118,7 +118,7 @@ public class ProtoExResponse extends NetResponse {
 
     @Override
     public String toString() {
-        return "ProtoResponse [ID=" + this.ID + ", protocol=" + this.protocol + ", result=" + this.result
+        return "ProtoResponse [ID=" + this.ID + ", number=" + this.number + ", protocol=" + this.protocol + ", result=" + this.result
                 + ", message=" + this.body + "]";
     }
 
