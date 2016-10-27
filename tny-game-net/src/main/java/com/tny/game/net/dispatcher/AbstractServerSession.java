@@ -104,7 +104,12 @@ public abstract class AbstractServerSession implements ServerSession {
                 while (true) {
                     if (lock.compareAndSet(false, true)) {
                         try {
-                            response.setNumber(createResponseNumber());
+                            int responseNum = createResponseNumber();
+                            if (responseNum < 0) {
+                                LOGGER.warn("{}.{} session 分配的 responseNum {} 无效", this.getGroup(), this.getUID(), responseNum);
+                                break;
+                            }
+                            response.setNumber(responseNum);
                             data = response;
                             this.prepareWriteResponse(response);
                             CoreLogger.log(this, response);

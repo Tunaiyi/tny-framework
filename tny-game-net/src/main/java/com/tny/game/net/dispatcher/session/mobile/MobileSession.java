@@ -1,8 +1,8 @@
 package com.tny.game.net.dispatcher.session.mobile;
 
+import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.ChannelServerSession;
 import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.LoginCertificate;
 import io.netty.channel.Channel;
 
 public class MobileSession extends ChannelServerSession {
@@ -22,6 +22,8 @@ public class MobileSession extends ChannelServerSession {
     @Override
     protected int createResponseNumber() {
         MobileAttach attach = this.getMobileAttach();
+        if (attach == null)
+            return -1;
         return attach.createResponseNumber();
     }
 
