@@ -24,7 +24,7 @@ ext.libs = [
 
         'cglib-nodep'           : "cglib:cglib-nodep:3.2.0",
         'javassist'             : 'org.javassist:javassist:3.20.0-GA',
-        'mvel'                  : "org.mvel:mvel2:2.2.7.Final",
+        'mvel'                  : "org.mvel:mvel2:2.3.1.Final",
         'groovy-all'            : 'org.codehaus.groovy:groovy-all:2.4.5',
 
 

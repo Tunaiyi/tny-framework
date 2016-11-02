@@ -244,6 +244,22 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
         return one.doubleValue() == other.doubleValue();
     }
 
+    public static int compare(Number one, Number other) {
+        Class<?> numClass = findClass(one.getClass(), other.getClass());
+        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class))
+            return one.intValue() - other.intValue();
+        if (numClass.isAssignableFrom(Long.class)) {
+            long value = one.longValue() - other.longValue();
+            return value == 0 ? 0 : value > 0 ? 1 : -1;
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
+            float value = one.floatValue() - other.floatValue();
+            return value == 0.F ? 0 : value > 0 ? 1 : -1;
+        }
+        double value = one.doubleValue() - other.doubleValue();
+        return value == 0. ? 0 : value > 0 ? 1 : -1;
+    }
+
     public static boolean notEqual(Number one, Number other) {
         return !equal(one, other);
     }
