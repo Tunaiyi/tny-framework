@@ -79,7 +79,7 @@ public interface TimeTrigger<C extends TimeCycle> extends TimeMeter<C> {
 
     void restart(C timeCycle, DateTime startTime, DateTime endTime);
 
-    boolean triggerForce();
+    boolean triggerForce(long timeMillis);
 
     default boolean trigger() {
         return trigger(System.currentTimeMillis());
