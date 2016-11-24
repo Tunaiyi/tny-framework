@@ -60,7 +60,7 @@ public abstract class UserAuthProvider extends GameAuthProvider {
             if (this.isAuth()) {
                 if (ticketWord == null)
                     throw new ValidatorFailException(openID, request.getHostName(), "无登录票据");
-                ticket = GameTickeHelper.decryptTicket(ticketWord);
+                ticket = GameTicketHelper.decryptTicket(ticketWord);
                 if (!this.isOnline() && (!ticket.getPf().equals("inside") || !ticket.isInterior()))
                     throw new DispatchException(SuiteResultCode.AUTH_SERVER_IS_OFFLINE, "服务器正在维护");
                 // 维护时候只有pf为inside才可以进入
@@ -79,12 +79,12 @@ public abstract class UserAuthProvider extends GameAuthProvider {
                         pf = pfs[1];
                     }
                     long time = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, System.currentTimeMillis());
-                    ticket = new GameTicket(System.currentTimeMillis(), serverID, openID, openKey, pf, zoneID, entryID, null, null, time, null);
+                    ticket = new GameTicket(System.currentTimeMillis(), serverID, openID, openID, false, openKey, pf, pf, zoneID, entryID, null, null, time, null);
                 } else {
-                    ticket = GameTickeHelper.decryptTicket(ticketWord);
+                    ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
                     if (!checkKey.equals(ticket.getSecret()))
-                        throw new ValidatorFailException(openID, request.getHostName(), "票据验证失败");
+                        throw new ValidatorFailException(ticket.getOpenID(), request.getHostName(), "票据验证失败" + ticket);
                 }
             }
         } catch (Throwable e) {
@@ -112,10 +112,9 @@ public abstract class UserAuthProvider extends GameAuthProvider {
         request.getSession().attributes().setAttribute(SessionKeys.OPEN_KEY_KEY, ticket.getOpenKey());
         request.getSession().attributes().setAttribute(SessionKeys.ACCOUNT_KEY, accountObj);
         request.getSession().attributes().setAttribute(SessionKeys.TICKET_KEY, ticket);
-        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", request.getHostName(), openID, accountObj.getUid());
+        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", request.getHostName(), ticket.getOpenID(), accountObj.getUid());
         return LoginCertificate.createLogin(accountObj.getUid(), relogin);
     }
-
 
     public void setOnline(boolean online) {
         this.online = online;

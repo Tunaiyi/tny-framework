@@ -13,9 +13,9 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 
-public class GameTickeHelper {
+public class GameTicketHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameTickeHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameTicketHelper.class);
 
     private static RSAPublicKey PUBLIC_KEY;// = RSAUtils.toPublicKey(this.pubKey);
     private static RSAPrivateKey PRIVATE_KEY;// = RSAUtils.toPrivateKey(this.priKey);
@@ -25,9 +25,9 @@ public class GameTickeHelper {
         String priKey = Configs.AUTH_CONFIG.getStr(Configs.AUTH_GAME_TICKET_PRIVATE_KEY);
         try {
             if (pubKey != null)
-                GameTickeHelper.PUBLIC_KEY = RSAUtils.toPublicKey(pubKey);
+                GameTicketHelper.PUBLIC_KEY = RSAUtils.toPublicKey(pubKey);
             if (priKey != null)
-                GameTickeHelper.PRIVATE_KEY = RSAUtils.toPrivateKey(priKey);
+                GameTicketHelper.PRIVATE_KEY = RSAUtils.toPrivateKey(priKey);
         } catch (InvalidKeySpecException e) {
             LOGGER.error("{}", e);
             throw new RuntimeException(e);

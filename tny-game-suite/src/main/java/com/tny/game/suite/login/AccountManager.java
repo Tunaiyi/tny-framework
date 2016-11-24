@@ -20,6 +20,10 @@ public class AccountManager {
         return this.accountDAO.get(account);
     }
 
+    public Account getAccount(long userID) {
+        return this.accountDAO.get(userID);
+    }
+
     public int update(Account accountObj, GameTicket ticket) {
         return this.accountDAO.update(
                 accountObj.getUid(),

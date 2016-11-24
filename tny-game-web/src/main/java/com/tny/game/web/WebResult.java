@@ -31,6 +31,14 @@ public class WebResult<O> {
         return result;
     }
 
+    public static <O> WebResult<O> of(ResultCode code, O object) {
+        WebResult<O> result = new WebResult<>();
+        result.code = code.getCode();
+        result.message = code.getMessage();
+        result.body = object;
+        return result;
+    }
+
     public static <O> WebResult<O> as(DoneResult<O> done) {
         WebResult<O> result = new WebResult<>();
         ResultCode code = done.getCode();

@@ -218,6 +218,10 @@ public class Account implements Identifiable {
         return this.pf;
     }
 
+    public String getAccountTag() {
+        return AccountUtils.account2Tag(account);
+    }
+
     protected void setPf(String pf) {
         this.pf = pf;
     }

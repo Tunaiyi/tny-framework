@@ -23,7 +23,7 @@ public class MobileSession extends ChannelServerSession {
     protected int createResponseNumber() {
         MobileAttach attach = this.getMobileAttach();
         if (attach == null)
-            return -1;
+            return 0;
         return attach.createResponseNumber();
     }
 

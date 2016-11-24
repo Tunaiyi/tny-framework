@@ -37,7 +37,9 @@ public class LoginUtils {
     public static String ticket2MD5(GameTicket ticket, String key) {
         String ticketStr = String.valueOf(ticket.getTokenID()) +
                 ticket.getOpenID() +
+                ticket.getBindID() +
                 ticket.getOpenKey() +
+                ticket.getAccountTag() +
                 ticket.getServer() +
                 ticket.getTime() +
                 ticket.getPf() +

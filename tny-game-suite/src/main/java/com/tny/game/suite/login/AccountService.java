@@ -42,8 +42,7 @@ public class AccountService implements ServerPreStart {
 
     private ExecutorService growUIDExecutor = Executors.newSingleThreadExecutor(new CoreThreadFactory("GrowUIDExecutor"));
 
-    public Account getAccount(GameTicket ticket) {
-        String account = AccountUtils.openID2Account(ticket.getPf(), ticket.getServer(), ticket.getOpenID());
+    public Account getAccount(String account, GameTicket ticket) {
         Account accountObj = this.accountManager.getAccount(account);
         if (accountObj != null) {
             accountObj.updateDevice(ticket);
@@ -52,14 +51,13 @@ public class AccountService implements ServerPreStart {
         return null;
     }
 
-
     public Account loadOrCreateAccount(GameTicket ticket) throws DispatchException {
-        String account = AccountUtils.openID2Account(ticket.getPf(), ticket.getServer(), ticket.getOpenID());
+        String account = AccountUtils.openID2Account(ticket.getAccountTag(), ticket.getServer(), ticket.getOpenID());
         int max = GameInfo.getMainInfo().getScopeType().isTest() ? Integer.MAX_VALUE : 10;
         int index = 0;
         Account accountObj = null;
         while (index < max) {
-            accountObj = this.getAccount(ticket);
+            accountObj = this.getAccount(account, ticket);
             if (accountObj != null)
                 return accountObj;
             long playerID = this.createUID(ticket.getServer());

@@ -11,8 +11,8 @@ public class AccountUtils {
     public static final int SERVER_ID_INDEX = 1;
     public static final int OPEN_ID_INDEX = 2;
 
-    public static String openID2Account(String pf, int serverID, String openid) {
-        return pf + SEPARATOR + serverID + SEPARATOR + openid;
+    public static String openID2Account(String accountTag, int serverID, String openid) {
+        return accountTag + SEPARATOR + serverID + SEPARATOR + openid;
     }
 
     public static Object[] breakAccount(String account) {
@@ -26,7 +26,7 @@ public class AccountUtils {
         return data;
     }
 
-    public static String account2PF(String account) {
+    public static String account2Tag(String account) {
         return StringUtils.split(account, SEPARATOR)[PF_INDEX];
     }
 

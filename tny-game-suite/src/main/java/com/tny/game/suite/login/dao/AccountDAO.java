@@ -17,6 +17,9 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("select " + ACCOUNT_FIELDS + " from " + TABLE + " where `account` = :account")
     Account get(@SQLParam("account") String account);
 
+    @SQL("select " + ACCOUNT_FIELDS + " from " + TABLE + " where `uid` = :uid")
+    Account get(@SQLParam("uid") long uid);
+
     @SQL("select `uid` from " + TABLE + " where `account` = :account")
     Long getUid(@SQLParam("account") String account);
 

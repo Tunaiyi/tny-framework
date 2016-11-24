@@ -5,14 +5,15 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.util.Log4jThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class KafkaOplogManager extends AbstractManager {
@@ -32,8 +33,8 @@ public class KafkaOplogManager extends AbstractManager {
 
     private final String topic;
 
-    public KafkaOplogManager(final String name, final String topic, final Property[] properties) {
-        super(name);
+    public KafkaOplogManager(LoggerContext context, final String name, final String topic, final Property[] properties) {
+        super(context, name);
         this.topic = topic;
         config.setProperty("key.serializer", StringSerializer.class.getName());
         config.setProperty("value.serializer", ByteArraySerializer.class.getName());
@@ -45,23 +46,31 @@ public class KafkaOplogManager extends AbstractManager {
     }
 
     @Override
-    public void releaseSub() {
+    public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        if (timeout > 0) {
+            closeProducer(timeout, timeUnit);
+        } else {
+            closeProducer(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
+        return true;
+    }
+
+    private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-            final Thread closeThread = new Log4jThread(() -> {
-                producer.flush();
-                producer.close();
-            });
-            closeThread.setName("KafkaManager-CloseThread");
-            closeThread.setDaemon(true); // avoid blocking JVM shutdown
-            closeThread.start();
+            final Runnable task = () -> {
+                if (producer != null) {
+                    producer.close();
+                }
+            };
             try {
-                closeThread.join(timeoutMillis);
-            } catch (final InterruptedException ignore) {
+                getLoggerContext().submitDaemon(task).get(timeout, timeUnit);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 // ignore
             }
         }
     }
+
 
     public void send(final Integer serverID, final String key, final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
@@ -74,6 +83,10 @@ public class KafkaOplogManager extends AbstractManager {
 
     public void startup() {
         producer = producerFactory.newKafkaProducer(config);
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
 }
