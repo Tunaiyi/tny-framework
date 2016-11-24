@@ -17,9 +17,9 @@ public interface TimeMeter<C extends TimeCycle> {
 
     DateTime getEndTime();
 
-    DateTime getSuspendTime();
+    DateTime getSuspendAt();
 
-    long getSpeedMills();
+    long getSpeedUpMills();
 
     C getTimeCycle();
 
@@ -28,11 +28,11 @@ public interface TimeMeter<C extends TimeCycle> {
     }
 
     default boolean isSuspend() {
-        return this.getNextTime() != null && this.getSuspendTime() != null;
+        return this.getNextTime() != null && this.getSuspendAt() != null;
     }
 
     default boolean isWorking() {
-        return this.getNextTime() != null && this.getSuspendTime() == null;
+        return this.getNextTime() != null && this.getSuspendAt() == null;
     }
 
     default boolean isFinish() {
@@ -79,10 +79,10 @@ public interface TimeMeter<C extends TimeCycle> {
         DateTime next = this.getNextTime();
         if (next == null)
             return -1;
-        DateTime suspendTime = this.getSuspendTime();
-        if (suspendTime != null && suspendTime.getMillis() < timeMillis + this.getSpeedMills())
+        DateTime suspendTime = this.getSuspendAt();
+        if (suspendTime != null && suspendTime.getMillis() < timeMillis + this.getSpeedUpMills())
             timeMillis = suspendTime.getMillis();
-        return Math.max(next.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
+        return Math.max(next.getMillis() - (timeMillis + this.getSpeedUpMills()), 0L);
     }
 
     default long countEndRemainMills() {
@@ -96,10 +96,10 @@ public interface TimeMeter<C extends TimeCycle> {
         DateTime end = this.getEndTime();
         if (end == null)
             return -1;
-        DateTime suspendTime = this.getSuspendTime();
+        DateTime suspendTime = this.getSuspendAt();
         if (suspendTime != null && suspendTime.getMillis() <= timeMillis)
             timeMillis = suspendTime.getMillis();
-        return Math.max(end.getMillis() - (timeMillis + this.getSpeedMills()), 0L);
+        return Math.max(end.getMillis() - (timeMillis + this.getSpeedUpMills()), 0L);
     }
 
 }

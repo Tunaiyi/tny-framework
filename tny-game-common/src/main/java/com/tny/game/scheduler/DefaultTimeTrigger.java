@@ -45,8 +45,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         return endTime;
     }
 
-    @Override
-    public long getSpeedMills() {
+    public long getSpeedUpMills() {
         return speedMills;
     }
 
@@ -126,9 +125,10 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     public boolean trigger(long timeMillis) {
         DateTime next = this.nextTime;
         DateTime suspend = this.suspendTime;
+        DateTime checkAt = new DateTime(timeMillis);
         if (next != null && suspend == null && getCheckMills(timeMillis) >= next.getMillis()) {
-            this.previousTime = next;
-            this.nextTime = getNextTimeAfter(this.previousTime);
+            this.previousTime = checkAt.isBefore(next) ? checkAt : next;
+            this.nextTime = getNextTimeAfter(next);
             return true;
         }
         return false;
@@ -143,11 +143,12 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     }
 
     @Override
-    public boolean triggerForce() {
+    public boolean triggerForce(long timeMillis) {
         DateTime next = this.nextTime;
+        DateTime time = new DateTime(timeMillis);
         if (next != null) {
-            this.previousTime = DateTime.now();
-            this.nextTime = getNextTimeAfter(this.previousTime);
+            this.previousTime = time.isBefore(next) ? time : next;
+            this.nextTime = getNextTimeAfter(next);
             return true;
         }
         return false;
@@ -158,7 +159,6 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
             return null;
         DateTime pot = timeCycle.getTimeAfter(time);
         if (this.endTime != null && pot.isAfter(this.endTime)) {
-            this.nextTime = null;
             return null;
         }
         return pot;
@@ -169,8 +169,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     }
 
 
-    @Override
-    public DateTime getSuspendTime() {
+    public DateTime getSuspendAt() {
         return this.suspendTime;
     }
 
@@ -191,7 +190,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public boolean suspend(DateTime time) {
-        if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
+        if (!isWorking() && time.plusMillis((int) this.getSpeedUpMills())
                 .isAfter(this.getNextTime()))
             return false;
         this.suspendTime = time;

@@ -30,4 +30,9 @@ public class CronTimeCycle implements TimeCycle {
         return new DateTime(expression.getTimeAfter(dateTime.toDate()));
     }
 
+    @Override
+    public long getDuration(DateTime dateTime) {
+        return Math.min(expression.getTimeAfter(dateTime.toDate()).getTime() - dateTime.getMillis(), 0);
+    }
+
 }

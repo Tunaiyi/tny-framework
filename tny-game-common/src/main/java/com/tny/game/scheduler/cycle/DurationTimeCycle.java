@@ -31,6 +31,10 @@ public class DurationTimeCycle implements TimeCycle {
         return duration;
     }
 
+    public long getDuration(DateTime dateTime) {
+        return duration.getMillis();
+    }
+
     @Override
     public DateTime getTimeAfter(DateTime dateTime) {
         return dateTime.plus(duration.getMillis());

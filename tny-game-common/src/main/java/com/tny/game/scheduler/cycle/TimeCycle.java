@@ -10,4 +10,6 @@ public interface TimeCycle {
 
     DateTime getTimeAfter(DateTime dateTime);
 
+    long getDuration(DateTime dateTime);
+
 }
