@@ -260,7 +260,7 @@ public class RSAUtils {
      * @return byte[] 数字签名
      */
     public static boolean verify(byte[] sign, byte[] data, PublicKey publicKey) throws Exception {
-        return verify(data, sign, publicKey, SIGN_MD5_ALGORITHM);
+        return verify(sign, data, publicKey, SIGN_MD5_ALGORITHM);
     }
 
     /**
@@ -285,7 +285,7 @@ public class RSAUtils {
      * @return byte[] 数字签名
      */
     public static boolean verify(String sign, String data, PublicKey publicKey) throws Exception {
-        return verify(data, sign, publicKey, SIGN_MD5_ALGORITHM);
+        return verify(sign, data, publicKey, SIGN_MD5_ALGORITHM);
     }
 
     /**
@@ -310,7 +310,7 @@ public class RSAUtils {
      * @return byte[] 数字签名
      */
     public static boolean verify(String sign, String data, String publicKeyWord) throws Exception {
-        return verify(data, sign, publicKeyWord, SIGN_MD5_ALGORITHM);
+        return verify(sign, data, publicKeyWord, SIGN_MD5_ALGORITHM);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.tny.game.oplog.log4j2;
+package com.tny.game.oplog.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;

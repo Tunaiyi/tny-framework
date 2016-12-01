@@ -1,5 +1,7 @@
 package com.tny.game.oplog;
 
+import org.joda.time.DateTime;
+
 public interface Loggable {
 
     String getLogID();
@@ -13,5 +15,7 @@ public interface Loggable {
     int getServerID();
 
     String getType();
+
+    DateTime getDateTimeAt();
 
 }

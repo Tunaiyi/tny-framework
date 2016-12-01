@@ -6,7 +6,7 @@ import com.tny.game.net.initer.InitLevel;
 import com.tny.game.net.initer.PerIniter;
 import com.tny.game.net.initer.ServerPreStart;
 import com.tny.game.oplog.Snapshot;
-import com.tny.game.oplog.log4j2.OpLogMapper;
+import com.tny.game.oplog.utils.OpLogMapper;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.filter.ClassIncludeFilter;
 import com.tny.game.scanner.filter.SubOfClassFilter;

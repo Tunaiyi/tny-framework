@@ -122,25 +122,27 @@ public class TimeTriggerTest {
 
     @Test
     public void triggerForce() throws Exception {
-        Assert.assertTrue(startNoEndTrigger.triggerForce());
+        DateTime nowDate = DateTime.now();
+        long now = nowDate.getMillis();
+        Assert.assertTrue(startNoEndTrigger.triggerForce(now));
         Assert.assertEquals(atTime
                         .plus(CYCLE_1000.getDuration())
                         .plus(CYCLE_1000.getDuration()),
                 startNoEndTrigger.getNextTime());
 
-        Assert.assertTrue(startEndTrigger.triggerForce());
+        Assert.assertTrue(startEndTrigger.triggerForce(now));
         DateTime exp = atTime.plus(CYCLE_1000.getDuration())
                 .plus(CYCLE_1000.getDuration());
         Assert.assertEquals(exp, startEndTrigger.getNextTime());
 
-        Assert.assertTrue(startEndTrigger.triggerForce());
+        Assert.assertTrue(startEndTrigger.triggerForce(now));
         exp = exp.plus(CYCLE_1000.getDuration());
         Assert.assertEquals(exp, startEndTrigger.getNextTime());
 
-        Assert.assertTrue(startEndTrigger.triggerForce());
+        Assert.assertTrue(startEndTrigger.triggerForce(now));
         Assert.assertNull(startEndTrigger.getNextTime());
 
-        Assert.assertFalse(startEndTrigger.triggerForce());
+        Assert.assertFalse(startEndTrigger.triggerForce(now));
     }
 
     @Test

@@ -109,10 +109,7 @@ subprojects {
                 libs.'spring-test',
         )
 
-        compile(
-                libs.'slf4j-api',
-                libs.'log4j-over-slf4j',
-        )
+        compile libs.'slf4j-api'
 
     }
 

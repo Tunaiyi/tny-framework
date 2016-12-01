@@ -8,6 +8,7 @@ dependencies {
     compile(
             libs.'log4j-api',
             libs.'log4j-core',
+            project(":tny-game-oplog"),
     )
 
 }

@@ -24,6 +24,9 @@ import java.util.List;
         getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class OperateLogDTO implements OperateLog {
 
+    @JsonProperty(index = 0)
+    private long at;
+
     @JsonProperty(index = 1)
     private long uid;
 
@@ -35,9 +38,6 @@ public class OperateLogDTO implements OperateLog {
 
     @JsonProperty(index = 4)
     private int sid;
-
-    @JsonProperty(index = 5)
-    private long at;
 
     @JsonProperty(index = 7)
     private Object op;
@@ -63,6 +63,8 @@ public class OperateLogDTO implements OperateLog {
 
     private String type = "oplog";
 
+    private DateTime dateTimeAt;
+
     private int date;
 
     public OperateLogDTO() {
@@ -79,6 +81,7 @@ public class OperateLogDTO implements OperateLog {
         this.op = log.getProtocol();
         DateTime dateTime = log.getCreateAt();
         this.at = dateTime.getMillis();
+        this.dateTimeAt = dateTime;
         this.date = DateTimeHelper.date2Int(dateTime);
         this.acid = actionLog.getActionID();
         this.i = index;
@@ -150,6 +153,10 @@ public class OperateLogDTO implements OperateLog {
     @Override
     public int getLevel() {
         return this.lv;
+    }
+
+    public DateTime getDateTimeAt() {
+        return dateTimeAt == null ? this.dateTimeAt = new DateTime(this.at) : this.dateTimeAt;
     }
 
     @Override

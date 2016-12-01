@@ -1,10 +1,10 @@
 package com.tny.game.oplog.log4j2;
 
 import com.tny.game.oplog.Loggable;
-import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
 
-public class LogMessage implements Message {
+public class LogMessage extends MapMessage {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,6 +12,7 @@ public class LogMessage implements Message {
 
     public LogMessage(Loggable log) {
         this.log = log;
+        this.put("sid", Integer.toString(log.getServerID()));
     }
 
     public Loggable getLog() {
@@ -21,6 +22,10 @@ public class LogMessage implements Message {
     @Override
     public String getFormattedMessage() {
         return Strings.EMPTY;
+    }
+
+    public int getServerID() {
+        return log.getServerID();
     }
 
     @Override

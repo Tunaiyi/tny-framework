@@ -9,8 +9,8 @@ dependencies {
         exclude module: 'jms'
         exclude module: 'jmxtools'
         exclude module: 'jmxri'
-        exclude module: 'log4j'
-        exclude module: 'slf4j-log4j12'
+        exclude group: 'log4j', module: 'log4j'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
     compile project(":tny-game-common")
 

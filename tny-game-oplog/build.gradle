@@ -7,7 +7,6 @@ dependencies {
     compile(
             libs.'commons-lang3',
             libs.'spring-context-support',
-
             project(":tny-game-base"),
     )
 

@@ -12,6 +12,7 @@ dependencies {
 //            libs.'kafka_2.11',
             project(":tny-game-common"),
             project(":tny-game-oplog"),
+            project(":tny-game-oplog-log4j"),
     )
 
 }

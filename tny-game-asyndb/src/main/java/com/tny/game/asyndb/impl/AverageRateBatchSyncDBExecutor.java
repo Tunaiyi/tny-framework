@@ -1,13 +1,27 @@
 package com.tny.game.asyndb.impl;
 
-import com.tny.game.asyndb.*;
+import com.tny.game.asyndb.AsyncDBState;
+import com.tny.game.asyndb.SyncDBExecutor;
+import com.tny.game.asyndb.Synchronizable;
+import com.tny.game.asyndb.Synchronizer;
+import com.tny.game.asyndb.TrySyncDone;
 import com.tny.game.asyndb.log.LogName;
+import com.tny.game.common.thread.CoreThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -41,7 +55,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
     /**
      * 提交线程同步队列线程
      */
-    private ExecutorService sumitSyncDBTaskExecutor = Executors.newCachedThreadPool();
+    private ExecutorService submitSyncDBTaskExecutor = Executors.newCachedThreadPool(new CoreThreadFactory("SubmitSyncDBTask"));
 
     /**
      * 同步计算器
@@ -87,8 +101,8 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
             LOGGER.info("#SyncDBExecutor#正在关闭同步执行器......");
             this.stop = true;
             LOGGER.info("#SyncDBExecutor#同步线程池shutdown....");
-            this.sumitSyncDBTaskExecutor.shutdown();
-            while (!this.sumitSyncDBTaskExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
+            this.submitSyncDBTaskExecutor.shutdown();
+            while (!this.submitSyncDBTaskExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
             }
             LOGGER.info("#SyncDBExecutor#同步线程池停止!");
             LOGGER.info("#SyncDBExecutor#同步执行器关闭!");
@@ -103,7 +117,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                 this.stop = false;
                 int id = 0;
                 for (BlockingQueue<Synchronizable> queues : this.sumitQueues) {
-                    this.sumitSyncDBTaskExecutor.submit(new SyncController(id++, queues));
+                    this.submitSyncDBTaskExecutor.submit(new SyncController(id++, queues));
                 }
                 LOGGER.info("#SyncDBExecutor#同步执行器启动!");
                 return true;

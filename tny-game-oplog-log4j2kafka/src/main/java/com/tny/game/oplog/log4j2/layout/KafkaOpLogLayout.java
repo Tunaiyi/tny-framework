@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tny.game.oplog.Loggable;
 import com.tny.game.oplog.log4j2.LogMessage;
-import com.tny.game.oplog.log4j2.OpLogMapper;
+import com.tny.game.oplog.utils.OpLogMapper;
 import com.tny.game.oplog.simple.LogRecord;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -20,19 +20,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@Plugin(name = "JsonOpLogLayout", category = "Core", elementType = "layout", printObject = true)
-public class JsonOpLogLayout extends AbstractStringLayout {
+@Plugin(name = "KafkaOpLogLayout", category = "Core", elementType = "layout", printObject = true)
+public class KafkaOpLogLayout extends AbstractStringLayout {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonOpLogLayout.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpLogJsonLayout.class);
 
     private final Map<String, String> result;
 
-    protected JsonOpLogLayout(Charset charset) {
+    protected KafkaOpLogLayout(Charset charset) {
         super(charset);
         Map<String, String> result = new HashMap<>();
         result.put("version", "2.0");
@@ -62,10 +62,10 @@ public class JsonOpLogLayout extends AbstractStringLayout {
     }
 
     @PluginFactory
-    public static JsonOpLogLayout createLayout(
+    public static OpLogJsonLayout createLayout(
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
     ) {
-        return new JsonOpLogLayout(charset);
+        return new OpLogJsonLayout(charset);
     }
 
 }
