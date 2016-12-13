@@ -172,7 +172,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                return DateTimeHelper.SIMPLE_DATE_TIME_FORMAT.parseLocalDate(crateAt);
+                return DateTimeHelper.DATE_TIME_MIN_FORMAT.parseLocalDate(crateAt);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -184,7 +184,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                return DateTimeHelper.SIMPLE_DATE_TIME_FORMAT.parseDateTime(crateAt);
+                return DateTimeHelper.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -196,7 +196,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                DateTime dateTime = DateTimeHelper.SIMPLE_DATE_TIME_FORMAT.parseDateTime(crateAt);
+                DateTime dateTime = DateTimeHelper.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
                 return dateTime.getMillis();
             } catch (Exception e) {
                 e.printStackTrace();

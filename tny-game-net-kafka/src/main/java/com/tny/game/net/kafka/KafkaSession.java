@@ -78,7 +78,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
             super.login(certificate);
             LoginCertificate cer = this.certificate;
             if (cer.isLogin()) {
-                this.loginKey = DateTimeHelper.time2SecondLong(new DateTime(cer.getLoginAt())) + "";
+                this.loginKey = DateTimeHelper.time2Second(new DateTime(cer.getLoginAt())) + "";
                 this.topic = Topics.requestTopic(this.serverInfo);
             }
         }
@@ -90,7 +90,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
             super.login(certificate);
             LoginCertificate cer = this.certificate;
             if (cer.isLogin()) {
-                this.loginKey = DateTimeHelper.time2SecondLong(new DateTime(cer.getLoginAt())) + "";
+                this.loginKey = DateTimeHelper.time2Second(new DateTime(cer.getLoginAt())) + "";
                 this.topic = Topics.responseTopic(cer);
             }
         }

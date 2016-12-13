@@ -51,7 +51,7 @@ public class GameInfo {
         xStream.autodetectAnnotations(true);
         xStream.alias("servers", ArrayList.class);
         xStream.alias("server", GameInfo.class);
-        xStream.registerLocalConverter(GameInfo.class, "openDate", new DateTimeConverter(DateTimeHelper.SIMPLE_DATE_TIME_FORMAT));
+        xStream.registerLocalConverter(GameInfo.class, "openDate", new DateTimeConverter(DateTimeHelper.DATE_TIME_MIN_FORMAT));
         Map<Integer, GameInfo> map = new HashMap<>();
         try (InputStream inputStream = ConfigLoader.loadInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
             LOGGER.info("#itemModelManager# 解析 <{}> xml ......", GameInfo.class.getName());

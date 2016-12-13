@@ -171,7 +171,7 @@ public class ServerOutline {
     public DateTime getOpenDateTime() {
         if (this.openDateTime != null)
             return this.openDateTime;
-        this.openDateTime = DateTime.parse(this.openDate, DateTimeHelper.SIMPLE_DATE_TIME_FORMAT);
+        this.openDateTime = DateTime.parse(this.openDate, DateTimeHelper.DATE_TIME_MIN_FORMAT);
         return this.openDateTime;
     }
 
@@ -188,7 +188,7 @@ public class ServerOutline {
     }
 
     public ServerOutline setOpenDate(DateTime openDate) {
-        this.openDate = openDate.toString(DateTimeHelper.SIMPLE_DATE_TIME_FORMAT);
+        this.openDate = openDate.toString(DateTimeHelper.DATE_TIME_MIN_FORMAT);
         return this;
     }
 
