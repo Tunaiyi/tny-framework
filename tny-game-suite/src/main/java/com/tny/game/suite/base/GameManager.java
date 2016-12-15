@@ -6,11 +6,11 @@ import java.util.Collection;
 
 public abstract class GameManager<O> extends GettableManager<O> {
 
-    protected final Class<? extends O> entityClass;
+    protected final Class<O> entityClass;
 
     protected GameManager(Class<? extends O> entityClass) {
         super();
-        this.entityClass = entityClass;
+        this.entityClass = (Class<O>) entityClass;
     }
 
     /**

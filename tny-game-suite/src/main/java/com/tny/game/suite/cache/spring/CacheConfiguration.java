@@ -6,11 +6,9 @@ import com.tny.game.asyndb.SynchronizerHolder;
 import com.tny.game.asyndb.impl.AverageRateBatchSyncDBExecutor;
 import com.tny.game.asyndb.spring.SpringSynchronizerHolder;
 import com.tny.game.cache.RawCacheItemFactory;
-import com.tny.game.cache.shard.CacheKeyShardInterpreter;
 import com.tny.game.common.config.Config;
 import com.tny.game.suite.cache.DomainItemDBItemFactory;
 import com.tny.game.suite.utils.Configs;
-import net.paoding.rose.jade.shard.ShardInterpreter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -33,10 +31,10 @@ public class CacheConfiguration {
         return new SpringSynchronizerHolder();
     }
 
-    @Bean
-    public ShardInterpreter<String> cacheKeyShardInterpreter() {
-        return new CacheKeyShardInterpreter();
-    }
+    // @Bean
+    // public ShardInterpreter<String> cacheKeyShardInterpreter() {
+    //     return new CacheKeyShardInterpreter();
+    // }
 
     @Bean(name = "dbItemFactory")
     public RawCacheItemFactory dbItemFactory() {

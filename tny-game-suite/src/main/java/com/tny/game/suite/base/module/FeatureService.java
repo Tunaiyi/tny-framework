@@ -196,10 +196,7 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
             this.handlerMap.put(feature.getFeature(), feature);
         }
         for (Feature feature : Features.values()) { //TODO AA 临时注释掉的
-            if (feature.isHasHandler()) {
-                if (!this.handlerMap.containsKey(feature))
-                    throw new IllegalArgumentException(LogUtils.format("{} feature handler is null", feature));
-            } else {
+            if (!this.handlerMap.containsKey(feature)) {
                 FeatureHandler handler = new DefaultFuncSysHandler(feature);
                 this.handlerMap.put(feature, handler);
             }
