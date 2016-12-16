@@ -1,4 +1,4 @@
-package com.tny.game.net.initer;
+package com.tny.game.lifecycle;
 
 /**
  * 初始化优先级
@@ -6,7 +6,7 @@ package com.tny.game.net.initer;
  *
  * @author KunYang
  */
-public enum InitLevel {
+public enum LifecycleLevel implements LifecyclePriority{
 
     LEVEL_1(1),
 
@@ -30,8 +30,12 @@ public enum InitLevel {
 
     public final int priority;
 
-    InitLevel(int priority) {
+    LifecycleLevel(int priority) {
         this.priority = priority;
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
 }

@@ -5,6 +5,7 @@ package com.tny.game.suite;
  */
 public interface SuiteProfiles {
 
+    String WEB = "suite.web";
     String GAME = "suite.game";
     String DOORS = "suite.doors";
     String ACCESS = "suite.access";

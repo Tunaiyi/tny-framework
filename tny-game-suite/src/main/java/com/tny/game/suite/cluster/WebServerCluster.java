@@ -8,12 +8,10 @@ import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -127,9 +125,9 @@ public abstract class WebServerCluster extends BaseCluster {
 
     @Override
     @PostConstruct
-    protected void init() throws IOException, KeeperException, InterruptedException {
-        if (this.protoExSchemaIniter.waitInitialized())
-            super.monitor();
+    protected void init() throws Exception {
+        this.protoExSchemaIniter.prepareStart();
+        super.monitor();
     }
 
     public WebServerCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {

@@ -11,10 +11,9 @@ public class FlashPolicyHandler extends SimpleChannelInboundHandler<String> {
             + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
             + "</cross-domain-policy>" + "\0";
 
-
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, String message) throws Exception {
-        if (message.contains("<policy-file-request/>")) {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        if (msg.contains("<policy-file-request/>")) {
             ChannelFuture future = ctx.channel().writeAndFlush(SECURITY_FILE);
             future.addListener((ChannelFuture f) -> ctx.channel().disconnect());
             ctx.flush();

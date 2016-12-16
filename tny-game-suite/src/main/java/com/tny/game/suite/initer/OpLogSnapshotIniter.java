@@ -2,50 +2,49 @@ package com.tny.game.suite.initer;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.utils.OpLogMapper;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.filter.ClassIncludeFilter;
-import com.tny.game.scanner.filter.SubOfClassFilter;
+import com.tny.game.protoex.annotations.ProtoEx;
+import com.tny.game.scanner.ClassSelector;
+import com.tny.game.scanner.filter.AnnotationClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
-public class OpLogSnapshotIniter implements ServerPreStart {
+public class OpLogSnapshotIniter implements ServerPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogSnapshotIniter.class);
 
-    private ForkJoinTask<?> forkJoinTask;
+    private static ForkJoinTask<?> forkJoinTask;
 
     private List<String> scanPaths = new ArrayList<>();
+
+    private static ClassSelector selector = ClassSelector
+            .instance(AnnotationClassFilter.ofInclude(ProtoEx.class))
+            .setHandler(OpLogSnapshotIniter::loadClasses);
+
+    public static ClassSelector selector() {
+        return selector;
+    }
 
     public OpLogSnapshotIniter(List<String> scanPaths) {
         this.scanPaths.addAll(scanPaths);
     }
 
-    @PostConstruct
     @SuppressWarnings("unchecked")
-    public void initSchemaAsync() {
+    public static void loadClasses(Set<Class<?>> classes) {
         LOGGER.info("启动初始化ProtoSchema任务!");
         forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
-
             // try {
-            ClassScanner scanner = new ClassScanner()
-                    .addFilter(SubOfClassFilter.ofInclude(Snapshot.class))
-                    .addFilter(ClassIncludeFilter.of(r -> !r.getClassMetadata().isAbstract()));
-            Set<Class<?>> classes = new HashSet<>();
-            classes.addAll(scanner.getClasses(scanPaths.toArray(new String[scanPaths.size()])));
-            RunningChecker.start(this.getClass());
+            RunningChecker.start(OpLogSnapshotIniter.class);
             LOGGER.info("开始初始化 OpLogSnapshot .......");
             for (Class<?> cl : classes) {
                 if (Snapshot.class.isAssignableFrom(cl)) {
@@ -58,33 +57,30 @@ public class OpLogSnapshotIniter implements ServerPreStart {
                     }
                 }
             }
-            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
+            OpLogSnapshotIniter.selector = null;
+            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunningChecker.end(OpLogSnapshotIniter.class).cost());
         });
     }
 
-    private boolean waitSuccess() {
-        forkJoinTask.quietlyJoin();
-        return forkJoinTask.isCompletedNormally();
+    @Override
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
     }
 
-    public Throwable getException() {
-        return forkJoinTask.getException();
+    private void waitSuccess() {
+        ForkJoinTask<?> forkJoinTask = OpLogSnapshotIniter.forkJoinTask;
+        if (forkJoinTask == null)
+            return;
+        try {
+            forkJoinTask.join();
+        } finally {
+            OpLogSnapshotIniter.forkJoinTask = null;
+        }
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
-    }
-
-    @Override
-    public void initialize() throws Exception {
-    }
-
-    @Override
-    public boolean waitInitialized() {
-        if (!this.waitSuccess())
-            throw new RuntimeException(forkJoinTask.getException());
-        return forkJoinTask.getException() == null;
+    public void prepareStart() throws Exception {
+        this.waitSuccess();
     }
 
 }

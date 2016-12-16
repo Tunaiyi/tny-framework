@@ -9,9 +9,9 @@ import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FeatureService<DTO> implements ServerPreStart, ApplicationContextAware {
+public abstract class FeatureService<DTO> implements ServerPrepareStart, ApplicationContextAware {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 
@@ -185,12 +185,12 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_5);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_5);
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         List<GameFeatureHandler> featureHandlers = new ArrayList<>(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
         for (GameFeatureHandler feature : featureHandlers) {
             this.handlerMap.put(feature.getFeature(), feature);
@@ -215,8 +215,4 @@ public abstract class FeatureService<DTO> implements ServerPreStart, Application
         );
     }
 
-    @Override
-    public boolean waitInitialized() {
-        return true;
-    }
 }

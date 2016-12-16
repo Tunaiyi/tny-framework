@@ -1,9 +1,9 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,7 +21,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Component
 @Profile({ITEM, GAME})
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, ServerPreStart {
+public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, ServerPrepareStart {
 
     private final Map<Class<?>, GameManager<Object>> managerMap = new HashMap<>();
 
@@ -324,7 +324,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public void initialize() {
+    public void prepareStart() {
         Map<String, GameManager> map = this.applicationContext.getBeansOfType(GameManager.class);
         for (GameManager<Object> manager : map.values()) {
             this.managerMap.put(manager.getClass(), manager);
@@ -337,8 +337,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_7);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
     }
+
 
 }

@@ -49,7 +49,7 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         if (!this.scheduler.isStart()) {
             this.scheduler.addListener(timeTask -> checkSystemTask());
             this.scheduler.start();

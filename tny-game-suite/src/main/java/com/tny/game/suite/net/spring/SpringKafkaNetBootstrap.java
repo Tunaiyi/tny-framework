@@ -1,8 +1,8 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PostIniter;
-import com.tny.game.net.initer.ServerPostStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PostStarter;
+import com.tny.game.lifecycle.ServerPostStart;
 import com.tny.game.net.kafka.KafkaAppContext;
 import com.tny.game.net.kafka.KafkaMessage;
 import com.tny.game.net.kafka.KafkaNetBootstrap;
@@ -27,12 +27,12 @@ public class SpringKafkaNetBootstrap extends KafkaNetBootstrap implements Server
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void postStart() throws Exception {
         this.start();
     }
 
     @Override
-    public PostIniter getIniter() {
-        return PostIniter.initer(SpringKafkaNetBootstrap.class, InitLevel.LEVEL_1);
+    public PostStarter getPostStarter() {
+        return PostStarter.value(SpringKafkaNetBootstrap.class, LifecycleLevel.LEVEL_1);
     }
 }

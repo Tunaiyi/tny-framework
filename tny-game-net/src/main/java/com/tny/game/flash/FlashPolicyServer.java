@@ -2,14 +2,19 @@ package com.tny.game.flash;
 
 import com.tny.game.log.CoreLogger;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +26,8 @@ public class FlashPolicyServer {
     private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NET);
 
 
-    private EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultExecutorServiceFactory("FlashPolicy-NIO-Boss-EventLoop#"));
-    private EventLoopGroup childGroup = new NioEventLoopGroup(1, new DefaultExecutorServiceFactory("FlashPolicy-NIO-Child-EventLoop#"));
+    private EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("FlashPolicy-NIO-Boss-EventLoop#"));
+    private EventLoopGroup childGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("FlashPolicy-NIO-Child-EventLoop#"));
 
     public void start(final InetSocketAddress address) {
         start(address.getAddress().getHostAddress(), address.getPort());

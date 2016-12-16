@@ -4,9 +4,9 @@ import com.google.common.collect.Range;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.net.dispatcher.exception.DispatchException;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.joda.time.DateTime;
@@ -31,7 +31,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({GAME})
-public class AccountService implements ServerPreStart {
+public class AccountService implements ServerPrepareStart {
 
     @Autowired
     private AccountManager accountManager;
@@ -237,12 +237,12 @@ public class AccountService implements ServerPreStart {
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         for (GameInfo info : GameInfo.getAllGamesInfo()) {
             this.getUIDCreator(info.getServerID());
         }

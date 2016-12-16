@@ -56,7 +56,7 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         this.scheduler.addListener(timeTask -> this.checkSystemTask());
         this.scheduler.start();
     }

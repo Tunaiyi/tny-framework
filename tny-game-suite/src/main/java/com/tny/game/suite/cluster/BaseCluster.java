@@ -56,7 +56,7 @@ public abstract class BaseCluster {
         return node.getUrl() + path;
     }
 
-    protected void init() throws IOException, KeeperException, InterruptedException {
+    protected void init() throws Exception {
         this.monitor();
     }
 

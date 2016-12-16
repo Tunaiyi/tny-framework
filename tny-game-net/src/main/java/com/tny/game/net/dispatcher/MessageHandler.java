@@ -95,9 +95,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
         super.exceptionCaught(ctx, cause);
     }
 
-    @Override
-    protected void messageReceived(ChannelHandlerContext context, Message msg) throws Exception {
 
+    @Override
+    protected void channelRead0(ChannelHandlerContext context, Message msg) throws Exception {
         Channel channel = context.channel();
         // 客户端发来请求格式无法解析的时候返回-1,并关闭Socket
         if (!channel.isActive())

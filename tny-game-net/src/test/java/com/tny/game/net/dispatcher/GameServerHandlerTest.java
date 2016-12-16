@@ -57,7 +57,7 @@ public class GameServerHandlerTest {
     @Test
     public void testMessageReceivedChannelHandlerContextMessageEvent() throws Exception {
         SimpleRequest request = this.request(TestContorl.login, 171772272L, "User", "", "127.0.0.1");
-        this.handler.messageReceived(this.channelContext, request);
+        this.handler.channelRead0(this.channelContext, request);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -68,7 +68,7 @@ public class GameServerHandlerTest {
     @Test
     public void testMessageReceivedChannelHandlerContextMessageEventUnlogin() throws Exception {
         SimpleRequest request = this.request(TestContorl.login, 1L, "User", "", "127.0.0.1");
-        this.handler.messageReceived(this.channelContext, request);
+        this.handler.channelRead0(this.channelContext, request);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -102,11 +102,6 @@ public class GameServerHandlerTest {
 
         @Override
         public EventExecutor executor() {
-            return null;
-        }
-
-        @Override
-        public ChannelHandlerInvoker invoker() {
             return null;
         }
 
@@ -314,6 +309,16 @@ public class GameServerHandlerTest {
         @Override
         public boolean isWritable() {
             return false;
+        }
+
+        @Override
+        public long bytesBeforeUnwritable() {
+            return 0;
+        }
+
+        @Override
+        public long bytesBeforeWritable() {
+            return 0;
         }
 
         @Override
@@ -541,5 +546,4 @@ public class GameServerHandlerTest {
         }
     }
 
-    ;
 }

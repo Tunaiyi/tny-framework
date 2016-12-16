@@ -10,26 +10,29 @@ import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.cache.annotation.Trigger;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.scanner.ClassScanner;
+import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
-import com.tny.game.scanner.filter.ClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 @SuppressWarnings("unchecked")
-public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, ServerPreStart {
+public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, ServerPrepareStart {
 
     private volatile boolean init = false;
 
@@ -40,6 +43,8 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
     private final Map<Class<?>, TriggerHolder> triggerHolderMap = new CopyOnWriteMap<>();
 
     private final Map<Class<?>, ToCacheClassHolder> holderMap = new CopyOnWriteMap<>();
+
+    private ForkJoinTask<Set<Class<?>>> task;
 
     private ApplicationContext applicationContext;
 
@@ -141,30 +146,36 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
+    }
+
+    @PostConstruct
+    private void loadClass() {
+        this.task = ForkJoinPool.commonPool()
+                .submit(() -> {
+                    ClassSelector selector = ClassSelector.instance(AnnotationClassFilter.ofInclude(ToCache.class));
+                    ClassScanner.instance()
+                            .addSelector(selector)
+                            .scan(scannerPath.toArray(new String[scannerPath.size()]));
+                    return selector.getClasses();
+                });
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         Map<String, CacheTrigger> triggerMap = this.applicationContext.getBeansOfType(CacheTrigger.class, true, true);
         for (CacheTrigger handler : triggerMap.values()) {
             this.triggerMap.put(handler.getClass(), handler);
         }
         Class<?> clazz = null;
         try {
-            ClassFilter filter = AnnotationClassFilter.ofInclude(ToCache.class);
-            ClassScanner scanner = new ClassScanner().
-                    addFilter(filter);
-            Set<Class<?>> classes = scanner.getClasses(scannerPath.toArray(new String[scannerPath.size()]));
             RunningChecker.start(this.getClass());
-            LOGGER.info("开始初始化 ToCacheClassHolder .......");
-            for (Class<?> cl : classes) {
+            for (Class<?> cl : this.task.get()) {
                 clazz = cl;
                 SpringToCacheClassHolderAndLinkHandlerFactory.this.register(cl);
             }
             LOGGER.info("开始初始化 ToCacheClassHolder 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
-
         } catch (Throwable e) {
             throw new RuntimeException(LogUtils.format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
         }

@@ -18,7 +18,7 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,11 +123,11 @@ public class NetServer {
     private EventLoopGroup[] initLoopGroup(boolean epoll) {
         EventLoopGroup[] groups = new EventLoopGroup[2];
         if (epoll) {
-            groups[0] = new EpollEventLoopGroup(1, new DefaultExecutorServiceFactory("Sever-Boss-NIO-EpollEventLoop#"));
-            groups[1] = new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new DefaultExecutorServiceFactory("Sever-Child-NIO-EpollEventLoop#"));
+            groups[0] = new EpollEventLoopGroup(1, new DefaultThreadFactory("Sever-Boss-NIO-EpollEventLoop#"));
+            groups[1] = new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new DefaultThreadFactory("Sever-Child-NIO-EpollEventLoop#"));
         } else {
-            groups[0] = new NioEventLoopGroup(1, new DefaultExecutorServiceFactory("Server-Boss-NIO-EventLoop#"));
-            groups[1] = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new DefaultExecutorServiceFactory("Server-Child-NIO-EventLoop#"));
+            groups[0] = new NioEventLoopGroup(1, new DefaultThreadFactory("Server-Boss-NIO-EventLoop#"));
+            groups[1] = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new DefaultThreadFactory("Server-Child-NIO-EventLoop#"));
         }
         return groups;
     }

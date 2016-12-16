@@ -7,9 +7,9 @@ import com.tny.game.net.client.rmi.NetRMIService;
 import com.tny.game.net.client.rmi.RMISession;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.exception.DispatchException;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.login.ServeTicket;
 import com.tny.game.suite.login.ServeTicketMaker;
@@ -19,7 +19,7 @@ import com.tny.game.suite.utils.Configs;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.ServerNotActiveException;
 
-public class GameRMIService extends NetRMIService implements ServerPreStart {
+public class GameRMIService extends NetRMIService implements ServerPrepareStart {
 
     private static TicketMaker<ServeTicket> maker = new ServeTicketMaker();
 
@@ -56,12 +56,12 @@ public class GameRMIService extends NetRMIService implements ServerPreStart {
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         this.startService();
     }
 

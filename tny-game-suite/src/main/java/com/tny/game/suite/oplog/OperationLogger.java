@@ -4,9 +4,9 @@ import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.utils.IDCreator;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.oplog.AbstractOpLogger;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;
@@ -38,7 +38,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  */
 @Component
 @Profile({ITEM_OPLOG, GAME})
-public class OperationLogger extends AbstractOpLogger implements ServerPreStart, ApplicationContextAware {
+public class OperationLogger extends AbstractOpLogger implements ServerPrepareStart, ApplicationContextAware {
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");
 
@@ -164,13 +164,13 @@ public class OperationLogger extends AbstractOpLogger implements ServerPreStart,
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         Map<String, Snapper> snapperMap = this.applicationContext.getBeansOfType(Snapper.class);
         Map<Object, Snapper<Identifiable, Snapshot>> map = new HashMap<>();
         for (Snapper snapper : snapperMap.values()) {

@@ -2,12 +2,13 @@ package com.tny.game.suite.oplog;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.LogUtils;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.utils.OpLogMapper;
 import com.tny.game.scanner.ClassScanner;
+import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.ClassFilterHelper;
 import com.tny.game.suite.utils.Configs;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({ITEM_OPLOG, GAME})
-public class OpLogMapperIniter implements ServerPreStart {
+public class OpLogMapperIniter implements ServerPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogMapperIniter.class);
 
@@ -38,11 +39,13 @@ public class OpLogMapperIniter implements ServerPreStart {
         Thread thread = new Thread(() -> {
             Class<?> clazz = null;
             try {
-                ClassScanner scanner = new ClassScanner()
-                        .addFilter(ClassFilterHelper.ofInclude((reader) ->
-                                ClassFilterHelper.matchSuper(reader, Snapshot.class)
-                        ));
-                Set<Class<?>> classes = scanner.getClasses(Configs.getScanPathArray());
+                ClassSelector selector = ClassSelector.instance(ClassFilterHelper.ofInclude((reader) ->
+                        ClassFilterHelper.matchSuper(reader, Snapshot.class)
+                ));
+                ClassScanner.instance()
+                        .addSelector(selector)
+                        .scan(Configs.getScanPathArray());
+                Set<Class<?>> classes = selector.getClasses();
                 for (Class<?> cl : classes) {
                     int modifier = cl.getModifiers();
                     if (Modifier.isAbstract(modifier))
@@ -62,21 +65,15 @@ public class OpLogMapperIniter implements ServerPreStart {
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_10);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
     }
 
     @Override
-    public boolean waitInitialized() throws Exception {
+    public void prepareStart() throws Exception {
         this.latch.await();
         if (this.exception != null)
             throw this.exception;
-        return true;
-    }
-
-    @Override
-    public void initialize() throws Exception {
-        waitInitialized();
     }
 
 }

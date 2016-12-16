@@ -7,6 +7,7 @@ import com.tny.game.doc.table.TableAttribute;
 import com.tny.game.doc.table.TableAttributeCreator;
 import com.tny.game.doc.table.XMLTable;
 import com.tny.game.scanner.ClassScanner;
+import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.ClassFilter;
 import org.apache.commons.io.IOUtils;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -143,21 +145,22 @@ public class Exportor {
                 e.printStackTrace();
             }
         }
-        ClassScanner scanner = new ClassScanner();
-        scanner.addFilter(filters);
-        Set<Class<?>> classSet = scanner.getClasses(basePackage);
-        Set<Class<?>> tempSet = new TreeSet<>((o1, o2) -> o1.getCanonicalName().compareTo(o2.getCanonicalName()));
-        tempSet.addAll(classSet);
-        if (classSet.isEmpty()) {
+        ClassSelector selector = ClassSelector.instance()
+                .addFilter(this.filters);
+        ClassScanner.instance(classLoader)
+                .addSelector(selector)
+                .scan(basePackage);
+        Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
+        tempSet.addAll(selector.getClasses());
+        if (tempSet.isEmpty()) {
             System.out.println(LogUtils.format("{}包下未找到符合的类", basePackage));
             return;
         }
-        classSet = tempSet;
         XStream xstream = new XStream();
         xstream.autodetectAnnotations(true);
         xstream.aliasSystemAttribute(null, "class");
         int count = 0;
-        for (Class<?> clazz : classSet) {
+        for (Class<?> clazz : tempSet) {
             try {
                 XMLTable table = createTable(clazz);
                 File outputFile = new File(baseDir, outputPath.getPath(clazz));
@@ -187,16 +190,17 @@ public class Exportor {
                 e.printStackTrace();
             }
         }
-        ClassScanner scanner = new ClassScanner(classLoader);
-        scanner.addFilter(filters);
-        Set<Class<?>> classSet = scanner.getClasses(basePackage);
-        Set<Class<?>> tempSet = new TreeSet<>((o1, o2) -> o1.getCanonicalName().compareTo(o2.getCanonicalName()));
-        tempSet.addAll(classSet);
-        classSet = tempSet;
+        ClassSelector selector = ClassSelector.instance()
+                .addFilter(this.filters);
+        ClassScanner.instance(classLoader)
+                .addSelector(selector)
+                .scan(basePackage);
+        Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
+        tempSet.addAll(selector.getClasses());
         XStream xstream = new XStream();
         xstream.autodetectAnnotations(true);
         xstream.aliasSystemAttribute(null, "class");
-        XMLTable table = createTable(classSet);
+        XMLTable table = createTable(tempSet);
         File outputFile = new File(baseDir, outputPath.getPath(null));
         System.out.println(LogUtils.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
         try (FileOutputStream output = openOutputStream(outputFile);
@@ -207,7 +211,7 @@ public class Exportor {
             IOUtils.write(xstream.toXML(table), writer);
 //            xstream.toXML(table, writer);
         }
-        System.out.println(LogUtils.format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, classSet.size(), outputFile.getAbsoluteFile()));
+        System.out.println(LogUtils.format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, selector.getClasses().size(), outputFile.getAbsoluteFile()));
     }
 
     public XMLTable createTable(Class<?> clazz) {

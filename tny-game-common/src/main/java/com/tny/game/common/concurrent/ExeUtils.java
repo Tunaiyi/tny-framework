@@ -25,6 +25,19 @@ public interface ExeUtils {
         runQuietly(runnable, LOGGER);
     }
 
+    static void runUnchecked(RunnableWithThrowable runnable, Logger logger) {
+        try {
+            runnable.run();
+        } catch (Throwable e) {
+            logger.error("run {} exception", runnable.getClass(), e);
+            throw new ExeUncheckedException(e);
+        }
+    }
+
+    static void runUnchecked(RunnableWithThrowable runnable) {
+        runUnchecked(runnable, LOGGER);
+    }
+
     static <R> Optional<R> callQuietly(Callable<R> callable, R defReturn, Logger logger) {
         try {
             return Optional.ofNullable(callable.call());
@@ -40,6 +53,19 @@ public interface ExeUtils {
 
     static <R> Optional<R> callQuietly(Callable<R> callable) {
         return callQuietly(callable, null, LOGGER);
+    }
+
+    static <R> Optional<R> callUnchecked(CallableWithThrowable<R> callable, Logger logger) {
+        try {
+            return Optional.ofNullable(callable.call());
+        } catch (Throwable e) {
+            logger.error("run {} exception", callable.getClass(), e);
+            throw new ExeUncheckedException(e);
+        }
+    }
+
+    static <R> Optional<R> callUnchecked(CallableWithThrowable<R> callable) {
+        return callUnchecked(callable, LOGGER);
     }
 
 }

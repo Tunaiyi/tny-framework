@@ -26,7 +26,7 @@ public class Bug {
         boolean close = false;
 
         @Override
-        protected void messageReceived(ChannelHandlerContext ctx, Object msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
             System.out.println(msg);
             final Channel channel = ctx.channel();
             if (!close) {
@@ -43,7 +43,7 @@ public class Bug {
         int port = 0;
 
         @Override
-        protected void messageReceived(ChannelHandlerContext ctx, Object msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
             ctx.channel().write("server(" + port + ") : " + msg + "\r\n");
         }
 

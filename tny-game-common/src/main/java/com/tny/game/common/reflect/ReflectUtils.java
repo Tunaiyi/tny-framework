@@ -129,7 +129,7 @@ public class ReflectUtils {
             Method method = clazz.getDeclaredMethod(name, paramType);
             method.setAccessible(true);
             return method;
-        } catch (Exception e) {
+        } catch (java.lang.NoSuchMethodException e) {
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && superClass != Object.class)
                 return getDeepMethod(superClass, name, paramType);

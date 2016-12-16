@@ -146,6 +146,8 @@ public abstract class AbstractOpLogger implements OpLogger {
     @SuppressWarnings("unchecked")
     protected <S extends Snapshot> S getSnapshot(long playerID, long id, Action action, SnapshotType type) {
         UserOpLog log = this.getUserLogger(playerID);
+        if (log == null)
+            return null;
         return (S) log.getSnapshot(action, id, type);
     }
 

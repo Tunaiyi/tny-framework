@@ -8,7 +8,7 @@
     </appender>
 
     <root>
-        <level value="debug"/>
+        <priority value="debug"/>
         <appender-ref ref="stdout"/>
     </root>
 

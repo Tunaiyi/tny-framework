@@ -4,9 +4,9 @@ import com.tny.game.LogUtils;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.ModuleHandler;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationContextAware {
+public abstract class ModuleService<DTO> implements ServerPrepareStart, ApplicationContextAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 
@@ -152,12 +152,12 @@ public abstract class ModuleService<DTO> implements ServerPreStart, ApplicationC
     }
 
     @Override
-    public PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_4);
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_4);
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void prepareStart() throws Exception {
         List<GameModuleHandler> moduleList = new ArrayList<>(this.applicationContext.getBeansOfType(GameModuleHandler.class).values());
         for (GameModuleHandler module : moduleList) {
             this.handlerMap.put(module.getModule(), module);

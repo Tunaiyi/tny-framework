@@ -38,10 +38,12 @@ public class ServerLauncher {
 
     private Consumer<ApplicationContext> complete;
 
+    private ApplicationLifecycleProcessor processor = new ApplicationLifecycleProcessor();
+
     private static Logger LOG = LoggerFactory.getLogger(ServerLauncher.class);
 
-
-    public ServerLauncher(String... contextFile) {
+    public ServerLauncher(String... contextFile) throws Throwable {
+        this.processor.onStaticInit();
         GenericXmlApplicationContext context = new GenericXmlApplicationContext();
         String profiles = Configs.SUITE_CONFIG.getStr(Configs.SUITE_LAUNCHER_PROFILES);
         context.getEnvironment().setActiveProfiles(StringUtils.split(profiles, ","));
@@ -62,15 +64,15 @@ public class ServerLauncher {
     public ServerLauncher start() throws Throwable {
         TransactionManager.open();
         try {
-            ServerIniterProcessor processor = new ServerIniterProcessor();
-            processor.setApplicationContext(this.context);
+            // processor.setApplicationContext(this.context);
             //per initServer
             runPoint(beforeInitServer);
             NetServer server = this.initServer();
+            ApplicationLifecycleProcessor.loadHandler(context);
             runPoint(afterInitServer);
             //post initServer
 
-            processor.initPreStart();
+            processor.onPrepareStart();
             LOG.info("服务器启动服务器!");
 
             // per start
@@ -84,11 +86,32 @@ public class ServerLauncher {
                 if (telnetServer != null)
                     telnetServer.start();
             }
-            processor.initPostStart();
+            processor.onPostStart();
 
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+
+                {
+                    this.setName("ApplicationLifecycleShutdownHook");
+                }
+
+                @Override
+                public void run() {
+                    TransactionManager.open();
+                    try {
+                        processor.onPostClose();
+                    } catch (Throwable throwable) {
+                        LOG.error("ShutdownHook handle close", throwable);
+                    } finally {
+                        TransactionManager.close();
+                    }
+                }
+
+            });
             // complete
             runPoint(complete);
-        } finally {
+        } finally
+
+        {
             TransactionManager.close();
         }
         return this;

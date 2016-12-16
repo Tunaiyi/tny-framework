@@ -4,12 +4,12 @@ package com.tny.game.suite.cluster.game;
 import com.tny.game.common.config.Config;
 import com.tny.game.event.BindP1EventBus;
 import com.tny.game.event.EventBuses;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PostStarter;
+import com.tny.game.lifecycle.ServerPostStart;
 import com.tny.game.net.config.BindIp;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PostIniter;
-import com.tny.game.net.initer.ServerPostStart;
 import com.tny.game.number.NumberUtils;
 import com.tny.game.suite.cluster.BaseCluster;
 import com.tny.game.suite.cluster.ClusterUtils;
@@ -140,19 +140,14 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
     }
 
     @Override
-    public PostIniter getIniter() {
-        return PostIniter.initer(this.getClass(), InitLevel.LEVEL_1);
+    public PostStarter getPostStarter() {
+        return PostStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
     }
 
     @Override
-    public void initialize() throws Exception {
-        if (this.initer.waitInitialized())
-            this.monitor();
+    public void postStart() throws Exception {
+        this.monitor();
     }
 
-    @Override
-    public boolean waitInitialized() {
-        return true;
-    }
 
 }

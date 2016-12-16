@@ -1,16 +1,16 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.net.initer.InitLevel;
-import com.tny.game.net.initer.PerIniter;
-import com.tny.game.net.initer.ServerPreStart;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
 
-public interface TimeTaskSchedulerService extends ServerPreStart {
+public interface TimeTaskSchedulerService extends ServerPrepareStart {
 
     void checkPlayerTask(long playerID, ReceiverType receiverType);
 
     @Override
-    default PerIniter getIniter() {
-        return PerIniter.initer(this.getClass(), InitLevel.LEVEL_1);
+    default PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
     }
 
 }

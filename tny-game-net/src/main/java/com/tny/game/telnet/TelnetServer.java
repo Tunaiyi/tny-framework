@@ -15,7 +15,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +56,8 @@ public class TelnetServer implements ServerClosedListener {
 
     private void bind(final InetSocketAddress address) {
         ServerBootstrap bootstrap = new ServerBootstrap();
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultExecutorServiceFactory("Telnet-Boss-NIO-EventLoop#"));
-        EventLoopGroup childGroup = new NioEventLoopGroup(1, new DefaultExecutorServiceFactory("Telnet-Child-NIO-EventLoop#"));
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("Telnet-Boss-NIO-EventLoop#"));
+        EventLoopGroup childGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("Telnet-Child-NIO-EventLoop#"));
         bootstrap.group(bossGroup, childGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(this.channelInitializer)

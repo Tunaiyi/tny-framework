@@ -5,8 +5,12 @@ import com.tny.game.telnet.command.CommandType;
 import com.tny.game.telnet.command.TelnetArgument;
 import com.tny.game.telnet.command.TelnetCommand;
 import com.tny.game.telnet.command.TelnetCommandHolder;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +42,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         TelnetSession session = null;
         if (attachment == null) {
             session = new TelnetSession(this.uid.incrementAndGet(), channel);
-            ctx.attr(NetAttributeKey.TELNET_SESSION).set(session);
+            channel.attr(NetAttributeKey.TELNET_SESSION).set(session);
         }
         this.handleCommand(CommandType.CONNECT, session);
     }
@@ -52,7 +56,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
         final Object attachment = channel.attr(NetAttributeKey.TELNET_SESSION).get();
         TelnetSession session = null;
