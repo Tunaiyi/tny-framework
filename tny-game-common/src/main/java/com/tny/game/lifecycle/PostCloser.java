@@ -10,7 +10,7 @@ public final class PostCloser extends Lifecycle<PostCloser, ServerPostClose> {
         return value(clazz, LifecycleLevel.LEVEL_5);
     }
 
-    public static PostCloser value(Class<? extends ServerPostClose> clazz, LifecycleLevel lifeCycleLevel) {
+    public static PostCloser value(Class<? extends ServerPostClose> clazz, LifecyclePriority lifeCycleLevel) {
         PostCloser lifecycle = getLifecycle(PostCloser.class, clazz);
         if (lifecycle == null) {
             lifecycle = new PostCloser(clazz, lifeCycleLevel);
@@ -19,7 +19,7 @@ public final class PostCloser extends Lifecycle<PostCloser, ServerPostClose> {
         return lifecycle;
     }
 
-    private PostCloser(Class<? extends ServerPostClose> initerClass, LifecycleLevel lifeCycleLevel) {
+    private PostCloser(Class<? extends ServerPostClose> initerClass, LifecyclePriority lifeCycleLevel) {
         super(initerClass, lifeCycleLevel);
     }
 

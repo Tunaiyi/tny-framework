@@ -10,7 +10,7 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, ServerPrepar
         return value(clazz, LifecycleLevel.LEVEL_5);
     }
 
-    public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz, LifecycleLevel lifeCycleLevel) {
+    public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz, LifecyclePriority lifeCycleLevel) {
         PrepareStarter lifecycle = getLifecycle(PrepareStarter.class, clazz);
         if (lifecycle == null) {
             lifecycle = new PrepareStarter(clazz, lifeCycleLevel);
@@ -19,7 +19,7 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, ServerPrepar
         return lifecycle;
     }
 
-    private PrepareStarter(Class<? extends ServerPrepareStart> initerClass, LifecycleLevel lifeCycleLevel) {
+    private PrepareStarter(Class<? extends ServerPrepareStart> initerClass, LifecyclePriority lifeCycleLevel) {
         super(initerClass, lifeCycleLevel);
     }
 

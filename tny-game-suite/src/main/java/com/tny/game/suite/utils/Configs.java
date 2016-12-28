@@ -108,6 +108,7 @@ public interface Configs {
     Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
     String SERVER_ID /*                 */ = "tny.server.id";
     String SERVER_SCOPE /*              */ = "tny.server.scope";
+    String SERVER_LOCAL /*              */ = "tny.server.local";
     String SERVER_TYPE /*               */ = "tny.server.type";
     String PUBLIC_HOST /*               */ = "tny.server.public_host";
     String PRIVATE_HOST /*              */ = "tny.server.private_host";

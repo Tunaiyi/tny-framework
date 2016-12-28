@@ -30,6 +30,8 @@ public class GameInfo {
 
     protected static ScopeType scopeType;
 
+    protected static String local;
+
     private static Map<Integer, GameInfo> GAMES_INFO_MAP;
 
     private DateTime openDate;
@@ -44,6 +46,7 @@ public class GameInfo {
 
     static {
         String serverTypeStr = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_SCOPE);
+        GameInfo.local = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_LOCAL, "zh-cn");
         GameInfo.scopeType = ScopeTypes.of(serverTypeStr.toUpperCase());
         LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
         XStream xStream = new XStream();
@@ -83,6 +86,14 @@ public class GameInfo {
 
     public int getServerID() {
         return this.serverID;
+    }
+
+    public static String getLocal() {
+        return GameInfo.local;
+    }
+
+    public static boolean isLocal(String local) {
+        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
     }
 
     public ServerType getServerType() {

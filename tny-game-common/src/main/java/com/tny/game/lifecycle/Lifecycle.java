@@ -42,7 +42,7 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
         return (I) initer;
     }
 
-    Lifecycle(Class<? extends P> processorClass, LifecycleLevel priority) {
+    Lifecycle(Class<? extends P> processorClass, LifecyclePriority priority) {
         this.processorClass = processorClass;
         this.priority = priority;
     }
@@ -51,8 +51,8 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
         return processorClass;
     }
 
-    public LifecyclePriority getPriority() {
-        return priority;
+    public int getPriority() {
+        return priority.getPriority();
     }
 
     public L getNext() {
@@ -73,8 +73,8 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
     public L append(L initer) {
         if (next != null)
             throw new IllegalArgumentException(LogUtils.format("{} next is exist {}", this, this.next));
-        if (initer.getPriority().getPriority() > this.getPriority().getPriority())
-            throw new IllegalArgumentException(LogUtils.format("{} [{}] prior to {} [{}]", initer, initer.getPriority().getPriority(), this, this.getPriority().getPriority()));
+        if (initer.getPriority() > this.getPriority())
+            throw new IllegalArgumentException(LogUtils.format("{} [{}] prior to {} [{}]", initer, initer.getPriority(), this, this.getPriority()));
         initer.setPrev(this);
         return next = initer;
     }

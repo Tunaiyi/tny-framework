@@ -105,7 +105,7 @@ public class ApplicationLifecycleProcessor {
                     handlerMap.put(lifecycle, i);
                 })
                 .map(lifecycleGetter)
-                .sorted((o1, o2) -> 0 - (o1.getPriority().getPriority() - o2.getPriority().getPriority()))
+                .sorted((o1, o2) -> 0 - (o1.getPriority() - o2.getPriority()))
                 .collect(Collectors.toList());
         lifecycleMap.put(processorClass, process);
     }

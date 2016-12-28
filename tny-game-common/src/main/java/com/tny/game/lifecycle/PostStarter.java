@@ -10,7 +10,7 @@ public final class PostStarter extends Lifecycle<PostStarter, ServerPostStart> {
         return value(clazz, LifecycleLevel.LEVEL_5);
     }
 
-    public static PostStarter value(Class<? extends ServerPostStart> clazz, LifecycleLevel lifeCycleLevel) {
+    public static PostStarter value(Class<? extends ServerPostStart> clazz, LifecyclePriority lifeCycleLevel) {
         PostStarter lifecycle = getLifecycle(PostStarter.class, clazz);
         if (lifecycle == null) {
             lifecycle = new PostStarter(clazz, lifeCycleLevel);
@@ -19,7 +19,7 @@ public final class PostStarter extends Lifecycle<PostStarter, ServerPostStart> {
         return lifecycle;
     }
 
-    private PostStarter(Class<? extends ServerPostStart> initerClass, LifecycleLevel lifeCycleLevel) {
+    private PostStarter(Class<? extends ServerPostStart> initerClass, LifecyclePriority lifeCycleLevel) {
         super(initerClass, lifeCycleLevel);
     }
 
