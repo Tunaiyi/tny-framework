@@ -39,7 +39,7 @@ public class EventDispatcherIniter implements ApplicationContextAware, ServerPre
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_7);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
     }
 
 }
