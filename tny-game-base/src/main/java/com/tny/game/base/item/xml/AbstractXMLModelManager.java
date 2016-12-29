@@ -10,8 +10,8 @@ import com.thoughtworks.xstream.mapper.Mapper;
 import com.tny.game.base.item.Ability;
 import com.tny.game.base.item.AbstractModelManager;
 import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.Model;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.AbstractAwardPlan;
 import com.tny.game.base.item.behavior.AbstractCostPlan;
 import com.tny.game.base.item.behavior.Action;
@@ -312,10 +312,10 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         if (!modelAliasMap.isEmpty())
             this.modelAliasMap.putAll(modelAliasMap);
         this.parseComplete(models);
-        if (reload) {
-            synchronized (this) {
-                this.parseAllComplete();
-            }
+        synchronized (this) {
+            this.parseAllComplete();
+            if (reload)
+                this.reloadAllComplete();
         }
         LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(), RunningChecker.end(this.getClass()).cost());
     }
@@ -329,6 +329,9 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     }
 
     protected void parseComplete(List<M> models) {
+    }
+
+    protected void reloadAllComplete() {
     }
 
     protected void parseAllComplete() {
