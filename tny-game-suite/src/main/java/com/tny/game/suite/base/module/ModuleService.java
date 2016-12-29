@@ -163,12 +163,8 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
             this.handlerMap.put(module.getModule(), module);
         }
         for (Module module : Modules.values()) { //TODO AA 临时注释掉的
-            if (module.isHasHandler()) {
-                if (!this.handlerMap.containsKey(module))
-                    throw new IllegalArgumentException(LogUtils.format("{} module handler is null", module));
-            } else {
+            if (!this.handlerMap.containsKey(module))
                 this.handlerMap.put(module, new DefaultModuleHandler(module));
-            }
         }
     }
 
