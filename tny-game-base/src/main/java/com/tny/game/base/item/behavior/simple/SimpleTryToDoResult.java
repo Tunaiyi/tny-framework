@@ -1,36 +1,43 @@
 package com.tny.game.base.item.behavior.simple;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.DemandResult;
 import com.tny.game.base.item.behavior.TryToDoResult;
 
+import java.util.Collection;
+import java.util.List;
+
 public class SimpleTryToDoResult implements TryToDoResult {
 
     private final Action action;
 
-    private final DemandResult unsatisfyDemandResult;
+    private List<DemandResult> failDemandResults = ImmutableList.of();
 
     private final Trade award;
 
     private final Trade cost;
 
     public SimpleTryToDoResult(Action action, Trade award, Trade cost) {
-        this.unsatisfyDemandResult = null;
         this.action = action;
         this.award = award;
         this.cost = cost;
+        this.failDemandResults = ImmutableList.of();
     }
 
-    public SimpleTryToDoResult(Action action, DemandResult unsatisfyDemandResult) {
-        this.unsatisfyDemandResult = unsatisfyDemandResult;
+    public SimpleTryToDoResult(Action action, DemandResult failDemandResults) {
         this.award = null;
         this.cost = null;
         this.action = action;
+        this.failDemandResults = ImmutableList.of(failDemandResults);
     }
 
-    public DemandResult getUnsatisfyDemandResult() {
-        return unsatisfyDemandResult;
+    public SimpleTryToDoResult(Action action, Collection<DemandResult> failDemandResults) {
+        this.award = null;
+        this.cost = null;
+        this.action = action;
+        this.failDemandResults = ImmutableList.copyOf(failDemandResults);
     }
 
     public Action getAction() {
@@ -39,12 +46,19 @@ public class SimpleTryToDoResult implements TryToDoResult {
 
     @Override
     public boolean isSatisfy() {
-        return unsatisfyDemandResult == null;
+        return failDemandResults == null || failDemandResults.isEmpty();
     }
 
     @Override
     public DemandResult getFailResult() {
-        return unsatisfyDemandResult;
+        if (failDemandResults.isEmpty())
+            return null;
+        return failDemandResults.get(0);
+    }
+
+    @Override
+    public List<DemandResult> getAllFailResults() {
+        return failDemandResults;
     }
 
     @Override

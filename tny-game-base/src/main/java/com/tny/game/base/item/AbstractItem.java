@@ -87,6 +87,16 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
+    public TryToDoResult tryToDoAll(boolean award, Action action, Object... attributes) {
+        return this.getModel().tryToDoAll(this, action, award, attributes);
+    }
+
+    @Override
+    public TryToDoResult tryToDoAll(Action action, Object... attributes) {
+        return this.getModel().tryToDoAll(this, action, attributes);
+    }
+
+    @Override
     public Trade createCost(Action action, Object... attributes) {
         return this.getModel().createCostTrade(this, action, attributes);
     }

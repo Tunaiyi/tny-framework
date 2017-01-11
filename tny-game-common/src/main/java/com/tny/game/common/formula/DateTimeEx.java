@@ -28,6 +28,22 @@ public class DateTimeEx {
         return DateTime.now();
     }
 
+    public static DateTime time(DateTime time, int hour) {
+        return time(time, hour, 0);
+    }
+
+    public static DateTime time(DateTime time, int hour, int minutes) {
+        return time(time, hour, minutes, 0);
+    }
+
+    public static DateTime time(DateTime time, int hour, int minutes, int seconds) {
+        return time(time, hour, minutes, seconds, 0);
+    }
+
+    public static DateTime time(DateTime time, int hour, int minutes, int seconds, int millis) {
+        return time.withTime(new LocalTime(hour, minutes, seconds, millis));
+    }
+
     public static LocalDate today() {
         return DateTimeHelper.today();
     }
@@ -78,7 +94,15 @@ public class DateTimeEx {
         return Years.yearsBetween(from, to).getYears();
     }
 
+    public static int years(ReadablePartial from, ReadablePartial to) {
+        return Years.yearsBetween(from, to).getYears();
+    }
+
     public static int months(ReadableInstant from, ReadableInstant to) {
+        return Months.monthsBetween(from, to).getMonths();
+    }
+
+    public static int months(ReadablePartial from, ReadablePartial to) {
         return Months.monthsBetween(from, to).getMonths();
     }
 
@@ -86,7 +110,15 @@ public class DateTimeEx {
         return Weeks.weeksBetween(from, to).getWeeks();
     }
 
+    public static int weeks(ReadablePartial from, ReadablePartial to) {
+        return Weeks.weeksBetween(from, to).getWeeks();
+    }
+
     public static int days(ReadableInstant from, ReadableInstant to) {
+        return Days.daysBetween(from, to).getDays();
+    }
+
+    public static int days(ReadablePartial from, ReadablePartial to) {
         return Days.daysBetween(from, to).getDays();
     }
 
@@ -94,7 +126,15 @@ public class DateTimeEx {
         return Hours.hoursBetween(from, to).getHours();
     }
 
+    public static int hours(ReadablePartial from, ReadablePartial to) {
+        return Hours.hoursBetween(from, to).getHours();
+    }
+
     public static int minutes(ReadableInstant from, ReadableInstant to) {
+        return Minutes.minutesBetween(from, to).getMinutes();
+    }
+
+    public static int minutes(ReadablePartial from, ReadablePartial to) {
         return Minutes.minutesBetween(from, to).getMinutes();
     }
 
@@ -102,9 +142,12 @@ public class DateTimeEx {
         return Seconds.secondsBetween(from, to).getSeconds();
     }
 
+    public static int seconds(ReadablePartial from, ReadablePartial to) {
+        return Seconds.secondsBetween(from, to).getSeconds();
+    }
+
     public static void main(String[] args) {
-        System.out.println(DateTimeEx.ofWeek(7));
-        System.out.println(DateTimeEx.ofWeek(3));
+        System.out.println(DateTime.now().withMillisOfDay(0));
     }
 
 }

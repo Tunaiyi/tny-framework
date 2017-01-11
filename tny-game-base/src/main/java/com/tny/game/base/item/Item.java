@@ -29,7 +29,7 @@ public interface Item<M extends ItemModel> extends Any<M> {
     <IT extends ItemType> IT getItemType();
 
     /**
-     * 尝试让该事物对象执行某指定操作
+     * 尝试让该事物对象执行某指定操作,失败立即返回
      *
      * @param action     操作类型
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
@@ -38,7 +38,7 @@ public interface Item<M extends ItemModel> extends Any<M> {
     TryToDoResult tryToDo(Action action, Object... attributes);
 
     /**
-     * 尝试让该事物对象执行某指定操作
+     * 尝试让该事物对象执行某指定操作,失败立即返回
      *
      * @param action     操作类型
      * @param award      是否创建奖励
@@ -46,6 +46,25 @@ public interface Item<M extends ItemModel> extends Any<M> {
      * @return 返回操作结果
      */
     TryToDoResult tryToDo(boolean award, Action action, Object... attributes);
+
+    /**
+     * 尝试让该事物对象执行某指定操作,尝试所有条件
+     *
+     * @param action     操作类型
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     */
+    TryToDoResult tryToDoAll(Action action,  Object... attributes);
+
+    /**
+     * 尝试让该事物对象执行某指定操作,尝试所有条件
+     *
+     * @param action     操作类型
+     * @param award      是否创建奖励
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     */
+    TryToDoResult tryToDoAll(boolean award, Action action, Object... attributes);
 
     /**
      * 获取指定action的奖励列表

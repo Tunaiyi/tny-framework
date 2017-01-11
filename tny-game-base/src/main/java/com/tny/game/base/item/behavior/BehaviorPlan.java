@@ -43,7 +43,7 @@ public interface BehaviorPlan {
      */
     public ActionPlan getActionPlan(Action action);
 
-    public DemandResult tryToDo(long playerID, Action action, Map<String, Object> attributeMap);
+    public List<DemandResult> tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap);
 
     /**
      * 计算对该事物进行某操作对象操作的消费

@@ -30,7 +30,7 @@ public interface ItemModel extends Model {
     <IT extends ItemType> IT getItemType();
 
     /**
-     * 尝试让某事物做某事
+     * 尝试让某事物做某事,失败立即返回
      *
      * @param item       事物对象
      * @param action     操作
@@ -41,7 +41,7 @@ public interface ItemModel extends Model {
     TryToDoResult tryToDo(Item<?> item, Action action, Object... attributes);
 
     /**
-     * 尝试让某事物做某事
+     * 尝试让某事物做某事,失败立即返回
      *
      * @param item       事物对象
      * @param action     操作
@@ -53,7 +53,7 @@ public interface ItemModel extends Model {
     TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes);
 
     /**
-     * 尝试让某事物做某事
+     * 尝试让某事物做某事,失败立即返回
      *
      * @param playerID   玩家ID
      * @param action     操作
@@ -64,7 +64,7 @@ public interface ItemModel extends Model {
     TryToDoResult tryToDo(long playerID, Action action, Object... attributes);
 
     /**
-     * 尝试让某事物做某事
+     * 尝试让某事物做某事,失败立即返回
      *
      * @param playerID   玩家ID
      * @param action     操作
@@ -74,6 +74,54 @@ public interface ItemModel extends Model {
      * @throws TryToDoException
      */
     TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
+
+    /**
+     * 尝试让某事物做某事,尝试所有条件后返回
+     *
+     * @param item       事物对象
+     * @param action     操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     * @throws TryToDoException
+     */
+    TryToDoResult tryToDoAll(Item<?> item, Action action, Object... attributes);
+
+    /**
+     * 尝试让某事物做某事,尝试所有条件后返回
+     *
+     * @param item       事物对象
+     * @param action     操作
+     * @param award      是否创建奖励
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     * @throws TryToDoException
+     */
+    TryToDoResult tryToDoAll(Item<?> item, Action action, boolean award, Object... attributes);
+
+    /**
+     * 尝试让某事物做某事,尝试所有条件后返回
+     *
+     * @param playerID   玩家ID
+     * @param action     操作
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     * @throws TryToDoException
+     */
+    TryToDoResult tryToDoAll(long playerID, Action action, Object... attributes);
+
+    /**
+     * 尝试让某事物做某事,尝试所有条件后返回
+     *
+     * @param playerID   玩家ID
+     * @param action     操作
+     * @param award      是否创建奖励
+     * @param attributes 附加参数 ["key1", object1, "key2", object2]
+     * @return 返回操作结果
+     * @throws TryToDoException
+     */
+    TryToDoResult tryToDoAll(long playerID, Action action, boolean award, Object... attributes);
+
+    //######################
 
     /**
      * 获取奖励&扣除列表

@@ -1,7 +1,17 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.AlterType;
+import com.tny.game.base.item.ItemExplorer;
+import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.ModelExplorer;
+import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.TradeItem;
+import com.tny.game.base.item.behavior.AbstractCostPlan;
+import com.tny.game.base.item.behavior.AbstractDemand;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.behavior.DemandResult;
+import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleCostList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
@@ -53,8 +63,8 @@ public class SimpleCostPlan extends AbstractCostPlan {
     }
 
     @Override
-    public DemandResult tryToDo(long playerID, Map<String, Object> attributeMap) {
-        return this.checkResult(playerID, this.demandList, attributeMap);
+    public List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributeMap) {
+        return this.checkResult(playerID, this.demandList, tryAll, attributeMap);
     }
 
 //	@Override

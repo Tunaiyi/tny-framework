@@ -3,6 +3,8 @@ package com.tny.game.base.item.behavior;
 import com.tny.game.base.item.Trade;
 import com.tny.game.common.result.ResultCode;
 
+import java.util.List;
+
 /**
  * 尝试执行某操作的结果
  *
@@ -39,6 +41,13 @@ public interface TryToDoResult {
      * @return 尝试失败的原因，成功返回null
      */
     DemandResult getFailResult();
+
+    /**
+     * 所有尝试失败的原因
+     *
+     * @return
+     */
+    List<DemandResult> getAllFailResults();
 
     /**
      * @return 获取结果码

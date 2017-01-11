@@ -8,6 +8,7 @@ import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
 import com.tny.game.common.formula.FormulaHolder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +57,15 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public DemandResult tryToDo(long playerID, Action action, Map<String, Object> attributeMap) {
+    public List<DemandResult> tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        DemandResult demandResult = this.checkResult(playerID, this.demandList, attributeMap);
-        if (demandResult != null)
+        List<DemandResult> demandResult = this.checkResult(playerID, this.demandList, tryAll, attributeMap);
+        if (!tryAll && demandResult != null && !demandResult.isEmpty())
             return demandResult;
-        return actionPlan.tryToDo(playerID, attributeMap);
+        List<DemandResult> allResults = new ArrayList<>();
+        allResults.addAll(demandResult);
+        allResults.addAll(actionPlan.tryToDo(playerID, tryAll, attributeMap));
+        return allResults;
     }
 
     @Override

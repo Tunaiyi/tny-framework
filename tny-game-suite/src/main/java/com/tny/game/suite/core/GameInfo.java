@@ -5,6 +5,7 @@ import com.tny.game.LogUtils;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.config.ConfigLoader;
+import com.tny.game.common.formula.DateTimeEx;
 import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.suite.login.IDUtils;
 import com.tny.game.suite.utils.Configs;
@@ -88,14 +89,6 @@ public class GameInfo {
         return this.serverID;
     }
 
-    public static String getLocal() {
-        return GameInfo.local;
-    }
-
-    public static boolean isLocal(String local) {
-        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
-    }
-
     public ServerType getServerType() {
         return GameInfo.scopeType.getServerType();
     }
@@ -124,6 +117,10 @@ public class GameInfo {
         return this.openDate;
     }
 
+    public int getOpenedDays() {
+        return DateTimeEx.days(this.getOpenDate().toLocalDate(), DateTimeEx.today());
+    }
+
     public DateTime getStartAt() {
         return GameInfo.startAt;
     }
@@ -142,6 +139,38 @@ public class GameInfo {
 
     public boolean isRegister() {
         return this.register;
+    }
+
+    public static DateTime openDate() {
+        return getMainInfo().getOpenDate();
+    }
+
+    public static DateTime openDateMillis(int millisOfDay) {
+        return getMainInfo().getOpenDate().withMillisOfDay(millisOfDay);
+    }
+
+    public static DateTime openDate(int hour) {
+        return openDate(hour, 0);
+    }
+
+    public static DateTime openDate(int hour, int minutes) {
+        return openDate(hour, minutes);
+    }
+
+    public static DateTime openDate(int hour, int minutes, int seconds) {
+        return getMainInfo().getOpenDate().withTime(hour, minutes, seconds, 0);
+    }
+
+    public static int openedDays() {
+        return getMainInfo().getOpenedDays();
+    }
+
+    public static String getLocal() {
+        return GameInfo.local;
+    }
+
+    public static boolean isLocal(String local) {
+        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
     }
 
     public static long getSystemID() {

@@ -117,14 +117,14 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return null;
     }
 
-    protected TryToDoResult doTryToDo(long playerID, Item<?> item, Action action, boolean award, Object... attributes) {
+    protected TryToDoResult doTryToDo(long playerID, Item<?> item, Action action, boolean award, boolean tryAll, Object... attributes) {
         Map<String, Object> attributeMap = new HashMap<>();
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        DemandResult demandResult = behaviorPlan.tryToDo(playerID, action, attributeMap);
-        if (demandResult != null)
-            return new SimpleTryToDoResult(action, demandResult);
+        List<DemandResult> demandResults = behaviorPlan.tryToDo(playerID, action, tryAll, attributeMap);
+        if (demandResults != null && !demandResults.isEmpty())
+            return new SimpleTryToDoResult(action, demandResults);
         return new SimpleTryToDoResult(action, award ?
                 behaviorPlan.countAward(playerID, action, attributeMap) :
                 new SimpleTrade(action, TradeType.AWARD),
@@ -258,8 +258,19 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes) {
-        return this.doTryToDo(item.getPlayerID(), item, action, award, attributes);
+        return this.doTryToDo(item.getPlayerID(), item, action, award, false, attributes);
     }
+
+    @Override
+    public TryToDoResult tryToDoAll(Item<?> item, Action action, Object... attributes) {
+        return this.tryToDoAll(item, action, true, attributes);
+    }
+
+    @Override
+    public TryToDoResult tryToDoAll(Item<?> item, Action action, boolean award, Object... attributes) {
+        return this.doTryToDo(item.getPlayerID(), item, action, award, true, attributes);
+    }
+
 
     //	@Override
     //	public List<DemandResult> countDemandResult(Item<?> item, Action action, Object... attributes) {
@@ -301,9 +312,18 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes) {
-        return this.doTryToDo(playerID, null, action, award, attributes);
+        return this.doTryToDo(playerID, null, action, award, false, attributes);
     }
 
+    @Override
+    public TryToDoResult tryToDoAll(long playerID, Action action, Object... attributes) {
+        return this.tryToDoAll(playerID, action, true, attributes);
+    }
+
+    @Override
+    public TryToDoResult tryToDoAll(long playerID, Action action, boolean award, Object... attributes) {
+        return this.doTryToDo(playerID, null, action, award, true, attributes);
+    }
     @Override
     public ActionTrades createActionTrades(Item<?> item, Action action, Object... attributes) {
         return this.doCreateActionTrades(item.getPlayerID(), item, action, attributes);

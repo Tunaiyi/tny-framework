@@ -25,7 +25,7 @@ public interface CostPlan extends TradePlan {
      * @param attributes
      * @return
      */
-    DemandResult tryToDo(long playerID, Map<String, Object> attributes);
+    List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributes);
 
     /**
      * 获取消耗列表

@@ -7,7 +7,13 @@ import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class DemandHolderObject {
 
@@ -48,15 +54,18 @@ public abstract class DemandHolderObject {
         return item;
     }
 
-    protected DemandResult checkResult(long playerID, List<AbstractDemand> demandList, Map<String, Object> attributeMap) {
+    protected List<DemandResult> checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
+        List<DemandResult> results = new ArrayList<>();
         for (Demand demand : demandList) {
             DemandResult result = demand.checkDemandResult(playerID, attributeMap);
             if (result != null && !result.isSatisfy()) {
-                return result;
+                results.add(result);
+                if (!tryAll)
+                    return results;
             }
         }
-        return null;
+        return results;
     }
 
     public Set<String> getAttributesAliasSet() {
