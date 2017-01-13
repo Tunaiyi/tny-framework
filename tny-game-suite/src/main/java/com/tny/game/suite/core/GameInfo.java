@@ -154,7 +154,7 @@ public class GameInfo {
     }
 
     public static DateTime openDate(int hour, int minutes) {
-        return openDate(hour, minutes);
+        return openDate(hour, minutes, 0);
     }
 
     public static DateTime openDate(int hour, int minutes, int seconds) {
