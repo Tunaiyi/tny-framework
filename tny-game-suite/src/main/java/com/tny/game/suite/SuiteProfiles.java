@@ -25,6 +25,7 @@ public interface SuiteProfiles {
     String ITEM = "suite.item";
     String ITEM_CACHE = "suite.item.cache";
     String ITEM_OPLOG = "suite.item.oplog";
+    String PROTOBUF_MAPPER = "suite.item.protobuf_mapper";
 
     String SERVER = "suite.server";
     String SERVER_AUTH = "suite.server_auth";

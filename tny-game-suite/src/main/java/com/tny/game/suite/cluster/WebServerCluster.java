@@ -1,16 +1,17 @@
 package com.tny.game.suite.cluster;
 
 
+import com.tny.game.lifecycle.ServerPostStart;
 import com.tny.game.suite.cluster.game.ServerLaunch;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class WebServerCluster extends BaseCluster {
+public abstract class WebServerCluster extends BaseCluster implements ServerPostStart {
 
     @Autowired
     private ProtoExSchemaIniter protoExSchemaIniter;
@@ -124,10 +125,14 @@ public abstract class WebServerCluster extends BaseCluster {
     };
 
     @Override
-    @PostConstruct
     protected void init() throws Exception {
         this.protoExSchemaIniter.prepareStart();
         super.monitor();
+    }
+
+    @Override
+    public void postStart() throws Exception {
+        this.init();
     }
 
     public WebServerCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
@@ -214,12 +219,12 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode setOutline(ServerOutline outline) {
-        ServerNode node = this.nodeMap().get(outline.getServerID());
+        ServerNode node = this.getOrCreate(outline.getServerID());
         if (node != null) {
             node.setOutline(outline);
             this.postUpdateOutline(node, outline, false);
         } else {
-            node = new ServerNode();
+            node = new ServerNode(outline.getServerID());
             node.setOutline(outline);
             this.postUpdateOutline(node, outline, true);
             this.nodeMap().put(node.getServerID(), node);
@@ -235,7 +240,7 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode setLaunch(int serverID, ServerLaunch launch, boolean create) {
-        ServerNode node = this.nodeMap().get(serverID);
+        ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setLaunch(launch);
             if (launch != null)
@@ -245,7 +250,7 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode removeLaunch(int serverID) {
-        ServerNode node = this.nodeMap().get(serverID);
+        ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setLaunch(null);
             this.postRemoveLaunch(node);
@@ -259,7 +264,7 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode setSetting(int serverID, ServerSetting setting, boolean create) {
-        ServerNode node = this.nodeMap().get(serverID);
+        ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setSetting(setting);
             if (setting != null)
@@ -269,10 +274,19 @@ public abstract class WebServerCluster extends BaseCluster {
     }
 
     private ServerNode removeSetting(int serverID) {
-        ServerNode node = this.nodeMap().get(serverID);
+        ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setSetting(null);
             this.postRemoveSetting(node);
+        }
+        return node;
+    }
+
+    private ServerNode getOrCreate(int serverID) {
+        ServerNode node = this.nodeMap.get(serverID);
+        if (node == null) {
+            node = new ServerNode(serverID);
+            node = ObjectUtils.defaultIfNull(this.nodeMap.putIfAbsent(serverID, node), node);
         }
         return node;
     }

@@ -26,7 +26,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
 
     public ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("MobileSessionRecycleThread"));
 
-    private int responseCacheSize = 10;
+    private int responseCacheSize = 50;
     private long offlineWait = 1000 * 60 * 120;
 
     private Set<Object> mobileUserGroups = new HashSet<>();

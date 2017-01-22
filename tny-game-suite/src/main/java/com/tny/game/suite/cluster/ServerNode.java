@@ -22,13 +22,16 @@ public class ServerNode {
     private static final BindP1EventBus<ServerNodeListener, ServerNode, ServerSetting> ON_SETTING_CHANGE =
             EventBuses.of(ServerNodeListener.class, ServerNodeListener::onSettingChange);
 
+    private int serverID;
+
     private ServerOutline outline;
 
     private ServerSetting setting;
 
     private ServerLaunch launch;
 
-    public ServerNode() {
+    public ServerNode(int serverID) {
+        this.serverID = serverID;
     }
 
     public boolean isWork() {
@@ -44,7 +47,7 @@ public class ServerNode {
     }
 
     public int getServerID() {
-        return this.outline.getServerID();
+        return this.serverID;
     }
 
     public ServerOutline getOutline() {
