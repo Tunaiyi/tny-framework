@@ -55,7 +55,7 @@ public abstract class AbstractResponseBuilder<RP extends NetResponse> implements
         if (protocol instanceof Request) {
             response.setID(((Request) protocol).getID());
         }
-        response.setPush(protocol.isPush());
+        // response.setPush(protocol.isPush());
         response.setProtocol(protocol.getProtocol());
         return this;
     }

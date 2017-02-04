@@ -7,7 +7,7 @@ import com.tny.game.net.dispatcher.BaseSessionHolder;
 import com.tny.game.net.dispatcher.ServerSession;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.NetSession;
+import com.tny.game.net.dispatcher.BaseSession;
 import com.tny.game.net.dispatcher.ProxyServerSession;
 import com.tny.game.net.dispatcher.Session;
 
@@ -107,7 +107,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
         }
     }
 
-    protected void setMobileAttach(NetSession session, MobileAttach attach) {
+    protected void setMobileAttach(BaseSession session, MobileAttach attach) {
         session.attributes().setAttribute(MobileSessionHolder.MOBILE_ATTACH, attach);
     }
 

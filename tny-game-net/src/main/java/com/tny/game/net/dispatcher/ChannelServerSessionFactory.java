@@ -4,6 +4,6 @@ import io.netty.channel.Channel;
 
 public interface ChannelServerSessionFactory {
 
-    ServerSession createSession(Channel channel);
+    NetServerSession createSession(Channel channel);
 
 }

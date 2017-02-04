@@ -1,6 +1,7 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
 import com.tny.game.net.base.MessageType;
+import com.tny.game.net.base.NetMessage;
 import com.tny.game.net.dispatcher.NetResponse;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExConf;
@@ -18,7 +19,7 @@ import com.tny.game.protoex.annotations.TypeEncode;
  * 请求响应对象,可附加信息<br>
  */
 @ProtoEx(ProtoExMessageCoder.RESPONSE_ID)
-public class ProtoExResponse extends NetResponse {
+public class ProtoExResponse extends NetMessage {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +35,7 @@ public class ProtoExResponse extends NetResponse {
     @ProtoExField(value = 4, conf = @ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
     protected Object body;
 
+    @Deprecated
     @ProtoExField(5)
     protected boolean push;
 
@@ -55,10 +57,10 @@ public class ProtoExResponse extends NetResponse {
         return this.protocol;
     }
 
-    @Override
-    public boolean isPush() {
-        return push;
-    }
+    // @Override
+    // public boolean isPush() {
+    //     return push;
+    // }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -69,6 +71,16 @@ public class ProtoExResponse extends NetResponse {
         if (!clazz.isInstance(msg))
             return null;
         return (T) msg;
+    }
+
+    @Override
+    public long getTime() {
+        return 0;
+    }
+
+    @Override
+    public String getCheckKey() {
+        return null;
     }
 
     @Override
@@ -101,12 +113,11 @@ public class ProtoExResponse extends NetResponse {
         this.protocol = protocol;
     }
 
-    @Override
-    protected void setPush(boolean push) {
-        this.push = push;
-    }
+    // @Override
+    // protected void setPush(boolean push) {
+    //     this.push = push;
+    // }
 
-    @Override
     protected void setNumber(int number) {
         this.number = number;
     }
@@ -114,6 +125,16 @@ public class ProtoExResponse extends NetResponse {
     @Override
     public MessageType getMessage() {
         return MessageType.RESPONSE;
+    }
+
+    @Override
+    public int getMessageCode() {
+        return result;
+    }
+
+    @Override
+    public int toMessage() {
+        return 0;
     }
 
     @Override

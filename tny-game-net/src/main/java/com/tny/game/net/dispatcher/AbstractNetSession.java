@@ -8,7 +8,7 @@ import com.tny.game.net.checker.RequestChecker;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractNetSession implements ServerSession, ClientSession {
+public abstract class AbstractNetSession extends NetSession {
 
     protected LoginCertificate certificate;
 

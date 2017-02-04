@@ -60,7 +60,7 @@ public abstract class NetRequest extends Request {
     }
 
     @Override
-    protected void requestBy(Session session) {
+    protected void owner(Session session) {
         this.session = session;
     }
 

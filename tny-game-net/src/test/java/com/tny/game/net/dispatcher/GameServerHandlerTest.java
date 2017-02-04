@@ -80,14 +80,14 @@ public class GameServerHandlerTest {
         return this.request(protocol, null, objects);
     }
 
-    public SimpleRequest request(int protocol, NetSession session, Object... objects) {
+    public SimpleRequest request(int protocol, BaseSession session, Object... objects) {
         SimpleRequest request = (SimpleRequest) GameServerHandlerTest.messageBuilderFactory
                 .newRequestBuilder(session)
                 .setProtocol(protocol)
                 .addParameter(Arrays.asList(objects))
                 .build();
         if (session != null)
-            request.requestBy(session);
+            request.owner(session);
         return request;
     }
 

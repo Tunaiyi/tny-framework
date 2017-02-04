@@ -47,8 +47,7 @@ public abstract class Request extends NetMessage implements Serializable {
     /**
      * 请求参数对象
      *
-     * @param <MD5RequestEncrypt>
-     * @param clazz
+     * @param clazzArray
      * @return
      */
     public abstract Object[] getParameters(Class<?>[] clazzArray);
@@ -87,13 +86,6 @@ public abstract class Request extends NetMessage implements Serializable {
      * @return IP
      */
     public abstract String getHostName();
-
-    /**
-     * 獲取玩家會話對象
-     *
-     * @return
-     */
-    public abstract Session getSession();
 
     // /**
     // * 獲取請求的IP地址
@@ -141,6 +133,6 @@ public abstract class Request extends NetMessage implements Serializable {
      *
      * @param session
      */
-    protected abstract void requestBy(Session session);
+    protected abstract void owner(Session session);
 
 }

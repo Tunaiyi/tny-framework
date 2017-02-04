@@ -64,7 +64,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     @Override
     public DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException {
-        request.requestBy(session);
+        request.owner(session);
 
         // 获取方法持有器
         final MethodHolder methodHolder = this.methodHolder.get(request.getProtocol());
@@ -183,7 +183,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     public abstract void initDispatcher(AppContext appContext);
 
-    private static abstract class AbstractDispatcherCommand<S extends NetSession, H extends Message, O> implements DispatcherCommand<O> {
+    private static abstract class AbstractDispatcherCommand<S extends BaseSession, H extends Message, O> implements DispatcherCommand<O> {
 
         final AppContext appContext;
         protected H message;
@@ -525,7 +525,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     if (!provider.isCanValidate(this.message))
                         continue;
                     LoginCertificate loginInfo = provider.validate(this.message);
-                    if (loginInfo == null || !loginInfo.isLogin() || !sessionHolder.online(this.session, loginInfo)) {
+                    if (loginInfo == null || !loginInfo.isLogin() || !sessionHolder.online((NetServerSession) this.session, loginInfo)) {
                         NetMessageDispatcher.DISPATCHER_LOG.error("用户没有登陆无法请求 {}.{} 业务方法", this.methodHolder.getMethodClass(), this.methodHolder.getName());
                         throw new DispatchException(CoreResponseCode.UNLOGIN);
                     } else {

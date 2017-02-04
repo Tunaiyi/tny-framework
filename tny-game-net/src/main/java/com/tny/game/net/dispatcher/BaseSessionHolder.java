@@ -23,7 +23,7 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
     // private static final Logger LOG_ENCODE = LoggerFactory.getLogger(CoreLogger.CODER);
 
-    protected final ConcurrentHashMap<String, ConcurrentMap<Object, ServerSession>> sessionMap = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<String, ConcurrentMap<Object, NetServerSession>> sessionMap = new ConcurrentHashMap<>();
 
     protected final ConcurrentMap<String, ConcurrentMap<Object, ChannelGroup>> channelMap = new ConcurrentHashMap<>();
 
@@ -32,8 +32,8 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
         return this.getSession0(userGroup, key);
     }
 
-    private ServerSession getSession0(String userGroup, Object key) {
-        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
+    private NetServerSession getSession0(String userGroup, Object key) {
+        ConcurrentMap<Object, NetServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return null;
         return userGroupSessionMap.get(key);
@@ -152,7 +152,7 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
 
     @Override
     public int send2AllOnline(String userGroup, Protocol protocol, ResultCode code, Object body) {
-        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
+        ConcurrentMap<Object, NetServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return 0;
         return this.doSendMultiSession(userGroupSessionMap.values(), protocol, code, body);
@@ -189,7 +189,7 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
     @Override
     public int size() {
         int size = 0;
-        for (ConcurrentMap<Object, ServerSession> map : this.sessionMap.values())
+        for (ConcurrentMap<Object, NetServerSession> map : this.sessionMap.values())
             size += map.size();
         return size;
     }
@@ -268,7 +268,7 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
 
     @Override
     public Session offline(String userGroup, Object key) {
-        ServerSession session = this.getSession0(userGroup, key);
+        NetServerSession session = this.getSession0(userGroup, key);
         if (session != null) {
             this.disconnect(session);
             this.offline(session);
@@ -278,11 +278,11 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
 
     @Override
     public void offlineAll(String userGroup) {
-        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
+        ConcurrentMap<Object, NetServerSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null) {
             return;
         }
-        for (Entry<Object, ServerSession> entry : userGroupSessionMap.entrySet()) {
+        for (Entry<Object, NetServerSession> entry : userGroupSessionMap.entrySet()) {
             //			this.disconnect(entry.getValue());
             this.offline(entry.getValue());
         }
@@ -290,11 +290,11 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
 
     @Override
     public void offlineAll() {
-        for (ConcurrentMap<Object, ServerSession> userGroupSessionMap : this.sessionMap.values()) {
+        for (ConcurrentMap<Object, NetServerSession> userGroupSessionMap : this.sessionMap.values()) {
             if (userGroupSessionMap == null) {
                 return;
             }
-            for (Entry<Object, ServerSession> entry : userGroupSessionMap.entrySet()) {
+            for (Entry<Object, NetServerSession> entry : userGroupSessionMap.entrySet()) {
                 this.disconnect(entry.getValue());
                 this.offline(entry.getValue());
             }
@@ -311,11 +311,11 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
 
     @Override
     public void offline(Session session) {
-        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
+        ConcurrentMap<Object, NetServerSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null)
             return;
         if (userGroupSessionMap.remove(session.getUID(), session) && session.isConnect()) {
-            this.disconnect(session);
+            this.disconnect((NetServerSession) session);
         }
         ConcurrentMap<Object, ChannelGroup> userGroupMap = this.channelMap.get(session.getGroup());
         if (userGroupMap != null) {
@@ -327,7 +327,7 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
         this.debugSessionSize();
     }
 
-    protected boolean loginSession(NetSession session, LoginCertificate loginInfo) {
+    protected boolean loginSession(BaseSession session, LoginCertificate loginInfo) {
         if (!loginInfo.isLogin())
             return false;
         session.login(loginInfo);
@@ -335,15 +335,15 @@ public abstract class BaseSessionHolder extends NetSessionHolder {
     }
 
     @Override
-    protected boolean online(ServerSession session, LoginCertificate loginInfo) throws ValidatorFailException {
+    protected boolean online(NetServerSession session, LoginCertificate loginInfo) throws ValidatorFailException {
         if (!this.loginSession(session, loginInfo))
             return false;
-        ConcurrentMap<Object, ServerSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
+        ConcurrentMap<Object, NetServerSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null) {
             this.sessionMap.putIfAbsent(session.getGroup(), new ConcurrentHashMap<>());
             userGroupSessionMap = this.sessionMap.get(session.getGroup());
         }
-        ServerSession oldSession = userGroupSessionMap.put(session.getUID(), session);
+        NetServerSession oldSession = userGroupSessionMap.put(session.getUID(), session);
         if (oldSession != null && oldSession != session) {
             this.fireRemoveSession(new SessionChangeEvent(this, oldSession));
             if (oldSession.isConnect())

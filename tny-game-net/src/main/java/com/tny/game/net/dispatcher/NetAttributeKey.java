@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NetAttributeKey {
 
-    public static final AttributeKey<NetSession> SESSION = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".SESSION");
+    public static final AttributeKey<BaseSession> SESSION = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".SESSION");
 
-    public static final AttributeKey<ServerSession> SERVER_SESSION = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".SERVER_SESSION");
+    public static final AttributeKey<NetServerSession> SERVER_SESSION = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".SERVER_SESSION");
     public static final AttributeKey<ClientSession> CLIENT_SESSION = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".CLIENT_SESSION");
 
     public static final AttributeKey<AppContext> CONTEXT = AttributeKey.valueOf(ChannelHandlerContext.class.getName() + ".CONTEXT");

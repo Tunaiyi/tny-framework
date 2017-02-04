@@ -40,7 +40,7 @@ public abstract class NetResponse extends Response {
 
     protected abstract void setProtocol(int protocol);
 
-    protected abstract void setPush(boolean push);
+    // protected abstract void setPush(boolean push);
 
     protected abstract void setNumber(int number);
 

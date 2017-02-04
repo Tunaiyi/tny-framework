@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractServerSession implements ServerSession {
+public abstract class AbstractServerSession extends NetServerSession {
 
     protected LoginCertificate certificate;
 
@@ -104,7 +104,7 @@ public abstract class AbstractServerSession implements ServerSession {
                 while (true) {
                     if (lock.compareAndSet(false, true)) {
                         try {
-                            int responseNum = createResponseNumber();
+                            int responseNum = nextResponseNumber();
                             if (responseNum < 0) {
                                 LOGGER.warn("{}.{} session 分配的 responseNum {} 无效", this.getGroup(), this.getUID(), responseNum);
                                 break;
@@ -131,8 +131,6 @@ public abstract class AbstractServerSession implements ServerSession {
             }
         }
     }
-
-    protected abstract int createResponseNumber();
 
     protected abstract Optional<NetFuture> write(Object data);
 

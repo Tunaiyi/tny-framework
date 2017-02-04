@@ -146,7 +146,7 @@ public abstract class AbstractRequestBuilder<RQ extends NetRequest> implements R
         RQ request = this.request;
         if (request.getProtocol() == 0)
             throw new NullPointerException("protocol is 0");
-        request.requestBy(session);
+        request.owner(session);
         if (this.verifier != null)
             this.setCheckKey();
         doBuild(request);

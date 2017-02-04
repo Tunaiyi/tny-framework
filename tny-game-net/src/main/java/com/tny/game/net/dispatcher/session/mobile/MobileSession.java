@@ -20,18 +20,17 @@ public class MobileSession extends ChannelServerSession {
     }
 
     @Override
-    protected int createResponseNumber() {
-        MobileAttach attach = this.getMobileAttach();
-        if (attach == null)
-            return 0;
-        return attach.createResponseNumber();
-    }
-
-    @Override
     protected void prepareWriteResponse(Response response) {
         MobileAttach attach = this.getMobileAttach();
         if (attach != null)
             attach.push(response);
     }
 
+    @Override
+    protected int nextResponseNumber() {
+        MobileAttach attach = this.getMobileAttach();
+        if (attach == null)
+            return 0;
+        return attach.createResponseNumber();
+    }
 }

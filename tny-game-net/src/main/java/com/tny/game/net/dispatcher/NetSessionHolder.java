@@ -26,16 +26,15 @@ public abstract class NetSessionHolder implements SessionHolder {
      * @param session 指定的session
      * @throws ValidatorFailException
      */
-    protected abstract boolean online(ServerSession session, LoginCertificate loginInfo) throws ValidatorFailException;
+    protected abstract boolean online(NetServerSession session, LoginCertificate loginInfo) throws ValidatorFailException;
 
     /**
      * 移出所有组
      */
     protected abstract void removeAllChannel(String userGroup);
 
-    protected void disconnect(Session session) {
-        if (session instanceof NetSession)
-            ((NetSession) session).disconnect();
+    protected void disconnect(NetServerSession session) {
+        session.disconnect();
         this.fireDisconnectSession(new SessionChangeEvent(this, session));
     }
 

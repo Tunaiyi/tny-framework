@@ -1,14 +1,14 @@
 package com.tny.game.net.kafka;
 
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.net.dispatcher.NetSession;
+import com.tny.game.net.dispatcher.BaseSession;
 
 import java.util.Map;
 
 /**
  * Created by Kun Yang on 16/8/10.
  */
-public class KafkaSessionMap<S extends NetSession> {
+public class KafkaSessionMap<S extends BaseSession> {
 
     private Map<String, S> sessionMap = new CopyOnWriteMap<>();
 

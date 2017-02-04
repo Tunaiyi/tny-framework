@@ -3,11 +3,11 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Message;
 import com.tny.game.net.base.MessageType;
 import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
-import com.tny.game.net.base.CoreResponseCode;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -133,7 +133,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     private DispatcherCommand<?> requestCommand(Channel channel, Message message) {
         AppContext appContext = channel.attr(NetAttributeKey.CONTEXT).get();
-        ServerSession session = channel.attr(NetAttributeKey.SERVER_SESSION).get();
+        NetServerSession session = channel.attr(NetAttributeKey.SERVER_SESSION).get();
         try {
             if (session == null) {
                 session = this.sessionFactory.createSession(channel);
@@ -141,7 +141,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
                 channel.attr(NetAttributeKey.SERVER_SESSION).set(session);
             }
             Request request = (Request) message;
-            request.requestBy(session);
+            request.owner(session);
             CoreLogger.log(session, request);
             return this.messageDispatcher.dispatch(request, session, appContext);
         } catch (Throwable ex) {
@@ -169,7 +169,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NetSession session = channel.attr(NetAttributeKey.SESSION).get();
+        NetServerSession session = channel.attr(NetAttributeKey.SERVER_SESSION).get();
         if (session != null) {
             if (this.sessionHolder != null) {
                 this.sessionHolder.offline(session);

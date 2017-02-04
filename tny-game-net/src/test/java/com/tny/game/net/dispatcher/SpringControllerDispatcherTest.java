@@ -152,7 +152,7 @@ public class SpringControllerDispatcherTest {
                 .addParameter(Arrays.asList(objects))
                 .setRequestVerifier(key != null ? (RequestVerifier) Request -> "ddd" : null).build();
         if (session != null)
-            request.requestBy(session);
+            request.owner(session);
         return request;
     }
 
