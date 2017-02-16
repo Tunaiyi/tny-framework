@@ -87,6 +87,11 @@ public class GameTicket {
 
     public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, String openKey,
                       String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
+        this(tokenID, server, openID, bindID, guest, false, openKey, pf, accountTag, zone, entry, device, deviceID, time, maker);
+    }
+
+    public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, boolean interior, String openKey,
+                      String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
         super();
         this.tokenID = tokenID;
         this.openID = openID;
@@ -101,7 +106,7 @@ public class GameTicket {
         this.entry = entry;
         this.device = StringUtils.isBlank(deviceID) ? "NONE" : device;
         this.deviceID = StringUtils.isBlank(deviceID) ? openID : deviceID;
-        this.interior = false;
+        this.interior = interior;
         if (maker != null)
             this.secret = maker.make(this);
     }

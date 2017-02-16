@@ -22,7 +22,7 @@ public class RMISession extends AbstractNetSession {
     private String host;
 
     public RMISession(long userId, String userGroup, String host) {
-        super(LoginCertificate.createLogin(userId, userGroup));
+        super(LoginCertificate.createLogin(System.currentTimeMillis(), userId, userGroup));
         this.host = host;
         this.messageBuilderFactory = RMISession.DEF_MSG_BUILDER_FACTORY;
     }
