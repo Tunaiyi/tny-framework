@@ -67,7 +67,14 @@ public enum CoreResponseCode implements ResultCode {
      * 响应过期
      */
     RESPONSE_TIMEOUT(215, "响应过期", ResultCodeType.WARN),
-
+    /**
+     * 会话丢失
+     */
+    SESSION_LOSS(216, "会话丢失", ResultCodeType.ERROR),
+    /**
+     * 会话超时
+     */
+    SESSION_TIMEOUT(217, "会话超时", ResultCodeType.ERROR),
     /**
      * 验证失败
      */

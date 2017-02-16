@@ -111,7 +111,7 @@ public class KafkaNetBootstrap {
     public RequestSession getOrCreateClient(String remoteType, int remoteUID, String userGroup, long uid, KafkaMessageBuilderFactory messageBuilderFactory, RequestVerifier verifier) {
         ClientSession session = clientSessionMap.get(remoteType, remoteUID);
         if (session == null) {
-            LoginCertificate cer = LoginCertificate.createLogin(uid, userGroup);
+            LoginCertificate cer = LoginCertificate.createLogin(uid, uid, userGroup);
             KafkaServerInfo remoteServer = new KafkaServerInfo(remoteType, remoteUID);
             session = KafkaSession.clientSession(producer, cer, remoteServer,
                     ObjectUtils.defaultIfNull(messageBuilderFactory, appContext.getMessageBuilderFactory()),
@@ -259,7 +259,7 @@ public class KafkaNetBootstrap {
         KafkaTicket ticket = request.getTicket();
         KafkaTicketTaker taker = appContext.getTicketTaker();
         if (taker.take(ticket, request.getCheckKey())) {
-            return LoginCertificate.createLogin(ticket.getUID(), ticket.getUserGroup());
+            return LoginCertificate.createLogin(ticket.getUID(), ticket.getUID(), ticket.getUserGroup());
         } else {
             return LoginCertificate.createUnLogin();
         }

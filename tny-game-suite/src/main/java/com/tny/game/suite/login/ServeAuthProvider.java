@@ -48,7 +48,7 @@ public class ServeAuthProvider extends GameAuthProvider {
         ServeTicket ticket = JSONUtils.toObject(ticketWord, ServeTicket.class);
         ServerType serverType = ticket.asScopeType().getServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
-            LoginCertificate info = LoginCertificate.createLogin(ticket.getServerID(), serverType.getName(), false);
+            LoginCertificate info = LoginCertificate.createLogin(ticket.getServerID(), ticket.getServerID(), serverType.getName(), false);
             String truePWD = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(serverType), "");
             request.getSession().attributes().setAttribute(SessionKeys.SYSTEM_USER_ID, ticket.getServerID());
             request.getSession().attributes().setAttribute(SessionKeys.SYSTEM_USER_USER_GROUP, serverType.getName());

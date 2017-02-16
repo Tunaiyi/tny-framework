@@ -30,7 +30,7 @@ public class TelnetSession extends ChannelServerSession {
     }
 
     public TelnetSession(int userId, Channel channel) {
-        super(channel, LoginCertificate.createLogin(userId, TelnetSession.TELNET_USER_GROUP, false));
+        super(channel, LoginCertificate.createLogin(System.currentTimeMillis(), userId, TelnetSession.TELNET_USER_GROUP, false));
         this.hostName = channel == null || channel.remoteAddress() == null ? null : ((InetSocketAddress) channel
                 .remoteAddress()).getAddress().getHostAddress();
     }

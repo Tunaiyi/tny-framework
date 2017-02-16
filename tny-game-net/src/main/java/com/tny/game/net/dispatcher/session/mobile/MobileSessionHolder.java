@@ -3,13 +3,14 @@ package com.tny.game.net.dispatcher.session.mobile;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.net.dispatcher.BaseSessionHolder;
-import com.tny.game.net.dispatcher.ServerSession;
-import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.dispatcher.BaseSessionHolder;
 import com.tny.game.net.dispatcher.NetSession;
 import com.tny.game.net.dispatcher.ProxyServerSession;
+import com.tny.game.net.dispatcher.ServerSession;
 import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -122,6 +123,10 @@ public class MobileSessionHolder extends BaseSessionHolder {
                 current = new ProxyServerSession(session);
                 this.setMobileAttach(current, new MobileAttach(this.responseCacheSize));
             } else {
+                if (current.getCertificate().getLoginID() != loginInfo.getLoginID()) {
+                    String account = loginInfo.getUserGroup() + "-" + loginInfo.getUserID();
+                    throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS, account, session.getHostName());
+                }
                 MobileAttach attach = this.getMobileAttach(current);
                 if (attach != null && (attach.isState(MobileSessionState.ONLINE) || attach.online())) {
                     Session old = current.setSession(session);
@@ -130,7 +135,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
                     this.setMobileAttach(current, attach);
                 } else {
                     String account = loginInfo.getUserGroup() + "-" + loginInfo.getUserID();
-                    throw new ValidatorFailException(account, session.getHostName(), "会话失效");
+                    throw new ValidatorFailException(CoreResponseCode.SESSION_TIMEOUT, account, session.getHostName());
                 }
             }
             addSession = current;

@@ -11,6 +11,7 @@ import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public abstract class UserAuthProvider extends GameAuthProvider {
                 if (ticketWord == null)
                     throw new ValidatorFailException(openID, request.getHostName(), "无登录票据");
                 ticket = GameTicketHelper.decryptTicket(ticketWord);
-                if (!this.isOnline() && (!ticket.getPf().equals("inside") || !ticket.isInterior()))
+                if (!this.isOnline() && !ticket.isInterior())
                     throw new DispatchException(SuiteResultCode.AUTH_SERVER_IS_OFFLINE, "服务器正在维护");
                 // 维护时候只有pf为inside才可以进入
                 String checkKey = this.ticketMaker.make(ticket);
@@ -79,7 +80,10 @@ public abstract class UserAuthProvider extends GameAuthProvider {
                         pf = pfs[1];
                     }
                     long time = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, System.currentTimeMillis());
-                    ticket = new GameTicket(System.currentTimeMillis(), serverID, openID, openID, false, openKey, pf, pf, zoneID, entryID, null, null, time, null);
+                    long ticketID = System.currentTimeMillis();
+                    if (StringUtils.isNumeric(openKey))
+                        ticketID = NumberUtils.toLong(openKey);
+                    ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, pf, pf, zoneID, entryID, null, null, time, null);
                 } else {
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
@@ -113,7 +117,7 @@ public abstract class UserAuthProvider extends GameAuthProvider {
         request.getSession().attributes().setAttribute(SessionKeys.ACCOUNT_KEY, accountObj);
         request.getSession().attributes().setAttribute(SessionKeys.TICKET_KEY, ticket);
         LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", request.getHostName(), ticket.getOpenID(), accountObj.getUid());
-        return LoginCertificate.createLogin(accountObj.getUid(), relogin);
+        return LoginCertificate.createLogin(ticket.getTokenID(), accountObj.getUid(), relogin);
     }
 
     public void setOnline(boolean online) {

@@ -63,12 +63,12 @@ public class RedisHashCacheClient extends BaseRedisCacheClient {
 
     @Override
     protected boolean jedisSetNX(Jedis jedis, byte[] key, byte[] value) {
-        return jedis.hsetnx(this.nameBytes, key, value) != null;
+        return jedis.hsetnx(this.nameBytes, key, value) > 0;
     }
 
     @Override
     protected boolean jedisSetNXPX(Jedis jedis, byte[] key, byte[] value, long time) {
-        return jedis.hsetnx(this.nameBytes, key, value) != null;
+        return jedis.hsetnx(this.nameBytes, key, value) > 0;
     }
 
     @Override
@@ -83,12 +83,12 @@ public class RedisHashCacheClient extends BaseRedisCacheClient {
 
     @Override
     protected boolean jedisSetXX(Jedis jedis, byte[] key, byte[] value) {
-        return jedis.hsetnx(this.nameBytes, key, value) != null;
+        return jedis.hsetnx(this.nameBytes, key, value) > 0;
     }
 
     @Override
     protected boolean jedisSetXXPX(Jedis jedis, byte[] key, byte[] value, long time) {
-        return jedis.hsetnx(this.nameBytes, key, value) != null;
+        return jedis.hsetnx(this.nameBytes, key, value) > 0;
     }
 
     @Override
@@ -103,12 +103,12 @@ public class RedisHashCacheClient extends BaseRedisCacheClient {
 
     @Override
     protected boolean jedisSet(Jedis jedis, byte[] key, byte[] value) {
-        return jedis.hset(this.nameBytes, key, value) != null;
+        return jedis.hset(this.nameBytes, key, value) > 0;
     }
 
     @Override
     protected boolean jedisSetPX(Jedis jedis, byte[] key, byte[] value, long time) {
-        return jedis.hset(this.nameBytes, key, value) != null;
+        return jedis.hset(this.nameBytes, key, value) > 0;
     }
 
     @Override
