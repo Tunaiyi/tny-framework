@@ -3,7 +3,7 @@ package com.tny.game.net.checker.md5;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.Request;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 
-public abstract class MD5VerifyChecker implements RequestChecker, RequestVerifier {
+public abstract class MD5VerifyChecker implements MessageChecker, RequestVerifier {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(CoreLogger.CHECKER);
 

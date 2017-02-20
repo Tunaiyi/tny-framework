@@ -47,7 +47,7 @@ public interface Session {
      *
      * @return
      */
-    boolean isAskerLogin();
+    boolean isLogin();
 
     /**
      * 獲取响应的IP地址

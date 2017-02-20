@@ -16,26 +16,26 @@ import java.util.function.Consumer;
 /**
  * Created by Kun Yang on 16/8/9.
  */
-public abstract class AbstractNetFuture<F extends Future<Void>> implements NetFuture {
+public abstract class AbstractNetSendFuture<F extends Future<Void>> implements MessageSendFuture {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetFuture.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetSendFuture.class);
 
     protected Session session;
 
     protected F future;
 
-    private List<Consumer<NetFuture>> listeners;
+    private List<Consumer<MessageSendFuture>> listeners;
 
-    protected AbstractNetFuture(Session session, F future) {
+    protected AbstractNetSendFuture(Session session, F future) {
         this.session = session;
         this.future = future;
     }
 
-    protected List<Consumer<NetFuture>> getListeners() {
+    protected List<Consumer<MessageSendFuture>> getListeners() {
         return ObjectUtils.defaultIfNull(this.listeners, Collections.emptyList());
     }
 
-    protected List<Consumer<NetFuture>> getAndCreateListeners() {
+    protected List<Consumer<MessageSendFuture>> getAndCreateListeners() {
         if (listeners != null)
             return listeners;
         listeners = new ArrayList<>();
@@ -45,7 +45,7 @@ public abstract class AbstractNetFuture<F extends Future<Void>> implements NetFu
 
     protected abstract void addRealListener(Runnable firer);
 
-    private void doFire(Consumer<NetFuture> listener) {
+    private void doFire(Consumer<MessageSendFuture> listener) {
         try {
             listener.accept(this);
         } catch (Throwable e) {
@@ -61,14 +61,14 @@ public abstract class AbstractNetFuture<F extends Future<Void>> implements NetFu
 
 
     @Override
-    public NetFuture addListener(Consumer<NetFuture> listener) {
+    public MessageSendFuture addListener(Consumer<MessageSendFuture> listener) {
         getAndCreateListeners().add(listener);
         return this;
     }
 
     @Override
-    public NetFuture removeListener(Consumer<NetFuture> listener) {
-        List<Consumer<NetFuture>> listeners = this.listeners;
+    public MessageSendFuture removeListener(Consumer<MessageSendFuture> listener) {
+        List<Consumer<MessageSendFuture>> listeners = this.listeners;
         if (listeners != null)
             listeners.remove(listener);
         return this;

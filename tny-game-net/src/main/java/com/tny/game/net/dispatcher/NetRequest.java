@@ -2,7 +2,6 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.base.MessageType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -51,7 +50,7 @@ public abstract class NetRequest extends Request {
 
     @Override
     public boolean isLogin() {
-        return this.session == null ? false : this.session.isAskerLogin();
+        return this.session == null ? false : this.session.isLogin();
     }
 
     @Override
@@ -112,10 +111,10 @@ public abstract class NetRequest extends Request {
         return null;
     }
 
-    @Override
-    public MessageType getMessage() {
-        return MessageType.REQUEST;
-    }
+    // @Override
+    // public MessageType getMessage() {
+    //     return MessageType.REQUEST;
+    // }
 
     public Class<?> getWrapper(final Class<?> clazz) {
         Class<?> wapper = NetRequest.WRAPPER_MAP.get(clazz);

@@ -82,12 +82,12 @@ public abstract class ChannelServerSession extends AbstractServerSession {
     }
 
     @Override
-    protected Optional<NetFuture> write(Object data) {
+    protected Optional<MessageSendFuture> write(Object data) {
         try {
             Channel channel = this.channel;
             if (channel != null && channel.isActive()) {
                 ChannelFuture channelFuture = channel.writeAndFlush(data);
-                return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
+                return Optional.ofNullable(channelFuture == null ? null : new NetSendChannelFuture(this, channelFuture));
             }
             return Optional.empty();
         } catch (Exception e) {

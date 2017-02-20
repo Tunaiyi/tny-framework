@@ -2,13 +2,13 @@ package com.tny.game.net;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.Request;
 import org.springframework.stereotype.Component;
 
 @Component("checker")
-public class TestRequestChecker implements RequestVerifier, RequestChecker {
+public class TestMessageChecker implements RequestVerifier, MessageChecker {
 
     @Override
     public ResultCode match(Request request) {

@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.coder.ChannelMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -20,7 +20,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class GameChannelMaker<C extends Channel> extends ChannelMaker<C> {
 
     @Autowired
-    public GameChannelMaker(List<RequestChecker> checkers) {
+    public GameChannelMaker(List<MessageChecker> checkers) {
         super(checkers);
     }
 

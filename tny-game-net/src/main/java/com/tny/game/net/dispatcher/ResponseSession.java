@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public interface ResponseSession extends Session {
 
-    default Optional<NetFuture> response(Protocol protocol, Object body) {
+    default Optional<MessageSendFuture> response(Protocol protocol, Object body) {
         return this.response(protocol, ResultCode.SUCCESS, body);
     }
 
-    Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body);
+    Optional<MessageSendFuture> response(Protocol protocol, ResultCode code, Object body);
 
 }

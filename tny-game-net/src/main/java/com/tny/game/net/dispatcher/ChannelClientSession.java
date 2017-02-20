@@ -83,15 +83,15 @@ public abstract class ChannelClientSession extends AbstractClientSession {
         return Optional.empty();
     }
 
-    protected Optional<NetFuture> writeRequest(Request request, final MessageFuture<?> future) {
+    protected Optional<MessageSendFuture> writeRequest(Request request, final MessageFuture<?> future) {
         try {
             if (this.channel.isActive()) {
                 if (future == null) {
                     ChannelFuture channelFuture = this.channel.writeAndFlush(request);
-                    return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
+                    return Optional.ofNullable(channelFuture == null ? null : new NetSendChannelFuture(this, channelFuture));
                 } else {
                     ChannelFuture channelFuture = this.channel.writeAndFlush(request, new NetChannelPromise(this, future, channel));
-                    return Optional.ofNullable(channelFuture == null ? null : new NetChannelFuture(this, channelFuture));
+                    return Optional.ofNullable(channelFuture == null ? null : new NetSendChannelFuture(this, channelFuture));
                 }
             }
         } catch (Exception e) {
@@ -101,12 +101,12 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, Object... params) {
         return this.request(protocol, (MessageFuture<?>) null, params);
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
         Request request = this.getMessageBuilderFactory()
                 .newRequestBuilder(this)
                 .setID(this.requestIDCreator.getAndIncrement())
@@ -122,7 +122,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
         MessageFuture<?> future = new MessageFuture<>(action, timeout);
         return this.request(protocol, future, params);
     }

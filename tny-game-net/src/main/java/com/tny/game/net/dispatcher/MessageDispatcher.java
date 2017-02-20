@@ -2,7 +2,7 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.dispatcher.exception.DispatchException;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
 
 /**
  * 请求派发器
@@ -26,18 +26,7 @@ public interface MessageDispatcher {
      * @param request 请求
      * @param session 通道
      */
-    DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException;
-
-    /**
-     * 派发请求
-     * <p>
-     * <p>
-     * 派发请求到相对应的Controller<br>
-     *
-     * @param response 请求
-     * @param session  通道
-     */
-    DispatcherCommand<Void> dispatch(Response response, ClientSession session, AppContext context) throws DispatchException;
+    DispatcherCommand<CommandResult> dispatch(Request request, NetSession session, AppContext context) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器
@@ -47,7 +36,7 @@ public interface MessageDispatcher {
      *
      * @param listener 添加的请求派发错误监听器
      */
-    void addDispatcherRequestListener(DispatcherRequestListener listener);
+    void addDispatcherRequestListener(DispatcherMessageListener listener);
 
     /**
      * 移除请求派发错误监听器
@@ -57,7 +46,7 @@ public interface MessageDispatcher {
      *
      * @param listener 移除的请求派发错误监听器
      */
-    void removeDispatcherRequestListener(DispatcherRequestListener listener);
+    void removeDispatcherRequestListener(DispatcherMessageListener listener);
 
     /**
      * 清除请求派发错误监听器

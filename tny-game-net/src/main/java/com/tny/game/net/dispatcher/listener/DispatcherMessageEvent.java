@@ -4,7 +4,7 @@ import com.tny.game.net.dispatcher.CommandResult;
 import com.tny.game.net.dispatcher.MethodHolder;
 import com.tny.game.net.dispatcher.Request;
 
-public class DispatcherRequestEvent {
+public class DispatcherMessageEvent {
 
     private Request request;
 
@@ -12,13 +12,13 @@ public class DispatcherRequestEvent {
 
     private CommandResult result;
 
-    public DispatcherRequestEvent(Request request, MethodHolder methodHolder, CommandResult result) {
+    public DispatcherMessageEvent(Request request, MethodHolder methodHolder, CommandResult result) {
         this.request = request;
         this.methodHolder = methodHolder;
         this.result = result;
     }
 
-    public DispatcherRequestEvent(Request request, MethodHolder methodHolder) {
+    public DispatcherMessageEvent(Request request, MethodHolder methodHolder) {
         this(request, methodHolder, null);
     }
 

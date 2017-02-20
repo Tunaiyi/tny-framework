@@ -12,7 +12,7 @@ import com.tny.game.net.dispatcher.Session;
 import com.tny.game.net.dispatcher.SessionHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.dispatcher.plugin.spring.SpringPluginHolder;
-import com.tny.game.net.dispatcher.session.mobile.MobileRequestIDChecker;
+import com.tny.game.net.dispatcher.session.mobile.MobileMessageIDChecker;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionFactory;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionHolder;
 import com.tny.game.net.dispatcher.spring.SpringMessageDispatcher;
@@ -85,7 +85,7 @@ public class NetServerConfiguration {
     }
 
     // @Bean(name = "idChecker")
-    public MobileRequestIDChecker requestIDChecker() {
+    public MobileMessageIDChecker requestIDChecker() {
         Config config = Configs.SUITE_CONFIG;
         String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
         List<Integer> ports = new ArrayList<>();
@@ -94,7 +94,7 @@ public class NetServerConfiguration {
                     .map(NumberUtils::toInt)
                     .collect(Collectors.toList());
         }
-        return new MobileRequestIDChecker(ports, ImmutableSet.of(Session.DEFAULT_USER_GROUP));
+        return new MobileMessageIDChecker(ports, ImmutableSet.of(Session.DEFAULT_USER_GROUP));
     }
 
     @Bean(name = "messageDispatcher")

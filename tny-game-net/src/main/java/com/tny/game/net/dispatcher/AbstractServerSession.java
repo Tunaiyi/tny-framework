@@ -7,7 +7,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public abstract class AbstractServerSession extends NetServerSession {
 
     protected LoginCertificate certificate;
 
-    protected List<RequestChecker> checkers;
+    protected List<MessageChecker> checkers;
 
     protected MessageBuilderFactory messageBuilderFactory;
 
@@ -78,7 +78,7 @@ public abstract class AbstractServerSession extends NetServerSession {
 
 
     @Override
-    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<MessageSendFuture> response(Protocol protocol, ResultCode code, Object body) {
         if (protocol.isPush()) {
             SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
             if (!option.isPush()) {
@@ -93,7 +93,7 @@ public abstract class AbstractServerSession extends NetServerSession {
             return this.write(data);
         } else {
             try {
-                Optional<NetFuture> optional = Optional.empty();
+                Optional<MessageSendFuture> optional = Optional.empty();
                 NetResponse response = (NetResponse) this.getMessageBuilderFactory()
                         .newResponseBuilder(this)
                         .setID(protocol.isPush() ? 0 : DEFAULT_RESPONSE_ID)
@@ -132,12 +132,12 @@ public abstract class AbstractServerSession extends NetServerSession {
         }
     }
 
-    protected abstract Optional<NetFuture> write(Object data);
+    protected abstract Optional<MessageSendFuture> write(Object data);
 
     protected void prepareWriteResponse(Response response) {
     }
 
-    protected void postWriteResponse(Response response, NetFuture future) {
+    protected void postWriteResponse(Response response, MessageSendFuture future) {
     }
 
     @Override
@@ -146,7 +146,7 @@ public abstract class AbstractServerSession extends NetServerSession {
     }
 
     @Override
-    public List<RequestChecker> getCheckers() {
+    public List<MessageChecker> getCheckers() {
         return this.checkers;
     }
 

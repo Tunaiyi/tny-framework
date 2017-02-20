@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.dispatcher.AbstractNetSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.MessageFuture;
-import com.tny.game.net.dispatcher.NetFuture;
+import com.tny.game.net.dispatcher.MessageSendFuture;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 
 import java.util.List;
@@ -48,27 +48,27 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, Object... params) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageAction<?> action, Object... params) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<NetFuture> response(Protocol protocol, ResultCode code, Object body) {
+    public Optional<MessageSendFuture> response(Protocol protocol, ResultCode code, Object body) {
         return Optional.empty();
     }
 
@@ -78,7 +78,7 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public List<RequestChecker> getCheckers() {
+    public List<MessageChecker> getCheckers() {
         return ImmutableList.of();
     }
 }

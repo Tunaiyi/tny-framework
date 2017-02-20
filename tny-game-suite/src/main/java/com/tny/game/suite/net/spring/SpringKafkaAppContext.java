@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.AuthProvider;
 import com.tny.game.net.dispatcher.NetMessageDispatcher;
@@ -44,7 +44,7 @@ public class SpringKafkaAppContext extends KafkaAppContext {
 
     @Autowired
     @Override
-    public void setCheckers(List<RequestChecker> checkers) {
+    public void setCheckers(List<MessageChecker> checkers) {
         super.setCheckers(checkers);
     }
 

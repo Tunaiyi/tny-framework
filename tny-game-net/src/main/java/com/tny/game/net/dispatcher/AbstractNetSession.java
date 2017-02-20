@@ -3,16 +3,16 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractNetSession extends NetSession {
+public abstract class AbstractNetSession extends CommonSession {
 
     protected LoginCertificate certificate;
 
-    protected RequestChecker checker;
+    protected MessageChecker checker;
 
     protected MessageBuilderFactory messageBuilderFactory;
 

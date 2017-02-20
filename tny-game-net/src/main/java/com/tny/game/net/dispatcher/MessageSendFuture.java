@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * Created by Kun Yang on 16/8/9.
  */
-public interface NetFuture extends Future<Void> {
+public interface MessageSendFuture extends Future<Void> {
 
     /**
      * @return 获取对应的Session
@@ -37,7 +37,7 @@ public interface NetFuture extends Future<Void> {
      * {@linkplain #isDone() done}.  If this future is already
      * completed, the specified listener is notified immediately.
      */
-    NetFuture addListener(Consumer<NetFuture> listener);
+    MessageSendFuture addListener(Consumer<MessageSendFuture> listener);
 
     /**
      * Removes the specified listener from this future.
@@ -46,6 +46,6 @@ public interface NetFuture extends Future<Void> {
      * listener is not associated with this future, this method
      * does nothing and returns silently.
      */
-    NetFuture removeListener(Consumer<NetFuture> listener);
+    MessageSendFuture removeListener(Consumer<MessageSendFuture> listener);
 
 }

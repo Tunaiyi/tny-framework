@@ -6,14 +6,14 @@ import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.AbstractServerSession;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageFuture;
 import com.tny.game.net.dispatcher.MessageFutureHolder;
-import com.tny.game.net.dispatcher.NetFuture;
+import com.tny.game.net.dispatcher.MessageSendFuture;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
 import com.tny.game.net.dispatcher.ServerSession;
@@ -53,7 +53,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     private String topic;
 
-    public static ServerSession serverSession(Producer<String, KafkaMessage> producer, KafkaServerInfo localServer, KafkaMessageBuilderFactory messageBuilderFactory, List<RequestChecker> checkers) {
+    public static ServerSession serverSession(Producer<String, KafkaMessage> producer, KafkaServerInfo localServer, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers) {
         return new KafkaSession(SessionModel.SERVER, producer, null, localServer, messageBuilderFactory, checkers, null);
     }
 
@@ -61,7 +61,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
         return new KafkaSession(SessionModel.CLIENT, producer, certificate, removeServer, messageBuilderFactory, null, verifier);
     }
 
-    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<RequestChecker> checkers, RequestVerifier verifier) {
+    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers, RequestVerifier verifier) {
         super(LoginCertificate.createUnLogin());
         this.model = model;
         this.producer = producer;
@@ -102,11 +102,11 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
     }
 
     @Override
-    protected Optional<NetFuture> write(Object data) {
+    protected Optional<MessageSendFuture> write(Object data) {
         return write(data, null);
     }
 
-    protected Optional<NetFuture> write(Object data, MessageFuture<?> future) {
+    protected Optional<MessageSendFuture> write(Object data, MessageFuture<?> future) {
         if (!(data instanceof KafkaMessage)) {
             LOGGER.error("KafkaSession 无法发送 {} 类型的消息", data.getClass());
             return Optional.empty();
@@ -170,18 +170,18 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, Object... params) {
         return this.request(protocol, (MessageFuture<?>) null, params);
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageAction<?> action, long timeout, Object... params) {
         MessageFuture<?> future = new MessageFuture<>(action, timeout);
         return this.request(protocol, future, params);
     }
 
     @Override
-    public Optional<NetFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
+    public Optional<MessageSendFuture> request(Protocol protocol, MessageFuture<?> future, Object... params) {
         Request request = this.getMessageBuilderFactory()
                 .newRequestBuilder(this)
                 .setID(this.requestIDCreator.getAndIncrement())

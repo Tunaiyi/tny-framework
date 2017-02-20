@@ -10,10 +10,8 @@ import com.tny.game.protoex.annotations.ProtoExElement;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.protoex.annotations.TypeEncode;
 
-@ProtoEx(ProtoExMessageCoder.REQUEST_ID)
-public class ProtoExRequest extends NetMessage {
-
-    private static final long serialVersionUID = 1L;
+@ProtoEx(ProtoExMessageCoder.MESSAGE_ID)
+public class ProtoExNetMessage extends NetMessage {
 
     @ProtoExField(1)
     protected int ID;
@@ -22,20 +20,26 @@ public class ProtoExRequest extends NetMessage {
     protected int protocol = -1;
 
     @ProtoExField(3)
-    protected String checkKey;
+    protected int result;
 
-    @ProtoExField(4)
-    protected long time = -1;
-
-    @ProtoExField(5)
     @Packed(false)
+    @ProtoExField(value = 4, conf = @ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
     @ProtoExElement(@ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
     protected Object body;
 
-    public ProtoExRequest() {
+    @ProtoExField(5)
+    protected int toMessage;
+
+    @ProtoExField(6)
+    protected String checkKey;
+
+    @ProtoExField(7)
+    protected long time = -1;
+
+    public ProtoExNetMessage() {
     }
 
-    protected ProtoExRequest(Session session) {
+    protected ProtoExNetMessage(Session session) {
         this.session = session;
     }
 
@@ -44,11 +48,6 @@ public class ProtoExRequest extends NetMessage {
         return this.ID;
     }
 
-    // @Override
-    // public MessageType getMessage() {
-    //     return MessageType.REQUEST;
-    // }
-
     @Override
     public int getMessageCode() {
         return ResultCode.SUCCESS_CODE;
@@ -56,14 +55,13 @@ public class ProtoExRequest extends NetMessage {
 
     @Override
     public int getToMessage() {
-        return -1;
+        return toMessage;
     }
 
     @Override
     public long getTime() {
         return this.time;
     }
-
 
     @Override
     public String getCheckKey() {
@@ -75,14 +73,6 @@ public class ProtoExRequest extends NetMessage {
         return this.protocol;
     }
 
-
-    @Override
-    public String toString() {
-        return "ProtoRequest [ID=" + this.ID + ", protocol=" + this.protocol + ", checkKey=" + this.checkKey
-                + ", time=" + this.time + ", paramList="
-                + this.body + "]";
-    }
-
     @Override
     protected Object getBody() {
         return this.body;
@@ -92,4 +82,12 @@ public class ProtoExRequest extends NetMessage {
     protected void setBody(Object body) {
         this.body = body;
     }
+
+    @Override
+    public String toString() {
+        return "ProtoRequest [ID=" + this.ID + ", protocol=" + this.protocol + ", checkKey=" + this.checkKey
+                + ", time=" + this.time + ", paramList="
+                + this.body + "]";
+    }
 }
+

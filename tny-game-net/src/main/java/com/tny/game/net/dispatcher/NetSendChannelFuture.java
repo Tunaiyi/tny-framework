@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Kun Yang on 16/8/9.
  */
-public class NetChannelFuture extends AbstractNetFuture<ChannelFuture> {
+public class NetSendChannelFuture extends AbstractNetSendFuture<ChannelFuture> {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(NetChannelFuture.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NetSendChannelFuture.class);
 
-    NetChannelFuture(Session session, ChannelFuture future) {
+    NetSendChannelFuture(Session session, ChannelFuture future) {
         super(session, future);
     }
 

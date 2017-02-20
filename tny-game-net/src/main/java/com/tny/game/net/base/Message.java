@@ -33,7 +33,7 @@ public interface Message extends Protocol {
     /**
      * @return 响应消息 -1 为无
      */
-    int toMessage();
+    int getToMessage();
 
     /**
      * @return 获取消息体

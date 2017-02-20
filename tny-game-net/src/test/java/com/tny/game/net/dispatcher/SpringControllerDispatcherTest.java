@@ -3,13 +3,13 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.checker.RequestVerifier;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageErrorEvent;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageEvent;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
 import com.tny.game.net.dispatcher.message.simple.SimpleChannelServerSession;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
@@ -34,7 +34,7 @@ public class SpringControllerDispatcherTest {
     private MessageDispatcher dispatcher;
 
     @Autowired
-    private RequestChecker checker;
+    private MessageChecker checker;
 
     @Autowired
     private AppContext context;
@@ -46,22 +46,22 @@ public class SpringControllerDispatcherTest {
     private static MessageBuilderFactory messageBuilderFactory = new SimpleMessageBuilderFactory();
 
 
-    private static DispatcherRequestListener listener = new DispatcherRequestListener() {
+    private static DispatcherMessageListener listener = new DispatcherMessageListener() {
 
         @Override
-        public void executeException(DispatcherRequestErrorEvent errorEvent) {
+        public void executeException(DispatcherMessageErrorEvent errorEvent) {
             long num = errorEvent.getRequest().getParameter(0, Long.class);
             Assert.assertEquals(num, 171772272);
             System.out.println("Exception");
         }
 
         @Override
-        public void execute(DispatcherRequestEvent event) {
+        public void execute(DispatcherMessageEvent event) {
 
         }
 
         @Override
-        public void finish(DispatcherRequestEvent event) {
+        public void finish(DispatcherMessageEvent event) {
 
         }
 

@@ -16,12 +16,12 @@ import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Message;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.base.ResultFactory;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestErrorEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherRequestListener;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageErrorEvent;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageEvent;
+import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
 import com.tny.game.worker.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +56,14 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
     /**
      * 派发错误监听器
      */
-    protected final List<DispatcherRequestListener> listeners = new CopyOnWriteArrayList<>();
+    protected final List<DispatcherMessageListener> listeners = new CopyOnWriteArrayList<>();
 
     NetMessageDispatcher(boolean checkTimeOut) {
         this.checkTimeOut = checkTimeOut;
     }
 
     @Override
-    public DispatcherCommand<CommandResult> dispatch(Request request, ServerSession session, AppContext context) throws DispatchException {
+    public DispatcherCommand<CommandResult> dispatch(Request request, NetSession session, AppContext context) throws DispatchException {
         request.owner(session);
 
         // 获取方法持有器
@@ -95,12 +95,12 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public void addDispatcherRequestListener(final DispatcherRequestListener listener) {
+    public void addDispatcherRequestListener(final DispatcherMessageListener listener) {
         this.listeners.add(listener);
     }
 
     @Override
-    public void removeDispatcherRequestListener(final DispatcherRequestListener listener) {
+    public void removeDispatcherRequestListener(final DispatcherMessageListener listener) {
         this.listeners.remove(listener);
     }
 
@@ -118,7 +118,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
      * @param event 未登陆事件
      */
     private void fireExecuteDispatchException(DispatchExceptionEvent event) {
-        for (DispatcherRequestListener listener : this.listeners) {
+        for (DispatcherMessageListener listener : this.listeners) {
             try {
                 listener.executeDispatchException(event);
             } catch (Exception e) {
@@ -135,8 +135,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
      *
      * @param event 业务运行错误事件
      */
-    private void fireExecuteException(DispatcherRequestErrorEvent event) {
-        for (DispatcherRequestListener listener : this.listeners) {
+    private void fireExecuteException(DispatcherMessageErrorEvent event) {
+        for (DispatcherMessageListener listener : this.listeners) {
             try {
                 listener.executeException(event);
             } catch (Exception e) {
@@ -153,8 +153,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
      *
      * @param event 业务运行事件
      */
-    private void fireExecute(DispatcherRequestEvent event) {
-        for (DispatcherRequestListener listener : this.listeners) {
+    private void fireExecute(DispatcherMessageEvent event) {
+        for (DispatcherMessageListener listener : this.listeners) {
             try {
                 listener.execute(event);
             } catch (Exception e) {
@@ -171,8 +171,8 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
      *
      * @param event 业务运行完成事件
      */
-    private void fireFinish(DispatcherRequestEvent event) {
-        for (DispatcherRequestListener listener : this.listeners) {
+    private void fireFinish(DispatcherMessageEvent event) {
+        for (DispatcherMessageListener listener : this.listeners) {
             try {
                 listener.finish(event);
             } catch (Exception e) {
@@ -385,7 +385,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", methodHolder.getMethodClass(), methodHolder.getName(), callback.getClass(), e);
                 }
             }
-            Optional<NetFuture> future = this.session.response(this.message, code, value);
+            Optional<MessageSendFuture> future = this.session.response(this.message, code, value);
             if (future != null && code.getType() == ResultCodeType.ERROR) {
                 future.ifPresent(result -> result.addListener(f -> this.appContext.getSessionHolder().offline(result.getSession())));
             }
@@ -463,7 +463,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 result = this.handleDispatchException(ex);
             } else {
                 NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", e);
-                DispatcherRequestErrorEvent event = new DispatcherRequestErrorEvent(this.message, this.methodHolder, e);
+                DispatcherMessageErrorEvent event = new DispatcherMessageErrorEvent(this.message, this.methodHolder, e);
                 NetMessageDispatcher.this.fireExecuteException(event);
                 result = event.getResult();
                 if (result != null) {
@@ -482,7 +482,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             // 调用方法
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行事件", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            NetMessageDispatcher.this.fireExecute(new DispatcherRequestEvent(this.message, this.methodHolder));
+            NetMessageDispatcher.this.fireExecute(new DispatcherMessageEvent(this.message, this.methodHolder));
 
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}执行业务", this.methodHolder.getMethodClass(), this.methodHolder.getName());
@@ -491,7 +491,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             // 执行结束触发命令执行完成事件
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行完成事件", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            DispatcherRequestEvent finish = new DispatcherRequestEvent(this.message, this.methodHolder, result);
+            DispatcherMessageEvent finish = new DispatcherMessageEvent(this.message, this.methodHolder, result);
             NetMessageDispatcher.this.fireFinish(finish);
 
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
@@ -544,10 +544,10 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                 NetMessageDispatcher.DISPATCHER_LOG.debug("检测调用 {}.{} 请求是否被篡改", this.methodHolder.getMethodClass(), this.methodHolder.getName());
 
-            List<RequestChecker> checkers = this.session.getCheckers();
+            List<MessageChecker> checkers = this.session.getCheckers();
             if (this.methodHolder.isCheck() && !checkers.isEmpty()) {
                 // 检测请求的正确性
-                for (RequestChecker checker : checkers) {
+                for (MessageChecker checker : checkers) {
                     // 获取普通调用的校验码密钥
                     if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
                         NetMessageDispatcher.DISPATCHER_LOG.debug("调用 {}.{} 检测Request - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass());

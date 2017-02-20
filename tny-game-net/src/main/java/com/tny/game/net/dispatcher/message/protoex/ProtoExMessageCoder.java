@@ -11,6 +11,7 @@ public class ProtoExMessageCoder implements MessageBodyCoder {
 
     public final static int REQUEST_ID = 1;
     public final static int RESPONSE_ID = 2;
+    public final static int MESSAGE_ID = 3;
 
     @Override
     public Object doDecoder(final byte[] array, boolean isRequest) throws Exception {

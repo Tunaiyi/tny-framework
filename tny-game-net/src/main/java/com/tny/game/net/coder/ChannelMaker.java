@@ -1,7 +1,7 @@
 package com.tny.game.net.coder;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.net.checker.RequestChecker;
+import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageCoder;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class ChannelMaker<C extends Channel> {
 
-    protected List<RequestChecker> checkers;
+    protected List<MessageChecker> checkers;
 
     protected DataPacketEncoder encoder;
 
@@ -21,7 +21,7 @@ public abstract class ChannelMaker<C extends Channel> {
 
     protected MessageBuilderFactory messageBuilderFactory;
 
-    public ChannelMaker(List<RequestChecker> checkers) {
+    public ChannelMaker(List<MessageChecker> checkers) {
         super();
         this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
         ProtoExMessageCoder coder = new ProtoExMessageCoder();
@@ -33,7 +33,7 @@ public abstract class ChannelMaker<C extends Channel> {
     public ChannelMaker(
             MessageBuilderFactory messageBuilderFactory,
             DataPacketEncoder encoder, DataPacketDecoder decoder,
-            List<RequestChecker> checkers) {
+            List<MessageChecker> checkers) {
         super();
         this.encoder = encoder;
         this.decoder = decoder;
@@ -75,7 +75,7 @@ public abstract class ChannelMaker<C extends Channel> {
         this.messageBuilderFactory = messageBuilderFactory;
     }
 
-    public void setCheckers(List<RequestChecker> checkers) {
+    public void setCheckers(List<MessageChecker> checkers) {
         this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
     }
 

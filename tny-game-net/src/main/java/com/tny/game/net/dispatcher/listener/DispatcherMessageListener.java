@@ -9,34 +9,34 @@ package com.tny.game.net.dispatcher.listener;
  * <p>
  * <br>
  */
-public interface DispatcherRequestListener {
+public interface DispatcherMessageListener {
 
     /**
      * 执行 <br>
      *
      * @param event
      */
-    public void execute(DispatcherRequestEvent event);
+    void execute(DispatcherMessageEvent event);
 
     /**
      * 执行业务完成 <br>
      *
      * @param event
      */
-    public void finish(DispatcherRequestEvent event);
+    void finish(DispatcherMessageEvent event);
 
     /**
      * 执行错误 <br>
      *
      * @param event
      */
-    public void executeDispatchException(DispatchExceptionEvent event);
+    void executeDispatchException(DispatchExceptionEvent event);
 
     /**
      * 执行错误 <br>
      *
      * @param event
      */
-    public void executeException(DispatcherRequestErrorEvent event);
+    void executeException(DispatcherMessageErrorEvent event);
 
 }

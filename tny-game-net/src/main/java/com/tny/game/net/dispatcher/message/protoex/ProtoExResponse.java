@@ -1,8 +1,6 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
-import com.tny.game.net.base.MessageType;
 import com.tny.game.net.base.NetMessage;
-import com.tny.game.net.dispatcher.NetResponse;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExConf;
 import com.tny.game.protoex.annotations.ProtoExField;
@@ -23,6 +21,7 @@ public class ProtoExResponse extends NetMessage {
 
     private static final long serialVersionUID = 1L;
 
+    //原来的ID
     @ProtoExField(1)
     protected int ID;
 
@@ -39,17 +38,15 @@ public class ProtoExResponse extends NetMessage {
     @ProtoExField(5)
     protected boolean push;
 
+    //原来的number
     @ProtoExField(6)
     protected int number;
 
-    @Override
-    public int getID() {
-        return this.ID;
-    }
+    protected long time;
 
     @Override
-    public int getResult() {
-        return this.result;
+    public int getID() {
+        return this.number;
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ProtoExResponse extends NetMessage {
 
     @Override
     public long getTime() {
-        return 0;
+        return time;
     }
 
     @Override
@@ -89,43 +86,14 @@ public class ProtoExResponse extends NetMessage {
     }
 
     @Override
-    public int getNumber() {
-        return number;
-    }
-
-    @Override
     protected void setBody(Object body) {
         this.body = body;
     }
 
-    @Override
-    protected void setResult(int result) {
-        this.result = result;
-    }
-
-    @Override
-    protected void setID(int id) {
-        this.ID = id;
-    }
-
-    @Override
-    protected void setProtocol(int protocol) {
-        this.protocol = protocol;
-    }
-
     // @Override
-    // protected void setPush(boolean push) {
-    //     this.push = push;
+    // public MessageType getMessage() {
+    //     return MessageType.RESPONSE;
     // }
-
-    protected void setNumber(int number) {
-        this.number = number;
-    }
-
-    @Override
-    public MessageType getMessage() {
-        return MessageType.RESPONSE;
-    }
 
     @Override
     public int getMessageCode() {
@@ -133,8 +101,8 @@ public class ProtoExResponse extends NetMessage {
     }
 
     @Override
-    public int toMessage() {
-        return 0;
+    public int getToMessage() {
+        return ID;
     }
 
     @Override

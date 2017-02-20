@@ -17,7 +17,7 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
 
     private long timeout;
 
-    private ClientSession session;
+    private NetSession session;
 
     private MessageAction<Object> responseAction;
 
@@ -36,7 +36,7 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
         return this.createAt;
     }
 
-    public MessageFuture<?> setSession(ClientSession session) {
+    public MessageFuture<?> setSession(NetSession session) {
         this.session = session;
         return this;
     }
