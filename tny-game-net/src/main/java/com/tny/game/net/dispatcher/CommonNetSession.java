@@ -9,7 +9,6 @@ import com.tny.game.net.base.Message;
 import com.tny.game.net.base.NetMessage;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.MessageChecker;
-import com.tny.game.net.dispatcher.session.mobile.ResponseItem;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.util.Collections;
@@ -23,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class CommonNetSession implements NetSession {
 
-
     protected LoginCertificate certificate;
 
     protected List<MessageChecker> checkers = new CopyOnWriteArrayList<>();
@@ -36,12 +34,13 @@ public abstract class CommonNetSession implements NetSession {
 
     private volatile ConcurrentLinkedDeque<MessageOrder> sendMessageQueue;
 
-    private CircularFifoQueue<ResponseItem> responseCache;
+    private CircularFifoQueue<MessageCapsule> sentMessageCache;
 
     private volatile HashMap<Integer, MessageFuture<?>> futureMap;
 
     public CommonNetSession(int cacheMessageSize) {
-        this.responseCache = new CircularFifoQueue<>();
+        if (cacheMessageSize > 0)
+            this.sentMessageCache = new CircularFifoQueue<>(cacheMessageSize);
     }
 
     @Override
@@ -139,8 +138,8 @@ public abstract class CommonNetSession implements NetSession {
     }
 
     @Override
-    public void flushMessage() {
-
+    public Iterable<Message> takeSendMessages() {
+        return null;
     }
 
     @Override

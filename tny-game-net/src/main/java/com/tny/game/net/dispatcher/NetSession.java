@@ -32,10 +32,13 @@ public interface NetSession extends Session {
 
     void sendMessage(Protocol protocol, MessageContent content, long timeout);
 
+    boolean hasSendMessage();
+
+    Iterable<MessageCapsule> takeSendMessages();
+
     void resendMessage(int fromID);
 
     void resendMessage(int fromID, int toID);
-    void flushMessage();
 
     void pullReceiveMessage(NetMessage message);
 
