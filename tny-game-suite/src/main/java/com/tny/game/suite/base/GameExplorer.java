@@ -286,7 +286,8 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
         return this.getModelManager(itemType);
     }
 
-    public ModelManager<Model> getModelManager(ItemType itemType) {
+    @Override
+    public <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType) {
         ModelManager<Model> manager = this.modelManagerMap
                 .get(itemType.getItemModelManagerClass());
         if (itemType.getItemModelManagerClass() == null)
@@ -295,7 +296,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
             throw new NullPointerException(MessageFormat.format(
                     "获取{0}事物的model manager[{1}]为null", itemType,
                     itemType.getItemModelManagerClass()));
-        return manager;
+        return (M) manager;
     }
 
     private ModelManager<Model> getModelManager(String alias) {

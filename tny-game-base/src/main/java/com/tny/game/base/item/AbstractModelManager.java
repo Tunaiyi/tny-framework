@@ -75,6 +75,11 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
     }
 
     @Override
+    public Map<Integer, M> getAllModelMap() {
+        return Collections.unmodifiableMap(modelMap);
+    }
+
+    @Override
     public Collection<M> getModelCollection(Collection<Integer> idCollection) {
         List<M> modelList = new ArrayList<>(idCollection.size());
         for (Integer id : idCollection)
