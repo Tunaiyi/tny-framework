@@ -52,6 +52,13 @@ public interface ModelManager<M extends Model> {
     Map<Integer, M> getModelMap(Collection<Integer> idCollection);
 
     /**
+     * 获取与所有模型Map <br>
+     *
+     * @return 模型Map
+     */
+    Map<Integer, M> getAllModelMap();
+
+    /**
      * 获取与指定ID集合相应的模型集合 <br>
      *
      * @param idCollection ID集合

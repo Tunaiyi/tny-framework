@@ -11,4 +11,5 @@ public interface ModelExplorer {
 
     <IM extends Model> IM getModelByAlias(String itemAlias);
 
+    <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType);
 }
