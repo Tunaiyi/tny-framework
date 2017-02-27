@@ -1,15 +1,19 @@
-package com.tny.game.net.base;
+package com.tny.game.net.dispatcher;
 
 import com.tny.game.LogUtils;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.base.Message;
 import com.tny.game.protoex.ProtoExEnum;
 
 public abstract class NetMessage implements Message {
 
     private static final long serialVersionUID = 1L;
+
+    private MessageSentHandler sentHandler;
+
+    private MessageFuture<Object> messageFuture;
 
     protected transient Session session;
 
@@ -33,6 +37,14 @@ public abstract class NetMessage implements Message {
     @Override
     public String getHostName() {
         return this.session.getHostName();
+    }
+
+    public MessageSentHandler getSentHandler() {
+        return sentHandler;
+    }
+
+    public MessageFuture<Object> getMessageFuture() {
+        return messageFuture;
     }
 
     @Override
@@ -95,11 +107,8 @@ public abstract class NetMessage implements Message {
 
     protected abstract Object getBody();
 
-    protected abstract void setBody(Object body);
-
     protected void setSession(Session session) {
         this.session = session;
     }
-
 
 }

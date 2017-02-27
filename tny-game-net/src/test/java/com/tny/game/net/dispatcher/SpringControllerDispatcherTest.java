@@ -4,7 +4,7 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.checker.MessageChecker;
-import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.checker.MessageCheckGenerator;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatcherMessageErrorEvent;
@@ -50,7 +50,7 @@ public class SpringControllerDispatcherTest {
 
         @Override
         public void executeException(DispatcherMessageErrorEvent errorEvent) {
-            long num = errorEvent.getRequest().getParameter(0, Long.class);
+            long num = errorEvent.getMessage().getParameter(0, Long.class);
             Assert.assertEquals(num, 171772272);
             System.out.println("Exception");
         }
@@ -67,7 +67,7 @@ public class SpringControllerDispatcherTest {
 
         @Override
         public void executeDispatchException(DispatchExceptionEvent event) {
-            long num = event.getRequest().getParameter(0, Long.class);
+            long num = event.getMessage().getParameter(0, Long.class);
             Assert.assertEquals(num, 171772272);
             int code = event.getException().getResultCode().getCode();
             System.out.println("DispacheException : " + event.getException().getResultCode());
@@ -150,7 +150,7 @@ public class SpringControllerDispatcherTest {
         SimpleRequest request = (SimpleRequest) SpringControllerDispatcherTest.messageBuilderFactory.newRequestBuilder(session)
                 .setProtocol(protocol)
                 .addParameter(Arrays.asList(objects))
-                .setRequestVerifier(key != null ? (RequestVerifier) Request -> "ddd" : null).build();
+                .setRequestVerifier(key != null ? (MessageCheckGenerator) Request -> "ddd" : null).build();
         if (session != null)
             request.owner(session);
         return request;

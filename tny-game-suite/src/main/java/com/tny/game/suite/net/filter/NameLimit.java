@@ -2,7 +2,7 @@ package com.tny.game.suite.net.filter;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
@@ -29,7 +29,7 @@ public class NameLimit extends AbstractParamFilter<NameFilter, String> {
     }
 
     @Override
-    protected ResultCode doFilter(MethodHolder holder, Request request, int index, NameFilter annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Request request, int index, NameFilter annotation, String param) {
         if (System.getProperty("com.sd.fol.name.test", "").equals("true"))
             return ResultCode.SUCCESS;
         if (!this.fullPattern.matcher(param).matches()) {

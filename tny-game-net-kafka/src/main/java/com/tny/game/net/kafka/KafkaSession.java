@@ -7,7 +7,7 @@ import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.MessageChecker;
-import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.checker.MessageCheckGenerator;
 import com.tny.game.net.dispatcher.AbstractServerSession;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.MessageAction;
@@ -47,7 +47,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     private SessionModel model;
 
-    private RequestVerifier verifier;
+    private MessageCheckGenerator verifier;
 
     private String loginKey;
 
@@ -57,11 +57,11 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
         return new KafkaSession(SessionModel.SERVER, producer, null, localServer, messageBuilderFactory, checkers, null);
     }
 
-    public static ClientSession clientSession(Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo removeServer, KafkaMessageBuilderFactory messageBuilderFactory, RequestVerifier verifier) {
+    public static ClientSession clientSession(Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo removeServer, KafkaMessageBuilderFactory messageBuilderFactory, MessageCheckGenerator verifier) {
         return new KafkaSession(SessionModel.CLIENT, producer, certificate, removeServer, messageBuilderFactory, null, verifier);
     }
 
-    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers, RequestVerifier verifier) {
+    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers, MessageCheckGenerator verifier) {
         super(LoginCertificate.createUnLogin());
         this.model = model;
         this.producer = producer;

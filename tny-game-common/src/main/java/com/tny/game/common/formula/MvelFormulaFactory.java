@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 /**
  * @author KGTny
@@ -31,7 +32,7 @@ public class MvelFormulaFactory {
     private static final boolean CACHED = System.getProperty(CACHED_KEY, "true").equals("true");
     public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
 
-    private static ConcurrentMap<String, Expression> expressionMap = new ConcurrentHashMap<String, Expression>();
+    private static ConcurrentMap<String, Expression> expressionMap = new ConcurrentHashMap<>();
 
     /**
      * 创建表达式 <br>
@@ -39,7 +40,7 @@ public class MvelFormulaFactory {
      * @param path 表达式内容
      * @param type 表达式类型
      * @return 表达式
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static FormulaHolder load(final String path, final FormulaType type) throws IOException {
         Map<String, Object> context = Collections.emptyMap();
@@ -83,6 +84,14 @@ public class MvelFormulaFactory {
     }
 
     private static Expression getExpression(String expression, ParserContext parserContext, boolean lazy) {
+        return getExpression(expression, () -> new Expression(expression, parserContext, lazy));
+    }
+
+    private static Expression getExpression(String expression, Map<String, Object> context, boolean lazy) {
+        return getExpression(expression, () -> new Expression(expression, context, lazy));
+    }
+
+    private static Expression getExpression(String expression, Supplier<Expression> creator) {
         expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
         Expression exp;
         if (CACHED) {
@@ -90,23 +99,11 @@ public class MvelFormulaFactory {
             if (exp != null)
                 return exp;
         }
-        exp = new Expression(expression, parserContext, lazy);
+        exp = creator.get();
         Expression oldExpression = CACHED ? expressionMap.putIfAbsent(expression, exp) : null;
         return oldExpression != null ? oldExpression : exp;
     }
 
-    private static Expression getExpression(String expression, Map<String, Object> context, boolean lazy) {
-        expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
-        Expression exp;
-        if (CACHED) {
-            exp = expressionMap.get(expression);
-            if (exp != null)
-                return exp;
-        }
-        exp = new Expression(expression, context, lazy);
-        Expression oldExpression = CACHED ? expressionMap.putIfAbsent(expression, exp) : null;
-        return oldExpression != null ? oldExpression : exp;
-    }
 
 //	public static void main(final String[] args) {
 //		Map<String, Object> map = new HashMap<String, Object>();

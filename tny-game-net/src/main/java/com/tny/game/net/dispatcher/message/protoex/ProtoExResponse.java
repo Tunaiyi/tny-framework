@@ -1,6 +1,6 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
-import com.tny.game.net.base.NetMessage;
+import com.tny.game.net.dispatcher.NetMessage;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExConf;
 import com.tny.game.protoex.annotations.ProtoExField;
@@ -96,7 +96,7 @@ public class ProtoExResponse extends NetMessage {
     // }
 
     @Override
-    public int getMessageCode() {
+    public int getCode() {
         return result;
     }
 

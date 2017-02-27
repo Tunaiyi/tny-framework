@@ -3,7 +3,12 @@ package com.tny.game.annotation;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Session;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author KGTny
@@ -51,7 +56,7 @@ public @interface Controller {
      *
      * @return
      */
-    public boolean auth() default true;
+    boolean auth() default true;
 
     /**
      * 消息校驗標記
@@ -61,10 +66,10 @@ public @interface Controller {
      *
      * @return
      */
-    public boolean check() default true;
+    boolean check() default true;
 
     /**
-     * 模块/业务方法名称 优先级比name高
+     * 处理协议号列表, 默认处理所有
      * <p>
      * <p>
      * 被Controller标记的类的模塊ID,與Request的Module相对应,默认-1代表无效<br>
@@ -73,7 +78,7 @@ public @interface Controller {
      * @return
      * @see Request
      */
-    public int value() default 0;
+    int value();
 
     /**
      * 模块/业务方法名称
@@ -85,17 +90,7 @@ public @interface Controller {
      * @return
      * @see Request
      */
-    public String name() default "";
-
-    //	/**
-    //	 * 用户类型
-    //	 * <p>
-    //	 *
-    //	 * 该控制器调用的用户类型<br>
-    //	 *
-    //	 * @return
-    //	 */
-    //	public UserType userType() default UserType.User;
+    String name() default "";
 
     /**
      * 用户组名称
@@ -105,27 +100,32 @@ public @interface Controller {
      *
      * @return
      */
-    public String[] userGroup() default {Session.DEFAULT_USER_GROUP};
+    String[] userGroup() default {Session.DEFAULT_USER_GROUP};
 
     /**
-     * 服务器类型
+     * 程序类型(服务器类型)
      *
-     * @return 服务器类型
+     * @return 程序类型
      */
-    public String[] serverType() default {};
+    String[] appType() default {};
+
+    /**
+     * @return 可处理的消息码, 默认为全部
+     */
+    int[] codes() default {};
 
     /**
      * 是否要检测请求超时
      *
      * @return 检测true 不检测false
      */
-    public boolean timeOut() default true;
+    boolean timeOut() default true;
 
     /**
      * 获取请求的生命周期(毫秒)<br>
      *
      * @return <= 0 为无限制
      */
-    public long requestLife() default 60000L;
+    long requestLife() default 60000L;
 
 }

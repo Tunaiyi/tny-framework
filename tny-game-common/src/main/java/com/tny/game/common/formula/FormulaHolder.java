@@ -7,6 +7,6 @@ public interface FormulaHolder {
      *
      * @return 表达式对象
      */
-    public Formula createFormula();
+    Formula createFormula();
 
 }

@@ -1,6 +1,6 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.Message;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
 
@@ -23,10 +23,10 @@ public interface MessageDispatcher {
      * <p>
      * 派发请求到相对应的Controller<br>
      *
-     * @param request 请求
+     * @param message 请求
      * @param session 通道
      */
-    DispatcherCommand<CommandResult> dispatch(Request request, NetSession session, AppContext context) throws DispatchException;
+    DispatcherCommand<CommandResult> dispatch(Message message, NetSession<?> session) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器

@@ -26,7 +26,7 @@ public abstract class NetSessionHolder implements SessionHolder {
      * @param session 指定的session
      * @throws ValidatorFailException
      */
-    protected abstract boolean online(NetServerSession session, LoginCertificate loginInfo) throws ValidatorFailException;
+    protected abstract boolean online(NetSession session, LoginCertificate loginInfo) throws ValidatorFailException;
 
     /**
      * 移出所有组

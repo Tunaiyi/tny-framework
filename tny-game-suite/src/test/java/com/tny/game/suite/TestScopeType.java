@@ -1,7 +1,7 @@
 package com.tny.game.suite;
 
 import com.tny.game.suite.core.ScopeType;
-import com.tny.game.suite.core.ServerType;
+import com.tny.game.suite.core.AppType;
 
 /**
  * 服务器作用域类型
@@ -10,7 +10,7 @@ import com.tny.game.suite.core.ServerType;
 public enum TestScopeType implements ScopeType {
 
 
-    ONLINE(0, "online", TestServerType.GAME, false),
+    ONLINE(0, "online", TestAppType.GAME, false),
 
     //
     ;
@@ -18,9 +18,9 @@ public enum TestScopeType implements ScopeType {
     int id;
     String name;
     boolean test;
-    TestServerType serverType;
+    TestAppType serverType;
 
-    TestScopeType(int id, String name, TestServerType serverType, boolean test) {
+    TestScopeType(int id, String name, TestAppType serverType, boolean test) {
         this.id = id;
         this.name = name;
         this.serverType = serverType;
@@ -45,7 +45,7 @@ public enum TestScopeType implements ScopeType {
     }
 
     @Override
-    public <S extends ServerType> S getServerType() {
+    public <S extends AppType> S getServerType() {
         return null;
     }
 }

@@ -1,7 +1,7 @@
 package com.tny.game.net.checker;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetMessage;
+import com.tny.game.net.base.Message;
 
 /**
  * 消息校驗處理器
@@ -16,7 +16,7 @@ public interface MessageChecker {
      * @param message
      * @return 检测返回 true 否则返回 false
      */
-    default boolean isCheck(NetMessage message) {
+    default boolean isCheck(Message message) {
         return true;
     }
 
@@ -26,6 +26,6 @@ public interface MessageChecker {
      * @param message 请求对象
      * @return 是否通過校驗 通過校驗返回true 否則返回false
      */
-    ResultCode match(NetMessage message);
+    ResultCode match(Message message);
 
 }

@@ -1,7 +1,7 @@
 package com.tny.game.net.filter;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.Request;
 
 import java.lang.annotation.Annotation;
@@ -13,7 +13,7 @@ public interface ParamFilter {
      *
      * @return
      */
-    public Class<? extends Annotation> getAnnotationClass();
+    Class<? extends Annotation> getAnnotationClass();
 
     /**
      * 过滤方法
@@ -23,6 +23,6 @@ public interface ParamFilter {
      * @return 返回CoreResponseCode.SUCCESS(100, "请求处理成功")这继续执行下面的逻辑
      * 否则返回响应ResponseCode到客户端,并停止执行接下去的逻辑
      */
-    public ResultCode filter(MethodHolder holder, Request request);
+    ResultCode filter(MethodControllerHolder holder, Request request);
 
 }

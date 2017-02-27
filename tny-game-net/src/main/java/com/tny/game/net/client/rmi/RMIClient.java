@@ -2,7 +2,7 @@ package com.tny.game.net.client.rmi;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.checker.MessageCheckGenerator;
 import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Protocol;
@@ -17,7 +17,7 @@ public class RMIClient {
 
     protected RMIService rmiService;
 
-    protected RequestVerifier verifier;
+    protected MessageCheckGenerator verifier;
 
     protected AtomicInteger requestIDCreator = new AtomicInteger(1);
 
@@ -25,7 +25,7 @@ public class RMIClient {
 
     private volatile transient Attributes attributes;
 
-    public RMIClient(RMIService rmiService, RequestVerifier verifier) {
+    public RMIClient(RMIService rmiService, MessageCheckGenerator verifier) {
         this.verifier = verifier;
         this.rmiService = rmiService;
     }

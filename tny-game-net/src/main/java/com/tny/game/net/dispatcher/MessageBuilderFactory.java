@@ -7,8 +7,6 @@ package com.tny.game.net.dispatcher;
  */
 public interface MessageBuilderFactory {
 
-    RequestBuilder newRequestBuilder(Session session);
-
-    ResponseBuilder newResponseBuilder(Session session);
+    MessageBuilder newMessageBuilder();
 
 }

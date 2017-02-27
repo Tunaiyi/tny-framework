@@ -46,10 +46,10 @@ public class DefaultMessageDispatcher extends NetMessageDispatcher {
         if (sessionHolder == null)
             throw new NullPointerException("sessionHolder is null");
         for (Object object : this.controllers) {
-            final ControllerHolder holder = new ControllerHolder(object, pluginHolder);
-            for (Entry<Integer, MethodHolder> entry : holder.getMethodHolderMap().entrySet()) {
-                MethodHolder methodHolder = entry.getValue();
-                MethodHolder old = this.methodHolder.put(methodHolder.getID(), methodHolder);
+            final ClassControllerHolder holder = new ClassControllerHolder(object, pluginHolder);
+            for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
+                MethodControllerHolder methodHolder = entry.getValue();
+                MethodControllerHolder old = this.methodHolder.put(methodHolder.getID(), methodHolder);
                 if (old != null)
                     throw new IllegalArgumentException(LogUtils.format("{} 与 {} name 发生冲突", old, methodHolder));
             }

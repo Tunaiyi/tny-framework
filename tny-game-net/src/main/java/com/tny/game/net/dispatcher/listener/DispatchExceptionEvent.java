@@ -1,16 +1,16 @@
 package com.tny.game.net.dispatcher.listener;
 
-import com.tny.game.net.dispatcher.MethodHolder;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.base.Message;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 
 public class DispatchExceptionEvent extends DispatcherMessageEvent {
 
     private final DispatchException exception;
 
-    public DispatchExceptionEvent(Request request,
-                                  MethodHolder methodHolder, DispatchException exception) {
-        super(request, methodHolder);
+    public DispatchExceptionEvent(Message message,
+                                  MethodControllerHolder methodHolder, DispatchException exception) {
+        super(message, methodHolder);
         this.exception = exception;
     }
 

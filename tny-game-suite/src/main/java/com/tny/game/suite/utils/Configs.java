@@ -3,7 +3,7 @@ package com.tny.game.suite.utils;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.suite.core.ServerType;
+import com.tny.game.suite.core.AppType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -135,7 +135,7 @@ public interface Configs {
         return AUTH_SERVER_HEAD + serverType + "." + AUTH_PASSWORD_KEY;
     }
 
-    static String createAuthKey(ServerType serverType) {
+    static String createAuthKey(AppType serverType) {
         return AUTH_SERVER_HEAD + serverType.getName() + "." + AUTH_PASSWORD_KEY;
     }
     //endregion

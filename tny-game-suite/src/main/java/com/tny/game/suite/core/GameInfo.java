@@ -89,7 +89,7 @@ public class GameInfo {
         return this.serverID;
     }
 
-    public ServerType getServerType() {
+    public AppType getServerType() {
         return GameInfo.scopeType.getServerType();
     }
 
@@ -105,7 +105,7 @@ public class GameInfo {
         return GAMES_INFO_MAP.get(serverID);
     }
 
-    public boolean isType(ServerType serverType) {
+    public boolean isType(AppType serverType) {
         return GameInfo.scopeType == serverType;
     }
 

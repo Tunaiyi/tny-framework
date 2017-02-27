@@ -4,7 +4,7 @@ import com.tny.game.net.dispatcher.Session;
 
 import java.io.Serializable;
 
-public final class LoginCertificate implements Serializable {
+public final class LoginCertificate<UID> implements Serializable {
 
     /**
      *
@@ -13,37 +13,40 @@ public final class LoginCertificate implements Serializable {
 
     private long loginID;
     private final LoginState loginState;
-    private final long userID;
+    private final UID userID;
     private final String userGroup;
     private final long loginAt;
 
-    public static LoginCertificate createLogin(long loginID, long userID) {
-        return new LoginCertificate(loginID, LoginState.LOGIN, userID, Session.DEFAULT_USER_GROUP);
+    public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID) {
+        return new LoginCertificate<>(loginID, LoginState.LOGIN, userID, Session.DEFAULT_USER_GROUP);
     }
 
-    public static LoginCertificate createLogin(long loginID, long userID, boolean relogin) {
-        return new LoginCertificate(loginID, relogin ? LoginState.RELOGIN : LoginState.LOGIN,
+    public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID, boolean relogin) {
+        return new LoginCertificate<>(loginID, relogin ? LoginState.RELOGIN : LoginState.LOGIN,
                 userID, Session.DEFAULT_USER_GROUP);
     }
 
-    public static LoginCertificate createRelogin(long loginID, long userID, String userGroup) {
-        return new LoginCertificate(loginID, LoginState.RELOGIN, userID, userGroup);
+    public static <UID> LoginCertificate<UID> createRelogin(long loginID, UID userID, String userGroup) {
+        return new LoginCertificate<>(loginID, LoginState.RELOGIN, userID, userGroup);
     }
 
-    public static LoginCertificate createLogin(long loginID, long userID, String userGroup) {
-        return new LoginCertificate(loginID, LoginState.LOGIN, userID, userGroup);
+    public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID, String userGroup) {
+        return new LoginCertificate<>(loginID, LoginState.LOGIN, userID, userGroup);
     }
 
-    public static LoginCertificate createLogin(long loginID, long userID, String userGroup, boolean relogin) {
-        return new LoginCertificate(loginID, relogin ? LoginState.RELOGIN : LoginState.LOGIN,
-                userID, userGroup);
+    public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID, String userGroup, boolean relogin) {
+        return new LoginCertificate<>(loginID, relogin ? LoginState.RELOGIN : LoginState.LOGIN, userID, userGroup);
     }
 
-    public static LoginCertificate createUnLogin() {
-        return new LoginCertificate(-1, LoginState.UNLOGIN, Session.UN_LOGIN_UID, Session.DEFAULT_USER_GROUP);
+    public static <UID> LoginCertificate<UID> createUnLogin() {
+        return new LoginCertificate<>(-1, LoginState.UNLOGIN, null, Session.DEFAULT_USER_GROUP);
     }
 
-    private LoginCertificate(long loginID, LoginState loginState, long userID, String userGroup) {
+    public static <UID> LoginCertificate<UID> createUnLogin(UID defUnloginID) {
+        return new LoginCertificate<>(-1, LoginState.UNLOGIN, defUnloginID, Session.DEFAULT_USER_GROUP);
+    }
+
+    private LoginCertificate(long loginID, LoginState loginState, UID userID, String userGroup) {
         super();
         this.loginID = loginID;
         this.loginState = loginState;
@@ -68,7 +71,7 @@ public final class LoginCertificate implements Serializable {
         return this.loginState;
     }
 
-    public long getUserID() {
+    public UID getUserID() {
         return this.userID;
     }
 

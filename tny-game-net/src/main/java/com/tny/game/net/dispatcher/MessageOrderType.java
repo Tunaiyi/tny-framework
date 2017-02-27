@@ -5,17 +5,8 @@ package com.tny.game.net.dispatcher;
  */
 public enum MessageOrderType {
 
-    SEND(true),
+    SEND,
 
-    RESEND(false);
+    RESEND;
 
-    private boolean cache;
-
-    MessageOrderType(boolean cache) {
-        this.cache = cache;
-    }
-
-    public boolean isCache() {
-        return cache;
-    }
 }

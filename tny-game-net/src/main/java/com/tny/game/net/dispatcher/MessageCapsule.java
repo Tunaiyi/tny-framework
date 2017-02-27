@@ -9,15 +9,31 @@ public class MessageCapsule implements MessageOrder {
 
     private Message message;
 
-    private MessageSendFuture sendFuture;
+    private MessageSentHandler sentHandler;
 
     private MessageFuture<?> messageFuture;
 
-    public MessageCapsule(Message message) {
+    public MessageCapsule(Message message, MessageSentHandler sentHandler, MessageFuture<?> messageFuture) {
+        this.message = message;
+        this.sentHandler = sentHandler;
+        this.messageFuture = messageFuture;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public MessageSentHandler getSentHandler() {
+        return sentHandler;
+    }
+
+    public MessageFuture<?> getMessageFuture() {
+        return messageFuture;
     }
 
     @Override
     public MessageOrderType getOrderType() {
         return MessageOrderType.SEND;
     }
+
 }

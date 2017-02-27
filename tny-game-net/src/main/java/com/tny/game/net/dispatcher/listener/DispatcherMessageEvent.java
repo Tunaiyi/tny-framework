@@ -1,38 +1,38 @@
 package com.tny.game.net.dispatcher.listener;
 
+import com.tny.game.net.base.Message;
 import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.MethodHolder;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 
 public class DispatcherMessageEvent {
 
-    private Request request;
+    private Message message;
 
-    private MethodHolder methodHolder;
+    private MethodControllerHolder methodHolder;
 
     private CommandResult result;
 
-    public DispatcherMessageEvent(Request request, MethodHolder methodHolder, CommandResult result) {
-        this.request = request;
+    public DispatcherMessageEvent(Message message, MethodControllerHolder methodHolder, CommandResult result) {
+        this.message = message;
         this.methodHolder = methodHolder;
         this.result = result;
     }
 
-    public DispatcherMessageEvent(Request request, MethodHolder methodHolder) {
-        this(request, methodHolder, null);
+    public DispatcherMessageEvent(Message message, MethodControllerHolder methodHolder) {
+        this(message, methodHolder, null);
     }
 
     /**
      * @return the request
      */
-    public Request getRequest() {
-        return this.request;
+    public Message getMessage() {
+        return this.message;
     }
 
     /**
      * @return the methodHolder
      */
-    public MethodHolder getMethodHolder() {
+    public MethodControllerHolder getMethodHolder() {
         return this.methodHolder;
     }
 

@@ -1,12 +1,12 @@
 package com.tny.game.suite;
 
-import com.tny.game.suite.core.ServerType;
+import com.tny.game.suite.core.AppType;
 
 /**
  * 服务器类型
  * Created by Kun Yang on 16/1/27.
  */
-public enum TestServerType implements ServerType {
+public enum TestAppType implements AppType {
 
 
     GAME("game"),
@@ -17,7 +17,7 @@ public enum TestServerType implements ServerType {
 
     String name;
 
-    TestServerType(String name) {
+    TestAppType(String name) {
         this.name = name;
         registerSelf();
     }

@@ -3,7 +3,7 @@ package com.tny.game.net.base;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.net.dispatcher.Session;
 
-public interface Message extends Protocol {
+public interface Message<UID> extends Protocol {
 
     /**
      * @return 返回请求Id
@@ -13,22 +13,22 @@ public interface Message extends Protocol {
     /**
      * @return 用户ID 无用户ID返回-1
      */
-    long getUserID();
+    UID getUserID();
 
     /**
      * @return 獲取所属用户组
      */
     String getUserGroup();
 
-    /**
-     * @return 传输类型 请求|响应
-     */
-    MessageType getMessage();
+    // /**
+    //  * @return 传输类型 请求|响应
+    //  */
+    // MessageType getMessage();
 
     /**
      * @return 消息响应码
      */
-    int getMessageCode();
+    int getCode();
 
     /**
      * @return 响应消息 -1 为无

@@ -1,6 +1,7 @@
 package com.tny.game.log;
 
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.net.base.Message;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
@@ -31,10 +32,26 @@ public class CoreLogger {
 
     public static void log(Session session, Response response) {
         if (LOG_RESPONSE.isDebugEnabled())
-            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - Protocol : {} 请求[{}] \n##响应No.: {}\n##响应码 : {} \n##响应消息体 : {}",
+            LOG_RESPONSE.debug("\n##响应到 [{}|{}|{}] \n##响应 - Protocol : {} 请求ID [{}] \n##响应ID : {}\n##响应码 : {} \n##响应消息体 : {}",
                     session.getGroup(), session.getHostName(), session.getUID(),
                     response.getID(), response.getProtocol(), response.getNumber(),
                     response.getResult(), response.getBody(Object.class));
+    }
+
+    public static void logSend(Session session, Message message) {
+        if (LOG_RESPONSE.isDebugEnabled())
+            LOG_RESPONSE.debug("\n#---------------------------------------------\n#>> 发送消息 [{}|{}|{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+                    session.getGroup(), session.getHostName(), session.getUID(),
+                    message.getProtocol(), message.getID(), message.getToMessage(),
+                    message.getCheckKey(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
+    }
+
+    public static void logReceive(Session session, Message message) {
+        if (LOG_RESPONSE.isDebugEnabled())
+            LOG_RESPONSE.debug("\n#---------------------------------------------\n#<< 接收消息 [{}|{}|{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
+                    session.getGroup(), session.getHostName(), session.getUID(),
+                    message.getProtocol(), message.getID(), message.getToMessage(),
+                    message.getCheckKey(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
     }
 
     public static void log(Session session, Request request) {

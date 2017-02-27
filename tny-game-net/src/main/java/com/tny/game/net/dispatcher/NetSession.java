@@ -1,7 +1,6 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetMessage;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.MessageChecker;
 
@@ -10,7 +9,7 @@ import java.util.List;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public interface NetSession extends Session {
+public interface NetSession<UID> extends Session<UID> {
 
     List<MessageChecker> getCheckers();
 
@@ -20,29 +19,35 @@ public interface NetSession extends Session {
 
     void removeChecker(Class<? extends MessageChecker> checkClass);
 
-    void sendMessage(Protocol protocol, Object body);
-
-    void sendMessage(Protocol protocol, Object body, ResultCode code);
-
-    void sendMessage(Protocol protocol, Object body, ResultCode code, int toMessage);
-
-    default void sendMessage(Protocol protocol, MessageContent content) {
-        sendMessage(protocol, content, 30000);
+    default void sendMessage(Protocol protocol, Object body) {
+        sendMessage(protocol, ResultCode.SUCCESS, body);
     }
 
-    void sendMessage(Protocol protocol, MessageContent content, long timeout);
+    default void sendMessage(Protocol protocol, ResultCode code, Object body) {
+        sendMessage(protocol, code, body, null);
+    }
+
+    default void sendMessage(Protocol protocol, ResultCode code, Object body, Integer toMessage) {
+        sendMessage(protocol, MessageContent.of(code, body, toMessage));
+    }
+
+    void sendMessage(Protocol protocol, MessageContent content);
+
+    void receiveMessage(NetMessage message);
+
+    void resendMessage(int messageID);
+
+    void resendMessages(int fromID);
+
+    void resendMessages(int fromID, int toID);
 
     boolean hasSendMessage();
 
-    Iterable<MessageCapsule> takeSendMessages();
+    boolean hasReceiveMessage();
 
-    void resendMessage(int fromID);
+    void processSendMessages();
 
-    void resendMessage(int fromID, int toID);
-
-    void pullReceiveMessage(NetMessage message);
-
-    NetMessage pollReceiveMessage();
+    void processReceiveMessage(MessageDispatcher dispatcher);
 
     MessageBuilderFactory getMessageBuilderFactory();
 

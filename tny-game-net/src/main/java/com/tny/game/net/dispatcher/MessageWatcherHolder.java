@@ -1,24 +1,30 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.annotation.Body;
-import com.tny.game.annotation.BodyHandler;
+
+import com.tny.game.annotation.MsgBody;
 import com.tny.game.annotation.UserID;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.reflect.GMethod;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class BodyHandlerHolder {
+public class MessageWatcherHolder {
 
-    private static enum ParamType {
-        RESPONSE,
+    private enum ParamType {
+
+        MESSAGE,
 
         BODY,
 
-        UID;
+        UID,
+
+        PARAM,
+
+        CODE,
+
+        CODE_NUM;
+
     }
 
     //	private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
@@ -53,37 +59,35 @@ public class BodyHandlerHolder {
     /**
      * 控制器操作配置
      */
-    protected final BodyHandler bodyHandler;
+    protected final MessageWatcher watcher;
     /**
      * 用户组名称列表
      */
     protected final List<String> userGroupList;
 
-    protected BodyHandlerHolder(final BodyHandler bodyHandler, final GMethod method, final Object executor) {
+    protected MessageWatcherHolder(final MessageWatcher watcher, final GMethod method, final Object executor) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.clazz = executor.getClass();
-        ExceptionUtils.checkNotNull(bodyHandler, "{} bodyHandler is null", this.clazz);
+        ExceptionUtils.checkNotNull(watcher, "{} watcher is null", this.clazz);
         ExceptionUtils.checkNotNull(method, "{} method is null", this.clazz);
 
-        this.bodyHandler = bodyHandler;
         this.method = method;
         this.methodName = this.method.getName();
         this.executor = executor;
-        this.userGroupList = new ArrayList<String>();
-        if (this.bodyHandler != null) {
-            this.userGroupList.addAll(Arrays.asList(this.bodyHandler.userGroup()));
-        }
+        this.userGroupList = new ArrayList<>();
+        this.watcher = watcher;
+        this.userGroupList.addAll(Arrays.asList(this.watcher.userGroup()));
 
         this.parameterClass = method.getJavaMethod().getParameterTypes();
         this.paramTypes = new ParamType[this.parameterClass.length];
         Annotation[][] value = method.getJavaMethod().getParameterAnnotations();
         for (int index = 0; index < this.parameterClass.length; index++) {
             if (Response.class.isAssignableFrom(this.parameterClass[index])) {
-                this.paramTypes[index] = ParamType.RESPONSE;
+                this.paramTypes[index] = ParamType.MESSAGE;
             } else if (this.isHasAnnotation(value, index, UserID.class)) {
                 this.paramTypes[index] = ParamType.UID;
-            } else if (this.isHasAnnotation(value, index, Body.class)) {
+            } else if (this.isHasAnnotation(value, index, MsgBody.class)) {
                 this.paramTypes[index] = ParamType.BODY;
             } else {
                 ExceptionUtils.checkNotNull(method, "{} 第 {} 个参数没有@Body", this.method.getJavaMethod(), index);
@@ -107,10 +111,8 @@ public class BodyHandlerHolder {
         return this.methodName;
     }
 
-    public void isCanHandle(ClientSession session, Response response, Object body) throws Exception {
-        if (isUserGroup(session.getGroup()) && this.messageClass.isInstance(body)) {
-
-        }
+    public boolean isCanHandle(NetSession session, NetMessage message) {
+        return this.isUserGroup(session.getGroup()) && this.messageClass.isInstance(message.getBody());
     }
 
     public void handle(Response response, Object body) throws Exception {

@@ -1,8 +1,8 @@
 package com.tny.game.net.dispatcher.plugin;
 
+import com.tny.game.net.base.Message;
 import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.MethodHolder;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 
 public class PluginContext {
 
@@ -12,26 +12,27 @@ public class PluginContext {
 
     private ControllerPlugin plugin;
 
-    private MethodHolder methodHolder;
+    private MethodControllerHolder methodHolder;
 
-    public PluginContext(MethodHolder methodHolder, ControllerPlugin plugin) {
+    public PluginContext(MethodControllerHolder methodHolder, ControllerPlugin plugin) {
         this.plugin = plugin;
         this.methodHolder = methodHolder;
         this.nextContext = new PluginContext(methodHolder);
     }
 
-    private PluginContext(MethodHolder methodHolder) {
+    private PluginContext(MethodControllerHolder methodHolder) {
         this.methodHolder = methodHolder;
     }
 
-    public MethodHolder getMethodHolder() {
+    public MethodControllerHolder getMethodHolder() {
         return this.methodHolder;
     }
 
-    public CommandResult passToNext(Request request, CommandResult result) throws Exception {
+    @SuppressWarnings("unchecked")
+    public CommandResult passToNext(Message<?> message, CommandResult result) throws Exception {
         if (this.plugin == null)
             return result;
-        return this.plugin.execute(request, result, this.nextContext != null ? this.nextContext : EMPTY_PLUGIN);
+        return this.plugin.execute(message, result, this.nextContext != null ? this.nextContext : EMPTY_PLUGIN);
     }
 
     public void setNext(PluginContext nextPlugin) {

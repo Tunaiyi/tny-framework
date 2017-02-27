@@ -14,7 +14,6 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Message;
-import com.tny.game.net.base.Protocol;
 import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.checker.MessageChecker;
 import com.tny.game.net.dispatcher.exception.DispatchException;
@@ -29,18 +28,17 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 抽象请求派发器
+ * 抽象消息派发器
  *
  * @author KGTny
  *         <p>
- *         抽象请求派发器
+ *         抽象消息派发器
  *         <p>
  *         <p>
- *         实现对controllerMap的初始化,派发请求流程<br>
+ *         实现对controllerMap的初始化,派发消息流程<br>
  */
 public abstract class NetMessageDispatcher implements MessageDispatcher {
 
@@ -49,7 +47,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
     /**
      * Controller Map
      */
-    final Map<Integer, MethodHolder> methodHolder = new CopyOnWriteMap<>();
+    final Map<Integer, MethodControllerHolder> methodHolder = new CopyOnWriteMap<>();
 
     private boolean checkTimeOut = true;
 
@@ -58,40 +56,32 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
      */
     protected final List<DispatcherMessageListener> listeners = new CopyOnWriteArrayList<>();
 
+    protected AppContext context;
+
     NetMessageDispatcher(boolean checkTimeOut) {
         this.checkTimeOut = checkTimeOut;
     }
 
     @Override
-    public DispatcherCommand<CommandResult> dispatch(Request request, NetSession session, AppContext context) throws DispatchException {
-        request.owner(session);
+    public DispatcherCommand<CommandResult> dispatch(Message message, NetSession session) throws DispatchException {
 
         // 获取方法持有器
-        final MethodHolder methodHolder = this.methodHolder.get(request.getProtocol());
+        final MethodControllerHolder methodHolder = this.methodHolder.get(message.getProtocol());
         if (methodHolder == null) {
-            NetMessageDispatcher.DISPATCHER_LOG.error("没有存在 {} 方法 ", request.getProtocol());
+            NetMessageDispatcher.DISPATCHER_LOG.error("没有存在 {} 方法 ", message.getProtocol());
             throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
         }
 
         if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-            NetMessageDispatcher.DISPATCHER_LOG.debug("请求:{}\n 请求调用{}.{} 业务方法", LogUtils.msg(request.toString(), methodHolder.getMethodClass(), methodHolder.getName()));
+            NetMessageDispatcher.DISPATCHER_LOG.debug("消息:{}\n 消息调用{}.{} 业务方法", LogUtils.msg(message.toString(), methodHolder.getMethodClass(), methodHolder.getName()));
 
         String serverType = context.getScopeType();
         if (serverType != null && !methodHolder.isCanCall(serverType)) {
             NetMessageDispatcher.DISPATCHER_LOG.error("{} 服务器无法调用 {}.{} 业务方法", LogUtils.msg(serverType, methodHolder.getMethodClass(), methodHolder.getName()));
             throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
         }
-        return new RequestDispatcherCommand(context, methodHolder, request, session);
+        return new MessageDispatcherCommand(context, message, session, methodHolder);
 
-    }
-
-    @Override
-    public DispatcherCommand<Void> dispatch(Response response, ClientSession session, AppContext context) throws DispatchException {
-        final MessageFuture<?> future = response.getID() >= 0 ? session.takeFuture(response.getID()) : null;
-        if (future != null) {
-            future.setResponse(response);
-        }
-        return new ResponseDispatcherCommand(context, response, session, future);
     }
 
     @Override
@@ -183,29 +173,31 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     public abstract void initDispatcher(AppContext appContext);
 
-    private static abstract class AbstractDispatcherCommand<S extends BaseSession, H extends Message, O> implements DispatcherCommand<O> {
+    private class MessageDispatcherCommand implements DispatcherCommand<CommandResult> {
 
-        final AppContext appContext;
-        protected H message;
-        protected S session;
+        protected AppContext appContext;
+        protected Message message;
+        protected NetSession<?> session;
+
+        private final MethodControllerHolder controller;
+
+        private CommandFuture commandFuture;
+
+        private boolean executed;
 
         Callback<Object> callback;
         boolean done;
 
-        private AbstractDispatcherCommand(AppContext appContext, H message, S session) {
+        private MessageDispatcherCommand(AppContext appContext, Message message, NetSession<?> session, MethodControllerHolder controller) {
             this.appContext = appContext;
             this.message = message;
             this.session = session;
+            this.controller = controller;
         }
 
         @SuppressWarnings("unchecked")
         public void setCallback(Callback<?> callback) {
             this.callback = (Callback<Object>) callback;
-        }
-
-        @Override
-        public long getUserID() {
-            return this.session.getUID();
         }
 
         @Override
@@ -218,66 +210,266 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             return done;
         }
 
-    }
-
-    private class ResponseDispatcherCommand extends AbstractDispatcherCommand<ClientSession, Response, Void> {
-
-        private MessageFuture<?> future;
-
-        private ResponseDispatcherCommand(AppContext appContext, Response response, ClientSession session, MessageFuture<?> future) {
-            super(appContext, response, session);
-            this.future = future;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public Void invoke() {
-            Object body = this.message.getBody(Object.class);
-            if (body == null)
-                return null;
-            ResponseHandlerHolder handlerHolder = appContext.getResponseHandlerHolder();
-            if (handlerHolder == null)
-                return null;
-            for (ResponseHandler<?> mon : handlerHolder.getMonitorHolderList(body)) {
-                ResponseHandler<Object> monitor = (ResponseHandler<Object>) mon;
-                if (monitor.getMonitorType().isHandle(this.message.getID())) {
-                    try {
-                        List<Protocol> includes = monitor.includeProtocols();
-                        if (!this.match(this.message, includes, true))
-                            continue;
-                        List<Protocol> excludes = monitor.excludeProtocols();
-                        if (this.match(this.message, excludes, false))
-                            continue;
-                        monitor.handle(this.session, this.message, this.message.getBody(Object.class));
-                    } catch (Throwable e) {
-                        NetMessageDispatcher.DISPATCHER_LOG.error("call monitor handle {}", monitor.getClass(), e);
-                    }
-                }
-            }
-            if (this.future != null)
-                this.future.setResponse(this.message);
+        private CommandFuture getCommandFuture(Object value) {
+            if (value instanceof TaskStage)
+                return new TaskStageCommandFuture((TaskStage) value);
+            else if (value instanceof Answer)
+                return new AnswerCommandFuture((Answer<?>) value);
             return null;
         }
 
-        private boolean match(Message message, List<Protocol> filters, boolean defResult) {
-            if (filters != null && !filters.isEmpty()) {
-                for (Protocol controller : filters) {
-                    if (controller.isOwn(message)) {
-                        return true;
-                    }
+        private void handleResult(ResultCode code, Object value, Throwable cause) {
+            if (callback != null) {
+                try {
+                    callback.callback(code, value, cause);
+                } catch (Throwable e) {
+                    DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", controller.getMethodClass(), controller.getName(), callback.getClass(), e);
                 }
-                return false;
             }
-            return defResult;
+            if (code.getType() != ResultCodeType.ERROR) {
+                this.session.sendMessage(this.message, code, value);
+            } else {
+                this.session.sendMessage(this.message, MessageContent.of(code, value)
+                        .setSentHandler(m ->
+                                this.appContext.getSessionHolder().offline(this.session)
+                        ));
+            }
+        }
+
+        @Override
+        public CommandResult invoke() {
+            if (this.executed)
+                return null;
+            CommandResult result;
+            try {
+                result = this.doExecute();
+            } catch (Throwable e) {
+                result = this.handleDispatchException(e);
+                DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行方法异常 {} - {} ", controller.getMethodClass(), controller.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
+            } finally {
+                this.executed = true;
+            }
+            return result;
         }
 
         @Override
         public void execute() {
-            invoke();
-            this.done = true;
+            CurrentCMD.setCurrent(this.message.getUserID(), this.message.getProtocol());
+            if (done)
+                return;
+            if (!executed) {
+                CommandResult result = invoke();
+                Object value = result.getBody();
+                this.commandFuture = getCommandFuture(value);
+                if (this.commandFuture == null) {
+                    try {
+                        this.handleResult(result.getResultCode(), result.getBody(), null);
+                    } finally {
+                        this.done = true;
+                    }
+                }
+            }
+            if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
+                try {
+                    try {
+                        if (this.commandFuture.isSuccess()) {
+                            Object value = this.commandFuture.getResult();
+                            this.handleResult(ResultCode.SUCCESS, value, null);
+                        } else {
+                            CommandResult result = handleDispatchException(this.commandFuture.getCause());
+                            DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", controller.getMethodClass(), controller.getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
+                            this.handleResult(result.getResultCode(), result.getBody(), this.commandFuture.getCause());
+                        }
+                    } finally {
+                        this.done = true;
+                    }
+                } catch (Throwable e) {
+                    try {
+                        CommandResult result = handleDispatchException(e);
+                        DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", controller.getMethodClass(), controller.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
+                        this.handleResult(result.getResultCode(), result.getBody(), e);
+                    } finally {
+                        this.done = true;
+                    }
+                }
+            }
+        }
+
+
+        private CommandResult handleDispatchException(Throwable e) {
+            CommandResult result;
+            if (e instanceof DispatchException) {
+                DispatchException dex = (DispatchException) e;
+                NetMessageDispatcher.DISPATCHER_LOG.error(dex.getMessage(), dex);
+                NetMessageDispatcher.this.fireExecuteDispatchException(new DispatchExceptionEvent(this.message, this.controller, dex));
+                result = ResultFactory.create(dex.getResultCode(), null);
+            } else if (e instanceof InvocationTargetException) {
+                NetMessageDispatcher.DISPATCHER_LOG.error("", e);
+                Throwable ex = ((InvocationTargetException) e).getTargetException();
+                result = this.handleDispatchException(ex);
+            } else {
+                NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.controller.getMethodClass() + "." + this.controller.getName() + " exception", e);
+                DispatcherMessageErrorEvent event = new DispatcherMessageErrorEvent(this.message, this.controller, e);
+                NetMessageDispatcher.this.fireExecuteException(event);
+                result = event.getResult();
+                if (result != null) {
+                    return result;
+                } else {
+                    return ResultFactory.create(CoreResponseCode.EXECUTE_EXCEPTION, null);
+                }
+            }
+            return result;
+        }
+
+        private CommandResult doExecute() throws Exception {
+
+            this.checkExecutable();
+
+            // 调用方法
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行事件", this.controller.getMethodClass(), this.controller.getName());
+            NetMessageDispatcher.this.fireExecute(new DispatcherMessageEvent(this.message, this.controller));
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}执行业务", this.controller.getMethodClass(), this.controller.getName());
+            CommandResult result = this.controller.execute(this.message);
+
+            // 执行结束触发命令执行完成事件
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行完成事件", this.controller.getMethodClass(), this.controller.getName());
+            DispatcherMessageEvent finish = new DispatcherMessageEvent(this.message, this.controller, result);
+            NetMessageDispatcher.this.fireFinish(finish);
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行完成", this.controller.getMethodClass(), this.controller.getName());
+
+            result = finish.getResult();
+            if (result == null)
+                result = ResultFactory.SUCC;
+            return result;
+
+        }
+
+        private void checkExecutable() throws DispatchException {
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("检测消息 {}.{} 业务方法超时", this.controller.getMethodClass(), this.controller.getName());
+            // 是否需要做超时判断
+            if (NetMessageDispatcher.this.checkTimeOut && this.controller.isTimeOut() && System.currentTimeMillis() + this.controller.getRequestLife() > this.message.getTime()) {
+                NetMessageDispatcher.DISPATCHER_LOG.error("消息 {}.{} 业务方法超时", this.controller.getMethodClass(), this.controller.getName());
+                throw new DispatchException(CoreResponseCode.REQUEST_TIMEOUT);
+            }
+
+            // 是否需要做登录校验,判断是否已经登录
+            NetSessionHolder sessionHolder = this.appContext.getSessionHolder();
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("检测消息 {}.{} 所需登陆权限", this.controller.getMethodClass(), this.controller.getName());
+            if (this.controller.isAuth() && !this.session.isLogin()) {
+                List<AuthProvider> authProviders = this.appContext.getAuthProviders();
+                for (AuthProvider provider : authProviders) {
+                    if (!provider.isCanValidate(this.message))
+                        continue;
+                    LoginCertificate loginInfo = provider.validate(this.message);
+                    if (loginInfo == null || !loginInfo.isLogin() || !sessionHolder.online(this.session, loginInfo)) {
+                        NetMessageDispatcher.DISPATCHER_LOG.error("用户没有登陆无法消息 {}.{} 业务方法", this.controller.getMethodClass(), this.controller.getName());
+                        throw new DispatchException(CoreResponseCode.UNLOGIN);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("检测用户调用 {}.{} 权限", this.controller.getMethodClass(), this.controller.getName());
+            if (!this.controller.isUserGroup(this.session.getGroup())) {
+                NetMessageDispatcher.DISPATCHER_LOG.error("{}用户组用户无法调用{}.{} 业务方法", LogUtils.msg(this.session.getGroup(), this.controller.getMethodClass(), this.controller.getName()));
+                throw new DispatchException(CoreResponseCode.NO_PERMISSIONS);
+            }
+
+            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                NetMessageDispatcher.DISPATCHER_LOG.debug("检测调用 {}.{} 消息是否被篡改", this.controller.getMethodClass(), this.controller.getName());
+
+            List<MessageChecker> checkers = this.session.getCheckers();
+            if (this.controller.isCheck() && !checkers.isEmpty()) {
+                // 检测消息的正确性
+                for (MessageChecker checker : checkers) {
+                    // 获取普通调用的校验码密钥
+                    if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
+                        NetMessageDispatcher.DISPATCHER_LOG.debug("调用 {}.{} 检测Request - {}", this.controller.getMethodClass(), this.controller.getName(), checker.getClass());
+                    ResultCode resultCode;
+                    if (!checker.isCheck(this.message))
+                        continue;
+                    if ((resultCode = checker.match(this.message)).isFailure()) {
+                        NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 检测Request - {} 失败原因: {} - {}", this.controller.getMethodClass(), this.controller.getName(), checker.getClass(), resultCode, resultCode.getMessage());
+                        throw new DispatchException(CoreResponseCode.FALSIFY);
+                    }
+                }
+            }
+
         }
 
     }
+
+
+    // private class ResponseDispatcherCommand extends AbstractDispatcherCommand<ClientSession, Response, Void> {
+    //
+    //     private MessageFuture<?> future;
+    //
+    //     private ResponseDispatcherCommand(AppContext appContext, Response response, ClientSession session, MessageFuture<?> future) {
+    //         super(appContext, response, session);
+    //         this.future = future;
+    //     }
+    //
+    //     @Override
+    //     @SuppressWarnings("unchecked")
+    //     public Void invoke() {
+    //         Object body = this.message.getBody(Object.class);
+    //         if (body == null)
+    //             return null;
+    //         ResponseHandlerHolder handlerHolder = appContext.getResponseHandlerHolder();
+    //         if (handlerHolder == null)
+    //             return null;
+    //         for (ResponseHandler<?> mon : handlerHolder.getMonitorHolderList(body)) {
+    //             ResponseHandler<Object> monitor = (ResponseHandler<Object>) mon;
+    //             if (monitor.getMonitorType().isHandle(this.message.getID())) {
+    //                 try {
+    //                     List<Protocol> includes = monitor.includeProtocols();
+    //                     if (!this.match(this.message, includes, true))
+    //                         continue;
+    //                     List<Protocol> excludes = monitor.excludeProtocols();
+    //                     if (this.match(this.message, excludes, false))
+    //                         continue;
+    //                     monitor.handle(this.session, this.message, this.message.getBody(Object.class));
+    //                 } catch (Throwable e) {
+    //                     NetMessageDispatcher.DISPATCHER_LOG.error("call monitor handle {}", monitor.getClass(), e);
+    //                 }
+    //             }
+    //         }
+    //         if (this.future != null)
+    //             this.future.setResponse(this.message);
+    //         return null;
+    //     }
+    //
+    //     private boolean match(Message message, List<Protocol> filters, boolean defResult) {
+    //         if (filters != null && !filters.isEmpty()) {
+    //             for (Protocol controller : filters) {
+    //                 if (controller.isOwn(message)) {
+    //                     return true;
+    //                 }
+    //             }
+    //             return false;
+    //         }
+    //         return defResult;
+    //     }
+    //
+    //     @Override
+    //     public void execute() {
+    //         invoke();
+    //         this.done = true;
+    //     }
+    //
+    // }
 
     private interface CommandFuture {
 
@@ -352,215 +544,6 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                 return ((TypeAnswer) this.answer).achieve().get();
             }
             return null;
-        }
-
-    }
-
-    private class RequestDispatcherCommand extends AbstractDispatcherCommand<ServerSession, Request, CommandResult> {
-
-        private final MethodHolder methodHolder;
-
-        private CommandFuture commandFuture;
-
-        private boolean executed;
-
-        private RequestDispatcherCommand(AppContext appContext, MethodHolder methodHolder, Request request, ServerSession session) {
-            super(appContext, request, session);
-            this.methodHolder = methodHolder;
-        }
-
-        private CommandFuture getCommandFuture(Object value) {
-            if (value instanceof TaskStage)
-                return new TaskStageCommandFuture((TaskStage) value);
-            else if (value instanceof Answer)
-                return new AnswerCommandFuture((Answer<?>) value);
-            return null;
-        }
-
-        private void handleResult(ResultCode code, Object value, Throwable cause) {
-            if (callback != null) {
-                try {
-                    callback.callback(code, value, cause);
-                } catch (Throwable e) {
-                    DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行回调方法 {} 异常", methodHolder.getMethodClass(), methodHolder.getName(), callback.getClass(), e);
-                }
-            }
-            Optional<MessageSendFuture> future = this.session.response(this.message, code, value);
-            if (future != null && code.getType() == ResultCodeType.ERROR) {
-                future.ifPresent(result -> result.addListener(f -> this.appContext.getSessionHolder().offline(result.getSession())));
-            }
-        }
-
-        @Override
-        public void execute() {
-            CurrentCMD.setCurrent(this.message.getUserID(), this.message.getProtocol());
-            if (done)
-                return;
-            if (!executed) {
-                CommandResult result = invoke();
-                Object value = result.getBody();
-                this.commandFuture = getCommandFuture(value);
-                if (this.commandFuture == null) {
-                    try {
-                        this.handleResult(result.getResultCode(), result.getBody(), null);
-                    } finally {
-                        this.done = true;
-                    }
-                }
-            }
-            if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
-                try {
-                    try {
-                        if (this.commandFuture.isSuccess()) {
-                            Object value = this.commandFuture.getResult();
-                            this.handleResult(ResultCode.SUCCESS, value, null);
-                        } else {
-                            CommandResult result = handleDispatchException(this.commandFuture.getCause());
-                            DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
-                            this.handleResult(result.getResultCode(), result.getBody(), this.commandFuture.getCause());
-                        }
-                    } finally {
-                        this.done = true;
-                    }
-                } catch (Throwable e) {
-                    try {
-                        CommandResult result = handleDispatchException(e);
-                        DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 轮询Command结束异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
-                        this.handleResult(result.getResultCode(), result.getBody(), e);
-                    } finally {
-                        this.done = true;
-                    }
-                }
-            }
-        }
-
-        @Override
-        public CommandResult invoke() {
-            if (this.executed)
-                return null;
-            CommandResult result = null;
-            try {
-                result = this.doExecute();
-            } catch (Throwable e) {
-                result = this.handleDispatchException(e);
-                DISPATCHER_LOG.error("#Dispatcher#DispatcherCommand [{}.{}] 执行方法异常 {} - {} ", methodHolder.getMethodClass(), methodHolder.getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
-            } finally {
-                this.executed = true;
-            }
-            return result;
-        }
-
-        private CommandResult handleDispatchException(Throwable e) {
-            CommandResult result;
-            if (e instanceof DispatchException) {
-                DispatchException dex = (DispatchException) e;
-                NetMessageDispatcher.DISPATCHER_LOG.error(dex.getMessage(), dex);
-                NetMessageDispatcher.this.fireExecuteDispatchException(new DispatchExceptionEvent(this.message, this.methodHolder, dex));
-                result = ResultFactory.create(dex.getResultCode(), null);
-            } else if (e instanceof InvocationTargetException) {
-                NetMessageDispatcher.DISPATCHER_LOG.error("", e);
-                Throwable ex = ((InvocationTargetException) e).getTargetException();
-                result = this.handleDispatchException(ex);
-            } else {
-                NetMessageDispatcher.DISPATCHER_LOG.error("Executing " + this.methodHolder.getMethodClass() + "." + this.methodHolder.getName() + " exception", e);
-                DispatcherMessageErrorEvent event = new DispatcherMessageErrorEvent(this.message, this.methodHolder, e);
-                NetMessageDispatcher.this.fireExecuteException(event);
-                result = event.getResult();
-                if (result != null) {
-                    return result;
-                } else {
-                    return ResultFactory.create(CoreResponseCode.EXECUTE_EXCEPTION, null);
-                }
-            }
-            return result;
-        }
-
-        private CommandResult doExecute() throws Exception {
-
-            this.checkExecutable();
-
-            // 调用方法
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行事件", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            NetMessageDispatcher.this.fireExecute(new DispatcherMessageEvent(this.message, this.methodHolder));
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}执行业务", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            CommandResult result = this.methodHolder.execute(this.message);
-
-            // 执行结束触发命令执行完成事件
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行完成事件", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            DispatcherMessageEvent finish = new DispatcherMessageEvent(this.message, this.methodHolder, result);
-            NetMessageDispatcher.this.fireFinish(finish);
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("{}.{}触发业务执行完成", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-
-            result = finish.getResult();
-            if (result == null)
-                result = ResultFactory.SUCC;
-            return result;
-
-        }
-
-        private void checkExecutable() throws DispatchException {
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("检测请求 {}.{} 业务方法超时", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            // 是否需要做登录校验,判断是否已经登录
-            if (NetMessageDispatcher.this.checkTimeOut && this.methodHolder.isTimeOut() && this.message.isTimeOut(this.methodHolder.getRequestLife())) {
-                NetMessageDispatcher.DISPATCHER_LOG.error("请求 {}.{} 业务方法超时", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-                throw new DispatchException(CoreResponseCode.REQUEST_TIMEOUT);
-            }
-
-            // 是否需要做登录校验,判断是否已经登录
-            NetSessionHolder sessionHolder = this.appContext.getSessionHolder();
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("检测请求 {}.{} 所需登陆权限", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            if (this.methodHolder.isAuth() && !this.message.isLogin()) {
-                List<AuthProvider> authProviders = this.appContext.getAuthProviders();
-                for (AuthProvider provider : authProviders) {
-                    if (!provider.isCanValidate(this.message))
-                        continue;
-                    LoginCertificate loginInfo = provider.validate(this.message);
-                    if (loginInfo == null || !loginInfo.isLogin() || !sessionHolder.online((NetServerSession) this.session, loginInfo)) {
-                        NetMessageDispatcher.DISPATCHER_LOG.error("用户没有登陆无法请求 {}.{} 业务方法", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-                        throw new DispatchException(CoreResponseCode.UNLOGIN);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("检测用户调用 {}.{} 权限", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-            if (!this.methodHolder.isUserGroup(this.session.getGroup())) {
-                NetMessageDispatcher.DISPATCHER_LOG.error("{}用户组用户无法调用{}.{} 业务方法", LogUtils.msg(this.session.getGroup(), this.methodHolder.getMethodClass(), this.methodHolder.getName()));
-                throw new DispatchException(CoreResponseCode.NO_PERMISSIONS);
-            }
-
-            if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                NetMessageDispatcher.DISPATCHER_LOG.debug("检测调用 {}.{} 请求是否被篡改", this.methodHolder.getMethodClass(), this.methodHolder.getName());
-
-            List<MessageChecker> checkers = this.session.getCheckers();
-            if (this.methodHolder.isCheck() && !checkers.isEmpty()) {
-                // 检测请求的正确性
-                for (MessageChecker checker : checkers) {
-                    // 获取普通调用的校验码密钥
-                    if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
-                        NetMessageDispatcher.DISPATCHER_LOG.debug("调用 {}.{} 检测Request - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass());
-                    ResultCode resultCode;
-                    if (!checker.isCheck(this.message))
-                        continue;
-                    if ((resultCode = checker.match(this.message)).isFailure()) {
-                        NetMessageDispatcher.DISPATCHER_LOG.error("调用 {}.{} 检测Request - {} 失败原因: {} - {}", this.methodHolder.getMethodClass(), this.methodHolder.getName(), checker.getClass(), resultCode, resultCode.getMessage());
-                        throw new DispatchException(CoreResponseCode.FALSIFY);
-                    }
-                }
-            }
-
         }
 
     }

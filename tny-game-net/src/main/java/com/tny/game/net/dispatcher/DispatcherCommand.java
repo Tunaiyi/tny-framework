@@ -7,8 +7,6 @@ public interface DispatcherCommand<T> extends Command {
 
     T invoke();
 
-    long getUserID();
-
     default String getName() {
         return this.getClass().getName();
     }

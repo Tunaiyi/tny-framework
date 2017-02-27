@@ -1,144 +1,126 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.LogUtils;
 import com.tny.game.annotation.Controller;
 import com.tny.game.annotation.Plugin;
-import com.tny.game.common.reflect.GClass;
-import com.tny.game.common.reflect.GMethod;
-import com.tny.game.common.reflect.MethodFilter;
-import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.ExceptionUtils;
+import com.tny.game.log.CoreLogger;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ControllerHolder extends AbstractControllerHolder {
+abstract class ControllerHolder {
 
-    private static final List<Method> OBJECT_METHOD_LIST = Arrays.asList(Object.class.getMethods());
+    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
 
+    /**
+     * 控制器类型
+     */
+    protected final Class<?> clazz;
+    /**
+     * 插件管理器
+     */
+    protected final PluginHolder pluginHolder;
+    /**
+     * 控制器操作配置
+     */
+    protected final Controller controller;
+    /**
+     * 执行前插件
+     */
+    protected final List<ControllerPlugin> pluginBeforeList;
     /**
      * 执行后插件
      */
-    private final Map<Integer, MethodHolder> methodHolderMap;
+    protected final List<ControllerPlugin> pluginAfterList;
+    /**
+     * 用户组名称列表
+     */
+    protected final List<String> userGroupList;
+    /**
+     * 服务器类型列表
+     */
+    protected final List<String> serverTypeList;
+    /**
+     * 插件註解
+     */
+    protected final Plugin plugin;
+    /**
+     * 方法上的注解
+     */
+    protected Map<Class<? extends Annotation>, Annotation> methodAnnotation;
 
-    public ControllerHolder(final Object executor, final PluginHolder pluginHolder) {
-        super(pluginHolder, executor.getClass().getAnnotation(Controller.class), executor.getClass().getAnnotation(Plugin.class), executor);
-        if (this.controller == null)
-            throw new IllegalArgumentException(this.clazz + " is not Controller Object");
-        this.initMethodAnnotation(executor.getClass().getAnnotations());
-        this.methodHolderMap = new CopyOnWriteMap<>();
-        this.initMethodHolder(executor);
+    protected ControllerHolder(final PluginHolder pluginHolder, final Controller controller, final Plugin plugin, final Object executor) {
+        if (executor == null)
+            throw new IllegalArgumentException("executor is null");
+        this.clazz = executor.getClass();
+        ExceptionUtils.checkNotNull(controller, "{} controller is null", this.clazz);
+        this.controller = controller;
+        ExceptionUtils.checkNotNull(pluginHolder, "{} pluginHolder is null", this.clazz);
+        this.pluginHolder = pluginHolder;
+        this.userGroupList = new ArrayList<>();
+        this.serverTypeList = new ArrayList<>();
+        this.pluginBeforeList = new ArrayList<>();
+        this.pluginAfterList = new ArrayList<>();
+        this.userGroupList.addAll(Arrays.asList(this.controller.userGroup()));
+        this.serverTypeList.addAll(Arrays.asList(this.controller.appType()));
+        this.plugin = plugin;
+        if (this.plugin != null) {
+            this.initPlugin(plugin.before(), this.pluginBeforeList);
+            this.initPlugin(plugin.after(), this.pluginAfterList);
+        }
     }
 
-    private static final MethodFilter FILTER = method -> {
-        if (OBJECT_METHOD_LIST.indexOf(method) > -1)
-            return true;
-        if (Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()))
-            return false;
-        return true;
-    };
-
-    protected void initMethodHolder(final Object executor) {
-        GClass access = JSsistUtils.getGClass(executor.getClass(), FILTER);
-        for (GMethod method : access.getGMethodList()) {
-            Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
-            if (controller == null)
+    @SuppressWarnings("unchecked")
+    private <E extends ControllerPlugin> void initPlugin(final Class<? extends ControllerPlugin>[] pluginClasses,
+                                                         final List<E> pluginList) {
+        for (Class<? extends ControllerPlugin> pluginClass : pluginClasses) {
+            if (pluginClass == null)
                 continue;
-            MethodHolder holder = new MethodHolder(executor, this, method, controller, this.pluginHolder);
-            if (holder.getID() > 0) {
-                MethodHolder last = this.methodHolderMap.put(holder.getID(), holder);
-                if (last != null)
-                    throw new IllegalArgumentException(LogUtils.format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
+            try {
+                final ControllerPlugin plugin = this.pluginHolder.getPlugin(pluginClass);
+                if (plugin != null)
+                    pluginList.add((E) plugin);
+            } catch (Exception e) {
+                LOG.warn("#AbstrectControllerHolder#初始化插件# {} 异常", pluginClass, e);
             }
         }
     }
 
-    public Map<Integer, MethodHolder> getMethodHolderMap() {
-        return Collections.unmodifiableMap(methodHolderMap);
+    protected void initMethodAnnotation(Annotation[] annotations) {
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
+        for (Annotation annotation : annotations)
+            annotationMap.put(annotation.getClass(), annotation);
+        this.methodAnnotation = Collections.unmodifiableMap(annotationMap);
     }
 
-    protected boolean filterMethod(Method method) {
-        if (OBJECT_METHOD_LIST.indexOf(method) > -1)
-            return true;
-        Class<?>[] parameterClass = method.getParameterTypes();
-        if (parameterClass.length <= 0)
-            return true;
-        if (!Request.class.isAssignableFrom(parameterClass[0]) && parameterClass[0] != int.class && parameterClass[0] != Integer.class)
-            return true;
-        return false;
+    @SuppressWarnings("unchecked")
+    protected <A extends Annotation> A getAnnotation0(Class<A> annotationClass) {
+        return (A) this.methodAnnotation.get(annotationClass);
     }
 
-    @Override
-    public String getName() {
-        final String controlName = this.controller.name();
-        if (controlName.equals("")) {
-            final String className = this.clazz.getName();
-            final String[] paths = className.split("\\.");
-            return paths[paths.length - 1];
-        }
-        return controlName;
-    }
+    public abstract List<ControllerPlugin> getControllerPluginBeforeList();
 
-    @Override
-    public int getID() {
-        return this.controller.value();
-    }
+    public abstract List<ControllerPlugin> getControllerPluginAfterList();
 
-    @Override
-    public boolean isCheck() {
-        return this.controller.check();
-    }
+    public abstract boolean isCheck();
 
-    @Override
-    public boolean isAuth() {
-        return this.controller.auth();
-    }
+    public abstract boolean isAuth();
 
-    // public UserType getUserType() {
-    // return this.controller.userType();
-    // }
+    public abstract boolean isUserGroup(String group);
 
-    public long getRequestLife() {
-        return this.controller.requestLife();
-    }
+    public abstract String getName();
 
-    public boolean isTimeOut() {
-        return this.controller.timeOut();
-    }
+    public abstract int getID();
 
-    @Override
-    public List<ControllerPlugin> getControllerPluginBeforeList() {
-        return Collections.unmodifiableList(this.pluginBeforeList);
-    }
-
-    @Override
-    public List<ControllerPlugin> getControllerPluginAfterList() {
-        return Collections.unmodifiableList(this.pluginAfterList);
-    }
-
-    @Override
-    public boolean isUserGroup(String group) {
-        return this.userGroupList.indexOf(group) > -1;
-    }
-
-    public MethodHolder getMethodHolder(int protocol) {
-        return this.methodHolderMap.get(protocol);
-    }
-
-    public boolean isCanCall(String serverType) {
-        return this.serverTypeList.isEmpty() || this.serverTypeList.indexOf(serverType) > -1;
-    }
-
-    @Override
-    public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
-        return this.getAnnotation0(annotationClass);
-    }
+    public abstract <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass);
 
 }

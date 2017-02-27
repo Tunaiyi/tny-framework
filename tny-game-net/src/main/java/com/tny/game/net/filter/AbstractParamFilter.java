@@ -1,7 +1,7 @@
 package com.tny.game.net.filter;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.dispatcher.Request;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public abstract class AbstractParamFilter<A extends Annotation, P> implements Pa
 
     @Override
     @SuppressWarnings("unchecked")
-    public ResultCode filter(MethodHolder holder, Request request) {
+    public ResultCode filter(MethodControllerHolder holder, Request request) {
         List<A> intRangeAnns = holder.getParamAnnotationsByIndex(this.annClass);
         int index = 0;
         Class<?>[] paramClasses = holder.getParamsType();
@@ -57,6 +57,6 @@ public abstract class AbstractParamFilter<A extends Annotation, P> implements Pa
         return CoreResponseCode.SUCCESS;
     }
 
-    protected abstract ResultCode doFilter(MethodHolder holder, Request request, int index, A annotation, P param);
+    protected abstract ResultCode doFilter(MethodControllerHolder holder, Request request, int index, A annotation, P param);
 
 }

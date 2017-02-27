@@ -7,8 +7,8 @@ import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.core.ScopeTypes;
-import com.tny.game.suite.core.ServerType;
-import com.tny.game.suite.core.ServerTypes;
+import com.tny.game.suite.core.AppType;
+import com.tny.game.suite.core.AppTypes;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.io.Serializable;
@@ -98,8 +98,8 @@ public class ServeTicket implements Serializable {
         this.secret = secret;
     }
 
-    public ServerType asServerType() {
-        return ServerTypes.of(serverType);
+    public AppType asServerType() {
+        return AppTypes.of(serverType);
     }
 
     public ScopeType asScopeType() {

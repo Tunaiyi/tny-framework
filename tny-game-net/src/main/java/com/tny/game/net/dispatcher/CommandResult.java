@@ -14,6 +14,21 @@ import com.tny.game.common.result.ResultCode;
  */
 public interface CommandResult {
 
+    CommandResult NO_RESULT = new CommandResult() {
+
+        @Override
+        public ResultCode getResultCode() {
+            return ResultCode.SUCCESS;
+        }
+
+        @Override
+        public Object getBody() {
+            return null;
+        }
+
+    };
+
+
     /**
      * 获取结果状态码
      * <p>

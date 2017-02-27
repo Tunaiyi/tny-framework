@@ -6,7 +6,7 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
-import com.tny.game.suite.core.ServerType;
+import com.tny.game.suite.core.AppType;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class ServeAuthProvider extends GameAuthProvider {
     protected LoginCertificate checkClustersLogin(Request request) throws ValidatorFailException {
         String ticketWord = request.getParameter(0, String.class);
         ServeTicket ticket = JSONUtils.toObject(ticketWord, ServeTicket.class);
-        ServerType serverType = ticket.asScopeType().getServerType();
+        AppType serverType = ticket.asScopeType().getServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
             LoginCertificate info = LoginCertificate.createLogin(ticket.getServerID(), ticket.getServerID(), serverType.getName(), false);
             String truePWD = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(serverType), "");

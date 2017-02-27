@@ -4,16 +4,17 @@ import com.tny.game.common.concurrent.AbstractFuture;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 
-public class MessageFuture<M> extends AbstractFuture<Response> {
+public class MessageFuture<M> extends AbstractFuture<Message> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NIO_CLIENT);
 
-    private Request request;
+    private Message request;
 
     private long timeout;
 
@@ -29,6 +30,8 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
 
     public MessageFuture(MessageAction<?> responseAction, long timeout) {
         this.setResponseAction(responseAction);
+        if (timeout < 0)
+            timeout = 30000L;
         this.timeout = System.currentTimeMillis() + timeout;
     }
 
@@ -41,7 +44,7 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
         return this;
     }
 
-    public MessageFuture<?> setRequest(Request request) {
+    public MessageFuture<?> setRequest(Message message) {
         this.request = request;
         return this;
     }
@@ -61,14 +64,14 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
         return System.currentTimeMillis() >= timeout;
     }
 
-    protected void setResponse(Response response) {
-        this.set(response);
+    protected void setResponse(Message message) {
+        this.set(message);
         if (this.isHasAction()) {
             try {
-                Object body = response.getBody(Object.class);
-                this.responseAction.handle(this.session, this.request, ResultCodes.of(response.getResult()), body);
+                Object body = message.getBody(Object.class);
+                this.responseAction.handle(this.session, this.request, ResultCodes.of(message.getCode()), body);
             } catch (Throwable e) {
-                LOG.error("call request [{}]'s response [{}] action {}", request, response, this.responseAction.getClass(), e);
+                LOG.error("call request [{}]'s response [{}] action {}", request, message, this.responseAction.getClass(), e);
             }
         }
     }
@@ -92,18 +95,18 @@ public class MessageFuture<M> extends AbstractFuture<Response> {
     }
 
     public int getResult() throws InterruptedException, ExecutionException {
-        Response response = this.get();
-        if (response == null)
+        Message message = this.get();
+        if (message == null)
             return CoreResponseCode.REMOTE_NO_RESPONSE.getCode();
-        return response.getResult();
+        return message.getCode();
     }
 
     @SuppressWarnings("unchecked")
     public M getBody() throws InterruptedException, ExecutionException {
-        Response response = this.get();
-        if (response == null)
+        Message message = this.get();
+        if (message == null)
             return null;
-        return (M) response.getBody(Object.class);
+        return (M) message.getBody(Object.class);
     }
 
 }

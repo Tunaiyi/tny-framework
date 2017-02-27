@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetMessage;
+import com.tny.game.net.dispatcher.NetMessage;
 import com.tny.game.net.dispatcher.Session;
 import com.tny.game.protoex.annotations.Packed;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -50,7 +50,7 @@ public class ProtoExRequest extends NetMessage {
     // }
 
     @Override
-    public int getMessageCode() {
+    public int getCode() {
         return ResultCode.SUCCESS_CODE;
     }
 

@@ -2,7 +2,7 @@ package com.tny.game.net.filter;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
@@ -32,7 +32,7 @@ public class FilterPlugin implements ControllerPlugin, ApplicationContextAware {
 
     @Override
     public CommandResult execute(Request request, CommandResult result, PluginContext context) throws Exception {
-        MethodHolder methodHolder = context.getMethodHolder();
+        MethodControllerHolder methodHolder = context.getMethodHolder();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {
             ParamFilter paramFliter = this.filterMap.get(filterClass);

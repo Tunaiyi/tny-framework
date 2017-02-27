@@ -1,7 +1,5 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.base.NetMessage;
-
 import java.io.Serializable;
 
 /**

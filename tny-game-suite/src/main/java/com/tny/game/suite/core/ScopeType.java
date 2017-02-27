@@ -12,7 +12,7 @@ public interface ScopeType {
 
     boolean isTest();
 
-    <S extends ServerType> S getServerType();
+    <S extends AppType> S getServerType();
 
     default void registerSelf() {
         ScopeTypes.register(this);

@@ -9,12 +9,12 @@ import java.util.Collection;
 /**
  * Created by Kun Yang on 16/1/29.
  */
-public final class ServerTypes extends AutoImport {
+public final class AppTypes extends AutoImport {
 
-    protected static EnumeratorHolder<ServerType> holder = new EnumeratorHolder<ServerType>() {
+    protected static EnumeratorHolder<AppType> holder = new EnumeratorHolder<AppType>() {
 
         @Override
-        protected void postRegister(ServerType object) {
+        protected void postRegister(AppType object) {
             putAndCheck(object.getName(), object);
         }
 
@@ -24,23 +24,23 @@ public final class ServerTypes extends AutoImport {
         loadClass(Configs.SUITE_SERVER_TYPE_CLASS);
     }
 
-    private ServerTypes() {
+    private AppTypes() {
     }
 
-    static void register(ServerType value) {
+    static void register(AppType value) {
         holder.register(value);
     }
 
-    public static <T extends ServerType> T of(String name) {
+    public static <T extends AppType> T of(String name) {
         return holder.ofAndCheck(name, "获取 {} ServerType不存在", name);
     }
 
-    public static <T extends ServerType> T valueOfEnum(String enumName) {
+    public static <T extends AppType> T valueOfEnum(String enumName) {
         return holder.ofAndCheck(enumName, "获取 {} 的ServerType不存在", enumName);
     }
 
 
-    public static Collection<ServerType> getAll() {
+    public static Collection<AppType> getAll() {
         return holder.values();
     }
 

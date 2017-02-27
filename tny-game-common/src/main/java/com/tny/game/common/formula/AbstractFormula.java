@@ -7,9 +7,7 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
 
     /**
      * 屬性
-     *
-     * @uml.property name="attribute"
-     * @uml.associationEnd multiplicity="(0 -1)" elementType="java.lang.Object"
+     * <p>
      * qualifier="key:java.lang.String java.lang.Object"
      */
     protected Map<String, Object> attribute = new HashMap<String, Object>();

@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.client.nio.ResponseMode;
+import com.tny.game.net.client.nio.MessageMode;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public interface ResponseHandler<M> {
 
     Class<?> getMessageClass();
 
-    ResponseMode getMonitorType();
+    MessageMode getMonitorType();
 
     List<Protocol> includeProtocols();
 

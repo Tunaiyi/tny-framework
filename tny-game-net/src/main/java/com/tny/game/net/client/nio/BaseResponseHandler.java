@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class BaseResponseHandler<M> implements ResponseHandler<M> {
 
-    private ResponseMode monitorType;
+    private MessageMode monitorType;
 
     private Class<M> clazz;
 
@@ -16,15 +16,15 @@ public abstract class BaseResponseHandler<M> implements ResponseHandler<M> {
 
     private List<Protocol> excludes;
 
-    public BaseResponseHandler(ResponseMode monitorType, Class<M> clazz) {
+    public BaseResponseHandler(MessageMode monitorType, Class<M> clazz) {
         this(monitorType, clazz, null, null);
     }
 
-    public BaseResponseHandler(ResponseMode monitorType, Class<M> clazz, Protocol... includes) {
+    public BaseResponseHandler(MessageMode monitorType, Class<M> clazz, Protocol... includes) {
         this(monitorType, clazz, ImmutableList.copyOf(includes), null);
     }
 
-    public BaseResponseHandler(ResponseMode monitorType, Class<M> clazz, List<Protocol> includes, List<Protocol> excludes) {
+    public BaseResponseHandler(MessageMode monitorType, Class<M> clazz, List<Protocol> includes, List<Protocol> excludes) {
         this.monitorType = monitorType;
         this.clazz = clazz;
         if (includes == null || includes.isEmpty())
@@ -54,7 +54,7 @@ public abstract class BaseResponseHandler<M> implements ResponseHandler<M> {
     }
 
     @Override
-    public ResponseMode getMonitorType() {
+    public MessageMode getMonitorType() {
         return this.monitorType;
     }
 

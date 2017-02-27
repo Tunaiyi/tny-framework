@@ -1,7 +1,7 @@
 package com.tny.game.net.filter.string;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
@@ -22,7 +22,7 @@ public class StringPatternMatchLimit extends AbstractParamFilter<PatternMatch, S
     }
 
     @Override
-    protected ResultCode doFilter(MethodHolder holder, Request request, int index, PatternMatch annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Request request, int index, PatternMatch annotation, String param) {
         if (!this.getPattern(annotation.pattern()).matcher(param).matches()) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
                     request.getUserID(), request.getProtocol(),

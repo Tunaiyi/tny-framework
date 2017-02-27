@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.checker.MessageCheckGenerator;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractRequestBuilder<RQ extends NetRequest> implements RequestBuilder {
 
-    protected RequestVerifier verifier;
+    protected MessageCheckGenerator verifier;
 
     protected RQ request;
 
@@ -58,7 +58,7 @@ public abstract class AbstractRequestBuilder<RQ extends NetRequest> implements R
      * @return 返回构建器本身
      */
     @Override
-    public RequestBuilder setRequestVerifier(RequestVerifier verifier) {
+    public RequestBuilder setRequestVerifier(MessageCheckGenerator verifier) {
         this.verifier = verifier;
         return this;
     }

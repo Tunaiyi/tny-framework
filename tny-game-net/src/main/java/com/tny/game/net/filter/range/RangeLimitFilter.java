@@ -1,7 +1,7 @@
 package com.tny.game.net.filter.range;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodHolder;
+import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.base.CoreResponseCode;
@@ -15,7 +15,7 @@ public abstract class RangeLimitFilter<A extends Annotation, N extends Comparabl
     }
 
     @Override
-    protected ResultCode doFilter(MethodHolder holder, Request request, int index, A annotation, N param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Request request, int index, A annotation, N param) {
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         N number = param;

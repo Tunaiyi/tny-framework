@@ -8,10 +8,10 @@ import com.tny.game.net.LoginCertificate;
  *
  * @author KGTny
  */
-public interface Session {
+public interface Session<UID> {
 
-    int DEFAULT_RESPONSE_ID = -1;
-    long UN_LOGIN_UID = 0;
+    // int DEFAULT_RESPONSE_ID = -1;
+    // long UN_LOGIN_UID = 0;
     String DEFAULT_USER_GROUP = "USER";
     String UNLOGIN_USER_GROUP = "UNLOGIN";
 
@@ -20,7 +20,7 @@ public interface Session {
      *
      * @return
      */
-    long getUID();
+    UID getUID();
 
     /**
      * 客户端用户组名称
@@ -73,7 +73,7 @@ public interface Session {
      */
     boolean isConnect();
 
-    LoginCertificate getCertificate();
+    LoginCertificate<UID> getCertificate();
 
     boolean isOnline();
 

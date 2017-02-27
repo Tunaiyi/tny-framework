@@ -2,7 +2,7 @@ package com.tny.game.net.kafka;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.base.simple.AbstractAppContext;
-import com.tny.game.net.checker.RequestVerifier;
+import com.tny.game.net.checker.MessageCheckGenerator;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class KafkaAppContext extends AbstractAppContext {
 
     private KafkaTicketTaker ticketTaker;
 
-    private RequestVerifier verifier;
+    private MessageCheckGenerator verifier;
 
     private KafkaMessageBuilderFactory messageBuilderFactory;
 
@@ -54,7 +54,7 @@ public class KafkaAppContext extends AbstractAppContext {
         return messageBuilderFactory;
     }
 
-    public RequestVerifier getVerifier() {
+    public MessageCheckGenerator getVerifier() {
         return verifier;
     }
 
@@ -78,7 +78,7 @@ public class KafkaAppContext extends AbstractAppContext {
         return this;
     }
 
-    public KafkaAppContext setVerifier(RequestVerifier verifier) {
+    public KafkaAppContext setVerifier(MessageCheckGenerator verifier) {
         this.verifier = verifier;
         return this;
     }

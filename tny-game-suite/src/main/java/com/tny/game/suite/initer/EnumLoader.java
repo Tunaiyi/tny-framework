@@ -14,7 +14,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
 import com.tny.game.suite.core.ScopeType;
-import com.tny.game.suite.core.ServerType;
+import com.tny.game.suite.core.AppType;
 
 /**
  * Created by Kun Yang on 16/9/9.
@@ -27,7 +27,7 @@ public class EnumLoader {
                         ResultCode.class,
                         Ability.class,
                         ScopeType.class,
-                        ServerType.class,
+                        AppType.class,
                         ItemType.class,
                         Action.class,
                         Behavior.class,

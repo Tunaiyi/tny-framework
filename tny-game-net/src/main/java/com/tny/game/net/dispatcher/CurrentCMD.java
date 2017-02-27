@@ -10,14 +10,14 @@ package com.tny.game.net.dispatcher;
  * <p>
  * <br>
  */
-public class CurrentCMD {
+public class CurrentCMD<UID> {
 
     //	private static final String SYSTEM_THREAD_CONTROLLER = "SysThreadController";
     //	private static final String SYSTEM_THREAD_HANDLER = "SysThreadHandler";
 
     private static ThreadLocal<CurrentCMD> local = new ThreadLocal<CurrentCMD>();
 
-    private long userID;
+    private UID userID;
 
     private int protocol;
 
@@ -26,7 +26,7 @@ public class CurrentCMD {
     private CurrentCMD() {
     }
 
-    private CurrentCMD(long userID, int protocol, Thread thread) {
+    private CurrentCMD(UID userID, int protocol, Thread thread) {
         this.userID = userID;
         this.protocol = protocol;
         this.thread = thread;
@@ -37,7 +37,7 @@ public class CurrentCMD {
      *
      * @return
      */
-    public static CurrentCMD getCurrent() {
+    public static <ID> CurrentCMD<ID> getCurrent() {
         CurrentCMD info = local.get();
         if (info == null) {
             info = new CurrentCMD();
@@ -48,7 +48,7 @@ public class CurrentCMD {
         return info;
     }
 
-    protected static void setCurrent(long userID, int protocol) {
+    protected static <ID> void setCurrent(ID userID, int protocol) {
         CurrentCMD info = local.get();
         if (info == null) {
             info = new CurrentCMD();
@@ -63,7 +63,7 @@ public class CurrentCMD {
      *
      * @return 当前线程请求对象
      */
-    public long getUserID() {
+    public UID getUserID() {
         return this.userID;
     }
 
