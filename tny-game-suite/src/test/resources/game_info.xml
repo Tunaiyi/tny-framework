@@ -9,15 +9,63 @@
         <openDate>2015-09-09 10:00</openDate>
         <mainServer>true</mainServer>
         <register>true</register>
+        <publicConnectors>
+            <connector>
+                <id>1</id>
+                <desc>本机</desc>
+                <host>127.0.0.1</host>
+                <port>18800</port>
+            </connector>
+        </publicConnectors>
+        <privateConnectors>
+            <connector>
+                <id>1</id>
+                <desc>RMI</desc>
+                <host>127.0.0.1</host>
+                <port>18802</port>
+            </connector>
+        </privateConnectors>
     </server>
     <server>
         <remoteID>100</remoteID>
         <openDate>2015-08-19 10:00</openDate>
         <register>false</register>
+        <publicConnectors>
+            <connector>
+                <id>1</id>
+                <desc>本机</desc>
+                <host>127.0.0.1</host>
+                <port>18800</port>
+            </connector>
+        </publicConnectors>
+        <privateConnectors>
+            <connector>
+                <id>1</id>
+                <desc>RMI</desc>
+                <host>127.0.0.1</host>
+                <port>18802</port>
+            </connector>
+        </privateConnectors>
     </server>
     <server>
         <remoteID>101</remoteID>
         <openDate>2015-08-19 10:00</openDate>
         <register>false</register>
+        <publicConnectors>
+            <connector>
+                <id>1</id>
+                <desc>本机</desc>
+                <host>127.0.0.1</host>
+                <port>18800</port>
+            </connector>
+        </publicConnectors>
+        <privateConnectors>
+            <connector>
+                <id>1</id>
+                <desc>RMI</desc>
+                <host>127.0.0.1</host>
+                <port>18802</port>
+            </connector>
+        </privateConnectors>
     </server>
 </servers>

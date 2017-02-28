@@ -24,5 +24,6 @@ public interface SuiteProtoIDs {
     int CLUSTER_$GAMES_TICKET = 1_01_14;
     int CLUSTER_$PF_TOKEN = 1_01_15;
     int CLUSTER_$PAY_PLAN_ORDER = 1_01_16;
+    int CLUSTER_$INET_CONNECTOR = 1_01_17;
 
 }

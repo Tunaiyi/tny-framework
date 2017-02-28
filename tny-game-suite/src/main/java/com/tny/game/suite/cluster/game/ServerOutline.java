@@ -1,11 +1,19 @@
 package com.tny.game.suite.cluster.game;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.suite.core.InetConnector;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+
+import java.util.Collection;
+import java.util.List;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_NODE)
 public class ServerOutline {
@@ -58,6 +66,15 @@ public class ServerOutline {
     @ProtoExField(14)
     private String serverScope;
 
+    @ProtoExField(15)
+    private List<InetConnector> publicConnectors;
+
+    @ProtoExField(16)
+    private List<InetConnector> privateConnectors;
+
+    @ProtoExField(17)
+    private String version;
+
     public ServerOutline() {
     }
 
@@ -95,6 +112,31 @@ public class ServerOutline {
 
     public String getServerScope() {
         return serverScope;
+    }
+
+    public List<InetConnector> getPublicConnectors() {
+        if (publicConnectors == null)
+            return ImmutableList.of();
+        return publicConnectors;
+    }
+
+    public List<InetConnector> getPrivateConnectors() {
+        if (privateConnectors == null)
+            return ImmutableList.of();
+        return privateConnectors;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void checkConnectors() {
+        if (CollectionUtils.isEmpty(this.publicConnectors) && StringUtils.isNoneBlank(this.publicIP)) {
+            this.publicConnectors = ImmutableList.of(new InetConnector("default", "默认", this.publicIP, this.serverPort));
+        }
+        if (CollectionUtils.isEmpty(this.privateConnectors) && StringUtils.isNoneBlank(this.privateIP)) {
+            this.privateConnectors = ImmutableList.of(new InetConnector("rmi", "RMI", this.privateIP, this.rmiPort));
+        }
     }
 
     ServerOutline setServerID(int serverID) {
@@ -157,6 +199,21 @@ public class ServerOutline {
         return this;
     }
 
+    ServerOutline setPublicConnectors(Collection<InetConnector> publicConnectors) {
+        this.publicConnectors = ImmutableList.copyOf(publicConnectors);
+        return this;
+    }
+
+    ServerOutline setPrivateConnectors(Collection<InetConnector> privateConnectors) {
+        this.privateConnectors = ImmutableList.copyOf(privateConnectors);
+        return this;
+    }
+
+    ServerOutline setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
     public String getOpenDate() {
         return this.openDate;
     }
@@ -190,6 +247,22 @@ public class ServerOutline {
     public ServerOutline setOpenDate(DateTime openDate) {
         this.openDate = openDate.toString(DateTimeHelper.DATE_TIME_MIN_FORMAT);
         return this;
+    }
+
+    public InetConnector getPublicConnector(String... ids) {
+        return this.publicConnectors
+                .stream()
+                .filter(c -> ArrayUtils.contains(ids, c.getId()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public InetConnector getPrivateConnector(String... ids) {
+        return this.privateConnectors
+                .stream()
+                .filter(c -> ArrayUtils.contains(ids, c.getId()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

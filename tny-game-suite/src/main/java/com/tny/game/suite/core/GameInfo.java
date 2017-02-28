@@ -43,6 +43,10 @@ public class GameInfo {
 
     private boolean register;
 
+    private List<InetConnector> publicConnectors;
+
+    private List<InetConnector> privateConnectors;
+
     private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
     static {
@@ -55,6 +59,7 @@ public class GameInfo {
         xStream.autodetectAnnotations(true);
         xStream.alias("servers", ArrayList.class);
         xStream.alias("server", GameInfo.class);
+        xStream.alias("connector", InetConnector.class);
         xStream.registerLocalConverter(GameInfo.class, "openDate", new DateTimeConverter(DateTimeHelper.DATE_TIME_MIN_FORMAT));
         Map<Integer, GameInfo> map = new HashMap<>();
         try (InputStream inputStream = ConfigLoader.loadInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
@@ -79,6 +84,10 @@ public class GameInfo {
         }
         GameInfo.GAMES_INFO_MAP = Collections.unmodifiableMap(map);
         LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunningChecker.end(GameInfo.class).cost());
+    }
+
+
+    public GameInfo() {
     }
 
     public static Collection<GameInfo> getAllGamesInfo() {
@@ -119,6 +128,18 @@ public class GameInfo {
 
     public int getOpenedDays() {
         return DateTimeEx.days(this.getOpenDate().toLocalDate(), DateTimeEx.today());
+    }
+
+    public List<InetConnector> getPublicConnectors() {
+        if (publicConnectors == null)
+            return new ArrayList<>();
+        return new ArrayList<>(publicConnectors);
+    }
+
+    public List<InetConnector> getPrivateConnectors() {
+        if (privateConnectors == null)
+            return new ArrayList<>();
+        return new ArrayList<>(privateConnectors);
     }
 
     public DateTime getStartAt() {
