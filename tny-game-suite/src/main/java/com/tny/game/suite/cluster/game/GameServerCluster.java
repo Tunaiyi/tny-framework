@@ -16,6 +16,7 @@ import com.tny.game.suite.cluster.ClusterUtils;
 import com.tny.game.suite.cluster.Servers;
 import com.tny.game.suite.cluster.event.GameServerClusterListener;
 import com.tny.game.suite.core.GameInfo;
+import com.tny.game.suite.core.InetConnector;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
@@ -27,7 +28,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
@@ -120,20 +123,35 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
             if (!info.isRegister())
                 continue;
             Config config = context.getConfig();
+            Collection<InetConnector> publicConnectors = new CopyOnWriteArraySet<>(info.getPublicConnectors());
+            Collection<InetConnector> privateConnectors = new CopyOnWriteArraySet<>(info.getPrivateConnectors());
+            String publicHost = config.getStr(Configs.PUBLIC_HOST);
+            if (publicHost != null) {
+                publicConnectors.add(new InetConnector("default", "默认", publicHost, ip.getPorts().get(0)));
+            }
+            String privateHost = config.getStr(Configs.PRIVATE_HOST);
+            if (privateHost != null) {
+                Integer rmiPort = config.getInt(Configs.RMI_PORT, -1);
+                if (rmiPort > 0)
+                    privateConnectors.add(new InetConnector("rmi", "RMI", privateHost, rmiPort));
+            }
             ServerOutline outline = new ServerOutline()
                     .setServerID(info.getServerID())
                     .setServerScope(info.getScopeType().getName())
                     .setServerType(info.getScopeType().getServerType().getName())
                     .setMain(info.isMainServer())
                     .setOpenDate(info.getOpenDate())
-                    .setServerPort(ip.getPorts().get(0))
-                    .setPublicIP(config.getStr(Configs.PUBLIC_HOST))
-                    .setPrivateIP(config.getStr(Configs.PRIVATE_HOST))
-                    .setRmiPort(config.getInt(Configs.RMI_PORT))
+                    .setVersion(GameInfo.getMainInfo().getVersion())
+                    // .setServerPort(ip.getPorts().get(0))
+                    // .setPublicIP(config.getStr(Configs.PUBLIC_HOST))
+                    // .setPrivateIP(config.getStr(Configs.PRIVATE_HOST))
+                    // .setRmiPort(config.getInt(Configs.RMI_PORT))
                     .setDbHost(System.getProperty(DB_HOST))
                     .setDbPort(NumberUtils.toInt(System.getProperty(DB_PORT, "0")))
                     .setDb(System.getProperty(DB_NAME))
-                    .setFollowServer(main.getServerID());
+                    .setFollowServer(main.getServerID())
+                    .setPublicConnectors(publicConnectors)
+                    .setPrivateConnectors(privateConnectors);
             outlines.add(outline);
         }
         return outlines;
