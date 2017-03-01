@@ -1,4 +1,3 @@
-//option java_package = "com.lq.sg.proto";
 option java_package = "com.tny.game.suite.proto";
 
 message TimeTaskProto {
