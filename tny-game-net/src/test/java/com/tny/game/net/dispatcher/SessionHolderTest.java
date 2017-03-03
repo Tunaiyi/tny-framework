@@ -187,7 +187,7 @@ public class SessionHolderTest {
     private static class TestSession extends ChannelServerSession {
 
         private TestSession(long userId) {
-            super(new TestChannel(), LoginCertificate.createLogin(userId, DEFAULT_USER_GROUP, false));
+            super(new TestChannel(), LoginCertificate.createLogin(System.currentTimeMillis(), userId, DEFAULT_USER_GROUP, false));
             this.messageBuilderFactory = new ProtoExMessageBuilderFactory();
         }
 

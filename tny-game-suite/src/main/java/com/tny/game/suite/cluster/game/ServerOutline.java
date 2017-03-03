@@ -256,7 +256,7 @@ public class ServerOutline {
     }
 
     public InetConnector getPublicConnector(String... ids) {
-        return this.publicConnectors
+        return this.getPublicConnectors()
                 .stream()
                 .filter(c -> ArrayUtils.contains(ids, c.getId()))
                 .findFirst()
@@ -264,7 +264,7 @@ public class ServerOutline {
     }
 
     public InetConnector getPrivateConnector(String... ids) {
-        return this.privateConnectors
+        return this.getPrivateConnectors()
                 .stream()
                 .filter(c -> ArrayUtils.contains(ids, c.getId()))
                 .findFirst()
