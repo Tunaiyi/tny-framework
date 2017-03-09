@@ -2,7 +2,7 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Message;
 import com.tny.game.net.dispatcher.exception.DispatchException;
-import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
+import com.tny.game.net.dispatcher.listener.MessageDispatcherListener;
 
 /**
  * 请求派发器
@@ -36,7 +36,7 @@ public interface MessageDispatcher {
      *
      * @param listener 添加的请求派发错误监听器
      */
-    void addDispatcherRequestListener(DispatcherMessageListener listener);
+    void addDispatcherRequestListener(MessageDispatcherListener listener);
 
     /**
      * 移除请求派发错误监听器
@@ -46,7 +46,7 @@ public interface MessageDispatcher {
      *
      * @param listener 移除的请求派发错误监听器
      */
-    void removeDispatcherRequestListener(DispatcherMessageListener listener);
+    void removeDispatcherRequestListener(MessageDispatcherListener listener);
 
     /**
      * 清除请求派发错误监听器

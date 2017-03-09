@@ -1,6 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.net.base.Protocol;
 
 /**
  * @author KGTny
@@ -26,6 +27,11 @@ public interface CommandResult {
             return null;
         }
 
+        @Override
+        public Protocol getProtocol() {
+            return null;
+        }
+
     };
 
 
@@ -48,5 +54,10 @@ public interface CommandResult {
      * @return 返回响应消息体
      */
     Object getBody();
+
+    /**
+     * @return 返回结果协议, null 原协议返回
+     */
+    Protocol getProtocol();
 
 }

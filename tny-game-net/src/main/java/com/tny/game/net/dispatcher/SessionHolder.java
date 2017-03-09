@@ -1,6 +1,5 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.base.listener.SessionListener;
 
@@ -27,7 +26,7 @@ public interface SessionHolder {
      * @param key 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    Session getSession(String userGroup, Object key);
+    <T> Session<T> getSession(String userGroup, T key);
 
     /**
      * <p>
@@ -112,21 +111,24 @@ public interface SessionHolder {
     /**
      * 发信息给用户 <br>
      *
-     * @param uid 用户ID
-     * @return 返回是否成功
+     * @param userGroup 用户组
+     * @param uid       用户ID
+     * @param protocol  协议
+     * @param content   消息内容
+     * @return 是否加入发送队列
      */
-    boolean send2User(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
+    boolean send2User(String userGroup, Object uid, Protocol protocol, MessageContent content);
 
     /**
-     * 发信息给Session对应的用户 <br>
+     * 发信息给用户集合 <br>
      *
-     * @param session  会话
-     * @param protocol 协议
-     * @param code     结果码
-     * @param body     消息体
-     * @return 返回是否发送成功
+     * @param userGroup 用户组
+     * @param uidColl   用户ID列表
+     * @param protocol  协议
+     * @param content   消息内容
+     * @return 返回发送数量
      */
-    boolean send2User(Session session, Protocol protocol, ResultCode code, Object body);
+    int send2Users(String userGroup, Collection<?> uidColl, Protocol protocol, MessageContent<?> content);
 
     /**
      * 发信息给用户 <br>
@@ -134,21 +136,14 @@ public interface SessionHolder {
      * @param uid 用户ID
      * @return 返回是否成功
      */
-    boolean send2Channel(String userGroup, Object uid, Protocol protocol, ResultCode code, Object body);
-
-    /**
-     * 发信息给用户集合 <br>
-     *
-     * @return 返回成功的数量
-     */
-    int send2User(String userGroup, Collection<?> uidColl, Protocol protocol, ResultCode code, Object body);
+    boolean send2Channel(String userGroup, Object channelID, Protocol protocol, MessageContent<?> content);
 
     /**
      * 发送给所有在线的用户 <br>
      *
      * @return 返回发送的人数
      */
-    int send2AllOnline(String userGroup, Protocol protocol, ResultCode code, Object body);
+    void send2AllOnline(String userGroup, Protocol protocol, MessageContent<?> content);
 
     /**
      * 计算在线人数
@@ -162,7 +157,7 @@ public interface SessionHolder {
      *
      * @param session 指定的session
      */
-    void offline(Session session);
+    void offline(Session<?> session);
 
     /**
      * T下线
@@ -170,7 +165,7 @@ public interface SessionHolder {
      * @param key
      * @return
      */
-    Session offline(String userGroup, Object key);
+    <T> Session<T> offline(String userGroup, T key);
 
     /**
      * 全部T下线
@@ -184,7 +179,7 @@ public interface SessionHolder {
 
     int size();
 
-    Map<Object, Session> getSessionMapByGroup(String userGroup);
+    <T> Map<Object, Session<T>> getSessionMapByGroup(String userGroup);
 
     void addSessionListener(SessionListener listener);
 

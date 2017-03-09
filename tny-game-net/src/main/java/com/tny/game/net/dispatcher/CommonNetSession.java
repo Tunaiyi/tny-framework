@@ -7,8 +7,8 @@ import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageCheckGenerator;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.MessageSignGenerator;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public abstract class CommonNetSession<UID> implements NetSession<UID> {
 
     protected LoginCertificate<UID> certificate;
 
-    protected List<MessageChecker> checkers = new CopyOnWriteArrayList<>();
+    protected List<ControllerChecker> checkers = new CopyOnWriteArrayList<>();
 
     private Attributes attributes;
 
@@ -49,7 +49,7 @@ public abstract class CommonNetSession<UID> implements NetSession<UID> {
 
     private int processReciveNumPerTime = -1;
 
-    private MessageCheckGenerator messageCheckGenerator;
+    private MessageSignGenerator messageCheckGenerator;
 
     private MessageWriter writer;
 
@@ -117,23 +117,23 @@ public abstract class CommonNetSession<UID> implements NetSession<UID> {
     }
 
     @Override
-    public List<MessageChecker> getCheckers() {
+    public List<ControllerChecker> getCheckers() {
         return Collections.unmodifiableList(this.checkers);
     }
 
     @Override
-    public void addChecker(MessageChecker checker) {
+    public void addChecker(ControllerChecker checker) {
         this.checkers.add(checker);
     }
 
     @Override
-    public void removeChecker(MessageChecker checker) {
+    public void removeChecker(ControllerChecker checker) {
         this.checkers.remove(checker);
     }
 
     @Override
-    public void removeChecker(Class<? extends MessageChecker> checkClass) {
-        for (MessageChecker checker : checkers) {
+    public void removeChecker(Class<? extends ControllerChecker> checkClass) {
+        for (ControllerChecker checker : checkers) {
             if (checkClass.isInstance(checker))
                 checkers.remove(checker);
         }

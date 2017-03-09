@@ -1,6 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.context.Attributes;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.AuthProvider;
 import com.tny.game.net.dispatcher.MessageDispatcher;
 import com.tny.game.net.dispatcher.NetSessionHolder;
@@ -22,6 +23,8 @@ public interface AppContext {
     PluginHolder getPluginHolder();
 
     List<AuthProvider> getAuthProviders();
+
+    List<ControllerChecker> getControllerCheckers();
 
     NetSessionHolder getSessionHolder();
 

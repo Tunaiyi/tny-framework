@@ -50,7 +50,7 @@ public class SimpleRequest extends NetRequest {
     }
 
     @Override
-    public String getCheckKey() {
+    public String getCheckCode() {
         return this.checkKey;
     }
 

@@ -4,7 +4,7 @@ import com.tny.game.net.base.Message;
 import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 
-public class DispatchExceptionEvent extends DispatcherMessageEvent {
+public class DispatchExceptionEvent extends ExecuteMessageEvent {
 
     private final DispatchException exception;
 

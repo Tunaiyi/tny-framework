@@ -193,7 +193,7 @@ public abstract class NetRequest extends Request {
 
     @Override
     public String toString() {
-        return "AbstractRequset [checkKey=" + this.getCheckKey() + ", hostName=" + this.getHostName() + ", protocol=" + this.getProtocol() + ", time="
+        return "AbstractRequset [checkKey=" + this.getCheckCode() + ", hostName=" + this.getHostName() + ", protocol=" + this.getProtocol() + ", time="
                 + this.getTime() + ", paramList="
                 + this.getParamList()
                 + "]";

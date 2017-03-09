@@ -1,6 +1,7 @@
 package com.tny.game.net.client.nio;
 
 import com.google.common.collect.ImmutableList;
+import com.tny.game.net.base.MessageMode;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.ResponseHandler;
 

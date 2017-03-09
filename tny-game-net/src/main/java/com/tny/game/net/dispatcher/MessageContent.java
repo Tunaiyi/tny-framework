@@ -17,15 +17,23 @@ public class MessageContent<R> {
 
     private MessageFuture<R> messageFuture;
 
-    public static <O> MessageContent<O> of(Object body) {
-        return new MessageContent<>(ResultCode.SUCCESS, body, null);
+    public static <O> MessageContent<O> toPush(ResultCode code, Object body) {
+        return new MessageContent<>(code, body, -1);
     }
 
-    public static <O> MessageContent<O> of(ResultCode code, Object body) {
-        return new MessageContent<>(code, body, null);
+    public static <O> MessageContent<O> toPush(Object body) {
+        return new MessageContent<>(ResultCode.SUCCESS, body, -1);
     }
 
-    public static <O> MessageContent<O> of(ResultCode code, Object body, Integer toMessage) {
+    public static <O> MessageContent<O> toRequest(Object body) {
+        return new MessageContent<>(ResultCode.SUCCESS, body, 0);
+    }
+
+    public static <O> MessageContent<O> toResponse(Object body, int toMessage) {
+        return new MessageContent<>(ResultCode.SUCCESS, body, toMessage);
+    }
+
+    public static <O> MessageContent<O> toResponse(ResultCode code, Object body, int toMessage) {
         return new MessageContent<>(code, body, toMessage);
     }
 

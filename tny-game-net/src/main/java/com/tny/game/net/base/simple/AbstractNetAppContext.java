@@ -16,7 +16,7 @@ public abstract class AbstractNetAppContext extends AbstractAppContext implement
     @Override
     public ChannelMaker<Channel> getChannelMaker() {
         if (this.channelMaker == null)
-            this.channelMaker = new SimpleChannelMaker<>(this.getCheckers());
+            this.channelMaker = new SimpleChannelMaker<>();
         return this.channelMaker;
     }
 

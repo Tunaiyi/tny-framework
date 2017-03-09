@@ -16,26 +16,27 @@ public abstract class NetSessionHolder implements SessionHolder {
 
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
 
-    private List<SessionListener> listenerList = new CopyOnWriteArrayList<SessionListener>();
+    private List<SessionListener> listenerList = new CopyOnWriteArrayList<>();
 
     /**
      * <p>
      * <p>
      * 添加指定的session<br>
      *
-     * @param session 指定的session
+     * @param session     指定的session
+     * @param certificate 登陆凭证
      * @throws ValidatorFailException
      */
-    protected abstract boolean online(NetSession session, LoginCertificate loginInfo) throws ValidatorFailException;
+    protected abstract <T> boolean online(NetSession<T> session, LoginCertificate<T> certificate) throws ValidatorFailException;
 
     /**
      * 移出所有组
      */
     protected abstract void removeAllChannel(String userGroup);
 
-    protected void disconnect(NetServerSession session) {
+    protected void disconnect(NetSession<?> session) {
         session.disconnect();
-        this.fireDisconnectSession(new SessionChangeEvent(this, session));
+        this.fireDisconnectSession(new SessionChangeEvent<>(this, session));
     }
 
     @Override
@@ -58,7 +59,7 @@ public abstract class NetSessionHolder implements SessionHolder {
         this.listenerList.clear();
     }
 
-    protected void fireDisconnectSession(SessionChangeEvent event) {
+    protected void fireDisconnectSession(SessionChangeEvent<?> event) {
         for (SessionListener listener : this.listenerList) {
             try {
                 listener.handleDisconnectSession(event);
@@ -68,7 +69,7 @@ public abstract class NetSessionHolder implements SessionHolder {
         }
     }
 
-    protected void fireAddSession(SessionChangeEvent event) {
+    protected void fireAddSession(SessionChangeEvent<?> event) {
         for (SessionListener listener : this.listenerList) {
             try {
                 listener.handleAddSession(event);
@@ -78,7 +79,7 @@ public abstract class NetSessionHolder implements SessionHolder {
         }
     }
 
-    protected void fireRemoveSession(SessionChangeEvent event) {
+    protected void fireRemoveSession(SessionChangeEvent<?> event) {
         for (SessionListener listener : this.listenerList) {
             try {
                 listener.handleRemoveSession(event);

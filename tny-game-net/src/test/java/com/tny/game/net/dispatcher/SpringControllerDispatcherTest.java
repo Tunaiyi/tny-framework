@@ -3,13 +3,13 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.MessageChecker;
-import com.tny.game.net.checker.MessageCheckGenerator;
+import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherMessageErrorEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherMessageEvent;
-import com.tny.game.net.dispatcher.listener.DispatcherMessageListener;
+import com.tny.game.net.dispatcher.listener.DispatchMessageErrorEvent;
+import com.tny.game.net.dispatcher.listener.ExecuteMessageEvent;
+import com.tny.game.net.dispatcher.listener.MessageDispatcherListener;
 import com.tny.game.net.dispatcher.message.simple.SimpleChannelServerSession;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
@@ -34,7 +34,7 @@ public class SpringControllerDispatcherTest {
     private MessageDispatcher dispatcher;
 
     @Autowired
-    private MessageChecker checker;
+    private ControllerChecker checker;
 
     @Autowired
     private AppContext context;
@@ -46,22 +46,22 @@ public class SpringControllerDispatcherTest {
     private static MessageBuilderFactory messageBuilderFactory = new SimpleMessageBuilderFactory();
 
 
-    private static DispatcherMessageListener listener = new DispatcherMessageListener() {
+    private static MessageDispatcherListener listener = new MessageDispatcherListener() {
 
         @Override
-        public void executeException(DispatcherMessageErrorEvent errorEvent) {
+        public void executeException(DispatchMessageErrorEvent errorEvent) {
             long num = errorEvent.getMessage().getParameter(0, Long.class);
             Assert.assertEquals(num, 171772272);
             System.out.println("Exception");
         }
 
         @Override
-        public void execute(DispatcherMessageEvent event) {
+        public void execute(ExecuteMessageEvent event) {
 
         }
 
         @Override
-        public void finish(DispatcherMessageEvent event) {
+        public void executeFinish(ExecuteMessageEvent event) {
 
         }
 
@@ -150,7 +150,7 @@ public class SpringControllerDispatcherTest {
         SimpleRequest request = (SimpleRequest) SpringControllerDispatcherTest.messageBuilderFactory.newRequestBuilder(session)
                 .setProtocol(protocol)
                 .addParameter(Arrays.asList(objects))
-                .setRequestVerifier(key != null ? (MessageCheckGenerator) Request -> "ddd" : null).build();
+                .setRequestVerifier(key != null ? (MessageSignGenerator) Request -> "ddd" : null).build();
         if (session != null)
             request.owner(session);
         return request;

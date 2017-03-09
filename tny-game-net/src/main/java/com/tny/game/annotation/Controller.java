@@ -1,7 +1,6 @@
 package com.tny.game.annotation;
 
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Session;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -48,27 +47,6 @@ import java.lang.annotation.Target;
 public @interface Controller {
 
     /**
-     * 身份認證標記
-     * <p>
-     * <p>
-     * 此操作是否需要登录认证.<br>
-     * true为需要身份认证 false为不需要身份认证,默认为false<br>
-     *
-     * @return
-     */
-    boolean auth() default true;
-
-    /**
-     * 消息校驗標記
-     * <p>
-     * <p>
-     * true為需要做消息校驗,false為不需要做消息校驗,默認為true<br>
-     *
-     * @return
-     */
-    boolean check() default true;
-
-    /**
      * 处理协议号列表, 默认处理所有
      * <p>
      * <p>
@@ -80,52 +58,25 @@ public @interface Controller {
      */
     int value();
 
-    /**
-     * 模块/业务方法名称
-     * <p>
-     * <p>
-     * 被Controller标记的类的模塊名稱,與Request的Module相对应,默認為類名<br>
-     * 被Controller标记的方法的业务方法名稱,與Request的Protocol相对应,默認為方法名<br>
-     *
-     * @return
-     * @see Request
-     */
-    String name() default "";
+    // /**
+    //  * 模块/业务方法名称
+    //  * <p>
+    //  * <p>
+    //  * 被Controller标记的类的模塊名稱,與Request的Module相对应,默認為類名<br>
+    //  * 被Controller标记的方法的业务方法名稱,與Request的Protocol相对应,默認為方法名<br>
+    //  *
+    //  * @return
+    //  * @see Request
+    //  */
+    // String name() default "";
 
-    /**
-     * 用户组名称
-     * <p>
-     * <p>
-     * 当userType System<br>
-     *
-     * @return
-     */
-    String[] userGroup() default {Session.DEFAULT_USER_GROUP};
 
-    /**
-     * 程序类型(服务器类型)
-     *
-     * @return 程序类型
-     */
-    String[] appType() default {};
-
-    /**
-     * @return 可处理的消息码, 默认为全部
-     */
-    int[] codes() default {};
-
-    /**
-     * 是否要检测请求超时
-     *
-     * @return 检测true 不检测false
-     */
-    boolean timeOut() default true;
-
-    /**
-     * 获取请求的生命周期(毫秒)<br>
-     *
-     * @return <= 0 为无限制
-     */
-    long requestLife() default 60000L;
+    // /**
+    //  * (移到Checker)
+    //  * 程序类型(服务器类型)
+    //  *
+    //  * @return 程序类型
+    //  */
+    // String[] appType() default {};
 
 }

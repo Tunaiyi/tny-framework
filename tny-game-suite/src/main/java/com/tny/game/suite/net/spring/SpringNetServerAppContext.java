@@ -1,9 +1,11 @@
 package com.tny.game.suite.net.spring;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.NetServerAppContext;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
@@ -23,8 +25,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -72,6 +72,8 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
 
     private List<AuthProvider> authProviders;
 
+    private List<ControllerChecker> checkers;
+
     private ApplicationContext applicationContext;
 
     @Override
@@ -87,8 +89,9 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
             this.getMessageDispatcher();
             this.getAuthProviders();
             Map<String, AuthProvider> providerMap = applicationContext.getBeansOfType(AuthProvider.class);
-            List<AuthProvider> providers = new ArrayList<>(providerMap.values());
-            authProviders = Collections.unmodifiableList(providers);
+            this.authProviders = ImmutableList.copyOf(providerMap.values());
+            Map<String, ControllerChecker> checkerMap = applicationContext.getBeansOfType(ControllerChecker.class);
+            this.checkers = ImmutableList.copyOf(checkerMap.values());
             if (accepter != null)
                 accepter.accept(this);
         }
@@ -143,6 +146,11 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     @Override
     public ServerConfig getServerConfig() {
         return serverConfig;
+    }
+
+    @Override
+    public List<ControllerChecker> getControllerCheckers() {
+        return this.checkers;
     }
 
     @Override

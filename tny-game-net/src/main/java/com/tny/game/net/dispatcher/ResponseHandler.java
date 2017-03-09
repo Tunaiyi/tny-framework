@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.client.nio.MessageMode;
+import com.tny.game.net.base.MessageMode;
 
 import java.util.List;
 

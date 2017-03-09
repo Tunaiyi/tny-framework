@@ -66,7 +66,7 @@ public class ProtoExRequest extends NetMessage {
 
 
     @Override
-    public String getCheckKey() {
+    public String getCheckCode() {
         return this.checkKey;
     }
 

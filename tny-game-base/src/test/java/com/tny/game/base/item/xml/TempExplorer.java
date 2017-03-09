@@ -4,8 +4,10 @@ import com.tny.game.base.item.Any;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.Model;
 import com.tny.game.base.item.ModelExplorer;
+import com.tny.game.base.item.ModelManager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +37,11 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
+        return null;
+    }
+
+    @Override
+    public <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType) {
         return null;
     }
 

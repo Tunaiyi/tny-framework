@@ -1,6 +1,11 @@
 package com.tny.game.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author KGTny
@@ -17,5 +22,7 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface MsgBody {
+
+    boolean require() default true;
 
 }

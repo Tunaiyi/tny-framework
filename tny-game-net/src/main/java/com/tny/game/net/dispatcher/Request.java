@@ -111,7 +111,7 @@ public abstract class Request extends NetMessage implements Serializable {
      *
      * @return
      */
-    public abstract String getCheckKey();
+    public abstract String getCheckCode();
 
     /**
      * 获取请求属性

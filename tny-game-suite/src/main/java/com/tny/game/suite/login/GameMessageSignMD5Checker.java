@@ -2,22 +2,23 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.checker.md5.MD5VerifyChecker;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.base.Message;
+import com.tny.game.net.checker.md5.MessageSignMD5Checker;
 import com.tny.game.net.dispatcher.Session;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.utils.Configs;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
-public class GameMD5VerifyChecker extends MD5VerifyChecker {
+public class GameMessageSignMD5Checker extends MessageSignMD5Checker {
 
     private short[] randomKey;
 
     private Set<String> checkGroups = ImmutableSet.of();
 
-    public GameMD5VerifyChecker(short[] randomKey, Set<String> checkGroups) {
+    public GameMessageSignMD5Checker(short[] randomKey, Set<String> checkGroups) {
         if (randomKey == null)
             this.randomKey = new short[0];
         else
@@ -25,18 +26,17 @@ public class GameMD5VerifyChecker extends MD5VerifyChecker {
         this.checkGroups = ImmutableSet.copyOf(checkGroups);
     }
 
-    @Override
-    public boolean isCheck(Request request) {
+    public boolean isCheck(Message<?> message) {
         boolean check = Configs.DEVELOP_CONFIG.getBoolean(Configs.DEVELOP_VERIFY_CHECK, true);
-        return check && (checkGroups.isEmpty() || checkGroups.contains(request.getUserGroup()));
+        return check && (checkGroups.isEmpty() || checkGroups.contains(message.getUserGroup()));
     }
 
-    public Object getRandomKey(Request request) {
-        return randomKey.length > 0 ? randomKey[request.getID() % randomKey.length] : "";
+    private Object getRandomKey(Message<?> message) {
+        return randomKey.length > 0 ? randomKey[message.getID() % randomKey.length] : "";
     }
 
 
-    private Attributes attributes(Request request) {
+    private Attributes attributes(Message<?> request) {
         Session session = request.getSession();
         if (session != null) {
             return session.attributes();
@@ -46,10 +46,10 @@ public class GameMD5VerifyChecker extends MD5VerifyChecker {
     }
 
     @Override
-    protected String createCheckKey(Request request) {
-        StringBuilder checkKeyBuilder = new StringBuilder(256);
-        Attributes attributes = this.attributes(request);
-        String group = request.getUserGroup();
+    protected String createSign(Message<?> message) {
+        StringBuilder signWordsBuilder = new StringBuilder(256);
+        Attributes attributes = this.attributes(message);
+        String group = message.getUserGroup();
         String key;
         if (group.equals(Session.DEFAULT_USER_GROUP) || group.equals(Session.UNLOGIN_USER_GROUP))
             key = Configs.AUTH_CONFIG.getStr(Configs.AUTH_CLIENT_MESSAGE_KEY);
@@ -63,16 +63,20 @@ public class GameMD5VerifyChecker extends MD5VerifyChecker {
         openKey = openKey == null ? "" : openKey;
         sysID = sysID == null ? "" : sysID;
         sysGroup = sysGroup == null ? "" : sysGroup;
-        checkKeyBuilder.append(openID)
+        signWordsBuilder.append(openID)
                 .append(openKey)
                 .append(sysID)
                 .append(sysGroup)
-                .append(request.getProtocol())
-                .append(request.getTime())
+                .append(message.getProtocol())
+                .append(message.getTime())
                 .append(key)
-                .append(getRandomKey(request));
-        request.getParamList().forEach(checkKeyBuilder::append);
-        return checkKeyBuilder.toString();
+                .append(getRandomKey(message));
+        Object body = message.getBody(Object.class);
+        if (body instanceof List)
+            ((List) body).forEach(signWordsBuilder::append);
+        else
+            signWordsBuilder.append(body);
+        return signWordsBuilder.toString();
     }
 
     //     Object serverID = attributes.getAttribute(SessionKeys.SYSTEM_USER_ID);

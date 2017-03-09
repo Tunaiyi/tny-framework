@@ -166,8 +166,8 @@ public class SessionHolderTest {
 
     @Test
     public void testSend2UserCollectionOfQMessage() {
-        Assert.assertEquals(this.sessionHolder.send2User(Session.DEFAULT_USER_GROUP, SessionHolderTest.uidList, SessionHolderTest.protocol, SessionHolderTest.code, null), 100);
-        Assert.assertEquals(this.sessionHolder.send2User(Session.DEFAULT_USER_GROUP, SessionHolderTest.uidMoreList, SessionHolderTest.protocol, SessionHolderTest.code, null), 100);
+        Assert.assertEquals(this.sessionHolder.send2Users(Session.DEFAULT_USER_GROUP, SessionHolderTest.uidList, SessionHolderTest.protocol, SessionHolderTest.code, null), 100);
+        Assert.assertEquals(this.sessionHolder.send2Users(Session.DEFAULT_USER_GROUP, SessionHolderTest.uidMoreList, SessionHolderTest.protocol, SessionHolderTest.code, null), 100);
     }
 
     @Test

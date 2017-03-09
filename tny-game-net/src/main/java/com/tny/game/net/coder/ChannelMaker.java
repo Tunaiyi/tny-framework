@@ -1,19 +1,15 @@
 package com.tny.game.net.coder;
 
-import com.google.common.collect.ImmutableList;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageCoder;
-import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 
-import java.util.List;
-
 public abstract class ChannelMaker<C extends Channel> {
 
-    protected List<MessageChecker> checkers;
+    // protected List<ControllerChecker> checkers;
 
     protected DataPacketEncoder encoder;
 
@@ -21,9 +17,9 @@ public abstract class ChannelMaker<C extends Channel> {
 
     protected MessageBuilderFactory messageBuilderFactory;
 
-    public ChannelMaker(List<MessageChecker> checkers) {
+    public ChannelMaker() {
         super();
-        this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
+        // this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
         ProtoExMessageCoder coder = new ProtoExMessageCoder();
         this.encoder = new SimpleDataPacketEncoder(coder, false);
         this.decoder = new SimpleDataPacketDecoder(coder);
@@ -32,12 +28,11 @@ public abstract class ChannelMaker<C extends Channel> {
 
     public ChannelMaker(
             MessageBuilderFactory messageBuilderFactory,
-            DataPacketEncoder encoder, DataPacketDecoder decoder,
-            List<MessageChecker> checkers) {
+            DataPacketEncoder encoder, DataPacketDecoder decoder) {
         super();
         this.encoder = encoder;
         this.decoder = decoder;
-        this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
+        // this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
         this.messageBuilderFactory = messageBuilderFactory;
     }
 
@@ -53,8 +48,8 @@ public abstract class ChannelMaker<C extends Channel> {
                 .set(this.decoder);
         channel.attr(NetAttributeKey.DATA_PACKET_ENCODER)
                 .set(this.encoder);
-        channel.attr(NetAttributeKey.REQUEST_CHECKERS)
-                .set(this.checkers);
+        // channel.attr(NetAttributeKey.REQUEST_CHECKERS)
+        //         .set(this.checkers);
         this.postInitChannel(channel);
     }
 
@@ -75,8 +70,8 @@ public abstract class ChannelMaker<C extends Channel> {
         this.messageBuilderFactory = messageBuilderFactory;
     }
 
-    public void setCheckers(List<MessageChecker> checkers) {
-        this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
-    }
+    // public void setCheckers(List<ControllerChecker> checkers) {
+    //     this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
+    // }
 
 }

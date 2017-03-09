@@ -6,8 +6,8 @@ import com.tny.game.common.utils.DateTimeHelper;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageChecker;
-import com.tny.game.net.checker.MessageCheckGenerator;
+import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.AbstractServerSession;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.MessageAction;
@@ -47,21 +47,21 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
 
     private SessionModel model;
 
-    private MessageCheckGenerator verifier;
+    private MessageSignGenerator verifier;
 
     private String loginKey;
 
     private String topic;
 
-    public static ServerSession serverSession(Producer<String, KafkaMessage> producer, KafkaServerInfo localServer, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers) {
+    public static ServerSession serverSession(Producer<String, KafkaMessage> producer, KafkaServerInfo localServer, KafkaMessageBuilderFactory messageBuilderFactory, List<ControllerChecker> checkers) {
         return new KafkaSession(SessionModel.SERVER, producer, null, localServer, messageBuilderFactory, checkers, null);
     }
 
-    public static ClientSession clientSession(Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo removeServer, KafkaMessageBuilderFactory messageBuilderFactory, MessageCheckGenerator verifier) {
+    public static ClientSession clientSession(Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo removeServer, KafkaMessageBuilderFactory messageBuilderFactory, MessageSignGenerator verifier) {
         return new KafkaSession(SessionModel.CLIENT, producer, certificate, removeServer, messageBuilderFactory, null, verifier);
     }
 
-    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<MessageChecker> checkers, MessageCheckGenerator verifier) {
+    private KafkaSession(SessionModel model, Producer<String, KafkaMessage> producer, LoginCertificate certificate, KafkaServerInfo serverInfo, KafkaMessageBuilderFactory messageBuilderFactory, List<ControllerChecker> checkers, MessageSignGenerator verifier) {
         super(LoginCertificate.createUnLogin());
         this.model = model;
         this.producer = producer;

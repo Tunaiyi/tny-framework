@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.checker.MessageCheckGenerator;
+import com.tny.game.net.checker.MessageSignGenerator;
 
 /**
  * Created by Kun Yang on 2017/2/23.
@@ -23,7 +23,7 @@ public interface MessageBuilder {
 
     MessageBuilder setToMessage(Integer toMessageID);
 
-    MessageBuilder setCheckGenerator(MessageCheckGenerator generator);
+    MessageBuilder setCheckGenerator(MessageSignGenerator generator);
 
     NetMessage build();
 

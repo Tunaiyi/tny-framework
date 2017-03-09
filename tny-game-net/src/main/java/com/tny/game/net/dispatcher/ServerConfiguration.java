@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.LogUtils;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
@@ -16,7 +16,7 @@ public class ServerConfiguration {
     /**
      * 请求校验器
      */
-    private MessageChecker checker;
+    private ControllerChecker checker;
 
     /**
      * 會話持有對象
@@ -51,11 +51,11 @@ public class ServerConfiguration {
         this.pluginHolder = pluginHolder;
     }
 
-    public MessageChecker getChecker() {
+    public ControllerChecker getChecker() {
         return checker;
     }
 
-    public void setChecker(MessageChecker checker) {
+    public void setChecker(ControllerChecker checker) {
         if (checker != null)
             throw new IllegalArgumentException(LogUtils.format("{} 与 {} verifier 冲突", this.checker.getClass(), checker.getClass()));
         this.checker = checker;

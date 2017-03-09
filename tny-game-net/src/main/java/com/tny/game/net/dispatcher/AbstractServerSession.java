@@ -7,7 +7,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public abstract class AbstractServerSession extends NetServerSession {
 
     protected LoginCertificate certificate;
 
-    protected List<MessageChecker> checkers;
+    protected List<ControllerChecker> checkers;
 
     protected MessageBuilderFactory messageBuilderFactory;
 
@@ -146,7 +146,7 @@ public abstract class AbstractServerSession extends NetServerSession {
     }
 
     @Override
-    public List<MessageChecker> getCheckers() {
+    public List<ControllerChecker> getCheckers() {
         return this.checkers;
     }
 

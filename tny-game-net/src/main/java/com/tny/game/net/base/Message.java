@@ -58,7 +58,7 @@ public interface Message<UID> extends Protocol {
     /**
      * @return 校验码
      */
-    String getCheckKey();
+    String getCheckCode();
 
     /**
      * @return 获取请求属性
@@ -69,4 +69,9 @@ public interface Message<UID> extends Protocol {
      * @return 获取HostName
      */
     String getHostName();
+
+    /**
+     * @return 获取消息模式
+     */
+    MessageMode getMode();
 }

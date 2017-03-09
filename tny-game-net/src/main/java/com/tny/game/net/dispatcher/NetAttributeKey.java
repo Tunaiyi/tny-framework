@@ -3,7 +3,7 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.coder.DataPacketDecoder;
 import com.tny.game.net.coder.DataPacketEncoder;
 import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
@@ -33,7 +33,7 @@ public class NetAttributeKey {
     public static final AttrKey<DispatcherCommandBox> USER_COMMAND_BOX = AttributeUtils.key(Session.class.getName() + "USER_COMMAND_BOX");
 
     public static final AttributeKey<MessageBuilderFactory> MSG_BUILDER_FACTOR = AttributeKey.valueOf(NetAttributeKey.class + "MSG_BUILDER_FACTOR");
-    public static final AttributeKey<List<MessageChecker>> REQUEST_CHECKERS = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKERS");
+    public static final AttributeKey<List<ControllerChecker>> REQUEST_CHECKERS = AttributeKey.valueOf(NetAttributeKey.class + "REQUEST_CHECKERS");
     public static final AttributeKey<DataPacketEncoder> DATA_PACKET_ENCODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_ENCODER");
     public static final AttributeKey<DataPacketDecoder> DATA_PACKET_DECODER = AttributeKey.valueOf(NetAttributeKey.class + "DATA_PACKET_DECODER");
     public static final AttributeKey<ResponseHandlerHolder> RESPONSE_HANDLER = AttributeKey.valueOf(NetAttributeKey.class + "RESPONSE_HANDLER");

@@ -27,4 +27,6 @@ public @interface MsgParam {
 
     int index() default -1;
 
+    boolean require() default true;
+
 }

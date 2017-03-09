@@ -17,11 +17,6 @@ public abstract class BaseDispatcherCommand<T> extends BaseCommand implements Di
     }
 
     @Override
-    public long getUserID() {
-        return 0;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public void setCallback(Callback<?> callback) {
         this.callback = (Callback<T>) callback;

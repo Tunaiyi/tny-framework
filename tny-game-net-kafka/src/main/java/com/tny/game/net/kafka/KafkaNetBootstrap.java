@@ -4,7 +4,7 @@ import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Message;
-import com.tny.game.net.checker.MessageCheckGenerator;
+import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.CommandResult;
 import com.tny.game.net.dispatcher.DispatcherCommand;
@@ -100,7 +100,7 @@ public class KafkaNetBootstrap {
         return getOrCreateClient(remoteServer.getServerType(), remoteServer.getID(), this.localSerType, this.localSerID, null, null);
     }
 
-    public RequestSession getOrCreateClient(String userGroup, long uid, KafkaServerInfo remoteServer, MessageCheckGenerator verifier) {
+    public RequestSession getOrCreateClient(String userGroup, long uid, KafkaServerInfo remoteServer, MessageSignGenerator verifier) {
         return getOrCreateClient(remoteServer.getServerType(), remoteServer.getID(), userGroup, uid, null, verifier);
     }
 
@@ -108,7 +108,7 @@ public class KafkaNetBootstrap {
         return getOrCreateClient(remoteServer.getServerType(), remoteServer.getID(), userGroup, uid, messageBuilderFactory, null);
     }
 
-    public RequestSession getOrCreateClient(String remoteType, int remoteUID, String userGroup, long uid, KafkaMessageBuilderFactory messageBuilderFactory, MessageCheckGenerator verifier) {
+    public RequestSession getOrCreateClient(String remoteType, int remoteUID, String userGroup, long uid, KafkaMessageBuilderFactory messageBuilderFactory, MessageSignGenerator verifier) {
         ClientSession session = clientSessionMap.get(remoteType, remoteUID);
         if (session == null) {
             LoginCertificate cer = LoginCertificate.createLogin(uid, uid, userGroup);
@@ -258,7 +258,7 @@ public class KafkaNetBootstrap {
     private LoginCertificate checkTicket(KafkaRequest request) {
         KafkaTicket ticket = request.getTicket();
         KafkaTicketTaker taker = appContext.getTicketTaker();
-        if (taker.take(ticket, request.getCheckKey())) {
+        if (taker.take(ticket, request.getCheckCode())) {
             return LoginCertificate.createLogin(ticket.getUID(), ticket.getUID(), ticket.getUserGroup());
         } else {
             return LoginCertificate.createUnLogin();

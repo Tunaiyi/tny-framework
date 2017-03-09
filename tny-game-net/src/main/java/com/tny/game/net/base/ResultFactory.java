@@ -112,10 +112,13 @@ public class ResultFactory {
         return fail(done.getCode(), null);
     }
 
+
+    //TODO Protocol 设置
     private static class CommandResultImpl implements CommandResult {
 
         private final ResultCode resultCode;
         private final Object body;
+        private Protocol protocol;
 
         private CommandResultImpl(ResultCode code) {
             super();
@@ -143,6 +146,11 @@ public class ResultFactory {
         @Override
         public Object getBody() {
             return this.body;
+        }
+
+        @Override
+        public Protocol getProtocol() {
+            return protocol;
         }
 
     }

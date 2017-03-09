@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageCheckGenerator;
+import com.tny.game.net.checker.MessageSignGenerator;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public interface RequestBuilder {
      * @param checker 请求交验编码器
      * @return 返回构建器本身
      */
-    RequestBuilder setRequestVerifier(MessageCheckGenerator checker);
+    RequestBuilder setRequestVerifier(MessageSignGenerator checker);
 
     //	/**
     //	 * 设置用户ID

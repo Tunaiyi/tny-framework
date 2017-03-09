@@ -3,7 +3,7 @@ package com.tny.game.net.base.simple;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.AuthProvider;
 import com.tny.game.net.dispatcher.DefaultMessageDispatcher;
 import com.tny.game.net.dispatcher.DefaultSessionHolder;
@@ -27,7 +27,7 @@ public abstract class AbstractAppContext implements AppContext {
 
     private PluginHolder pluginHolder;
 
-    private List<MessageChecker> checkers;
+    private List<ControllerChecker> checkers = new ArrayList<>();
 
     private List<AuthProvider> authProviders = new ArrayList<>();
 
@@ -64,7 +64,8 @@ public abstract class AbstractAppContext implements AppContext {
         return this.pluginHolder;
     }
 
-    public List<MessageChecker> getCheckers() {
+    @Override
+    public List<ControllerChecker> getControllerCheckers() {
         return this.checkers;
     }
 
@@ -108,7 +109,7 @@ public abstract class AbstractAppContext implements AppContext {
         this.pluginHolder = pluginHolder;
     }
 
-    public void setCheckers(List<MessageChecker> checkers) {
+    public void setCheckers(List<ControllerChecker> checkers) {
         this.checkers = checkers;
     }
 

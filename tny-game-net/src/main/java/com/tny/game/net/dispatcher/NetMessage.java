@@ -5,9 +5,10 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
 import com.tny.game.net.base.Message;
+import com.tny.game.net.base.MessageMode;
 import com.tny.game.protoex.ProtoExEnum;
 
-public abstract class NetMessage implements Message {
+public abstract class NetMessage<UID> implements Message<UID> {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,13 +16,15 @@ public abstract class NetMessage implements Message {
 
     private MessageFuture<Object> messageFuture;
 
-    protected transient Session session;
+    protected transient Session<UID> session;
 
     protected volatile transient Attributes attributes;
 
+    protected MessageMode mode;
+
     @Override
-    public long getUserID() {
-        return this.session == null ? Session.UN_LOGIN_UID : this.session.getUID();
+    public UID getUserID() {
+        return this.session == null ? null : this.session.getUID();
     }
 
     @Override
@@ -103,6 +106,13 @@ public abstract class NetMessage implements Message {
                 return this.attributes;
             return this.attributes = ContextAttributes.create();
         }
+    }
+
+    @Override
+    public MessageMode getMode() {
+        if(mode == null)
+            mode = MessageMode.getMode(this);
+        return mode;
     }
 
     protected abstract Object getBody();

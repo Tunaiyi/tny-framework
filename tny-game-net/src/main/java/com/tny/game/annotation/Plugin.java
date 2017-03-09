@@ -28,7 +28,7 @@ public @interface Plugin {
      *
      * @return
      */
-    public Class<? extends ControllerPlugin>[] after() default {};
+    Class<? extends ControllerPlugin>[] after() default {};
 
     /**
      * 插件类型数组
@@ -38,5 +38,5 @@ public @interface Plugin {
      *
      * @return
      */
-    public Class<? extends ControllerPlugin>[] before() default {};
+    Class<? extends ControllerPlugin>[] before() default {};
 }

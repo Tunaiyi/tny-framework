@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.word.LocalWordsFilter;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.checker.md5.MD5VerifyChecker;
+import com.tny.game.net.checker.md5.MessageSignMD5Checker;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
 import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
@@ -12,12 +12,12 @@ import com.tny.game.net.dispatcher.Session;
 import com.tny.game.net.dispatcher.SessionHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.dispatcher.plugin.spring.SpringPluginHolder;
-import com.tny.game.net.dispatcher.session.mobile.MobileMessageIDChecker;
+import com.tny.game.net.dispatcher.session.mobile.MobileControllerIDChecker;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionFactory;
 import com.tny.game.net.dispatcher.session.mobile.MobileSessionHolder;
 import com.tny.game.net.dispatcher.spring.SpringMessageDispatcher;
 import com.tny.game.net.executor.normal.ThreadPoolCommandExecutor;
-import com.tny.game.suite.login.GameMD5VerifyChecker;
+import com.tny.game.suite.login.GameMessageSignMD5Checker;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +62,7 @@ public class NetServerConfiguration {
     }
 
     @Bean(name = "verifier")
-    public MD5VerifyChecker requestVerifier() {
+    public MessageSignMD5Checker requestVerifier() {
         Config config = Configs.SUITE_CONFIG;
         // String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
         // List<Integer> ports = new ArrayList<>();
@@ -81,11 +81,11 @@ public class NetServerConfiguration {
                             .toArray(new Short[0]));
         }
         // return new  GameMD5VerifyChecker(randomKey, ImmutableSet.of(Session.UNLOGIN_USER_GROUP, Session.DEFAULT_USER_GROUP));
-        return new GameMD5VerifyChecker(randomKey, ImmutableSet.of());
+        return new GameMessageSignMD5Checker(randomKey, ImmutableSet.of());
     }
 
     // @Bean(name = "idChecker")
-    public MobileMessageIDChecker requestIDChecker() {
+    public MobileControllerIDChecker requestIDChecker() {
         Config config = Configs.SUITE_CONFIG;
         String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);
         List<Integer> ports = new ArrayList<>();
@@ -94,7 +94,7 @@ public class NetServerConfiguration {
                     .map(NumberUtils::toInt)
                     .collect(Collectors.toList());
         }
-        return new MobileMessageIDChecker(ports, ImmutableSet.of(Session.DEFAULT_USER_GROUP));
+        return new MobileControllerIDChecker(ports, ImmutableSet.of(Session.DEFAULT_USER_GROUP));
     }
 
     @Bean(name = "messageDispatcher")

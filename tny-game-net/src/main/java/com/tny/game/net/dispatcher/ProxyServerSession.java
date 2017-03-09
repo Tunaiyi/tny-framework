@@ -4,7 +4,7 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +79,7 @@ public class ProxyServerSession implements ServerSession {
     }
 
     @Override
-    public List<MessageChecker> getCheckers() {
+    public List<ControllerChecker> getCheckers() {
         return this.session.getCheckers();
     }
 

@@ -3,7 +3,9 @@ package com.tny.game.net.dispatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.LogUtils;
+import com.tny.game.annotation.Checkers;
 import com.tny.game.annotation.Controller;
+import com.tny.game.annotation.MessageFilter;
 import com.tny.game.annotation.MsgBody;
 import com.tny.game.annotation.MsgCode;
 import com.tny.game.annotation.MsgParam;
@@ -16,10 +18,11 @@ import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
-import com.tny.game.net.DevUtils;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Message;
+import com.tny.game.net.base.MessageMode;
 import com.tny.game.net.base.ResultFactory;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
@@ -50,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class MethodControllerHolder extends ControllerHolder {
 
-    private static final String DEV_TIMEOUT_CHECK = "tny.server.dev.timeout.check";
+    // private static final String DEV_TIMEOUT_CHECK = "tny.server.dev.timeout.check";
 
     protected static final ConcurrentHashMap<String, FormulaHolder> cache = new ConcurrentHashMap<>();
 
@@ -76,9 +79,15 @@ public final class MethodControllerHolder extends ControllerHolder {
      */
     private List<ParamDesc> parameterDescs;
     /**
-     * 注解列表
+     * 参数注解列表
      */
-    private Map<Class<?>, List<Annotation>> annotationsMap;
+    private Map<Class<?>, List<Annotation>> paramAnnotationsMap;
+
+    /**
+     * 方法注解
+     */
+    private Map<Class<?>, Annotation> methodAnnotationMap;
+
     /**
      * 执行list
      */
@@ -98,8 +107,12 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param executor 调用的执行对象
      * @param method   方法
      */
-    protected MethodControllerHolder(final Object executor, final ClassControllerHolder classController, final GMethod method, final Controller controller, final PluginHolder pluginHolder) {
-        super(pluginHolder, controller, method.getJavaMethod().getAnnotation(Plugin.class), executor);
+    protected MethodControllerHolder(final Object executor, final ClassControllerHolder classController, final GMethod method, final Controller controller, final PluginHolder pluginHolder, Map<Class<?>, ControllerChecker> checkerMap) {
+        super(pluginHolder, controller,
+                method.getJavaMethod().getAnnotation(Plugin.class),
+                method.getJavaMethod().getAnnotation(MessageFilter.class),
+                method.getJavaMethod().getAnnotation(Checkers.class),
+                executor, checkerMap);
         try {
             this.methodName = method.getName();
             this.method = method;
@@ -140,7 +153,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                 }
                 annotationsMap.put(clazz, Collections.unmodifiableList(indexAnnotationList));
             }
-            this.annotationsMap = ImmutableMap.copyOf(annotationsMap);
+            this.paramAnnotationsMap = ImmutableMap.copyOf(annotationsMap);
             this.parameterDescs = ImmutableList.copyOf(parameterDescs);
             for (ControllerPlugin plugin : this.getControllerPluginBeforeList())
                 this.putPlugin(plugin);
@@ -150,6 +163,20 @@ public final class MethodControllerHolder extends ControllerHolder {
         } catch (Exception e) {
             throw new IllegalArgumentException(LogUtils.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
+    }
+
+    private void initMethodAnnotation(Annotation[] annotations) {
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
+        for (Annotation annotation : annotations)
+            annotationMap.put(annotation.getClass(), annotation);
+        this.methodAnnotationMap = Collections.unmodifiableMap(annotationMap);
+    }
+
+    @Override
+    public Set<MessageMode> getMessageModes() {
+        if (this.messageModes != null)
+            return this.messageModes;
+        return this.classController.getMessageModes();
     }
 
     public List<ParamDesc> getParameterDescs() {
@@ -164,7 +191,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         }
     }
 
-    public Class<?> getMethodClass() {
+    public Class<?> getControllerClass() {
         return method.getDeclaringClass();
     }
 
@@ -193,6 +220,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             Object body = message.getBody(Object.class);
             for (int i = 0; i < descs.size(); i++) {
                 ParamDesc desc = descs.get(i);
+                boolean require = desc.isRequire();
                 Object value = null;
                 switch (desc.getParamType()) {
                     case MESSAGE:
@@ -209,8 +237,12 @@ public final class MethodControllerHolder extends ControllerHolder {
                         break;
                     case INDEX_PARAM:
                         try {
-                            if (body == null)
-                                throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                            if (body == null) {
+                                if (require)
+                                    throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                                else
+                                    break;
+                            }
                             if (body instanceof List) {
                                 value = ((List) body).get(desc.getIndex());
                             } else if (body.getClass().isArray()) {
@@ -225,10 +257,14 @@ public final class MethodControllerHolder extends ControllerHolder {
                         }
                         break;
                     case KEY_PARAM:
-                        if (body == null)
-                            throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                        if (body == null) {
+                            if (require)
+                                throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                            else
+                                break;
+                        }
                         if (body instanceof Map) {
-                            body = ((Map) body).get(desc.getName());
+                            value = ((Map) body).get(desc.getName());
                         } else {
                             value = desc.getFormula().createFormula()
                                     .put("_body", body)
@@ -270,10 +306,7 @@ public final class MethodControllerHolder extends ControllerHolder {
      */
     @Override
     public String getName() {
-        final String operationName = this.controller != null ? this.controller.name() : null;
-        if (operationName == null || operationName.equals(""))
-            return this.methodName;
-        return operationName;
+        return this.methodName;
     }
 
     @Override
@@ -294,15 +327,15 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.method.invoke(this.executor, params);
     }
 
-    @Override
-    public boolean isCheck() {
-        return this.controller != null ? this.controller.check() : this.classController.isCheck();
-    }
-
-    @Override
-    public boolean isAuth() {
-        return this.controller != null ? this.controller.auth() : this.classController.isAuth();
-    }
+    // @Override
+    // public boolean isCheck() {
+    //     return this.controller != null ? this.controller.check() : this.classController.isCheck();
+    // }
+    //
+    // @Override
+    // public boolean isAuth() {
+    //     return this.controller != null ? this.controller.auth() : this.classController.isAuth();
+    // }
 
     // @Override
     // public UserType getUserType() {
@@ -311,80 +344,69 @@ public final class MethodControllerHolder extends ControllerHolder {
     // }
 
     @Override
-    public List<ControllerPlugin> getControllerPluginBeforeList() {
+    protected List<ControllerPlugin> getControllerPluginBeforeList() {
         return this.plugin != null ? Collections.unmodifiableList(this.pluginBeforeList) : this.classController.getControllerPluginBeforeList();
     }
 
     @Override
-    public List<ControllerPlugin> getControllerPluginAfterList() {
+    protected List<ControllerPlugin> getControllerPluginAfterList() {
         return this.plugin != null ? Collections.unmodifiableList(this.pluginAfterList) : this.classController.getControllerPluginAfterList();
     }
 
+    // @Override
+    // public boolean isUserGroup(String group) {
+    //     return this.controller != null ? this.userGroupList.indexOf(group) > -1 : this.classController.isUserGroup(group);
+    // }
+
+    // public long getTimeout() {
+    //     if (this.controller != null && this.controller.timeOut() > 0)
+    //         return this.controller.timeOut();
+    //     return this.classController.getTimeout();
+    // }
+
+    // public boolean isCanCall(String serverType) {
+    //     return this.controller != null ? this.serverTypeList.isEmpty() || this.serverTypeList.indexOf(serverType) > -1 : this.classController.isCanCall(serverType);
+    // }
+
+    // public boolean isTimeOut() {
+    //     if (!DevUtils.DEV_CONFIG.getBoolean(DEV_TIMEOUT_CHECK, true))
+    //         return false;
+    //     return this.controller != null ? this.controller.timeOut() > 0 : this.classController.isTimeOut();
+    // }
+
     @Override
-    public boolean isUserGroup(String group) {
-        return this.controller != null ? this.userGroupList.indexOf(group) > -1 : this.classController.isUserGroup(group);
-    }
-
-    public long getRequestLife() {
-        return this.controller != null ? this.controller.requestLife() : this.classController.getRequestLife();
-    }
-
-    public boolean isCanCall(String serverType) {
-        return this.controller != null ? this.serverTypeList.isEmpty() || this.serverTypeList.indexOf(serverType) > -1 : this.classController.isCanCall(serverType);
-    }
-
-    public boolean isTimeOut() {
-        if (!DevUtils.DEV_CONFIG.getBoolean(DEV_TIMEOUT_CHECK, true))
-            return false;
-        return this.controller != null ? this.controller.timeOut() : this.classController.isTimeOut();
-    }
-
     @SuppressWarnings("unchecked")
-    public <A extends Annotation> List<A> getParamAnnotationsByType(Class<A> clazz) {
-        List<Annotation> annotations = this.annotationsMap.get(clazz);
+    public <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz) {
+        List<Annotation> annotations = this.paramAnnotationsMap.get(clazz);
         if (annotations == null)
             return new ArrayList<>();
         return (List<A>) annotations;
     }
 
-    public boolean isExistParamAnnotation(Class<? extends Annotation> clazz) {
-        return this.annotationsMap.containsKey(clazz);
+    @Override
+    public boolean isParamsAnnotationExist(Class<? extends Annotation> clazz) {
+        return this.paramAnnotationsMap.containsKey(clazz);
     }
 
-    /**
-     * 获取某个参数上的注解列表
-     *
-     * @param index 参数位置索引
-     * @return 返回指定参数的注解列表 ( @A @B int a, int b, @A int C) 获取 0 : [@A, @B] 获取 1
-     * : [] 获取 2 : [@A]
-     */
+
+    @Override
     public List<Annotation> getParamAnnotationsByIndex(int index) {
         return this.parameterDescs.get(index).getParamAnnotations();
     }
 
     public Set<Class<?>> getParamAnnotationClass() {
-        return this.annotationsMap.keySet();
-    }
-
-    /**
-     * 获取某方上参数指定注解类型的注解列表
-     *
-     * @param annotationClass 指定的注解类型
-     * @return 注解列表 ( @A int a, int b, @A int c, @B int d) <br/>
-     * 获取 @A : [@A, null, @A, null] <br/>
-     * 获取 @B : [null, null, null, @B]
-     */
-    @SuppressWarnings("unchecked")
-    public <A extends Annotation> List<A> getParamAnnotationsByClass(Class<A> annotationClass) {
-        return (List<A>) this.annotationsMap.get(annotationClass);
+        return this.paramAnnotationsMap.keySet();
     }
 
     @Override
+    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+        return this.classController.getAnnotation(annotationClass);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
-        A annotation = this.getAnnotation0(annotationClass);
-        if (annotation != null)
-            return annotation;
-        return this.classController.getMethodAnnotation(annotationClass);
+        return (A) this.methodAnnotationMap.get(annotationClass);
     }
 
     //	public boolean isNeedRequest() {
@@ -396,7 +418,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public String toString() {
-        return "MethodHolder [" + getMethodClass() + "." + getName() + "]";
+        return "MethodHolder [" + getControllerClass() + "." + getName() + "]";
     }
 
     private static class ParamDesc {
@@ -417,11 +439,14 @@ public final class MethodControllerHolder extends ControllerHolder {
         /* 参数注解 */
         private MsgParam msgParam;
 
+        private boolean require;
+
         private List<Annotation> paramAnnotations;
 
         private ParamDesc(Class<?> paramClass, List<Annotation> paramAnnotations, LocalNum<Integer> indexCounter) {
             this.paramClass = paramClass;
             this.paramAnnotations = paramAnnotations;
+            this.require = true;
             if (paramClass == Session.class) {
                 this.paramType = ParamType.SESSION;
             } else if (paramClass == Message.class) {
@@ -430,8 +455,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                 for (Annotation anno : this.paramAnnotations) {
                     if (anno.annotationType() == MsgBody.class) {
                         this.paramType = ParamType.BODY;
+                        this.require = ((MsgBody) anno).require();
                     } else if (anno.annotationType() == MsgParam.class) {
                         this.msgParam = (MsgParam) anno;
+                        this.require = this.msgParam.require();
                         if (StringUtils.isNoneBlank(this.msgParam.value())) {
                             this.name = this.msgParam.value();
                             this.formula = formula("_body." + this.name.trim());
@@ -466,6 +493,10 @@ public final class MethodControllerHolder extends ControllerHolder {
 
         private String getName() {
             return name;
+        }
+
+        private boolean isRequire() {
+            return require;
         }
 
         private ParamType getParamType() {

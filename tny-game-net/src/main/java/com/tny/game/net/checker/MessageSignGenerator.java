@@ -7,7 +7,7 @@ import com.tny.game.net.dispatcher.Request;
  *
  * @author KGTny
  */
-public interface MessageCheckGenerator {
+public interface MessageSignGenerator {
 
     /**
      * 加密

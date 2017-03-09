@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageChecker;
+import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.AbstractNetSession;
 import com.tny.game.net.dispatcher.MessageAction;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
@@ -78,7 +78,7 @@ public class RMISession extends AbstractNetSession {
     }
 
     @Override
-    public List<MessageChecker> getCheckers() {
+    public List<ControllerChecker> getCheckers() {
         return ImmutableList.of();
     }
 }

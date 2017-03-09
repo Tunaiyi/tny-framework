@@ -87,7 +87,7 @@ public class SessionService {
             if (!filter.contains(gamer.getPlayerID()))
                 userIDSet.add(gamer.getPlayerID());
         }
-        this.sessionHolder.send2User(
+        this.sessionHolder.send2Users(
                 Session.DEFAULT_USER_GROUP,
                 userIDSet,
                 ProtocolUtils.PUSH,
@@ -98,7 +98,7 @@ public class SessionService {
     public void sendResponse2UserID(Collection<Long> gamerList, Object message) {
         if (gamerList.isEmpty())
             return;
-        this.sessionHolder.send2User(
+        this.sessionHolder.send2Users(
                 Session.DEFAULT_USER_GROUP,
                 gamerList,
                 ProtocolUtils.PUSH,
