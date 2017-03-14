@@ -71,10 +71,15 @@ public interface Session<UID> {
      *
      * @return 连接返回true 否则返回false
      */
-    boolean isConnect();
+    boolean isOnline();
+
+    /**
+     * 是否是失效,无法重连
+     *
+     * @return 失效返回true 失效返回false
+     */
+    boolean isInvalid();
 
     LoginCertificate<UID> getCertificate();
-
-    boolean isOnline();
 
 }

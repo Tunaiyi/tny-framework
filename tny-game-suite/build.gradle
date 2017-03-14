@@ -2,6 +2,8 @@ group "com.tny.game"
 
 apply plugin: "maven"
 
+apply plugin: 'com.google.protobuf'
+
 dependencies {
 
     testCompile 'com.h2database:h2:1.4.182'
@@ -25,4 +27,45 @@ dependencies {
             project(":tny-game-net-kafka")
     )
 
+}
+
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+        proto {
+            srcDir 'src/main/proto'
+            include '**/*.proto'
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:2.6.1'
+    }
+
+    generateProtoTasks.generatedFilesBaseDir = 'src'
+
+    generateProtoTasks {
+        all().each { task ->
+        }
+        ofSourceSet('main')
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file("src/main/proto");
+    }
 }

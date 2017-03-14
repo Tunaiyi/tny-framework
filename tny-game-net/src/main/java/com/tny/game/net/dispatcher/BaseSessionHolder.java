@@ -308,7 +308,7 @@ public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSess
         ConcurrentMap<Object, NetSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null)
             return;
-        if (userGroupSessionMap.remove(session.getUID(), session) && session.isConnect()) {
+        if (userGroupSessionMap.remove(session.getUID(), session) && session.isConnected()) {
             this.disconnect((NetSession) session);
         }
         ConcurrentMap<Object, ChannelGroup> userGroupMap = this.channelMap.get(session.getGroup());
@@ -340,7 +340,7 @@ public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSess
         NetSession<?> oldSession = userGroupSessionMap.put(session.getUID(), session);
         if (oldSession != null && oldSession != session) {
             this.fireRemoveSession(new SessionChangeEvent<>(this, oldSession));
-            if (oldSession.isConnect())
+            if (oldSession.isConnected())
                 this.disconnect(oldSession);
         }
         this.fireAddSession(new SessionChangeEvent<>(this, session));

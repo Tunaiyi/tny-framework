@@ -35,7 +35,7 @@ public abstract class NetSessionHolder implements SessionHolder {
     protected abstract void removeAllChannel(String userGroup);
 
     protected void disconnect(NetSession<?> session) {
-        session.disconnect();
+        session.offline();
         this.fireDisconnectSession(new SessionChangeEvent<>(this, session));
     }
 

@@ -7,8 +7,8 @@ import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
@@ -288,11 +288,6 @@ public abstract class CommonNetSession<UID> implements NetSession<UID> {
             this.futureHolder = new MessageFutureHolder();
             return this.futureHolder;
         }
-    }
-
-    @Override
-    public boolean isConnect() {
-        return false;
     }
 
     @Override

@@ -101,7 +101,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
             if (!current.equals(session))
                 return;
             attach.offline(this.offlineWait);
-            if (session.isConnect())
+            if (session.isConnected())
                 this.disconnect(session);
         }
     }
@@ -163,7 +163,7 @@ public class MobileSessionHolder extends BaseSessionHolder {
             return 0;
         int size = 0;
         for (Session session : map.values()) {
-            if (session.isConnect())
+            if (session.isConnected())
                 size++;
         }
         return size;

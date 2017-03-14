@@ -40,7 +40,13 @@ public interface NetSession<UID> extends Session<UID> {
 
     void takeFuture(int id);
 
-    void disconnect();
+    void offline(boolean invalid);
+
+    default void offline() {
+        offline(false);
+    }
+
+    boolean relogin(NetSession<UID> uid);
 
     void login(LoginCertificate<UID> loginInfo);
 }
