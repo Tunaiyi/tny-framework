@@ -324,6 +324,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     public TryToDoResult tryToDoAll(long playerID, Action action, boolean award, Object... attributes) {
         return this.doTryToDo(playerID, null, action, award, true, attributes);
     }
+
     @Override
     public ActionTrades createActionTrades(Item<?> item, Action action, Object... attributes) {
         return this.doCreateActionTrades(item.getPlayerID(), item, action, attributes);
@@ -484,14 +485,24 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(item.getPlayerID(), item, ability, (Class<A>) defaultObject.getClass(), attributes);
+        Class<A> clazz;
+        if (defaultObject == null)
+            clazz = (Class<A>) Object.class;
+        else
+            clazz = (Class<A>) defaultObject.getClass();
+        A value = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(playerID, null, ability, (Class<A>) defaultObject.getClass(), attributes);
+        Class<A> clazz;
+        if (defaultObject == null)
+            clazz = (Class<A>) Object.class;
+        else
+            clazz = (Class<A>) defaultObject.getClass();
+        A value = this.doCountAbility(playerID, null, ability, clazz, attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
