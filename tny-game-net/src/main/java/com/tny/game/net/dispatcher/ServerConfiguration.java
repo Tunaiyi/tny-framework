@@ -21,7 +21,7 @@ public class ServerConfiguration {
     /**
      * 會話持有對象
      */
-    private NetSessionHolder sessionHolder;
+    private AbstractNetSessionHolder sessionHolder;
 
     /**
      * 会话验证器
@@ -61,11 +61,11 @@ public class ServerConfiguration {
         this.checker = checker;
     }
 
-    public NetSessionHolder getSessionHolder() {
+    public AbstractNetSessionHolder getSessionHolder() {
         return sessionHolder;
     }
 
-    public void setSessionHolder(NetSessionHolder sessionHolder) {
+    public void setSessionHolder(AbstractNetSessionHolder sessionHolder) {
         if (sessionHolder != null)
             throw new IllegalArgumentException(LogUtils.format("{} 与 {} sessionHolder 冲突", this.sessionHolder.getClass(), sessionHolder.getClass()));
         this.sessionHolder = sessionHolder;

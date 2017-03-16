@@ -417,7 +417,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
 
             // 是否需要做登录校验,判断是否已经登录
-            NetSessionHolder sessionHolder = this.appContext.getSessionHolder();
+            AbstractNetSessionHolder sessionHolder = this.appContext.getSessionHolder();
 
             if (controller.isAuth() && !this.session.isLogin()) {
                 if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())

@@ -6,7 +6,7 @@ import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.dispatcher.MessageHandler;
 import com.tny.game.net.dispatcher.RequestSession;
-import com.tny.game.net.dispatcher.SessionHolder;
+import com.tny.game.net.session.SessionHolder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

@@ -1,6 +1,6 @@
 package com.tny.game.net;
 
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 import java.io.Serializable;
 

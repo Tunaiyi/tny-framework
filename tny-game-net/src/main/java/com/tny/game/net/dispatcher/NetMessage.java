@@ -6,6 +6,7 @@ import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
 import com.tny.game.net.base.Message;
 import com.tny.game.net.base.MessageMode;
+import com.tny.game.net.session.Session;
 import com.tny.game.protoex.ProtoExEnum;
 
 public abstract class NetMessage<UID> implements Message<UID> {

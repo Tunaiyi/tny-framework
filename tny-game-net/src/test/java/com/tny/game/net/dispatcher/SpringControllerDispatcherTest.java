@@ -13,6 +13,7 @@ import com.tny.game.net.dispatcher.listener.MessageDispatcherListener;
 import com.tny.game.net.dispatcher.message.simple.SimpleChannelServerSession;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
+import com.tny.game.net.session.Session;
 import io.netty.channel.Channel;
 import org.junit.After;
 import org.junit.Assert;

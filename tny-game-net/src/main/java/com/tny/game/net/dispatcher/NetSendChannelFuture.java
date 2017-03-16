@@ -1,5 +1,6 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.net.session.Session;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

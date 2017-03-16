@@ -1,6 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.SendResult;
+import com.tny.game.net.session.Session;
 import io.netty.channel.ChannelFuture;
 
 public class NetSendResult implements SendResult {

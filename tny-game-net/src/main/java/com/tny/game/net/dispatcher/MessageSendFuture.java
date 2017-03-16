@@ -1,5 +1,7 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.net.session.Session;
+
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 

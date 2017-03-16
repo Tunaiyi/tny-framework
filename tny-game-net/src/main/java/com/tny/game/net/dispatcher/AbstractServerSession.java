@@ -9,6 +9,7 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
+import com.tny.game.net.session.SessionPushOption;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

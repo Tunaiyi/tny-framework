@@ -1,4 +1,4 @@
-package com.tny.game.net.dispatcher;
+package com.tny.game.net.session;
 
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttributeUtils;

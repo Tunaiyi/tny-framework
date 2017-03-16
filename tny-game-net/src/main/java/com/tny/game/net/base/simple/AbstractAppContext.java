@@ -9,7 +9,7 @@ import com.tny.game.net.dispatcher.DefaultMessageDispatcher;
 import com.tny.game.net.dispatcher.DefaultSessionHolder;
 import com.tny.game.net.dispatcher.MessageDispatcher;
 import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.dispatcher.NetSessionHolder;
+import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import com.tny.game.net.dispatcher.plugin.DefaultPluginHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
@@ -31,7 +31,7 @@ public abstract class AbstractAppContext implements AppContext {
 
     private List<AuthProvider> authProviders = new ArrayList<>();
 
-    private NetSessionHolder sessionHolder;
+    private AbstractNetSessionHolder sessionHolder;
 
     private NetMessageDispatcher messageDispatcher;
 
@@ -77,7 +77,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
 
     @Override
-    public NetSessionHolder getSessionHolder() {
+    public AbstractNetSessionHolder getSessionHolder() {
         if (this.sessionHolder == null)
             this.sessionHolder = new DefaultSessionHolder();
         return this.sessionHolder;
@@ -117,7 +117,7 @@ public abstract class AbstractAppContext implements AppContext {
         this.authProviders = authProviders;
     }
 
-    public void setSessionHolder(NetSessionHolder sessionHolder) {
+    public void setSessionHolder(AbstractNetSessionHolder sessionHolder) {
         this.sessionHolder = sessionHolder;
     }
 

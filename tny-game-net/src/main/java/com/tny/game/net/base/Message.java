@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 public interface Message<UID> extends Protocol {
 

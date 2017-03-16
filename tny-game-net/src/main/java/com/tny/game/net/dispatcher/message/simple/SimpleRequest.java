@@ -2,7 +2,7 @@ package com.tny.game.net.dispatcher.message.simple;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.net.dispatcher.NetRequest;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 import java.util.ArrayList;
 import java.util.Collections;

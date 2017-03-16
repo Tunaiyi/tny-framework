@@ -3,7 +3,7 @@ package com.tny.game.net.dispatcher.message.protoex;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.RequestBuilder;
 import com.tny.game.net.dispatcher.ResponseBuilder;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 public class ProtoExMessageBuilderFactory implements MessageBuilderFactory {
 

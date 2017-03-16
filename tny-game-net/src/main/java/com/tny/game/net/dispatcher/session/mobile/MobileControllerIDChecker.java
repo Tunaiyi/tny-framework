@@ -6,7 +6,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 import java.util.List;
 import java.util.Set;

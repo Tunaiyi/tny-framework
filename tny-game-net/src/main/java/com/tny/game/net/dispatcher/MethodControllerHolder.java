@@ -27,6 +27,7 @@ import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.session.Session;
 import com.tny.game.number.LocalNum;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,7 +1,8 @@
-package com.tny.game.net.dispatcher;
+package com.tny.game.net.session;
 
 import com.tny.game.net.base.Protocol;
-import com.tny.game.net.base.listener.SessionListener;
+import com.tny.game.net.base.listener.SessionHolderListener;
+import com.tny.game.net.dispatcher.MessageContent;
 
 import java.util.Collection;
 import java.util.Map;
@@ -109,6 +110,11 @@ public interface SessionHolder {
     void clearChannelUser(String userGroup, Object channelID);
 
     /**
+     * 移出所有组
+     */
+    void clearAllChannel(String userGroup);
+
+    /**
      * 发信息给用户 <br>
      *
      * @param userGroup 用户组
@@ -181,12 +187,10 @@ public interface SessionHolder {
 
     <T> Map<Object, Session<T>> getSessionMapByGroup(String userGroup);
 
-    void addSessionListener(SessionListener listener);
+    void addListener(SessionHolderListener listener);
 
-    void addSessionListener(Collection<SessionListener> listeners);
+    void addListener(Collection<SessionHolderListener> listeners);
 
-    void removeSessionListener(SessionListener listener);
-
-    void clearSessionListener();
+    void removeListener(SessionHolderListener listener);
 
 }

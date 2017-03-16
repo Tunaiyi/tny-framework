@@ -1,4 +1,4 @@
-package com.tny.game.net.dispatcher;
+package com.tny.game.net.session;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.net.LoginCertificate;
@@ -80,6 +80,9 @@ public interface Session<UID> {
      */
     boolean isInvalid();
 
+    /**
+     * @return 登陆凭证
+     */
     LoginCertificate<UID> getCertificate();
 
 }

@@ -8,6 +8,7 @@ import com.tny.game.net.base.Message;
 import com.tny.game.net.base.MessageType;
 import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
+import com.tny.game.net.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,7 +36,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * 會話持有對象
      */
-    protected NetSessionHolder sessionHolder;
+    protected AbstractNetSessionHolder sessionHolder;
 
     /**
      * 请求命令执行器

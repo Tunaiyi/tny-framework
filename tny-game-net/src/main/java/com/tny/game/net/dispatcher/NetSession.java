@@ -2,21 +2,12 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.Protocol;
+import com.tny.game.net.session.Session;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
 public interface NetSession<UID> extends Session<UID> {
-
-    // List<MessageChecker> getCheckers();
-    //
-    // void addChecker(MessageChecker checker);
-    //
-    // void removeChecker(MessageChecker checker);
-    //
-    // void removeChecker(Class<? extends MessageChecker> checkClass);
-    //
-    // MessageSignGenerator getMessageSignGenerator();
 
     void sendMessage(Protocol protocol, MessageContent content);
 
@@ -49,4 +40,13 @@ public interface NetSession<UID> extends Session<UID> {
     boolean relogin(NetSession<UID> uid);
 
     void login(LoginCertificate<UID> loginInfo);
+
+    /**
+     * 将当前的session 转换到指定session
+     * @param session 转换的目标session
+     * @param <T>
+     * @return
+     */
+    boolean exchange(NetSession<UID> session);
+
 }

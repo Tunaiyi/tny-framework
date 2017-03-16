@@ -1,7 +1,7 @@
 package com.tny.game.net.base.listener;
 
-import com.tny.game.net.dispatcher.Session;
-import com.tny.game.net.dispatcher.SessionHolder;
+import com.tny.game.net.session.Session;
+import com.tny.game.net.session.SessionHolder;
 
 public class SessionChangeEvent<T> {
 

@@ -2,7 +2,7 @@ package com.tny.game.suite.scheduler;
 
 import com.tny.game.net.dispatcher.CommandResult;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
 import com.tny.game.net.dispatcher.plugin.PluginContext;
 import org.slf4j.Logger;

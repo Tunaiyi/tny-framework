@@ -1,6 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.context.Attributes;
+import com.tny.game.net.session.Session;
 
 import java.io.Serializable;
 import java.util.List;

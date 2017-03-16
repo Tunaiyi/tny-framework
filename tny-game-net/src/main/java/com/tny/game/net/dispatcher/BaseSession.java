@@ -1,6 +1,7 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.session.Session;
 
 public interface BaseSession extends Session {
 

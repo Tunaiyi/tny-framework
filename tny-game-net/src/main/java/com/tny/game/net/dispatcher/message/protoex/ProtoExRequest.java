@@ -2,7 +2,7 @@ package com.tny.game.net.dispatcher.message.protoex;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.dispatcher.NetMessage;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import com.tny.game.protoex.annotations.Packed;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExConf;

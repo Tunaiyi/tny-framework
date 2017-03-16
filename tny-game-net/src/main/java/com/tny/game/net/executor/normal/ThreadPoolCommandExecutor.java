@@ -9,7 +9,7 @@ import com.tny.game.net.dispatcher.command.DispatcherCommandBox;
 import com.tny.game.net.dispatcher.DispatcherCommand;
 import com.tny.game.net.dispatcher.NetAttributeKey;
 import com.tny.game.net.dispatcher.RunnableDispatcherCommand;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
 import com.tny.game.worker.Callback;
 import org.slf4j.Logger;

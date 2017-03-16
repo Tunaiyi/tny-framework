@@ -5,7 +5,7 @@ import com.tny.game.net.base.Message;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

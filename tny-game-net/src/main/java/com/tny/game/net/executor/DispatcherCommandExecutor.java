@@ -1,7 +1,7 @@
 package com.tny.game.net.executor;
 
 import com.tny.game.net.dispatcher.DispatcherCommand;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 /**
  * @author KGTny

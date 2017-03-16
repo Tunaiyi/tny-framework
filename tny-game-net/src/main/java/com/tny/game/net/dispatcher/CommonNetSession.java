@@ -10,6 +10,7 @@ import com.tny.game.net.base.Protocol;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.exception.SessionException;
+import com.tny.game.net.session.SessionPushOption;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

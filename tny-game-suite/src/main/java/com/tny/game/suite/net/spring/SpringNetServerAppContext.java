@@ -13,7 +13,7 @@ import com.tny.game.net.dispatcher.AuthProvider;
 import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
 import com.tny.game.net.dispatcher.MessageDispatcher;
 import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.dispatcher.NetSessionHolder;
+import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
@@ -54,7 +54,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     private PluginHolder pluginHolder;
 
     @Autowired
-    private NetSessionHolder sessionHolder;
+    private AbstractNetSessionHolder sessionHolder;
 
     @Autowired
     private ChannelServerSessionFactory sessionFactory;
@@ -118,7 +118,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     }
 
     @Override
-    public NetSessionHolder getSessionHolder() {
+    public AbstractNetSessionHolder getSessionHolder() {
         return this.sessionHolder;
     }
 

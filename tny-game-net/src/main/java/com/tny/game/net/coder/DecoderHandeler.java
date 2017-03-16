@@ -2,7 +2,7 @@ package com.tny.game.net.coder;
 
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.dispatcher.NetAttributeKey;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

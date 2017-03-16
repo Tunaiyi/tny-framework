@@ -7,6 +7,7 @@ import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.MessageMode;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.session.Session;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class DefaultMessageDispatcher extends NetMessageDispatcher {
         PluginHolder pluginHolder = appContext.getPluginHolder();
         if (pluginHolder == null)
             throw new NullPointerException("pluginHolder is null");
-        NetSessionHolder sessionHolder = appContext.getSessionHolder();
+        AbstractNetSessionHolder sessionHolder = appContext.getSessionHolder();
         if (sessionHolder == null)
             throw new NullPointerException("sessionHolder is null");
         Map<Class<?>, ControllerChecker> checkerMap = appContext.getControllerCheckers()

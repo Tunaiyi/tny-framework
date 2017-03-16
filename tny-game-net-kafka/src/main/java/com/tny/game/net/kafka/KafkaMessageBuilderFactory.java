@@ -3,7 +3,7 @@ package com.tny.game.net.kafka;
 import com.tny.game.net.dispatcher.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.RequestBuilder;
 import com.tny.game.net.dispatcher.ResponseBuilder;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 /**
  * Created by Kun Yang on 16/8/10.

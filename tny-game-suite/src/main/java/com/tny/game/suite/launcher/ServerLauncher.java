@@ -2,7 +2,7 @@ package com.tny.game.suite.launcher;
 
 import com.tny.game.net.NetServer;
 import com.tny.game.net.base.listener.SessionListener;
-import com.tny.game.net.dispatcher.SessionHolder;
+import com.tny.game.net.session.SessionHolder;
 import com.tny.game.net.listener.ServerClosedListener;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;

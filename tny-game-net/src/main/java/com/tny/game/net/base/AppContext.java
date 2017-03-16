@@ -4,7 +4,7 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.AuthProvider;
 import com.tny.game.net.dispatcher.MessageDispatcher;
-import com.tny.game.net.dispatcher.NetSessionHolder;
+import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import com.tny.game.net.dispatcher.plugin.PluginHolder;
 import com.tny.game.net.executor.DispatcherCommandExecutor;
@@ -26,7 +26,7 @@ public interface AppContext {
 
     List<ControllerChecker> getControllerCheckers();
 
-    NetSessionHolder getSessionHolder();
+    AbstractNetSessionHolder getSessionHolder();
 
     MessageDispatcher getMessageDispatcher();
 

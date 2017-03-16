@@ -8,6 +8,7 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
+import com.tny.game.net.session.Session;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -29,7 +30,7 @@ public class SessionHolderTest {
 
     @Autowired
     @Qualifier("testSessionHoslder")
-    private NetSessionHolder sessionHolder;
+    private AbstractNetSessionHolder sessionHolder;
 
     private static List<ServerSession> sessionList = new ArrayList<ServerSession>();
 
@@ -59,7 +60,7 @@ public class SessionHolderTest {
     @Before
     public void setUp() throws Exception {
         this.sessionHolder.offlineAll(Session.DEFAULT_USER_GROUP);
-        this.sessionHolder.removeAllChannel(Session.DEFAULT_USER_GROUP);
+        this.sessionHolder.clearAllChannel(Session.DEFAULT_USER_GROUP);
         for (ServerSession session : SessionHolderTest.sessionList) {
             this.sessionHolder.online(session, session.getCertificate());
         }

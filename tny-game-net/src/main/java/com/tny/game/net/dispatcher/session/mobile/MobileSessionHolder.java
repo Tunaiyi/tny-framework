@@ -8,7 +8,7 @@ import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.dispatcher.BaseSession;
 import com.tny.game.net.dispatcher.BaseSessionHolder;
 import com.tny.game.net.dispatcher.ProxyServerSession;
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
 
 import java.util.Collection;

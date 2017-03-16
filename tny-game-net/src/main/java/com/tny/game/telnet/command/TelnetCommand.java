@@ -1,6 +1,6 @@
 package com.tny.game.telnet.command;
 
-import com.tny.game.net.dispatcher.Session;
+import com.tny.game.net.session.Session;
 
 public interface TelnetCommand {
 

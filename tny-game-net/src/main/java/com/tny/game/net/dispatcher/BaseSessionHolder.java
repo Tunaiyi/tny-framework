@@ -3,9 +3,11 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.LogUtils;
 import com.tny.game.log.CoreLogger;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.Protocol;
 import com.tny.game.net.base.listener.SessionChangeEvent;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
+import com.tny.game.net.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +18,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSessionHolder {
+public abstract class BaseSessionHolder<S extends NetSession<?>> extends AbstractNetSessionHolder {
 
     protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
     // private static final Logger LOG_ENCODE = LoggerFactory.getLogger(CoreLogger.CODER);
@@ -296,7 +298,7 @@ public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSess
     }
 
     @Override
-    protected void removeAllChannel(String userGroup) {
+    protected void clearAllChannel(String userGroup) {
         ConcurrentMap<Object, ChannelGroup> userGroupMap = this.channelMap.get(userGroup);
         if (userGroupMap == null)
             return;
@@ -305,6 +307,7 @@ public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSess
 
     @Override
     public void offline(Session<?> session) {
+
         ConcurrentMap<Object, NetSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null)
             return;
@@ -329,22 +332,38 @@ public abstract class BaseSessionHolder<S extends NetSession<?>> extends NetSess
     }
 
     @Override
-    protected <T> boolean online(NetSession<T> session, LoginCertificate<T> loginInfo) throws ValidatorFailException {
+    @SuppressWarnings("unchecked")
+    public <T> boolean online(NetSession<T> session, LoginCertificate<T> loginInfo) throws ValidatorFailException {
         if (!this.loginSession(session, loginInfo))
+            return false;
+        if (!session.isOnline())
             return false;
         ConcurrentMap<Object, NetSession> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null) {
             this.sessionMap.putIfAbsent(session.getGroup(), new ConcurrentHashMap<>());
             userGroupSessionMap = this.sessionMap.get(session.getGroup());
         }
-        NetSession<?> oldSession = userGroupSessionMap.put(session.getUID(), session);
-        if (oldSession != null && oldSession != session) {
-            this.fireRemoveSession(new SessionChangeEvent<>(this, oldSession));
-            if (oldSession.isConnected())
-                this.disconnect(oldSession);
+        NetSession oldSession = userGroupSessionMap.get(session.getUID());
+        if (oldSession == null || !loginInfo.isRelogin()) {
+            oldSession = userGroupSessionMap.put(session.getUID(), session);
+            if (oldSession != null && oldSession != session) {
+                this.onRemoveSession.notify(this, oldSession);
+                if (oldSession.isOnline())
+                    oldSession.offline(true);
+            } else {
+                this.onAddSession.notify(this, session);
+                this.debugSessionSize();
+            }
+        } else {
+            if (oldSession.getCertificate().getLoginID() != loginInfo.getLoginID()) {
+                String account = loginInfo.getUserGroup() + "-" + loginInfo.getUserID();
+                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS, account, session.getHostName());
+            }
+            if (oldSession.isInvalid() || session.exchange(oldSession)) {
+                String account = loginInfo.getUserGroup() + "-" + loginInfo.getUserID();
+                throw new ValidatorFailException(CoreResponseCode.SESSION_TIMEOUT, account, session.getHostName());
+            }
         }
-        this.fireAddSession(new SessionChangeEvent<>(this, session));
-        this.debugSessionSize();
         return true;
     }
 
