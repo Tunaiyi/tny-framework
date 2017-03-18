@@ -27,7 +27,7 @@ allprojects {
     group "com.tny.game"
     apply plugin: "idea"
 
-    ext.pj_version = "2.1.x-SNAPSHOT"
+    ext.pj_version = "2.1.3-SNAPSHOT"
     version = pj_version
 
     ext {
