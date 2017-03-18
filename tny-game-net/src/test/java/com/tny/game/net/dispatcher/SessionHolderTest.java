@@ -2,12 +2,14 @@ package com.tny.game.net.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.ProtocolUtils;
+import com.tny.game.net.common.session.BaseNetSessionHolder;
 import com.tny.game.net.dispatcher.exception.ValidatorFailException;
-import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.Protocol;
-import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
+import com.tny.game.net.message.Protocol;
+import com.tny.game.net.message.simple.SimpleMessageBuilderFactory;
 import com.tny.game.net.session.Session;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,7 +32,7 @@ public class SessionHolderTest {
 
     @Autowired
     @Qualifier("testSessionHoslder")
-    private AbstractNetSessionHolder sessionHolder;
+    private BaseNetSessionHolder sessionHolder;
 
     private static List<ServerSession> sessionList = new ArrayList<ServerSession>();
 

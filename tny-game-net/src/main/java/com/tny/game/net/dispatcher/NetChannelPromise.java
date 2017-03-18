@@ -1,5 +1,6 @@
 package com.tny.game.net.dispatcher;
 
+import com.tny.game.net.session.MessageFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.DefaultChannelPromise;

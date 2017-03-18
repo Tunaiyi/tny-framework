@@ -3,7 +3,7 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
+import com.tny.game.net.message.Protocol;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.session.Session;
 

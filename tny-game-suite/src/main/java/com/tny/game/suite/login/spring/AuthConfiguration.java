@@ -1,7 +1,7 @@
 package com.tny.game.suite.login.spring;
 
 import com.tny.game.common.ExceptionUtils;
-import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.suite.login.ServeAuthProvider;
 import com.tny.game.suite.login.UserLoginAuthProvider;
 import com.tny.game.suite.login.UserReloginAuthProvider;

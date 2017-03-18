@@ -1,9 +1,9 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.net.dispatcher.MessageBuilderFactory;
-import com.tny.game.net.dispatcher.NetAttributeKey;
-import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageBuilderFactory;
-import com.tny.game.net.dispatcher.message.protoex.ProtoExMessageCoder;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.netty.NettyAttrKeys;
+import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.message.protoex.ProtoExMessageCoder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 
@@ -42,11 +42,11 @@ public abstract class ChannelMaker<C extends Channel> {
         channelPipeline.addLast("frameDecoder", new DecoderHandeler(this.decoder));
         channelPipeline.addLast("encoder", new EncodeHandler(this.encoder));
         this.postAddCoder(channelPipeline);
-        channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR)
+        channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR)
                 .set(this.messageBuilderFactory);
-        channel.attr(NetAttributeKey.DATA_PACKET_DECODER)
+        channel.attr(NettyAttrKeys.DATA_PACKET_DECODER)
                 .set(this.decoder);
-        channel.attr(NetAttributeKey.DATA_PACKET_ENCODER)
+        channel.attr(NettyAttrKeys.DATA_PACKET_ENCODER)
                 .set(this.encoder);
         // channel.attr(NetAttributeKey.REQUEST_CHECKERS)
         //         .set(this.checkers);

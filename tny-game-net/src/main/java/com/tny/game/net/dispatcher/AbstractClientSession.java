@@ -3,6 +3,9 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.session.MessageFuture;
+import com.tny.game.net.message.MessageFutureHolder;
 
 public abstract class AbstractClientSession implements ClientSession {
 

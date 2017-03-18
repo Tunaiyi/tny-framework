@@ -1,8 +1,10 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.net.base.NetAppContext;
-import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
-import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.message.simple.SimpleMessageBuilderFactory;
+import com.tny.game.net.message.simple.SimpleRequest;
+import com.tny.game.net.netty.NettyMessageHandler;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.util.Attribute;
@@ -28,11 +30,11 @@ public class GameServerHandlerTest {
     @Autowired
     private NetAppContext appContext;
 
-    private MessageHandler handler;
+    private NettyMessageHandler handler;
 
     @Before
     public void setUp() throws Exception {
-        this.handler = new MessageHandler();
+        this.handler = new NettyMessageHandler();
         this.handler.setAppContext(this.appContext);
     }
 

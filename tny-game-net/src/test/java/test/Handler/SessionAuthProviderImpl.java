@@ -1,7 +1,7 @@
 package test.Handler;
 
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.dispatcher.Request;
 
 public final class SessionAuthProviderImpl implements AuthProvider {

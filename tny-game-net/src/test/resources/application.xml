@@ -20,11 +20,11 @@
 
     <bean name="authProvider" class="test.Handler.SessionAuthProviderImpl"/>
 
-    <bean name="dispatcher" class="com.tny.game.net.dispatcher.spring.SpringMessageDispatcher">
+    <bean name="dispatcher" class="com.tny.game.net.messageDispatcher.spring.SpringMessageDispatcher">
         <constructor-arg value="true"/>
     </bean>
 
-    <bean name="serverAppContext" class="com.tny.game.net.base.simple.SimpleNetServerAppContext">
+    <bean name="serverAppContext" class="com.tny.game.net.base.DefaultNetServerAppContext">
         <property name="authProviders">
             <list>
                 <ref bean="authProvider"/>

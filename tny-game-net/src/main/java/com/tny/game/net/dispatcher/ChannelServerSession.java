@@ -1,7 +1,8 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.netty.NettyAttrKeys;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 public abstract class ChannelServerSession extends AbstractServerSession {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
+    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
     /**
      * ip地址
@@ -48,10 +49,10 @@ public abstract class ChannelServerSession extends AbstractServerSession {
         Channel old = this.channel;
         if (old == null && channel != null) {
             this.channel = channel;
-            channel.attr(NetAttributeKey.SESSION).set(this);
-            channel.attr(NetAttributeKey.SERVER_SESSION).set(this);
-            this.checkers = channel.attr(NetAttributeKey.REQUEST_CHECKERS).get();
-            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
+            channel.attr(NettyAttrKeys.SESSION).set(this);
+            channel.attr(NettyAttrKeys.SERVER_SESSION).set(this);
+            this.checkers = channel.attr(NettyAttrKeys.REQUEST_CHECKERS).get();
+            this.messageBuilderFactory = channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR).get();
         }
     }
 

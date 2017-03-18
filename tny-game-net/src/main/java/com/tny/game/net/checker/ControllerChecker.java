@@ -2,7 +2,7 @@ package com.tny.game.net.checker;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.dispatcher.ControllerHolder;
 
 /**

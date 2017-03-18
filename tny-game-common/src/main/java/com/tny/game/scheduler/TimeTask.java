@@ -1,5 +1,8 @@
 package com.tny.game.scheduler;
 
+import com.tny.game.common.utils.DateTimeHelper;
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,8 +58,7 @@ public class TimeTask implements Comparable<TimeTask>, Serializable {
 
     @Override
     public String toString() {
-        return "\nTimeTaskHandlerHolder [executeTime=" + this.executeTime + ", handlerList=" + this.handlerList +
-                "]\n";
+        return "\nTimeTaskHandlerHolder [executeTime=" + new DateTime(this.executeTime).toString(DateTimeHelper.DATE_TIME_FORMAT) + ", handlerList=" + this.handlerList + "]\n";
     }
 
     public int size() {

@@ -7,19 +7,25 @@ import com.tny.game.actor.stage.StageUtils;
 import com.tny.game.actor.stage.TaskStage;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.Message;
-import com.tny.game.net.base.MessageMode;
 import com.tny.game.net.base.ResultFactory;
+import com.tny.game.net.command.MessageCommand;
 import com.tny.game.net.dispatcher.exception.DispatchException;
 import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatchMessageErrorEvent;
 import com.tny.game.net.dispatcher.listener.DispatchMessageEvent;
 import com.tny.game.net.dispatcher.listener.ExecuteMessageEvent;
 import com.tny.game.net.dispatcher.listener.MessageDispatcherListener;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageContent;
+import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.session.NetSession;
+import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.worker.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -41,7 +48,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class NetMessageDispatcher implements MessageDispatcher {
 
-    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
+    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
     /**
      * Controller Map
@@ -56,7 +63,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
     protected AppContext context;
 
     @Override
-    public DispatcherCommand<CommandResult> dispatch(Message message, NetSession session) throws DispatchException {
+    public MessageCommand dispatch(Message message, NetSession session) throws DispatchException {
 
         // 获取方法持有器
         MethodControllerHolder controller = null;
@@ -69,7 +76,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
         //     NetMessageDispatcher.DISPATCHER_LOG.error("{} 服务器无法调用此协议", LogUtils.msg(serverType, methodHolder.getMethodClass(), methodHolder.getName()));
         //     throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
         // }
-        return new MessageDispatcherCommand(context, message, session, controller);
+        return new MessageMessageCommand(context, message, session, controller);
 
     }
 
@@ -198,10 +205,10 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
     public abstract void initDispatcher(AppContext appContext);
 
-    private class MessageDispatcherCommand implements DispatcherCommand<CommandResult> {
+    private class MessageMessageCommand implements MessageCommand<CommandResult> {
 
         protected AppContext appContext;
-        protected Message message;
+        protected Message<?> message;
         protected NetSession<?> session;
 
         private MethodControllerHolder controller;
@@ -214,7 +221,7 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
 
         boolean done;
 
-        private MessageDispatcherCommand(AppContext appContext, Message message, NetSession<?> session, MethodControllerHolder controller) {
+        private MessageMessageCommand(AppContext appContext, Message message, NetSession<?> session, MethodControllerHolder controller) {
             this.appContext = appContext;
             this.message = message;
             this.session = session;
@@ -413,11 +420,12 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private void checkExecutable(MethodControllerHolder controller) throws DispatchException {
 
 
             // 是否需要做登录校验,判断是否已经登录
-            AbstractNetSessionHolder sessionHolder = this.appContext.getSessionHolder();
+            NetSessionHolder<?, NetSession<?>> sessionHolder = this.appContext.getSessionHolder();
 
             if (controller.isAuth() && !this.session.isLogin()) {
                 if (NetMessageDispatcher.DISPATCHER_LOG.isDebugEnabled())
@@ -427,10 +435,12 @@ public abstract class NetMessageDispatcher implements MessageDispatcher {
                     if (!provider.isCanValidate(this.message))
                         continue;
                     LoginCertificate loginInfo = provider.validate(this.message);
-                    if (loginInfo == null || !loginInfo.isLogin() || !sessionHolder.online(this.session, loginInfo)) {
+                    Optional<NetSession<?>> onlineOpt;
+                    if (loginInfo == null || !loginInfo.isLogin() || !(onlineOpt = sessionHolder.online(this.session, loginInfo)).isPresent()) {
                         NetMessageDispatcher.DISPATCHER_LOG.error("Controller [{}] 用户未登陆", getName());
                         throw new DispatchException(CoreResponseCode.UNLOGIN);
                     } else {
+                        this.session = onlineOpt.get();
                         break;
                     }
                 }

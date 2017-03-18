@@ -1,10 +1,13 @@
 package com.tny.game.net.dispatcher;
 
 import com.tny.game.LogUtils;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.common.session.BaseNetSessionHolder;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.plugin.PluginHolder;
 
 public class ServerConfiguration {
 
@@ -21,7 +24,7 @@ public class ServerConfiguration {
     /**
      * 會話持有對象
      */
-    private AbstractNetSessionHolder sessionHolder;
+    private BaseNetSessionHolder sessionHolder;
 
     /**
      * 会话验证器
@@ -61,11 +64,11 @@ public class ServerConfiguration {
         this.checker = checker;
     }
 
-    public AbstractNetSessionHolder getSessionHolder() {
+    public BaseNetSessionHolder getSessionHolder() {
         return sessionHolder;
     }
 
-    public void setSessionHolder(AbstractNetSessionHolder sessionHolder) {
+    public void setSessionHolder(BaseNetSessionHolder sessionHolder) {
         if (sessionHolder != null)
             throw new IllegalArgumentException(LogUtils.format("{} 与 {} sessionHolder 冲突", this.sessionHolder.getClass(), sessionHolder.getClass()));
         this.sessionHolder = sessionHolder;

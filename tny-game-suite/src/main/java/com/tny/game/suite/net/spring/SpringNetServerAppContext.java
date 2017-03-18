@@ -9,14 +9,14 @@ import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
-import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
-import com.tny.game.net.dispatcher.MessageDispatcher;
+import com.tny.game.net.message.MessageDispatcher;
 import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
+import com.tny.game.net.common.session.BaseNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
-import com.tny.game.net.executor.DispatcherCommandExecutor;
+import com.tny.game.net.plugin.PluginHolder;
+import com.tny.game.net.command.MessageCommandExecutor;
 import io.netty.channel.Channel;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     private PluginHolder pluginHolder;
 
     @Autowired
-    private AbstractNetSessionHolder sessionHolder;
+    private BaseNetSessionHolder sessionHolder;
 
     @Autowired
     private ChannelServerSessionFactory sessionFactory;
@@ -63,7 +63,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     private NetMessageDispatcher messageDispatcher;
 
     @Autowired
-    private DispatcherCommandExecutor dispatcherCommandExecutor;
+    private MessageCommandExecutor dispatcherCommandExecutor;
 
     @Autowired(required = false)
     private ResponseHandlerHolder responseHandlerHolder;
@@ -118,7 +118,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     }
 
     @Override
-    public AbstractNetSessionHolder getSessionHolder() {
+    public BaseNetSessionHolder getSessionHolder() {
         return this.sessionHolder;
     }
 
@@ -134,7 +134,7 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     }
 
     @Override
-    public DispatcherCommandExecutor getCommandExecutor() {
+    public MessageCommandExecutor getCommandExecutor() {
         return this.dispatcherCommandExecutor;
     }
 

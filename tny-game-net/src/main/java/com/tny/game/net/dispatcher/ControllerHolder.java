@@ -10,11 +10,11 @@ import com.tny.game.annotation.Controller;
 import com.tny.game.annotation.MessageFilter;
 import com.tny.game.annotation.Plugin;
 import com.tny.game.common.ExceptionUtils;
-import com.tny.game.log.CoreLogger;
-import com.tny.game.net.base.MessageMode;
+import com.tny.game.log.NetLogger;
+import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.plugin.ControllerPlugin;
+import com.tny.game.net.plugin.PluginHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ import java.util.Set;
 
 public abstract class ControllerHolder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
+    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
     /**
      * 控制器类型

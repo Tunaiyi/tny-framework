@@ -1,10 +1,10 @@
 package com.tny.game.net.checker.md5;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.ControllerHolder;
@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 
 public abstract class MessageSignMD5Checker implements ControllerChecker, MessageSignGenerator {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(CoreLogger.CHECKER);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
 
     protected boolean isCheck(Message<?> message) {
         return true;

@@ -1,7 +1,7 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.log.CoreLogger;
-import com.tny.game.net.dispatcher.NetAttributeKey;
+import com.tny.game.log.NetLogger;
+import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DecoderHandeler extends ByteToMessageDecoder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
+    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
     private DataPacketDecoder decoder;
 
@@ -34,7 +34,7 @@ public class DecoderHandeler extends ByteToMessageDecoder {
             Channel channel = null;
             if (ctx != null) {
                 channel = ctx.channel();
-                session = channel.attr(NetAttributeKey.SESSION).get();
+                session = channel.attr(NettyAttrKeys.SESSION).get();
             }
             LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, session == null ? "SOME ONE UNLOGION!" : session.getUID(), exception);
             if (exception instanceof PacketHeadException)

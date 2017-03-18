@@ -1,6 +1,6 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.utils.CompressUtils;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;

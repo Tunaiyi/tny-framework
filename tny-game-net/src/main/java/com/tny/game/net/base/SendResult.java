@@ -5,17 +5,17 @@ public interface SendResult {
     /**
      * 是否完成
      */
-    public boolean isDone();
+    boolean isDone();
 
     /**
      * 是否成功
      */
-    public boolean isSuccess();
+    boolean isSuccess();
 
     /**
      * 获取失败原因
      */
-    public Throwable getCause();
+    Throwable getCause();
 
     long getUserID();
 

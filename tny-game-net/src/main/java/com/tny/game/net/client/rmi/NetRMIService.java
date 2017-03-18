@@ -1,9 +1,9 @@
 package com.tny.game.net.client.rmi;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.MessageDispatcher;
+import com.tny.game.net.message.MessageDispatcher;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
 import com.tny.game.net.dispatcher.exception.DispatchException;
@@ -46,7 +46,7 @@ public abstract class NetRMIService implements RMIService {
                     .setProtocol(request)
                     .setResult(e.getResultCode())
                     .build();
-            CoreLogger.log(session, response);
+            NetLogger.log(session, response);
             return response;
         }
         return null;

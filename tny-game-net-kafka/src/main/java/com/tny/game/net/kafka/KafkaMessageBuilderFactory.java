@@ -1,6 +1,6 @@
 package com.tny.game.net.kafka;
 
-import com.tny.game.net.dispatcher.MessageBuilderFactory;
+import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.RequestBuilder;
 import com.tny.game.net.dispatcher.ResponseBuilder;
 import com.tny.game.net.session.Session;

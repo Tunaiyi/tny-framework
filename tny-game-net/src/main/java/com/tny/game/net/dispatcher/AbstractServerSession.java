@@ -4,9 +4,10 @@ import com.tny.game.LogUtils;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.message.Protocol;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.dispatcher.exception.SessionException;
 import com.tny.game.net.session.SessionPushOption;
@@ -28,7 +29,7 @@ public abstract class AbstractServerSession extends NetServerSession {
 
     private AtomicBoolean lock = new AtomicBoolean(false);
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(CoreLogger.SESSION);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.SESSION);
 
     private volatile transient Attributes attributes;
 
@@ -113,7 +114,7 @@ public abstract class AbstractServerSession extends NetServerSession {
                             response.setNumber(responseNum);
                             data = response;
                             this.prepareWriteResponse(response);
-                            CoreLogger.log(this, response);
+                            NetLogger.log(this, response);
                             optional = this.write(data);
                             break;
                         } catch (Throwable e) {

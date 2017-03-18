@@ -3,6 +3,7 @@ package com.tny.game.net.dispatcher;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.exception.DispatchException;
@@ -10,9 +11,11 @@ import com.tny.game.net.dispatcher.listener.DispatchExceptionEvent;
 import com.tny.game.net.dispatcher.listener.DispatchMessageErrorEvent;
 import com.tny.game.net.dispatcher.listener.ExecuteMessageEvent;
 import com.tny.game.net.dispatcher.listener.MessageDispatcherListener;
-import com.tny.game.net.dispatcher.message.simple.SimpleChannelServerSession;
-import com.tny.game.net.dispatcher.message.simple.SimpleMessageBuilderFactory;
-import com.tny.game.net.dispatcher.message.simple.SimpleRequest;
+import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.message.simple.SimpleChannelServerSession;
+import com.tny.game.net.message.simple.SimpleMessageBuilderFactory;
+import com.tny.game.net.message.simple.SimpleRequest;
 import com.tny.game.net.session.Session;
 import io.netty.channel.Channel;
 import org.junit.After;
@@ -83,8 +86,8 @@ public class SpringControllerDispatcherTest {
     @Before
     public void setUp() throws Exception {
         this.context.initContext(null);
-        this.channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).set(new SimpleMessageBuilderFactory());
-        this.channel.attr(NetAttributeKey.REQUEST_CHECKERS).set(Arrays.asList(this.checker));
+        this.channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR).set(new SimpleMessageBuilderFactory());
+        this.channel.attr(NettyAttrKeys.REQUEST_CHECKERS).set(Arrays.asList(this.checker));
     }
 
     @After

@@ -1,7 +1,7 @@
 package com.tny.game.net.kafka;
 
 import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttributeUtils;
+import com.tny.game.common.context.AttrUtils;
 import com.tny.game.net.LoginCertificate;
 
 /**
@@ -9,7 +9,7 @@ import com.tny.game.net.LoginCertificate;
  */
 interface KafkaAttrKeys {
 
-    AttrKey<LoginCertificate> KAFKA_LOGIN_KEY = AttributeUtils.key(KafkaAttrKeys.class, "KAFKA_LOGIN_KEY");
+    AttrKey<LoginCertificate> KAFKA_LOGIN_KEY = AttrUtils.key(KafkaAttrKeys.class, "KAFKA_LOGIN_KEY");
 
 
 }

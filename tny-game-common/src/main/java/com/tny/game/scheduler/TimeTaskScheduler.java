@@ -241,6 +241,11 @@ public class TimeTaskScheduler {
             this.stopTime = startTime;
             if (backup.getTimeTaskQueue() != null) {
                 this.timeTaskQueue = backup.getTimeTaskQueue();
+                if (LOG.isInfoEnabled()){
+                    LOG.info("=读取存储 TimeTask=");
+                    this.timeTaskQueue.getTimeTaskList()
+                            .forEach(t -> LOG.info("{}", t));
+                }
             }
         }
     }
@@ -414,6 +419,8 @@ public class TimeTaskScheduler {
                     TimeTaskScheduler.this.writeLock.lock();
                     try {
                         TimeTaskScheduler.this.timeTaskQueue.put(this.timeTask);
+                        if (LOG.isInfoEnabled())
+                            LOG.info(" =插入新 timetask =\n{}", this.timeTask);
                     } finally {
                         TimeTaskScheduler.this.writeLock.unlock();
                     }

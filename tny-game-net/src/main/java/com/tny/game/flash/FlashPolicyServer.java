@@ -1,6 +1,6 @@
 package com.tny.game.flash;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
 
 public class FlashPolicyServer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NET);
+    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("FlashPolicy-NIO-Boss-EventLoop#"));

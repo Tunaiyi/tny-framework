@@ -1,6 +1,6 @@
 package com.tny.game.net.kafka;
 
-import com.tny.game.net.dispatcher.message.protoex.ProtoExRequest;
+import com.tny.game.net.message.protoex.ProtoExRequest;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 

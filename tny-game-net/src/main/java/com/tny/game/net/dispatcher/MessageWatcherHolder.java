@@ -5,6 +5,8 @@ import com.tny.game.annotation.MsgBody;
 import com.tny.game.annotation.UserID;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.reflect.GMethod;
+import com.tny.game.net.common.NetMessage;
+import com.tny.game.net.session.NetSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;

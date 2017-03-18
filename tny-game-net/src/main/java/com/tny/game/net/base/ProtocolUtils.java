@@ -1,5 +1,7 @@
 package com.tny.game.net.base;
 
+import com.tny.game.net.message.Protocol;
+
 public class ProtocolUtils {
 
     public static final DefaultProtocol PUSH = new DefaultProtocol(-1);

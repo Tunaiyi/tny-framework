@@ -1,6 +1,6 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 
 /**
  * Created by Kun Yang on 2017/2/17.

@@ -2,7 +2,7 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.checker.md5.MessageSignMD5Checker;
 import com.tny.game.net.session.Session;
 import com.tny.game.suite.core.SessionKeys;

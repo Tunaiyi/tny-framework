@@ -12,10 +12,10 @@ import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.MethodFilter;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.net.base.MessageMode;
+import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.plugin.ControllerPlugin;
+import com.tny.game.net.plugin.PluginHolder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

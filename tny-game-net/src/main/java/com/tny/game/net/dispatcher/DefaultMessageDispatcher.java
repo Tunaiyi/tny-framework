@@ -4,9 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import com.tny.game.LogUtils;
 import com.tny.game.common.utils.collection.CollectUtils;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.base.MessageMode;
+import com.tny.game.net.common.session.BaseNetSessionHolder;
+import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
+import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.session.Session;
 
 import java.lang.reflect.Method;
@@ -45,7 +46,7 @@ public class DefaultMessageDispatcher extends NetMessageDispatcher {
         PluginHolder pluginHolder = appContext.getPluginHolder();
         if (pluginHolder == null)
             throw new NullPointerException("pluginHolder is null");
-        AbstractNetSessionHolder sessionHolder = appContext.getSessionHolder();
+        BaseNetSessionHolder sessionHolder = appContext.getSessionHolder();
         if (sessionHolder == null)
             throw new NullPointerException("sessionHolder is null");
         Map<Class<?>, ControllerChecker> checkerMap = appContext.getControllerCheckers()

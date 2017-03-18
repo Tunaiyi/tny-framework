@@ -1,8 +1,11 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
+import com.tny.game.net.netty.NettyAttrKeys;
+import com.tny.game.net.message.MessageAction;
+import com.tny.game.net.session.MessageFuture;
+import com.tny.game.net.message.Protocol;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.slf4j.Logger;
@@ -16,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ChannelClientSession extends AbstractClientSession {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.SESSION);
+    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
     /**
      * ip地址
@@ -45,9 +48,9 @@ public abstract class ChannelClientSession extends AbstractClientSession {
             this.channel = channel;
             SocketAddress address = channel.remoteAddress();
             this.hostName = address == null ? null : ((InetSocketAddress) address).getAddress().getHostAddress();
-            channel.attr(NetAttributeKey.SESSION).set(this);
-            channel.attr(NetAttributeKey.CLIENT_SESSION).set(this);
-            this.messageBuilderFactory = channel.attr(NetAttributeKey.MSG_BUILDER_FACTOR).get();
+            channel.attr(NettyAttrKeys.SESSION).set(this);
+            channel.attr(NettyAttrKeys.CLIENT_SESSION).set(this);
+            this.messageBuilderFactory = channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR).get();
         }
     }
 
@@ -113,7 +116,7 @@ public abstract class ChannelClientSession extends AbstractClientSession {
                 .setProtocol(protocol)
                 .addParameter(params)
                 .build();
-        CoreLogger.log(this, request);
+        NetLogger.log(this, request);
         if (future != null) {
             future.setRequest(request)
                     .setSession(this);

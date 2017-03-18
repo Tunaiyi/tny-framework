@@ -1,5 +1,7 @@
 package com.tny.game.net.base;
 
+import com.tny.game.net.message.Protocol;
+
 /**
  * @author KGTny
  * @ClassName: MessageBuilder

@@ -8,7 +8,7 @@ import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.Owner;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.SessionHolder;
+import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.suite.core.GameInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 

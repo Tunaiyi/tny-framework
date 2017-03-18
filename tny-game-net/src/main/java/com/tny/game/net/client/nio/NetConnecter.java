@@ -1,12 +1,12 @@
 package com.tny.game.net.client.nio;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.coder.ChannelMaker;
-import com.tny.game.net.dispatcher.MessageHandler;
+import com.tny.game.net.netty.NettyMessageHandler;
 import com.tny.game.net.dispatcher.RequestSession;
-import com.tny.game.net.session.SessionHolder;
+import com.tny.game.net.session.holder.SessionHolder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -21,11 +21,11 @@ import java.io.IOException;
 
 public class NetConnecter {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.CLIENT);
+    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.CLIENT);
 
     private Bootstrap bootstrap = null;
 
-    private MessageHandler messageHandler;
+    private NettyMessageHandler messageHandler;
 
     private ChannelMaker<Channel> channelMaker;
 
@@ -35,7 +35,7 @@ public class NetConnecter {
         this.bootstrap = new Bootstrap();
         this.channelMaker = appContext.getChannelMaker();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        this.messageHandler = new MessageHandler();
+        this.messageHandler = new NettyMessageHandler();
         this.messageHandler.setAppContext(appContext);
         this.bootstrap.group(workerGroup)
                 .channel(NioSocketChannel.class)

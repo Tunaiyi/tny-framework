@@ -1,7 +1,7 @@
 package com.tny.game.net.dispatcher;
 
-import com.tny.game.net.dispatcher.plugin.ControllerPlugin;
-import com.tny.game.net.dispatcher.plugin.PluginContext;
+import com.tny.game.net.plugin.ControllerPlugin;
+import com.tny.game.net.plugin.PluginContext;
 import org.springframework.stereotype.Component;
 
 @Component

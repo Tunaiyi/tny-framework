@@ -3,6 +3,7 @@ package com.tny.game.net.base;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.DoneResult;
 import com.tny.game.net.dispatcher.CommandResult;
+import com.tny.game.net.message.Protocol;
 
 /**
  * @author KGTny

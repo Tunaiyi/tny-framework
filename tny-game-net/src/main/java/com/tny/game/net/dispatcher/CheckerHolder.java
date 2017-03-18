@@ -4,9 +4,9 @@ import com.tny.game.annotation.Check;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.checker.ControllerChecker;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CheckerHolder {
 
-    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(CoreLogger.DISPATCHER);
+    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
     private ControllerChecker<Object> checker;
 

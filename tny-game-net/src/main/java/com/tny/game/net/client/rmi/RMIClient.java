@@ -5,8 +5,8 @@ import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.client.exception.ClientException;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.Protocol;
-import com.tny.game.net.dispatcher.MessageBuilderFactory;
+import com.tny.game.net.message.Protocol;
+import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
 

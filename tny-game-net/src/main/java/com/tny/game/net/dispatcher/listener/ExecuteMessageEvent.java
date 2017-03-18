@@ -1,6 +1,6 @@
 package com.tny.game.net.dispatcher.listener;
 
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.dispatcher.CommandResult;
 import com.tny.game.net.dispatcher.MethodControllerHolder;
 

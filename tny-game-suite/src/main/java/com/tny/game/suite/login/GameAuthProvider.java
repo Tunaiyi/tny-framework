@@ -2,7 +2,7 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
-import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.suite.utils.Configs;
 

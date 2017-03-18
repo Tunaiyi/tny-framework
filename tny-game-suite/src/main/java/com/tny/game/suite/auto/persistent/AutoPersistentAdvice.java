@@ -3,7 +3,7 @@ package com.tny.game.suite.auto.persistent;
 import com.tny.game.LogUtils;
 import com.tny.game.base.item.Manager;
 import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttributeUtils;
+import com.tny.game.common.context.AttrUtils;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
@@ -44,7 +44,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoPersistentAdvice.class);
 
-    private static AttrKey<Map<Object, String>> OP_DB_MAP = AttributeUtils.key(AutoPersistentAdvice.class, "OP_DB_MAP");
+    private static AttrKey<Map<Object, String>> OP_DB_MAP = AttrUtils.key(AutoPersistentAdvice.class, "OP_DB_MAP");
 
     private AutoMethodHolder<AutoDBMethod> methodHolder = new AutoMethodHolder<>(AutoDBMethod::new);
 

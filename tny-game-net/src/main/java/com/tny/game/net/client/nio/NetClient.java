@@ -1,9 +1,9 @@
 package com.tny.game.net.client.nio;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.ChannelClientSession;
-import com.tny.game.net.dispatcher.NetAttributeKey;
+import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -25,7 +25,7 @@ public class NetClient extends ChannelClientSession {
     private static final int CONNECTING = 3;
     private static final int CONNECTED = 4;
 
-    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NIO_CLIENT);
+    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.NIO_CLIENT);
 
     protected AtomicInteger idCreater = new AtomicInteger(0);
 
@@ -53,7 +53,7 @@ public class NetClient extends ChannelClientSession {
         super(null);
         this.remoteAddress = remoteAddress;
         this.bootstrap = bootstrap;
-        this.attributes().setAttribute(NetAttributeKey.CLEAR_KEY, new AtomicBoolean());
+        this.attributes().setAttribute(NettyAttrKeys.CLEAR_KEY, new AtomicBoolean());
         this.hostName = remoteAddress.getHostName();
         this.connectedCallback = callback;
     }

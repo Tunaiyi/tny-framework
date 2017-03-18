@@ -1,6 +1,6 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.utils.CompressUtils;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
-    private static final Logger DECODER_LOG = LoggerFactory.getLogger(CoreLogger.CODER);
+    private static final Logger DECODER_LOG = LoggerFactory.getLogger(NetLogger.CODER);
 
     private MessageBodyCoder coder;
 

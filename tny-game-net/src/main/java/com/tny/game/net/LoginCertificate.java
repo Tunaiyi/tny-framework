@@ -1,6 +1,7 @@
 package com.tny.game.net;
 
 import com.tny.game.net.session.Session;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
@@ -11,11 +12,11 @@ public final class LoginCertificate<UID> implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    private long loginID;
+    private long ID;
     private final LoginState loginState;
     private final UID userID;
     private final String userGroup;
-    private final long loginAt;
+    private final DateTime loginAt;
 
     public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID) {
         return new LoginCertificate<>(loginID, LoginState.LOGIN, userID, Session.DEFAULT_USER_GROUP);
@@ -46,17 +47,17 @@ public final class LoginCertificate<UID> implements Serializable {
         return new LoginCertificate<>(-1, LoginState.UNLOGIN, defUnloginID, Session.DEFAULT_USER_GROUP);
     }
 
-    private LoginCertificate(long loginID, LoginState loginState, UID userID, String userGroup) {
+    private LoginCertificate(long ID, LoginState loginState, UID userID, String userGroup) {
         super();
-        this.loginID = loginID;
+        this.ID = ID;
         this.loginState = loginState;
         this.userID = userID;
         this.userGroup = userGroup;
-        this.loginAt = loginState == LoginState.UNLOGIN ? -1 : System.currentTimeMillis();
+        this.loginAt = DateTime.now();
     }
 
-    public long getLoginID() {
-        return loginID;
+    public long getID() {
+        return ID;
     }
 
     public boolean isRelogin() {
@@ -79,7 +80,7 @@ public final class LoginCertificate<UID> implements Serializable {
         return this.userGroup;
     }
 
-    public long getLoginAt() {
+    public DateTime getLoginAt() {
         return this.loginAt;
     }
 

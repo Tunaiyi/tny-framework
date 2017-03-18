@@ -3,16 +3,16 @@ package com.tny.game.net.kafka;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Protocol;
+import com.tny.game.net.message.Protocol;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.AbstractServerSession;
 import com.tny.game.net.dispatcher.ClientSession;
-import com.tny.game.net.dispatcher.MessageAction;
-import com.tny.game.net.dispatcher.MessageFuture;
-import com.tny.game.net.dispatcher.MessageFutureHolder;
+import com.tny.game.net.message.MessageAction;
+import com.tny.game.net.session.MessageFuture;
+import com.tny.game.net.message.MessageFutureHolder;
 import com.tny.game.net.dispatcher.MessageSendFuture;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
@@ -189,7 +189,7 @@ class KafkaSession extends AbstractServerSession implements ClientSession {
                 .setRequestVerifier(verifier)
                 .addParameter(params)
                 .build();
-        CoreLogger.log(this, request);
+        NetLogger.log(this, request);
         if (future != null) {
             future.setRequest(request)
                     .setSession(this);

@@ -1,8 +1,8 @@
 package com.tny.game.net.client.nio;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.net.base.MessageMode;
-import com.tny.game.net.base.Protocol;
+import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.message.Protocol;
 import com.tny.game.net.dispatcher.ResponseHandler;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.tny.game.net.kafka;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.net.base.simple.AbstractAppContext;
+import com.tny.game.net.base.AbstractAppContext;
 import com.tny.game.net.checker.MessageSignGenerator;
 
 import java.util.List;

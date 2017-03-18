@@ -1,13 +1,13 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.context.Attributes;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.dispatcher.AuthProvider;
-import com.tny.game.net.dispatcher.MessageDispatcher;
-import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
-import com.tny.game.net.dispatcher.ResponseHandlerHolder;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
-import com.tny.game.net.executor.DispatcherCommandExecutor;
+import com.tny.game.net.command.MessageCommandExecutor;
+import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.plugin.PluginHolder;
+import com.tny.game.net.session.NetSession;
+import com.tny.game.net.session.holder.NetSessionHolder;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,11 +26,11 @@ public interface AppContext {
 
     List<ControllerChecker> getControllerCheckers();
 
-    AbstractNetSessionHolder getSessionHolder();
+    NetSessionHolder<?, NetSession<?>> getSessionHolder();
 
     MessageDispatcher getMessageDispatcher();
 
-    DispatcherCommandExecutor getCommandExecutor();
+    MessageCommandExecutor getCommandExecutor();
 
-    ResponseHandlerHolder getResponseHandlerHolder();
+    // ResponseHandlerHolder getResponseHandlerHolder();
 }

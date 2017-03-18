@@ -5,7 +5,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.ProtocolUtils;
 import com.tny.game.net.dispatcher.CommandResult;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.SessionHolder;
+import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.suite.login.GroupType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -218,14 +218,14 @@ public class SessionService {
      * @return 默认用户组session数量
      */
     public int size() {
-        return this.sessionHolder.getSessionMapByGroup(Session.DEFAULT_USER_GROUP).size();
+        return this.sessionHolder.getSessionsByGroup(Session.DEFAULT_USER_GROUP).size();
     }
 
     /**
      * @return 获取所有默认组用户session
      */
     public Set<Session> getAllUserSession() {
-        return new HashSet<>(this.sessionHolder.getSessionMapByGroup(Session.DEFAULT_USER_GROUP).values());
+        return new HashSet<>(this.sessionHolder.getSessionsByGroup(Session.DEFAULT_USER_GROUP).values());
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.tny.game.net;
 
 import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttributeUtils;
+import com.tny.game.common.context.AttrUtils;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import org.junit.*;
@@ -30,7 +30,7 @@ public class AttributesTest {
     public void tearDown() throws Exception {
     }
 
-    private static AttrKey<Person> PERSION_KEY = AttributeUtils.key("TEST");
+    private static AttrKey<Person> PERSION_KEY = AttrUtils.key("TEST");
 
     @Test
     public void testAttribute() {

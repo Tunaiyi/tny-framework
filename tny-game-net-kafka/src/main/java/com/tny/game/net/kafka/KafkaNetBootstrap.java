@@ -3,11 +3,11 @@ package com.tny.game.net.kafka;
 import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.ClientSession;
 import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.DispatcherCommand;
+import com.tny.game.net.command.MessageCommand;
 import com.tny.game.net.dispatcher.RequestSession;
 import com.tny.game.net.dispatcher.ServerSession;
 import com.tny.game.net.dispatcher.exception.DispatchException;
@@ -229,7 +229,7 @@ public class KafkaNetBootstrap {
             session = this.serverSessionMap.put(cer.getUserGroup(), cer.getUserID(), session);
         }
         session.attributes().setAttribute(KafkaAttrKeys.KAFKA_LOGIN_KEY, cer);
-        DispatcherCommand<CommandResult> command = appContext.getMessageDispatcher().dispatch(request, session, appContext);
+        MessageCommand<CommandResult> command = appContext.getMessageDispatcher().dispatch(request, session, appContext);
         if (command != null)
             appContext.getCommandExecutor().submit(session, command);
     }
@@ -240,7 +240,7 @@ public class KafkaNetBootstrap {
             this.getOrCreateClient(new KafkaServerInfo(response.getRemoteType(), response.getRemoteID()));
             session = clientSessionMap.get(response.getRemoteType(), response.getRemoteID());
         }
-        DispatcherCommand<Void> command = appContext.getMessageDispatcher().dispatch(response, session, appContext);
+        MessageCommand<Void> command = appContext.getMessageDispatcher().dispatch(response, session, appContext);
         if (command != null)
             appContext.getCommandExecutor().submit(session, command);
     }

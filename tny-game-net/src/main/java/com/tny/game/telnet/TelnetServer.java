@@ -1,6 +1,6 @@
 package com.tny.game.telnet;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.listener.ServerClosedListener;
@@ -29,7 +29,7 @@ public class TelnetServer implements ServerClosedListener {
     private static final String TELNET_HOST = HEAD_KEY + "telnet.host";
     private static final String TELNET_PORT = HEAD_KEY + "telnet.port";
 
-    protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
     private TelnetHandler telnetHandler;
 

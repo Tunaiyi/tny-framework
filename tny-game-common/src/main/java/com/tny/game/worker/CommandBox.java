@@ -11,10 +11,6 @@ public interface CommandBox<C extends Command> extends CommandWorker {
 
     void clear();
 
-    int getProcessSize();
-
-    long getProcessUseTime();
-
     boolean accept(C command);
 
     boolean bindWorker(CommandWorker worker);

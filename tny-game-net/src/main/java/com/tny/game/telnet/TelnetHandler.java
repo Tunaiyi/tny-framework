@@ -1,6 +1,6 @@
 package com.tny.game.telnet;
 
-import com.tny.game.net.dispatcher.NetAttributeKey;
+import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.telnet.command.CommandType;
 import com.tny.game.telnet.command.TelnetArgument;
 import com.tny.game.telnet.command.TelnetCommand;
@@ -38,11 +38,11 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        final Object attachment = channel.attr(NetAttributeKey.TELNET_SESSION).get();
+        final Object attachment = channel.attr(NettyAttrKeys.TELNET_SESSION).get();
         TelnetSession session = null;
         if (attachment == null) {
             session = new TelnetSession(this.uid.incrementAndGet(), channel);
-            channel.attr(NetAttributeKey.TELNET_SESSION).set(session);
+            channel.attr(NettyAttrKeys.TELNET_SESSION).set(session);
         }
         this.handleCommand(CommandType.CONNECT, session);
     }
@@ -58,7 +58,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
-        final Object attachment = channel.attr(NetAttributeKey.TELNET_SESSION).get();
+        final Object attachment = channel.attr(NettyAttrKeys.TELNET_SESSION).get();
         TelnetSession session = null;
         if (TelnetSession.class.isInstance(attachment))
             session = (TelnetSession) attachment;

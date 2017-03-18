@@ -2,12 +2,12 @@ package com.tny.game.suite.net.spring;
 
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
-import com.tny.game.net.dispatcher.AuthProvider;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.dispatcher.AbstractNetSessionHolder;
+import com.tny.game.net.common.session.BaseNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
-import com.tny.game.net.dispatcher.plugin.PluginHolder;
-import com.tny.game.net.executor.DispatcherCommandExecutor;
+import com.tny.game.net.plugin.PluginHolder;
+import com.tny.game.net.command.MessageCommandExecutor;
 import com.tny.game.net.kafka.KafkaAppContext;
 import com.tny.game.net.kafka.KafkaMessageBuilderFactory;
 import com.tny.game.net.kafka.KafkaTicketTaker;
@@ -56,7 +56,7 @@ public class SpringKafkaAppContext extends KafkaAppContext {
 
     @Autowired
     @Override
-    public void setSessionHolder(AbstractNetSessionHolder sessionHolder) {
+    public void setSessionHolder(BaseNetSessionHolder sessionHolder) {
         super.setSessionHolder(sessionHolder);
     }
 
@@ -80,7 +80,7 @@ public class SpringKafkaAppContext extends KafkaAppContext {
 
     @Autowired
     @Override
-    public void setDispatcherCommandExecutor(DispatcherCommandExecutor dispatcherCommandExecutor) {
+    public void setDispatcherCommandExecutor(MessageCommandExecutor dispatcherCommandExecutor) {
         super.setDispatcherCommandExecutor(dispatcherCommandExecutor);
     }
 

@@ -1,12 +1,12 @@
 package com.tny.game.net;
 
 import com.tny.game.flash.FlashPolicyServer;
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;
-import com.tny.game.net.dispatcher.MessageHandler;
-import com.tny.game.net.dispatcher.NetAttributeKey;
+import com.tny.game.net.netty.NettyMessageHandler;
+import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.listener.ServerClosedListener;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NetServer {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(CoreLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
     private static final String FLASH_POLICY_USABLE = "tny.server.flash.policy.usable";
     private static final String FLASH_POLICY_PORT = "tny.server.flash.policy.port";
@@ -43,7 +43,7 @@ public class NetServer {
 
     private ServerBootstrap bootstrap;
 
-    private MessageHandler messageHandler;
+    private NettyMessageHandler messageHandler;
 
     private ChannelMaker<Channel> channelMaker;
 
@@ -64,10 +64,10 @@ public class NetServer {
     }
 
     public NetServer(String name, NetServerAppContext appContext) {
-        this(name, appContext, new MessageHandler());
+        this(name, appContext, new NettyMessageHandler());
     }
 
-    public NetServer(String name, NetServerAppContext appContext, MessageHandler handler) {
+    public NetServer(String name, NetServerAppContext appContext, NettyMessageHandler handler) {
         super();
         this.name = name;
         this.appContext = appContext;
@@ -167,7 +167,7 @@ public class NetServer {
                         protected void initChannel(Channel ch) throws Exception {
                             NetServer.this.channelMaker.initChannel(ch);
                             ch.pipeline().addLast("gameHandler", NetServer.this.messageHandler);
-                            ch.attr(NetAttributeKey.CONTEXT)
+                            ch.attr(NettyAttrKeys.CONTEXT)
                                     .set(NetServer.this.appContext);
                         }
                     });

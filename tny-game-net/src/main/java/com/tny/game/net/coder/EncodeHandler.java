@@ -1,6 +1,6 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.log.CoreLogger;
+import com.tny.game.log.NetLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -14,7 +14,7 @@ public class EncodeHandler extends MessageToByteEncoder<Object> {
     /**
      * 日志
      */
-    private static final Logger LOG = LoggerFactory.getLogger(CoreLogger.CODER);
+    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.CODER);
 
     private DataPacketEncoder encoder;
 

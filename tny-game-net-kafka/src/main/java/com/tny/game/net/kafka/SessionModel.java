@@ -1,6 +1,6 @@
 package com.tny.game.net.kafka;
 
-import com.tny.game.net.base.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.base.MessageType;
 
 /**

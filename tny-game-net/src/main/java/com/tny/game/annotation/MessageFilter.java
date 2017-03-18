@@ -1,6 +1,6 @@
 package com.tny.game.annotation;
 
-import com.tny.game.net.base.MessageMode;
+import com.tny.game.net.message.MessageMode;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

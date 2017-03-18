@@ -25,8 +25,7 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
 //        System.out.println(++handleTimes);
             ActorCommand<?, ?, ?> delimiter = null;
             Queue<ActorCommand<?, ?, ?>> queue = this.acceptQueue();
-            long startTime = System.currentTimeMillis();
-            this.runSize = 0;
+            int runSize = 0;
             int stepSize = this.getStepSize();
             while (!queue.isEmpty()) {
                 ActorCommand<?, ?, ?> cmd = queue.peek();
@@ -36,21 +35,18 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
                 if (!cmd.isWork())
                     continue;
                 this.executeCommand(cmd);
-                this.runSize++;
+                runSize++;
                 if (!cmd.isDone()) {
                     if (delimiter == null)
                         delimiter = cmd;
                     queue.add(cmd);
                 }
-                if (this.runSize >= stepSize)
+                if (runSize >= stepSize)
                     break;
             }
             for (CommandBox commandBox : boxes()) {
                 this.worker.submit(commandBox);
-                this.runSize += commandBox.getProcessSize();
             }
-            long finishTime = System.currentTimeMillis();
-            this.runUseTime = finishTime - startTime;
         }
 
     }
