@@ -51,8 +51,11 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
         } else {
             receiver = dbReceiver;
         }
-        this.scheduler.schedule(receiver);
-        this.taskReceiverManager.save(receiver);
+
+        if (receiver.getGroup() == receiverType) {
+            this.scheduler.schedule(receiver);
+            this.taskReceiverManager.save(receiver);
+        }
     }
 
     @Override

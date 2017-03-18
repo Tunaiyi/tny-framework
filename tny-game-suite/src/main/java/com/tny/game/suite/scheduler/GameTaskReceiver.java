@@ -6,7 +6,6 @@ import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.suite.SuiteDBHead;
 import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
-import com.tny.game.suite.login.IDUtils;
 import com.tny.game.suite.scheduler.cache.TaskReceiverFormatter;
 
 @Persistent(synchronizerClass = DBCacheSynchronizer.class)
@@ -29,10 +28,7 @@ public class GameTaskReceiver extends TaskReceiver implements Identifiable {
     }
 
     protected void setGroup(ReceiverType group) {
-        if (IDUtils.isSystem(this.playerID))
-            this.group = ReceiverType.SYSTEM;
-        else
-            this.group = group;
+        this.group = group;
     }
 
     public void setActualLastHandlerTime(long actualLastHandlerTime) {
