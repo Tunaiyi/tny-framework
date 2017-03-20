@@ -104,14 +104,14 @@ public class SpringControllerDispatcherTest {
 
     @Test
     public void testDispatchNoPermissions() throws DispatchException {
-        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "giftSystem"));
+        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(System.currentTimeMillis(), 171772272, "giftSystem"));
         SimpleRequest request = this.request(TestContorl.test2, session, "ddd", 171772272);
         Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).invoke().getResultCode(), CoreResponseCode.NO_PERMISSIONS);
     }
 
     @Test
     public void testDispatchFalsify() throws DispatchException {
-        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "loginSystem"));
+        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(System.currentTimeMillis(), 171772272, "loginSystem"));
         SimpleRequest request = this.request(TestContorl.test3, session, null, 171772272);
         // request.setKeyBytes(new byte [1]);
         Assert.assertEquals(this.dispatcher.dispatch(request, session, this.context).invoke().getResultCode(), CoreResponseCode.FALSIFY);
@@ -119,7 +119,7 @@ public class SpringControllerDispatcherTest {
 
     @Test
     public void testDispatchException() throws DispatchException {
-        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, Session.DEFAULT_USER_GROUP));
+        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(System.currentTimeMillis(), 171772272, Session.DEFAULT_USER_GROUP));
         SimpleRequest request = this.request(TestContorl.test4, session, "ddd", 171772272);
         CommandResult response = this.dispatcher.dispatch(request, session, this.context).invoke();
         Assert.assertEquals(response.getResultCode(), CoreResponseCode.EXECUTE_EXCEPTION);
@@ -134,14 +134,14 @@ public class SpringControllerDispatcherTest {
 
     @Test
     public void testDispatchNomalLogin() throws DispatchException {
-        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, Session.DEFAULT_USER_GROUP));
+        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(System.currentTimeMillis(), 171772272, Session.DEFAULT_USER_GROUP));
         SimpleRequest request = this.request(TestContorl.nomalLogin, session, "ddd", 171772272, SpringControllerDispatcherTest.number++);
         this.dispatcher.dispatch(request, session, this.context).invoke();
     }
 
     @Test
     public void testDispatchSystemLogin() throws DispatchException {
-        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(171772272, "loginSystem"));
+        ServerSession session = new SimpleChannelServerSession(this.channel, LoginCertificate.createLogin(System.currentTimeMillis(), 171772272, "loginSystem"));
         SimpleRequest request = this.request(TestContorl.systemLogin, session, "ddd", 171772272, SpringControllerDispatcherTest.number++);
         this.dispatcher.dispatch(request, session, this.context).invoke();
     }

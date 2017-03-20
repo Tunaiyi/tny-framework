@@ -7,13 +7,19 @@ import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.core.InetConnector;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.LongAdder;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_NODE)
 public class ServerOutline {
@@ -250,7 +256,7 @@ public class ServerOutline {
     }
 
     public InetConnector getPublicConnector(String... ids) {
-        return this.publicConnectors
+        return this.getPublicConnectors()
                 .stream()
                 .filter(c -> ArrayUtils.contains(ids, c.getId()))
                 .findFirst()
@@ -258,7 +264,7 @@ public class ServerOutline {
     }
 
     public InetConnector getPrivateConnector(String... ids) {
-        return this.privateConnectors
+        return this.getPrivateConnectors()
                 .stream()
                 .filter(c -> ArrayUtils.contains(ids, c.getId()))
                 .findFirst()
@@ -267,12 +273,21 @@ public class ServerOutline {
 
     @Override
     public String toString() {
-        return "ServerOutline [serverID=" + this.serverID + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" + this.serverPort + ", rmiPort=" + this.rmiPort
-                + ", openDate=" + this.openDate + "]";
+        return "ServerOutline [serverID=" + this.serverID + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" + this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
     }
 
     public boolean isHasDB() {
         return this.db != null && this.dbHost != null;
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        Map<String, LongAdder> count = new HashMap<>();
+        File file = new File("/Users/KGTny/Desktop/test");
+        List<String> lines = FileUtils.readLines(file);
+        lines.forEach(l -> count.put(l, new LongAdder()));
+        lines.forEach(l -> count.get(l).increment());
+        count.forEach((k, v) -> System.out.println(k + " = " + v));
     }
 
 }
