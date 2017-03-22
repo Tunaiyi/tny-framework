@@ -39,7 +39,7 @@ public class ProtoExRequest extends NetRequest {
     public ProtoExRequest() {
     }
 
-    protected ProtoExRequest(Session session) {
+    public ProtoExRequest(Session session) {
         this.session = session;
     }
 
