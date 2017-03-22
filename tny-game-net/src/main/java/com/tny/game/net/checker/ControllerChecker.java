@@ -2,15 +2,16 @@ package com.tny.game.net.checker;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.AppContext;
+import com.tny.game.net.common.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.dispatcher.ControllerHolder;
+import com.tny.game.net.session.Session;
 
 /**
  * 消息校驗處理器
  *
  * @author KGTny
  */
-public interface ControllerChecker<O> {
+public interface ControllerChecker<UID, O> {
 
     /**
      * 消息校驗
@@ -18,7 +19,7 @@ public interface ControllerChecker<O> {
      * @param message 请求对象
      * @return 是否通過校驗 通過校驗返回true 否則返回false
      */
-    ResultCode check(Message message, ControllerHolder holder, AppContext context, O attribute);
+    ResultCode check(Session<UID> session, Message<UID> message, ControllerHolder holder, AppContext context, O attribute);
 
     /**
      * @return 属性类型

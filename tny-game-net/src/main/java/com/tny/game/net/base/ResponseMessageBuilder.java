@@ -84,7 +84,7 @@ public class ResponseMessageBuilder {
      */
     public ResponseMessage build() {
         if (this.result <= 0)
-            throw new IllegalArgumentException("build message result is " + this.result);
+            throw new IllegalArgumentException("build message code is " + this.result);
         if (this.protocol == 0)
             throw new NullPointerException("build message protocol is 0");
         GameResponseMessage message = new GameResponseMessage();

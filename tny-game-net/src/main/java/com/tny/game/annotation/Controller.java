@@ -1,6 +1,5 @@
 package com.tny.game.annotation;
 
-import com.tny.game.net.dispatcher.Request;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -38,7 +37,6 @@ import java.lang.annotation.Target;
  * <p>
  * Request.getModule() 等于ControllerTest Request.getProtocol() 等于playerId
  * 系统会调用getPlayerIdList,但不会进行信息校验
- * @see Request
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -47,14 +45,13 @@ import java.lang.annotation.Target;
 public @interface Controller {
 
     /**
-     * 处理协议号列表, 默认处理所有
+     * 处理协议号
      * <p>
      * <p>
-     * 被Controller标记的类的模塊ID,與Request的Module相对应,默认-1代表无效<br>
-     * 被Controller标记的方法的业务方法ID,與Request的Protocol相对应,默认-1代表无效<br>
+     * 被Controller标记的类的模塊ID <br>
+     * 被Controller标记的方法的业务方法ID <br>
      *
-     * @return
-     * @see Request
+     * @return 处理协议号
      */
     int value();
 

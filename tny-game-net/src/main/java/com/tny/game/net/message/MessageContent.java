@@ -1,7 +1,6 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MessageSentHandler;
 import com.tny.game.net.session.MessageFuture;
 
 /**
@@ -15,7 +14,7 @@ public class MessageContent<R> {
 
     private Integer toMessage;
 
-    private MessageSentHandler sentHandler;
+    private MessageSentHandler<?> sentHandler;
 
     private MessageFuture<R> messageFuture;
 
@@ -50,8 +49,6 @@ public class MessageContent<R> {
         this.code = code;
         this.body = body;
         this.toMessage = toMessage;
-        this.sentHandler = sentHandler;
-        this.messageFuture = messageFuture;
     }
 
     public ResultCode getCode() {
@@ -66,14 +63,13 @@ public class MessageContent<R> {
         return toMessage;
     }
 
-    public MessageSentHandler getSentHandler() {
+    public MessageSentHandler<?> getSentHandler() {
         return sentHandler;
     }
 
     public MessageFuture<R> getMessageFuture() {
         return messageFuture;
     }
-
 
     public MessageContent setSentHandler(MessageSentHandler sentHandler) {
         this.sentHandler = sentHandler;

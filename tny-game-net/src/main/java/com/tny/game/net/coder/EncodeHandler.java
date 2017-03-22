@@ -1,6 +1,6 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

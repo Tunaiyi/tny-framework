@@ -1,11 +1,11 @@
 package com.tny.game.net.client.nio;
 
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.NetAppContext;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.netty.NettyMessageHandler;
-import com.tny.game.net.dispatcher.RequestSession;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.rmi.server.UID;
+
 
 public class NetConnecter {
 
@@ -47,36 +49,37 @@ public class NetConnecter {
                     protected void initChannel(Channel ch) throws Exception {
                         NetConnecter.this.channelMaker.initChannel(ch);
                         ch.pipeline().addLast("gameHandler", NetConnecter.this.messageHandler);
+                        ch.pipeline().addLast("gameHandler", NetConnecter.this.messageHandler);
                     }
                 });
         this.addShutdownHook(workerGroup);
     }
 
-    public RequestSession connect(String host, int port) throws IOException {
+    public Session<UID> connect(String host, int port) throws IOException {
         return connect(host, port, null);
     }
 
-    public RequestSession connect(String host, int port, ConnectedCallback callback) throws IOException {
+    public Session<UID> connect(String host, int port, ConnectedCallback callback) throws IOException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.connect();
         return client;
     }
 
-    public RequestSession awaitConnect(String host, int port) throws IOException, InterruptedException {
+    public Session<UID> awaitConnect(String host, int port) throws IOException, InterruptedException {
         return awaitConnect(host, port, null);
     }
 
-    public RequestSession awaitConnect(String host, int port, ConnectedCallback callback) throws IOException, InterruptedException {
+    public Session<UID> awaitConnect(String host, int port, ConnectedCallback callback) throws IOException, InterruptedException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.awaitConnect();
         return client;
     }
 
-    public RequestSession awaitConnect(String host, int port, long timeoutMillis) throws IOException, InterruptedException {
+    public Session<UID> awaitConnect(String host, int port, long timeoutMillis) throws IOException, InterruptedException {
         return awaitConnect(host, port, timeoutMillis, null);
     }
 
-    public RequestSession awaitConnect(String host, int port, long timeoutMillis, ConnectedCallback callback) throws IOException, InterruptedException {
+    public Session<UID> awaitConnect(String host, int port, long timeoutMillis, ConnectedCallback callback) throws IOException, InterruptedException {
         NetClient client = new NetClient(this.bootstrap, host, port, callback);
         client.awaitConnect(timeoutMillis);
         return client;

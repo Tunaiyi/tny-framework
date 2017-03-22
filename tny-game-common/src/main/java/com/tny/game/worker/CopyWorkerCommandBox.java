@@ -75,7 +75,7 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> exte
         }
         for (CommandBox commandBox : boxes()) {
             this.worker.submit(commandBox);
-            runSize += commandBox.getProcessSize();
+            // runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;

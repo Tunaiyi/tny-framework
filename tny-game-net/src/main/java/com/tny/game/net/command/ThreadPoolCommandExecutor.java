@@ -4,9 +4,8 @@ import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrUtils;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.collection.LinkedTransferQueue;
-import com.tny.game.log.NetLogger;
-import com.tny.game.net.dispatcher.MessageCommandBox;
-import com.tny.game.net.dispatcher.RunnableMessageCommand;
+import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.common.dispatcher.MessageCommandBox;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
 import com.tny.game.worker.Callback;
@@ -125,20 +124,12 @@ public class ThreadPoolCommandExecutor implements MessageCommandExecutor {
                     }
                 } else {
                     if (this.start.compareAndSet(true, false)) {
-                        if (!this.commandQueue.isEmpty() && this.start.compareAndSet(false, true)) {
-                            continue;
-                        } else {
+                        if (this.commandQueue.isEmpty() && !this.start.compareAndSet(false, true))
                             break;
-                        }
                     }
                 }
             }
             this.thread = null;
-//            if (!this.commandQueue.isEmpty()) {
-//                if (this.start.compareAndSet(false, true)) {
-//                    this.executorService.submit(this);
-//                }
-//            }
         }
 
         @Override

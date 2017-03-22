@@ -1,23 +1,12 @@
 package com.tny.game.net.message.protoex;
 
+import com.tny.game.net.message.MessageBuilder;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.dispatcher.RequestBuilder;
-import com.tny.game.net.dispatcher.ResponseBuilder;
-import com.tny.game.net.session.Session;
 
-public class ProtoExMessageBuilderFactory implements MessageBuilderFactory {
-
-
+public class ProtoExMessageBuilderFactory<UID> implements MessageBuilderFactory<UID> {
 
     @Override
-    public RequestBuilder newRequestBuilder(Session session) {
-        return new ProtoExRequestBuilder();
+    public MessageBuilder<UID> newMessageBuilder() {
+        return new ProtoExMessageBuilder<>();
     }
-
-
-    @Override
-    public ResponseBuilder newResponseBuilder(Session session) {
-        return new ProtoExResponseBuilder();
-    }
-
 }

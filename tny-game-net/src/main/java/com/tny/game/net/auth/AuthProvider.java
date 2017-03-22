@@ -1,7 +1,7 @@
 package com.tny.game.net.auth;
 
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 
 /**

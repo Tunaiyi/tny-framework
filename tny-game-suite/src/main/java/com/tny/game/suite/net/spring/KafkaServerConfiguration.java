@@ -1,8 +1,8 @@
 package com.tny.game.suite.net.spring;
 
 import com.google.common.collect.Range;
-import com.tny.game.net.dispatcher.DefaultSessionHolder;
-import com.tny.game.net.common.session.BaseNetSessionHolder;
+import com.tny.game.net.session.holder.DefaultSessionHolder;
+import com.tny.game.net.common.session.AbstractNetSessionHolder;
 import com.tny.game.net.kafka.KafkaAppContext;
 import com.tny.game.net.kafka.KafkaMessage;
 import com.tny.game.net.kafka.KafkaServeAuthProvider;
@@ -49,7 +49,7 @@ public class KafkaServerConfiguration {
 
     @Bean(name = "sessionHolder")
     @Profile({SERVER, SERVER_KAFKA})
-    public BaseNetSessionHolder serverSessionHolder() {
+    public AbstractNetSessionHolder serverSessionHolder() {
         return new DefaultSessionHolder();
     }
 

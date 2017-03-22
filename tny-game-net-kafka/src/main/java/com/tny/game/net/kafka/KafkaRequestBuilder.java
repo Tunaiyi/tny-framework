@@ -39,7 +39,7 @@ public class KafkaRequestBuilder extends AbstractRequestBuilder<KafkaRequest> {
 
     @Override
     protected void doBuild(KafkaRequest request) {
-        request.setTicket(ticketSeller.create(this.remoteServer, certificate, request.getCheckCode()));
+        request.setTicket(ticketSeller.create(this.remoteServer, certificate, request.getSign()));
     }
 
 }

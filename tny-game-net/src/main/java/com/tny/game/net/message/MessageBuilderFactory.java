@@ -5,8 +5,8 @@ package com.tny.game.net.message;
  *
  * @author Kun.y
  */
-public interface MessageBuilderFactory {
+public interface MessageBuilderFactory<UID> {
 
-    MessageBuilder newMessageBuilder();
+    MessageBuilder<UID> newMessageBuilder();
 
 }

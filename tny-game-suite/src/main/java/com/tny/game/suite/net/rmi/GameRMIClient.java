@@ -9,7 +9,7 @@ import com.tny.game.net.client.rmi.RMIService;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.message.simple.SimpleMessageBuilderFactory;
+import com.tny.game.net.message.defalut.SimpleMessageBuilderFactory;
 import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.core.SessionKeys;
 import com.tny.game.suite.login.ServeTicket;

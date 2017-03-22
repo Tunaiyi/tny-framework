@@ -1,6 +1,6 @@
 package com.tny.game.flash;
 
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

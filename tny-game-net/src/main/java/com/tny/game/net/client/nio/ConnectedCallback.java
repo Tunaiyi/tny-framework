@@ -1,10 +1,10 @@
 package com.tny.game.net.client.nio;
 
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.ClientSession;
+import com.tny.game.net.session.Session;
 
-public interface ConnectedCallback {
+public interface ConnectedCallback<UID> {
 
-    public LoginCertificate connected(boolean success, ClientSession session, Throwable cause);
+    LoginCertificate connected(boolean success, Session<UID> session, Throwable cause);
 
 }

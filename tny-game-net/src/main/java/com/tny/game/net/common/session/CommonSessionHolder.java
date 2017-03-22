@@ -2,10 +2,10 @@ package com.tny.game.net.common.session;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.dispatcher.exception.ValidatorFailException;
+import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.Protocol;
 import com.tny.game.net.session.NetSession;
@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extends BaseNetSessionHolder<UID, S> {
+public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extends AbstractNetSessionHolder<UID, S> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
     // private static final Logger LOG_ENCODE = LoggerFactory.getLogger(CoreLogger.CODER);
@@ -41,6 +41,7 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
         for (Map<UID, S> userGroupSessionMap : this.sessionMap.values()) {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
+                    session.removeTimeoutFuture();
                     if (session.getOfflineTime() + sessionLife > now) {
                         if (!session.isInvalided())
                             session.invalid();

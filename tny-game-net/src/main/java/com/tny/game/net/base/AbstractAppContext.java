@@ -2,18 +2,18 @@ package com.tny.game.net.base;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.auth.AuthProvider;
-import com.tny.game.net.dispatcher.DefaultMessageDispatcher;
-import com.tny.game.net.dispatcher.DefaultSessionHolder;
-import com.tny.game.net.message.MessageDispatcher;
-import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.common.session.BaseNetSessionHolder;
-import com.tny.game.net.dispatcher.ResponseHandlerHolder;
+import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.command.MessageCommandExecutor;
+import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.command.ThreadPoolCommandExecutor;
+import com.tny.game.net.common.dispatcher.CommonMessageDispatcher;
+import com.tny.game.net.common.dispatcher.DefaultMessageDispatcher;
 import com.tny.game.net.plugin.DefaultPluginHolder;
 import com.tny.game.net.plugin.PluginHolder;
-import com.tny.game.net.command.MessageCommandExecutor;
-import com.tny.game.net.command.ThreadPoolCommandExecutor;
+import com.tny.game.net.session.NetSession;
+import com.tny.game.net.session.holder.DefaultSessionHolder;
+import com.tny.game.net.session.holder.NetSessionHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,11 @@ public abstract class AbstractAppContext implements AppContext {
 
     private List<AuthProvider> authProviders = new ArrayList<>();
 
-    private BaseNetSessionHolder sessionHolder;
+    private NetSessionHolder sessionHolder;
 
-    private NetMessageDispatcher messageDispatcher;
+    private CommonMessageDispatcher messageDispatcher;
 
     private MessageCommandExecutor dispatcherCommandExecutor;
-
-    private ResponseHandlerHolder responseHandlerHolder;
 
     private AtomicBoolean init = new AtomicBoolean(false);
 
@@ -76,9 +74,10 @@ public abstract class AbstractAppContext implements AppContext {
     }
 
     @Override
-    public BaseNetSessionHolder getSessionHolder() {
+    @SuppressWarnings("unchecked")
+    public NetSessionHolder<?, NetSession<?>> getSessionHolder() {
         if (this.sessionHolder == null)
-            this.sessionHolder = new DefaultSessionHolder();
+            this.sessionHolder = new DefaultSessionHolder<>(6000L);
         return this.sessionHolder;
     }
 
@@ -86,7 +85,7 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public MessageDispatcher getMessageDispatcher() {
         if (this.messageDispatcher == null)
-            this.messageDispatcher = new DefaultMessageDispatcher(true);
+            this.messageDispatcher = new DefaultMessageDispatcher();
         return this.messageDispatcher;
     }
 
@@ -95,13 +94,6 @@ public abstract class AbstractAppContext implements AppContext {
         if (this.dispatcherCommandExecutor == null)
             this.dispatcherCommandExecutor = new ThreadPoolCommandExecutor();
         return this.dispatcherCommandExecutor;
-    }
-
-    @Override
-    public ResponseHandlerHolder getResponseHandlerHolder() {
-        if (this.responseHandlerHolder == null)
-            this.responseHandlerHolder = new ResponseHandlerHolder();
-        return this.responseHandlerHolder;
     }
 
     public void setPluginHolder(PluginHolder pluginHolder) {
@@ -116,11 +108,11 @@ public abstract class AbstractAppContext implements AppContext {
         this.authProviders = authProviders;
     }
 
-    public void setSessionHolder(BaseNetSessionHolder sessionHolder) {
+    public void setSessionHolder(NetSessionHolder sessionHolder) {
         this.sessionHolder = sessionHolder;
     }
 
-    public void setMessageDispatcher(NetMessageDispatcher messageDispatcher) {
+    public void setMessageDispatcher(CommonMessageDispatcher messageDispatcher) {
         this.messageDispatcher = messageDispatcher;
     }
 
@@ -128,8 +120,4 @@ public abstract class AbstractAppContext implements AppContext {
         this.dispatcherCommandExecutor = dispatcherCommandExecutor;
     }
 
-    public void setResponseHandlerHolder(ResponseHandlerHolder responseHandlerHolder) {
-        this.responseHandlerHolder = responseHandlerHolder;
-    }
-    
 }

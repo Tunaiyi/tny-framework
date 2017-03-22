@@ -110,6 +110,11 @@ public interface Session<UID> {
     long getOfflineTime();
 
     /**
+     * @return 最后接受消息时间
+     */
+    long getLastReceiveTime();
+
+    /**
      * 发送消息
      *
      * @param protocol 协议

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.json.JSONUtils;
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.config.BindIp;
 import com.tny.game.net.config.ServerConfig;
 import org.apache.commons.lang3.StringUtils;

@@ -40,7 +40,7 @@ public final class LoginCertificate<UID> implements Serializable {
     }
 
     public static <UID> LoginCertificate<UID> createUnLogin() {
-        return new LoginCertificate<>(-1, LoginState.UNLOGIN, Session.UN_LOGIN_UID, Session.UNLOGIN_USER_GROUP);
+        return new LoginCertificate<>(-1, LoginState.UNLOGIN, null, Session.UNLOGIN_USER_GROUP);
     }
 
     public static <UID> LoginCertificate<UID> createUnLogin(UID defUnloginID) {

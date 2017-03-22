@@ -3,8 +3,8 @@ package com.tny.game.suite.net.spring;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.auth.AuthProvider;
-import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.common.session.BaseNetSessionHolder;
+import com.tny.game.net.common.dispatcher.CommonMessageDispatcher;
+import com.tny.game.net.common.session.AbstractNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.command.MessageCommandExecutor;
@@ -56,7 +56,7 @@ public class SpringKafkaAppContext extends KafkaAppContext {
 
     @Autowired
     @Override
-    public void setSessionHolder(BaseNetSessionHolder sessionHolder) {
+    public void setSessionHolder(AbstractNetSessionHolder sessionHolder) {
         super.setSessionHolder(sessionHolder);
     }
 
@@ -74,7 +74,7 @@ public class SpringKafkaAppContext extends KafkaAppContext {
 
     @Autowired
     @Override
-    public void setMessageDispatcher(NetMessageDispatcher messageDispatcher) {
+    public void setMessageDispatcher(CommonMessageDispatcher messageDispatcher) {
         super.setMessageDispatcher(messageDispatcher);
     }
 

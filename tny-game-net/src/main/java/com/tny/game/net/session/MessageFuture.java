@@ -2,7 +2,7 @@ package com.tny.game.net.session;
 
 import com.tny.game.common.concurrent.AbstractFuture;
 import com.tny.game.common.result.ResultCodes;
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageAction;
@@ -81,7 +81,7 @@ public class MessageFuture<M> extends AbstractFuture<Message<?>> {
     public boolean cancel(boolean mayInterruptIfRunning) {
         boolean cancel = super.cancel(mayInterruptIfRunning);
         if (cancel) {
-            session.takeFuture(this.request.getID());
+            session.removeFuture(this);
             try {
                 this.responseAction.handle(this.session, this.request, CoreResponseCode.REQUEST_FAILED, null);
             } catch (Throwable e) {

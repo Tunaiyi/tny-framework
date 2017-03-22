@@ -43,7 +43,7 @@ public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  
         }
         for (CommandBox commandBox : boxes()) {
             commandBox.process();
-            runSize += commandBox.getProcessSize();
+            // runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;

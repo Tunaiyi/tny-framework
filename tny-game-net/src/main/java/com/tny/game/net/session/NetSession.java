@@ -1,9 +1,13 @@
 package com.tny.game.net.session;
 
+import com.google.common.collect.Range;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionOutputEvent;
+import com.tny.game.net.session.event.SessionSendEvent;
+
+import java.util.List;
 
 /**
  * Created by Kun Yang on 2017/2/16.
@@ -21,6 +25,14 @@ public interface NetSession<UID> extends Session<UID> {
     SessionOutputEvent pollOutputEvent();
 
     /**
+     * 获取指定范围的已处理发送事件
+     *
+     * @param range 指定方位
+     * @return 获取事件列表
+     */
+    List<SessionSendEvent> getHandledSendEvents(Range<Integer> range);
+
+    /**
      * @return 是否有输入事件
      */
     boolean hasInputEvent();
@@ -30,9 +42,10 @@ public interface NetSession<UID> extends Session<UID> {
      */
     boolean hasOutputEvent();
 
+    /**
+     * @return 消息构建器工厂
+     */
     MessageBuilderFactory getMessageBuilderFactory();
-
-    MessageFuture<?> takeFuture(int id);
 
     /**
      * 通过指定session使当前session恢复上线.
@@ -56,4 +69,11 @@ public interface NetSession<UID> extends Session<UID> {
      */
     void login(LoginCertificate<UID> certificate);
 
+    /**
+     * 移除指定future
+     *
+     * @param future 移除的future
+     */
+    void removeFuture(MessageFuture<?> future);
+    void removeTimeoutFuture();
 }

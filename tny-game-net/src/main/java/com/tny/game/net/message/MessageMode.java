@@ -19,7 +19,7 @@ public enum MessageMode {
     /**
      * 处理响应
      */
-    RESPONSE(MessageUtils::isRequest);
+    RESPONSE(MessageUtils::isResponse);
 
     private Predicate<Message<?>> checkMode;
 

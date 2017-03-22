@@ -106,8 +106,8 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                     while (currentTime >= nextRunningTime) {
                         for (CommandBox box : commandBoxList) {
                             this.worker.submit(box);
-                            box.getProcessUseTime();
-                            currentRunSize += box.getProcessSize();
+                            // box.getProcessUseTime();
+                            // currentRunSize += box.getProcessSize();
                         }
                         nextRunningTime += 100L;
                         currentContinueTime++;

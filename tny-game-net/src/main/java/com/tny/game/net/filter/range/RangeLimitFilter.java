@@ -1,27 +1,28 @@
 package com.tny.game.net.filter.range;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodControllerHolder;
-import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.common.dispatcher.MethodControllerHolder;
+import com.tny.game.net.filter.AbstractParamFilter;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.session.Session;
 
 import java.lang.annotation.Annotation;
 
-public abstract class RangeLimitFilter<A extends Annotation, N extends Comparable<N>> extends AbstractParamFilter<A, N> {
+public abstract class RangeLimitFilter<A extends Annotation, N extends Comparable<N>> extends AbstractParamFilter<Object, A, N> {
 
     protected RangeLimitFilter(Class<A> annClass, Class<N> numClass) {
         super(annClass, numClass);
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Request request, int index, A annotation, N param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Session<Object> session, Message<Object> message, int index, A annotation, N param) {
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         N number = param;
         if (!this.filterRange(low, number, high)) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    request.getUserID(), request.getProtocol(),
+                    message.getUserID(), message.getProtocol(),
                     index, number, low, high);
             return CoreResponseCode.ILLEGAL_PARAMETERS;
         }

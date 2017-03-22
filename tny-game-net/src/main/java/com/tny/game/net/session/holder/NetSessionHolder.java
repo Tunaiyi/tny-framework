@@ -1,7 +1,7 @@
 package com.tny.game.net.session.holder;
 
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.exception.ValidatorFailException;
+import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.session.NetSession;
 
 import java.util.Optional;

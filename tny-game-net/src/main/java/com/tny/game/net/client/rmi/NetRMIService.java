@@ -1,12 +1,10 @@
 package com.tny.game.net.client.rmi;
 
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
-import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.message.MessageDispatcher;
-import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Response;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.message.defalut.DefaultMessageBuilderFactory;
 
 public abstract class NetRMIService implements RMIService {
 
@@ -16,6 +14,8 @@ public abstract class NetRMIService implements RMIService {
     protected AppContext context;
 
     private MessageDispatcher messageDispatcher;
+
+    private DefaultMessageBuilderFactory<Object> messageBuilderFactory;
 
     public NetRMIService(AppContext context) {
         this.context = context;
@@ -27,31 +27,32 @@ public abstract class NetRMIService implements RMIService {
         });
     }
 
-    @Override
-    public Response send(Request request) {
-        RMISession session = null;
-        try {
-            session = this.createSession(request);
-            CommandResult result = this.messageDispatcher.dispatch(request, session, this.context).invoke();
-            if (result != null) {
-                return session.getMessageBuilderFactory()
-                        .newResponseBuilder(session)
-                        .setProtocol(request)
-                        .setCommandResult(result)
-                        .build();
-            }
-        } catch (DispatchException e) {
-            Response response = session.getMessageBuilderFactory()
-                    .newResponseBuilder(session)
-                    .setProtocol(request)
-                    .setResult(e.getResultCode())
-                    .build();
-            NetLogger.log(session, response);
-            return response;
-        }
-        return null;
-    }
+    // @Override
+    // public <FID, TID> Message<TID> send(Message<FID> message) {
+    //     RMISession<FID> session = null;
+    //     try {
+    //         session = this.loadOrCreateSession(message);
+    //         CommandResult result = this.messageDispatcher.dispatch(message, session).invoke();
+    //         if (result != null) {
+    //             return messageBuilderFactory
+    //                     .newMessageBuilder()
+    //                     .setSession(session)
+    //                     .setCommandResult(result)
+    //                     .setProtocol(message)
+    //                     .build();
+    //         }
+    //     } catch (DispatchException e) {
+    //         Response response = session.getMessageBuilderFactory()
+    //                 .newResponseBuilder(session)
+    //                 .setProtocol(request)
+    //                 .setResult(e.getResultCode())
+    //                 .build();
+    //         NetLogger.log(session, response);
+    //         return response;
+    //     }
+    //     return null;
+    // }
 
-    protected abstract RMISession createSession(Request request) throws DispatchException;
+    protected abstract RMISession loadOrCreateSession(Message<?> request) throws DispatchException;
 
 }

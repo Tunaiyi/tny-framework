@@ -1,7 +1,8 @@
 package com.tny.game.net.plugin;
 
+import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.dispatcher.CommandResult;
+import com.tny.game.net.session.Session;
 
 public interface ControllerPlugin<UID> {
 
@@ -14,6 +15,6 @@ public interface ControllerPlugin<UID> {
      * @return 返回结果
      * @throws Exception 异常
      */
-    CommandResult execute(Message<UID> message, CommandResult result, PluginContext context) throws Exception;
+    CommandResult execute(Session<UID> session, Message<UID> message, CommandResult result, PluginContext context) throws Exception;
 
 }

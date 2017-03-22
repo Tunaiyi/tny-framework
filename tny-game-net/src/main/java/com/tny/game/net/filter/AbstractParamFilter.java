@@ -1,16 +1,18 @@
 package com.tny.game.net.filter;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.dispatcher.MethodControllerHolder;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.common.dispatcher.MethodControllerHolder;
+import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public abstract class AbstractParamFilter<A extends Annotation, P> implements ParamFilter {
+public abstract class AbstractParamFilter<UID, A extends Annotation, P> implements ParamFilter<UID> {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(ParamFilter.class);
 
@@ -29,25 +31,14 @@ public abstract class AbstractParamFilter<A extends Annotation, P> implements Pa
 
     @Override
     @SuppressWarnings("unchecked")
-    public ResultCode filter(MethodControllerHolder holder, Request request) {
-        List<A> intRangeAnns = holder.getParamAnnotationsByIndex(this.annClass);
+    public ResultCode filter(MethodControllerHolder holder, Session<UID> session, Message<UID> message) throws DispatchException {
+        List<A> annotations = holder.getParamsAnnotationsByType(this.annClass);
         int index = 0;
-        Class<?>[] paramClasses = holder.getParamsType();
-        for (A rangeAnn : intRangeAnns) {
-            if (rangeAnn != null) {
-                P param = null;
-                if (index == 0) {
-                    if (Object.class.isAssignableFrom(this.paramClass)) {
-                        param = (P) ((Object) request.getUserID());
-                    } else if (Integer.class.isAssignableFrom(this.paramClass)) {
-                        param = (P) ((Object) request.getUserID());
-                    } else if (Request.class.isAssignableFrom(this.paramClass)) {
-                        param = (P) request;
-                    }
-                } else {
-                    param = (P) request.getParameter(index - 1, paramClasses[index]);
-                }
-                ResultCode result = this.doFilter(holder, request, index, rangeAnn, param);
+        Object body = message.getBody(Object.class);
+        for (A an : annotations) {
+            if (an != null) {
+                P param = (P) holder.getParameterValue(index, session, message, body);
+                ResultCode result = this.doFilter(holder, session, message, index, an, param);
                 if (result != CoreResponseCode.SUCCESS) {
                     return result;
                 }
@@ -57,6 +48,6 @@ public abstract class AbstractParamFilter<A extends Annotation, P> implements Pa
         return CoreResponseCode.SUCCESS;
     }
 
-    protected abstract ResultCode doFilter(MethodControllerHolder holder, Request request, int index, A annotation, P param);
+    protected abstract ResultCode doFilter(MethodControllerHolder holder, Session<UID> session, Message<UID> message, int index, A annotation, P param);
 
 }

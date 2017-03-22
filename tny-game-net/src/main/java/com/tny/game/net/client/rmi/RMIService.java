@@ -1,7 +1,6 @@
 package com.tny.game.net.client.rmi;
 
-import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.Response;
+import com.tny.game.net.message.Message;
 
 import java.rmi.RemoteException;
 
@@ -15,9 +14,9 @@ public interface RMIService {
     /**
      * 发送请求
      *
-     * @param request 请求对象
+     * @param message 消息
      * @return 返回相应
      */
-    public Response send(Request request) throws RemoteException;
+    <FID, TID> Message send(Message<FID> message) throws RemoteException;
 
 }

@@ -1,21 +1,21 @@
 package com.tny.game.net.checker.md5;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.AppContext;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.message.Message;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
-import com.tny.game.net.dispatcher.ControllerHolder;
-import com.tny.game.net.dispatcher.Request;
+import com.tny.game.net.common.dispatcher.ControllerHolder;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.session.Session;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 
-public abstract class MessageSignMD5Checker implements ControllerChecker, MessageSignGenerator {
+public abstract class MessageSignMD5Checker<UID> implements ControllerChecker<UID, Object>, MessageSignGenerator<UID> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
 
@@ -24,7 +24,7 @@ public abstract class MessageSignMD5Checker implements ControllerChecker, Messag
     }
 
     @Override
-    public ResultCode check(Message message, ControllerHolder holder, AppContext context, Object attribute) {
+    public ResultCode check(Session<UID> session, Message<UID> message, ControllerHolder holder, AppContext context, Object attribute) {
         if (!isCheck(message))
             return ResultCode.SUCCESS;
         String requestStr = this.createSign(message);
@@ -32,9 +32,9 @@ public abstract class MessageSignMD5Checker implements ControllerChecker, Messag
             if (requestStr != null) {
                 String checkKey = DigestUtils.md5Hex(requestStr.getBytes("utf-8"));
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("请求MD5key:{} 请求内容:{} 校验MD5key:{}", message.getCheckCode(), requestStr, checkKey);
-                if (!checkKey.equals(message.getCheckCode())) {
-                    LOGGER.warn("请求MD5key:{} 请求内容:{} | 校验MD5key:{} | 请求校验失败!", message.getCheckCode(), requestStr, checkKey);
+                    LOGGER.debug("请求MD5key:{} 请求内容:{} 校验MD5key:{}", message.getSign(), requestStr, checkKey);
+                if (!checkKey.equals(message.getSign())) {
+                    LOGGER.warn("请求MD5key:{} 请求内容:{} | 校验MD5key:{} | 请求校验失败!", message.getSign(), requestStr, checkKey);
                     return CoreResponseCode.FALSIFY;
                 }
                 return ResultCode.SUCCESS;
@@ -46,7 +46,7 @@ public abstract class MessageSignMD5Checker implements ControllerChecker, Messag
     }
 
     @Override
-    public String generate(Request request) {
+    public String generate(Session<UID> session, Message<UID> request) {
         String requestStr = this.createSign(request);
         try {
             if (requestStr != null) {

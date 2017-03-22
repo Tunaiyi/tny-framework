@@ -2,15 +2,15 @@ package com.tny.game.net.base;
 
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.coder.SimpleChannelMaker;
-import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
-import com.tny.game.net.message.simple.SimpleSessionFactory;
+import com.tny.game.net.netty.NettySessionFactory;
+import com.tny.game.net.message.defalut.SimpleSessionFactory;
 import io.netty.channel.Channel;
 
 public abstract class AbstractNetAppContext extends AbstractAppContext implements NetAppContext {
 
     private ChannelMaker<Channel> channelMaker;
 
-    private ChannelServerSessionFactory sessionFactory;
+    private NettySessionFactory sessionFactory;
 
     @Override
     public ChannelMaker<Channel> getChannelMaker() {
@@ -20,13 +20,13 @@ public abstract class AbstractNetAppContext extends AbstractAppContext implement
     }
 
     @Override
-    public ChannelServerSessionFactory getSessionFactory() {
+    public NettySessionFactory getSessionFactory() {
         if (this.sessionFactory == null)
             this.sessionFactory = this.getDefaultSessionFactory();
         return this.sessionFactory;
     }
 
-    protected ChannelServerSessionFactory getDefaultSessionFactory() {
+    protected NettySessionFactory getDefaultSessionFactory() {
         return new SimpleSessionFactory();
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractNetAppContext extends AbstractAppContext implement
         this.channelMaker = channelMaker;
     }
 
-    public void setSessionFactory(ChannelServerSessionFactory sessionFactory) {
+    public void setSessionFactory(NettySessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

@@ -2,7 +2,7 @@ package com.tny.game.suite.net.filter;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.dispatcher.MethodControllerHolder;
+import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.suite.net.filter.annotation.NameFilter;

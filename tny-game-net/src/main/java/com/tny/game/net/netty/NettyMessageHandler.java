@@ -1,14 +1,13 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.base.NetAppContext;
-import com.tny.game.net.common.NetMessage;
-import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.MessageCommandExecutor;
-import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.message.NetMessage;
 import com.tny.game.net.session.NetSession;
-import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.session.Session;
+import com.tny.game.net.session.holder.NetSessionHolder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -51,7 +50,7 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     /**
      * session工厂
      */
-    protected ChannelServerSessionFactory sessionFactory;
+    protected NettySessionFactory sessionFactory;
 
     public NettyMessageHandler() {
 
@@ -73,7 +72,8 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
         if (LOG.isInfoEnabled()) {
             Channel channel = ctx.channel();
             LOG.info("接受连接##通道 {} ==> {} 在 {} 时链接服务器", channel.remoteAddress(), channel.localAddress(), new Date());
-            this.sessionFactory.createSession(channel);
+            NetSession<?> session = this.sessionFactory.createSession(channel);
+            channel.attr(NettyAttrKeys.SESSION).set(session);
         }
         super.channelRegistered(ctx);
     }
@@ -116,8 +116,9 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
         try {
             NetSession<?> session = channel.attr(NettyAttrKeys.SESSION).get();
-            if (session != null)
+            if (session != null) {
                 session.receiveMessage(message);
+            }
         } catch (Throwable ex) {
             LOG.error("#GameServerHandler#接受请求异常", ex);
         }
@@ -125,14 +126,15 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         NetSession<?> session = channel.attr(NettyAttrKeys.SESSION).get();
         if (LOG.isInfoEnabled())
             LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
         if (session != null)
             session.offline();
-        super.channelUnregistered(ctx);
+        super.channelInactive(ctx);
+
     }
 
     @Override

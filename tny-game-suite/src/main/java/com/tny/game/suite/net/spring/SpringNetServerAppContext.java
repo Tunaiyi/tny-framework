@@ -10,10 +10,10 @@ import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.auth.AuthProvider;
-import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
-import com.tny.game.net.message.MessageDispatcher;
-import com.tny.game.net.dispatcher.NetMessageDispatcher;
-import com.tny.game.net.common.session.BaseNetSessionHolder;
+import com.tny.game.net.netty.NettySessionFactory;
+import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.common.dispatcher.CommonMessageDispatcher;
+import com.tny.game.net.common.session.AbstractNetSessionHolder;
 import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.command.MessageCommandExecutor;
@@ -54,13 +54,13 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     private PluginHolder pluginHolder;
 
     @Autowired
-    private BaseNetSessionHolder sessionHolder;
+    private AbstractNetSessionHolder sessionHolder;
 
     @Autowired
-    private ChannelServerSessionFactory sessionFactory;
+    private NettySessionFactory sessionFactory;
 
     @Autowired
-    private NetMessageDispatcher messageDispatcher;
+    private CommonMessageDispatcher messageDispatcher;
 
     @Autowired
     private MessageCommandExecutor dispatcherCommandExecutor;
@@ -118,12 +118,12 @@ public class SpringNetServerAppContext implements NetServerAppContext, Applicati
     }
 
     @Override
-    public BaseNetSessionHolder getSessionHolder() {
+    public AbstractNetSessionHolder getSessionHolder() {
         return this.sessionHolder;
     }
 
     @Override
-    public ChannelServerSessionFactory getSessionFactory() {
+    public NettySessionFactory getSessionFactory() {
         return this.sessionFactory;
     }
 

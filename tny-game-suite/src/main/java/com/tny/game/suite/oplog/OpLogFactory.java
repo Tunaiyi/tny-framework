@@ -1,6 +1,6 @@
 package com.tny.game.suite.oplog;
 
-import com.tny.game.net.dispatcher.CurrentCMD;
+import com.tny.game.net.common.dispatcher.CurrentCommand;
 import com.tny.game.oplog.OpLog;
 import com.tny.game.oplog.simple.SimpleOpLog;
 
@@ -10,7 +10,7 @@ import com.tny.game.oplog.simple.SimpleOpLog;
 public interface OpLogFactory {
 
     default OpLog createLog() {
-        CurrentCMD cmd = CurrentCMD.getCurrent();
+        CurrentCommand cmd = CurrentCommand.getCurrent();
         return new SimpleOpLog(cmd.getProtocol());
     }
 

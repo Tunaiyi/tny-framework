@@ -1,7 +1,7 @@
 package com.tny.game.net;
 
 import com.tny.game.flash.FlashPolicyServer;
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.config.ServerConfig;

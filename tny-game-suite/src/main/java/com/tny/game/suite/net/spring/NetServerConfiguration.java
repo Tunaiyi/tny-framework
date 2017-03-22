@@ -7,15 +7,15 @@ import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.checker.md5.MessageSignMD5Checker;
 import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.net.config.properties.PropertiesServerConfigFactory;
-import com.tny.game.net.dispatcher.ChannelServerSessionFactory;
+import com.tny.game.net.netty.NettySessionFactory;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.plugin.spring.SpringPluginHolder;
-import com.tny.game.net.session.mobile.MobileControllerIDChecker;
-import com.tny.game.net.session.mobile.MobileSessionFactory;
-import com.tny.game.net.session.mobile.MobileSessionHolder;
-import com.tny.game.net.dispatcher.spring.SpringMessageDispatcher;
+import com.tny.game.del.mobile.MobileControllerIDChecker;
+import com.tny.game.del.mobile.MobileSessionFactory;
+import com.tny.game.del.mobile.MobileSessionHolder;
+import com.tny.game.net.spring.SpringMessageDispatcher;
 import com.tny.game.net.command.ThreadPoolCommandExecutor;
 import com.tny.game.suite.login.GameMessageSignMD5Checker;
 import com.tny.game.suite.utils.Configs;
@@ -57,11 +57,11 @@ public class NetServerConfiguration {
     }
 
     @Bean(name = "sessionFactory")
-    public ChannelServerSessionFactory serverSessionFactory() {
+    public NettySessionFactory serverSessionFactory() {
         return new MobileSessionFactory();
     }
 
-    @Bean(name = "verifier")
+    @Bean(name = "signGenerator")
     public MessageSignMD5Checker requestVerifier() {
         Config config = Configs.SUITE_CONFIG;
         // String protsWords = config.getStr(Configs.SUITE_REQ_CHECKER_DIRECT_PROTS);

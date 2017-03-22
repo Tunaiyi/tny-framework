@@ -4,7 +4,7 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.message.Protocol;
 import com.tny.game.net.dispatcher.ChannelServerSession;
-import com.tny.game.net.dispatcher.MessageSendFuture;
+import com.tny.game.del.MessageSendFuture;
 import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;

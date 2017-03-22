@@ -33,21 +33,33 @@ public class MessageFutureHolder {
         if (System.currentTimeMillis() > this.nextCheckTime) {
             if (futureMap == null)
                 return;
-            List<Integer> ids = new ArrayList<>();
-            for (Entry<Integer, MessageFuture<?>> entry : futureMap.entrySet()) {
-                Integer id = entry.getKey();
-                MessageFuture<?> future = futureMap.get(id);
-                if (future.isTimeout())
-                    ids.add(id);
-            }
-            if (!ids.isEmpty()) {
-                ids.forEach(i -> {
-                    MessageFuture<?> f = this.futureMap.remove(i);
-                    if (f != null)
-                        f.cancel(true);
-                });
-            }
+            doTimeoutFutrue();
             this.setNextCheckTime();
+        }
+    }
+
+    public void removeTimeoutFutrue() {
+        if (futureMap == null)
+            return;
+        if (this.futureMapLock.compareAndSet(false, true)) {
+            doTimeoutFutrue();
+        }
+    }
+
+    private void doTimeoutFutrue() {
+        List<Integer> ids = new ArrayList<>();
+        for (Entry<Integer, MessageFuture<?>> entry : futureMap.entrySet()) {
+            Integer id = entry.getKey();
+            MessageFuture<?> future = futureMap.get(id);
+            if (future.isTimeout())
+                ids.add(id);
+        }
+        if (!ids.isEmpty()) {
+            ids.forEach(i -> {
+                MessageFuture<?> f = this.futureMap.remove(i);
+                if (f != null)
+                    f.cancel(true);
+            });
         }
     }
 
@@ -89,6 +101,23 @@ public class MessageFutureHolder {
         }
     }
 
+    public void removeFuture(MessageFuture<?> future) {
+        if (future == null)
+            return;
+        while (true) {
+            if (this.futureMapLock.compareAndSet(false, true)) {
+                try {
+                    if (this.futureMap == null)
+                        return;
+                    this.futureMap.remove(future.getRequestID(), future);
+                    break;
+                } finally {
+                    this.futureMapLock.set(false);
+                }
+            }
+        }
+    }
+
     public void clearFuture() {
         while (true) {
             if (this.futureMapLock.compareAndSet(false, true)) {
@@ -101,4 +130,5 @@ public class MessageFutureHolder {
             }
         }
     }
+
 }

@@ -1,9 +1,10 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.session.Session;
 
-public interface Message<UID> extends Protocol {
+import java.io.Serializable;
+
+public interface Message<UID> extends Protocol, Serializable {
 
     /**
      * @return 返回请求Id
@@ -41,11 +42,6 @@ public interface Message<UID> extends Protocol {
     <T> T getBody(Class<T> clazz);
 
     /**
-     * @return 獲取玩家會話對象
-     */
-    Session getSession();
-
-    /**
      * 获取请求时间
      * <p>
      * <p>
@@ -58,17 +54,12 @@ public interface Message<UID> extends Protocol {
     /**
      * @return 校验码
      */
-    String getCheckCode();
+    String getSign();
 
     /**
      * @return 获取请求属性
      */
     Attributes attributes();
-
-    /**
-     * @return 获取HostName
-     */
-    String getHostName();
 
     /**
      * @return 获取消息模式

@@ -1,6 +1,6 @@
 package com.tny.game.telnet;
 
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.NetServerAppContext;
 import com.tny.game.net.config.ServerConfig;
 import com.tny.game.net.listener.ServerClosedListener;

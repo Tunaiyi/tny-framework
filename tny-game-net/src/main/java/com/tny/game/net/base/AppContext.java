@@ -4,7 +4,7 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.command.MessageCommandExecutor;
-import com.tny.game.net.message.MessageDispatcher;
+import com.tny.game.net.command.MessageDispatcher;
 import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;

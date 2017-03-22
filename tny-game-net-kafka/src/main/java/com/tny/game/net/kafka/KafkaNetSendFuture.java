@@ -1,6 +1,6 @@
 package com.tny.game.net.kafka;
 
-import com.tny.game.net.dispatcher.AbstractNetSendFuture;
+import com.tny.game.del.AbstractNetSendFuture;
 import com.tny.game.net.session.Session;
 import io.netty.channel.ChannelFuture;
 

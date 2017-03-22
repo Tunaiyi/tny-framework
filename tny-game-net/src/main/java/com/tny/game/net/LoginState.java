@@ -12,7 +12,7 @@ public enum LoginState {
     private int id;
     private boolean login;
 
-    private LoginState(int id, boolean login) {
+    LoginState(int id, boolean login) {
         this.id = id;
         this.login = login;
     }

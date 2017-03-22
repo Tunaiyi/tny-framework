@@ -1,10 +1,9 @@
 package com.tny.game.net.client.nio;
 
-import com.tny.game.log.NetLogger;
 import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.ChannelClientSession;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.netty.NettyAttrKeys;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.session.NetSession;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +17,7 @@ import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NetClient extends ChannelClientSession {
+public class NetClient<UID> extends NetSession<UID> {
 
     private static final int CLOSE = 1;
     private static final int UNCONNECTED = 2;
@@ -29,7 +28,7 @@ public class NetClient extends ChannelClientSession {
 
     protected AtomicInteger idCreater = new AtomicInteger(0);
 
-    protected long userID = Session.UN_LOGIN_UID;
+    protected UID userID = null;
 
     protected SocketAddress remoteAddress;
 
@@ -64,24 +63,19 @@ public class NetClient extends ChannelClientSession {
 
     public void connect() throws IOException {
         ChannelFuture future = this.doConnect();
-        future.addListener(new ChannelFutureListener() {
-
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
+        future.addListener(f -> {
+            try {
+                ConnectedCallback callback = NetClient.this.connectedCallback;
+                if (callback == null)
+                    return;
                 try {
-                    ConnectedCallback callback = NetClient.this.connectedCallback;
-                    if (callback == null)
-                        return;
-                    try {
-                        LoginCertificate certificate = callback.connected(future.isSuccess(), NetClient.this, future.cause());
-                        NetClient.this.login(certificate);
-                    } catch (Exception exception) {
-                        NetClient.LOG.error("", exception);
-                    }
-                } catch (Exception e2) {
+                    LoginCertificate certificate = callback.connected(f.isSuccess(), NetClient.this, f.cause());
+                    NetClient.this.login(certificate);
+                } catch (Exception exception) {
+                    NetClient.LOG.error("", exception);
                 }
+            } catch (Exception e2) {
             }
-
         });
     }
 
@@ -108,31 +102,26 @@ public class NetClient extends ChannelClientSession {
 
     };
 
-    private ChannelFutureListener conneteder = new ChannelFutureListener() {
-
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            try {
-                Channel channel = future.channel();
-                channel.closeFuture().addListener(NetClient.this.reconnetter);
-                if (future.isSuccess()) {
-                    int stateValue = NetClient.this.state.get();
-                    if (stateValue == NetClient.CONNECTING && NetClient.this.state.compareAndSet(stateValue, NetClient.CONNECTED)) {
-                        NetClient.this.setChannel(channel);
-                        NetClient.LOG.debug("连接 {} ", NetClient.this.remoteAddress);
-                    } else {
-                        NetClient.LOG.debug("连接 {} 在连接过程中被断开", NetClient.this.remoteAddress);
-                        NetClient.this.disconnect();
-                    }
+    private ChannelFutureListener conneteder = future -> {
+        try {
+            Channel channel = future.channel();
+            channel.closeFuture().addListener(NetClient.this.reconnetter);
+            if (future.isSuccess()) {
+                int stateValue = NetClient.this.state.get();
+                if (stateValue == NetClient.CONNECTING && NetClient.this.state.compareAndSet(stateValue, NetClient.CONNECTED)) {
+                    NetClient.this.setChannel(channel);
+                    NetClient.LOG.debug("连接 {} ", NetClient.this.remoteAddress);
                 } else {
-                    NetClient.LOG.error("连接 {} 失败", NetClient.this.remoteAddress, future.cause());
-                    NetClient.this.connect();
+                    NetClient.LOG.debug("连接 {} 在连接过程中被断开", NetClient.this.remoteAddress);
+                    NetClient.this.disconnect();
                 }
-            } catch (Exception e) {
-                NetClient.LOG.error("连接 {} 失败", NetClient.this.remoteAddress, e);
+            } else {
+                NetClient.LOG.error("连接 {} 失败", NetClient.this.remoteAddress, future.cause());
+                NetClient.this.connect();
             }
+        } catch (Exception e) {
+            NetClient.LOG.error("连接 {} 失败", NetClient.this.remoteAddress, e);
         }
-
     };
 
     private ChannelFuture doConnect() throws IOException {

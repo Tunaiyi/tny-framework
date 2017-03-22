@@ -6,11 +6,11 @@ import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.dispatcher.ClientSession;
-import com.tny.game.net.dispatcher.CommandResult;
+import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.command.MessageCommand;
 import com.tny.game.net.dispatcher.RequestSession;
 import com.tny.game.net.dispatcher.ServerSession;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -258,7 +258,7 @@ public class KafkaNetBootstrap {
     private LoginCertificate checkTicket(KafkaRequest request) {
         KafkaTicket ticket = request.getTicket();
         KafkaTicketTaker taker = appContext.getTicketTaker();
-        if (taker.take(ticket, request.getCheckCode())) {
+        if (taker.take(ticket, request.getSign())) {
             return LoginCertificate.createLogin(ticket.getUID(), ticket.getUID(), ticket.getUserGroup());
         } else {
             return LoginCertificate.createUnLogin();

@@ -3,7 +3,7 @@ package com.tny.game.net.kafka;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 
 /**
  * Created by Kun Yang on 16/8/10.

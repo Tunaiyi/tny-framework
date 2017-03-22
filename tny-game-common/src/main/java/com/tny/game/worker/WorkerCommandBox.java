@@ -16,9 +16,9 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
 
     protected volatile CommandWorker worker;
 
-    // protected long runUseTime;
+    protected long runUseTime;
 
-    // protected int runSize;
+    protected int runSize;
 
     private volatile Queue<CB> commandBoxList;
 
@@ -31,13 +31,13 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
         return executeIfCurrent(command);
     }
 
-    // public long getProcessUseTime() {
-    //     return runUseTime;
-    // }
+    public long getProcessUseTime() {
+        return runUseTime;
+    }
 
-    // public int getProcessSize() {
-    //     return runSize;
-    // }
+    public int getProcessSize() {
+        return runSize;
+    }
 
     @Override
     public boolean isOnCurrentThread() {

@@ -3,7 +3,7 @@ package com.tny.game.suite.login;
 import com.google.common.collect.Range;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;

@@ -1,9 +1,8 @@
 package com.tny.game.net.coder;
 
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.netty.NettyAttrKeys;
-import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.message.protoex.ProtoExMessageCoder;
+import com.tny.game.net.netty.NettyAttrKeys;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 
@@ -15,7 +14,7 @@ public abstract class ChannelMaker<C extends Channel> {
 
     protected DataPacketDecoder decoder;
 
-    protected MessageBuilderFactory messageBuilderFactory;
+    // protected MessageBuilderFactory messageBuilderFactory;
 
     public ChannelMaker() {
         super();
@@ -23,7 +22,7 @@ public abstract class ChannelMaker<C extends Channel> {
         ProtoExMessageCoder coder = new ProtoExMessageCoder();
         this.encoder = new SimpleDataPacketEncoder(coder, false);
         this.decoder = new SimpleDataPacketDecoder(coder);
-        this.messageBuilderFactory = new ProtoExMessageBuilderFactory();
+        // this.messageBuilderFactory = new ProtoExMessageBuilderFactory();
     }
 
     public ChannelMaker(
@@ -33,7 +32,7 @@ public abstract class ChannelMaker<C extends Channel> {
         this.encoder = encoder;
         this.decoder = decoder;
         // this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
-        this.messageBuilderFactory = messageBuilderFactory;
+        // this.messageBuilderFactory = messageBuilderFactory;
     }
 
     public void initChannel(C channel) throws Exception {
@@ -42,8 +41,8 @@ public abstract class ChannelMaker<C extends Channel> {
         channelPipeline.addLast("frameDecoder", new DecoderHandeler(this.decoder));
         channelPipeline.addLast("encoder", new EncodeHandler(this.encoder));
         this.postAddCoder(channelPipeline);
-        channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR)
-                .set(this.messageBuilderFactory);
+        // channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR)
+        //         .set(this.messageBuilderFactory);
         channel.attr(NettyAttrKeys.DATA_PACKET_DECODER)
                 .set(this.decoder);
         channel.attr(NettyAttrKeys.DATA_PACKET_ENCODER)
@@ -60,14 +59,6 @@ public abstract class ChannelMaker<C extends Channel> {
     }
 
     protected void postInitChannel(C channel) {
-    }
-
-    public MessageBuilderFactory getMessageBuilderFactory() {
-        return this.messageBuilderFactory;
-    }
-
-    public void setMessageBuilderFactory(MessageBuilderFactory messageBuilderFactory) {
-        this.messageBuilderFactory = messageBuilderFactory;
     }
 
     // public void setCheckers(List<ControllerChecker> checkers) {

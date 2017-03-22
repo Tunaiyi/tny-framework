@@ -41,7 +41,7 @@ public class OneByOneActorCommandBoxFactory implements ActorCommandBoxFactory {
             }
             for (CommandBox commandBox : boxes()) {
                 this.worker.submit(commandBox);
-                this.runSize += commandBox.getProcessSize();
+                // this.runSize += commandBox.getProcessSize();
             }
             long finishTime = System.currentTimeMillis();
             this.runUseTime = finishTime - startTime;

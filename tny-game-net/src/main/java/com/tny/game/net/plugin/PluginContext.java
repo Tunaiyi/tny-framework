@@ -1,8 +1,9 @@
 package com.tny.game.net.plugin;
 
 import com.tny.game.net.message.Message;
-import com.tny.game.net.dispatcher.CommandResult;
-import com.tny.game.net.dispatcher.MethodControllerHolder;
+import com.tny.game.net.command.CommandResult;
+import com.tny.game.net.common.dispatcher.MethodControllerHolder;
+import com.tny.game.net.session.Session;
 
 public class PluginContext {
 
@@ -29,10 +30,10 @@ public class PluginContext {
     }
 
     @SuppressWarnings("unchecked")
-    public CommandResult passToNext(Message<?> message, CommandResult result) throws Exception {
+    public CommandResult passToNext(Session<?> session, Message<?> message, CommandResult result) throws Exception {
         if (this.plugin == null)
             return result;
-        return this.plugin.execute(message, result, this.nextContext != null ? this.nextContext : EMPTY_PLUGIN);
+        return this.plugin.execute(session, message, result, this.nextContext != null ? this.nextContext : EMPTY_PLUGIN);
     }
 
     public void setNext(PluginContext nextPlugin) {

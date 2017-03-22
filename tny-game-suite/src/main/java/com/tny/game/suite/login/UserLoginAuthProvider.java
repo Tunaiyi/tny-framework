@@ -3,7 +3,7 @@ package com.tny.game.suite.login;
 import com.google.common.collect.Range;
 import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 
 import java.util.Set;
 

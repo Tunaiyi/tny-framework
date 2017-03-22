@@ -8,7 +8,7 @@ import com.tny.game.net.client.nio.NetClient;
 import com.tny.game.net.coder.DataPacketDecoder;
 import com.tny.game.net.coder.DataPacketEncoder;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.dispatcher.MessageCommandBox;
+import com.tny.game.net.common.dispatcher.MessageCommandBox;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.Session;
 import com.tny.game.telnet.TelnetSession;

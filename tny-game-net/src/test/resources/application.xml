@@ -15,7 +15,7 @@
 
     <bean name="verifier" class="com.tny.game.net.TestControllerChecker"/>
 
-    <bean name="testSessionHoslder" class="com.tny.game.net.dispatcher.DefaultSessionHolder">
+    <bean name="testSessionHoslder" class="com.tny.game.net.session.holder.DefaultSessionHolder">
     </bean>
 
     <bean name="authProvider" class="test.Handler.SessionAuthProviderImpl"/>

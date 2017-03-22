@@ -1,6 +1,6 @@
 package com.tny.game.net.coder;
 
-import com.tny.game.log.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
 import io.netty.buffer.ByteBuf;

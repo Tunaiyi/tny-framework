@@ -6,7 +6,7 @@ import com.tny.game.net.base.AppContext;
 import com.tny.game.net.client.rmi.NetRMIService;
 import com.tny.game.net.client.rmi.RMISession;
 import com.tny.game.net.dispatcher.Request;
-import com.tny.game.net.dispatcher.exception.DispatchException;
+import com.tny.game.net.exception.DispatchException;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;
