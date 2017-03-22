@@ -102,4 +102,8 @@ public class NettySession<UID> extends CommonSession<UID, NettySession<UID>> {
         return channel;
     }
 
+    @Override
+    public String toString() {
+        return "Session [" + this.getGroup() + "." + this.getUID() + " | " + this.channel + "]";
+    }
 }

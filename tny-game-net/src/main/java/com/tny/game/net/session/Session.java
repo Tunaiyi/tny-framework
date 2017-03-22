@@ -2,10 +2,13 @@ package com.tny.game.net.session;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.exception.RemotingException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.Protocol;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 用户会话对象 此对象从Socket链接便创建,保存用户链接后的属性对象,直到Socket断开连接
@@ -13,6 +16,8 @@ import org.joda.time.DateTime;
  * @author KGTny
  */
 public interface Session<UID> {
+
+    Logger LOGGER = LoggerFactory.getLogger(Session.class);
 
     // int DEFAULT_RESPONSE_ID = -1;
     // long UN_LOGIN_UID = 0;
@@ -53,15 +58,15 @@ public interface Session<UID> {
      */
     boolean isLogin();
 
-    /**
-     * 獲取响应的IP地址
-     * <p>
-     * <p>
-     * 獲取請求的IP地址<br>
-     *
-     * @return 返回IP地址
-     */
-    String getHostName();
+    // /**
+    //  * 獲取响应的IP地址
+    //  * <p>
+    //  * <p>
+    //  * 獲取請求的IP地址<br>
+    //  *
+    //  * @return 返回IP地址
+    //  */
+    // String getHostName();
 
     /**
      * 获取会话属性
@@ -120,7 +125,22 @@ public interface Session<UID> {
      * @param protocol 协议
      * @param content  消息内容
      */
-    void sendMessage(Protocol protocol, MessageContent content);
+    default void sendMessage(Protocol protocol, MessageContent content) {
+        try {
+            sendMessage(protocol, content, false);
+        } catch (RemotingException e) {
+            LOGGER.error("{} send message exception", this, e);
+        }
+    }
+    ;
+
+    /**
+     * 发送消息
+     *
+     * @param protocol 协议
+     * @param content  消息内容
+     */
+    void sendMessage(Protocol protocol, MessageContent content, boolean sent) throws RemotingException;
 
     /**
      * 接收消息

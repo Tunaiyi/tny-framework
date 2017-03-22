@@ -1,7 +1,7 @@
 package com.tny.game.net.session.event;
 
-import com.tny.game.net.message.MessageSentHandler;
 import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageSentHandler;
 
 /**
  * Created by Kun Yang on 2017/2/17.

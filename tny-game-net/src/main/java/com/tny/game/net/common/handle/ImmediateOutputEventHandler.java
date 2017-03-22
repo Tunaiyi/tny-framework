@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Kun Yang on 2017/3/18.
  */
-public abstract class ImmediateOutputEventHandler<UID, S extends NetSession<UID>> implements SessionOutputEventHandler<UID, S> {
+public class ImmediateOutputEventHandler<UID, S extends NetSession<UID>> implements SessionOutputEventHandler<UID, S> {
 
     public final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -51,5 +51,8 @@ public abstract class ImmediateOutputEventHandler<UID, S extends NetSession<UID>
         }
     }
 
-    protected abstract void write(S session, SessionSendEvent event);
+    protected void write(S session, SessionSendEvent event) {
+        session.write(event);
+    }
+
 }

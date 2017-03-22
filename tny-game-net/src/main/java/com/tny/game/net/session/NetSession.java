@@ -75,5 +75,16 @@ public interface NetSession<UID> extends Session<UID> {
      * @param future 移除的future
      */
     void removeFuture(MessageFuture<?> future);
+
+    /**
+     * 移除过期Future
+     */
     void removeTimeoutFuture();
+
+    /**
+     * 写出数据指定事件
+     *
+     * @param event 写出事件
+     */
+    void write(SessionSendEvent event);
 }

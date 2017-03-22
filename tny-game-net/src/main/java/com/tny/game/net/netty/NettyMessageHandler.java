@@ -2,12 +2,9 @@ package com.tny.game.net.netty;
 
 import com.tny.game.net.base.NetAppContext;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.command.MessageCommandExecutor;
-import com.tny.game.net.command.MessageDispatcher;
 import com.tny.game.net.message.NetMessage;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.holder.NetSessionHolder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,21 +30,6 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
     /**
-     * 會話持有對象
-     */
-    protected NetSessionHolder sessionHolder;
-
-    /**
-     * 请求命令执行器
-     */
-    protected MessageCommandExecutor commandExecutor;
-
-    /**
-     * 请求分发器
-     */
-    protected MessageDispatcher messageDispatcher;
-
-    /**
      * session工厂
      */
     protected NettySessionFactory sessionFactory;
@@ -61,9 +43,6 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     }
 
     public void setAppContext(NetAppContext appContext) {
-        this.commandExecutor = appContext.getCommandExecutor();
-        this.messageDispatcher = appContext.getMessageDispatcher();
-        this.sessionHolder = appContext.getSessionHolder();
         this.sessionFactory = appContext.getSessionFactory();
     }
 
@@ -99,24 +78,19 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void channelRead0(ChannelHandlerContext context, NetMessage message) throws Exception {
         Channel channel = context.channel();
-        // 客户端发来请求格式无法解析的时候返回-1,并关闭Socket
-        if (!channel.isActive())
-            return;
-
         if (message == null) {
             LOG.warn("读取的message为null 服务器主动断开 {} 连接", channel.localAddress());
             // channel.write(new SimpleResponse(CoreResponseCode.DECODE_ERROR));
             channel.disconnect();
             return;
         }
-
-        //TODO 客户端没有serverContext
-
         try {
-            NetSession<?> session = channel.attr(NettyAttrKeys.SESSION).get();
+            NetSession session = channel.attr(NettyAttrKeys.SESSION).get();
             if (session != null) {
+                message.register(session);
                 session.receiveMessage(message);
             }
         } catch (Throwable ex) {

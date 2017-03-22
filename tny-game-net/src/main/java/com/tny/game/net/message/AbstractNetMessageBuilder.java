@@ -97,7 +97,7 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
         if (message.getProtocol() == 0)
             throw new NullPointerException("protocol is 0");
         if (session != null)
-            message.register(session);
+            message.setSession(session);
         if (this.signGenerator != null)
             message.setSign(this.signGenerator.generate(this.session, message));
         doBuild(message);

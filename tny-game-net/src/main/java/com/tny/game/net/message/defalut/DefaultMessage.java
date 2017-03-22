@@ -30,7 +30,7 @@ public class DefaultMessage<UID> extends AbstractNetMessage<UID> {
     }
 
     protected DefaultMessage(Session<UID> session) {
-        this.register(session);
+        this.setSession(session);
     }
 
     @Override
@@ -119,12 +119,20 @@ public class DefaultMessage<UID> extends AbstractNetMessage<UID> {
         return this;
     }
 
-    public DefaultMessage setGroup(String group) {
+    @Override
+    protected DefaultMessage<UID> setSession(Session<UID> session) {
+        LoginCertificate<UID> certificate = session.getCertificate();
+        this.uid = certificate.getUserID();
+        this.group = certificate.getUserGroup();
+        return this;
+    }
+
+    public DefaultMessage<UID> setGroup(String group) {
         this.group = group;
         return this;
     }
 
-    public DefaultMessage setUid(UID uid) {
+    public DefaultMessage<UID> setUid(UID uid) {
         this.uid = uid;
         return this;
     }
@@ -138,9 +146,7 @@ public class DefaultMessage<UID> extends AbstractNetMessage<UID> {
 
     @Override
     public void register(Session<UID> session) {
-        LoginCertificate<UID> certificate = session.getCertificate();
-        this.uid = certificate.getUserID();
-        this.group = certificate.getUserGroup();
+        this.setSession(session);
     }
 }
 

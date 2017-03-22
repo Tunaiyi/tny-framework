@@ -16,7 +16,6 @@ import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageFutureHolder;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.message.NetMessage;
 import com.tny.game.net.message.Protocol;
 import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
@@ -63,10 +62,10 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     private Attributes attributes;
 
     /* 消息工厂 */
-    protected MessageBuilderFactory messageBuilderFactory;
+    protected MessageBuilderFactory<UID> messageBuilderFactory;
 
     /* 消息校验码生成器 */
-    protected MessageSignGenerator messageCheckGenerator;
+    protected MessageSignGenerator<UID> messageCheckGenerator;
 
     /* 接收队列 */
     private Queue<SessionInputEvent> inputEventQueue = new ConcurrentLinkedQueue<>();
@@ -154,7 +153,7 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     }
 
     @Override
-    public void sendMessage(Protocol protocol, MessageContent content) {
+    public void sendMessage(Protocol protocol, MessageContent content, boolean sent) {
         if (protocol.isPush() && !checkPushable())
             return;
         if (protocol.isPush() && !checkPushable())
@@ -184,8 +183,6 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
 
     @Override
     public void receiveMessage(Message<UID> message) {
-        if (message instanceof NetMessage)
-            ((NetMessage<UID>) message).register(this);
         NetLogger.logReceive(this, message);
         MessageFuture<?> future = null;
         if (MessageMode.RESPONSE.isMode(message) && this.futureHolder != null) {
@@ -205,11 +202,6 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     @Override
     public boolean hasOutputEvent() {
         return !inputEventQueue.isEmpty();
-    }
-
-    @Override
-    public String getHostName() {
-        return null;
     }
 
     @Override
