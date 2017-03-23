@@ -26,7 +26,6 @@ import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.message.NetMessage;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.worker.Callback;
@@ -456,8 +455,6 @@ public abstract class CommonMessageDispatcher implements MessageDispatcher {
                         throw new DispatchException(CoreResponseCode.UNLOGIN);
                     } else {
                         this.session = onlineOpt.get();
-                        if (message instanceof NetMessage)
-                            ((NetMessage) message).register(session);
                         break;
                     }
                 }

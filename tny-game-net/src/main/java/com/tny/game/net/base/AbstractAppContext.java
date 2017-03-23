@@ -6,7 +6,7 @@ import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.command.MessageCommandExecutor;
 import com.tny.game.net.command.MessageDispatcher;
-import com.tny.game.net.command.ThreadPoolCommandExecutor;
+import com.tny.game.net.command.ThreadPoolMessageCommandExecutor;
 import com.tny.game.net.common.dispatcher.CommonMessageDispatcher;
 import com.tny.game.net.common.dispatcher.DefaultMessageDispatcher;
 import com.tny.game.net.plugin.DefaultPluginHolder;
@@ -92,7 +92,7 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public MessageCommandExecutor getCommandExecutor() {
         if (this.dispatcherCommandExecutor == null)
-            this.dispatcherCommandExecutor = new ThreadPoolCommandExecutor();
+            this.dispatcherCommandExecutor = new ThreadPoolMessageCommandExecutor();
         return this.dispatcherCommandExecutor;
     }
 

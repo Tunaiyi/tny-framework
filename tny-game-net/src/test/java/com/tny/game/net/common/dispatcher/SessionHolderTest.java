@@ -1,7 +1,7 @@
 package com.tny.game.net.common.dispatcher;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.ProtocolUtils;
+import com.tny.game.net.message.ProtocolUtils;
 import com.tny.game.net.common.session.AbstractNetSessionHolder;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.MessageBuilderFactory;

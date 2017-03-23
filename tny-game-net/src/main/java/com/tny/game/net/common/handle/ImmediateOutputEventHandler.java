@@ -20,7 +20,7 @@ public class ImmediateOutputEventHandler<UID, S extends NetSession<UID>> impleme
 
     @Override
     public void onOutput(S session) {
-        while (session.hasOutputEvent()) {
+        while (!session.isInvalided() && session.hasOutputEvent()) {
             SessionOutputEvent event = session.pollOutputEvent();
             if (event != null) {
                 switch (event.getEventType()) {

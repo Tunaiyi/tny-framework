@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ThreadPoolCommandExecutor implements MessageCommandExecutor {
+public class ThreadPoolMessageCommandExecutor implements MessageCommandExecutor {
 
     private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttrUtils.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
@@ -27,7 +27,7 @@ public class ThreadPoolCommandExecutor implements MessageCommandExecutor {
 
     private final ExecutorService executorService;
 
-    public ThreadPoolCommandExecutor() {
+    public ThreadPoolMessageCommandExecutor() {
         int corePoolSize = Integer.parseInt(System.getProperty("tny.server.executor.corePoolSize", "4"));
         int maximumPoolSize = Integer.parseInt(System.getProperty("tny.server.executor.maximumPoolSize", "8"));
         long keepAliveTime = Integer.parseInt(System.getProperty("tny.server.executor.keepAliveTime", "720000"));
@@ -35,7 +35,7 @@ public class ThreadPoolCommandExecutor implements MessageCommandExecutor {
                 "ThreadPoolCommandExecutorPool"));
     }
 
-    public ThreadPoolCommandExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime) {
+    public ThreadPoolMessageCommandExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime) {
         this.executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedTransferQueue<>(), new CoreThreadFactory(
                 "ThreadPoolCommandExecutorPool"));
     }

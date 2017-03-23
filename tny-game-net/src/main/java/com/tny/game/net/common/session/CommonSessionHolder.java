@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,7 +40,6 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
         for (Map<UID, S> userGroupSessionMap : this.sessionMap.values()) {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
-                    session.removeTimeoutFuture();
                     if (session.getOfflineTime() + sessionLife > now) {
                         if (!session.isInvalided())
                             session.invalid();
@@ -164,11 +162,11 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
     }
 
     @Override
-    public Optional<S> online(S session, LoginCertificate<UID> cert) throws ValidatorFailException {
+    public boolean online(S session, LoginCertificate<UID> cert) throws ValidatorFailException {
         if (!this.loginSession(session, cert))
-            return Optional.empty();
+            return false;
         if (!session.isOnline())
-            return Optional.empty();
+            return false;
         Map<UID, S> userGroupSessionMap = this.sessionMap.get(session.getGroup());
         if (userGroupSessionMap == null) {
             this.sessionMap.putIfAbsent(session.getGroup(), new ConcurrentHashMap<>());
@@ -176,16 +174,15 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
         }
         S oldSession = userGroupSessionMap.get(session.getUID());
         if (oldSession == session)
-            return Optional.of(session);
+            return true;
         if (cert.isRelogin()) {
             // oldSession为null或者失效 session登陆ID不是同一个 session无法转换
             if (oldSession == null || oldSession.isInvalided() ||
                     oldSession.getCertificate().getID() != cert.getID() ||
-                    !oldSession.reline(session)) {
-                String account = cert.getUserGroup() + "-" + cert.getUserID();
-                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS, account, session.getHostName());
+                    !oldSession.invalid() || !session.transferFrom(oldSession)
+                    || !userGroupSessionMap.replace(session.getUID(), oldSession, session)) {
+                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS, session);
             }
-            session = oldSession;
         } else {
             oldSession = userGroupSessionMap.put(session.getUID(), session);
             if (oldSession != null && oldSession != session) {
@@ -199,7 +196,7 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
                 this.debugSessionSize();
             }
         }
-        return Optional.of(session);
+        return true;
     }
 
     private boolean loginSession(NetSession<UID> session, LoginCertificate<UID> certificate) {

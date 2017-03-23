@@ -14,7 +14,6 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageBuilder;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.MessageFutureHolder;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.message.Protocol;
 import com.tny.game.net.session.MessageFuture;
@@ -34,10 +33,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.StampedLock;
@@ -51,6 +49,8 @@ import java.util.stream.Collectors;
 public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implements NetSession<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
+
+    private int id;
 
     /* 认证 */
     protected LoginCertificate<UID> certificate;
@@ -68,17 +68,15 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     protected MessageSignGenerator<UID> messageCheckGenerator;
 
     /* 接收队列 */
-    private Queue<SessionInputEvent> inputEventQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedDeque<SessionInputEvent> inputEventQueue = new ConcurrentLinkedDeque<>();
 
     /* 发送队列 */
-    private Queue<SessionOutputEvent> outputEventQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedDeque<SessionOutputEvent> outputEventQueue = new ConcurrentLinkedDeque<>();
 
     /* 发送缓存 */
-    private Collection<SessionSendEvent> handledSendEventQueue = null;
+    private CircularFifoQueue<SessionSendEvent> handledSendEventQueue = null;
 
     private StampedLock handledSendEventQueueLock;
-
-    private MessageFutureHolder futureHolder;
 
     private int messageIDCounter = 0;
 
@@ -103,6 +101,11 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     }
 
     @Override
+    public long getID() {
+        return 0;
+    }
+
+    @Override
     public UID getUID() {
         return certificate.getUserID();
     }
@@ -117,7 +120,7 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         return certificate.getLoginAt();
     }
 
-    protected MessageSignGenerator getMessageCheckGenerator() {
+    protected MessageSignGenerator<UID> getMessageCheckGenerator() {
         return messageCheckGenerator;
     }
 
@@ -153,9 +156,27 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public boolean transferFrom(NetSession<UID> oldSession) {
+        if (!this.isOnline() || this.getCertificate().isRelogin())
+            return false;
+        if (this.getClass().isInstance(oldSession) && oldSession.invalid()) {
+            CommonSession<UID, S> oldOne = (CommonSession<UID, S>) oldSession;
+            synchronized (this) {
+                this.id = oldOne.id;
+                this.messageIDCounter = oldOne.messageIDCounter;
+                this.inputEventQueue.addAll(oldOne.inputEventQueue);
+                this.outputEventQueue.addAll(oldOne.outputEventQueue);
+                //TODO 是否有线程问题
+                this.handledSendEventQueue.addAll(oldOne.handledSendEventQueue);
+            }
+            postTransferTo((S) oldSession);
+        }
+        return true;
+    }
+
+    @Override
     public void sendMessage(Protocol protocol, MessageContent content, boolean sent) {
-        if (protocol.isPush() && !checkPushable())
-            return;
         if (protocol.isPush() && !checkPushable())
             return;
         MessageBuilder builder = messageBuilderFactory.newMessageBuilder()
@@ -169,10 +190,11 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
                 Message<?> message = builder.setID(++messageIDCounter)
                         .build();
                 NetLogger.logSend(this, message);
-                this.outputEventQueue.add(new SessionSendEvent(message, SessionEventType.MESSAGE, content.getSentHandler()));
+                this.outputEventQueue.add(sendEvent(message, content, sent));
                 if (content.hasMessageFuture()) {
-                    MessageFuture<?> future = content.getMessageFuture();
-                    holder().putFuture(future);
+                    MessageFuture<?> future = content.getMessageFuture()
+                            .setSession(this);
+                    MessageFuture.putFuture(this, message, future);
                 }
                 inputEventHandler.onInput(this);
             }
@@ -185,11 +207,11 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     public void receiveMessage(Message<UID> message) {
         NetLogger.logReceive(this, message);
         MessageFuture<?> future = null;
-        if (MessageMode.RESPONSE.isMode(message) && this.futureHolder != null) {
+        if (MessageMode.RESPONSE.isMode(message)) {
             int toMessage = message.getToMessage();
-            future = this.futureHolder.takeFuture(toMessage);
+            future = MessageFuture.getFuture(this.getID(), toMessage);
         }
-        this.inputEventQueue.add(new SessionReceiveEvent(message, SessionEventType.MESSAGE, future));
+        this.inputEventQueue.add(receiveEvent(message, future));
         outputEventHandler.onOutput(this);
         this.lastReceiveTime = System.currentTimeMillis();
     }
@@ -223,6 +245,14 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         this.outputEventQueue.add(new SessionResendEvent(range));
     }
 
+    private SessionSendEvent sendEvent(Message<?> message, MessageContent content, boolean sent) {
+        return new SessionSendEvent(message, sent, SessionEventType.MESSAGE, content.getSentHandler());
+    }
+
+    private SessionReceiveEvent receiveEvent(Message<?> message, MessageFuture<?> future) {
+        return new SessionReceiveEvent(message, SessionEventType.MESSAGE, future);
+    }
+
     @Override
     public List<SessionSendEvent> getHandledSendEvents(Range<Integer> range) {
         if (this.handledSendEventQueue == null)
@@ -238,7 +268,7 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         }
     }
 
-    private void addHandledOutputEvent(SessionSendEvent event) {
+    protected void addHandledOutputEvent(SessionSendEvent event) {
         if (event.getEventType() != SessionEventType.MESSAGE)
             return;
         if (this.handledSendEventQueue != null) {
@@ -254,6 +284,8 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
 
     @Override
     public SessionInputEvent pollInputEvent() {
+        if (this.isInvalided())
+            return null;
         Queue<SessionInputEvent> inputEventQueue = this.inputEventQueue;
         if (inputEventQueue == null || inputEventQueue.isEmpty())
             return null;
@@ -262,6 +294,8 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
 
     @Override
     public SessionOutputEvent pollOutputEvent() {
+        if (this.isInvalided())
+            return null;
         Queue<SessionOutputEvent> outputEventQueue = this.outputEventQueue;
         if (outputEventQueue == null || outputEventQueue.isEmpty())
             return null;
@@ -272,17 +306,6 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         return event;
     }
 
-    private MessageFutureHolder holder() {
-        if (futureHolder != null)
-            return this.futureHolder;
-        synchronized (this) {
-            if (this.futureHolder != null)
-                return this.futureHolder;
-            this.futureHolder = new MessageFutureHolder();
-            return this.futureHolder;
-        }
-    }
-
     @Override
     public boolean isOnline() {
         return false;
@@ -291,17 +314,6 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     @Override
     public MessageBuilderFactory<UID> getMessageBuilderFactory() {
         return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean reline(NetSession<UID> session) {
-        if (!session.isOnline() || session.getCertificate().isRelogin())
-            return false;
-        if (this.getClass().isInstance(session) && this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.ONLINE.getId())) {
-            postReline((S) session);
-        }
-        return true;
     }
 
     @Override
@@ -349,17 +361,7 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         this.certificate = certificate;
     }
 
-    @Override
-    public void removeFuture(MessageFuture<?> future) {
-        this.futureHolder.removeFuture(future);
-    }
-
-    @Override
-    public void removeTimeoutFuture() {
-        this.futureHolder.removeTimeoutFutrue();
-    }
-
-    protected abstract void postReline(S newSession);
+    protected abstract void postTransferTo(S newSession);
 
     protected abstract void postOffline();
 

@@ -29,16 +29,16 @@ public class NetLogger {
 
     public static void logSend(Session session, Message message) {
         if (SEND_LOGGER.isDebugEnabled())
-            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送消息 [{}|{}|{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
-                    session.getGroup(), session.getHostName(), session.getUID(),
+            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+                    session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
     }
 
     public static void logReceive(Session session, Message message) {
         if (RECEIVE_LOGGER.isDebugEnabled())
-            RECEIVE_LOGGER.debug("\n#---------------------------------------------\n#<< 接收消息 [{}|{}|{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
-                    session.getGroup(), session.getHostName(), session.getUID(),
+            RECEIVE_LOGGER.debug("\n#---------------------------------------------\n#<< 接收消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
+                    session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
     }

@@ -15,33 +15,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MessageFutureHolder {
 
-    protected AtomicBoolean futureMapLock = new AtomicBoolean(false);
+    private AtomicBoolean lock = new AtomicBoolean(false);
 
     private volatile Map<Integer, MessageFuture<?>> futureMap = new HashMap<>();
-
-    private long nextCheckTime;
-
-    public MessageFutureHolder() {
-        this.setNextCheckTime();
-    }
-
-    private void setNextCheckTime() {
-        this.nextCheckTime = System.currentTimeMillis() + 3 * 60000;
-    }
-
-    private void checkTimeout() {
-        if (System.currentTimeMillis() > this.nextCheckTime) {
-            if (futureMap == null)
-                return;
-            doTimeoutFutrue();
-            this.setNextCheckTime();
-        }
-    }
 
     public void removeTimeoutFutrue() {
         if (futureMap == null)
             return;
-        if (this.futureMapLock.compareAndSet(false, true)) {
+        if (this.lock.compareAndSet(false, true)) {
             doTimeoutFutrue();
         }
     }
@@ -68,15 +49,14 @@ public class MessageFutureHolder {
             return null;
         MessageFuture<?> future;
         while (true) {
-            if (this.futureMapLock.compareAndSet(false, true)) {
+            if (this.lock.compareAndSet(false, true)) {
                 try {
                     if (this.futureMap == null)
                         return null;
                     future = this.futureMap.remove(id);
-                    checkTimeout();
                     break;
                 } finally {
-                    this.futureMapLock.set(false);
+                    this.lock.set(false);
                 }
             }
         }
@@ -87,15 +67,14 @@ public class MessageFutureHolder {
         if (future == null)
             return;
         while (true) {
-            if (this.futureMapLock.compareAndSet(false, true)) {
+            if (this.lock.compareAndSet(false, true)) {
                 try {
                     if (this.futureMap == null)
                         this.futureMap = new HashMap<>();
-                    this.checkTimeout();
                     this.futureMap.put(future.getRequestID(), future);
                     break;
                 } finally {
-                    this.futureMapLock.set(false);
+                    this.lock.set(false);
                 }
             }
         }
@@ -105,14 +84,14 @@ public class MessageFutureHolder {
         if (future == null)
             return;
         while (true) {
-            if (this.futureMapLock.compareAndSet(false, true)) {
+            if (this.lock.compareAndSet(false, true)) {
                 try {
                     if (this.futureMap == null)
                         return;
                     this.futureMap.remove(future.getRequestID(), future);
                     break;
                 } finally {
-                    this.futureMapLock.set(false);
+                    this.lock.set(false);
                 }
             }
         }
@@ -120,12 +99,12 @@ public class MessageFutureHolder {
 
     public void clearFuture() {
         while (true) {
-            if (this.futureMapLock.compareAndSet(false, true)) {
+            if (this.lock.compareAndSet(false, true)) {
                 try {
                     this.futureMap = new HashMap<>();
                     break;
                 } finally {
-                    this.futureMapLock.set(false);
+                    this.lock.set(false);
                 }
             }
         }

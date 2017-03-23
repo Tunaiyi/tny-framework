@@ -6,7 +6,13 @@ public enum SessionState {
 
     OFFLINE(2),
 
-    INVALID(0);
+    INVALID(0),
+
+    TRANSFORM(3),
+
+    //
+
+    ;
 
     private final int id;
 

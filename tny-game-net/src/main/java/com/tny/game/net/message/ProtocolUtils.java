@@ -1,6 +1,4 @@
-package com.tny.game.net.base;
-
-import com.tny.game.net.message.Protocol;
+package com.tny.game.net.message;
 
 public class ProtocolUtils {
 
@@ -45,9 +43,7 @@ public class ProtocolUtils {
             if (getClass() != obj.getClass())
                 return false;
             Protocol other = (Protocol) obj;
-            if (protocol != other.getProtocol())
-                return false;
-            return true;
+            return protocol == other.getProtocol();
         }
 
     }

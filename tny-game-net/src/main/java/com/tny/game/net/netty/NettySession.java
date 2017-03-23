@@ -47,7 +47,7 @@ public class NettySession<UID> extends CommonSession<UID, NettySession<UID>> {
     }
 
     @Override
-    protected void postReline(NettySession<UID> newSession) {
+    protected void postTransferTo(NettySession<UID> newSession) {
         synchronized (this) {
             this.certificate = newSession.getCertificate();
             this.messageCheckGenerator = newSession.getMessageCheckGenerator();

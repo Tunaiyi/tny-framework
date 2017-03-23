@@ -2,6 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.session.Session;
 
 public class ValidatorFailException extends DispatchException {
 
@@ -14,28 +15,28 @@ public class ValidatorFailException extends DispatchException {
 
     private String ip;
 
-    public ValidatorFailException(ResultCode code, String account, String ip, String message, Throwable e) {
-        super(code, "!!|账号:" + account + "|" + "ip:" + ip + "|" + (message == null ? code.getMessage() : message));
+    public ValidatorFailException(ResultCode code, Session<?> session, String message, Throwable e) {
+        super(code, "!!|" + session + "|" + (message == null ? code.getMessage() : message), e);
     }
 
-    public ValidatorFailException(ResultCode code, String account, String ip, String message) {
-        super(code, "!!|账号:" + account + "|" + "ip:" + ip + "|" + (message == null ? code.getMessage() : message));
+    public ValidatorFailException(ResultCode code, Session<?> session, String message) {
+        super(code, "!!|" + session + "|" + (message == null ? code.getMessage() : message));
     }
 
-    public ValidatorFailException(ResultCode code, String account, String ip, Throwable e) {
-        this(code, account, ip, code.getMessage(), e);
+    public ValidatorFailException(ResultCode code, Session<?> session, Throwable e) {
+        this(code, session, code.getMessage(), e);
     }
 
-    public ValidatorFailException(ResultCode code, String account, String ip) {
-        this(code, account, ip, code.getMessage());
+    public ValidatorFailException(ResultCode code, Session<?> session) {
+        this(code, session, code.getMessage());
     }
 
-    public ValidatorFailException(String account, String ip, String message, Throwable e) {
-        this(CoreResponseCode.VALIDATOR_FAIL, account, ip, message, e);
+    public ValidatorFailException(Session<?> session, String message, Throwable e) {
+        this(CoreResponseCode.VALIDATOR_FAIL, session, message, e);
     }
 
-    public ValidatorFailException(String account, String ip, String message) {
-        this(CoreResponseCode.VALIDATOR_FAIL, account, ip, message);
+    public ValidatorFailException(Session<?> session, String message) {
+        this(CoreResponseCode.VALIDATOR_FAIL, session, message);
     }
 
     public String getAccount() {

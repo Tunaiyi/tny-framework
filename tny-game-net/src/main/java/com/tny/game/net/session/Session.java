@@ -25,6 +25,12 @@ public interface Session<UID> {
     String UNLOGIN_USER_GROUP = "UNLOGIN";
 
     /**
+     * 回话ID
+     * @return
+     */
+    long getID();
+
+    /**
      * 客户端用户ID
      *
      * @return

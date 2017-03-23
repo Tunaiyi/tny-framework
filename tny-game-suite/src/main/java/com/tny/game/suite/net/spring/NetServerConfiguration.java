@@ -16,7 +16,7 @@ import com.tny.game.del.mobile.MobileControllerIDChecker;
 import com.tny.game.del.mobile.MobileSessionFactory;
 import com.tny.game.del.mobile.MobileSessionHolder;
 import com.tny.game.net.spring.SpringMessageDispatcher;
-import com.tny.game.net.command.ThreadPoolCommandExecutor;
+import com.tny.game.net.command.ThreadPoolMessageCommandExecutor;
 import com.tny.game.suite.login.GameMessageSignMD5Checker;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.ArrayUtils;
@@ -43,12 +43,12 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class NetServerConfiguration {
 
     @Bean(name = "commandExecutor")
-    public ThreadPoolCommandExecutor threadPoolCommandExecutor() {
+    public ThreadPoolMessageCommandExecutor threadPoolCommandExecutor() {
         Config config = Configs.SUITE_CONFIG;
         int corePoolSize = config.getInt(Configs.SUITE_EXECUTOR_THREAD_SIZE, Runtime.getRuntime().availableProcessors() * 2);
         int maxPoolSize = config.getInt(Configs.SUITE_EXECUTOR_THREAD_MAX_SIZE, Runtime.getRuntime().availableProcessors() * 2);
         long keepAliveTime = config.getLong(Configs.SUITE_EXECUTOR_KEEP_ALIVE_TIME, Duration.ofMinutes(15).toMillis());
-        return new ThreadPoolCommandExecutor(corePoolSize, maxPoolSize, keepAliveTime);
+        return new ThreadPoolMessageCommandExecutor(corePoolSize, maxPoolSize, keepAliveTime);
     }
 
     @Bean(name = "serverConfigFactory")

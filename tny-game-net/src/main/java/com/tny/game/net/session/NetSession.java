@@ -53,7 +53,7 @@ public interface NetSession<UID> extends Session<UID> {
      * @param session 指定session
      * @return 返回是否上线成功
      */
-    boolean reline(NetSession<UID> session);
+    boolean transferFrom(NetSession<UID> session);
 
     /**
      * 使session失效
@@ -70,21 +70,10 @@ public interface NetSession<UID> extends Session<UID> {
     void login(LoginCertificate<UID> certificate);
 
     /**
-     * 移除指定future
-     *
-     * @param future 移除的future
-     */
-    void removeFuture(MessageFuture<?> future);
-
-    /**
-     * 移除过期Future
-     */
-    void removeTimeoutFuture();
-
-    /**
      * 写出数据指定事件
      *
      * @param event 写出事件
      */
     void write(SessionSendEvent event);
+
 }
