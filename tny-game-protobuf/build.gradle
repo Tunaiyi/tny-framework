@@ -1,0 +1,55 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+apply plugin: 'com.google.protobuf'
+
+dependencies {
+
+    compile libs.'protobuf-java'
+
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir "src/main/proto"
+            include "**/*.proto"
+        }
+    }
+}
+
+
+jar {
+//    include("**.proto")
+//    exclude("**.sql", "**.xml", "**.properties")
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.2.0'
+    }
+
+    generateProtoTasks.generatedFilesBaseDir = 'src'
+
+    generateProtoTasks {
+        all().each { task ->
+        }
+        ofSourceSet('main')
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file("src/main/proto");
+    }
+}

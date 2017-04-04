@@ -53,6 +53,7 @@ subprojects {
 
     task createJavaProject << {
         sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.proto.srcDirs*.each { it.mkdirs() }
         sourceSets*.resources.srcDirs*.each { it.mkdirs() }
     }
 

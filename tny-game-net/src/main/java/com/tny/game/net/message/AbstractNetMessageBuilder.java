@@ -2,7 +2,7 @@ package com.tny.game.net.message;
 
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 
 import java.util.function.Supplier;
 
@@ -16,7 +16,7 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     protected M message;
 
-    protected Session<UID> session;
+    protected Tunnel<UID> tunnel;
 
     private Supplier<M> creator;
 
@@ -31,9 +31,11 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
     }
 
     @Override
-    public MessageBuilder<UID> setSession(Session<UID> session) {
-        getMessage().setSession(session);
-        return this;
+    public MessageBuilder<UID> setContent(MessageContent content) {
+        return this.setProtocol(content)
+                .setCode(content.getCode())
+                .setBody(content.getBody())
+                .setToMessage(content.getToMessage());
     }
 
     @Override
@@ -73,11 +75,17 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
     }
 
     @Override
+    public MessageBuilder<UID> setTunnel(Tunnel<UID> tunnel) {
+        this.tunnel = tunnel;
+        return this;
+    }
+
+    @Override
     public MessageBuilder<UID> setProtocol(Protocol protocol) {
         M message = getMessage();
         if (message.getProtocol() <= 0)
             getMessage().setProtocol(protocol.getProtocol());
-        return null;
+        return this;
     }
 
     @Override
@@ -96,15 +104,12 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
         M message = getMessage();
         if (message.getProtocol() == 0)
             throw new NullPointerException("protocol is 0");
-        if (session != null)
-            message.setSession(session);
+        message.setTime(System.currentTimeMillis())
+                .setTunnel(this.tunnel);
         if (this.signGenerator != null)
-            message.setSign(this.signGenerator.generate(this.session, message));
-        doBuild(message);
-        message.setTime(System.currentTimeMillis());
+            message.setSign(this.signGenerator.generate(this.tunnel, message));
         this.message = null;
         return message;
     }
 
-    protected abstract void doBuild(M request);
 }

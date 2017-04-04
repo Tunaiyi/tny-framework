@@ -14,7 +14,7 @@ public class NetLogger {
     private static final Logger SEND_LOGGER = LoggerFactory.getLogger(NetLogger.SEND_MESSAGE);
 
     public static final String CODER = "netCoder";
-    public static final String CONTEXT = "context";
+    public static final String CONTEXT = "appContext";
     private static final String RECEIVE_MESSAGE = "receiveMessage";
     private static final String SEND_MESSAGE = "sendMessage";
     public static final String CHECKER = "signGenerator";
@@ -29,7 +29,8 @@ public class NetLogger {
 
     public static void logSend(Session session, Message message) {
         if (SEND_LOGGER.isDebugEnabled())
-            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+                    message.getMode(),
                     session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
@@ -37,7 +38,8 @@ public class NetLogger {
 
     public static void logReceive(Session session, Message message) {
         if (RECEIVE_LOGGER.isDebugEnabled())
-            RECEIVE_LOGGER.debug("\n#---------------------------------------------\n#<< 接收消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
+            RECEIVE_LOGGER.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
+                    message.getMode(),
                     session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));

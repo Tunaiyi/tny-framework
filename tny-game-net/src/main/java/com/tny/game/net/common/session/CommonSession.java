@@ -1,88 +1,61 @@
 package com.tny.game.net.common.session;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.tny.game.LogUtils;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.checker.MessageSignGenerator;
+import com.tny.game.net.exception.RemotingException;
 import com.tny.game.net.exception.SessionException;
+import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageBuilder;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.message.Protocol;
-import com.tny.game.net.session.MessageFuture;
-import com.tny.game.net.session.NetSession;
-import com.tny.game.net.session.SessionInputEventHandler;
-import com.tny.game.net.session.SessionOutputEventHandler;
-import com.tny.game.net.session.SessionPushOption;
-import com.tny.game.net.session.SessionState;
+import com.tny.game.net.session.*;
 import com.tny.game.net.session.event.SessionEvent.SessionEventType;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionOutputEvent;
 import com.tny.game.net.session.event.SessionReceiveEvent;
 import com.tny.game.net.session.event.SessionResendEvent;
 import com.tny.game.net.session.event.SessionSendEvent;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
-import org.joda.time.DateTime;
+import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.tunnel.Tunnel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.StampedLock;
-import java.util.stream.Collectors;
 
 /**
  * 通用Session
  * <p>
  * Created by Kun Yang on 2017/2/17.
  */
-public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implements NetSession<UID> {
+public class CommonSession<UID> implements NetSession<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
-    private int id;
+    private volatile long id;
+
+    private volatile SessionEventsBox<UID> eventBox;
+
+    private volatile long offlineTime;
+
+    private volatile long lastReceiveTime;
+
+    private volatile NetTunnel<UID> currentTunnel;
 
     /* 认证 */
-    protected LoginCertificate<UID> certificate;
-
-    /* 检测器 */
-    protected List<ControllerChecker> checkers = new CopyOnWriteArrayList<>();
-
-    /* 附加属性 */
-    private Attributes attributes;
+    private LoginCertificate<UID> certificate;
 
     /* 消息工厂 */
     protected MessageBuilderFactory<UID> messageBuilderFactory;
 
     /* 消息校验码生成器 */
-    protected MessageSignGenerator<UID> messageCheckGenerator;
-
-    /* 接收队列 */
-    private ConcurrentLinkedDeque<SessionInputEvent> inputEventQueue = new ConcurrentLinkedDeque<>();
-
-    /* 发送队列 */
-    private ConcurrentLinkedDeque<SessionOutputEvent> outputEventQueue = new ConcurrentLinkedDeque<>();
-
-    /* 发送缓存 */
-    private CircularFifoQueue<SessionSendEvent> handledSendEventQueue = null;
-
-    private StampedLock handledSendEventQueueLock;
-
-    private int messageIDCounter = 0;
-
-    private volatile long offlineTime;
-
-    private volatile long lastReceiveTime;
+    private MessageSignGenerator<UID> messageSignGenerator;
 
     private AtomicInteger sessionState = new AtomicInteger(SessionState.ONLINE.getId());
 
@@ -91,18 +64,21 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     private SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler;
 
     @SuppressWarnings("unchecked")
-    public CommonSession(SessionOutputEventHandler<UID, S> writer, SessionInputEventHandler<UID, S> reader, int cacheMessageSize) {
-        this.outputEventHandler = (SessionOutputEventHandler<UID, NetSession<UID>>) writer;
-        this.inputEventHandler = (SessionInputEventHandler<UID, NetSession<UID>>) reader;
-        if (cacheMessageSize > 0) {
-            this.handledSendEventQueue = new CircularFifoQueue<>(cacheMessageSize);
-            handledSendEventQueueLock = new StampedLock();
-        }
+    public CommonSession(NetTunnel<UID> tunnel, UID unloginUID, MessageBuilderFactory<UID> messageBuilderFactory, SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler, SessionInputEventHandler<UID, NetSession<UID>> inputEventHandler, MessageSignGenerator<UID> messageSignGenerator, int cacheMessageSize) {
+        this.id = SessionUtils.newSessionID();
+        this.certificate = LoginCertificate.createUnLogin(unloginUID);
+        this.messageSignGenerator = messageSignGenerator;
+        this.messageBuilderFactory = messageBuilderFactory;
+        this.outputEventHandler = outputEventHandler;
+        this.inputEventHandler = inputEventHandler;
+        this.eventBox = SessionEventsBox.create(this, cacheMessageSize);
+        this.currentTunnel = tunnel;
+        this.currentTunnel.bind(this);
     }
 
     @Override
     public long getID() {
-        return 0;
+        return id;
     }
 
     @Override
@@ -111,33 +87,23 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     }
 
     @Override
-    public String getGroup() {
+    public String getUserGroup() {
         return certificate.getUserGroup();
     }
 
     @Override
-    public DateTime getLoginAt() {
+    public Instant getLoginAt() {
         return certificate.getLoginAt();
-    }
-
-    protected MessageSignGenerator<UID> getMessageCheckGenerator() {
-        return messageCheckGenerator;
     }
 
     @Override
     public boolean isLogin() {
-        return this.certificate != null && this.certificate.isLogin();
+        return this.certificate.isLogin();
     }
 
     @Override
     public Attributes attributes() {
-        if (this.attributes != null)
-            return this.attributes;
-        synchronized (this) {
-            if (this.attributes != null)
-                return this.attributes;
-            return this.attributes = ContextAttributes.create();
-        }
+        return this.eventBox.attributes();
     }
 
     @Override
@@ -145,204 +111,178 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
         return certificate;
     }
 
-    private boolean checkPushable() {
-        SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
-        if (!option.isPush()) {
-            if (option.isThrowable())
-                throw new SessionException(LogUtils.format("Session {}-{} [{}] 无法推送", this.getCertificate(), this.getGroup(), this.getUID()));
+    @Override
+    public boolean relogin(NetSession<UID> cerSession) {
+        LoginCertificate<UID> certificate = cerSession.getCertificate();
+        if (this.certificate.getID() != certificate.getID())
             return false;
-        }
-        return true;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean transferFrom(NetSession<UID> oldSession) {
-        if (!this.isOnline() || this.getCertificate().isRelogin())
-            return false;
-        if (this.getClass().isInstance(oldSession) && oldSession.invalid()) {
-            CommonSession<UID, S> oldOne = (CommonSession<UID, S>) oldSession;
+        if (this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.ONLINE.getId())) {
             synchronized (this) {
-                this.id = oldOne.id;
-                this.messageIDCounter = oldOne.messageIDCounter;
-                this.inputEventQueue.addAll(oldOne.inputEventQueue);
-                this.outputEventQueue.addAll(oldOne.outputEventQueue);
-                //TODO 是否有线程问题
-                this.handledSendEventQueue.addAll(oldOne.handledSendEventQueue);
-            }
-            postTransferTo((S) oldSession);
-        }
-        return true;
-    }
-
-    @Override
-    public void sendMessage(Protocol protocol, MessageContent content, boolean sent) {
-        if (protocol.isPush() && !checkPushable())
-            return;
-        MessageBuilder builder = messageBuilderFactory.newMessageBuilder()
-                .setBody(content.getBody())
-                .setCode(content.getCode())
-                .setToMessage(content.getToMessage())
-                .setSignGenerator(this.messageCheckGenerator)
-                .setTime(System.currentTimeMillis());
-        try {
-            synchronized (this) {
-                Message<?> message = builder.setID(++messageIDCounter)
-                        .build();
-                NetLogger.logSend(this, message);
-                this.outputEventQueue.add(sendEvent(message, content, sent));
-                if (content.hasMessageFuture()) {
-                    MessageFuture<?> future = content.getMessageFuture()
-                            .setSession(this);
-                    MessageFuture.putFuture(this, message, future);
-                }
-                inputEventHandler.onInput(this);
-            }
-        } catch (Throwable e) {
-            LOGGER.error("send response exception", e);
-        }
-    }
-
-    @Override
-    public void receiveMessage(Message<UID> message) {
-        NetLogger.logReceive(this, message);
-        MessageFuture<?> future = null;
-        if (MessageMode.RESPONSE.isMode(message)) {
-            int toMessage = message.getToMessage();
-            future = MessageFuture.getFuture(this.getID(), toMessage);
-        }
-        this.inputEventQueue.add(receiveEvent(message, future));
-        outputEventHandler.onOutput(this);
-        this.lastReceiveTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public boolean hasInputEvent() {
-        return !outputEventQueue.isEmpty();
-    }
-
-    @Override
-    public boolean hasOutputEvent() {
-        return !inputEventQueue.isEmpty();
-    }
-
-    @Override
-    public void resendMessage(int messageID) {
-        resendMessage(Range.singleton(messageID));
-    }
-
-    @Override
-    public void resendMessages(int fromID) {
-        resendMessage(Range.atLeast(fromID));
-    }
-
-    @Override
-    public void resendMessages(int fromID, int toID) {
-        resendMessage(Range.closed(fromID, toID));
-    }
-
-    private void resendMessage(Range<Integer> range) {
-        this.outputEventQueue.add(new SessionResendEvent(range));
-    }
-
-    private SessionSendEvent sendEvent(Message<?> message, MessageContent content, boolean sent) {
-        return new SessionSendEvent(message, sent, SessionEventType.MESSAGE, content.getSentHandler());
-    }
-
-    private SessionReceiveEvent receiveEvent(Message<?> message, MessageFuture<?> future) {
-        return new SessionReceiveEvent(message, SessionEventType.MESSAGE, future);
-    }
-
-    @Override
-    public List<SessionSendEvent> getHandledSendEvents(Range<Integer> range) {
-        if (this.handledSendEventQueue == null)
-            return ImmutableList.of();
-        StampedLock lock = this.handledSendEventQueueLock;
-        long stamp = lock.readLock();
-        try {
-            return this.handledSendEventQueue.stream()
-                    .filter(e -> range.contains(e.getMessage().getID()))
-                    .collect(Collectors.toList());
-        } finally {
-            lock.unlockRead(stamp);
-        }
-    }
-
-    protected void addHandledOutputEvent(SessionSendEvent event) {
-        if (event.getEventType() != SessionEventType.MESSAGE)
-            return;
-        if (this.handledSendEventQueue != null) {
-            StampedLock lock = this.handledSendEventQueueLock;
-            long stamp = lock.writeLock();
-            try {
-                this.handledSendEventQueue.add(event);
-            } finally {
-                lock.unlockWrite(stamp);
+                this.certificate = certificate;
+                CommonSession<UID> session = (CommonSession<UID>) cerSession;
+                this.currentTunnel = session.getCurrentTunnel();
+                this.currentTunnel.bind(this);
+                this.eventBox.accept(session.eventBox);
+                return true;
             }
         }
-    }
-
-    @Override
-    public SessionInputEvent pollInputEvent() {
-        if (this.isInvalided())
-            return null;
-        Queue<SessionInputEvent> inputEventQueue = this.inputEventQueue;
-        if (inputEventQueue == null || inputEventQueue.isEmpty())
-            return null;
-        return inputEventQueue.poll();
-    }
-
-    @Override
-    public SessionOutputEvent pollOutputEvent() {
-        if (this.isInvalided())
-            return null;
-        Queue<SessionOutputEvent> outputEventQueue = this.outputEventQueue;
-        if (outputEventQueue == null || outputEventQueue.isEmpty())
-            return null;
-        SessionOutputEvent event = outputEventQueue.poll();
-        if (event != null && event instanceof SessionSendEvent) {
-            addHandledOutputEvent((SessionSendEvent) event);
-        }
-        return event;
-    }
-
-    @Override
-    public boolean isOnline() {
         return false;
     }
 
     @Override
-    public MessageBuilderFactory<UID> getMessageBuilderFactory() {
-        return null;
-    }
-
-    @Override
-    public void offline(boolean invalid) {
-        int state = this.sessionState.get();
-        if (invalid) {
-            while (state != SessionState.INVALID.getId() && !this.sessionState.compareAndSet(state, SessionState.INVALID.getId())) {
-                state = this.sessionState.get();
-            }
-            this.postInvalid();
-        } else {
-            if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
-                this.offlineTime = System.currentTimeMillis();
-                this.postOffline();
-            }
+    public void offlineIfCurrent(Tunnel<UID> tunnel) {
+        if (!isOnline())
+            return;
+        if (this.currentTunnel != tunnel)
+            return;
+        synchronized (this) {
+            if (this.currentTunnel != tunnel)
+                return;
+            this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.ONLINE.getId());
         }
     }
 
     @Override
-    public boolean invalid() {
+    public void receive(Message<UID> message) {
+        receive(this.currentTunnel, message);
+    }
+
+    @Override
+    public void receive(Tunnel<UID> tunnel, Message<UID> message) {
+        try {
+            NetLogger.logReceive(this, message);
+            MessageMode mode = message.getMode();
+            if (mode == MessageMode.PING || mode == MessageMode.PONG)
+                return;
+            MessageFuture<?> future = null;
+            if (MessageMode.RESPONSE.isMode(message)) {
+                int toMessage = message.getToMessage();
+                future = MessageFuture.getFuture(this.getID(), toMessage);
+            }
+            this.eventBox.addInputEvent(receiveEvent(getTunnel(tunnel), message, future));
+            inputEventHandler.onInput(this);
+        } finally {
+            this.lastReceiveTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public void send(MessageContent content) throws RemotingException {
+        send(this.currentTunnel, content);
+    }
+
+    @Override
+    public void send(Tunnel<UID> tunnel, MessageContent<?> content) {
+        Message<UID> message = null;
+        try {
+            tunnel = getTunnel(tunnel);
+            MessageBuilder<UID> builder = messageBuilderFactory.newMessageBuilder()
+                    .setContent(content)
+                    .setSignGenerator(this.messageSignGenerator)
+                    .setTime(System.currentTimeMillis())
+                    .setTunnel(tunnel);
+            final SessionEventsBox eventBox = this.eventBox;
+            synchronized (eventBox) {
+                message = builder.setID(eventBox.allotMessageID())
+                        .build();
+                NetLogger.logSend(this, message);
+                SessionSendEvent<UID> event = sendEvent(tunnel, message, content);
+                eventBox.addOutputEvent(event);
+                if (content.hasMessageFuture()) {
+                    MessageFuture.putFuture(this, message, content
+                            .getMessageFuture());
+                }
+                outputEventHandler.onOutput(this);
+                if (content.isSent())
+                    event.waitForSend(content.getSentTimeout());
+            }
+        } catch (Throwable e) {
+            LOGGER.error("send response exception", e);
+            if (content.isSent())
+                throw new RemotingException(LogUtils.format("{} send {} failed", this, message));
+        }
+    }
+
+    @Override
+    public void resend(ResendMessage message) {
+        this.resend(this.currentTunnel, message);
+    }
+
+    @Override
+    public void resend(Tunnel<UID> tunnel, ResendMessage message) {
+        this.eventBox.addOutputEvent(new SessionResendEvent<>(getTunnel(tunnel), message.getResendRange()));
+    }
+
+    @Override
+    public boolean hasInputEvent() {
+        return this.eventBox.hasInputEvent();
+    }
+
+    @Override
+    public boolean hasOutputEvent() {
+        return this.eventBox.hasOutputEvent();
+    }
+
+
+    private SessionReceiveEvent receiveEvent(Tunnel<UID> tunnel, Message<UID> message, MessageFuture<?> future) {
+        return new SessionReceiveEvent<>(tunnel, message, SessionEventType.MESSAGE, future);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SessionSendEvent<UID> sendEvent(Tunnel<UID> tunnel, Message<UID> message, MessageContent content) {
+        return new SessionSendEvent<UID>(tunnel, message, content.isSent(), content.getSendFuture());
+    }
+
+    private Tunnel<UID> getTunnel(Tunnel<UID> tunnel) {
+        return tunnel == null ? this.currentTunnel : tunnel;
+    }
+
+    @Override
+    public List<SessionSendEvent> getHandledSendEvents(Range<Integer> range) {
+        return this.eventBox.getHandledSendEvents(range);
+    }
+
+    @Override
+    public SessionSendEvent getHandledSendEventByToID(int toMessageID) {
+        return this.eventBox.getHandledSendEventByToID(toMessageID);
+    }
+
+    @Override
+    public SessionInputEvent pollInputEvent() {
+        return this.eventBox.pollInputEvent();
+    }
+
+    @Override
+    public SessionOutputEvent pollOutputEvent() {
+        return this.eventBox.pollOutputEvent();
+    }
+
+    @Override
+    public boolean isOnline() {
+        return this.sessionState.get() == SessionState.ONLINE.getId();
+    }
+
+    @Override
+    public void offline() {
+        if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
+            this.offlineTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public boolean close() {
         if (this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.INVALID.getId())) {
-            this.postInvalid();
+            Tunnel<UID> tunnel = this.currentTunnel;
+            if (tunnel != null && tunnel.getSession() == this)
+                tunnel.close();
             return true;
         }
         return false;
     }
 
+
     @Override
-    public boolean isInvalided() {
+    public boolean isClosed() {
         return this.sessionState.get() == SessionState.INVALID.getId();
     }
 
@@ -357,15 +297,45 @@ public abstract class CommonSession<UID, S extends CommonSession<UID, S>> implem
     }
 
     @Override
-    public void login(LoginCertificate<UID> certificate) {
+    public void login(LoginCertificate<UID> certificate) throws ValidatorFailException {
+        if (!certificate.isLogin())
+            throw new ValidatorFailException("Certificate unlogin");
         this.certificate = certificate;
     }
 
-    protected abstract void postTransferTo(S newSession);
+    @Override
+    public NetTunnel<UID> getCurrentTunnel() {
+        return currentTunnel;
+    }
 
-    protected abstract void postOffline();
+    // protected void closeTunnel(String reason) {
+    //     Tunnel<UID> session = this.session;
+    //     if (session != null && session.isConnected()) {
+    //         if (LOGGER.isInfoEnabled())
+    //             LOGGER.info("Session主动断开## Tunnel {} ##通道 {}", reason, session);
+    //         session.close();
+    //     }
+    // }
 
-    protected abstract void postInvalid();
+    protected MessageSignGenerator<UID> getMessageSignGenerator() {
+        return messageSignGenerator;
+    }
+
+    private boolean checkPushable() {
+        SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
+        if (!option.isPush()) {
+            if (option.isThrowable())
+                throw new SessionException(LogUtils.format("Session {}-{} [{}] 无法推送", this.getCertificate(), this.getUserGroup(), this.getUID()));
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Session [" + this.getUserGroup() + "." + this.getUID() + " | " + this.currentTunnel + "]";
+    }
+    // protected abstract void connect() throws RemotingException;
 
     // @Override
     // public void pollInputEvent() {

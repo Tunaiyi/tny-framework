@@ -51,7 +51,7 @@ public class ServeTicket implements Serializable {
     public ServeTicket(ScopeType scopeType, int server, TicketMaker<ServeTicket> maker) {
         super();
         this.scopeType = scopeType.getName();
-        this.serverType = scopeType.getServerType().getName();
+        this.serverType = scopeType.getAppType().getName();
         this.serverID = server;
         this.time = System.currentTimeMillis();
         if (maker != null)

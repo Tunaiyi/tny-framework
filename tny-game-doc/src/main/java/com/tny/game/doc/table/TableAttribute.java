@@ -6,4 +6,13 @@ public interface TableAttribute {
 
     void putAttribute(Class<?> clazz, TypeFormatter typeFormatter);
 
+    default String getTemplate() {
+        return null;
+    }
+
+    default String getOutput() {
+        return null;
+    }
+
+
 }

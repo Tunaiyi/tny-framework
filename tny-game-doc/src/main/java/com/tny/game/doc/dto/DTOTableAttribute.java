@@ -1,12 +1,17 @@
 package com.tny.game.doc.dto;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.DTODocHolder;
+import com.tny.game.doc.holder.ExportHolder;
 import com.tny.game.doc.table.TableAttribute;
 
 public class DTOTableAttribute implements TableAttribute {
 
     private DTOConfiger dto;
+
+    @XStreamOmitField
+    private ExportHolder exportHolder;
 
     public DTOTableAttribute() {
         super();
@@ -15,6 +20,7 @@ public class DTOTableAttribute implements TableAttribute {
     public DTOTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         super();
         this.dto = DTOConfiger.create(DTODocHolder.create(clazz), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
     }
 
     public DTOConfiger getDto() {
@@ -24,6 +30,17 @@ public class DTOTableAttribute implements TableAttribute {
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         this.dto = DTOConfiger.create(DTODocHolder.create(clazz), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
+    }
+
+    @Override
+    public String getOutput() {
+        return this.exportHolder.getOutput();
+    }
+
+    @Override
+    public String getTemplate() {
+        return this.exportHolder.getTemplate();
     }
 
     @Override

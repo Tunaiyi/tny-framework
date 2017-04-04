@@ -15,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/28.
  */
 @Component("objectPool")
-@Profile({CACHE_ASYNC, GAME})
+@Profile({CACHE_ASYNC, CACHE_ALL})
 public class StringLocalAsyncDBObjectPool extends LocalAsyncDBObjectPool {
 
     @Autowired

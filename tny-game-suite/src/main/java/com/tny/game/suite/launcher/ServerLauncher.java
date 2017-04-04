@@ -1,12 +1,11 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.net.NetServer;
-import com.tny.game.net.session.holder.listener.SessionListener;
+import com.tny.game.net.listener.SeverClosedListener;
+import com.tny.game.net.netty.NettyServer;
 import com.tny.game.net.session.holder.SessionHolder;
-import com.tny.game.net.listener.ServerClosedListener;
+import com.tny.game.net.session.holder.listener.SessionHolderListener;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;
-import com.tny.game.telnet.TelnetServer;
 import com.tny.game.telnet.command.TelnetCommandHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -64,29 +63,29 @@ public class ServerLauncher {
     public ServerLauncher start() throws Throwable {
         TransactionManager.open();
         try {
-            // processor.setApplicationContext(this.context);
+            // processor.setApplicationContext(this.appContext);
             //per initServer
             runPoint(beforeInitServer);
-            NetServer server = this.initServer();
+            NettyServer server = this.initServer();
             ApplicationLifecycleProcessor.loadHandler(context);
             runPoint(afterInitServer);
             //post initServer
 
-            processor.onPrepareStart();
+            processor.onPrepareStart(false);
             LOG.info("服务器启动服务器!");
 
             // per start
             runPoint(beforeStartServer);
-            server.start();
+            server.open();
             runPoint(afterStartServer);
             // post start
 
-            if (this.context.getBeanNamesForType(TelnetServer.class).length > 0) {
-                TelnetServer telnetServer = this.context.getBean(TelnetServer.class);
-                if (telnetServer != null)
-                    telnetServer.start();
-            }
-            processor.onPostStart();
+            // if (this.context.getBeanNamesForType(TelnetServer.class).length > 0) {
+            //     TelnetServer telnetServer = this.context.getBean(TelnetServer.class);
+            //     if (telnetServer != null)
+            //         telnetServer.start();
+            // }
+            processor.onPostStart(false);
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
 
@@ -98,10 +97,15 @@ public class ServerLauncher {
                 public void run() {
                     TransactionManager.open();
                     try {
-                        processor.onPostClose();
+                        server.close();
                     } catch (Throwable throwable) {
                         LOG.error("ShutdownHook handle close", throwable);
                     } finally {
+                        try {
+                            processor.onClosed(true);
+                        } catch (Throwable throwable) {
+                            LOG.error("ShutdownHook handle close", throwable);
+                        }
                         TransactionManager.close();
                     }
                 }
@@ -109,9 +113,7 @@ public class ServerLauncher {
             });
             // complete
             runPoint(complete);
-        } finally
-
-        {
+        } finally {
             TransactionManager.close();
         }
         return this;
@@ -174,11 +176,11 @@ public class ServerLauncher {
         }
     }
 
-    private NetServer initServer() {
-        NetServer server = this.context.getBean(NetServer.class);
-        server.addServerClosedListeners(this.context.getBeansOfType(ServerClosedListener.class).values());
+    private NettyServer initServer() {
+        NettyServer server = this.context.getBean(NettyServer.class);
+        server.addClosedListeners(this.context.getBeansOfType(SeverClosedListener.class).values());
         SessionHolder sessionHolder = this.context.getBean(SessionHolder.class);
-        sessionHolder.addSessionListener(this.context.getBeansOfType(SessionListener.class).values());
+        sessionHolder.addListener(this.context.getBeansOfType(SessionHolderListener.class).values());
         LOG.info("服务器实例化完成!");
         return server;
     }

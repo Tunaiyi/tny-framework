@@ -1,31 +1,54 @@
 package com.tny.game.net.spring;
 
-import com.tny.game.annotation.Controller;
-import com.tny.game.net.base.AppContext;
-import com.tny.game.net.common.dispatcher.DefaultMessageDispatcher;
-import com.tny.game.net.command.listener.MessageDispatcherListener;
+import com.tny.game.net.annotation.Controller;
+import com.tny.game.lifecycle.LifecycleLevel;
+import com.tny.game.lifecycle.PrepareStarter;
+import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.net.auth.AuthProvider;
+import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.base.annotation.Unit;
+import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.command.listener.DispatchCommandListener;
+import com.tny.game.net.common.dispatcher.CommonMessageDispatcher;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
 
-public final class SpringMessageDispatcher extends DefaultMessageDispatcher implements ApplicationContextAware {
+@Unit("SpringMessageDispatcher")
+public final class SpringMessageDispatcher extends CommonMessageDispatcher implements ApplicationContextAware, ServerPrepareStart {
 
     private ApplicationContext applicationContext;
+
+    public SpringMessageDispatcher(AppConfiguration appConfiguration) {
+        super(appConfiguration);
+    }
 
     @Override
     public void setApplicationContext(final ApplicationContext context) throws BeansException {
         this.applicationContext = context;
     }
 
+
     @Override
-    public void initDispatcher(AppContext appContext) {
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
+    }
+
+    @Override
+    public void prepareStart() throws Exception {
+        final Map<String, AuthProvider> providerMap = this.applicationContext.getBeansOfType(AuthProvider.class);
+        this.addAuthProvider(providerMap.values());
+        final Map<String, ControllerChecker> checkerMap = this.applicationContext.getBeansOfType(ControllerChecker.class);
+        this.addControllerChecker(checkerMap.values());
+        final Map<String, ControllerPlugin> pluginMap = this.applicationContext.getBeansOfType(ControllerPlugin.class);
+        this.addControllerPlugin(pluginMap.values());
         final Map<String, Object> handlerMap = this.applicationContext.getBeansWithAnnotation(Controller.class);
         this.addController(handlerMap.values());
-        super.initDispatcher(appContext);
-        final Map<String, MessageDispatcherListener> listenerMap = this.applicationContext.getBeansOfType(MessageDispatcherListener.class);
-        this.listeners.addAll(listenerMap.values());
+        final Map<String, DispatchCommandListener> listenerMap = this.applicationContext.getBeansOfType(DispatchCommandListener.class);
+        this.addDispatcherRequestListener(listenerMap.values());
     }
 
 }

@@ -19,9 +19,37 @@ public enum MessageMode {
     /**
      * 处理响应
      */
-    RESPONSE(MessageUtils::isResponse);
+    RESPONSE(MessageUtils::isResponse),
+
+    /**
+     * PING
+     */
+    PING() {
+        @Override
+        public boolean isMode(Message<?> message) {
+            return message.getMode() == this;
+        }
+    },
+
+
+    /**
+     * PONG
+     */
+    PONG() {
+        @Override
+        public boolean isMode(Message<?> message) {
+            return message.getMode() == this;
+        }
+    },
+
+    //
+    ;
+
 
     private Predicate<Message<?>> checkMode;
+
+    MessageMode() {
+    }
 
     MessageMode(Predicate<Message<?>> checkMode) {
         this.checkMode = checkMode;

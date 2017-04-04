@@ -5,7 +5,7 @@ import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 
 import java.lang.annotation.Annotation;
 
@@ -16,7 +16,7 @@ public abstract class RangeLimitFilter<A extends Annotation, N extends Comparabl
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Session<Object> session, Message<Object> message, int index, A annotation, N param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, A annotation, N param) {
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         N number = param;

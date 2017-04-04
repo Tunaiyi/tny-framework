@@ -5,7 +5,7 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.common.concurrent.ExeUtils;
 import com.tny.game.lifecycle.Lifecycle;
 import com.tny.game.lifecycle.LifecycleHandler;
-import com.tny.game.lifecycle.ServerPostClose;
+import com.tny.game.lifecycle.ServerClosed;
 import com.tny.game.lifecycle.ServerPostStart;
 import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.lifecycle.StaticIniter;
@@ -62,7 +62,7 @@ public class ApplicationLifecycleProcessor {
         }
     }
 
-    private ClassSelector selector() {
+    private ClassSelector  () {
         return ClassSelector.instance()
                 .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
                 .setHandler(classes -> classes.forEach(c ->
@@ -70,16 +70,16 @@ public class ApplicationLifecycleProcessor {
                 ));
     }
 
-    public void onPrepareStart() throws Throwable {
-        this.process("prepareStart", ServerPrepareStart.class, ServerPrepareStart::prepareStart);
+    public void onPrepareStart(boolean errorContinue) throws Throwable {
+        this.process("prepareStart", ServerPrepareStart.class, ServerPrepareStart::prepareStart, errorContinue);
     }
 
-    public void onPostStart() throws Throwable {
-        this.process("postStart", ServerPostStart.class, ServerPostStart::postStart);
+    public void onPostStart(boolean errorContinue) throws Throwable {
+        this.process("postStart", ServerPostStart.class, ServerPostStart::postStart, errorContinue);
     }
 
-    public void onPostClose() throws Throwable {
-        this.process("postClose", ServerPostClose.class, ServerPostClose::postClose);
+    public void onClosed(boolean errorContinue) throws Throwable {
+        this.process("onClosed", ServerClosed.class, ServerClosed::onClosed, errorContinue);
     }
 
     @FunctionalInterface
@@ -92,7 +92,7 @@ public class ApplicationLifecycleProcessor {
     public static void loadHandler(ApplicationContext context) {
         loadHandler(ServerPrepareStart.class, ServerPrepareStart::getPrepareStarter, context);
         loadHandler(ServerPostStart.class, ServerPostStart::getPostStarter, context);
-        loadHandler(ServerPostClose.class, ServerPostClose::getPostCloser, context);
+        loadHandler(ServerClosed.class, ServerClosed::getPostCloser, context);
     }
 
     private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter, ApplicationContext context) {
@@ -110,10 +110,10 @@ public class ApplicationLifecycleProcessor {
         lifecycleMap.put(processorClass, process);
     }
 
-    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner) throws Throwable {
+    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue) throws Throwable {
         String name = processorClass.getSimpleName();
-        LOGGER.info("服务器初始化 {} ! 初始化开始......", name);
-        // Map<String, ? extends T> initerMap = this.context.getBeansOfType(processorClass);
+        LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
+        // Map<String, ? extends T> initerMap = this.appContext.getBeansOfType(processorClass);
         List<Lifecycle> lifecycleList = lifecycleMap.getOrDefault(processorClass, Collections.emptyList());
         int index = 0;
 
@@ -128,7 +128,8 @@ public class ApplicationLifecycleProcessor {
                 if (processor != null) {
                     Method method = processor.getClass().getMethod(methodName);
                     AsyncProcess asyncProcess = method.getAnnotation(AsyncProcess.class);
-                    LOGGER.info("服务器初始化 {} 初始化器 [{}] : {}", name, index, currentLifecycle);
+                    LOGGER.info("服务生命周期 {} # 处理器 [{}] : {}", name, index, currentLifecycle);
+                    int currentIndex = index;
                     if (asyncProcess != null) {
                         ForkJoinTask<?> task = ForkJoinPool.commonPool().submit(() -> {
                             TransactionManager.open();
@@ -136,15 +137,23 @@ public class ApplicationLifecycleProcessor {
                                 runner.process(processor);
                                 TransactionManager.close();
                             } catch (Throwable e) {
+                                LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
                                 TransactionManager.rollback(e);
                                 throw new LifecycleProcessException(e);
                             }
                         });
                         tasks.add(task);
                     } else {
-                        runner.process(processor);
+                        try {
+                            runner.process(processor);
+                        } catch (Throwable e) {
+                            if (errorContinue)
+                                LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
+                            else
+                                throw new LifecycleProcessException(e);
+                        }
                     }
-                    LOGGER.info("服务器初始化 {} 初始化器 [{}] : 耗时 {} -> {} 完成", name, index, System.currentTimeMillis() - current, currentLifecycle);
+                    LOGGER.info("服务生命周期 {} # 处理器 [{}] : 耗时 {} -> {} 完成", name, index, System.currentTimeMillis() - current, currentLifecycle);
                     index++;
                 }
                 currentLifecycle = currentLifecycle.getNext();
@@ -154,7 +163,7 @@ public class ApplicationLifecycleProcessor {
         for (ForkJoinTask<?> task : tasks) {
             task.join();
         }
-        LOGGER.info("服务器初始化 {} 完成! 共 {} 个初始化器!", name, index);
+        LOGGER.info("服务生命周期处理 {} 完成! 共 {} 个初始化器!", name, index);
     }
 
 }

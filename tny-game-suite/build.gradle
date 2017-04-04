@@ -2,7 +2,6 @@ group "com.tny.game"
 
 apply plugin: "maven"
 
-apply plugin: 'com.google.protobuf'
 
 dependencies {
 
@@ -12,7 +11,6 @@ dependencies {
     compile(
             libs.'jade',
             libs.'druid',
-            libs.'protobuf-java',
             libs.'guava',
             project(":tny-game-common"),
             project(":tny-game-base"),
@@ -22,50 +20,10 @@ dependencies {
             project(":tny-game-scanning"),
             project(":tny-game-zookeeper"),
             project(":tny-game-cache-mysql"),
+            project(":tny-game-protobuf"),
             project(":tny-game-cache-redis"),
             project(":tny-game-oplog-log4j2kafka"),
-            project(":tny-game-net-kafka")
+//            project(":tny-game-net-kafka")
     )
 
-}
-
-buildscript {
-    repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
-    }
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDirs "src/main/resources"
-        }
-        proto {
-            srcDir 'src/main/proto'
-            include '**/*.proto'
-        }
-    }
-}
-
-protobuf {
-    protoc {
-        artifact = 'com.google.protobuf:protoc:2.6.1'
-    }
-
-    generateProtoTasks.generatedFilesBaseDir = 'src'
-
-    generateProtoTasks {
-        all().each { task ->
-        }
-        ofSourceSet('main')
-    }
-}
-
-idea {
-    module {
-        sourceDirs += file("src/main/proto");
-    }
 }

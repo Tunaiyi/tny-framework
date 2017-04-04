@@ -1,10 +1,9 @@
 package com.tny.game.net.checker;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.AppContext;
+import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.common.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.Session;
 
 /**
  * 消息校驗處理器
@@ -19,7 +18,7 @@ public interface ControllerChecker<UID, O> {
      * @param message 请求对象
      * @return 是否通過校驗 通過校驗返回true 否則返回false
      */
-    ResultCode check(Session<UID> session, Message<UID> message, ControllerHolder holder, AppContext context, O attribute);
+    ResultCode check(Tunnel<UID> tunnel, Message<UID> message, ControllerHolder holder, O attribute);
 
     /**
      * @return 属性类型

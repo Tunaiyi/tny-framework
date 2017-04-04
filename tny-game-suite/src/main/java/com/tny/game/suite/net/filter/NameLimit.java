@@ -3,8 +3,9 @@ package com.tny.game.suite.net.filter;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.common.dispatcher.MethodControllerHolder;
-import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.filter.AbstractParamFilter;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({SERVER, GAME})
-public class NameLimit extends AbstractParamFilter<NameFilter, String> {
+public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String> {
 
     @Autowired
     private WordsFilter wordsFilter;
@@ -29,19 +30,17 @@ public class NameLimit extends AbstractParamFilter<NameFilter, String> {
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Request request, int index, NameFilter annotation, String param) {
-        if (System.getProperty("com.sd.fol.name.test", "").equals("true"))
-            return ResultCode.SUCCESS;
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, NameFilter annotation, String param) {
         if (!this.fullPattern.matcher(param).matches()) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    request.getUserID(), request.getProtocol(),
+                    message.getUserID(), message.getProtocol(),
                     index, param, this.fullPattern.pattern());
             return SuiteResultCode.NAME_CONTENT_ILLEGAL;
         }
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    request.getUserID(), request.getProtocol(),
+                    message.getUserID(), message.getProtocol(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return SuiteResultCode.NAME_LENGTH_ILLEGAL;
         }

@@ -2,7 +2,7 @@ package com.tny.game.doc.imports;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.annotation.Controller;
+import com.tny.game.net.annotation.Controller;
 import com.tny.game.protoex.annotations.ProtoEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

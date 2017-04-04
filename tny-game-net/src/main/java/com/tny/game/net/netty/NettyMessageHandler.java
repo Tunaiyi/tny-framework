@@ -1,10 +1,9 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.NetAppContext;
+import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.message.NetMessage;
-import com.tny.game.net.session.NetSession;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
+import java.rmi.server.UID;
 import java.util.Date;
 
 /**
@@ -29,30 +29,21 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
-    /**
-     * session工厂
-     */
-    protected NettySessionFactory sessionFactory;
 
-    public NettyMessageHandler() {
+    protected AppConfiguration appConfiguration;
 
-    }
-
-    public NettyMessageHandler(NetAppContext appContext) {
-        this.setAppContext(appContext);
-    }
-
-    public void setAppContext(NetAppContext appContext) {
-        this.sessionFactory = appContext.getSessionFactory();
+    public NettyMessageHandler(AppConfiguration appConfiguration) {
+        this.appConfiguration = appConfiguration;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         if (LOG.isInfoEnabled()) {
             Channel channel = ctx.channel();
             LOG.info("接受连接##通道 {} ==> {} 在 {} 时链接服务器", channel.remoteAddress(), channel.localAddress(), new Date());
-            NetSession<?> session = this.sessionFactory.createSession(channel);
-            channel.attr(NettyAttrKeys.SESSION).set(session);
+            Tunnel<?> tunnel = new NettyTunnel<>(channel, appConfiguration.getSessionFactory());
+            channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
         }
         super.channelRegistered(ctx);
     }
@@ -88,10 +79,10 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
             return;
         }
         try {
-            NetSession session = channel.attr(NettyAttrKeys.SESSION).get();
-            if (session != null) {
-                message.register(session);
-                session.receiveMessage(message);
+            Tunnel<UID> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+            if (tunnel != null) {
+                message.sendBy(tunnel);
+                tunnel.receive(message);
             }
         } catch (Throwable ex) {
             LOG.error("#GameServerHandler#接受请求异常", ex);
@@ -102,13 +93,12 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NetSession<?> session = channel.attr(NettyAttrKeys.SESSION).get();
+        Tunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
         if (LOG.isInfoEnabled())
             LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
-        if (session != null)
-            session.offline();
+        if (tunnel != null)
+            tunnel.close();
         super.channelInactive(ctx);
-
     }
 
     @Override
@@ -116,8 +106,8 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             Channel channel = ctx.channel();
-            Session session = channel.attr(NettyAttrKeys.SESSION).get();
-            if (session != null) {
+            Tunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+            if (tunnel != null) {
                 String op = "空闲超时";
                 switch (event.state()) {
                     case READER_IDLE:

@@ -13,7 +13,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/28.
  */
 @Component("dbCacheSynchronizer")
-@Profile({CACHE_DB, GAME})
+@Profile({CACHE_DB, CACHE_ALL})
 public class DBCacheSynchronizer extends CacheSynchronizer {
 
     @Autowired

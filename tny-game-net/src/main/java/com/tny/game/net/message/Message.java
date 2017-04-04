@@ -17,6 +17,11 @@ public interface Message<UID> extends Protocol, Serializable {
     UID getUserID();
 
     /**
+     * @return 是否已经登录
+     */
+    boolean isLogin();
+
+    /**
      * @return 獲取所属用户组
      */
     String getUserGroup();
@@ -42,6 +47,11 @@ public interface Message<UID> extends Protocol, Serializable {
     <T> T getBody(Class<T> clazz);
 
     /**
+     * @return 获取消息体
+     */
+    <T> T getBody(BodyClass<T> clazz);
+
+    /**
      * 获取请求时间
      * <p>
      * <p>
@@ -65,4 +75,5 @@ public interface Message<UID> extends Protocol, Serializable {
      * @return 获取消息模式
      */
     MessageMode getMode();
+
 }

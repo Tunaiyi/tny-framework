@@ -24,7 +24,7 @@
         <constructor-arg value="true"/>
     </bean>
 
-    <bean name="serverAppContext" class="com.tny.game.net.base.DefaultNetServerAppContext">
+    <bean name="serverAppContext" class="com.tny.game.net.base.DefaultAppConfiguration">
         <property name="authProviders">
             <list>
                 <ref bean="authProvider"/>
@@ -34,12 +34,12 @@
         <property name="messageDispatcher" ref="dispatcher"/>
     </bean>
 
-    <bean name="gameServer" class="com.tny.game.net.NetServer">
+    <bean name="gameServer" class="com.tny.game.net.netty.NettyServer">
         <constructor-arg ref="serverAppContext"/>
     </bean>
 
     <context:component-scan base-package="com.tny.game">
-        <context:include-filter type="annotation" expression="com.tny.game.annotation.Controller"/>
+        <context:include-filter type="annotation" expression="com.tny.game.net.annotation.Controller"/>
     </context:component-scan>
 
 </beans>

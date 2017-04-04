@@ -36,10 +36,10 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (contextInit.compareAndSet(false, true)) {
             ApplicationLifecycleProcessor.loadHandler(context);
-            // processor.setApplicationContext(this.context);
+            // processor.setApplicationContext(this.appContext);
             try {
-                processor.onPrepareStart();
-                processor.onPostStart();
+                processor.onPrepareStart(true);
+                processor.onPostStart(true);
             } catch (Throwable throwable) {
                 throw new RuntimeException(throwable);
             }
@@ -54,7 +54,7 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ExeUtils.runUnchecked(() -> processor.onPostClose());
+        ExeUtils.runUnchecked(() -> processor.onClosed(false));
     }
 
 }

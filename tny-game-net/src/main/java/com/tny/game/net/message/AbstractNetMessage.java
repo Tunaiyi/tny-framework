@@ -4,15 +4,53 @@ import com.tny.game.LogUtils;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.base.AppConstants;
+import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.protoex.ProtoExEnum;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
 
     protected volatile transient Attributes attributes;
 
     private MessageMode mode;
-    private Session<UID> session;
+
+    protected Tunnel<UID> tunnel;
+
+
+    @Override
+    public UID getUserID() {
+        Tunnel<UID> tunnel = this.tunnel;
+        return tunnel == null ? null : tunnel.getUID();
+    }
+
+    @Override
+    public String getUserGroup() {
+        Tunnel<UID> tunnel = this.tunnel;
+        return tunnel == null ? AppConstants.DEFAULT_USER_GROUP : tunnel.getUserGroup();
+    }
+
+    @Override
+    public boolean isLogin() {
+        Tunnel<UID> tunnel = this.tunnel;
+        return tunnel != null && tunnel.isLogin();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getBody(BodyClass<T> bodyClass) {
+        Type[] types = bodyClass.getClass().getGenericInterfaces();
+        Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
+        Class<T> clazz = null;
+        if(subType instanceof Class) {
+            clazz = (Class<T>) subType;
+        } else if(subType instanceof ParameterizedType) {
+            clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
+        }
+        return getBody(clazz);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -80,6 +118,16 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
         return mode;
     }
 
+    @Override
+    public void sendBy(Tunnel<UID> tunnel) {
+        setTunnel(tunnel);
+    }
+
+    protected AbstractNetMessage<UID> setTunnel(Tunnel<UID> tunnel) {
+        this.tunnel = tunnel;
+        return this;
+    }
+
     protected abstract Object getBody();
 
     protected abstract AbstractNetMessage<UID> setID(int ID);
@@ -96,6 +144,6 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
 
     protected abstract AbstractNetMessage<UID> setToMessage(int toMessage);
 
-    protected abstract AbstractNetMessage<UID> setSession(Session<UID> session);
+    // protected abstract AbstractNetMessage<UID> setSession(Session<UID> session);
 
 }

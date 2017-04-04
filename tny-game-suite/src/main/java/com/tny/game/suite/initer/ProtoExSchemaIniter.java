@@ -5,8 +5,7 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;
-import com.tny.game.net.message.protoex.ProtoExRequest;
-import com.tny.game.net.message.protoex.ProtoExResponse;
+import com.tny.game.net.message.protoex.ProtoExMessage;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.field.runtime.RuntimeProtoExSchema;
@@ -15,9 +14,7 @@ import com.tny.game.scanner.filter.AnnotationClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
@@ -27,7 +24,6 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proto");
 
-    private List<String> scanPaths = new ArrayList<>();
 
     private static ClassSelector selector = ClassSelector
             .instance(AnnotationClassFilter.ofInclude(ProtoEx.class))
@@ -39,20 +35,19 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
         return selector;
     }
 
-    public ProtoExSchemaIniter(List<String> scanPaths) {
-        this.scanPaths.addAll(scanPaths);
+    public ProtoExSchemaIniter() {
     }
 
     @SuppressWarnings("unchecked")
-    public static void loadClasses(Set<Class<?>> classes) {
+    private static void loadClasses(Set<Class<?>> classes) {
         LOGGER.info("启动初始化ProtoSchema任务!");
         forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
             Class<?> clazz;
             RunningChecker.start(ProtoExSchemaIniter.class);
             LOGGER.info("开始初始化 ProtoSchema .......");
             Map<Integer, Class<?>> classMap = new HashMap<>();
-            RuntimeProtoExSchema.getProtoSchema(ProtoExRequest.class);
-            RuntimeProtoExSchema.getProtoSchema(ProtoExResponse.class);
+            RuntimeProtoExSchema.getProtoSchema(ProtoExMessage.class);
+            // RuntimeProtoExSchema.getProtoSchema(ProtoExResponse.class);
             for (Class<?> cl : classes) {
                 clazz = cl;
                 ProtoExSchema<?> schema = RuntimeProtoExSchema.getProtoSchema(clazz);

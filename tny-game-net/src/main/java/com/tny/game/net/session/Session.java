@@ -1,83 +1,37 @@
 package com.tny.game.net.session;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.exception.RemotingException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.Protocol;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.tunnel.Terminal;
+import com.tny.game.net.tunnel.Tunnel;
+
+import java.time.Instant;
 
 /**
  * 用户会话对象 此对象从Socket链接便创建,保存用户链接后的属性对象,直到Socket断开连接
  *
  * @author KGTny
  */
-public interface Session<UID> {
-
-    Logger LOGGER = LoggerFactory.getLogger(Session.class);
-
-    // int DEFAULT_RESPONSE_ID = -1;
-    // long UN_LOGIN_UID = 0;
-    String DEFAULT_USER_GROUP = "USER";
-    String UNLOGIN_USER_GROUP = "UNLOGIN";
+public interface Session<UID> extends Terminal<UID> {
 
     /**
-     * 回话ID
-     * @return
+     * @return 会话ID
      */
     long getID();
 
     /**
-     * 客户端用户ID
-     *
-     * @return
+     * @return 登陆时间
      */
-    UID getUID();
+    Instant getLoginAt();
 
     /**
-     * 客户端用户组名称
-     * <p>
-     * <p>
-     * <br>
-     *
-     * @return
-     */
-    String getGroup();
-
-    /**
-     * 客户端登陆时间
-     *
-     * @return
-     */
-    DateTime getLoginAt();
-
-    /**
-     * 客户端是否登錄
-     * <p>
-     * <p>
-     * <br>
-     *
-     * @return
+     * @return 是否登錄
      */
     boolean isLogin();
 
-    // /**
-    //  * 獲取响应的IP地址
-    //  * <p>
-    //  * <p>
-    //  * 獲取請求的IP地址<br>
-    //  *
-    //  * @return 返回IP地址
-    //  */
-    // String getHostName();
-
     /**
-     * 获取会话属性
-     *
-     * @return
+     * @return获取会话属性
      */
     Attributes attributes();
 
@@ -88,32 +42,36 @@ public interface Session<UID> {
      */
     boolean isOnline();
 
-    /**
-     * 是否是失效,无法重连
-     *
-     * @return 失效返回true 失效返回false
-     */
-    boolean isInvalided();
+    // /**
+    //  * @return 是否连接
+    //  */
+    // boolean isConnected();
 
     /**
      * @return 登陆凭证
      */
     LoginCertificate<UID> getCertificate();
 
-    /**
-     * session下线
-     *
-     * @param invalid 是否立即失效
-     */
-    void offline(boolean invalid);
-
+    // /**
+    //  * session下线
+    //  *
+    //  * @param invalid 是否立即失效
+    //  */
+    // void offline(boolean invalid);
 
     /**
      * session下线, 不立即失效
      */
     default void offline() {
-        offline(false);
+        this.close();
     }
+
+    /**
+     * 使下线如果当前通道为指定通道
+     *
+     * @param tunnel 指定通道
+     */
+    void offlineIfCurrent(Tunnel<UID> tunnel);
 
     /**
      * @return 获取下线时间
@@ -126,54 +84,26 @@ public interface Session<UID> {
     long getLastReceiveTime();
 
     /**
-     * 发送消息
-     *
-     * @param protocol 协议
-     * @param content  消息内容
-     */
-    default void sendMessage(Protocol protocol, MessageContent content) {
-        try {
-            sendMessage(protocol, content, false);
-        } catch (RemotingException e) {
-            LOGGER.error("{} send message exception", this, e);
-        }
-    }
-    ;
-
-    /**
-     * 发送消息
-     *
-     * @param protocol 协议
-     * @param content  消息内容
-     */
-    void sendMessage(Protocol protocol, MessageContent content, boolean sent) throws RemotingException;
-
-    /**
      * 接收消息
      *
+     * @param tunnel  消息通道
      * @param message 消息
      */
-    void receiveMessage(Message<UID> message);
+    void receive(Tunnel<UID> tunnel, Message<UID> message);
+
+    /**
+     * 发送消息
+     *
+     * @param tunnel  消息通道
+     * @param content 消息内容
+     */
+    void send(Tunnel<UID> tunnel, MessageContent<?> content);
 
     /**
      * 重新messageID消息
      *
-     * @param messageID 消息ID
+     * @param message 重发消息
      */
-    void resendMessage(int messageID);
-
-    /**
-     * 重新发送从fromID开始的消息
-     *
-     * @param fromID 消息ID
-     */
-    void resendMessages(int fromID);
-
-    /**
-     * 重新发送从fromID开始到toID的消息
-     *
-     * @param fromID 消息ID
-     */
-    void resendMessages(int fromID, int toID);
+    void resend(Tunnel<UID> tunnel, ResendMessage message);
 
 }

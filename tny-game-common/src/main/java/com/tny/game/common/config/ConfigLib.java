@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -79,8 +80,12 @@ public class ConfigLib {
         return old != null ? old : config;
     }
 
-    public static Config newConfig(Properties properties) {
-        return new PropertiesConfig(properties);
+    public static Config newConfig(Properties properties, ConfigFormatter... formatters) {
+        return new PropertiesConfig(properties, formatters);
+    }
+
+    public static Config newConfig(Map<String, Object> config, ConfigFormatter... formatters) {
+        return new PropertiesConfig(config, formatters);
     }
 
     private static class ConfigFileListener extends FileAlterationListenerAdaptor {

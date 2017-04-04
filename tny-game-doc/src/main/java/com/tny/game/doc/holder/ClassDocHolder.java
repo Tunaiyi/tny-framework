@@ -1,7 +1,8 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.annotation.Controller;
 import com.tny.game.doc.annotation.ClassDoc;
+import com.tny.game.net.annotation.Controller;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,8 @@ public class ClassDocHolder {
     private ClassDoc classDoc;
 
     private Class<?> entityClass;
+
+    private String className;
 
     private int moduleID = -1;
 
@@ -46,6 +49,9 @@ public class ClassDocHolder {
         holder.entityClass = clazz;
         holder.fieldList = Collections.unmodifiableList(createFieldList(clazz));
         holder.funList = Collections.unmodifiableList(createFunctionList(clazz));
+        holder.className = classDoc.name();
+        if (StringUtils.isBlank(holder.className))
+            holder.className = clazz.getSimpleName();
         return holder;
     }
 
@@ -71,6 +77,10 @@ public class ClassDocHolder {
 
     public ClassDoc getClassDoc() {
         return classDoc;
+    }
+
+    public String getClassName() {
+        return this.className;
     }
 
     public int getModuleID() {

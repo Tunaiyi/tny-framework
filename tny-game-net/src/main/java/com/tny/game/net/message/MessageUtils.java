@@ -16,15 +16,26 @@ public interface MessageUtils {
     int RESPONSE_TO_MESSAGE_MAX_ID = Integer.MAX_VALUE;
 
     static boolean isResponse(Message<?> message) {
-        return RESPONSE_TO_MESSAGE_MIN_ID <= message.getToMessage() && message.getToMessage() <= RESPONSE_TO_MESSAGE_MAX_ID;
+        return isResponse(message.getToMessage());
     }
 
     static boolean isPush(Message<?> message) {
-        return PUSH_TO_MESSAGE_MIN_ID <= message.getToMessage() && message.getToMessage() <= PUSH_TO_MESSAGE_MAX_ID;
+        return isPush(message.getToMessage());
     }
 
     static boolean isRequest(Message<?> message) {
-        return REQUEST_TO_MESSAGE_MIN_ID <= message.getToMessage() && message.getToMessage() <= REQUEST_TO_MESSAGE_MAX_ID;
+        return isRequest(message.getToMessage());
+    }
+    static boolean isResponse(int toMessage) {
+        return RESPONSE_TO_MESSAGE_MIN_ID <= toMessage && toMessage <= RESPONSE_TO_MESSAGE_MAX_ID;
+    }
+
+    static boolean isPush(int toMessage) {
+        return PUSH_TO_MESSAGE_MIN_ID <= toMessage && toMessage <= PUSH_TO_MESSAGE_MAX_ID;
+    }
+
+    static boolean isRequest(int toMessage) {
+        return REQUEST_TO_MESSAGE_MIN_ID <= toMessage && toMessage <= REQUEST_TO_MESSAGE_MAX_ID;
     }
 
 }

@@ -2,6 +2,7 @@ package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.ClassDoc;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,8 @@ public class EnumDocHolder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassDocHolder.class);
 
     private ClassDoc classDoc;
+
+    private String className;
 
     private Class<?> entityClass;
 
@@ -30,6 +33,9 @@ public class EnumDocHolder {
         holder.classDoc = classDoc;
         holder.entityClass = clazz;
         holder.enumList = Collections.unmodifiableList(createFieldList(clazz));
+        holder.className = classDoc.name();
+        if (StringUtils.isBlank(holder.className))
+            holder.className = clazz.getSimpleName();
         return holder;
     }
 
@@ -56,8 +62,12 @@ public class EnumDocHolder {
         return entityClass;
     }
 
+
     public List<FieldDocHolder> getEnumList() {
         return enumList;
     }
 
+    public String getClassName() {
+        return className;
+    }
 }

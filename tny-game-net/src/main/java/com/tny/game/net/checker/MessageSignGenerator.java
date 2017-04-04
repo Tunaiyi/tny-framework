@@ -1,7 +1,7 @@
 package com.tny.game.net.checker;
 
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 
 /**
  * 消息校驗码生成器
@@ -16,6 +16,6 @@ public interface MessageSignGenerator<UID> {
      * @param message 指定消息
      * @return 返回校验码
      */
-    String generate(Session<UID> session, Message<UID> message);
+    String generate(Tunnel<UID> tunnel, Message<UID> message);
 
 }

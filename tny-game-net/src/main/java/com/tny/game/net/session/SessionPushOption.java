@@ -1,7 +1,7 @@
 package com.tny.game.net.session;
 
 import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttrUtils;
+import com.tny.game.common.context.AttrKeys;
 
 /**
  * Session推送选项
@@ -35,6 +35,6 @@ public enum SessionPushOption {
         return throwable;
     }
 
-    public static final AttrKey<SessionPushOption> SESSION_PUSH_OPTION = AttrUtils.key(SessionPushOption.class, "SESSION_PUSH_OPTION");
+    public static final AttrKey<SessionPushOption> SESSION_PUSH_OPTION = AttrKeys.key(SessionPushOption.class, "SESSION_PUSH_OPTION");
 
 }

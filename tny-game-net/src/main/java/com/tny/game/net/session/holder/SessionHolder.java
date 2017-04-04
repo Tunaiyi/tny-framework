@@ -2,7 +2,6 @@ package com.tny.game.net.session.holder;
 
 
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.Protocol;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.listener.SessionHolderListener;
 
@@ -19,7 +18,7 @@ import java.util.Map;
  * <p>
  * 负责管理会话<br>
  */
-public interface SessionHolder<UID> {
+public interface SessionHolder {
 
     /**
      * <p>
@@ -29,7 +28,7 @@ public interface SessionHolder<UID> {
      * @param uid 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    Session<UID> getSession(String userGroup, UID uid);
+    <U> Session<U> getSession(String userGroup, U uid);
 
     /**
      * <p>
@@ -39,36 +38,34 @@ public interface SessionHolder<UID> {
      * @param uid 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    boolean isOnline(String userGroup, UID uid);
+    boolean isOnline(String userGroup, Object uid);
 
     /**
      * 发信息给用户 <br>
      *
      * @param userGroup 用户组
      * @param uid       用户ID
-     * @param protocol  协议
      * @param content   消息内容
      * @return 是否加入发送队列
      */
-    boolean send2User(String userGroup, UID uid, Protocol protocol, MessageContent content);
+    boolean send2User(String userGroup, Object uid, MessageContent content);
 
     /**
      * 发信息给用户集合 <br>
      *
      * @param userGroup 用户组
      * @param uidColl   用户ID列表
-     * @param protocol  协议
      * @param content   消息内容
      * @return 返回发送数量
      */
-    int send2Users(String userGroup, Collection<UID> uidColl, Protocol protocol, MessageContent<?> content);
+    int send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content);
 
     /**
      * 发送给所有在线的用户 <br>
      *
      * @return 返回发送的人数
      */
-    void send2AllOnline(String userGroup, Protocol protocol, MessageContent<?> content);
+    void send2AllOnline(String userGroup, MessageContent<?> content);
 
     /**
      * 计算在线人数
@@ -82,7 +79,7 @@ public interface SessionHolder<UID> {
      * @param uid       指定uid
      * @return 返回下线session
      */
-    default Session<UID> offline(String userGroup, UID uid) {
+    default <U> Session<U> offline(String userGroup, U uid) {
         return this.offline(userGroup, uid, false);
     }
 
@@ -94,7 +91,7 @@ public interface SessionHolder<UID> {
      * @param invalid   true为立即失效,false为只是下线
      * @return 返回下线session
      */
-    Session<UID> offline(String userGroup, UID uid, boolean invalid);
+    <U> Session<U> offline(String userGroup, U uid, boolean invalid);
 
     /**
      * 使指定用户组的所有session下线, session不立即失效
@@ -137,27 +134,27 @@ public interface SessionHolder<UID> {
      * @param userGroup 指定group
      * @return 返回sessions map
      */
-    Map<UID, Session<UID>> getSessionsByGroup(String userGroup);
+    <U> Map<U, Session<U>> getSessionsByGroup(String userGroup);
 
     /**
      * 添加监听器
      *
      * @param listener 监听器
      */
-    void addListener(SessionHolderListener<UID> listener);
+    void addListener(SessionHolderListener listener);
 
     /**
      * 添加监听器列表
      *
      * @param listeners 监听器列表
      */
-    void addListener(Collection<SessionHolderListener<UID>> listeners);
+    void addListener(Collection<SessionHolderListener> listeners);
 
     /**
      * 移除监听器
      *
      * @param listener 监听器
      */
-    void removeListener(SessionHolderListener<UID> listener);
+    void removeListener(SessionHolderListener listener);
 
 }

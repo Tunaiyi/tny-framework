@@ -6,7 +6,7 @@ import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.filter.string.annotation.StrLength;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +17,7 @@ public class StringLengthLimit extends AbstractParamFilter<Object, StrLength, St
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Session<Object> session, Message<Object> request, int index, StrLength annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> request, int index, StrLength annotation, String param) {
         if (param == null)
             return CoreResponseCode.ILLEGAL_PARAMETERS;
         int length = param.length();

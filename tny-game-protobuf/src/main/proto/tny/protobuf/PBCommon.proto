@@ -1,0 +1,140 @@
+option java_package = "com.tny.game.protobuf";
+
+message CommonEntryProto {
+    optional int32 intValue = 1;
+    optional int64 longValue = 2;
+    optional float floatValue = 3;
+    optional double doubleValue = 4;
+    optional bool booleanValue = 5;
+    optional string stringValue = 6;
+    optional bytes bytesValue = 7;
+}
+
+message IntEntryProto {
+    optional int32 key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+message StringEntryProto {
+    optional string key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+message LongEntryProto {
+    optional int64 key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+message FloatEntryProto {
+    optional float key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+
+message DoubleEntryProto {
+    optional float key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+message BooleanEntryProto {
+    optional float key = 1;
+
+    optional int32 intValue = 2;
+    optional int64 longValue = 3;
+    optional float floatValue = 4;
+    optional double doubleValue = 5;
+    optional bool booleanValue = 6;
+    optional string stringValue = 7;
+    optional bytes bytesValue = 8;
+}
+
+message TradeItemProto {
+    optional int32 itemID = 1;
+    optional int64 number = 2;
+    optional int32 alterType = 3;
+}
+
+message TradeProto {
+    optional int32 action = 1;
+    repeated TradeItemProto item = 2;
+    optional int32 tradeType = 3;
+}
+
+message StuffProto {
+    optional int32 itemID = 1;
+    optional int64 number = 2;
+    optional int32 itemType = 3;
+}
+
+message TimeTaskProto {
+    optional uint64 executTime = 1;
+    repeated string handlerList = 2;
+}
+
+message TaskReceiverProto {
+    optional int64 playerID = 1;
+    optional string group = 2;
+    optional uint64 lastHandlerTime = 3;
+    optional uint64 actualLastHandlerTime = 4;
+}
+
+message SchedulerBackupProto {
+    optional int64 stopTime = 1;
+    repeated TimeTaskProto timeTaskQueue = 2;
+}
+
+message CapacitySupplierProto {
+    optional int64 id = 1;
+    optional int32 itemID = 2;
+    optional int64 playerID = 3;
+    optional int32 type = 4;
+    repeated IntEntryProto capacityMap = 5;
+    optional int64 endAt = 6;
+}
+
+message CapacityGoalProto {
+    repeated CapacitySupplierProto suppliers = 4;
+}
+
+message CapacityGoalItemProto {
+    optional int64 id = 1;
+    optional int32 itemID = 2;
+    optional int64 playerID = 3;
+    repeated CapacitySupplierProto dependSuppliers = 4;
+}
+

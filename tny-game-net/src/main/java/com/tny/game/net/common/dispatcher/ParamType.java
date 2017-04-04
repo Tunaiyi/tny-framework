@@ -9,6 +9,8 @@ public enum ParamType {
 
     MESSAGE,
 
+    TUNNEL,
+
     SESSION,
 
     BODY,

@@ -76,6 +76,10 @@ public enum CoreResponseCode implements ResultCode {
      */
     SESSION_TIMEOUT(217, "会话超时", ResultCodeType.ERROR),
     /**
+     * 请求序号错误
+     */
+    MESSAGE_HANDLE(218, "请求序号错误", ResultCodeType.WARN),
+    /**
      * 验证失败
      */
     SERVER_OFFLINE(220, "服务器未上线", ResultCodeType.ERROR),

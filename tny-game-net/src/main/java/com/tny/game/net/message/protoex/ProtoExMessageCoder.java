@@ -14,7 +14,7 @@ public class ProtoExMessageCoder implements MessageBodyCoder {
     public final static int MESSAGE_ID = 3;
 
     @Override
-    public Object doDecoder(final byte[] array, boolean isRequest) throws Exception {
+    public Object doDecoder(final byte[] array) throws Exception {
         ProtoExReader reader = new ProtoExReader(array);
         return reader.readMessage();
     }

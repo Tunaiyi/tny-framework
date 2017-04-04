@@ -45,7 +45,7 @@ public enum TestScopeType implements ScopeType {
     }
 
     @Override
-    public <S extends AppType> S getServerType() {
+    public <S extends AppType> S getAppType() {
         return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.annotation.Controller;
+import com.tny.game.net.annotation.Controller;
 import com.tny.game.common.reflect.javassist.JavassistUtils;
 import com.tny.game.doc.annotation.FunDoc;
 import com.tny.game.doc.annotation.VarDoc;

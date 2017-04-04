@@ -2,7 +2,7 @@ package com.tny.game.suite.scheduler.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tny.game.cache.CacheFormatter;
-import com.tny.game.suite.proto.PBSuite261.TaskReceiverProto;
+import com.tny.game.protobuf.PBCommon.TaskReceiverProto;
 import com.tny.game.suite.scheduler.GameTaskReceiver;
 import com.tny.game.suite.scheduler.ReceiverType;
 import com.tny.game.suite.scheduler.TaskReceiverBuilder;

@@ -38,7 +38,7 @@ public abstract class ChannelMaker<C extends Channel> {
     public void initChannel(C channel) throws Exception {
         ChannelPipeline channelPipeline = channel.pipeline();
         this.prepareAddCoder(channelPipeline);
-        channelPipeline.addLast("frameDecoder", new DecoderHandeler(this.decoder));
+        channelPipeline.addLast("frameDecoder", new DecoderHandler(this.decoder));
         channelPipeline.addLast("encoder", new EncodeHandler(this.encoder));
         this.postAddCoder(channelPipeline);
         // channel.attr(NettyAttrKeys.MSG_BUILDER_FACTOR)

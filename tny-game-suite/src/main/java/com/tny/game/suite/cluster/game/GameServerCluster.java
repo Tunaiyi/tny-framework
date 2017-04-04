@@ -1,15 +1,11 @@
 package com.tny.game.suite.cluster.game;
 
 
-import com.tny.game.common.config.Config;
 import com.tny.game.event.BindP1EventBus;
 import com.tny.game.event.EventBuses;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PostStarter;
 import com.tny.game.lifecycle.ServerPostStart;
-import com.tny.game.net.config.BindIp;
-import com.tny.game.net.config.ServerConfig;
-import com.tny.game.net.config.ServerConfigFactory;
 import com.tny.game.number.NumberUtils;
 import com.tny.game.suite.cluster.BaseCluster;
 import com.tny.game.suite.cluster.ClusterUtils;
@@ -17,13 +13,10 @@ import com.tny.game.suite.cluster.Servers;
 import com.tny.game.suite.cluster.event.GameServerClusterListener;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.core.InetConnector;
-import com.tny.game.suite.initer.ProtoExSchemaIniter;
-import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -46,12 +39,6 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
 
     private static final BindP1EventBus<GameServerClusterListener, GameServerCluster, ServerSetting> ON_SETTING_CHANGE =
             EventBuses.of(GameServerClusterListener.class, GameServerClusterListener::onChange);
-
-    @Autowired
-    private ServerConfigFactory factory;
-
-    @Autowired
-    private ProtoExSchemaIniter initer;
 
     private volatile ServerSetting serverSetting;
 
@@ -114,31 +101,17 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
     }
 
     private List<ServerOutline> currentConfiger() {
-        ServerConfig context = this.factory.getServerContext();
-        List<BindIp> serverIPList = context.getBindIp(null);
-        BindIp ip = serverIPList.get(0);
         List<ServerOutline> outlines = new ArrayList<>();
         GameInfo main = GameInfo.getMainInfo();
         for (GameInfo info : GameInfo.getAllGamesInfo()) {
             if (!info.isRegister())
                 continue;
-            Config config = context.getConfig();
             Collection<InetConnector> publicConnectors = new CopyOnWriteArraySet<>(info.getPublicConnectors());
             Collection<InetConnector> privateConnectors = new CopyOnWriteArraySet<>(info.getPrivateConnectors());
-            String publicHost = config.getStr(Configs.PUBLIC_HOST);
-            if (publicHost != null) {
-                publicConnectors.add(new InetConnector("default", "默认", publicHost, ip.getPorts().get(0)));
-            }
-            String privateHost = config.getStr(Configs.PRIVATE_HOST);
-            if (privateHost != null) {
-                Integer rmiPort = config.getInt(Configs.RMI_PORT, -1);
-                if (rmiPort > 0)
-                    privateConnectors.add(new InetConnector("rmi", "RMI", privateHost, rmiPort));
-            }
             ServerOutline outline = new ServerOutline()
                     .setServerID(info.getServerID())
                     .setServerScope(info.getScopeType().getName())
-                    .setServerType(info.getScopeType().getServerType().getName())
+                    .setServerType(info.getScopeType().getAppType().getName())
                     .setMain(info.isMainServer())
                     .setOpenDate(info.getOpenDate())
                     .setVersion(GameInfo.getMainInfo().getVersion())

@@ -2,28 +2,30 @@ package com.tny.game.net.common.dispatcher;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.LogUtils;
-import com.tny.game.annotation.Auth;
-import com.tny.game.annotation.Check;
-import com.tny.game.annotation.Checkers;
-import com.tny.game.annotation.Controller;
-import com.tny.game.annotation.MessageFilter;
-import com.tny.game.annotation.Plugin;
 import com.tny.game.common.ExceptionUtils;
+import com.tny.game.net.annotation.AfterPlugin;
+import com.tny.game.net.annotation.AppProfile;
+import com.tny.game.net.annotation.Auth;
+import com.tny.game.net.annotation.BeforePlugin;
+import com.tny.game.net.annotation.Check;
+import com.tny.game.net.annotation.Controller;
+import com.tny.game.net.annotation.MessageFilter;
+import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.common.CheckerHolder;
-import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.plugin.ControllerPlugin;
-import com.tny.game.net.plugin.PluginHolder;
+import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.common.ControllerCheckerHolder;
+import com.tny.game.net.message.MessageMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class ControllerHolder {
 
@@ -33,10 +35,6 @@ public abstract class ControllerHolder {
      * 控制器类型
      */
     protected final Class<?> controllerClass;
-    /**
-     * 插件管理器
-     */
-    protected final PluginHolder pluginHolder;
     /**
      * 控制器操作配置
      */
@@ -55,77 +53,79 @@ public abstract class ControllerHolder {
     /**
      * 执行前插件
      */
-    protected final List<ControllerPlugin> pluginBeforeList;
+    protected List<ControllerPlugin> beforePlugins;
     /**
      * 执行后插件
      */
-    protected final List<ControllerPlugin> pluginAfterList;
+    protected List<ControllerPlugin> afterPlugins;
     /**
      * 用户组名称列表
      */
     protected final List<String> userGroups;
+
     /**
-     * 插件註解
+     * 应用类型
      */
-    protected final Plugin plugin;
+    protected final List<String> appTypes;
 
     /**
      * 检测器列表
      */
-    protected List<CheckerHolder> checkerHolders;
+    protected List<ControllerCheckerHolder> checkerHolders;
 
-
-    protected ControllerHolder(final PluginHolder pluginHolder, final Controller controller, final Plugin plugin, final MessageFilter filter, final Checkers checkers, final Object executor, Map<Class<?>, ControllerChecker> checkerMap) {
+    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile profile) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
         ExceptionUtils.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.controller = controller;
-        this.auth = this.controllerClass.getAnnotation(Auth.class);
+        this.auth = auth;
         if (this.auth != null && this.auth.enable())
             this.userGroups = ImmutableList.copyOf(this.auth.value());
         else
-            this.userGroups = ImmutableList.of();
-        ExceptionUtils.checkNotNull(pluginHolder, "{} pluginHolder is null", this.controllerClass);
-        this.pluginHolder = pluginHolder;
-        this.pluginBeforeList = new ArrayList<>();
-        this.pluginAfterList = new ArrayList<>();
-        // this.userGroupList.addAll(Arrays.asList(this.controller.userGroup()));
-        // this.serverTypeList.addAll(Arrays.asList(this.controller.appType()));
-        this.plugin = plugin;
-        if (this.plugin != null) {
-            this.initPlugin(plugin.before(), this.pluginBeforeList);
-            this.initPlugin(plugin.after(), this.pluginAfterList);
-        }
+            this.userGroups = null;
+        if (profile != null)
+            this.appTypes = ImmutableList.copyOf(profile.value());
+        else
+            this.appTypes = null;
+        if (beforePlugins != null)
+            this.initPlugins(dispatcher, Stream.of(beforePlugins)
+                    .map(BeforePlugin::value)
+                    .collect(Collectors.toList()), this.beforePlugins = new ArrayList<>());
+        if (afterPlugins != null)
+            this.initPlugins(dispatcher, Stream.of(afterPlugins)
+                    .map(AfterPlugin::value)
+                    .collect(Collectors.toList()), this.afterPlugins = new ArrayList<>());
 
-        List<CheckerHolder> checkerHolders = new ArrayList<>();
-        if (checkers != null) {
-            for (Check check : checkers.value()) {
-                ControllerChecker msgChecker = checkerMap.get(check.value());
-                if (msgChecker == null)
-                    throw new NullPointerException(LogUtils.format("{} class MessageChecker is null", check.value()));
-                checkerHolders.add(new CheckerHolder(this, msgChecker, check));
-            }
-        }
-        this.checkerHolders = ImmutableList.copyOf(checkerHolders);
+        if (checkers != null)
+            this.initChecker(dispatcher, checkers);
 
         if (filter != null)
             this.messageModes = ImmutableSet.copyOf(filter.modes());
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends ControllerPlugin> void initPlugin(final Class<? extends ControllerPlugin>[] pluginClasses,
-                                                         final List<E> pluginList) {
+    private <E extends ControllerPlugin> void initChecker(AbstractMessageDispatcher dispatcher, final Check[] checkers) {
+        List<ControllerCheckerHolder> checkerHolders = new ArrayList<>();
+        for (Check check : checkers) {
+            ControllerChecker checker = dispatcher.getChecker(check.value());
+            ExceptionUtils.checkNotNull(checker, "{} Checker is null", check.value());
+            checkerHolders.add(new ControllerCheckerHolder(this, checker, check));
+        }
+        this.checkerHolders = ImmutableList.copyOf(checkerHolders);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private <E extends ControllerPlugin> void initPlugins(AbstractMessageDispatcher dispatcher,
+                                                          final Collection<Class<? extends ControllerPlugin>> pluginClasses,
+                                                          final List<E> pluginList) {
         for (Class<? extends ControllerPlugin> pluginClass : pluginClasses) {
             if (pluginClass == null)
                 continue;
-            try {
-                final ControllerPlugin plugin = this.pluginHolder.getPlugin(pluginClass);
-                if (plugin != null)
-                    pluginList.add((E) plugin);
-            } catch (Exception e) {
-                LOG.warn("#AbstrectControllerHolder#初始化插件# {} 异常", pluginClass, e);
-            }
+            final ControllerPlugin plugin = dispatcher.getPlugin(pluginClass);
+            ExceptionUtils.checkNotNull(plugin, "{} plugin is null", pluginClass);
+            pluginList.add((E) plugin);
         }
     }
 
@@ -133,7 +133,13 @@ public abstract class ControllerHolder {
         return this.auth != null && this.auth.enable();
     }
 
-    protected List<CheckerHolder> getCheckerHolders() {
+    public Class<?> getAuthProvider() {
+        if (this.auth != null && this.auth.enable() && this.auth.provider() != AuthProvider.class)
+            return this.auth.provider();
+        return null;
+    }
+
+    public List<ControllerCheckerHolder> getCheckerHolders() {
         return checkerHolders;
     }
 
@@ -141,15 +147,17 @@ public abstract class ControllerHolder {
         return controllerClass;
     }
 
-    protected boolean isUserGroup(String group) {
-        if (this.userGroups.isEmpty())
-            return true;
-        return this.userGroups.contains(group);
+    public boolean isUserGroup(String group) {
+        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(group);
     }
 
-    protected abstract List<ControllerPlugin> getControllerPluginBeforeList();
+    public boolean isActive(String appType) {
+        return this.appTypes == null || this.appTypes.isEmpty() || this.appTypes.contains(appType);
+    }
 
-    protected abstract List<ControllerPlugin> getControllerPluginAfterList();
+    protected abstract List<ControllerPlugin> getControllerBeforePlugins();
+
+    protected abstract List<ControllerPlugin> getControllerAfterPlugins();
 
     public abstract String getName();
 
@@ -183,5 +191,6 @@ public abstract class ControllerHolder {
     }
 
     public abstract boolean isParamsAnnotationExist(Class<? extends Annotation> clazz);
+
 
 }

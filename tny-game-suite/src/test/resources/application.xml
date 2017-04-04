@@ -12,7 +12,7 @@
     <bean class="net.paoding.rose.jade.context.spring.JadeBeanFactoryPostProcessor"/>
 
     <context:component-scan base-package="com.tny.game.net.filter,com.tny.game.suite.*">
-        <context:include-filter type="annotation" expression="com.tny.game.annotation.Controller"/>
+        <context:include-filter type="annotation" expression="com.tny.game.net.annotation.Controller"/>
     </context:component-scan>
 
 </beans>

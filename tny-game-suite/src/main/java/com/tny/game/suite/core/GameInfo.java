@@ -99,7 +99,7 @@ public class GameInfo {
     }
 
     public AppType getServerType() {
-        return GameInfo.scopeType.getServerType();
+        return GameInfo.scopeType.getAppType();
     }
 
     public ScopeType getScopeType() {

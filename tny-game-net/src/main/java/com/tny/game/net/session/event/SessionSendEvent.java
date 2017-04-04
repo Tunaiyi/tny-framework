@@ -1,44 +1,55 @@
 package com.tny.game.net.session.event;
 
 import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageSentHandler;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.tunnel.TunnelContent;
 
-import java.rmi.server.UID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionSendEvent implements SessionOutputEvent {
+public class SessionSendEvent<UID> extends BaseSessionEvent implements SessionOutputEvent, TunnelContent<UID> {
 
-    private Session<UID> session;
+    private CompletableFuture<Tunnel<UID>> sendFuture;
 
-    private SessionEventType eventType;
+    private Message<UID> message;
 
-    private boolean sent;
-
-    private Message message;
-
-    private MessageSentHandler<?> sentHandler;
-
-    public SessionSendEvent(Message message, boolean sent, SessionEventType eventType, MessageSentHandler<?> sentHandler) {
+    public SessionSendEvent(Tunnel<UID> tunnel, Message<UID> message, boolean sent, CompletableFuture<Tunnel<UID>> sendFuture) {
+        super(tunnel);
         this.message = message;
-        this.sent = sent;
-        this.eventType = eventType;
-        this.sentHandler = sentHandler;
+        this.sendFuture = sendFuture;
+        if (sent && sendFuture == null) {
+            this.sendFuture = new CompletableFuture<>();
+        }
     }
 
-    public Message getMessage() {
+    @Override
+    public Message<UID> getMessage() {
         return message;
     }
 
     @Override
+    public CompletableFuture<Tunnel<UID>> getSendFuture() {
+        return sendFuture;
+    }
+
+    @Override
     public SessionEventType getEventType() {
-        return eventType;
+        return SessionEventType.MESSAGE;
     }
 
-    public MessageSentHandler<?> getSentHandler() {
-        return sentHandler;
+    @Override
+    public void cancelSendWait(boolean mayInterruptIfRunning) {
+        if (sendFuture != null)
+            sendFuture.cancel(mayInterruptIfRunning);
     }
 
+    public void waitForSend(long timeout) throws InterruptedException, TimeoutException, ExecutionException {
+        if (sendFuture != null)
+            sendFuture.get(timeout, TimeUnit.MILLISECONDS);
+    }
 }

@@ -15,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/28.
  */
 @Component("dbClient")
-@Profile({CACHE_DB, GAME})
+@Profile({CACHE_DB, CACHE_ALL})
 public class SpringDBCacheClient extends DBCacheClient {
 
     @Autowired

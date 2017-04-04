@@ -2,11 +2,11 @@ package com.tny.game.net.message;
 
 public interface Protocol {
 
-    int getProtocol();
+    int PING_PROTOCOL_NUM = 1;
 
-    default boolean isPush() {
-        return false;
-    }
+    int PONG_PROTOCOL_NUM = 2;
+
+    int getProtocol();
 
     default boolean isOwn(Message message) {
         return this.getProtocol() == message.getProtocol();

@@ -1,21 +1,23 @@
 package com.tny.game.net.common.dispatcher;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.LogUtils;
-import com.tny.game.annotation.Checkers;
-import com.tny.game.annotation.Controller;
-import com.tny.game.annotation.MessageFilter;
-import com.tny.game.annotation.Plugin;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.MethodFilter;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.net.annotation.AfterPlugin;
+import com.tny.game.net.annotation.AppProfile;
+import com.tny.game.net.annotation.Auth;
+import com.tny.game.net.annotation.BeforePlugin;
+import com.tny.game.net.annotation.Check;
+import com.tny.game.net.annotation.Controller;
+import com.tny.game.net.annotation.MessageFilter;
+import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.plugin.ControllerPlugin;
-import com.tny.game.net.plugin.PluginHolder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -33,28 +35,30 @@ public final class ClassControllerHolder extends ControllerHolder {
     /**
      * Class的注解
      */
-    protected Map<Class<? extends Annotation>, Annotation> annotationMap;
+    private Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
 
     /**
      * 执行后插件
      */
-    private final Map<Integer, MethodControllerHolder> methodHolderMap;
+    private Map<Integer, MethodControllerHolder> methodHolderMap = new CopyOnWriteMap<>();
 
-    public ClassControllerHolder(final Object executor, final PluginHolder pluginHolder, Map<Class<?>, ControllerChecker> checkerMap) {
-        super(pluginHolder,
+    public ClassControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher) {
+        super(executor, dispatcher,
                 executor.getClass().getAnnotation(Controller.class),
-                executor.getClass().getAnnotation(Plugin.class),
+                executor.getClass().getAnnotationsByType(BeforePlugin.class),
+                executor.getClass().getAnnotationsByType(AfterPlugin.class),
+                executor.getClass().getAnnotation(Auth.class),
+                executor.getClass().getAnnotationsByType(Check.class),
                 executor.getClass().getAnnotation(MessageFilter.class),
-                executor.getClass().getAnnotation(Checkers.class),
-                executor, checkerMap);
+                executor.getClass().getAnnotation(AppProfile.class));
         if (this.controller == null)
             throw new IllegalArgumentException(this.controllerClass + " is not Controller Object");
         for (Annotation annotation : controllerClass.getAnnotations())
             this.annotationMap.put(annotation.getClass(), annotation);
         Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
         this.annotationMap = ImmutableMap.copyOf(annotationMap);
-        this.methodHolderMap = new CopyOnWriteMap<>();
-        this.initMethodHolder(executor, checkerMap);
+        this.initMethodHolder(executor, dispatcher);
+        this.methodHolderMap = ImmutableMap.copyOf(this.methodHolderMap);
         if (messageModes == null)
             this.messageModes = ImmutableSet.copyOf(MessageMode.values());
     }
@@ -62,13 +66,13 @@ public final class ClassControllerHolder extends ControllerHolder {
     private static final MethodFilter FILTER = method -> OBJECT_METHOD_LIST.indexOf(method) > -1 ||
             !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
-    private void initMethodHolder(final Object executor, Map<Class<?>, ControllerChecker> checkerMap) {
+    private void initMethodHolder(final Object executor, final AbstractMessageDispatcher dispatcher) {
         GClass access = JSsistUtils.getGClass(executor.getClass(), FILTER);
         for (GMethod method : access.getGMethodList()) {
             Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
             if (controller == null)
                 continue;
-            MethodControllerHolder holder = new MethodControllerHolder(executor, this, method, controller, this.pluginHolder, checkerMap);
+            MethodControllerHolder holder = new MethodControllerHolder(executor, dispatcher, this, method, controller);
             if (holder.getID() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
                 if (last != null)
@@ -141,13 +145,17 @@ public final class ClassControllerHolder extends ControllerHolder {
     // }
 
     @Override
-    protected List<ControllerPlugin> getControllerPluginBeforeList() {
-        return Collections.unmodifiableList(this.pluginBeforeList);
+    protected List<ControllerPlugin> getControllerBeforePlugins() {
+        if (this.beforePlugins == null)
+            return ImmutableList.of();
+        return Collections.unmodifiableList(this.beforePlugins);
     }
 
     @Override
-    protected List<ControllerPlugin> getControllerPluginAfterList() {
-        return Collections.unmodifiableList(this.pluginAfterList);
+    protected List<ControllerPlugin> getControllerAfterPlugins() {
+        if (this.afterPlugins == null)
+            return ImmutableList.of();
+        return Collections.unmodifiableList(this.afterPlugins);
     }
 
     // @Override

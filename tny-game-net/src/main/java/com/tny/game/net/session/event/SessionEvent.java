@@ -1,17 +1,14 @@
 package com.tny.game.net.session.event;
 
-import com.tny.game.net.message.Message;
+
+import com.tny.game.net.tunnel.Tunnel;
 
 /**
  * Created by Kun Yang on 2017/3/18.
  */
-public interface SessionEvent {
+public interface SessionEvent<UID> {
 
     enum SessionEventType {
-
-        PING,
-
-        PONG,
 
         MESSAGE,
 
@@ -19,9 +16,15 @@ public interface SessionEvent {
 
     }
 
-    Message<?> getMessage();
 
+    /**
+     * @return 所属通道ID
+     */
+    Tunnel<UID> getTunnel();
+
+    /**
+     * @return 事件类型
+     */
     SessionEventType getEventType();
-
 
 }

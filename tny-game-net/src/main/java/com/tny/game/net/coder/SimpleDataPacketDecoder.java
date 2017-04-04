@@ -1,6 +1,7 @@
 package com.tny.game.net.coder;
 
 import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.message.DetectMessage;
 import com.tny.game.utils.CompressUtils;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
@@ -34,6 +35,14 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
             DECODER_LOG.debug("read option");
         final byte option = buffer.readByte();
 
+        if ((option & CoderContent.PING_OPTION) > 0) {
+            return DetectMessage.ping();
+        }
+
+        if ((option & CoderContent.PONG_OPTION) > 0) {
+            return DetectMessage.pong();
+        }
+
         if (DECODER_LOG.isDebugEnabled())
             DECODER_LOG.debug("read body size");
         final int messageBodySize = buffer.readInt();
@@ -55,7 +64,7 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
         if ((option & CoderContent.COMPRESS_OPTION) > 0) {
             messageBytes = CompressUtils.decompressBytes(messageBytes);
         }
-        return this.coder.doDecoder(messageBytes, (option & CoderContent.RESPONSE_OPTION) == 0);
+        return this.coder.doDecoder(messageBytes);
 
     }
 

@@ -52,11 +52,8 @@ public interface Configs {
     String SUITE_EXECUTOR_THREAD_SIZE /*                */ = "tny.server.suite.executor.thread_size";
     String SUITE_EXECUTOR_THREAD_MAX_SIZE /*            */ = "tny.server.suite.executor.thread_max_size";
     String SUITE_EXECUTOR_KEEP_ALIVE_TIME /*            */ = "tny.server.suite.executor.keep_alive_time";
-    String SUITE_REQ_CHECKER_DIRECT_PROTS /*            */ = "tny.server.suite.req_checker.direct_ports";
-    String SUITE_REQ_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.req_checker.random_seq";
-    String SUITE_AUTH_USER_LOGIN_PROTOCOLS /*           */ = "tny.server.suite.auth.user_login.protocols";
-    String SUITE_AUTH_USER_RELOGIN_PROTOCOLS /*         */ = "tny.server.suite.auth.user_relogin.protocols";
-    String SUITE_AUTH_SERV_LOGIN_PROTOCOLS /*           */ = "tny.server.suite.auth.serv_login.protocols";
+    // String SUITE_MSG_CHECKER_DIRECT_PROTS /*            */ = "tny.server.suite.message_checker.direct_ports";
+    String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC /*      */ = "tny.server.suite.auth.kafka_login.protocols.inc";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC /*      */ = "tny.server.suite.auth.kafka_login.protocols.exc";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.inc_rg";

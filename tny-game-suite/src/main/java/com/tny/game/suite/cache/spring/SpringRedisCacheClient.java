@@ -14,7 +14,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/28.
  */
 @Component("redisClient")
-@Profile({CACHE_REDIS, GAME})
+@Profile({CACHE_REDIS, CACHE_ALL})
 public class SpringRedisCacheClient extends RedisCacheClient {
 
     @Autowired

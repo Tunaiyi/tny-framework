@@ -47,7 +47,7 @@ public class EnumConfiger {
     }
 
     public void setEnumDocHolder(EnumDocHolder holder) {
-        this.className = holder.getEntityClass().getSimpleName();
+        this.className = holder.getClassName();
         this.packageName = holder.getEntityClass().getPackage().getName();
         this.des = holder.getClassDoc().value();
         this.text = holder.getClassDoc().text();

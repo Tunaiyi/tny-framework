@@ -10,10 +10,10 @@ import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 import com.tny.game.cache.CacheFormatter;
+import com.tny.game.protobuf.PBCommon.TradeItemProto;
+import com.tny.game.protobuf.PBCommon.TradeProto;
 import com.tny.game.suite.base.Actions;
 import com.tny.game.suite.base.GameExplorer;
-import com.tny.game.suite.proto.PBSuite261.AwardProto;
-import com.tny.game.suite.proto.PBSuite261.TradeProto;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
 
     protected Trade proto2Trade(TradeProto tradeProto) {
         List<TradeItem<?>> tradeItemList = new ArrayList<>();
-        for (AwardProto awardProto : tradeProto.getItemList()) {
+        for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemID());
             if (awardModel != null) {
                 tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber()));
@@ -71,9 +71,9 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     protected TradeProto trade2Proto(Trade trade) {
-        List<AwardProto> list = new ArrayList<>();
+        List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
-            list.add(AwardProto.newBuilder().setItemID(item.getItemModel().getID()).setNumber(item.getNumber().longValue()).build());
+            list.add(TradeItemProto.newBuilder().setItemID(item.getItemModel().getID()).setNumber(item.getNumber().longValue()).build());
         }
         return TradeProto.newBuilder().setAction(trade.getAction().getID())
                 .addAllItem(list)

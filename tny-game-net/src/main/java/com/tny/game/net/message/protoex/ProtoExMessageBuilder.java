@@ -11,8 +11,5 @@ public class ProtoExMessageBuilder<UID> extends AbstractNetMessageBuilder<UID, P
         super(ProtoExMessage::new);
     }
 
-    @Override
-    protected void doBuild(ProtoExMessage<UID> request) {
 
-    }
 }

@@ -57,7 +57,7 @@ public class ModuleConfiger {
             ModuleConfiger configer = configerMap.get(holder.getModuleID());
             ModuleConfiger old;
             if (configer != null) {
-                if (configer.getClassName().equals(holder.getEntityClass().getSimpleName()))
+                if (configer.getClassName().equals(holder.getClassName()))
                     return configer;
                 throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
             } else {
@@ -74,7 +74,7 @@ public class ModuleConfiger {
     }
 
     private ModuleConfiger(ClassDocHolder holder, TypeFormatter typeFormatter) {
-        this.className = holder.getEntityClass().getSimpleName();
+        this.className = holder.getClassName();
         this.packageName = holder.getEntityClass().getPackage().getName();
         this.moduleID = holder.getModuleID();
         this.operationList = new OperationList();

@@ -4,6 +4,26 @@ import com.tny.game.LogUtils;
 
 public class ExceptionUtils {
 
+    public interface ExceptionCreator<E extends RuntimeException> {
+
+        E create(String message);
+
+    }
+
+    public interface ExByCauseCreator<E extends RuntimeException> {
+
+        E create(String message, Throwable e);
+
+    }
+
+    public static void throwException(ExceptionCreator<? extends RuntimeException> creator, String errorMessageTemplate, Object... errorMessageArgs) {
+        throw creator.create(format(errorMessageTemplate, errorMessageArgs));
+    }
+
+    public static void throwByCause(ExByCauseCreator<? extends RuntimeException> creator, Throwable e, String errorMessageTemplate, Object... errorMessageArgs) {
+        throw creator.create(format(errorMessageTemplate, errorMessageArgs), e);
+    }
+
     /**
      * Ensures the truth of an expression involving one or more parameters to the calling method.
      *

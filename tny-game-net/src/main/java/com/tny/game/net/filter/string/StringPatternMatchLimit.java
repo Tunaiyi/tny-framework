@@ -6,7 +6,7 @@ import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.filter.AbstractParamFilter;
 import com.tny.game.net.filter.string.annotation.PatternMatch;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +32,7 @@ public class StringPatternMatchLimit extends AbstractParamFilter<Object, Pattern
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Session<Object> session, Message<Object> message, int index, PatternMatch annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, PatternMatch annotation, String param) {
         if (!this.getPattern(annotation.pattern()).matcher(param).matches()) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
                     message.getUserID(), message.getProtocol(),

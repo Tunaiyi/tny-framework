@@ -1,10 +1,10 @@
 package com.tny.game.net.session.holder;
 
-import com.tny.game.net.LoginCertificate;
 import com.tny.game.net.exception.ValidatorFailException;
+import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.session.NetSession;
 
-public interface NetSessionHolder<UID, S extends NetSession<UID>> extends SessionHolder<UID> {
+public interface NetSessionHolder extends SessionHolder {
 
 
     /**
@@ -16,7 +16,7 @@ public interface NetSessionHolder<UID, S extends NetSession<UID>> extends Sessio
      * @param certificate 登陆凭证
      * @throws ValidatorFailException 认证异常
      */
-    boolean online(S session, LoginCertificate<UID> certificate) throws ValidatorFailException;
+    <U> boolean online(NetSession<U> session, LoginCertificate<U> certificate) throws ValidatorFailException;
 
     // protected void disconnect(NetSession<?> session) {
     //     session.offline();

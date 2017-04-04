@@ -3,14 +3,6 @@ package com.tny.game.net.common.dispatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.LogUtils;
-import com.tny.game.annotation.Checkers;
-import com.tny.game.annotation.Controller;
-import com.tny.game.annotation.MessageFilter;
-import com.tny.game.annotation.MsgBody;
-import com.tny.game.annotation.MsgCode;
-import com.tny.game.annotation.MsgParam;
-import com.tny.game.annotation.Plugin;
-import com.tny.game.annotation.UserID;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
@@ -18,17 +10,17 @@ import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.ResultFactory;
-import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.command.CommandResult;
+import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.command.PluginContext;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.plugin.ControllerPlugin;
-import com.tny.game.net.plugin.PluginContext;
-import com.tny.game.net.plugin.PluginHolder;
 import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.number.LocalNum;
 import org.apache.commons.lang3.StringUtils;
 
@@ -109,12 +101,14 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param executor 调用的执行对象
      * @param method   方法
      */
-    protected MethodControllerHolder(final Object executor, final ClassControllerHolder classController, final GMethod method, final Controller controller, final PluginHolder pluginHolder, Map<Class<?>, ControllerChecker> checkerMap) {
-        super(pluginHolder, controller,
-                method.getJavaMethod().getAnnotation(Plugin.class),
+    protected MethodControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
+        super(executor, dispatcher, controller,
+                method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
+                method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
+                method.getJavaMethod().getAnnotation(Auth.class),
+                method.getJavaMethod().getAnnotationsByType(Check.class),
                 method.getJavaMethod().getAnnotation(MessageFilter.class),
-                method.getJavaMethod().getAnnotation(Checkers.class),
-                executor, checkerMap);
+                method.getJavaMethod().getAnnotation(AppProfile.class));
         try {
             this.methodName = method.getName();
             this.method = method;
@@ -125,7 +119,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             Annotation[][] parameterAnnotations = method.getJavaMethod().getParameterAnnotations();
             LocalNum<Integer> counter = new LocalNum<>(0);
             if (parameterClasses.length > 0) {
-                for (int index = 0; index < parameterClasses.length; index--) {
+                for (int index = 0; index < parameterClasses.length; index++) {
                     Class<?> paramClass = parameterClasses[index];
                     List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
                     ParamDesc paramDesc = new ParamDesc(this, paramClass, annotations, counter);
@@ -157,10 +151,10 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
             this.paramAnnotationsMap = ImmutableMap.copyOf(annotationsMap);
             this.parameterDescs = ImmutableList.copyOf(parameterDescs);
-            for (ControllerPlugin plugin : this.getControllerPluginBeforeList())
+            for (ControllerPlugin plugin : this.getControllerBeforePlugins())
                 this.putPlugin(plugin);
             this.putPlugin(new MethodControllerPlugin(this));
-            for (ControllerPlugin plugin : this.getControllerPluginAfterList())
+            for (ControllerPlugin plugin : this.getControllerAfterPlugins())
                 this.putPlugin(plugin);
         } catch (Exception e) {
             throw new IllegalArgumentException(LogUtils.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
@@ -197,6 +191,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         }
     }
 
+    @Override
     public Class<?> getControllerClass() {
         return method.getDeclaringClass();
     }
@@ -219,12 +214,12 @@ public final class MethodControllerHolder extends ControllerHolder {
         }
 
         @Override
-        public CommandResult execute(Session<Object> session, Message<Object> message, CommandResult result, PluginContext context) throws Exception {
+        public CommandResult execute(Tunnel<Object> tunnel, Message<Object> message, CommandResult result, PluginContext context) throws Exception {
             // 获取调用方法的参数类型
             Object[] param = new Object[this.methodHolder.getParametersSize()];
             Object body = message.getBody(Object.class);
             for (int index = 0; index < param.length; index++) {
-                param[index] = this.methodHolder.getParameterValue(index, session, message, body);
+                param[index] = this.methodHolder.getParameterValue(index, tunnel, message, body);
             }
 
             CommandResult executeResult = null;
@@ -241,17 +236,17 @@ public final class MethodControllerHolder extends ControllerHolder {
                 executeResult = ResultFactory.success(object);
             }
 
-            return context.passToNext(session, message, executeResult);
+            return context.passToNext(tunnel, message, executeResult);
         }
     }
 
-    public Object getParameterValue(int index, Session<?> session, Message<?> message, Object body) throws DispatchException {
+    public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
         if (index >= this.parameterDescs.size())
             throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
             throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
-        return desc.getValue(session, message, body);
+        return desc.getValue(tunnel, message, body);
     }
 
     /**
@@ -282,6 +277,26 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.method.invoke(this.executor, params);
     }
 
+    @Override
+    public boolean isUserGroup(String group) {
+        return this.userGroups != null ? super.isUserGroup(group) : classController.isUserGroup(group);
+    }
+
+    @Override
+    public boolean isActive(String appType) {
+        return this.appTypes != null ? super.isActive(appType) : classController.isActive(appType);
+    }
+
+    @Override
+    public boolean isAuth() {
+        return this.auth != null ? super.isAuth() : classController.isAuth();
+    }
+
+    @Override
+    public Class<?> getAuthProvider() {
+        return this.auth != null ? super.getAuthProvider() : classController.getAuthProvider();
+    }
+
     // @Override
     // public boolean isCheck() {
     //     return this.controller != null ? this.controller.check() : this.classController.isCheck();
@@ -299,13 +314,13 @@ public final class MethodControllerHolder extends ControllerHolder {
     // }
 
     @Override
-    protected List<ControllerPlugin> getControllerPluginBeforeList() {
-        return this.plugin != null ? Collections.unmodifiableList(this.pluginBeforeList) : this.classController.getControllerPluginBeforeList();
+    protected List<ControllerPlugin> getControllerBeforePlugins() {
+        return this.beforePlugins != null ? Collections.unmodifiableList(this.beforePlugins) : this.classController.getControllerBeforePlugins();
     }
 
     @Override
-    protected List<ControllerPlugin> getControllerPluginAfterList() {
-        return this.plugin != null ? Collections.unmodifiableList(this.pluginAfterList) : this.classController.getControllerPluginAfterList();
+    protected List<ControllerPlugin> getControllerAfterPlugins() {
+        return this.afterPlugins != null ? Collections.unmodifiableList(this.afterPlugins) : this.classController.getControllerAfterPlugins();
     }
 
     // @Override
@@ -367,8 +382,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     //	public boolean isNeedRequest() {
     //		return needRequest;
     //	}
-    public CommandResult execute(Session<?> session, Message message) throws Exception {
-        return this.pluginContext.passToNext(session, message, null);
+    public CommandResult execute(Tunnel<?> tunnel, Message message) throws Exception {
+        return this.pluginContext.passToNext(tunnel, message, null);
     }
 
     @Override
@@ -407,6 +422,8 @@ public final class MethodControllerHolder extends ControllerHolder {
             this.require = true;
             if (paramClass == Session.class) {
                 this.paramType = ParamType.SESSION;
+            } else if (paramClass == Tunnel.class) {
+                this.paramType = ParamType.TUNNEL;
             } else if (paramClass == Message.class) {
                 this.paramType = ParamType.MESSAGE;
             } else {
@@ -428,6 +445,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                                 this.index = indexCounter.intValue();
                                 indexCounter.add(1);
                             }
+                            this.paramType = ParamType.INDEX_PARAM;
                         }
                     } else if (anno.annotationType() == UserID.class) {
                         this.paramType = ParamType.UserID;
@@ -445,7 +463,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
         }
 
-        private Object getValue(Session<?> session, Message<?> message, Object body) throws DispatchException {
+        private Object getValue(Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
             boolean require = this.require;
             if (body == null)
                 body = message.getBody(Object.class);
@@ -455,13 +473,16 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = message;
                     break;
                 case SESSION:
-                    value = session;
+                    value = tunnel.getSession();
+                    break;
+                case TUNNEL:
+                    value = tunnel;
                     break;
                 case BODY:
                     value = body;
                     break;
                 case UserID:
-                    value = message.getID();
+                    value = message.getUserID();
                     break;
                 case INDEX_PARAM:
                     try {

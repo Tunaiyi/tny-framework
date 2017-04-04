@@ -1,13 +1,15 @@
 package com.tny.game.net.common.session;
 
 import com.google.common.collect.ImmutableMap;
+import com.tny.game.common.config.Config;
 import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.net.LoginCertificate;
+import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.Protocol;
+import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.Session;
 import org.slf4j.Logger;
@@ -21,29 +23,43 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extends AbstractNetSessionHolder<UID, S> {
+@Unit("CommonSessionHolder")
+public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
     // private static final Logger LOG_ENCODE = LoggerFactory.getLogger(CoreLogger.CODER);
 
-    private final long sessionLife = 600000;
+    private static final long DEFAULT_CLEAR_INTERVAL = 60000L;
+    private static final long DEFAULT_SESSION_LIFE = 600000L;
 
-    protected final ConcurrentHashMap<String, Map<UID, S>> sessionMap = new ConcurrentHashMap<>();
+    protected long sessionLife;
 
-    public CommonSessionHolder(long clearInterval) {
+    protected final ConcurrentHashMap<String, Map<Object, NetSession>> sessionMap = new ConcurrentHashMap<>();
+
+    public CommonSessionHolder() {
+        this(DEFAULT_SESSION_LIFE, DEFAULT_CLEAR_INTERVAL);
+    }
+
+    public CommonSessionHolder(Config config) {
+        this(config.getLong(AppConstants.SESSION_HOLDER_SESSION_LIVE, DEFAULT_SESSION_LIFE),
+                config.getLong(AppConstants.SESSION_HOLDER_CLEAR_INTERVAL, DEFAULT_CLEAR_INTERVAL));
+    }
+
+    public CommonSessionHolder(long sessionLife, long clearInterval) {
+        this.sessionLife = sessionLife;
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
     }
 
     private void clearInvalidedSession() {
         long now = System.currentTimeMillis();
-        for (Map<UID, S> userGroupSessionMap : this.sessionMap.values()) {
+        for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
                     if (session.getOfflineTime() + sessionLife > now) {
-                        if (!session.isInvalided())
-                            session.invalid();
-                        if (session.isInvalided())
+                        if (!session.isClosed())
+                            session.close();
+                        if (session.isClosed())
                             userGroupSessionMap.remove(session.getUID(), session);
                     }
                 } catch (Throwable e) {
@@ -54,13 +70,13 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
     }
 
     @Override
-    public Session<UID> getSession(String userGroup, UID uid) {
+    public <U> Session<U> getSession(String userGroup, U uid) {
         return this.getSession0(userGroup, uid);
     }
 
     @SuppressWarnings("unchecked")
-    private S getSession0(String userGroup, UID uid) {
-        Map<UID, S> userGroupSessionMap = this.sessionMap.get(userGroup);
+    private <U> NetSession<U> getSession0(String userGroup, U uid) {
+        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return null;
         return userGroupSessionMap.get(uid);
@@ -68,46 +84,46 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<UID, Session<UID>> getSessionsByGroup(String userGroup) {
-        Map<UID, S> userGroupSessionMap = this.sessionMap.get(userGroup);
+    public <U> Map<U, Session<U>> getSessionsByGroup(String userGroup) {
+        Map<Object, ? extends Session> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return Collections.emptyMap();
-        return (Map<UID, Session<UID>>) userGroupSessionMap;
+        return (Map<U, Session<U>>) userGroupSessionMap;
     }
 
     @Override
-    public boolean isOnline(String userGroup, UID uid) {
+    public boolean isOnline(String userGroup, Object uid) {
         Session session = this.getSession0(userGroup, uid);
         return session != null && session.isOnline();
     }
 
     @Override
-    public boolean send2User(String userGroup, UID uid, Protocol protocol, MessageContent content) {
-        NetSession session = this.getSession0(userGroup, uid);
+    public boolean send2User(String userGroup, Object uid, MessageContent content) {
+        NetSession<Object> session = this.getSession0(userGroup, uid);
         if (session != null) {
-            session.sendMessage(protocol, content);
+            session.send(content);
             return true;
         }
         return false;
     }
 
     @Override
-    public int send2Users(String userGroup, Collection<UID> uidColl, Protocol protocol, MessageContent<?> content) {
-        return this.doSendMultiSessionID(userGroup, uidColl, protocol, content);
+    public int send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
+        return this.doSendMultiSessionID(userGroup, uidColl, content);
     }
 
     @Override
-    public void send2AllOnline(String userGroup, Protocol protocol, MessageContent<?> content) {
-        Map<UID, S> userGroupSessionMap = this.sessionMap.get(userGroup);
+    public void send2AllOnline(String userGroup, MessageContent<?> content) {
+        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return;
-        this.doSendMultiSession(userGroupSessionMap.values(), protocol, content);
+        this.doSendMultiSession(userGroupSessionMap.values(), content);
     }
 
     @Override
     public int size() {
         int size = 0;
-        for (Map<UID, S> map : this.sessionMap.values())
+        for (Map<Object, NetSession> map : this.sessionMap.values())
             size += map.size();
         return size;
     }
@@ -122,17 +138,17 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
         return this.sessionMap.size();
     }
 
-    private void doSendMultiSession(Collection<S> sessionCollection, Protocol protocol, MessageContent<?> content) {
-        for (NetSession session : sessionCollection)
-            session.sendMessage(protocol, content);
+    private void doSendMultiSession(Collection<NetSession> sessionCollection, MessageContent<?> content) {
+        for (NetSession<?> session : sessionCollection)
+            session.send(content);
     }
 
-    private int doSendMultiSessionID(String userGroup, Collection<UID> uidColl, Protocol protocol, MessageContent<?> content) {
+    private int doSendMultiSessionID(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
         int num = 0;
-        for (UID uid : uidColl) {
-            NetSession session = this.getSession0(userGroup, uid);
+        for (Object uid : uidColl) {
+            NetSession<Object> session = this.getSession0(userGroup, uid);
             if (session != null) {
-                session.sendMessage(protocol, content);
+                session.send(content);
                 num++;
             }
         }
@@ -141,54 +157,66 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
 
 
     @Override
-    public Session<UID> offline(String userGroup, UID uid, boolean invalid) {
-        NetSession<UID> session = this.getSession0(userGroup, uid);
-        if (session != null)
-            session.offline(invalid);
+    public <U> Session<U> offline(String userGroup, U uid, boolean invalid) {
+        NetSession<U> session = this.getSession0(userGroup, uid);
+        if (session != null) {
+            if (invalid)
+                session.close();
+            else
+                session.offline();
+        }
         return session;
     }
 
     @Override
     public void offlineAll(String userGroup, boolean invalid) {
         this.sessionMap.getOrDefault(userGroup, ImmutableMap.of())
-                .forEach((key, session) -> session.offline(invalid));
+                .forEach((key, session) -> {
+                    if (invalid)
+                        session.close();
+                    else
+                        session.offline();
+                });
     }
 
     @Override
     public void offlineAll(boolean invalid) {
-        for (Map<UID, S> userGroupSessionMap : this.sessionMap.values()) {
-            userGroupSessionMap.forEach((key, session) -> session.offline(invalid));
+        for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
+            userGroupSessionMap.forEach((key, session) -> {
+                if (invalid)
+                    session.close();
+                else
+                    session.offline();
+            });
         }
     }
 
     @Override
-    public boolean online(S session, LoginCertificate<UID> cert) throws ValidatorFailException {
+    @SuppressWarnings("unchecked")
+    public <U> boolean online(NetSession<U> session, LoginCertificate<U> cert) throws ValidatorFailException {
         if (!this.loginSession(session, cert))
             return false;
         if (!session.isOnline())
             return false;
-        Map<UID, S> userGroupSessionMap = this.sessionMap.get(session.getGroup());
+        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
         if (userGroupSessionMap == null) {
-            this.sessionMap.putIfAbsent(session.getGroup(), new ConcurrentHashMap<>());
-            userGroupSessionMap = this.sessionMap.get(session.getGroup());
+            this.sessionMap.putIfAbsent(session.getUserGroup(), new ConcurrentHashMap<>());
+            userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
         }
-        S oldSession = userGroupSessionMap.get(session.getUID());
+        NetSession oldSession = userGroupSessionMap.get(session.getUID());
         if (oldSession == session)
             return true;
         if (cert.isRelogin()) {
             // oldSession为null或者失效 session登陆ID不是同一个 session无法转换
-            if (oldSession == null || oldSession.isInvalided() ||
-                    oldSession.getCertificate().getID() != cert.getID() ||
-                    !oldSession.invalid() || !session.transferFrom(oldSession)
-                    || !userGroupSessionMap.replace(session.getUID(), oldSession, session)) {
-                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS, session);
+            if (oldSession == null || oldSession.isClosed() || !oldSession.relogin(session)) {
+                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
             }
         } else {
             oldSession = userGroupSessionMap.put(session.getUID(), session);
             if (oldSession != null && oldSession != session) {
                 // 替换session成功, 并且任然存在oldSession
                 if (oldSession.isOnline())
-                    oldSession.offline(true);
+                    oldSession.close();
                 this.onRemoveSession.notify(this, oldSession);
             }
             if (oldSession != session) {
@@ -199,7 +227,7 @@ public abstract class CommonSessionHolder<UID, S extends NetSession<UID>> extend
         return true;
     }
 
-    private boolean loginSession(NetSession<UID> session, LoginCertificate<UID> certificate) {
+    private <UID> boolean loginSession(NetSession<UID> session, LoginCertificate<UID> certificate) throws ValidatorFailException {
         if (!certificate.isLogin())
             return false;
         session.login(certificate);

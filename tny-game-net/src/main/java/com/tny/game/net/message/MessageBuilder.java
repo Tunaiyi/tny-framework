@@ -3,7 +3,7 @@ package com.tny.game.net.message;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 
 /**
  * Created by Kun Yang on 2017/2/23.
@@ -11,6 +11,8 @@ import com.tny.game.net.session.Session;
 public interface MessageBuilder<UID> {
 
     MessageBuilder<UID> setID(int id);
+
+    MessageBuilder<UID> setTunnel(Tunnel<UID> tunnel);
 
     MessageBuilder<UID> setCode(int code);
 
@@ -29,10 +31,9 @@ public interface MessageBuilder<UID> {
 
     MessageBuilder<UID> setSignGenerator(MessageSignGenerator<UID> generator);
 
-    MessageBuilder<UID> setSession(Session<UID> session);
-
     MessageBuilder<UID> setCommandResult(CommandResult result);
 
     Message<UID> build();
 
+    MessageBuilder<UID> setContent(MessageContent content);
 }

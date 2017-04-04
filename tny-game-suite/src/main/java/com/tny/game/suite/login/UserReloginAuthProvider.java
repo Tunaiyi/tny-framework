@@ -1,41 +1,15 @@
 package com.tny.game.suite.login;
 
-import com.google.common.collect.Range;
-import com.tny.game.net.LoginCertificate;
-import com.tny.game.net.dispatcher.Request;
 import com.tny.game.net.exception.DispatchException;
-
-import java.util.Set;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.session.LoginCertificate;
+import com.tny.game.net.tunnel.Tunnel;
 
 public class UserReloginAuthProvider extends UserAuthProvider {
 
-    public UserReloginAuthProvider(Set<Integer> includes) {
-        this(includes, null);
-    }
-
-    public UserReloginAuthProvider(Range<Integer> includeRange) {
-        this(includeRange, null);
-    }
-
-    public UserReloginAuthProvider(Range<Integer> includeRange, Range<Integer> excludeRange) {
-        this(null, null, includeRange, excludeRange);
-    }
-
-    public UserReloginAuthProvider(Set<Integer> includes, Set<Integer> excludes) {
-        this(includes, excludes, null, null);
-    }
-
-    public UserReloginAuthProvider(Set<Integer> includes, Set<Integer> excludes, Range<Integer> includeRange, Range<Integer> excludeRange) {
-        super("user-relogin-auth-provider", includes, excludes, includeRange, excludeRange);
-    }
-
-    // public UserReloginAuthProvider(Set<Integer> authProtocols) {
-    //     this("user-relogin-auth-provider", authProtocols);
-    // }
-
     @Override
-    public LoginCertificate validate(Request request) throws DispatchException {
-        return checkUserLogin(request, true);
+    public LoginCertificate<Long> validate(Tunnel<Long> tunnel, Message<Long> message) throws DispatchException {
+        return checkUserLogin(tunnel, message, true);
     }
 
 }
