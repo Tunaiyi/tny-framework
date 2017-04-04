@@ -9,6 +9,7 @@ import com.tny.game.suite.initer.ProtoExSchemaIniter;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.zookeeper.NodeWatcher;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -295,7 +297,6 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
         return this.nodeMap;
     }
 
-
     protected void postRemoveOutline(ServerNode node) {
     }
 
@@ -315,6 +316,14 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
 
     protected void postUpdateLaunch(ServerNode node, ServerLaunch launch, boolean create) {
 
+    }
+
+    public Optional<String> getHttpUrl(int serverID, String... paths) {
+        ServerNode node = getServerNode(serverID);
+        if (node == null)
+            return Optional.empty();
+        return node.getPrivateConnector("http")
+                .map(c -> "http://" + c.getHost() + ":" + c.getPort() + "/" + StringUtils.join(paths, "/"));
     }
 
 }

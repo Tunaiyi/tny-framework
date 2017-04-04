@@ -485,24 +485,14 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
-        Class<A> clazz;
-        if (defaultObject == null)
-            clazz = (Class<A>) Object.class;
-        else
-            clazz = (Class<A>) defaultObject.getClass();
-        A value = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
+        A value = this.doCountAbility(item.getPlayerID(), item, ability, (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes) {
-        Class<A> clazz;
-        if (defaultObject == null)
-            clazz = (Class<A>) Object.class;
-        else
-            clazz = (Class<A>) defaultObject.getClass();
-        A value = this.doCountAbility(playerID, null, ability, clazz, attributes);
+        A value = this.doCountAbility(playerID, null, ability, (Class<A>) (defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 

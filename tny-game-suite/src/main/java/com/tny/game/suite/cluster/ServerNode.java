@@ -9,7 +9,10 @@ import com.tny.game.suite.cluster.game.ServerLaunch;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import com.tny.game.suite.cluster.game.ServerState;
+import com.tny.game.suite.core.InetConnector;
 import org.joda.time.LocalDate;
+
+import java.util.Optional;
 
 public class ServerNode {
 
@@ -91,6 +94,20 @@ public class ServerNode {
         LocalDate data = outline.getOpenLocalDate();
         LocalDate now = DateTimeHelper.today();
         return !now.isBefore(data);
+    }
+
+    public Optional<InetConnector> getPublicConnector(String... ids) {
+        ServerOutline outline = this.outline;
+        if (outline == null)
+            return null;
+        return Optional.ofNullable(outline.getPublicConnector(ids));
+    }
+
+    public Optional<InetConnector> getPrivateConnector(String... ids) {
+        ServerOutline outline = this.outline;
+        if (outline == null)
+            return null;
+        return Optional.ofNullable(outline.getPrivateConnector(ids));
     }
 
     @Override
