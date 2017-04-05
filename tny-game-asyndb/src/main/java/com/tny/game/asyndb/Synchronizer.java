@@ -15,24 +15,24 @@ import java.util.Map;
  */
 public interface Synchronizer<O> {
 
-    public boolean insert(O object);
+    boolean insert(O object);
 
-    public Collection<O> insert(Collection<O> objects);
+    Collection<O> insert(Collection<O> objects);
 
-    public boolean update(O object);
+    boolean update(O object);
 
-    public Collection<O> update(Collection<O> objects);
+    Collection<O> update(Collection<O> objects);
 
-    public boolean delete(O object);
+    boolean delete(O object);
 
-    public Collection<O> delete(Collection<O> objects);
+    Collection<O> delete(Collection<O> objects);
 
-    public boolean save(O object);
+    boolean save(O object);
 
-    public Collection<O> save(Collection<O> objects);
+    Collection<O> save(Collection<O> objects);
 
-    public O get(Class<? extends O> clazz, String key);
+    O get(Class<? extends O> clazz, String key);
 
-    public Map<String, ? extends O> get(Class<? extends O> clazz, Collection<String> keyValues);
+    Map<String, ? extends O> get(Class<? extends O> clazz, Collection<String> keyValues);
 
 }
