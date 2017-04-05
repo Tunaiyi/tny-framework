@@ -393,18 +393,8 @@ public class MathEx {
      *
      * @return
      */
-    @Deprecated
-    public static DateTime currentDateTime() {
-        return DateTime.now();
-    }
-
-    /**
-     * 获取时间对象
-     *
-     * @return
-     */
     public static DateTime now() {
-        return new DateTime();
+        return DateTime.now();
     }
 
     /**

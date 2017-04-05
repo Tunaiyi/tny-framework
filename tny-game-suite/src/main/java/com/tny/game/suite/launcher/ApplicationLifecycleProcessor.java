@@ -62,7 +62,7 @@ public class ApplicationLifecycleProcessor {
         }
     }
 
-    private ClassSelector  () {
+    private ClassSelector selector() {
         return ClassSelector.instance()
                 .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
                 .setHandler(classes -> classes.forEach(c ->

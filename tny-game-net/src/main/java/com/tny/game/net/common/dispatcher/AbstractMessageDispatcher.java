@@ -300,7 +300,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         private MethodControllerHolder controller;
 
-        private CommandFuture commandFuture;
+        // private CommandFuture commandFuture;
 
         private Callback<Object> callback;
 
@@ -389,6 +389,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             CommandResult result;
             try {
                 result = this.doExecute();
+                if (result != null)
+                    this.handleResult(result, null, true);
             } catch (Throwable e) {
                 result = this.handleException(e);
                 DISPATCHER_LOG.error("Controller [{}] 处理消息异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
@@ -404,49 +406,50 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         @Override
         public void execute() {
             CurrentCommand.setCurrent(this.message.getUserID(), this.message.getProtocol());
-            if (done)
-                return;
-            if (!executed) {
-                CommandResult result = invoke();
-                Object value = null;
-                if (result != null)
-                    value = result.getBody();
-                this.commandFuture = getCommandFuture(value);
-                if (this.commandFuture == null) {
-                    try {
-                        this.handleResult(result, null, true);
-                    } finally {
-                        this.done = true;
-                    }
-                }
-            }
-            if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
-                try {
-                    try {
-                        if (this.commandFuture.isSuccess()) {
-                            Object value = this.commandFuture.getResult();
-                            if (value instanceof CommandResult)
-                                this.handleResult((CommandResult) value, null, true);
-                            else
-                                this.handleResult(ResultCode.SUCCESS, value, null, true);
-                        } else {
-                            CommandResult result = handleException(this.commandFuture.getCause());
-                            DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
-                            this.handleResult(result, this.commandFuture.getCause(), false);
-                        }
-                    } finally {
-                        this.done = true;
-                    }
-                } catch (Throwable e) {
-                    try {
-                        CommandResult result = handleException(e);
-                        DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
-                        this.handleResult(result, e, false);
-                    } finally {
-                        this.done = true;
-                    }
-                }
-            }
+            invoke();
+            // if (done)
+            //     return;
+            // if (!executed) {
+            // CommandResult result = invoke();
+            // Object value = null;
+            // if (result != null)
+            // value = result.getBody();
+            // this.commandFuture = getCommandFuture(value);
+            // if (this.commandFuture == null) {
+            //     try {
+            // this.handleResult(result, null, true);
+            //     } finally {
+            //         this.done = true;
+            //     }
+            // }
+            // }
+            // if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
+            //     try {
+            //         try {
+            //             if (this.commandFuture.isSuccess()) {
+            //                 Object value = this.commandFuture.getResult();
+            //                 if (value instanceof CommandResult)
+            //                     this.handleResult((CommandResult) value, null, true);
+            //                 else
+            //                     this.handleResult(ResultCode.SUCCESS, value, null, true);
+            //             } else {
+            //                 CommandResult result = handleException(this.commandFuture.getCause());
+            //                 DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
+            //                 this.handleResult(result, this.commandFuture.getCause(), false);
+            //             }
+            //         } finally {
+            //             this.done = true;
+            //         }
+            //     } catch (Throwable e) {
+            //         try {
+            //             CommandResult result = handleException(e);
+            //             DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
+            //             this.handleResult(result, e, false);
+            //         } finally {
+            //             this.done = true;
+            //         }
+            //     }
+            // }
         }
 
 
@@ -539,7 +542,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 else
                     return result;
             } finally {
-                AbstractMessageDispatcher.this.fireDispatchFinish(new DispatchCommandEvent(this, this.tunnel, this.message, controller));
+                fireDispatchFinish(new DispatchCommandEvent(this, this.tunnel, this.message, controller));
             }
         }
 
