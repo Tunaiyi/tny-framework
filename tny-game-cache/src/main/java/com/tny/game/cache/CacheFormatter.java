@@ -52,7 +52,7 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
                     LOGGER.error(LogUtils.format("parse {} exception", key), e);
                 }
             }
-            return objects;
+            return list;
         } else {
             try {
                 return this.format2Load(key, object);
@@ -69,20 +69,11 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
             Collection<O> objects = (Collection<O>) object;
             List<Object> list = new ArrayList<>();
             for (O value : objects) {
-                try {
-                    list.add(this.format2Save(key, value));
-                } catch (Throwable e) {
-                    LOGGER.error(LogUtils.format("format {} exception", key), e);
-                }
+                list.add(this.format2Save(key, value));
             }
-            return objects;
+            return list;
         } else {
-            try {
-                return this.format2Save(key, object);
-            } catch (Throwable e) {
-                LOGGER.error(LogUtils.format("format {} exception", key), e);
-            }
-            return null;
+            return this.format2Save(key, object);
         }
     }
 

@@ -23,11 +23,7 @@ public class TriggerHolder {
     public Object triggerLoad(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            try {
-                value = trigger.triggerLoad(key, object, value);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
+            value = trigger.triggerLoad(key, object, value);
         }
         return value;
     }
@@ -35,11 +31,7 @@ public class TriggerHolder {
     public Object triggerUpdate(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            try {
-                value = trigger.triggerReplace(key, object, value);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
+            value = trigger.triggerReplace(key, object, value);
         }
         return value;
     }
@@ -47,11 +39,7 @@ public class TriggerHolder {
     public Object triggerInsert(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            try {
-                value = trigger.triggerAdd(key, object, value);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
+            value = trigger.triggerAdd(key, object, value);
         }
         return value;
     }
@@ -59,11 +47,7 @@ public class TriggerHolder {
     public Object triggerSave(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            try {
-                value = trigger.triggerSet(key, object, value);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
+            value = trigger.triggerSet(key, object, value);
         }
         return value;
     }

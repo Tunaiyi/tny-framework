@@ -2,14 +2,14 @@ package com.tny.game.asyndb;
 
 public interface Synchronizable {
 
-    public AsyncDBState getState();
+    AsyncDBState getState();
 
-    public Object getValue();
+    Object getValue();
 
-    public TrySyncDone trySync();
+    TrySyncDone trySync();
 
-    public Synchronizer<?> getSynchronizer();
+    Synchronizer<?> getSynchronizer();
 
-    public boolean syncFail(AsyncDBState currentState);
+    boolean syncFail(AsyncDBState currentState);
 
 }
