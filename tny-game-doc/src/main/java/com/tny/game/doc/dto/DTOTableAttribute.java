@@ -1,5 +1,6 @@
 package com.tny.game.doc.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.DTODocHolder;
@@ -10,6 +11,7 @@ public class DTOTableAttribute implements TableAttribute {
 
     private DTOConfiger dto;
 
+    @JsonIgnore
     @XStreamOmitField
     private ExportHolder exportHolder;
 
@@ -36,6 +38,11 @@ public class DTOTableAttribute implements TableAttribute {
     @Override
     public String getOutput() {
         return this.exportHolder.getOutput();
+    }
+
+    @Override
+    public Object getContent() {
+        return dto;
     }
 
     @Override

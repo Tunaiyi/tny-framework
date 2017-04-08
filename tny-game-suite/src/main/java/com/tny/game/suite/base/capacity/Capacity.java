@@ -14,6 +14,9 @@ public interface Capacity extends GameAbility {
 
     CapacityValueType getValueType();
 
+    CapacityGroup getGroup();
+
+
     default Number getDefault() {
         return 0;
     }

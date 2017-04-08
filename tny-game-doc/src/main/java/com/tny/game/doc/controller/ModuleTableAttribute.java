@@ -1,5 +1,6 @@
 package com.tny.game.doc.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.ClassDocHolder;
 import com.tny.game.doc.holder.ExportHolder;
@@ -9,6 +10,7 @@ public class ModuleTableAttribute implements TableAttribute {
 
     private ModuleConfiger module;
 
+    @JsonIgnore
     private ExportHolder exportHolder;
 
     public ModuleTableAttribute() {
@@ -34,6 +36,11 @@ public class ModuleTableAttribute implements TableAttribute {
     @Override
     public String getOutput() {
         return this.exportHolder.getOutput();
+    }
+
+    @Override
+    public Object getContent() {
+        return module;
     }
 
     @Override

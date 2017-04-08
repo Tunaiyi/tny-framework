@@ -4,13 +4,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang3.StringUtils;
 
 @XStreamAlias("table")
-public class XMLTable {
+public class ConfigTable {
 
     private TemplateSheetConfig config;
 
     private TableAttribute attributeMap;
 
-    public XMLTable(String mvl, String output) {
+    public ConfigTable(String mvl, String output) {
         super();
         this.config = new TemplateSheetConfig(mvl, output);
     }

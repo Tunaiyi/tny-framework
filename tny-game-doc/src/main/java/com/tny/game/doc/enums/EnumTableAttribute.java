@@ -56,6 +56,11 @@ public class EnumTableAttribute implements TableAttribute {
     }
 
     @Override
+    public Object getContent() {
+        return enumeration;
+    }
+
+    @Override
     public String getTemplate() {
         return this.exportHolder.getTemplate();
     }

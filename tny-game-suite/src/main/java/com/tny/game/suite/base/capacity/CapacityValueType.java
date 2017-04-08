@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-enum CapacityValueType {
+public enum CapacityValueType {
 
     BASE,
 

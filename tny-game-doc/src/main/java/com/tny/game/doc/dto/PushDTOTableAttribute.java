@@ -36,4 +36,9 @@ public class PushDTOTableAttribute implements TableAttribute {
         this.pushDTOList.pushDTOList.add(new PushDTOInfo(clazz));
     }
 
+    @Override
+    public Object getContent() {
+        return pushDTOList;
+    }
+
 }

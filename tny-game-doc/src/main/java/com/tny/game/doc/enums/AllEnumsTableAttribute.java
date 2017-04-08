@@ -58,6 +58,11 @@ public class AllEnumsTableAttribute implements TableAttribute {
         }
     }
 
+    @Override
+    public Object getContent() {
+        return enumList;
+    }
+
     public EnumList getEnumeration() {
         return this.enumList;
     }

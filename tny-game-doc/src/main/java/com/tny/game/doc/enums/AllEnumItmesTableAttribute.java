@@ -1,5 +1,6 @@
 package com.tny.game.doc.enums;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -15,6 +16,7 @@ public class AllEnumItmesTableAttribute implements TableAttribute {
 
     private EnumerList enumerList = new EnumerList();
 
+    @JsonIgnore
     private Class<? extends EnumConfiger> enumConfigClass;
 
     @XStreamAlias("enumerList")
@@ -56,6 +58,11 @@ public class AllEnumItmesTableAttribute implements TableAttribute {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Object getContent() {
+        return enumerList;
     }
 
     public EnumerList getEnumeration() {

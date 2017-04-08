@@ -14,5 +14,6 @@ public interface TableAttribute {
         return null;
     }
 
+    Object getContent();
 
 }

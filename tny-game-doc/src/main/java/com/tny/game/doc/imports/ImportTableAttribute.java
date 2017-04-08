@@ -23,14 +23,18 @@ public class ImportTableAttribute implements TableAttribute {
         private String type = "list";
 
         @XStreamImplicit(itemFieldName = "import")
-        private SortedSet<ImportInfo> importList = new TreeSet<ImportInfo>();
-        ;
+        private SortedSet<ImportInfo> importList = new TreeSet<>();
 
     }
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         this.importList.importList.add(new ImportInfo(clazz));
+    }
+
+    @Override
+    public Object getContent() {
+        return importList;
     }
 
     public Collection<ImportInfo> getImportList() {
