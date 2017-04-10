@@ -34,7 +34,7 @@ public class Exportor {
 
     private File baseDir;
 
-    private String basePackage;
+    private String[] basePackage;
 
     private Pather mvlPath;
 
@@ -52,7 +52,7 @@ public class Exportor {
 
     private ClassLoader classLoader;
 
-    public Exportor setBasePackage(String basePackage) {
+    public Exportor setBasePackage(String... basePackage) {
         this.basePackage = basePackage;
         return this;
     }

@@ -95,9 +95,12 @@ subprojects {
 
     repositories {
         mavenLocal()        //使用本地仓库
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public"
+        }
         mavenCentral()
 //        maven {
-//            url "http://nexus.coolfunny.net/nexus/content/groups/public"
+//            url "http://nexus.lingqugame.net/nexus/content/groups/public"
 //        }
     }
 
