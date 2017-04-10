@@ -395,6 +395,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 result = this.handleException(e);
                 DISPATCHER_LOG.error("Controller [{}] 处理消息异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
             } finally {
+                this.done = true;
                 this.executed = true;
                 if (this.messageFuture != null) {
                     this.messageFuture.complete(this.message);

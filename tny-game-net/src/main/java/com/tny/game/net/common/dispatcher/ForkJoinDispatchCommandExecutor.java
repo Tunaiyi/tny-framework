@@ -118,7 +118,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
                 if (cmd != null) {
                     try {
                         cmd.execute();
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         LOG_NET.error("run command task {} exception", cmd.getName(), e);
                     }
                     if (cmd.isDone()) {

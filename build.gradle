@@ -96,12 +96,12 @@ subprojects {
     repositories {
         mavenLocal()        //使用本地仓库
         maven {
+            url "http://nexus.lingqugame.net/nexus/content/groups/public"
+        }
+        maven {
             url "http://maven.aliyun.com/nexus/content/groups/public"
         }
         mavenCentral()
-//        maven {
-//            url "http://nexus.lingqugame.net/nexus/content/groups/public"
-//        }
     }
 
     dependencies {
@@ -109,7 +109,7 @@ subprojects {
         testCompile(
                 "junit:junit:${vers.junit}",
                 "org.jmock:jmock-junit4:${vers.jmock}",
-                "net.sourceforge.groboutils:groboutils-core:5",
+//                "net.sourceforge.groboutils:groboutils-core:5",
                 libs.'spring-test',
         )
 
