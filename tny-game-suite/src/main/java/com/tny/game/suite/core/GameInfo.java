@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class GameInfo {
 
@@ -140,6 +141,18 @@ public class GameInfo {
         if (privateConnectors == null)
             return new ArrayList<>();
         return new ArrayList<>(privateConnectors);
+    }
+
+    public Optional<InetConnector> getPublicConnector(String connectorID) {
+        return this.publicConnectors.stream()
+                .filter(c -> c.getId().equals(connectorID))
+                .findFirst();
+    }
+
+    public Optional<InetConnector> getPrivateConnector(String connectorID) {
+        return this.privateConnectors.stream()
+                .filter(c -> c.getId().equals(connectorID))
+                .findFirst();
     }
 
     public DateTime getStartAt() {
