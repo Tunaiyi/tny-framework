@@ -48,6 +48,8 @@ public interface SuiteProtoIDs {
     int STUFF_LIST_DTO = 2_16_00;
     int COST_STUFF_DTO = 2_17_00;
     int COST_STUFF_LIST_DTO = 2_18_00;
+    int TRADE_STUFF_DTO = 2_19_00;
+    int TRADE_STUFF_LIST_DTO = 2_20_00;
 
 
 }

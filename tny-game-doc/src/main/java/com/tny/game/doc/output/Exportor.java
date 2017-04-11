@@ -9,6 +9,7 @@ import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.ClassFilter;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -152,7 +153,7 @@ public class Exportor {
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
         tempSet.addAll(selector.getClasses());
         if (tempSet.isEmpty()) {
-            System.out.println(LogUtils.format("{}包下未找到符合的类", basePackage));
+            System.out.println(LogUtils.format("{}包下未找到符合的类", StringUtils.join(basePackage, ";")));
             return;
         }
         // XStream xstream = new XStream();

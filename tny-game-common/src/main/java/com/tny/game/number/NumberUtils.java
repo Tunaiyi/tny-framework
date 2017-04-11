@@ -276,4 +276,138 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
         return NUM_CLASSES[0];
     }
 
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(byte x, byte y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(byte x, byte y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
+
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(short x, short y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(short x, short y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(int x, int y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(int x, int y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(long x, long y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(long x, long y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(float x, float y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(float x, float y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
+    /**
+     * 升序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : -1 | x = y : 0 | x ></> y : 1
+     */
+    public static int ascCompare(double x, double y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * 降序比较
+     *
+     * @param x 参数x
+     * @param y 参数y
+     * @return x < y : 1 | x = y : 0 | x ></> y : -1
+     */
+    public static int desCompare(double x, double y) {
+        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+    }
+
 }

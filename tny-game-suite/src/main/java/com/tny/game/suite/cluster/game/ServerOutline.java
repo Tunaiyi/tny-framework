@@ -284,7 +284,7 @@ public class ServerOutline {
     public static void main(String[] args) throws IOException {
         Map<String, LongAdder> count = new HashMap<>();
         File file = new File("/Users/KGTny/Desktop/test");
-        List<String> lines = FileUtils.readLines(file);
+        List<String> lines = FileUtils.readLines(file, "UTF-8");
         lines.forEach(l -> count.put(l, new LongAdder()));
         lines.forEach(l -> count.get(l).increment());
         count.forEach((k, v) -> System.out.println(k + " = " + v));
