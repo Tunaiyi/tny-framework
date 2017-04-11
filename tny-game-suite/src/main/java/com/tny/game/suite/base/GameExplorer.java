@@ -36,6 +36,10 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
             EXPLORER = this;
     }
 
+    public static GameExplorer getInstance() {
+        return EXPLORER;
+    }
+
     @Override
     public <IM extends Model> IM getModel(int itemID) {
         return (IM) this.getModelManager(itemID).getModel(itemID);
