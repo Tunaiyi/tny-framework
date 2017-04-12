@@ -6,7 +6,7 @@ ext.vers = [
         spring : '4.3.7.RELEASE',
         slf4j  : '1.7.14',
         log4j  : '2.7',
-        jackson: '2.7.0',
+        jackson: '2.8.6',
         tny    : '3.0.x-SNAPSHOT',
 
 ]
