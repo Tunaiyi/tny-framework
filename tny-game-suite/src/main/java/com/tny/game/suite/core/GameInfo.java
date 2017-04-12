@@ -144,13 +144,13 @@ public class GameInfo {
     }
 
     public Optional<InetConnector> getPublicConnector(String connectorID) {
-        return this.publicConnectors.stream()
+        return this.getPublicConnectors().stream()
                 .filter(c -> c.getId().equals(connectorID))
                 .findFirst();
     }
 
     public Optional<InetConnector> getPrivateConnector(String connectorID) {
-        return this.privateConnectors.stream()
+        return this.getPrivateConnectors().stream()
                 .filter(c -> c.getId().equals(connectorID))
                 .findFirst();
     }

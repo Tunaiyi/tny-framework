@@ -3,7 +3,7 @@
 *.jar
 *.war
 *.ear
-log
+/log
 *.settings/
 */build
 *.classpath

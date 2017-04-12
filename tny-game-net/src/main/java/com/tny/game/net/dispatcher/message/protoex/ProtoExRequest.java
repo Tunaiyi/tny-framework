@@ -1,7 +1,6 @@
 package com.tny.game.net.dispatcher.message.protoex;
 
 import com.tny.game.net.dispatcher.NetRequest;
-import com.tny.game.net.dispatcher.Session;
 import com.tny.game.protoex.ProtoExEnum;
 import com.tny.game.protoex.annotations.Packed;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -35,13 +34,6 @@ public class ProtoExRequest extends NetRequest {
     @Packed(false)
     @ProtoExElement(@ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
     protected List<Object> paramList = new ArrayList<>();
-
-    public ProtoExRequest() {
-    }
-
-    public ProtoExRequest(Session session) {
-        this.session = session;
-    }
 
     @Override
     public int getID() {
