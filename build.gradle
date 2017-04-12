@@ -105,7 +105,7 @@ subprojects {
         testCompile(
                 "junit:junit:${vers.junit}",
                 "org.jmock:jmock-junit4:${vers.jmock}",
-                "net.sourceforge.groboutils:groboutils-core:5",
+//                "net.sourceforge.groboutils:groboutils-core:5",
                 libs.'spring-test',
         )
 
