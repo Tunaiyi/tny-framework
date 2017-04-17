@@ -4,8 +4,8 @@ ext.vers = [
         junit  : '4.12',
 
         spring : '4.3.7.RELEASE',
-        slf4j  : '1.7.14',
-        log4j  : '2.7',
+        slf4j  : '1.7.25',
+        log4j  : '2.8.2',
         jackson: '2.8.6',
         tny    : '3.0.x-SNAPSHOT',
 

@@ -63,11 +63,11 @@ public class KafkaOplogManager extends AbstractManager {
                     producer.close();
                 }
             };
-            try {
-                getLoggerContext().submitDaemon(task).get(timeout, timeUnit);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                // ignore
-            }
+            // try {
+            //     getLoggerContext().submitDaemon(task).get(timeout, timeUnit);
+            // } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            //     // ignore
+            // }
         }
     }
 
