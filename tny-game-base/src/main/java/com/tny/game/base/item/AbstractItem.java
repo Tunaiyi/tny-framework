@@ -1,18 +1,5 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.ActionResult;
-import com.tny.game.base.item.behavior.AwardList;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.item.behavior.BehaviorResult;
-import com.tny.game.base.item.behavior.CostList;
-import com.tny.game.base.item.behavior.Option;
-import com.tny.game.base.item.behavior.TryToDoResult;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * 抽象事物接口
  *
@@ -56,116 +43,6 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
         return this.model;
     }
 
-    @Override
-    public boolean hasAbility(Ability ability) {
-        return this.getModel().hasAbility(ability);
-    }
-
-    @Override
-    public boolean hasBehavior(Behavior behavior) {
-        return this.getModel().hasBehavior(behavior);
-    }
-
-    @Override
-    public boolean hasAction(Action action) {
-        return this.getModel().hasAction(action);
-    }
-
-    @Override
-    public boolean hasOption(Action action, Option option) {
-        return this.getModel().hasOption(action, option);
-    }
-
-    @Override
-    public TryToDoResult tryToDo(boolean award, Action action, Object... attributes) {
-        return this.getModel().tryToDo(this, action, award, attributes);
-    }
-
-    @Override
-    public TryToDoResult tryToDo(Action action, Object... attributes) {
-        return this.getModel().tryToDo(this, action, attributes);
-    }
-
-    @Override
-    public TryToDoResult tryToDoAll(boolean award, Action action, Object... attributes) {
-        return this.getModel().tryToDoAll(this, action, award, attributes);
-    }
-
-    @Override
-    public TryToDoResult tryToDoAll(Action action, Object... attributes) {
-        return this.getModel().tryToDoAll(this, action, attributes);
-    }
-
-    @Override
-    public Trade createCost(Action action, Object... attributes) {
-        return this.getModel().createCostTrade(this, action, attributes);
-    }
-
-    @Override
-    public Trade createAward(Action action, Object... attributes) {
-        return this.getModel().createAwardTrade(this, action, attributes);
-    }
-
-    @Override
-    public BehaviorResult getBehaviorResult(Behavior behavior, Object... attributes) {
-        return this.getModel().getBehaviorResult(this, behavior, attributes);
-    }
-
-    @Override
-    public <A> Map<Ability, A> getAbilities(Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes) {
-        return this.getModel().getAbilities(this, abilityCollection, clazz, attributes);
-    }
-
-    @Override
-    public <A extends Ability, V> Map<A, V> getAbilitiesByType(Class<A> abilityClass, Class<V> clazz, Object... attributes) {
-        return this.getModel().getAbilitiesByType(this, abilityClass, clazz, attributes);
-    }
-
-    @Override
-    public <A> A getAbility(Ability ability, Class<A> clazz, Object... attributes) {
-        return this.getModel().getAbility(this, ability, clazz, attributes);
-    }
-
-    @Override
-    public <A> A getAbility(A defaultObject, Ability ability, Object... attributes) {
-        return this.getModel().getAbility(this, defaultObject, ability, attributes);
-    }
-
-    @Override
-    public <O> O getActionOption(Action action, Option option, Object... attributes) {
-        return this.getModel().getActionOption(this, action, option, attributes);
-    }
-
-    @Override
-    public <O> O getActionOption(Action action, O defaultNum, Option option, Object... attributes) {
-        return this.getModel().getActionOption(this, defaultNum, action, option, attributes);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass) {
-        return this.getModel().getOwnAbilityBy(abilityClass);
-    }
-
-    @Override
-    public AwardList getAwardList(Action action, Object... attributes) {
-        return this.getModel().getAwardList(this, action, attributes);
-    }
-
-    @Override
-    public CostList getCostList(Action action, Object... attributes) {
-        return this.getModel().getCostList(this, action, attributes);
-    }
-
-    @Override
-    public ActionResult getActionResult(Action action, Object... attributes) {
-        return this.getModel().getActionResult(this, action, attributes);
-    }
-
-    @Override
-    public ActionTrades createActionTrades(Action action, Object... attributes) {
-        return this.getModel().createActionTrades(this, action, attributes);
-    }
 
     protected void setPlayerID(long playerID) {
         this.playerID = playerID;
@@ -173,11 +50,6 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     protected void setModel(IM model) {
         this.model = model;
-    }
-
-    @Override
-    public Behavior getBehaviorByAction(Action action) {
-        return this.model.getBehaviorByAction(action);
     }
 
     /*

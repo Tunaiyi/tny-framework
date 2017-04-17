@@ -22,12 +22,12 @@ public class EnumTableAttribute implements TableAttribute {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public EnumTableAttribute(Class<Enum> clazz, Class<? extends EnumConfiger> enumConfigerClass) {
+    public EnumTableAttribute(Class<Enum> clazz, Class<? extends EnumConfiger> enumConfigerClass, TypeFormatter typeFormatter) {
         super();
         try {
             this.enumConfigerClass = enumConfigerClass;
             this.enumeration = this.enumConfigerClass.newInstance();
-            this.enumeration.setEnumDocHolder(create(clazz));
+            this.enumeration.setEnumDocHolder(create(clazz), typeFormatter);
             this.exportHolder = ExportHolder.create(clazz);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
@@ -39,7 +39,7 @@ public class EnumTableAttribute implements TableAttribute {
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         try {
             this.enumeration = this.enumConfigerClass.newInstance();
-            this.enumeration.setEnumDocHolder(create((Class<Enum>) clazz));
+            this.enumeration.setEnumDocHolder(create((Class<Enum>) clazz), typeFormatter);
             this.exportHolder = ExportHolder.create(clazz);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();

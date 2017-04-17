@@ -31,17 +31,17 @@ public class AllEnumItmesTableAttribute implements TableAttribute {
 
     }
 
-    public AllEnumItmesTableAttribute(Class<? extends EnumConfiger> enumConfigClass) {
+    public AllEnumItmesTableAttribute(Class<? extends EnumConfiger> enumConfigClass, TypeFormatter typeFormatter) {
         this.enumConfigClass = enumConfigClass;
     }
 
     @SuppressWarnings("rawtypes")
-    public AllEnumItmesTableAttribute(Class<Enum> clazz, Class<? extends EnumConfiger> enumConfigClass) {
+    public AllEnumItmesTableAttribute(Class<Enum> clazz, Class<? extends EnumConfiger> enumConfigClass, TypeFormatter typeFormatter) {
         super();
         try {
             this.enumConfigClass = enumConfigClass;
             EnumConfiger configer = this.enumConfigClass.newInstance();
-            configer.setEnumDocHolder(EnumDocHolder.create(clazz));
+            configer.setEnumDocHolder(EnumDocHolder.create(clazz), typeFormatter);
             this.enumerList.enumerList.addAll(configer.getEnumerList());
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
@@ -53,7 +53,7 @@ public class AllEnumItmesTableAttribute implements TableAttribute {
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         try {
             EnumConfiger configer = this.enumConfigClass.newInstance();
-            configer.setEnumDocHolder(EnumDocHolder.create((Class<Enum>) clazz));
+            configer.setEnumDocHolder(EnumDocHolder.create((Class<Enum>) clazz), typeFormatter);
             this.enumerList.enumerList.addAll(configer.getEnumerList());
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.tny.game.doc.label;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.annotation.ItemLabel;
 import com.tny.game.doc.enums.EnumConfiger;
 import com.tny.game.doc.enums.EnumerConfiger;
@@ -15,15 +16,15 @@ public class ItemLabelEnumConfiger extends EnumConfiger {
     private String[] labelGroup = new String[0];
 
     @Override
-    public void setEnumDocHolder(EnumDocHolder holder) {
+    public void setEnumDocHolder(EnumDocHolder holder, TypeFormatter typeFormatter) {
         ItemLabel label = holder.getEntityClass().getAnnotation(ItemLabel.class);
         this.labelGroup = label.groups();
-        super.setEnumDocHolder(holder);
+        super.setEnumDocHolder(holder, typeFormatter);
     }
 
     @Override
-    protected EnumerConfiger createEnumerConfiger(FieldDocHolder fieldDocHolder) {
-        return new ItemLabelEnumerConfiger(fieldDocHolder, this.labelGroup);
+    protected EnumerConfiger createEnumerConfiger(FieldDocHolder fieldDocHolder, TypeFormatter typeFormatter) {
+        return new ItemLabelEnumerConfiger(fieldDocHolder, typeFormatter, this.labelGroup);
     }
 
 }

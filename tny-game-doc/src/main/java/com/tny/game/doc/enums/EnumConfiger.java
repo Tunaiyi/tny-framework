@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.tny.game.LogUtils;
+import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.EnumDocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +47,7 @@ public class EnumConfiger {
     public EnumConfiger() {
     }
 
-    public void setEnumDocHolder(EnumDocHolder holder) {
+    public void setEnumDocHolder(EnumDocHolder holder, TypeFormatter typeFormatter) {
         this.className = holder.getClassName();
         this.packageName = holder.getEntityClass().getPackage().getName();
         this.des = holder.getClassDoc().value();
@@ -55,7 +56,7 @@ public class EnumConfiger {
             this.text = this.des;
         Map<String, EnumerConfiger> fieldMap = new HashMap<>();
         for (FieldDocHolder fieldDocHolder : holder.getEnumList()) {
-            EnumerConfiger configer = this.createEnumerConfiger(fieldDocHolder);
+            EnumerConfiger configer = this.createEnumerConfiger(fieldDocHolder, typeFormatter);
             this.enumerList.enumerList.add(configer);
             EnumerConfiger old = fieldMap.put(configer.getID(), configer);
             if (old != null) {
@@ -65,8 +66,8 @@ public class EnumConfiger {
         }
     }
 
-    protected EnumerConfiger createEnumerConfiger(FieldDocHolder fieldDocHolder) {
-        return new EnumerConfiger(fieldDocHolder);
+    protected EnumerConfiger createEnumerConfiger(FieldDocHolder fieldDocHolder, TypeFormatter typeFormatter) {
+        return new EnumerConfiger(fieldDocHolder, typeFormatter);
     }
 
     public String getDes() {

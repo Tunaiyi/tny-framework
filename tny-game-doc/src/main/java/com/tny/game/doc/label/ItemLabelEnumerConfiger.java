@@ -2,6 +2,7 @@ package com.tny.game.doc.label;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.annotation.ItemLabel;
 import com.tny.game.doc.enums.EnumerConfiger;
 import com.tny.game.doc.holder.FieldDocHolder;
@@ -13,8 +14,8 @@ public class ItemLabelEnumerConfiger extends EnumerConfiger {
     @XStreamAsAttribute
     private String labelGroup = null;
 
-    public ItemLabelEnumerConfiger(FieldDocHolder holder, String[] labelGroups) {
-        super(holder);
+    public ItemLabelEnumerConfiger(FieldDocHolder holder, TypeFormatter typeFormatter, String[] labelGroups) {
+        super(holder, typeFormatter);
         ItemLabel label = holder.getField().getAnnotation(ItemLabel.class);
         if (label == null) {
             this.labelGroup = StringUtils.join(labelGroups, ",");

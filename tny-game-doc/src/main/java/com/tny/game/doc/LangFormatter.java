@@ -65,38 +65,52 @@ public enum LangFormatter implements TypeFormatter {
     CSHARP {
         @Override
         public String format(Type type) {
-            if (type instanceof Class) {
-                Class<?> javaType = (Class<?>) type;
-                if (javaType.isEnum() || String.class.isAssignableFrom(javaType)) {
-                    return "string";
-                } else if (javaType == Long.class || javaType == long.class) {
-                    return "long";
-                } else if (javaType == Integer.class || javaType == int.class) {
-                    return "int";
-                } else if (javaType == Short.class || javaType == short.class) {
-                    return "short";
-                } else if (javaType == Byte.class || javaType == byte.class) {
-                    return "sbyte";
-                } else if (javaType == Double.class || javaType == double.class) {
-                    return "double";
-                } else if (javaType == Float.class || javaType == float.class) {
-                    return "float";
-                } else if (javaType == Boolean.class || javaType == boolean.class) {
-                    return "bool";
-                } else if (javaType == byte[].class || javaType == Byte[].class) {
-                    return "byte []";
-                }
-                return javaType.getSimpleName();
-            } else if (type instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType) type;
-                Class<?> javaType = (Class<?>) pType.getRawType();
-                if (Collection.class.isAssignableFrom(javaType)) {
-                    return "List<" + format(pType.getActualTypeArguments()[0]) + ">";
-                }
-            }
-            throw new IllegalArgumentException(LogUtils.format("{} 类型 无法进行map", type));
+            return LangFormatter.cshapFormat(type, true);
         }
-    };
+    },
+
+    CSHARP_ENUM {
+        @Override
+        public String format(Type type) {
+            return LangFormatter.cshapFormat(type, false);
+        }
+    }
+    //
+    ;
+
+    private static String cshapFormat(Type type, boolean formatEnum) {
+        if (type instanceof Class) {
+            Class<?> javaType = (Class<?>) type;
+            if (formatEnum && (javaType.isEnum() || String.class.isAssignableFrom(javaType))) {
+                return "string";
+            } else if (javaType == Long.class || javaType == long.class) {
+                return "long";
+            } else if (javaType == Integer.class || javaType == int.class) {
+                return "int";
+            } else if (javaType == Short.class || javaType == short.class) {
+                return "short";
+            } else if (javaType == Byte.class || javaType == byte.class) {
+                return "sbyte";
+            } else if (javaType == Double.class || javaType == double.class) {
+                return "double";
+            } else if (javaType == Float.class || javaType == float.class) {
+                return "float";
+            } else if (javaType == Boolean.class || javaType == boolean.class) {
+                return "bool";
+            } else if (javaType == byte[].class || javaType == Byte[].class) {
+                return "byte []";
+            }
+            return javaType.getSimpleName();
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Class<?> javaType = (Class<?>) pType.getRawType();
+            if (Collection.class.isAssignableFrom(javaType)) {
+                return "List<" + cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
+            }
+        }
+        throw new IllegalArgumentException(LogUtils.format("{} 类型 无法进行map", type));
+    }
+
 
 //    private Function<Type, String> fn;
 //

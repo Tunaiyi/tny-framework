@@ -3,6 +3,7 @@ package com.tny.game.doc.dto;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.tny.game.LogUtils;
+import com.tny.game.doc.LangFormatter;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.FieldDocHolder;
 import com.tny.game.protoex.annotations.ProtoExField;
@@ -13,6 +14,9 @@ public class FieldConfiger {
 
     @XStreamAsAttribute
     private String className;
+
+    @XStreamAsAttribute
+    private String rawClassName;
 
     @XStreamAsAttribute
     private String fieldName;
@@ -33,6 +37,7 @@ public class FieldConfiger {
         if (StringUtils.isBlank(this.text))
             this.text = this.des;
         this.className = typeFormatter.format(holder.getField().getGenericType());
+        this.rawClassName = LangFormatter.RAW.format(holder.getField().getGenericType());
         ProtoExField field = holder.getField().getAnnotation(ProtoExField.class);
         if (field != null) {
             if (field.value() <= 0) {
@@ -44,6 +49,10 @@ public class FieldConfiger {
 
     public String getClassName() {
         return this.className;
+    }
+
+    public String getRawClassName() {
+        return rawClassName;
     }
 
     public String getFieldName() {
