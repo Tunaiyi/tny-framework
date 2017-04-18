@@ -4,6 +4,7 @@ import com.tny.game.common.utils.collection.CopyOnWriteMap;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 复制的能力提供器
@@ -15,16 +16,21 @@ public class CopyCapacityGoal extends InnerCapacityGoal {
 
     private CapacityGoalType goalType;
 
-    private long id;
+    private Supplier<Long> idSupplier;
 
     public CopyCapacityGoal(long id, CapacityGoalType goalType) {
-        this.id = id;
         this.goalType = goalType;
+        this.idSupplier = () -> id;
+    }
+
+    public CopyCapacityGoal(Supplier<Long> idSupplier, CapacityGoalType goalType) {
+        this.goalType = goalType;
+        this.idSupplier = idSupplier;
     }
 
     @Override
     public long getID() {
-        return id;
+        return idSupplier.get();
     }
 
     @Override

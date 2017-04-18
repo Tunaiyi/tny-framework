@@ -13,6 +13,9 @@ public abstract class CapacityGoalItem<IM extends ItemModel> extends GameItem<IM
 
     protected InnerCapacityGoal capacityGoal;
 
+    protected CapacityGoalItem() {
+    }
+
     protected CapacityGoalItem(InnerCapacityGoal capacityGoal) {
         this.capacityGoal = capacityGoal;
     }
@@ -23,6 +26,11 @@ public abstract class CapacityGoalItem<IM extends ItemModel> extends GameItem<IM
     @Override
     public CapacityGoal capacityGoal() {
         return capacityGoal;
+    }
+
+    protected CapacityGoalItem setCapacityGoal(InnerCapacityGoal capacityGoal) {
+        this.capacityGoal = capacityGoal;
+        return this;
     }
 
     protected void accept(CapacitySupplier supplier) {

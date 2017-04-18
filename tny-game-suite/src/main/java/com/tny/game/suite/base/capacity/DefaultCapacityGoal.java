@@ -1,19 +1,22 @@
 package com.tny.game.suite.base.capacity;
 
+import java.util.function.Supplier;
+
 /**
  * Created by Kun Yang on 16/3/11.
  */
 public class DefaultCapacityGoal extends AbstractCapacityGoal {
 
-    private long id;
+    private Supplier<Long> idSupplier;
 
     public DefaultCapacityGoal(long id, CapacityGoalType goalType) {
         super(goalType);
-        this.id = id;
+        this.idSupplier = () -> id;
     }
 
-    public long getId() {
-        return id;
+    public DefaultCapacityGoal(Supplier<Long> idSupplier, CapacityGoalType goalType) {
+        super(goalType);
+        this.idSupplier = idSupplier;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class DefaultCapacityGoal extends AbstractCapacityGoal {
 
     @Override
     public long getID() {
-        return 0;
+        return idSupplier.get();
     }
 }
 
