@@ -1,19 +1,21 @@
 package com.tny.game.suite.base.capacity;
 
+import com.tny.game.base.item.Item;
+
 /**
  * Created by Kun Yang on 16/3/11.
  */
-public class DefaultCapacityGoal extends AbstractCapacityGoal {
+public class DefaultItemCapacityGoal extends AbstractCapacityGoal {
 
-    private long id;
+    private Item<?> item;
 
-    public DefaultCapacityGoal(long id, CapacityGoalType goalType) {
+    public DefaultItemCapacityGoal(Item<?> item, CapacityGoalType goalType) {
         super(goalType);
-        this.id = id;
+        this.item = item;
     }
 
     public long getId() {
-        return id;
+        return item.getID();
     }
 
     @Override

@@ -11,20 +11,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public abstract class AbstractCapacityGoal extends InnerCapacityGoal {
 
-    public long id;
-
     protected CapacityGoalType goalType;
 
     protected volatile Set<CapacitySupplier> suppliers = new CopyOnWriteArraySet<>();
 
-    protected AbstractCapacityGoal(long id, CapacityGoalType goalType) {
-        this.id = id;
+    protected AbstractCapacityGoal(CapacityGoalType goalType) {
         this.goalType = goalType;
-    }
-
-    @Override
-    public long getID() {
-        return id;
     }
 
     @Override
