@@ -10,7 +10,7 @@ public interface TimeTaskSchedulerService extends ServerPrepareStart {
 
     @Override
     default PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_1);
     }
 
 }

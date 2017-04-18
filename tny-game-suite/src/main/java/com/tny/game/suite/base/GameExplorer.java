@@ -339,7 +339,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
     }
 
 

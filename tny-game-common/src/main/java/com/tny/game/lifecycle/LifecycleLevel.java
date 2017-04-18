@@ -8,25 +8,47 @@ package com.tny.game.lifecycle;
  */
 public enum LifecycleLevel implements LifecyclePriority{
 
-    LEVEL_1(1),
+    SYSTEM_LEVEL_1(9001),
 
-    LEVEL_2(2),
+    SYSTEM_LEVEL_2(9002),
 
-    LEVEL_3(3),
+    SYSTEM_LEVEL_3(9003),
 
-    LEVEL_4(4),
+    SYSTEM_LEVEL_4(9004),
 
-    LEVEL_5(5),
+    SYSTEM_LEVEL_5(9005),
 
-    LEVEL_6(6),
+    SYSTEM_LEVEL_6(9006),
 
-    LEVEL_7(7),
+    SYSTEM_LEVEL_7(9007),
 
-    LEVEL_8(8),
+    SYSTEM_LEVEL_8(9008),
 
-    LEVEL_9(9),
+    SYSTEM_LEVEL_9(9009),
 
-    LEVEL_10(10);
+    SYSTEM_LEVEL_10(9010),
+
+    CUSTOM_LEVEL_1(1001),
+
+    CUSTOM_LEVEL_2(1002),
+
+    CUSTOM_LEVEL_3(1003),
+
+    CUSTOM_LEVEL_4(1004),
+
+    CUSTOM_LEVEL_5(1005),
+
+    CUSTOM_LEVEL_6(1006),
+
+    CUSTOM_LEVEL_7(1007),
+
+    CUSTOM_LEVEL_8(1008),
+
+    CUSTOM_LEVEL_9(1009),
+
+    CUSTOM_LEVEL_10(1010),
+
+    ;
 
     public final int priority;
 

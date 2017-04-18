@@ -238,7 +238,7 @@ public class AccountService implements ServerPrepareStart {
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_1);
     }
 
     @Override
