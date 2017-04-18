@@ -54,6 +54,7 @@ public interface SuiteProtoIDs {
     int CAPACITY_DTO = 2_21_00;
     int CAPACITY_ITEM_DTO = 2_22_00;
     int CAPACITY_ITEM_LIST_DTO = 2_23_00;
+    int CAPACITY_GOAL_DTO = 2_24_00;
 
 
 }

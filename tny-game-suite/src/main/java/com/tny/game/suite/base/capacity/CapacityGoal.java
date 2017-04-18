@@ -11,6 +11,11 @@ import java.util.Collection;
 public interface CapacityGoal extends Capacitiable {
 
     /**
+     * @return 获取能力提供者ID
+     */
+    long getID();
+
+    /**
      * @return 获取目标类型
      */
     CapacityGoalType getGoalType();

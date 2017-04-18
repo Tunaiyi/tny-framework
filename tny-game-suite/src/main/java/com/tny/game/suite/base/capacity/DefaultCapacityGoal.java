@@ -5,8 +5,9 @@ package com.tny.game.suite.base.capacity;
  */
 public class DefaultCapacityGoal extends AbstractCapacityGoal {
 
-    public DefaultCapacityGoal(CapacityGoalType goalType) {
-        super(goalType);
+
+    public DefaultCapacityGoal(long id, CapacityGoalType goalType) {
+        super(id, goalType);
     }
 
     @Override
@@ -28,5 +29,9 @@ public class DefaultCapacityGoal extends AbstractCapacityGoal {
         return suppliers.remove(supplier);
     }
 
+    @Override
+    public long getID() {
+        return 0;
+    }
 }
 

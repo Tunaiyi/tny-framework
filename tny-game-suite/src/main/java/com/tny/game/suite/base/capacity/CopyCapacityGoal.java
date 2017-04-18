@@ -15,8 +15,16 @@ public class CopyCapacityGoal extends InnerCapacityGoal {
 
     private CapacityGoalType goalType;
 
-    public CopyCapacityGoal(CapacityGoalType goalType) {
+    private long id;
+
+    public CopyCapacityGoal(long id, CapacityGoalType goalType) {
+        this.id = id;
         this.goalType = goalType;
+    }
+
+    @Override
+    public long getID() {
+        return id;
     }
 
     @Override

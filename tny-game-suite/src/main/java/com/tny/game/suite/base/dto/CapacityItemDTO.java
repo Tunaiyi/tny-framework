@@ -6,7 +6,6 @@ import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.capacity.CapacityGoal;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 import com.tny.game.suite.base.capacity.ComboCapacitySupplier;
 import com.tny.game.suite.base.capacity.TimeoutCapacitySupplier;
@@ -40,10 +39,6 @@ public class CapacityItemDTO {
     private Long remainTime;
 
     public static CapacityItemDTO supplier2DTO(CapacitySupplier supplier) {
-        return supplier2DTO(supplier, false);
-    }
-
-    public static CapacityItemDTO supplier2DTO(CapacitySupplier supplier, boolean aboutPower) {
         CapacityItemDTO dto = new CapacityItemDTO();
         dto.id = supplier.getID();
         if (supplier instanceof ComboCapacitySupplier)
@@ -69,19 +64,12 @@ public class CapacityItemDTO {
                 .collect(Collectors.toList());
     }
 
-    public static List<Long> suppliers2IDs(Collection<CapacitySupplier> suppliers) {
-        return suppliers.stream().map(CapacitySupplier::getID).collect(Collectors.toList());
-    }
-
-    public static List<Long> goal2IDs(CapacityGoal goal) {
-        return goal.suppliers().stream().map(CapacitySupplier::getID).collect(Collectors.toList());
-    }
-
-    public static List<Long> combo2IDs(ComboCapacitySupplier supplier) {
-        return supplier.dependSuppliers().stream().map(CapacitySupplier::getID).collect(Collectors.toList());
-    }
-
     public List<CapacityDTO> getCapacities() {
         return capacities;
     }
+
+    private static List<Long> combo2IDs(ComboCapacitySupplier supplier) {
+        return supplier.dependSuppliers().stream().map(CapacitySupplier::getID).collect(Collectors.toList());
+    }
+
 }

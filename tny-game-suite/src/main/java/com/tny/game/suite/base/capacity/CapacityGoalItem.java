@@ -18,6 +18,9 @@ public abstract class CapacityGoalItem<IM extends ItemModel> extends GameItem<IM
     }
 
     @Override
+    public abstract long getID();
+
+    @Override
     public CapacityGoal capacityGoal() {
         return capacityGoal;
     }

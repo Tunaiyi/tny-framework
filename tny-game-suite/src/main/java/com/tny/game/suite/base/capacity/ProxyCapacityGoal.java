@@ -11,6 +11,11 @@ public interface ProxyCapacityGoal extends CapacityGoal {
     CapacityGoal capacityGoal();
 
     @Override
+    default long getID() {
+        return capacityGoal().getID();
+    }
+
+    @Override
     default CapacityGoalType getGoalType() {
         return capacityGoal().getGoalType();
     }
