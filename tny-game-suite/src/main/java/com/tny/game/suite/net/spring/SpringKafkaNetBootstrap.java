@@ -33,6 +33,6 @@ public class SpringKafkaNetBootstrap extends KafkaNetBootstrap implements Server
 
     @Override
     public PostStarter getPostStarter() {
-        return PostStarter.value(SpringKafkaNetBootstrap.class, LifecycleLevel.LEVEL_1);
+        return PostStarter.value(SpringKafkaNetBootstrap.class, LifecycleLevel.SYSTEM_LEVEL_1);
     }
 }

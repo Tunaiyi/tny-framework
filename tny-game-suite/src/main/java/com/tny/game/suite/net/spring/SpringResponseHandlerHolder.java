@@ -1,9 +1,10 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.dispatcher.ResponseHandler;
-import com.tny.game.net.dispatcher.ResponseHandlerHolder;
+import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.net.dispatcher.ResponseHandler;
+import com.tny.game.net.dispatcher.ResponseHandlerHolder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -30,7 +31,7 @@ public class SpringResponseHandlerHolder extends ResponseHandlerHolder implement
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass());
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_5);
     }
 
     @Override
