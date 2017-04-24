@@ -1,6 +1,7 @@
 package com.tny.game.common;
 
 import com.tny.game.LogUtils;
+import com.tny.game.common.reflect.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,9 +85,7 @@ public class RunningChecker {
         String log = null;
         if (counter.getTask() != null || message != null) {
             log = new Date(counter.getStartAt()) + " OO 开始运行 " + task;
-            if (message != null)
-                log += LogUtils.format("\n\t" + message, args);
-            System.out.println(log);
+            LOGGER.debug(log + "\n\t" + ObjectUtils.defaultIfNull(message, ""), args);
         }
     }
 
@@ -113,9 +112,7 @@ public class RunningChecker {
         RunnerCounter counter = end(task);
         String log = null;
         log = new Date(counter.getEndAt()) + " XX 结束运行" + (task == null ? "" : " " + task + " ") + " | 消耗 " + (counter.cost()) + " ms";
-        if (message != null)
-            log += LogUtils.format("\n\t" + message, args);
-        System.out.println(log);
+        LOGGER.debug(log + "\n\t" + ObjectUtils.defaultIfNull(message, ""), args);
     }
 
     public static void main(String[] args) throws InterruptedException {

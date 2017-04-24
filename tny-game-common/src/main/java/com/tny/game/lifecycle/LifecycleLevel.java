@@ -48,6 +48,25 @@ public enum LifecycleLevel implements LifecyclePriority{
 
     CUSTOM_LEVEL_10(1010),
 
+    POST_SYSTEM_LEVEL_1(101),
+
+    POST_SYSTEM_LEVEL_2(102),
+
+    POST_SYSTEM_LEVEL_3(103),
+
+    POST_SYSTEM_LEVEL_4(104),
+
+    POST_SYSTEM_LEVEL_5(105),
+
+    POST_SYSTEM_LEVEL_6(106),
+
+    POST_SYSTEM_LEVEL_7(107),
+
+    POST_SYSTEM_LEVEL_8(108),
+
+    POST_SYSTEM_LEVEL_9(109),
+
+    POST_SYSTEM_LEVEL_10(110),
     ;
 
     public final int priority;
