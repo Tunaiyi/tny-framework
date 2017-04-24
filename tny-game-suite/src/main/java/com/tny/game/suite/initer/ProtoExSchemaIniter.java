@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
 public class ProtoExSchemaIniter implements ServerPrepareStart {
@@ -41,7 +40,7 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
     @SuppressWarnings("unchecked")
     private static void loadClasses(Set<Class<?>> classes) {
         LOGGER.info("启动初始化ProtoSchema任务!");
-        forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
+        // forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
             Class<?> clazz;
             RunningChecker.start(ProtoExSchemaIniter.class);
             LOGGER.info("开始初始化 ProtoSchema .......");
@@ -61,7 +60,7 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
             }
             LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunningChecker.end(ProtoExSchemaIniter.class).cost());
             selector = null;
-        });
+        // });
     }
 
     public Throwable getException() {
@@ -70,7 +69,7 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
     }
 
     private void waitSuccess() {

@@ -7,7 +7,7 @@ package com.tny.game.lifecycle;
 public final class PostStarter extends Lifecycle<PostStarter, ServerPostStart> {
 
     public static PostStarter value(Class<? extends ServerPostStart> clazz) {
-        return value(clazz, LifecycleLevel.LEVEL_5);
+        return value(clazz, LifecycleLevel.CUSTOM_LEVEL_5);
     }
 
     public static PostStarter value(Class<? extends ServerPostStart> clazz, LifecyclePriority lifeCycleLevel) {

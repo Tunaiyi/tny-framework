@@ -186,7 +186,7 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_5);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_5);
     }
 
     @Override

@@ -153,7 +153,7 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_4);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_4);
     }
 
     @Override

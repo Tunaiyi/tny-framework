@@ -132,7 +132,7 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
 
     @Override
     public PostStarter getPostStarter() {
-        return PostStarter.value(this.getClass(), LifecycleLevel.LEVEL_1);
+        return PostStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_1);
     }
 
     @Override

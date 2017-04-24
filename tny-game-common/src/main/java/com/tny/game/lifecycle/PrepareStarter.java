@@ -7,7 +7,7 @@ package com.tny.game.lifecycle;
 public final class PrepareStarter extends Lifecycle<PrepareStarter, ServerPrepareStart> {
 
     public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz) {
-        return value(clazz, LifecycleLevel.LEVEL_5);
+        return value(clazz, LifecycleLevel.CUSTOM_LEVEL_5);
     }
 
     public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz, LifecyclePriority lifeCycleLevel) {

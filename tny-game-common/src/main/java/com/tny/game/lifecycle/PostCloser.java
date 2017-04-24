@@ -7,7 +7,7 @@ package com.tny.game.lifecycle;
 public final class PostCloser extends Lifecycle<PostCloser, ServerClosed> {
 
     public static PostCloser value(Class<? extends ServerClosed> clazz) {
-        return value(clazz, LifecycleLevel.LEVEL_5);
+        return value(clazz, LifecycleLevel.CUSTOM_LEVEL_5);
     }
 
     public static PostCloser value(Class<? extends ServerClosed> clazz, LifecyclePriority lifeCycleLevel) {
