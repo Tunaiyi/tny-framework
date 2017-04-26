@@ -121,7 +121,7 @@ public class SpringAppConfiguration extends AbstractAppConfiguration implements 
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.LEVEL_10);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
     }
 
     @Override

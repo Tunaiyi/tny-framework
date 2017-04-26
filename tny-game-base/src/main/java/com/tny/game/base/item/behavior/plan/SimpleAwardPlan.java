@@ -1,10 +1,10 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.RandomCreator;
+import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.AbstractAwardGroup;
 import com.tny.game.base.item.behavior.AbstractAwardPlan;
@@ -12,6 +12,7 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.AwardDetail;
 import com.tny.game.base.item.behavior.AwardGroup;
 import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.behavior.AwardPlan;
 import com.tny.game.base.item.behavior.DemandHolderObject;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
@@ -40,7 +41,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     /**
      * 随机器
      */
-    protected RandomCreator<AwardGroup> randomer;
+    protected RandomCreator<AwardPlan, AwardGroup> randomer;
 
     /**
      * 奖励方式
@@ -61,14 +62,14 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     protected ModelExplorer itemModelExplorer;
 
-    public SimpleAwardPlan(RandomCreator<AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
+    public SimpleAwardPlan(RandomCreator<AwardPlan, AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
         this.randomer = randomer;
         this.awardGroupSet = new ArrayList<>(treeSet);
     }
 
     @Override
     public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<AwardGroup> groupList = this.randomer.random(this.range, 1, this.awardGroupSet, attributeMap);
+        List<AwardGroup> groupList = this.randomer.random(this, attributeMap);
         if (groupList == null || groupList.isEmpty())
             return new SimpleTrade(action, TradeType.AWARD);
         AwardGroup group = groupList.get(0);
@@ -107,4 +108,18 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
     }
 
+    @Override
+    public List<AwardGroup> probabilities() {
+        return awardGroupSet;
+    }
+
+    @Override
+    public int getRange(Map<String, Object> attributeMap) {
+        return range;
+    }
+
+    @Override
+    public int getNumber(Map<String, Object> attributeMap) {
+        return 1;
+    }
 }

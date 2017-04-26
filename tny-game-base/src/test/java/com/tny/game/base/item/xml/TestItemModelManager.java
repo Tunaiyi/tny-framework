@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
-import com.tny.game.base.item.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
 
 public class TestItemModelManager extends AbstractXMLModelManager<TestItemModel> {
 

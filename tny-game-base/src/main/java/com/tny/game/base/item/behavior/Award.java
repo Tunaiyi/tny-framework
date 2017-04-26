@@ -2,7 +2,9 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Probability;
+import com.tny.game.base.item.TradeItem;
+import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
+import com.tny.game.base.item.probability.Probability;
 
 import java.util.Map;
 
@@ -43,4 +45,25 @@ public interface Award extends Probability {
      */
     Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap);
 
+    /**
+     * 创建TradeItem
+     *
+     * @param awardModel
+     * @param attributeMap
+     */
+    default TradeItem<ItemModel> createTradeItem(boolean valid, ItemModel awardModel, Map<String, Object> attributeMap) {
+        AlterType type = this.getAlterType();
+        Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
+        int number = this.countNumber(awardModel, attributeMap);
+        if (number > 0) {
+            return new SimpleTradeItem<>(awardModel, type == null ? AlterType.IGNORE : type, number, valid, paramMap);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    default boolean isEffect(Map<String, Object> attributeMap) {
+        return true;
+    }
 }

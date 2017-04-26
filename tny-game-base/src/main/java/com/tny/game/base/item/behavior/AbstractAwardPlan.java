@@ -13,4 +13,5 @@ public abstract class AbstractAwardPlan implements AwardPlan {
 
     public abstract void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer);
 
+
 }

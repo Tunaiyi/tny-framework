@@ -1,20 +1,17 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.AllRandomCreatorFactory;
-import com.tny.game.base.item.AlterType;
+import com.tny.game.base.item.probability.AllRandomCreatorFactory;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.RandomCreator;
+import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +44,12 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     /*
      * 产生奖励总类最大个数 -1为无限 默认值为 -1
      */
-    private FormulaHolder number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
+    protected FormulaHolder number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
+
+    /*
+     * 产生奖励总类最大个数 -1为无限 默认值为 -1
+     */
+    protected FormulaHolder drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
 
     /**
      * 条件 group生效条件
@@ -57,7 +59,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     /**
      * 随机器
      */
-    protected RandomCreator<Award> randomer = AllRandomCreatorFactory.getInstance();
+    protected RandomCreator<AwardGroup, Award> randomer = AllRandomCreatorFactory.getInstance();
 
     /**
      * 奖励列表
@@ -76,6 +78,12 @@ public abstract class AbstractAwardGroup implements AwardGroup {
                 .execute(Integer.class);
     }
 
+
+    @Override
+    public List<Award> probabilities() {
+        return this.awardList;
+    }
+
 //    @Override
 //    public int compareTo(Probability o) {
 //        int value = o.getPriority() - this.priority;
@@ -92,28 +100,6 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     @Override
     public Set<ItemModel> getAwardSet(Map<String, Object> attributeMap) {
         return new HashSet<>(this.getAwardAliasModelMap(attributeMap).values());
-    }
-
-    @Override
-    public List<TradeItem<ItemModel>> countAwardNumber(Map<String, Object> attributeMap) {
-        List<TradeItem<ItemModel>> itemList = new ArrayList<>();
-        Integer awardNum = this.number.createFormula().putAll(attributeMap).execute(Integer.class);
-        if (awardNum == null)
-            awardNum = 1;
-        List<Award> awardList = this.randomer.random(10000, awardNum, this.awardList, attributeMap);
-        for (Award award : awardList) {
-            String awModelAlias = award.getItemAlias(attributeMap);
-            ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
-            if (awardModel == null)
-                continue;
-            AlterType type = award.getAlterType();
-            Map<DemandParam, Object> paramMap = award.countDemandParam(attributeMap);
-            int number = award.countNumber(awardModel, attributeMap);
-            if (number > 0) {
-                itemList.add(new SimpleTradeItem<>(awardModel, type == null ? AlterType.IGNORE : type, number, paramMap));
-            }
-        }
-        return itemList;
     }
 
     @Override
@@ -136,6 +122,26 @@ public abstract class AbstractAwardGroup implements AwardGroup {
         return this.condition == null ? true : this.condition.createFormula()
                 .putAll(attributeMap)
                 .execute(Boolean.class);
+    }
+
+    public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
+        Integer drawNumber = this.drawNumber.createFormula().putAll(attributeMap).execute(Integer.class);
+        if (drawNumber == null)
+            drawNumber = -1;
+        return drawNumber <= 0 ? awardNum : Math.min(drawNumber, awardNum);
+    }
+
+    @Override
+    public int getNumber(Map<String, Object> attributeMap) {
+        Integer awardNum = this.number.createFormula().putAll(attributeMap).execute(Integer.class);
+        if (awardNum == null)
+            awardNum = 1;
+        return awardNum;
+    }
+
+    @Override
+    public int getRange(Map<String, Object> attributeMap) {
+        return 10000;
     }
 
     public void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {

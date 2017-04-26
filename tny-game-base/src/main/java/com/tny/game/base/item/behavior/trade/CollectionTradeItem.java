@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tny.game.number.NumberUtils.add;
+import static com.tny.game.number.NumberUtils.*;
 
 public class CollectionTradeItem implements TradeItem<ItemModel> {
 
@@ -19,6 +19,8 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
 
     private Number number;
 
+    private boolean valid;
+
     private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
 
     public CollectionTradeItem(TradeItem<?> item) {
@@ -26,6 +28,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
         this.itemModel = item.getItemModel();
         this.number = item.getNumber();
         this.alertType = item.getAlertType();
+        this.valid = item.isValid();
         if (this.paramMap != null) {
             this.paramMap.putAll(item.getParamMap());
         }
@@ -36,16 +39,24 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
         return this.alertType;
     }
 
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
+
     protected void collect(TradeItem<?> item) {
         if (this.getItemModel().getID() == item.getItemModel().getID()) {
-            this.number = add(this.number,item.getNumber());
+            if (item.isValid()) {
+                this.number = add(this.number, item.getNumber());
+                this.valid = true;
+            }
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <SI extends ItemModel> SI getItemModel() {
-        return (SI)this.itemModel;
+        return (SI) this.itemModel;
     }
 
     @Override

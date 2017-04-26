@@ -14,11 +14,12 @@ public interface TradePlan {
     /**
      * 创建交易结果集
      *
-     * @param action       创建奖励的行为
-     * @param atrributeMap 计算参数
+     * @param playerID     玩家ID
+     * @param action       行为
+     * @param attributeMap 计算参数
      * @return 返回交易结果集
      */
-    public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap);
+    Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap);
 
     /**
      * 交易的方式

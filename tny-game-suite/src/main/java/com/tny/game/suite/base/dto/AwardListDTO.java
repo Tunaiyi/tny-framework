@@ -23,7 +23,7 @@ import java.util.List;
 
 @ProtoEx(SuiteProtoIDs.AWARD_LIST_DTO)
 @DTODoc(value = "奖励列表DTO")
-public class AwardListDTO  implements Serializable {
+public class AwardListDTO implements Serializable {
 
     /**
      *
@@ -70,7 +70,19 @@ public class AwardListDTO  implements Serializable {
         return dto;
     }
 
-    public static AwardListDTO tradeItemList2DTO(Collection<? extends DealedItem<?>> tradeItemList) {
+    public static AwardListDTO tradeItemList2DTO(Collection<? extends TradeItem<?>> tradeItemList) {
+        AwardListDTO dto = new AwardListDTO();
+        List<AwardDTO> awardList = new ArrayList<>();
+        for (TradeItem<?> entry : tradeItemList) {
+            if (entry.getNumber().longValue() > 0) {
+                awardList.add(AwardDTO.tradeItem2DTO(entry));
+            }
+        }
+        dto.awardList = awardList;
+        return dto;
+    }
+
+    public static AwardListDTO dealedItemList2DTO(Collection<? extends DealedItem<?>> tradeItemList) {
         AwardListDTO dto = new AwardListDTO();
         List<AwardDTO> awardList = new ArrayList<>();
         for (DealedItem<?> entry : tradeItemList) {
@@ -103,7 +115,7 @@ public class AwardListDTO  implements Serializable {
     }
 
     public static AwardListDTO dealedItems2DTO(List<DealedItem<?>> awardTrade) {
-        return tradeItemList2DTO(awardTrade);
+        return dealedItemList2DTO(awardTrade);
     }
 
     public static AwardListDTO awardList2DTO(Trade countTradeAward) {

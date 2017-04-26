@@ -2,18 +2,16 @@ package com.tny.game.base.item.xml;
 
 import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.RandomCreator;
 import com.tny.game.base.item.behavior.Award;
 import com.tny.game.base.item.behavior.AwardGroup;
 import com.tny.game.base.item.behavior.AwardPlan;
 import com.tny.game.base.item.behavior.DemandParam;
 import com.tny.game.base.item.behavior.plan.SimpleAwardGroup;
 import com.tny.game.base.item.behavior.plan.SimpleAwardPlan;
+import com.tny.game.base.item.probability.RandomCreator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -21,16 +19,11 @@ public class XMLAwardPlanTest {
 
     int NUMBER;
 
-    RandomCreator<AwardGroup> randomer = new RandomCreator<AwardGroup>() {
-
-        @Override
-        public List<AwardGroup> random(int range, int number, Collection<? extends AwardGroup> probabilityList, Map<String, Object> attributeMap) {
-            for (AwardGroup p : probabilityList)
+    RandomCreator<AwardPlan, AwardGroup> randomer = (group, attributeMap) -> {
+            for (AwardGroup p : group.probabilities())
                 if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap))
-                    return Arrays.asList(p);
+                    return Collections.singletonList(p);
             return null;
-        }
-
     };
 
     class TeatAward implements Award {

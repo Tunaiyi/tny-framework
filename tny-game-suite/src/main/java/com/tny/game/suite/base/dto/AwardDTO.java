@@ -42,16 +42,23 @@ public class AwardDTO implements Serializable {
     @JsonProperty
     private long number;
 
-    private void alterNumber(long alterNum) {
-        this.number += alterNum;
-    }
+    @VarDoc("是否是有效(抽中)的奖励")
+    @ProtoExField(4)
+    @JsonProperty
+    private boolean valid;
 
     public static AwardDTO tradeItem2DTO(DealedItem<?> item) {
         return dealedItem2DTO(item);
     }
 
+    public static AwardDTO tradeItem2DTO(TradeItem<?> item) {
+        AwardDTO dto = dealedItem2DTO(item);
+        dto.valid = item.isValid();
+        return dto;
+    }
+
     public static void mergeAward(Map<Integer, AwardDTO> awardMap, TradeItem<?> tradItem) {
-        if (tradItem.getNumber().longValue() >= 0) {
+        if (tradItem.isValid() && tradItem.getNumber().longValue() >= 0) {
             AwardDTO award = awardMap.get(tradItem.getItemModel().getID());
             if (award == null) {
                 award = tradeItem2DTO(tradItem);
@@ -81,15 +88,25 @@ public class AwardDTO implements Serializable {
         dto.itemID = dealedItem.getItemModel().getID();
         dto.itemType = ItemTypes.ofItemID(dto.itemID).getID();
         dto.number = dealedItem.getNumber().longValue();
+        dto.valid = true;
         return dto;
     }
 
     public static AwardDTO attr2DTO(int itemID, ItemType type, int number) {
+        return attr2DTO(itemID, type, number, true);
+    }
+
+    public static AwardDTO attr2DTO(int itemID, ItemType type, int number, boolean valid) {
         AwardDTO dto = new AwardDTO();
         dto.itemID = itemID;
         dto.itemType = type.getID();
         dto.number = number;
+        dto.valid = valid;
         return dto;
+    }
+
+    private void alterNumber(long alterNum) {
+        this.number += alterNum;
     }
 
     public int getItemID() {

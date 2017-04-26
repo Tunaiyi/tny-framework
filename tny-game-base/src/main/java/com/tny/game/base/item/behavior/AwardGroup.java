@@ -1,7 +1,8 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Probability;
+import com.tny.game.base.item.probability.Probability;
+import com.tny.game.base.item.probability.ProbabilityGroup;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 
@@ -14,7 +15,7 @@ import java.util.Set;
  *
  * @author KGTny
  */
-public interface AwardGroup extends Probability {
+public interface AwardGroup extends Probability, ProbabilityGroup<Award> {
 
     /**
      * 获取奖励组所奖励的所有物品ID列表
@@ -40,13 +41,5 @@ public interface AwardGroup extends Probability {
      * @return 返回结果集
      */
     Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap);
-
-    /**
-     * 是否生效
-     *
-     * @param attributeMap
-     * @return
-     */
-    boolean isEffect(Map<String, Object> attributeMap);
 
 }

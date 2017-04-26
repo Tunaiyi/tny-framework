@@ -2,8 +2,8 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.tny.game.LogUtils;
-import com.tny.game.base.item.RandomCreator;
-import com.tny.game.base.item.RandomCreatorFactory;
+import com.tny.game.base.item.probability.RandomCreator;
+import com.tny.game.base.item.probability.RandomCreatorFactory;
 
 import java.util.Collections;
 import java.util.HashMap;

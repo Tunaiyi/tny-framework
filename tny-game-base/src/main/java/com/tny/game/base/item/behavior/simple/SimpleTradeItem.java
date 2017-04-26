@@ -19,59 +19,85 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
 
     private Number number;
 
+    private boolean valid;
+
     private Map<DemandParam, Object> paramMap = new HashMap<>();
 
-    public SimpleTradeItem() {
-        super();
+    public SimpleTradeItem(AlterType alertType, DemandResult result, DemandParamEntry<?>... entries) {
+        this(alertType, result, true, entries);
     }
 
     @SuppressWarnings("unchecked")
-    public SimpleTradeItem(AlterType alertType, DemandResult result, DemandParamEntry<?>... entries) {
-        super();
+    public SimpleTradeItem(AlterType alertType, DemandResult result, boolean valid, DemandParamEntry<?>... entries) {
         this.alertType = alertType;
         this.itemModel = (I) result.getItemModel();
         this.number = result.getExpectValue(Integer.class);
+        this.valid = valid;
         for (DemandParamEntry<?> entry : entries) {
             this.paramMap.put(entry.getParam(), entry.getValue());
         }
     }
 
     public SimpleTradeItem(AlterType alertType, I itemModel, Number number, Map<DemandParam, Object> paramMap) {
+        this(alertType, itemModel, number, true, paramMap);
+    }
+
+    public SimpleTradeItem(AlterType alertType, I itemModel, Number number, boolean valid, Map<DemandParam, Object> paramMap) {
         super();
         this.alertType = alertType;
         this.itemModel = itemModel;
         this.number = number;
+        this.valid = valid;
         if (paramMap != null) {
             this.paramMap.putAll(paramMap);
         }
     }
 
     public SimpleTradeItem(TradeItem<I> item, Number number) {
+        this(item, number, true);
+    }
+
+    public SimpleTradeItem(TradeItem<I> item, Number number, boolean valid) {
         super();
         this.itemModel = item.getItemModel();
         this.number = number;
         this.alertType = item.getAlertType();
+        this.valid = valid;
         if (paramMap != null) {
             this.paramMap.putAll(item.getParamMap());
         }
     }
 
     public SimpleTradeItem(I model, Number number, AlterType alertType) {
+        this(model, number, alertType, true);
+    }
+
+    public SimpleTradeItem(I model, Number number, AlterType alertType, boolean valid) {
         super();
         this.itemModel = model;
         this.number = number;
         this.alertType = alertType;
+        this.valid = valid;
     }
 
     public SimpleTradeItem(I model, Number number) {
-        this(model, number, AlterType.CHECK);
+        this(model, number, true);
+    }
+
+    public SimpleTradeItem(I model, Number number, boolean valid) {
+        this(model, number, AlterType.CHECK, valid);
     }
 
     public SimpleTradeItem(I itemModel, AlterType alertType, Number number, Map<DemandParam, Object> paramMap) {
+        this(itemModel, alertType, number, true, paramMap);
+    }
+
+    public SimpleTradeItem(I itemModel, AlterType alertType, Number number, boolean valid, Map<DemandParam, Object> paramMap) {
         super();
         this.itemModel = itemModel;
         this.number = number;
         this.alertType = alertType;
+        this.valid = valid;
         if (paramMap != null) {
             this.paramMap.putAll(paramMap);
         }
@@ -80,6 +106,11 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
     @Override
     public AlterType getAlertType() {
         return alertType;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
     }
 
     @Override

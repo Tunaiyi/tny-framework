@@ -131,6 +131,8 @@ public abstract class AbstractWarehouse<O extends Owner>
     }
 
     private void consume0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        if(!tradeItem.isValid())
+            return;
         ItemModel model = tradeItem.getItemModel();
         try {
             O owner = this.getOwner(model.getItemType(), ownerClass);
@@ -150,6 +152,8 @@ public abstract class AbstractWarehouse<O extends Owner>
     }
 
     private void receive0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        if(!tradeItem.isValid())
+            return;
         ItemModel model = tradeItem.getItemModel();
         try {
             O owner = this.getOwner(model.getItemType(), ownerClass);
