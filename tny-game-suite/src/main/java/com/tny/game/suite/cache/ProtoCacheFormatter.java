@@ -2,6 +2,7 @@ package com.tny.game.suite.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.Trade;
@@ -60,11 +61,11 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     protected Trade proto2Trade(TradeProto tradeProto) {
-        List<TradeItem<?>> tradeItemList = new ArrayList<>();
+        List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemID());
             if (awardModel != null) {
-                tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber()));
+                tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber(), AlterType.valueOf(awardProto.getAlterType()), awardProto.getValid()));
             }
         }
         return new SimpleTrade(Actions.of(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
@@ -73,7 +74,12 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     protected TradeProto trade2Proto(Trade trade) {
         List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
-            list.add(TradeItemProto.newBuilder().setItemID(item.getItemModel().getID()).setNumber(item.getNumber().longValue()).build());
+            list.add(TradeItemProto.newBuilder()
+                    .setItemID(item.getItemModel().getID())
+                    .setNumber(item.getNumber().longValue())
+                    .setAlterType(item.getAlertType().getID())
+                    .setValid(item.isValid())
+                    .build());
         }
         return TradeProto.newBuilder().setAction(trade.getAction().getID())
                 .addAllItem(list)

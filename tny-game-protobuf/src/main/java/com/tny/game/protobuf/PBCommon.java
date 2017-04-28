@@ -8193,6 +8193,15 @@ public final class PBCommon {
      * <code>optional int32 alterType = 3;</code>
      */
     int getAlterType();
+
+    /**
+     * <code>optional bool valid = 4;</code>
+     */
+    boolean hasValid();
+    /**
+     * <code>optional bool valid = 4;</code>
+     */
+    boolean getValid();
   }
   /**
    * Protobuf type {@code TradeItemProto}
@@ -8209,6 +8218,7 @@ public final class PBCommon {
       itemID_ = 0;
       number_ = 0L;
       alterType_ = 0;
+      valid_ = false;
     }
 
     @java.lang.Override
@@ -8252,6 +8262,11 @@ public final class PBCommon {
             case 24: {
               bitField0_ |= 0x00000004;
               alterType_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              valid_ = input.readBool();
               break;
             }
           }
@@ -8324,6 +8339,21 @@ public final class PBCommon {
       return alterType_;
     }
 
+    public static final int VALID_FIELD_NUMBER = 4;
+    private boolean valid_;
+    /**
+     * <code>optional bool valid = 4;</code>
+     */
+    public boolean hasValid() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional bool valid = 4;</code>
+     */
+    public boolean getValid() {
+      return valid_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -8345,6 +8375,9 @@ public final class PBCommon {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, alterType_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, valid_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -8364,6 +8397,10 @@ public final class PBCommon {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, alterType_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, valid_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8397,6 +8434,11 @@ public final class PBCommon {
         result = result && (getAlterType()
             == other.getAlterType());
       }
+      result = result && (hasValid() == other.hasValid());
+      if (hasValid()) {
+        result = result && (getValid()
+            == other.getValid());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -8420,6 +8462,11 @@ public final class PBCommon {
       if (hasAlterType()) {
         hash = (37 * hash) + ALTERTYPE_FIELD_NUMBER;
         hash = (53 * hash) + getAlterType();
+      }
+      if (hasValid()) {
+        hash = (37 * hash) + VALID_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getValid());
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -8545,6 +8592,8 @@ public final class PBCommon {
         bitField0_ = (bitField0_ & ~0x00000002);
         alterType_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        valid_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -8581,6 +8630,10 @@ public final class PBCommon {
           to_bitField0_ |= 0x00000004;
         }
         result.alterType_ = alterType_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.valid_ = valid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8631,6 +8684,9 @@ public final class PBCommon {
         }
         if (other.hasAlterType()) {
           setAlterType(other.getAlterType());
+        }
+        if (other.hasValid()) {
+          setValid(other.getValid());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8752,6 +8808,38 @@ public final class PBCommon {
       public Builder clearAlterType() {
         bitField0_ = (bitField0_ & ~0x00000004);
         alterType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean valid_ ;
+      /**
+       * <code>optional bool valid = 4;</code>
+       */
+      public boolean hasValid() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional bool valid = 4;</code>
+       */
+      public boolean getValid() {
+        return valid_;
+      }
+      /**
+       * <code>optional bool valid = 4;</code>
+       */
+      public Builder setValid(boolean value) {
+        bitField0_ |= 0x00000008;
+        valid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool valid = 4;</code>
+       */
+      public Builder clearValid() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        valid_ = false;
         onChanged();
         return this;
       }
@@ -9745,15 +9833,6 @@ public final class PBCommon {
      * <code>optional int64 number = 2;</code>
      */
     long getNumber();
-
-    /**
-     * <code>optional int32 itemType = 3;</code>
-     */
-    boolean hasItemType();
-    /**
-     * <code>optional int32 itemType = 3;</code>
-     */
-    int getItemType();
   }
   /**
    * Protobuf type {@code StuffProto}
@@ -9769,7 +9848,6 @@ public final class PBCommon {
     private StuffProto() {
       itemID_ = 0;
       number_ = 0L;
-      itemType_ = 0;
     }
 
     @java.lang.Override
@@ -9808,11 +9886,6 @@ public final class PBCommon {
             case 16: {
               bitField0_ |= 0x00000002;
               number_ = input.readInt64();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              itemType_ = input.readInt32();
               break;
             }
           }
@@ -9870,21 +9943,6 @@ public final class PBCommon {
       return number_;
     }
 
-    public static final int ITEMTYPE_FIELD_NUMBER = 3;
-    private int itemType_;
-    /**
-     * <code>optional int32 itemType = 3;</code>
-     */
-    public boolean hasItemType() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int32 itemType = 3;</code>
-     */
-    public int getItemType() {
-      return itemType_;
-    }
-
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -9903,9 +9961,6 @@ public final class PBCommon {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(2, number_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, itemType_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -9921,10 +9976,6 @@ public final class PBCommon {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, number_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, itemType_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -9953,11 +10004,6 @@ public final class PBCommon {
         result = result && (getNumber()
             == other.getNumber());
       }
-      result = result && (hasItemType() == other.hasItemType());
-      if (hasItemType()) {
-        result = result && (getItemType()
-            == other.getItemType());
-      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -9977,10 +10023,6 @@ public final class PBCommon {
         hash = (37 * hash) + NUMBER_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getNumber());
-      }
-      if (hasItemType()) {
-        hash = (37 * hash) + ITEMTYPE_FIELD_NUMBER;
-        hash = (53 * hash) + getItemType();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -10104,8 +10146,6 @@ public final class PBCommon {
         bitField0_ = (bitField0_ & ~0x00000001);
         number_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        itemType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -10138,10 +10178,6 @@ public final class PBCommon {
           to_bitField0_ |= 0x00000002;
         }
         result.number_ = number_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.itemType_ = itemType_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10189,9 +10225,6 @@ public final class PBCommon {
         }
         if (other.hasNumber()) {
           setNumber(other.getNumber());
-        }
-        if (other.hasItemType()) {
-          setItemType(other.getItemType());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -10281,38 +10314,6 @@ public final class PBCommon {
       public Builder clearNumber() {
         bitField0_ = (bitField0_ & ~0x00000002);
         number_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int itemType_ ;
-      /**
-       * <code>optional int32 itemType = 3;</code>
-       */
-      public boolean hasItemType() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int32 itemType = 3;</code>
-       */
-      public int getItemType() {
-        return itemType_;
-      }
-      /**
-       * <code>optional int32 itemType = 3;</code>
-       */
-      public Builder setItemType(int value) {
-        bitField0_ |= 0x00000004;
-        itemType_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 itemType = 3;</code>
-       */
-      public Builder clearItemType() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        itemType_ = 0;
         onChanged();
         return this;
       }
@@ -15717,28 +15718,28 @@ public final class PBCommon {
       "to\022\013\n\003key\030\001 \001(\002\022\020\n\010intValue\030\002 \001(\005\022\021\n\tlon" +
       "gValue\030\003 \001(\003\022\022\n\nfloatValue\030\004 \001(\002\022\023\n\013doub" +
       "leValue\030\005 \001(\001\022\024\n\014booleanValue\030\006 \001(\010\022\023\n\013s",
-      "tringValue\030\007 \001(\t\022\022\n\nbytesValue\030\010 \001(\014\"C\n\016" +
+      "tringValue\030\007 \001(\t\022\022\n\nbytesValue\030\010 \001(\014\"R\n\016" +
       "TradeItemProto\022\016\n\006itemID\030\001 \001(\005\022\016\n\006number" +
-      "\030\002 \001(\003\022\021\n\talterType\030\003 \001(\005\"N\n\nTradeProto\022" +
-      "\016\n\006action\030\001 \001(\005\022\035\n\004item\030\002 \003(\0132\017.TradeIte" +
-      "mProto\022\021\n\ttradeType\030\003 \001(\005\">\n\nStuffProto\022" +
-      "\016\n\006itemID\030\001 \001(\005\022\016\n\006number\030\002 \001(\003\022\020\n\010itemT" +
-      "ype\030\003 \001(\005\"8\n\rTimeTaskProto\022\022\n\nexecutTime" +
-      "\030\001 \001(\004\022\023\n\013handlerList\030\002 \003(\t\"l\n\021TaskRecei" +
-      "verProto\022\020\n\010playerID\030\001 \001(\003\022\r\n\005group\030\002 \001(" +
-      "\t\022\027\n\017lastHandlerTime\030\003 \001(\004\022\035\n\025actualLast",
-      "HandlerTime\030\004 \001(\004\"O\n\024SchedulerBackupProt" +
-      "o\022\020\n\010stopTime\030\001 \001(\003\022%\n\rtimeTaskQueue\030\002 \003" +
-      "(\0132\016.TimeTaskProto\"\207\001\n\025CapacitySupplierP" +
-      "roto\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\020\n\010play" +
-      "erID\030\003 \001(\003\022\014\n\004type\030\004 \001(\005\022#\n\013capacityMap\030" +
-      "\005 \003(\0132\016.IntEntryProto\022\r\n\005endAt\030\006 \001(\003\">\n\021" +
-      "CapacityGoalProto\022)\n\tsuppliers\030\004 \003(\0132\026.C" +
-      "apacitySupplierProto\"v\n\025CapacityGoalItem" +
-      "Proto\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\020\n\010pla" +
-      "yerID\030\003 \001(\003\022/\n\017dependSuppliers\030\004 \003(\0132\026.C",
-      "apacitySupplierProtoB\027\n\025com.tny.game.pro" +
-      "tobuf"
+      "\030\002 \001(\003\022\021\n\talterType\030\003 \001(\005\022\r\n\005valid\030\004 \001(\010" +
+      "\"N\n\nTradeProto\022\016\n\006action\030\001 \001(\005\022\035\n\004item\030\002" +
+      " \003(\0132\017.TradeItemProto\022\021\n\ttradeType\030\003 \001(\005" +
+      "\",\n\nStuffProto\022\016\n\006itemID\030\001 \001(\005\022\016\n\006number" +
+      "\030\002 \001(\003\"8\n\rTimeTaskProto\022\022\n\nexecutTime\030\001 " +
+      "\001(\004\022\023\n\013handlerList\030\002 \003(\t\"l\n\021TaskReceiver" +
+      "Proto\022\020\n\010playerID\030\001 \001(\003\022\r\n\005group\030\002 \001(\t\022\027" +
+      "\n\017lastHandlerTime\030\003 \001(\004\022\035\n\025actualLastHan",
+      "dlerTime\030\004 \001(\004\"O\n\024SchedulerBackupProto\022\020" +
+      "\n\010stopTime\030\001 \001(\003\022%\n\rtimeTaskQueue\030\002 \003(\0132" +
+      "\016.TimeTaskProto\"\207\001\n\025CapacitySupplierProt" +
+      "o\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\020\n\010playerI" +
+      "D\030\003 \001(\003\022\014\n\004type\030\004 \001(\005\022#\n\013capacityMap\030\005 \003" +
+      "(\0132\016.IntEntryProto\022\r\n\005endAt\030\006 \001(\003\">\n\021Cap" +
+      "acityGoalProto\022)\n\tsuppliers\030\004 \003(\0132\026.Capa" +
+      "citySupplierProto\"v\n\025CapacityGoalItemPro" +
+      "to\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\020\n\010player" +
+      "ID\030\003 \001(\003\022/\n\017dependSuppliers\030\004 \003(\0132\026.Capa",
+      "citySupplierProtoB\027\n\025com.tny.game.protob" +
+      "uf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -15799,7 +15800,7 @@ public final class PBCommon {
     internal_static_TradeItemProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TradeItemProto_descriptor,
-        new java.lang.String[] { "ItemID", "Number", "AlterType", });
+        new java.lang.String[] { "ItemID", "Number", "AlterType", "Valid", });
     internal_static_TradeProto_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_TradeProto_fieldAccessorTable = new
@@ -15811,7 +15812,7 @@ public final class PBCommon {
     internal_static_StuffProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_StuffProto_descriptor,
-        new java.lang.String[] { "ItemID", "Number", "ItemType", });
+        new java.lang.String[] { "ItemID", "Number", });
     internal_static_TimeTaskProto_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_TimeTaskProto_fieldAccessorTable = new

@@ -1,6 +1,9 @@
 package com.tny.game.base.module;
 
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.Model;
+
+import java.util.Set;
 
 public interface FeatureModel extends Model, Comparable<FeatureModel> {
 
@@ -15,6 +18,11 @@ public interface FeatureModel extends Model, Comparable<FeatureModel> {
     boolean isEffect();
 
     int getPriority();
+
+    @Override
+    default Set<Object> tags() {
+        return ImmutableSet.of();
+    }
 
     @Override
     default int compareTo(FeatureModel other) {

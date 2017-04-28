@@ -1,15 +1,14 @@
 package com.tny.game.base.item.xml;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.AbstractItemModel;
 import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.ItemType;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.utils.collection.EmptyImmutableList;
-import com.tny.game.common.utils.collection.EmptyImmutableMap;
-import com.tny.game.common.utils.collection.EmptyImmutableSet;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,22 +46,26 @@ public abstract class XMLItemModel extends AbstractItemModel {
         if (this.init)
             return;
         if (this.behaviorPlanList == null)
-            this.behaviorPlanList = new EmptyImmutableList<>();
+            this.behaviorPlanList = ImmutableList.of();
         if (this.behaviorPlanMap == null)
-            this.behaviorPlanMap = new EmptyImmutableMap<>();
+            this.behaviorPlanMap = ImmutableMap.of();
 
         if (this.attrAliasSet == null)
-            this.attrAliasSet = new EmptyImmutableSet<>();
+            this.attrAliasSet = ImmutableSet.of();
 
         if (this.abilityMap == null)
-            this.abilityMap = new EmptyImmutableMap<>();
+            this.abilityMap = ImmutableMap.of();
 
         if (this.actionBehaviorPlanMap == null)
-            this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
+            this.actionBehaviorPlanMap = ImmutableMap.of();
 
-        this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
-        this.behaviorPlanList = Collections.unmodifiableList(this.behaviorPlanList);
-        this.abilityMap = Collections.unmodifiableMap(this.abilityMap);
+        if (this.tags == null)
+            this.tags = ImmutableSet.of();
+
+        this.attrAliasSet = ImmutableSet.copyOf(this.attrAliasSet);
+        this.behaviorPlanList = ImmutableList.copyOf(this.behaviorPlanList);
+        this.abilityMap = ImmutableMap.copyOf(this.abilityMap);
+        this.tags = ImmutableSet.copyOf(this.tags);
 
         for (XMLBehaviorPlan behaviorPlan : this.behaviorPlanList) {
             behaviorPlan.init(this, itemExplorer, itemModelExplorer);
@@ -70,8 +73,8 @@ public abstract class XMLItemModel extends AbstractItemModel {
             for (Action action : behaviorPlan.getActionPlanMap().keySet())
                 this.actionBehaviorPlanMap.put(action, behaviorPlan);
         }
-        this.behaviorPlanMap = Collections.unmodifiableMap(this.behaviorPlanMap);
-        this.actionBehaviorPlanMap = Collections.unmodifiableMap(this.actionBehaviorPlanMap);
+        this.behaviorPlanMap = ImmutableMap.copyOf(this.behaviorPlanMap);
+        this.actionBehaviorPlanMap = ImmutableMap.copyOf(this.actionBehaviorPlanMap);
         this.init = true;
         for (String alias : this.attrAliasSet) {
             AliasCollectUtils.addAlias(alias);

@@ -1,6 +1,10 @@
 package com.tny.game.base.item;
 
-public interface Any<M extends Model> extends Identifiable {
+import com.tny.game.common.tag.Taggable;
+
+import java.util.Set;
+
+public interface Any<M extends Model> extends Identifiable, Taggable {
 
     /**
      * 获取对象ID
@@ -30,4 +34,8 @@ public interface Any<M extends Model> extends Identifiable {
      */
     M getModel();
 
+    @Override
+    default Set<Object> tags() {
+        return this.getModel().tags();
+    }
 }

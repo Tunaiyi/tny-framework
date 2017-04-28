@@ -12,7 +12,6 @@ import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.ItemTypes;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,10 +31,10 @@ public class AwardDTO implements Serializable {
     @JsonProperty
     private int itemID;
 
-    @VarDoc("条件相关的ItemType")
-    @ProtoExField(2)
-    @JsonProperty
-    private int itemType;
+    // @VarDoc("条件相关的ItemType")
+    // @ProtoExField(2)
+    // @JsonProperty
+    // private int itemType;
 
     @VarDoc("条件相关的数量")
     @ProtoExField(3)
@@ -86,7 +85,6 @@ public class AwardDTO implements Serializable {
     public static AwardDTO dealedItem2DTO(DealedItem<?> dealedItem) {
         AwardDTO dto = new AwardDTO();
         dto.itemID = dealedItem.getItemModel().getID();
-        dto.itemType = ItemTypes.ofItemID(dto.itemID).getID();
         dto.number = dealedItem.getNumber().longValue();
         dto.valid = true;
         return dto;
@@ -99,7 +97,6 @@ public class AwardDTO implements Serializable {
     public static AwardDTO attr2DTO(int itemID, ItemType type, int number, boolean valid) {
         AwardDTO dto = new AwardDTO();
         dto.itemID = itemID;
-        dto.itemType = type.getID();
         dto.number = number;
         dto.valid = valid;
         return dto;
@@ -111,10 +108,6 @@ public class AwardDTO implements Serializable {
 
     public int getItemID() {
         return itemID;
-    }
-
-    public int getItemType() {
-        return itemType;
     }
 
     public long getNumber() {

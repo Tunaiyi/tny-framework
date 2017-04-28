@@ -16,9 +16,11 @@ public class CostStuffDTO {
     @VarDoc("id")
     @ProtoExField(3)
     private long id;
+
     @VarDoc("itemID")
     @ProtoExField(1)
     private int itemID;
+
     @VarDoc("数量")
     @ProtoExField(2)
     private int number;

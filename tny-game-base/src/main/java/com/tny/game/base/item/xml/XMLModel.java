@@ -1,6 +1,9 @@
 package com.tny.game.base.item.xml;
 
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.Model;
+
+import java.util.Set;
 
 /**
  * 抽象xml映射事物模型
@@ -10,6 +13,8 @@ import com.tny.game.base.item.Model;
 public abstract class XMLModel implements Model {
 
     protected boolean init = false;
+
+    protected Set<Object> tags;
 
     protected String currentFormula(String alias) {
         return null;
@@ -21,6 +26,13 @@ public abstract class XMLModel implements Model {
         }
         this.doInit();
         init = true;
+        if (this.tags == null)
+            this.tags = ImmutableSet.of();
+    }
+
+    @Override
+    public Set<Object> tags() {
+        return tags;
     }
 
     protected abstract void doInit();

@@ -87,6 +87,7 @@ message TradeItemProto {
     optional int32 itemID = 1;
     optional int64 number = 2;
     optional int32 alterType = 3;
+    optional bool valid = 4;
 }
 
 message TradeProto {
@@ -98,7 +99,6 @@ message TradeProto {
 message StuffProto {
     optional int32 itemID = 1;
     optional int64 number = 2;
-    optional int32 itemType = 3;
 }
 
 message TimeTaskProto {

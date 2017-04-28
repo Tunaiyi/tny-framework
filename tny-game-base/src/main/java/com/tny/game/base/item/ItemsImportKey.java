@@ -39,5 +39,9 @@ public interface ItemsImportKey {
      * 计算是否符合消耗物品的条件
      */
     String FX_FORMULA = CURRENT_VALUE + " >= " + EXPECT_VALUE;
+    /**
+     * 内容
+     */
+    String DEMAIND_PARAMS = "params";
 
 }

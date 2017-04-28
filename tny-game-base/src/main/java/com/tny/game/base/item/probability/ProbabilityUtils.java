@@ -24,6 +24,64 @@ public interface ProbabilityUtils {
                 .collect(Collectors.toList());
     }
 
+    class ProbabilityEntry<P extends Probability> {
+        private int probability;
+        private P value;
+
+        private ProbabilityEntry(P value, int probability) {
+            this.probability = probability;
+            this.value = value;
+        }
+
+        public int getProbability() {
+            return probability;
+        }
+
+        public P getValue() {
+            return value;
+        }
+    }
+
+    static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawWeightsNoRepeat(G group, Map<String, Object> attributes) {
+        List<P> probabilities = group.probabilities();
+        if (probabilities.isEmpty())
+            return ImmutableList.of();
+        int total = 0;
+        List<ProbabilityEntry<P>> entries = new ArrayList<>();
+        for (P p : probabilities) {
+            if (p.isEffect(attributes))
+                continue;
+            int probability = p.getProbability(attributes);
+            if (probability > 0) {
+                total += probability;
+                entries.add(new ProbabilityEntry<>(p, probability));
+            }
+        }
+        if (total == 0)
+            return ImmutableList.of();
+        int number = group.getNumber(attributes);
+        List<P> values = new ArrayList<>();
+        if (number <= 0)
+            return ImmutableList.of();
+        Random random = ThreadLocalRandom.current();
+        while (values.size() != number && !entries.isEmpty()) {
+            int index = 0;
+            ProbabilityEntry<P> gain = null;
+            int rand = random.nextInt(total);
+            for (ProbabilityEntry<P> entry : entries) {
+                if (index <= rand && rand < index + entry.getProbability()) {
+                    gain = entry;
+                    values.add(gain.getValue());
+                }
+                index += entry.getProbability();
+            }
+            if (gain != null)
+                entries.remove(gain);
+        }
+        return values;
+    }
+
+
     static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawWeights(G group, Map<String, Object> attributes) {
         List<P> probabilities = group.probabilities();
         if (probabilities.isEmpty())

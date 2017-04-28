@@ -8,6 +8,8 @@ import com.tny.game.base.item.probability.Probability;
 
 import java.util.Map;
 
+import static com.tny.game.base.item.ItemsImportKey.*;
+
 /**
  * 奖励
  *
@@ -54,9 +56,10 @@ public interface Award extends Probability {
     default TradeItem<ItemModel> createTradeItem(boolean valid, ItemModel awardModel, Map<String, Object> attributeMap) {
         AlterType type = this.getAlterType();
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
+        attributeMap.put(DEMAIND_PARAMS, paramMap);
         int number = this.countNumber(awardModel, attributeMap);
         if (number > 0) {
-            return new SimpleTradeItem<>(awardModel, type == null ? AlterType.IGNORE : type, number, valid, paramMap);
+            return new SimpleTradeItem<>(awardModel, number, type == null ? AlterType.IGNORE : type, valid, paramMap);
         } else {
             return null;
         }

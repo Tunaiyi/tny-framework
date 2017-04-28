@@ -47,7 +47,7 @@ public class SimpleCostPlan extends AbstractCostPlan {
         List<TradeItem<ItemModel>> itemList = new ArrayList<TradeItem<ItemModel>>();
         List<DemandResult> demandResultList = this.countDemandResultList(playerID, this.costList, attributeMap);
         for (DemandResult result : demandResultList) {
-            itemList.add(new SimpleTradeItem<ItemModel>(result.getItemModel(), this.alertType, result.getExpectValue(Number.class).intValue(), result.getParamMap()));
+            itemList.add(new SimpleTradeItem<ItemModel>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), this.alertType, result.getParamMap()));
         }
         return itemList;
     }

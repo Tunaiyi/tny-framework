@@ -1,13 +1,13 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.probability.AllRandomCreatorFactory;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
+import com.tny.game.base.item.probability.AllRandomCreatorFactory;
+import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
@@ -125,6 +125,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     }
 
     public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
+        if (this.drawNumber == null)
+            return -1;
         Integer drawNumber = this.drawNumber.createFormula().putAll(attributeMap).execute(Integer.class);
         if (drawNumber == null)
             drawNumber = -1;

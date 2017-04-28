@@ -1,20 +1,22 @@
 package com.tny.game.base.item;
 
-public interface Model {
+import com.tny.game.common.tag.Taggable;
+
+public interface Model extends Taggable {
 
     /**
      * 事物ID
      *
      * @return
      */
-    public int getID();
+    int getID();
 
     /**
      * 获取别名
      *
      * @return
      */
-    public String getAlias();
+    String getAlias();
 
     /**
      * 获取描述

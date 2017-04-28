@@ -80,6 +80,8 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     protected volatile FormulaHolder currentFormulaHolder;
 
+    protected Set<Object> tags;
+
     @Override
     public int getID() {
         return this.id;
@@ -271,6 +273,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return this.doTryToDo(item.getPlayerID(), item, action, award, true, attributes);
     }
 
+    @Override
+    public Set<Object> tags() {
+        return tags;
+    }
 
     //	@Override
     //	public List<DemandResult> countDemandResult(Item<?> item, Action action, Object... attributes) {

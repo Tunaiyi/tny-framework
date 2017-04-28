@@ -12,7 +12,6 @@ import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.ItemTypes;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -31,11 +30,6 @@ public class StuffDTO implements Serializable {
     @ProtoExField(1)
     @JsonProperty
     private int itemID;
-
-    @VarDoc("条件相关的ItemType")
-    @ProtoExField(2)
-    @JsonProperty
-    private int itemType;
 
     @VarDoc("条件相关的数量")
     @ProtoExField(3)
@@ -79,7 +73,6 @@ public class StuffDTO implements Serializable {
     public static StuffDTO dealedItem2DTO(DealedItem<?> dealedItem) {
         StuffDTO dto = new StuffDTO();
         dto.itemID = dealedItem.getItemModel().getID();
-        dto.itemType = ItemTypes.ofItemID(dto.itemID).getID();
         dto.number = dealedItem.getNumber().longValue();
         return dto;
     }
@@ -87,7 +80,6 @@ public class StuffDTO implements Serializable {
     public static StuffDTO attr2DTO(int itemID, ItemType type, long number) {
         StuffDTO dto = new StuffDTO();
         dto.itemID = itemID;
-        dto.itemType = type.getID();
         dto.number = number;
         return dto;
     }
@@ -95,17 +87,12 @@ public class StuffDTO implements Serializable {
     public static StuffDTO attr2DTO(int itemID, int type, long number) {
         StuffDTO dto = new StuffDTO();
         dto.itemID = itemID;
-        dto.itemType = type;
         dto.number = number;
         return dto;
     }
 
     public int getItemID() {
         return itemID;
-    }
-
-    public int getItemType() {
-        return itemType;
     }
 
     public long getNumber() {

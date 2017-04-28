@@ -22,7 +22,7 @@ public abstract class AbstractAward implements Award {
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
         int number = this.countNumber(awardModel, attributeMap);
         if (number > 0) {
-            return new SimpleTradeItem<>(awardModel, type == null ? AlterType.IGNORE : type, number, valid, paramMap);
+            return new SimpleTradeItem<>(awardModel, number, type == null ? AlterType.IGNORE : type, valid, paramMap);
         } else {
             return null;
         }
