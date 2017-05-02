@@ -244,6 +244,9 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("param", DemandParam.class);
 
         xStream.alias("entry", Entry.class);
+        xStream.alias("tag", String.class);
+
+
 
         this.initXStream(xStream);
 

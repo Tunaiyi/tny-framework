@@ -43,8 +43,10 @@ public class SimpleDataPacketEncoder implements DataPacketEncoder {
 
             if (message.getMode() == MessageMode.PING) {
                 out.writeByte(CoderContent.PING_OPTION);
+                out.writeInt(0); // BodySize
             } else if (message.getMode() == MessageMode.PONG) {
                 out.writeByte(CoderContent.PONG_OPTION);
+                out.writeInt(0); // BodySize
             } else {
                 boolean response = Message.class.isInstance(msg);
                 data = this.coder.doEncode(msg);

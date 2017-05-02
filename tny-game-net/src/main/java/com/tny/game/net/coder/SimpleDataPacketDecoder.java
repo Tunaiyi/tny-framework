@@ -21,7 +21,7 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
     @Override
     public final Object decodeObject(final ByteBuf buffer) throws Exception {
 
-        if (buffer.readableBytes() < CoderContent.FRAME_MAGIC.length + CoderContent.MESSAGE_LENGTH_SIZE + CoderContent.OPTION_SIZE)
+        if (buffer.readableBytes() < CoderContent.FRAME_MAGIC.length + CoderContent.OPTION_SIZE + CoderContent.MESSAGE_LENGTH_SIZE)
             return null;
         // 检验消息头
         if (DECODER_LOG.isDebugEnabled())
@@ -35,6 +35,10 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
             DECODER_LOG.debug("read option");
         final byte option = buffer.readByte();
 
+        if (DECODER_LOG.isDebugEnabled())
+            DECODER_LOG.debug("read body size");
+        final int messageBodySize = buffer.readInt();
+
         if ((option & CoderContent.PING_OPTION) > 0) {
             return DetectMessage.ping();
         }
@@ -42,10 +46,6 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
         if ((option & CoderContent.PONG_OPTION) > 0) {
             return DetectMessage.pong();
         }
-
-        if (DECODER_LOG.isDebugEnabled())
-            DECODER_LOG.debug("read body size");
-        final int messageBodySize = buffer.readInt();
 
         // 读取请求信息体
         if (buffer.readableBytes() < messageBodySize) {

@@ -8,6 +8,7 @@ import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.utils.collection.EmptyImmutableMap;
 
 import java.util.List;
 
@@ -47,17 +48,12 @@ public abstract class XMLItemModel extends AbstractItemModel {
             return;
         if (this.behaviorPlanList == null)
             this.behaviorPlanList = ImmutableList.of();
-        if (this.behaviorPlanMap == null)
-            this.behaviorPlanMap = ImmutableMap.of();
 
         if (this.attrAliasSet == null)
             this.attrAliasSet = ImmutableSet.of();
 
         if (this.abilityMap == null)
             this.abilityMap = ImmutableMap.of();
-
-        if (this.actionBehaviorPlanMap == null)
-            this.actionBehaviorPlanMap = ImmutableMap.of();
 
         if (this.tags == null)
             this.tags = ImmutableSet.of();
@@ -66,6 +62,13 @@ public abstract class XMLItemModel extends AbstractItemModel {
         this.behaviorPlanList = ImmutableList.copyOf(this.behaviorPlanList);
         this.abilityMap = ImmutableMap.copyOf(this.abilityMap);
         this.tags = ImmutableSet.copyOf(this.tags);
+
+
+        if (this.actionBehaviorPlanMap == null)
+            this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
+
+        if (this.behaviorPlanMap == null)
+            this.behaviorPlanMap = new EmptyImmutableMap<>();
 
         for (XMLBehaviorPlan behaviorPlan : this.behaviorPlanList) {
             behaviorPlan.init(this, itemExplorer, itemModelExplorer);
