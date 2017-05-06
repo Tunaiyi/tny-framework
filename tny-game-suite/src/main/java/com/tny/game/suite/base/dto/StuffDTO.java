@@ -3,7 +3,6 @@ package com.tny.game.suite.base.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.base.item.DealedItem;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.TradeType;
@@ -77,14 +76,7 @@ public class StuffDTO implements Serializable {
         return dto;
     }
 
-    public static StuffDTO attr2DTO(int itemID, ItemType type, long number) {
-        StuffDTO dto = new StuffDTO();
-        dto.itemID = itemID;
-        dto.number = number;
-        return dto;
-    }
-
-    public static StuffDTO attr2DTO(int itemID, int type, long number) {
+    public static StuffDTO attr2DTO(int itemID, long number) {
         StuffDTO dto = new StuffDTO();
         dto.itemID = itemID;
         dto.number = number;

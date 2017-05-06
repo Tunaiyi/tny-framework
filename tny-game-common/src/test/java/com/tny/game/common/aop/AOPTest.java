@@ -61,26 +61,10 @@ public class AOPTest {
     public void testPlayer() throws InstantiationException, IllegalAccessException {
         Player player = new Player();
         Player playerProxy = AOPerBuilder.newBuilder(Player.class)
-                .setAfterReturningAdvice(new AfterReturningAdvice() {
-
-                    @Override
-                    public void afterReturning(Object returnValue, Method method, Object[] args, Object target) {
-                        System.out.println(target.getClass() + " -- afterReturning -- " + method + " resut = " + returnValue);
-                    }
-                }).setBeforeAdvice(new BeforeAdvice() {
-
-                    @Override
-                    public void before(Method method, Object[] args, Object target) throws Throwable {
-                        System.out.println(target.getClass() + " -- before -- " + method);
-                    }
-                }).setThrowsAdvice(new ThrowsAdvice() {
-
-                    @Override
-                    public void afterThrowing(Method method, Object[] args, Object target, Throwable cause) {
-                        System.out.println(target.getClass() + " -- afterThrowing -- " + method + "by cause - " + cause);
-
-                    }
-                }).build();
+                .setAfterReturningAdvice((returnValue, method, args, target) -> System.out.println(target.getClass() + " -- afterReturning -- " + method + " resut = " + returnValue))
+                .setBeforeAdvice((method, args, target) -> System.out.println(target.getClass() + " -- before -- " + method))
+                .setThrowsAdvice((method, args, target, cause) -> System.out.println(target.getClass() + " -- afterThrowing -- " + method + "by cause - " + cause))
+                .build();
         playerProxy.callName();
         playerProxy.getName();
         playerProxy.callProtected();

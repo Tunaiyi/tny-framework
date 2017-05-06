@@ -1,5 +1,7 @@
 package com.tny.game.suite.base.dto;
 
+import com.tny.game.doc.annotation.DTODoc;
+import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
@@ -10,13 +12,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by xiaoqing on 2016/9/2.
- */
+@DTODoc("交易物品列表DTO")
 @ProtoEx(SuiteProtoIDs.TRADE_STUFF_LIST_DTO)
 public class TradeStuffListDTO {
 
     @ProtoExField(1)
+    @VarDoc("交易物品列表")
     private List<TradeStuffDTO> stuffList;
 
     public List<TradeStuffDTO> getStuffList() {

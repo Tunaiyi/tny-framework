@@ -108,7 +108,7 @@ public enum AlterType {
             Number countNumber, currentNum;
             countNumber = currentNum = number;
             countNumber = sub(countNumber, alertNum);
-            countNumber = less(countNumber, 0) ? as(0, number) : countNumber;
+            countNumber = less(countNumber, 0) ? become(0, number) : countNumber;
             return sub(currentNum, countNumber);
         }
 
@@ -119,7 +119,7 @@ public enum AlterType {
             countNumber = add(countNumber, alertNum);
             countNumber = greater(limit, CountableStuff.UNLIMITED) && greater(countNumber, limit) ? limit : countNumber;
             Number result = sub(countNumber, number);
-            return lessEqual(result, 0) ? as(0, number) : result;
+            return lessEqual(result, 0) ? become(0, number) : result;
         }
 
         @Override

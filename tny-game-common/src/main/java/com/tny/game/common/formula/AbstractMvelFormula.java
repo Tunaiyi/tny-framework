@@ -1,5 +1,6 @@
 package com.tny.game.common.formula;
 
+import com.tny.game.number.NumberUtils;
 import org.mvel2.ParserContext;
 
 import java.lang.reflect.Method;
@@ -16,6 +17,7 @@ public abstract class AbstractMvelFormula extends AbstractFormula {
     static {
         Collections.addAll(methodSet, Math.class.getMethods());
         Collections.addAll(methodSet, MathEx.class.getMethods());
+        Collections.addAll(methodSet, NumberUtils.class.getDeclaredMethods());
         Collections.addAll(methodSet, DateTimeEx.class.getMethods());
     }
 

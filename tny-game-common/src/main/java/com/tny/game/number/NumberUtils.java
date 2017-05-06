@@ -8,7 +8,7 @@ import com.tny.game.LogUtils;
 public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
 
     @SuppressWarnings("unchecked")
-    public static <N extends Number> N as(Number source, N target) {
+    public static <N extends Number> N become(Number source, N target) {
         Number value;
         if (target instanceof Integer)
             value = source.intValue();
@@ -58,18 +58,18 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
-            return as(one.intValue() + other.intValue(), one);
+            return become(one.intValue() + other.intValue(), one);
         if (numClass.isAssignableFrom(Long.class))
-            return as(one.longValue() + other.longValue(), one);
+            return become(one.longValue() + other.longValue(), one);
         if (numClass.isAssignableFrom(Float.class))
-            return as(one.floatValue() + other.floatValue(), one);
+            return become(one.floatValue() + other.floatValue(), one);
         if (numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() + other.doubleValue(), one);
+            return become(one.doubleValue() + other.doubleValue(), one);
         if (numClass.isAssignableFrom(Short.class))
-            return as(one.shortValue() + other.shortValue(), one);
+            return become(one.shortValue() + other.shortValue(), one);
         if (numClass.isAssignableFrom(Byte.class))
-            return as(one.byteValue() + other.byteValue(), one);
-        return as(one.doubleValue() + other.doubleValue(), one);
+            return become(one.byteValue() + other.byteValue(), one);
+        return become(one.doubleValue() + other.doubleValue(), one);
     }
 
     public static <N extends Number> N sub(N one, N other) {
@@ -79,18 +79,18 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
-            return as(one.intValue() - other.intValue(), one);
+            return become(one.intValue() - other.intValue(), one);
         if (numClass.isAssignableFrom(Long.class))
-            return as(one.longValue() - other.longValue(), one);
+            return become(one.longValue() - other.longValue(), one);
         if (numClass.isAssignableFrom(Float.class))
-            return as(one.floatValue() - other.floatValue(), one);
+            return become(one.floatValue() - other.floatValue(), one);
         if (numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() - other.doubleValue(), one);
+            return become(one.doubleValue() - other.doubleValue(), one);
         if (numClass.isAssignableFrom(Short.class))
-            return as(one.shortValue() - other.shortValue(), one);
+            return become(one.shortValue() - other.shortValue(), one);
         if (numClass.isAssignableFrom(Byte.class))
-            return as(one.byteValue() - other.byteValue(), one);
-        return as(one.doubleValue() - other.doubleValue(), one);
+            return become(one.byteValue() - other.byteValue(), one);
+        return become(one.doubleValue() - other.doubleValue(), one);
     }
 
     public static <N extends Number> N multiply(N one, N other) {
@@ -100,18 +100,40 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
-            return as(one.intValue() * other.intValue(), one);
+            return become(one.intValue() * other.intValue(), one);
         if (numClass.isAssignableFrom(Long.class))
-            return as(one.longValue() * other.longValue(), one);
+            return become(one.longValue() * other.longValue(), one);
         if (numClass.isAssignableFrom(Float.class))
-            return as(one.floatValue() * other.floatValue(), one);
+            return become(one.floatValue() * other.floatValue(), one);
         if (numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() * other.doubleValue(), one);
+            return become(one.doubleValue() * other.doubleValue(), one);
         if (numClass.isAssignableFrom(Short.class))
-            return as(one.shortValue() * other.shortValue(), one);
+            return become(one.shortValue() * other.shortValue(), one);
         if (numClass.isAssignableFrom(Byte.class))
-            return as(one.byteValue() * other.byteValue(), one);
-        return as(one.doubleValue() * other.doubleValue(), one);
+            return become(one.byteValue() * other.byteValue(), one);
+        return become(one.doubleValue() * other.doubleValue(), one);
+    }
+
+    public static <N extends Number> double divideAsDouble(N one, N other) {
+        if (one == null)
+            return other.floatValue();
+        if (other == null)
+            return one.floatValue();
+        Class<?> numClass = findClass(one.getClass(), other.getClass());
+        return as(one.doubleValue() / other.doubleValue(), Double.class);
+    }
+
+    public static <N extends Number> float divideAsFloat(N one, N other) {
+        if (one == null)
+            return other.floatValue();
+        if (other == null)
+            return one.floatValue();
+        Class<?> numClass = findClass(one.getClass(), other.getClass());
+        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class))
+            return as(one.floatValue() / other.floatValue(), Float.class);
+        if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
+            return as(one.doubleValue() / other.doubleValue(), Float.class);
+        return as(one.doubleValue() / other.doubleValue(), Float.class);
     }
 
     public static <N extends Number> N divide(N one, N other) {
@@ -121,18 +143,18 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
-            return as(one.intValue() / other.intValue(), one);
+            return become(one.intValue() / other.intValue(), one);
         if (numClass.isAssignableFrom(Long.class))
-            return as(one.longValue() / other.longValue(), one);
+            return become(one.longValue() / other.longValue(), one);
         if (numClass.isAssignableFrom(Float.class))
-            return as(one.floatValue() / other.floatValue(), one);
+            return become(one.floatValue() / other.floatValue(), one);
         if (numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() / other.doubleValue(), one);
+            return become(one.doubleValue() / other.doubleValue(), one);
         if (numClass.isAssignableFrom(Short.class))
-            return as(one.shortValue() / other.shortValue(), one);
+            return become(one.shortValue() / other.shortValue(), one);
         if (numClass.isAssignableFrom(Byte.class))
-            return as(one.byteValue() / other.byteValue(), one);
-        return as(one.doubleValue() / other.doubleValue(), one);
+            return become(one.byteValue() / other.byteValue(), one);
+        return become(one.doubleValue() / other.doubleValue(), one);
     }
 
     public static <N extends Number> N mod(N one, N other) {
@@ -142,18 +164,18 @@ public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
             return one;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
-            return as(one.intValue() % other.intValue(), one);
+            return become(one.intValue() % other.intValue(), one);
         if (numClass.isAssignableFrom(Long.class))
-            return as(one.longValue() % other.longValue(), one);
+            return become(one.longValue() % other.longValue(), one);
         if (numClass.isAssignableFrom(Float.class))
-            return as(one.floatValue() % other.floatValue(), one);
+            return become(one.floatValue() % other.floatValue(), one);
         if (numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() % other.doubleValue(), one);
+            return become(one.doubleValue() % other.doubleValue(), one);
         if (numClass.isAssignableFrom(Short.class))
-            return as(one.shortValue() % other.shortValue(), one);
+            return become(one.shortValue() % other.shortValue(), one);
         if (numClass.isAssignableFrom(Byte.class))
-            return as(one.byteValue() % other.byteValue(), one);
-        return as(one.doubleValue() % other.doubleValue(), one);
+            return become(one.byteValue() % other.byteValue(), one);
+        return become(one.doubleValue() % other.doubleValue(), one);
     }
 
     public static boolean less(Number one, Number other) {
