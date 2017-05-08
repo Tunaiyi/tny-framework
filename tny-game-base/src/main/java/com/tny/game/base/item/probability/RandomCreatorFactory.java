@@ -6,4 +6,8 @@ public interface RandomCreatorFactory<G extends ProbabilityGroup<P>, P extends P
 
     RandomCreator<G, P> getRandomCreator();
 
+    default void registerSelf() {
+        RandomCreators.register(this);
+    }
+
 }

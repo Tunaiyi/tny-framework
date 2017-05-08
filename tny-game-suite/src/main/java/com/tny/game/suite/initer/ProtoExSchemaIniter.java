@@ -23,7 +23,6 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proto");
 
-
     private static ClassSelector selector = ClassSelector
             .instance(AnnotationClassFilter.ofInclude(ProtoEx.class))
             .setHandler(ProtoExSchemaIniter::loadClasses);

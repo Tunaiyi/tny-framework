@@ -17,6 +17,7 @@ import com.tny.game.scanner.filter.AnnotationClassFilter;
 import com.tny.game.suite.initer.EnumLoader;
 import com.tny.game.suite.initer.OpLogSnapshotIniter;
 import com.tny.game.suite.initer.ProtoExSchemaIniter;
+import com.tny.game.suite.initer.RandomCreatorIniter;
 import com.tny.game.suite.launcher.exception.LifecycleProcessException;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;
@@ -55,6 +56,7 @@ public class ApplicationLifecycleProcessor {
                     .addSelector(EnumLoader.selector())
                     .addSelector(ProtoExSchemaIniter.selector())
                     .addSelector(OpLogSnapshotIniter.selector())
+                    .addSelector(RandomCreatorIniter.selector())
                     .scan(Configs.getScanPathArray());
             LOGGER.info("开始初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {

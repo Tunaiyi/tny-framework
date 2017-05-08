@@ -2,12 +2,14 @@ package com.tny.game.suite.base;
 
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.converter.MvelFormulaConverter;
-import com.tny.game.base.item.*;
+import com.tny.game.base.item.Ability;
+import com.tny.game.base.item.Model;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.base.item.behavior.Option;
 import com.tny.game.base.item.probability.AllRandomCreatorFactory;
 import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
 import com.tny.game.base.item.probability.RandomCreatorFactory;
+import com.tny.game.base.item.probability.RandomCreators;
 import com.tny.game.base.item.xml.AbstractXMLModelManager;
 import com.tny.game.base.item.xml.String2RandomCreator;
 import org.springframework.beans.BeansException;
@@ -45,8 +47,7 @@ public abstract class GameItemModelManager<M extends Model> extends AbstractXMLM
             if (this.randomConverter != null)
                 return this.randomConverter;
             Map<String, RandomCreatorFactory> factoryMap = new HashMap<>();
-            Map<String, RandomCreatorFactory> springBeanMap = this.applicationContext.getBeansOfType(RandomCreatorFactory.class);
-            for (RandomCreatorFactory factory : springBeanMap.values()) {
+            for (RandomCreatorFactory factory : RandomCreators.getFactories()) {
                 factoryMap.put(factory.getName(), factory);
             }
             RandomCreatorFactory factory = new DefaultRandomCreatorFactory();

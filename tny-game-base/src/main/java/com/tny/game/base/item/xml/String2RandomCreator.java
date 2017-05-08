@@ -22,7 +22,7 @@ public class String2RandomCreator extends AbstractSingleValueConverter {
         if (randomCreatorFactory == null) {
             this.randomCreatorFactory = Collections.emptyMap();
         } else {
-            this.randomCreatorFactory = new HashMap<String, RandomCreatorFactory>(randomCreatorFactory);
+            this.randomCreatorFactory = new HashMap<>(randomCreatorFactory);
         }
     }
 
