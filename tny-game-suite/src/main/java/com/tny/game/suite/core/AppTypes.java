@@ -39,7 +39,6 @@ public final class AppTypes extends AutoImport {
         return holder.ofAndCheck(enumName, "获取 {} 的ServerType不存在", enumName);
     }
 
-
     public static Collection<AppType> getAll() {
         return holder.values();
     }

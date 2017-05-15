@@ -1,5 +1,6 @@
 package com.tny.game.suite.cache;
 
+import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.Item;
 import com.tny.game.cache.mysql.DBCacheItem;
 
@@ -16,12 +17,17 @@ public class DomainDBItem<R> extends DBCacheItem<R> {
     @Override
     protected void format(Object data) {
         if (data instanceof ProtoItem) {
-            ProtoItem item = (ProtoItem) data;
-            Item<?> object = item.getItemObject();
-            this.uid = object.getPlayerID();
-            this.itemID = object.getItemID();
-            this.number = item.getNumber();
-            data = item.getItem();
+            ProtoItem proto = (ProtoItem) data;
+            Object object = proto.getObject();
+            if (object instanceof Item) {
+                Item<?> item = (Item<?>) object;
+                this.uid = item.getPlayerID();
+                this.itemID = item.getItemID();
+            } else if (object instanceof Identifiable) {
+                this.uid = ((Identifiable) object).getPlayerID();
+            }
+            this.number = proto.getNumber();
+            data = proto.getItem();
         }
         super.format(data);
     }

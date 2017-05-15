@@ -1,6 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.Ability;
+import com.tny.game.base.module.Module;
 import com.tny.game.common.enums.EnumeratorHolder;
 import com.tny.game.suite.utils.Configs;
 
@@ -30,6 +31,14 @@ public final class Abilities extends AutoImport {
 
     public static <T extends Ability> T of(int id) {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 Ability 不存在", id);
+    }
+
+    public static <T extends Ability> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends Ability> T ofUncheck(String key) {
+        return holder.of(key);
     }
 
     public static Collection<Ability> getAll() {

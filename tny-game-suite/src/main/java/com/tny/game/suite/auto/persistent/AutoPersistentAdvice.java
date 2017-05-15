@@ -61,12 +61,12 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     }
 
     @Override
-    public void afterReturning(Object returnValue, Method method, Object[] args, Object target) {
+    public void doAfterReturning(Object returnValue, Method method, Object[] args, Object target) {
         this.addSaveList(method, target, returnValue, args);
     }
 
     @Override
-    public void afterThrowing(Method method, Object[] args, Object target, Throwable cause) {
+    public void doAfterThrowing(Method method, Object[] args, Object target, Throwable cause) {
         this.addSaveList(method, target, null, args);
     }
 

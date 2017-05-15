@@ -32,6 +32,14 @@ public final class Actions extends AutoImport {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 Action 不存在", id);
     }
 
+    public static <T extends Action> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends Action> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<Action> getAll() {
         return holder.values();
     }

@@ -32,6 +32,14 @@ public final class DemandTypes extends AutoImport {
         return holder.of(id);
     }
 
+    public static <T extends DemandType> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends DemandType> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<DemandType> getAll() {
         return holder.values();
     }

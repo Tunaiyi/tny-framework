@@ -4,6 +4,6 @@ import java.lang.reflect.Method;
 
 public interface AfterReturningAdvice {
 
-    public void afterReturning(Object returnValue, Method method, Object[] args, Object target);
+    void doAfterReturning(Object returnValue, Method method, Object[] args, Object target);
 
 }

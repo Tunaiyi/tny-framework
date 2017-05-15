@@ -37,6 +37,10 @@ public final class Features extends AutoImport {
         return holder.of(id);
     }
 
+    public static <T extends Feature> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<Feature> values() {
         return holder.values();
     }

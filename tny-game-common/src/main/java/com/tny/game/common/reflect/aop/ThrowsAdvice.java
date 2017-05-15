@@ -4,6 +4,6 @@ import java.lang.reflect.Method;
 
 public interface ThrowsAdvice {
 
-    public void afterThrowing(Method method, Object[] args, Object target, Throwable cause);
+    void doAfterThrowing(Method method, Object[] args, Object target, Throwable cause);
 
 }

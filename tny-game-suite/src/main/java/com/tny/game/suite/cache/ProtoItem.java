@@ -6,15 +6,15 @@ public class ProtoItem {
 
     private byte[] item;
 
-    private Item<?> itemObject;
+    private Object object;
 
     private Integer number;
 
     private int state;
 
-    public ProtoItem(byte[] item, Item<?> itemObject, Integer number, int state) {
+    public ProtoItem(byte[] item, Item<?> object, Integer number, int state) {
         this.item = item;
-        this.itemObject = itemObject;
+        this.object = object;
         this.number = number;
         this.state = state;
     }
@@ -27,8 +27,8 @@ public class ProtoItem {
         return this.number;
     }
 
-    public Item<?> getItemObject() {
-        return this.itemObject;
+    public Object getObject() {
+        return this.object;
     }
 
 }

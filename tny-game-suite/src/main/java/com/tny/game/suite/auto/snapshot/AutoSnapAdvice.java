@@ -52,17 +52,17 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
     }
 
     @Override
-    public void before(Method method, Object[] args, Object target) throws Throwable {
+    public void doBefore(Method method, Object[] args, Object target) throws Throwable {
         this.snapshot(method, args, target);
     }
 
     @Override
-    public void afterReturning(Object returnValue, Method method, Object[] args, Object target) {
+    public void doAfterReturning(Object returnValue, Method method, Object[] args, Object target) {
         this.snapshot(method, args, target);
     }
 
     @Override
-    public void afterThrowing(Method method, Object[] args, Object target, Throwable cause) {
+    public void doAfterThrowing(Method method, Object[] args, Object target, Throwable cause) {
         this.snapshot(method, args, target);
     }
 

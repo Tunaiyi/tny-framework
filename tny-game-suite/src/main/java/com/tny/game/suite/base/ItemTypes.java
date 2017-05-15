@@ -42,6 +42,14 @@ public class ItemTypes extends AutoImport {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 ItemType 不存在", id);
     }
 
+    public static <T extends ItemType> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends ItemType> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static <T extends ItemType> T ofItemID(int itemID) {
         int typeID = itemID / 1000000 * 1000000;
         return of(typeID);

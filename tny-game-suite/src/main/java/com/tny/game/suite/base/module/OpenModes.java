@@ -33,6 +33,14 @@ public final class OpenModes extends AutoImport {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 OpenMode 不存在", id);
     }
 
+    public static <T extends OpenMode> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends OpenMode> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<OpenMode> getAll() {
         return holder.values();
     }

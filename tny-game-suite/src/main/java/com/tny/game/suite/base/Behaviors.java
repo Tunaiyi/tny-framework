@@ -36,6 +36,10 @@ public final class Behaviors extends AutoImport {
         return holder.of(id);
     }
 
+    public static <T extends Behavior> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<Behavior> getAll() {
         return holder.values();
     }

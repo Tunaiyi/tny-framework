@@ -32,6 +32,14 @@ public final class DemandParams extends AutoImport {
         return holder.of(id);
     }
 
+    public static <T extends DemandParams> T ofUncheck(int id) {
+        return holder.of(id);
+    }
+
+    public static <T extends DemandParams> T ofUncheck(String key) {
+        return holder.of(key);
+    }
+
     public static Collection<DemandParam> getAll() {
         return holder.values();
     }

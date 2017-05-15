@@ -19,19 +19,19 @@ public class AOPTest {
                 .setAfterReturningAdvice(new AfterReturningAdvice() {
 
                     @Override
-                    public void afterReturning(Object returnValue, Method method, Object[] args, Object target) {
+                    public void doAfterReturning(Object returnValue, Method method, Object[] args, Object target) {
                         System.out.println(target.getClass() + " -- afterReturning -- " + method + " resut = " + returnValue);
                     }
                 }).setBeforeAdvice(new BeforeAdvice() {
 
                     @Override
-                    public void before(Method method, Object[] args, Object target) throws Throwable {
+                    public void doBefore(Method method, Object[] args, Object target) throws Throwable {
                         System.out.println(target.getClass() + " -- before -- " + method);
                     }
                 }).setThrowsAdvice(new ThrowsAdvice() {
 
                     @Override
-                    public void afterThrowing(Method method, Object[] args, Object target, Throwable cause) {
+                    public void doAfterThrowing(Method method, Object[] args, Object target, Throwable cause) {
                         System.out.println(target.getClass() + " -- afterThrowing -- " + method + "by cause - " + cause);
                     }
                 }).build();
