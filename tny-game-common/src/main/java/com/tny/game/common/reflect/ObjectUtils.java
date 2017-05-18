@@ -22,7 +22,7 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
         return object == null ? defObject : mapper.apply(object);
     }
 
-    public static <T, O> O ifNotNull(T object, Function<T, O> mapper, Supplier<O> defObject) {
+    public static <T, O> O ifNotNull(T object, Function<T, O> mapper, Supplier<? extends O> defObject) {
         return object == null ? defObject.get() : mapper.apply(object);
     }
 

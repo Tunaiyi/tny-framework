@@ -414,8 +414,69 @@ public class MathEx {
         return builder.toString();
     }
 
+    /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param value    取值数
+     * @param minValue 最小范围
+     * @param maxValue 最大范围
+     * @return 返回有效数
+     */
     public static int clamp(int value, int minValue, int maxValue) {
         return Math.min(Math.max(minValue, value), maxValue);
+    }
+
+    /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param value    取值数
+     * @param minValue 最小范围
+     * @param maxValue 最大范围
+     * @return 返回有效数
+     */
+    public static long clamp(long value, long minValue, long maxValue) {
+        return Math.min(Math.max(minValue, value), maxValue);
+    }
+
+    /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param value    取值数
+     * @param minValue 最小范围
+     * @param maxValue 最大范围
+     * @return 返回有效数
+     */
+    public static float clamp(float value, float minValue, float maxValue) {
+        return Math.min(Math.max(minValue, value), maxValue);
+    }
+
+    /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param value    取值数
+     * @param minValue 最小范围
+     * @param maxValue 最大范围
+     * @return 返回有效数
+     */
+    public static double clamp(double value, double minValue, double maxValue) {
+        return Math.min(Math.max(minValue, value), maxValue);
+    }
+
+    /**
+     * 随机次数, 有一定概率完成
+     *
+     * @param prob  概率
+     * @param times 做多少次
+     * @return 返回做成的次数
+     */
+    public static int randTimes(int prob, int times) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int done = 0;
+        for (int time = 0; time < times; time++) {
+            if (random.nextInt(10000) < prob)
+                done++;
+        }
+        return done;
     }
 
 }

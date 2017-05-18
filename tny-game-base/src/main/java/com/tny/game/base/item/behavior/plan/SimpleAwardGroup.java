@@ -21,13 +21,14 @@ public class SimpleAwardGroup extends AbstractAwardGroup {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
         List<Award> awardList = this.randomer.random(this, attributeMap);
         int drawNumber = getDrawNumber(awardList.size(), attributeMap);
-        boolean all = drawNumber <= 0;
         for (Award award : awardList) {
+            if (drawNumber <= 0)
+                continue;
             String awModelAlias = award.getItemAlias(attributeMap);
             ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
             if (awardModel == null)
                 continue;
-            TradeItem<ItemModel> tradeItem = award.createTradeItem((all || drawNumber > 0), awardModel, attributeMap);
+            TradeItem<ItemModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
             if (tradeItem != null) {
                 drawNumber--;
                 itemList.add(tradeItem);

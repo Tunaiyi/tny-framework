@@ -126,7 +126,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 
     public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
         if (this.drawNumber == null)
-            return -1;
+            return awardNum;
         Integer drawNumber = this.drawNumber.createFormula().putAll(attributeMap).execute(Integer.class);
         if (drawNumber == null)
             drawNumber = -1;

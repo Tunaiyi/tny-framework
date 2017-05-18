@@ -49,7 +49,7 @@ public interface ProbabilityUtils {
         int total = 0;
         List<ProbabilityEntry<P>> entries = new ArrayList<>();
         for (P p : probabilities) {
-            if (p.isEffect(attributes))
+            if (!p.isEffect(attributes))
                 continue;
             int probability = p.getProbability(attributes);
             if (probability > 0) {
@@ -89,7 +89,7 @@ public interface ProbabilityUtils {
         TreeMap<Integer, P> proMap = new TreeMap<>();
         int total = 0;
         for (P p : probabilities) {
-            if (p.isEffect(attributes))
+            if (!p.isEffect(attributes))
                 continue;
             int probability = p.getProbability(attributes);
             if (probability > 0) {
