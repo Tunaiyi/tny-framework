@@ -25,7 +25,7 @@ public abstract class AbstractCapacityGoal extends InnerCapacityGoal {
     }
 
     @Override
-    public Collection<CapacitySupplier> suppliers() {
+    public Collection<? extends CapacitySupplier> suppliers() {
         return Collections.unmodifiableCollection(suppliers);
     }
 

@@ -401,6 +401,6 @@ public interface CapacityGoal extends Capacitiable {
     /**
      * @return 获取提供器列表
      */
-    Collection<CapacitySupplier> suppliers();
+    Collection<? extends CapacitySupplier> suppliers();
 
 }

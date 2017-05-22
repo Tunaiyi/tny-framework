@@ -24,11 +24,13 @@ public class CapacityGoalDTO {
     @ProtoExField(3)
     private List<Long> dependSuppliers;
 
-
     public static CapacityGoalDTO goal2DTO(CapacityGoal goal) {
         CapacityGoalDTO dto = new CapacityGoalDTO();
         dto.id = goal.getID();
-        dto.dependSuppliers = goal.suppliers().stream().map(CapacitySupplier::getID).collect(Collectors.toList());
+        dto.dependSuppliers = goal.suppliers().stream()
+                .filter(CapacitySupplier::isSupplying)
+                .map(CapacitySupplier::getID)
+                .collect(Collectors.toList());
         return dto;
     }
 

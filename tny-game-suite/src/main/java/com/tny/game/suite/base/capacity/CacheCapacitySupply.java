@@ -6,7 +6,6 @@ import com.tny.game.suite.base.capacity.event.CapacityEvents;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -62,10 +61,10 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
         return 0;
     }
 
-    @Override
-    public Set<Capacity> getSupplyCapacities() {
-        return cache.getAbilityTypes(Capacity.class);
-    }
+    // @Override
+    // public Set<Capacity> getSupplyCapacities() {
+    //     return cache.getAbilityTypes(Capacity.class);
+    // }
 
     @Override
     public void refresh(CapacitySupplier supplier) {

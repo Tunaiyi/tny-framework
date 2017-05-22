@@ -72,7 +72,7 @@ public class CopyCapacityGoal extends InnerCapacityGoal {
     }
 
     @Override
-    public Collection<CapacitySupplier> suppliers() {
+    public Collection<? extends CapacitySupplier> suppliers() {
         return this.supplierMap.values();
     }
 

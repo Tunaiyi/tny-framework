@@ -1,9 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
+import com.tny.game.number.NumberUtils;
+
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 组合能力提供起
@@ -14,21 +15,42 @@ public interface ComboCapacitySupplier extends CapacitySupplier {
     /**
      * @return 依赖能力提供器
      */
-    Collection<CapacitySupplier> dependSuppliers();
+    Collection<? extends CapacitySupplier> dependSuppliers();
 
     @Override
     default boolean isHasValue(Capacity capacity) {
-        return false;
+        return dependSuppliers().stream().anyMatch(s -> s.isHasValue(capacity));
+    }
+
+    @Override
+    default Number getValue(Capacity capacity) {
+        return getValue(capacity, null);
+    }
+
+    @Override
+    default Number getValue(Capacity capacity, Number defaultNum) {
+        Number total = null;
+        for (CapacitySupplier supplier : dependSuppliers()) {
+            if (total == null)
+                total = supplier.getValue(capacity);
+            else
+                total = NumberUtils.add(supplier.getValue(capacity, 0), total);
+        }
+        return total == null ? defaultNum : total;
     }
 
     @Override
     default Map<Capacity, Number> getAllCapacityValue() {
-        return Collections.emptyMap();
+        Map<Capacity, Number> numberMap = new HashMap<>();
+        for (CapacitySupplier supplier : dependSuppliers()) {
+            supplier.getAllCapacityValue().forEach((c, num) -> numberMap.merge(c, num, NumberUtils::add));
+        }
+        return numberMap;
     }
 
-    @Override
-    default Set<Capacity> getSupplyCapacities() {
-        return Collections.emptySet();
-    }
+    // @Override
+    // default Set<Capacity> getSupplyCapacities() {
+    //     return Collections.emptySet();
+    // }
 
 }

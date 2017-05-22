@@ -5,7 +5,6 @@ import com.tny.game.base.item.ItemModel;
 import com.tny.game.suite.base.capacity.event.CapacityEvents;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 可缓存能力提供器
@@ -68,10 +67,10 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
         return 0;
     }
 
-    @Override
-    public Set<Capacity> getSupplyCapacities() {
-        return model.getAbilityTypes(Capacity.class);
-    }
+    // @Override
+    // public Set<Capacity> getSupplyCapacities() {
+    //     return model.getAbilityTypes(Capacity.class);
+    // }
 
 
     @Override

@@ -21,7 +21,7 @@ public interface ProxyCapacityGoal extends CapacityGoal {
     }
 
     @Override
-    default Collection<CapacitySupplier> suppliers() {
+    default Collection<? extends CapacitySupplier> suppliers() {
         return capacityGoal().suppliers();
     }
 

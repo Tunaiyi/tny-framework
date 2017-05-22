@@ -1,11 +1,9 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.Item;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 能力值提供七代理接口
@@ -56,13 +54,6 @@ public interface ProxyCapacitySupplier extends CapacitySupplier {
         if (!isSupplying())
             return ImmutableMap.of();
         return supply().getAllCapacityValue();
-    }
-
-    @Override
-    default Set<Capacity> getSupplyCapacities() {
-        if (!isSupplying())
-            return ImmutableSet.of();
-        return supply().getSupplyCapacities();
     }
 
 }

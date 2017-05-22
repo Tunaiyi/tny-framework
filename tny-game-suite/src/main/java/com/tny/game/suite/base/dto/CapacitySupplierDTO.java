@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_ITEM_DTO)
 @DTODoc(value = "游戏能力相关对象DTO")
-public class CapacityItemDTO {
+public class CapacitySupplierDTO {
 
     @VarDoc("提供者ID")
     @ProtoExField(1)
@@ -38,8 +38,8 @@ public class CapacityItemDTO {
     @ProtoExField(5)
     private Long remainTime;
 
-    public static CapacityItemDTO supplier2DTO(CapacitySupplier supplier) {
-        CapacityItemDTO dto = new CapacityItemDTO();
+    public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
+        CapacitySupplierDTO dto = new CapacitySupplierDTO();
         dto.id = supplier.getID();
         if (supplier instanceof ComboCapacitySupplier)
             dto.dependSuppliers = combo2IDs((ComboCapacitySupplier) supplier);
@@ -58,9 +58,9 @@ public class CapacityItemDTO {
         return dto;
     }
 
-    public static List<CapacityItemDTO> suppliers2DTOs(Collection<? extends CapacitySupplier> suppliers) {
+    public static List<CapacitySupplierDTO> suppliers2DTOs(Collection<? extends CapacitySupplier> suppliers) {
         return suppliers.stream()
-                .map(CapacityItemDTO::supplier2DTO)
+                .map(CapacitySupplierDTO::supplier2DTO)
                 .collect(Collectors.toList());
     }
 

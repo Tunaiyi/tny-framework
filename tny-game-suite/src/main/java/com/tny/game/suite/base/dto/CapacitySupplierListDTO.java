@@ -13,16 +13,17 @@ import java.util.stream.Collectors;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_ITEM_LIST_DTO)
 @DTODoc(value = "游戏能力相关对象列表DTO")
-public class CapacityItemListDTO {
+public class CapacitySupplierListDTO {
 
     @VarDoc("能力相关对象列表")
     @ProtoExField(1)
-    private List<CapacityItemDTO> capacityItems;
+    private List<CapacitySupplierDTO> capacityItems;
 
-    public static CapacityItemListDTO suppliers2DTO(Collection<? extends CapacitySupplier> suppliers) {
-        CapacityItemListDTO dto = new CapacityItemListDTO();
+    public static CapacitySupplierListDTO suppliers2DTO(Collection<? extends CapacitySupplier> suppliers) {
+        CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
         dto.capacityItems = suppliers.stream()
-                .map(CapacityItemDTO::supplier2DTO)
+                .filter(CapacitySupplier::isSupplying)
+                .map(CapacitySupplierDTO::supplier2DTO)
                 .collect(Collectors.toList());
         return dto;
     }

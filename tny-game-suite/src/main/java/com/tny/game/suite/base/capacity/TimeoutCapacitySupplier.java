@@ -62,10 +62,10 @@ public interface TimeoutCapacitySupplier extends CapacitySupplier {
             return supplier.getAllCapacityValue(timeChecker.getCheckAt());
         }
 
-        @Override
-        public Set<Capacity> getSupplyCapacities() {
-            return supplier.getSupplyCapacities(timeChecker.getCheckAt());
-        }
+        // @Override
+        // public Set<Capacity> getSupplyCapacities() {
+        //     return supplier.getSupplyCapacities(timeChecker.getCheckAt());
+        // }
     }
 
     /**
@@ -225,9 +225,9 @@ public interface TimeoutCapacitySupplier extends CapacitySupplier {
      */
     Set<Capacity> getSupplyCapacities(long time);
 
-    @Override
-    default Set<Capacity> getSupplyCapacities() {
-        return getSupplyCapacities(System.currentTimeMillis());
-    }
+    // @Override
+    // default Set<Capacity> getSupplyCapacities() {
+    //     return getSupplyCapacities(System.currentTimeMillis());
+    // }
 
 }

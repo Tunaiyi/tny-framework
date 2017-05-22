@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 可通过能力接口
@@ -90,8 +89,4 @@ public interface CapacitySupply {
         return 0;
     }
 
-    /**
-     * @return 获取所有Capacity类型
-     */
-    Set<Capacity> getSupplyCapacities();
 }

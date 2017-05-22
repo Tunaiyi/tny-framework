@@ -122,7 +122,7 @@ public class Expression extends AbstractMvelFormula {
             return this.number;
         try {
             return MVEL.executeExpression(this.getExpression(), this.attribute);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException("执行 [" + this.expressionStr + "] 异常 ", e);
         }
     }
