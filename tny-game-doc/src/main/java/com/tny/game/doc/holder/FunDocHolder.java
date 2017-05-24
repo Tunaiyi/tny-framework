@@ -1,20 +1,14 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.net.annotation.Controller;
-import com.tny.game.common.reflect.javassist.JavassistUtils;
 import com.tny.game.doc.annotation.FunDoc;
 import com.tny.game.doc.annotation.VarDoc;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
-import javassist.bytecode.MethodInfo;
+import com.tny.game.net.annotation.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,26 +44,14 @@ public class FunDocHolder {
         holder.method = method;
         List<VarDocHolder> paramList = new ArrayList<VarDocHolder>();
         holder.paramList = Collections.unmodifiableList(paramList);
-        CtMethod ctMethod;
-        try {
-            ctMethod = JavassistUtils.getMethodBy(clazz, method);
-        } catch (NotFoundException e) {
-            LOGGER.error("", e);
-            return null;
-        }
-        MethodInfo methodInfo = ctMethod.getMethodInfo();
-        CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
-        LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
-        Annotation[][] paramAnnotation = method.getParameterAnnotations();
-        Class<?>[] params = method.getParameterTypes();
-        int pos = Modifier.isStatic(ctMethod.getModifiers()) ? 0 : 1;
+        Parameter[] params = method.getParameters();
         for (int i = 0; i < params.length; i++) {
-            Class<?> paramClass = params[i];
-            VarDoc paramDoc = getParamsAnnotation(paramAnnotation[i], VarDoc.class);
+            Parameter param = params[i];
+            VarDoc paramDoc = param.getAnnotation(VarDoc.class);
             if (paramDoc == null)
                 continue;
-            String name = attr.variableName(i + pos);
-            paramList.add(VarDocHolder.create(paramDoc, name, paramClass));
+            String name = param.getName();
+            paramList.add(VarDocHolder.create(paramDoc, name, param.getType()));
         }
         return holder;
     }
