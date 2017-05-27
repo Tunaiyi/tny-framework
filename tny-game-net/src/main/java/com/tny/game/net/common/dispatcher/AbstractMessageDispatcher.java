@@ -7,6 +7,7 @@ import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.stage.StageUtils;
 import com.tny.game.actor.stage.TaskStage;
 import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;
 import com.tny.game.common.utils.collection.CollectUtils;
@@ -20,11 +21,9 @@ import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.checker.ControllerChecker;
 import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.DispatchCommand;
-import com.tny.game.net.command.MessageDispatcher;
-import com.tny.game.net.command.listener.DispatchCommandEvent;
-import com.tny.game.net.command.listener.DispatchCommandExceptionEvent;
-import com.tny.game.net.command.listener.DispatchCommandExecuteEvent;
+import com.tny.game.net.command.DispatchContext;
+import com.tny.game.net.command.listener.DispatchCommandExecuteListener;
+import com.tny.game.net.command.listener.DispatchCommandInvokeListener;
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import com.tny.game.net.common.ControllerCheckerHolder;
 import com.tny.game.net.exception.DispatchException;
@@ -36,7 +35,7 @@ import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.worker.Callback;
+import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +46,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * 抽象消息派发器
@@ -77,7 +78,12 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     /**
      * 派发错误监听器
      */
-    private final List<DispatchCommandListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<DispatchCommandExecuteListener> executeListeners = new CopyOnWriteArrayList<>();
+
+    /**
+     * 派发错误监听器
+     */
+    private final List<DispatchCommandInvokeListener> invokeListeners = new CopyOnWriteArrayList<>();
 
     /**
      * 认证器列表
@@ -96,7 +102,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public DispatchCommand<CommandResult> dispatch(Message message, MessageFuture<?> future, Tunnel<?> tunnel) throws DispatchException {
+    public Command dispatch(Message message, MessageFuture<?> future, Tunnel<?> tunnel) throws DispatchException {
         // 获取方法持有器
         MethodControllerHolder controller = null;
         final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(message.getProtocol());
@@ -107,114 +113,172 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public void addDispatcherRequestListener(final DispatchCommandListener listener) {
-        this.listeners.add(listener);
+    public void addListener(final DispatchCommandListener listener) {
+        if (listener instanceof DispatchCommandInvokeListener)
+            this.invokeListeners.add((DispatchCommandInvokeListener) listener);
+        if (listener instanceof DispatchCommandExecuteListener)
+            this.executeListeners.add((DispatchCommandExecuteListener) listener);
     }
 
     @Override
-    public void addDispatcherRequestListener(final Collection<DispatchCommandListener> listeners) {
-        this.listeners.addAll(listeners);
+    public void addListener(final Collection<DispatchCommandListener> listeners) {
+        listeners.forEach(this::addListener);
     }
 
     @Override
-    public void removeDispatcherRequestListener(final DispatchCommandListener listener) {
-        this.listeners.remove(listener);
+    public void removeListener(final DispatchCommandListener listener) {
+        if (listener instanceof DispatchCommandInvokeListener)
+            this.invokeListeners.remove(listener);
+        if (listener instanceof DispatchCommandExecuteListener)
+            this.executeListeners.remove(listener);
     }
 
     @Override
-    public void clearDispatcherRequestListener() {
-        this.listeners.clear();
+    public void clearListener() {
+        this.invokeListeners.clear();
+        this.executeListeners.clear();
     }
 
     /**
-     * 触发接收消息消息事件
-     * <p>
-     * <p>
-     * 触发接收消息消息事件<br>
+     * 触发接将要运行业务事件
      *
-     * @param event 接收消息
+     * @param context 派发上下文
      */
-    private void fireReceive(DispatchCommandExecuteEvent event) {
-        for (DispatchCommandListener listener : this.listeners) {
+    private void fireWillInvoke(DispatchContext context) {
+        for (DispatchCommandInvokeListener listener : this.invokeListeners) {
             try {
-                listener.receive(event);
-            } catch (Exception e) {
-                DISPATCHER_LOG.error("处理 {}.receive", listener.getClass(), e);
-            }
-        }
-    }
-
-    /**
-     * 触发业务运行错误事件
-     * <p>
-     * <p>
-     * 触发业务运行错误事件<br>
-     *
-     * @param event 业务运行错误事件
-     */
-    private void fireExecuteException(DispatchCommandExceptionEvent event) {
-        for (DispatchCommandListener listener : this.listeners) {
-            try {
-                listener.executeException(event);
-            } catch (Exception e) {
-                DISPATCHER_LOG.error("处理 {}.executeException 监听器异常", listener.getClass(), e);
+                listener.willInvoke(context);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.willInvoke 监听器异常", listener.getClass(), e);
             }
         }
     }
 
     /**
      * 触发业务运行事件
-     * <p>
-     * <p>
-     * 触发业务运行事件<br>
      *
-     * @param event 业务运行事件
+     * @param context 派发上下文
      */
-    private void fireExecute(DispatchCommandExecuteEvent event) {
-        for (DispatchCommandListener listener : this.listeners) {
+    private void fireInvoke(DispatchContext context) {
+        for (DispatchCommandInvokeListener listener : this.invokeListeners) {
             try {
-                listener.execute(event);
-            } catch (Exception e) {
+                listener.invoke(context);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.invoke 监听器异常", listener.getClass(), e);
+            }
+        }
+    }
+
+    /**
+     * 触发业务运行事件成功
+     *
+     * @param context 派发上下文
+     */
+    private void fireInvoked(DispatchContext context) {
+        for (DispatchCommandInvokeListener listener : this.invokeListeners) {
+            try {
+                listener.invoked(context);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.invoked 监听器异常", listener.getClass(), e);
+            }
+        }
+    }
+
+
+    /**
+     * 触发业务运行完成事件, 无论成功失败
+     *
+     * @param context 派发上下文
+     * @param cause   失败原因, 成功为null
+     */
+    private void fireInvokeFinish(DispatchContext context, Throwable cause) {
+        for (DispatchCommandInvokeListener listener : this.invokeListeners) {
+            try {
+                listener.invokeFinish(context, cause);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.invokeFinish 监听器异常", listener.getClass(), e);
+            }
+        }
+    }
+
+    /**
+     * 触发调用执行错误事件
+     *
+     * @param context 派发上下文
+     * @param cause   失败原因
+     */
+    private void fireInvokeException(DispatchContext context, Throwable cause) {
+        for (DispatchCommandInvokeListener listener : this.invokeListeners) {
+            try {
+                listener.invokeException(context, cause);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.invokeException 监听器异常", listener.getClass(), e);
+            }
+        }
+    }
+
+    /**
+     * 触发开始Command执行
+     *
+     * @param context 派发上下文
+     */
+    private void fireExecute(DispatchContext context) {
+        for (DispatchCommandExecuteListener listener : this.executeListeners) {
+            try {
+                listener.execute(context);
+            } catch (Throwable e) {
                 DISPATCHER_LOG.error("处理 {}.execute 监听器异常", listener.getClass(), e);
             }
         }
     }
 
     /**
-     * 触发业务运行完成事件
-     * <p>
-     * <p>
-     * 触发业务运行完成事件<br>
+     * 触发开始Command执行完成
      *
-     * @param event 业务运行完成事件
+     * @param context 派发上下文
      */
-    private void fireExecuteFinish(DispatchCommandExecuteEvent event) {
-        for (DispatchCommandListener listener : this.listeners) {
+    private void fireExecuted(DispatchContext context) {
+        for (DispatchCommandExecuteListener listener : this.executeListeners) {
             try {
-                listener.executeFinish(event);
-            } catch (Exception e) {
+                listener.executed(context);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.executed 监听器异常", listener.getClass(), e);
+            }
+        }
+    }
+
+    /**
+     * 触发Command执行完成, 无论成功还是失败
+     *
+     * @param context 派发上下文
+     * @param cause   失败原因
+     */
+    private void fireExecuteFinish(DispatchContext context, Throwable cause) {
+        for (DispatchCommandExecuteListener listener : this.executeListeners) {
+            try {
+                listener.executeFinish(context, cause);
+            } catch (Throwable e) {
                 DISPATCHER_LOG.error("处理 {}.executeFinish 监听器异常", listener.getClass(), e);
             }
         }
     }
 
     /**
-     * 触发消息处理完成事件
-     * <p>
-     * <p>
-     * 触发业务运行完成事件<br>
+     * 触发Command执行错误事件
      *
-     * @param event 业务运行完成事件
+     * @param context 派发上下文
+     * @param cause   失败原因
      */
-    private void fireDispatchFinish(DispatchCommandEvent event) {
-        for (DispatchCommandListener listener : this.listeners) {
+    private void fireExecuteException(DispatchContext context, Throwable cause) {
+        for (DispatchCommandExecuteListener listener : this.executeListeners) {
             try {
-                listener.dispatchFinish(event);
-            } catch (Exception e) {
-                DISPATCHER_LOG.error("处理 {}.dispatchFinish 监听器异常", listener.getClass(), e);
+                listener.executeException(context, cause);
+            } catch (Throwable e) {
+                DISPATCHER_LOG.error("处理 {}.executeException 监听器异常", listener.getClass(), e);
             }
         }
     }
+
 
     protected ControllerPlugin getPlugin(Class<?> pluginClass) {
         return this.pluginMap.get(pluginClass);
@@ -290,36 +354,20 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         }
     }
 
-    private class MessageDispatchCommand implements DispatchCommand<CommandResult> {
-
-        private Tunnel<?> tunnel;
-
-        private Message<Object> message;
+    private class MessageDispatchCommand extends DispatchContext implements Command {
 
         private MessageFuture<Object> messageFuture;
 
-        private MethodControllerHolder controller;
+        private Future<Object> future;
 
-        // private CommandFuture commandFuture;
-
-        private Callback<Object> callback;
-
-        private boolean executed;
+        private long timeout;
 
         private boolean done;
 
         @SuppressWarnings("unchecked")
         private MessageDispatchCommand(Message message, MessageFuture messageFuture, Tunnel tunnel, MethodControllerHolder controller) {
-            this.message = message;
+            super(controller, tunnel, message);
             this.messageFuture = messageFuture;
-            this.tunnel = tunnel;
-            this.controller = controller;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void setCallback(Callback<?> callback) {
-            this.callback = (Callback<Object>) callback;
         }
 
         @Override
@@ -333,157 +381,127 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         @Override
         public boolean isDone() {
-            return done;
+            return interrupted || done;
         }
 
-        private CommandFuture getCommandFuture(Object value) {
-            if (value instanceof TaskStage)
-                return new TaskStageCommandFuture((TaskStage) value);
-            else if (value instanceof Answer)
-                return new AnswerCommandFuture((Answer<?>) value);
-            return null;
-        }
-
-        private void handleResult(CommandResult result, Throwable cause, boolean mustSend) {
-            ResultCode code = result == null ? ResultCode.SUCCESS : result.getResultCode();
-            Object value = result == null ? null : result.getBody();
-            handleResult(code, value, cause, mustSend);
-        }
-
-        private void handleResult(ResultCode code, Object value, Throwable cause, boolean mustSend) {
-            if (callback != null) {
-                try {
-                    callback.callback(code, value, cause);
-                } catch (Throwable e) {
-                    DISPATCHER_LOG.error("Controller [{}] 执行回调方法 {} 异常", getName(), callback.getClass(), e);
-                }
-            }
-            MessageContent<?> content = null;
-            switch (message.getMode()) {
-                case PUSH:
-                    if (mustSend || code.isSuccess())
-                        content = MessageContent.toPush(this.message, code, value);
-                    break;
-                case REQUEST:
-                    content = MessageContent.toResponse(this.message, code, value, message.getID());
-                    break;
-            }
-
-            if (content != null) {
-                if (code.getType() != ResultCodeType.ERROR) {
-                    this.tunnel.send(content);
-                } else {
-                    content.createSentFuture()
-                            .getSendFuture()
-                            .whenComplete((tunnel, e) -> tunnel.close());
-                    this.tunnel.send(content);
-                }
-            }
-
-        }
-
-        @Override
-        public CommandResult invoke() {
-            if (this.executed)
-                return null;
-            CommandResult result;
-            try {
-                result = this.doExecute();
-                if (result != null)
-                    this.handleResult(result, null, true);
-            } catch (Throwable e) {
-                result = this.handleException(e);
-                DISPATCHER_LOG.error("Controller [{}] 处理消息异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
-            } finally {
+        /* 检测结果 */
+        private void checkResult(Throwable cause) {
+            Object o = this.result;
+            if (o instanceof Future) { // 如果是结果为Future进入等待逻辑
+                this.future = ObjectUtils.as(o);
+                this.timeout = System.currentTimeMillis() + 5000; // 超时
+                this.result = null;
+            } else { // 结果处理逻辑
+                this.postInvoke();
                 this.done = true;
-                this.executed = true;
+                this.handleResult(cause);
+            }
+        }
+
+        /* 检测是否有future对象*/
+        private void checkFuture() throws Throwable {
+            if (this.future != null) { // 检测是否
+                if (this.future.isDone()) {
+                    this.result = this.future.get();
+                    this.checkResult(null);
+                }
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void handleResult(Throwable cause) {
+            if (!this.isDone())
+                return;
+            try {
+                MessageContent<?> content = null;
+                ResultCode code = ResultCode.SUCCESS;
+                Object value = null;
+                if (this.result instanceof CommandResult) {
+                    CommandResult commandResult = (CommandResult) this.result;
+                    code = commandResult.getResultCode();
+                    value = commandResult.getBody();
+                } else if (this.result instanceof ResultCode) {
+                    code = (ResultCode) this.result;
+                } else {
+                    value = this.result;
+                }
+                if (cause != null)
+                    DISPATCHER_LOG.error("Controller [{}] 处理消息异常 {} - {} ", getName(), code, code.getCode(), cause);
+                boolean mustSend = this.result != null;
+                switch (message.getMode()) {
+                    case PUSH:
+                        if (mustSend || code.isSuccess())
+                            content = MessageContent.toPush(this.message, code, value);
+                        break;
+                    case REQUEST:
+                        content = MessageContent.toResponse(this.message, code, value, message.getID());
+                        break;
+                }
+                if (content != null) {
+                    if (code.getType() != ResultCodeType.ERROR) {
+                        this.tunnel.send(content);
+                    } else {
+                        content.createSentFuture()
+                                .getSendFuture()
+                                .whenComplete((tunnel, e) -> tunnel.close());
+                        this.tunnel.send(content);
+                    }
+                }
+            } finally {
                 if (this.messageFuture != null) {
                     this.messageFuture.complete(this.message);
                 }
             }
-            return result;
         }
+
 
         @Override
         public void execute() {
             CurrentCommand.setCurrent(this.message.getUserID(), this.message.getProtocol());
-            invoke();
-            // if (done)
-            //     return;
-            // if (!executed) {
-            // CommandResult result = invoke();
-            // Object value = null;
-            // if (result != null)
-            // value = result.getBody();
-            // this.commandFuture = getCommandFuture(value);
-            // if (this.commandFuture == null) {
-            //     try {
-            // this.handleResult(result, null, true);
-            //     } finally {
-            //         this.done = true;
-            //     }
-            // }
-            // }
-            // if (!done && this.commandFuture != null && this.commandFuture.isDone()) {
-            //     try {
-            //         try {
-            //             if (this.commandFuture.isSuccess()) {
-            //                 Object value = this.commandFuture.getResult();
-            //                 if (value instanceof CommandResult)
-            //                     this.handleResult((CommandResult) value, null, true);
-            //                 else
-            //                     this.handleResult(ResultCode.SUCCESS, value, null, true);
-            //             } else {
-            //                 CommandResult result = handleException(this.commandFuture.getCause());
-            //                 DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), this.commandFuture.getCause());
-            //                 this.handleResult(result, this.commandFuture.getCause(), false);
-            //             }
-            //         } finally {
-            //             this.done = true;
-            //         }
-            //     } catch (Throwable e) {
-            //         try {
-            //             CommandResult result = handleException(e);
-            //             DISPATCHER_LOG.error("Controller [{}] 轮询Command结束异常 {} - {} ", getName(), result.getResultCode(), result.getResultCode().getMessage(), e);
-            //             this.handleResult(result, e, false);
-            //         } finally {
-            //             this.done = true;
-            //         }
-            //     }
-            // }
+            try {
+                if (isDone())
+                    return;
+                fireExecute(this);
+                if (future == null) {
+                    // 调用逻辑业务
+                    this.invoke();
+                    // 调用调用结果
+                    this.checkResult(null);
+                }
+                if (!this.isDone())
+                    this.checkFuture();
+                fireExecuted(this);
+                fireExecuteFinish(this, null);
+            } catch (Throwable e) {
+                this.handleException(e);
+                this.checkResult(e);
+                fireExecuteException(this, e);
+                fireExecuteFinish(this, e);
+            }
         }
 
 
         @SuppressWarnings("unchecked")
-        private CommandResult handleException(Throwable e) {
-            CommandResult result;
+        private void handleException(Throwable e) {
             if (e instanceof DispatchException) {
+                // DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
                 DispatchException dex = (DispatchException) e;
                 DISPATCHER_LOG.error(dex.getMessage(), dex);
-                DispatchCommandExceptionEvent event = new DispatchCommandExceptionEvent(this, this.tunnel, this.message, controller, dex);
-                AbstractMessageDispatcher.this.fireExecuteException(event);
-                if (event.isInterrupt())
-                    result = getEventResult(this.message.getMode(), event);
-                else
-                    result = ResultFactory.create(dex.getResultCode(), null);
+                fireInvokeException(this, dex);
+                if (!this.isInterrupted())
+                    this.done(dex.getResultCode());
+                fireInvokeFinish(this, e);
             } else if (e instanceof InvocationTargetException) {
-                DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
-                Throwable ex = ((InvocationTargetException) e).getTargetException();
-                result = this.handleException(ex);
+                this.handleException(((InvocationTargetException) e).getTargetException());
+            } else if (e instanceof ExecutionException) {
+                this.handleException(e.getCause());
             } else {
-                DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
-                DispatchCommandExceptionEvent event = new DispatchCommandExceptionEvent(this, this.tunnel, this.message, controller, e);
-                AbstractMessageDispatcher.this.fireExecuteException(event);
-                if (event.isInterrupt())
-                    result = getEventResult(this.message.getMode(), event);
-                else
-                    return ResultFactory.create(CoreResponseCode.EXECUTE_EXCEPTION, null);
+                // DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
+                fireInvokeException(this, e);
+                if (!this.isInterrupted())
+                    this.done(CoreResponseCode.EXECUTE_EXCEPTION);
+                fireInvokeFinish(this, e);
             }
-            return result;
-        }
-
-        private CommandResult getEventResult(MessageMode mode, DispatchCommandExecuteEvent event) {
-            return getResult(mode, event.getResult());
         }
 
         private CommandResult getResult(MessageMode mode, CommandResult result) {
@@ -493,58 +511,63 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         }
 
         @SuppressWarnings("unchecked")
-        private CommandResult doExecute() throws Exception {
-            DispatchCommandExecuteEvent event;
-            MessageMode mode = message.getMode();
+        private void invoke() throws Exception {
 
-            try {
-                //检测认证
-                this.checkAuth();
+            //检测认证
+            this.checkAuth();
 
-                event = new DispatchCommandExecuteEvent(this, this.tunnel, this.message, controller);
-                AbstractMessageDispatcher.this.fireReceive(event);
-                if (event.isInterrupt())
-                    return getEventResult(mode, event);
+            fireWillInvoke(this);
+            if (this.isInterrupted())
+                return;
 
-                if (this.controller == null) {
-                    DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", message.getProtocol());
-                    return getResult(mode, null);
-                }
-
-                if (DISPATCHER_LOG.isDebugEnabled())
-                    DISPATCHER_LOG.debug("Controller [{}] 开始处理Message : {}\n ", getName(), message.toString());
-
-                // 检测是否controller运行条件
-                this.checkController();
-
-                // 调用方法
-                if (DISPATCHER_LOG.isDebugEnabled())
-                    DISPATCHER_LOG.debug("Controller [{}] 触Message处理事件", getName());
-                event = new DispatchCommandExecuteEvent(this, this.tunnel, this.message, controller);
-                AbstractMessageDispatcher.this.fireExecute(event);
-                if (event.isInterrupt())
-                    return getEventResult(mode, event);
-
-                if (DISPATCHER_LOG.isDebugEnabled())
-                    DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
-                CommandResult result = controller.execute(this.tunnel, this.message);
-
-                // 执行结束触发命令执行完成事件
-                if (DISPATCHER_LOG.isDebugEnabled())
-                    DISPATCHER_LOG.debug("Controller [{}] 触发Message处理完成事件", getName());
-                event = new DispatchCommandExecuteEvent(this, this.tunnel, this.message, controller, result);
-                AbstractMessageDispatcher.this.fireExecuteFinish(event);
-
-                if (DISPATCHER_LOG.isDebugEnabled())
-                    DISPATCHER_LOG.debug("Controller [{}] 处理Message完成!", getName());
-
-                if (event.isInterrupt())
-                    return getEventResult(mode, event);
-                else
-                    return result;
-            } finally {
-                fireDispatchFinish(new DispatchCommandEvent(this, this.tunnel, this.message, controller));
+            if (this.controller == null) {
+                DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", message.getProtocol());
+                this.done(CoreResponseCode.NO_SUCH_PROTOCOL);
+                return;
             }
+
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 开始处理Message : {}\n ", getName(), message.toString());
+
+            // 检测是否controller运行条件
+            this.checkController();
+
+            // 调用方法
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 触Message处理事件", getName());
+            fireInvoke(this);
+            if (this.isInterrupted())
+                return;
+
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 执行BeforePlugins", getName());
+            controller.beforeInvoke(this.tunnel, this.message, this);
+
+            if (this.isInterrupted())
+                return;
+
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
+            controller.invoke(this.tunnel, this.message, this);
+
+            fireInvoked(this);
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 执行业务成功!", getName());
+        }
+
+        @SuppressWarnings("unchecked")
+        private void postInvoke() {
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 执行AftertPlugins", getName());
+            controller.afterInvke(this.tunnel, this.message, this);
+
+            // 执行结束触发命令执行完成事件
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 触发Message处理完成事件", getName());
+            fireInvokeFinish(this, null);
+
+            if (DISPATCHER_LOG.isDebugEnabled())
+                DISPATCHER_LOG.debug("Controller [{}] 处理Message完成!", getName());
         }
 
         @SuppressWarnings("unchecked")

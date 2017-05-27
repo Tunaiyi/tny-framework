@@ -7,12 +7,11 @@ import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.command.DispatchCommand;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.command.RunnableDispatchCommand;
+import com.tny.game.net.command.RunnableCommand;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
-import com.tny.game.worker.Callback;
+import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
     }
 
     @Override
-    public void submit(Session session, DispatchCommand<?> command) {
+    public void submit(Session session, Command command) {
         ChildExecutor executor = session.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
         if (executor == null) {
             executor = new ChildExecutor(this.executorService);
@@ -63,7 +62,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
 
     private static class ChildExecutor implements MessageCommandBox, Runnable {
 
-        private final Queue<DispatchCommand<?>> commandQueue = new ConcurrentLinkedQueue<>();
+        private final Queue<Command> commandQueue = new ConcurrentLinkedQueue<>();
 
         private final ExecutorService executorService;
 
@@ -77,22 +76,15 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
         }
 
         @Override
-        public boolean appoint(DispatchCommand<?> command) {
-            return this.appoint(command, null);
-        }
-
-        @Override
-        public <T> boolean appoint(DispatchCommand<T> command, Callback<T> callback) {
+        public boolean appoint(Command command) {
             if (!this.executorService.isShutdown()) {
-                if (callback != null)
-                    command.setCallback(callback);
                 submit(command);
                 return true;
             }
             return false;
         }
 
-        private <T> void submit(DispatchCommand<T> command) {
+        private <T> void submit(Command command) {
             if (this.thread != null && this.thread == Thread.currentThread()) {
                 command.execute();
                 if (!command.isDone())
@@ -107,14 +99,14 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
 
         @Override
         public boolean appoint(Runnable runnable) {
-            return appoint(new RunnableDispatchCommand(runnable), null);
+            return appoint(new RunnableCommand(runnable));
         }
 
         @Override
         public void run() {
             this.thread = Thread.currentThread();
             for (; ; ) {
-                DispatchCommand<?> cmd = this.commandQueue.peek();
+                Command cmd = this.commandQueue.peek();
                 if (cmd != null) {
                     try {
                         cmd.execute();

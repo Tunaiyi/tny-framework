@@ -12,9 +12,8 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.ResultFactory;
-import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.PluginContext;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
@@ -85,7 +84,12 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 执行list
      */
-    private PluginContext pluginContext;
+    private PluginContext beforeContext;
+
+    /**
+     * 执行list
+     */
+    private PluginContext afterContext;
 
     private boolean isUserID(Annotation[][] value) {
         for (Annotation annotation : value[0]) {
@@ -152,10 +156,9 @@ public final class MethodControllerHolder extends ControllerHolder {
             this.paramAnnotationsMap = ImmutableMap.copyOf(annotationsMap);
             this.parameterDescs = ImmutableList.copyOf(parameterDescs);
             for (ControllerPlugin plugin : this.getControllerBeforePlugins())
-                this.putPlugin(plugin);
-            this.putPlugin(new MethodControllerPlugin(this));
+                this.beforeContext = this.putPlugin(this.beforeContext, plugin);
             for (ControllerPlugin plugin : this.getControllerAfterPlugins())
-                this.putPlugin(plugin);
+                this.afterContext = this.putPlugin(this.afterContext, plugin);
         } catch (Exception e) {
             throw new IllegalArgumentException(LogUtils.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
@@ -183,12 +186,13 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.parameterDescs.size();
     }
 
-    private void putPlugin(ControllerPlugin plugin) {
-        if (this.pluginContext == null) {
-            this.pluginContext = new PluginContext(this, plugin);
+    private PluginContext putPlugin(PluginContext context, ControllerPlugin plugin) {
+        if (context == null) {
+            context = new PluginContext(plugin);
         } else {
-            this.pluginContext.setNext(new PluginContext(this, plugin));
+            context.setNext(new PluginContext(plugin));
         }
+        return context;
     }
 
     @Override
@@ -202,42 +206,6 @@ public final class MethodControllerHolder extends ControllerHolder {
             return holder;
         holder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
         return ObjectUtils.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
-    }
-
-    private static class MethodControllerPlugin implements ControllerPlugin<Object> {
-
-        private MethodControllerHolder methodHolder;
-
-        private MethodControllerPlugin(MethodControllerHolder methodHolder) {
-            super();
-            this.methodHolder = methodHolder;
-        }
-
-        @Override
-        public CommandResult execute(Tunnel<Object> tunnel, Message<Object> message, CommandResult result, PluginContext context) throws Exception {
-            // 获取调用方法的参数类型
-            Object[] param = new Object[this.methodHolder.getParametersSize()];
-            Object body = message.getBody(Object.class);
-            for (int index = 0; index < param.length; index++) {
-                param[index] = this.methodHolder.getParameterValue(index, tunnel, message, body);
-            }
-
-            CommandResult executeResult = null;
-
-            // 执行方法
-            Object object = this.methodHolder.invoke(param);
-
-
-            if (object instanceof CommandResult) {
-                CommandResult rsObject = (CommandResult) object;
-                if (rsObject != ResultFactory.NONE)
-                    executeResult = rsObject;
-            } else if (object != null) {
-                executeResult = ResultFactory.success(object);
-            }
-
-            return context.passToNext(tunnel, message, executeResult);
-        }
     }
 
     public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
@@ -297,22 +265,6 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.auth != null ? super.getAuthProvider() : classController.getAuthProvider();
     }
 
-    // @Override
-    // public boolean isCheck() {
-    //     return this.controller != null ? this.controller.check() : this.classController.isCheck();
-    // }
-    //
-    // @Override
-    // public boolean isAuth() {
-    //     return this.controller != null ? this.controller.auth() : this.classController.isAuth();
-    // }
-
-    // @Override
-    // public UserType getUserType() {
-    // return controller != null ? controller.userType() :
-    // classController.getUserType();
-    // }
-
     @Override
     protected List<ControllerPlugin> getControllerBeforePlugins() {
         return this.beforePlugins != null ? Collections.unmodifiableList(this.beforePlugins) : this.classController.getControllerBeforePlugins();
@@ -322,27 +274,6 @@ public final class MethodControllerHolder extends ControllerHolder {
     protected List<ControllerPlugin> getControllerAfterPlugins() {
         return this.afterPlugins != null ? Collections.unmodifiableList(this.afterPlugins) : this.classController.getControllerAfterPlugins();
     }
-
-    // @Override
-    // public boolean isUserGroup(String group) {
-    //     return this.controller != null ? this.userGroupList.indexOf(group) > -1 : this.classController.isUserGroup(group);
-    // }
-
-    // public long getTimeout() {
-    //     if (this.controller != null && this.controller.timeOut() > 0)
-    //         return this.controller.timeOut();
-    //     return this.classController.getTimeout();
-    // }
-
-    // public boolean isCanCall(String serverType) {
-    //     return this.controller != null ? this.serverTypeList.isEmpty() || this.serverTypeList.indexOf(serverType) > -1 : this.classController.isCanCall(serverType);
-    // }
-
-    // public boolean isTimeOut() {
-    //     if (!DevUtils.DEV_CONFIG.getBoolean(DEV_TIMEOUT_CHECK, true))
-    //         return false;
-    //     return this.controller != null ? this.controller.timeOut() > 0 : this.classController.isTimeOut();
-    // }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -379,11 +310,22 @@ public final class MethodControllerHolder extends ControllerHolder {
         return (A) this.methodAnnotationMap.get(annotationClass);
     }
 
-    //	public boolean isNeedRequest() {
-    //		return needRequest;
-    //	}
-    public CommandResult execute(Tunnel<?> tunnel, Message message) throws Exception {
-        return this.pluginContext.passToNext(tunnel, message, null);
+    protected void invoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) throws Exception {
+        // 获取调用方法的参数类型
+        Object[] param = new Object[this.getParametersSize()];
+        Object body = message.getBody(Object.class);
+        for (int index = 0; index < param.length; index++) {
+            param[index] = this.getParameterValue(index, tunnel, message, body);
+        }
+        context.setResult(this.invoke(param));
+    }
+
+    protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+        this.beforeContext.execute(tunnel, message, context);
+    }
+
+    protected void afterInvke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+        this.afterContext.execute(tunnel, message, context);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.tny.game.net.spring;
 
-import com.tny.game.net.annotation.Controller;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.net.annotation.Controller;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.annotation.Unit;
@@ -48,7 +48,7 @@ public final class SpringMessageDispatcher extends CommonMessageDispatcher imple
         final Map<String, Object> handlerMap = this.applicationContext.getBeansWithAnnotation(Controller.class);
         this.addController(handlerMap.values());
         final Map<String, DispatchCommandListener> listenerMap = this.applicationContext.getBeansOfType(DispatchCommandListener.class);
-        this.addDispatcherRequestListener(listenerMap.values());
+        this.addListener(listenerMap.values());
     }
 
 }

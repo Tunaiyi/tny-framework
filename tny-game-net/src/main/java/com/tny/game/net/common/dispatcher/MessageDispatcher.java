@@ -1,10 +1,11 @@
-package com.tny.game.net.command;
+package com.tny.game.net.common.dispatcher;
 
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.worker.command.Command;
 
 import java.util.Collection;
 
@@ -30,7 +31,7 @@ public interface MessageDispatcher {
      * @param message 请求
      * @param tunnel  通道
      */
-    DispatchCommand<CommandResult> dispatch(Message message, MessageFuture<?> future, Tunnel<?> tunnel) throws DispatchException;
+    Command dispatch(Message message, MessageFuture<?> future, Tunnel<?> tunnel) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器
@@ -40,7 +41,7 @@ public interface MessageDispatcher {
      *
      * @param listener 添加的请求派发错误监听器
      */
-    void addDispatcherRequestListener(DispatchCommandListener listener);
+    void addListener(DispatchCommandListener listener);
 
     /**
      * 添加请求派发错误监听器列表
@@ -50,7 +51,7 @@ public interface MessageDispatcher {
      *
      * @param listeners 添加的请求派发错误监听器列表
      */
-    void addDispatcherRequestListener(Collection<DispatchCommandListener> listeners);
+    void addListener(Collection<DispatchCommandListener> listeners);
     /**
      * 移除请求派发错误监听器
      * <p>
@@ -59,7 +60,7 @@ public interface MessageDispatcher {
      *
      * @param listener 移除的请求派发错误监听器
      */
-    void removeDispatcherRequestListener(DispatchCommandListener listener);
+    void removeListener(DispatchCommandListener listener);
 
     /**
      * 清除请求派发错误监听器
@@ -67,6 +68,6 @@ public interface MessageDispatcher {
      * <p>
      * 清除所有请求派发错误监听器<br>
      */
-    void clearDispatcherRequestListener();
+    void clearListener();
 
 }

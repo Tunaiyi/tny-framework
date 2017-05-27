@@ -2,10 +2,8 @@ package com.tny.game.net.filter;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.ResultFactory;
-import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.PluginContext;
+import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
@@ -31,21 +29,20 @@ public class FilterPlugin<UID> implements ControllerPlugin<UID>, ApplicationCont
         }
     }
 
+
     @Override
-    @SuppressWarnings("unchecked")
-    public CommandResult execute(Tunnel<UID> tunnel, Message<UID> message, CommandResult result, PluginContext context) throws Exception {
-        MethodControllerHolder methodHolder = context.getMethodHolder();
+    public void execute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) throws Exception {
+        MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {
             ParamFilter paramFilter = this.filterMap.get(filterClass);
             if (paramFilter != null) {
                 ResultCode resultCode = paramFilter.filter(methodHolder, tunnel, message);
                 if (resultCode != CoreResponseCode.SUCCESS) {
-                    return ResultFactory.fail(resultCode);
+                    // 完成 不继续执行
+                    context.done(resultCode);
                 }
             }
         }
-        return context.passToNext(tunnel, message, result);
     }
-
 }

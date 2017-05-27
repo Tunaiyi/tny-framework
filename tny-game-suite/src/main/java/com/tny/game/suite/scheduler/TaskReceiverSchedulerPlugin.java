@@ -1,9 +1,8 @@
 package com.tny.game.suite.scheduler;
 
 import com.tny.game.net.base.AppConstants;
-import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.PluginContext;
+import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.tunnel.Tunnel;
@@ -28,8 +27,9 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin<Long> {
     @Resource
     private TimeTaskSchedulerService taskSchedulerService;
 
+
     @Override
-    public CommandResult execute(Tunnel<Long> tunnel, Message<Long> message, CommandResult result, PluginContext context) throws Exception {
+    public void execute(Tunnel<Long> tunnel, Message<Long> message, InvokeContext context) throws Exception {
         if (tunnel.getUserGroup().equals(AppConstants.DEFAULT_USER_GROUP)) {
             if (IDUtils.isSystem(message.getUserID())) {
                 Session<Long> session = tunnel.getSession();
@@ -42,6 +42,6 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin<Long> {
                 }
             }
         }
-        return context.passToNext(tunnel, message, result);
     }
+
 }

@@ -10,7 +10,7 @@ import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.SessionInputEventHandler;

@@ -1,13 +1,10 @@
 package com.tny.game.net.common.dispatcher;
 
-import com.tny.game.net.command.DispatchCommand;
-import com.tny.game.worker.Callback;
+import com.tny.game.worker.command.Command;
 
 public interface MessageCommandBox {
 
-    boolean appoint(DispatchCommand<?> command);
-
-    <T> boolean appoint(DispatchCommand<T> command, Callback<T> callback);
+    boolean appoint(Command command);
 
     boolean appoint(Runnable runnable);
 

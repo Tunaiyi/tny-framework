@@ -7,10 +7,8 @@ import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.command.DispatchCommand;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.command.MessageDispatcher;
+import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
@@ -26,6 +24,7 @@ import com.tny.game.net.session.event.SessionSendEvent;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.tunnel.TunnelContent;
+import com.tny.game.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +120,7 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         // if (handledID == null)
         //     session.attributes().setAttribute(HANDLED_MSG_ID, handledID = new AtomicInteger(0));
         try {
-            DispatchCommand<CommandResult> command = messageDispatcher.dispatch(message, event.getMessageFuture(), event.getTunnel());
+            Command command = messageDispatcher.dispatch(message, event.getMessageFuture(), event.getTunnel());
             commandExecutor.submit(session, command);
         } catch (DispatchException e) {
             if (message.getMode() == MessageMode.REQUEST)

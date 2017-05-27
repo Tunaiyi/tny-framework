@@ -1,38 +1,35 @@
 package com.tny.game.net.command;
 
-import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.message.Message;
+import com.tny.game.net.tunnel.Tunnel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PluginContext {
 
-    private final static PluginContext EMPTY_PLUGIN = new PluginContext(null);
+    public static final Logger LOGGER = LoggerFactory.getLogger(PluginContext.class);
 
     private PluginContext nextContext;
 
     private ControllerPlugin plugin;
 
-    private MethodControllerHolder methodHolder;
-
-    public PluginContext(MethodControllerHolder methodHolder, ControllerPlugin plugin) {
+    public PluginContext(ControllerPlugin plugin) {
         this.plugin = plugin;
-        this.methodHolder = methodHolder;
-        this.nextContext = new PluginContext(methodHolder);
-    }
-
-    private PluginContext(MethodControllerHolder methodHolder) {
-        this.methodHolder = methodHolder;
-    }
-
-    public MethodControllerHolder getMethodHolder() {
-        return this.methodHolder;
+        this.nextContext = new PluginContext(null);
     }
 
     @SuppressWarnings("unchecked")
-    public CommandResult passToNext(Tunnel<?> tunnel, Message<?> message, CommandResult result) throws Exception {
-        if (this.plugin == null)
-            return result;
-        return this.plugin.execute(tunnel, message, result, this.nextContext != null ? this.nextContext : EMPTY_PLUGIN);
+    public void execute(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+        if (this.plugin == null || context.isInterrupted())
+            return;
+        try {
+            this.plugin.execute(tunnel, message, context);
+        } catch (Throwable e) {
+            LOGGER.error("invoke plugin {} exception", this.plugin.getClass());
+        }
+        if (this.nextContext == null || context.isInterrupted())
+            return;
+        this.nextContext.execute(tunnel, message, context);
     }
 
     public void setNext(PluginContext nextPlugin) {
