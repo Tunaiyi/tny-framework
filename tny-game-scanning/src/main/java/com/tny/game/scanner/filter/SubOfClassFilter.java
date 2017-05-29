@@ -21,11 +21,11 @@ public class SubOfClassFilter implements ClassFilter {
     }
 
     public static final ClassFilter ofExclude(Collection<Class<?>> excludes) {
-        return new SubOfClassFilter(excludes, null);
+        return new SubOfClassFilter(null, excludes);
     }
 
     public static final ClassFilter ofExclude(Class<?>... excludes) {
-        return new SubOfClassFilter(Arrays.asList(excludes), null);
+        return new SubOfClassFilter(null, Arrays.asList(excludes));
     }
 
     public static final ClassFilter of(Collection<Class<?>> includes, Collection<Class<?>> excludes) {
@@ -43,11 +43,15 @@ public class SubOfClassFilter implements ClassFilter {
 
     @Override
     public boolean include(MetadataReader reader) {
+        if (this.includes == null || this.includes.isEmpty())
+            return true;
         return ClassFilterHelper.matchSuper(reader, this.includes);
     }
 
     @Override
     public boolean exclude(MetadataReader reader) {
+        if (this.excludes == null || this.excludes.isEmpty())
+            return false;
         return ClassFilterHelper.matchSuper(reader, this.excludes);
     }
 
