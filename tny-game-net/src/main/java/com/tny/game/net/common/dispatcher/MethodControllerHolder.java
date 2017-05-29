@@ -321,10 +321,14 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+        if (this.beforeContext == null)
+            return;
         this.beforeContext.execute(tunnel, message, context);
     }
 
     protected void afterInvke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+        if (this.afterContext == null)
+            return;
         this.afterContext.execute(tunnel, message, context);
     }
 

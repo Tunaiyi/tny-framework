@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.actor.stage.TypeTaskStage;
+import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.common.utils.Done;
 
 import java.util.function.Function;
@@ -10,15 +10,15 @@ import java.util.function.Function;
  * Actor Callable 命令
  * Created by Kun Yang on 16/4/26.
  */
-class ActorCallUntilCommand<T, A extends BaseAnswer<T, TypeTaskStage<T>>> extends ActorAnswerCommand<T, TypeTaskStage<T>, A> {
+class ActorCallUntilCommand<T, A extends BaseAnswer<T, TypeStage<T>>> extends ActorAnswerCommand<T, TypeStage<T>, A> {
 
     private Function<LocalActor, Done<T>> function;
 
-    protected ActorCallUntilCommand(ActorCell actorCell, Function<LocalActor, Done<T>> function, TypeTaskStage<T> stage) {
+    protected ActorCallUntilCommand(ActorCell actorCell, Function<LocalActor, Done<T>> function, TypeStage<T> stage) {
         this(actorCell, function, null, stage);
     }
 
-    protected ActorCallUntilCommand(ActorCell actorCell, Function<LocalActor, Done<T>> function, A answer, TypeTaskStage<T> stage) {
+    protected ActorCallUntilCommand(ActorCell actorCell, Function<LocalActor, Done<T>> function, A answer, TypeStage<T> stage) {
         super(actorCell, answer, stage);
         this.function = function;
     }

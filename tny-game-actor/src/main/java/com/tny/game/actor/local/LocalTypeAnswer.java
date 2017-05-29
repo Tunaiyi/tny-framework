@@ -3,14 +3,12 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.AnswerListener;
 import com.tny.game.actor.TypeAnswer;
-import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.common.utils.DoneUtils;
-import com.tny.game.common.utils.Done;
+import com.tny.game.actor.stage.TypeStage;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-class LocalTypeAnswer<T> extends BaseAnswer<T, TypeTaskStage<T>> implements TypeAnswer<T> {
+class LocalTypeAnswer<T> extends BaseAnswer<T, TypeStage<T>> implements TypeAnswer<T> {
 
     private volatile List<AnswerListener<T>> listeners;
 
@@ -21,13 +19,6 @@ class LocalTypeAnswer<T> extends BaseAnswer<T, TypeTaskStage<T>> implements Type
         this.listeners.add(listener);
     }
 
-    @Override
-    public Done<T> achieve() {
-        if (!this.isDone())
-            return DoneUtils.fail();
-        return DoneUtils.succNullable(this.getRawValue());
-    }
-
     // @Override
     // public TypeTaskStage<T> stage() {
     //     if (this.stage == null)
@@ -35,6 +26,7 @@ class LocalTypeAnswer<T> extends BaseAnswer<T, TypeTaskStage<T>> implements Type
     //     return this.stage;
     // }
 
+    @Override
     protected void fire() {
         if (this.listeners == null)
             return;

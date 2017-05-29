@@ -2,16 +2,16 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneUtils;
 
 /**
  * Actor Message 命令
  * Created by Kun Yang on 16/4/26.
  */
 @SuppressWarnings("unchecked")
-class ActorMailCommand<T, A extends BaseAnswer<T, TypeTaskStage<T>>> extends ActorAnswerCommand<T, TypeTaskStage<T>, A> implements ActorMail<Object> {
+class ActorMailCommand<T, A extends BaseAnswer<T, TypeStage<T>>> extends ActorAnswerCommand<T, TypeStage<T>, A> implements ActorMail<Object> {
 
     private Object message;
 

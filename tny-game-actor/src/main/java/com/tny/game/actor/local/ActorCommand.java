@@ -3,12 +3,12 @@ package com.tny.game.actor.local;
 import com.tny.game.actor.Answer;
 import com.tny.game.actor.exception.ActorCommandCancelledException;
 import com.tny.game.actor.exception.ActorCommandExecuteException;
-import com.tny.game.actor.stage.StageUtils;
-import com.tny.game.actor.stage.TaskStage;
-import com.tny.game.actor.stage.TypeTaskStage;
+import com.tny.game.actor.stage.Stage;
+import com.tny.game.actor.stage.Stages;
+import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.actor.stage.exception.TaskInterruptedException;
-import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneUtils;
 import com.tny.game.worker.command.Command;
 
 /**
@@ -16,7 +16,7 @@ import com.tny.game.worker.command.Command;
  * Created by Kun Yang on 16/4/26.
  */
 @SuppressWarnings("unchecked")
-public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>> implements Command {
+public abstract class ActorCommand<T, TS extends Stage, A extends Answer<T>> implements Command {
 
     protected ActorCell actorCell;
 
@@ -63,7 +63,7 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
                 return;
             if (cancelled) {
                 if (this.stage != null) {
-                    StageUtils.cancel(stage);
+                    Stages.cancel(stage);
                     this.checkStageResult();
                 } else {
                     this.fail(new ActorCommandCancelledException(this), true);
@@ -83,7 +83,7 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
             }
             if (this.handleResult.isSuccess() && stage != null) {
                 if (!this.stage.isDone()) {
-                    StageUtils.run(this.stage);
+                    Stages.process(this.stage);
                     boolean stageDone = this.stage.isDone();
                     if (!stageDone)
                         return;
@@ -181,8 +181,8 @@ public abstract class ActorCommand<T, TS extends TaskStage, A extends Answer<T>>
     public Object getResult() {
         if (isDone()) {
             if (this.stage != null) {
-                if (this.stage instanceof TypeTaskStage)
-                    return ((TypeTaskStage<T>) this.stage).getResult();
+                if (this.stage instanceof TypeStage)
+                    return ((TypeStage<T>) this.stage).getResult();
                 return null;
             } else {
                 return this.result.get();

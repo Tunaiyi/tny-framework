@@ -6,16 +6,11 @@ package com.tny.game.actor;
  *
  * @author KGTny
  */
-public interface VoidAnswer extends Answer<Void>, Completable {
+public interface VoidAnswer extends Answer<Void> {
 
     /**
      * @param listener 添加未来响应监听器
      */
     void addListener(VoidAnswerListener listener);
-
-    @Override
-    default boolean isCompleted() {
-        return this.isDone();
-    }
 
 }

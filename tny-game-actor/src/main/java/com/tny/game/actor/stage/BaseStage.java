@@ -2,24 +2,25 @@ package com.tny.game.actor.stage;
 
 
 import com.tny.game.actor.stage.exception.TaskInterruptedException;
+import com.tny.game.common.reflect.ObjectUtils;
 
 /**
  * 基础阶段抽象类
  * Created by Kun Yang on 16/1/22.
  */
 @SuppressWarnings("unchecked")
-public abstract class BaseTaskStage<R> implements InnerTaskStage<R> {
+public abstract class BaseStage<R> implements InnerStage<R> {
 
-    protected CommonTaskStage head;
+    protected CommonStage head;
 
-    protected CommonTaskStage next;
+    protected CommonStage next;
 
-    protected BaseTaskStage(CommonTaskStage head) {
+    protected BaseStage(CommonStage head) {
         this.head = head == null ? this : head;
     }
 
     @Override
-    public CommonTaskStage getHead() {
+    public CommonStage getHead() {
         return head;
     }
 
@@ -34,20 +35,20 @@ public abstract class BaseTaskStage<R> implements InnerTaskStage<R> {
     }
 
     @Override
-    public CommonTaskStage getNext() {
+    public CommonStage getNext() {
         return next;
     }
 
     @Override
-    public void setHead(CommonTaskStage head, TaskStageKey key) {
+    public void setHead(CommonStage head, TaskStageKey key) {
         Stages.checkKey(key);
         this.head = head;
     }
 
     @Override
-    public <T extends TaskStage, OT extends T> T setNext(OT next, TaskStageKey key) {
+    public <T extends Stage, OT extends T> T setNext(OT next, TaskStageKey key) {
         Stages.checkKey(key);
-        this.next = StageUtils.as(next);
+        this.next = ObjectUtils.as(next);
         return next;
     }
 

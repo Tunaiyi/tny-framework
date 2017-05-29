@@ -1,12 +1,12 @@
 package com.tny.game.actor.invoke;
 
 
-import com.tny.game.actor.stage.VoidTaskStage;
+import com.tny.game.actor.stage.VoidStage;
 
 import java.util.function.Consumer;
 
 public interface Teller<TE> {
 
-    TE then(Consumer<VoidTaskStage> stage);
+    TE then(Consumer<VoidStage> stage);
 
 }

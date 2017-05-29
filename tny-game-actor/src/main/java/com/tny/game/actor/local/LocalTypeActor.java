@@ -22,7 +22,7 @@ import com.tny.game.actor.local.LocalTeller.LocalA5Teller;
 import com.tny.game.actor.local.LocalTeller.LocalA6Teller;
 import com.tny.game.actor.local.LocalTeller.LocalA7Teller;
 import com.tny.game.actor.local.LocalTeller.LocalUntilTeller;
-import com.tny.game.actor.stage.TypeTaskStage;
+import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.common.utils.Done;
 
 import java.util.function.Function;
@@ -130,12 +130,12 @@ class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
     }
 
     @Override
-    public <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Supplier<Done<T>> supplier) {
+    public <T> A0Asker<T, TypeStage<T>> asWaitAsker(Supplier<Done<T>> supplier) {
         return new LocalUntilAsker<>(actorCell, supplier);
     }
 
     @Override
-    public <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Function<LocalActor, Done<T>> function) {
+    public <T> A0Asker<T, TypeStage<T>> asWaitAsker(Function<LocalActor, Done<T>> function) {
         return new LocalUntilAsker<>(actorCell, function);
     }
 
@@ -220,82 +220,82 @@ class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
     }
 
     @Override
-    public <R> A0Asker<R, TypeTaskStage<R>> asAsker(A0Answerer<Actor<ID, M>, R> answerer) {
+    public <R> A0Asker<R, TypeStage<R>> asAsker(A0Answerer<Actor<ID, M>, R> answerer) {
         return new LocalA0Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1> A1Asker<R, TypeTaskStage<R>, A1> asAsker(A1Answerer<Actor<ID, M>, R, A1> answerer) {
+    public <R, A1> A1Asker<R, TypeStage<R>, A1> asAsker(A1Answerer<Actor<ID, M>, R, A1> answerer) {
         return new LocalA1Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2> A2Asker<R, TypeTaskStage<R>, A1, A2> asAsker(A2Answerer<Actor<ID, M>, R, A1, A2> answerer) {
+    public <R, A1, A2> A2Asker<R, TypeStage<R>, A1, A2> asAsker(A2Answerer<Actor<ID, M>, R, A1, A2> answerer) {
         return new LocalA2Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2, A3> A3Asker<R, TypeTaskStage<R>, A1, A2, A3> asAsker(A3Answerer<Actor<ID, M>, R, A1, A2, A3> answerer) {
+    public <R, A1, A2, A3> A3Asker<R, TypeStage<R>, A1, A2, A3> asAsker(A3Answerer<Actor<ID, M>, R, A1, A2, A3> answerer) {
         return new LocalA3Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2, A3, A4> A4Asker<R, TypeTaskStage<R>, A1, A2, A3, A4> asAsker(A4Answerer<Actor<ID, M>, R, A1, A2, A3, A4> answerer) {
+    public <R, A1, A2, A3, A4> A4Asker<R, TypeStage<R>, A1, A2, A3, A4> asAsker(A4Answerer<Actor<ID, M>, R, A1, A2, A3, A4> answerer) {
         return new LocalA4Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5> A5Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5> asAsker(A5Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5> answerer) {
+    public <R, A1, A2, A3, A4, A5> A5Asker<R, TypeStage<R>, A1, A2, A3, A4, A5> asAsker(A5Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5> answerer) {
         return new LocalA5Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6> answerer) {
+    public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6> answerer) {
         return new LocalA6Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6, A7> answerer) {
+    public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6, A7> answerer) {
         return new LocalA7Asker<>(actorCell, answerer);
     }
 
     @Override
-    public <R> A0Asker<R, TypeTaskStage<R>> asAsker(A0Caller<R> caller) {
+    public <R> A0Asker<R, TypeStage<R>> asAsker(A0Caller<R> caller) {
         return new LocalA0Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1> A1Asker<R, TypeTaskStage<R>, A1> asAsker(A1Caller<R, A1> caller) {
+    public <R, A1> A1Asker<R, TypeStage<R>, A1> asAsker(A1Caller<R, A1> caller) {
         return new LocalA1Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2> A2Asker<R, TypeTaskStage<R>, A1, A2> asAsker(A2Caller<R, A1, A2> caller) {
+    public <R, A1, A2> A2Asker<R, TypeStage<R>, A1, A2> asAsker(A2Caller<R, A1, A2> caller) {
         return new LocalA2Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2, A3> A3Asker<R, TypeTaskStage<R>, A1, A2, A3> asAsker(A3Caller<R, A1, A2, A3> caller) {
+    public <R, A1, A2, A3> A3Asker<R, TypeStage<R>, A1, A2, A3> asAsker(A3Caller<R, A1, A2, A3> caller) {
         return new LocalA3Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2, A3, A4> A4Asker<R, TypeTaskStage<R>, A1, A2, A3, A4> asAsker(A4Caller<R, A1, A2, A3, A4> caller) {
+    public <R, A1, A2, A3, A4> A4Asker<R, TypeStage<R>, A1, A2, A3, A4> asAsker(A4Caller<R, A1, A2, A3, A4> caller) {
         return new LocalA4Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5> A5Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5> asAsker(A5Caller<R, A1, A2, A3, A4, A5> caller) {
+    public <R, A1, A2, A3, A4, A5> A5Asker<R, TypeStage<R>, A1, A2, A3, A4, A5> asAsker(A5Caller<R, A1, A2, A3, A4, A5> caller) {
         return new LocalA5Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Caller<R, A1, A2, A3, A4, A5, A6> caller) {
+    public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Caller<R, A1, A2, A3, A4, A5, A6> caller) {
         return new LocalA6Asker<>(actorCell, caller);
     }
 
     @Override
-    public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7> caller) {
+    public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7> caller) {
         return new LocalA7Asker<>(actorCell, caller);
     }
 

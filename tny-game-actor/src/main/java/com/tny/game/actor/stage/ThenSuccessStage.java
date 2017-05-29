@@ -4,9 +4,9 @@ package com.tny.game.actor.stage;
  * 当fragment成功时阶段完成
  * Created by Kun Yang on 16/1/22.
  */
-class ThenSuccessTaskStage<R> extends DefaultTaskStage<R> {
+class ThenSuccessStage<R> extends DefaultStage<R> {
 
-    public ThenSuccessTaskStage(CommonTaskStage head, TaskFragment<?, R> fragment) {
+    public ThenSuccessStage(CommonStage head, TaskFragment<?, R> fragment) {
         super(head, fragment);
     }
 

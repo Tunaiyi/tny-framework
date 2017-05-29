@@ -4,7 +4,7 @@ package drama;
 import com.tny.game.actor.Actor;
 import com.tny.game.actor.local.LocalActor;
 import com.tny.game.actor.local.LocalActorContext;
-import com.tny.game.actor.stage.TaskStage;
+import com.tny.game.actor.stage.Stage;
 
 /**
  * Created by Kun Yang on 16/4/30.
@@ -37,15 +37,15 @@ public class ActorTestMain {
         LocalActor<String, Object> actor1 = context.actorOf("Actor1");
         LocalActor<String, Object> actor2 = context.actorOf("Actor2");
 
-
         System.out.println(Thread.currentThread());
-        TaskStage doStage = actor1.asTeller(service::tell).then((stage) -> stage
-                .joinFor(() -> actor2.asAsker(service::askName).ask())
-                .joinFor((name) -> actor2.asAsker(service::askAge).ask(name))
-                .thenAccept((message) -> {
-                    actor2.asTeller(service::tell).tell();
-                    System.out.println(message);
-                }))
+        // VoidStage stage = Stages.of(() -> service.tell(actor1))
+        //         .joinFor(() -> actor2.asAsker(service::askName).ask())
+        //         .joinFor((name) -> actor2.asAsker(service::askAge).ask(name))
+        //         .thenAccept((message) -> {
+        //             actor2.asTeller(service::tell).tell();
+        //             System.out.println(message);
+        //         });
+        Stage doStage = actor1.asTeller(service::tell)
                 .telling();
 
         while (!doStage.isDone()) {

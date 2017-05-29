@@ -1,8 +1,8 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.Available;
 import com.tny.game.actor.Completable;
+import com.tny.game.actor.DoneSupplier;
 import com.tny.game.actor.stage.exception.TaskTimeoutException;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
@@ -13,13 +13,15 @@ import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.ExceptionUtils;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -39,79 +41,104 @@ public class Stages {
         ExceptionUtils.checkNotNull(key, "TaskStageKey is null");
     }
 
+    public static void process(Stage stage) {
+        ObjectUtils.as(stage, CommonStage.class).start();
+    }
+
+    public static void cancel(Stage stage) {
+        ObjectUtils.as(stage, CommonStage.class).cancel();
+    }
+
+    public static <T> Done<T> getResult(Stage stage) {
+        if (!stage.isDone())
+            return DoneUtils.fail();
+        if (stage instanceof TypeStage) {
+            TypeStage<T> typeStage = (TypeStage<T>) stage;
+            return DoneUtils.succNullable(typeStage.getResult());
+        } else if (stage instanceof VoidStage) {
+            return DoneUtils.succNullable(null);
+        }
+        return DoneUtils.fail();
+    }
+
+    public static Done<Throwable> getCause(Stage stage) {
+        if (!stage.isDone())
+            return DoneUtils.fail();
+        return DoneUtils.succNullable(stage.getCause());
+    }
+
     public static Completable time(Duration duration) {
         return new TimeAwait(duration)::get;
     }
 
-    public static <T> Available<T> time(T object, Duration duration) {
+    public static <T> DoneSupplier<T> time(T object, Duration duration) {
         return new TimeAwaitWith<>(object, duration)::get;
     }
 
     //region then 成功时处理
-    public static VoidTaskStage run(Runnable fn) {
-        return new ThenSuccessTaskStage<>(null, new RunFragment(fn));
+    public static VoidStage of(Runnable fn) {
+        return new ThenSuccessStage<>(null, new RunFragment(fn));
     }
 
-    public static <T> TypeTaskStage<T> supply(Supplier<T> fn) {
-        return new ThenSuccessTaskStage<>(null, new SupplyFragment<>(fn));
+    public static <T> TypeStage<T> of(Supplier<T> fn) {
+        return new ThenSuccessStage<>(null, new SupplyFragment<>(fn));
     }
-
     //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
-    public static VoidTaskStage waitUntil(Iterable<? extends Completable> fns) {
+    public static VoidStage waitUntil(Iterable<? extends Completable> fns) {
         return waitUntil(fns, null);
     }
 
-    public static VoidTaskStage waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
-        return new AwaysTaskStage(null, new WaitRunFragment(fns, timeout));
+    public static VoidStage waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
+        return new AwaysStage(null, new WaitRunFragment(fns, timeout));
     }
 
-    public static VoidTaskStage waitUntil(Completable fn) {
+    public static VoidStage waitUntil(Completable fn) {
         return waitUntil(fn, null);
     }
 
-    public static VoidTaskStage waitUntil(Completable fn, Duration timeout) {
-        return new AwaysTaskStage(null, new WaitRunFragment(fn, timeout));
+    public static VoidStage waitUntil(Completable fn, Duration timeout) {
+        return new AwaysStage(null, new WaitRunFragment(fn, timeout));
     }
 
-    public static VoidTaskStage waitTime(Duration duration) {
+    public static VoidStage waitTime(Duration duration) {
         return waitUntil(new TimeAwait(duration)::get, null);
     }
 
-    public static <T> TypeTaskStage<T> waitTime(T object, Duration duration) {
+    public static <T> TypeStage<T> waitTime(T object, Duration duration) {
         return waitFor(new TimeAwaitWith<>(object, duration)::get, null);
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Available<T> fn) {
+    public static <T> TypeStage<T> waitFor(DoneSupplier<T> fn) {
         return waitFor(fn, null);
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Available<T> fn, Duration timeout) {
-        return new ThenSuccessTaskStage<>(null, new WaitSupplyFragment<>(fn, timeout));
+    public static <T> TypeStage<T> waitFor(DoneSupplier<T> fn, Duration timeout) {
+        return new ThenSuccessStage<>(null, new WaitSupplyFragment<>(fn, timeout));
     }
 
-    public static <T> TypeTaskStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns) {
+    public static <T> TypeStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns) {
         return waitFor(fns, null);
     }
 
-    public static <T> TypeTaskStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns, Duration timeout) {
-        return new ThenSuccessTaskStage<>(null, new WaitSupplyDoneListFragment<>(fns, timeout));
+    public static <T> TypeStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns, Duration timeout) {
+        return new ThenSuccessStage<>(null, new WaitSupplyDoneListFragment<>(fns, timeout));
     }
 
-    public static <K, T> TypeTaskStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns) {
+    public static <K, T> TypeStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns) {
         return waitFor(fns, null);
     }
 
-    public static <K, T> TypeTaskStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns, Duration timeout) {
-        return new ThenSuccessTaskStage<>(null, new WaitSupplyDoneMapFragment<>(fns, timeout));
+    public static <K, T> TypeStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns, Duration timeout) {
+        return new ThenSuccessStage<>(null, new WaitSupplyDoneMapFragment<>(fns, timeout));
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Future<T> future) {
+    public static <T> TypeStage<T> waitFor(Future<T> future) {
         return waitFor(future, null);
     }
 
-    public static <T> TypeTaskStage<T> waitFor(Future<T> future, Duration duration) {
+    public static <T> TypeStage<T> waitFor(Future<T> future, Duration duration) {
         return waitFor(new FutureAwait<>(future), duration);
     }
 
@@ -168,7 +195,7 @@ public class Stages {
             if (isFailed(e) || this.isDone())
                 return;
             NR result = invoke(returnVal, e);
-            this.finish(result == null ? null : result);
+            this.finish(result);
         }
 
     }
@@ -186,7 +213,7 @@ public class Stages {
     }
 
     //region JoinFragment classes
-    static abstract class JoinFragment<F, T, TS extends TaskStage> extends BaseTaskFragment<F, T, TS> {
+    static abstract class JoinFragment<F, T, TS extends Stage> extends BaseTaskFragment<F, T, TS> {
 
         protected TS stage;
 
@@ -212,7 +239,7 @@ public class Stages {
 
     }
 
-    static abstract class VoidJoinFragment<F, TS extends TaskStage> extends JoinFragment<F, Void, TS> {
+    static abstract class VoidJoinFragment<F, TS extends Stage> extends JoinFragment<F, Void, TS> {
 
         VoidJoinFragment(F fn) {
             super(fn);
@@ -224,7 +251,7 @@ public class Stages {
         }
     }
 
-    static class JoinSupplyFragment<TS extends TaskStage> extends VoidJoinFragment<Supplier<TS>, TS> {
+    static class JoinSupplyFragment<TS extends Stage> extends VoidJoinFragment<Supplier<TS>, TS> {
 
         JoinSupplyFragment(Supplier<TS> fn) {
             super(fn);
@@ -238,7 +265,7 @@ public class Stages {
 
     }
 
-    static class JoinApplyFragment<T, TS extends TaskStage> extends JoinFragment<Function<T, TS>, T, TS> {
+    static class JoinApplyFragment<T, TS extends Stage> extends JoinFragment<Function<T, TS>, T, TS> {
 
         JoinApplyFragment(Function<T, TS> fn) {
             super(fn);
@@ -251,7 +278,7 @@ public class Stages {
 
     }
 
-    static class JoinSupplyStageableFragment<TS extends TaskStage> extends VoidJoinFragment<SupplyStageable<TS>, TS> {
+    static class JoinSupplyStageableFragment<TS extends Stage> extends VoidJoinFragment<SupplyStageable<TS>, TS> {
 
         JoinSupplyStageableFragment(SupplyStageable<TS> fn) {
             super(fn);
@@ -265,7 +292,7 @@ public class Stages {
 
     }
 
-    static class JoinApplyStageableFragment<T, TS extends TaskStage> extends JoinFragment<ApplyStageable<T, TS>, T, TS> {
+    static class JoinApplyStageableFragment<T, TS extends Stage> extends JoinFragment<ApplyStageable<T, TS>, T, TS> {
 
         JoinApplyStageableFragment(ApplyStageable<T, TS> fn) {
             super(fn);
@@ -278,57 +305,56 @@ public class Stages {
 
     }
 
-    static class JoinSupplierAvailableFragment<T> extends VoidJoinFragment<Supplier<Available<T>>, TypeTaskStage<T>> {
+    static class JoinSupplierAvailableFragment<T> extends VoidJoinFragment<Supplier<DoneSupplier<T>>, TypeStage<T>> {
 
-        JoinSupplierAvailableFragment(Supplier<Available<T>> fn) {
+        JoinSupplierAvailableFragment(Supplier<DoneSupplier<T>> fn) {
             super(fn);
         }
 
         @Override
-        protected TypeTaskStage<T> invoke(Void returnVal, Throwable e) {
+        protected TypeStage<T> invoke(Void returnVal, Throwable e) {
             return waitFor(fn.get());
         }
 
     }
 
-    static class JoinSupplierCompletableFragment<T> extends VoidJoinFragment<Supplier<Completable>, VoidTaskStage> {
+    static class JoinSupplierCompletableFragment extends VoidJoinFragment<Supplier<Completable>, VoidStage> {
 
         JoinSupplierCompletableFragment(Supplier<Completable> fn) {
             super(fn);
         }
 
         @Override
-        protected VoidTaskStage invoke(Void returnVal, Throwable e) {
+        protected VoidStage invoke(Void returnVal, Throwable e) {
             return waitUntil(fn.get());
         }
 
     }
 
-    static class JoinApplyCompletableFragment<R> extends JoinFragment<Function<R, Completable>, R, VoidTaskStage> {
+    static class JoinApplyCompletableFragment<R> extends JoinFragment<Function<R, Completable>, R, VoidStage> {
 
         JoinApplyCompletableFragment(Function<R, Completable> fn) {
             super(fn);
         }
 
         @Override
-        protected VoidTaskStage invoke(R returnVal, Throwable e) {
+        protected VoidStage invoke(R returnVal, Throwable e) {
             return waitUntil(fn.apply(returnVal));
         }
 
 
     }
 
-    static class JoinApplyAvailableFragment<T, R> extends JoinFragment<Function<R, Available<T>>, R, TypeTaskStage<T>> {
+    static class JoinApplyAvailableFragment<T, R> extends JoinFragment<Function<R, DoneSupplier<T>>, R, TypeStage<T>> {
 
-        JoinApplyAvailableFragment(Function<R, Available<T>> fn) {
+        JoinApplyAvailableFragment(Function<R, DoneSupplier<T>> fn) {
             super(fn);
         }
 
         @Override
-        protected TypeTaskStage<T> invoke(R returnVal, Throwable e) {
+        protected TypeStage<T> invoke(R returnVal, Throwable e) {
             return waitFor(fn.apply(returnVal));
         }
-
 
     }
 
@@ -412,7 +438,7 @@ public class Stages {
             if (this.isDone())
                 return;
             NR result = invoke(returnVal, e);
-            this.finish(result == null ? null : result);
+            this.finish(result);
         }
 
     }
@@ -503,7 +529,7 @@ public class Stages {
                 this.finish(returnVal);
             } else {
                 NR result = invoke(null, e);
-                this.finish(result == null ? null : result);
+                this.finish(result);
             }
         }
 
@@ -636,15 +662,15 @@ public class Stages {
 
     }
 
-    static class WaitSupplyFragment<R> extends VoidWaitFragment<Available<R>, R> {
+    static class WaitSupplyFragment<R> extends VoidWaitFragment<DoneSupplier<R>, R> {
 
-        WaitSupplyFragment(Available<R> fn, Duration timeout) {
+        WaitSupplyFragment(DoneSupplier<R> fn, Duration timeout) {
             super(fn, timeout);
         }
 
         @Override
         protected R invoke(Void returnVal, Throwable e) {
-            return checkDone(fn.achieve());
+            return checkDone(fn.getDone());
         }
 
     }
@@ -683,7 +709,7 @@ public class Stages {
                 }
                 return DoneUtils.succ(fns.entrySet().stream()
                         .collect(Collectors.toMap(
-                                e -> e.getKey(),
+                                Entry::getKey,
                                 e -> e.getValue().get().get()
                         )));
             }, timeout);

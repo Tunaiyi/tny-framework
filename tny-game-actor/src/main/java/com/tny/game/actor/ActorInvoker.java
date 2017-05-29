@@ -3,7 +3,7 @@ package com.tny.game.actor;
 
 import com.tny.game.actor.invoke.*;
 import com.tny.game.actor.local.LocalActor;
-import com.tny.game.actor.stage.TypeTaskStage;
+import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.common.utils.Done;
 
 import java.util.function.Function;
@@ -19,9 +19,9 @@ public interface ActorInvoker<ID, ACT extends Actor<ID, ?>> {
 
     A0Teller asWaitTeller(Predicate<LocalActor> predicate);
 
-    <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Supplier<Done<T>> supplier);
+    <T> A0Asker<T, TypeStage<T>> asWaitAsker(Supplier<Done<T>> supplier);
 
-    <T> A0Asker<T, TypeTaskStage<T>> asWaitAsker(Function<LocalActor, Done<T>> predicate);
+    <T> A0Asker<T, TypeStage<T>> asWaitAsker(Function<LocalActor, Done<T>> predicate);
 
     A0Teller asTeller(A0Acceptor<ACT> acceptor);
 
@@ -55,36 +55,36 @@ public interface ActorInvoker<ID, ACT extends Actor<ID, ?>> {
 
     <A1, A2, A3, A4, A5, A6, A7> A7Teller<A1, A2, A3, A4, A5, A6, A7> asTeller(A7Runner<A1, A2, A3, A4, A5, A6, A7> runner);
 
-    <R> A0Asker<R, TypeTaskStage<R>> asAsker(A0Answerer<ACT, R> answerer);
+    <R> A0Asker<R, TypeStage<R>> asAsker(A0Answerer<ACT, R> answerer);
 
-    <R, A1> A1Asker<R, TypeTaskStage<R>, A1> asAsker(A1Answerer<ACT, R, A1> answerer);
+    <R, A1> A1Asker<R, TypeStage<R>, A1> asAsker(A1Answerer<ACT, R, A1> answerer);
 
-    <R, A1, A2> A2Asker<R, TypeTaskStage<R>, A1, A2> asAsker(A2Answerer<ACT, R, A1, A2> answerer);
+    <R, A1, A2> A2Asker<R, TypeStage<R>, A1, A2> asAsker(A2Answerer<ACT, R, A1, A2> answerer);
 
-    <R, A1, A2, A3> A3Asker<R, TypeTaskStage<R>, A1, A2, A3> asAsker(A3Answerer<ACT, R, A1, A2, A3> answerer);
+    <R, A1, A2, A3> A3Asker<R, TypeStage<R>, A1, A2, A3> asAsker(A3Answerer<ACT, R, A1, A2, A3> answerer);
 
-    <R, A1, A2, A3, A4> A4Asker<R, TypeTaskStage<R>, A1, A2, A3, A4> asAsker(A4Answerer<ACT, R, A1, A2, A3, A4> answerer);
+    <R, A1, A2, A3, A4> A4Asker<R, TypeStage<R>, A1, A2, A3, A4> asAsker(A4Answerer<ACT, R, A1, A2, A3, A4> answerer);
 
-    <R, A1, A2, A3, A4, A5> A5Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5> asAsker(A5Answerer<ACT, R, A1, A2, A3, A4, A5> answerer);
+    <R, A1, A2, A3, A4, A5> A5Asker<R, TypeStage<R>, A1, A2, A3, A4, A5> asAsker(A5Answerer<ACT, R, A1, A2, A3, A4, A5> answerer);
 
-    <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<ACT, R, A1, A2, A3, A4, A5, A6> answerer);
+    <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<ACT, R, A1, A2, A3, A4, A5, A6> answerer);
 
-    <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<ACT, R, A1, A2, A3, A4, A5, A6, A7> answerer);
+    <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<ACT, R, A1, A2, A3, A4, A5, A6, A7> answerer);
 
-    <R> A0Asker<R, TypeTaskStage<R>> asAsker(A0Caller<R> caller);
+    <R> A0Asker<R, TypeStage<R>> asAsker(A0Caller<R> caller);
 
-    <R, A1> A1Asker<R, TypeTaskStage<R>, A1> asAsker(A1Caller<R, A1> caller);
+    <R, A1> A1Asker<R, TypeStage<R>, A1> asAsker(A1Caller<R, A1> caller);
 
-    <R, A1, A2> A2Asker<R, TypeTaskStage<R>, A1, A2> asAsker(A2Caller<R, A1, A2> caller);
+    <R, A1, A2> A2Asker<R, TypeStage<R>, A1, A2> asAsker(A2Caller<R, A1, A2> caller);
 
-    <R, A1, A2, A3> A3Asker<R, TypeTaskStage<R>, A1, A2, A3> asAsker(A3Caller<R, A1, A2, A3> caller);
+    <R, A1, A2, A3> A3Asker<R, TypeStage<R>, A1, A2, A3> asAsker(A3Caller<R, A1, A2, A3> caller);
 
-    <R, A1, A2, A3, A4> A4Asker<R, TypeTaskStage<R>, A1, A2, A3, A4> asAsker(A4Caller<R, A1, A2, A3, A4> caller);
+    <R, A1, A2, A3, A4> A4Asker<R, TypeStage<R>, A1, A2, A3, A4> asAsker(A4Caller<R, A1, A2, A3, A4> caller);
 
-    <R, A1, A2, A3, A4, A5> A5Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5> asAsker(A5Caller<R, A1, A2, A3, A4, A5> caller);
+    <R, A1, A2, A3, A4, A5> A5Asker<R, TypeStage<R>, A1, A2, A3, A4, A5> asAsker(A5Caller<R, A1, A2, A3, A4, A5> caller);
 
-    <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Caller<R, A1, A2, A3, A4, A5, A6> caller);
+    <R, A1, A2, A3, A4, A5, A6> A6Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Caller<R, A1, A2, A3, A4, A5, A6> caller);
 
-    <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeTaskStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7> caller);
+    <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, TypeStage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7> caller);
 
 }

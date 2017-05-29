@@ -3,14 +3,14 @@ package com.tny.game.actor.stage;
 /**
  * Created by Kun Yang on 16/1/22.
  */
-interface CommonTaskStage extends TaskStage {
+interface CommonStage extends Stage {
 
-    CommonTaskStage getHead();
+    CommonStage getHead();
 
-    CommonTaskStage getNext();
+    CommonStage getNext();
 
     default Object getTailResult() {
-        CommonTaskStage next = getNext();
+        CommonStage next = getNext();
         TaskFragment<?, ?> fragment = getTaskFragment();
         if (!fragment.isDone() || fragment.isFailed()) {
             return null;
@@ -21,9 +21,9 @@ interface CommonTaskStage extends TaskStage {
         }
     }
 
-    void setHead(CommonTaskStage head, TaskStageKey key);
+    void setHead(CommonStage head, TaskStageKey key);
 
-    <T extends TaskStage, OT extends T> T setNext(OT next, TaskStageKey key);
+    <T extends Stage, OT extends T> T setNext(OT next, TaskStageKey key);
 
     boolean isNoneParam();
 
@@ -42,7 +42,7 @@ interface CommonTaskStage extends TaskStage {
     TaskFragment<?, ?> getTaskFragment();
 
     default boolean isAllDone() {
-        CommonTaskStage next = getNext();
+        CommonStage next = getNext();
         TaskFragment<?, ?> fragment = getTaskFragment();
         if (!fragment.isDone())
             return false;
@@ -61,7 +61,7 @@ interface CommonTaskStage extends TaskStage {
     }
 
     default boolean isAllSuccess() {
-        CommonTaskStage next = getNext();
+        CommonStage next = getNext();
         TaskFragment<?, ?> fragment = getTaskFragment();
         if (!fragment.isSuccess())
             return false;
@@ -73,7 +73,7 @@ interface CommonTaskStage extends TaskStage {
     }
 
     default Throwable getFirstCause() {
-        CommonTaskStage next = getNext();
+        CommonStage next = getNext();
         TaskFragment<?, ?> fragment = getTaskFragment();
         if (fragment.isDone() && fragment.isFailed()) {
             return fragment.getCause();

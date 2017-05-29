@@ -1,11 +1,11 @@
 package com.tny.game.actor.stage.invok;
 
 
+import com.tny.game.actor.stage.Stage;
 import com.tny.game.actor.stage.Stageable;
-import com.tny.game.actor.stage.TaskStage;
 
 @FunctionalInterface
-public interface ApplyStageable<V, TS extends TaskStage> {
+public interface ApplyStageable<V, TS extends Stage> {
 
     Stageable<TS> stageable(V value);
 

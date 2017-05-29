@@ -7,10 +7,15 @@ import java.util.concurrent.Future;
  *
  * @author KGTny
  */
-public interface Answer<V> extends Future<V> {
+public interface Answer<V> extends Future<V>, DoneSupplier<V> {
 
     boolean isFail();
 
     Throwable getCause();
+
+    @Override
+    default boolean isCompleted() {
+        return this.isDone();
+    }
 
 }

@@ -4,12 +4,12 @@ package com.tny.game.actor.stage;
  * 默认阶段实现
  * Created by Kun Yang on 16/1/22.
  */
-abstract class DefaultTaskStage<R> extends BaseTaskStage<R> {
+abstract class DefaultStage<R> extends BaseStage<R> {
 
     protected TaskFragment<Object, R> fragment;
 
     @SuppressWarnings("unchecked")
-    public DefaultTaskStage(CommonTaskStage head, TaskFragment<?, R> fragment) {
+    public DefaultStage(CommonStage head, TaskFragment<?, R> fragment) {
         super(head);
         this.fragment = (TaskFragment<Object, R>) fragment;
     }

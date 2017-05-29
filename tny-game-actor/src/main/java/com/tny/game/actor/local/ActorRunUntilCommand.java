@@ -1,9 +1,9 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.actor.stage.VoidTaskStage;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.actor.stage.VoidStage;
 import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneUtils;
 
 import java.util.function.Predicate;
 
@@ -11,15 +11,15 @@ import java.util.function.Predicate;
  * Actor Runnable 命令
  * Created by Kun Yang on 16/4/26.
  */
-public class ActorRunUntilCommand<A extends BaseAnswer<Void, VoidTaskStage>> extends ActorAnswerCommand<Void, VoidTaskStage, A> {
+public class ActorRunUntilCommand<A extends BaseAnswer<Void, VoidStage>> extends ActorAnswerCommand<Void, VoidStage, A> {
 
     private Predicate<LocalActor> predicate;
 
-    ActorRunUntilCommand(ActorCell actorCell, Predicate<LocalActor> predicate, VoidTaskStage stage) {
+    ActorRunUntilCommand(ActorCell actorCell, Predicate<LocalActor> predicate, VoidStage stage) {
         this(actorCell, predicate, null, stage);
     }
 
-    ActorRunUntilCommand(ActorCell actorCell, Predicate<LocalActor> predicate, A answer, VoidTaskStage stage) {
+    ActorRunUntilCommand(ActorCell actorCell, Predicate<LocalActor> predicate, A answer, VoidStage stage) {
         super(actorCell, answer, stage);
         this.predicate = predicate;
     }

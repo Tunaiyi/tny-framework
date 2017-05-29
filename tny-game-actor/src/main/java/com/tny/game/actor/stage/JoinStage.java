@@ -6,14 +6,14 @@ import com.tny.game.actor.stage.Stages.JoinFragment;
 /**
  * Created by Kun Yang on 16/1/22.
  */
-class JoinTaskStage<TS extends TaskStage> extends BaseTaskStage<Object> {
+class JoinStage<TS extends Stage> extends BaseStage<Object> {
 
-    protected JoinFragment<?, Object, ? extends TaskStage> targetFragment;
+    protected JoinFragment<?, Object, ? extends Stage> targetFragment;
 
     @SuppressWarnings("unchecked")
-    public JoinTaskStage(CommonTaskStage head, JoinFragment<?, ?, TS> fragment) {
+    public JoinStage(CommonStage head, JoinFragment<?, ?, TS> fragment) {
         super(head);
-        this.targetFragment = (JoinFragment<?, Object, TaskStage>) fragment;
+        this.targetFragment = (JoinFragment<?, Object, Stage>) fragment;
     }
 
     @Override
@@ -37,7 +37,7 @@ class JoinTaskStage<TS extends TaskStage> extends BaseTaskStage<Object> {
                 targetFragment.execute(returnVal, e);
                 if (!targetFragment.isDone())
                     return;
-                CommonTaskStage stage = (CommonTaskStage) targetFragment.getStage();
+                CommonStage stage = (CommonStage) targetFragment.getStage();
                 stage.setHead(this.head, key);
                 stage.setNext(this.next, key);
                 this.setNext(stage, key);

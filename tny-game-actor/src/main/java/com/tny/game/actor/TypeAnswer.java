@@ -7,7 +7,7 @@ package com.tny.game.actor;
  * @param <V>
  * @author KGTny
  */
-public interface TypeAnswer<V> extends Answer<V>, Available<V> {
+public interface TypeAnswer<V> extends Answer<V> {
 
     /**
      * @param listener 添加未来响应监听器

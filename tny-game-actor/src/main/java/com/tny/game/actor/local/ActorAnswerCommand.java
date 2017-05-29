@@ -1,13 +1,13 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.actor.stage.TaskStage;
+import com.tny.game.actor.stage.Stage;
 
 /**
  * Actor命令 持有Answer的Actor命令
  * Created by Kun Yang on 16/4/26.
  */
-public abstract class ActorAnswerCommand<T, TS extends TaskStage, A extends BaseAnswer<T, TS>> extends ActorCommand<T, TS, A> {
+public abstract class ActorAnswerCommand<T, TS extends Stage, A extends BaseAnswer<T, TS>> extends ActorCommand<T, TS, A> {
 
     private A answer;
 

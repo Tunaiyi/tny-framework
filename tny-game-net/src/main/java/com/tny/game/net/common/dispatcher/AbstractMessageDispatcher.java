@@ -1,11 +1,6 @@
 package com.tny.game.net.common.dispatcher;
 
 import com.tny.game.LogUtils;
-import com.tny.game.actor.Answer;
-import com.tny.game.actor.TypeAnswer;
-import com.tny.game.actor.VoidAnswer;
-import com.tny.game.actor.stage.StageUtils;
-import com.tny.game.actor.stage.TaskStage;
 import com.tny.game.common.ExceptionUtils;
 import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.result.ResultCode;
@@ -655,71 +650,6 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         Throwable getCause();
 
         Object getResult();
-
-    }
-
-    private static class TaskStageCommandFuture implements CommandFuture {
-
-        private TaskStage stage;
-
-        TaskStageCommandFuture(TaskStage stage) {
-            this.stage = stage;
-        }
-
-        @Override
-        public boolean isDone() {
-            return stage.isDone();
-        }
-
-        @Override
-        public boolean isSuccess() {
-            return stage.isSuccess();
-        }
-
-        @Override
-        public Throwable getCause() {
-            return stage.getCause();
-        }
-
-        @Override
-        public Object getResult() {
-            return StageUtils.getCause(stage);
-        }
-
-    }
-
-    private static class AnswerCommandFuture implements CommandFuture {
-
-        private Answer<?> answer;
-
-        AnswerCommandFuture(Answer<?> answer) {
-            this.answer = answer;
-        }
-
-        @Override
-        public boolean isDone() {
-            return answer.isDone();
-        }
-
-        @Override
-        public boolean isSuccess() {
-            return !answer.isFail();
-        }
-
-        @Override
-        public Throwable getCause() {
-            return answer.getCause();
-        }
-
-        @Override
-        public Object getResult() {
-            if (this.answer instanceof VoidAnswer) {
-                return null;
-            } else if (this.answer instanceof TypeAnswer) {
-                return ((TypeAnswer) this.answer).achieve().get();
-            }
-            return null;
-        }
 
     }
 

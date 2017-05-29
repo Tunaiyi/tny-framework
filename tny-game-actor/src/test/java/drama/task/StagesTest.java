@@ -1,11 +1,11 @@
 package drama.task;
 
-import com.tny.game.actor.Available;
+import com.tny.game.actor.DoneSupplier;
 import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TypeTaskStage;
-import com.tny.game.actor.stage.VoidTaskStage;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.actor.stage.TypeStage;
+import com.tny.game.actor.stage.VoidStage;
 import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneUtils;
 import org.jmock.Expectations;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class StagesTest extends TaskStageTestUnits {
             oneOf(fn).run();
         }});
         checkStage(
-                Stages.run(fn::run)
+                Stages.of(fn::run)
                 , true
         );
         context.assertIsSatisfied();
@@ -46,7 +46,7 @@ public class StagesTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.supply(fn::get)
+                Stages.of(fn::get)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -72,7 +72,7 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitRun1() throws Exception {
-        VoidTaskStage stage = checkStage(
+        VoidStage stage = checkStage(
                 Stages.waitUntil(() -> false, Duration.ofMillis(10))
                 , false
         );
@@ -101,8 +101,8 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        Available<String> fn = DoneUtils::fail;
-        TypeTaskStage<String> stage = checkStage(
+        DoneSupplier<String> fn = DoneUtils::fail;
+        TypeStage<String> stage = checkStage(
                 Stages.waitFor(fn, TIME_100)
                 , false, null
         );
@@ -132,7 +132,7 @@ public class StagesTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
 
-        TypeTaskStage<String> stage = checkStage(
+        TypeStage<String> stage = checkStage(
                 Stages.waitFor(future, TIME_100)
                 , false, null
         );

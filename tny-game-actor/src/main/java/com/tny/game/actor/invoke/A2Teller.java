@@ -2,7 +2,7 @@ package com.tny.game.actor.invoke;
 
 
 import com.tny.game.actor.VoidAnswer;
-import com.tny.game.actor.stage.TaskStage;
+import com.tny.game.actor.stage.Stage;
 
 public interface A2Teller<A1, A2> extends Teller<A2Teller<A1, A2>> {
 
@@ -10,6 +10,6 @@ public interface A2Teller<A1, A2> extends Teller<A2Teller<A1, A2>> {
 
     VoidAnswer tellOf(A1 arg1, A2 arg2);
 
-    TaskStage telling(A1 arg1, A2 arg2);
+    Stage telling(A1 arg1, A2 arg2);
 
 }

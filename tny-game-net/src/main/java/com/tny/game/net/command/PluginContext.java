@@ -15,7 +15,7 @@ public class PluginContext {
 
     public PluginContext(ControllerPlugin plugin) {
         this.plugin = plugin;
-        this.nextContext = new PluginContext(null);
+        this.nextContext = null;
     }
 
     @SuppressWarnings("unchecked")

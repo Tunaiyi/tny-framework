@@ -5,9 +5,9 @@ import com.tny.game.actor.Actor;
 import com.tny.game.actor.Completable;
 import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.invoke.*;
+import com.tny.game.actor.stage.Stage;
 import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TaskStage;
-import com.tny.game.actor.stage.VoidTaskStage;
+import com.tny.game.actor.stage.VoidStage;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -16,9 +16,9 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
 
-    protected ActorCommand<Void, VoidTaskStage, LocalVoidAnswer> command;
+    protected ActorCommand<Void, VoidStage, LocalVoidAnswer> command;
 
-    protected VoidTaskStage stage;
+    protected VoidStage stage;
 
     protected ActorCell actorCell;
 
@@ -31,13 +31,13 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public TE then(Consumer<VoidTaskStage> initStage) {
+    public TE then(Consumer<VoidStage> initStage) {
         this.stage = stage();
         initStage.accept(this.stage);
         return (TE) this;
     }
 
-    protected VoidTaskStage stage() {
+    protected VoidStage stage() {
         if (this.stage == null)
             this.stage = Stages.waitUntil(this);
         return this.stage;
@@ -69,9 +69,8 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling() {
+        public Stage telling() {
             this.tell();
-            ;
             return this.stage();
         }
 
@@ -101,7 +100,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling() {
+        public Stage telling() {
             this.tell();
             return this.stage();
         }
@@ -131,7 +130,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1) {
+        public Stage telling(A1 arg1) {
             this.tell(arg1);
             return this.stage();
         }
@@ -160,7 +159,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2) {
+        public Stage telling(A1 arg1, A2 arg2) {
             this.tell(arg1, arg2);
             return this.stage();
         }
@@ -189,7 +188,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2, A3 arg3) {
+        public Stage telling(A1 arg1, A2 arg2, A3 arg3) {
             this.tell(arg1, arg2, arg3);
             return this.stage();
         }
@@ -219,7 +218,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4) {
+        public Stage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4) {
             this.tell(arg1, arg2, arg3, arg4);
             return this.stage();
         }
@@ -249,7 +248,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5) {
+        public Stage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5) {
             this.tell(arg1, arg2, arg3, arg4, arg5);
             return this.stage();
         }
@@ -279,7 +278,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6) {
+        public Stage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6) {
             this.tell(arg1, arg2, arg3, arg4, arg5, arg6);
             return this.stage();
         }
@@ -309,7 +308,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
         }
 
         @Override
-        public TaskStage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6, A7 arg7) {
+        public Stage telling(A1 arg1, A2 arg2, A3 arg3, A4 arg4, A5 arg5, A6 arg6, A7 arg7) {
             this.tell(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
             return this.stage();
         }
