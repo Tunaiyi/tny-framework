@@ -187,11 +187,9 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     private PluginContext putPlugin(PluginContext context, ControllerPlugin plugin) {
-        if (context == null) {
+        if (context == null)
             context = new PluginContext(plugin);
-        } else {
-            context.setNext(new PluginContext(plugin));
-        }
+        context.setNext(new PluginContext(plugin));
         return context;
     }
 
@@ -267,12 +265,12 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     protected List<ControllerPlugin> getControllerBeforePlugins() {
-        return this.beforePlugins != null ? Collections.unmodifiableList(this.beforePlugins) : this.classController.getControllerBeforePlugins();
+        return this.beforePlugins != null && !this.beforePlugins.isEmpty() ? Collections.unmodifiableList(this.beforePlugins) : this.classController.getControllerBeforePlugins();
     }
 
     @Override
     protected List<ControllerPlugin> getControllerAfterPlugins() {
-        return this.afterPlugins != null ? Collections.unmodifiableList(this.afterPlugins) : this.classController.getControllerAfterPlugins();
+        return this.afterPlugins != null && !this.afterPlugins.isEmpty() ? Collections.unmodifiableList(this.afterPlugins) : this.classController.getControllerAfterPlugins();
     }
 
     @Override
