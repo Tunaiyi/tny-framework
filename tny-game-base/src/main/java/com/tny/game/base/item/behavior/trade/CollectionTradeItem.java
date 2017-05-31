@@ -44,7 +44,7 @@ public class CollectionTradeItem implements TradeItem<ItemModel> {
         return valid;
     }
 
-    protected void collect(TradeItem<?> item) {
+    public void collect(TradeItem<?> item) {
         if (this.getItemModel().getID() == item.getItemModel().getID()) {
             if (item.isValid()) {
                 this.number = add(this.number, item.getNumber());

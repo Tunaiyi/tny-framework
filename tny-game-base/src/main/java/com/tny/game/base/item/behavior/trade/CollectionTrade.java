@@ -119,7 +119,8 @@ public class CollectionTrade implements Trade {
     }
 
     @Override
-    public void merge() {
+    public Trade merge() {
+        return this;
     }
 
     @Override
