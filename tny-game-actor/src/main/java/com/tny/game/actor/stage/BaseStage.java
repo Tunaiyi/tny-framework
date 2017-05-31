@@ -1,7 +1,7 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.stage.exception.TaskInterruptedException;
+import com.tny.game.actor.stage.exception.StageInterruptedException;
 import com.tny.game.common.reflect.ObjectUtils;
 
 /**
@@ -38,28 +38,16 @@ public abstract class BaseStage<R> implements InnerStage<R> {
     public void interrupt() {
         Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
         if (!fragment.isDone()) {
-            fragment.fail(new TaskInterruptedException("stage was interrupted"));
+            fragment.fail(new StageInterruptedException("stage was interrupted"));
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void run(Fragment<?, ?> prev, Object returnVal, Throwable e) {
+    public void run(Object returnVal, Throwable e) {
         Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
-        while (true) {
-            if (fragment.isDone()) {
-                // if (next != null && next.isCanRun(fragment)) {
-                //     if (next.isNoneParam())
-                //         next.run(fragment, null, fragment.getCause(), key);
-                //     else
-                //         next.run(fragment, fragment.getResult(), fragment.getCause(), key);
-                // }
-                // return;
-            } else {
-                fragment.execute(returnVal, e);
-                if (!fragment.isDone())
-                    return;
-            }
+        if (!fragment.isDone()) {
+            fragment.execute(returnVal, e);
         }
     }
 

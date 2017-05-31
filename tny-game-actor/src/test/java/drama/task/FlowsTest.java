@@ -2,7 +2,8 @@ package drama.task;
 
 import com.tny.game.actor.DoneSupplier;
 import com.tny.game.actor.stage.Flows;
-import com.tny.game.actor.stage.Stage;
+import com.tny.game.actor.stage.TypeFlow;
+import com.tny.game.actor.stage.VoidFlow;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
 import org.jmock.Expectations;
@@ -21,7 +22,7 @@ import static org.junit.Assert.*;
  * Created by Kun Yang on 16/1/25.
  */
 @SuppressWarnings("unchecked")
-public class StagesTest extends TaskStageTestUnits {
+public class FlowsTest extends FlowTestUnits {
 
     @Test
     public void testRun() throws Exception {
@@ -29,7 +30,7 @@ public class StagesTest extends TaskStageTestUnits {
         context.checking(new Expectations() {{
             oneOf(fn).run();
         }});
-        checkStage(
+        checkFlow(
                 Flows.of(fn::run)
                 , true
         );
@@ -45,7 +46,7 @@ public class StagesTest extends TaskStageTestUnits {
             oneOf(fn).get();
             will(returnValue(value));
         }});
-        checkStage(
+        checkFlow(
                 Flows.of(fn::get)
                 , true, value
         );
@@ -63,7 +64,7 @@ public class StagesTest extends TaskStageTestUnits {
                     returnValue(true)
             ));
         }});
-        checkStage(
+        checkFlow(
                 Flows.waitUntil(fn::getAsBoolean)
                 , true
         );
@@ -72,11 +73,11 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitRun1() throws Exception {
-        Stage<Void> stage = checkStage(
+        VoidFlow flow = checkFlow(
                 Flows.waitUntil(() -> false, Duration.ofMillis(10))
                 , false
         );
-        assertNotNull(stage.getCause());
+        assertNotNull(flow.getCause());
         context.assertIsSatisfied();
     }
 
@@ -91,7 +92,7 @@ public class StagesTest extends TaskStageTestUnits {
                     returnValue(DoneUtils.succ(value))
             ));
         }});
-        checkStage(
+        checkFlow(
                 Flows.waitFor(fn::get)
                 , true, value
         );
@@ -102,11 +103,11 @@ public class StagesTest extends TaskStageTestUnits {
     @Test
     public void testAwaitSupply1() throws Exception {
         DoneSupplier<String> fn = DoneUtils::fail;
-        Stage<String> stage = checkStage(
+        TypeFlow<String> flow = checkFlow(
                 Flows.waitFor(fn, TIME_100)
                 , false, null
         );
-        assertNotNull(stage.getCause());
+        assertNotNull(flow.getCause());
         context.assertIsSatisfied();
     }
 
@@ -116,7 +117,7 @@ public class StagesTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis(), TimeUnit.MILLISECONDS);
 
-        checkStage(
+        checkFlow(
                 Flows.waitFor(future)
                 , true, value
         );
@@ -132,12 +133,12 @@ public class StagesTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
 
-        Stage<String> stage = checkStage(
+        TypeFlow<String> flow = checkFlow(
                 Flows.waitFor(future, TIME_100)
                 , false, null
         );
 
-        assertNotNull(stage.getCause());
+        assertNotNull(flow.getCause());
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
         context.assertIsSatisfied();
 
@@ -146,7 +147,7 @@ public class StagesTest extends TaskStageTestUnits {
     @Test
     public void yieldForWait2() throws Exception {
         long time = System.currentTimeMillis();
-        checkStage(
+        checkFlow(
                 Flows.waitTime(TIME_100)
                 , true
         );
@@ -158,7 +159,7 @@ public class StagesTest extends TaskStageTestUnits {
     @Test
     public void yieldForWait3() throws Exception {
         long time = System.currentTimeMillis();
-        checkStage(
+        checkFlow(
                 Flows.waitTime(value, TIME_100)
                 , true, value
         );

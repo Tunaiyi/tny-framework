@@ -1,12 +1,12 @@
 package drama.test;
 
 import com.google.common.collect.Lists;
-import com.tny.game.actor.ActorPath;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TestClass {
@@ -49,9 +49,13 @@ public class TestClass {
         System.out.println(newPersons);
     }
 
+
+    public static String ELEMENT_REGEX_STR = "(?:[-\\w:@&=+,.!~*'_;]|%\\p{XDigit}{2})(?:[-\\w:@&=+,.!~*'$_;]|%\\p{XDigit}{2})*";
+    public static Pattern ELEMENT_REGEX = Pattern.compile(ELEMENT_REGEX_STR);
+
     private boolean match(String value) {
         System.out.print(value + " = ");
-        return ActorPath.ELEMENT_REGEX.matcher(value).matches();
+        return ELEMENT_REGEX.matcher(value).matches();
     }
 
     @Test

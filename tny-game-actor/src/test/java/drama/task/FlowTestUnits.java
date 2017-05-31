@@ -1,8 +1,8 @@
 package drama.task;
 
 
-import com.tny.game.actor.stage.Flows;
-import com.tny.game.actor.stage.Stage;
+import com.tny.game.actor.stage.Flow;
+import com.tny.game.actor.stage.TypeFlow;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 
@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Kun Yang on 16/1/25.
  */
-public class TaskStageTestUnits {
+public class FlowTestUnits {
 
     Mockery context = new JUnit4Mockery();
 
@@ -30,35 +30,35 @@ public class TaskStageTestUnits {
 
     static final Duration TIME_200 = Duration.ofMillis(200);
 
-    public <TS extends Stage> TS checkStage(TS stage, boolean success) {
-        while (!stage.isDone()) {
-            Flows.process(stage);
+    public <TS extends Flow> TS checkFlow(TS flow, boolean success) {
+        while (!flow.isDone()) {
+            flow.run();
         }
-        boolean result = stage.isSuccess();
+        boolean result = flow.isSuccess();
         if (!result && success) {
             System.out.println("TaskStage异常");
-            stage.getCause().printStackTrace();
-            assertEquals(exception, stage.getCause());
+            flow.getCause().printStackTrace();
+            assertEquals(exception, flow.getCause());
         }
         assertEquals("TaskStage 结果 : ", success, result);
-        return stage;
+        return flow;
     }
 
-    public <T, TS extends Stage<T>> TS checkStage(TS stage, boolean success, T object) {
-        while (!stage.isDone()) {
-            Flows.process(stage);
+    public <T, TS extends TypeFlow<T>> TS checkFlow(TS flow, boolean success, T object) {
+        while (!flow.isDone()) {
+            flow.run();
         }
-        boolean result = stage.isSuccess();
+        boolean result = flow.isSuccess();
         if (!result && success) {
             System.out.println("TaskStage异常");
-            stage.getCause().printStackTrace();
+            flow.getCause().printStackTrace();
         }
         assertEquals("TaskStage 结果 : ", success, result);
         if (object == null)
-            assertNull(stage.getResult());
+            assertNull(flow.getResult().get());
         else
-            assertEquals("TaskStage 结果 : ", object, stage.getResult());
-        return stage;
+            assertEquals("TaskStage 结果 : ", object, flow.getResult().get());
+        return flow;
     }
 
 }

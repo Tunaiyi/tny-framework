@@ -24,7 +24,6 @@ public interface TypeFlow<V> extends Flow {
      * 将fn返回的Completable加入Stage,并等待Completable完成
      *
      * @param fn 业务方法
-     * @param fn 业务方法
      * @return 返回无类型Stage
      */
     default VoidFlow joinUntil(Function<V, Completable> fn) {
@@ -39,11 +38,11 @@ public interface TypeFlow<V> extends Flow {
 
     <T> TypeFlow<T> joinFor(Object name, Function<V, DoneSupplier<T>> fn);
 
-    default <TS extends Stage> TS join(Function<V, TS> fn) {
-        return this.join(null, fn);
-    }
+    // default <TS extends Stage> TS join(Function<V, TS> fn) {
+    //     return this.join(null, fn);
+    // }
 
-    <TS extends Stage> TS join(Object name, Function<V, TS> fn);
+    // <TS extends Stage> TS join(Object name, Function<V, TS> fn);
 
     default VoidFlow thenAccept(Consumer<V> fn) {
         return this.thenAccept(null, fn);
@@ -82,7 +81,7 @@ public interface TypeFlow<V> extends Flow {
     <T> TypeFlow<T> waitFor(Object name, Function<V, Done<T>> fn);
 
     default <T> TypeFlow<T> waitFor(Function<V, Done<T>> fn, Duration timeout) {
-        return this.waitFor(null, fn);
+        return this.waitFor(null, fn, timeout);
     }
 
     <T> TypeFlow<T> waitFor(Object name, Function<V, Done<T>> fn, Duration timeout);
@@ -94,7 +93,7 @@ public interface TypeFlow<V> extends Flow {
     VoidFlow waitUntil(Object name, Predicate<V> fn);
 
     default VoidFlow waitUntil(Predicate<V> fn, Duration timeout) {
-        return this.waitUntil(null, fn);
+        return this.waitUntil(null, fn, timeout);
     }
 
     VoidFlow waitUntil(Object name, Predicate<V> fn, Duration timeout);

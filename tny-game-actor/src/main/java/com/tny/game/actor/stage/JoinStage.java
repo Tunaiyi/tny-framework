@@ -1,7 +1,7 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.stage.Flows.JoinFragment;
+import com.tny.game.actor.stage.Stages.JoinFragment;
 
 /**
  * Created by Kun Yang on 16/1/22.
@@ -34,25 +34,14 @@ class JoinStage<T> extends BaseStage<Stage<T>> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void run(Fragment<?, ?> prev, Object returnVal, Throwable e) {
-        while (true) {
-            if (this.targetFragment.isDone()) {
-                // if (next != null && next.isCanRun(targetFragment)) {
-                //     if (next.isNoneParam())
-                //         next.run(targetFragment, null, targetFragment.getCause(), key);
-                //     else
-                //         next.run(targetFragment, returnVal, targetFragment.getCause(), key);
-                // }
+    public void run(Object returnVal, Throwable e) {
+        if (!this.targetFragment.isDone()) {
+            targetFragment.execute(returnVal, e);
+            if (!targetFragment.isDone())
                 return;
-            } else {
-                targetFragment.execute(returnVal, e);
-                if (!targetFragment.isDone())
-                    return;
-                InnerStage stage = (InnerStage) targetFragment.getStage();
-                // stage.setHead(this.head, key);
-                stage.setNext(this.next);
-                this.setNext(stage);
-            }
+            InnerStage stage = (InnerStage) targetFragment.getStage();
+            stage.setNext(this.next);
+            this.setNext(stage);
         }
     }
 

@@ -2,7 +2,7 @@ package com.tny.game.actor.stage;
 
 
 import com.tny.game.actor.DoneSupplier;
-import com.tny.game.actor.stage.exception.TaskException;
+import com.tny.game.actor.stage.exception.StageException;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
 
@@ -29,9 +29,9 @@ public class FutureAwait<T> implements DoneSupplier<T> {
             try {
                 return DoneUtils.succ(future.get());
             } catch (ExecutionException e) {
-                throw new TaskException(e.getCause());
+                throw new StageException(e.getCause());
             } catch (InterruptedException e) {
-                throw new TaskException(e);
+                throw new StageException(e);
             }
         }
     }

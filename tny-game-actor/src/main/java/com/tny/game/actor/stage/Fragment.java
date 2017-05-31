@@ -8,6 +8,7 @@ import com.tny.game.common.ExceptionUtils;
  */
 public abstract class Fragment<V, R> {
 
+
     /* 片段是否完成 */
     private boolean done;
 
@@ -55,7 +56,7 @@ public abstract class Fragment<V, R> {
      */
     @SuppressWarnings("unchecked")
     protected void finish(Object result) {
-        ExceptionUtils.checkState(!done, "设置运行成功结果时错误, 运行结果已经完成");
+        ExceptionUtils.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
         this.done = true;
         this.result = (R) result;
     }
@@ -66,34 +67,9 @@ public abstract class Fragment<V, R> {
      * @param cause
      */
     protected void fail(Throwable cause) {
-        ExceptionUtils.checkState(!done, "设置运行失败结果时错误, 运行结果已经完成");
+        ExceptionUtils.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
         this.done = true;
         this.cause = cause;
-    }
-
-    /**
-     * 强制改变运行结果
-     *
-     * @param result 结果值
-     */
-    @SuppressWarnings("unchecked")
-    protected void obtrudeResult(Object result) {
-        ExceptionUtils.checkState(done, "强制设置运行成功结果时错误, 运行结果未完成");
-        this.done = true;
-        this.cause = null;
-        this.result = (R) result;
-    }
-
-    /**
-     * 强制改变运行结果错误
-     *
-     * @param result 结果值
-     */
-    protected void obtrudeCause(Throwable result) {
-        ExceptionUtils.checkState(done, "强制设置运行成功结果时错误, 运行结果未完成");
-        this.done = true;
-        this.cause = result;
-        this.result = null;
     }
 
     /**
@@ -102,7 +78,7 @@ public abstract class Fragment<V, R> {
      * @return
      */
     public boolean isFailed() {
-        return done && cause != null;
+        return this.done && this.cause != null;
     }
 
     /**
@@ -111,7 +87,7 @@ public abstract class Fragment<V, R> {
      * @return
      */
     public boolean isSuccess() {
-        return done && cause == null;
+        return this.done && this.cause == null;
     }
 
     /**
@@ -120,7 +96,7 @@ public abstract class Fragment<V, R> {
      * @return
      */
     public boolean isDone() {
-        return done;
+        return this.done;
     }
 
     /**
@@ -136,6 +112,31 @@ public abstract class Fragment<V, R> {
     public Object getResult() {
         return this.result;
     }
+
+    // /**
+    //  * 强制改变运行结果
+    //  *
+    //  * @param result 结果值
+    //  */
+    // @SuppressWarnings("unchecked")
+    // protected void obtrudeResult(Object result) {
+    //     ExceptionUtils.checkState(isDone(), "强制设置运行成功结果时错误, 运行结果未完成");
+    //     this.done = true;
+    //     this.cause = null;
+    //     this.result = (R) result;
+    // }
+
+    // /**
+    //  * 强制改变运行结果错误
+    //  *
+    //  * @param result 结果值
+    //  */
+    // protected void obtrudeCause(Throwable result) {
+    //     ExceptionUtils.checkState(done, "强制设置运行成功结果时错误, 运行结果未完成");
+    //     this.done = true;
+    //     this.cause = result;
+    //     this.result = null;
+    // }
 
 
 }

@@ -16,11 +16,11 @@ interface InnerStage<R> extends Stage<R> {
 
     void setNext(InnerStage next);
 
-    default boolean isCanRun(Fragment<?, ?> prev) {
+    default boolean isCanRun(Fragment prev) {
         return prev == null || doCheck(prev);
     }
 
-    default boolean doCheck(Fragment<?, ?> prev) {
+    default boolean doCheck(Fragment prev) {
         return prev.isSuccess();
     }
 
@@ -28,7 +28,7 @@ interface InnerStage<R> extends Stage<R> {
         return getFragment().isNoneParam();
     }
 
-    void run(Fragment<?, ?> prev, Object returnVal, Throwable e);
+    void run(Object returnVal, Throwable e);
 
     void interrupt();
 
@@ -55,6 +55,10 @@ interface InnerStage<R> extends Stage<R> {
     @Override
     default R getResult() {
         return ObjectUtils.as(this.getFragment().getResult());
+    }
+
+    default boolean hasNext() {
+        return this.getNext() != null;
     }
 
     //region Join 链接另一个fn返回的代码段

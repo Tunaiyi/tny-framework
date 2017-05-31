@@ -10,9 +10,4 @@ class ThenSuccessStage<R> extends DefaultStage<R> {
         super((name), fragment);
     }
 
-    @Override
-    public boolean doCheck(Fragment<?, ?> prev) {
-        return super.doCheck(prev);
-    }
-
 }
