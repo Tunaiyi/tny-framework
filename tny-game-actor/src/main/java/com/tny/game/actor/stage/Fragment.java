@@ -6,7 +6,7 @@ import com.tny.game.common.ExceptionUtils;
  * 代码片段对象
  * Created by Kun Yang on 16/1/22.
  */
-public abstract class TaskFragment<V, R> {
+public abstract class Fragment<V, R> {
 
     /* 片段是否完成 */
     private boolean done;
@@ -21,7 +21,7 @@ public abstract class TaskFragment<V, R> {
         return false;
     }
 
-    protected TaskFragment() {
+    protected Fragment() {
         done = false;
     }
 
@@ -31,9 +31,10 @@ public abstract class TaskFragment<V, R> {
      * @param returnVal 上个片段的返回值
      * @param cause     上个片段失败的原因
      */
-    protected void execute(V returnVal, Throwable cause) {
+    @SuppressWarnings("unchecked")
+    protected void execute(Object returnVal, Throwable cause) {
         try {
-            doExecute(returnVal, cause);
+            doExecute((V) returnVal, cause);
         } catch (Throwable e) {
             fail(e);
         }

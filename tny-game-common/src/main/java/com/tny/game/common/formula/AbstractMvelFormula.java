@@ -1,5 +1,6 @@
 package com.tny.game.common.formula;
 
+import com.tny.game.common.MVELHelper;
 import com.tny.game.number.NumberUtils;
 import org.mvel2.ParserContext;
 
@@ -15,6 +16,7 @@ public abstract class AbstractMvelFormula extends AbstractFormula {
     protected final static Set<Method> methodSet = new HashSet<>();
 
     static {
+        Collections.addAll(methodSet, MVELHelper.class.getMethods());
         Collections.addAll(methodSet, Math.class.getMethods());
         Collections.addAll(methodSet, MathEx.class.getMethods());
         Collections.addAll(methodSet, NumberUtils.class.getDeclaredMethods());

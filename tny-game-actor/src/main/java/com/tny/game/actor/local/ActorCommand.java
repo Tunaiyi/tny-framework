@@ -3,9 +3,8 @@ package com.tny.game.actor.local;
 import com.tny.game.actor.Answer;
 import com.tny.game.actor.exception.ActorCommandCancelledException;
 import com.tny.game.actor.exception.ActorCommandExecuteException;
+import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.Stage;
-import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TypeStage;
 import com.tny.game.actor.stage.exception.TaskInterruptedException;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
@@ -63,7 +62,7 @@ public abstract class ActorCommand<T, TS extends Stage, A extends Answer<T>> imp
                 return;
             if (cancelled) {
                 if (this.stage != null) {
-                    Stages.cancel(stage);
+                    Flows.cancel(stage);
                     this.checkStageResult();
                 } else {
                     this.fail(new ActorCommandCancelledException(this), true);
@@ -83,7 +82,7 @@ public abstract class ActorCommand<T, TS extends Stage, A extends Answer<T>> imp
             }
             if (this.handleResult.isSuccess() && stage != null) {
                 if (!this.stage.isDone()) {
-                    Stages.process(this.stage);
+                    Flows.process(this.stage);
                     boolean stageDone = this.stage.isDone();
                     if (!stageDone)
                         return;
@@ -181,8 +180,8 @@ public abstract class ActorCommand<T, TS extends Stage, A extends Answer<T>> imp
     public Object getResult() {
         if (isDone()) {
             if (this.stage != null) {
-                if (this.stage instanceof TypeStage)
-                    return ((TypeStage<T>) this.stage).getResult();
+                if (this.stage instanceof Stage)
+                    return ((Stage<T>) this.stage).getResult();
                 return null;
             } else {
                 return this.result.get();

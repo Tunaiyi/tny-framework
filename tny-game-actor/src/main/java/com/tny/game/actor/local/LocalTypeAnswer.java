@@ -3,12 +3,12 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.AnswerListener;
 import com.tny.game.actor.TypeAnswer;
-import com.tny.game.actor.stage.TypeStage;
+import com.tny.game.actor.stage.Stage;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-class LocalTypeAnswer<T> extends BaseAnswer<T, TypeStage<T>> implements TypeAnswer<T> {
+class LocalTypeAnswer<T> extends BaseAnswer<T, Stage<T>> implements TypeAnswer<T> {
 
     private volatile List<AnswerListener<T>> listeners;
 

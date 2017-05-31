@@ -1,8 +1,8 @@
 package drama.task;
 
 
-import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TypeStage;
+import com.tny.game.actor.stage.Flows;
+import com.tny.game.actor.stage.Stage;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
@@ -27,15 +27,15 @@ public class TypeStageTest extends TaskStageTestUnits {
     @Test
     public void testJoinApply() throws Exception {
         final Supplier<String> fn = context.mock(Supplier.class);
-        final Function<String, TypeStage<String>> tfn = context.mock(Function.class);
+        final Function<String, Stage<String>> tfn = context.mock(Function.class);
         context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).apply(value);
-            will(returnValue(Stages.of(() -> other)));
+            will(returnValue(Flows.of(() -> other)));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .join(tfn)
                 , true, other
         );
@@ -46,16 +46,16 @@ public class TypeStageTest extends TaskStageTestUnits {
     public void testJoinAccept() throws Exception {
         final Runnable runFn = context.mock(Runnable.class);
         final Supplier<String> fn = context.mock(Supplier.class);
-        final Function<String, TypeStage<String>> tfn = context.mock(Function.class);
+        final Function<String, Stage<String>> tfn = context.mock(Function.class);
         context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).apply(value);
-            will(returnValue(Stages.of(runFn)));
+            will(returnValue(Flows.of(runFn)));
             oneOf(runFn).run();
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .join(tfn)
                 , true
         );
@@ -73,7 +73,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(returnValue(other));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .thenApply(tfn)
                 , true, other
         );
@@ -90,7 +90,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).accept(value);
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .thenAccept(tfn)
                 , true
         );
@@ -112,7 +112,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(returnValue(other));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .doneApply(tfn)
                 , true, other
         );
@@ -127,7 +127,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.of(fn).doneApply(tfn)
+                Flows.of(fn).doneApply(tfn)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -141,7 +141,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn).doneApply(tfn)
+                Flows.of(fn).doneApply(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -154,7 +154,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .doneApply(tfn)
                 , false
         );
@@ -175,7 +175,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).handle(true, value, null);
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .doneAccept(tfn)
                 , true
         );
@@ -189,7 +189,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).handle(false, null, exception);
         }});
         checkStage(
-                Stages.of(fn).doneAccept(tfn)
+                Flows.of(fn).doneAccept(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -203,7 +203,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn).doneAccept(tfn)
+                Flows.of(fn).doneAccept(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -216,7 +216,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .doneAccept(tfn)
                 , false
         );
@@ -237,7 +237,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             never(tfn).catchThrow(null);
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .thenThrow(tfn)
                 , true, value
         );
@@ -251,7 +251,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(returnValue(other));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .thenThrow(tfn)
                 , true, other
         );
@@ -266,7 +266,7 @@ public class TypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .thenThrow(tfn)
                 , false
         );
@@ -287,7 +287,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         AtomicInteger times = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitFor((value) -> {
                             assertEquals(value, TaskStageTestUnits.value);
                             times.getAndIncrement();
@@ -317,7 +317,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time1 = System.currentTimeMillis();
         AtomicInteger times1 = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitFor((value) -> {
                             assertEquals(value, TaskStageTestUnits.value);
                             times1.getAndIncrement();
@@ -340,7 +340,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time2 = System.currentTimeMillis();
         AtomicInteger times2 = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitFor((value) -> {
                             times2.getAndIncrement();
                             if (System.currentTimeMillis() < time2 + TIME_200.toMillis())
@@ -369,7 +369,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         AtomicInteger times = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitUntil((value) -> {
                             assertEquals(value, TaskStageTestUnits.value);
                             times.getAndIncrement();
@@ -396,7 +396,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time1 = System.currentTimeMillis();
         AtomicInteger times1 = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitUntil((value) -> {
                             assertEquals(value, TaskStageTestUnits.value);
                             times1.getAndIncrement();
@@ -416,7 +416,7 @@ public class TypeStageTest extends TaskStageTestUnits {
         long time2 = System.currentTimeMillis();
         AtomicInteger times2 = new AtomicInteger(0);
         checkStage(
-                Stages.of(fn)
+                Flows.of(fn)
                         .waitUntil((value) -> {
                             times2.getAndIncrement();
                             return System.currentTimeMillis() >= time2 + TIME_200.toMillis();

@@ -1,9 +1,8 @@
 package drama.task;
 
 
+import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.Stage;
-import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TypeStage;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 
@@ -33,7 +32,7 @@ public class TaskStageTestUnits {
 
     public <TS extends Stage> TS checkStage(TS stage, boolean success) {
         while (!stage.isDone()) {
-            Stages.process(stage);
+            Flows.process(stage);
         }
         boolean result = stage.isSuccess();
         if (!result && success) {
@@ -45,9 +44,9 @@ public class TaskStageTestUnits {
         return stage;
     }
 
-    public <T, TS extends TypeStage<T>> TS checkStage(TS stage, boolean success, T object) {
+    public <T, TS extends Stage<T>> TS checkStage(TS stage, boolean success, T object) {
         while (!stage.isDone()) {
-            Stages.process(stage);
+            Flows.process(stage);
         }
         boolean result = stage.isSuccess();
         if (!result && success) {

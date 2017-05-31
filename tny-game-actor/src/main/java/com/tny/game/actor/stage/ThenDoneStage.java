@@ -6,30 +6,31 @@ package com.tny.game.actor.stage;
  */
 class ThenDoneStage<R> extends DefaultStage<R> {
 
-    public ThenDoneStage(CommonStage head, TaskFragment<?, R> fragment) {
-        super(head, fragment);
+    public ThenDoneStage(Object name, Fragment<?, R> fragment) {
+        super(name, fragment);
     }
 
     @Override
-    public boolean checkCanRun(TaskFragment<?, ?> prev) {
+    public boolean doCheck(Fragment<?, ?> prev) {
         return prev.isDone();
     }
 
     @Override
-    public void run(TaskFragment<?, ?> prev, Object returnVal, Throwable e, TaskStageKey key) {
+    public void run(Fragment<?, ?> prev, Object returnVal, Throwable e) {
         while (true) {
             if (fragment.isDone()) {
-                if (next != null && next.isCanRun(fragment)) {
-                    if (next.isNoneParam())
-                        next.run(fragment, null, fragment.getCause(), key);
-                    else
-                        next.run(fragment, fragment.getResult(), fragment.getCause(), key);
-                }
-                return;
+                // if (next != null && next.isCanRun(fragment)) {
+                //     if (next.isNoneParam())
+                //         next.run(fragment, null, fragment.getCause(), key);
+                //     else
+                //         next.run(fragment, fragment.getResult(), fragment.getCause(), key);
+                // }
+                // return;
             } else {
                 fragment.execute(returnVal, e);
                 if (fragment.isSuccess()) {
-                    prev.obtrudeResult(null);
+                    if (prev.isFailed())
+                        prev.obtrudeResult(null);
                 } else if (!fragment.isDone()) {
                     return;
                 }

@@ -5,8 +5,8 @@ import com.tny.game.actor.Actor;
 import com.tny.game.actor.Completable;
 import com.tny.game.actor.VoidAnswer;
 import com.tny.game.actor.invoke.*;
+import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.Stage;
-import com.tny.game.actor.stage.Stages;
 import com.tny.game.actor.stage.VoidStage;
 
 import java.util.function.Consumer;
@@ -39,7 +39,7 @@ class LocalTeller<TE extends Teller, R> implements Teller<TE>, Completable {
 
     protected VoidStage stage() {
         if (this.stage == null)
-            this.stage = Stages.waitUntil(this);
+            this.stage = Flows.waitUntil(this);
         return this.stage;
     }
 

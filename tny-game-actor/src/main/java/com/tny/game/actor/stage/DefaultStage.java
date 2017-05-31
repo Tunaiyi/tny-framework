@@ -6,16 +6,16 @@ package com.tny.game.actor.stage;
  */
 abstract class DefaultStage<R> extends BaseStage<R> {
 
-    protected TaskFragment<Object, R> fragment;
+    protected Fragment<Object, R> fragment;
 
     @SuppressWarnings("unchecked")
-    public DefaultStage(CommonStage head, TaskFragment<?, R> fragment) {
-        super(head);
-        this.fragment = (TaskFragment<Object, R>) fragment;
+    public DefaultStage(Object name, Fragment<?, R> fragment) {
+        super(name);
+        this.fragment = (Fragment<Object, R>) fragment;
     }
 
     @Override
-    public TaskFragment<?, ?> getTaskFragment() {
+    public Fragment<?, ?> getFragment() {
         return fragment;
     }
 

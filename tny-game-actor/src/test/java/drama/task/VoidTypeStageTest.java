@@ -1,7 +1,7 @@
 package drama.task;
 
 
-import com.tny.game.actor.stage.Stages;
+import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.invok.CatcherRun;
 import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
@@ -27,8 +27,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             exactly(3).of(fn).run();
         }});
         checkStage(
-                Stages.of(fn::run)
-                        .join(() -> Stages.of(fn::run))
+                Flows.of(fn::run)
+                        .join(() -> Flows.of(fn::run))
                         .thenRun(fn::run)
                 , true
         );
@@ -48,8 +48,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             oneOf(fn).run();
         }});
         checkStage(
-                Stages.of(fn::run)
-                        .join(() -> Stages.of(tfn::get))
+                Flows.of(fn::run)
+                        .join(() -> Flows.of(tfn::get))
                         .thenAccept(cfn::accept)
                         .thenRun(fn::run)
                 , true
@@ -65,7 +65,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             exactly(2).of(fn).run();
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .thenRun(fn::run)
                 , true
         );
@@ -83,7 +83,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .thenGet(tfn::get)
                 , true, value
         );
@@ -102,7 +102,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).run(true, null);
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .doneRun(tfn)
                 , true
         );
@@ -114,7 +114,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).run(false, exception);
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .doneRun(tfn)
@@ -129,7 +129,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .doneRun(tfn)
@@ -144,7 +144,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .doneRun(tfn)
                 , false
         );
@@ -166,7 +166,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .doneGet(tfn)
                 , true, value
         );
@@ -179,7 +179,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .doneGet(tfn)
@@ -194,7 +194,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .doneRun(rfn)
@@ -209,7 +209,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .doneGet(tfn)
                 , false, null
         );
@@ -228,7 +228,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             never(tfn).catchThrow(null);
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                         .thenThrow(tfn)
                 , true
         );
@@ -240,7 +240,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             oneOf(tfn).catchThrow(exception);
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .thenThrow(tfn)
@@ -255,7 +255,7 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             will(throwException(exception));
         }});
         checkStage(
-                Stages.of(() -> {
+                Flows.of(() -> {
                     throw exception;
                 })
                         .thenThrow(tfn)
@@ -273,8 +273,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
         }});
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.of(fn::run)
-                        .waitUntil(Stages.time(TIME_100))
+                Flows.of(fn::run)
+                        .waitUntil(Flows.time(TIME_100))
                         .thenRun(fn::run)
                 , true
         );
@@ -290,8 +290,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
         }});
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.of(fn::run)
-                        .waitUntil(Stages.time(TIME_100), TIME_200)
+                Flows.of(fn::run)
+                        .waitUntil(Flows.time(TIME_100), TIME_200)
                         .thenRun(fn::run)
                 , true
         );
@@ -302,8 +302,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             exactly(1).of(fn).run();
         }});
         checkStage(
-                Stages.of(fn::run)
-                        .waitUntil(Stages.time(TIME_200), TIME_100)
+                Flows.of(fn::run)
+                        .waitUntil(Flows.time(TIME_200), TIME_100)
                         .thenRun(fn::run)
                 , false
         );
@@ -322,8 +322,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
         }});
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.of(fn::run)
-                        .waitFor(Stages.time(value, TIME_100))
+                Flows.of(fn::run)
+                        .waitFor(Flows.time(value, TIME_100))
                         .thenApply(cfn)
                 , true, value
         );
@@ -345,8 +345,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
         }});
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.of(fn::run)
-                        .waitFor(Stages.time(value, TIME_100), TIME_200)
+                Flows.of(fn::run)
+                        .waitFor(Flows.time(value, TIME_100), TIME_200)
                         .thenApply(ffn)
                 , true, value
         );
@@ -358,8 +358,8 @@ public class VoidTypeStageTest extends TaskStageTestUnits {
             never(cfn).accept(value);
         }});
         checkStage(
-                Stages.of(fn::run)
-                        .waitFor(Stages.time(value, TIME_200), TIME_100)
+                Flows.of(fn::run)
+                        .waitFor(Flows.time(value, TIME_200), TIME_100)
                         .thenAccept(cfn::accept)
                 , false
         );

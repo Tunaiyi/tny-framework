@@ -13,7 +13,6 @@ import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.ExceptionUtils;
-import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
 
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Kun Yang on 16/1/23.
  */
-public class Stages {
+public class Flows {
 
     static final TaskStageKey KEY = new TaskStageKey() {
     };
@@ -41,24 +40,24 @@ public class Stages {
         ExceptionUtils.checkNotNull(key, "TaskStageKey is null");
     }
 
-    public static void process(Stage stage) {
-        ObjectUtils.as(stage, CommonStage.class).start();
+    public static void process(Flow flow) {
+        flow.run();
     }
 
-    public static void cancel(Stage stage) {
-        ObjectUtils.as(stage, CommonStage.class).cancel();
+    public static void cancel(Flow flow) {
+        flow.cancel();
     }
 
-    public static <T> Done<T> getResult(Stage stage) {
-        if (!stage.isDone())
-            return DoneUtils.fail();
-        if (stage instanceof TypeStage) {
-            TypeStage<T> typeStage = (TypeStage<T>) stage;
-            return DoneUtils.succNullable(typeStage.getResult());
-        } else if (stage instanceof VoidStage) {
-            return DoneUtils.succNullable(null);
-        }
-        return DoneUtils.fail();
+    public static <T> Done<T> getResult(Stage<T> stage) {
+        // if (!stage.isDone())
+        //     return DoneUtils.fail();
+        // if (stage instanceof Stage) {
+        //     Stage<T> typeStage = (Stage<T>) stage;
+        //     return DoneUtils.succNullable(typeStage.getResult());
+        // } else if (stage instanceof Stage<Void>) {
+        //     return DoneUtils.succNullable(null);
+        // }
+        return DoneUtils.succNullable(stage.getResult());
     }
 
     public static Done<Throwable> getCause(Stage stage) {
@@ -76,69 +75,69 @@ public class Stages {
     }
 
     //region then 成功时处理
-    public static VoidStage of(Runnable fn) {
+    public static Stage<Void> of(Runnable fn) {
         return new ThenSuccessStage<>(null, new RunFragment(fn));
     }
 
-    public static <T> TypeStage<T> of(Supplier<T> fn) {
+    public static <T> Stage<T> of(Supplier<T> fn) {
         return new ThenSuccessStage<>(null, new SupplyFragment<>(fn));
     }
     //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
-    public static VoidStage waitUntil(Iterable<? extends Completable> fns) {
+    public static Stage<Void> waitUntil(Iterable<? extends Completable> fns) {
         return waitUntil(fns, null);
     }
 
-    public static VoidStage waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
+    public static Stage<Void> waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
         return new AwaysStage(null, new WaitRunFragment(fns, timeout));
     }
 
-    public static VoidStage waitUntil(Completable fn) {
+    public static Stage<Void> waitUntil(Completable fn) {
         return waitUntil(fn, null);
     }
 
-    public static VoidStage waitUntil(Completable fn, Duration timeout) {
+    public static Stage<Void> waitUntil(Completable fn, Duration timeout) {
         return new AwaysStage(null, new WaitRunFragment(fn, timeout));
     }
 
-    public static VoidStage waitTime(Duration duration) {
+    public static Stage<Void> waitTime(Duration duration) {
         return waitUntil(new TimeAwait(duration)::get, null);
     }
 
-    public static <T> TypeStage<T> waitTime(T object, Duration duration) {
+    public static <T> Stage<T> waitTime(T object, Duration duration) {
         return waitFor(new TimeAwaitWith<>(object, duration)::get, null);
     }
 
-    public static <T> TypeStage<T> waitFor(DoneSupplier<T> fn) {
+    public static <T> Stage<T> waitFor(DoneSupplier<T> fn) {
         return waitFor(fn, null);
     }
 
-    public static <T> TypeStage<T> waitFor(DoneSupplier<T> fn, Duration timeout) {
+    public static <T> Stage<T> waitFor(DoneSupplier<T> fn, Duration timeout) {
         return new ThenSuccessStage<>(null, new WaitSupplyFragment<>(fn, timeout));
     }
 
-    public static <T> TypeStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns) {
+    public static <T> Stage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns) {
         return waitFor(fns, null);
     }
 
-    public static <T> TypeStage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns, Duration timeout) {
+    public static <T> Stage<List<T>> waitFor(Iterable<? extends Supplier<Done<T>>> fns, Duration timeout) {
         return new ThenSuccessStage<>(null, new WaitSupplyDoneListFragment<>(fns, timeout));
     }
 
-    public static <K, T> TypeStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns) {
+    public static <K, T> Stage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns) {
         return waitFor(fns, null);
     }
 
-    public static <K, T> TypeStage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns, Duration timeout) {
+    public static <K, T> Stage<Map<K, T>> waitFor(Map<K, ? extends Supplier<Done<T>>> fns, Duration timeout) {
         return new ThenSuccessStage<>(null, new WaitSupplyDoneMapFragment<>(fns, timeout));
     }
 
-    public static <T> TypeStage<T> waitFor(Future<T> future) {
+    public static <T> Stage<T> waitFor(Future<T> future) {
         return waitFor(future, null);
     }
 
-    public static <T> TypeStage<T> waitFor(Future<T> future, Duration duration) {
+    public static <T> Stage<T> waitFor(Future<T> future, Duration duration) {
         return waitFor(new FutureAwait<>(future), duration);
     }
 
@@ -175,11 +174,11 @@ public class Stages {
 //    }
     //endregion
 
-    static abstract class BaseTaskFragment<F, T, NR> extends TaskFragment<T, NR> {
+    static abstract class BaseFragment<F, T, NR> extends Fragment<T, NR> {
 
         protected F fn;
 
-        BaseTaskFragment(F fn) {
+        BaseFragment(F fn) {
             super();
             this.fn = fn;
         }
@@ -200,9 +199,9 @@ public class Stages {
 
     }
 
-    static abstract class VoidTaskFragment<F, NR> extends BaseTaskFragment<F, Void, NR> {
+    static abstract class VoidFragment<F, NR> extends BaseFragment<F, Void, NR> {
 
-        VoidTaskFragment(F fn) {
+        VoidFragment(F fn) {
             super(fn);
         }
 
@@ -213,15 +212,15 @@ public class Stages {
     }
 
     //region JoinFragment classes
-    static abstract class JoinFragment<F, T, TS extends Stage> extends BaseTaskFragment<F, T, TS> {
+    static abstract class JoinFragment<F, T, R> extends BaseFragment<F, T, Stage<R>> {
 
-        protected TS stage;
+        protected Stage<R> stage;
 
         JoinFragment(F fn) {
             super(fn);
         }
 
-        TS getStage() {
+        Stage<R> getStage() {
             return stage;
         }
 
@@ -239,7 +238,7 @@ public class Stages {
 
     }
 
-    static abstract class VoidJoinFragment<F, TS extends Stage> extends JoinFragment<F, Void, TS> {
+    static abstract class VoidJoinFragment<F, T> extends JoinFragment<F, Void, T> {
 
         VoidJoinFragment(F fn) {
             super(fn);
@@ -251,108 +250,107 @@ public class Stages {
         }
     }
 
-    static class JoinSupplyFragment<TS extends Stage> extends VoidJoinFragment<Supplier<TS>, TS> {
+    static class JoinSupplyFragment<T> extends VoidJoinFragment<Supplier<Stage<T>>, T> {
 
-        JoinSupplyFragment(Supplier<TS> fn) {
+        JoinSupplyFragment(Supplier<Stage<T>> fn) {
             super(fn);
         }
 
-
         @Override
-        protected TS invoke(Void returnVal, Throwable e) {
+        protected Stage<T> invoke(Void returnVal, Throwable e) {
             return fn.get();
         }
 
     }
 
-    static class JoinApplyFragment<T, TS extends Stage> extends JoinFragment<Function<T, TS>, T, TS> {
+    static class JoinApplyFragment<T, R> extends JoinFragment<Function<T, Stage<R>>, T, R> {
 
-        JoinApplyFragment(Function<T, TS> fn) {
+        JoinApplyFragment(Function<T, Stage<R>> fn) {
             super(fn);
         }
 
         @Override
-        protected TS invoke(T returnVal, Throwable e) {
+        protected Stage<R> invoke(T returnVal, Throwable e) {
             return fn.apply(returnVal);
         }
 
     }
 
-    static class JoinSupplyStageableFragment<TS extends Stage> extends VoidJoinFragment<SupplyStageable<TS>, TS> {
+    static class JoinSupplyStageableFragment<T, R> extends VoidJoinFragment<SupplyStageable<Stage<R>>, R> {
 
-        JoinSupplyStageableFragment(SupplyStageable<TS> fn) {
+        JoinSupplyStageableFragment(SupplyStageable<Stage<R>> fn) {
             super(fn);
         }
 
 
         @Override
-        protected TS invoke(Void returnVal, Throwable e) {
+        protected Stage<R> invoke(Void returnVal, Throwable e) {
             return fn.stageable().stage();
         }
 
     }
 
-    static class JoinApplyStageableFragment<T, TS extends Stage> extends JoinFragment<ApplyStageable<T, TS>, T, TS> {
+    static class JoinApplyStageableFragment<T, R> extends JoinFragment<ApplyStageable<T, Stage<R>>, T, R> {
 
-        JoinApplyStageableFragment(ApplyStageable<T, TS> fn) {
+        JoinApplyStageableFragment(ApplyStageable<T, Stage<R>> fn) {
             super(fn);
         }
 
         @Override
-        protected TS invoke(T returnVal, Throwable e) {
+        protected Stage<R> invoke(T returnVal, Throwable e) {
             return fn.stageable(returnVal).stage();
         }
 
     }
 
-    static class JoinSupplierAvailableFragment<T> extends VoidJoinFragment<Supplier<DoneSupplier<T>>, TypeStage<T>> {
+    static class JoinSupplierDoneSupplierFragment<T> extends VoidJoinFragment<Supplier<DoneSupplier<T>>, T> {
 
-        JoinSupplierAvailableFragment(Supplier<DoneSupplier<T>> fn) {
+        JoinSupplierDoneSupplierFragment(Supplier<DoneSupplier<T>> fn) {
             super(fn);
         }
 
         @Override
-        protected TypeStage<T> invoke(Void returnVal, Throwable e) {
+        protected Stage<T> invoke(Void returnVal, Throwable e) {
             return waitFor(fn.get());
         }
 
     }
 
-    static class JoinSupplierCompletableFragment extends VoidJoinFragment<Supplier<Completable>, VoidStage> {
+    static class JoinSupplierCompletableFragment extends VoidJoinFragment<Supplier<Completable>, Void> {
 
         JoinSupplierCompletableFragment(Supplier<Completable> fn) {
             super(fn);
         }
 
         @Override
-        protected VoidStage invoke(Void returnVal, Throwable e) {
+        protected Stage<Void> invoke(Void returnVal, Throwable e) {
             return waitUntil(fn.get());
         }
 
     }
 
-    static class JoinApplyCompletableFragment<R> extends JoinFragment<Function<R, Completable>, R, VoidStage> {
+    static class JoinApplyCompletableFragment<R> extends JoinFragment<Function<R, Completable>, R, Void> {
 
         JoinApplyCompletableFragment(Function<R, Completable> fn) {
             super(fn);
         }
 
         @Override
-        protected VoidStage invoke(R returnVal, Throwable e) {
+        protected Stage<Void> invoke(R returnVal, Throwable e) {
             return waitUntil(fn.apply(returnVal));
         }
 
 
     }
 
-    static class JoinApplyAvailableFragment<T, R> extends JoinFragment<Function<R, DoneSupplier<T>>, R, TypeStage<T>> {
+    static class JoinApplyDoneSupplierFragment<T, R> extends JoinFragment<Function<R, DoneSupplier<T>>, R, T> {
 
-        JoinApplyAvailableFragment(Function<R, DoneSupplier<T>> fn) {
+        JoinApplyDoneSupplierFragment(Function<R, DoneSupplier<T>> fn) {
             super(fn);
         }
 
         @Override
-        protected TypeStage<T> invoke(R returnVal, Throwable e) {
+        protected Stage<T> invoke(R returnVal, Throwable e) {
             return waitFor(fn.apply(returnVal));
         }
 
@@ -361,7 +359,7 @@ public class Stages {
     //endregion
 
     //region RunFragment classes
-    static class RunFragment extends VoidTaskFragment<Runnable, Void> {
+    static class RunFragment extends VoidFragment<Runnable, Void> {
 
         RunFragment(Runnable fn) {
             super(fn);
@@ -376,7 +374,7 @@ public class Stages {
     //endregion
 
     //region SupplyFragment classes
-    static class SupplyFragment<T> extends VoidTaskFragment<Supplier<T>, T> {
+    static class SupplyFragment<T> extends VoidFragment<Supplier<T>, T> {
 
         SupplyFragment(Supplier<T> fn) {
             super(fn);
@@ -390,7 +388,7 @@ public class Stages {
     //endregion
 
     //region ApplyFragment classes
-    static class ApplyFragment<T, R> extends BaseTaskFragment<Function<T, R>, T, R> {
+    static class ApplyFragment<T, R> extends BaseFragment<Function<T, R>, T, R> {
 
         ApplyFragment(Function<T, R> fn) {
             super(fn);
@@ -405,7 +403,7 @@ public class Stages {
 
     //region AcceptFragment classes
 
-    static class AcceptFragment<T> extends BaseTaskFragment<Consumer<T>, T, Void> {
+    static class AcceptFragment<T> extends BaseFragment<Consumer<T>, T, Void> {
 
         AcceptFragment(Consumer<T> fn) {
             super(fn);
@@ -420,7 +418,7 @@ public class Stages {
     //endregion
 
     //region doneFragment classes
-    static abstract class DoneFragment<F, T, NR> extends BaseTaskFragment<F, T, NR> {
+    static abstract class DoneFragment<F, T, NR> extends BaseFragment<F, T, NR> {
 
         DoneFragment(F fn) {
             super(fn);
@@ -512,7 +510,7 @@ public class Stages {
     //endregion
 
     //region throwFragment class
-    static abstract class ThrowFragment<F, T, NR> extends BaseTaskFragment<F, T, NR> {
+    static abstract class ThrowFragment<F, T, NR> extends BaseFragment<F, T, NR> {
 
         ThrowFragment(F fn) {
             super(fn);
@@ -578,7 +576,7 @@ public class Stages {
 
     //region waitFragment classes
 
-    static abstract class WaitFragment<F, T, R> extends BaseTaskFragment<F, T, R> {
+    static abstract class WaitFragment<F, T, R> extends BaseFragment<F, T, R> {
 
         private long timeout = -1;
         private Duration duration;

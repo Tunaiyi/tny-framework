@@ -5,16 +5,16 @@ package com.tny.game.actor.stage;
  */
 class AwaysStage extends BaseStage<Void> {
 
-    protected TaskFragment<Object, Object> fragment;
+    protected Fragment<Object, Object> fragment;
 
     @SuppressWarnings("unchecked")
-    public AwaysStage(CommonStage head, TaskFragment<?, ?> fragment) {
-        super(head);
-        this.fragment = (TaskFragment<Object, Object>) fragment;
+    public AwaysStage(Object name, Fragment<?, ?> fragment) {
+        super(name);
+        this.fragment = (Fragment<Object, Object>) fragment;
     }
 
     @Override
-    public TaskFragment<?, ?> getTaskFragment() {
+    public Fragment<?, ?> getFragment() {
         return fragment;
     }
 

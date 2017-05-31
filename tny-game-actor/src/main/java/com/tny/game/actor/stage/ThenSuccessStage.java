@@ -6,13 +6,13 @@ package com.tny.game.actor.stage;
  */
 class ThenSuccessStage<R> extends DefaultStage<R> {
 
-    public ThenSuccessStage(CommonStage head, TaskFragment<?, R> fragment) {
-        super(head, fragment);
+    public ThenSuccessStage(Object name, Fragment<?, R> fragment) {
+        super((name), fragment);
     }
 
     @Override
-    public boolean checkCanRun(TaskFragment<?, ?> prev) {
-        return super.checkCanRun(prev);
+    public boolean doCheck(Fragment<?, ?> prev) {
+        return super.doCheck(prev);
     }
 
 }

@@ -11,71 +11,50 @@ import com.tny.game.common.reflect.ObjectUtils;
 @SuppressWarnings("unchecked")
 public abstract class BaseStage<R> implements InnerStage<R> {
 
-    protected CommonStage head;
+    private Object name;
 
-    protected CommonStage next;
+    protected InnerStage next;
 
-    protected BaseStage(CommonStage head) {
-        this.head = head == null ? this : head;
+    protected BaseStage(Object name) {
+        this.name = name;
     }
 
     @Override
-    public CommonStage getHead() {
-        return head;
-    }
-
-    @Override
-    public void start() {
-        this.head.run(null, null, null, Stages.KEY);
-    }
-
-    @Override
-    public void cancel() {
-        this.head.interrupt();
-    }
-
-    @Override
-    public CommonStage getNext() {
+    public InnerStage getNext() {
         return next;
     }
 
     @Override
-    public void setHead(CommonStage head, TaskStageKey key) {
-        Stages.checkKey(key);
-        this.head = head;
-    }
-
-    @Override
-    public <T extends Stage, OT extends T> T setNext(OT next, TaskStageKey key) {
-        Stages.checkKey(key);
+    public void setNext(InnerStage next) {
         this.next = ObjectUtils.as(next);
-        return next;
+    }
+
+    @Override
+    public Object getName() {
+        return name;
     }
 
     @Override
     public void interrupt() {
-        TaskFragment<Object, ?> fragment = (TaskFragment<Object, ?>) getTaskFragment();
+        Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
         if (!fragment.isDone()) {
             fragment.fail(new TaskInterruptedException("stage was interrupted"));
-        } else {
-            if (next != null)
-                this.next.interrupt();
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void run(TaskFragment<?, ?> prev, Object returnVal, Throwable e, TaskStageKey key) {
-        TaskFragment<Object, ?> fragment = (TaskFragment<Object, ?>) getTaskFragment();
+    public void run(Fragment<?, ?> prev, Object returnVal, Throwable e) {
+        Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
         while (true) {
             if (fragment.isDone()) {
-                if (next != null && next.isCanRun(fragment)) {
-                    if (next.isNoneParam())
-                        next.run(fragment, null, fragment.getCause(), key);
-                    else
-                        next.run(fragment, fragment.getResult(), fragment.getCause(), key);
-                }
-                return;
+                // if (next != null && next.isCanRun(fragment)) {
+                //     if (next.isNoneParam())
+                //         next.run(fragment, null, fragment.getCause(), key);
+                //     else
+                //         next.run(fragment, fragment.getResult(), fragment.getCause(), key);
+                // }
+                // return;
             } else {
                 fragment.execute(returnVal, e);
                 if (!fragment.isDone())

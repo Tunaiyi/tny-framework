@@ -1,9 +1,8 @@
 package drama.task;
 
 import com.tny.game.actor.DoneSupplier;
-import com.tny.game.actor.stage.Stages;
-import com.tny.game.actor.stage.TypeStage;
-import com.tny.game.actor.stage.VoidStage;
+import com.tny.game.actor.stage.Flows;
+import com.tny.game.actor.stage.Stage;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
 import org.jmock.Expectations;
@@ -16,6 +15,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import static org.junit.Assert.*;
+
 
 /**
  * Created by Kun Yang on 16/1/25.
@@ -30,7 +30,7 @@ public class StagesTest extends TaskStageTestUnits {
             oneOf(fn).run();
         }});
         checkStage(
-                Stages.of(fn::run)
+                Flows.of(fn::run)
                 , true
         );
         context.assertIsSatisfied();
@@ -46,7 +46,7 @@ public class StagesTest extends TaskStageTestUnits {
             will(returnValue(value));
         }});
         checkStage(
-                Stages.of(fn::get)
+                Flows.of(fn::get)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -64,7 +64,7 @@ public class StagesTest extends TaskStageTestUnits {
             ));
         }});
         checkStage(
-                Stages.waitUntil(fn::getAsBoolean)
+                Flows.waitUntil(fn::getAsBoolean)
                 , true
         );
         context.assertIsSatisfied();
@@ -72,8 +72,8 @@ public class StagesTest extends TaskStageTestUnits {
 
     @Test
     public void testAwaitRun1() throws Exception {
-        VoidStage stage = checkStage(
-                Stages.waitUntil(() -> false, Duration.ofMillis(10))
+        Stage<Void> stage = checkStage(
+                Flows.waitUntil(() -> false, Duration.ofMillis(10))
                 , false
         );
         assertNotNull(stage.getCause());
@@ -92,7 +92,7 @@ public class StagesTest extends TaskStageTestUnits {
             ));
         }});
         checkStage(
-                Stages.waitFor(fn::get)
+                Flows.waitFor(fn::get)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -102,8 +102,8 @@ public class StagesTest extends TaskStageTestUnits {
     @Test
     public void testAwaitSupply1() throws Exception {
         DoneSupplier<String> fn = DoneUtils::fail;
-        TypeStage<String> stage = checkStage(
-                Stages.waitFor(fn, TIME_100)
+        Stage<String> stage = checkStage(
+                Flows.waitFor(fn, TIME_100)
                 , false, null
         );
         assertNotNull(stage.getCause());
@@ -117,7 +117,7 @@ public class StagesTest extends TaskStageTestUnits {
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis(), TimeUnit.MILLISECONDS);
 
         checkStage(
-                Stages.waitFor(future)
+                Flows.waitFor(future)
                 , true, value
         );
 
@@ -132,8 +132,8 @@ public class StagesTest extends TaskStageTestUnits {
         long time = System.currentTimeMillis();
         scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
 
-        TypeStage<String> stage = checkStage(
-                Stages.waitFor(future, TIME_100)
+        Stage<String> stage = checkStage(
+                Flows.waitFor(future, TIME_100)
                 , false, null
         );
 
@@ -147,7 +147,7 @@ public class StagesTest extends TaskStageTestUnits {
     public void yieldForWait2() throws Exception {
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.waitTime(TIME_100)
+                Flows.waitTime(TIME_100)
                 , true
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
@@ -159,7 +159,7 @@ public class StagesTest extends TaskStageTestUnits {
     public void yieldForWait3() throws Exception {
         long time = System.currentTimeMillis();
         checkStage(
-                Stages.waitTime(value, TIME_100)
+                Flows.waitTime(value, TIME_100)
                 , true, value
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
