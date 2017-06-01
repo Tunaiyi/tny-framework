@@ -103,8 +103,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     }
 
     @Override
-    public Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<TradeItem<ItemModel>> tradeItemList = this.countAwardNumber(attributeMap);
+    public Trade countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap) {
+        List<TradeItem<ItemModel>> tradeItemList = this.countAwardNumber(merge, attributeMap);
         return new SimpleTrade(action, TradeType.AWARD, tradeItemList);
     }
 

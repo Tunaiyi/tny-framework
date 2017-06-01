@@ -1,10 +1,8 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.behavior.AbstractAwardGroup;
 import com.tny.game.base.item.behavior.AbstractAwardPlan;
@@ -17,6 +15,8 @@ import com.tny.game.base.item.behavior.DemandHolderObject;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
+import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.probability.RandomCreator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +37,11 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
      * 随机范围
      */
     protected int range;
+
+    /**
+     * 数量合并
+     */
+    protected boolean merge = false;
 
     /**
      * 随机器
@@ -73,7 +78,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         if (groupList == null || groupList.isEmpty())
             return new SimpleTrade(action, TradeType.AWARD);
         AwardGroup group = groupList.get(0);
-        return group.countAwardResult(playerID, action, attributeMap);
+        return group.countAwardResult(playerID, action, this.merge, attributeMap);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         DemandHolderObject.setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
-            AwardDetail detail = new AwardDetail(group.countAwardNumber(attributeMap));
+            AwardDetail detail = new AwardDetail(group.countAwardNumber(this.merge, attributeMap));
             resultList.add(detail);
         }
         return new SimpleAwardList(action, resultList);
@@ -102,7 +107,6 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         }
         //        Collections.sort(this.awardGroupSet);
         this.awardGroupSet = Collections.unmodifiableList(this.awardGroupSet);
-
         if (this.attrAliasSet == null)
             this.attrAliasSet = new HashSet<>(0);
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);

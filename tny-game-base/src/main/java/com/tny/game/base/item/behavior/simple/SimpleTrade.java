@@ -116,7 +116,7 @@ public class SimpleTrade implements Trade {
     }
 
     @Override
-    public void merge() {
+    public Trade merge() {
         Map<ItemModel, Number> itemNumMap = new HashMap<>();
         for (TradeItem<ItemModel> item : this.tradeItemList) {
             Number value = itemNumMap.get(item.getItemModel());
@@ -129,6 +129,7 @@ public class SimpleTrade implements Trade {
                 .map(entry -> new SimpleTradeItem<>(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
         this.tradeItemList = tradeItemList;
+        return this;
     }
 
     @Override

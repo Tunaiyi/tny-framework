@@ -30,7 +30,7 @@ public interface AwardGroup extends Probability, ProbabilityGroup<Award> {
      * @param attributeMap 计算参数
      * @return 返回奖励的物品和数量
      */
-    List<TradeItem<ItemModel>> countAwardNumber(Map<String, Object> attributeMap);
+    List<TradeItem<ItemModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap);
 
     /**
      * 创建奖励结果集
@@ -40,6 +40,6 @@ public interface AwardGroup extends Probability, ProbabilityGroup<Award> {
      * @param attributeMap 附加参数
      * @return 返回结果集
      */
-    Trade countAwardResult(long playerID, Action action, Map<String, Object> attributeMap);
+    Trade countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap);
 
 }
