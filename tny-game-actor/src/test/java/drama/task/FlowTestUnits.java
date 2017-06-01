@@ -55,9 +55,9 @@ public class FlowTestUnits {
         }
         assertEquals("TaskStage 结果 : ", success, result);
         if (object == null)
-            assertNull(flow.getResult().get());
+            assertNull(flow.getDone().get());
         else
-            assertEquals("TaskStage 结果 : ", object, flow.getResult().get());
+            assertEquals("TaskStage 结果 : ", object, flow.getDone().get());
         return flow;
     }
 

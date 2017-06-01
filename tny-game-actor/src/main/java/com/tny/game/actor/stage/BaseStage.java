@@ -4,6 +4,8 @@ package com.tny.game.actor.stage;
 import com.tny.game.actor.stage.exception.StageInterruptedException;
 import com.tny.game.common.reflect.ObjectUtils;
 
+import java.util.concurrent.Executor;
+
 /**
  * 基础阶段抽象类
  * Created by Kun Yang on 16/1/22.
@@ -14,6 +16,8 @@ public abstract class BaseStage<R> implements InnerStage<R> {
     private Object name;
 
     protected InnerStage next;
+
+    private Executor executor;
 
     protected BaseStage(Object name) {
         this.name = name;
@@ -32,6 +36,16 @@ public abstract class BaseStage<R> implements InnerStage<R> {
     @Override
     public Object getName() {
         return name;
+    }
+
+    @Override
+    public void setSwitchExecutor(Executor executor) {
+        this.executor = executor;
+    }
+
+    @Override
+    public Executor getSwitchExecutor() {
+        return this.executor;
     }
 
     @Override

@@ -7,6 +7,9 @@ import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -15,6 +18,10 @@ import java.util.function.Supplier;
  */
 public interface VoidFlow extends Flow {
 
+    @Override
+    default Object getResult() {
+        return null;
+    }
 
     default VoidFlow joinUntil(Supplier<Completable> fn) {
         return this.joinUntil(null, fn);
@@ -96,4 +103,35 @@ public interface VoidFlow extends Flow {
     }
 
     <T> TypeFlow<T> waitFor(Object name, DoneSupplier<T> fn, Duration timeout);
+
+    VoidFlow switchTo(Executor executor);
+
+    @Override
+    VoidFlow start();
+
+    @Override
+    VoidFlow start(Executor executor);
+
+    default VoidFlow start(Runnable onSuccess) {
+        return this.start(ForkJoinPool.commonPool(), onSuccess, null, null);
+    }
+
+    default VoidFlow start(Runnable onSuccess, Consumer<Throwable> onError) {
+        return this.start(ForkJoinPool.commonPool(), onSuccess, onError, null);
+    }
+
+    default VoidFlow start(Runnable onSuccess, Consumer<Throwable> onError, Consumer<Throwable> onFinish) {
+        return this.start(ForkJoinPool.commonPool(), onSuccess, onError, onFinish);
+    }
+
+    default VoidFlow start(Executor executor, Runnable onSuccess) {
+        return this.start(executor, onSuccess);
+    }
+
+    default VoidFlow start(Executor executor, Runnable onSuccess, Consumer<Throwable> onError) {
+        return this.start(executor, onSuccess, onError, null);
+    }
+
+    VoidFlow start(Executor executor, Runnable onSuccess, Consumer<Throwable> onError, Consumer<Throwable> onFinish);
+
 }

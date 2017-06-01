@@ -12,6 +12,7 @@ import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -22,11 +23,25 @@ import java.util.function.Supplier;
  */
 interface InnerFlow<R> extends VoidFlow, TypeFlow<R> {
 
+    @Override
+    default R getResult() {
+        return TypeFlow.super.getResult();
+    }
+
     <F extends Flow> F add(InnerStage<?> stage);
 
     Fragment<?, ?> getTaskFragment();
 
-    //region Join 链接另一个fn返回的代码段
+    @Override
+    InnerFlow<R> switchTo(Executor executor);
+
+    @Override
+    InnerFlow<R> start();
+
+    @Override
+    InnerFlow<R> start(Executor executor);
+
+//region Join 链接另一个fn返回的代码段
 
     @Override
     @SuppressWarnings("unchecked")
@@ -171,6 +186,5 @@ interface InnerFlow<R> extends VoidFlow, TypeFlow<R> {
         return add(new AwaysStage(name, new WaitAcceptFragment<>(fn, timeout)));
     }
     //endregion
-
 
 }

@@ -8,6 +8,8 @@ import com.tny.game.actor.stage.invok.CatcherSupplier;
 import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,7 +20,12 @@ import java.util.function.Predicate;
  */
 public interface TypeFlow<V> extends Flow {
 
-    Done<V> getResult();
+    Done<V> getDone();
+
+    @Override
+    default V getResult() {
+        return getDone().get();
+    }
 
     /**
      * 将fn返回的Completable加入Stage,并等待Completable完成
@@ -97,5 +104,35 @@ public interface TypeFlow<V> extends Flow {
     }
 
     VoidFlow waitUntil(Object name, Predicate<V> fn, Duration timeout);
+
+    TypeFlow<V> switchTo(Executor executor);
+
+    @Override
+    TypeFlow<V> start();
+
+    @Override
+    TypeFlow<V> start(Executor executor);
+
+    default TypeFlow<V> start(Consumer<V> onSuccess) {
+        return this.start(onSuccess, null, null);
+    }
+
+    default TypeFlow<V> start(Consumer<V> onSuccess, Consumer<Throwable> onError) {
+        return this.start(onSuccess, onError, null);
+    }
+
+    default TypeFlow<V> start(Consumer<V> onSuccess, Consumer<Throwable> onError, BiConsumer<V, Throwable> onFinish) {
+        return this.start(onSuccess, onError, null);
+    }
+
+    default TypeFlow<V> start(Executor executor, Consumer<V> onSuccess) {
+        return this.start(executor, onSuccess, null, null);
+    }
+
+    default TypeFlow<V> start(Executor executor, Consumer<V> onSuccess, Consumer<Throwable> onError) {
+        return this.start(executor, onSuccess, onError, null);
+    }
+
+    TypeFlow<V> start(Executor executor, Consumer<V> onSuccess, Consumer<Throwable> onError, BiConsumer<V, Throwable> onFinish);
 
 }

@@ -2,6 +2,8 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.common.reflect.ObjectUtils;
 
+import java.util.concurrent.Executor;
+
 /**
  * 内部阶段接口
  * Created by Kun Yang on 16/1/22.
@@ -60,6 +62,10 @@ interface InnerStage<R> extends Stage<R> {
     default boolean hasNext() {
         return this.getNext() != null;
     }
+
+    void setSwitchExecutor(Executor executor);
+
+    Executor getSwitchExecutor();
 
     //region Join 链接另一个fn返回的代码段
 
