@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -34,7 +35,14 @@ public class Flows {
         return new TimeAwaitWith<>(object, duration)::get;
     }
 
-    //region then 成功时处理
+    public static VoidFlow of() {
+        return new LinkedFlow<>();
+    }
+
+    public static VoidFlow of(Executor executor) {
+        return new LinkedFlow<>().switchTo(executor);
+    }
+
     public static VoidFlow of(Runnable fn) {
         return new LinkedFlow<>().thenRun(fn);
     }
@@ -42,7 +50,6 @@ public class Flows {
     public static <T> TypeFlow<T> of(Supplier<T> fn) {
         return new LinkedFlow<>().thenGet(fn);
     }
-    //endregion
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
     public static VoidFlow waitUntil(Iterable<? extends Completable> fns) {

@@ -36,7 +36,7 @@ class ActorCommandExecutor implements CommandExecutor, ActorWorker {
     private volatile long sleepTime;
 
     public ActorCommandExecutor(String name) {
-        this(name, new ForkJoinPool(10));
+        this(name, ForkJoinPool.commonPool());
     }
 
     public ActorCommandExecutor(String name, ForkJoinPool pool) {
@@ -47,7 +47,7 @@ class ActorCommandExecutor implements CommandExecutor, ActorWorker {
 
     @Override
     public void start() {
-        this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.getName() + "-SubmitThread"));
+        this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.getName() + "-SubmitThread", true));
         this.executor.execute(() -> {
             nextRunningTime = System.currentTimeMillis();
             while (true) {

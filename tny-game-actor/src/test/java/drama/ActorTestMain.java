@@ -38,7 +38,8 @@ public class ActorTestMain {
         LocalActor<String, Object> actor1 = context.actorOf("Actor1");
         LocalActor<String, Object> actor2 = context.actorOf("Actor2");
 
-        VoidFlow flow = Flows.of(() -> service.tell(actor1))
+        VoidFlow flow = Flows.of(actor1)
+                .thenRun(() -> service.tell(actor1))
                 .switchTo(actor2)
                 .thenGet(() -> service.askName(actor2))
                 .thenApply((name) -> service.askAge(actor2, name))
@@ -46,7 +47,7 @@ public class ActorTestMain {
                     service.tell(actor2);
                     System.out.println(message);
                 })
-                .start(actor1);
+                .start();
 
         while (!flow.isDone()) {
             Thread.sleep(10);
@@ -55,13 +56,15 @@ public class ActorTestMain {
 
         long time = System.currentTimeMillis() + 5000;
 
-        flow = Flows.waitUntil(() -> System.currentTimeMillis() > time)
+        flow = Flows.of(actor1)
+                .waitUntil(() -> System.currentTimeMillis() > time)
                 .thenRun(() -> System.out.println("finish tell until"))
-                .start(actor1);
+                .start();
 
         while (!flow.isDone()) {
             Thread.sleep(10);
         }
+        context.stopAll();
     }
 
 }

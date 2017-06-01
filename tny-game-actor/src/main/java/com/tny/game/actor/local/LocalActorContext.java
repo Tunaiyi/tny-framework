@@ -5,6 +5,7 @@ import com.tny.game.actor.Actor;
 import com.tny.game.actor.ActorContext;
 import com.tny.game.actor.ActorPath;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -96,6 +97,13 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
             }
         }
         return false;
+    }
+
+    @Override
+    public void stopAll() {
+        Map<ID, LocalTypeActor<ID, M>> removes = this.actorMap;
+        this.actorMap = new ConcurrentHashMap<>();
+        removes.values().forEach(LocalTypeActor::terminate);
     }
 
 }

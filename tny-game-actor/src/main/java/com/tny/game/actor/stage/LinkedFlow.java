@@ -4,6 +4,7 @@ import com.tny.game.actor.stage.exception.FlowBreakOffException;
 import com.tny.game.actor.stage.exception.FlowCancelException;
 import com.tny.game.common.concurrent.ExeUtils;
 import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(LinkedFlow.class);
 
-    private static ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+    private static ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
 
     private static final byte IDLE = 0;
     private static final byte EXECUTE = 1;
@@ -211,7 +212,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     @Override
     public InnerFlow<V> start() {
-        return this.start(ForkJoinPool.commonPool());
+        return this.doStart(null, null, null, null);
     }
 
     @Override
@@ -238,7 +239,10 @@ public class LinkedFlow<V> implements InnerFlow<V> {
             this.onSuccess = onSuccess;
             this.onError = onError;
             this.onFinish = onFinish;
-            this.executor = executor;
+            if (executor != null)
+                this.executor = executor;
+            if (this.executor == null)
+                this.executor = ForkJoinPool.commonPool();
             this.executor.execute(this);
         }
         return this;

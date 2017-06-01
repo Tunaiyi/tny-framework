@@ -8,7 +8,6 @@ import com.tny.game.actor.stage.invok.SupplyDone;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -113,15 +112,15 @@ public interface VoidFlow extends Flow {
     VoidFlow start(Executor executor);
 
     default VoidFlow start(Runnable onSuccess) {
-        return this.start(ForkJoinPool.commonPool(), onSuccess, null, null);
+        return this.start(null, onSuccess, null, null);
     }
 
     default VoidFlow start(Runnable onSuccess, Consumer<Throwable> onError) {
-        return this.start(ForkJoinPool.commonPool(), onSuccess, onError, null);
+        return this.start(onSuccess, onError, null);
     }
 
     default VoidFlow start(Runnable onSuccess, Consumer<Throwable> onError, Consumer<Throwable> onFinish) {
-        return this.start(ForkJoinPool.commonPool(), onSuccess, onError, onFinish);
+        return this.start(null, onSuccess, onError, onFinish);
     }
 
     default VoidFlow start(Executor executor, Runnable onSuccess) {

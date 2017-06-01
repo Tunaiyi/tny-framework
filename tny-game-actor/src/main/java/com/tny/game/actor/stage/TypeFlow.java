@@ -122,7 +122,7 @@ public interface TypeFlow<V> extends Flow {
     }
 
     default TypeFlow<V> start(Consumer<V> onSuccess, Consumer<Throwable> onError, BiConsumer<V, Throwable> onFinish) {
-        return this.start(onSuccess, onError, null);
+        return this.start(null, onSuccess, onError, null);
     }
 
     default TypeFlow<V> start(Executor executor, Consumer<V> onSuccess) {
