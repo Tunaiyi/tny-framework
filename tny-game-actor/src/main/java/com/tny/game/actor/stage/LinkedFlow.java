@@ -23,15 +23,17 @@ import java.util.function.Consumer;
  */
 public class LinkedFlow<V> implements InnerFlow<V> {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(LinkedFlow.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Flow.class);
 
-    private static ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
+    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
 
     private static final byte IDLE = 0;
     private static final byte EXECUTE = 1;
     private static final byte DONE = 1 << 2;
     private static final byte SUCCESS = 1 << 3 | DONE;
     private static final byte FAILED = DONE;
+
+    private String name;
 
     private InnerStage head;
 
@@ -58,6 +60,18 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     private Executor executor;
 
     private boolean start;
+
+    public LinkedFlow() {
+        this.name = "Flow";
+    }
+
+    public LinkedFlow(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean isDone() {
@@ -100,15 +114,19 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     private void fail(Throwable cause) {
         this.state = FAILED;
         this.cause = cause;
-        ExeUtils.runQuietly(() -> this.onError.accept(cause));
-        ExeUtils.runQuietly(() -> this.onFinish.accept(null, cause));
+        if (this.onError != null)
+            ExeUtils.runQuietly(() -> this.onError.accept(cause));
+        if (this.onFinish != null)
+            ExeUtils.runQuietly(() -> this.onFinish.accept(null, cause));
     }
 
     private void success(V result) {
         this.state = FAILED;
         this.result = result;
-        ExeUtils.runQuietly(() -> this.onSuccess.accept(result));
-        ExeUtils.runQuietly(() -> this.onFinish.accept(result, cause));
+        if (this.onSuccess != null)
+            ExeUtils.runQuietly(() -> this.onSuccess.accept(result));
+        if (this.onFinish != null)
+            ExeUtils.runQuietly(() -> this.onFinish.accept(result, cause));
     }
 
 
@@ -118,6 +136,8 @@ public class LinkedFlow<V> implements InnerFlow<V> {
             if (state == IDLE)
                 state = EXECUTE;
             if (current.isDone()) {
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("Flow运行在");
                 System.out.println(this.executor);
                 this.previous = current.getFragment();
                 Executor executor = this.current.getSwitchExecutor();
@@ -176,7 +196,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
         if (this.isFailed())
             return DoneUtils.fail();
         else if (this.isSuccess())
-            return DoneUtils.succNullable(ObjectUtils.as(this.previous.getResult()));
+            return DoneUtils.succNullable(ObjectUtils.as(result));
         else
             return DoneUtils.succNullable(null);
     }

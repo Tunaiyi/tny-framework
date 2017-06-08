@@ -3,15 +3,15 @@ package com.tny.game.base.item.behavior;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.simple.SimpleTrade;
+import com.tny.game.base.item.behavior.trade.CollectionTradeItem;
 import com.tny.game.base.item.probability.AllRandomCreatorFactory;
 import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -103,9 +103,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     }
 
     @Override
-    public Trade countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap) {
-        List<TradeItem<ItemModel>> tradeItemList = this.countAwardNumber(merge, attributeMap);
-        return new SimpleTrade(action, TradeType.AWARD, tradeItemList);
+    public List<TradeItem<ItemModel>> countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap) {
+        return this.countAwardNumber(merge, attributeMap);
     }
 
     private Map<String, ItemModel> getAwardAliasModelMap(Map<String, Object> attributeMap) {
@@ -156,10 +155,48 @@ public abstract class AbstractAwardGroup implements AwardGroup {
         }
         if (this.number == null)
             this.number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
+        if (this.drawNumber == null)
+            this.drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
         //		if (this.createType == null)
         //			this.createType = AwardCreateType.ABSOLUTE;
         //        Collections.sort(this.awardList);
         this.awardList = Collections.unmodifiableList(this.awardList);
+    }
+
+    @Override
+    public List<TradeItem<ItemModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap) {
+        List<TradeItem<ItemModel>> itemList = new ArrayList<>();
+        List<Award> awardList = this.randomer.random(this, attributeMap);
+        int drawNumber = getDrawNumber(awardList.size(), attributeMap);
+        Map<Integer, CollectionTradeItem> itemMap = null;
+        for (Award award : awardList) {
+            if (drawNumber <= 0)
+                break;
+            String awModelAlias = award.getItemAlias(attributeMap);
+            ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
+            if (awardModel == null)
+                continue;
+            TradeItem<ItemModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
+            if (tradeItem != null) {
+                drawNumber--;
+                if (merge) {
+                    if (itemMap == null)
+                        itemMap = new HashMap<>();
+                    int itemID = awardModel.getID();
+                    CollectionTradeItem current = itemMap.get(itemID);
+                    if (current == null) {
+                        current = new CollectionTradeItem(tradeItem);
+                        itemMap.put(tradeItem.getItemModel().getID(), current);
+                        itemList.add(current);
+                    } else {
+                        current.collect(tradeItem);
+                    }
+                } else {
+                    itemList.add(tradeItem);
+                }
+            }
+        }
+        return itemList;
     }
 
 }

@@ -18,10 +18,10 @@ public abstract class AbstractNetSessionHolder implements NetSessionHolder {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    protected final BindP1EventBus<SessionHolderListener, SessionHolder, Session> onAddSession =
+    protected static final BindP1EventBus<SessionHolderListener, SessionHolder, Session> onAddSession =
             EventBuses.of(SessionHolderListener.class, SessionHolderListener::onAddSession);
 
-    protected final BindP1EventBus<SessionHolderListener, SessionHolder, Session> onRemoveSession =
+    protected static final BindP1EventBus<SessionHolderListener, SessionHolder, Session> onRemoveSession =
             EventBuses.of(SessionHolderListener.class, SessionHolderListener::onRemoveSession);
 
     // protected void disconnect(NetSession<?> session) {

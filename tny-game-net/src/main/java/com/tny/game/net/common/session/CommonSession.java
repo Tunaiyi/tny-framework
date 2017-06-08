@@ -3,6 +3,8 @@ package com.tny.game.net.common.session;
 import com.google.common.collect.Range;
 import com.tny.game.LogUtils;
 import com.tny.game.common.context.Attributes;
+import com.tny.game.event.BindP1EventBus;
+import com.tny.game.event.EventBuses;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.exception.RemotingException;
@@ -20,6 +22,7 @@ import com.tny.game.net.session.event.SessionOutputEvent;
 import com.tny.game.net.session.event.SessionReceiveEvent;
 import com.tny.game.net.session.event.SessionResendEvent;
 import com.tny.game.net.session.event.SessionSendEvent;
+import com.tny.game.net.session.holder.listener.SessionListener;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import org.slf4j.Logger;
@@ -35,6 +38,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by Kun Yang on 2017/2/17.
  */
 public class CommonSession<UID> implements NetSession<UID> {
+
+    protected static final BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
+            EventBuses.of(SessionListener.class, SessionListener::onOnline);
+
+    protected static final BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
+            EventBuses.of(SessionListener.class, SessionListener::onOffline);
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
@@ -112,6 +121,14 @@ public class CommonSession<UID> implements NetSession<UID> {
     }
 
     @Override
+    public void login(LoginCertificate<UID> certificate) throws ValidatorFailException {
+        if (!certificate.isLogin())
+            throw new ValidatorFailException("Certificate unlogin");
+        this.certificate = certificate;
+        ON_ONLINE.notify(this, this.currentTunnel);
+    }
+
+    @Override
     public boolean relogin(NetSession<UID> cerSession) {
         LoginCertificate<UID> certificate = cerSession.getCertificate();
         if (this.certificate.getID() != certificate.getID())
@@ -120,11 +137,14 @@ public class CommonSession<UID> implements NetSession<UID> {
             synchronized (this) {
                 this.certificate = certificate;
                 CommonSession<UID> session = (CommonSession<UID>) cerSession;
+                Tunnel<UID> old = this.currentTunnel;
                 this.currentTunnel = session.getCurrentTunnel();
                 this.currentTunnel.bind(this);
                 this.eventBox.accept(session.eventBox);
-                return true;
+                old.close();
             }
+            ON_ONLINE.notify(this, this.currentTunnel);
+            return true;
         }
         return false;
     }
@@ -133,14 +153,47 @@ public class CommonSession<UID> implements NetSession<UID> {
     public void offlineIfCurrent(Tunnel<UID> tunnel) {
         if (!isOnline())
             return;
-        if (this.currentTunnel != tunnel)
+        Tunnel<UID> offline = this.currentTunnel;
+        if (offline != tunnel)
             return;
         synchronized (this) {
-            if (this.currentTunnel != tunnel)
+            if (offline != tunnel)
                 return;
-            this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.ONLINE.getId());
+            if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
+                offline.close();
+                ON_OFFLINE.notify(this, offline);
+            }
         }
     }
+
+    @Override
+    public void offline() {
+        // this.sessionState
+        if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
+            Tunnel<UID> tunnel = this.currentTunnel;
+            this.offlineTime = System.currentTimeMillis();
+            tunnel.close();
+            ON_OFFLINE.notify(this, this.currentTunnel);
+        }
+    }
+
+    @Override
+    public boolean close() {
+        int state = this.sessionState.get();
+        while (state != SessionState.INVALID.getId()) {
+            if (this.sessionState.compareAndSet(state, SessionState.INVALID.getId())) {
+                Tunnel<UID> tunnel = this.currentTunnel;
+                if (tunnel != null && tunnel.getSession() == this)
+                    tunnel.close();
+                ON_OFFLINE.notify(this, tunnel);
+                return true;
+            } else {
+                state = this.sessionState.get();
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void receive(Message<UID> message) {
@@ -263,23 +316,9 @@ public class CommonSession<UID> implements NetSession<UID> {
     }
 
     @Override
-    public void offline() {
-        if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
-            this.offlineTime = System.currentTimeMillis();
-        }
+    public boolean isOffline() {
+        return this.sessionState.get() == SessionState.OFFLINE.getId();
     }
-
-    @Override
-    public boolean close() {
-        if (this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.INVALID.getId())) {
-            Tunnel<UID> tunnel = this.currentTunnel;
-            if (tunnel != null && tunnel.getSession() == this)
-                tunnel.close();
-            return true;
-        }
-        return false;
-    }
-
 
     @Override
     public boolean isClosed() {
@@ -294,13 +333,6 @@ public class CommonSession<UID> implements NetSession<UID> {
     @Override
     public long getLastReceiveTime() {
         return lastReceiveTime;
-    }
-
-    @Override
-    public void login(LoginCertificate<UID> certificate) throws ValidatorFailException {
-        if (!certificate.isLogin())
-            throw new ValidatorFailException("Certificate unlogin");
-        this.certificate = certificate;
     }
 
     @Override

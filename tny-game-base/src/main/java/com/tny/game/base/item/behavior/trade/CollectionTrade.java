@@ -40,6 +40,13 @@ public class CollectionTrade implements Trade {
         }
     }
 
+    public CollectionTrade(Action action, TradeType tradeType, List<? extends TradeItem<?>> tradeItemList) {
+        this.tradeMap = new HashMap<>();
+        this.action = action;
+        this.tradeType = tradeType;
+        this.collectItem(tradeItemList);
+    }
+
     public void collectItem(ItemModel model, Number number) {
         this.collectItem(new SimpleTradeItem<>(model, number));
     }
@@ -116,11 +123,6 @@ public class CollectionTrade implements Trade {
             }
         }
         return tradeItemList;
-    }
-
-    @Override
-    public Trade merge() {
-        return this;
     }
 
     @Override

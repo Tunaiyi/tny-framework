@@ -69,10 +69,11 @@ public class SimpleAward extends AbstractAward {
         if (this.paramMap == null || this.paramMap.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
+        Map<DemandParam, Object> paramMap = new HashMap<>();
         for (Entry<DemandParam, FormulaHolder> entry : this.paramMap.entrySet()) {
             try {
-                paramMap.put(entry.getKey(), entry.getValue().createFormula().putAll(attributeMap).execute(Object.class));
+                Object value = entry.getValue().createFormula().putAll(attributeMap).execute(Object.class);
+                paramMap.put(entry.getKey(), value);
             } catch (Exception e) {
                 LOGGER.error("", e);
             }

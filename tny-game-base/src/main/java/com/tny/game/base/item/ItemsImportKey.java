@@ -42,6 +42,6 @@ public interface ItemsImportKey {
     /**
      * 内容
      */
-    String DEMAIND_PARAMS = "params";
+    String DEMAND_PARAMS = "params";
 
 }

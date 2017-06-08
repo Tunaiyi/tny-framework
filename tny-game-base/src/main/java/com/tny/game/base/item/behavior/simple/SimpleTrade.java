@@ -116,23 +116,6 @@ public class SimpleTrade implements Trade {
     }
 
     @Override
-    public Trade merge() {
-        Map<ItemModel, Number> itemNumMap = new HashMap<>();
-        for (TradeItem<ItemModel> item : this.tradeItemList) {
-            Number value = itemNumMap.get(item.getItemModel());
-            if (value == null)
-                value = 0L;
-            value = add(value, item.getNumber());
-            itemNumMap.put(item.getItemModel(), value);
-        }
-        List<TradeItem<ItemModel>> tradeItemList = itemNumMap.entrySet().stream()
-                .map(entry -> new SimpleTradeItem<>(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-        this.tradeItemList = tradeItemList;
-        return this;
-    }
-
-    @Override
     public boolean has(ItemType... itemTypes) {
         for (TradeItem<ItemModel> tradeItem : this.tradeItemList) {
             ItemType type = tradeItem.getItemModel().getItemType();

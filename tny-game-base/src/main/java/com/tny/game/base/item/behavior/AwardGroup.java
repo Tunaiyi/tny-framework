@@ -1,10 +1,9 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.probability.Probability;
 import com.tny.game.base.item.probability.ProbabilityGroup;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeItem;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,6 @@ public interface AwardGroup extends Probability, ProbabilityGroup<Award> {
      * @param attributeMap 附加参数
      * @return 返回结果集
      */
-    Trade countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap);
+    List<TradeItem<ItemModel>> countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap);
 
 }

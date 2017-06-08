@@ -463,13 +463,13 @@ public class MathEx {
     }
 
     /**
-     * 随机次数, 有一定概率完成
+     * 随机times次数, 有一定概率命中
      *
      * @param prob  概率
      * @param times 做多少次
-     * @return 返回做成的次数
+     * @return 返回命中的次数
      */
-    public static int randTimes(int prob, int times) {
+    public static int randHitTimes(int prob, int times) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int done = 0;
         for (int time = 0; time < times; time++) {

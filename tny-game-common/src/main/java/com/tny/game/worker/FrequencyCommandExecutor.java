@@ -92,7 +92,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
     @Override
     public void start() {
-        this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name));
+        this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name, true));
         this.executor.execute(() -> {
             nextRunningTime = System.currentTimeMillis();
             currentThread = Thread.currentThread();

@@ -93,7 +93,7 @@ public interface VoidFlow extends Flow {
     }
 
     default <T> TypeFlow<T> waitFor(Object name, DoneSupplier<T> fn) {
-        return this.waitFor(null, fn);
+        return this.waitFor(null, fn, null);
 
     }
 

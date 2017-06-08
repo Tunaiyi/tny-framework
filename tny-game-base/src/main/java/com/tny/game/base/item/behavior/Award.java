@@ -56,7 +56,7 @@ public interface Award extends Probability {
     default TradeItem<ItemModel> createTradeItem(boolean valid, ItemModel awardModel, Map<String, Object> attributeMap) {
         AlterType type = this.getAlterType();
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
-        attributeMap.put(DEMAIND_PARAMS, paramMap);
+        attributeMap.put(DEMAND_PARAMS, paramMap);
         int number = this.countNumber(awardModel, attributeMap);
         if (number > 0) {
             return new SimpleTradeItem<>(awardModel, number, type == null ? AlterType.IGNORE : type, valid, paramMap);

@@ -17,7 +17,7 @@ import java.util.concurrent.ForkJoinPool;
  * Actor 执行器
  * Created by Kun Yang on 16/4/26.
  */
-class ActorCommandExecutor implements CommandExecutor, ActorWorker {
+public class ActorCommandExecutor implements CommandExecutor, ActorWorker {
 
     private ForkJoinPool pool;
 

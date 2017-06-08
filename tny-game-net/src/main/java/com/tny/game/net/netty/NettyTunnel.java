@@ -40,18 +40,23 @@ public class NettyTunnel<UID> extends AbstractTunnel<UID> {
         if (this.channel.isActive()) {
             this.channel.disconnect().addListener(this::handleClose);
             return true;
+        } else {
+            sessionOffline();
         }
         return false;
     }
 
     private void handleClose(Future<?> future) {
         if (future.isSuccess()) {
-            Session<UID> session = this.session;
-            if (session != null)
-                session.offlineIfCurrent(this);
+            sessionOffline();
         }
     }
 
+    private void sessionOffline() {
+        Session<UID> session = this.session;
+        if (session != null)
+            session.offlineIfCurrent(this);
+    }
 
     @Override
     public void ping() {

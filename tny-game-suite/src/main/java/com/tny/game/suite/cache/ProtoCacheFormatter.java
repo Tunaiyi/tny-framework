@@ -10,6 +10,7 @@ import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
+import com.tny.game.base.item.behavior.trade.CollectionTrade;
 import com.tny.game.cache.CacheFormatter;
 import com.tny.game.protobuf.PBCommon.TradeItemProto;
 import com.tny.game.protobuf.PBCommon.TradeProto;
@@ -60,7 +61,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         return 0;
     }
 
-    protected Trade proto2Trade(TradeProto tradeProto) {
+    protected <T extends Trade> T proto2Trade(TradeFactory<T> creator, TradeProto tradeProto) {
         List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemID());
@@ -68,7 +69,15 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
                 tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber(), AlterType.valueOf(awardProto.getAlterType()), awardProto.getValid()));
             }
         }
-        return new SimpleTrade(Actions.of(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
+        return creator.create(Actions.of(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
+    }
+
+    protected Trade proto2Trade(TradeProto tradeProto) {
+        return proto2Trade(SimpleTrade::new, tradeProto);
+    }
+
+    protected Trade proto2CollectionTrade(TradeProto tradeProto) {
+        return proto2Trade(CollectionTrade::new, tradeProto);
     }
 
     protected TradeProto trade2Proto(Trade trade) {

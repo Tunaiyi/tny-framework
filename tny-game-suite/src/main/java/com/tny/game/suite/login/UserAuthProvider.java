@@ -96,7 +96,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
         Account accountObj = this.accountService.loadOrCreateAccount(ticket);
         if (accountObj == null)
             throw new ValidatorFailException(SuiteResultCode.AUTH_NO_ACCOUNT, openID + (relogin ? "重登" : "登录"));
-        accountObj.online(tunnel.getHostName());
+        // accountObj.online(tunnel.getHostName());
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_ID_KEY, ticket.getOpenID());
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_KEY_KEY, ticket.getOpenKey());
         tunnel.attributes().setAttribute(AttributesKeys.ACCOUNT_KEY, accountObj);

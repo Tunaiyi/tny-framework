@@ -1,6 +1,7 @@
 package com.tny.game.common.reflect;
 
 import com.tny.game.number.NumberUtils;
+import org.joda.time.DateTime;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,9 +23,46 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
         return object == null ? defObject : mapper.apply(object);
     }
 
-    public static <T, O> O ifNotNull(T object, Function<T, O> mapper, Supplier<? extends O> defObject) {
-        return object == null ? defObject.get() : mapper.apply(object);
+    public static <T, O> O ifNotNullElse(T object, Function<T, O> mapper, Supplier<? extends O> supplier) {
+        return object == null ? supplier.get() : mapper.apply(object);
     }
+
+    public static <V, R> R ifEquals(V one, V other, R trueValue, R falseValue) {
+        if (one.equals(other))
+            return trueValue;
+        return falseValue;
+    }
+
+    public static <V, R> R ifEquals(V one, V other, Supplier<R> trueValue, R falseValue) {
+        if (one.equals(other))
+            return trueValue.get();
+        return falseValue;
+    }
+
+    public static <V, R> R ifEquals(V one, V other, R trueValue, Supplier<R> falseValue) {
+        if (one.equals(other))
+            return trueValue;
+        return falseValue.get();
+    }
+
+    public static <V, R> R ifEquals(V one, V other, Supplier<R> trueValue, Supplier<R> falseValue) {
+        if (one.equals(other))
+            return trueValue.get();
+        return falseValue.get();
+    }
+
+    public static <V, R> R ifEqualsThenNull(V one, V other, R trueValue) {
+        if (one.equals(other))
+            return null;
+        return trueValue;
+    }
+
+    public static <V, R> R ifEqualsThenNull(V one, V other, Supplier<R> trueValue) {
+        if (one.equals(other))
+            return null;
+        return trueValue.get();
+    }
+
 
     public static <T> T self(T object) {
         return object;
@@ -43,6 +81,13 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object) {
         return (T) object;
+    }
+
+    public static void main(String[] args) {
+        DateTime date = DateTime.now();
+        long test = 222L;
+        long value = ifNotNullElse(date, DateTime::getMillis, () -> test);
+        date = ifNull(date, DateTime::now);
     }
 
 }

@@ -8,8 +8,6 @@ public enum SessionState {
 
     INVALID(0),
 
-    TRANSFORM(3),
-
     //
 
     ;

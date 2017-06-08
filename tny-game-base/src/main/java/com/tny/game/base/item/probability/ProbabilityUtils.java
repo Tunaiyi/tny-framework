@@ -46,7 +46,11 @@ public interface ProbabilityUtils {
         List<P> probabilities = group.probabilities();
         if (probabilities.isEmpty())
             return ImmutableList.of();
+        int number = group.getNumber(attributes);
+        if (number <= 0)
+            return ImmutableList.of();
         int total = 0;
+        List<P> values = new ArrayList<>();
         List<ProbabilityEntry<P>> entries = new ArrayList<>();
         for (P p : probabilities) {
             if (!p.isEffect(attributes))
@@ -55,14 +59,14 @@ public interface ProbabilityUtils {
             if (probability > 0) {
                 total += probability;
                 entries.add(new ProbabilityEntry<>(p, probability));
+            } else if (probability < 0) {
+                values.add(p);
+                if (values.size() >= number)
+                    return values;
             }
         }
         if (total == 0)
-            return ImmutableList.of();
-        int number = group.getNumber(attributes);
-        List<P> values = new ArrayList<>();
-        if (number <= 0)
-            return ImmutableList.of();
+            return values;
         Random random = ThreadLocalRandom.current();
         while (values.size() != number && !entries.isEmpty()) {
             int index = 0;
@@ -87,7 +91,11 @@ public interface ProbabilityUtils {
         if (probabilities.isEmpty())
             return ImmutableList.of();
         TreeMap<Integer, P> proMap = new TreeMap<>();
+        int number = group.getNumber(attributes);
+        if (number <= 0)
+            return ImmutableList.of();
         int total = 0;
+        List<P> values = new ArrayList<>();
         for (P p : probabilities) {
             if (!p.isEffect(attributes))
                 continue;
@@ -95,14 +103,15 @@ public interface ProbabilityUtils {
             if (probability > 0) {
                 total += probability;
                 proMap.put(total, p);
+            } else if (probability < 0) {
+                values.add(p);
+                if (values.size() >= number)
+                    return values;
             }
         }
         if (proMap.isEmpty())
-            return ImmutableList.of();
-        int number = group.getNumber(attributes);
-        if (number <= 0)
-            return ImmutableList.of();
-        return draw(number, total, proMap);
+            return values;
+        return draw(number, total, proMap, values);
     }
 
     static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawProbabilities(G group, Map<String, Object> attributes) {
@@ -110,27 +119,32 @@ public interface ProbabilityUtils {
         List<P> probabilities = group.probabilities();
         if (range == 0)
             range = 10000;
+        int number = group.getNumber(attributes);
+        if (number <= 0)
+            return ImmutableList.of();
         TreeMap<Integer, P> proMap = new TreeMap<>();
+        List<P> values = new ArrayList<>();
         for (P p : probabilities) {
             if (!p.isEffect(attributes))
                 continue;
             int probability = p.getProbability(attributes);
-            if (probability > 0)
+            if (probability > 0) {
                 proMap.put(probability, p);
+            } else if (probability < 0) {
+                values.add(p);
+                if (values.size() >= number)
+                    return values;
+            }
         }
         if (proMap.isEmpty())
-            return ImmutableList.of();
-        int number = group.getNumber(attributes);
-        if (number <= 0)
-            return ImmutableList.of();
-        return draw(number, range, proMap);
+            return values;
+        return draw(number, range, proMap, values);
     }
 
-    static <O> List<O> draw(int number, int range, TreeMap<Integer, O> proMap) {
+    static <O> List<O> draw(int number, int range, TreeMap<Integer, O> proMap, List<O> values) {
         if (proMap.isEmpty() || number <= 0)
             return ImmutableList.of();
         Random random = ThreadLocalRandom.current();
-        List<O> values = new ArrayList<>();
         while (values.size() < number) {
             int rand = random.nextInt(range);
             Entry<Integer, O> entry = proMap.higherEntry(rand);

@@ -42,6 +42,12 @@ public interface Session<UID> extends Terminal<UID> {
      */
     boolean isOnline();
 
+    /**
+     * 是否已下线
+     *
+     * @return 连接返回true 否则返回false
+     */
+    boolean isOffline();
     // /**
     //  * @return 是否连接
     //  */

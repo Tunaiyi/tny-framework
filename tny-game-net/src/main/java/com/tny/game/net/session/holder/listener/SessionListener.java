@@ -1,14 +1,14 @@
 package com.tny.game.net.session.holder.listener;
 
-public interface SessionListener<T> {
+import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.Tunnel;
 
-    default void handleAddSession(SessionChangeEvent<T> event) {
+public interface SessionListener<UID> {
+
+    default void onOnline(Session<UID> session, Tunnel<UID> tunnel) {
     }
 
-    default void handleRemoveSession(SessionChangeEvent<T> event) {
-    }
-
-    default void handleDisconnectSession(SessionChangeEvent<T> event) {
+    default void onOffline(Session<UID> session, Tunnel<UID> tunnel) {
     }
 
 }

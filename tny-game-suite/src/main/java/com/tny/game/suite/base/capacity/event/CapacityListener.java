@@ -9,10 +9,10 @@ import com.tny.game.suite.base.capacity.CapacitySupply;
  */
 public interface CapacityListener {
 
-    void onChange(CapacitySupply source, CapacitySupplier owner);
+    default void onChange(CapacitySupply source, CapacitySupplier owner){}
 
-    void onInvalid(CapacitySupply source, CapacitySupplier owner);
+    default void onInvalid(CapacitySupply source, CapacitySupplier owner){}
 
-    void onEffect(CapacitySupply source, CapacitySupplier owner);
+    default void onEffect(CapacitySupply source, CapacitySupplier owner){}
 
 }

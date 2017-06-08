@@ -2,6 +2,7 @@ package com.tny.game.net.common.dispatcher;
 
 import com.tny.game.LogUtils;
 import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.concurrent.Waitable;
 import com.tny.game.common.reflect.ObjectUtils;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;
@@ -353,7 +354,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         private MessageFuture<Object> messageFuture;
 
-        private Future<Object> future;
+        private Waitable<Object> waitable;
 
         private long timeout;
 
@@ -382,8 +383,12 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         /* 检测结果 */
         private void checkResult(Throwable cause) {
             Object o = this.result;
-            if (o instanceof Future) { // 如果是结果为Future进入等待逻辑
-                this.future = ObjectUtils.as(o);
+            if (o instanceof Waitable) { // 如果是结果为Future进入等待逻辑
+                this.waitable = ObjectUtils.as(o);
+                this.timeout = System.currentTimeMillis() + 5000; // 超时
+                this.result = null;
+            } else if (o instanceof Future) { // 如果是结果为Future进入等待逻辑
+                this.waitable = Waitable.of(ObjectUtils.as(o));
                 this.timeout = System.currentTimeMillis() + 5000; // 超时
                 this.result = null;
             } else { // 结果处理逻辑
@@ -395,10 +400,15 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         /* 检测是否有future对象*/
         private void checkFuture() throws Throwable {
-            if (this.future != null) { // 检测是否
-                if (this.future.isDone()) {
-                    this.result = this.future.get();
-                    this.checkResult(null);
+            if (this.waitable != null) { // 检测是否
+                if (this.waitable.isDone()) {
+                    if (this.waitable.isSuccess()) {
+                        this.result = this.waitable.getResult();
+                        this.checkResult(null);
+                    } else {
+                        this.result = null;
+                        throw this.waitable.getCause();
+                    }
                 }
             }
         }
@@ -457,7 +467,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 if (isDone())
                     return;
                 fireExecute(this);
-                if (future == null) {
+                if (waitable == null) {
                     // 调用逻辑业务
                     this.invoke();
                     // 调用调用结果

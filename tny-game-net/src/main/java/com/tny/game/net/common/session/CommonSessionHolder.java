@@ -56,12 +56,16 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
-                    if (session.getOfflineTime() + sessionLife > now) {
-                        if (!session.isClosed())
-                            session.close();
-                        if (session.isClosed())
-                            userGroupSessionMap.remove(session.getUID(), session);
+                    NetSession<?> closeSession = null;
+                    if (session.isClosed()) {
+                        userGroupSessionMap.remove(session.getUID(), session);
+                        closeSession = session;
+                    } else if (session.isOffline() && session.getOfflineTime() + sessionLife < now) {
+                        session.close();
+                        closeSession = session;
                     }
+                    if (closeSession != null)
+                        userGroupSessionMap.remove(session.getUID(), session);
                 } catch (Throwable e) {
                     LOG.error("clear {} invalided session exception", session.getUID(), e);
                 }

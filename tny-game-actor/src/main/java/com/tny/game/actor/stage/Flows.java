@@ -39,16 +39,32 @@ public class Flows {
         return new LinkedFlow<>();
     }
 
+    public static VoidFlow of(String name) {
+        return new LinkedFlow<>(name);
+    }
+
     public static VoidFlow of(Executor executor) {
         return new LinkedFlow<>().switchTo(executor);
+    }
+
+    public static VoidFlow of(String name, Executor executor) {
+        return new LinkedFlow<>(name).switchTo(executor);
     }
 
     public static VoidFlow of(Runnable fn) {
         return new LinkedFlow<>().thenRun(fn);
     }
 
+    public static VoidFlow of(String name, Runnable fn) {
+        return new LinkedFlow<>(name).thenRun(fn);
+    }
+
     public static <T> TypeFlow<T> of(Supplier<T> fn) {
         return new LinkedFlow<>().thenGet(fn);
+    }
+
+    public static <T> TypeFlow<T> of(String name, Supplier<T> fn) {
+        return new LinkedFlow<>(name).thenGet(fn);
     }
 
     //region wait 等待方法返回true或返回的Done为true时继续执行
