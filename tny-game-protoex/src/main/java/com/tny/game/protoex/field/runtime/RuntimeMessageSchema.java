@@ -112,19 +112,17 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
         T message = null;
         try {
             message = (T) this.gClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        int fieldIndx = 1;
+        int fieldIndex = 1;
         int offset = inputStream.position();
         int length = inputStream.readInt();
         while (inputStream.position() - offset < length) {
             Tag currentTag = inputStream.getTag();
-            fieldIndx = currentTag.getFieldNumber();
+            fieldIndex = currentTag.getFieldNumber();
             //判断是否显示 读取
-            final FieldDesc<Object> field = (FieldDesc<Object>) this.getFieldDesc(fieldIndx);
+            final FieldDesc<Object> field = (FieldDesc<Object>) this.getFieldDesc(fieldIndex);
             int protoExID = currentTag.getProtoExID();
             if (field == null) {
                 LOGGER.warn("获取 Tag | {} -> [字段ID : {}] 不存在! Tag : {}", this.gClass.getName(), currentTag.getFieldNumber(), currentTag);

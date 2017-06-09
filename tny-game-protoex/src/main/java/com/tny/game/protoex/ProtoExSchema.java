@@ -15,21 +15,21 @@ public interface ProtoExSchema<T> {
      *
      * @return
      */
-    public int getProtoExID();
+    int getProtoExID();
 
     /**
      * 结构名字
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * 是否是原生类型
      *
      * @return
      */
-    public boolean isRaw();
+    boolean isRaw();
 
     /**
      * 按conf编码方式将value(包含tag)的protoEx序列化字节数组写入outputStream
@@ -38,7 +38,7 @@ public interface ProtoExSchema<T> {
      * @param value        值
      * @param conf         编码方式
      */
-    public void writeMessage(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf);
+    void writeMessage(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf);
 
     /**
      * 按conf编码方式将value(不包含tag)的protoEx序列化字节数组写入outputStream
@@ -47,7 +47,7 @@ public interface ProtoExSchema<T> {
      * @param value        值
      * @param conf         编码方式
      */
-    public void writeValue(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf);
+    void writeValue(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf);
 
     /**
      * 按conf编码方式从inputStream读取Message(包括读取Tag),优先按Tag描述读取,若tag信息不全则按conf读取
@@ -56,7 +56,7 @@ public interface ProtoExSchema<T> {
      * @param conf        默认编码方式
      * @return
      */
-    public T readMessage(ProtoExInputStream inputStream, IOConfiger<?> conf);
+    T readMessage(ProtoExInputStream inputStream, IOConfiger<?> conf);
 
     /**
      * 按conf编码方式从inputStream读取Message(不包括读取Tag),优先按Tag描述读取,若tag信息不全则按conf读取
@@ -66,6 +66,6 @@ public interface ProtoExSchema<T> {
      * @param conf
      * @return
      */
-    public T readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf);
+    T readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf);
 
 }

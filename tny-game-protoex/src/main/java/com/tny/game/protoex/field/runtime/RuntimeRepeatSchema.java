@@ -1,6 +1,13 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.protoex.*;
+import com.tny.game.protoex.BaseProtoExSchema;
+import com.tny.game.protoex.ProtoExInputStream;
+import com.tny.game.protoex.ProtoExOutputStream;
+import com.tny.game.protoex.ProtoExSchema;
+import com.tny.game.protoex.ProtoExSchemaContext;
+import com.tny.game.protoex.ProtobufExException;
+import com.tny.game.protoex.Tag;
+import com.tny.game.protoex.WireFormat;
 import com.tny.game.protoex.field.IOConfiger;
 import com.tny.game.protoex.field.RepeatIOConfiger;
 
@@ -98,16 +105,16 @@ public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
         Tag elementTag = new Tag(repeatChildID, raw, tag);
 
         if (packed) {
-            return this.doReadPackeds(inputStream, length, elementTag, elementDesc);
+            return this.doReadPackedElements(inputStream, length, elementTag, elementDesc);
         } else {
-            return this.doReadUnpackeds(inputStream, length, elementTag, elementDesc);
+            return this.doReadUnpackedElements(inputStream, length, elementTag, elementDesc);
         }
     }
 
-    private <T, C extends Collection<T>> Collection<T> doReadPackeds(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
+    private <T, C extends Collection<T>> Collection<T> doReadPackedElements(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
         ProtoExSchema<T> schema = schemaContext.getSchema(tag.getProtoExID(), tag.isRaw(), elConf.getDefaultType());
-        List<T> valueList = new ArrayList<T>();
+        List<T> valueList = new ArrayList<>();
         int startAt = inputStream.position();
         int position = inputStream.position();
         while (position - startAt < length) {
@@ -119,9 +126,9 @@ public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
         return valueList;
     }
 
-    private <T, C extends Collection<T>> Collection<T> doReadUnpackeds(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
+    private <T, C extends Collection<T>> Collection<T> doReadUnpackedElements(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
-        List<T> valueList = new ArrayList<T>();
+        List<T> valueList = new ArrayList<>();
         int startAt = inputStream.position();
         int position = inputStream.position();
         while (position - startAt < length) {

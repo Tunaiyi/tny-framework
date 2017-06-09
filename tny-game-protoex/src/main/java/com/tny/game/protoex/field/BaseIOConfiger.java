@@ -24,6 +24,8 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
 
     protected Class<T> type;
 
+    protected Class<T> use;
+
     protected boolean packed;
 
     protected TypeEncode typeEncode;
@@ -53,7 +55,15 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
         if (member.value() <= 0)
             throw new NullPointerException(LogUtils.format("{} 类 {} 字段 ProtoField.value = {} <= 0", field.getDeclaringClass(), field, member.value()));
         ProtoExConf conf = member.conf();
-        this.init(protoExType, (Class<T>) field.getType(), field.getName(), member.value(), conf.typeEncode(), conf.format());
+        Class<T> type = (Class<T>) field.getType();
+        if (conf.ues() != Void.class) {
+            if (!type.isAssignableFrom(conf.ues()))
+                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
+            this.use = (Class<T>) conf.ues();
+        } else {
+            this.use = type;
+        }
+        this.init(protoExType, type, field.getName(), member.value(), conf.typeEncode(), conf.format());
     }
 
     private void init(ProtoExType protoExType, Class<T> type, String name, int index, TypeEncode typeEncode, FieldFormat format) {

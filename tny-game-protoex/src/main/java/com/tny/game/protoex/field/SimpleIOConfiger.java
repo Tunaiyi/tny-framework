@@ -4,6 +4,10 @@ import com.tny.game.protoex.ProtoExType;
 import com.tny.game.protoex.annotations.ProtoExConf;
 import com.tny.game.protoex.annotations.TypeEncode;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+
 /**
  * 简单编码方式
  *
@@ -27,6 +31,24 @@ public class SimpleIOConfiger<T> extends BaseIOConfiger<T> {
     public SimpleIOConfiger(EntryType entryType, Class<T> type, TypeEncode typeEncode, FieldFormat format) {
         super(ProtoExType.getProtoExType(type), type, entryType.name(), entryType.getFieldIndex(), typeEncode, format);
         this.packed = false;
+    }
+
+    private static class TC {
+        int[] ints;
+        Object[] objects;
+        String[] strings;
+        String type;
+    }
+
+    public static void main(String[] args) {
+        for (Field field : TC.class.getDeclaredFields()) {
+            // Arrays.
+            Class<?> czz = field.getType().getComponentType();
+            if (czz != null)
+                System.out.println(Array.newInstance(czz, 10));
+            System.out.println(field.getGenericType() instanceof GenericArrayType);
+        }
+
     }
 
 }

@@ -37,23 +37,23 @@ public class RuntimeFieldDescFactory {
 
     static {
 
-        BOOL = RuntimeUnsafeFieldDescFactroy.BOOLEAN;
-        BYTE = RuntimeUnsafeFieldDescFactroy.BYTE;
-        BYTE_ARRAY = RuntimeUnsafeFieldDescFactroy.BYTE_ARRAY;
-        CHAR = RuntimeUnsafeFieldDescFactroy.CHAR;
-        DOUBLE = RuntimeUnsafeFieldDescFactroy.DOUBLE;
-        FLOAT = RuntimeUnsafeFieldDescFactroy.FLOAT;
-        INT32 = RuntimeUnsafeFieldDescFactroy.INTEGER;
-        INT64 = RuntimeUnsafeFieldDescFactroy.LONG;
-        SHORT = RuntimeUnsafeFieldDescFactroy.SHORT;
-        STRING = RuntimeUnsafeFieldDescFactroy.STRING;
-        LINKED_BYTE_BUFFER = RuntimeUnsafeFieldDescFactroy.LINKED_BYTE_BUFFER;
+        BOOL = RuntimeUnsafeFieldDescFactory.BOOLEAN;
+        BYTE = RuntimeUnsafeFieldDescFactory.BYTE;
+        BYTE_ARRAY = RuntimeUnsafeFieldDescFactory.BYTE_ARRAY;
+        CHAR = RuntimeUnsafeFieldDescFactory.CHAR;
+        DOUBLE = RuntimeUnsafeFieldDescFactory.DOUBLE;
+        FLOAT = RuntimeUnsafeFieldDescFactory.FLOAT;
+        INT32 = RuntimeUnsafeFieldDescFactory.INTEGER;
+        INT64 = RuntimeUnsafeFieldDescFactory.LONG;
+        SHORT = RuntimeUnsafeFieldDescFactory.SHORT;
+        STRING = RuntimeUnsafeFieldDescFactory.STRING;
+        LINKED_BYTE_BUFFER = RuntimeUnsafeFieldDescFactory.LINKED_BYTE_BUFFER;
 
-        ENUM = RuntimeUnsafeFieldDescFactroy.ENUM;
-        OBJECT = RuntimeUnsafeFieldDescFactroy.OBJECT;
+        ENUM = RuntimeUnsafeFieldDescFactory.ENUM;
+        OBJECT = RuntimeUnsafeFieldDescFactory.OBJECT;
 
-        COLLECTION = RuntimeUnsafeFieldDescFactroy.COLLECTION;
-        MAP = RuntimeUnsafeFieldDescFactroy.MAP;
+        COLLECTION = RuntimeUnsafeFieldDescFactory.COLLECTION;
+        MAP = RuntimeUnsafeFieldDescFactory.MAP;
         //		ARRAY = RuntimeUnsafeFieldDescFactory.ARRAY;
 
         factotyMap.put(Integer.TYPE, INT32);

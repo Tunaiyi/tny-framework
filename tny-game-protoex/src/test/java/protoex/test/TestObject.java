@@ -5,6 +5,9 @@ import com.tny.game.protoex.annotations.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @ProtoEx(1000)
 public class TestObject {
@@ -78,6 +81,15 @@ public class TestObject {
             key = @ProtoExConf(typeEncode = TypeEncode.IMPLICIT),
             value = @ProtoExConf(typeEncode = TypeEncode.IMPLICIT))
     public Map<TestKey, TestKey> testAllImpMap;
+
+    @ProtoExField(20)
+    public AtomicInteger testAtomicInteger;
+
+    @ProtoExField(21)
+    public AtomicLong testAtomicLong;
+
+    @ProtoExField(22)
+    public AtomicBoolean testAtomicBoolean;
 
     @Override
     public int hashCode() {
@@ -183,6 +195,15 @@ public class TestObject {
             if (other.testValueImpMap != null)
                 return false;
         } else if (!testValueImpMap.equals(other.testValueImpMap))
+            return false;
+
+        if(this.testAtomicInteger.get() != other.testAtomicInteger.get())
+            return false;
+
+        if(this.testAtomicLong.get() != other.testAtomicLong.get())
+            return false;
+
+        if(this.testAtomicBoolean.get() != other.testAtomicBoolean.get())
             return false;
         return true;
     }

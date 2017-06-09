@@ -6,7 +6,7 @@ import com.tny.game.protoex.annotations.ProtoExField;
 @ProtoEx(1001)
 public class TestSubObject extends TestObject {
 
-    @ProtoExField(20)
+    @ProtoExField(100)
     public String subField = "";
 
     @Override

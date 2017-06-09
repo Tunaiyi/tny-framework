@@ -1,5 +1,6 @@
 package com.tny.game.doc.holder;
 
+import com.tny.game.common.ExceptionUtils;
 import com.tny.game.doc.annotation.ClassDoc;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +26,7 @@ public class EnumDocHolder {
 
     public static <E extends Enum<E>> EnumDocHolder create(Class<E> clazz) {
         ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
-        if (classDoc == null) {
-            LOGGER.warn("{} is not classDoc", clazz);
-            return null;
-        }
+        ExceptionUtils.checkNotNull(classDoc, "{} is not classDoc", clazz);
         EnumDocHolder holder = new EnumDocHolder();
         holder.classDoc = classDoc;
         holder.entityClass = clazz;

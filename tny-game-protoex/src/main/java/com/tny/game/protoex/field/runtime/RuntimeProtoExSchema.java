@@ -12,9 +12,16 @@ import com.tny.game.protoex.field.FieldDesc;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 运行时类型描述结构
@@ -24,8 +31,8 @@ import java.util.concurrent.ConcurrentMap;
 @SuppressWarnings("unchecked")
 public class RuntimeProtoExSchema {
 
-    private static final ConcurrentMap<Type, ProtoExSchema<?>> schemaMap = new ConcurrentHashMap<Type, ProtoExSchema<?>>();
-    private static final Map<DefineType, ConcurrentMap<Integer, ProtoExSchema<?>>> typpeSchemaMap = new HashMap<DefineType, ConcurrentMap<Integer, ProtoExSchema<?>>>();
+    private static final ConcurrentMap<Type, ProtoExSchema<?>> schemaMap = new ConcurrentHashMap<>();
+    private static final Map<DefineType, ConcurrentMap<Integer, ProtoExSchema<?>>> typpeSchemaMap = new HashMap<>();
 
     static {
 
@@ -47,13 +54,27 @@ public class RuntimeProtoExSchema {
         schemaMap.put(Byte.class, RuntimePrimitiveSchema.BYTE_SCHEMA);
         schemaMap.put(String.class, RuntimePrimitiveSchema.STRING_SCHEMA);
         schemaMap.put(byte[].class, RuntimePrimitiveSchema.BYTES_SCHEMA);
+        schemaMap.put(AtomicInteger.class, RuntimePrimitiveSchema.ATOMIC_INT_SCHEMA);
+        schemaMap.put(AtomicLong.class, RuntimePrimitiveSchema.ATOMIC_LONG_SCHEMA);
+        schemaMap.put(AtomicBoolean.class, RuntimePrimitiveSchema.ATOMIC_BOOLEAN_SCHEMA);
         schemaMap.put(LinkedByteBuffer.class, RuntimePrimitiveSchema.LINKED_BUFFER_SCHEMA);
         for (DefineType type : DefineType.values()) {
-            typpeSchemaMap.put(type, new ConcurrentHashMap<Integer, ProtoExSchema<?>>());
+            typpeSchemaMap.put(type, new ConcurrentHashMap<>());
         }
-        for (ProtoExSchema<?> schema : schemaMap.values()) {
-            typpeSchemaMap.get(DefineType.RAW).putIfAbsent(schema.getProtoExID(), schema);
-        }
+        putRawSchema(RuntimePrimitiveSchema.CHAR_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.SHORT_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.BYTE_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.INT_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.LONG_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.FLOAT_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.DOUBLE_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.BOOLEAN_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.STRING_SCHEMA);
+        putRawSchema(RuntimePrimitiveSchema.BYTES_SCHEMA);
+    }
+
+    private static void putRawSchema(ProtoExSchema schema) {
+        typpeSchemaMap.get(DefineType.RAW).putIfAbsent(schema.getProtoExID(), schema);
     }
 
     public static <T> ProtoExSchema<T> getProtoSchema(int id, boolean raw) {
@@ -80,7 +101,7 @@ public class RuntimeProtoExSchema {
                 } else {
                     if (clazz.getAnnotation(ProtoEx.class) == null)
                         return null;
-                    RuntimeMessageSchema<T> newSchema = new RuntimeMessageSchema<T>(clazz);
+                    RuntimeMessageSchema<T> newSchema = new RuntimeMessageSchema<>(clazz);
                     if (putInto(type, newSchema)) {
                         return initMessageSchema(newSchema, clazz);
                     } else {
@@ -129,7 +150,7 @@ public class RuntimeProtoExSchema {
 
         final Map<String, Field> fieldMap = findInstanceFields(typeClass);
         int maxFieldMapping = 0;
-        final ArrayList<FieldDesc<?>> fields = new ArrayList<FieldDesc<?>>(fieldMap.size());
+        final ArrayList<FieldDesc<?>> fields = new ArrayList<>(fieldMap.size());
         for (Field f : fieldMap.values()) {
             if (f.getAnnotation(Deprecated.class) != null) {
                 continue;
@@ -189,7 +210,7 @@ public class RuntimeProtoExSchema {
     }
 
     private static Map<String, Field> findInstanceFields(Class<?> typeClass) {
-        LinkedHashMap<String, Field> fieldMap = new LinkedHashMap<String, Field>();
+        LinkedHashMap<String, Field> fieldMap = new LinkedHashMap<>();
         fill(fieldMap, typeClass);
         return fieldMap;
     }

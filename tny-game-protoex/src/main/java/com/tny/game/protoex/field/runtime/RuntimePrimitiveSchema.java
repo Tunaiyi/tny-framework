@@ -1,8 +1,17 @@
 package com.tny.game.protoex.field.runtime;
 
 import com.tny.game.common.utils.buff.LinkedByteBuffer;
-import com.tny.game.protoex.*;
+import com.tny.game.protoex.BaseProtoExSchema;
+import com.tny.game.protoex.ProtoExInputStream;
+import com.tny.game.protoex.ProtoExOutputStream;
+import com.tny.game.protoex.ProtoExSchema;
+import com.tny.game.protoex.Tag;
+import com.tny.game.protoex.WireFormat;
 import com.tny.game.protoex.field.IOConfiger;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 原生类型描述框架
@@ -78,6 +87,20 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
 
     };
 
+    public final static ProtoExSchema<AtomicInteger> ATOMIC_INT_SCHEMA = new RuntimePrimitiveSchema<AtomicInteger>(WireFormat.PROTO_ID_INT, AtomicInteger.class) {
+
+        @Override
+        public void writeValue(ProtoExOutputStream outputStream, AtomicInteger value, IOConfiger<?> conf) {
+            conf.getFormat().writeNoTag(value.intValue(), outputStream);
+        }
+
+        @Override
+        public AtomicInteger readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+            return new AtomicInteger(tag.getFormat().readInt(inputStream));
+        }
+
+    };
+
     public final static ProtoExSchema<Long> LONG_SCHEMA = new RuntimePrimitiveSchema<Long>(WireFormat.PROTO_ID_LONG, Long.class) {
 
         @Override
@@ -88,6 +111,20 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
         @Override
         public Long readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
             return tag.getFormat().readLong(inputStream);
+        }
+
+    };
+
+    public final static ProtoExSchema<AtomicLong> ATOMIC_LONG_SCHEMA = new RuntimePrimitiveSchema<AtomicLong>(WireFormat.PROTO_ID_LONG, AtomicLong.class) {
+
+        @Override
+        public void writeValue(ProtoExOutputStream outputStream, AtomicLong value, IOConfiger<?> conf) {
+            conf.getFormat().writeNoTag(value.longValue(), outputStream);
+        }
+
+        @Override
+        public AtomicLong readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+            return new AtomicLong(tag.getFormat().readLong(inputStream));
         }
 
     };
@@ -129,6 +166,20 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
         @Override
         public Boolean readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
             return inputStream.readBoolean();
+        }
+
+    };
+
+    public final static ProtoExSchema<AtomicBoolean> ATOMIC_BOOLEAN_SCHEMA = new RuntimePrimitiveSchema<AtomicBoolean>(WireFormat.PROTO_ID_BOOLEAN, AtomicBoolean.class) {
+
+        @Override
+        public void writeValue(ProtoExOutputStream outputStream, AtomicBoolean value, IOConfiger<?> conf) {
+            outputStream.writeBoolean(value.get());
+        }
+
+        @Override
+        public AtomicBoolean readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+            return new AtomicBoolean(inputStream.readBoolean());
         }
 
     };

@@ -82,6 +82,12 @@ public final class WireFormat {
     public final static int PROTO_ID_REPEAT = 12;
     public final static int PROTO_ID_ENUM = 13;
 
+
+    // public final static AtomicInteger PROTO_ID_ATOMIC_INT = 24;
+    // public final static AtomicLong PROTO_ID_ATOMIC_LONG = 25;
+    // public final static AtomicDouble PROTO_ID_ATOMIC_DOUBLE = 27;
+    // public final static AtomicBoolean PROTO_ID_ATOMIC_BOOLEAN = 28;
+
     //	public static final int WIRETYPE_VARINT = 0;
     //	public static final int WIRETYPE_FIXED64 = 1;
     //	public static final int WIRETYPE_LENGTH_DELIMITED = 2;
@@ -91,18 +97,18 @@ public final class WireFormat {
     //	public static final int WIRETYPE_REFERENCE = 6;
     //	public static final int WIRETYPE_TAIL_DELIMITER = 7;
 
-    static final int TYPE_TAG_KIND_BITS = 1;
-    static final int TYPE_TAG_KIND_MASK = 1 << 1;
-    static final int TYPE_TAG_MARK_BITS = 1;
-    static final int TYPE_TAG_MARK_MASK = 1;
+    private static final int TYPE_TAG_KIND_BITS = 1;
+    private static final int TYPE_TAG_KIND_MASK = 1 << 1;
+    private static final int TYPE_TAG_MARK_BITS = 1;
+    private static final int TYPE_TAG_MARK_MASK = 1;
 
-    static final int REPEAT_OPTION_PACKED_BITS = 1;
-    static final int REPEAT_OPTION_RAW_BITS = 1;
-    static final int REPEAT_OPTION_PACKED_MASK = 1;
-    static final int REPEAT_OPTION_RAW_MASK = 1 << 1;
+    private static final int REPEAT_OPTION_PACKED_BITS = 1;
+    private static final int REPEAT_OPTION_RAW_BITS = 1;
+    private static final int REPEAT_OPTION_PACKED_MASK = 1;
+    private static final int REPEAT_OPTION_RAW_MASK = 1 << 1;
 
-    static final int FIELD_TAG_FORMAT_BITS = 2;
-    static final int FIELD_TAG_FORMAT_MASK = 1 << 1 | 1;
+    private static final int FIELD_TAG_FORMAT_BITS = 2;
+    private static final int FIELD_TAG_FORMAT_MASK = 1 << 1 | 1;
 
     public static boolean checkProtoExID(int protoExID) {
         return WireFormat.MIN_PROTO_EX_ID <= protoExID && protoExID <= WireFormat.MAX_PROTO_EX_ID;
@@ -185,8 +191,8 @@ public final class WireFormat {
     }
 
     // Field numbers for feilds in MessageSet wire format.
-    static final int MESSAGE_SET_ITEM = 1;
-    static final int MESSAGE_SET_TYPE_ID = 2;
-    static final int MESSAGE_SET_MESSAGE = 3;
+    // static final int MESSAGE_SET_ITEM = 1;
+    // static final int MESSAGE_SET_TYPE_ID = 2;
+    // static final int MESSAGE_SET_MESSAGE = 3;
 
 }

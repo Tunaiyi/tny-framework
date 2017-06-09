@@ -30,4 +30,10 @@ public @interface ProtoExConf {
      */
     TypeEncode typeEncode() default TypeEncode.DEFAULT;
 
+    /**
+     * 使用指定类型
+     *
+     * @return
+     */
+    Class<?> ues() default Void.class;
 }

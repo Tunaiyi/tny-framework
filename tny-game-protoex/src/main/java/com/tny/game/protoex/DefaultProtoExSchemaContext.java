@@ -38,10 +38,14 @@ public class DefaultProtoExSchemaContext {
 
         @Override
         public <T> ProtoExSchema<T> getSchema(int protoExID, boolean raw, Class<?> defaultClass) {
-            ProtoExSchema<T> schema = RuntimeProtoExSchema.getProtoSchema(protoExID, raw);
-            if (schema != null)
-                return schema;
-            schema = this.getSchema(defaultClass);
+            ProtoExSchema<T> schema;
+            if (defaultClass != null && defaultClass != Object.class) {
+                schema = RuntimeProtoExSchema.getProtoSchema(defaultClass);
+                //protoExID 无效的时候 || schema 与 protoExID 不对应
+                if (protoExID == 0 || (schema != null && (schema.isRaw() == raw) && schema.getProtoExID() == protoExID))
+                    return schema;
+            }
+            schema = RuntimeProtoExSchema.getProtoSchema(protoExID, raw);
             if (schema == null)
                 throw ProtobufExException.noSchema(protoExID, raw, defaultClass);
             return schema;

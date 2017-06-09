@@ -12,6 +12,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ProtoExTest {
 
@@ -548,6 +551,9 @@ public class ProtoExTest {
         object.testValueImpMap = map;
         object.testAllExpMap = map;
         object.testAllImpMap = map;
+        object.testAtomicBoolean = new AtomicBoolean(true);
+        object.testAtomicInteger = new AtomicInteger(200);
+        object.testAtomicLong = new AtomicLong(20001L);
     }
 
     @Test

@@ -108,12 +108,12 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         List<AwardGroup> groupList = this.randomer.random(this, attributeMap);
         if (groupList == null || groupList.isEmpty())
             return new SimpleTrade(action, TradeType.AWARD);
-        int drawNumber = getDrawNumber(groupList.size(), attributeMap);
+        // int drawNumber = getDrawNumber(groupList.size(), attributeMap);
         List<TradeItem<ItemModel>> tradeItems = new ArrayList<>();
         for (AwardGroup group : groupList) {
-            if (drawNumber <= 0)
-                break;
-            drawNumber--;
+            // if (drawNumber <= 0)
+            //     break;
+            // drawNumber--;
             List<TradeItem<ItemModel>> award = group.countAwardResult(playerID, action, this.merge, attributeMap);
             if (award != null) {
                 tradeItems.addAll(award);

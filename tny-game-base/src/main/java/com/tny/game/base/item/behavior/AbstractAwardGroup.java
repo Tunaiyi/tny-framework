@@ -167,10 +167,11 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     public List<TradeItem<ItemModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap) {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
         List<Award> awardList = this.randomer.random(this, attributeMap);
-        int drawNumber = getDrawNumber(awardList.size(), attributeMap);
+        int number = awardList.size();
+        int drawNumber = getDrawNumber(number, attributeMap);
         Map<Integer, CollectionTradeItem> itemMap = null;
         for (Award award : awardList) {
-            if (drawNumber <= 0)
+            if (number <= 0)
                 break;
             String awModelAlias = award.getItemAlias(attributeMap);
             ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
@@ -178,6 +179,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
                 continue;
             TradeItem<ItemModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
             if (tradeItem != null) {
+                number--;
                 drawNumber--;
                 if (merge) {
                     if (itemMap == null)

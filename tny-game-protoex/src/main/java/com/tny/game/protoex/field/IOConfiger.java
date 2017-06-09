@@ -13,41 +13,41 @@ public interface IOConfiger<T> {
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * 字段索引
      *
      * @return
      */
-    public int getIndex();
+    int getIndex();
 
     /**
      * ProtoEx相对应类型
      *
      * @return
      */
-    public Class<T> getDefaultType();
+    Class<T> getDefaultType();
 
     /**
      * 整形数字类型编码方式
      *
      * @return
      */
-    public FieldFormat getFormat();
+    FieldFormat getFormat();
 
     /**
      * 是否显式写入字段对应类型
      *
      * @return
      */
-    public boolean isExplicit();
+    boolean isExplicit();
 
     /**
      * 若为Repeat(Collection)
      *
      * @return
      */
-    public boolean isPacked();
+    boolean isPacked();
 
 }

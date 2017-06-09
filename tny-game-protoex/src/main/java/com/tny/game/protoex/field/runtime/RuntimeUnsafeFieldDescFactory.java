@@ -22,7 +22,7 @@ import java.util.Map;
  * @author KGTny
  */
 @SuppressWarnings("restriction")
-public class RuntimeUnsafeFieldDescFactroy {
+public class RuntimeUnsafeFieldDescFactory {
 
     private static final sun.misc.Unsafe UNSAFE = initUnsafe();
 
@@ -36,7 +36,7 @@ public class RuntimeUnsafeFieldDescFactroy {
         return sun.misc.Unsafe.getUnsafe();
     }
 
-    private RuntimeUnsafeFieldDescFactroy() {
+    private RuntimeUnsafeFieldDescFactory() {
     }
 
     public static class UnsafeFieldDesc<T> extends BaseIOConfiger<T> implements FieldDesc<T> {
@@ -301,50 +301,15 @@ public class RuntimeUnsafeFieldDescFactroy {
 
     };
 
-    public static final FieldDescFactory<String> STRING = new FieldDescFactory<String>() {
+    public static final FieldDescFactory<String> STRING = field -> new UnsafeFieldDesc<>(ProtoExType.STRING, field);
 
-        @Override
-        public FieldDesc<String> create(Field field) {
-            return new UnsafeFieldDesc<String>(ProtoExType.STRING, field);
-        }
+    public static final FieldDescFactory<byte[]> BYTE_ARRAY = field -> new UnsafeFieldDesc<>(ProtoExType.BYTES, field);
 
-    };
+    public static final FieldDescFactory<LinkedByteBuffer> LINKED_BYTE_BUFFER = field -> new UnsafeFieldDesc<>(ProtoExType.BYTES, field);
 
-    public static final FieldDescFactory<byte[]> BYTE_ARRAY = new FieldDescFactory<byte[]>() {
+    public static final FieldDescFactory<Enum<?>> ENUM = field -> new UnsafeFieldDesc<>(ProtoExType.ENUM, field);
 
-        @Override
-        public FieldDesc<byte[]> create(Field field) {
-            return new UnsafeFieldDesc<byte[]>(ProtoExType.BYTES, field);
-        }
-
-    };
-
-    public static final FieldDescFactory<LinkedByteBuffer> LINKED_BYTE_BUFFER = new FieldDescFactory<LinkedByteBuffer>() {
-
-        @Override
-        public FieldDesc<LinkedByteBuffer> create(Field field) {
-            return new UnsafeFieldDesc<LinkedByteBuffer>(ProtoExType.BYTES, field);
-        }
-
-    };
-
-    public static final FieldDescFactory<Enum<?>> ENUM = new FieldDescFactory<Enum<?>>() {
-
-        @Override
-        public FieldDesc<Enum<?>> create(Field field) {
-            return new UnsafeFieldDesc<Enum<?>>(ProtoExType.ENUM, field);
-        }
-
-    };
-
-    public static final FieldDescFactory<Object> OBJECT = new FieldDescFactory<Object>() {
-
-        @Override
-        public FieldDesc<Object> create(Field field) {
-            return new UnsafeFieldDesc<Object>(ProtoExType.MESSAGE, field);
-        }
-
-    };
+    public static final FieldDescFactory<Object> OBJECT = field -> new UnsafeFieldDesc<>(ProtoExType.MESSAGE, field);
 
     public static class UnsafeRepeatFieldDesc extends UnsafeFieldDesc<Object> implements RepeatIOConfiger<Object> {
 
@@ -357,9 +322,9 @@ public class RuntimeUnsafeFieldDescFactroy {
             ProtoExElement protoExElement = field.getAnnotation(ProtoExElement.class);
             if (protoExElement == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExElement.class));
-                this.elementDesc = new SimpleIOConfiger<Object>(elementType, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+                this.elementDesc = new SimpleIOConfiger<>(elementType, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
             } else {
-                this.elementDesc = new SimpleIOConfiger<Object>(elementType, 0, protoExElement.value());
+                this.elementDesc = new SimpleIOConfiger<>(elementType, 0, protoExElement.value());
             }
             Packed packed = field.getAnnotation(Packed.class);
             ProtoExType elementExType = ProtoExType.getProtoExType(elementType);
@@ -412,11 +377,11 @@ public class RuntimeUnsafeFieldDescFactroy {
             ProtoExEntry protoExEntry = field.getAnnotation(ProtoExEntry.class);
             if (protoExEntry == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExEntry.class));
-                this.keyDesc = new SimpleIOConfiger<Object>(EntryType.KEY, keyClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-                this.valueDesc = new SimpleIOConfiger<Object>(EntryType.VALUE, valueClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+                this.keyDesc = new SimpleIOConfiger<>(EntryType.KEY, keyClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+                this.valueDesc = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
             } else {
-                this.keyDesc = new SimpleIOConfiger<Object>(EntryType.KEY, keyClass, protoExEntry.key());
-                this.valueDesc = new SimpleIOConfiger<Object>(EntryType.VALUE, valueClass, protoExEntry.value());
+                this.keyDesc = new SimpleIOConfiger<>(EntryType.KEY, keyClass, protoExEntry.key());
+                this.valueDesc = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, protoExEntry.value());
             }
         }
 
@@ -447,23 +412,9 @@ public class RuntimeUnsafeFieldDescFactroy {
 
     }
 
-    public static final FieldDescFactory<Object> COLLECTION = new FieldDescFactory<Object>() {
+    public static final FieldDescFactory<Object> COLLECTION = field -> new UnsafeRepeatFieldDesc(field);
 
-        @Override
-        public FieldDesc<Object> create(Field field) {
-            return new UnsafeRepeatFieldDesc(field);
-        }
-
-    };
-
-    public static final FieldDescFactory<Object> MAP = new FieldDescFactory<Object>() {
-
-        @Override
-        public FieldDesc<Object> create(Field field) {
-            return new UnsafeMapFieldDesc(field);
-        }
-
-    };
+    public static final FieldDescFactory<Object> MAP = field -> new UnsafeMapFieldDesc(field);
 
     public static Class<?> getComponentType(Field field) {
         Class<?> typeClass = field.getType();
