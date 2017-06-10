@@ -83,7 +83,7 @@ public class RuntimeFieldDescFactory {
         factotyMap.put(boolean[].class, REPEAT);
         factotyMap.put(char[].class, REPEAT);
         factotyMap.put(short[].class, REPEAT);
-        factotyMap.put(byte[].class, REPEAT);
+        // factotyMap.put(byte[].class, REPEAT);
 
     }
 
