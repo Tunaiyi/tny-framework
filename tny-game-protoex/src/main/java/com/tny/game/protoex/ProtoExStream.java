@@ -5,7 +5,7 @@ package com.tny.game.protoex;
  *
  * @author KGTny
  */
-public interface PotoExStream {
+public interface ProtoExStream {
 
     /**
      * 获取ProtoEx类型描述结构上下文

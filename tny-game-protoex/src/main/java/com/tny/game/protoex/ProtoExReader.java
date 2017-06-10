@@ -1,11 +1,14 @@
 package com.tny.game.protoex;
 
+import com.tny.game.common.concurrent.ExeUtils;
+import com.tny.game.protoex.field.runtime.RuntimeCollectionSchema;
 import com.tny.game.protoex.field.runtime.RuntimeMapSchema;
 import com.tny.game.protoex.field.runtime.RuntimePrimitiveSchema;
-import com.tny.game.protoex.field.runtime.RuntimeRepeatSchema;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * ProtoEx类型读取器
@@ -131,19 +134,44 @@ public class ProtoExReader {
      * ======================= collection =======================
      */
     @SuppressWarnings("unchecked")
-    public <T> Collection<T> readRepeat(Class<T> elementType) {
+    public <T> Collection<T> readCollection(Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        return (Collection<T>) RuntimeRepeatSchema.REPEAT_SCHEMA.readMessage(this.inputStream,
-                ProtoExIO.createRepeat(elementType, true));
+        return (Collection<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
+                ProtoExIO.createRepeat(ArrayList.class, elementType, true));
     }
 
-    public <T, C extends Collection<T>> C readRepeat(C collection, Class<T> elementType) {
-        Collection<T> values = this.readRepeat(collection, elementType);
-        if (values != null)
-            collection.addAll(values);
-        return collection;
+    @SuppressWarnings("unchecked")
+    public <T, C extends Collection<T>> C readCollection(C collection, Class<T> elementType) {
+        Tag tag = this.inputStream.getTag();
+        this.checkType(ProtoExType.REPEAT, tag);
+        return (C) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(() -> collection, this.inputStream,
+                ProtoExIO.createRepeat(collection.getClass(), elementType, true));
     }
+
+    @SuppressWarnings("unchecked")
+    public <T, C extends Collection<T>> C readCollection(Class<C> collectionClass, Class<T> elementType) throws IllegalAccessException, InstantiationException {
+        Tag tag = this.inputStream.getTag();
+        this.checkType(ProtoExType.REPEAT, tag);
+        Supplier<C> supplier = ExeUtils.callUnchecked(collectionClass::newInstance)::get;
+        return RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(supplier, this.inputStream,
+                ProtoExIO.createRepeat(collectionClass, elementType, true));
+    }
+
+    // @SuppressWarnings("unchecked")
+    // public <T> T[] readArrays(Class<T> elementType) {
+    //     Tag tag = this.inputStream.getTag();
+    //     this.checkType(ProtoExType.REPEAT, tag);
+    //     return (Collection<T>) RuntimeRepeatSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
+    //             ProtoExIO.createRepeat(elementType, true));
+    // }
+    //
+    // public <T> T[] readArrays(C collection, Class<T> elementType) {
+    //     Collection<T> values = this.readRepeat(elementType);
+    //     if (values != null)
+    //         collection.addAll(values);
+    //     return collection;
+    // }
 
     /*
      * ======================= map =======================

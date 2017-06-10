@@ -344,16 +344,17 @@ public class RuntimeUnsafeFieldDescFactory {
         public void setValue(Object message, Object value) {
             if (value == null)
                 return;
-            Collection<Object> collection = (Collection<Object>) this.getValue(message);
-            if (collection == null) {
-                collection = CollectionCreator.createCollection(this.type);
-                super.setValue(message, collection);
-            }
-            if (value instanceof Collection) {
-                collection.addAll((Collection<?>) value);
-            } else {
-                collection.add(value);
-            }
+            super.setValue(message, value);
+            // Collection<Object> collection = (Collection<Object>) this.getValue(message);
+            // if (collection == null) {
+            //     collection = CollectionCreator.createCollection(this.type);
+            //     super.setValue(message, collection);
+            // }
+            // if (value instanceof Collection) {
+            //     collection.addAll((Collection<?>) value);
+            // } else {
+            //     collection.add(value);
+            // }
         }
 
         @Override
@@ -412,7 +413,7 @@ public class RuntimeUnsafeFieldDescFactory {
 
     }
 
-    public static final FieldDescFactory<Object> COLLECTION = field -> new UnsafeRepeatFieldDesc(field);
+    public static final FieldDescFactory<Object> REPEAT = field -> new UnsafeRepeatFieldDesc(field);
 
     public static final FieldDescFactory<Object> MAP = field -> new UnsafeMapFieldDesc(field);
 

@@ -11,20 +11,19 @@ import com.tny.game.protoex.WireFormat;
 import com.tny.game.protoex.field.IOConfiger;
 import com.tny.game.protoex.field.RepeatIOConfiger;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 重复(Collection)类型描述结构
  *
  * @author KGTny
  */
-public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
+public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
 
-    public final static ProtoExSchema<Collection<?>> REPEAT_SCHEMA = new RuntimeRepeatSchema();
+    public final static RuntimeCollectionSchema COLLECTION_SCHEMA = new RuntimeCollectionSchema();
 
-    private RuntimeRepeatSchema() {
+    private RuntimeCollectionSchema() {
         super(WireFormat.PROTO_ID_REPEAT, true, Collection.class.getName());
     }
 
@@ -81,8 +80,19 @@ public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
         }
     }
 
+    // TODO 加入参数Class 创建Collection
+
+    public <T, C extends Collection<T>> C readMessage(Supplier<C> supplier, ProtoExInputStream inputStream, IOConfiger<?> conf) {
+        Tag tag = this.readTag(inputStream);
+        return this.readValue(supplier.get(), inputStream, tag, conf);
+    }
+
     @Override
     public Collection<?> readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+        return readValue(CollectionCreator.createCollection(conf.getDefaultType()), inputStream, tag, conf);
+    }
+
+    public <T, C extends Collection<T>> C readValue(C valueList, ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
         int length = inputStream.readInt();
         if (length < 0)
             throw ProtobufExException.negativeSize(length);
@@ -105,16 +115,15 @@ public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
         Tag elementTag = new Tag(repeatChildID, raw, tag);
 
         if (packed) {
-            return this.doReadPackedElements(inputStream, length, elementTag, elementDesc);
+            return this.doReadPackedElements(valueList, inputStream, length, elementTag, elementDesc);
         } else {
-            return this.doReadUnpackedElements(inputStream, length, elementTag, elementDesc);
+            return this.doReadUnpackedElements(valueList, inputStream, length, elementDesc);
         }
     }
 
-    private <T, C extends Collection<T>> Collection<T> doReadPackedElements(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
+    private <T, C extends Collection<T>> C doReadPackedElements(C valueList, ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
         ProtoExSchema<T> schema = schemaContext.getSchema(tag.getProtoExID(), tag.isRaw(), elConf.getDefaultType());
-        List<T> valueList = new ArrayList<>();
         int startAt = inputStream.position();
         int position = inputStream.position();
         while (position - startAt < length) {
@@ -126,9 +135,8 @@ public class RuntimeRepeatSchema extends BaseProtoExSchema<Collection<?>> {
         return valueList;
     }
 
-    private <T, C extends Collection<T>> Collection<T> doReadUnpackedElements(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
+    private <T, C extends Collection<T>> C doReadUnpackedElements(C valueList, ProtoExInputStream inputStream, int length, IOConfiger<?> elConf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
-        List<T> valueList = new ArrayList<>();
         int startAt = inputStream.position();
         int position = inputStream.position();
         while (position - startAt < length) {

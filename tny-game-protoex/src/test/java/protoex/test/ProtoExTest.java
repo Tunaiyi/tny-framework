@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -544,7 +545,7 @@ public class ProtoExTest {
         object.testShot = 10;
         object.testIntValues = Arrays.asList(1, 2, 3, 4, 5);
         object.testKeyExpValues = Arrays.asList(TestKey.key("A"), TestKey.key("B"), TestKey.key("C"));
-        object.testKeyImpValues = Arrays.asList(TestKey.key("D"), TestKey.key("E"), TestKey.key("F"));
+        object.testKeyImpValues = new LinkedList<>(Arrays.asList(TestKey.key("D"), TestKey.key("E"), TestKey.key("F")));
         object.testKeyExpMap = map;
         object.testKeyImpMap = map;
         object.testValueExpMap = map;
@@ -554,6 +555,9 @@ public class ProtoExTest {
         object.testAtomicBoolean = new AtomicBoolean(true);
         object.testAtomicInteger = new AtomicInteger(200);
         object.testAtomicLong = new AtomicLong(20001L);
+        object.integers = new Integer[]{1, 2, 3};
+        object.ints = new int[]{1, 2, 3};
+        object.keys = new TestKey[]{TestKey.key("keys1"), TestKey.key("keys2"), TestKey.key("keys3")};
     }
 
     @Test
@@ -742,14 +746,14 @@ public class ProtoExTest {
         for (Collection<?> value : values) {
             String method = LogUtils.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             System.out.println(method + " time : " + time++);
-            writer.writeRepeat(value, elementType, packed, elTypeEncode, elFormat);
+            writer.writeCollection(value, elementType, packed, elTypeEncode, elFormat);
         }
     }
 
     public <T> void read(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
-            Collection<?> readValue = reader.readRepeat(elementType);
+            Collection<?> readValue = reader.readCollection(elementType);
             String method = LogUtils.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);
         }

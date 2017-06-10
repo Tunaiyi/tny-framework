@@ -30,7 +30,7 @@ public class RuntimeFieldDescFactory {
     static final FieldDescFactory<Enum<?>> ENUM;
     static final FieldDescFactory<Object> OBJECT;
 
-    static final FieldDescFactory<Object> COLLECTION;
+    static final FieldDescFactory<Object> REPEAT;
     static final FieldDescFactory<Object> MAP;
     static final FieldDescFactory<LinkedByteBuffer> LINKED_BYTE_BUFFER;
     //	static final FieldDescFactory<Object> ARRAY;
@@ -52,7 +52,7 @@ public class RuntimeFieldDescFactory {
         ENUM = RuntimeUnsafeFieldDescFactory.ENUM;
         OBJECT = RuntimeUnsafeFieldDescFactory.OBJECT;
 
-        COLLECTION = RuntimeUnsafeFieldDescFactory.COLLECTION;
+        REPEAT = RuntimeUnsafeFieldDescFactory.REPEAT;
         MAP = RuntimeUnsafeFieldDescFactory.MAP;
         //		ARRAY = RuntimeUnsafeFieldDescFactory.ARRAY;
 
@@ -76,6 +76,15 @@ public class RuntimeFieldDescFactory {
         factotyMap.put(byte[].class, BYTE_ARRAY);
         factotyMap.put(LinkedByteBuffer.class, LINKED_BYTE_BUFFER);
 
+        factotyMap.put(int[].class, REPEAT);
+        factotyMap.put(long[].class, REPEAT);
+        factotyMap.put(float[].class, REPEAT);
+        factotyMap.put(double[].class, REPEAT);
+        factotyMap.put(boolean[].class, REPEAT);
+        factotyMap.put(char[].class, REPEAT);
+        factotyMap.put(short[].class, REPEAT);
+        factotyMap.put(byte[].class, REPEAT);
+
     }
 
     /**
@@ -90,8 +99,8 @@ public class RuntimeFieldDescFactory {
             return factory;
         else if (type.isEnum())
             return ENUM;
-        else if (Collection.class.isAssignableFrom(type))
-            return COLLECTION;
+        else if (type.isArray() || Collection.class.isAssignableFrom(type))
+            return REPEAT;
         else if (Map.class.isAssignableFrom(type))
             return MAP;
         return OBJECT;

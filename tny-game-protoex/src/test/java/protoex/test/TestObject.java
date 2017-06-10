@@ -1,9 +1,11 @@
 package protoex.test;
 
+import com.google.common.base.MoreObjects;
 import com.tny.game.protoex.annotations.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,7 +54,7 @@ public class TestObject {
 
     @ProtoExField(13)
     @ProtoExElement(@ProtoExConf(typeEncode = TypeEncode.IMPLICIT))
-    public Collection<TestKey> testKeyImpValues;
+    public LinkedList<TestKey> testKeyImpValues;
 
     @ProtoExField(14)
     @ProtoExEntry(value = @ProtoExConf(typeEncode = TypeEncode.EXPLICIT))
@@ -90,6 +92,15 @@ public class TestObject {
 
     @ProtoExField(22)
     public AtomicBoolean testAtomicBoolean;
+
+    @ProtoExField(23)
+    public int [] ints;
+
+    @ProtoExField(24)
+    public Integer [] integers;
+
+    @ProtoExField(25)
+    public TestKey [] keys;
 
     @Override
     public int hashCode() {
@@ -205,15 +216,42 @@ public class TestObject {
 
         if(this.testAtomicBoolean.get() != other.testAtomicBoolean.get())
             return false;
+        if (!Arrays.equals(this.ints, other.ints))
+            return false;
+        if (!Arrays.equals(this.integers, other.integers))
+            return false;
+        if (!Arrays.equals(this.keys, other.keys))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "\nTestObject [testLong=" + testLong + ", testShot=" + testShot + ", testInt=" + testInt + ", testByte=" + testByte + ", testFloat=" + testFloat + ", testDouble=" + testDouble
-                + ", testString=" + testString + ", testBytes=" + Arrays.toString(testBytes) + ", testChar=" + testChar + ", testBoolean=" + testBoolean + ", testIntValues=" + testIntValues
-                + ", testKeyExpValues=" + testKeyExpValues + ", testKeyImpValues=" + testKeyImpValues + ", testValueExpMap=" + testValueExpMap + ", testValueImpMap=" + testValueImpMap
-                + ", testKeyExpMap=" + testKeyExpMap + ", testKeyImpMap=" + testKeyImpMap + ", testAllExpMap=" + testAllExpMap + ", testAllImpMap=" + testAllImpMap + "]\n";
+        return MoreObjects.toStringHelper(this)
+                .add("testLong", testLong)
+                .add("testShot", testShot)
+                .add("testInt", testInt)
+                .add("testByte", testByte)
+                .add("testFloat", testFloat)
+                .add("testDouble", testDouble)
+                .add("testString", testString)
+                .add("testBytes", Arrays.toString(testBytes))
+                .add("testChar", testChar)
+                .add("testBoolean", testBoolean)
+                .add("testIntValues", testIntValues)
+                .add("testKeyExpValues", testKeyExpValues)
+                .add("testKeyImpValues", testKeyImpValues)
+                .add("testValueExpMap", testValueExpMap)
+                .add("testValueImpMap", testValueImpMap)
+                .add("testKeyExpMap", testKeyExpMap)
+                .add("testKeyImpMap", testKeyImpMap)
+                .add("testAllExpMap", testAllExpMap)
+                .add("testAllImpMap", testAllImpMap)
+                .add("testAtomicInteger", testAtomicInteger)
+                .add("testAtomicLong", testAtomicLong)
+                .add("testAtomicBoolean", testAtomicBoolean)
+                .add("ints", ints)
+                .add("integers", integers)
+                .toString();
     }
-
 }

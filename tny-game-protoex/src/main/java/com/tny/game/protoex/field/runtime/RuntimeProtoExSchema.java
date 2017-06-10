@@ -2,11 +2,10 @@ package com.tny.game.protoex.field.runtime;
 
 import com.tny.game.LogUtils;
 import com.tny.game.common.utils.buff.LinkedByteBuffer;
+import com.tny.game.common.utils.collection.CopyOnWriteMap;
 import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.ProtobufExException;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.protoex.field.DefineType;
 import com.tny.game.protoex.field.FieldDesc;
 
 import java.lang.reflect.Field;
@@ -14,7 +13,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,70 +30,118 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RuntimeProtoExSchema {
 
     private static final ConcurrentMap<Type, ProtoExSchema<?>> schemaMap = new ConcurrentHashMap<>();
-    private static final Map<DefineType, ConcurrentMap<Integer, ProtoExSchema<?>>> typpeSchemaMap = new HashMap<>();
+    // private static final Map<DefineType, ConcurrentMap<Integer, Map<Class<?>, ProtoExSchema<?>>>> typpeSchemaMap = new HashMap<>();
+    private static final Map<Integer, Map<Object, ProtoExSchema<?>>> rawSchemaMap = new ConcurrentHashMap<>();
+    private static final Map<Integer, ProtoExSchema<?>> customSchemaMap = new ConcurrentHashMap<>();
 
     static {
-
-        schemaMap.put(Integer.TYPE, RuntimePrimitiveSchema.INT_SCHEMA);
-        schemaMap.put(Integer.class, RuntimePrimitiveSchema.INT_SCHEMA);
-        schemaMap.put(Long.TYPE, RuntimePrimitiveSchema.LONG_SCHEMA);
-        schemaMap.put(Long.class, RuntimePrimitiveSchema.LONG_SCHEMA);
-        schemaMap.put(Float.TYPE, RuntimePrimitiveSchema.FLOAT_SCHEMA);
-        schemaMap.put(Float.class, RuntimePrimitiveSchema.FLOAT_SCHEMA);
-        schemaMap.put(Double.TYPE, RuntimePrimitiveSchema.DOUBLE_SCHEMA);
-        schemaMap.put(Double.class, RuntimePrimitiveSchema.DOUBLE_SCHEMA);
-        schemaMap.put(Boolean.TYPE, RuntimePrimitiveSchema.BOOLEAN_SCHEMA);
-        schemaMap.put(Boolean.class, RuntimePrimitiveSchema.BOOLEAN_SCHEMA);
-        schemaMap.put(Character.TYPE, RuntimePrimitiveSchema.CHAR_SCHEMA);
-        schemaMap.put(Character.class, RuntimePrimitiveSchema.CHAR_SCHEMA);
-        schemaMap.put(Short.TYPE, RuntimePrimitiveSchema.SHORT_SCHEMA);
-        schemaMap.put(Short.class, RuntimePrimitiveSchema.SHORT_SCHEMA);
-        schemaMap.put(Byte.TYPE, RuntimePrimitiveSchema.BYTE_SCHEMA);
-        schemaMap.put(Byte.class, RuntimePrimitiveSchema.BYTE_SCHEMA);
-        schemaMap.put(String.class, RuntimePrimitiveSchema.STRING_SCHEMA);
-        schemaMap.put(byte[].class, RuntimePrimitiveSchema.BYTES_SCHEMA);
-        schemaMap.put(AtomicInteger.class, RuntimePrimitiveSchema.ATOMIC_INT_SCHEMA);
-        schemaMap.put(AtomicLong.class, RuntimePrimitiveSchema.ATOMIC_LONG_SCHEMA);
-        schemaMap.put(AtomicBoolean.class, RuntimePrimitiveSchema.ATOMIC_BOOLEAN_SCHEMA);
-        schemaMap.put(LinkedByteBuffer.class, RuntimePrimitiveSchema.LINKED_BUFFER_SCHEMA);
-        for (DefineType type : DefineType.values()) {
-            typpeSchemaMap.put(type, new ConcurrentHashMap<>());
-        }
-        putRawSchema(RuntimePrimitiveSchema.CHAR_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.SHORT_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.BYTE_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.INT_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.LONG_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.FLOAT_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.DOUBLE_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.BOOLEAN_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.STRING_SCHEMA);
-        putRawSchema(RuntimePrimitiveSchema.BYTES_SCHEMA);
+        putRawSchema(Integer.TYPE, RuntimePrimitiveSchema.INT_SCHEMA, false);
+        putRawSchema(Integer.class, RuntimePrimitiveSchema.INT_SCHEMA, true);
+        putRawSchema(Long.TYPE, RuntimePrimitiveSchema.LONG_SCHEMA, false);
+        putRawSchema(Long.class, RuntimePrimitiveSchema.LONG_SCHEMA, true);
+        putRawSchema(Float.TYPE, RuntimePrimitiveSchema.FLOAT_SCHEMA, false);
+        putRawSchema(Float.class, RuntimePrimitiveSchema.FLOAT_SCHEMA, true);
+        putRawSchema(Double.TYPE, RuntimePrimitiveSchema.DOUBLE_SCHEMA, false);
+        putRawSchema(Double.class, RuntimePrimitiveSchema.DOUBLE_SCHEMA, true);
+        putRawSchema(Boolean.TYPE, RuntimePrimitiveSchema.BOOLEAN_SCHEMA, false);
+        putRawSchema(Boolean.class, RuntimePrimitiveSchema.BOOLEAN_SCHEMA, true);
+        putRawSchema(Character.TYPE, RuntimePrimitiveSchema.CHAR_SCHEMA, false);
+        putRawSchema(Character.class, RuntimePrimitiveSchema.CHAR_SCHEMA, true);
+        putRawSchema(Short.TYPE, RuntimePrimitiveSchema.SHORT_SCHEMA, false);
+        putRawSchema(Short.class, RuntimePrimitiveSchema.SHORT_SCHEMA, true);
+        putRawSchema(Byte.TYPE, RuntimePrimitiveSchema.BYTE_SCHEMA, false);
+        putRawSchema(Byte.class, RuntimePrimitiveSchema.BYTE_SCHEMA, true);
+        putRawSchema(String.class, RuntimePrimitiveSchema.STRING_SCHEMA, true);
+        putRawSchema(byte[].class, RuntimePrimitiveSchema.BYTES_SCHEMA, true);
+        putRawSchema(AtomicInteger.class, RuntimePrimitiveSchema.ATOMIC_INT_SCHEMA, false);
+        putRawSchema(AtomicLong.class, RuntimePrimitiveSchema.ATOMIC_LONG_SCHEMA, false);
+        putRawSchema(AtomicBoolean.class, RuntimePrimitiveSchema.ATOMIC_BOOLEAN_SCHEMA, false);
+        putRawSchema(LinkedByteBuffer.class, RuntimePrimitiveSchema.LINKED_BUFFER_SCHEMA, false);
     }
 
-    private static void putRawSchema(ProtoExSchema schema) {
-        typpeSchemaMap.get(DefineType.RAW).putIfAbsent(schema.getProtoExID(), schema);
+
+    private static void putTypeSchema(Type type, ProtoExSchema<?> schema) {
+        ProtoExSchema<?> last = schemaMap.putIfAbsent(type, schema);
+        if (last != null)
+            throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+    }
+
+    private static void putRawSchema(Type type, ProtoExSchema<?> schema, boolean defSchema) {
+        putTypeSchema(type, schema);
+        Map<Object, ProtoExSchema<?>> map = rawSchemaMap.computeIfAbsent(schema.getProtoExID(), k -> new CopyOnWriteMap<>());
+        map.put(type, schema);
+        if (defSchema) {
+            ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExID(), schema);
+            if (last != null)
+                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+        }
+    }
+
+    private static void putCustomSchema(Type type, ProtoExSchema<?> schema) {
+        putTypeSchema(type, schema);
+        ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExID(), schema);
+        if (last != null)
+            throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+    }
+
+    private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
+        if (schema.getProtoExID() >= 0) {
+            if (schema.isRaw()) {
+                putRawSchema(type, schema, false);
+            } else {
+                putCustomSchema(type, schema);
+            }
+        }
+        return true;
     }
 
     public static <T> ProtoExSchema<T> getProtoSchema(int id, boolean raw) {
-        return (ProtoExSchema<T>) typpeSchemaMap.get(DefineType.get(raw)).get(id);
+        if (raw) {
+            Map<Object, ProtoExSchema<?>> schemaMap = rawSchemaMap.get(id);
+            if (schemaMap == null)
+                return null;
+            return (ProtoExSchema<T>) schemaMap.get(id);
+        } else {
+            return (ProtoExSchema<T>) customSchemaMap.get(id);
+        }
     }
 
-    public static void main(String[] args) {
-        RuntimeProtoExSchema.getProtoSchema(int.class);
+    public static <T> ProtoExSchema<T> getProtoSchema(int id, boolean raw, Class<?> type) {
+        ProtoExSchema<T> schema;
+        if (type != null && type != Object.class) {
+            schema = getProtoSchema(type);
+            if (schema != null && (id == 0 || (schema.isRaw() == raw && schema.getProtoExID() == id)))
+                return schema;
+        }
+        if (raw) {
+            Map<Object, ProtoExSchema<?>> schemaMap = rawSchemaMap.get(id);
+            if (schemaMap == null)
+                return null;
+            if (type != null) {
+                schema = (ProtoExSchema<T>) schemaMap.get(type);
+                if (schema != null)
+                    return schema;
+            }
+            schema = (ProtoExSchema<T>) schemaMap.get(id);
+            // if (schema != null)
+            return schema;
+        } else {
+            return (ProtoExSchema<T>) customSchemaMap.get(id);
+        }
     }
 
-    public static <T> ProtoExSchema<T> getProtoSchema(Class<?> type) {
+    public static <T> ProtoExSchema<T> getProtoSchema(Type type) {
         ProtoExSchema<T> schema = (ProtoExSchema<T>) schemaMap.get(type);
         if (schema == null) {
             if (type instanceof Class) {
                 Class<T> clazz = (Class<T>) type;
                 if (clazz.isArray()) {
-                    throw ProtobufExException.unsupportArray(clazz);
+                    schema = (ProtoExSchema<T>) RuntimeArraySchema.ARRAY_SCHEMA;
+                    // throw ProtobufExException.unsupportArray(clazz);
                 } else if (clazz.isEnum()) {
                     schema = newEnumSchema((Class<Enum<?>>) clazz);
                 } else if (Collection.class.isAssignableFrom(clazz)) {
-                    return (ProtoExSchema<T>) RuntimeRepeatSchema.REPEAT_SCHEMA;
+                    return (ProtoExSchema<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA;
                 } else if (Map.class.isAssignableFrom(clazz)) {
                     return (ProtoExSchema<T>) RuntimeMapSchema.MAP_SCHEMA;
                 } else {
@@ -109,36 +155,11 @@ public class RuntimeProtoExSchema {
                     }
                 }
             }
-            //			else if (type instanceof ParameterizedType) {
-            //				ParameterizedType paramType = (ParameterizedType) type;
-            //				Class<?> rawClass = (Class<?>) paramType.getRawType();
-            //				if (Collection.class.isAssignableFrom(rawClass)) {
-            //					schema = (ProtoExSchema<T>) RuntimeRepeatSchema.REPEAT_SCHEMA;
-            //				} else if (Map.class.isAssignableFrom(rawClass)) {
-            //					schema = (ProtoExSchema<T>) RuntimeMapSchema.MAP_SCHEMA;
-            //				}
-            //			}
             if (schema == null)
                 return null;
-            //				throw new IllegalArgumentException(LogUtils.format("{} 无发创建对应的 schema", type));
             putInto(type, schema);
         }
         return schema;
-    }
-
-    private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
-        ProtoExSchema<T> old = (ProtoExSchema<T>) schemaMap.putIfAbsent(type, schema);
-        if (old != null) {
-            return false;
-        } else {
-            if (schema.getProtoExID() >= 0) {
-                ConcurrentMap<Integer, ProtoExSchema<?>> idSchemaMap = typpeSchemaMap.get(DefineType.get(schema.isRaw()));
-                ProtoExSchema<?> last = idSchemaMap.putIfAbsent(schema.getProtoExID(), schema);
-                if (last != null)
-                    throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
-            }
-            return true;
-        }
     }
 
     private static <T> ProtoExSchema<T> initMessageSchema(RuntimeMessageSchema<T> schema, Class<T> typeClass) {
@@ -169,8 +190,8 @@ public class RuntimeProtoExSchema {
 
             }
             Class<?> clazz = f.getType();
-            if (f.getType().isArray() && clazz != byte[].class && clazz != Byte[].class)
-                throw ProtobufExException.unsupportArray(typeClass, f);
+            // if (f.getType().isArray() && clazz != byte[].class && clazz != Byte[].class)
+            //     throw ProtobufExException.unsupportArray(typeClass, f);
             final FieldDesc<?> field = RuntimeFieldDescFactory.getFactory(clazz).create(f);
             fields.add(field);
             maxFieldMapping = Math.max(maxFieldMapping, fieldMapping);
@@ -224,6 +245,10 @@ public class RuntimeProtoExSchema {
             if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod) && f.getAnnotation(ProtoExField.class) != null)
                 fieldMap.put(f.getName(), f);
         }
+    }
+
+    public static void main(String[] args) {
+        RuntimeProtoExSchema.getProtoSchema(int.class);
     }
 
 }

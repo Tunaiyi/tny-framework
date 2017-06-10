@@ -22,13 +22,12 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     private IOConfiger<?> valueConfiger;
 
     public static <T> IOConfiger<T> createNomalConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
-        return new RootIOConfiger<T>(protoExType, type, packed, typeEncode, format);
+        return new RootIOConfiger<>(protoExType, type, packed, typeEncode, format);
     }
 
     @SuppressWarnings("unchecked")
-    public static RootIOConfiger<Collection<?>> createRepeatConfiger(Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
-        Class<?> type = Collections.emptyList().getClass();
-        return new RootIOConfiger<Collection<?>>((Class<Collection<?>>) type, elementType, packed, elTypeEncode, elFormat);
+    public static <C extends Collection<?>> RootIOConfiger<C> createRepeatConfiger(Class<C> collectionClass, Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+        return new RootIOConfiger<>(collectionClass, elementType, packed, elTypeEncode, elFormat);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +35,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
             Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
             Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         Class<Map<?, ?>> type = (Class<Map<?, ?>>) Collections.emptyMap().getClass();
-        return new RootIOConfiger<Map<?, ?>>(type, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
+        return new RootIOConfiger<>(type, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -46,15 +45,15 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
         this(ProtoExType.REPEAT, type, false, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
         Class<Object> keyClass = (Class<Object>) keyType;
         Class<Object> valueClass = (Class<Object>) valueType;
-        this.keyConfiger = new SimpleIOConfiger<Object>(EntryType.KEY, keyClass, keyTypeEncode, keyFormat);
-        this.valueConfiger = new SimpleIOConfiger<Object>(EntryType.VALUE, valueClass, valueTypeEncode, valueFormat);
+        this.keyConfiger = new SimpleIOConfiger<>(EntryType.KEY, keyClass, keyTypeEncode, keyFormat);
+        this.valueConfiger = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, valueTypeEncode, valueFormat);
     }
 
     @SuppressWarnings({"unchecked",})
     private RootIOConfiger(Class<T> clazz, Class<?> elementType, boolean packed, TypeEncode typeEncode, FieldFormat format) {
         this(ProtoExType.REPEAT, clazz, packed, TypeEncode.DEFAULT, format);
         boolean primitive = Wraper.getPrimitive(elementType).isPrimitive();
-        this.elementConfiger = new SimpleIOConfiger<Object>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
+        this.elementConfiger = new SimpleIOConfiger<>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
         this.packed = packed;
         if (primitive) {
             this.packed = true;

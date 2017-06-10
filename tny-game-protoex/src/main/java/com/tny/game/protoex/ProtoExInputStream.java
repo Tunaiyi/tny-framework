@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  *
  * @author KGTny
  */
-public class ProtoExInputStream implements PotoExStream {
+public class ProtoExInputStream implements ProtoExStream {
 
     protected static final Charset UTF8 = Charset.forName("UTF-8");
 

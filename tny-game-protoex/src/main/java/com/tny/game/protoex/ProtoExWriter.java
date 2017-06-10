@@ -46,7 +46,7 @@ public class ProtoExWriter {
     public void writeChar(char value) {
         ProtoExSchema<Character> schema = ProtoExIO.getSchema(this.outputStream, char.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.CHAR, value, TypeEncode.DEFAULT));
+                ProtoExIO.createNormal(ProtoExType.CHAR, value, TypeEncode.DEFAULT));
     }
 
 	/*
@@ -56,7 +56,7 @@ public class ProtoExWriter {
     public void writeByte(byte value) {
         ProtoExSchema<Byte> schema = ProtoExIO.getSchema(this.outputStream, byte.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.BYTE, value, TypeEncode.DEFAULT));
+                ProtoExIO.createNormal(ProtoExType.BYTE, value, TypeEncode.DEFAULT));
     }
 
     /*
@@ -69,7 +69,7 @@ public class ProtoExWriter {
     public void writeShort(short value, FieldFormat format) {
         ProtoExSchema<Short> schema = ProtoExIO.getSchema(this.outputStream, short.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.SHORT, value, format));
+                ProtoExIO.createNormal(ProtoExType.SHORT, value, format));
     }
 
     /*
@@ -82,7 +82,7 @@ public class ProtoExWriter {
     public void writeInt(int value, FieldFormat format) {
         ProtoExSchema<Integer> schema = ProtoExIO.getSchema(this.outputStream, int.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.INT, value, format));
+                ProtoExIO.createNormal(ProtoExType.INT, value, format));
     }
 
     /*
@@ -95,7 +95,7 @@ public class ProtoExWriter {
     public void writeLong(long value, FieldFormat format) {
         ProtoExSchema<Long> schema = ProtoExIO.getSchema(this.outputStream, long.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.LONG, value, format));
+                ProtoExIO.createNormal(ProtoExType.LONG, value, format));
     }
 
     /*
@@ -104,7 +104,7 @@ public class ProtoExWriter {
     public void writeFloat(float value) {
         ProtoExSchema<Float> schema = ProtoExIO.getSchema(this.outputStream, float.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.FLOAT, value));
+                ProtoExIO.createNormal(ProtoExType.FLOAT, value));
     }
 
     /*
@@ -113,7 +113,7 @@ public class ProtoExWriter {
     public void writeDouble(double value) {
         ProtoExSchema<Double> schema = ProtoExIO.getSchema(this.outputStream, double.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.DOUBLE, value));
+                ProtoExIO.createNormal(ProtoExType.DOUBLE, value));
     }
 
     /*
@@ -122,7 +122,7 @@ public class ProtoExWriter {
     public void writeBoolean(boolean value) {
         ProtoExSchema<Boolean> schema = ProtoExIO.getSchema(this.outputStream, boolean.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.BOOLEAN, value));
+                ProtoExIO.createNormal(ProtoExType.BOOLEAN, value));
     }
 
     /*
@@ -131,7 +131,7 @@ public class ProtoExWriter {
     public void writeString(String value) {
         ProtoExSchema<String> schema = ProtoExIO.getSchema(this.outputStream, String.class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.STRING, value));
+                ProtoExIO.createNormal(ProtoExType.STRING, value));
     }
 
     /*
@@ -140,7 +140,7 @@ public class ProtoExWriter {
     public void writeBytes(byte[] value) {
         ProtoExSchema<byte[]> schema = ProtoExIO.getSchema(this.outputStream, byte[].class);
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.BYTES, value));
+                ProtoExIO.createNormal(ProtoExType.BYTES, value));
     }
 
     /*
@@ -153,24 +153,24 @@ public class ProtoExWriter {
     public void writeMessage(Object value, TypeEncode typeEncode) {
         ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, value.getClass());
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNomal(ProtoExType.MESSAGE, value, typeEncode));
+                ProtoExIO.createNormal(ProtoExType.MESSAGE, value, typeEncode));
     }
 
     /*
      * ======================= collection =======================
      */
-    public <T> void writeRepeat(Collection<?> value, Class<T> elementType) {
-        this.writeRepeat(value, elementType, true, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
+    public <T> void writeCollection(Collection<?> value, Class<T> elementType) {
+        this.writeCollection(value, elementType, true, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
     }
 
-    public <T> void writeRepeat(Collection<?> value, Class<T> elementType, boolean packed) {
-        this.writeRepeat(value, elementType, packed, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
+    public <T> void writeCollection(Collection<?> value, Class<T> elementType, boolean packed) {
+        this.writeCollection(value, elementType, packed, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
     }
 
-    public <T> void writeRepeat(Collection<?> value, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    public <T> void writeCollection(Collection<?> value, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
         ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, value.getClass());
         schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createRepeat(elementType, packed, elTypeEncode, elFormat));
+                ProtoExIO.createRepeat(value.getClass(), elementType, packed, elTypeEncode, elFormat));
     }
 
 	/*
