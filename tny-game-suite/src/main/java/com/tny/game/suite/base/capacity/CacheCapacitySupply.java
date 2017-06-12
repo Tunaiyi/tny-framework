@@ -20,7 +20,7 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
         this(new DefaultCapacityCache(item));
     }
 
-    public CacheCapacitySupply(int playerID, ItemModel model) {
+    public CacheCapacitySupply(long playerID, ItemModel model) {
         this(new DefaultCapacityCache(playerID, model));
     }
 

@@ -27,7 +27,7 @@ public class DefaultCapacityCache extends CapacityCache {
         this.model = item.getModel();
     }
 
-    public DefaultCapacityCache(int playerID, ItemModel model) {
+    public DefaultCapacityCache(long playerID, ItemModel model) {
         super();
         this.playerID = playerID;
         this.item = null;
