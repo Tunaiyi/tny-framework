@@ -21,7 +21,7 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
         }
 
         @Override
-        public void process() {
+        protected void doProcess() {
 //        System.out.println(++handleTimes);
             ActorCommand<?> delimiter = null;
             Queue<ActorCommand<?>> queue = this.acceptQueue();
@@ -45,7 +45,8 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
                     break;
             }
             for (CommandBox commandBox : boxes()) {
-                this.worker.submit(commandBox);
+                commandBox.process();
+                // this.worker.execute(commandBox);
             }
         }
 

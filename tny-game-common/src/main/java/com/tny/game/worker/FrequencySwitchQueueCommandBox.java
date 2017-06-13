@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
+public class FrequencySwitchQueueCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogUtils.WORKER);
 
@@ -20,17 +20,18 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> exte
 
     private Lock lock = new ReentrantLock();
 
-    public CopyWorkerCommandBox(Queue<C> fromQueue, Queue<C> toQueue) {
+    public FrequencySwitchQueueCommandBox(Queue<C> fromQueue, Queue<C> toQueue) {
         super(new ConcurrentLinkedQueue<>());
         this.fromQueue = fromQueue;
         this.toQueue = toQueue;
         this.queue = fromQueue;
     }
 
-    public CopyWorkerCommandBox() {
+    public FrequencySwitchQueueCommandBox() {
         this(new ConcurrentLinkedQueue<>(), new ConcurrentLinkedQueue<>());
     }
 
+    @Override
     protected Queue<C> acceptQueue() {
         while (true) {
             if (lock.tryLock()) {
@@ -44,21 +45,30 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> exte
         }
     }
 
+    @Override
     public void clear() {
         queue.clear();
         toQueue.clear();
         fromQueue.clear();
     }
 
+    @Override
+    public boolean submit() {
+        return true;
+    }
+
+    @Override
     public boolean isEmpty() {
         return toQueue.isEmpty() && fromQueue.isEmpty();
     }
 
+    @Override
     public int size() {
         return toQueue.size() + fromQueue.size();
     }
 
-    public void process() {
+    @Override
+    protected void doProcess() {
         Queue<C> currentRunQueue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         runSize = 0;
@@ -74,11 +84,18 @@ public class CopyWorkerCommandBox<C extends Command, CB extends CommandBox> exte
             cmd = currentRunQueue.poll();
         }
         for (CommandBox commandBox : boxes()) {
-            this.worker.submit(commandBox);
+            commandBox.process();
+            // commandBox.process();
+            // this.worker.submit(commandBox);
             // runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;
+    }
+
+    @Override
+    public boolean execute(CommandBox commandBox) {
+        return true;
     }
 
 }

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractWorkerCommandBox<C extends Command, CB extends CommandBox> extends WorkerCommandBox<C, CB> {
 
@@ -13,17 +14,16 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     protected volatile Queue<C> queue;
 
-    public AbstractWorkerCommandBox(Queue<C> queue) {
-        super();
-        this.queue = queue;
-    }
+    private AtomicBoolean submit = new AtomicBoolean(false);
 
+    @Override
     protected abstract Queue<C> acceptQueue();
 
     protected Queue<C> getQueue() {
         return queue;
     }
 
+    @Override
     protected boolean executeIfCurrent(C command) {
         CommandWorker worker = this.worker;
         if (worker != null && worker.isOnCurrentThread())
@@ -31,6 +31,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
         if (!command.isDone()) {
             this.queue.add(command);
             postAcceptIntoQueue(command);
+            this.submit();
         }
         postAccept(command);
         return true;
@@ -53,8 +54,6 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
             this.preBind();
             this.worker = worker;
             this.postBind();
-            for (CB box : boxes())
-                box.bindWorker(worker);
             return true;
         }
     }
@@ -93,12 +92,67 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
         queue.clear();
     }
 
+    @Override
     public boolean isEmpty() {
-        return queue.isEmpty();
+        if (!queue.isEmpty())
+            return false;
+        for (CommandBox box : boxes()) {
+            if (!box.isEmpty())
+                return false;
+        }
+        return true;
     }
 
+    @Override
     public int size() {
         return queue.size();
+    }
+
+    @Override
+    public boolean submit() {
+        try {
+            if (!this.isEmpty()) {
+                return doExecute();
+            }
+        } catch (Exception e) {
+            this.submit.set(false);
+        }
+        return false;
+    }
+
+    private boolean doExecute() {
+        try {
+            if (this.worker instanceof CommandBox) {
+                return this.worker.execute(this);
+            } else if (this.submit.compareAndSet(false, true)) {
+                return this.worker.execute(this);
+            }
+        } catch (Exception e) {
+            this.submit.set(false);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean execute(CommandBox commandBox) {
+        return this.doExecute();
+    }
+
+    @Override
+    public void process() {
+        try {
+            doProcess();
+        } finally {
+            this.submit.set(false);
+        }
+    }
+
+    protected void doProcess() {
+    }
+
+    public AbstractWorkerCommandBox(Queue<C> queue) {
+        super();
+        this.queue = queue;
     }
 
     protected void executeCommand(C command) {

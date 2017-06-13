@@ -13,8 +13,8 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.SessionInputEventHandler;
-import com.tny.game.net.session.SessionOutputEventHandler;
+import com.tny.game.net.session.event.SessionInputEventHandler;
+import com.tny.game.net.session.event.SessionOutputEventHandler;
 import com.tny.game.net.session.holder.NetSessionHolder;
 
 import java.io.IOException;

@@ -2,26 +2,22 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.exception.ActorTerminatedException;
-import com.tny.game.actor.local.ActorCommandExecutor.ActorCommandWorker;
 import com.tny.game.worker.AbstractWorkerCommandBox;
 import com.tny.game.worker.CommandBox;
 import com.tny.game.worker.CommandWorker;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Actor 命令箱子
  * Created by Kun Yang on 16/4/25.
  */
-public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorCommand<?>, ActorCommandBox> implements Runnable {
+public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorCommand<?>, ActorCommandBox> {
 
     private ActorCell actorCell;
 
     private volatile boolean terminated;
-
-    private AtomicBoolean submit = new AtomicBoolean(false);
 
     public ActorCommandBox(ActorCell actorCell) {
         super(new ConcurrentLinkedQueue<>());
@@ -32,28 +28,6 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
     protected Queue<ActorCommand<?>> acceptQueue() {
         return queue;
     }
-
-    boolean trySubmit() {
-        return !this.queue.isEmpty() && this.submit.compareAndSet(false, true);
-    }
-
-    @Override
-    public void run() {
-        try {
-            this.worker.submit(this);
-        } finally {
-            this.submit.set(false);
-        }
-    }
-
-    @Override
-    protected void postAcceptIntoQueue(ActorCommand<?> command) {
-        CommandWorker worker = this.worker;
-        if (worker != null && worker instanceof ActorCommandWorker) {
-            ((ActorCommandWorker) worker).trySubmit(this);
-        }
-    }
-
 
     protected void terminate() {
         if (this.terminated)
@@ -112,6 +86,5 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
     public boolean register(CommandBox commandBox) {
         return !this.terminated && super.register(commandBox);
     }
-
 
 }

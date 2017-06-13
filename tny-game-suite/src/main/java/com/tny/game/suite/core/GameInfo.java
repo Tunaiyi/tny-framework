@@ -7,7 +7,6 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.formula.DateTimeEx;
 import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.suite.login.IDUtils;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.DateTimeConverter;
 import org.joda.time.DateTime;
@@ -87,6 +86,30 @@ public class GameInfo {
         LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunningChecker.end(GameInfo.class).cost());
     }
 
+    public static GameInfo getMainInfo() {
+        return GAMES_INFO;
+    }
+
+    public static GameInfo getInfo(int serverID) {
+        return GAMES_INFO_MAP.get(serverID);
+    }
+
+    public static boolean isLocal(String local) {
+        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
+    }
+
+    public static String getLocal() {
+        return GameInfo.local;
+    }
+
+    public static int getMainServerID() {
+        return getMainInfo().getServerID();
+    }
+
+    public static boolean isHasServer(int serverID) {
+        return GAMES_INFO_MAP.containsKey(serverID);
+    }
+
 
     public GameInfo() {
     }
@@ -105,14 +128,6 @@ public class GameInfo {
 
     public ScopeType getScopeType() {
         return GameInfo.scopeType;
-    }
-
-    public static GameInfo getMainInfo() {
-        return GAMES_INFO;
-    }
-
-    public static GameInfo getGamesInfo(int serverID) {
-        return GAMES_INFO_MAP.get(serverID);
     }
 
     public boolean isType(AppType serverType) {
@@ -175,57 +190,24 @@ public class GameInfo {
         return this.register;
     }
 
-    public static DateTime openDate() {
-        return getMainInfo().getOpenDate();
+    public DateTime openDate() {
+        return this.openDate;
     }
 
-    public static DateTime openDateMillis(int millisOfDay) {
-        return getMainInfo().getOpenDate().withMillisOfDay(millisOfDay);
+    public DateTime openDateMillis(int millisOfDay) {
+        return this.openDate.withMillisOfDay(millisOfDay);
     }
 
-    public static DateTime openDate(int hour) {
+    public DateTime openDate(int hour) {
         return openDate(hour, 0);
     }
 
-    public static DateTime openDate(int hour, int minutes) {
+    public DateTime openDate(int hour, int minutes) {
         return openDate(hour, minutes, 0);
     }
 
-    public static DateTime openDate(int hour, int minutes, int seconds) {
-        return getMainInfo().getOpenDate().withTime(hour, minutes, seconds, 0);
-    }
-
-    public static int openedDays() {
-        return getMainInfo().getOpenedDays();
-    }
-
-    public static String getLocal() {
-        return GameInfo.local;
-    }
-
-    public static boolean isLocal(String local) {
-        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
-    }
-
-    public static long getSystemID() {
-        return getMainInfo().getServerID();
-    }
-
-    public static int getMainServerID() {
-        return getMainInfo().getServerID();
-    }
-
-    public static boolean isHasServer(int serverID) {
-        return GAMES_INFO_MAP.containsKey(serverID);
-    }
-
-    public static boolean isOwnUser(long userID) {
-        int serverID = IDUtils.userID2SID(userID);
-        return GAMES_INFO_MAP.containsKey(serverID);
-    }
-
-    public static boolean isSystemID(long id) {
-        return id < 10000000;
+    public DateTime openDate(int hour, int minutes, int seconds) {
+        return this.openDate.withTime(hour, minutes, seconds, 0);
     }
 
 }

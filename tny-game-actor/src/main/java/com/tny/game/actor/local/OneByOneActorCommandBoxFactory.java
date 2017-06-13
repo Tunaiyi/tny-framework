@@ -21,7 +21,7 @@ public class OneByOneActorCommandBoxFactory implements ActorCommandBoxFactory {
         }
 
         @Override
-        public void process() {
+        protected void doProcess() {
             Queue<ActorCommand<?>> queue = this.acceptQueue();
             long startTime = System.currentTimeMillis();
             this.runSize = 0;
@@ -40,7 +40,7 @@ public class OneByOneActorCommandBoxFactory implements ActorCommandBoxFactory {
                 }
             }
             for (CommandBox commandBox : boxes()) {
-                this.worker.submit(commandBox);
+                commandBox.process();
                 // this.runSize += commandBox.getProcessSize();
             }
             long finishTime = System.currentTimeMillis();

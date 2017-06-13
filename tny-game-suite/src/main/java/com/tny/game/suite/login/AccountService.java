@@ -3,10 +3,10 @@ package com.tny.game.suite.login;
 import com.google.common.collect.Range;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.net.exception.DispatchException;
 import com.tny.game.lifecycle.LifecycleLevel;
 import com.tny.game.lifecycle.PrepareStarter;
 import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.net.exception.DispatchException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.joda.time.DateTime;
@@ -85,11 +85,7 @@ public class AccountService implements ServerPrepareStart {
         UIDCreator creator = this.UIDCreatorMap.get(serverID);
         if (creator == null) {
             synchronized (this) {
-                creator = this.UIDCreatorMap.get(serverID);
-                if (creator == null) {
-                    creator = new UIDCreator(serverID);
-                    this.UIDCreatorMap.put(serverID, creator);
-                }
+                creator = this.UIDCreatorMap.computeIfAbsent(serverID, UIDCreator::new);
             }
         }
         if (!GameInfo.getMainInfo().getScopeType().isTest() && creator.isFull())
@@ -158,7 +154,7 @@ public class AccountService implements ServerPrepareStart {
 
         private AccountManager manager;
 
-        private Queue<Long> idQueue = new ConcurrentLinkedQueue<Long>();
+        private Queue<Long> idQueue = new ConcurrentLinkedQueue<>();
 
         public UIDCreator(int serverID) {
             super();
@@ -181,7 +177,7 @@ public class AccountService implements ServerPrepareStart {
 
         public Long createID() {
             Long id = null;
-            while (!this.isFull() && id == null) {
+            while (!this.isFull()) {
                 id = this.idQueue.poll();
                 if (id != null) {
                     this.tryGrowUIDs();
@@ -196,7 +192,7 @@ public class AccountService implements ServerPrepareStart {
             if (maxUID == null)
                 maxUID = this.uidRange.lowerEndpoint() + 10000 + ThreadLocalRandom.current().nextInt(10000);
             maxUID = Math.min(maxUID, this.uidRange.upperEndpoint());
-            List<Long> growthIDs = new ArrayList<Long>();
+            List<Long> growthIDs = new ArrayList<>();
             for (int index = 0; index < this.growSize; index++)
                 growthIDs.add(maxUID++);
             int[] results = this.manager.insert(growthIDs);
@@ -216,19 +212,14 @@ public class AccountService implements ServerPrepareStart {
             double usedPCT = current / this.growSize;
             if (usedPCT <= this.growAtPCT) {
                 if (this.growing.compareAndSet(false, true)) {
-                    AccountService.this.growUIDExecutor.execute(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            try {
-                                UIDCreator.this.doGrow();
-                            } catch (Exception e) {
-                                LOGGER.error("", e);
-                            } finally {
-                                UIDCreator.this.growing.set(false);
-                            }
+                    AccountService.this.growUIDExecutor.execute(() -> {
+                        try {
+                            UIDCreator.this.doGrow();
+                        } catch (Exception e) {
+                            LOGGER.error("", e);
+                        } finally {
+                            UIDCreator.this.growing.set(false);
                         }
-
                     });
                 }
             }

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -65,22 +65,28 @@ public abstract class TaskReceiver {
         return actualLastHandlerTime;
     }
 
-    protected void handle(List<TimeTaskEvent> events) {
-        Set<String> runSet = new HashSet<String>();
-        for (TimeTaskEvent event : events) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " + event.getTimeTask().getHandlerList());
-            }
-            for (TimeTaskHandler handler : event.getHandlerList()) {
-                try {
-                    if (handler.getHandleType() != HandleType.ONCE || runSet.add(handler.getHandlerName()))
-                        handler.handle(this);
-                } catch (Throwable e) {
-                    LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getHandlerName(), e);
+    protected void handle(Queue<TimeTaskEvent> events) {
+        Set<String> runSet = new HashSet<>();
+        TriggerContext context = new TriggerContext(events);
+        while (!events.isEmpty()) {
+            TimeTaskEvent event = events.peek();
+            try {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " + event.getTimeTask().getHandlerList());
                 }
+                for (TimeTaskHandler handler : event.getHandlerList()) {
+                    try {
+                        if (handler.getHandleType() != HandleType.ONCE || runSet.add(handler.getHandlerName()))
+                            handler.handle(this, context);
+                    } catch (Throwable e) {
+                        LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getHandlerName(), e);
+                    }
+                }
+                this.lastHandlerTime = event.getTimeTask().getExecuteTime();
+                this.actualLastHandlerTime = System.currentTimeMillis();
+            } finally {
+                events.poll();
             }
-            this.lastHandlerTime = event.getTimeTask().getExecuteTime();
-            this.actualLastHandlerTime = System.currentTimeMillis();
         }
     }
 

@@ -2,7 +2,7 @@ package com.tny.game.suite.scheduler.cache;
 
 import com.tny.game.scheduler.TaskReceiver;
 import com.tny.game.suite.base.GameCacheManager;
-import com.tny.game.suite.core.GameInfo;
+import com.tny.game.suite.login.IDUtils;
 import com.tny.game.suite.scheduler.GameTaskReceiver;
 import com.tny.game.suite.scheduler.TaskReceiverManager;
 import org.springframework.context.annotation.Profile;
@@ -19,7 +19,7 @@ public class CacheTaskReceiverManager extends GameCacheManager<TaskReceiver> imp
     }
 
     public TaskReceiver getSystemReceiver() {
-        return this.get(GameInfo.getSystemID());
+        return this.get(IDUtils.getSystemID());
     }
 
     public TaskReceiver getPlayerReceiver(long playerID) {

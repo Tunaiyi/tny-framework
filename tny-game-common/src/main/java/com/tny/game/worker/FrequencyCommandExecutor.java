@@ -76,6 +76,11 @@ public class FrequencyCommandExecutor implements CommandExecutor {
             return FrequencyCommandExecutor.this.register(commandBox);
         }
 
+        @Override
+        public boolean execute(CommandBox commandBox) {
+            return true;
+        }
+
     };
 
     public FrequencyCommandExecutor(String name) {
@@ -105,7 +110,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                     int currentContinueTime = 0;
                     while (currentTime >= nextRunningTime) {
                         for (CommandBox box : commandBoxList) {
-                            this.worker.submit(box);
+                            this.worker.execute(box);
                             // box.getProcessUseTime();
                             // currentRunSize += box.getProcessSize();
                         }

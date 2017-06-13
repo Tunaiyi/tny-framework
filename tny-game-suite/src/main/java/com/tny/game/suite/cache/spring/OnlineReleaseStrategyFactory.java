@@ -9,7 +9,7 @@ import com.tny.game.base.item.Item;
 import com.tny.game.base.item.Owner;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.session.holder.SessionHolder;
-import com.tny.game.suite.core.GameInfo;
+import com.tny.game.suite.login.IDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
@@ -47,7 +47,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            return !(!super.release(entity, releaseAt) || this.playerID != null && (GameInfo.isSystemID(this.playerID) || OnlineReleaseStrategyFactory.this.sessionHolder.isOnline(AppConstants.DEFAULT_USER_GROUP, this.playerID)));
+            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDUtils.isSystem(this.playerID) || OnlineReleaseStrategyFactory.this.sessionHolder.isOnline(AppConstants.DEFAULT_USER_GROUP, this.playerID)));
         }
 
     }

@@ -33,4 +33,13 @@ public interface IDUtils {
         return (int) (playerID / PLAYER_ID_OFFSET);
     }
 
+    static boolean isOwnUser(long userID) {
+        int serverID = IDUtils.userID2SID(userID);
+        return GameInfo.getInfo(serverID) != null;
+    }
+
+    static long getSystemID() {
+        return GameInfo.getMainServerID();
+    }
+
 }

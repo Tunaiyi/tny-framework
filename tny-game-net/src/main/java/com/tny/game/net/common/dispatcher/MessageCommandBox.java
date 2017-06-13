@@ -2,11 +2,11 @@ package com.tny.game.net.common.dispatcher;
 
 import com.tny.game.worker.command.Command;
 
-public interface MessageCommandBox {
+public interface MessageCommandBox {//extends CommandBox<Command> {
 
-    boolean appoint(Command command);
+    boolean accept(Command command);
 
-    boolean appoint(Runnable runnable);
+    boolean accept(Runnable runnable);
 
     int size();
 

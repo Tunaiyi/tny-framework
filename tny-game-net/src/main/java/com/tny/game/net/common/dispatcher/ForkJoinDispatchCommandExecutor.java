@@ -52,7 +52,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
             session.attributes().setAttribute(COMMAND_CHILD_EXECUTOR, executor);
             session.attributes().setAttribute(NettyAttrKeys.USER_COMMAND_BOX, executor);
         }
-        executor.appoint(command);
+        executor.accept(command);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
         }
 
         @Override
-        public boolean appoint(Command command) {
+        public boolean accept(Command command) {
             if (!this.executorService.isShutdown()) {
                 submit(command);
                 return true;
@@ -84,7 +84,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
             return false;
         }
 
-        private <T> void submit(Command command) {
+        private void submit(Command command) {
             if (this.thread != null && this.thread == Thread.currentThread()) {
                 command.execute();
                 if (!command.isDone())
@@ -98,14 +98,14 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
         }
 
         @Override
-        public boolean appoint(Runnable runnable) {
-            return appoint(new RunnableCommand(runnable));
+        public boolean accept(Runnable runnable) {
+            return accept(new RunnableCommand(runnable));
         }
 
         @Override
         public void run() {
             this.thread = Thread.currentThread();
-            for (; ; ) {
+            while (true) {
                 Command cmd = this.commandQueue.peek();
                 if (cmd != null) {
                     try {

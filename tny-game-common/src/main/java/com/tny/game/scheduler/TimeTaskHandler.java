@@ -15,7 +15,7 @@ public interface TimeTaskHandler {
      *
      * @param receiver 任务接收器
      */
-    public void handle(TaskReceiver receiver);
+    void handle(TaskReceiver receiver, TriggerContext context);
 
     /**
      * 任务处理器名称 <br>
@@ -23,20 +23,20 @@ public interface TimeTaskHandler {
      * @return 名称
      * @uml.property name="handlerName"
      */
-    public String getHandlerName();
+    String getHandlerName();
 
     /**
      * 处理方式
      *
      * @return
      */
-    public HandleType getHandleType();
+    HandleType getHandleType();
 
     /**
      * 任务处理器处理组 <br>
      *
      * @return 可处理的用户组
      */
-    public boolean isHandleWith(Object group);
+    boolean isHandleWith(Object group);
 
 }

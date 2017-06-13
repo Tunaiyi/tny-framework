@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -212,7 +214,7 @@ public class TimeTaskScheduler {
                         LogUtils.msg(receiver.toString(), new Date(receiver.getLastHandlerTime()), new Date(), timeTaskList.size()));
             }
 
-            List<TimeTaskEvent> eventList = new ArrayList<TimeTaskEvent>();
+            Queue<TimeTaskEvent> eventList = new ArrayDeque<>();
             for (TimeTask timeTask : timeTaskList) {
                 List<TimeTaskHandler> handlerList = this.handlerHodler.getHandlerList(receiver.getGroup(), timeTask.getHandlerList());
                 eventList.add(new TimeTaskEvent(timeTask, handlerList));
@@ -241,7 +243,7 @@ public class TimeTaskScheduler {
             this.stopTime = startTime;
             if (backup.getTimeTaskQueue() != null) {
                 this.timeTaskQueue = backup.getTimeTaskQueue();
-                if (LOG.isInfoEnabled()){
+                if (LOG.isInfoEnabled()) {
                     LOG.info("=读取存储 TimeTask=");
                     this.timeTaskQueue.getTimeTaskList()
                             .forEach(t -> LOG.info("{}", t));

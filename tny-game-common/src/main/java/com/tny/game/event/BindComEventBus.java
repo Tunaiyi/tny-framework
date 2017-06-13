@@ -23,8 +23,8 @@ public class BindComEventBus<L, E extends Event<?>> extends BindEventBus<L, ComE
 
     public void notify(E event) {
         if (global) {
-            List<L> globalListeners = GlobalListenerHolder.getInstance().getListeners(bindWith);
-            for (L listener : globalListeners) {
+            List<L> global = GlobalListenerHolder.getInstance().getListeners(bindWith);
+            for (L listener : global) {
                 try {
                     invoker.invoke(listener, event);
                 } catch (Throwable e) {

@@ -19,8 +19,9 @@ public interface CommandWorker extends CommandBoxProcessor {
         return commandBox.unbindWorker();
     }
 
-    default void submit(CommandBox commandBox) {
-        commandBox.process();
-    }
+    /**
+     * @param commandBox 执行
+     */
+    boolean execute(CommandBox commandBox);
 
 }

@@ -5,13 +5,13 @@ import com.tny.game.worker.command.Command;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  extends AbstractWorkerCommandBox<C, CB> {
+public class FrequencyCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
 
-    public DefaultWorkerCommandBox(Queue<C> queue) {
+    public FrequencyCommandBox(Queue<C> queue) {
         super(queue);
     }
 
-    public DefaultWorkerCommandBox() {
+    public FrequencyCommandBox() {
         super(new ConcurrentLinkedQueue<>());
     }
 
@@ -20,7 +20,13 @@ public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  
         return queue;
     }
 
-    public void process() {
+    @Override
+    public boolean submit() {
+        return true;
+    }
+
+    @Override
+    protected void doProcess() {
         Queue<C> queue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
         int currentSize = queue.size();
@@ -47,6 +53,11 @@ public class DefaultWorkerCommandBox<C extends Command, CB extends CommandBox>  
         }
         long finishTime = System.currentTimeMillis();
         runUseTime = finishTime - startTime;
+    }
+
+    @Override
+    public boolean execute(CommandBox commandBox) {
+        return true;
     }
 
 }

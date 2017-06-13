@@ -10,13 +10,13 @@ import com.tny.game.net.base.AppUtils;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.common.AbstractAppConfiguration;
+import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.SessionInputEventHandler;
-import com.tny.game.net.session.SessionOutputEventHandler;
+import com.tny.game.net.session.event.SessionInputEventHandler;
+import com.tny.game.net.session.event.SessionOutputEventHandler;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
@@ -147,9 +147,7 @@ public class SpringAppConfiguration extends AbstractAppConfiguration implements 
                         AppUtils::getUnitName,
                         ObjectUtils::self
                 )));
-        T unit;
-        ExceptionUtils.checkNotNull(unit = units.get(checkUnit), "{} [{}] 不存在", clazz, checkUnit);
-        return unit;
+        return ExceptionUtils.checkNotNull(units.get(checkUnit), "{} [{}] 不存在", clazz, checkUnit);
     }
 
 

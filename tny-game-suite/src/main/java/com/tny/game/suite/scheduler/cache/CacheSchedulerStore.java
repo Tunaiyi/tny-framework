@@ -4,7 +4,7 @@ import com.tny.game.cache.async.AsyncCache;
 import com.tny.game.scheduler.SchedulerBackup;
 import com.tny.game.scheduler.SchedulerStore;
 import com.tny.game.scheduler.TimeTaskScheduler;
-import com.tny.game.suite.core.GameInfo;
+import com.tny.game.suite.login.IDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -25,13 +25,13 @@ public class CacheSchedulerStore implements SchedulerStore {
     @Override
     public void save(TimeTaskScheduler timeTaskScheduler) {
         CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
-                getKey(GameInfo.getSystemID()), timeTaskScheduler);
+                getKey(IDUtils.getSystemID()), timeTaskScheduler);
         this.cache.setObject(cacheSchedulerBackup);
     }
 
     @Override
     public SchedulerBackup load() {
-        return this.cache.getObject(CacheSchedulerBackup.class, getKey(GameInfo.getSystemID()));
+        return this.cache.getObject(CacheSchedulerBackup.class, getKey(IDUtils.getSystemID()));
     }
 
 }

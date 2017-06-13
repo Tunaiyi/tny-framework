@@ -1,4 +1,6 @@
-package com.tny.game.net.session;
+package com.tny.game.net.session.event;
+
+import com.tny.game.net.session.NetSession;
 
 /**
  * Session 输出消息处理器

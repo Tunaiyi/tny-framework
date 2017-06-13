@@ -28,5 +28,25 @@ public class CapacitySupplierListDTO {
         return dto;
     }
 
+    public CapacitySupplierListDTO addSupplier(CapacitySupplier supplier) {
+        capacityItems.add(CapacitySupplierDTO.supplier2DTO(supplier));
+        return this;
+    }
+
+    public CapacitySupplierListDTO addDTO(CapacitySupplierDTO supplierDTO) {
+        capacityItems.add(supplierDTO);
+        return this;
+    }
+
+    public CapacitySupplierListDTO addAllSuppliers(Collection<CapacitySupplier> suppliers) {
+        suppliers.forEach(this::addSupplier);
+        return this;
+    }
+
+    public CapacitySupplierListDTO addAllDTOs(Collection<CapacitySupplierDTO> supplierDTOs) {
+        supplierDTOs.forEach(this::addDTO);
+        return this;
+    }
+
 
 }
