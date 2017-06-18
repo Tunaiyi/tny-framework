@@ -44,7 +44,7 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
     protected ConcurrentMap<Integer, ServerNode> nodeMap = new ConcurrentHashMap<>();
 
     protected NodeWatcher<ServerLaunch> launchHandler = (path, state, old, data) -> {
-        ServerNode node = null;
+        ServerNode node;
         switch (state) {
             case CREATE:
                 if (data == null)
@@ -65,13 +65,13 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
                     return;
                 node = this.removeLaunch(old.getServerID());
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerID());
+                    LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerID(), node);
                 break;
         }
     };
 
     protected NodeWatcher<ServerOutline> outlineHandler = (path, state, old, data) -> {
-        ServerNode node = null;
+        ServerNode node;
         switch (state) {
             case CREATE:
                 if (data == null)
@@ -100,7 +100,7 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
     protected NodeWatcher<ServerSetting> settingHandler = (path, state, old, data) -> {
         if (data == null)
             return;
-        ServerNode node = null;
+        ServerNode node;
         switch (state) {
             case CREATE:
                 if (data == null)
@@ -175,6 +175,7 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
             this.remoteMonitor.monitorChildren(ClusterUtils.SETTING_LIST_PATH, this.settingHandler);
 
         this.postWebMonitor();
+        SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
 
         String host = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
         String port = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_PORT);
@@ -318,12 +319,16 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
 
     }
 
-    public Optional<String> getHttpUrl(int serverID, String... paths) {
+    public Optional<String> gameUrl(int serverID, String... paths) {
         ServerNode node = getServerNode(serverID);
         if (node == null)
             return Optional.empty();
-        return node.getPrivateConnector("http")
+        return node.getPrivateConnector(WebPaths.HTTP_INSIDE)
                 .map(c -> "http://" + c.getHost() + ":" + c.getPort() + "/" + StringUtils.join(paths, "/"));
+    }
+
+    public Optional<String> gameUrl(int serverID, WebPath path) {
+        return gameUrl(serverID, path.getPath());
     }
 
 }

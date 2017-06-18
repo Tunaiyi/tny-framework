@@ -6,6 +6,7 @@ import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.suite.base.capacity.CapacityGoal;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 import com.tny.game.suite.base.capacity.ComboCapacitySupplier;
 import com.tny.game.suite.base.capacity.TimeoutCapacitySupplier;
@@ -14,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ProtoEx(SuiteProtoIDs.CAPACITY_ITEM_DTO)
+@ProtoEx(SuiteProtoIDs.CAPACITY_SUPPLIER_DTO)
 @DTODoc(value = "游戏能力相关对象DTO")
 public class CapacitySupplierDTO {
 
@@ -37,6 +38,16 @@ public class CapacitySupplierDTO {
     @VarDoc("剩余时间")
     @ProtoExField(5)
     private Long remainTime;
+
+    @VarDoc("是不是目标")
+    @ProtoExField(6)
+    private boolean goal;
+
+    public static <T extends CapacitySupplier & CapacityGoal> CapacitySupplierDTO goalSupplier2DTO(T g) {
+        CapacitySupplierDTO dto = supplier2DTO(g);
+        dto.goal = true;
+        return dto;
+    }
 
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
         CapacitySupplierDTO dto = new CapacitySupplierDTO();

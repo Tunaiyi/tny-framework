@@ -1,5 +1,6 @@
 package com.tny.game.suite.base.dto;
 
+import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -20,8 +21,16 @@ public class TradeStuffListDTO {
     @VarDoc("交易物品列表")
     private List<TradeStuffDTO> stuffList;
 
+    @ProtoExField(2)
+    @VarDoc("交易类型")
+    private TradeType tradeType;
+
     public List<TradeStuffDTO> getStuffList() {
         return stuffList;
+    }
+
+    public TradeType getTradeType() {
+        return tradeType;
     }
 
     public static TradeStuffListDTO stuff2DTO(List<TradeStuff> stuffs) {

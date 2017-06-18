@@ -10,6 +10,11 @@ public class MD5 {
     }
 
 
+    public static String md5(byte [] content) {
+        return DigestUtils.md5Hex(content);
+    }
+
+
     static String values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\"\\/|~!@#$%^&*()[]{};':\",./<>?";
 
     public static void main(String[] args) {

@@ -29,6 +29,7 @@ import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -54,7 +55,7 @@ public class HttpClientConfiguration {
     private static final String HTTP_PROXY_PORT = "tny.common.http_client.proxy.port";
 
     private ScheduledExecutorService idleConnectionMonitor = Executors.newSingleThreadScheduledExecutor(
-            new CoreThreadFactory("IdleConnectionMonitor"));
+            new CoreThreadFactory("IdleConnectionMonitor", true));
 
     private ConnectionKeepAliveStrategy keepAliveStrategy = (response, context) -> {
         HeaderElementIterator it = new BasicHeaderElementIterator(
@@ -108,9 +109,8 @@ public class HttpClientConfiguration {
         }
     }
 
-
-    @Bean(name = "restTemplate", autowire = Autowire.NO)
-    public RestTemplate restTemplate() throws Exception {
+    @Bean
+    public HttpComponentsClientHttpRequestFactory requestFactory() throws Exception {
         SSLContext sslContext = newSSLContext();
         PlainConnectionSocketFactory httpSocketFactory = new PlainConnectionSocketFactory();
         SSLConnectionSocketFactory httpsSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
@@ -163,7 +163,7 @@ public class HttpClientConfiguration {
             }
 
         }, 5, TimeUnit.SECONDS);
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient) {
+        return new HttpComponentsClientHttpRequestFactory(httpClient) {
             @Override
             protected HttpUriRequest createHttpUriRequest(HttpMethod httpMethod, URI uri) {
                 if (HttpMethod.DELETE == httpMethod) {
@@ -172,7 +172,12 @@ public class HttpClientConfiguration {
                 return super.createHttpUriRequest(httpMethod, uri);
             }
         };
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
+    }
+
+
+    @Bean(name = "restTemplate", autowire = Autowire.NO)
+    public RestTemplate restTemplate(@Autowired HttpComponentsClientHttpRequestFactory factory) throws Exception {
+        RestTemplate restTemplate = new RestTemplate(factory);
         return restTemplate;
     }
 }

@@ -204,6 +204,14 @@ public interface Configs {
     }
     //endregion
 
+
+
+    //region 协议配置
+    String PROTOCOLS_CONFIG_PATH = "protocols.properties";
+    Config PROTOCOLS_CONFIG = ConfigLib.getConfigExist(PROTOCOLS_CONFIG_PATH);
+    String PATH_HEAD = "tny.server.url.path";
+    //endregion
+
 //    static Function<String, String> keyAs(String nextChild) {
 //        if (nextChild.endsWith(".")) {
 //            String head = PREFIX + nextChild;

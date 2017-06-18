@@ -52,9 +52,10 @@ public interface SuiteProtoIDs {
     int TRADE_STUFF_LIST_DTO = 2_20_00;
 
     int CAPACITY_DTO = 2_21_00;
-    int CAPACITY_ITEM_DTO = 2_22_00;
-    int CAPACITY_ITEM_LIST_DTO = 2_23_00;
+    int CAPACITY_SUPPLIER_DTO = 2_22_00;
+    int CAPACITY_SUPPLIER_LIST_DTO = 2_23_00;
     int CAPACITY_GOAL_DTO = 2_24_00;
+    int CAPACITY_GOAL_LIST_DTO = 2_25_00;
 
 
 }

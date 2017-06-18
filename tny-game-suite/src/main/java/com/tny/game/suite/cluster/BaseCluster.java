@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -37,23 +38,6 @@ public abstract class BaseCluster {
 
     public Collection<WebServiceNodeHolder> getAllWebHolders() {
         return this.webHolderMap.values();
-    }
-
-    public String selectWebUrl(String type, String path) {
-        WebServiceNodeHolder holder = this.webHolderMap.get(type);
-        if (holder == null)
-            return null;
-        return holder.selectUrl() + path;
-    }
-
-    public String selectWebUrl(String type, int id, String path) {
-        WebServiceNodeHolder holder = this.webHolderMap.get(type);
-        if (holder == null)
-            return null;
-        WebServiceNode node = holder.getNode(id);
-        if (node == null)
-            return null;
-        return node.getUrl() + path;
     }
 
     protected void init() throws Exception {
@@ -106,6 +90,27 @@ public abstract class BaseCluster {
                     break;
             }
         };
+    }
+
+    public Optional<String> webUrl(String type, String path) {
+        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        if (holder == null)
+            return Optional.empty();
+        return Optional.of(holder.selectUrl() + path);
+    }
+
+    public Optional<String> webUrl(String type, int id, String path) {
+        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        if (holder == null)
+            return Optional.empty();
+        WebServiceNode node = holder.getNode(id);
+        if (node == null)
+            return Optional.empty();
+        return Optional.of(node.getUrl() + path);
+    }
+
+    public Optional<String> webUrl(WebPath path) {
+        return webUrl(path.getServerType(), path.getPath());
     }
 
 }

@@ -3,6 +3,7 @@ package com.tny.game.web;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.DoneResult;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -84,12 +85,24 @@ public class WebResult<O> {
         return this.code;
     }
 
-    public Object getBody() {
+    public O getBody() {
         return this.body;
     }
 
     public String getMessage() {
         return this.message;
+    }
+
+    public boolean isSuccess() {
+        return ResultCodes.isSuccess(this.code);
+    }
+
+    public boolean isFailed() {
+        return !ResultCodes.isSuccess(this.code);
+    }
+
+    public ResultCode resultCode() {
+        return ResultCodes.of(this.code);
     }
 
     @Override

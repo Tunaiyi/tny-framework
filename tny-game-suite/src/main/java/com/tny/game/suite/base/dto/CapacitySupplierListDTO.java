@@ -7,17 +7,24 @@ import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ProtoEx(SuiteProtoIDs.CAPACITY_ITEM_LIST_DTO)
+@ProtoEx(SuiteProtoIDs.CAPACITY_SUPPLIER_LIST_DTO)
 @DTODoc(value = "游戏能力相关对象列表DTO")
 public class CapacitySupplierListDTO {
 
     @VarDoc("能力相关对象列表")
     @ProtoExField(1)
     private List<CapacitySupplierDTO> capacityItems;
+
+    public static CapacitySupplierListDTO create() {
+        CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
+        dto.capacityItems = new ArrayList<>();
+        return dto;
+    }
 
     public static CapacitySupplierListDTO suppliers2DTO(Collection<? extends CapacitySupplier> suppliers) {
         CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
