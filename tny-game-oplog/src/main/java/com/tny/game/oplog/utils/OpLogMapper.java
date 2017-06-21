@@ -48,6 +48,8 @@ public class OpLogMapper {
                 return jsonParser.getBooleanValue();
             } else if (token == JsonToken.VALUE_STRING) {
                 return jsonParser.getText();
+            } else if (token == JsonToken.VALUE_EMBEDDED_OBJECT) {
+                return jsonParser.getEmbeddedObject();
             }
             return null;
         }
@@ -113,8 +115,10 @@ public class OpLogMapper {
                 generator.writeNumber(value.toString());
             } else if (value instanceof Boolean) {
                 generator.writeBoolean((Boolean) value);
-            } else {
+            } else if (value instanceof String) {
                 generator.writeString(value.toString());
+            } else {
+                generator.writeObject(value);
             }
         }
 

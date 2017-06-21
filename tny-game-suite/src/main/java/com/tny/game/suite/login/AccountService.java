@@ -101,6 +101,8 @@ public class AccountService implements ServerPrepareStart {
         try {
             account.offline();
             DateTime dateTime = account.getOfflineTime();
+            if (dateTime == null)
+                dateTime = DateTime.now();
             this.accountManager.updateOfflineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOfflineAt exception", e);
@@ -111,6 +113,8 @@ public class AccountService implements ServerPrepareStart {
         try {
             account.online(ip);
             DateTime dateTime = account.getOnlineTime();
+            if (dateTime == null)
+                dateTime = DateTime.now();
             this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOnlineAt exception", e);

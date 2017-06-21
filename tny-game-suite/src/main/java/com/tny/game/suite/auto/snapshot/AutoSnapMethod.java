@@ -5,10 +5,8 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.config.Config;
 import com.tny.game.oplog.Snapper;
 import com.tny.game.oplog.annotation.Snap;
-import com.tny.game.oplog.annotation.SnapReason;
 import com.tny.game.suite.auto.AutoMethod;
 import com.tny.game.suite.auto.annotation.None;
-import com.tny.game.suite.base.Actions;
 import com.tny.game.suite.utils.Configs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +16,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 自动快照方法
  * Created by Kun Yang on 16/5/25.
  */
-public class AutoSnapMethod extends AutoMethod<Snap, None, None> {
+public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None, None> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AutoSnapMethod.class);
 
@@ -37,10 +36,10 @@ public class AutoSnapMethod extends AutoMethod<Snap, None, None> {
 
     private static Config CONFIG = Configs.SNAP_REASON_CONFIG;
 
-    protected AutoSnapMethod(Method method) {
+    public AutoSnapMethod(Class<SN> snClass, Function<SN, Action> actionGetter, Method method) {
         super(method, Snap.class, null, null);
         Class<? extends Snapper>[] snapShotTypes = this.autoInvoke.value();
-        SnapReason reason = method.getAnnotation(SnapReason.class);
+        SN reason = method.getAnnotation(snClass);
         List<SnapParamHolder> paramSnapsHolders = new ArrayList<>();
         Annotation[][] paramsAnnotations = method.getParameterAnnotations();
         for (int pIndex = 0; pIndex < paramsAnnotations.length; pIndex++) {
@@ -56,12 +55,7 @@ public class AutoSnapMethod extends AutoMethod<Snap, None, None> {
         }
         this.paramSnapsHolders = paramSnapsHolders.isEmpty() ? ImmutableList.of() : paramSnapsHolders;
         if (reason != null) {
-            String actionStr;
-            if (CONFIG != null)
-                actionStr = CONFIG.getStr(reason.value(), reason.value());
-            else
-                actionStr = reason.value();
-            this.action = Actions.of(actionStr);
+            this.action = actionGetter.apply(reason);
             this.snapShotTypes = snapShotTypes;
         } else {
             int actionIndex = -1;

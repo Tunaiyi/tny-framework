@@ -56,7 +56,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> getEntity(String url, Class<B> bodyClass) {
-        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, ImmutableMap.of(), bodyClass);
+        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, ImmutableMap.of(), bodyClass);
     }
 
     public <B> B get(String url, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -67,7 +67,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> getEntity(String url, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, urlVars, bodyClass);
+        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, urlVars, bodyClass);
     }
 
     public <E, B> B get(String url, E entity, Class<B> bodyClass) {
@@ -78,7 +78,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> getEntity(String url, E entity, Class<B> bodyClass) {
-        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, ImmutableMap.of(), bodyClass);
+        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, ImmutableMap.of(), bodyClass);
     }
 
     public <E, B> B get(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -89,7 +89,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> getEntity(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, urlVars, bodyClass);
+        return this.getEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, urlVars, bodyClass);
     }
 
     public <B> B get(String url, MediaType accept, MediaType contentType, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -162,7 +162,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> postEntity(String url, Class<B> bodyClass) {
-        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, ImmutableMap.of(), bodyClass);
+        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, ImmutableMap.of(), bodyClass);
     }
 
     public <B> B post(String url, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -173,7 +173,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> postEntity(String url, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, urlVars, bodyClass);
+        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, urlVars, bodyClass);
     }
 
     public <E, B> B post(String url, E entity, Class<B> bodyClass) {
@@ -184,7 +184,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> postEntity(String url, E entity, Class<B> bodyClass) {
-        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, ImmutableMap.of(), bodyClass);
+        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, ImmutableMap.of(), bodyClass);
     }
 
     public <E, B> B post(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -195,7 +195,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> postEntity(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, urlVars, bodyClass);
+        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, urlVars, bodyClass);
     }
 
     public <B> B post(String url, MediaType accept, MediaType contentType, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -268,7 +268,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> putEntity(String url, Class<B> bodyClass) {
-        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, ImmutableMap.of(), bodyClass);
+        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, ImmutableMap.of(), bodyClass);
     }
 
     public <B> B put(String url, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -279,7 +279,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> putEntity(String url, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, urlVars, bodyClass);
+        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, urlVars, bodyClass);
     }
 
     public <E, B> B put(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -290,7 +290,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> putEntity(String url, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, urlVars, bodyClass);
+        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, urlVars, bodyClass);
     }
 
     public <E, B> B put(String url, E entity, Class<B> bodyClass) {
@@ -301,7 +301,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> putEntity(String url, E entity, Class<B> bodyClass) {
-        return this.postEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, entity, ImmutableMap.of(), bodyClass);
+        return this.putEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, entity, ImmutableMap.of(), bodyClass);
     }
 
     public <B> B put(String url, MediaType accept, MediaType contentType, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -362,7 +362,7 @@ public class HTTPClient {
     }
 
     public <E, B> ResponseEntity<B> putEntity(String url, HttpEntity<E> entity, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.restTemplate.postForEntity(url, entity, bodyClass, urlVars);
+        return this.restTemplate.exchange(url, HttpMethod.PUT, entity, bodyClass, urlVars);
     }
 
     public <B> B del(String url, Class<B> bodyClass) {
@@ -373,7 +373,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> delEntity(String url, Class<B> bodyClass) {
-        return this.delEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, ImmutableMap.of(), bodyClass);
+        return this.delEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, ImmutableMap.of(), bodyClass);
     }
 
     public <B> B del(String url, Map<String, String> urlVars, Class<B> bodyClass) {
@@ -384,7 +384,7 @@ public class HTTPClient {
     }
 
     public <B> ResponseEntity<B> delEntity(String url, Map<String, String> urlVars, Class<B> bodyClass) {
-        return this.delEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, urlVars, bodyClass);
+        return this.delEntity(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, urlVars, bodyClass);
     }
 
     public <B> B del(String url, MediaType accept, MediaType contentType, Map<String, String> urlVars, Class<B> bodyClass) {

@@ -11,6 +11,7 @@ import com.tny.game.lifecycle.ServerPrepareStart;
 import com.tny.game.lifecycle.StaticIniter;
 import com.tny.game.lifecycle.annotaion.AsLifecycle;
 import com.tny.game.lifecycle.annotaion.AsyncProcess;
+import com.tny.game.number.IntLocalNum;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
@@ -65,10 +66,20 @@ public class ApplicationLifecycleProcessor {
     }
 
     private ClassSelector selector() {
+        IntLocalNum count = new IntLocalNum(0);
         return ClassSelector.instance()
                 .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
-                .setHandler(classes -> classes.forEach(c ->
-                        ExeUtils.runUnchecked(() -> StaticIniter.instance(c).init())
+                .setHandler(classes -> classes.forEach(c -> {
+                            int number = count.add(1);
+                            long current = System.currentTimeMillis();
+                            try {
+                                LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] : {}", number, c);
+                                ExeUtils.runUnchecked(() -> StaticIniter.instance(c).init());
+                                LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] : 耗时 {} -> {} 完成", number, System.currentTimeMillis() - current, c);
+                            } catch (Throwable e) {
+                                LOGGER.error("服务生命周期 StaticInit # 处理器 [{}] 异常", number, c, e);
+                            }
+                        }
                 ));
     }
 

@@ -46,6 +46,10 @@ public class CapacitySupplierDTO {
     public static <T extends CapacitySupplier & CapacityGoal> CapacitySupplierDTO goalSupplier2DTO(T g) {
         CapacitySupplierDTO dto = supplier2DTO(g);
         dto.goal = true;
+        dto.dependSuppliers = g.suppliers().stream()
+                .filter(CapacitySupplier::isSupplying)
+                .map(CapacitySupplier::getID)
+                .collect(Collectors.toList());
         return dto;
     }
 

@@ -19,7 +19,14 @@ public class AutoMethodHolder<M extends AutoMethod> {
         this.creator = creator;
     }
 
+    public AutoMethodHolder() {
+    }
+
     public M getInstance(Method method) {
+        return getInstance(method, creator);
+    }
+
+    public M getInstance(Method method, Function<Method, M> creator) {
         M autoMethod = METHOD_MAP.get(method);
         if (autoMethod != null)
             return autoMethod;

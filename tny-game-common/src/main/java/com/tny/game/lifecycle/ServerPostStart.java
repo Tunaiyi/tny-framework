@@ -7,6 +7,6 @@ public interface ServerPostStart extends LifecycleHandler {
         return PostStarter.value(this.getClass());
     }
 
-    void postStart() throws Exception;
+    void postStart() throws Throwable;
 
 }

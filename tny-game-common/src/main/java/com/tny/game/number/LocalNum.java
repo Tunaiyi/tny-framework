@@ -189,6 +189,10 @@ public class LocalNum<N extends Number> extends Number {
         return this.number = NumberUtils.become(NumberUtils.mod(this.number, num.number), this.number);
     }
 
+    public N getNumber() {
+        return number;
+    }
+
     @Override
     public int intValue() {
         return number.intValue();

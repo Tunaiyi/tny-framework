@@ -6,6 +6,6 @@ public interface ServerPrepareStart extends LifecycleHandler {
         return PrepareStarter.value(this.getClass());
     }
 
-    void prepareStart() throws Exception;
+    void prepareStart() throws Throwable;
 
 }

@@ -7,6 +7,6 @@ public interface ServerClosed extends LifecycleHandler {
         return PostCloser.value(this.getClass());
     }
 
-    void onClosed() throws Exception;
+    void onClosed() throws Throwable;
 
 }
