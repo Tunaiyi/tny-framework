@@ -5,9 +5,10 @@ import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.ItemsImportKey;
+import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.log.LogName;
+import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +73,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
 
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
-        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
-                : this.itemAlias;
+        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class) : this.itemAlias;
     }
 
     @Override
@@ -84,21 +84,6 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
     @Override
     public DemandType getDemandType() {
         return this.demandType;
-    }
-
-    @Override
-    public boolean isSatisfy(long playerID, Map<String, Object> attributeMap) {
-        String alias = this.getItemAlias(attributeMap);
-        if (alias == null)
-            return true;
-        ItemModel demandModel = this.setAttrMap(playerID, alias, attributeMap);
-        Number current = demandModel.currentFormula().createFormula().putAll(attributeMap).execute(Number.class);
-        Number expect = this.expect.createFormula().putAll(attributeMap).execute(Number.class);
-        return this.isSatisfy0(current, expect, attributeMap);
-    }
-
-    protected boolean isSatisfy0(Object current, Object expect, Map<String, Object> attribute) {
-        return this.fx.createFormula().putAll(attribute).put(CURRENT_VALUE, current).put(EXPECT_VALUE, expect).execute(Boolean.class);
     }
 
     @Override
@@ -116,7 +101,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         if (alias == null)
             return null;
         ItemModel demandModel = this.setAttrMap(playerID, alias, attributeMap);
-        return demandModel.currentFormula().createFormula().putAll(attributeMap).execute(Object.class);
+        return demandModel.currentFormula().putAll(attributeMap).execute(Object.class);
     }
 
     @Override
@@ -127,19 +112,42 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         long id = 0;
         ItemModel demandModel = this.getItemModel(alias);
         this.setAttrMap(playerID, alias, attributeMap);
-        Object current = null;
-        Object expect = null;
-        if (this.current != null) {
-            current = this.current.createFormula().putAll(attributeMap).execute(Object.class);
-        } else {
-            if (this.demandType.isCost())
-                current = demandModel.currentFormula().createFormula().putAll(attributeMap).execute(Object.class);
-        }
-        if (this.expect != null)
-            expect = this.expect.createFormula().putAll(attributeMap).execute(Object.class);
-        boolean satisfy = this.isSatisfy0(current, expect, attributeMap);
+        Formula currentFormula = getCurrentFormula(demandModel);
+        Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
+        Object expect = this.expect != null ? this.expect.createFormula().putAll(attributeMap).execute(Object.class) : null;
+        boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
         return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
+    }
+
+    private Formula getCurrentFormula(ItemModel demandModel) {
+        if (this.current != null) {
+            return this.current.createFormula();
+        } else {
+            if (this.demandType.isCost())
+                return demandModel.currentFormula();
+        }
+        return null;
+    }
+
+    private Formula getDemandFormula(ItemModel demandModel) {
+        if (this.fx != null) {
+            return this.fx.createFormula();
+        } else {
+            if (this.demandType.isCost())
+                return demandModel.demandFormula();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isSatisfy(long playerID, Map<String, Object> attributeMap) {
+        return this.checkDemandResult(playerID, attributeMap).isSatisfy();
+    }
+
+    protected boolean checkSatisfy(Object current, Object expect, ItemModel demandModel, Map<String, Object> attribute) {
+        Formula fxFormula = getDemandFormula(demandModel);
+        return fxFormula.putAll(attribute).put(CURRENT_VALUE, current).put(EXPECT_VALUE, expect).execute(Boolean.class);
     }
 
     private Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap) {

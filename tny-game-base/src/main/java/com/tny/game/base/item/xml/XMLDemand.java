@@ -86,15 +86,14 @@ public class XMLDemand extends AbstractDemand {
             this.demandType = TradeDemandType.COST_DEMAND_GE;
 
         if (this.itemAlias == null) {
-            if (this.itemAliasFx == null) {
+            if (this.itemAliasFx == null)
                 AliasCollectUtils.addAlias(null);
-            }
         } else {
             AliasCollectUtils.addAlias(this.itemAlias);
         }
         if (this.demandType.isCost()) {
             if (this.fx == null)
-                this.fx = MvelFormulaFactory.create(FX_FORMULA, FormulaType.EXPRESSION);
+                this.fx = MvelFormulaFactory.create(DEMAND_FORMULA, FormulaType.EXPRESSION);
         }
     }
 

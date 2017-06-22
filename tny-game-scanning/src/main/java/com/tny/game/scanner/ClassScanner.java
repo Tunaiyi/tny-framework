@@ -2,7 +2,6 @@ package com.tny.game.scanner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,6 +23,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
+
+import static org.slf4j.LoggerFactory.*;
 
 public class ClassScanner {
 
@@ -33,7 +35,7 @@ public class ClassScanner {
 
     private static MetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 
-    protected static final Logger LOG = LoggerFactory.getLogger(ClassScanner.class);
+    protected static final Logger LOG = getLogger(ClassScanner.class);
 
     private List<ClassSelector> selectors = new ArrayList<>();
 
@@ -79,7 +81,7 @@ public class ClassScanner {
 
         // 是否循环迭代
         boolean recursive = true;
-        for (String pack : packs) {
+        Stream.of(packs).parallel().forEach(pack -> {
             // 获取包的名字 并进行替换
             String packageName = pack;
             String packageDirName = packageName.replace('.', '/');
@@ -106,11 +108,11 @@ public class ClassScanner {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("scan {} 异常", pack, e);
             }
-        }
+        });
         for (ClassSelector selector : selectors) {
-            selector.selected(selector.getClasses());
+            selector.selected();
         }
     }
 
@@ -128,23 +130,31 @@ public class ClassScanner {
         if (!"".equals(rootEntryPath) && !rootEntryPath.endsWith("/")) {
             rootEntryPath = rootEntryPath + "/";
         }
-        for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
-            JarEntry entry = entries.nextElement();
+        String rootPath = rootEntryPath;
+        UrlResource jar = jarRes;
+        jarFile.stream().parallel().forEach(entry -> {
             String entryPath = entry.getName();
-            if (entryPath.startsWith(rootEntryPath)) {
-                String relativePath = entryPath.substring(rootEntryPath.length());
+            if (!entryPath.startsWith(rootPath))
+                return;
+            try {
+                String relativePath = entryPath.substring(rootPath.length());
                 if (relativePath.endsWith(".class")) {
-                    Resource resource = jarRes.createRelative(relativePath);
+                    Resource resource;
+                    resource = jar.createRelative(relativePath);
                     if (!resource.isReadable())
-                        continue;
+                        return;
                     MetadataReader reader = readerFactory.getMetadataReader(resource);
                     Class<?> clazz = null;
                     for (ClassSelector selector : selectors) {
-                        clazz = selector.selector(reader, clazz);
+                        Class<?> selClass = selector.selector(reader, clazz);
+                        if (clazz == null && selClass != null)
+                            clazz = selClass;
                     }
                 }
+            } catch (Throwable e) {
+                LOG.error("scan {} 异常", entryPath, e);
             }
-        }
+        });
     }
 
     /**
@@ -166,20 +176,32 @@ public class ClassScanner {
         // 如果存在 就获取包下的所有文件 包括目录
         // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
         File[] dirfiles = dir.listFiles(file -> (recursive && file.isDirectory()) || (file.getName().endsWith(".class")));
+        if (dirfiles == null)
+            return;
         // 循环所有文件
-        for (File file : dirfiles) {
-            // 如果是目录 则继续扫描
-            if (file.isDirectory()) {
-                this.findAndAddClassesInDirByFile(packageName + "." + file.getName(), file.getAbsolutePath(), recursive);
-            } else {
-                FileSystemResource resource = new FileSystemResource(file);
-                MetadataReader reader = readerFactory.getMetadataReader(resource);
-                // 如果是java类文件 去掉后面的.class 只留下类名
-                Class<?> clazz = null;
-                for (ClassSelector selector : selectors)
-                    clazz = selector.selector(reader, clazz);
-            }
-        }
+        Stream.of(dirfiles).parallel()
+                .forEach(file -> {
+                    if (file.isDirectory()) {
+                        try {
+                            String nextPackage = packageName + "." + file.getName();
+                            this.findAndAddClassesInDirByFile(nextPackage, file.getAbsolutePath(), recursive);
+                        } catch (IOException e) {
+                            LOG.error("find dir {} 异常", packageName);
+                        }
+                    } else {
+                        FileSystemResource resource = new FileSystemResource(file);
+                        MetadataReader reader = null;
+                        try {
+                            reader = readerFactory.getMetadataReader(resource);
+                            // 如果是java类文件 去掉后面的.class 只留下类名
+                            Class<?> clazz = null;
+                            for (ClassSelector selector : selectors)
+                                clazz = selector.selector(reader, clazz);
+                        } catch (IOException e) {
+                            LOG.error("find class {} 异常", file);
+                        }
+                    }
+                });
     }
 
 }

@@ -44,10 +44,10 @@ public class SimpleCostPlan extends AbstractCostPlan {
     }
 
     private List<TradeItem<ItemModel>> createTradeItem(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<TradeItem<ItemModel>> itemList = new ArrayList<TradeItem<ItemModel>>();
+        List<TradeItem<ItemModel>> itemList = new ArrayList<>();
         List<DemandResult> demandResultList = this.countDemandResultList(playerID, this.costList, attributeMap);
         for (DemandResult result : demandResultList) {
-            itemList.add(new SimpleTradeItem<ItemModel>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), this.alertType, result.getParamMap()));
+            itemList.add(new SimpleTradeItem<>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), this.alertType, result.getParamMap()));
         }
         return itemList;
     }
@@ -76,7 +76,7 @@ public class SimpleCostPlan extends AbstractCostPlan {
     public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         super.init(itemModel, itemExplorer, itemModelExplorer);
         if (this.costList == null)
-            this.costList = new ArrayList<AbstractDemand>(0);
+            this.costList = new ArrayList<>(0);
         this.demandList = this.costList = Collections.unmodifiableList(this.costList);
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;

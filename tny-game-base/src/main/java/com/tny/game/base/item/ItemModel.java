@@ -9,7 +9,7 @@ import com.tny.game.base.item.behavior.BehaviorResult;
 import com.tny.game.base.item.behavior.CostList;
 import com.tny.game.base.item.behavior.Option;
 import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.common.formula.FormulaHolder;
+import com.tny.game.common.formula.Formula;
 
 import java.util.Collection;
 import java.util.Map;
@@ -458,6 +458,13 @@ public interface ItemModel extends Model {
      *
      * @return 返回当前值公式
      */
-    FormulaHolder currentFormula();
+    Formula currentFormula();
+
+    /**
+     * 消耗条件公式
+     *
+     * @return 返回消耗条件公式
+     */
+    Formula demandFormula();
 
 }

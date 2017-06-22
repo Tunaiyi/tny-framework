@@ -6,6 +6,7 @@ import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
 
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -19,7 +20,7 @@ public class RandomCreatorIniter {
                 .setHandler(RandomCreatorIniter::handle);
     }
 
-    private static void handle(Set<Class<?>> classes) {
+    private static void handle(Collection<Class<?>> classes) {
         for (Class<?> clazz : classes) {
             if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()))
                 continue;

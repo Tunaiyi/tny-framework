@@ -24,10 +24,10 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
@@ -44,7 +44,7 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
 
     private final Map<Class<?>, ToCacheClassHolder> holderMap = new CopyOnWriteMap<>();
 
-    private ForkJoinTask<Set<Class<?>>> task;
+    private ForkJoinTask<Collection<Class<?>>> task;
 
     private ApplicationContext applicationContext;
 

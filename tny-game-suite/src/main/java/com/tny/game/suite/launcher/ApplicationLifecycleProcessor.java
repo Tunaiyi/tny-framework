@@ -52,6 +52,7 @@ public class ApplicationLifecycleProcessor {
         Class<?> clazz = null;
         try {
             RunningChecker.start(this.getClass());
+            LOGGER.info("开始初始化 Class Scan ...");
             ClassScanner.instance()
                     .addSelector(this.selector())
                     .addSelector(EnumLoader.selector())
@@ -59,7 +60,7 @@ public class ApplicationLifecycleProcessor {
                     .addSelector(OpLogSnapshotIniter.selector())
                     .addSelector(RandomCreatorIniter.selector())
                     .scan(Configs.getScanPathArray());
-            LOGGER.info("开始初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
+            LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
             throw new RuntimeException(LogUtils.format("获取 {} 类 ProtoExSchema 错误", clazz), e);
         }

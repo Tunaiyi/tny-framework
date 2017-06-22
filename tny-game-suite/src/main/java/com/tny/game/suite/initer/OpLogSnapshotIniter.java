@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
@@ -40,7 +40,7 @@ public class OpLogSnapshotIniter implements ServerPrepareStart {
     }
 
     @SuppressWarnings("unchecked")
-    public static void loadClasses(Set<Class<?>> classes) {
+    public static void loadClasses(Collection<Class<?>> classes) {
         LOGGER.info("启动初始化ProtoSchema任务!");
         forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
             // try {

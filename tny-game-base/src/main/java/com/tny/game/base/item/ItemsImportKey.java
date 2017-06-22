@@ -38,7 +38,11 @@ public interface ItemsImportKey {
     /**
      * 计算是否符合消耗物品的条件
      */
-    String FX_FORMULA = CURRENT_VALUE + " >= " + EXPECT_VALUE;
+    String DEMAND_FORMULA = CURRENT_VALUE + " >= " + EXPECT_VALUE;
+    /**
+     * 计算物品的当前数量
+     */
+    String CURRENT_FORMULA = DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number";
     /**
      * 内容
      */

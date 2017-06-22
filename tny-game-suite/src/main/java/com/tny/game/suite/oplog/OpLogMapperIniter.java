@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Modifier;
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -45,7 +45,7 @@ public class OpLogMapperIniter implements ServerPrepareStart {
                 ClassScanner.instance()
                         .addSelector(selector)
                         .scan(Configs.getScanPathArray());
-                Set<Class<?>> classes = selector.getClasses();
+                Collection<Class<?>> classes = selector.getClasses();
                 for (Class<?> cl : classes) {
                     int modifier = cl.getModifiers();
                     if (Modifier.isAbstract(modifier))

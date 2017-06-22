@@ -6,22 +6,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by Kun Yang on 2016/12/16.
  */
-public class ClassSelector implements ClassSelectedHandler {
+public class ClassSelector {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClassSelector.class);
 
     private List<ClassFilter> filters = new ArrayList<>();
 
-    private Set<Class<?>> classes = new HashSet<>();
+    private List<Class<?>> classes = Collections.emptyList();
+
+    private Map<Thread, Set<Class<?>>> mapClass = new ConcurrentHashMap<>();
 
     private ClassSelectedHandler handler;
 
@@ -50,13 +56,12 @@ public class ClassSelector implements ClassSelectedHandler {
         return this;
     }
 
-    public Set<Class<?>> getClasses() {
-        return Collections.unmodifiableSet(classes);
+    public Collection<Class<?>> getClasses() {
+        return Collections.unmodifiableCollection(classes);
     }
 
     public ClassSelector addFilter(ClassFilter... filters) {
-        for (ClassFilter fileFilter : filters)
-            this.filters.add(fileFilter);
+        this.filters.addAll(Arrays.asList(filters));
         return this;
     }
 
@@ -69,9 +74,11 @@ public class ClassSelector implements ClassSelectedHandler {
         if (filter(reader)) {
             String fullClassName = reader.getClassMetadata().getClassName();
             try {
+                Thread current = Thread.currentThread();
                 if (clazz == null)
-                    clazz = Thread.currentThread().getContextClassLoader().loadClass(fullClassName);
-                classes.add(clazz);
+                    clazz = current.getContextClassLoader().loadClass(fullClassName);
+                mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
+                        .add(clazz);
                 return clazz;
             } catch (Throwable e) {
                 LOG.error("添加用户自定义视图类错误 找不到此类的{}文件", fullClassName, e);
@@ -88,10 +95,15 @@ public class ClassSelector implements ClassSelectedHandler {
         return true;
     }
 
-    @Override
-    public void selected(Set<Class<?>> classes) {
+    void selected() {
+        this.classes = mapClass.values().stream()
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        this.mapClass.clear();
+        this.mapClass = null;
         if (handler != null)
-            handler.selected(classes);
+            handler.selected(this.getClasses());
     }
 
 }

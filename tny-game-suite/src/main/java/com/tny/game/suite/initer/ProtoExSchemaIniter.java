@@ -14,6 +14,7 @@ import com.tny.game.scanner.filter.AnnotationClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +38,7 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
     }
 
     @SuppressWarnings("unchecked")
-    private static void loadClasses(Set<Class<?>> classes) {
+    private static void loadClasses(Collection<Class<?>> classes) {
         LOGGER.info("启动初始化ProtoSchema任务!");
         // forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
             Class<?> clazz;

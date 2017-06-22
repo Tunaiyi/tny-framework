@@ -28,6 +28,8 @@ public abstract class XMLItemModel extends AbstractItemModel {
 
     protected String currentFormula;
 
+    protected String demandFormula;
+
     @Override
     @SuppressWarnings("unchecked")
     public <IT extends ItemType> IT getItemType() {
@@ -38,7 +40,12 @@ public abstract class XMLItemModel extends AbstractItemModel {
 
     @Override
     protected String getCurrentFormula() {
-        return this.currentFormula == null ? (DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number") : this.currentFormula;
+        return this.currentFormula == null ? super.getCurrentFormula() : this.currentFormula;
+    }
+
+    @Override
+    protected String getDemandFormula() {
+        return this.demandFormula == null ? super.getCurrentFormula() : this.demandFormula;
     }
 
     protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {

@@ -6,6 +6,7 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
 import com.tny.game.base.item.behavior.simple.SimpleTryToDoResult;
+import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
@@ -78,7 +79,15 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
      */
     protected Map<Ability, FormulaHolder> abilityMap;
 
+    /**
+     * 能治值
+     */
     protected volatile FormulaHolder currentFormulaHolder;
+
+    /**
+     * 能治值
+     */
+    protected volatile FormulaHolder demandFormulaHolder;
 
     protected Set<Object> tags;
 
@@ -584,18 +593,33 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     @Override
-    public FormulaHolder currentFormula() {
+    public Formula currentFormula() {
         if (this.currentFormulaHolder != null) {
-            return this.currentFormulaHolder;
+            return this.currentFormulaHolder.createFormula();
         } else {
             String formula = this.getCurrentFormula();
             this.currentFormulaHolder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
-            return this.currentFormulaHolder;
+            return this.currentFormulaHolder.createFormula();
+        }
+    }
+
+    @Override
+    public Formula demandFormula() {
+        if (this.demandFormulaHolder != null) {
+            return this.demandFormulaHolder.createFormula();
+        } else {
+            String formula = this.getDemandFormula();
+            this.demandFormulaHolder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
+            return this.demandFormulaHolder.createFormula();
         }
     }
 
     protected String getCurrentFormula() {
-        return DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number";
+        return CURRENT_FORMULA;
+    }
+
+    protected String getDemandFormula() {
+        return DEMAND_FORMULA;
     }
 
     /*

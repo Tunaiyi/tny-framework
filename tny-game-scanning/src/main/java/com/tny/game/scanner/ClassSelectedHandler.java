@@ -1,12 +1,12 @@
 package com.tny.game.scanner;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Created by Kun Yang on 2016/12/16.
  */
 public interface ClassSelectedHandler {
 
-    void selected(Set<Class<?>> classes);
+    void selected(Collection<Class<?>> classes);
 
 }
