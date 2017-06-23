@@ -91,10 +91,10 @@ public class XMLDemand extends AbstractDemand {
         } else {
             AliasCollectUtils.addAlias(this.itemAlias);
         }
-        if (this.demandType.isCost()) {
-            if (this.fx == null)
-                this.fx = MvelFormulaFactory.create(DEMAND_FORMULA, FormulaType.EXPRESSION);
-        }
+        // if (this.demandType.isCost()) {
+        //     if (this.fx == null)
+        //         this.fx = MvelFormulaFactory.create(DEMAND_FORMULA, FormulaType.EXPRESSION);
+        // }
     }
 
     @Override

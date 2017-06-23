@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -111,9 +113,12 @@ public class ClassScanner {
                 LOG.error("scan {} 异常", pack, e);
             }
         });
+        List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (ClassSelector selector : selectors) {
-            selector.selected();
+            tasks.add(ForkJoinPool.commonPool()
+                    .submit(selector::selected));
         }
+        tasks.forEach(ForkJoinTask::join);
     }
 
     private void findAndAddClassesInJar(URL url) throws IOException {
