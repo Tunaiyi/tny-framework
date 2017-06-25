@@ -171,7 +171,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean insertOwner(Owner<?>... owners) {
         boolean result = true;
         for (Owner<?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getOwnerItemType().getID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
             if (!manager.insert(owner))
@@ -195,7 +195,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean updateOwner(Owner<?>... owners) {
         boolean result = true;
         for (Owner<?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getOwnerItemType().getID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
             if (!manager.update(owner))
@@ -219,7 +219,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean saveOwner(Owner<?>... owners) {
         boolean result = true;
         for (Owner<?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getOwnerItemType().getID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
             if (!manager.save(owner))
@@ -242,7 +242,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean deleteOwner(Owner<?>... owners) {
         boolean result = true;
         for (Owner<?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getOwnerItemType().getID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
             if (!manager.delete(owner))

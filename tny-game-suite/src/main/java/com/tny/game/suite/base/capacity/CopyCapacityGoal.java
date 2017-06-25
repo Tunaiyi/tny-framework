@@ -1,10 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
+import com.tny.game.base.item.Item;
 import com.tny.game.common.utils.collection.CopyOnWriteMap;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * 复制的能力提供器
@@ -16,21 +16,21 @@ public class CopyCapacityGoal extends InnerCapacityGoal {
 
     private CapacityGoalType goalType;
 
-    private Supplier<Long> idSupplier;
+    private Item<?> item;
 
-    public CopyCapacityGoal(long id, CapacityGoalType goalType) {
+    public CopyCapacityGoal(Item<?> item, CapacityGoalType goalType) {
         this.goalType = goalType;
-        this.idSupplier = () -> id;
-    }
-
-    public CopyCapacityGoal(Supplier<Long> idSupplier, CapacityGoalType goalType) {
-        this.goalType = goalType;
-        this.idSupplier = idSupplier;
+        this.item = item;
     }
 
     @Override
     public long getID() {
-        return idSupplier.get();
+        return item.getID();
+    }
+
+    @Override
+    public int getItemID() {
+        return item.getItemID();
     }
 
     @Override

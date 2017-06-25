@@ -52,7 +52,7 @@ public abstract class StuffOwner<IM extends ItemModel, S extends Stuff<IM>> impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public <IT extends ItemType> IT getOwnerItemType() {
+    public <IT extends ItemType> IT getItemType() {
         return (IT) ownItemType;
     }
 

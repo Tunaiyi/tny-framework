@@ -53,10 +53,10 @@ public interface Owner<S extends Stuff<?>> {
     S getItemByItemID(int itemID);
 
     /**
-     * 获取持有的事物Model类型 <br>
+     * 获取ItemType <br>
      *
      * @return 物品类型
      */
-    <IT extends ItemType> IT getOwnerItemType();
+    <IT extends ItemType> IT getItemType();
 
 }

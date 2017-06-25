@@ -23,6 +23,10 @@ public class CapacitySupplierDTO {
     @ProtoExField(1)
     private long id;
 
+    @VarDoc("提供者itemID")
+    @ProtoExField(7)
+    private int itemID;
+
     @VarDoc("能力值列表")
     @ProtoExField(2)
     private List<CapacityDTO> capacities;
@@ -56,6 +60,7 @@ public class CapacitySupplierDTO {
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
         CapacitySupplierDTO dto = new CapacitySupplierDTO();
         dto.id = supplier.getID();
+        dto.id = supplier.getItemID();
         if (supplier instanceof ComboCapacitySupplier)
             dto.dependSuppliers = combo2IDs((ComboCapacitySupplier) supplier);
         else

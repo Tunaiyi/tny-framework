@@ -20,6 +20,10 @@ public class CapacityGoalDTO {
     @ProtoExField(1)
     private long id;
 
+    @VarDoc("提供者itemID")
+    @ProtoExField(2)
+    private int itemID;
+
     @VarDoc("能力值目标依赖的能力值提供器列表")
     @ProtoExField(3)
     private List<Long> dependSuppliers;
@@ -27,6 +31,7 @@ public class CapacityGoalDTO {
     public static CapacityGoalDTO goal2DTO(CapacityGoal goal) {
         CapacityGoalDTO dto = new CapacityGoalDTO();
         dto.id = goal.getID();
+        dto.itemID = goal.getItemID();
         dto.dependSuppliers = goal.suppliers().stream()
                 .filter(CapacitySupplier::isSupplying)
                 .map(CapacitySupplier::getID)

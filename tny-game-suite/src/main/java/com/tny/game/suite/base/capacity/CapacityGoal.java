@@ -16,6 +16,11 @@ public interface CapacityGoal extends Capacitiable {
     long getID();
 
     /**
+     * @return 获取能力提供者ID
+     */
+    int getItemID();
+
+    /**
      * @return 获取目标类型
      */
     CapacityGoalType getGoalType();
