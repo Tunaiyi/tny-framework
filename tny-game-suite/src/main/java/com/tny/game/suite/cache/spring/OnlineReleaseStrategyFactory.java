@@ -6,7 +6,6 @@ import com.tny.game.asyndb.ReleaseStrategyFactory;
 import com.tny.game.asyndb.TimeoutReleaseStrategy;
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.Item;
-import com.tny.game.base.item.Owner;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.suite.login.IDUtils;
@@ -30,8 +29,6 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
             playerID = ((Item<?>) object).getPlayerID();
         } else if (object instanceof Identifiable) {
             playerID = ((Identifiable) object).getPlayerID();
-        } else if (object instanceof Owner) {
-            playerID = ((Owner<?>) object).getPlayerID();
         }
         return new LoginTimeStrategy(playerID, addLife == Long.MIN_VALUE ? defaultLifeTime : addLife);
     }

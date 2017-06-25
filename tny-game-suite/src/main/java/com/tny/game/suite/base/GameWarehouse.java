@@ -1,6 +1,9 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.*;
+import com.tny.game.base.item.AbstractWarehouse;
+import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.context.Attributes;
@@ -49,35 +52,35 @@ public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements I
     }
 
     @Override
-    protected DealedResult consume(Trade result, AttrEntry<?>... entries) {
-        return super.consume(result, entries);
+    protected void consume(Trade result, AttrEntry<?>... entries) {
+        super.consume(result, entries);
     }
 
     @Override
-    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        return super.consume(tradeItem, action, entries);
+    protected void consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
+        super.consume(tradeItem, action, entries);
     }
 
     @Override
-    protected DealedResult receive(Trade result, AttrEntry<?>... entries) {
-        return super.receive(result, entries);
+    protected void receive(Trade result, AttrEntry<?>... entries) {
+        super.receive(result, entries);
     }
 
     @Override
-    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        return super.receive(tradeItem, action, entries);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected TradeResult doReceive(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        return owner.receive(tradeItem, action, attributes);
+    protected void receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
+        super.receive(tradeItem, action, entries);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected TradeResult doConsume(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        return owner.consume(tradeItem, action, attributes);
+    protected void doReceive(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        owner.receive(tradeItem, action, attributes);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void doConsume(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        owner.consume(tradeItem, action, attributes);
     }
 
 

@@ -9,22 +9,22 @@ import java.util.Collection;
  */
 public interface OwnerExplorer {
 
-    <O extends Owner<?>> O getOwner(long playerID, int itemID, Object... object);
+    <O extends Owner<?, ?>> O getOwner(long playerID, int itemID, Object... object);
 
-    boolean insertOwner(Owner<?>... owners);
+    boolean insertOwner(Owner<?, ?>... owners);
 
-    <O extends Owner<?>> Collection<O> insertOwner(Collection<O> ownerCollection);
+    <O extends Owner<?, ?>> Collection<O> insertOwner(Collection<O> ownerCollection);
 
-    boolean updateOwner(Owner<?>... owners);
+    boolean updateOwner(Owner<?, ?>... owners);
 
-    <O extends Owner<?>> Collection<O> updateOwner(Collection<O> ownerCollection);
+    <O extends Owner<?, ?>> Collection<O> updateOwner(Collection<O> ownerCollection);
 
-    boolean saveOwner(Owner<?>... owners);
+    boolean saveOwner(Owner<?, ?>... owners);
 
-    <O extends Owner<?>> Collection<O> saveOwner(Collection<O> ownerCollection);
+    <O extends Owner<?, ?>> Collection<O> saveOwner(Collection<O> ownerCollection);
 
-    boolean deleteOwner(Owner<?>... owners);
+    boolean deleteOwner(Owner<?, ?>... owners);
 
-    <O extends Owner<?>> Collection<O> deleteOwner(Collection<O> ownerCollection);
+    <O extends Owner<?, ?>> Collection<O> deleteOwner(Collection<O> ownerCollection);
 
 }

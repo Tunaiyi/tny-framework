@@ -18,25 +18,23 @@ public abstract class IntCountableStuff<SM extends CountableStuffModel<Integer>>
     }
 
     @Override
-    protected TradeResult consume(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+    protected void consume(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
         int alter = this.getConsumeAlterType(tradeItem).consume(this, tradeItem.getNumber()).intValue();
         if (alter > 0) {
             int oldNumber = this.getNumber();
             this.number -= alter;
-            return this.postConsume(alter, oldNumber, this.number, action, attributes);
+            this.postConsume(alter, oldNumber, this.number, action, attributes);
         }
-        return TradeResult.empty();
     }
 
     @Override
-    protected TradeResult receive(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+    protected void receive(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
         int alter = this.getReceiveAlterType(tradeItem).receive(this, tradeItem.getNumber()).intValue();
         if (alter > 0) {
             int oldNumber = this.getNumber();
             this.number += alter;
-            return this.postReceive(alter, oldNumber, this.number, action, attributes);
+            this.postReceive(alter, oldNumber, this.number, action, attributes);
         }
-        return TradeResult.empty();
     }
 
     @Override

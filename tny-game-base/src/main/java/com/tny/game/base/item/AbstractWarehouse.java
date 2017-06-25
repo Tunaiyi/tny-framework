@@ -14,17 +14,13 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public abstract class AbstractWarehouse<O extends Owner>
-        implements Warehouse<O> {
+public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O> {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
 
@@ -69,7 +65,7 @@ public abstract class AbstractWarehouse<O extends Owner>
 
     @Override
     public <I extends Item<?>> I getItemByID(ItemType itemType, long id, Class<I> clazz) {
-        Owner<?> owner = this.getOwner(itemType, ownerClass);
+        Owner<?, Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return null;
         return (I) owner.getItemByID(id);
@@ -77,7 +73,7 @@ public abstract class AbstractWarehouse<O extends Owner>
 
     @Override
     public <I extends Item<?>> List<I> getItemByItemID(ItemType itemType, int itemID, Class<I> clazz) {
-        Owner<Stuff<?>> owner = this.getOwner(itemType, ownerClass);
+        Owner<?, Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return Collections.emptyList();
         return owner.getItemsByItemID(itemID)
@@ -86,40 +82,32 @@ public abstract class AbstractWarehouse<O extends Owner>
                 .collect(Collectors.toList());
     }
 
-    protected DealedResult consume(Trade result, AttrEntry<?>... entries) {
-        WarehouseDealedResult dealedResult = new WarehouseDealedResult(result.getAction());
+    protected void consume(Trade result, AttrEntry<?>... entries) {
         Attributes attributes = ContextAttributes.create(entries);
         for (TradeItem tradeItem : result.getAllTradeItem()) {
-            this.consume0(dealedResult, tradeItem, result.getAction(), attributes);
+            this.consume0(tradeItem, result.getAction(), attributes);
         }
-        TradeEvents.CONSUME_EVENT.notify(this, result.getAction(), result, dealedResult, attributes);
-        return dealedResult;
+        TradeEvents.CONSUME_EVENT.notify(this, result.getAction(), result, attributes);
     }
 
-    protected DealedResult consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
+    protected void consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         Attributes attributes = ContextAttributes.create(entries);
-        this.consume0(dealedResult, tradeItem, action, attributes);
-        TradeEvents.CONSUME_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
-        return dealedResult;
+        this.consume0(tradeItem, action, attributes);
+        TradeEvents.CONSUME_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), attributes);
     }
 
-    protected DealedResult receive(Trade result, AttrEntry<?>... entries) {
-        WarehouseDealedResult dealedResult = new WarehouseDealedResult(result.getAction());
+    protected void receive(Trade result, AttrEntry<?>... entries) {
         Attributes attributes = ContextAttributes.create(entries);
         for (TradeItem tradeItem : result.getAllTradeItem()) {
-            this.receive0(dealedResult, tradeItem, result.getAction(), attributes);
+            this.receive0(tradeItem, result.getAction(), attributes);
         }
-        TradeEvents.RECEIVE_EVENT.notify(this, result.getAction(), result, dealedResult, attributes);
-        return dealedResult;
+        TradeEvents.RECEIVE_EVENT.notify(this, result.getAction(), result, attributes);
     }
 
-    protected DealedResult receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        WarehouseDealedResult dealedResult = new WarehouseDealedResult(action);
+    protected void receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
         Attributes attributes = ContextAttributes.create(entries);
-        this.receive0(dealedResult, tradeItem, action, attributes);
-        TradeEvents.RECEIVE_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), dealedResult, attributes);
-        return dealedResult;
+        this.receive0(tradeItem, action, attributes);
+        TradeEvents.RECEIVE_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), attributes);
     }
 
     protected void setPlayerID(long playerID) {
@@ -130,18 +118,15 @@ public abstract class AbstractWarehouse<O extends Owner>
         this.ownerExplorer = ownerExplorer;
     }
 
-    private void consume0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        if(!tradeItem.isValid())
+    private void consume0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        if (!tradeItem.isValid())
             return;
         ItemModel model = tradeItem.getItemModel();
         try {
             O owner = this.getOwner(model.getItemType(), ownerClass);
             if (owner != null) {
                 synchronized (owner) {
-                    dealedResult.changeOwnerSet.add(owner);
-                    TradeResult tradeResult = this.doConsume(owner, tradeItem, action, attributes);
-                    dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
-                    dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+                     this.doConsume(owner, tradeItem, action, attributes);
                 }
             } else {
                 LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
@@ -151,18 +136,15 @@ public abstract class AbstractWarehouse<O extends Owner>
         }
     }
 
-    private void receive0(WarehouseDealedResult dealedResult, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        if(!tradeItem.isValid())
+    private void receive0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        if (!tradeItem.isValid())
             return;
         ItemModel model = tradeItem.getItemModel();
         try {
             O owner = this.getOwner(model.getItemType(), ownerClass);
             if (owner != null) {
                 synchronized (owner) {
-                    dealedResult.changeOwnerSet.add(owner);
-                    TradeResult tradeResult = this.doReceive(owner, tradeItem, action, attributes);
-                    dealedResult.changeStuffSet.addAll(tradeResult.getTradeStuffSet());
-                    dealedResult.dealedItemList.addAll(tradeResult.getTradedList());
+                    this.doReceive(owner, tradeItem, action, attributes);
                 }
             } else {
                 LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
@@ -172,43 +154,7 @@ public abstract class AbstractWarehouse<O extends Owner>
         }
     }
 
-    protected abstract TradeResult doReceive(O owner, TradeItem<?> tradeItem, Action action, Attributes attributes);
+    protected abstract void doReceive(O owner, TradeItem<?> tradeItem, Action action, Attributes attributes);
 
-    protected abstract TradeResult doConsume(O owner, TradeItem<?> tradeItem, Action action, Attributes attributes);
-
-    private static class WarehouseDealedResult implements DealedResult {
-
-        private Action action;
-
-        private List<DealedItem<?>> dealedItemList = new ArrayList<>();
-
-        private Set<Owner<?>> changeOwnerSet = new HashSet<>();
-
-        private Set<Stuff<?>> changeStuffSet = new HashSet<>();
-
-        private WarehouseDealedResult(Action action) {
-            this.action = action;
-        }
-
-        @Override
-        public Action getAction() {
-            return this.action;
-        }
-
-        @Override
-        public Set<Owner<?>> getChangeOwnerSet() {
-            return Collections.unmodifiableSet(this.changeOwnerSet);
-        }
-
-        @Override
-        public Set<Stuff<?>> getChangeStuffSet() {
-            return Collections.unmodifiableSet(this.changeStuffSet);
-        }
-
-        @Override
-        public List<DealedItem<?>> getDealedItemList() {
-            return Collections.unmodifiableList(this.dealedItemList);
-        }
-
-    }
+    protected abstract void doConsume(O owner, TradeItem<?> tradeItem, Action action, Attributes attributes);
 }

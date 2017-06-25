@@ -157,7 +157,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?>> O getOwner(long playerID, int itemID, Object... object) {
+    public <O extends Owner<?, ?>> O getOwner(long playerID, int itemID, Object... object) {
         Object[] params = new Object[object.length];
         if (object.length > 0)
             System.arraycopy(object, 0, params, 0, object.length);
@@ -168,9 +168,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public boolean insertOwner(Owner<?>... owners) {
+    public boolean insertOwner(Owner<?, ?>... owners) {
         boolean result = true;
-        for (Owner<?> owner : owners) {
+        for (Owner<?, ?> owner : owners) {
             GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
@@ -181,7 +181,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?>> Collection<O> insertOwner(
+    public <O extends Owner<?, ?>> Collection<O> insertOwner(
             Collection<O> ownerCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O owner : ownerCollection) {
@@ -192,9 +192,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public boolean updateOwner(Owner<?>... owners) {
+    public boolean updateOwner(Owner<?, ?>... owners) {
         boolean result = true;
-        for (Owner<?> owner : owners) {
+        for (Owner<?, ?> owner : owners) {
             GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
@@ -205,7 +205,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?>> Collection<O> updateOwner(
+    public <O extends Owner<?, ?>> Collection<O> updateOwner(
             Collection<O> ownerCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O owner : ownerCollection) {
@@ -216,9 +216,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public boolean saveOwner(Owner<?>... owners) {
+    public boolean saveOwner(Owner<?, ?>... owners) {
         boolean result = true;
-        for (Owner<?> owner : owners) {
+        for (Owner<?, ?> owner : owners) {
             GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
@@ -229,7 +229,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?>> Collection<O> saveOwner(Collection<O> ownerCollection) {
+    public <O extends Owner<?, ?>> Collection<O> saveOwner(Collection<O> ownerCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O owner : ownerCollection) {
             if (!this.saveOwner(owner))
@@ -239,9 +239,9 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public boolean deleteOwner(Owner<?>... owners) {
+    public boolean deleteOwner(Owner<?, ?>... owners) {
         boolean result = true;
-        for (Owner<?> owner : owners) {
+        for (Owner<?, ?> owner : owners) {
             GameManager<Object> manager = this.getOwnerManager(owner.getItemType().getID());
             if (manager == null)
                 return true;
@@ -252,18 +252,13 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?>> Collection<O> deleteOwner(Collection<O> ownerCollection) {
+    public <O extends Owner<?, ?>> Collection<O> deleteOwner(Collection<O> ownerCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O owner : ownerCollection) {
             if (!this.deleteOwner(owner))
                 fail.add(owner);
         }
         return fail;
-    }
-
-    protected void saveTradeChange(DealedResult tradeChange) {
-        this.saveOwner(tradeChange.getChangeOwnerSet());
-        this.saveItem(tradeChange.getChangeStuffSet());
     }
 
     private GameManager<Object> getOwnerManager(int itemID) {

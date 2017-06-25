@@ -32,9 +32,9 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
         return alterType.overLowerLimit(this, receiveNum);
     }
 
-    protected abstract TradeResult consume(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+    protected abstract void consume(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
-    protected abstract TradeResult receive(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+    protected abstract void receive(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
     protected abstract void setNumber(N number);
 
@@ -54,7 +54,7 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
      * @param current
      * @param action
      */
-    protected abstract TradeResult postConsume(N alter, N oldNumber, N current, Action action, Attributes attributes);
+    protected abstract void postConsume(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
     /**
      * 执行增加
@@ -64,6 +64,6 @@ public abstract class BaseCountableStuff<SM extends CountableStuffModel, N exten
      * @param current
      * @param action
      */
-    protected abstract TradeResult postReceive(N alter, N oldNumber, N current, Action action, Attributes attributes);
+    protected abstract void postReceive(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
 }

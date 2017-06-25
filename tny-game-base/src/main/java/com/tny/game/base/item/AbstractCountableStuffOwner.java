@@ -10,7 +10,7 @@ import com.tny.game.common.context.Attributes;
  * @param <S>
  * @author KGTny
  */
-public abstract class AbstractCountableStuffOwner<SM extends CountableStuffModel, S extends BaseCountableStuff<SM, ?>> extends StuffOwner<SM, S> {
+public abstract class AbstractCountableStuffOwner<IM extends ItemModel, SM extends CountableStuffModel, S extends BaseCountableStuff<SM, ?>> extends StuffOwner<IM, SM, S> {
 
     protected void doConsume(S stuff, Action action, TradeItem<SM> tradeItem, Attributes attributes) {
         stuff.consume(action, tradeItem, attributes);

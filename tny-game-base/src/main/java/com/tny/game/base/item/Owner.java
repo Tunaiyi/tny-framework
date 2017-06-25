@@ -13,14 +13,7 @@ import java.util.List;
  * <p>
  * <br>
  */
-public interface Owner<S extends Stuff<?>> {
-
-    /**
-     * 获取事物拥有者ID <br>
-     *
-     * @return
-     */
-    long getPlayerID();
+public interface Owner<M extends ItemModel, S extends Stuff<?>> extends Item<M> {
 
     /**
      * 获取某事物的信息 <br>
@@ -51,12 +44,5 @@ public interface Owner<S extends Stuff<?>> {
      * @return 物品信息
      */
     S getItemByItemID(int itemID);
-
-    /**
-     * 获取ItemType <br>
-     *
-     * @return 物品类型
-     */
-    <IT extends ItemType> IT getItemType();
 
 }

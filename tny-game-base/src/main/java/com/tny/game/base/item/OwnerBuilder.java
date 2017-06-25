@@ -6,13 +6,13 @@ import java.util.Set;
 /**
  * Owner构建器
  *
- * @param <I>
+ * @param <S>
  * @param <O>
  * @param <B>
  * @author KGTny
  */
 @SuppressWarnings("unchecked")
-public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I>, B extends OwnerBuilder<I, O, B>> {
+public abstract class OwnerBuilder<IM extends ItemModel, S extends Stuff<?>, O extends StuffOwner<IM, ?, S>, B extends OwnerBuilder<IM, S, O, B>> {
 
     /**
      * 玩家ID
@@ -22,7 +22,7 @@ public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I
     /**
      * 物品模型列表
      */
-    protected Set<I> itemSet = new HashSet<I>();
+    protected Set<S> itemSet = new HashSet<S>();
 
     /**
      * 设置玩家id
@@ -41,7 +41,7 @@ public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I
      * @param item 添加的item对象
      * @return 返回ownerBuilder对象
      */
-    public B addItem(I item) {
+    public B addItem(S item) {
         this.itemSet.add(item);
         return (B) this;
     }
@@ -52,8 +52,8 @@ public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I
      * @param itemList 添加的item对象列表
      * @return 返回ownerBuilder对象
      */
-    public B addItem(Set<I> itemList) {
-        for (I item : itemList)
+    public B addItem(Set<S> itemList) {
+        for (S item : itemList)
             this.itemSet.add(item);
         return (B) this;
     }
@@ -64,9 +64,9 @@ public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I
      * @return owner对象
      */
     public O build() {
-        StuffOwner<?, I> entity = createItemOwner();
+        StuffOwner<IM, ?, S> entity = createItemOwner();
         entity.setPlayerID(playerID);
-        for (I item : this.itemSet) {
+        for (S item : this.itemSet) {
             entity.itemMap.put(item.getID(), item);
         }
         return (O) entity;
@@ -77,6 +77,6 @@ public abstract class OwnerBuilder<I extends Stuff<?>, O extends StuffOwner<?, I
      *
      * @return
      */
-    protected abstract StuffOwner<?, I> createItemOwner();
+    protected abstract StuffOwner<IM, ?, S> createItemOwner();
 
 }

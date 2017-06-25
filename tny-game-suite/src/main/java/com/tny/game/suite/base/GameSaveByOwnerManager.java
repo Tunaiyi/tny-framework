@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author KGTny
  */
-public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner<S>> extends GameSaveByOtherManager<S, O> {
+public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner<?, S>> extends GameSaveByOtherManager<S, O> {
 
     @Autowired
     private GameWarehouseManager gameWarehouseManager;
