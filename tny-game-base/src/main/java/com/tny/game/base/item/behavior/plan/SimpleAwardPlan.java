@@ -63,11 +63,6 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     protected FormulaHolder drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
 
     /**
-     * 奖励方式
-     */
-    //	protected AlertType alertType;
-
-    /**
      *
      */
     protected List<AwardGroup> awardGroupSet;

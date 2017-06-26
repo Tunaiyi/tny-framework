@@ -44,7 +44,7 @@ public interface ActionPlan {
      * @return 返回未达到条件的结果集, 若尝试成功则返回null
      * @throws TryToDoException
      */
-    List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributes);
+    DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
 
     /**
      * 获取操作结果

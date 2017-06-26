@@ -31,11 +31,25 @@ public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
     public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, DemandParamEntry<?>... entries) {
         this.alertType = alertType;
         this.itemModel = (I) result.getItemModel();
-        this.number = result.getExpectValue(Integer.class);
+        this.number = result.getExpectValue(Number.class);
         this.valid = valid;
         for (DemandParamEntry<?> entry : entries) {
             this.paramMap.put(entry.getParam(), entry.getValue());
         }
+    }
+
+    public SimpleTradeItem(DemandResult result, AlterType alertType, Map<DemandParam, Object> paramMap) {
+        this(result, alertType, true, paramMap);
+    }
+
+    @SuppressWarnings("unchecked")
+    public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, Map<DemandParam, Object> paramMap) {
+        this.alertType = alertType;
+        this.itemModel = (I) result.getItemModel();
+        this.number = result.getExpectValue(Number.class);
+        this.valid = valid;
+        if (paramMap != null)
+            this.paramMap.putAll(paramMap);
     }
 
     public SimpleTradeItem(I itemModel, Number number, AlterType alertType, Map<DemandParam, Object> paramMap) {

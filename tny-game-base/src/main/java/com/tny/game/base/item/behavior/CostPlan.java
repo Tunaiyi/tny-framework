@@ -13,10 +13,10 @@ public interface CostPlan extends TradePlan {
     /**
      * 获取消耗方案的条件结果
      *
-     * @param atrributeMap
+     * @param attributeMap
      * @return
      */
-    List<DemandResult> countDemandResultList(long playerID, Map<String, Object> atrributeMap);
+    List<DemandResult> countDemandResultList(long playerID, Map<String, Object> attributeMap);
 
     /**
      * 尝试做某事
@@ -25,7 +25,7 @@ public interface CostPlan extends TradePlan {
      * @param attributes
      * @return
      */
-    List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributes);
+    DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
 
     /**
      * 获取消耗列表

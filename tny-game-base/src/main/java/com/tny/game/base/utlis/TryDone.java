@@ -22,17 +22,18 @@ public class TryDone<M> extends DoneResult<M> {
         this.tryResult = tryResult;
     }
 
-    public void ifFailedTry(Consumer<TryDone<M>> consumer) {
+    public void ifTryFailed(Consumer<TryDone<M>> consumer) {
         if (!this.isSuccess())
             consumer.accept(this);
     }
 
-    public void ifResult(Consumer<TryDone<M>> consumer) {
-        consumer.accept(this);
+    public void ifTrySuccess(Consumer<TryDone<M>> consumer) {
+        if (this.isSuccess())
+            consumer.accept(this);
     }
 
     public boolean isTryFailed() {
-        return this.tryResult != null;
+        return super.isFailed() && this.tryResult != null;
     }
 
     public TryToDoResult getTryResult() {

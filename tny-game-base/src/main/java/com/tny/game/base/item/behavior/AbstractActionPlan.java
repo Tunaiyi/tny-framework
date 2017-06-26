@@ -61,24 +61,24 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     }
 
     @Override
-    public List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributeMap) {
-        List<DemandResult> result = this.checkResult(playerID, this.demandList, tryAll, attributeMap);
-        if (!tryAll && result != null && !result.isEmpty())
-            return result;
+    public DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
+        this.checkResult(playerID, this.demandList, tryAll, collector, attributeMap);
+        if (!tryAll && collector.isFailed())
+            return collector;
         if (this.costPlan != null) {
-            result.addAll(this.costPlan.tryToDo(playerID, tryAll, attributeMap));
+            this.costPlan.tryToDo(playerID, tryAll, collector, attributeMap);
         }
-        return result;
+        return collector;
     }
 
     @Override
     public List<DemandResult> countDemandResult(long playerID, Map<String, Object> map) {
-        return this.countDemandResultList(playerID, this.demandList, map);
+        return this.countAllDemandResults(playerID, this.demandList, map);
     }
 
     @Override
     public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<DemandResult> resultList = this.countDemandResultList(playerID, this.demandList, attributeMap);
+        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, attributeMap);
         List<DemandResult> costResultList = this.costPlan == null ?
                 new ArrayList<>() :
                 this.costPlan.countDemandResultList(playerID, attributeMap);

@@ -1,6 +1,5 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ModelExplorer;
@@ -9,8 +8,10 @@ import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.AbstractCostPlan;
 import com.tny.game.base.item.behavior.AbstractDemand;
 import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.CostDemandResult;
 import com.tny.game.base.item.behavior.CostList;
 import com.tny.game.base.item.behavior.DemandResult;
+import com.tny.game.base.item.behavior.DemandResultCollector;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleCostList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
@@ -33,38 +34,36 @@ public class SimpleCostPlan extends AbstractCostPlan {
      */
     protected List<AbstractDemand> costList;
 
-    /**
-     * 交易方式
-     */
-    protected AlterType alertType;
-
     @Override
     public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap) {
-        return new SimpleTrade(action, TradeType.COST, this.createTradeItem(playerID, action, attributeMap));
+        return new SimpleTrade(action, TradeType.COST, this.createTradeItem(playerID, attributeMap));
     }
 
-    private List<TradeItem<ItemModel>> createTradeItem(long playerID, Action action, Map<String, Object> attributeMap) {
+    private List<TradeItem<ItemModel>> createTradeItem(long playerID, Map<String, Object> attributeMap) {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
-        List<DemandResult> demandResultList = this.countDemandResultList(playerID, this.costList, attributeMap);
-        for (DemandResult result : demandResultList) {
-            itemList.add(new SimpleTradeItem<>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), this.alertType, result.getParamMap()));
+        List<DemandResult> demandResultList = this.countAllDemandResults(playerID, this.costList, attributeMap);
+        for (DemandResult demandResult : demandResultList) {
+            if (!(demandResult instanceof CostDemandResult))
+                continue;
+            CostDemandResult result = (CostDemandResult) demandResult;
+            itemList.add(new SimpleTradeItem<>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), result.getAlterType(), demandResult.getParamMap()));
         }
         return itemList;
     }
 
     @Override
     public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
-        return new SimpleCostList(action, this.createTradeItem(playerID, action, attributeMap));
+        return new SimpleCostList(action, this.createTradeItem(playerID, attributeMap));
     }
 
     @Override
     public List<DemandResult> countDemandResultList(long playerID, Map<String, Object> attributeMap) {
-        return this.countDemandResultList(playerID, this.costList, attributeMap);
+        return this.countAllDemandResults(playerID, this.costList, attributeMap);
     }
 
     @Override
-    public List<DemandResult> tryToDo(long playerID, boolean tryAll, Map<String, Object> attributeMap) {
-        return this.checkResult(playerID, this.demandList, tryAll, attributeMap);
+    public DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
+        return this.checkResult(playerID, this.demandList, tryAll, collector, attributeMap);
     }
 
 //	@Override
@@ -80,8 +79,6 @@ public class SimpleCostPlan extends AbstractCostPlan {
         this.demandList = this.costList = Collections.unmodifiableList(this.costList);
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
-        if (this.alertType == null)
-            this.alertType = AlterType.CHECK;
         for (AbstractDemand demand : this.costList) {
             demand.init(itemModel, itemExplorer, this.itemModelExplorer);
         }

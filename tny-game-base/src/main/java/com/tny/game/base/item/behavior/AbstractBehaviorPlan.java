@@ -8,7 +8,6 @@ import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
 import com.tny.game.common.formula.FormulaHolder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,20 +51,20 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public List<DemandResult> countDemandResult(long playerID, Map<String, Object> map) {
-        return this.countDemandResultList(playerID, this.demandList, map);
+    public List<DemandResult> countAllDemandResults(long playerID, Map<String, Object> map) {
+        return this.countAllDemandResults(playerID, this.demandList, map);
     }
 
     @Override
-    public List<DemandResult> tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap) {
+    public DemandResultCollector tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap) {
+        DemandResultCollector collector = new DemandResultCollector();
         ActionPlan actionPlan = this.getActionPlan0(action);
-        List<DemandResult> demandResult = this.checkResult(playerID, this.demandList, tryAll, attributeMap);
-        if (!tryAll && demandResult != null && !demandResult.isEmpty())
-            return demandResult;
-        List<DemandResult> allResults = new ArrayList<>();
-        allResults.addAll(demandResult);
-        allResults.addAll(actionPlan.tryToDo(playerID, tryAll, attributeMap));
-        return allResults;
+        this.checkResult(playerID, this.demandList, tryAll, collector, attributeMap);
+        if (!tryAll && collector.isFailed()) {
+            return collector;
+        }
+        actionPlan.tryToDo(playerID, tryAll, collector, attributeMap);
+        return collector;
     }
 
     @Override
@@ -92,7 +91,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     @Override
     public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        List<DemandResult> resultList = this.countDemandResultList(playerID, this.demandList, attributeMap);
+        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, attributeMap);
         ActionPlan actionPlan = this.getActionPlan0(action);
         ActionResult actionResult = actionPlan.getActionResult(playerID, action, attributeMap);
         return new SimpleActionResult(action, resultList, actionResult);
@@ -114,7 +113,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
 
     @Override
     public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap) {
-        List<DemandResult> behaviorDemandResults = this.countDemandResultList(playerID, this.demandList, attributeMap);
+        List<DemandResult> behaviorDemandResults = this.countAllDemandResults(playerID, this.demandList, attributeMap);
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : this.actionPlanMap.entrySet()) {
             for (Action action : entry.getValue().getActions())

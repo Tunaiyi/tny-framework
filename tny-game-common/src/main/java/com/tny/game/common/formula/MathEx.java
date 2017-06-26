@@ -1,5 +1,6 @@
 package com.tny.game.common.formula;
 
+import com.tny.game.common.reflect.ObjectUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,35 +100,6 @@ public class MathEx {
         return ThreadLocalRandom.current().nextInt(number);
     }
 
-    private static class RandomItem implements Comparable<RandomItem> {
-
-        private Object object;
-
-        private int value;
-
-        public RandomItem(Object object, int value) {
-            this.object = object;
-            this.value = value;
-        }
-
-        public Object getObject() {
-            return this.object;
-        }
-
-        public int getValue() {
-            return this.value;
-        }
-
-        @Override
-        public int compareTo(RandomItem o) {
-            return (this.value - o.getValue()) * -1;
-        }
-
-        @Override
-        public String toString() {
-            return this.object + ":" + this.value;
-        }
-    }
 
     /**
      * 抽签 (权重)
@@ -138,22 +110,82 @@ public class MathEx {
      * @param randomItemList 内容
      * @return
      */
-    public static Object lot(List<Object> randomItemList) {
-        List<RandomItem> itemList = new ArrayList<RandomItem>();
+    public static <V> V lot(List<?> randomItemList) {
+        List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
-            Object object = randomItemList.get(index + 1);
+            V object = ObjectUtils.as(randomItemList.get(index + 1));
             number += value;
-            itemList.add(new RandomItem(object, number));
+            itemList.add(new RandomObject<>(object, number));
         }
         int value = ThreadLocalRandom.current().nextInt(number);
-        for (RandomItem item : itemList) {
+        for (RandomObject<V> item : itemList) {
             if (value < item.getValue())
                 return item.getObject();
         }
         return null;
     }
+
+    public static <V> List<V> randObjects(int times, List<RandomObject<V>> items) {
+        return randObjects(items.get(items.size() - 1).getValue(), times, items, null);
+    }
+
+    public static <V> List<V> randObjects(int times, List<RandomObject<V>> items, V defItem) {
+        return randObjects(items.get(items.size() - 1).getValue(), times, items, defItem);
+    }
+
+    public static <V> List<V> randObjects(int number, int times, List<RandomObject<V>> items) {
+        return randObjects(number, times, items, null);
+    }
+
+    public static <V> List<V> randObjects(int number, int times, List<RandomObject<V>> items, V defItem) {
+        List<V> list = new ArrayList<>();
+        for (int index = 0; index < times; index++) {
+            int value = ThreadLocalRandom.current().nextInt(number);
+            for (RandomObject<V> item : items) {
+                if (value < item.getValue()) {
+                    list.add(item.getObject());
+                }
+            }
+            list.add(defItem);
+        }
+        return list;
+    }
+
+    public static <V> V randObject(List<RandomObject<V>> items) {
+        return randObject(items.get(items.size() - 1).getValue(), items);
+    }
+
+    public static <V> V randObject(List<RandomObject<V>> items, V defItem) {
+        return randObject(items.get(items.size() - 1).getValue(), items, defItem);
+    }
+
+    public static <V> V randObject(int number, List<RandomObject<V>> items) {
+        return randObject(number, items, null);
+    }
+
+    public static <V> V randObject(int number, List<RandomObject<V>> items, V defItem) {
+        int value = ThreadLocalRandom.current().nextInt(number);
+        for (RandomObject<V> item : items) {
+            if (value < item.getValue())
+                return item.getObject();
+        }
+        return defItem;
+    }
+
+    public static <V> List<RandomObject<V>> weights2RandomItems(List<?> randomItemList) {
+        List<RandomObject<V>> itemList = new ArrayList<>();
+        int number = 0;
+        for (int index = 0; index < randomItemList.size(); index = index + 2) {
+            Integer value = (Integer) randomItemList.get(index);
+            V object = ObjectUtils.as(randomItemList.get(index + 1));
+            number += value;
+            itemList.add(new RandomObject<>(object, number));
+        }
+        return itemList;
+    }
+
 
     /**
      * 随机获取对象
@@ -166,7 +198,7 @@ public class MathEx {
      * @param randomItemList 随机内容
      * @return
      */
-    public static Object rand(final int number, List<Object> randomItemList) {
+    public static <V> V rand(final int number, List<Object> randomItemList) {
         return rand(number, randomItemList, null);
     }
 
@@ -182,16 +214,16 @@ public class MathEx {
      * @param defaultObject  随机不到对象 返回的默认值
      * @return
      */
-    public static Object rand(final int number, List<Object> randomItemList, Object defaultObject) {
-        List<RandomItem> itemList = new ArrayList<RandomItem>();
+    public static <V> V rand(final int number, List<Object> randomItemList, V defaultObject) {
+        List<RandomObject<V>> itemList = new ArrayList<>();
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
-            Object object = randomItemList.get(index + 1);
-            itemList.add(new RandomItem(object, value));
+            V object = ObjectUtils.as(randomItemList.get(index + 1));
+            itemList.add(new RandomObject<>(object, value));
         }
         Collections.sort(itemList);
         int value = ThreadLocalRandom.current().nextInt(number);
-        for (RandomItem item : itemList) {
+        for (RandomObject<V> item : itemList) {
             if (value < item.getValue()) {
                 return item.getObject();
             }
@@ -210,7 +242,7 @@ public class MathEx {
      * @param randomMap 随机内容
      * @return
      */
-    public static Object rand(final int number, Map<Integer, Object> randomMap) {
+    public static <V> V rand(final int number, Map<Integer, V> randomMap) {
         return rand(number, randomMap, null);
     }
 
@@ -226,10 +258,10 @@ public class MathEx {
      * @param defaultObject 随机不到对象 返回的默认值
      * @return
      */
-    public static Object rand(final int number, Map<Integer, Object> randomMap, Object defaultObject) {
+    public static <V> V rand(final int number, Map<Integer, V> randomMap, V defaultObject) {
         int value = ThreadLocalRandom.current().nextInt(number);
-        SortedMap<Integer, Object> sortedMap = new TreeMap<Integer, Object>(randomMap);
-        for (Entry<Integer, Object> entry : sortedMap.entrySet()) {
+        SortedMap<Integer, V> sortedMap = new TreeMap<>(randomMap);
+        for (Entry<Integer, V> entry : sortedMap.entrySet()) {
             if (value < entry.getKey()) {
                 return entry.getValue();
             }
@@ -287,15 +319,15 @@ public class MathEx {
      */
     public static boolean randLimited(int time, int num, Map<Integer, Integer> timesProbsMap, int extra, int currentTime, int currentNum) {
         int certainly = checkCertainly(time, num, extra, currentTime, currentNum);
-        boolean drop = false;
+        boolean drop;
         if (certainly == 0) {
             int moreTime = currentTime % time;
             Integer prob = null;
-            SortedMap<Integer, Integer> sortedMap = null;
+            SortedMap<Integer, Integer> sortedMap;
             if (timesProbsMap instanceof SortedMap)
                 sortedMap = (SortedMap<Integer, Integer>) timesProbsMap;
             else
-                sortedMap = new TreeMap<Integer, Integer>(timesProbsMap);
+                sortedMap = new TreeMap<>(timesProbsMap);
             for (Entry<Integer, Integer> entry : sortedMap.entrySet()) {
                 if (moreTime < entry.getKey()) {
                     prob = entry.getValue();
@@ -354,7 +386,7 @@ public class MathEx {
      */
     public static boolean randLimited(int time, int num, int prob, int extra, int currentTime, int currentNum) {
         int certainly = checkCertainly(time, num, extra, currentTime, currentNum);
-        boolean drop = false;
+        boolean drop;
         if (certainly == 0) {
             int randValue = rand(0, 10000);
             drop = randValue < prob;
@@ -371,7 +403,7 @@ public class MathEx {
         final int allTime = 100;
         int currentTime = 0;
         int currentNum = 0;
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> map = new HashMap<>();
         map.put(25, 500);
         map.put(40, 3000);
         map.put(50, 9000);

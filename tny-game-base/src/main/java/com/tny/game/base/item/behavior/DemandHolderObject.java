@@ -54,25 +54,26 @@ public abstract class DemandHolderObject {
         return item;
     }
 
-    protected List<DemandResult> checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll, Map<String, Object> attributeMap) {
+    protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
-        List<DemandResult> results = new ArrayList<>();
+        if (collector == null)
+            collector = new DemandResultCollector();
         for (Demand demand : demandList) {
             DemandResult result = demand.checkDemandResult(playerID, attributeMap);
-            if (result != null && !result.isSatisfy()) {
-                results.add(result);
-                if (!tryAll)
-                    return results;
+            if (result != null) {
+                collector.addDemandResult(result);
+                if (!tryAll && collector.isFailed())
+                    return collector;
             }
         }
-        return results;
+        return collector;
     }
 
     public Set<String> getAttributesAliasSet() {
         return this.attrAliasSet;
     }
 
-    protected List<DemandResult> countDemandResultList(long playerID, List<AbstractDemand> demandList,
+    protected List<DemandResult> countAllDemandResults(long playerID, List<AbstractDemand> demandList,
                                                        Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
         List<DemandResult> demandResults = new ArrayList<>();

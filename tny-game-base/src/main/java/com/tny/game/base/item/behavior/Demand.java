@@ -66,5 +66,4 @@ public interface Demand {
 
     DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
 
-
 }

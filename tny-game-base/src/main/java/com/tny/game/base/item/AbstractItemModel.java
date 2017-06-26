@@ -5,14 +5,15 @@ import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
+import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 import com.tny.game.base.item.behavior.simple.SimpleTryToDoResult;
+import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
 import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.reflect.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 抽象事物模型
@@ -133,24 +135,16 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        List<DemandResult> demandResults = behaviorPlan.tryToDo(playerID, action, tryAll, attributeMap);
-        if (demandResults != null && !demandResults.isEmpty())
-            return new SimpleTryToDoResult(action, demandResults);
+        DemandResultCollector collector = behaviorPlan.tryToDo(playerID, action, tryAll, attributeMap);
+        if (collector.isFailed())
+            return new SimpleTryToDoResult(action, collector.getFailedDemands());
         return new SimpleTryToDoResult(action, award ?
                 behaviorPlan.countAward(playerID, action, attributeMap) :
                 new SimpleTrade(action, TradeType.AWARD),
-                behaviorPlan.countCost(playerID, action, attributeMap));
-    }
-
-    protected List<DemandResult> doCountDemandResult(long playerID, Item<?> item, Action action, Object... attributes) {
-        Map<String, Object> attributeMap = new HashMap<>();
-        BehaviorPlan behaviorPlan = this.getBehaviorPlanByAction(action);
-        this.setAttrMap(playerID, attributeMap, item, attributes);
-        this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        List<DemandResult> resultList = new ArrayList<>();
-        resultList.addAll(behaviorPlan.countDemandResult(playerID, attributeMap));
-        resultList.addAll(behaviorPlan.getActionPlan(action).countDemandResult(playerID, attributeMap));
-        return resultList;
+                new SimpleTrade(action, TradeType.COST, collector.getCostDemands().stream()
+                        .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
+                        .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
+                        .collect(Collectors.toList())));
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerID, Item<?> item, Behavior behavior, Object... attributes) {
@@ -158,7 +152,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
         BehaviorPlan behaviorPlan = this.getBehaviorPlanByBehavior(behavior);
-        List<DemandResult> resultList = behaviorPlan.countDemandResult(playerID, attributeMap);
+        List<DemandResult> resultList = behaviorPlan.countAllDemandResults(playerID, attributeMap);
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : behaviorPlan.getActionPlanMap().entrySet()) {
             ActionPlan actionPlan = entry.getValue();
@@ -541,6 +535,13 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         if (plan == null)
             throw new GameRuningException(action, ItemResultCode.BEHAVIOR_NO_EXIST);
         return plan;
+    }
+
+    protected ActionPlan getActionPlan(Action action) {
+        BehaviorPlan plan = this.actionBehaviorPlanMap.get(action);
+        if (plan == null)
+            throw new GameRuningException(action, ItemResultCode.BEHAVIOR_NO_EXIST);
+        return plan.getActionPlan(action);
     }
 
     @Override

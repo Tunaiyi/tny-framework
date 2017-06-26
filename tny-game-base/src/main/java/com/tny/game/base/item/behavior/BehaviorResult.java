@@ -15,13 +15,13 @@ public interface BehaviorResult {
      *
      * @return
      */
-    public List<DemandResult> getBehaviorDemandResultList();
+    List<DemandResult> getBehaviorDemandResultList();
 
     /**
      * 获取操作结果Map
      *
      * @return
      */
-    public Map<Action, ActionResult> getActionResultMap();
+    Map<Action, ActionResult> getActionResultMap();
 
 }

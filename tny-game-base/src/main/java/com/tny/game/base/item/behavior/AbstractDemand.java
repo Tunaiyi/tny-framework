@@ -2,11 +2,13 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.GameRuningException;
 import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemsImportKey;
 import com.tny.game.base.item.ModelExplorer;
+import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
@@ -63,6 +65,11 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
     protected FormulaHolder fx;
 
     /**
+     * 改变类型
+     */
+    protected AlterType alertType;
+
+    /**
      * 参数
      */
     protected Map<DemandParam, FormulaHolder> paramMap;
@@ -70,6 +77,10 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
     protected ItemExplorer itemExplorer;
 
     protected ModelExplorer itemModelExplorer;
+
+    public AlterType getAlertType() {
+        return alertType;
+    }
 
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
@@ -117,7 +128,10 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         Object expect = this.expect != null ? this.expect.createFormula().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
-        return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
+        if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE)
+            return new CostDemandResult(id, demandModel, this.demandType, current, expect, satisfy, this.alertType, paramMap);
+        else
+            return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
     }
 
     private Formula getCurrentFormula(ItemModel demandModel) {
@@ -189,6 +203,8 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
     public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
+        if (this.alertType == null)
+            this.alertType = AlterType.CHECK;
         if (this.itemAlias == null) {
             this.itemAlias = itemModel.getAlias();
         }
