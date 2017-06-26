@@ -60,7 +60,7 @@ public class CapacitySupplierDTO {
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
         CapacitySupplierDTO dto = new CapacitySupplierDTO();
         dto.id = supplier.getID();
-        dto.id = supplier.getItemID();
+        dto.itemID = supplier.getItemID();
         if (supplier instanceof ComboCapacitySupplier)
             dto.dependSuppliers = combo2IDs((ComboCapacitySupplier) supplier);
         else
