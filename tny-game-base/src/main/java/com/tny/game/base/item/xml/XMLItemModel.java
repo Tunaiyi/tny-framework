@@ -45,7 +45,7 @@ public abstract class XMLItemModel extends AbstractItemModel {
 
     @Override
     protected String getDemandFormula() {
-        return this.demandFormula == null ? super.getCurrentFormula() : this.demandFormula;
+        return this.demandFormula == null ? super.getDemandFormula() : this.demandFormula;
     }
 
     protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {

@@ -109,8 +109,10 @@ public class GameWarehouseService implements WarehouseService {
             switch (trade.getTradeType()) {
                 case AWARD:
                     this.doHandleTrade(playerID, trade, warehouse::receive, entries);
+                    break;
                 case COST:
                     this.doHandleTrade(playerID, trade, warehouse::consume, entries);
+                    break;
             }
         }
     }

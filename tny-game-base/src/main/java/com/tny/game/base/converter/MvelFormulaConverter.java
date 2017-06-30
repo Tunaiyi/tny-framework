@@ -55,8 +55,8 @@ public abstract class MvelFormulaConverter extends AbstractSingleValueConverter 
             return null;
         try {
             return MvelFormulaFactory.create(formula, this.type, this.parserContext, false);
-        } catch (RuntimeException e) {
-            LOG.error(formula, e);
+        } catch (Throwable e) {
+            LOG.error("{}", formula, e);
             throw e;
         }
     }

@@ -150,7 +150,6 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
                                     resendEvents.forEach(ev -> doWrite(ev, resendEvent.getTunnel()));
                                 }
                                 break;
-
                         }
                     } catch (Throwable e) {
                         LOGGER.error("", e);

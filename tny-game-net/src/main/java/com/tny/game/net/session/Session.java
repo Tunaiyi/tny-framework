@@ -112,4 +112,9 @@ public interface Session<UID> extends Terminal<UID> {
      */
     void resend(Tunnel<UID> tunnel, ResendMessage message);
 
+    /**
+     * @return 获取当前通道
+     */
+    Tunnel<UID> getCurrentTunnel();
+
 }

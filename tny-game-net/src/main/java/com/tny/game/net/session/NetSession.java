@@ -66,6 +66,7 @@ public interface NetSession<UID> extends Session<UID> {
     /**
      * @return 获取当前通道
      */
+    @Override
     NetTunnel<UID> getCurrentTunnel();
 
 }

@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -80,9 +78,8 @@ public class ClassScanner {
      * @return
      */
     public void scan(String... packs) {
-
+        this.classLoader = Thread.currentThread().getContextClassLoader();
         // 是否循环迭代
-        boolean recursive = true;
         Stream.of(packs).parallel().forEach(pack -> {
             // 获取包的名字 并进行替换
             String packageName = pack;
@@ -90,8 +87,6 @@ public class ClassScanner {
             // 定义一个枚举的集合 并进行循环来处理这个目录下的things
             Enumeration<URL> dirs;
             try {
-                if (classLoader == null)
-                    classLoader = Thread.currentThread().getContextClassLoader();
                 dirs = classLoader.getResources(packageDirName);
                 // 循环迭代下去
                 while (dirs.hasMoreElements()) {
@@ -104,24 +99,23 @@ public class ClassScanner {
                         // 获取包的物理路径
                         String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
                         // 以文件的方式扫描整个包下的文件 并添加到集合中
-                        this.findAndAddClassesInDirByFile(packageName, filePath, recursive);
+                        this.findAndAddClassesInDirByFile(packageName, filePath, true, this.classLoader);
                     } else if ("jar".equals(protocol)) {
-                        this.findAndAddClassesInJar(url);
+                        this.findAndAddClassesInJar(url, this.classLoader);
                     }
                 }
             } catch (IOException e) {
                 LOG.error("scan {} 异常", pack, e);
             }
         });
-        List<ForkJoinTask<?>> tasks = new ArrayList<>();
+        // List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (ClassSelector selector : selectors) {
-            tasks.add(ForkJoinPool.commonPool()
-                    .submit(selector::selected));
+            selector.selected();
         }
-        tasks.forEach(ForkJoinTask::join);
+        // tasks.forEach(ForkJoinTask::join);
     }
 
-    private void findAndAddClassesInJar(URL url) throws IOException {
+    private void findAndAddClassesInJar(URL url, ClassLoader loader) throws IOException {
         UrlResource jarRes = null;
         if (StringUtils.endsWith(url.getPath(), "/"))
             jarRes = new UrlResource(url);
@@ -151,7 +145,7 @@ public class ClassScanner {
                     MetadataReader reader = readerFactory.getMetadataReader(resource);
                     Class<?> clazz = null;
                     for (ClassSelector selector : selectors) {
-                        Class<?> selClass = selector.selector(reader, clazz);
+                        Class<?> selClass = selector.selector(reader, loader, clazz);
                         if (clazz == null && selClass != null)
                             clazz = selClass;
                     }
@@ -170,7 +164,7 @@ public class ClassScanner {
      * @param recursive
      * @throws IOException
      */
-    private void findAndAddClassesInDirByFile(String packageName, String packagePath, final boolean recursive) throws IOException {
+    private void findAndAddClassesInDirByFile(String packageName, String packagePath, final boolean recursive, ClassLoader loader) throws IOException {
         // 获取此包的目录 建立一个File
         File dir = new File(packagePath);
         // 如果不存在或者 也不是目录就直接返回
@@ -189,7 +183,7 @@ public class ClassScanner {
                     if (file.isDirectory()) {
                         try {
                             String nextPackage = packageName + "." + file.getName();
-                            this.findAndAddClassesInDirByFile(nextPackage, file.getAbsolutePath(), recursive);
+                            this.findAndAddClassesInDirByFile(nextPackage, file.getAbsolutePath(), recursive, loader);
                         } catch (IOException e) {
                             LOG.error("find dir {} 异常", packageName);
                         }
@@ -201,7 +195,7 @@ public class ClassScanner {
                             // 如果是java类文件 去掉后面的.class 只留下类名
                             Class<?> clazz = null;
                             for (ClassSelector selector : selectors)
-                                clazz = selector.selector(reader, clazz);
+                                clazz = selector.selector(reader, loader, clazz);
                         } catch (IOException e) {
                             LOG.error("find class {} 异常", file);
                         }

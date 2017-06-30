@@ -70,13 +70,16 @@ public class ClassSelector {
         return this;
     }
 
-    Class<?> selector(MetadataReader reader, Class<?> clazz) {
+    Class<?> selector(MetadataReader reader, ClassLoader loader, Class<?> clazz) {
         if (filter(reader)) {
             String fullClassName = reader.getClassMetadata().getClassName();
             try {
                 Thread current = Thread.currentThread();
-                if (clazz == null)
-                    clazz = current.getContextClassLoader().loadClass(fullClassName);
+                if (clazz == null) {
+                    if (loader == null)
+                        loader = current.getContextClassLoader();
+                    clazz = loader.loadClass(fullClassName);
+                }
                 mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
                         .add(clazz);
                 return clazz;
