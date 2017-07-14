@@ -1,7 +1,8 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.LogUtils;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.Throws;
+import com.tny.game.common.RunningChecker;
 import org.joda.time.DateTime;
 
 import java.util.concurrent.locks.StampedLock;
@@ -57,9 +58,9 @@ public class UUIDCreator {
     }
 
     public UUIDCreator(long workerID, long workerIDBits, long sequenceBits) {
-        ExceptionUtils.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
+        Throws.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
         long maxWorkerID = ~(-1L << workerIDBits);
-        ExceptionUtils.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
+        Throws.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
         this.sequenceMask = ~(-1L << sequenceBits);
         this.workerIdShift = sequenceBits;
         this.timestampShift = sequenceBits + workerIDBits;
@@ -68,15 +69,16 @@ public class UUIDCreator {
 
 
     public long createID() {
-        long lockStamp = lock.readLock();
+        long lockStamp = 0;
         try {
             long timestamp;
             long seq = 0;
             while (true) {
+                lockStamp = lock.readLock();
                 long lastTime = this.lastTimestamp;
                 timestamp = timeGenerate();
                 if (timestamp < lastTime)
-                    throw new IllegalArgumentException(LogUtils.format("时间发生回滚, {} milliseconds", lastTime - timestamp));
+                    throw new IllegalArgumentException(Logs.format("时间发生回滚, {} milliseconds", lastTime - timestamp));
                 if (lastTime == timestamp) {
                     long writeStamp = lock.tryConvertToWriteLock(lockStamp);
                     if (writeStamp != 0L) {
@@ -105,9 +107,9 @@ public class UUIDCreator {
             }
             return ((timestamp - BASE_TIME) << (int) timestampShift) | (workerID << (int) workerIdShift) | seq;
         } finally {
-            lock.unlock(lockStamp);
+            if (lockStamp != 0)
+                lock.unlock(lockStamp);
         }
-
     }
 
     private long tilNextMillis(long lastTimestamp) {
@@ -124,10 +126,38 @@ public class UUIDCreator {
 
 
     public static void main(String[] args) {
-        UUIDCreator creator = new UUIDCreator(10);
-        long id = creator.createID();
-        System.out.println(System.currentTimeMillis());
-        System.out.println(UUIDCreator.parseTime(id));
+        System.out.println(Math.pow(2, 13));
+        UUIDCreator creator = new UUIDCreator(1, 13);
+        RunningChecker.startPrint(UUIDCreator.class);
+        for (int i = 0; i < 1000000; i++) {
+            creator.createID();
+            // ForkJoinPool.commonPool()
+            //         .submit(() -> creator.createID());
+        }
+        long cost = RunningChecker.end(UUIDCreator.class).cost();
+        System.out.println(cost);
+        // System.out.println(creator.createID());
+        // System.out.println(System.currentTimeMillis());
+        // System.out.println(Long.MAX_VALUE);
+        // UUIDCreator[] creators = new UUIDCreator[]{
+        //         // new UUIDCreator(0, 3),
+        //         // new UUIDCreator(1, 3),
+        //         // new UUIDCreator(2, 3),
+        //         // new UUIDCreator(3, 3),
+        //         // new UUIDCreator(4, 3),
+        //         // new UUIDCreator(5, 3),
+        //         // new UUIDCreator(6, 3),
+        //         // new UUIDCreator(7, 3),
+        // };
+        // RunningChecker.startPrint(UUIDCreator.class);
+        // for (int i = 0; i < 1000000; i++) {
+        //     int index = i;
+        //     ForkJoinPool.commonPool()
+        //             .submit(() -> creators[index % creators.length].createID());
+        // }
+        // long cost = RunningChecker.end(UUIDCreator.class).cost();
+        // System.out.println(cost);
+        // size.forEach(System.out::println);
     }
 
 }

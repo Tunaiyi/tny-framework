@@ -2,11 +2,15 @@ package com.tny.game.common.word;
 
 import com.tny.game.common.config.FileLoader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
 
 /**
  * 敏感词过滤
@@ -34,14 +38,19 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     }
 
     @Override
+    public String filterWords(String content) {
+        return this.filterWords(content, this.FILTER);
+    }
+
+    @Override
     public String filterWords(String content, char replace) {
         int a = 0;
-        char[] chars = (new String(content)).toLowerCase().toCharArray();
+        char[] chars = content.toLowerCase().toCharArray();
         char[] sourceChars = content.toCharArray();
         Node node = this.rootNode;
         if (node == null)
             return content;
-        List<String> word = new ArrayList<>();
+        List<Character> word = new ArrayList<>();
         while (a < chars.length) {
             node = node.findNode(chars[a]);
             if (node == null) {
@@ -49,7 +58,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
                 a = a - word.size();
                 word.clear();
             } else if (node.flag == 1) {
-                word.add(String.valueOf(chars[a]));
+                word.add(chars[a]);
                 for (int i = 0; i < word.size(); i++) {
                     sourceChars[a - i] = replace;
                 }
@@ -57,16 +66,11 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
                 word.clear();
                 node = this.rootNode;
             } else {
-                word.add(String.valueOf(chars[a]));
+                word.add(chars[a]);
             }
             a++;
         }
         return String.valueOf(sourceChars);
-    }
-
-    @Override
-    public String filterWords(String content) {
-        return this.filterWords(content, this.FILTER);
     }
 
     @Override
@@ -76,7 +80,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
         Node node = this.rootNode;
         if (node == null)
             return false;
-        List<String> word = new ArrayList<>();
+        List<Character> word = new ArrayList<>();
         while (a < chars.length) {
             node = node.findNode(chars[a]);
             if (node == null) {
@@ -85,6 +89,8 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
                 word.clear();
             } else if (node.flag == 1) {
                 return true;
+            } else {
+                word.add(chars[a]);
             }
             a++;
         }
@@ -94,8 +100,9 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     private void insertNode(Node node, char[] cs, int index) {
         Node n = node.findNode(cs[index]);
         if (n == null) {
-            n = new Node(cs[index]);
-            node.nodes.add(n);
+            char c = cs[index];
+            n = new Node(c);
+            node.nodes.put(c, n);
         }
         if (index == (cs.length - 1))
             n.flag = 1;
@@ -108,15 +115,10 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     private class Node implements Comparable<Node> {
         private char c;
         private int flag;
-        private Set<Node> nodes = new TreeSet<>();
+        private Map<Character, Node> nodes = new HashMap<>();
 
         private Node findNode(char c) {
-            for (Node n : this.nodes) {
-                if (n.c == c) {
-                    return n;
-                }
-            }
-            return null;
+            return nodes.get(c);
         }
 
         public Node(char c) {

@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.cache.CacheTrigger;
 import com.tny.game.cache.CacheTriggerFactory;
 import com.tny.game.cache.ToCacheClassHolder;
@@ -9,10 +9,10 @@ import com.tny.game.cache.TriggerHolder;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.cache.annotation.Trigger;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
@@ -177,7 +177,7 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
             }
             LOGGER.info("开始初始化 ToCacheClassHolder 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
-            throw new RuntimeException(LogUtils.format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
+            throw new RuntimeException(Logs.format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
         }
     }
 

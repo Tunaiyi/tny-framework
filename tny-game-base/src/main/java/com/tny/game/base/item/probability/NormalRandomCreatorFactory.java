@@ -5,7 +5,7 @@ public class NormalRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends
     private static final String NAME = "normal";
 
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
-            ProbabilityUtils::drawProbabilities;
+            Probabilities::drawProbabilities;
 
     @Override
     @SuppressWarnings("unchecked")

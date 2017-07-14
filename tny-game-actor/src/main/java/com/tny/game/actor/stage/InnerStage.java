@@ -1,6 +1,6 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.concurrent.Executor;
 
@@ -56,7 +56,7 @@ interface InnerStage<R> extends Stage<R> {
 
     @Override
     default R getResult() {
-        return ObjectUtils.as(this.getFragment().getResult());
+        return ObjectAide.as(this.getFragment().getResult());
     }
 
     default boolean hasNext() {

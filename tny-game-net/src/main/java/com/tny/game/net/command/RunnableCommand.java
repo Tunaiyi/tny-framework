@@ -1,6 +1,6 @@
 package com.tny.game.net.command;
 
-import com.tny.game.worker.command.BaseCommand;
+import com.tny.game.common.worker.command.BaseCommand;
 
 /**
  * Created by Kun Yang on 16/6/15.

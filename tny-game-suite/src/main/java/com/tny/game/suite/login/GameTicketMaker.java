@@ -15,7 +15,7 @@ public class GameTicketMaker implements TicketMaker<GameTicket> {
         String ticketKey = Configs.AUTH_CONFIG.getStr(Configs.AUTH_GAMES_TICKET_KEY);
         if (ticketKey == null)
             throw new NullPointerException("ticketKey 为空");
-        return LoginUtils.ticket2MD5(ticket, ticketKey);
+        return LoginAide.ticket2MD5(ticket, ticketKey);
     }
 
 }

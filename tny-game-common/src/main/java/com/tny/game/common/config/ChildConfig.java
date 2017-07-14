@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -23,8 +23,8 @@ class ChildConfig implements Config {
     private String parentHeadKey;
 
     ChildConfig(String parentKey, String delimiter, Config parent) {
-        ExceptionUtils.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
-        ExceptionUtils.checkNotNull(parent, "parent 不可为null");
+        Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Throws.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;

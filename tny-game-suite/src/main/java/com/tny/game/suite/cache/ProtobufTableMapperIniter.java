@@ -1,9 +1,9 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.common.utils.collection.CollectUtils;
-import com.tny.game.lifecycle.ServerPostStart;
+import com.tny.game.common.collection.CollectorsAide;
+import com.tny.game.common.lifecycle.ServerPostStart;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
@@ -48,13 +48,13 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
                 context.getBeansOfType(ProtoCacheFormatter.class)
                         .values()
                         .stream()
-                        .collect(CollectUtils.toMap(ProtoCacheFormatter::getClass));
+                        .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
         for (Class<?> clazz : selector.getClasses()) {
             ToCache cache = clazz.getAnnotation(ToCache.class);
             String table = cache.prefix();
             if (StringUtils.isBlank(table))
                 throw new IllegalArgumentException(
-                        LogUtils.format("{} 没有 prefix 参数", clazz));
+                        Logs.format("{} 没有 prefix 参数", clazz));
             if (cache.triggers().length == 0)
                 continue;
             Class<?> triggerClass = cache.triggers()[0];
@@ -63,7 +63,7 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
             ProtoCacheFormatter<?, ?> formatter = formatterMap.get(triggerClass);
             if (formatter == null)
                 throw new IllegalArgumentException(
-                        LogUtils.format("{} 找不到 {} formatter", clazz, triggerClass));
+                        Logs.format("{} 找不到 {} formatter", clazz, triggerClass));
             ProtobufTableMapper.loadOrCreate(table, formatter);
         }
     }

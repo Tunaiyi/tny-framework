@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 
 /**
  * Actor Runnable 命令
@@ -24,7 +24,7 @@ public class ActorRunCommand extends BaseActorCommand<Void> {
     @Override
     protected Done<Void> doHandle() {
         this.runnable.run();
-        return DoneUtils.succNullable(null);
+        return DoneResults.succNullable(null);
     }
 
 }

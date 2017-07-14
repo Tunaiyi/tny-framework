@@ -2,9 +2,9 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.exception.ActorTerminatedException;
-import com.tny.game.worker.AbstractWorkerCommandBox;
-import com.tny.game.worker.CommandBox;
-import com.tny.game.worker.CommandWorker;
+import com.tny.game.common.worker.AbstractWorkerCommandBox;
+import com.tny.game.common.worker.CommandBox;
+import com.tny.game.common.worker.CommandWorker;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

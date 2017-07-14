@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,8 +24,8 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     }
 
     protected GameFeatureExplorer(Set<Feature> openedFeatures, Set<Module> openedModules) {
-        ExceptionUtils.checkNotNull(openedFeatures);
-        ExceptionUtils.checkNotNull(openedModules);
+        Throws.checkNotNull(openedFeatures);
+        Throws.checkNotNull(openedModules);
         this.openedModules = new AtomicReference<>(ImmutableSet.copyOf(openedModules));
         this.openedFeatures = new AtomicReference<>(ImmutableSet.copyOf(openedFeatures));
     }

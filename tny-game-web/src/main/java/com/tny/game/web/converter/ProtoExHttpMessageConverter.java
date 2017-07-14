@@ -1,6 +1,6 @@
 package com.tny.game.web.converter;
 
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.protoex.ProtoExReader;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.ProtoExWriter;

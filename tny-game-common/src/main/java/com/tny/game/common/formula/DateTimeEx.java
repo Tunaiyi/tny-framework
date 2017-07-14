@@ -1,6 +1,6 @@
 package com.tny.game.common.formula;
 
-import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.common.utils.DateTimeAide;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -9,15 +9,15 @@ import java.text.ParseException;
 public class DateTimeEx {
 
     public static DateTime date(String date) throws ParseException {
-        return DateTimeHelper.DATE_FORMAT.parseDateTime(date);
+        return DateTimeAide.DATE_FORMAT.parseDateTime(date);
     }
 
     public static DateTime date(String date, DateTimeFormatter formatter) throws ParseException {
-        return DateTimeHelper.DATE_FORMAT.parseDateTime(date);
+        return DateTimeAide.DATE_FORMAT.parseDateTime(date);
     }
 
     public static DateTime dateTime(String date) throws ParseException {
-        return DateTimeHelper.DATE_TIME_FORMAT.parseDateTime(date);
+        return DateTimeAide.DATE_TIME_FORMAT.parseDateTime(date);
     }
 
     public static DateTime dateTime(String date, DateTimeFormatter formatter) throws ParseException {
@@ -45,7 +45,7 @@ public class DateTimeEx {
     }
 
     public static LocalDate today() {
-        return DateTimeHelper.today();
+        return DateTimeAide.today();
     }
 
     public static DateTime today(int hour) {
@@ -144,10 +144,6 @@ public class DateTimeEx {
 
     public static int seconds(ReadablePartial from, ReadablePartial to) {
         return Seconds.secondsBetween(from, to).getSeconds();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DateTime.now().withMillisOfDay(0));
     }
 
 }

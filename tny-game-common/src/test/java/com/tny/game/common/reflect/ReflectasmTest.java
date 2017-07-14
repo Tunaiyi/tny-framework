@@ -2,7 +2,7 @@ package com.tny.game.common.reflect;
 
 import com.tny.game.common.reflect.javassist.InvokerFactory;
 import com.tny.game.common.reflect.javassist.MethodInvoker;
-import com.tny.game.event.annotation.Listener;
+import com.tny.game.common.event.annotation.Listener;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
 import org.junit.Test;

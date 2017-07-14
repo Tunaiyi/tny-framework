@@ -24,7 +24,7 @@ import com.tny.game.net.session.event.SessionSendEvent;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.tunnel.TunnelContent;
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

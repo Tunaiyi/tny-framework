@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster;
 
 
-import com.tny.game.lifecycle.ServerPostStart;
+import com.tny.game.common.lifecycle.ServerPostStart;
 import com.tny.game.suite.cluster.game.ServerLaunch;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;

@@ -1,7 +1,7 @@
 package com.tny.game.suite.scheduler.database;
 
 
-import com.tny.game.scheduler.TaskReceiver;
+import com.tny.game.common.scheduler.TaskReceiver;
 import com.tny.game.suite.scheduler.GameTaskReceiver;
 import com.tny.game.suite.scheduler.cache.CacheSchedulerBackup;
 import com.tny.game.suite.scheduler.cache.CacheSchedulerBackupFormatter;

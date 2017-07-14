@@ -75,7 +75,7 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
             if (item instanceof Item) {
                 O owner = this.getOwner(((Item<?>) item).getPlayerID());
                 if (owner != null)
-                    saveCollection.add(item);
+                    saveCollection.add(owner);
             }
         }
         return super.save(saveCollection);

@@ -1,7 +1,7 @@
 package com.tny.game.common.utils;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.ResultUtils;
+import com.tny.game.common.result.Results;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -29,7 +29,7 @@ public class DoneResult<M> implements Done<M> {
      */
     @Override
     public boolean isSuccess() {
-        return ResultUtils.isSucc(this.code);
+        return Results.isSucc(this.code);
     }
 
     /**
@@ -38,7 +38,7 @@ public class DoneResult<M> implements Done<M> {
      * @return
      */
     public boolean isFail() {
-        return !ResultUtils.isSucc(this.code);
+        return !Results.isSucc(this.code);
     }
 
     /**

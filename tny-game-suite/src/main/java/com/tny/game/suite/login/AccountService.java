@@ -2,10 +2,10 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.Range;
 import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
@@ -103,7 +103,7 @@ public class AccountService implements ServerPrepareStart {
             DateTime dateTime = account.getOfflineTime();
             if (dateTime == null)
                 dateTime = DateTime.now();
-            this.accountManager.updateOfflineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
+            this.accountManager.updateOfflineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOfflineAt exception", e);
         }
@@ -115,7 +115,7 @@ public class AccountService implements ServerPrepareStart {
             DateTime dateTime = account.getOnlineTime();
             if (dateTime == null)
                 dateTime = DateTime.now();
-            this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
+            this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOnlineAt exception", e);
         }
@@ -126,7 +126,7 @@ public class AccountService implements ServerPrepareStart {
             account.setName(name);
             account.createRole(dateTime);
             if (dateTime != null) {
-                this.accountManager.updateCreateRole(account.getUid(), name, DateTimeHelper.date2Int(dateTime), dateTime.getMillis());
+                this.accountManager.updateCreateRole(account.getUid(), name, DateTimeAide.date2Int(dateTime), dateTime.getMillis());
             }
         } catch (Exception e) {
             LOGGER.error("accountDAO.updateCreateRole exception", e);
@@ -163,7 +163,7 @@ public class AccountService implements ServerPrepareStart {
         public UIDCreator(int serverID) {
             super();
             this.serverID = serverID;
-            this.uidRange = IDUtils.createUIDRange(serverID);
+            this.uidRange = IDAide.createUIDRange(serverID);
             this.manager = AccountService.this.accountManager;
             List<Long> emptyIDs = this.manager.findEmptyUID(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
             this.idQueue.addAll(emptyIDs);

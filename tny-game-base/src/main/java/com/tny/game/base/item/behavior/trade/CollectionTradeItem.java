@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tny.game.number.NumberUtils.*;
+import static com.tny.game.common.number.NumberAide.*;
 
 public class CollectionTradeItem implements TradeItem<ItemModel> {
 

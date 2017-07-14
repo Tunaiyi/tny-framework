@@ -1,6 +1,6 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.worker.ForkJoinPoolCommandExecutor;
+import com.tny.game.common.worker.ForkJoinPoolCommandExecutor;
 
 import java.util.concurrent.ForkJoinPool;
 

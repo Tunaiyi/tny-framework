@@ -3,7 +3,7 @@ package com.tny.game.base.item;
 import com.tny.game.base.exception.GameRuningException;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

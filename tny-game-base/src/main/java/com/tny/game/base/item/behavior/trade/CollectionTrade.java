@@ -8,7 +8,7 @@ import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
-import com.tny.game.number.NumberUtils;
+import com.tny.game.common.number.NumberAide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +96,7 @@ public class CollectionTrade implements Trade {
 
     @Override
     public boolean isNeedTrade(ItemModel model) {
-        return NumberUtils.greater(this.getNumber(model), 0);
+        return NumberAide.greater(this.getNumber(model), 0);
     }
 
     @Override

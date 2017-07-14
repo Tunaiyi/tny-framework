@@ -1,10 +1,10 @@
 package com.tny.game.web.converter.excel;
 
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GPropertyAccessor;
-import com.tny.game.common.reflect.ReflectUtils;
+import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.web.converter.excel.annotation.ExcelColumn;
 import com.tny.game.web.converter.excel.annotation.ExcelSheet;
@@ -38,7 +38,7 @@ public class ExcelClassHolder {
 		ExcelClassHolder holder = new ExcelClassHolder();
 		holder.sheet = sheet;
 		holder.gClass = JSsistUtils.getGClass(clazz);
-		for (Field field : ReflectUtils.getDeepField(clazz)) {
+		for (Field field : ReflectAide.getDeepField(clazz)) {
 			ExcelColumn column = field.getAnnotation(ExcelColumn.class);
 			if (column == null)
 				continue;
@@ -47,9 +47,9 @@ public class ExcelClassHolder {
 				name = field.getName();
 			GPropertyAccessor accessor = holder.gClass.getProperty(name);
 			if (accessor == null)
-				throw new NullPointerException(LogUtils.format("{} 不存在 {} property", clazz, name));
+				throw new NullPointerException(Logs.format("{} 不存在 {} property", clazz, name));
 			if (!holder.fieldHolders.add(new ExcelFieldHolder(column, accessor)))
-				throw new IllegalArgumentException(LogUtils.format("{} 属性 {} 字段索引 {} 有冲突", clazz, name, column.index()));
+				throw new IllegalArgumentException(Logs.format("{} 属性 {} 字段索引 {} 有冲突", clazz, name, column.index()));
 		}
 		return holder;
 	}

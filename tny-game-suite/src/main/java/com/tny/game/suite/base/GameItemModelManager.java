@@ -7,7 +7,7 @@ import com.tny.game.base.item.Model;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.base.item.behavior.Option;
 import com.tny.game.base.item.probability.AllRandomCreatorFactory;
-import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.probability.SequenceRandomCreatorFactory;
 import com.tny.game.base.item.probability.RandomCreatorFactory;
 import com.tny.game.base.item.probability.RandomCreators;
 import com.tny.game.base.item.xml.AbstractXMLModelManager;
@@ -50,7 +50,7 @@ public abstract class GameItemModelManager<M extends Model> extends AbstractXMLM
             for (RandomCreatorFactory factory : RandomCreators.getFactories()) {
                 factoryMap.put(factory.getName(), factory);
             }
-            RandomCreatorFactory factory = new DefaultRandomCreatorFactory();
+            RandomCreatorFactory factory = new SequenceRandomCreatorFactory();
             factoryMap.put(factory.getName(), factory);
             factory = new AllRandomCreatorFactory();
             factoryMap.put(factory.getName(), factory);

@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
@@ -84,7 +84,7 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
         T value = this.parseParam(clazz, body);
         if (value != null)
             return value;
-        throw new ClassCastException(LogUtils.format(
+        throw new ClassCastException(Logs.format(
                 "{} body {} is not class {} ", this.getProtocol(),
                 body.getClass(), clazz));
     }

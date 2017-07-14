@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.utils.buff.LinkedByteBuffer;
+import com.tny.game.common.buff.LinkedByteBuffer;
 import com.tny.game.protoex.annotations.TypeEncode;
 import com.tny.game.protoex.field.FieldFormat;
 

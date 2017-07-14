@@ -113,7 +113,7 @@ public class MessageContent<R> implements Protocol {
     }
 
     public MessageContent<R> createMessageFuture() {
-        if (MessageUtils.isRequest(this.toMessage)) {
+        if (MessageAide.isRequest(this.toMessage)) {
             if (this.messageFuture == null)
                 this.messageFuture = new MessageFuture<>();
         }
@@ -121,7 +121,7 @@ public class MessageContent<R> implements Protocol {
     }
 
     public MessageContent<R> createMessageFuture(long timeout) {
-        if (MessageUtils.isRequest(this.toMessage)) {
+        if (MessageAide.isRequest(this.toMessage)) {
             if (this.messageFuture == null)
                 this.messageFuture = new MessageFuture<>(timeout);
         }

@@ -16,7 +16,7 @@ import com.tny.game.base.item.behavior.DemandHolderObject;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.probability.DefaultRandomCreatorFactory;
+import com.tny.game.base.item.probability.SequenceRandomCreatorFactory;
 import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
@@ -135,7 +135,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     @Override
     public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
         if (this.randomer == null)
-            this.randomer = DefaultRandomCreatorFactory.getInstance();
+            this.randomer = SequenceRandomCreatorFactory.getInstance();
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.awardGroupSet == null)

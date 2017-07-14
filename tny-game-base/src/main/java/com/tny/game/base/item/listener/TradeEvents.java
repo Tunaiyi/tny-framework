@@ -4,8 +4,8 @@ import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.Warehouse;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.event.BindP3EventBus;
-import com.tny.game.event.EventBuses;
+import com.tny.game.common.event.BindP3EventBus;
+import com.tny.game.common.event.EventBuses;
 
 /**
  * Created by Kun Yang on 16/2/13.

@@ -1,8 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.reflect.ObjectUtils;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.collection.CopyOnWriteMap;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class Capacities {
         Set<Capacity> capacities = groupCapacities.get(capacity.getGroup());
         if (capacities == null) {
             capacities = new CopyOnWriteArraySet<>();
-            capacities = ObjectUtils.ifNull(groupCapacities.putIfAbsent(capacity.getGroup(), capacities), capacities);
+            capacities = ObjectAide.ifNull(groupCapacities.putIfAbsent(capacity.getGroup(), capacities), capacities);
         }
         capacities.add(capacity);
     }

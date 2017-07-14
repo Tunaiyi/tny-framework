@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.Identifiable;
-import com.tny.game.suite.login.IDUtils;
+import com.tny.game.suite.login.IDAide;
 
 /**
  * Created by Kun Yang on 16/1/28.
@@ -9,7 +9,7 @@ import com.tny.game.suite.login.IDUtils;
 public interface GameIdentifiable extends Identifiable {
 
     default int getServerID() {
-        return IDUtils.userID2SID(getPlayerID());
+        return IDAide.userID2SID(getPlayerID());
     }
 
 }

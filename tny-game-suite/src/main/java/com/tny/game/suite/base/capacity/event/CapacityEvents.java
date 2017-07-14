@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity.event;
 
-import com.tny.game.event.BindP1EventBus;
-import com.tny.game.event.EventBuses;
+import com.tny.game.common.event.BindP1EventBus;
+import com.tny.game.common.event.EventBuses;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 import com.tny.game.suite.base.capacity.CapacitySupply;
 

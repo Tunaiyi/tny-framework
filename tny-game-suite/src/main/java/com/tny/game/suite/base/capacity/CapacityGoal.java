@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.number.NumberUtils;
+import com.tny.game.common.number.NumberAide;
 
 import java.util.Collection;
 
@@ -53,7 +53,7 @@ public interface CapacityGoal extends Capacitiable {
                 if (total == null)
                     total = supplier.getValue(capacity);
                 else
-                    total = NumberUtils.add(supplier.getValue(capacity, 0), total);
+                    total = NumberAide.add(supplier.getValue(capacity, 0), total);
             }
         }
         return total == null ? capacity.getDefault() : total;
@@ -149,7 +149,7 @@ public interface CapacityGoal extends Capacitiable {
             if (total == null)
                 total = supplier.getValue(capacity);
             else
-                total = NumberUtils.add(supplier.getValue(capacity), total);
+                total = NumberAide.add(supplier.getValue(capacity), total);
         }
         return total;
     }
@@ -167,7 +167,7 @@ public interface CapacityGoal extends Capacitiable {
             if (total == null)
                 total = supplier.getValue(capacity);
             else
-                total = NumberUtils.add(supplier.getValue(capacity, capacity.getDefault()), total);
+                total = NumberAide.add(supplier.getValue(capacity, capacity.getDefault()), total);
         }
         return total == null ? defaultNum : total;
     }

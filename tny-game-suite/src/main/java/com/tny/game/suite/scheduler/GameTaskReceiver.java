@@ -3,7 +3,7 @@ package com.tny.game.suite.scheduler;
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.scheduler.TaskReceiver;
+import com.tny.game.common.scheduler.TaskReceiver;
 import com.tny.game.suite.SuiteDBHead;
 import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 import com.tny.game.suite.scheduler.cache.TaskReceiverFormatter;

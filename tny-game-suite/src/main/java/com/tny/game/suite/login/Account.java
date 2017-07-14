@@ -1,9 +1,9 @@
 package com.tny.game.suite.login;
 
 import com.tny.game.base.item.Identifiable;
-import com.tny.game.common.utils.DateTimeHelper;
-import com.tny.game.event.BindVoidEventBus;
-import com.tny.game.event.EventBuses;
+import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.common.event.BindVoidEventBus;
+import com.tny.game.common.event.EventBuses;
 import com.tny.game.suite.login.event.AccountListener;
 import com.tny.game.suite.utils.Configs;
 import org.joda.time.DateTime;
@@ -158,13 +158,13 @@ public class Account implements Identifiable {
     public Integer getCreateDate() {
         if (this.createAt == null)
             return null;
-        return DateTimeHelper.date2Int(this.createAt);
+        return DateTimeAide.date2Int(this.createAt);
     }
 
     public Integer getCreateRoleDate() {
         if (this.createRoleAt == null)
             return null;
-        return DateTimeHelper.date2Int(this.createRoleAt);
+        return DateTimeAide.date2Int(this.createRoleAt);
     }
 
     public DateTime getCreateDateTime() {

@@ -1,8 +1,8 @@
 package com.tny.game.net.spring;
 
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.net.annotation.Controller;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.AppConfiguration;

@@ -4,7 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.tny.game.cache.CacheFormatter;
 import com.tny.game.protobuf.PBCommon.SchedulerBackupProto;
 import com.tny.game.protobuf.PBCommon.TimeTaskProto;
-import com.tny.game.scheduler.TimeTask;
+import com.tny.game.common.scheduler.TimeTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;

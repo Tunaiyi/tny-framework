@@ -2,7 +2,7 @@ package com.tny.game.net.netty;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.Config;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;

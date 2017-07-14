@@ -3,7 +3,7 @@ package com.tny.game.doc.dto;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.DTODocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
@@ -64,18 +64,18 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
             if (configer != null) {
                 if (configer.getClassName().equals(holder.getEntityClass().getSimpleName()))
                     return configer;
-                throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
+                throw new IllegalArgumentException(Logs.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
             } else {
                 configer = new DTOConfiger(holder, typeFormatter);
                 old = configerMap.putIfAbsent(configer.getID(), configer);
                 if (old != null) {
-                    throw new IllegalArgumentException(LogUtils.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
+                    throw new IllegalArgumentException(Logs.format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getID()));
                 } else {
                     return configer;
                 }
             }
         }
-        throw new IllegalArgumentException(LogUtils.format("{} id 不存在", holder.getEntityClass()));
+        throw new IllegalArgumentException(Logs.format("{} id 不存在", holder.getEntityClass()));
     }
 
     private DTOConfiger(DTODocHolder holder, TypeFormatter typeFormatter) {
@@ -97,7 +97,7 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
             fieldList.add(configer);
             FieldConfiger old = fieldMap.put(configer.getFieldID(), configer);
             if (old != null) {
-                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} 字段 ID 都为 {}",
+                throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} 字段 ID 都为 {}",
                         holder.getEntityClass(), configer.getFieldName(), old.getFieldName(), configer.getFieldID()));
             }
         }

@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.protoex.*;
@@ -52,12 +52,12 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
             if (this.fieldsByIndexMap != null) {
                 FieldDesc<?> last = this.fieldsByIndexMap.put(field.getIndex(), field);
                 if (last != null) {
-                    throw new IllegalStateException(LogUtils.format("in {} class, {} and {} cannot have the same index {}", typeClass,
+                    throw new IllegalStateException(Logs.format("in {} class, {} and {} cannot have the same index {}", typeClass,
                             field.getName(), last.getName(), field.getIndex()));
                 }
             } else if (this.fieldsByIndex != null) {
                 if (this.fieldsByIndex[field.getIndex()] != null) {
-                    throw new IllegalStateException(LogUtils.format("in {} class, {} and {} cannot have the same index {}", typeClass,
+                    throw new IllegalStateException(Logs.format("in {} class, {} and {} cannot have the same index {}", typeClass,
                             field.getName(), this.fieldsByIndex[field.getIndex()].getName(), field.getIndex()));
                 }
                 this.fieldsByIndex[field.getIndex()] = field;

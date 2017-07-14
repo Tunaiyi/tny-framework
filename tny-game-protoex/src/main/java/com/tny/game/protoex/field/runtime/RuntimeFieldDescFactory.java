@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.buff.LinkedByteBuffer;
+import com.tny.game.common.buff.LinkedByteBuffer;
 import com.tny.game.protoex.field.FieldDescFactory;
 
 import java.util.Collection;

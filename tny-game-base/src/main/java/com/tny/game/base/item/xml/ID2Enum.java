@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.enums.EnumID;
 import org.apache.commons.lang3.EnumUtils;
 
@@ -35,7 +35,7 @@ public class ID2Enum<ID, T extends Enum<T> & EnumID<ID>> extends AbstractSingleV
             for (T e : enums) {
                 Enum<?> oldEnum = this.enumMap.put(e.getID(), e);
                 if (oldEnum != null) {
-                    throw new IllegalArgumentException(LogUtils.format("{}.{} 与 {}.{} name 相同!",
+                    throw new IllegalArgumentException(Logs.format("{}.{} 与 {}.{} name 相同!",
                             oldEnum.getClass(), oldEnum.name(),
                             e.getClass(), e.name()));
                 }

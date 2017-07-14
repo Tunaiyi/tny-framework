@@ -1,13 +1,13 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.item.Manager;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
-import com.tny.game.event.annotation.Listener;
+import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.net.common.dispatcher.CurrentCommand;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.persistent.annotation.AutoDB;
@@ -169,10 +169,10 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             if (manager == null) {
                 AutoDBBy saveBy = clazz.getAnnotation(AutoDBBy.class);
                 if (saveBy == null)
-                    throw new NullPointerException(LogUtils.format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
+                    throw new NullPointerException(Logs.format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
                 manager = (Manager<Object>) this.explorer.getManager(saveBy.manager());
                 if (manager == null)
-                    throw new NullPointerException(LogUtils.format("{} 类找不到 {} manager", clazz, saveBy.manager()));
+                    throw new NullPointerException(Logs.format("{} 类找不到 {} manager", clazz, saveBy.manager()));
                 this.classManagerMap.put(clazz, manager);
             }
             switch (operation) {

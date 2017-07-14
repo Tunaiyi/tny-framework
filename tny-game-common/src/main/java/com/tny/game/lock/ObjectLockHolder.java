@@ -1,6 +1,6 @@
 package com.tny.game.lock;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.thread.CoreThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @SuppressWarnings({"rawtypes"})
 class ObjectLockHolder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LogUtils.LOCK);
+    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOCK);
 
     private static final long GC_TIME = 600; // s
     private static final long SHOW_TIME = 30; // s

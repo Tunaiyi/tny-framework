@@ -1,6 +1,6 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.asyndb.annotation.Replace;
 
 import java.lang.ref.WeakReference;
@@ -127,16 +127,16 @@ public class AsyncDBEntity implements Synchronizable {
      */
     boolean mark(Operation operation, Object object) throws AsyncDBReleaseException, SubmitAtWrongStateException {
         if (this.release(System.currentTimeMillis()))
-            throw new AsyncDBReleaseException(LogUtils.format("[{}] submit exception", this.value));
+            throw new AsyncDBReleaseException(Logs.format("[{}] submit exception", this.value));
         AsyncDBState currentState = this.state;
         // 判断操作是否能在当前状态操作
         if (!operation.isCanOperationAt(currentState))
-            throw new SubmitAtWrongStateException(LogUtils.format("[{}] submit exception", this.value), currentState, operation);
+            throw new SubmitAtWrongStateException(Logs.format("[{}] submit exception", this.value), currentState, operation);
         this.lock.lock();
         try {
             currentState = this.state;
             if (!operation.isCanOperationAt(currentState))
-                throw new SubmitAtWrongStateException(LogUtils.format("[{}] submit exception", this.value), currentState, operation);
+                throw new SubmitAtWrongStateException(Logs.format("[{}] submit exception", this.value), currentState, operation);
             Object currentObject = this.value.get();
             this.state = operation.getChangeTo(currentState, currentState);
             if ((currentState.isDelete() && object != null) ||

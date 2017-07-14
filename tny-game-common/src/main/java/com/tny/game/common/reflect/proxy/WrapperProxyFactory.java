@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect.proxy;
 
-import com.tny.game.common.reflect.ReflectUtils;
+import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.BeforeAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
@@ -55,7 +55,7 @@ public class WrapperProxyFactory {
             implementWrapperProxy(pool, targetClass, proxyClass);
 
             Set<CtMethod> methodSet = new HashSet<>();
-            for (Method method : ReflectUtils.getDeepMethod(targetClass)) {
+            for (Method method : ReflectAide.getDeepMethod(targetClass)) {
                 int modifiers = method.getModifiers();
                 if (Modifier.isPrivate(modifiers) || Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers) || Modifier.isFinal(modifiers))
                     continue;

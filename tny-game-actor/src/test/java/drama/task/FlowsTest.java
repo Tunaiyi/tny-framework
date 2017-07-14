@@ -5,7 +5,7 @@ import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.TypeFlow;
 import com.tny.game.actor.stage.VoidFlow;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import org.jmock.Expectations;
 import org.junit.Test;
 
@@ -87,9 +87,9 @@ public class FlowsTest extends FlowTestUnits {
         context.checking(new Expectations() {{
             exactly(3).of(fn).get();
             will(onConsecutiveCalls(
-                    returnValue(DoneUtils.fail()),
-                    returnValue(DoneUtils.fail()),
-                    returnValue(DoneUtils.succ(value))
+                    returnValue(DoneResults.fail()),
+                    returnValue(DoneResults.fail()),
+                    returnValue(DoneResults.succ(value))
             ));
         }});
         checkFlow(
@@ -102,7 +102,7 @@ public class FlowsTest extends FlowTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        DoneSupplier<String> fn = DoneUtils::fail;
+        DoneSupplier<String> fn = DoneResults::fail;
         TypeFlow<String> flow = checkFlow(
                 Flows.waitFor(fn, TIME_100)
                 , false, null

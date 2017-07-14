@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.protoex.ProtoExInputStream;
 import com.tny.game.protoex.ProtoExOutputStream;
 import com.tny.game.protoex.Tag;
@@ -22,7 +22,7 @@ public class EnumSchema<E extends Enum<E>> extends RuntimePrimitiveSchema<E> {
         this.typeClass = clazz;
         ProtoEx proto = this.typeClass.getAnnotation(ProtoEx.class);
         if (proto == null)
-            throw new RuntimeException(LogUtils.format("{} @{} is null", this.typeClass, ProtoEx.class));
+            throw new RuntimeException(Logs.format("{} @{} is null", this.typeClass, ProtoEx.class));
         this.protoExID = proto.value();
         this.raw = false;
     }

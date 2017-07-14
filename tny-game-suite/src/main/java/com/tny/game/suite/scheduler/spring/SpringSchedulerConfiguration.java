@@ -1,6 +1,6 @@
 package com.tny.game.suite.scheduler.spring;
 
-import com.tny.game.suite.login.IDUtils;
+import com.tny.game.suite.login.IDAide;
 import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
 import com.tny.game.suite.scheduler.cache.CacheTimeTaskSchedulerService;
 import com.tny.game.suite.scheduler.database.DBTimeTaskSchedulerService;
@@ -20,7 +20,7 @@ public class SpringSchedulerConfiguration {
     @Bean
     @Profile({GAME})
     public TimeTaskSchedulerService gameSchedulerService() {
-        return new CacheTimeTaskSchedulerService(IDUtils.getSystemID());
+        return new CacheTimeTaskSchedulerService(IDAide.getSystemID());
     }
 
     @Bean

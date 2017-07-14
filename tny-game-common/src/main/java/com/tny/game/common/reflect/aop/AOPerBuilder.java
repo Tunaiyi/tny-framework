@@ -2,7 +2,7 @@ package com.tny.game.common.reflect.aop;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.common.reflect.ReflectUtils;
+import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.common.reflect.aop.annotation.AOP;
 import com.tny.game.common.reflect.aop.annotation.Privileges;
 import com.tny.game.common.reflect.javassist.InvokerFactory;
@@ -114,7 +114,7 @@ public class AOPerBuilder<T> {
                 proxyClass.addField(staticLogger);
 
                 AOP globalAOP = targetClass.getAnnotation(AOP.class);
-                List<Method> allMethodList = ReflectUtils.getDeepMethod(targetClass);
+                List<Method> allMethodList = ReflectAide.getDeepMethod(targetClass);
                 List<Method> aopMethodList = new ArrayList<Method>(allMethodList.size());
                 int methodIndex = 0;
                 Set<CtMethod> methodSet = new HashSet<CtMethod>();

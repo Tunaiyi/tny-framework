@@ -5,7 +5,7 @@ public class WeightOnRepeatRandomCreatorFactory<G extends ProbabilityGroup<P>, P
     private static final String NAME = "weightNoRepeat";
 
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
-            ProbabilityUtils::drawWeightsNoRepeat;
+            Probabilities::drawWeightsNoRepeat;
 
     @Override
     @SuppressWarnings("unchecked")

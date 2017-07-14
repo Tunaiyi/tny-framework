@@ -3,7 +3,7 @@ package com.tny.game.suite.cache;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.google.common.collect.Maps;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.config.FileLoader;
 import net.paoding.rose.jade.context.spring.SpringDataSourceFactory;
 import net.paoding.rose.jade.dataaccess.DataSourceFactory;
@@ -116,7 +116,7 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
             Properties defProperties = ShardDataSourceFactory.this.properties;
             Properties properties = new Properties();
             properties.putAll(defProperties);
-            String url = LogUtils.format(ShardDataSourceFactory.this.dbUrlTemplate,
+            String url = Logs.format(ShardDataSourceFactory.this.dbUrlTemplate,
                     host == null ? this.host : host,
                     port == null ? this.port : port,
                     name == null ? this.name : name);

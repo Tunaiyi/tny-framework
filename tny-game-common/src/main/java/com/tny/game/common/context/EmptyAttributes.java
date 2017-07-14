@@ -3,6 +3,7 @@ package com.tny.game.common.context;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Supplier;
 
 class EmptyAttributes implements Attributes {
 
@@ -17,6 +18,16 @@ class EmptyAttributes implements Attributes {
 
     @Override
     public <T> T getAttribute(AttrKey<? extends T> key, T defaultValue) {
+        return null;
+    }
+
+    @Override
+    public <T> T computeIfAbsent(AttrKey<? extends T> key, T value) {
+        return null;
+    }
+
+    @Override
+    public <T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> supplier) {
         return null;
     }
 

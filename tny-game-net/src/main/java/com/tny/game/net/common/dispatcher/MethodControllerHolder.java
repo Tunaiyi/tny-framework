@@ -2,12 +2,12 @@ package com.tny.game.net.common.dispatcher;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.reflect.GMethod;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.net.annotation.*;
@@ -20,7 +20,7 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.number.LocalNum;
+import com.tny.game.common.number.LocalNum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -160,7 +160,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             for (ControllerPlugin plugin : this.getControllerAfterPlugins())
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
         } catch (Exception e) {
-            throw new IllegalArgumentException(LogUtils.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
+            throw new IllegalArgumentException(Logs.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
     }
 
@@ -203,15 +203,15 @@ public final class MethodControllerHolder extends ControllerHolder {
         if (holder != null)
             return holder;
         holder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
-        return ObjectUtils.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
+        return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
     }
 
     public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
         if (index >= this.parameterDescs.size())
-            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
+            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
-            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
         return desc.getValue(tunnel, message, body);
     }
 
@@ -399,7 +399,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
                             this.paramType = ParamType.CODE;
                         } else {
-                            throw new IllegalArgumentException(LogUtils.format("{} 类型参数只能是 {} {} {}, 无法为 {}",
+                            throw new IllegalArgumentException(Logs.format("{} 类型参数只能是 {} {} {}, 无法为 {}",
                                     MsgCode.class, Integer.class, int.class, ResultCode.class));
                         }
                     }
@@ -432,7 +432,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     try {
                         if (body == null) {
                             if (require)
-                                throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                                throw new NullPointerException(Logs.format("{} 收到消息体为 null"));
                             else
                                 break;
                         }
@@ -441,18 +441,18 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 收到消息体为 {}, 不可通过index获取", holder.toString(), body.getClass()));
+                            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 收到消息体为 {}, 不可通过index获取", holder.toString(), body.getClass()));
                         }
                     } catch (DispatchException e) {
                         throw e;
                     } catch (Throwable e) {
-                        throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, LogUtils.format("{} 调用异常", holder.toString()), e);
+                        throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 调用异常", holder.toString()), e);
                     }
                     break;
                 case KEY_PARAM:
                     if (body == null) {
                         if (require)
-                            throw new NullPointerException(LogUtils.format("{} 收到消息体为 null"));
+                            throw new NullPointerException(Logs.format("{} 收到消息体为 null"));
                         else
                             break;
                     }

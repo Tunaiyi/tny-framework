@@ -1,13 +1,13 @@
 package com.tny.game.common.formula;
 
-import com.tny.game.common.reflect.ObjectUtils;
+import com.google.common.collect.Range;
+import com.tny.game.common.utils.ObjectAide;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,7 +115,7 @@ public class MathEx {
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
-            V object = ObjectUtils.as(randomItemList.get(index + 1));
+            V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
         }
@@ -179,7 +179,7 @@ public class MathEx {
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
-            V object = ObjectUtils.as(randomItemList.get(index + 1));
+            V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
         }
@@ -218,7 +218,7 @@ public class MathEx {
         List<RandomObject<V>> itemList = new ArrayList<>();
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
-            V object = ObjectUtils.as(randomItemList.get(index + 1));
+            V object = ObjectAide.as(randomItemList.get(index + 1));
             itemList.add(new RandomObject<>(object, value));
         }
         Collections.sort(itemList);
@@ -398,28 +398,6 @@ public class MathEx {
         return drop;
     }
 
-    public static void main(String[] args) {
-        final int timePerRound = 50;
-        final int allTime = 100;
-        int currentTime = 0;
-        int currentNum = 0;
-        Map<Integer, Integer> map = new HashMap<>();
-        map.put(25, 500);
-        map.put(40, 3000);
-        map.put(50, 9000);
-        for (int index = 0; index < allTime; index++) {
-            boolean ok = false;
-            if (randLimited(timePerRound, 10, map, 0, currentTime, currentNum)) {
-                currentNum++;
-                ok = true;
-            }
-            System.out.println(currentTime + " 次 ==> " + (ok ? 'O' : 'X') + " = " + currentNum);
-            if (index % timePerRound == (timePerRound - 1))
-                System.out.println(currentTime + " 临界值 " + " = " + currentNum);
-            currentTime++;
-        }
-    }
-
     /**
      * 获取时间对象
      *
@@ -495,6 +473,19 @@ public class MathEx {
     }
 
     /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param range 方位
+     * @param value 取值数
+     * @return 返回有效数
+     */
+    public static <T extends Comparable<T>> T clamp(Range<T> range, T value) {
+        if (range.contains(value))
+            return value;
+        return value.compareTo(range.lowerEndpoint()) < 0 ? range.lowerEndpoint() : range.upperEndpoint();
+    }
+
+    /**
      * 随机times次数, 有一定概率命中
      *
      * @param prob  概率
@@ -509,6 +500,103 @@ public class MathEx {
                 done++;
         }
         return done;
+    }
+
+    // public static <T extends Comparable<T>> Range<T> range(T fromInclusive, T toInclusive) {
+    //     return Range.between(fromInclusive, toInclusive).isOverlappedBy();
+    // }
+
+    public static void main(String[] args) {
+        String fx = "" +
+                "num = 0.0;\n" +
+                "if (overlapped(border = range(1, 1), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*200;\n" +
+                "}\n" +
+                "if (overlapped(border = range(2, 2), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*150;\n" +
+                "}\n" +
+                "if (overlapped(border = range(3, 3), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*100;\n" +
+                "}\n" +
+                "if (overlapped(border = range(4, 5), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*50;\n" +
+                "}\n" +
+                "if (overlapped(border = range(6, 10), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*30;\n" +
+                "}\n" +
+                "if (overlapped(border = range(11, 30), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*15;\n" +
+                "}\n" +
+                "if (overlapped(border = range(31, 100), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*5;\n" +
+                "}\n" +
+                "if (overlapped(border = range(101, 300), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*1;\n" +
+                "}\n" +
+                "if (overlapped(border = range(301, 1000), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*0.5;\n" +
+                "}\n" +
+                "if (overlapped(border = range(1001, 2000), topRanks)) {\n" +
+                "    num += (clamp(border, topRanks.upperEndpoint()) - clamp(border, topRanks.lowerEndpoint())+1)*0.3;\n" +
+                "}\n" +
+                "return toInt(ceil(num));";
+
+        System.out.println(MvelFormulaFactory.create(fx, FormulaType.EXPRESSION)
+                .createFormula()
+                .put("topRanks", MvelEx.range(200, 1999))
+                .execute(Object.class));
+        System.out.println(MvelFormulaFactory.create(fx, FormulaType.EXPRESSION)
+                .createFormula()
+                .put("topRanks", MvelEx.range(29, 1000))
+                .execute(Object.class));
+        System.out.println(MvelFormulaFactory.create(fx, FormulaType.EXPRESSION)
+                .createFormula()
+                .put("topRanks", MvelEx.range(212, 598))
+                .execute(Object.class));
+        System.out.println(MvelFormulaFactory.create(fx, FormulaType.EXPRESSION)
+                .createFormula()
+                .put("topRanks", MvelEx.range(1, 1))
+                .execute(Object.class));
+        System.out.println(MvelFormulaFactory.create(fx, FormulaType.EXPRESSION)
+                .createFormula()
+                .put("topRanks", MvelEx.range(1, 2))
+                .execute(Object.class));
+
+        // test = Range.between(0, 10);
+        // System.out.println(range.intersectionWith(test));
+        // test = Range.between(210, 220);
+        // System.out.println(range.intersectionWith(test));
+        // test = Range.between(100, 200);
+        // System.out.println(range.intersectionWith(test));
+        // test = Range.between(110, 190);
+        // System.out.println(range.intersectionWith(test));
+        // test = Range.between(90, 150);
+        // System.out.println(range.intersectionWith(test));
+        // test = Range.between(150, 210);
+        // System.out.println(range.intersectionWith(test));
+
+        // for (int i = 0; i < 100; i++) {
+        //     System.out.println(rand(1, 3));
+        // }
+        // final int timePerRound = 50;
+        // final int allTime = 100;
+        // int currentTime = 0;
+        // int currentNum = 0;
+        // Map<Integer, Integer> map = new HashMap<>();
+        // map.put(25, 500);
+        // map.put(40, 3000);
+        // map.put(50, 9000);
+        // for (int index = 0; index < allTime; index++) {
+        //     boolean ok = false;
+        //     if (randLimited(timePerRound, 10, map, 0, currentTime, currentNum)) {
+        //         currentNum++;
+        //         ok = true;
+        //     }
+        //     System.out.println(currentTime + " 次 ==> " + (ok ? 'O' : 'X') + " = " + currentNum);
+        //     if (index % timePerRound == (timePerRound - 1))
+        //         System.out.println(currentTime + " 临界值 " + " = " + currentNum);
+        //     currentTime++;
+        // }
     }
 
 }

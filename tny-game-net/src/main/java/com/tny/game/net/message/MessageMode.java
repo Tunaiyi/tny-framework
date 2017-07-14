@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 
 import java.util.function.Predicate;
 
@@ -9,17 +9,17 @@ public enum MessageMode {
     /**
      * 处理推送
      */
-    PUSH(MessageUtils::isPush),
+    PUSH(MessageAide::isPush),
 
     /**
      * 处理请求
      */
-    REQUEST(MessageUtils::isRequest),
+    REQUEST(MessageAide::isRequest),
 
     /**
      * 处理响应
      */
-    RESPONSE(MessageUtils::isResponse),
+    RESPONSE(MessageAide::isResponse),
 
     /**
      * PING
@@ -63,7 +63,7 @@ public enum MessageMode {
         } else if (PUSH.isMode(message)) {
             return PUSH;
         }
-        throw new NullPointerException(LogUtils.format("mode [{}] is null", message.getToMessage()));
+        throw new NullPointerException(Logs.format("mode [{}] is null", message.getToMessage()));
     }
 
     public boolean isMode(Message<?> message) {

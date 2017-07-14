@@ -5,7 +5,7 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.BeforeAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.event.annotation.Listener;
+import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.oplog.OpLogger;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.snapshot.AutoSnapMethod.SnapParamEntry;

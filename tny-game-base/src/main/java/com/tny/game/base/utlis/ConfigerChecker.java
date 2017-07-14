@@ -1,6 +1,6 @@
 package com.tny.game.base.utlis;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.Behavior;
 import com.tny.game.base.module.Feature;
@@ -28,7 +28,7 @@ public class ConfigerChecker {
     public static void check(Object key, Object value, String message, Object... params) {
         Set<Object> idSet = getCheckSet(key);
         if (!idSet.add(value)) {
-            IllegalArgumentException e = new IllegalArgumentException(LogUtils.format(message, params));
+            IllegalArgumentException e = new IllegalArgumentException(Logs.format(message, params));
             e.printStackTrace();
             throw e;
         }
@@ -36,7 +36,7 @@ public class ConfigerChecker {
 
     public static void checkBehaviorBelogFuncSys(Behavior child, Feature parent) {
         if (!(child.getID() + "").startsWith(parent.getID() + "")) {
-            IllegalArgumentException e = new IllegalArgumentException(LogUtils.format("{} 行为[ID:{}]不属于 {} 系统[ID:{}]",
+            IllegalArgumentException e = new IllegalArgumentException(Logs.format("{} 行为[ID:{}]不属于 {} 系统[ID:{}]",
                     child, child.getID(), parent, parent.getID()));
             e.printStackTrace();
             throw e;
@@ -45,7 +45,7 @@ public class ConfigerChecker {
 
     public static void checkActionBelogBehavior(Action child, Behavior parent) {
         if (child.getID() / 1000 != parent.getID()) {
-            IllegalArgumentException e = new IllegalArgumentException(LogUtils.format("{} 操作[ID:{}]不属于 {} 行为[ID:{}]",
+            IllegalArgumentException e = new IllegalArgumentException(Logs.format("{} 操作[ID:{}]不属于 {} 行为[ID:{}]",
                     child, child.getID(), parent, parent.getID()));
             e.printStackTrace();
             throw e;

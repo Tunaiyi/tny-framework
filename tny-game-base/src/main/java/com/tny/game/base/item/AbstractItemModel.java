@@ -12,7 +12,7 @@ import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -419,7 +419,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         Set<A> types = new HashSet<>();
         for (Ability ability : this.abilityMap.keySet()) {
             if (typeClass.isInstance(ability))
-                types.add(ObjectUtils.as(ability, typeClass));
+                types.add(ObjectAide.as(ability, typeClass));
         }
         return types;
     }

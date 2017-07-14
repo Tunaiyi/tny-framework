@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.protoex.BaseProtoExSchema;
 import com.tny.game.protoex.ProtoExInputStream;
 import com.tny.game.protoex.ProtoExOutputStream;
@@ -39,7 +39,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     @Override
     public void writeMessage(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
         if (array != null)
-            ExceptionUtils.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+            Throws.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
         if (array == null || Array.getLength(array) == 0)
             return;
         this.writeTag(outputStream, conf);
@@ -49,7 +49,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     @Override
     public void writeValue(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
         if (array != null)
-            ExceptionUtils.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+            Throws.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
         if (array == null || Array.getLength(array) == 0)
             return;
         if (!(conf instanceof RepeatIOConfiger))

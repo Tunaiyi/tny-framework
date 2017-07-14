@@ -27,7 +27,7 @@ public class CGlibClass implements GClass {
         super();
         this.javaClass = javaClass;
         this.fastClass = FastClass.create(this.javaClass);
-        List<Method> methods = ReflectUtils.getDeepMethod(this.javaClass);
+        List<Method> methods = ReflectAide.getDeepMethod(this.javaClass);
         Map<String, CGlibPropertyAccessor> accessorMap = new HashMap<String, CGlibPropertyAccessor>();
         for (Method method : methods) {
             if (!Modifier.isPublic(method.getModifiers()) || Modifier.isStatic(method.getModifiers()) || filter != null && filter.filter(method))
@@ -85,7 +85,7 @@ public class CGlibClass implements GClass {
         }
         if (name.equals(""))
             return null;
-        Field field = ReflectUtils.getDeepField(javaClass, name);
+        Field field = ReflectAide.getDeepField(javaClass, name);
         if (field != null)
             return field.getName();
         if (name.equals(name.toUpperCase()))

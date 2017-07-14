@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.item.probability.RandomCreator;
 import com.tny.game.base.item.probability.RandomCreatorFactory;
 
@@ -36,7 +36,7 @@ public class String2RandomCreator extends AbstractSingleValueConverter {
     public Object fromString(String name) {
         RandomCreatorFactory factory = randomCreatorFactory.get(name);
         if (factory == null)
-            throw new NullPointerException(LogUtils.format("找不到名字为 {} 的 RandomCreatorFactory", name));
+            throw new NullPointerException(Logs.format("找不到名字为 {} 的 RandomCreatorFactory", name));
         return factory.getRandomCreator();
     }
 

@@ -1,6 +1,6 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.concurrent.ExeUtils;
+import com.tny.game.common.utils.ExeAide;
 import com.tny.game.suite.SuiteProfiles;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -49,12 +49,12 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ExeUtils.runUnchecked(() -> processor.onStaticInit());
+        ExeAide.runUnchecked(() -> processor.onStaticInit());
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ExeUtils.runUnchecked(() -> processor.onClosed(false));
+        ExeAide.runUnchecked(() -> processor.onClosed(false));
     }
 
 }

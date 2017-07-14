@@ -1,6 +1,6 @@
 package com.tny.game.net.command;
 
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.common.dispatcher.MethodControllerHolder;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
@@ -25,11 +25,11 @@ public abstract class DispatchContext extends InvokeContext {
     }
 
     public <T> Tunnel<T> getTunnel() {
-        return ObjectUtils.as(tunnel);
+        return ObjectAide.as(tunnel);
     }
 
     public <T> Message<T> getMessage() {
-        return ObjectUtils.as(message);
+        return ObjectAide.as(message);
     }
 }
 

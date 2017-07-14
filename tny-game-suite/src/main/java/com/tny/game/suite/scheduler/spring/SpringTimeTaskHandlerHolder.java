@@ -1,7 +1,7 @@
 package com.tny.game.suite.scheduler.spring;
 
-import com.tny.game.scheduler.AbstractTimeTaskHandlerHolder;
-import com.tny.game.scheduler.TimeTaskHandler;
+import com.tny.game.common.scheduler.AbstractTimeTaskHandlerHolder;
+import com.tny.game.common.scheduler.TimeTaskHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

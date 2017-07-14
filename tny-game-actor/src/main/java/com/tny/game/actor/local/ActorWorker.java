@@ -1,6 +1,6 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.worker.CommandWorker;
+import com.tny.game.common.worker.CommandWorker;
 
 /**
  * Created by Kun Yang on 16/4/28.

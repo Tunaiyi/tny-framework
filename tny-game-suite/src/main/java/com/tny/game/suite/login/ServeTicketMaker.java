@@ -14,7 +14,7 @@ public class ServeTicketMaker implements TicketMaker<ServeTicket> {
     public String make(ServeTicket ticket) {
         String serverType = ticket.getServerType();
         String truePWD = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(serverType), "");
-        return LoginUtils.ticket2MD5(ticket, truePWD);
+        return LoginAide.ticket2MD5(ticket, truePWD);
     }
 
 }

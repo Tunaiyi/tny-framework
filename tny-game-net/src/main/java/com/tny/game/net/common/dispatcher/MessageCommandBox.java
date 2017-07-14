@@ -1,6 +1,6 @@
 package com.tny.game.net.common.dispatcher;
 
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.worker.command.Command;
 
 public interface MessageCommandBox {//extends CommandBox<Command> {
 

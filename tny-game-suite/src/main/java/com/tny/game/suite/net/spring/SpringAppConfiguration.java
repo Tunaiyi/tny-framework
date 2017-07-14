@@ -1,11 +1,11 @@
 package com.tny.game.suite.net.spring;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.ExceptionUtils;
-import com.tny.game.common.reflect.ObjectUtils;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.net.base.AppUtils;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.coder.ChannelMaker;
@@ -145,9 +145,9 @@ public class SpringAppConfiguration extends AbstractAppConfiguration implements 
                 .stream()
                 .collect(Collectors.toMap(
                         AppUtils::getUnitName,
-                        ObjectUtils::self
+                        ObjectAide::self
                 )));
-        return ExceptionUtils.checkNotNull(units.get(checkUnit), "{} [{}] 不存在", clazz, checkUnit);
+        return Throws.checkNotNull(units.get(checkUnit), "{} [{}] 不存在", clazz, checkUnit);
     }
 
 

@@ -1,10 +1,10 @@
 package com.tny.game.net.common.session;
 
 import com.google.common.collect.Range;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.event.BindP1EventBus;
-import com.tny.game.event.EventBuses;
+import com.tny.game.common.event.BindP1EventBus;
+import com.tny.game.common.event.EventBuses;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.exception.RemotingException;
@@ -76,7 +76,7 @@ public class CommonSession<UID> implements NetSession<UID> {
 
     @SuppressWarnings("unchecked")
     public CommonSession(NetTunnel<UID> tunnel, UID unloginUID, MessageBuilderFactory<UID> messageBuilderFactory, SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler, SessionInputEventHandler<UID, NetSession<UID>> inputEventHandler, MessageSignGenerator<UID> messageSignGenerator, int cacheMessageSize) {
-        this.id = SessionUtils.newSessionID();
+        this.id = SessionAide.newSessionID();
         this.certificate = LoginCertificate.createUnLogin(unloginUID);
         this.messageSignGenerator = messageSignGenerator;
         this.messageBuilderFactory = messageBuilderFactory;
@@ -254,7 +254,7 @@ public class CommonSession<UID> implements NetSession<UID> {
         } catch (Throwable e) {
             LOGGER.error("send response exception", e);
             if (content.isSent())
-                throw new RemotingException(LogUtils.format("{} send {} failed", this, message));
+                throw new RemotingException(Logs.format("{} send {} failed", this, message));
         }
     }
 
@@ -359,7 +359,7 @@ public class CommonSession<UID> implements NetSession<UID> {
         SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
         if (!option.isPush()) {
             if (option.isThrowable())
-                throw new SessionException(LogUtils.format("Session {}-{} [{}] 无法推送", this.getCertificate(), this.getUserGroup(), this.getUID()));
+                throw new SessionException(Logs.format("Session {}-{} [{}] 无法推送", this.getCertificate(), this.getUserGroup(), this.getUID()));
             return false;
         }
         return true;

@@ -3,7 +3,7 @@ package com.tny.game.cache.spring;
 import com.tny.game.cache.*;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.cache.annotation.Trigger;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

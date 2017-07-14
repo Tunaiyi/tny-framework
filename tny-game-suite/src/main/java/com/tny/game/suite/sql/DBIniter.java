@@ -1,6 +1,6 @@
 package funs.god.games.base.sql;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.suite.sql.SQLScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class DBIniter implements BeanFactoryPostProcessor {
                 rdp.addScript(new ClassPathResource(sqlScript.getFile()));
                 rdp.populate(connection);
             } catch (Throwable e) {
-                throw new SQLException(LogUtils.format("初始化脚本 {} 异常", sqlScript), e);
+                throw new SQLException(Logs.format("初始化脚本 {} 异常", sqlScript), e);
             }
         }
     }

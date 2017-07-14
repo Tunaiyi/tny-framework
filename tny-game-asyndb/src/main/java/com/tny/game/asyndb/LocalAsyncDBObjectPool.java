@@ -1,6 +1,6 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.asyndb.log.LogName;
 import com.tny.game.common.thread.CoreThreadFactory;
@@ -274,7 +274,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         }
         Object currentObject = asyncDBEntity.getValue();
         if (!asyncDBEntity.isDelete() && !asyncDBEntity.isCanReplace() && asyncDBEntity.getValue() != object)
-            throw new IllegalArgumentException(LogUtils.format("对象 [key:{}] 执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", key, operation, currentObject, object));
+            throw new IllegalArgumentException(Logs.format("对象 [key:{}] 执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", key, operation, currentObject, object));
         try {
             LOGGER.debug("#LoaclAsynBDObjectPool#提交更改对象池中{} 状态: {} -> {}", asyncDBEntity, asyncDBEntity.getState(), operation);
             boolean submit = asyncDBEntity.mark(operation, object);

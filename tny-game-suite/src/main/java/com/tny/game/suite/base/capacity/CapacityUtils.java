@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.number.NumberUtils;
+import com.tny.game.common.number.NumberAide;
 
 /**
  * CapacityUtils
@@ -9,7 +9,7 @@ import com.tny.game.number.NumberUtils;
 public interface CapacityUtils {
 
     static Number countCapacity(Number baseValue, CapacityGoal goal, Capacity valueCap) {
-        return NumberUtils.add(baseValue, goal.getBaseCapacity(valueCap, valueCap.getDefault()));
+        return NumberAide.add(baseValue, goal.getBaseCapacity(valueCap, valueCap.getDefault()));
     }
 
     static Number countFinalValue(Number baseValue, CapacityGoal goal, Capacity... capacities) {

@@ -11,7 +11,7 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.RunnableCommand;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

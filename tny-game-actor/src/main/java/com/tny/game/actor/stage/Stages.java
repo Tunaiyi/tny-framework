@@ -12,7 +12,7 @@ import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import org.springframework.core.task.TaskTimeoutException;
 
 import java.time.Duration;
@@ -34,8 +34,8 @@ class Stages {
 
     public static Done<Throwable> getCause(Stage stage) {
         if (!stage.isDone())
-            return DoneUtils.fail();
-        return DoneUtils.succNullable(stage.getCause());
+            return DoneResults.fail();
+        return DoneResults.succNullable(stage.getCause());
     }
 
     public static Completable time(Duration duration) {
@@ -653,11 +653,11 @@ class Stages {
                 for (Supplier<Done<R>> fn : fns) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return DoneUtils.fail();
+                        return DoneResults.fail();
                     else
                         result.add(done.get());
                 }
-                return DoneUtils.succ(result);
+                return DoneResults.succ(result);
             }, timeout);
         }
 
@@ -675,9 +675,9 @@ class Stages {
                 for (Supplier<Done<R>> fn : fns.values()) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return DoneUtils.fail();
+                        return DoneResults.fail();
                 }
-                return DoneUtils.succ(fns.entrySet().stream()
+                return DoneResults.succ(fns.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Entry::getKey,
                                 e -> e.getValue().get().get()

@@ -120,10 +120,12 @@ public class NetServerBeanFactory {
     }
 
     @Bean
-    public WordsFilter wordsFilter() {
-        return new LocalWordsFilter(
+    public WordsFilter wordsFilter() throws Exception {
+        LocalWordsFilter filter = new LocalWordsFilter(
                 Configs.SUITE_CONFIG.getStr(Configs.SUITE_WORD_FILTER_CONFIG_PATH, Configs.WORD_FILTER_CONFIG_PATH),
                 Configs.SUITE_CONFIG.getStr(Configs.SUITE_WORD_REPLACE_SYMBOL, "*"));
+        filter.load();
+        return filter;
     }
 
     @Bean

@@ -2,7 +2,7 @@ package com.tny.game.suite.base;
 
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.base.item.ItemType;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

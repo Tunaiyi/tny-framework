@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.protoex.ProtoExType;
 import com.tny.game.protoex.ProtobufExException;
 import com.tny.game.protoex.annotations.ProtoExConf;
@@ -51,14 +51,14 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
     protected BaseIOConfiger(ProtoExType protoExType, Field field) {
         ProtoExField member = field.getAnnotation(ProtoExField.class);
         if (member == null)
-            throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExField.class));
+            throw new NullPointerException(Logs.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExField.class));
         if (member.value() <= 0)
-            throw new NullPointerException(LogUtils.format("{} 类 {} 字段 ProtoField.value = {} <= 0", field.getDeclaringClass(), field, member.value()));
+            throw new NullPointerException(Logs.format("{} 类 {} 字段 ProtoField.value = {} <= 0", field.getDeclaringClass(), field, member.value()));
         ProtoExConf conf = member.conf();
         Class<T> type = (Class<T>) field.getType();
         if (conf.ues() != Void.class) {
             if (!type.isAssignableFrom(conf.ues()))
-                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
+                throw new IllegalArgumentException(Logs.format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
             this.use = (Class<T>) conf.ues();
         } else {
             this.use = type;

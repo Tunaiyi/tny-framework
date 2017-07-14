@@ -12,7 +12,7 @@ import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.utils.DoneResult;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,16 +158,16 @@ public class GameWarehouseService implements WarehouseService {
                     CountableStuffOwner owner = warehouse.getOwner(stuffModel.getItemType(), GameCountableStuffOwner.class);
                     if (award) {
                         if (owner.isOverUpperLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneUtils.fail(ItemResultCode.FULL_NUMBER);
+                            return DoneResults.fail(ItemResultCode.FULL_NUMBER);
                     } else {
                         if (owner.isOverLowerLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneUtils.fail(ItemResultCode.LACK_NUMBER);
+                            return DoneResults.fail(ItemResultCode.LACK_NUMBER);
                     }
                 }
             }
-            return DoneUtils.succ(true);
+            return DoneResults.succ(true);
         }
-        return DoneUtils.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneResults.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     interface TradeWithTradeItem {

@@ -6,8 +6,8 @@ import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.ItemsImportKey;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.utils.collection.MapBuilder;
-import com.tny.game.common.utils.collection.MapRef;
+import com.tny.game.common.collection.MapBuilder;
+import com.tny.game.common.collection.MapRef;
 import org.junit.Assert;
 import org.junit.Test;
 

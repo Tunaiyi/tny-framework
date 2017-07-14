@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster.game;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
@@ -234,7 +234,7 @@ public class ServerOutline {
     public DateTime getOpenDateTime() {
         if (this.openDateTime != null)
             return this.openDateTime;
-        this.openDateTime = DateTime.parse(this.openDate, DateTimeHelper.DATE_TIME_MIN_FORMAT);
+        this.openDateTime = DateTime.parse(this.openDate, DateTimeAide.DATE_TIME_MIN_FORMAT);
         return this.openDateTime;
     }
 
@@ -251,7 +251,7 @@ public class ServerOutline {
     }
 
     public ServerOutline setOpenDate(DateTime openDate) {
-        this.openDate = openDate.toString(DateTimeHelper.DATE_TIME_MIN_FORMAT);
+        this.openDate = openDate.toString(DateTimeAide.DATE_TIME_MIN_FORMAT);
         return this;
     }
 

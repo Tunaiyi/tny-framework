@@ -1,7 +1,7 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.result.ResultCode;
 
 import java.util.Collections;
@@ -112,7 +112,7 @@ public class DemandResult {
     public <V> V getExpectValue(Class<V> clazz) {
         if (expectValue == null)
             return null;
-        return ObjectUtils.as(expectValue, clazz);
+        return ObjectAide.as(expectValue, clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,7 +120,7 @@ public class DemandResult {
         Object value = this.paramMap.get(param);
         if (param == null)
             return null;
-        return ObjectUtils.as(value, clazz);
+        return ObjectAide.as(value, clazz);
     }
 
     @SuppressWarnings("unchecked")

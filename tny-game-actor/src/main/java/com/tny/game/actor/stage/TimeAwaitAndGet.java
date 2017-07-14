@@ -1,6 +1,6 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
@@ -25,8 +25,8 @@ public class TimeAwaitAndGet<T> implements Supplier<Done<T>> {
         if (this.timeout < 0)
             this.timeout = System.currentTimeMillis() + duration.toMillis();
         if (System.currentTimeMillis() > this.timeout)
-            return DoneUtils.succ(object);
-        return DoneUtils.fail();
+            return DoneResults.succ(object);
+        return DoneResults.fail();
     }
 
 }

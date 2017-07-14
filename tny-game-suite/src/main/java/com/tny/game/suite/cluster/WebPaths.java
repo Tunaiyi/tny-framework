@@ -2,7 +2,7 @@ package com.tny.game.suite.cluster;
 
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.suite.utils.Configs;
 
 /**
@@ -29,7 +29,7 @@ public class WebPaths {
             this.serverType = serverType;
             String key = Configs.PATH_HEAD + serverType + "." + name;
             this.path = Configs.PROTOCOLS_CONFIG.getStr(key, defaultPath);
-            ExceptionUtils.checkNotNull(this.path, "{} path is null", key);
+            Throws.checkNotNull(this.path, "{} path is null", key);
         }
 
         @Override

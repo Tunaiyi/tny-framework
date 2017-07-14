@@ -3,12 +3,12 @@ package com.tny.game.net.common.dispatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.MethodFilter;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;
@@ -76,7 +76,7 @@ public final class ClassControllerHolder extends ControllerHolder {
             if (holder.getID() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
                 if (last != null)
-                    throw new IllegalArgumentException(LogUtils.format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
+                    throw new IllegalArgumentException(Logs.format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
             }
         }
     }

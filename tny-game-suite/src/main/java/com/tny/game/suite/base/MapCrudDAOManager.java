@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import net.paoding.rose.jade.annotation.SQLParam;
 
 import java.io.Serializable;

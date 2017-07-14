@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.FeatureHandler;
@@ -9,9 +9,9 @@ import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,7 +207,7 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
                     for (FeatureModel model : featureModels) {
                         FeatureHandler handler = this.handlerMap.get(model.getFeature());
                         if (handler == null)
-                            throw new NullPointerException(LogUtils.format("{} feature handler is null", model.getFeature()));
+                            throw new NullPointerException(Logs.format("{} feature handler is null", model.getFeature()));
                         handlers.add(handler);
                     }
                     this.handlersMap.put(openMode, handlers);

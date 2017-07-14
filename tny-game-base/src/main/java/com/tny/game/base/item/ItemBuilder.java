@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 
 /**
  * item构建器
@@ -41,7 +41,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      * @return 构建器
      */
     public B setModel(IM model) {
-        ExceptionUtils.checkNotNull(model);
+        Throws.checkNotNull(model);
         this.itemModel = model;
         return (B) this;
     }

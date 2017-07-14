@@ -1,6 +1,6 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
 
@@ -16,7 +16,7 @@ public class ValidatorFailException extends DispatchException {
     private String ip;
 
     public ValidatorFailException(ResultCode code, String message, Throwable e) {
-        super(code, LogUtils.format("!!|({}) {} | {}", code.getCode(), code.getMessage(), message), e);
+        super(code, Logs.format("!!|({}) {} | {}", code.getCode(), code.getMessage(), message), e);
     }
 
     public ValidatorFailException(ResultCode code, String message) {

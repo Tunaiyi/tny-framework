@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.protobuf.Message;
-import com.tny.game.common.utils.protobuf.Protobuf2JsonFormat;
+import com.tny.game.common.protobuf.Protobuf2JsonFormat;
 import com.tny.game.oplog.Alter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

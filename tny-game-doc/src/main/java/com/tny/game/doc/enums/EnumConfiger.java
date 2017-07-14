@@ -3,7 +3,7 @@ package com.tny.game.doc.enums;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.EnumDocHolder;
 import com.tny.game.doc.holder.FieldDocHolder;
@@ -60,7 +60,7 @@ public class EnumConfiger {
             this.enumerList.enumerList.add(configer);
             EnumerConfiger old = fieldMap.put(configer.getID(), configer);
             if (old != null) {
-                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} 枚举 ID 都为 {}",
+                throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} 枚举 ID 都为 {}",
                         holder.getEntityClass(), configer.getName(), old.getName(), configer.getID()));
             }
         }

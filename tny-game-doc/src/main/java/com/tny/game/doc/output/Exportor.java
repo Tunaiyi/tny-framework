@@ -1,6 +1,6 @@
 package com.tny.game.doc.output;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.table.ConfigTable;
 import com.tny.game.doc.table.TableAttribute;
@@ -130,9 +130,9 @@ public class Exportor {
 
     public Exportor clean() throws IOException {
         if (this.baseDir.exists()) {
-            System.out.println(LogUtils.format("正在清空 [{}] 文件夹......", this.baseDir));
+            System.out.println(Logs.format("正在清空 [{}] 文件夹......", this.baseDir));
             deleteDirectory(this.baseDir);
-            System.out.println(LogUtils.format("清空 [{}] 文件夹完成", this.baseDir));
+            System.out.println(Logs.format("清空 [{}] 文件夹完成", this.baseDir));
         }
         return this;
     }
@@ -153,7 +153,7 @@ public class Exportor {
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
         tempSet.addAll(selector.getClasses());
         if (tempSet.isEmpty()) {
-            System.out.println(LogUtils.format("{}包下未找到符合的类", StringUtils.join(basePackage, ";")));
+            System.out.println(Logs.format("{}包下未找到符合的类", StringUtils.join(basePackage, ";")));
             return;
         }
         // XStream xstream = new XStream();
@@ -168,11 +168,11 @@ public class Exportor {
                 File outputFile = new File(baseDir, outputPath.getPath(clazz));
                 try (FileOutputStream output = openOutputStream(outputFile);
                      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"))) {
-                    System.out.println(LogUtils.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
+                    System.out.println(Logs.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
                     IOUtils.write(exporter.getHead(), writer);
                     IOUtils.write(headMessage, writer);
                     IOUtils.write(exporter.output(table), writer);
-                    System.out.println(LogUtils.format("导出 {} 完成", outputFile.getAbsoluteFile()));
+                    System.out.println(Logs.format("导出 {} 完成", outputFile.getAbsoluteFile()));
                     count++;
                 }
             } catch (Throwable e) {
@@ -181,7 +181,7 @@ public class Exportor {
                 throw e;
             }
         }
-        System.out.println(LogUtils.format("{} 包中,一共导出 {} 个文件到 {} 文件夹下", basePackage, count, baseDir.getAbsoluteFile()));
+        System.out.println(Logs.format("{} 包中,一共导出 {} 个文件到 {} 文件夹下", basePackage, count, baseDir.getAbsoluteFile()));
     }
 
     public void export2One(OutputType type) throws IOException {
@@ -205,7 +205,7 @@ public class Exportor {
         // xstream.aliasSystemAttribute(null, "class");
         ConfigTable table = createTable(tempSet);
         File outputFile = new File(baseDir, outputPath.getPath(null));
-        System.out.println(LogUtils.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
+        System.out.println(Logs.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
         try (FileOutputStream output = openOutputStream(outputFile);
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"))) {
             IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", writer);
@@ -214,7 +214,7 @@ public class Exportor {
             IOUtils.write(exporter.output(table), writer);
 //            xstream.toXML(table, writer);
         }
-        System.out.println(LogUtils.format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, selector.getClasses().size(), outputFile.getAbsoluteFile()));
+        System.out.println(Logs.format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, selector.getClasses().size(), outputFile.getAbsoluteFile()));
     }
 
     public ConfigTable createTable(Class<?> clazz) {

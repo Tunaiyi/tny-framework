@@ -1,8 +1,8 @@
 package com.tny.game.suite.scheduler.database;
 
-import com.tny.game.scheduler.SchedulerBackup;
-import com.tny.game.scheduler.SchedulerStore;
-import com.tny.game.scheduler.TimeTaskScheduler;
+import com.tny.game.common.scheduler.SchedulerBackup;
+import com.tny.game.common.scheduler.SchedulerStore;
+import com.tny.game.common.scheduler.TimeTaskScheduler;
 import com.tny.game.suite.scheduler.cache.CacheSchedulerBackup;
 import com.tny.game.suite.utils.Configs;
 import org.slf4j.Logger;

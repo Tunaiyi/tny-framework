@@ -1,7 +1,7 @@
 package com.tny.game.web;
 
-import com.tny.game.LogUtils;
-import com.tny.game.web.utils.HttpUtils;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.web.utils.HttpAide;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +37,14 @@ public class GlobalController {
         for (Entry<String, String[]> paramEntry : request.getParameterMap().entrySet()) {
             params += paramEntry.getKey() + ":" + StringUtils.join(paramEntry.getValue(), "|") + "\n";
         }
-        String requestStr = LogUtils.format("HttpServletRequest:\n url={}\nquery={}\nmethod={}\nhead:\n{}\nparams:\n{}",
+        String requestStr = Logs.format("HttpServletRequest:\n url={}\nquery={}\nmethod={}\nhead:\n{}\nparams:\n{}",
                 request.getRequestURL(),
                 request.getQueryString(),
                 request.getMethod(),
                 heads,
                 params);
         LOGGER.error("处理Http 请求异常\n{}", requestStr, e);
-        return HttpUtils.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        return HttpAide.status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

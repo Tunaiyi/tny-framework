@@ -1,7 +1,8 @@
 package com.tny.game.common.utils.md5;
 
-import com.tny.game.common.utils.collection.ThreadLocalRandom;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MD5 {
 
@@ -27,7 +28,7 @@ public class MD5 {
                 word.append(values.charAt(index));
             }
             String v = word.toString();
-            if (!MD5.md5(v).equals(SignUtils.md5Hex(v)))
+            if (!MD5.md5(v).equals(SignAide.md5Hex(v)))
                 System.out.println(v);
         }
 

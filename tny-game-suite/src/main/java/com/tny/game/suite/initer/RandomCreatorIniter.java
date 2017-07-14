@@ -1,13 +1,12 @@
 package com.tny.game.suite.initer;
 
 import com.tny.game.base.item.probability.RandomCreatorFactory;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by Kun Yang on 16/9/9.
@@ -28,7 +27,7 @@ public class RandomCreatorIniter {
                 RandomCreatorFactory factory = (RandomCreatorFactory) clazz.newInstance();
                 factory.registerSelf();
             } catch (Exception e) {
-                ExceptionUtils.throwByCause(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
+                Throws.throwByCause(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
             }
         }
     }

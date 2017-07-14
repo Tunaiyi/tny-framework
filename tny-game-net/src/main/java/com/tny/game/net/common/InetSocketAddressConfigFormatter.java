@@ -1,8 +1,8 @@
 package com.tny.game.net.common;
 
 import com.tny.game.common.config.ConfigFormatter;
-import com.tny.game.number.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;

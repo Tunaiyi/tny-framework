@@ -5,7 +5,7 @@ public class WeightRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends
     private static final String NAME = "weight";
 
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
-            ProbabilityUtils::drawWeights;
+            Probabilities::drawWeights;
 
     @Override
     @SuppressWarnings("unchecked")

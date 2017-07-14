@@ -1,6 +1,6 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.common.reflect.ReflectUtils;
+import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class DTODocHolder {
 
     private static List<FieldDocHolder> createFieldList(Class<?> clazz) {
         List<FieldDocHolder> list = new ArrayList<FieldDocHolder>();
-        for (Field field : ReflectUtils.getDeepField(clazz)) {
+        for (Field field : ReflectAide.getDeepField(clazz)) {
             FieldDocHolder fieldDocHolder = FieldDocHolder.create(field);
             if (fieldDocHolder != null)
                 list.add(fieldDocHolder);

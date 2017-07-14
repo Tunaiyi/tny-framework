@@ -1,8 +1,8 @@
 package com.tny.game.suite.cache;
 
 import com.google.protobuf.Message;
-import com.tny.game.LogUtils;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class ProtobufTableMapper {
         ProtobufTableMapper old = tableMapperMap.putIfAbsent(mapper.getTable(), mapper);
         if (old != null && old.getFormatter() != formatter) {
             throw new IllegalArgumentException(
-                    LogUtils.format("存在两个相同的表 {} 对应不同的formatter {} 与 {}", table, formatter.getClass(), old.getFormatter().getClass()));
+                    Logs.format("存在两个相同的表 {} 对应不同的formatter {} 与 {}", table, formatter.getClass(), old.getFormatter().getClass()));
         }
         return old != null ? old : mapper;
     }

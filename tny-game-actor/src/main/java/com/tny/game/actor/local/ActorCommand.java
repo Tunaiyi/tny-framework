@@ -2,8 +2,8 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Answer;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.utils.DoneResults;
+import com.tny.game.common.worker.command.Command;
 
 /**
  * Actor命令
@@ -28,8 +28,8 @@ public abstract class ActorCommand<T> implements Command {
 
     public Done<T> getDone() {
         if (this.isDone())
-            return DoneUtils.fail();
-        return DoneUtils.succNullable(this.getResult());
+            return DoneResults.fail();
+        return DoneResults.succNullable(this.getResult());
     }
 
     @Override

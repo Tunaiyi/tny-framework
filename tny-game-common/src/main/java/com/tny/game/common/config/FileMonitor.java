@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.thread.CoreThreadFactory;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -29,7 +29,7 @@ public class FileMonitor {
     /**
      * 日志对象
      */
-    private static final Logger LOG = LoggerFactory.getLogger(LogUtils.FILE_MONITOR);
+    private static final Logger LOG = LoggerFactory.getLogger(Logs.FILE_MONITOR);
 
     /**
      * 观察者

@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.Item;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CopyOnWriteMap;
 
 import java.util.Collection;
 import java.util.Map;

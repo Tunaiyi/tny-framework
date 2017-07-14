@@ -1,9 +1,9 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -52,13 +52,13 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     @Override
     public <I extends Any<?>> I getItem(long playerID, int itemID, Object... object) {
+        GameManager<Object> manager = this.getItemManager(itemID);
+        if (manager == null)
+            return null;
         Object[] params = new Object[object.length + 1];
         params[0] = itemID;
         if (object.length > 0)
             System.arraycopy(object, 0, params, 1, object.length);
-        GameManager<Object> manager = this.getItemManager(itemID);
-        if (manager == null)
-            return null;
         return (I) manager.get(playerID, params);
     }
 
@@ -158,13 +158,10 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     @Override
     public <O extends Owner<?, ?>> O getOwner(long playerID, int itemID, Object... object) {
-        Object[] params = new Object[object.length];
-        if (object.length > 0)
-            System.arraycopy(object, 0, params, 0, object.length);
         GameManager<Object> manager = this.getOwnerManager(itemID);
         if (manager == null)
             return null;
-        return (O) manager.get(playerID, params);
+        return (O) manager.get(playerID, object);
     }
 
     @Override

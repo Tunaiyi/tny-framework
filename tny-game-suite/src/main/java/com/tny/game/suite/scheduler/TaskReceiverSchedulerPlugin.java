@@ -6,7 +6,7 @@ import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.login.IDUtils;
+import com.tny.game.suite.login.IDAide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +31,7 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin<Long> {
     @Override
     public void execute(Tunnel<Long> tunnel, Message<Long> message, InvokeContext context) throws Exception {
         if (tunnel.getUserGroup().equals(AppConstants.DEFAULT_USER_GROUP)) {
-            if (IDUtils.isSystem(message.getUserID())) {
+            if (IDAide.isSystem(message.getUserID())) {
                 Session<Long> session = tunnel.getSession();
                 TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | session {} | 请求 {} 协议", message.getUserID(), message.isLogin(), session, message.getProtocol(), new RuntimeException());
             } else {

@@ -2,7 +2,7 @@ package com.tny.game.net.common.dispatcher;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;
@@ -77,7 +77,7 @@ public abstract class ControllerHolder {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
-        ExceptionUtils.checkNotNull(controller, "{} controller is null", this.controllerClass);
+        Throws.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.controller = controller;
         this.auth = auth;
         if (this.auth != null && this.auth.enable())
@@ -109,7 +109,7 @@ public abstract class ControllerHolder {
         List<ControllerCheckerHolder> checkerHolders = new ArrayList<>();
         for (Check check : checkers) {
             ControllerChecker checker = dispatcher.getChecker(check.value());
-            ExceptionUtils.checkNotNull(checker, "{} Checker is null", check.value());
+            Throws.checkNotNull(checker, "{} Checker is null", check.value());
             checkerHolders.add(new ControllerCheckerHolder(this, checker, check));
         }
         this.checkerHolders = ImmutableList.copyOf(checkerHolders);
@@ -124,7 +124,7 @@ public abstract class ControllerHolder {
             if (pluginClass == null)
                 continue;
             final ControllerPlugin plugin = dispatcher.getPlugin(pluginClass);
-            ExceptionUtils.checkNotNull(plugin, "{} plugin is null", pluginClass);
+            Throws.checkNotNull(plugin, "{} plugin is null", pluginClass);
             pluginList.add((E) plugin);
         }
     }

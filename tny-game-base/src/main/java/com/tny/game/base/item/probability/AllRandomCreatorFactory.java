@@ -4,7 +4,7 @@ public class AllRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends Pr
 
     private static final String name = "all";
 
-    private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR = ProbabilityUtils::all;
+    private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR = Probabilities::all;
 
     @SuppressWarnings("unchecked")
     public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreator<G, P> getInstance() {

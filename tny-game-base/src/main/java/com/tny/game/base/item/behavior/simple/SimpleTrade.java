@@ -4,6 +4,7 @@ import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.TradeInfo;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
@@ -12,12 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.tny.game.number.NumberUtils.*;
+import static com.tny.game.common.number.NumberAide.*;
 
 public class SimpleTrade implements Trade {
 
@@ -52,11 +51,23 @@ public class SimpleTrade implements Trade {
     }
 
     @SuppressWarnings("unchecked")
-    public SimpleTrade(Action action, TradeType tradeType, List<? extends TradeItem<?>> tradeItemList) {
+    public SimpleTrade(Action action, TradeType tradeType, Collection<? extends TradeItem<?>> tradeItemList) {
         this.action = action;
         this.tradeType = tradeType;
         if (tradeItemList != null && tradeItemList.size() > 0) {
             this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<ItemModel>) item).collect(Collectors.toList()));
+        }
+        this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
+    }
+
+    @SuppressWarnings("unchecked")
+    public SimpleTrade(TradeInfo info) {
+        this.action = info.getAction();
+        this.tradeType = info.getTradeType();
+        this.tradeItemList = new ArrayList<>(info.getAllTradeItem());
+        Collection<TradeItem<ItemModel>> tradeItems = info.getAllTradeItem();
+        if (tradeItems != null && tradeItems.size() > 0) {
+            this.tradeItemList.addAll(tradeItems.stream().filter(item -> greater(item.getNumber(), 0)).collect(Collectors.toList()));
         }
         this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
     }

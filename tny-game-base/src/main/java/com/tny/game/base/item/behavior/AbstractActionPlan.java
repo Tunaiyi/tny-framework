@@ -8,7 +8,7 @@ import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleCostList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.common.formula.FormulaHolder;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     private Action checkAction(Action action) {
         if (actions.contains(action))
             return action;
-        ExceptionUtils.checkNotNull(null, "{] action is null", action);
+        Throws.checkNotNull(null, "{] action is null", action);
         return null;
     }
 

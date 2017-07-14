@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tny.game.number.NumberUtils.*;
+import static com.tny.game.common.number.NumberAide.*;
 
 /**
  * 交易对象 获取扣除和奖励的物品信息

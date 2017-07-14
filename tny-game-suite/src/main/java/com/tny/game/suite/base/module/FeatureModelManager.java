@@ -3,7 +3,7 @@ package com.tny.game.suite.base.module;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
@@ -62,7 +62,7 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
     public FeatureModel getAndCheckModelBy(Feature feature) {
         FeatureModel model = this.typeMap.get(feature);
         if (model == null)
-            throw new NullPointerException(LogUtils.format("{} 系统 model 为 null", feature));
+            throw new NullPointerException(Logs.format("{} 系统 model 为 null", feature));
         return model;
     }
 

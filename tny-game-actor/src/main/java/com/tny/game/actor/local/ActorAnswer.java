@@ -4,7 +4,7 @@ import com.tny.game.actor.Answer;
 import com.tny.game.actor.AnswerListener;
 import com.tny.game.common.concurrent.AbstractFuture;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ class ActorAnswer<T> extends AbstractFuture<T> implements Answer<T> {
     @Override
     public Done<T> getDone() {
         if (!this.isDone())
-            return DoneUtils.fail();
-        return DoneUtils.succNullable(this.getRawValue());
+            return DoneResults.fail();
+        return DoneResults.succNullable(this.getRawValue());
     }
 
     protected boolean success(T value) {

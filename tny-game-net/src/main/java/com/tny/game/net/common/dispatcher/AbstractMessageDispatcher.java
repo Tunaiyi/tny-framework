@@ -1,13 +1,13 @@
 package com.tny.game.net.common.dispatcher;
 
-import com.tny.game.LogUtils;
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.common.concurrent.Waitable;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;
-import com.tny.game.common.utils.collection.CollectUtils;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.CollectorsAide;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.AppConfiguration;
@@ -31,7 +31,7 @@ import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -282,7 +282,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
     protected void addControllerPlugin(Collection<ControllerPlugin> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                .collect(CollectUtils.toMap(ControllerPlugin::getClass)));
+                .collect(CollectorsAide.toMap(ControllerPlugin::getClass)));
     }
 
     protected void addControllerPlugin(ControllerPlugin plugin) {
@@ -291,7 +291,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
     protected void addControllerChecker(Collection<ControllerChecker> checkers) {
         this.checkerMap.putAll(checkers.stream()
-                .collect(CollectUtils.toMap(ControllerChecker::getClass)));
+                .collect(CollectorsAide.toMap(ControllerChecker::getClass)));
     }
 
     protected ControllerChecker getChecker(Class<?> checkerClass) {
@@ -311,7 +311,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                ExceptionUtils.checkNotNull(this.authAllProvider, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, authAllProvider.getClass());
+                Throws.checkNotNull(this.authAllProvider, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, authAllProvider.getClass());
                 this.authAllProvider = provider;
             } else {
                 for (int value : protocol.value()) {
@@ -325,7 +325,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     private <K, V> void putObject(Map<K, V> map, K key, V value) {
         V oldValue = map.put(key, value);
         if (oldValue != null)
-            ExceptionUtils.throwException(IllegalArgumentException::new,
+            Throws.throwException(IllegalArgumentException::new,
                     "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
     }
 
@@ -345,7 +345,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             for (MessageMode mode : controller.getMessageModes()) {
                 MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
                 if (old != null)
-                    throw new IllegalArgumentException(LogUtils.format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
+                    throw new IllegalArgumentException(Logs.format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
             }
         }
     }
@@ -384,11 +384,11 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         private void checkResult(Throwable cause) {
             Object o = this.result;
             if (o instanceof Waitable) { // 如果是结果为Future进入等待逻辑
-                this.waitable = ObjectUtils.as(o);
+                this.waitable = ObjectAide.as(o);
                 this.timeout = System.currentTimeMillis() + 5000; // 超时
                 this.result = null;
             } else if (o instanceof Future) { // 如果是结果为Future进入等待逻辑
-                this.waitable = Waitable.of(ObjectUtils.as(o));
+                this.waitable = Waitable.of(ObjectAide.as(o));
                 this.timeout = System.currentTimeMillis() + 5000; // 超时
                 this.result = null;
             } else { // 结果处理逻辑
@@ -583,7 +583,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                     Class<?> clazz = controller.getAuthProvider();
                     if (clazz != null) {
                         provider = authProviders.get(clazz);
-                        ExceptionUtils.checkNotNull(provider, "{} 认证器不存在", clazz);
+                        Throws.checkNotNull(provider, "{} 认证器不存在", clazz);
                     }
                 }
                 if (provider == null)

@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ import java.text.MessageFormat;
 
 public class ConfigLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LogUtils.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
 
     private static FileMonitor MONITOR = null;
 
@@ -94,7 +94,7 @@ public class ConfigLoader {
     // }
 
     public static void main(String[] args) {
-        LOG.debug("add{}bs{}ss{}s", LogUtils.msg("a", "d", "D"));
+        LOG.debug("add{}bs{}ss{}s", Logs.msg("a", "d", "D"));
     }
 
 }

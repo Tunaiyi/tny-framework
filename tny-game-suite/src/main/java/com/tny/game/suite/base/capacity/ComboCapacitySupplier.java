@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.number.NumberUtils;
+import com.tny.game.common.number.NumberAide;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public interface ComboCapacitySupplier extends CapacitySupplier {
             if (total == null)
                 total = supplier.getValue(capacity);
             else
-                total = NumberUtils.add(supplier.getValue(capacity, 0), total);
+                total = NumberAide.add(supplier.getValue(capacity, 0), total);
         }
         return total == null ? defaultNum : total;
     }
@@ -43,7 +43,7 @@ public interface ComboCapacitySupplier extends CapacitySupplier {
     default Map<Capacity, Number> getAllCapacityValue() {
         Map<Capacity, Number> numberMap = new HashMap<>();
         for (CapacitySupplier supplier : dependSuppliers()) {
-            supplier.getAllCapacityValue().forEach((c, num) -> numberMap.merge(c, num, NumberUtils::add));
+            supplier.getAllCapacityValue().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add));
         }
         return numberMap;
     }

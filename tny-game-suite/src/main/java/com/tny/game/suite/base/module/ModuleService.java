@@ -1,12 +1,12 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.ModuleHandler;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
                             LOGGER.debug("{} 玩家开启 {} 模块", explorer.getPlayerID(), module);
                         ModuleHandler handler = this.handlerMap.get(module);
                         if (handler == null)
-                            throw new NullPointerException(LogUtils.format("{} module handler is null", module));
+                            throw new NullPointerException(Logs.format("{} module handler is null", module));
                         if (handler == null || handler.openModule(explorer)) {
                             explorer.open(module);
                             succList.add(module);

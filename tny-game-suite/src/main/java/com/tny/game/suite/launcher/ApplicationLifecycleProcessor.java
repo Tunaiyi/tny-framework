@@ -1,17 +1,17 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.concurrent.ExeUtils;
-import com.tny.game.lifecycle.Lifecycle;
-import com.tny.game.lifecycle.LifecycleHandler;
-import com.tny.game.lifecycle.ServerClosed;
-import com.tny.game.lifecycle.ServerPostStart;
-import com.tny.game.lifecycle.ServerPrepareStart;
-import com.tny.game.lifecycle.StaticIniter;
-import com.tny.game.lifecycle.annotaion.AsLifecycle;
-import com.tny.game.lifecycle.annotaion.AsyncProcess;
-import com.tny.game.number.IntLocalNum;
+import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.lifecycle.Lifecycle;
+import com.tny.game.common.lifecycle.LifecycleHandler;
+import com.tny.game.common.lifecycle.ServerClosed;
+import com.tny.game.common.lifecycle.ServerPostStart;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.StaticIniter;
+import com.tny.game.common.lifecycle.annotaion.AsLifecycle;
+import com.tny.game.common.lifecycle.annotaion.AsyncProcess;
+import com.tny.game.common.number.IntLocalNum;
 import com.tny.game.scanner.ClassScanner;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
@@ -62,7 +62,7 @@ public class ApplicationLifecycleProcessor {
                     .scan(Configs.getScanPathArray());
             LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
-            throw new RuntimeException(LogUtils.format("获取 {} 类 ProtoExSchema 错误", clazz), e);
+            throw new RuntimeException(Logs.format("获取 {} 类 ProtoExSchema 错误", clazz), e);
         }
     }
 
@@ -75,7 +75,7 @@ public class ApplicationLifecycleProcessor {
                             long current = System.currentTimeMillis();
                             try {
                                 LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] : {}", number, c);
-                                ExeUtils.runUnchecked(() -> StaticIniter.instance(c).init());
+                                ExeAide.runUnchecked(() -> StaticIniter.instance(c).init());
                                 LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] : 耗时 {} -> {} 完成", number, System.currentTimeMillis() - current, c);
                             } catch (Throwable e) {
                                 LOGGER.error("服务生命周期 StaticInit # 处理器 [{}] 异常", number, c, e);
@@ -115,7 +115,7 @@ public class ApplicationLifecycleProcessor {
                 .peek(i -> {
                     Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
                     if (i.getClass() != lifecycle.getHandlerClass())
-                        throw new IllegalArgumentException(LogUtils.format("{} 不符合 {}", i.getClass(), lifecycle));
+                        throw new IllegalArgumentException(Logs.format("{} 不符合 {}", i.getClass(), lifecycle));
                     handlerMap.put(lifecycle, i);
                 })
                 .map(lifecycleGetter)

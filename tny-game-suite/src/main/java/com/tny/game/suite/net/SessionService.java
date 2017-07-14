@@ -6,7 +6,7 @@ import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.ProtocolUtils;
+import com.tny.game.net.message.ProtocolAide;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 gamer.getPlayerID(),
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         message.getResultCode(),
                         message.getBody()
                 ));
@@ -58,7 +58,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 gamer.getPlayerID(),
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         CoreResponseCode.SUCCESS,
                         body
                 ));
@@ -69,7 +69,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 gamer.getPlayerID(),
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         resultCode
                 ));
     }
@@ -79,7 +79,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 gamer.getPlayerID(),
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         resultCode,
                         body
                 ));
@@ -100,7 +100,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 userIDSet,
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         ResultCode.SUCCESS,
                         body
                 ));
@@ -113,7 +113,7 @@ public class SessionService {
                 AppConstants.DEFAULT_USER_GROUP,
                 gamerList,
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         ResultCode.SUCCESS,
                         body
                 ));
@@ -123,7 +123,7 @@ public class SessionService {
         this.sessionHolder.send2AllOnline(
                 AppConstants.DEFAULT_USER_GROUP,
                 MessageContent.toPush(
-                        ProtocolUtils.PUSH,
+                        ProtocolAide.PUSH,
                         ResultCode.SUCCESS,
                         body
                 ));

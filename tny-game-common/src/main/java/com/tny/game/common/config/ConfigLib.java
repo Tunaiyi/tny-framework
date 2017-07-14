@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ConfigLib {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(LogUtils.LOADER);
+    protected static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
 
     private static ConcurrentMap<String, PropertiesConfig> configMap = new ConcurrentHashMap<String, PropertiesConfig>();
 

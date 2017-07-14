@@ -6,6 +6,7 @@ import com.tny.game.base.item.AlterType;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.TradeInfo;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
@@ -62,6 +63,8 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     protected <T extends Trade> T proto2Trade(TradeFactory<T> creator, TradeProto tradeProto) {
+        if (tradeProto.getItemCount() == 0)
+            return null;
         List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemID());
@@ -80,7 +83,9 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         return proto2Trade(CollectionTrade::new, tradeProto);
     }
 
-    protected TradeProto trade2Proto(Trade trade) {
+    protected TradeProto trade2Proto(TradeInfo trade) {
+        if (trade == null || trade.isEmpty())
+            return TradeProto.newBuilder().build();
         List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
             list.add(TradeItemProto.newBuilder()
@@ -100,14 +105,16 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     protected Collection<Trade> protos2Trades(Collection<TradeProto> tradeProtos) {
         List<Trade> trades = new ArrayList<>();
         for (TradeProto tradeProto : tradeProtos) {
-            trades.add(this.proto2Trade(tradeProto));
+            Trade trade = this.proto2Trade(tradeProto);
+            if (trade != null)
+                trades.add(trade);
         }
         return trades;
     }
 
-    protected Collection<TradeProto> trades2Protos(Collection<Trade> trades) {
+    protected Collection<TradeProto> trades2Protos(Collection<? extends TradeInfo> trades) {
         List<TradeProto> tradeProtos = new ArrayList<>();
-        for (Trade trade : trades) {
+        for (TradeInfo trade : trades) {
             tradeProtos.add(this.trade2Proto(trade));
         }
         return tradeProtos;

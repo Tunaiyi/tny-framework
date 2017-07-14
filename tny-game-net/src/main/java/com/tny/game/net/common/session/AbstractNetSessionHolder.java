@@ -1,8 +1,8 @@
 package com.tny.game.net.common.session;
 
 
-import com.tny.game.event.BindP1EventBus;
-import com.tny.game.event.EventBuses;
+import com.tny.game.common.event.BindP1EventBus;
+import com.tny.game.common.event.EventBuses;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.NetSessionHolder;

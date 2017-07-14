@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LogUtils.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
 
     public SystemPropertiesLoader(List<String> fileList) throws IOException {
         for (String file : fileList)

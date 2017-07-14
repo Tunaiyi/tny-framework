@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.common.utils.json.JSONUtils;
+import com.tny.game.common.utils.json.JSONAide;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
@@ -18,7 +18,7 @@ public class ServeAuthProvider extends GameAuthProvider<Integer> {
     @Override
     public LoginCertificate<Integer> validate(Tunnel<Integer> tunnel, Message<Integer> message) throws DispatchException {
         String ticketWord = message.getBody(String.class);
-        ServeTicket ticket = JSONUtils.toObject(ticketWord, ServeTicket.class);
+        ServeTicket ticket = JSONAide.toObject(ticketWord, ServeTicket.class);
         AppType serverType = ticket.asScopeType().getAppType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
             LoginCertificate<Integer> info = LoginCertificate.createLogin(ticket.getServerID(), ticket.getServerID(), serverType.getName(), false);

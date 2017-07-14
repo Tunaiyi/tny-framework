@@ -1,10 +1,10 @@
 package com.tny.game.suite.initer;
 
-import com.tny.game.event.GlobalListenerHolder;
-import com.tny.game.event.annotation.Listener;
-import com.tny.game.lifecycle.LifecycleLevel;
-import com.tny.game.lifecycle.PrepareStarter;
-import com.tny.game.lifecycle.ServerPrepareStart;
+import com.tny.game.common.event.GlobalListenerHolder;
+import com.tny.game.common.event.annotation.Listener;
+import com.tny.game.common.lifecycle.LifecycleLevel;
+import com.tny.game.common.lifecycle.PrepareStarter;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

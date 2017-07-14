@@ -6,7 +6,7 @@ import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.common.checker.MessageMD5Signer;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageUtils;
+import com.tny.game.net.message.MessageAide;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.Configs;
@@ -31,7 +31,7 @@ public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
     }
 
     public boolean isCheck(Message<?> message) {
-        if (MessageUtils.isResponse(message))
+        if (MessageAide.isResponse(message))
             return false;
         boolean check = Configs.DEVELOP_CONFIG.getBoolean(Configs.DEVELOP_VERIFY_CHECK, true);
         return check && (checkGroups.isEmpty() || checkGroups.contains(message.getUserGroup()));

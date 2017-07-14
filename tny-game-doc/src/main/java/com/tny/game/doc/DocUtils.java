@@ -1,6 +1,6 @@
 package com.tny.game.doc;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.annotation.VarDoc;
 
 import java.lang.reflect.Field;
@@ -19,7 +19,7 @@ public class DocUtils {
                     O object = (O) field.get(null);
                     VarDoc varDoc = field.getAnnotation(VarDoc.class);
                     if (varDoc == null)
-                        throw new IllegalAccessException(LogUtils.format("{}.{} 没有 {} 注解", clazz, object, VarDoc.class));
+                        throw new IllegalAccessException(Logs.format("{}.{} 没有 {} 注解", clazz, object, VarDoc.class));
                     action.accept(object, varDoc);
                 } catch (Exception e) {
                     throw new Error(e);

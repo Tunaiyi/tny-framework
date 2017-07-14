@@ -1,6 +1,6 @@
 package com.tny.game.common.result;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class ResultCodes {
     static void registerCode(ResultCode code) {
         ResultCode old = codeMap.put(code.getCode(), code);
         if (old != null) {
-            IllegalArgumentException e = new IllegalArgumentException(LogUtils.format("{}.{} 与 {}.{} id 都为 {}",
+            IllegalArgumentException e = new IllegalArgumentException(Logs.format("{}.{} 与 {}.{} id 都为 {}",
                     code.getClass(), code, old.getClass(), old, old.getCode()));
             e.printStackTrace();
             throw e;

@@ -8,7 +8,7 @@ import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ItemType;
 import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.utils.collection.EmptyImmutableMap;
+import com.tny.game.common.collection.EmptyImmutableMap;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.worker.command.Command;
+import com.tny.game.common.worker.command.Command;
 
 import java.util.Collection;
 

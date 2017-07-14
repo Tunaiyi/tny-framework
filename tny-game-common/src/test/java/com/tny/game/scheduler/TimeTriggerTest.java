@@ -1,7 +1,9 @@
 package com.tny.game.scheduler;
 
-import com.tny.game.scheduler.cycle.DurationTimeCycle;
-import com.tny.game.scheduler.cycle.TimeCycle;
+import com.tny.game.common.scheduler.TimeTrigger;
+import com.tny.game.common.scheduler.TimeTriggerBuilder;
+import com.tny.game.common.scheduler.cycle.DurationTimeCycle;
+import com.tny.game.common.scheduler.cycle.TimeCycle;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;

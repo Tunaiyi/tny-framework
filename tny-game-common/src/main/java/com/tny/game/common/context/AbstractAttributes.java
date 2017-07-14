@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 
 public abstract class AbstractAttributes implements Attributes {
 
@@ -83,6 +84,20 @@ public abstract class AbstractAttributes implements Attributes {
         } finally {
             this.readUnlock();
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T computeIfAbsent(AttrKey<? extends T> key, T value) {
+        Map<AttrKey<?>, Object> map = this.getMap();
+        return (T) map.computeIfAbsent(key, k -> value);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> value) {
+        Map<AttrKey<?>, Object> map = this.getMap();
+        return (T) map.computeIfAbsent(key, k -> value.get());
     }
 
     @Override

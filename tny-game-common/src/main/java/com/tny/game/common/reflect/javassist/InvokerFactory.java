@@ -2,8 +2,8 @@ package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.common.reflect.ReflectUtils;
-import com.tny.game.common.utils.collection.ConcurrentHashSet;
+import com.tny.game.common.reflect.ReflectAide;
+import com.tny.game.common.collection.ConcurrentHashSet;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -323,7 +323,7 @@ public class InvokerFactory {
 
     public static void main(String[] args) {
         Method target = null;
-        for (Method method : ReflectUtils.getDeepMethod(ContextAttributes.class)) {
+        for (Method method : ReflectAide.getDeepMethod(ContextAttributes.class)) {
             if (method.getName().equals("getMap")) {
                 target = method;
                 break;

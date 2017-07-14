@@ -1,6 +1,6 @@
 package com.tny.game.batch;
 
-import com.tny.game.common.utils.collection.ThreadLocalRandom;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class UpObject {
 

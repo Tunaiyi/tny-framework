@@ -24,7 +24,7 @@ public class JSsistClass implements GClass {
     public JSsistClass(Class<?> javaClass, MethodFilter filter) {
         super();
         this.javaClass = javaClass;
-        List<Method> methods = ReflectUtils.getDeepMethod(this.javaClass);
+        List<Method> methods = ReflectAide.getDeepMethod(this.javaClass);
         Map<String, JSsistPropertyAccessor> accessorMap = new HashMap<String, JSsistPropertyAccessor>();
         ConstructInvoker constructInvoker = null;
         if (!javaClass.isInterface() && !Modifier.isAbstract(javaClass.getModifiers())) {
@@ -96,7 +96,7 @@ public class JSsistClass implements GClass {
         }
         if (name.equals(""))
             return null;
-        Field field = ReflectUtils.getDeepField(this.javaClass, name);
+        Field field = ReflectAide.getDeepField(this.javaClass, name);
         if (field != null)
             return field.getName();
         if (name.equals(name.toUpperCase()))

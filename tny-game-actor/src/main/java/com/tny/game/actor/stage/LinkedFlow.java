@@ -2,11 +2,11 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.stage.exception.FlowBreakOffException;
 import com.tny.game.actor.stage.exception.FlowCancelException;
-import com.tny.game.common.concurrent.ExeUtils;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,25 +108,25 @@ public class LinkedFlow<V> implements InnerFlow<V> {
         while (stage != null && (stage.getName() == null || !stage.getName().equals(name))) {
             stage = stage.getNext();
         }
-        return ObjectUtils.as(stage);
+        return ObjectAide.as(stage);
     }
 
     private void fail(Throwable cause) {
         this.state = FAILED;
         this.cause = cause;
         if (this.onError != null)
-            ExeUtils.runQuietly(() -> this.onError.accept(cause));
+            ExeAide.runQuietly(() -> this.onError.accept(cause));
         if (this.onFinish != null)
-            ExeUtils.runQuietly(() -> this.onFinish.accept(null, cause));
+            ExeAide.runQuietly(() -> this.onFinish.accept(null, cause));
     }
 
     private void success(V result) {
         this.state = FAILED;
         this.result = result;
         if (this.onSuccess != null)
-            ExeUtils.runQuietly(() -> this.onSuccess.accept(result));
+            ExeAide.runQuietly(() -> this.onSuccess.accept(result));
         if (this.onFinish != null)
-            ExeUtils.runQuietly(() -> this.onFinish.accept(result, cause));
+            ExeAide.runQuietly(() -> this.onFinish.accept(result, cause));
     }
 
 
@@ -146,7 +146,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
                     if (this.previous.isFailed()) { // 失败
                         fail(this.previous.getCause());
                     } else if (this.previous.isSuccess()) { // 成功
-                        success(ObjectUtils.as(this.previous.getResult()));
+                        success(ObjectAide.as(this.previous.getResult()));
                     }
                     return;
                 } else { // 若果有继续, current需要切换到其他Executor时
@@ -194,11 +194,11 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     @Override
     public Done<V> getDone() {
         if (this.isFailed())
-            return DoneUtils.fail();
+            return DoneResults.fail();
         else if (this.isSuccess())
-            return DoneUtils.succNullable(ObjectUtils.as(result));
+            return DoneResults.succNullable(ObjectAide.as(result));
         else
-            return DoneUtils.succNullable(null);
+            return DoneResults.succNullable(null);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
         }
         while (this.tail.hasNext())
             this.tail = this.tail.getNext();
-        return ObjectUtils.as(this);
+        return ObjectAide.as(this);
     }
 
     @Override

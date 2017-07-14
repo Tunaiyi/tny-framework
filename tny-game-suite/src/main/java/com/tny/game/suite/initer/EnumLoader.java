@@ -9,7 +9,7 @@ import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
-import com.tny.game.common.enums.EnumUtils;
+import com.tny.game.common.enums.Enums;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
@@ -39,7 +39,7 @@ public class EnumLoader {
                 .setHandler((classes) -> classes.stream()
                         .filter(Class::isEnum)
                         .map(c -> (Class<? extends Enum>) c)
-                        .forEach(EnumUtils::getEnumList)
+                        .forEach(Enums::getEnumList)
                 );
     }
 

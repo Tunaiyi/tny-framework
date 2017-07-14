@@ -4,7 +4,7 @@ package com.tny.game.actor.stage;
 import com.tny.game.actor.Completable;
 import com.tny.game.actor.DoneSupplier;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class Flows {
 
     public static Done<Throwable> getCause(Stage stage) {
         if (!stage.isDone())
-            return DoneUtils.fail();
-        return DoneUtils.succNullable(stage.getCause());
+            return DoneResults.fail();
+        return DoneResults.succNullable(stage.getCause());
     }
 
     public static Completable time(Duration duration) {
@@ -115,11 +115,11 @@ public class Flows {
             for (Supplier<Done<T>> fn : fns) {
                 Done<T> done = fn.get();
                 if (!done.isSuccess())
-                    return DoneUtils.fail();
+                    return DoneResults.fail();
                 else
                     result.add(done.get());
             }
-            return DoneUtils.succ(result);
+            return DoneResults.succ(result);
         }, timeout);
     }
 
@@ -132,9 +132,9 @@ public class Flows {
             for (Supplier<Done<T>> fn : fns.values()) {
                 Done<T> done = fn.get();
                 if (!done.isSuccess())
-                    return DoneUtils.fail();
+                    return DoneResults.fail();
             }
-            return DoneUtils.succ(fns.entrySet().stream()
+            return DoneResults.succ(fns.entrySet().stream()
                     .collect(Collectors.toMap(
                             Entry::getKey,
                             e -> e.getValue().get().get()

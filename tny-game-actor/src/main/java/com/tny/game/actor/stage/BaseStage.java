@@ -2,7 +2,7 @@ package com.tny.game.actor.stage;
 
 
 import com.tny.game.actor.stage.exception.StageInterruptedException;
-import com.tny.game.common.reflect.ObjectUtils;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.concurrent.Executor;
 
@@ -30,7 +30,7 @@ public abstract class BaseStage<R> implements InnerStage<R> {
 
     @Override
     public void setNext(InnerStage next) {
-        this.next = ObjectUtils.as(next);
+        this.next = ObjectAide.as(next);
     }
 
     @Override

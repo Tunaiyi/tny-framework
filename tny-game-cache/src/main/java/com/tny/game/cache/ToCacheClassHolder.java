@@ -1,11 +1,11 @@
 package com.tny.game.cache;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.cache.annotation.CacheID;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GPropertyAccessor;
-import com.tny.game.common.reflect.ReflectUtils;
+import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 
 import java.lang.reflect.Field;
@@ -33,7 +33,7 @@ public class ToCacheClassHolder extends TriggerHolder {
         if (this.toCache == null)
             throw new NullPointerException("init ToCacheClassHolder " + cacheClass + " don't have Item annotation");
         if (this.toCache.cacheKeys() == null) {
-            List<Field> idFieldList = ReflectUtils.getDeepFieldByAnnotation(cacheClass, CacheID.class);
+            List<Field> idFieldList = ReflectAide.getDeepFieldByAnnotation(cacheClass, CacheID.class);
             this.initIDMethods(gClass, idFieldList);
         } else {
             this.initIDMethods(gClass, this.toCache.cacheKeys());
@@ -51,7 +51,7 @@ public class ToCacheClassHolder extends TriggerHolder {
             if (trigger != null)
                 triggerList.add(trigger);
             else
-                throw new NullPointerException(LogUtils.format("没有找到 {} 的 {} 触发器!", this.cacheClass, clazz));
+                throw new NullPointerException(Logs.format("没有找到 {} 的 {} 触发器!", this.cacheClass, clazz));
         }
         if (triggerList.isEmpty())
             return Collections.emptyList();

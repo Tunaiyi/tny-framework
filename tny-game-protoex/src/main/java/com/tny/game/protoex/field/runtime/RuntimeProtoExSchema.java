@@ -1,8 +1,8 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.LogUtils;
-import com.tny.game.common.utils.buff.LinkedByteBuffer;
-import com.tny.game.common.utils.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.buff.LinkedByteBuffer;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
@@ -63,7 +63,7 @@ public class RuntimeProtoExSchema {
     private static void putTypeSchema(Type type, ProtoExSchema<?> schema) {
         ProtoExSchema<?> last = schemaMap.putIfAbsent(type, schema);
         if (last != null)
-            throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+            throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
     }
 
     private static void putRawSchema(Type type, ProtoExSchema<?> schema, boolean defSchema) {
@@ -73,7 +73,7 @@ public class RuntimeProtoExSchema {
         if (defSchema) {
             ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExID(), schema);
             if (last != null)
-                throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+                throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
         }
     }
 
@@ -81,7 +81,7 @@ public class RuntimeProtoExSchema {
         putTypeSchema(type, schema);
         ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExID(), schema);
         if (last != null)
-            throw new IllegalArgumentException(LogUtils.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+            throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
     }
 
     private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
@@ -167,7 +167,7 @@ public class RuntimeProtoExSchema {
             throw new RuntimeException("The root object can neither be an abstract " + "class nor interface: \"" + typeClass.getName());
         }
         if (typeClass.getAnnotation(ProtoEx.class) == null)
-            throw new RuntimeException(LogUtils.format("{} @{} is null", typeClass, ProtoEx.class));
+            throw new RuntimeException(Logs.format("{} @{} is null", typeClass, ProtoEx.class));
 
         final Map<String, Field> fieldMap = findInstanceFields(typeClass);
         int maxFieldMapping = 0;

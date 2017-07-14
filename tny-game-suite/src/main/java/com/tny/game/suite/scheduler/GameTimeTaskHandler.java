@@ -1,9 +1,9 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.scheduler.HandleType;
-import com.tny.game.scheduler.TaskReceiver;
-import com.tny.game.scheduler.TimeTaskHandler;
-import com.tny.game.scheduler.TriggerContext;
+import com.tny.game.common.scheduler.HandleType;
+import com.tny.game.common.scheduler.TaskReceiver;
+import com.tny.game.common.scheduler.TimeTaskHandler;
+import com.tny.game.common.scheduler.TriggerContext;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -89,7 +89,7 @@ public class CapacitySupplierDTO {
     }
 
     private static List<Long> combo2IDs(ComboCapacitySupplier supplier) {
-        return supplier.dependSuppliers().stream().map(CapacitySupplier::getID).collect(Collectors.toList());
+        return supplier.dependSuppliers().stream().filter(CapacitySupplier::isSupplying).map(CapacitySupplier::getID).collect(Collectors.toList());
     }
 
 }

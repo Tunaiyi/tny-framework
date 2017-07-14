@@ -1,6 +1,6 @@
 package com.tny.game.doc;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -58,7 +58,7 @@ public enum LangFormatter implements TypeFormatter {
                     return "Object";
                 }
             }
-            throw new IllegalArgumentException(LogUtils.format("{} 类型 无法进行map", type));
+            throw new IllegalArgumentException(Logs.format("{} 类型 无法进行map", type));
         }
     },
 
@@ -108,7 +108,7 @@ public enum LangFormatter implements TypeFormatter {
                 return "List<" + cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
             }
         }
-        throw new IllegalArgumentException(LogUtils.format("{} 类型 无法进行map", type));
+        throw new IllegalArgumentException(Logs.format("{} 类型 无法进行map", type));
     }
 
 

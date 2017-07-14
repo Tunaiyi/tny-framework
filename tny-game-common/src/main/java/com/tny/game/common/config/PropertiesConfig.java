@@ -1,7 +1,7 @@
 package com.tny.game.common.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.tny.game.common.utils.json.JSONUtils;
+import com.tny.game.common.utils.json.JSONAide;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -42,7 +42,7 @@ class PropertiesConfig implements Config {
         Set<String> imports = new HashSet<>();
         for (Entry<?, ?> entry : properties.entrySet()) {
             if (entry.getKey().equals(IMPORT_KEY))
-                imports = JSONUtils.toObject(entry.getValue().toString(), IMPORT_PATH_TOKEN);
+                imports = JSONAide.toObject(entry.getValue().toString(), IMPORT_PATH_TOKEN);
             Object value = entry.getValue().toString();
             String key = entry.getKey().toString();
             for (ConfigFormatter formatter : this.formatterList)

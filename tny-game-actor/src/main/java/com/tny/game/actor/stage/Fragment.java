@@ -1,6 +1,6 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.common.ExceptionUtils;
+import com.tny.game.common.utils.Throws;
 
 /**
  * 代码片段对象
@@ -56,7 +56,7 @@ public abstract class Fragment<V, R> {
      */
     @SuppressWarnings("unchecked")
     protected void finish(Object result) {
-        ExceptionUtils.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
+        Throws.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
         this.done = true;
         this.result = (R) result;
     }
@@ -67,7 +67,7 @@ public abstract class Fragment<V, R> {
      * @param cause
      */
     protected void fail(Throwable cause) {
-        ExceptionUtils.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
+        Throws.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
         this.done = true;
         this.cause = cause;
     }

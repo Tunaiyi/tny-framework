@@ -1,9 +1,9 @@
 package com.tny.game.suite.scheduler.database;
 
-import com.tny.game.scheduler.SchedulerBackup;
-import com.tny.game.scheduler.TimeTask;
-import com.tny.game.scheduler.TimeTaskQueue;
-import com.tny.game.scheduler.TimeTaskScheduler;
+import com.tny.game.common.scheduler.SchedulerBackup;
+import com.tny.game.common.scheduler.TimeTask;
+import com.tny.game.common.scheduler.TimeTaskQueue;
+import com.tny.game.common.scheduler.TimeTaskScheduler;
 
 import java.util.Collection;
 

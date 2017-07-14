@@ -30,7 +30,7 @@
 
 package com.tny.game.protoex;
 
-import com.tny.game.LogUtils;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.protoex.field.IOConfiger;
 import com.tny.game.protoex.field.MapIOConfiger;
 import com.tny.game.protoex.field.RepeatIOConfiger;
@@ -76,7 +76,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException notMapIOConfiger(IOConfiger<?> conf) {
-        return new ProtobufExException(LogUtils.format("{} 类型 {} 字段描述非 {}", conf.getDefaultType(), conf.getName(), MapIOConfiger.class));
+        return new ProtobufExException(Logs.format("{} 类型 {} 字段描述非 {}", conf.getDefaultType(), conf.getName(), MapIOConfiger.class));
     }
 
     /**
@@ -86,7 +86,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException notRepeatIOConfiger(IOConfiger<?> conf) {
-        return new ProtobufExException(LogUtils.format("{} 类型 {} 字段描述非 {}", conf.getDefaultType(), conf.getName(), RepeatIOConfiger.class));
+        return new ProtobufExException(Logs.format("{} 类型 {} 字段描述非 {}", conf.getDefaultType(), conf.getName(), RepeatIOConfiger.class));
     }
 
     /**
@@ -97,7 +97,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException unsupportArray(Class<?> type, Field field) {
-        return new ProtobufExException(LogUtils.format("{} 类型 {} 字段是array类型, 不支持array类型", type, field.getName()));
+        return new ProtobufExException(Logs.format("{} 类型 {} 字段是array类型, 不支持array类型", type, field.getName()));
     }
 
     /**
@@ -108,7 +108,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException unsupportArray(Class<?> type) {
-        return new ProtobufExException(LogUtils.format("{} 类型是array类型, 不支持array类型", type));
+        return new ProtobufExException(Logs.format("{} 类型是array类型, 不支持array类型", type));
     }
 
     /**
@@ -119,7 +119,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException notEnoughSize(int length, int remaining) {
-        return new ProtobufExException(LogUtils.format("需要的string或bytes长度为{},但buffer剩余长度为{}", length, remaining));
+        return new ProtobufExException(Logs.format("需要的string或bytes长度为{},但buffer剩余长度为{}", length, remaining));
     }
 
     /**
@@ -130,7 +130,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException readErrorSizeBuffer(int length, int readSize) {
-        return new ProtobufExException(LogUtils.format("需要的string或bytes长度为{},但读取的字节长度为{}", length, readSize));
+        return new ProtobufExException(Logs.format("需要的string或bytes长度为{},但读取的字节长度为{}", length, readSize));
     }
 
     /**
@@ -140,7 +140,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException negativeSize(long length) {
-        return new ProtobufExException(LogUtils.format("消息体长度 {} 为复数", length));
+        return new ProtobufExException(Logs.format("消息体长度 {} 为复数", length));
     }
 
     /**
@@ -150,7 +150,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException fieldNotPrimitive(Field field) {
-        return new ProtobufExException(LogUtils.format("{} 类 {} 字段为 {} 非原生类型", field.getDeclaringClass(), field.getName(), field.getType()));
+        return new ProtobufExException(Logs.format("{} 类 {} 字段为 {} 非原生类型", field.getDeclaringClass(), field.getName(), field.getType()));
     }
 
     /**
@@ -169,7 +169,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException fieldIllegalExplicit(Field field) {
-        return new ProtobufExException(LogUtils.format("{} 类 {} 字段为抽象类或接口, conf.explicit() 不可为 false", field.getDeclaringClass(), field));
+        return new ProtobufExException(Logs.format("{} 类 {} 字段为抽象类或接口, conf.explicit() 不可为 false", field.getDeclaringClass(), field));
     }
 
     /**
@@ -180,7 +180,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException fieldIllegalExplicit(Class<?> type, String name) {
-        return new ProtobufExException(LogUtils.format("{} 类 {} 字段为抽象类, conf.explicit() 不可为 false", type, name));
+        return new ProtobufExException(Logs.format("{} 类 {} 字段为抽象类, conf.explicit() 不可为 false", type, name));
     }
 
     /**
@@ -190,7 +190,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException rawTypeIsNoLengthLimitation(Class<? extends Object> clazz) {
-        return new ProtobufExException(LogUtils.format("{} 类 属于ProtoEx的Raw类型, 无法进行长度自定义类型编码", clazz));
+        return new ProtobufExException(Logs.format("{} 类 属于ProtoEx的Raw类型, 无法进行长度自定义类型编码", clazz));
     }
 
     /**
@@ -201,7 +201,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException readTypeError(ProtoExType type, Tag tag) {
-        return new ProtobufExException(LogUtils.format("读取protoExID为{}({}) 非 {}({})",
+        return new ProtobufExException(Logs.format("读取protoExID为{}({}) 非 {}({})",
                 tag.getProtoExID(), tag.isRaw() ? "原生" : "自定义", type, type.isRaw() ? "原生" : "自定义"));
     }
 
@@ -212,7 +212,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException noSchema(Type type) {
-        return new ProtobufExException(LogUtils.format("没有找到{}对应的schema", type));
+        return new ProtobufExException(Logs.format("没有找到{}对应的schema", type));
     }
 
     /**
@@ -222,7 +222,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException noSchema(int protoExID, boolean raw) {
-        return new ProtobufExException(LogUtils.format("没有找到{{}|{}}对应的schema", raw ? "RAW" : "USER", protoExID));
+        return new ProtobufExException(Logs.format("没有找到{{}|{}}对应的schema", raw ? "RAW" : "USER", protoExID));
     }
 
     /**
@@ -232,7 +232,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException noSchema(int protoExID, boolean raw, Class<?> defaultType) {
-        return new ProtobufExException(LogUtils.format("没有找到 {{}|{}} 和 {} 对应的schema", raw ? "RAW" : "USER", protoExID, defaultType));
+        return new ProtobufExException(Logs.format("没有找到 {{}|{}} 和 {} 对应的schema", raw ? "RAW" : "USER", protoExID, defaultType));
     }
 
     /**
@@ -243,7 +243,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidProtoExID(Class<?> typeClass, int protoExID) {
-        return new ProtobufExException(LogUtils.format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID, WireFormat.MAX_PROTO_EX_ID));
+        return new ProtobufExException(Logs.format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID, WireFormat.MAX_PROTO_EX_ID));
     }
 
     /**
@@ -255,7 +255,7 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidFieldNumber(Class<?> typeClass, String name, int fieldNumber) {
-        return new ProtobufExException(LogUtils.format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER, WireFormat.MAX_FIELD_NUMBER));
+        return new ProtobufExException(Logs.format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER, WireFormat.MAX_FIELD_NUMBER));
     }
     //	缩短了的；被删节的；切去顶端的
     //	public static ProtobufExException truncatedMessage() {

@@ -3,7 +3,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 
 /**
  * Actor Message 命令
@@ -28,7 +28,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     protected Done<T> doHandle() {
-        return DoneUtils.succNullable((T) actorCell.handle(this));
+        return DoneResults.succNullable((T) actorCell.handle(this));
     }
 
     @Override

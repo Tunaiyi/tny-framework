@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneUtils;
+import com.tny.game.common.utils.DoneResults;
 
 import java.util.concurrent.Callable;
 
@@ -25,7 +25,7 @@ class ActorCallCommand<T> extends BaseActorCommand<T> {
 
     @Override
     protected Done<T> doHandle() throws Exception {
-        return DoneUtils.succNullable(this.callable.call());
+        return DoneResults.succNullable(this.callable.call());
     }
 
 }

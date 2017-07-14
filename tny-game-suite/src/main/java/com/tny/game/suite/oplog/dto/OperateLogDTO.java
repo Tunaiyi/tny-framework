@@ -3,7 +3,7 @@ package com.tny.game.suite.oplog.dto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;
 import com.tny.game.oplog.OperateLog;
@@ -82,7 +82,7 @@ public class OperateLogDTO implements OperateLog {
         DateTime dateTime = log.getCreateAt();
         this.at = dateTime.getMillis();
         this.dateTimeAt = dateTime;
-        this.date = DateTimeHelper.date2Int(dateTime);
+        this.date = DateTimeAide.date2Int(dateTime);
         this.acid = actionLog.getActionID();
         this.i = index;
         for (TradeLog tradeLog : actionLog.getReceiveLogs()) {

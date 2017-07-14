@@ -2,7 +2,7 @@ package com.tny.game.suite.utils;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigLib;
-import com.tny.game.common.utils.DateTimeHelper;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.suite.core.AppType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -170,7 +170,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                return DateTimeHelper.DATE_TIME_MIN_FORMAT.parseLocalDate(crateAt);
+                return DateTimeAide.DATE_TIME_MIN_FORMAT.parseLocalDate(crateAt);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -182,7 +182,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                return DateTimeHelper.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
+                return DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -194,7 +194,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getStr(key);
         if (crateAt != null) {
             try {
-                DateTime dateTime = DateTimeHelper.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
+                DateTime dateTime = DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
                 return dateTime.getMillis();
             } catch (Exception e) {
                 e.printStackTrace();
