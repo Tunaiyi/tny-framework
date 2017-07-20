@@ -1,6 +1,7 @@
 package com.tny.game.suite.base.dto;
 
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -36,6 +37,14 @@ public class CapacityGoalDTO {
                 .filter(CapacitySupplier::isSupplying)
                 .map(CapacitySupplier::getID)
                 .collect(Collectors.toList());
+        return dto;
+    }
+
+    public static CapacityGoalDTO goal2RemoveDTO(CapacityGoal goal) {
+        CapacityGoalDTO dto = new CapacityGoalDTO();
+        dto.id = goal.getID();
+        dto.itemID = goal.getItemID();
+        dto.dependSuppliers = ImmutableList.of();
         return dto;
     }
 

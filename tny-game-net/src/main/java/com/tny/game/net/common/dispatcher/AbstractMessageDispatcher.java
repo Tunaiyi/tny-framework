@@ -1,13 +1,14 @@
 package com.tny.game.net.common.dispatcher;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.common.concurrent.Waitable;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.ResultCodeType;
 import com.tny.game.common.collection.CollectorsAide;
 import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.concurrent.Waitable;
+import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.ResultCodeType;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.Throws;
+import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.AppConfiguration;
@@ -31,7 +32,6 @@ import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -446,8 +446,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                     if (code.getType() != ResultCodeType.ERROR) {
                         this.tunnel.send(content);
                     } else {
-                        content.createSentFuture()
-                                .getSendFuture()
+                        content.sendCompletionStage()
                                 .whenComplete((tunnel, e) -> tunnel.close());
                         this.tunnel.send(content);
                     }

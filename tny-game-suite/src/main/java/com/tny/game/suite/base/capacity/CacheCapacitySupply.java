@@ -4,6 +4,7 @@ import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.suite.base.capacity.event.CapacityEvents;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -43,7 +44,14 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
     }
 
     @Override
-    public Map<Capacity, Number> getAllCapacityValue() {
+    public void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
+        for (Capacity capacity : capacities) {
+            collector.collect(capacity, cache.get(capacity));
+        }
+    }
+
+    @Override
+    public Map<Capacity, Number> getAllValues() {
         return cache.getAll(Capacity.class).entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -55,16 +63,6 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
     public boolean isHasValue(Capacity capacity) {
         return cache.hasAbility(capacity);
     }
-
-    @Override
-    public long getPowerValue() {
-        return 0;
-    }
-
-    // @Override
-    // public Set<Capacity> getSupplyCapacities() {
-    //     return cache.getAbilityTypes(Capacity.class);
-    // }
 
     @Override
     public void refresh(CapacitySupplier supplier) {

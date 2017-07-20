@@ -8,11 +8,11 @@ import com.tny.game.common.number.NumberAide;
  */
 public interface CapacityUtils {
 
-    static Number countCapacity(Number baseValue, CapacityGoal goal, Capacity valueCap) {
-        return NumberAide.add(baseValue, goal.getBaseCapacity(valueCap, valueCap.getDefault()));
+    static Number countCapacity(Number baseValue, CapacityGather gather, Capacity valueCap) {
+        return NumberAide.add(baseValue, gather.getBaseCapacity(valueCap, valueCap.getDefault()));
     }
 
-    static Number countFinalValue(Number baseValue, CapacityGoal goal, Capacity... capacities) {
+    static Number countFinalValue(Number baseValue, CapacityGather gather, Capacity... capacities) {
         int base = baseValue.intValue();
         if (capacities.length == 0)
             return base;
@@ -23,25 +23,25 @@ public interface CapacityUtils {
         for (Capacity capacity : capacities) {
             switch (capacity.getValueType()) {
                 case BASE:
-                    base += goal.getIntBaseCapacity(capacity);
+                    base += gather.getIntBaseCapacity(capacity);
                     break;
                 case INC:
-                    alterValue += goal.getIntBaseCapacity(capacity);
+                    alterValue += gather.getIntBaseCapacity(capacity);
                     break;
                 case INC_PCT:
-                    pctValue += goal.getFloatBaseCapacity(capacity);
+                    pctValue += gather.getFloatBaseCapacity(capacity);
                     break;
                 case INC_EFF:
-                    effValue += goal.getFloatBaseCapacity(capacity);
+                    effValue += gather.getFloatBaseCapacity(capacity);
                     break;
                 case RED:
-                    alterValue -= goal.getIntBaseCapacity(capacity);
+                    alterValue -= gather.getIntBaseCapacity(capacity);
                     break;
                 case RED_PCT:
-                    pctValue -= goal.getFloatBaseCapacity(capacity);
+                    pctValue -= gather.getFloatBaseCapacity(capacity);
                     break;
                 case RED_EFF:
-                    effValue -= goal.getFloatBaseCapacity(capacity);
+                    effValue -= gather.getFloatBaseCapacity(capacity);
                     break;
             }
         }

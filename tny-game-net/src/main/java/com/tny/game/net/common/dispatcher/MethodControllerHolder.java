@@ -58,7 +58,6 @@ public final class MethodControllerHolder extends ControllerHolder {
      * 执行方法
      */
     private final GMethod method;
-
     /**
      * 方法名字
      */
@@ -195,7 +194,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public Class<?> getControllerClass() {
-        return method.getDeclaringClass();
+        return executor.getClass();
     }
 
     private static FormulaHolder formula(String formula) {

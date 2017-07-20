@@ -17,19 +17,19 @@ public interface NetSession<UID> extends Session<UID> {
     /**
      * @return 弹出输入事件
      */
-    SessionInputEvent pollInputEvent();
+    SessionInputEvent<UID> pollInputEvent();
 
     /**
      * @return 弹出输出事件
      */
-    SessionOutputEvent pollOutputEvent();
+    SessionOutputEvent<UID> pollOutputEvent();
 
     /**
      * 通过响应ID寻找已发送时间
      * @param toMessageID 响应ID
      * @return 返回对应时间
      */
-    SessionSendEvent getHandledSendEventByToID(int toMessageID);
+    SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID);
 
     /**
      * 获取指定范围的已处理发送事件
@@ -37,7 +37,7 @@ public interface NetSession<UID> extends Session<UID> {
      * @param range 指定方位
      * @return 获取事件列表
      */
-    List<SessionSendEvent> getHandledSendEvents(Range<Integer> range);
+    List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range);
 
     /**
      * @return 是否有输入事件

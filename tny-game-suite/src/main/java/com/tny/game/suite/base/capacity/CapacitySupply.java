@@ -1,12 +1,14 @@
 package com.tny.game.suite.base.capacity;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * 可通过能力接口
  * Created by Kun Yang on 16/3/12.
  */
-public interface CapacitySupply {
+public interface CapacitySupply extends Capacitiable {
 
     /**
      * 是否存在 capacity 能力值
@@ -78,15 +80,29 @@ public interface CapacitySupply {
     }
 
     /**
-     * @return 获取所有相关的所有 能力值
+     * 收集Supplier中指定capacities的能力值
+     *
+     * @param collector  收集器
+     * @param capacities 能力值类型
      */
-    Map<Capacity, Number> getAllCapacityValue();
+    default void collectValues(CapacityCollector collector, Capacity... capacities) {
+        collectValues(collector, Arrays.asList(capacities));
+    }
 
     /**
-     * @return 获取战斗力
+     * 收集Supplier中指定capacities的能力值
+     *
+     * @param collector  收集器
+     * @param capacities 能力值类型
      */
-    default long getPowerValue() {
-        return 0;
+    default void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
+        for (Capacity capacity : capacities)
+            collector.collect(capacity, getValue(capacity));
     }
+
+    /**
+     * @return 获取所有相关的所有 能力值
+     */
+    Map<Capacity, Number> getAllValues();
 
 }

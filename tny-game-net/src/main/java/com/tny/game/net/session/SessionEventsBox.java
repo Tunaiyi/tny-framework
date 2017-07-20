@@ -41,13 +41,13 @@ public class SessionEventsBox<UID> {
     private Attributes attributes;
 
     /* 接收队列 */
-    private ConcurrentLinkedDeque<SessionInputEvent> inputEventQueue = new ConcurrentLinkedDeque<>();
+    private ConcurrentLinkedDeque<SessionInputEvent<UID>> inputEventQueue = new ConcurrentLinkedDeque<>();
 
     /* 发送队列 */
-    private ConcurrentLinkedDeque<SessionOutputEvent> outputEventQueue = new ConcurrentLinkedDeque<>();
+    private ConcurrentLinkedDeque<SessionOutputEvent<UID>> outputEventQueue = new ConcurrentLinkedDeque<>();
 
     /* 发送缓存 */
-    private CircularFifoQueue<SessionSendEvent> handledSendEventQueue = null;
+    private CircularFifoQueue<SessionSendEvent<UID>> handledSendEventQueue = null;
 
     private StampedLock handledSendEventQueueLock;
 
@@ -89,11 +89,11 @@ public class SessionEventsBox<UID> {
         this.inputEventQueue.add(event);
     }
 
-    public void addInputEvent(Collection<SessionInputEvent> events) {
+    public void addInputEvent(Collection<SessionInputEvent<UID>> events) {
         this.inputEventQueue.addAll(events);
     }
 
-    public void addOutputEvent(Collection<SessionOutputEvent> events) {
+    public void addOutputEvent(Collection<SessionOutputEvent<UID>> events) {
         this.outputEventQueue.addAll(events);
     }
 
@@ -110,15 +110,15 @@ public class SessionEventsBox<UID> {
         this.inputEventQueue.addAll(eventBox.inputEventQueue);
     }
 
-    public SessionInputEvent pollInputEvent() {
-        Queue<SessionInputEvent> inputEventQueue = this.inputEventQueue;
+    public SessionInputEvent<UID> pollInputEvent() {
+        Queue<SessionInputEvent<UID>> inputEventQueue = this.inputEventQueue;
         if (inputEventQueue == null || inputEventQueue.isEmpty())
             return null;
         return inputEventQueue.poll();
     }
 
-    public SessionOutputEvent pollOutputEvent() {
-        Queue<SessionOutputEvent> outputEventQueue = this.outputEventQueue;
+    public SessionOutputEvent<UID> pollOutputEvent() {
+        Queue<SessionOutputEvent<UID>> outputEventQueue = this.outputEventQueue;
         if (outputEventQueue == null || outputEventQueue.isEmpty())
             return null;
         SessionOutputEvent event = outputEventQueue.poll();
@@ -128,7 +128,7 @@ public class SessionEventsBox<UID> {
         return event;
     }
 
-    public List<SessionSendEvent> getHandledSendEvents(Range<Integer> range) {
+    public List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range) {
         if (this.handledSendEventQueue == null)
             return ImmutableList.of();
         StampedLock lock = this.handledSendEventQueueLock;
@@ -142,7 +142,7 @@ public class SessionEventsBox<UID> {
         }
     }
 
-    public SessionSendEvent getHandledSendEventByToID(int toMessageID) {
+    public SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID) {
         if (this.handledSendEventQueue == null)
             return null;
         StampedLock lock = this.handledSendEventQueueLock;

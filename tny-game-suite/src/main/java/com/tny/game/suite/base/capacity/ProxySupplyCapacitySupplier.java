@@ -1,34 +1,17 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.base.item.Item;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * 能力值提供七代理接口
  * Created by Kun Yang on 16/3/12.
  */
-public interface ProxyCapacitySupplier extends CapacitySupplier {
-
-    Item<?> item();
+public interface ProxySupplyCapacitySupplier extends CapacitySupplier {
 
     CapacitySupply supply();
-
-    @Override
-    default long getID() {
-        return item().getID();
-    }
-
-    @Override
-    default int getItemID() {
-        return item().getItemID();
-    }
-
-    @Override
-    default long getPlayerID() {
-        return item().getPlayerID();
-    }
 
     @Override
     default boolean isHasValue(Capacity capacity) {
@@ -50,10 +33,15 @@ public interface ProxyCapacitySupplier extends CapacitySupplier {
     }
 
     @Override
-    default Map<Capacity, Number> getAllCapacityValue() {
+    default Map<Capacity, Number> getAllValues() {
         if (!isSupplying())
             return ImmutableMap.of();
-        return supply().getAllCapacityValue();
+        return supply().getAllValues();
+    }
+
+    @Override
+    default void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
+        supply().collectValues(collector, capacities);
     }
 
 }

@@ -6,13 +6,15 @@ import com.tny.game.net.tunnel.Tunnel;
 
 import java.rmi.server.UID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
 public class MessageContent<R> implements Protocol {
 
-    public static final long SEND_TIMEOUT = 30000;
+    private static final long SEND_TIMEOUT = 30000;
 
     private ResultCode code = ResultCode.SUCCESS;
 
@@ -22,9 +24,11 @@ public class MessageContent<R> implements Protocol {
 
     private int toMessage;
 
-    private CompletableFuture<Tunnel<UID>> sendFuture;
+    private MessageMode mode;
 
-    private MessageFuture<R> messageFuture;
+    private volatile CompletableFuture<Tunnel<UID>> sendFuture;
+
+    private volatile MessageFuture<R> messageFuture;
 
     private long sentTimeout = -1;
 
@@ -68,6 +72,7 @@ public class MessageContent<R> implements Protocol {
         this.code = code;
         this.body = body;
         this.toMessage = toMessage;
+        this.mode = MessageMode.getMode(toMessage);
     }
 
     public ResultCode getCode() {
@@ -82,58 +87,61 @@ public class MessageContent<R> implements Protocol {
         return toMessage;
     }
 
-    public CompletableFuture<Tunnel<UID>> getSendFuture() {
-        return sendFuture;
+    private CompletableFuture<Tunnel<UID>> createSentFuture() {
+        if (this.sendFuture != null)
+            return this.sendFuture;
+        synchronized (this) {
+            if (this.sendFuture == null)
+                this.sendFuture = new CompletableFuture<>();
+        }
+        return this.sendFuture;
+    }
+
+    public CompletionStage<Tunnel<UID>> sendCompletionStage() {
+        return createSentFuture();
+    }
+
+    public Future<Tunnel<UID>> sendFuture() {
+        return createSentFuture();
+    }
+
+    public Future<Tunnel<UID>> getSendFailure() {
+        return this.sendFuture;
+    }
+
+    public MessageContent<R> setWaitForSent() {
+        this.sentTimeout = SEND_TIMEOUT;
+        return this;
+    }
+
+    public MessageContent<R> setWaitForSent(long sentTimeout) {
+        this.sentTimeout = sentTimeout;
+        createSentFuture();
+        return this;
+    }
+
+    public MessageFuture<R> createMessageFuture() {
+        return createMessageFuture(-1);
+    }
+
+    public MessageFuture<R> createMessageFuture(long timeout) {
+        if (MessageAide.isRequest(this.toMessage)) {
+            if (this.messageFuture != null)
+                return this.messageFuture;
+            synchronized (this) {
+                if (this.messageFuture != null)
+                    return this.messageFuture;
+                if (timeout > 0)
+                    this.messageFuture = new MessageFuture<>(timeout);
+                else
+                    this.messageFuture = new MessageFuture<>();
+            }
+        }
+        return this.messageFuture;
     }
 
     public MessageFuture<R> getMessageFuture() {
         return messageFuture;
-    }
-
-    // public MessageContent<R> setTunnel(Tunnel<?> tunnel) {
-    //     this.tunnel = tunnel;
-    //     return this;
-    // }
-
-    public MessageContent<R> setWaitSent() {
-        this.sentTimeout = SEND_TIMEOUT;
-        return createSentFuture();
-    }
-
-    public MessageContent<R> setWaitSent(long sentTimeout) {
-        this.sentTimeout = sentTimeout;
-        return createSentFuture();
-    }
-
-
-    public MessageContent<R> createSentFuture() {
-        if (this.sendFuture == null)
-            this.sendFuture = new CompletableFuture<>();
-        return this;
-    }
-
-    public MessageContent<R> createMessageFuture() {
-        if (MessageAide.isRequest(this.toMessage)) {
-            if (this.messageFuture == null)
-                this.messageFuture = new MessageFuture<>();
-        }
-        return this;
-    }
-
-    public MessageContent<R> createMessageFuture(long timeout) {
-        if (MessageAide.isRequest(this.toMessage)) {
-            if (this.messageFuture == null)
-                this.messageFuture = new MessageFuture<>(timeout);
-        }
-        return this;
-    }
-
-    public long getSentTimeout() {
-        return sentTimeout;
-    }
-
-    public boolean isSent() {
-        return sentTimeout >= 0;
     }
 
     public boolean hasMessageFuture() {
@@ -149,4 +157,17 @@ public class MessageContent<R> implements Protocol {
     public int getProtocol() {
         return protocol;
     }
+
+    public long getSentTimeout() {
+        return sentTimeout;
+    }
+
+    public boolean isWaitForSent() {
+        return sentTimeout >= 0;
+    }
+
+    public MessageMode getMode() {
+        return this.mode;
+    }
+
 }

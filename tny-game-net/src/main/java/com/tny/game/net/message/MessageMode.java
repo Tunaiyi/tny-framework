@@ -66,6 +66,17 @@ public enum MessageMode {
         throw new NullPointerException(Logs.format("mode [{}] is null", message.getToMessage()));
     }
 
+    public static MessageMode getMode(int toMessage) {
+        if (MessageAide.isRequest(toMessage)) {
+            return REQUEST;
+        } else if (MessageAide.isResponse(toMessage)) {
+            return RESPONSE;
+        } else if (MessageAide.isPush(toMessage)) {
+            return PUSH;
+        }
+        throw new NullPointerException(Logs.format("mode [{}] is null", toMessage));
+    }
+
     public boolean isMode(Message<?> message) {
         return checkMode.test(message);
     }

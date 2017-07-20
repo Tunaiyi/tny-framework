@@ -121,9 +121,8 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
                 if (oldTunnel != null) {
                     oldTunnel.close();
                 }
-                MessageContent<?> loginMessage = MessageContent.toRequest(loginProtocol, loginBodyCreator.get())
-                        .createMessageFuture(loginTimeout + 10000L);
-                loginFuture = loginMessage.getMessageFuture();
+                MessageContent<?> loginMessage = MessageContent.toRequest(loginProtocol, loginBodyCreator.get());
+                loginFuture = loginMessage.createMessageFuture(loginTimeout + 10000L);
                 this.tunnel.send(loginMessage);
                 loginFuture.get(loginTimeout, TimeUnit.MILLISECONDS);
             }

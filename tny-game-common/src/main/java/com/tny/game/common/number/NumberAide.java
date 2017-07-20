@@ -56,6 +56,8 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
+        if (one == null && other == null)
+            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() + other.intValue(), one);
@@ -77,6 +79,8 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
+        if (one == null && other == null)
+            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() - other.intValue(), one);
@@ -98,6 +102,8 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
+        if (one == null && other == null)
+            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() * other.intValue(), one);
@@ -141,6 +147,8 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
+        if (one == null && other == null)
+            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() / other.intValue(), one);
@@ -162,6 +170,8 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
+        if (one == null && other == null)
+            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() % other.intValue(), one);

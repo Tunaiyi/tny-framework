@@ -3,6 +3,8 @@ package com.tny.game.suite.login;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.stream.Stream;
+
 public class AccountUtils {
 
     private static final String SEPARATOR = ".";
@@ -31,7 +33,16 @@ public class AccountUtils {
     }
 
     public static String account2OpenID(String account) {
-        return StringUtils.split(account, SEPARATOR)[OPEN_ID_INDEX];
+        String[] accWords = StringUtils.split(account, SEPARATOR);
+        if (accWords.length == 3)
+            return accWords[OPEN_ID_INDEX];
+        else {
+            StringBuilder builder = new StringBuilder();
+            Stream.of(accWords)
+                    .skip(2) // 跳过 PF & SERVER_ID
+                    .forEach(builder::append);
+            return builder.toString();
+        }
     }
 
     /**

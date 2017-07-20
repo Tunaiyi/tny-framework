@@ -4,6 +4,7 @@ import com.tny.game.net.tunnel.Tunnel;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 
 /**
  * Created by Kun Yang on 2017/3/18.
@@ -17,8 +18,8 @@ public abstract class BaseSessionEvent<UID> implements SessionEvent<UID> {
     }
 
     @Override
-    public Tunnel<UID> getTunnel() {
-        return this.tunnel.get();
+    public Optional<Tunnel<UID>> getTunnel() {
+        return Optional.ofNullable(this.tunnel.get());
     }
 
 }

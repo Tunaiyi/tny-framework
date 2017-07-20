@@ -14,8 +14,12 @@ public interface Loggable {
 
     int getServerID();
 
+    int getVip();
+
+    String getOpenID();
+
     String getType();
 
-    DateTime getDateTimeAt();
+    DateTime getLogAt();
 
 }

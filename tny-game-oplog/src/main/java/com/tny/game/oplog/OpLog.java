@@ -42,6 +42,12 @@ public abstract class OpLog {
      */
     public abstract List<UserOpLog> getUserLogs();
 
+    /**
+     * 插入用户日志
+     *
+     * @param userOpLog 用户
+     * @return
+     */
     protected abstract UserOpLog putUserOpLog(UserOpLog userOpLog);
 
 }

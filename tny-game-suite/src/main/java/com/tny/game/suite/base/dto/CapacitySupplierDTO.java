@@ -1,6 +1,7 @@
 package com.tny.game.suite.base.dto;
 
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -9,7 +10,7 @@ import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.base.capacity.CapacityGoal;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 import com.tny.game.suite.base.capacity.ComboCapacitySupplier;
-import com.tny.game.suite.base.capacity.TimeoutCapacitySupplier;
+import com.tny.game.suite.base.capacity.ExpireCapacitySupplier;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,12 +65,12 @@ public class CapacitySupplierDTO {
         if (supplier instanceof ComboCapacitySupplier)
             dto.dependSuppliers = combo2IDs((ComboCapacitySupplier) supplier);
         else
-            dto.capacities = supplier.getAllCapacityValue().entrySet().stream()
+            dto.capacities = supplier.getAllValues().entrySet().stream()
                     .map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
-        if (supplier instanceof TimeoutCapacitySupplier) {
-            TimeoutCapacitySupplier timeoutSupplier = (TimeoutCapacitySupplier) supplier;
-            long remain = timeoutSupplier.countRemainTime(System.currentTimeMillis());
+        if (supplier instanceof ExpireCapacitySupplier) {
+            ExpireCapacitySupplier timeoutSupplier = (ExpireCapacitySupplier) supplier;
+            long remain = timeoutSupplier.getRemainTime(System.currentTimeMillis());
             if (remain >= 0) {
                 dto.timeout = true;
                 dto.remainTime = remain;
@@ -83,6 +84,22 @@ public class CapacitySupplierDTO {
                 .map(CapacitySupplierDTO::supplier2DTO)
                 .collect(Collectors.toList());
     }
+
+    public static CapacitySupplierDTO supplier2RemoveDTO(CapacitySupplier supplier) {
+        CapacitySupplierDTO dto = new CapacitySupplierDTO();
+        dto.id = supplier.getID();
+        dto.itemID = supplier.getItemID();
+        dto.capacities = ImmutableList.of();
+        dto.dependSuppliers = ImmutableList.of();
+        return dto;
+    }
+
+    public static List<CapacitySupplierDTO> suppliers2RemoveDTO(Collection<? extends CapacitySupplier> suppliers) {
+        return suppliers.stream()
+                .map(CapacitySupplierDTO::supplier2RemoveDTO)
+                .collect(Collectors.toList());
+    }
+
 
     public List<CapacityDTO> getCapacities() {
         return capacities;

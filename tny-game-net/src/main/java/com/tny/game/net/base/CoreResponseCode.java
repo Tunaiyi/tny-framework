@@ -44,6 +44,16 @@ public enum CoreResponseCode implements ResultCode {
     ILLEGAL_PARAMETERS(207, "非法请求参数", ResultCodeType.WARN),
 
     /**
+     * 无法接收该类型消息
+     */
+    NO_RECEIVE_MODE(208, "无法接收该类型消息", ResultCodeType.WARN),
+
+    /**
+     * 无法发送该类型消息
+     */
+    NO_SEND_MODE(209, "无法发送该类型消息", ResultCodeType.WARN),
+
+    /**
      * 验证失败
      */
     VALIDATOR_FAIL(210, "验证失败", ResultCodeType.ERROR),

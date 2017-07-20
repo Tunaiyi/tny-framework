@@ -4,6 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.annotation.Unit;
@@ -24,7 +25,6 @@ import com.tny.game.net.session.event.SessionSendEvent;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.tunnel.TunnelContent;
-import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,15 +119,18 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         // AtomicInteger handledID = session.attributes().getAttribute(HANDLED_MSG_ID);
         // if (handledID == null)
         //     session.attributes().setAttribute(HANDLED_MSG_ID, handledID = new AtomicInteger(0));
-        try {
-            Command command = messageDispatcher.dispatch(message, event.getMessageFuture(), event.getTunnel());
-            commandExecutor.submit(session, command);
-        } catch (DispatchException e) {
-            if (message.getMode() == MessageMode.REQUEST)
-                session.send(MessageContent.toResponse(message, e.getResultCode(), message.getID()));
-            if (event.hasMessageFuture())
-                event.getMessageFuture().completeExceptionally(e);
-            LOGGER.error("#ThreadPoolSessionInputEvetHandler#处理InputEvent异常", e);
+        Tunnel<UID> tunnel = event.getTunnel().orElse(null);
+        if (tunnel != null) {
+            try {
+                Command command = messageDispatcher.dispatch(message, event.getMessageFuture(), tunnel);
+                commandExecutor.submit(session, command);
+            } catch (DispatchException e) {
+                if (message.getMode() == MessageMode.REQUEST)
+                    session.send(MessageContent.toResponse(message, e.getResultCode(), message.getID()));
+                if (event.hasMessageFuture())
+                    event.getMessageFuture().completeExceptionally(e);
+                LOGGER.error("#ThreadPoolSessionInputEvetHandler#处理InputEvent异常", e);
+            }
         }
     }
 
@@ -135,19 +138,21 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
     private void doOutput(AtomicBoolean handled, S session) {
         try {
             while (session.hasOutputEvent()) {
-                SessionOutputEvent event = session.pollOutputEvent();
+                SessionOutputEvent<UID> event = session.pollOutputEvent();
                 if (event != null) {
                     try {
                         switch (event.getEventType()) {
                             case MESSAGE:
                                 if (event instanceof SessionSendEvent)
-                                    doWrite((TunnelContent<UID>) event, event.getTunnel());
+                                    doWrite((TunnelContent<UID>) event, event.getTunnel().orElse(null));
                                 break;
                             case RESEND:
                                 if (event instanceof SessionResendEvent) {
-                                    SessionResendEvent resendEvent = (SessionResendEvent) event;
+                                    SessionResendEvent<UID> resendEvent = (SessionResendEvent) event;
+                                    Tunnel<UID> tunnel = resendEvent.getTunnel().orElse(null);
                                     List<SessionSendEvent<UID>> resendEvents = session.getHandledSendEvents(resendEvent.getResendRange());
-                                    resendEvents.forEach(ev -> doWrite(ev, resendEvent.getTunnel()));
+                                    resendEvents.forEach(ev -> doWrite(ev, tunnel));
+                                    resendEvent.resendSuccess(tunnel);
                                 }
                                 break;
                         }

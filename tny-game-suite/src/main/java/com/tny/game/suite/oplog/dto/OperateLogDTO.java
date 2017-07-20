@@ -2,7 +2,6 @@ package com.tny.game.suite.oplog.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;
@@ -45,25 +44,29 @@ public class OperateLogDTO implements OperateLog {
     @JsonProperty(index = 8)
     private int lv;
 
+    @JsonProperty(index = 9)
+    private String opid;
+
     @JsonProperty(index = 10)
-    private List<ReceiveLogDTO> revs;
+    private int vip;
 
     @JsonProperty(index = 11)
-    private List<ConsumeLogDTO> coss;
+    private List<ReceiveLogDTO> revs;
 
     @JsonProperty(index = 12)
-    private List<BaseSnapshot> snaps;
+    private List<ConsumeLogDTO> coss;
 
     @JsonProperty(index = 13)
-    private int i;
+    private List<BaseSnapshot> snaps;
 
-    private Action action;
+    @JsonProperty(index = 14)
+    private int i;
 
     private String logID;
 
     private String type = "oplog";
 
-    private DateTime dateTimeAt;
+    private DateTime logAt;
 
     private int date;
 
@@ -77,11 +80,13 @@ public class OperateLogDTO implements OperateLog {
         this.name = userOpLog.getName();
         this.lv = userOpLog.getLevel();
         this.sid = userOpLog.getCreateSID();
+        this.opid = userOpLog.getOpenID();
+        this.vip = userOpLog.getVip();
         //		this.mod = log.getModule();
         this.op = log.getProtocol();
         DateTime dateTime = log.getCreateAt();
         this.at = dateTime.getMillis();
-        this.dateTimeAt = dateTime;
+        this.logAt = dateTime;
         this.date = DateTimeAide.date2Int(dateTime);
         this.acid = actionLog.getActionID();
         this.i = index;
@@ -155,8 +160,19 @@ public class OperateLogDTO implements OperateLog {
         return this.lv;
     }
 
-    public DateTime getDateTimeAt() {
-        return dateTimeAt == null ? this.dateTimeAt = new DateTime(this.at) : this.dateTimeAt;
+    @Override
+    public int getVip() {
+        return this.vip;
+    }
+
+    @Override
+    public String getOpenID() {
+        return this.opid;
+    }
+
+    @Override
+    public DateTime getLogAt() {
+        return logAt == null ? this.logAt = new DateTime(this.at) : this.logAt;
     }
 
     @Override

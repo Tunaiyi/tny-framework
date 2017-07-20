@@ -5,6 +5,8 @@ import com.tny.game.common.number.NumberAide;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * 组合能力提供起
@@ -17,9 +19,15 @@ public interface ComboCapacitySupplier extends CapacitySupplier {
      */
     Collection<? extends CapacitySupplier> dependSuppliers();
 
+    default Stream<? extends CapacitySupplier> dependSuppliersStream() {
+        return dependSuppliers().stream();
+    }
+
     @Override
     default boolean isHasValue(Capacity capacity) {
-        return dependSuppliers().stream().anyMatch(s -> s.isHasValue(capacity));
+        return dependSuppliersStream()
+                .filter(CapacitySupplier::isSupplying)
+                .anyMatch(s -> s.isHasValue(capacity));
     }
 
     @Override
@@ -29,22 +37,18 @@ public interface ComboCapacitySupplier extends CapacitySupplier {
 
     @Override
     default Number getValue(Capacity capacity, Number defaultNum) {
-        Number total = null;
-        for (CapacitySupplier supplier : dependSuppliers()) {
-            if (total == null)
-                total = supplier.getValue(capacity);
-            else
-                total = NumberAide.add(supplier.getValue(capacity, 0), total);
-        }
-        return total == null ? defaultNum : total;
+        return dependSuppliersStream()
+                .map(s -> s.getValue(capacity))
+                .filter(Objects::nonNull)
+                .reduce(NumberAide::add)
+                .orElse(defaultNum);
     }
 
     @Override
-    default Map<Capacity, Number> getAllCapacityValue() {
+    default Map<Capacity, Number> getAllValues() {
         Map<Capacity, Number> numberMap = new HashMap<>();
-        for (CapacitySupplier supplier : dependSuppliers()) {
-            supplier.getAllCapacityValue().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add));
-        }
+        dependSuppliersStream()
+                .forEach(s -> s.getAllValues().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add)));
         return numberMap;
     }
 

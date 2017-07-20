@@ -1,21 +1,29 @@
 package com.tny.game.net.common.session;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.event.BindP1EventBus;
 import com.tny.game.common.event.EventBuses;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.exception.RemotingException;
-import com.tny.game.net.exception.SessionException;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageBuilder;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.session.*;
+import com.tny.game.net.session.LoginCertificate;
+import com.tny.game.net.session.MessageFuture;
+import com.tny.game.net.session.NetSession;
+import com.tny.game.net.session.ResendMessage;
+import com.tny.game.net.session.Session;
+import com.tny.game.net.session.SessionAide;
+import com.tny.game.net.session.SessionEventsBox;
+import com.tny.game.net.session.SessionState;
 import com.tny.game.net.session.event.SessionEvent.SessionEventType;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionInputEventHandler;
@@ -41,10 +49,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CommonSession<UID> implements NetSession<UID> {
 
-    protected static final BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
+    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
             EventBuses.of(SessionListener.class, SessionListener::onOnline);
 
-    protected static final BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
+    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
             EventBuses.of(SessionListener.class, SessionListener::onOffline);
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
@@ -159,7 +167,7 @@ public class CommonSession<UID> implements NetSession<UID> {
         if (offline != tunnel)
             return;
         synchronized (this) {
-            if (offline != tunnel)
+            if (this.currentTunnel != offline)
                 return;
             if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
                 offline.close();
@@ -207,15 +215,30 @@ public class CommonSession<UID> implements NetSession<UID> {
         try {
             NetLogger.logReceive(this, message);
             MessageMode mode = message.getMode();
-            if (mode == MessageMode.PING || mode == MessageMode.PONG)
+            if (tunnel.getReceiveExcludes().contains(mode)) {
+                LOGGER.debug("{}无法接收 {} 信息[{}]", tunnel, mode, message.getProtocol());
+                if (mode == MessageMode.REQUEST)
+                    send(MessageContent.toResponse(message, CoreResponseCode.NO_RECEIVE_MODE));
                 return;
-            MessageFuture<?> future = null;
-            if (MessageMode.RESPONSE.isMode(message)) {
-                int toMessage = message.getToMessage();
-                future = MessageFuture.getFuture(this.getID(), toMessage);
             }
-            this.eventBox.addInputEvent(receiveEvent(getTunnel(tunnel), message, future));
-            inputEventHandler.onInput(this);
+            switch (mode) {
+                case PING:
+                    if (tunnel instanceof NetTunnel)
+                        ((NetTunnel) tunnel).pong();
+                    return;
+                case PONG:
+                    return;
+                case PUSH:
+                case REQUEST:
+                case RESPONSE:
+                    MessageFuture<?> future = null;
+                    if (MessageMode.RESPONSE.isMode(message)) {
+                        int toMessage = message.getToMessage();
+                        future = MessageFuture.getFuture(this.getID(), toMessage);
+                    }
+                    this.eventBox.addInputEvent(receiveEvent(getTunnel(tunnel), message, future));
+                    inputEventHandler.onInput(this);
+            }
         } finally {
             this.lastReceiveTime = System.currentTimeMillis();
         }
@@ -230,6 +253,11 @@ public class CommonSession<UID> implements NetSession<UID> {
     public void send(Tunnel<UID> tunnel, MessageContent<?> content) {
         Message<UID> message = null;
         try {
+            MessageMode mode = content.getMode();
+            if (tunnel.getSendExcludes().contains(mode)) {
+                LOGGER.debug("{}无法发送 {} 信息[{}]", tunnel, mode, content.getProtocol());
+                return;
+            }
             tunnel = getTunnel(tunnel);
             MessageBuilder<UID> builder = messageBuilderFactory.newMessageBuilder()
                     .setContent(content)
@@ -237,23 +265,24 @@ public class CommonSession<UID> implements NetSession<UID> {
                     .setTime(System.currentTimeMillis())
                     .setTunnel(tunnel);
             final SessionEventsBox eventBox = this.eventBox;
+            SessionSendEvent<UID> event;
             synchronized (eventBox) {
                 message = builder.setID(eventBox.allotMessageID())
                         .build();
                 NetLogger.logSend(this, message);
-                SessionSendEvent<UID> event = sendEvent(tunnel, message, content);
+                event = sendEvent(tunnel, message, content);
                 eventBox.addOutputEvent(event);
                 if (content.hasMessageFuture()) {
                     MessageFuture.putFuture(this, message, content
                             .getMessageFuture());
                 }
                 outputEventHandler.onOutput(this);
-                if (content.isSent())
-                    event.waitForSend(content.getSentTimeout());
             }
+            if (content.isWaitForSent())
+                event.waitForSend(content.getSentTimeout());
         } catch (Throwable e) {
             LOGGER.error("send response exception", e);
-            if (content.isSent())
+            if (content.isWaitForSent())
                 throw new RemotingException(Logs.format("{} send {} failed", this, message));
         }
     }
@@ -264,8 +293,9 @@ public class CommonSession<UID> implements NetSession<UID> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void resend(Tunnel<UID> tunnel, ResendMessage message) {
-        this.eventBox.addOutputEvent(new SessionResendEvent<>(getTunnel(tunnel), message.getResendRange()));
+        this.eventBox.addOutputEvent(new SessionResendEvent<>(getTunnel(tunnel), message.getResendRange(), ObjectAide.as(message.getSendFuture())));
     }
 
     @Override
@@ -278,37 +308,27 @@ public class CommonSession<UID> implements NetSession<UID> {
         return this.eventBox.hasOutputEvent();
     }
 
-
-    private SessionReceiveEvent receiveEvent(Tunnel<UID> tunnel, Message<UID> message, MessageFuture<?> future) {
-        return new SessionReceiveEvent<>(tunnel, message, SessionEventType.MESSAGE, future);
-    }
-
-    @SuppressWarnings("unchecked")
-    private SessionSendEvent<UID> sendEvent(Tunnel<UID> tunnel, Message<UID> message, MessageContent content) {
-        return new SessionSendEvent<UID>(tunnel, message, content.isSent(), content.getSendFuture());
-    }
-
     private Tunnel<UID> getTunnel(Tunnel<UID> tunnel) {
         return tunnel == null ? this.currentTunnel : tunnel;
     }
 
     @Override
-    public List<SessionSendEvent> getHandledSendEvents(Range<Integer> range) {
+    public List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range) {
         return this.eventBox.getHandledSendEvents(range);
     }
 
     @Override
-    public SessionSendEvent getHandledSendEventByToID(int toMessageID) {
+    public SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID) {
         return this.eventBox.getHandledSendEventByToID(toMessageID);
     }
 
     @Override
-    public SessionInputEvent pollInputEvent() {
+    public SessionInputEvent<UID> pollInputEvent() {
         return this.eventBox.pollInputEvent();
     }
 
     @Override
-    public SessionOutputEvent pollOutputEvent() {
+    public SessionOutputEvent<UID> pollOutputEvent() {
         return this.eventBox.pollOutputEvent();
     }
 
@@ -355,14 +375,12 @@ public class CommonSession<UID> implements NetSession<UID> {
         return messageSignGenerator;
     }
 
-    private boolean checkPushable() {
-        SessionPushOption option = this.attributes().getAttribute(SessionPushOption.SESSION_PUSH_OPTION, SessionPushOption.PUSH);
-        if (!option.isPush()) {
-            if (option.isThrowable())
-                throw new SessionException(Logs.format("Session {}-{} [{}] 无法推送", this.getCertificate(), this.getUserGroup(), this.getUID()));
-            return false;
-        }
-        return true;
+    private SessionReceiveEvent receiveEvent(Tunnel<UID> tunnel, Message<UID> message, MessageFuture<?> future) {
+        return new SessionReceiveEvent<>(tunnel, message, SessionEventType.MESSAGE, future);
+    }
+
+    private SessionSendEvent<UID> sendEvent(Tunnel<UID> tunnel, Message<UID> message, MessageContent content) {
+        return new SessionSendEvent<>(tunnel, message, content.isWaitForSent(), ObjectAide.as(content.getSendFailure()));
     }
 
     @Override

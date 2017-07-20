@@ -1,5 +1,6 @@
 package com.tny.game.net.common;
 
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.net.message.Message;
@@ -11,6 +12,9 @@ import com.tny.game.net.session.Session;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnels;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * 抽象通道
@@ -24,6 +28,12 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
 
     /* 附加属性 */
     private Attributes attributes;
+
+    /* 接收排除消息模型 */
+    private Set<MessageMode> receiveExcludes = ImmutableSet.of();
+
+    /* 发送排除消息模型 */
+    private Set<MessageMode> sendExcludes = ImmutableSet.of();
 
     public AbstractTunnel(SessionFactory<UID> sessionFactory) {
         this.id = Tunnels.newID();
@@ -66,11 +76,7 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
 
     @Override
     public void receive(Message<UID> message) {
-        MessageMode mode = message.getMode();
-        if (mode == MessageMode.PING)
-            this.pong();
-        else if (mode != MessageMode.PONG)
-            session.receive(this, message);
+        session.receive(this, message);
     }
 
     @Override
@@ -94,4 +100,23 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
         return session;
     }
 
+    @Override
+    public void receiveExcludes(Collection<MessageMode> modes) {
+        this.receiveExcludes = ImmutableSet.copyOf(modes);
+    }
+
+    @Override
+    public void sendExcludes(Collection<MessageMode> modes) {
+        this.sendExcludes = ImmutableSet.copyOf(modes);
+    }
+
+    @Override
+    public Collection<MessageMode> getReceiveExcludes() {
+        return this.receiveExcludes;
+    }
+
+    @Override
+    public Collection<MessageMode> getSendExcludes() {
+        return this.sendExcludes;
+    }
 }

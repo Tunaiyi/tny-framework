@@ -10,6 +10,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
 import com.tny.game.base.item.Ability;
 import com.tny.game.base.item.AbstractModelManager;
 import com.tny.game.base.item.ItemExplorer;
+import com.tny.game.base.item.ItemModels;
 import com.tny.game.base.item.Model;
 import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.behavior.AbstractAwardPlan;
@@ -27,14 +28,14 @@ import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.OpenMode;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.config.FileLoader;
-import com.tny.game.common.formula.FormulaHolder;
-import com.tny.game.common.reflect.proxy.WrapperProxy;
-import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.collection.EmptyImmutableList;
 import com.tny.game.common.collection.EmptyImmutableMap;
 import com.tny.game.common.collection.EmptyImmutableSet;
+import com.tny.game.common.config.FileLoader;
+import com.tny.game.common.formula.FormulaHolder;
+import com.tny.game.common.reflect.proxy.WrapperProxy;
+import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,7 +248,6 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("tag", String.class);
 
 
-
         this.initXStream(xStream);
 
         Map<Class<?>, List<Class<? extends Enum>>> map = this.createEnumClassMap();
@@ -307,6 +307,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
                 wrapperModel.set$Proxied(model);
             }
             models.add(wrapperModel.get$Wrapper());
+            ItemModels.register(wrapperModel.get$Wrapper());
         }
         if (!handlerMap.isEmpty())
             this.handlerMap.putAll(handlerMap);

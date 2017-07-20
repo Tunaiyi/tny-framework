@@ -8,49 +8,42 @@ import java.util.Collection;
 public abstract class UserOpLog {
 
     /**
-     * 日志所属用户ID
-     *
-     * @return
+     * @return 日志所属用户ID
      */
     public abstract long getUserID();
 
     /**
-     * 玩家名字
-     *
-     * @return
+     * @return vip
      */
     public abstract String getName();
 
     /**
-     * 等级
+     * @return 等级
      */
     public abstract int getLevel();
 
     /**
-     * vip
-     *
-     * @return
+     * @return vip
      */
     public abstract int getVip();
 
     /**
-     * 创建角色服务器ID
-     *
-     * @return
+     * @return 平台用户ID
+     */
+    public abstract String getOpenID();
+
+    /**
+     * @return 创建角色服务器ID
      */
     public abstract int getCreateSID();
 
     /**
-     * 日志操作日志Map
-     *
-     * @return
+     * @return 日志操作日志Map
      */
     public abstract Collection<ActionLog> getActionLogs();
 
     /**
-     * 属性
-     *
-     * @return
+     * @return 属性
      */
     public abstract Attributes attributes();
 

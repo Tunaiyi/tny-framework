@@ -7,7 +7,7 @@ import com.tny.game.net.tunnel.Tunnel;
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionReceiveEvent<UID> extends BaseSessionEvent implements SessionInputEvent {
+public class SessionReceiveEvent<UID> extends BaseSessionEvent<UID> implements SessionInputEvent<UID> {
 
     private SessionEventType eventType;
 

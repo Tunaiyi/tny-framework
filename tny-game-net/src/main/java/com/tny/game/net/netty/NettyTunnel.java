@@ -4,14 +4,12 @@ import com.tny.game.net.common.AbstractTunnel;
 import com.tny.game.net.message.DetectMessage;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.tunnel.TunnelContent;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.Future;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Kun Yang on 2017/3/28.
@@ -71,13 +69,12 @@ public class NettyTunnel<UID> extends AbstractTunnel<UID> {
     @Override
     public void write(TunnelContent<UID> content) {
         ChannelFuture future = channel.writeAndFlush(content.getMessage());
-        CompletableFuture<Tunnel<UID>> sentFuture = content.getSendFuture();
-        if (sentFuture != null) {
+        if (content.hasSendFuture()) {
             future.addListener(f -> {
                 if (f.isSuccess())
-                    sentFuture.complete(this);
+                    content.sendSuccess(this);
                 else
-                    sentFuture.completeExceptionally(f.cause());
+                    content.sendFailed(f.cause());
             });
         }
     }

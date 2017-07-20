@@ -9,20 +9,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * 内部能力值作用对象
  * Created by Kun Yang on 16/2/15.
  */
-public abstract class AbstractCapacityGoal extends InnerCapacityGoal {
-
-    protected CapacityGoalType goalType;
+public abstract class AbstractCapacityGather implements InnerCapacityGather {
 
     protected volatile Set<CapacitySupplier> suppliers = new CopyOnWriteArraySet<>();
-
-    protected AbstractCapacityGoal(CapacityGoalType goalType) {
-        this.goalType = goalType;
-    }
-
-    @Override
-    public CapacityGoalType getGoalType() {
-        return goalType;
-    }
 
     @Override
     public Collection<? extends CapacitySupplier> suppliers() {
@@ -33,4 +22,10 @@ public abstract class AbstractCapacityGoal extends InnerCapacityGoal {
     public void clear() {
         this.suppliers = new CopyOnWriteArraySet<>();
     }
+
+    @Override
+    public void collectCapacities(CapacityCollector collector, Collection<? extends Capacity> capacities) {
+        suppliers.forEach(supplier -> supplier.collectValues(collector, capacities));
+    }
+
 }

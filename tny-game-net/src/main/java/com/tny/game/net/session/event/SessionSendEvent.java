@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionSendEvent<UID> extends BaseSessionEvent implements SessionOutputEvent, TunnelContent<UID> {
+public class SessionSendEvent<UID> extends BaseSessionEvent<UID> implements SessionOutputEvent<UID>, TunnelContent<UID> {
 
     private CompletableFuture<Tunnel<UID>> sendFuture;
 
@@ -33,8 +33,8 @@ public class SessionSendEvent<UID> extends BaseSessionEvent implements SessionOu
     }
 
     @Override
-    public CompletableFuture<Tunnel<UID>> getSendFuture() {
-        return sendFuture;
+    public boolean hasSendFuture() {
+        return sendFuture != null;
     }
 
     @Override
@@ -44,8 +44,29 @@ public class SessionSendEvent<UID> extends BaseSessionEvent implements SessionOu
 
     @Override
     public void cancelSendWait(boolean mayInterruptIfRunning) {
-        if (sendFuture != null)
+        CompletableFuture<Tunnel<UID>> sendFuture = this.sendFuture;
+        if (sendFuture != null && !sendFuture.isDone()) {
             sendFuture.cancel(mayInterruptIfRunning);
+            this.sendFuture = null;
+        }
+    }
+
+    @Override
+    public void sendSuccess(Tunnel<UID> tunnel) {
+        CompletableFuture<Tunnel<UID>> sendFuture = this.sendFuture;
+        if (sendFuture != null && !sendFuture.isDone()) {
+            sendFuture.complete(tunnel);
+            this.sendFuture = null;
+        }
+    }
+
+    @Override
+    public void sendFailed(Throwable cause) {
+        CompletableFuture<Tunnel<UID>> sendFuture = this.sendFuture;
+        if (sendFuture != null && !sendFuture.isDone()) {
+            sendFuture.completeExceptionally(cause);
+            this.sendFuture = null;
+        }
     }
 
     public void waitForSend(long timeout) throws InterruptedException, TimeoutException, ExecutionException {

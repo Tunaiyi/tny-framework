@@ -19,6 +19,8 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private long userID;
 
+    private String openID;
+
     private int createSID;
 
     private String name;
@@ -31,9 +33,10 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private List<ActionLog> actionLogs = new ArrayList<>();
 
-    public SimpleUserOpLog(long userID, int createSID, String name, int level, int vip) {
+    public SimpleUserOpLog(long userID, String openID, int createSID, String name, int level, int vip) {
         super();
         this.userID = userID;
+        this.openID = openID;
         this.createSID = createSID;
         this.name = name;
         this.vip = vip;
@@ -63,6 +66,11 @@ public class SimpleUserOpLog extends UserOpLog {
     @Override
     public int getVip() {
         return this.vip;
+    }
+
+    @Override
+    public String getOpenID() {
+        return this.openID;
     }
 
     @Override

@@ -18,6 +18,12 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
 
     private Item<?> item;
 
+    public DefaultCapacitySupply(Item<?> item, ItemModel model) {
+        this.playerID = item.getPlayerID();
+        this.item = item;
+        this.model = model;
+    }
+
     public DefaultCapacitySupply(Item<?> item) {
         this.playerID = item.getPlayerID();
         this.model = item.getModel();
@@ -26,13 +32,13 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
 
     public DefaultCapacitySupply(long playerID, ItemModel model) {
         this.playerID = playerID;
-        this.model = item.getModel();
+        this.model = model;
     }
 
     @Override
     public Number getValue(Capacity capacity, Number defaultNum) {
         if (item != null) {
-            return item.getAbility(defaultNum, capacity);
+            return model.getAbility(item, defaultNum, capacity);
         } else {
             return model.getAbility(playerID, defaultNum, capacity);
         }
@@ -41,16 +47,16 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
     @Override
     public Number getValue(Capacity capacity) {
         if (item != null) {
-            return item.getAbility(capacity, Number.class);
+            return model.getAbility(item, capacity, Number.class);
         } else {
             return model.getAbility(playerID, capacity, Number.class);
         }
     }
 
     @Override
-    public Map<Capacity, Number> getAllCapacityValue() {
+    public Map<Capacity, Number> getAllValues() {
         if (item != null) {
-            return item.getAbilitiesByType(Capacity.class, Number.class);
+            return model.getAbilitiesByType(item, Capacity.class, Number.class);
         } else {
             return model.getAbilitiesByType(playerID, Capacity.class, Number.class);
         }
@@ -60,18 +66,6 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
     public boolean isHasValue(Capacity capacity) {
         return model.hasAbility(capacity);
     }
-
-
-    @Override
-    public long getPowerValue() {
-        return 0;
-    }
-
-    // @Override
-    // public Set<Capacity> getSupplyCapacities() {
-    //     return model.getAbilityTypes(Capacity.class);
-    // }
-
 
     @Override
     public void refresh(CapacitySupplier supplier) {

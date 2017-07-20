@@ -53,6 +53,10 @@ public class LocalNum<N extends Number> extends Number {
         return this.number = NumberAide.as(NumberAide.add(this.number, num.number), this.number);
     }
 
+    public N add(Number num) {
+        return this.number = NumberAide.as(NumberAide.add(this.number, num), this.number);
+    }
+
     public N sub(int num) {
         int value = this.number.intValue() - num;
         return number = NumberAide.as(value, this.number);

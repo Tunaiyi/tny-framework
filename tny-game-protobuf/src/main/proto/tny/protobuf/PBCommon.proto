@@ -117,24 +117,3 @@ message SchedulerBackupProto {
     optional int64 stopTime = 1;
     repeated TimeTaskProto timeTaskQueue = 2;
 }
-
-message CapacitySupplierProto {
-    optional int64 id = 1;
-    optional int32 itemID = 2;
-    optional int64 playerID = 3;
-    optional int32 type = 4;
-    repeated IntEntryProto capacityMap = 5;
-    optional int64 endAt = 6;
-}
-
-message CapacityGoalProto {
-    repeated CapacitySupplierProto suppliers = 4;
-}
-
-message CapacityGoalItemProto {
-    optional int64 id = 1;
-    optional int32 itemID = 2;
-    optional int64 playerID = 3;
-    repeated CapacitySupplierProto dependSuppliers = 4;
-}
-

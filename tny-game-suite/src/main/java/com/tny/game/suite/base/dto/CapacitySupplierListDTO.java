@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_SUPPLIER_LIST_DTO)
 @DTODoc(value = "游戏能力相关对象列表DTO")
@@ -26,11 +27,27 @@ public class CapacitySupplierListDTO {
         return dto;
     }
 
-    public static CapacitySupplierListDTO suppliers2DTO(Collection<? extends CapacitySupplier> suppliers) {
+    public static CapacitySupplierListDTO suppliers2DTO(Stream<? extends CapacitySupplier> suppliers) {
         CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
-        dto.capacityItems = suppliers.stream()
+        dto.capacityItems = suppliers
                 .filter(CapacitySupplier::isSupplying)
                 .map(CapacitySupplierDTO::supplier2DTO)
+                .collect(Collectors.toList());
+        return dto;
+    }
+
+    public static CapacitySupplierListDTO suppliers2DTO(Collection<? extends CapacitySupplier> suppliers) {
+        return suppliers2DTO(suppliers.stream());
+    }
+
+    public static CapacitySupplierListDTO suppliers2RemoveDTO(Collection<? extends CapacitySupplier> suppliers) {
+        return suppliers2RemoveDTO(suppliers.stream());
+    }
+
+    public static CapacitySupplierListDTO suppliers2RemoveDTO(Stream<? extends CapacitySupplier> suppliers) {
+        CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
+        dto.capacityItems = suppliers
+                .map(CapacitySupplierDTO::supplier2RemoveDTO)
                 .collect(Collectors.toList());
         return dto;
     }
@@ -45,12 +62,22 @@ public class CapacitySupplierListDTO {
         return this;
     }
 
-    public CapacitySupplierListDTO addAllSuppliers(Collection<CapacitySupplier> suppliers) {
+    public CapacitySupplierListDTO addAllSuppliers(Collection<? extends CapacitySupplier> suppliers) {
+        suppliers.forEach(this::addSupplier);
+        return this;
+    }
+
+    public CapacitySupplierListDTO addAllSuppliers(Stream<? extends CapacitySupplier> suppliers) {
         suppliers.forEach(this::addSupplier);
         return this;
     }
 
     public CapacitySupplierListDTO addAllDTOs(Collection<CapacitySupplierDTO> supplierDTOs) {
+        supplierDTOs.forEach(this::addDTO);
+        return this;
+    }
+
+    public CapacitySupplierListDTO addAllDTOs(Stream<CapacitySupplierDTO> supplierDTOs) {
         supplierDTOs.forEach(this::addDTO);
         return this;
     }
