@@ -26,7 +26,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
         return CapacityStoreProto.newBuilder()
                 .setPlayerID(object.getPlayerID())
                 .addAllSuppliers(object.getStoreSuppliersSteam()
-                        .filter(StoreCapacitySupplier::isLinked)
+                        .filter(s -> !s.isLinked())
                         .map(CapacityStorerFormatter::supplier2Proto)
                         .collect(Collectors.toList()))
                 .addAllGoals(object.getStoreGoalsSteam()
@@ -44,7 +44,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                         .map(s -> proto2Supplier(s, storer)))
                 .addStoreSuppliers(createLinkSupplier(storer, proto)
                         .filter(Objects::nonNull)
-                        .map(s -> StoreCapacitySupplier.saveBySupplier(s, 0)));
+                        .map(s -> StoreCapacitySupplier.linkBySupplier(s, 0)));
         return storer;
     }
 

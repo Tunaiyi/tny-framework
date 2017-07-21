@@ -22,8 +22,6 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
             if (expireAt == 0 || ((StoreCapacitySupplier) supplier).getExpireAt() == expireAt)
                 return as(supplier);
         }
-        if (supplier instanceof ComboCapacitySupplier)
-            return saveBySupplier(as(supplier, ComboCapacitySupplier.class), expireAt);
         return new StoreByCopyCapacitySupplier(
                 supplier.getSupplierType(),
                 supplier.getID(),

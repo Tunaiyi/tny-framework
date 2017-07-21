@@ -211,6 +211,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         if (oldSession == session)
             return true;
         if (cert.isRelogin()) {
+            oldSession.offline();
             // oldSession为null或者失效 session登陆ID不是同一个 session无法转换
             if (oldSession == null || oldSession.isClosed() || !oldSession.relogin(session)) {
                 throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);

@@ -55,6 +55,9 @@ public class CommonSession<UID> implements NetSession<UID> {
     private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
             EventBuses.of(SessionListener.class, SessionListener::onOffline);
 
+    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_CLOSE =
+            EventBuses.of(SessionListener.class, SessionListener::onClose);
+
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
     private volatile long id;
@@ -143,7 +146,10 @@ public class CommonSession<UID> implements NetSession<UID> {
         LoginCertificate<UID> certificate = cerSession.getCertificate();
         if (this.certificate.getID() != certificate.getID())
             return false;
-        if (this.sessionState.compareAndSet(SessionState.OFFLINE.getId(), SessionState.ONLINE.getId())) {
+        int stateID = this.sessionState.get();
+        // if (stateID != SessionState.ONLINE.getId() && stateID != SessionState.OFFLINE.getId())
+        //     return false;
+        if (this.sessionState.compareAndSet(stateID, SessionState.ONLINE.getId())) {
             synchronized (this) {
                 this.certificate = certificate;
                 CommonSession<UID> session = (CommonSession<UID>) cerSession;
@@ -170,6 +176,7 @@ public class CommonSession<UID> implements NetSession<UID> {
             if (this.currentTunnel != offline)
                 return;
             if (this.sessionState.compareAndSet(SessionState.ONLINE.getId(), SessionState.OFFLINE.getId())) {
+                this.offlineTime = System.currentTimeMillis();
                 offline.close();
                 ON_OFFLINE.notify(this, offline);
             }
@@ -195,7 +202,9 @@ public class CommonSession<UID> implements NetSession<UID> {
                 Tunnel<UID> tunnel = this.currentTunnel;
                 if (tunnel != null && tunnel.getSession() == this)
                     tunnel.close();
-                ON_OFFLINE.notify(this, tunnel);
+                if (state == SessionState.ONLINE.getId())
+                    ON_OFFLINE.notify(this, tunnel);
+                ON_CLOSE.notify(this, tunnel);
                 return true;
             } else {
                 state = this.sessionState.get();

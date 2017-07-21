@@ -11,4 +11,7 @@ public interface SessionListener<UID> {
     default void onOffline(Session<UID> session, Tunnel<UID> tunnel) {
     }
 
+    default void onClose(Session<UID> session, Tunnel<UID> tunnel) {
+    }
+
 }

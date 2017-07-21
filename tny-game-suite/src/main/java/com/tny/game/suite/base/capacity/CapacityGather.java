@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
+ * 能力值提供器集合
+ *
  * Created by Kun Yang on 2017/7/18.
  */
 public interface CapacityGather extends Capacitiable {
