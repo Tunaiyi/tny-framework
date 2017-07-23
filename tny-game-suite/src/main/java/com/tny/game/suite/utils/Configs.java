@@ -165,6 +165,7 @@ public interface Configs {
     String DEVELOP_AUTH_PF /*               */ = "tny.server.dev.auth.pf";
     String DEVELOP_VERIFY_CHECK /*          */ = "tny.server.dev.verify.check";
     String DEVELOP_PAY_PRICE /*             */ = "tny.server.dev.pay.pay_price";
+    String DEVELOP_MODULE_TIME_CONSUMING /* */ = "tny.server.dev.module.time_consuming";
 
 
     static LocalDate devDate(String key, LocalDate... defaultValue) {

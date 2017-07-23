@@ -20,9 +20,12 @@ public class CronTimeCycle implements TimeCycle {
         return new CronTimeCycle(new CronExpression(expr));
     }
 
-
     public static final CronTimeCycle of(CronExpression expr) throws ParseException {
         return new CronTimeCycle(expr);
+    }
+
+    public CronExpression getExpression() {
+        return expression;
     }
 
     @Override

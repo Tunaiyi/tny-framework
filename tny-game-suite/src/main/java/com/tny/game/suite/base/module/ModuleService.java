@@ -1,12 +1,15 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
 import com.tny.game.base.module.ModuleHandler;
+import com.tny.game.common.RunningChecker;
+import com.tny.game.common.config.Config;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tny.game.suite.utils.Configs.*;
+
 public abstract class ModuleService<DTO> implements ServerPrepareStart, ApplicationContextAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
@@ -34,6 +39,8 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
     protected FeatureExplorerManager featureExplorerManager;
 
     private ApplicationContext applicationContext;
+
+    private Config DEVELOP = Configs.DEVELOP_CONFIG;
 
     public ModuleService() {
     }
@@ -62,6 +69,7 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
 
     private List<Module> doOpenModule(GameFeatureExplorer explorer, Collection<Module> moduleTypes) {
         List<Module> succList = new ArrayList<>();
+        boolean consuming = DEVELOP.getBoolean(DEVELOP_MODULE_TIME_CONSUMING, false);
         for (Module module : moduleTypes) {
             if (!module.isValid() || explorer.isModuleOpened(module))
                 continue;
@@ -73,10 +81,14 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
                         ModuleHandler handler = this.handlerMap.get(module);
                         if (handler == null)
                             throw new NullPointerException(Logs.format("{} module handler is null", module));
-                        if (handler == null || handler.openModule(explorer)) {
+                        if (consuming)
+                            RunningChecker.startPrint(module);
+                        if (handler.openModule(explorer)) {
                             explorer.open(module);
                             succList.add(module);
                         }
+                        if (consuming)
+                            RunningChecker.endPrint(module);
                     }
                 }
             } catch (Throwable e) {
