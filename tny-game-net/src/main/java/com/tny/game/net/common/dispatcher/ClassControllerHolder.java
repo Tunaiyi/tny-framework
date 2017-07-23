@@ -3,12 +3,12 @@ package com.tny.game.net.common.dispatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.MethodFilter;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;
@@ -16,6 +16,7 @@ import com.tny.game.net.annotation.BeforePlugin;
 import com.tny.game.net.annotation.Check;
 import com.tny.game.net.annotation.Controller;
 import com.tny.game.net.annotation.MessageFilter;
+import com.tny.game.net.annotation.ScopeProfile;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.message.MessageMode;
 
@@ -50,7 +51,8 @@ public final class ClassControllerHolder extends ControllerHolder {
                 executor.getClass().getAnnotation(Auth.class),
                 executor.getClass().getAnnotationsByType(Check.class),
                 executor.getClass().getAnnotation(MessageFilter.class),
-                executor.getClass().getAnnotation(AppProfile.class));
+                executor.getClass().getAnnotation(AppProfile.class),
+                executor.getClass().getAnnotation(ScopeProfile.class));
         if (this.controller == null)
             throw new IllegalArgumentException(this.controllerClass + " is not Controller Object");
         for (Annotation annotation : controllerClass.getAnnotations())

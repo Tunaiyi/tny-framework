@@ -111,7 +111,8 @@ public final class MethodControllerHolder extends ControllerHolder {
                 method.getJavaMethod().getAnnotation(Auth.class),
                 method.getJavaMethod().getAnnotationsByType(Check.class),
                 method.getJavaMethod().getAnnotation(MessageFilter.class),
-                method.getJavaMethod().getAnnotation(AppProfile.class));
+                method.getJavaMethod().getAnnotation(AppProfile.class),
+                method.getJavaMethod().getAnnotation(ScopeProfile.class));
         try {
             this.methodName = method.getName();
             this.method = method;
@@ -248,8 +249,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public boolean isActive(String appType) {
-        return this.appTypes != null ? super.isActive(appType) : classController.isActive(appType);
+    public boolean isActiveByAppType(String appType) {
+        return this.appTypes != null ? super.isActiveByAppType(appType) : classController.isActiveByAppType(appType);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.tny.game.common.enums.Enums;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
+import com.tny.game.suite.base.capacity.CapacitySupplierType;
 import com.tny.game.suite.core.ScopeType;
 import com.tny.game.suite.core.AppType;
 
@@ -35,7 +36,8 @@ public class EnumLoader {
                         DemandParam.class,
                         Module.class,
                         Feature.class,
-                        OpenMode.class))
+                        OpenMode.class,
+                        CapacitySupplierType.class))
                 .setHandler((classes) -> classes.stream()
                         .filter(Class::isEnum)
                         .map(c -> (Class<? extends Enum>) c)

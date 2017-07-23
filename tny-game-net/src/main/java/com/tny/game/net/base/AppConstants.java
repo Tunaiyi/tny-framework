@@ -6,7 +6,7 @@ package com.tny.game.net.base;
 public interface AppConstants {
 
     String APP_TYPE = "tny.server.app_type";
-    String SCOPE_TYPE = "tny.server.scope_type";
+    String SCOPE_TYPE = "tny.server.scope";
     String DISPATCHER_EXECUTOR_THREADS = "tny.server.dispatcher.executor.threads";
     String SESSION_HOLDER_CLEAR_INTERVAL = "tny.server.session_holder.clear_interval";
     String SESSION_HOLDER_SESSION_LIVE = "tny.server.session_holder.session_live";

@@ -3,6 +3,7 @@ package com.tny.game.suite.utils;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.net.base.AppConstants;
 import com.tny.game.suite.core.AppType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -104,9 +105,9 @@ public interface Configs {
     String SERVICE_CONFIG_PATH = "service.properties";
     Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
     String SERVER_ID /*                 */ = "tny.server.id";
-    String SERVER_SCOPE /*              */ = "tny.server.scope";
     String SERVER_LOCAL /*              */ = "tny.server.local";
-    String SERVER_TYPE /*               */ = "tny.server.type";
+    String SERVER_SCOPE /*              */ = AppConstants.SCOPE_TYPE;
+    String SERVER_TYPE /*               */ = AppConstants.APP_TYPE;
     String PUBLIC_HOST /*               */ = "tny.server.public_host";
     String PRIVATE_HOST /*              */ = "tny.server.private_host";
     String RMI_PORT /*                  */ = "tny.server.rmi.registryPort";
@@ -203,7 +204,6 @@ public interface Configs {
         return defaultValue;
     }
     //endregion
-
 
 
     //region 协议配置

@@ -10,6 +10,7 @@ import com.tny.game.net.annotation.BeforePlugin;
 import com.tny.game.net.annotation.Check;
 import com.tny.game.net.annotation.Controller;
 import com.tny.game.net.annotation.MessageFilter;
+import com.tny.game.net.annotation.ScopeProfile;
 import com.tny.game.net.auth.AuthProvider;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.checker.ControllerChecker;
@@ -69,11 +70,16 @@ public abstract class ControllerHolder {
     protected final List<String> appTypes;
 
     /**
+     * 应用类型
+     */
+    protected final List<String> scopes;
+
+    /**
      * 检测器列表
      */
     protected List<ControllerCheckerHolder> checkerHolders;
 
-    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile profile) {
+    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
@@ -84,10 +90,14 @@ public abstract class ControllerHolder {
             this.userGroups = ImmutableList.copyOf(this.auth.value());
         else
             this.userGroups = null;
-        if (profile != null)
-            this.appTypes = ImmutableList.copyOf(profile.value());
+        if (appProfile != null)
+            this.appTypes = ImmutableList.copyOf(appProfile.value());
         else
             this.appTypes = null;
+        if (scopeProfile != null)
+            this.scopes = ImmutableList.copyOf(scopeProfile.value());
+        else
+            this.scopes = null;
         if (beforePlugins != null)
             this.initPlugins(dispatcher, Stream.of(beforePlugins)
                     .map(BeforePlugin::value)
@@ -151,8 +161,12 @@ public abstract class ControllerHolder {
         return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(group);
     }
 
-    public boolean isActive(String appType) {
+    public boolean isActiveByAppType(String appType) {
         return this.appTypes == null || this.appTypes.isEmpty() || this.appTypes.contains(appType);
+    }
+
+    public boolean isActiveByScope(String scope) {
+        return this.scopes == null || this.scopes.isEmpty() || this.scopes.contains(scope);
     }
 
     protected abstract List<ControllerPlugin> getControllerBeforePlugins();

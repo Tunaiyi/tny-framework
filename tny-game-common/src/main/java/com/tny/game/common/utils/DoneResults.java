@@ -10,6 +10,15 @@ import com.tny.game.common.result.ResultCode;
 public class DoneResults {
 
     /**
+     * 返回一个成功的结果, value 为null
+     *
+     * @return
+     */
+    public static <M> DoneResult<M> succ() {
+        return new DoneResult<>(null, ResultCode.SUCCESS);
+    }
+
+    /**
      * 返回一个成功的结果, value 不能为null
      *
      * @param value

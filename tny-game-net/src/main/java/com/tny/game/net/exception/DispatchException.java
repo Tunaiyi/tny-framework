@@ -14,6 +14,8 @@ public class DispatchException extends Exception {
      */
     private ResultCode resultCode;
 
+    private Object body;
+
     public DispatchException(ResultCode code, String message) {
         this(code, message, null);
     }
@@ -27,8 +29,21 @@ public class DispatchException extends Exception {
     }
 
     public DispatchException(ResultCode code, String message, Throwable cause) {
+        this(code, null, null, cause);
+    }
+
+    public DispatchException(ResultCode code, Object body) {
+        this(code, null, body, null);
+    }
+
+    public DispatchException(ResultCode code, String message, Object body) {
+        this(code, message, body, null);
+    }
+
+    public DispatchException(ResultCode code, String message, Object body, Throwable cause) {
         super(message, cause);
         this.resultCode = code;
+        this.body = body;
     }
 
     public ResultCode getResultCode() {

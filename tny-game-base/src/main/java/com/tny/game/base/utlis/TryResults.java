@@ -1,13 +1,23 @@
 package com.tny.game.base.utlis;
 
 import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.common.utils.Throws;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.utils.DoneResult;
+import com.tny.game.common.utils.Throws;
 
 /**
  * Created by Kun Yang on 16/7/29.
  */
 public class TryResults {
+
+    /**
+     * 返回一个成功的结果, value 为null
+     *
+     * @return
+     */
+    public static <M> DoneResult<M> succ() {
+        return new TryResult<>(null, ResultCode.SUCCESS);
+    }
 
     /**
      * 返回一个成功的结果, value 不能为null

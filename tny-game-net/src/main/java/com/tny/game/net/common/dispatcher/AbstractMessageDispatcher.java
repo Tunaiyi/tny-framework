@@ -49,11 +49,11 @@ import java.util.concurrent.Future;
  * 抽象消息派发器
  *
  * @author KGTny
- *         <p>
- *         抽象消息派发器
- *         <p>
- *         <p>
- *         实现对controllerMap的初始化,派发消息流程<br>
+ * <p>
+ * 抽象消息派发器
+ * <p>
+ * <p>
+ * 实现对controllerMap的初始化,派发消息流程<br>
  */
 public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
@@ -611,11 +611,15 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             //     throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
             // }
             String appType = appConfiguration.getAppType();
-            if (!controller.isActive(appType)) {
+            if (!controller.isActiveByAppType(appType)) {
                 DISPATCHER_LOG.error("Controller [{}] 应用类型 {} 无法此协议", getName(), appType);
                 throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
             }
-
+            String scopeType = appConfiguration.getScopeType();
+            if (!controller.isActiveByScope(scopeType)) {
+                DISPATCHER_LOG.error("Controller [{}] 应用类型 {} 无法此协议", getName(), appType);
+                throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
+            }
             if (DISPATCHER_LOG.isDebugEnabled())
                 DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
             if (controller.isAuth() && !this.tunnel.isLogin()) {

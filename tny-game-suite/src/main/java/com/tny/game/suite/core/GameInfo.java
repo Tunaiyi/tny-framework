@@ -50,9 +50,9 @@ public class GameInfo {
     private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
     static {
-        String serverTypeStr = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_SCOPE);
+        String scopeStr = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_SCOPE);
         GameInfo.local = Configs.SERVICE_CONFIG.getStr(Configs.SERVER_LOCAL, "zh-cn");
-        GameInfo.scopeType = ScopeTypes.of(serverTypeStr.toUpperCase());
+        GameInfo.scopeType = ScopeTypes.of(scopeStr.toUpperCase());
         LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
         XStream xStream = new XStream();
         RunningChecker.start(GameInfo.class);
