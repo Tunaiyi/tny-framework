@@ -12,6 +12,7 @@ import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.Session;
+import com.tny.game.net.tunnel.NetTunnel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +32,26 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     private static final long DEFAULT_CLEAR_INTERVAL = 60000L;
     private static final long DEFAULT_SESSION_LIFE = 600000L;
+    private static final long DEFAULT_KEEP_IDLE_TIME = 180000L;
 
     protected long sessionLife;
+    protected long keepIdleTime;
 
     protected final ConcurrentHashMap<String, Map<Object, NetSession>> sessionMap = new ConcurrentHashMap<>();
 
     public CommonSessionHolder() {
-        this(DEFAULT_SESSION_LIFE, DEFAULT_CLEAR_INTERVAL);
+        this(DEFAULT_SESSION_LIFE, DEFAULT_KEEP_IDLE_TIME, DEFAULT_CLEAR_INTERVAL);
     }
 
     public CommonSessionHolder(Config config) {
         this(config.getLong(AppConstants.SESSION_HOLDER_SESSION_LIVE, DEFAULT_SESSION_LIFE),
+                config.getLong(AppConstants.SESSION_HOLDER_KEEP_IDLE_TIME, DEFAULT_KEEP_IDLE_TIME),
                 config.getLong(AppConstants.SESSION_HOLDER_CLEAR_INTERVAL, DEFAULT_CLEAR_INTERVAL));
     }
 
-    public CommonSessionHolder(long sessionLife, long clearInterval) {
+    public CommonSessionHolder(long sessionLife, long keepIdleTime, long clearInterval) {
         this.sessionLife = sessionLife;
+        this.keepIdleTime = keepIdleTime;
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
     }
@@ -56,6 +61,11 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
+                    NetTunnel<?> tunnel = session.getCurrentTunnel();
+                    if (tunnel.getLatestActiveAt() + keepIdleTime < now) {
+                        LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
+                        tunnel.close();
+                    }
                     NetSession<?> closeSession = null;
                     if (session.isClosed()) {
                         userGroupSessionMap.remove(session.getUID(), session);

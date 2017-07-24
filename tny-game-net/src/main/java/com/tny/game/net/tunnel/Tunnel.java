@@ -16,6 +16,8 @@ public interface Tunnel<UID> extends Terminal<UID> {
 
     boolean isConnected();
 
+    long getLatestActiveAt();
+
     Attributes attributes();
 
     Session<UID> getSession();

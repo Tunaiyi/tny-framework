@@ -60,6 +60,9 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                         .map(CapacitySupplier::getID)
                         .collect(Collectors.toList()))
                 .setExpireAt(goal.getExpireAt())
+                .addAllGroup(goal.getSuppliersCapacityGroups().stream()
+                        .map(CapacityGroup::getID)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 
@@ -68,6 +71,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                 proto.getId(),
                 proto.getItemID(),
                 proto.getSuppliersList().stream(),
+                proto.getGroupList().stream().map(Capacities::getGroup),
                 visitor,
                 proto.getExpireAt());
     }
@@ -77,7 +81,10 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                 .setId(supplier.getID())
                 .setItemID(supplier.getItemID())
                 .setType(supplier.getSupplierType().getID())
-                .setExpireAt(supplier.getExpireAt());
+                .setExpireAt(supplier.getExpireAt())
+                .addAllGroup(supplier.getAllCapacityGroups().stream()
+                        .map(CapacityGroup::getID)
+                        .collect(Collectors.toSet()));
         if (supplier instanceof ComboCapacitySupplier) {
             ComboCapacitySupplier comboSupplier = as(supplier);
             builder.setCombo(true)
@@ -99,6 +106,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                     proto.getId(),
                     proto.getItemID(),
                     proto.getSuppliersList().stream(),
+                    proto.getGroupList().stream().map(Capacities::getGroup),
                     visitor,
                     proto.getExpireAt());
         } else {
@@ -108,6 +116,9 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
                     proto.getItemID(),
                     visitor.getPlayerID(),
                     intEntries2Map(proto.getCapacityMapList()),
+                    proto.getGroupList().stream()
+                            .map(Capacities::getGroup)
+                            .collect(Collectors.toSet()),
                     proto.getExpireAt());
         }
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 能力值提供七代理接口
@@ -44,4 +45,8 @@ public interface ProxySupplyCapacitySupplier extends CapacitySupplier {
         supply().collectValues(collector, capacities);
     }
 
+    @Override
+    default Set<CapacityGroup> getAllCapacityGroups() {
+        return supply().getAllCapacityGroups();
+    }
 }

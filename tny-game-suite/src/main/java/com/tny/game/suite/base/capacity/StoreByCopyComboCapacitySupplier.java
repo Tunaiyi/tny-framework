@@ -33,7 +33,9 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 
     private CapacityVisitor visitor;
 
-    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers, CapacityVisitor visitor, long expireAt) {
+    private Set<CapacityGroup> groups;
+
+    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
@@ -41,6 +43,25 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
         suppliers.forEach(suppliersBuilder::add);
         this.suppliers = suppliersBuilder.build();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        groups.forEach(groupsBuilder::add);
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
+
+    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemID = itemID;
+        this.type = type;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        suppliers.forEach(s->{
+            suppliersBuilder.add(s.getID());
+            groupsBuilder.addAll(s.getAllCapacityGroups());
+        });
+        this.suppliers = suppliersBuilder.build();
+        this.groups = groupsBuilder.build();
         this.visitor = visitor;
     }
 
@@ -63,6 +84,7 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
     public CapacitySupplierType getSupplierType() {
         return type;
     }
+
 
     @Override
     public Collection<? extends CapacitySupplier> dependSuppliers() {
@@ -108,6 +130,13 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
                 .filter(Objects::nonNull)
                 .reduce(NumberAide::add)
                 .orElse(defaultValue);
+    }
+
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        if (!this.isSupplying() || suppliers.isEmpty())
+            return ImmutableSet.of();
+        return groups;
     }
 
 

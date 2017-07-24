@@ -3,6 +3,7 @@ package com.tny.game.suite.base.capacity;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 可通过能力接口
@@ -99,6 +100,11 @@ public interface CapacitySupply extends Capacitiable {
         for (Capacity capacity : capacities)
             collector.collect(capacity, getValue(capacity));
     }
+
+    /**
+     * @return 获取所有能力值组
+     */
+    Set<CapacityGroup> getAllCapacityGroups();
 
     /**
      * @return 获取所有相关的所有 能力值

@@ -1,12 +1,12 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemModel;
 import com.tny.game.suite.base.capacity.event.CapacityEvents;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -15,21 +15,21 @@ import java.util.stream.Collectors;
  */
 public class CacheCapacitySupply implements InnerCapacitySupply {
 
-    private CapacityCache cache;
+    private AbilitiesCache<? extends CapacityItemModel> cache;
 
-    public CacheCapacitySupply(Item<?> item) {
-        this(new DefaultCapacityCache(item));
+    public CacheCapacitySupply(Item<? extends CapacityItemModel> item) {
+        this(new DefaultAbilitiesCache<>(item));
     }
 
-    public CacheCapacitySupply(long playerID, ItemModel model) {
-        this(new DefaultCapacityCache(playerID, model));
+    public CacheCapacitySupply(long playerID, CapacityItemModel model) {
+        this(new DefaultAbilitiesCache<>(playerID, model));
     }
 
-    public CacheCapacitySupply(Item<?> item, ItemModel model) {
-        this(new DefaultCapacityCache(item, model));
+    public CacheCapacitySupply(Item<?> item, CapacityItemModel model) {
+        this(new DefaultAbilitiesCache<>(item, model));
     }
 
-    public CacheCapacitySupply(CapacityCache cache) {
+    private CacheCapacitySupply(AbilitiesCache<? extends CapacityItemModel> cache) {
         this.cache = cache;
     }
 
@@ -48,6 +48,11 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
         for (Capacity capacity : capacities) {
             collector.collect(capacity, cache.get(capacity));
         }
+    }
+
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        return this.cache.itemModel().getCapacityGroups();
     }
 
     @Override

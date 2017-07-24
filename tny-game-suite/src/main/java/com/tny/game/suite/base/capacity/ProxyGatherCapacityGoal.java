@@ -1,6 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * 内部能力值作用对象
@@ -15,4 +16,8 @@ public interface ProxyGatherCapacityGoal extends CapacityGoal {
         return gather().suppliers();
     }
 
+    @Override
+    default Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return gather().getSuppliersCapacityGroups();
+    }
 }

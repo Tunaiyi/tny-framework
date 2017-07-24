@@ -24,15 +24,34 @@ public class StoreByCopyCapacityGoal extends BaseStoreCapacitiable implements St
 
     private Set<Long> suppliers;
 
+    private Set<CapacityGroup> groups;
+
     private CapacityVisitor visitor;
 
-    StoreByCopyCapacityGoal(long id, int itemID, Stream<Long> suppliers, CapacityVisitor visitor, long expireAt) {
+    StoreByCopyCapacityGoal(long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
         ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
         suppliers.forEach(suppliersBuilder::add);
         this.suppliers = suppliersBuilder.build();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        groups.forEach(groupsBuilder::add);
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
+    StoreByCopyCapacityGoal(long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemID = itemID;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        suppliers.forEach(s->{
+            suppliersBuilder.add(s.getID());
+            groupsBuilder.addAll(s.getAllCapacityGroups());
+        });
+        this.suppliers = suppliersBuilder.build();
+        this.groups = groupsBuilder.build();
         this.visitor = visitor;
     }
 
@@ -49,6 +68,11 @@ public class StoreByCopyCapacityGoal extends BaseStoreCapacitiable implements St
     @Override
     public long getPlayerID() {
         return visitor.getPlayerID();
+    }
+
+    @Override
+    public Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return groups;
     }
 
     @Override

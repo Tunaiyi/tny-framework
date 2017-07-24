@@ -99,6 +99,19 @@ public final class PBCapacity {
      * <code>repeated int64 suppliers = 7;</code>
      */
     long getSuppliers(int index);
+
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    java.util.List<java.lang.Integer> getGroupList();
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    int getGroupCount();
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    int getGroup(int index);
   }
   /**
    * Protobuf type {@code CapacitySupplierProto}
@@ -119,6 +132,7 @@ public final class PBCapacity {
       expireAt_ = 0L;
       capacityMap_ = java.util.Collections.emptyList();
       suppliers_ = java.util.Collections.emptyList();
+      group_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -204,6 +218,27 @@ public final class PBCapacity {
               input.popLimit(limit);
               break;
             }
+            case 64: {
+              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+                group_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000080;
+              }
+              group_.add(input.readInt32());
+              break;
+            }
+            case 66: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080) && input.getBytesUntilLimit() > 0) {
+                group_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000080;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                group_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -217,6 +252,9 @@ public final class PBCapacity {
         }
         if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
           suppliers_ = java.util.Collections.unmodifiableList(suppliers_);
+        }
+        if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+          group_ = java.util.Collections.unmodifiableList(group_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -367,6 +405,28 @@ public final class PBCapacity {
       return suppliers_.get(index);
     }
 
+    public static final int GROUP_FIELD_NUMBER = 8;
+    private java.util.List<java.lang.Integer> group_;
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getGroupList() {
+      return group_;
+    }
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public int getGroupCount() {
+      return group_.size();
+    }
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public int getGroup(int index) {
+      return group_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -399,6 +459,9 @@ public final class PBCapacity {
       }
       for (int i = 0; i < suppliers_.size(); i++) {
         output.writeInt64(7, suppliers_.get(i));
+      }
+      for (int i = 0; i < group_.size(); i++) {
+        output.writeInt32(8, group_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -440,6 +503,15 @@ public final class PBCapacity {
         }
         size += dataSize;
         size += 1 * getSuppliersList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < group_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(group_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getGroupList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -487,6 +559,8 @@ public final class PBCapacity {
           .equals(other.getCapacityMapList());
       result = result && getSuppliersList()
           .equals(other.getSuppliersList());
+      result = result && getGroupList()
+          .equals(other.getGroupList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -528,6 +602,10 @@ public final class PBCapacity {
       if (getSuppliersCount() > 0) {
         hash = (37 * hash) + SUPPLIERS_FIELD_NUMBER;
         hash = (53 * hash) + getSuppliersList().hashCode();
+      }
+      if (getGroupCount() > 0) {
+        hash = (37 * hash) + GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getGroupList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -666,6 +744,8 @@ public final class PBCapacity {
         }
         suppliers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000040);
+        group_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -724,6 +804,11 @@ public final class PBCapacity {
           bitField0_ = (bitField0_ & ~0x00000040);
         }
         result.suppliers_ = suppliers_;
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          group_ = java.util.Collections.unmodifiableList(group_);
+          bitField0_ = (bitField0_ & ~0x00000080);
+        }
+        result.group_ = group_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -814,6 +899,16 @@ public final class PBCapacity {
           } else {
             ensureSuppliersIsMutable();
             suppliers_.addAll(other.suppliers_);
+          }
+          onChanged();
+        }
+        if (!other.group_.isEmpty()) {
+          if (group_.isEmpty()) {
+            group_ = other.group_;
+            bitField0_ = (bitField0_ & ~0x00000080);
+          } else {
+            ensureGroupIsMutable();
+            group_.addAll(other.group_);
           }
           onChanged();
         }
@@ -1310,6 +1405,72 @@ public final class PBCapacity {
         onChanged();
         return this;
       }
+
+      private java.util.List<java.lang.Integer> group_ = java.util.Collections.emptyList();
+      private void ensureGroupIsMutable() {
+        if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+          group_ = new java.util.ArrayList<java.lang.Integer>(group_);
+          bitField0_ |= 0x00000080;
+         }
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getGroupList() {
+        return java.util.Collections.unmodifiableList(group_);
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public int getGroupCount() {
+        return group_.size();
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public int getGroup(int index) {
+        return group_.get(index);
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder setGroup(
+          int index, int value) {
+        ensureGroupIsMutable();
+        group_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder addGroup(int value) {
+        ensureGroupIsMutable();
+        group_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder addAllGroup(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureGroupIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, group_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder clearGroup() {
+        group_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -1402,6 +1563,19 @@ public final class PBCapacity {
      * <code>repeated int64 suppliers = 4;</code>
      */
     long getSuppliers(int index);
+
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    java.util.List<java.lang.Integer> getGroupList();
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    int getGroupCount();
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    int getGroup(int index);
   }
   /**
    * Protobuf type {@code CapacityGoalProto}
@@ -1419,6 +1593,7 @@ public final class PBCapacity {
       itemID_ = 0;
       expireAt_ = 0L;
       suppliers_ = java.util.Collections.emptyList();
+      group_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1485,6 +1660,27 @@ public final class PBCapacity {
               input.popLimit(limit);
               break;
             }
+            case 64: {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                group_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              group_.add(input.readInt32());
+              break;
+            }
+            case 66: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
+                group_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                group_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1495,6 +1691,9 @@ public final class PBCapacity {
       } finally {
         if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           suppliers_ = java.util.Collections.unmodifiableList(suppliers_);
+        }
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          group_ = java.util.Collections.unmodifiableList(group_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1580,6 +1779,28 @@ public final class PBCapacity {
       return suppliers_.get(index);
     }
 
+    public static final int GROUP_FIELD_NUMBER = 8;
+    private java.util.List<java.lang.Integer> group_;
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getGroupList() {
+      return group_;
+    }
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public int getGroupCount() {
+      return group_.size();
+    }
+    /**
+     * <code>repeated int32 group = 8;</code>
+     */
+    public int getGroup(int index) {
+      return group_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1603,6 +1824,9 @@ public final class PBCapacity {
       }
       for (int i = 0; i < suppliers_.size(); i++) {
         output.writeInt64(4, suppliers_.get(i));
+      }
+      for (int i = 0; i < group_.size(); i++) {
+        output.writeInt32(8, group_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1632,6 +1856,15 @@ public final class PBCapacity {
         }
         size += dataSize;
         size += 1 * getSuppliersList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < group_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(group_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getGroupList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1667,6 +1900,8 @@ public final class PBCapacity {
       }
       result = result && getSuppliersList()
           .equals(other.getSuppliersList());
+      result = result && getGroupList()
+          .equals(other.getGroupList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1695,6 +1930,10 @@ public final class PBCapacity {
       if (getSuppliersCount() > 0) {
         hash = (37 * hash) + SUPPLIERS_FIELD_NUMBER;
         hash = (53 * hash) + getSuppliersList().hashCode();
+      }
+      if (getGroupCount() > 0) {
+        hash = (37 * hash) + GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getGroupList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1822,6 +2061,8 @@ public final class PBCapacity {
         bitField0_ = (bitField0_ & ~0x00000004);
         suppliers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
+        group_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1863,6 +2104,11 @@ public final class PBCapacity {
           bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.suppliers_ = suppliers_;
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          group_ = java.util.Collections.unmodifiableList(group_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.group_ = group_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1921,6 +2167,16 @@ public final class PBCapacity {
           } else {
             ensureSuppliersIsMutable();
             suppliers_.addAll(other.suppliers_);
+          }
+          onChanged();
+        }
+        if (!other.group_.isEmpty()) {
+          if (group_.isEmpty()) {
+            group_ = other.group_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureGroupIsMutable();
+            group_.addAll(other.group_);
           }
           onChanged();
         }
@@ -2110,6 +2366,72 @@ public final class PBCapacity {
       public Builder clearSuppliers() {
         suppliers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> group_ = java.util.Collections.emptyList();
+      private void ensureGroupIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          group_ = new java.util.ArrayList<java.lang.Integer>(group_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getGroupList() {
+        return java.util.Collections.unmodifiableList(group_);
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public int getGroupCount() {
+        return group_.size();
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public int getGroup(int index) {
+        return group_.get(index);
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder setGroup(
+          int index, int value) {
+        ensureGroupIsMutable();
+        group_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder addGroup(int value) {
+        ensureGroupIsMutable();
+        group_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder addAllGroup(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureGroupIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, group_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 group = 8;</code>
+       */
+      public Builder clearGroup() {
+        group_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
       }
@@ -3388,17 +3710,17 @@ public final class PBCapacity {
   static {
     java.lang.String[] descriptorData = {
       "\n\035tny/protobuf/PBCapacity.proto\032\033tny/pro" +
-      "tobuf/PBCommon.proto\"\232\001\n\025CapacitySupplie" +
+      "tobuf/PBCommon.proto\"\251\001\n\025CapacitySupplie" +
       "rProto\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\014\n\004ty" +
       "pe\030\003 \001(\005\022\r\n\005combo\030\004 \001(\010\022\020\n\010expireAt\030\005 \001(" +
       "\003\022#\n\013capacityMap\030\006 \003(\0132\016.IntEntryProto\022\021" +
-      "\n\tsuppliers\030\007 \003(\003\"T\n\021CapacityGoalProto\022\n" +
-      "\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(\005\022\020\n\010expireAt\030\003" +
-      " \001(\003\022\021\n\tsuppliers\030\004 \003(\003\"t\n\022CapacityStore" +
-      "Proto\022\020\n\010playerID\030\001 \001(\003\022)\n\tsuppliers\030\002 \003" +
-      "(\0132\026.CapacitySupplierProto\022!\n\005goals\030\003 \003(",
-      "\0132\022.CapacityGoalProtoB\027\n\025com.tny.game.pr" +
-      "otobuf"
+      "\n\tsuppliers\030\007 \003(\003\022\r\n\005group\030\010 \003(\005\"c\n\021Capa" +
+      "cityGoalProto\022\n\n\002id\030\001 \001(\003\022\016\n\006itemID\030\002 \001(" +
+      "\005\022\020\n\010expireAt\030\003 \001(\003\022\021\n\tsuppliers\030\004 \003(\003\022\r" +
+      "\n\005group\030\010 \003(\005\"t\n\022CapacityStoreProto\022\020\n\010p" +
+      "layerID\030\001 \001(\003\022)\n\tsuppliers\030\002 \003(\0132\026.Capac",
+      "itySupplierProto\022!\n\005goals\030\003 \003(\0132\022.Capaci" +
+      "tyGoalProtoB\027\n\025com.tny.game.protobuf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3418,13 +3740,13 @@ public final class PBCapacity {
     internal_static_CapacitySupplierProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CapacitySupplierProto_descriptor,
-        new java.lang.String[] { "Id", "ItemID", "Type", "Combo", "ExpireAt", "CapacityMap", "Suppliers", });
+        new java.lang.String[] { "Id", "ItemID", "Type", "Combo", "ExpireAt", "CapacityMap", "Suppliers", "Group", });
     internal_static_CapacityGoalProto_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_CapacityGoalProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CapacityGoalProto_descriptor,
-        new java.lang.String[] { "Id", "ItemID", "ExpireAt", "Suppliers", });
+        new java.lang.String[] { "Id", "ItemID", "ExpireAt", "Suppliers", "Group", });
     internal_static_CapacityStoreProto_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_CapacityStoreProto_fieldAccessorTable = new

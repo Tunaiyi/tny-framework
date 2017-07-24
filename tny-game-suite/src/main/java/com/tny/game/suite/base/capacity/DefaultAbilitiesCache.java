@@ -11,30 +11,30 @@ import java.util.Set;
 /**
  * 能力值缓存
  */
-public class DefaultCapacityCache extends CapacityCache {
+public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCache<I> {
 
     private volatile Map<Ability, Number> abilityMap = new CopyOnWriteMap<>();
 
     private Item<?> item;
 
-    protected ItemModel model;
+    protected I model;
 
     protected long playerID;
 
-    public DefaultCapacityCache(Item<?> item) {
+    public DefaultAbilitiesCache(Item<? extends I> item) {
         super();
         this.item = item;
         this.model = item.getModel();
     }
 
-    public DefaultCapacityCache(long playerID, ItemModel model) {
+    public DefaultAbilitiesCache(long playerID, I model) {
         super();
         this.playerID = playerID;
         this.item = null;
         this.model = model;
     }
 
-    public DefaultCapacityCache(Item<?> item, ItemModel model) {
+    public DefaultAbilitiesCache(Item<?> item, I model) {
         super();
         this.item = item;
         this.model = model;
@@ -44,6 +44,11 @@ public class DefaultCapacityCache extends CapacityCache {
     @Override
     public long getPlayerID() {
         return this.playerID;
+    }
+
+    @Override
+    public I itemModel() {
+        return model;
     }
 
     @Override
@@ -62,33 +67,33 @@ public class DefaultCapacityCache extends CapacityCache {
         Number number = abilityMap.get(ability);
         if (number != null)
             return true;
-        return getModel().hasAbility(ability);
+        return this.model.hasAbility(ability);
     }
 
     @Override
     public <A extends Ability> Map<A, Number> getAll(Class<A> abilityClass, Object... attributes) {
         if (this.item != null) {
-            return getModel().getAbilitiesByType(this.item, abilityClass, Number.class, attributes);
+            return this.model.getAbilitiesByType(this.item, abilityClass, Number.class, attributes);
         } else {
-            return getModel().getAbilitiesByType(this.playerID, abilityClass, Number.class, attributes);
+            return this.model.getAbilitiesByType(this.playerID, abilityClass, Number.class, attributes);
         }
     }
 
     @Override
     public Set<Ability> getAllAbilityTypes() {
-        return getModel().getAbilityTypes();
+        return this.model.getAbilityTypes();
     }
 
     @Override
     public <S extends Ability> Set<S> getAbilityTypes(Class<S> abilityClass) {
-        return getModel().getAbilityTypes(abilityClass);
+        return this.model.getAbilityTypes(abilityClass);
     }
 
     protected synchronized Number count(Map<Ability, Number> abilityMap, Ability ability, Object... attributes) {
         Number number = abilityMap.get(ability);
         if (number != null)
             return number;
-        ItemModel model = getModel();
+        ItemModel model = this.model;
         if (model.hasAbility(ability)) {
             if (this.item != null) {
                 number = model.getAbility(this.item, ability, Number.class, attributes);
@@ -107,16 +112,8 @@ public class DefaultCapacityCache extends CapacityCache {
         return number;
     }
 
-    private ItemModel getModel() {
-        if (this.model != null)
-            return this.model;
-        else if (this.item != null)
-            this.model = this.item.getModel();
-        return this.model;
-    }
-
     @Override
-    protected void refresh() {
+    public void refresh() {
         this.abilityMap = new CopyOnWriteMap<>();
     }
 

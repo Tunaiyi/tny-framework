@@ -5,11 +5,13 @@ import com.tny.game.common.number.NumberAide;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * 能力值提供器集合
- *
+ * <p>
  * Created by Kun Yang on 2017/7/18.
  */
 public interface CapacityGather extends Capacitiable {
@@ -397,6 +399,15 @@ public interface CapacityGather extends Capacitiable {
     }
 
     /**
+     * @return 获取所有提供器的能力值组
+     */
+    default Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return suppliersStream()
+                .flatMap(s -> s.getAllCapacityGroups().stream())
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * @return 获取提供器列表
      */
     Collection<? extends CapacitySupplier> suppliers();
@@ -407,5 +418,6 @@ public interface CapacityGather extends Capacitiable {
     default Stream<? extends CapacitySupplier> suppliersStream() {
         return suppliers().stream();
     }
+
 
 }

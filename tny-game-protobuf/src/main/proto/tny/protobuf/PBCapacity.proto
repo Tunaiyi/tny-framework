@@ -10,6 +10,7 @@ message CapacitySupplierProto {
     optional int64 expireAt = 5;
     repeated IntEntryProto capacityMap = 6;
     repeated int64 suppliers = 7;
+    repeated int32 group = 8;
 }
 
 message CapacityGoalProto {
@@ -17,6 +18,7 @@ message CapacityGoalProto {
     optional int32 itemID = 2;
     optional int64 expireAt = 3;
     repeated int64 suppliers = 4;
+    repeated int32 group = 8;
 }
 
 message CapacityStoreProto {

@@ -1,13 +1,12 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.ItemModel;
 import com.tny.game.suite.base.GameItem;
 
 /**
  * Item能力值提供器
  * Created by Kun Yang on 16/3/12.
  */
-public abstract class CapacitySupplierItem<IM extends ItemModel> extends GameItem<IM> implements CapacitySupplier {
+public abstract class CapacitySupplierItem<IM extends CapacityItemModel> extends GameItem<IM> implements CapacitySupplier {
 
     protected InnerCapacitySupply capacitySupply;
 

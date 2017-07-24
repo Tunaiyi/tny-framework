@@ -1,8 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -27,4 +29,10 @@ public interface ProxyVisitorCapacityGoal extends ProxyGatherCapacityGoal {
                 .orElse(Stream.empty());
     }
 
+    @Override
+    default Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return visitor().findGoal(this.getID())
+                .map(CapacityGoal::getSuppliersCapacityGroups)
+                .orElse(ImmutableSet.of());
+    }
 }

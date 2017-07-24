@@ -1,10 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemModel;
 import com.tny.game.suite.base.capacity.event.CapacityEvents;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 可缓存能力提供器
@@ -14,23 +14,23 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
 
     private long playerID;
 
-    private ItemModel model;
+    private CapacityItemModel model;
 
     private Item<?> item;
 
-    public DefaultCapacitySupply(Item<?> item, ItemModel model) {
+    public DefaultCapacitySupply(Item<?> item, CapacityItemModel model) {
         this.playerID = item.getPlayerID();
         this.item = item;
         this.model = model;
     }
 
-    public DefaultCapacitySupply(Item<?> item) {
+    public DefaultCapacitySupply(Item<? extends CapacityItemModel> item) {
         this.playerID = item.getPlayerID();
         this.model = item.getModel();
         this.item = item;
     }
 
-    public DefaultCapacitySupply(long playerID, ItemModel model) {
+    public DefaultCapacitySupply(long playerID, CapacityItemModel model) {
         this.playerID = playerID;
         this.model = model;
     }
@@ -42,6 +42,11 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
         } else {
             return model.getAbility(playerID, defaultNum, capacity);
         }
+    }
+
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        return model.getCapacityGroups();
     }
 
     @Override

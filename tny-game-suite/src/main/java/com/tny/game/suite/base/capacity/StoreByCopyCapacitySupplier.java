@@ -5,7 +5,9 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.base.item.ItemModels;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 游戏能力值提供器
@@ -23,13 +25,16 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     private ImmutableMap<Capacity, Number> capacityMap;
 
-    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap, long expireAt) {
+    private Set<CapacityGroup> groups;
+
+    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap, Set<CapacityGroup> groups, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
         this.playerID = playerID;
         this.type = type;
         this.capacityMap = ImmutableMap.copyOf(capacityMap);
+        this.groups = Collections.unmodifiableSet(groups);
     }
 
     @Override
@@ -67,6 +72,10 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
         return number == null ? defaultValue : number;
     }
 
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        return groups;
+    }
 
     @Override
     public Number getValue(Capacity capacity) {

@@ -1,12 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.ItemModel;
-
 /**
  * Item能力值提供器
  * Created by Kun Yang on 16/3/12.
  */
-public abstract class ProxyVisitorCapacitySupplierItem<IM extends ItemModel> extends CapacitySupplierItem<IM> implements ProxyVisitorCapacitySupplier {
+public abstract class ProxyVisitorCapacitySupplierItem<IM extends CapacityItemModel> extends CapacitySupplierItem<IM> implements ProxyVisitorCapacitySupplier {
 
     protected CapacityStorer storer;
 

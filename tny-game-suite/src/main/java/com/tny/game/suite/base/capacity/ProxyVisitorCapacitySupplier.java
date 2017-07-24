@@ -1,9 +1,11 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 能力值提供七代理接口
@@ -49,4 +51,10 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
                 .ifPresent(s -> s.collectValues(collector, capacities));
     }
 
+    @Override
+    default Set<CapacityGroup> getAllCapacityGroups() {
+        return visitor().findSupplier(this.getID())
+                .map(CapacitySupply::getAllCapacityGroups)
+                .orElse(ImmutableSet.of());
+    }
 }

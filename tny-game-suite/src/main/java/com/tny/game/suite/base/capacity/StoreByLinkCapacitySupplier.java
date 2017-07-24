@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import com.tny.game.base.item.ItemModels;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 游戏能力值提供器
@@ -49,6 +50,10 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapacitiable implement
         return supplier.getValue(capacity, defaultValue);
     }
 
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        return supplier.getAllCapacityGroups();
+    }
 
     @Override
     public Number getValue(Capacity capacity) {

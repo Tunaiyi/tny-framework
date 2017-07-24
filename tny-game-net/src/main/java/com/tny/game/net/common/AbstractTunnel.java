@@ -24,6 +24,8 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
 
     private final long id;
 
+    private long latestActiveAt;
+
     protected NetSession<UID> session;
 
     /* 附加属性 */
@@ -37,6 +39,7 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
 
     public AbstractTunnel(SessionFactory<UID> sessionFactory) {
         this.id = Tunnels.newID();
+        this.latestActiveAt = System.currentTimeMillis();
         this.session = sessionFactory.createSession(this);
     }
 
@@ -61,6 +64,11 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
     }
 
     @Override
+    public long getLatestActiveAt() {
+        return latestActiveAt;
+    }
+
+    @Override
     public boolean bind(NetSession<UID> session) {
         if (session.getCurrentTunnel() == this) {
             this.session = session;
@@ -71,11 +79,13 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
 
     @Override
     public void send(MessageContent<?> content) {
+        this.latestActiveAt = System.currentTimeMillis();
         session.send(this, content);
     }
 
     @Override
     public void receive(Message<UID> message) {
+        this.latestActiveAt = System.currentTimeMillis();
         session.receive(this, message);
     }
 

@@ -1,7 +1,5 @@
 package com.tny.game.suite.base.capacity;
 
-import java.util.stream.Stream;
-
 /**
  * Created by Kun Yang on 16/3/11.
  */

@@ -1,9 +1,9 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.ItemType;
-import com.tny.game.base.item.xml.XMLItemModel;
+import com.tny.game.suite.base.capacity.XMLCapacityItemModel;
 
-public class DefaultItemModel extends XMLItemModel {
+public class DefaultItemModel extends XMLCapacityItemModel {
 
     private ItemType itemType;
 
