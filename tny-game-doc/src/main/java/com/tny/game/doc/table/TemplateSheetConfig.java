@@ -1,10 +1,16 @@
 package com.tny.game.doc.table;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@XStreamAlias("config")
 public class TemplateSheetConfig {
 
     private String mvl;
 
     private String output;
+
+    public TemplateSheetConfig() {
+    }
 
     public TemplateSheetConfig(String mvl, String output) {
         super();

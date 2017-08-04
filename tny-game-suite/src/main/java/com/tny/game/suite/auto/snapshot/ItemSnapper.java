@@ -1,44 +1,33 @@
 package com.tny.game.suite.auto.snapshot;
 
 import com.tny.game.base.item.Item;
-import com.tny.game.oplog.Snapper;
 import com.tny.game.oplog.SnapperType;
-import com.tny.game.oplog.SnapshotType;
 
-public abstract class ItemSnapper<I extends Item<?>, S extends ItemSnapshot> implements Snapper<I, S> {
-
-    private SnapperType snapperType;
+public abstract class ItemSnapper<O, I extends Item<?>, S extends ItemSnapshot> extends BaseSnapper<O, S> {
 
     protected ItemSnapper(SnapperType snapperType) {
-        this.snapperType = snapperType;
+        super(snapperType);
     }
 
     @Override
-    public S toSnapshot(I item) {
-        S snapshot = this.snapperType.getSnapshotType().newSnapshot();
-        if (snapshot != null) {
-            snapshot.setIDs(item.getItemID(), item.getID());
-            snapshot.setPid(item.getPlayerID());
-            this.setSnapshot(snapshot, item);
-        }
+    public S toSnapshot(O object) {
+        I item = item(object);
+        if (item == null)
+            return null;
+        S snapshot = super.toSnapshot(object);
+        if (snapshot == null)
+            return null;
+        snapshot.setIDs(item.getItemID(), item.getID());
+        snapshot.setPid(item.getPlayerID());
+        this.setSnapshot(snapshot, object);
         return snapshot;
     }
 
     @Override
-    public long getSnapshotID(I item) {
-        return item.getID();
+    public long getSnapshotID(O object) {
+        return item(object).getID();
     }
 
-    @Override
-    public SnapshotType getSnapshotType() {
-        return this.snapperType.getSnapshotType();
-    }
-
-    @Override
-    public SnapperType getSnapperType() {
-        return this.snapperType;
-    }
-
-    public abstract void setSnapshot(S snapshot, I item);
+    protected abstract I item(O object);
 
 }

@@ -1,7 +1,9 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.number.NumberAide;
+import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.Enums;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 
 import java.util.function.Function;
@@ -131,11 +133,72 @@ public class ObjectAide extends ObjectUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object, Class<T> clazz) {
-        if (Number.class.isAssignableFrom(clazz)) {
-            return (T) NumberAide.as(object, (Class<? extends Number>) clazz);
-        }
         if (clazz.isInstance(object))
             return (T) object;
+        else if (clazz == int.class || clazz == Integer.class) {
+            if (object instanceof Integer) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).intValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toInt(as(object)));
+            }
+        } else if (clazz == long.class || clazz == Long.class) {
+            if (object instanceof Long) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).longValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toLong(as(object)));
+            }
+        } else if (clazz == float.class || clazz == Float.class) {
+            if (object instanceof Float) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).floatValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toFloat(as(object)));
+            }
+        } else if (clazz == double.class || clazz == Double.class) {
+            if (object instanceof Double) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).doubleValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toDouble(as(object)));
+            }
+        } else if (clazz == short.class || clazz == Short.class) {
+            if (object instanceof Short) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).shortValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toShort(as(object)));
+            }
+        } else if (clazz == byte.class || clazz == Byte.class) {
+            if (object instanceof Byte) {
+                return as(object);
+            } else if (object instanceof Number) {
+                return as(as(object, Number.class).byteValue());
+            } else if (object instanceof String) {
+                return as(NumberUtils.toByte(as(object)));
+            }
+        } else if (clazz == boolean.class || clazz == Boolean.class) {
+            if (object instanceof Boolean)
+                return as(object);
+            else if (object instanceof Number) {
+                return as(as(object, Number.class).longValue() > 0);
+            } else if (object instanceof String) {
+                return as(Boolean.valueOf(object.toString().toLowerCase()));
+            }
+        } else if (Enum.class.isAssignableFrom(clazz)) {
+            T value = null;
+            if (object instanceof String)
+                value = Enums.uncheckOfName(clazz, as(object));
+            if (value == null && EnumID.class.isAssignableFrom(clazz))
+                value = Enums.uncheckOf(as(clazz), object);
+            return value;
+        }
         throw new ClassCastException(object + "is not " + clazz + "instance");
     }
 

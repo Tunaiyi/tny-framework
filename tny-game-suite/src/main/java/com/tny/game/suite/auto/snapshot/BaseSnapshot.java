@@ -24,6 +24,15 @@ public abstract class BaseSnapshot implements Snapshot {
     }
 
     @Override
+    public long getID() {
+        return id;
+    }
+
+    public void setID(long id) {
+        this.id = id;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;

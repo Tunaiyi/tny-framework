@@ -3,20 +3,23 @@ package com.tny.game.doc.table;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @XStreamAlias("table")
 public class ConfigTable {
 
-    private TemplateSheetConfig config;
+    private List<TemplateSheetConfig> configs = new ArrayList<>();
 
     private TableAttribute attributeMap;
 
     public ConfigTable(String mvl, String output) {
         super();
-        this.config = new TemplateSheetConfig(mvl, output);
+        this.configs.add(new TemplateSheetConfig(mvl, output));
     }
 
-    public TemplateSheetConfig getConfig() {
-        return config;
+    public List<TemplateSheetConfig> getConfigs() {
+        return configs;
     }
 
     public Object getAttributeMap() {
@@ -25,10 +28,8 @@ public class ConfigTable {
 
     public void setAttributeMap(TableAttribute attributeMap) {
         this.attributeMap = attributeMap;
-        if (StringUtils.isNoneBlank(attributeMap.getTemplate()))
-            this.config.setMvl(attributeMap.getTemplate());
-        if (StringUtils.isNoneBlank(attributeMap.getOutput()))
-            this.config.setOut(attributeMap.getOutput());
+        if (StringUtils.isNoneBlank(attributeMap.getTemplate()) && StringUtils.isNoneBlank(attributeMap.getOutput()))
+            this.configs.add(new TemplateSheetConfig(attributeMap.getTemplate(), attributeMap.getOutput()));
     }
 
 }

@@ -62,7 +62,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
             userGroupSessionMap.forEach((key, session) -> {
                 try {
                     NetTunnel<?> tunnel = session.getCurrentTunnel();
-                    if (tunnel.getLatestActiveAt() + keepIdleTime < now) {
+                    if (tunnel.isConnected() && tunnel.getLatestActiveAt() + keepIdleTime < now) {
                         LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
                         tunnel.close();
                     }
@@ -221,7 +221,8 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         if (oldSession == session)
             return true;
         if (cert.isRelogin()) {
-            oldSession.offline();
+            if (oldSession != null)
+                oldSession.offline();
             // oldSession为null或者失效 session登陆ID不是同一个 session无法转换
             if (oldSession == null || oldSession.isClosed() || !oldSession.relogin(session)) {
                 throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);

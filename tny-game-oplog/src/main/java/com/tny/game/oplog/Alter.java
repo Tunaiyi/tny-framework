@@ -1,10 +1,23 @@
 package com.tny.game.oplog;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Supplier;
+
 public class Alter<N> {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(Alter.class);
 
     private N value;
 
     private N lately;
+
+    private Supplier<N> supplier;
+
+    public static <N> Alter<N> of(Supplier<N> supplier) {
+        return new Alter<N>(supplier);
+    }
 
     public static <N> Alter<N> of(N value) {
         return new Alter<N>(value);
@@ -23,12 +36,23 @@ public class Alter<N> {
         this.lately = lately;
     }
 
+    private Alter(Supplier<N> supplier) {
+        this.supplier = supplier;
+        this.value = supplier.get();
+    }
+
     public N getValue() {
         return this.value;
     }
 
     public N getLately() {
         return this.lately;
+    }
+
+    public void update() {
+        if (this.supplier == null)
+            LOGGER.warn("alter supplier is null", new NullPointerException());
+        this.update(this.supplier.get());
     }
 
     public void update(N alter) {

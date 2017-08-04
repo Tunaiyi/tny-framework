@@ -2,14 +2,15 @@ package com.tny.game.net.common.dispatcher;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
+import com.tny.game.common.number.LocalNum;
 import com.tny.game.common.reflect.GMethod;
-import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.ControllerPlugin;
@@ -20,7 +21,6 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.common.number.LocalNum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -470,6 +470,9 @@ public final class MethodControllerHolder extends ControllerHolder {
                 case CODE_NUM:
                     value = message.getCode();
                     break;
+            }
+            if (value != null && !this.paramClass.isInstance(value)) {
+                value = ObjectAide.as(value, this.paramClass);
             }
             return value;
         }

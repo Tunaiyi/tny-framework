@@ -19,8 +19,15 @@ public enum SuiteResultCode implements ResultCode {
 
     NAME_CONTENT_ILLEGAL(2020, "名字非法字符"),
     NAME_LENGTH_ILLEGAL(2021, "名字长度错误"),
-    NAME_FILTER_WORD(2022, "名字带有屏蔽字"),;
+    NAME_FILTER_WORD(2022, "名字带有屏蔽字"),
 
+    
+    TEXT_LENGTH_ILLEGAL(2024, "文本长度错误"),
+    TEXT_FILTER_WORD(2025, "文本带有屏蔽字"),
+
+
+    //
+    ;
     private final int code;
     private final String message;
     private final ResultCodeType type;

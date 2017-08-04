@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class WebServerCluster extends BaseCluster implements ServerPostStart {
+public abstract class WebServerCluster extends SpringBaseCluster implements ServerPostStart {
 
     @Autowired
     private ProtoExSchemaIniter protoExSchemaIniter;
@@ -98,8 +98,6 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
     };
 
     protected NodeWatcher<ServerSetting> settingHandler = (path, state, old, data) -> {
-        if (data == null)
-            return;
         ServerNode node;
         switch (state) {
             case CREATE:
@@ -133,7 +131,8 @@ public abstract class WebServerCluster extends BaseCluster implements ServerPost
     }
 
     @Override
-    public void postStart() throws Exception {
+    public void postStart() throws Throwable {
+        super.postStart();
         this.init();
     }
 

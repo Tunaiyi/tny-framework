@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Pattern;
-
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -23,20 +21,12 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
     @Autowired
     private WordsFilter wordsFilter;
 
-    private Pattern fullPattern = Pattern.compile("[a-zA-Z0-9\u4e00-\u9fa5]*");
-
     protected NameLimit() {
         super(NameFilter.class, String.class);
     }
 
     @Override
     protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, NameFilter annotation, String param) {
-        if (!this.fullPattern.matcher(param).matches()) {
-            LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    message.getUserID(), message.getProtocol(),
-                    index, param, this.fullPattern.pattern());
-            return SuiteResultCode.NAME_CONTENT_ILLEGAL;
-        }
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
@@ -49,4 +39,27 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
         }
         return ResultCode.SUCCESS;
     }
+
+//     public static void main(String[] args) {
+//         String[] values = {
+//                 "dafds",
+//                 "jdklsfjlkf}dsa",
+//                 "jdklsfjlkf{dsa",
+//                 "jdklsfjlkf(dsa",
+//                 "jdklsfjlkf)dsa",
+//                 "jdklsfjlkf[dsa",
+//                 "jdklsfjlkf]dsa",
+//                 "jdklsfjlkf*dsa",
+//                 "jdklsfjlkf?dsa",
+//                 "jdklsfjlkf\"dsa",
+//                 "jdklsfjlkf+dsa",
+//                 "jdklsfjlkf'dsa",
+//                 "jdklsfjlkf$dsa",
+//                 "jdklsfjlk^dsa",
+//                 "jdklsfjlkf\\dsa",
+//         };
+//         for (String v : values)
+//             System.out.println(v + " : " + fullPattern.matcher(v).find());
+//     }
+// }
 }

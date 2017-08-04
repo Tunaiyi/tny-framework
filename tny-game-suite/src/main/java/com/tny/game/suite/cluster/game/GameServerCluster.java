@@ -3,12 +3,9 @@ package com.tny.game.suite.cluster.game;
 
 import com.tny.game.common.event.BindP1EventBus;
 import com.tny.game.common.event.EventBuses;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PostStarter;
-import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.suite.cluster.BaseCluster;
 import com.tny.game.suite.cluster.ClusterUtils;
 import com.tny.game.suite.cluster.Servers;
+import com.tny.game.suite.cluster.SpringBaseCluster;
 import com.tny.game.suite.cluster.event.GameServerClusterListener;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.core.InetConnector;
@@ -29,7 +26,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({GAME})
-public class GameServerCluster extends BaseCluster implements ServerPostStart {
+public class GameServerCluster extends SpringBaseCluster {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GameServerCluster.class);
 
@@ -131,12 +128,8 @@ public class GameServerCluster extends BaseCluster implements ServerPostStart {
     }
 
     @Override
-    public PostStarter getPostStarter() {
-        return PostStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_1);
-    }
-
-    @Override
-    public void postStart() throws Exception {
+    public void postStart() throws Throwable {
+        super.postStart();
         this.monitor();
     }
 

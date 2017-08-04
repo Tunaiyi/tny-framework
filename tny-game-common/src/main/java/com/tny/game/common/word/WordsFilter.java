@@ -8,12 +8,17 @@ package com.tny.game.common.word;
 public interface WordsFilter {
 
     /**
+     * 用来替换敏感词的符号
+     */
+    char FILTER = '*';
+
+    /**
      * 过滤屏蔽字,替代为*
      *
      * @param content 要检测的内容
      * @return 返回过滤后的内容
      */
-    public String filterWords(String content);
+    String filterWords(String content);
 
     /**
      * 过滤屏蔽字,替代为 replace
@@ -22,7 +27,7 @@ public interface WordsFilter {
      * @param replace 替代为的文字
      * @return 返回过滤后的内容
      */
-    public String filterWords(String content, char replace);
+    String filterWords(String content, char replace);
 
     /**
      * 检测内容是否有屏蔽字
@@ -30,6 +35,11 @@ public interface WordsFilter {
      * @param content 要检测的内容
      * @return 有屏蔽字返回true 无则返回false
      */
-    public boolean hasBadWords(String content);
+    boolean hasBadWords(String content);
+
+    /**
+     * @return 过滤器顺序, 越小越先过滤
+     */
+    int order();
 
 }

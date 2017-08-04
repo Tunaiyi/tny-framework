@@ -1,6 +1,8 @@
 package com.tny.game.common.number;
 
 import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.ObjectAide;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Created by Kun Yang on 16/2/17.
@@ -34,30 +36,47 @@ public class NumberAide {
         if (!(source instanceof Number))
             throw new ClassCastException(Logs.format("{} {} 不属于 {}", source, source.getClass(), Number.class));
         value = (Number) source;
-        if (Integer.class == clazz)
+        if (Integer.class == clazz || int.class == clazz)
             value = value.intValue();
-        else if (Long.class == clazz)
+        else if (Long.class == clazz || long.class == clazz)
             value = value.longValue();
-        else if (Float.class == clazz)
+        else if (Float.class == clazz || float.class == clazz)
             value = value.floatValue();
-        else if (Double.class == clazz)
+        else if (Double.class == clazz || double.class == clazz)
             value = value.doubleValue();
-        else if (Short.class == clazz)
+        else if (Short.class == clazz || short.class == clazz)
             value = value.shortValue();
-        else if (Byte.class == clazz)
+        else if (Byte.class == clazz || byte.class == clazz)
             value = value.byteValue();
         else
             value = value.intValue();
         return (N) value;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <N extends Number> N as(String source, Class<N> clazz) {
+        if (Integer.class == clazz || int.class == clazz)
+            return ObjectAide.as(NumberUtils.toInt(source));
+        else if (Long.class == clazz || long.class == clazz)
+            return ObjectAide.as(NumberUtils.toLong(source));
+        else if (Float.class == clazz || float.class == clazz)
+            return ObjectAide.as(NumberUtils.toFloat(source));
+        else if (Double.class == clazz || double.class == clazz)
+            return ObjectAide.as(NumberUtils.toDouble(source));
+        else if (Short.class == clazz || short.class == clazz)
+            return ObjectAide.as(NumberUtils.toShort(source));
+        else if (Byte.class == clazz || byte.class == clazz)
+            return ObjectAide.as(NumberUtils.toByte(source));
+        throw new IllegalArgumentException(
+                Logs.format("{} is not number", source));
+    }
+
+
     public static <N extends Number> N add(N one, N other) {
         if (one == null)
             return other;
         if (other == null)
             return one;
-        if (one == null && other == null)
-            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() + other.intValue(), one);
@@ -79,8 +98,6 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
-        if (one == null && other == null)
-            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() - other.intValue(), one);
@@ -102,8 +119,6 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
-        if (one == null && other == null)
-            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() * other.intValue(), one);
@@ -147,8 +162,6 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
-        if (one == null && other == null)
-            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() / other.intValue(), one);
@@ -170,8 +183,6 @@ public class NumberAide {
             return other;
         if (other == null)
             return one;
-        if (one == null && other == null)
-            return null;
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class))
             return as(one.intValue() % other.intValue(), one);
@@ -316,7 +327,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(byte x, byte y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Byte.compare(x, y);
     }
 
 
@@ -328,7 +339,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(byte x, byte y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Byte.compare(y, x);
     }
 
 
@@ -340,7 +351,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(short x, short y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Short.compare(x, y);
     }
 
     /**
@@ -351,7 +362,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(short x, short y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Short.compare(y, x);
     }
 
     /**
@@ -362,7 +373,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(int x, int y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Integer.compare(x, y);
     }
 
     /**
@@ -373,7 +384,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(int x, int y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Integer.compare(y, x);
     }
 
     /**
@@ -384,7 +395,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(long x, long y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Long.compare(x, y);
     }
 
     /**
@@ -395,7 +406,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(long x, long y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Long.compare(y, x);
     }
 
     /**
@@ -406,7 +417,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(float x, float y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Float.compare(x, y);
     }
 
     /**
@@ -417,7 +428,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(float x, float y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Float.compare(y, x);
     }
 
     /**
@@ -428,7 +439,7 @@ public class NumberAide {
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
      */
     public static int ascCompare(double x, double y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return Double.compare(x, y);
     }
 
     /**
@@ -439,7 +450,7 @@ public class NumberAide {
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
      */
     public static int desCompare(double x, double y) {
-        return (x < y) ? 1 : ((x == y) ? 0 : -1);
+        return Double.compare(y, x);
     }
 
 }

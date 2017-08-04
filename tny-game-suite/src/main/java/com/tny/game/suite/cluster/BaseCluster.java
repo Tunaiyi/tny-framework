@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +48,8 @@ public abstract class BaseCluster {
     protected void doMonitor() {
     }
 
+    protected abstract List<ZKMonitorInitHandler> initHandlers();
+
     protected void monitor() throws IOException, KeeperException, InterruptedException {
         if (this.remoteMonitor == null) {
             String ips = System.getProperty(ClusterUtils.IP_LIST);
@@ -60,6 +63,7 @@ public abstract class BaseCluster {
                 this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType.toString(), holder));
             }
             this.doMonitor();
+            this.initHandlers().forEach(h -> h.onInit(this.remoteMonitor));
         }
 
     }

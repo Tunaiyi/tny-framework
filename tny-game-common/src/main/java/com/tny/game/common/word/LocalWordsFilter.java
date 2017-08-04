@@ -27,19 +27,20 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
      * @uml.associationEnd
      */
     private Node rootNode = null;
+
     /**
-     * 用来替换敏感词的符号
+     * 屏蔽符号
      */
-    private char FILTER = '*';
+    private char maskChar = FILTER;
 
     public LocalWordsFilter(String file, String filterChar) {
         super(file);
-        this.FILTER = filterChar.charAt(0);
+        this.maskChar = filterChar.charAt(0);
     }
 
     @Override
     public String filterWords(String content) {
-        return this.filterWords(content, this.FILTER);
+        return this.filterWords(content, this.maskChar);
     }
 
     @Override
@@ -95,6 +96,11 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
             a++;
         }
         return false;
+    }
+
+    @Override
+    public int order() {
+        return -1;
     }
 
     private void insertNode(Node node, char[] cs, int index) {

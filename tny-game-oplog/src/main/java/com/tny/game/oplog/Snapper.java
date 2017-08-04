@@ -4,9 +4,11 @@ public interface Snapper<O, S extends Snapshot> {
 
     S toSnapshot(O o);
 
-    SnapshotType getSnapshotType();
-
     SnapperType getSnapperType();
+
+    default SnapshotType getSnapshotType() {
+        return getSnapperType().getSnapshotType();
+    }
 
     long getSnapshotID(O object);
 

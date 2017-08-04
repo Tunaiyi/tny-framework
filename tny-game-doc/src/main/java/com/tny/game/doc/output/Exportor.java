@@ -208,7 +208,8 @@ public class Exportor {
         System.out.println(Logs.format("正在导出 {} ......", outputFile.getAbsoluteFile()));
         try (FileOutputStream output = openOutputStream(outputFile);
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"))) {
-            IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", writer);
+            // IOUtils.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", writer);
+            IOUtils.write(exporter.getHead(), writer);
             if (headMessage != null)
                 IOUtils.write(headMessage, writer);
             IOUtils.write(exporter.output(table), writer);
