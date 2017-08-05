@@ -121,7 +121,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     }
 
     private void success(V result) {
-        this.state = FAILED;
+        this.state = SUCCESS;
         this.result = result;
         if (this.onSuccess != null)
             ExeAide.runQuietly(() -> this.onSuccess.accept(result));
@@ -137,8 +137,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
                 state = EXECUTE;
             if (current.isDone()) {
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("Flow运行在");
-                System.out.println(this.executor);
+                    LOGGER.debug("Flow运行在", this.executor);
                 this.previous = current.getFragment();
                 Executor executor = this.current.getSwitchExecutor();
                 this.current = current.getNext();
