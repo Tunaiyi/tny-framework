@@ -36,11 +36,12 @@ import com.tny.game.net.session.holder.listener.SessionListener;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.slf4j.LoggerFactory.*;
 
 /**
  * 通用Session
@@ -58,7 +59,7 @@ public class CommonSession<UID> implements NetSession<UID> {
     private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_CLOSE =
             EventBuses.of(SessionListener.class, SessionListener::onClose);
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
+    public static final Logger LOGGER = getLogger(CommonSession.class);
 
     private volatile long id;
 
@@ -144,11 +145,15 @@ public class CommonSession<UID> implements NetSession<UID> {
     @Override
     public boolean relogin(NetSession<UID> cerSession) {
         LoginCertificate<UID> certificate = cerSession.getCertificate();
-        if (this.certificate.getID() != certificate.getID())
+        if (this.certificate.getID() != certificate.getID()) {
+            LOGGER.warn("重登certificate ID [{}] 与Session certificate ID[{}] 不同! 重登失败!", certificate.getID(), this.certificate.getID());
             return false;
+        }
         int stateID = this.sessionState.get();
-        // if (stateID != SessionState.ONLINE.getId() && stateID != SessionState.OFFLINE.getId())
-        //     return false;
+        if (stateID != SessionState.ONLINE.getId() && stateID != SessionState.OFFLINE.getId()) {
+            LOGGER.warn("session 状态为 {} 无法重登", SessionState.INVALID);
+            return false;
+        }
         if (this.sessionState.compareAndSet(stateID, SessionState.ONLINE.getId())) {
             synchronized (this) {
                 this.certificate = certificate;
@@ -162,6 +167,7 @@ public class CommonSession<UID> implements NetSession<UID> {
             ON_ONLINE.notify(this, this.currentTunnel);
             return true;
         }
+        LOGGER.warn("session {} 状态已经改变为 {} ,重登失败", stateID, this.sessionState.get());
         return false;
     }
 

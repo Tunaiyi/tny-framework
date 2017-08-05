@@ -223,8 +223,15 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         if (cert.isRelogin()) {
             if (oldSession != null)
                 oldSession.offline();
-            // oldSession为null或者失效 session登陆ID不是同一个 session无法转换
-            if (oldSession == null || oldSession.isClosed() || !oldSession.relogin(session)) {
+            if (oldSession == null) {
+                LOG.warn("旧session {} 已经丢失", session.getUID());
+                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
+            }
+            if (oldSession.isClosed()) {
+                LOG.warn("旧session {} 已经关闭", session.getUID());
+                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
+            }
+            if (!oldSession.relogin(session)) {
                 throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
             }
         } else {
@@ -233,10 +240,10 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
                 // 替换session成功, 并且任然存在oldSession
                 if (oldSession.isOnline())
                     oldSession.close();
-                this.onRemoveSession.notify(this, oldSession);
+                onRemoveSession.notify(this, oldSession);
             }
             if (oldSession != session) {
-                this.onAddSession.notify(this, session);
+                onAddSession.notify(this, session);
                 this.debugSessionSize();
             }
         }
