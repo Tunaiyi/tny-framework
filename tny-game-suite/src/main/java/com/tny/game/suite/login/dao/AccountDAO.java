@@ -20,11 +20,17 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("select " + ACCOUNT_FIELDS + " from " + TABLE + " where `uid` = :uid")
     Account get(@SQLParam("uid") long uid);
 
+    @SQL("select `uid` from " + TABLE + " where `createSID` = :sid and `deviceID` = :deviceID")
+    Collection<Long> findUIDsByDeviceID(@SQLParam("sid") int serverID, @SQLParam("deviceID") String deviceID);
+
+    @SQL("select `uid` from " + TABLE + " where `createSID` = :sid and `deviceID` = :deviceID")
+    Long findUIDByOpenID(@SQLParam("sid") int serverID, @SQLParam("deviceID") String deviceID);
+
     @SQL("select `uid` from " + TABLE + " where `account` = :account")
-    Long getUid(@SQLParam("account") String account);
+    Long findUID(@SQLParam("account") String account);
 
     @SQL("select `account` from " + TABLE + " where `uid` = :uid")
-    String getAccount(@SQLParam("uid") long uid);
+    String findAccount(@SQLParam("uid") long uid);
 
     @ReturnGeneratedKeys
     @SQL("insert ignore into " + TABLE + "(`uid`) values(:uid)")

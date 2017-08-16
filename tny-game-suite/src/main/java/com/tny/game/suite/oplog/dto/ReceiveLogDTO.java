@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.oplog.StuffLog;
 import com.tny.game.oplog.TradeLog;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ReceiveLogDTO implements StuffLog {
@@ -64,6 +65,11 @@ public class ReceiveLogDTO implements StuffLog {
         return this.rnnum;
     }
 
+    @Override
+    public long getAlterNum() {
+        return this.ralter;
+    }
+
     public long getNum() {
         if (this.ralter == null)
             return this.rnnum - this.ronum;
@@ -108,5 +114,16 @@ public class ReceiveLogDTO implements StuffLog {
 
     public void setRonum(int ronum) {
         this.ronum = ronum;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("rid", rid)
+                .append("ralter", ralter)
+                .append("riid", riid)
+                .append("ronum", ronum)
+                .append("rnnum", rnnum)
+                .toString();
     }
 }

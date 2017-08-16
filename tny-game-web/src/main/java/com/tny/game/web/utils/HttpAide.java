@@ -1,8 +1,11 @@
 package com.tny.game.web.utils;
 
 import com.tny.game.common.result.ResultCode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -28,7 +31,7 @@ public class HttpAide {
 
 
     public static Map<String, String> requestParam2Map(HttpServletRequest request) {
-        return requestParam2Map(request, new HashMap<String, String>());
+        return requestParam2Map(request, new HashMap<>());
     }
 
     public static <M extends Map<String, String>> M requestParam2Map(HttpServletRequest request, M map) {
@@ -37,6 +40,26 @@ public class HttpAide {
             map.put(key, value);
         }
         return map;
+    }
+
+    public static String getIP() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String ip = request.getHeader("X-Real-IP");
+        if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            // 多次反向代理后会有多个IP值，第一个为真实IP。
+            int index = ip.indexOf(',');
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
+                return ip;
+            }
+        } else {
+            return request.getRemoteAddr();
+        }
     }
 
 }

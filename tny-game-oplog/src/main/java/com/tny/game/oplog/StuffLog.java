@@ -10,4 +10,6 @@ public interface StuffLog {
 
     long getNewNum();
 
+    long getAlterNum();
+
 }

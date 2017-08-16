@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.oplog.StuffLog;
 import com.tny.game.oplog.TradeLog;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ConsumeLogDTO implements StuffLog {
@@ -67,6 +68,11 @@ public class ConsumeLogDTO implements StuffLog {
         return this.cnnum;
     }
 
+    @Override
+    public long getAlterNum() {
+        return calter;
+    }
+
     public long getNum() {
         if (this.calter == null)
             return this.cnnum - this.conum;
@@ -111,5 +117,16 @@ public class ConsumeLogDTO implements StuffLog {
 
     public void setConum(long conum) {
         this.conum = conum;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("cid", cid)
+                .append("calter", calter)
+                .append("ciid", ciid)
+                .append("conum", conum)
+                .append("cnnum", cnnum)
+                .toString();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -22,6 +23,14 @@ public class AccountManager {
 
     public Account getAccount(long userID) {
         return this.accountDAO.get(userID);
+    }
+
+    public Collection<Long> findUIDsByDeviceID(int serverID, String deviceID) {
+        return this.accountDAO.findUIDsByDeviceID(serverID, deviceID);
+    }
+
+    public Long findUIDByOpenID(int serverID, String openID) {
+        return this.accountDAO.findUIDByOpenID(serverID, openID);
     }
 
     public int update(Account accountObj, GameTicket ticket) {

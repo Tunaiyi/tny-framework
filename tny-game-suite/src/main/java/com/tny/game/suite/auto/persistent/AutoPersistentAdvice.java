@@ -1,13 +1,13 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.base.item.Manager;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
+import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.event.annotation.Listener;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.net.common.dispatcher.CurrentCommand;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.persistent.annotation.AutoDB;
@@ -19,7 +19,6 @@ import com.tny.game.suite.base.GameExplorer;
 import com.tny.game.suite.transaction.Transaction;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.transaction.listener.TransactionListener;
-import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -103,7 +103,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     private Map<Object, String> loadOrCreate(Transaction transaction) {
         Map<Object, String> saveMap = transaction.attributes().getAttribute(OP_DB_MAP);
         if (saveMap == null) {
-            saveMap = new HashedMap<>();
+            saveMap = new HashMap<>();
             transaction.attributes().setAttribute(OP_DB_MAP, saveMap);
         }
         return saveMap;
