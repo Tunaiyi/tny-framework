@@ -7,7 +7,7 @@ import com.tny.game.suite.core.GameInfo;
 
 public interface IDAide {
 
-    long SYSTEM_PLAYER_ID = 0;
+    // long SYSTEM_PLAYER_ID = 0;
 
     long PLAYER_ID_OFFSET = 10000000;
 
