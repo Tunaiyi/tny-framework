@@ -109,13 +109,15 @@ public class AccountService implements ServerPrepareStart {
         }
     }
 
-    public void updateOnlineAt(Account account, String ip) {
+    public void updateOnlineAt(Account account, String ip, String device, String deviceID) {
         try {
             account.online(ip);
+            account.setDevice(device);
+            account.setDeviceID(deviceID);
             DateTime dateTime = account.getOnlineTime();
             if (dateTime == null)
                 dateTime = DateTime.now();
-            this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
+            this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis(), device, deviceID);
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOnlineAt exception", e);
         }

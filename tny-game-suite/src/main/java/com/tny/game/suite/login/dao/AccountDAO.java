@@ -78,8 +78,8 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("update " + TABLE + " set `name`=:name where `uid` = :uid")
     int updateName(@SQLParam("uid") long uid, @SQLParam("name") String name);
 
-    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `onlineAt`=:actionAt where `uid` = :uid")
-    int updateOnlineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int activeDate, @SQLParam("actionAt") long onlineAt);
+    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `device` = :device, `deviceID` = :deviceID, `onlineAt`=:actionAt where `uid` = :uid")
+    int updateOnlineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int activeDate, @SQLParam("actionAt") long onlineAt, @SQLParam("device") String device, @SQLParam("deviceID") String deviceID);
 
     @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `offlineAt`=:actionAt where `uid` = :uid")
     int updateOfflineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int actionDate, @SQLParam("actionAt") long offlineAt);

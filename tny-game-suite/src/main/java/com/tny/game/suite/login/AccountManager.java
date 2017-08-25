@@ -55,8 +55,8 @@ public class AccountManager {
         this.accountDAO.updateOfflineAt(uid, dateInt, millis);
     }
 
-    public void updateOnlineAt(long uid, int dateInt, long millis) {
-        this.accountDAO.updateOnlineAt(uid, dateInt, millis);
+    public void updateOnlineAt(long uid, int dateInt, long millis, String device, String deviceID) {
+        this.accountDAO.updateOnlineAt(uid, dateInt, millis, device, deviceID);
     }
 
     public void updateCreateRole(long uid, String name, int dateInt, long millis) {

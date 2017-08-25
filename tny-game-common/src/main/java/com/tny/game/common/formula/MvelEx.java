@@ -3,6 +3,12 @@ package com.tny.game.common.formula;
 
 import com.google.common.collect.Range;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by Kun Yang on 2017/5/30.
  */
@@ -49,4 +55,18 @@ public class MvelEx {
                 || one.contains(other.lowerEndpoint());
     }
 
+
+    public static <T> Set<T> toSet(T... values) {
+        Set<T> set = new HashSet<>();
+        set.addAll(Arrays.asList(values));
+        return set;
+    }
+
+    public static <T> List<T> toList(T... values) {
+        List<T> list = new ArrayList<>();
+        list.addAll(Arrays.asList(values));
+        return list;
+    }
+
 }
+

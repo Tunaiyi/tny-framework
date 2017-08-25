@@ -2,19 +2,24 @@ package com.tny.game.suite.base.dto;
 
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.capacity.CapacityGoal;
+import com.tny.game.suite.base.capacity.CapacityGroup;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 import com.tny.game.suite.base.capacity.ComboCapacitySupplier;
 import com.tny.game.suite.base.capacity.ExpireCapacitySupplier;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_SUPPLIER_DTO)
 @DTODoc(value = "游戏能力相关对象DTO")
@@ -23,10 +28,6 @@ public class CapacitySupplierDTO {
     @VarDoc("提供者ID")
     @ProtoExField(1)
     private long id;
-
-    @VarDoc("提供者itemID")
-    @ProtoExField(7)
-    private int itemID;
 
     @VarDoc("能力值列表")
     @ProtoExField(2)
@@ -48,14 +49,24 @@ public class CapacitySupplierDTO {
     @ProtoExField(6)
     private boolean goal;
 
-    public static <T extends CapacitySupplier & CapacityGoal> CapacitySupplierDTO goalSupplier2DTO(T g) {
-        CapacitySupplierDTO dto = supplier2DTO(g);
-        dto.goal = true;
-        dto.dependSuppliers = g.suppliers().stream()
+    @VarDoc("提供者itemID")
+    @ProtoExField(7)
+    private int itemID;
+
+    @VarDoc("能力值组")
+    @ProtoExField(8)
+    private Set<Integer> capacityGroups;
+
+    private static void initComboSupplier(CapacitySupplierDTO dto, ComboCapacitySupplier supplier) {
+        Set<CapacityGroup> capacityGroups = new HashSet<>();
+        dto.dependSuppliers = supplier.dependSuppliers().stream()
                 .filter(CapacitySupplier::isSupplying)
+                .peek(s -> capacityGroups.addAll(s.getAllCapacityGroups()))
                 .map(CapacitySupplier::getID)
                 .collect(Collectors.toList());
-        return dto;
+        dto.capacityGroups = supplier.getAllCapacityGroups().stream()
+                .map(CapacityGroup::getID)
+                .collect(Collectors.toSet());
     }
 
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
@@ -63,11 +74,15 @@ public class CapacitySupplierDTO {
         dto.id = supplier.getID();
         dto.itemID = supplier.getItemID();
         if (supplier instanceof ComboCapacitySupplier)
-            dto.dependSuppliers = combo2IDs((ComboCapacitySupplier) supplier);
-        else
+            initComboSupplier(dto, as(supplier));
+        else {
             dto.capacities = supplier.getAllValues().entrySet().stream()
                     .map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
+            dto.capacityGroups = supplier.getAllCapacityGroups().stream()
+                    .map(CapacityGroup::getID)
+                    .collect(Collectors.toSet());
+        }
         if (supplier instanceof ExpireCapacitySupplier) {
             ExpireCapacitySupplier timeoutSupplier = (ExpireCapacitySupplier) supplier;
             long remain = timeoutSupplier.getRemainTime(System.currentTimeMillis());
@@ -91,6 +106,7 @@ public class CapacitySupplierDTO {
         dto.itemID = supplier.getItemID();
         dto.capacities = ImmutableList.of();
         dto.dependSuppliers = ImmutableList.of();
+        dto.capacityGroups = ImmutableSet.of();
         return dto;
     }
 
@@ -103,10 +119,6 @@ public class CapacitySupplierDTO {
 
     public List<CapacityDTO> getCapacities() {
         return capacities;
-    }
-
-    private static List<Long> combo2IDs(ComboCapacitySupplier supplier) {
-        return supplier.dependSuppliers().stream().filter(CapacitySupplier::isSupplying).map(CapacitySupplier::getID).collect(Collectors.toList());
     }
 
 }

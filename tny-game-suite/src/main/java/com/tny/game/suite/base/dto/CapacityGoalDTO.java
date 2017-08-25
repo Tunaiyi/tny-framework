@@ -2,15 +2,18 @@ package com.tny.game.suite.base.dto;
 
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.doc.annotation.DTODoc;
 import com.tny.game.doc.annotation.VarDoc;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
 import com.tny.game.suite.base.capacity.CapacityGoal;
+import com.tny.game.suite.base.capacity.CapacityGroup;
 import com.tny.game.suite.base.capacity.CapacitySupplier;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_GOAL_DTO)
@@ -29,10 +32,18 @@ public class CapacityGoalDTO {
     @ProtoExField(3)
     private List<Long> dependSuppliers;
 
+    @VarDoc("能力值组")
+    @ProtoExField(4)
+    private Set<Integer> capacityGroups;
+
     public static CapacityGoalDTO goal2DTO(CapacityGoal goal) {
         CapacityGoalDTO dto = new CapacityGoalDTO();
         dto.id = goal.getID();
         dto.itemID = goal.getItemID();
+        dto.capacityGroups = goal.getSuppliersCapacityGroups()
+                .stream()
+                .map(CapacityGroup::getID)
+                .collect(Collectors.toSet());
         dto.dependSuppliers = goal.suppliers().stream()
                 .filter(CapacitySupplier::isSupplying)
                 .map(CapacitySupplier::getID)
@@ -45,6 +56,7 @@ public class CapacityGoalDTO {
         dto.id = goal.getID();
         dto.itemID = goal.getItemID();
         dto.dependSuppliers = ImmutableList.of();
+        dto.capacityGroups = ImmutableSet.of();
         return dto;
     }
 
