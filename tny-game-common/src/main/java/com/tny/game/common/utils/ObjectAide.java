@@ -7,6 +7,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -32,6 +33,30 @@ public class ObjectAide extends ObjectUtils {
 
     public static <T, O> O ifNotNullElse(T object, Function<T, O> mapper, Supplier<? extends O> supplier) {
         return object == null ? supplier.get() : mapper.apply(object);
+    }
+
+    public static <V, R> R ifTrue(V value, Predicate<V> condition, R trueValue, R falseValue) {
+        if (condition.test(value))
+            return trueValue;
+        return falseValue;
+    }
+
+    public static <V, R> R ifTrue(V value, Predicate<V> condition, Function<V, R> trueValue, Function<V, R> falseValue) {
+        if (condition.test(value))
+            return trueValue.apply(value);
+        return falseValue.apply(value);
+    }
+
+    public static <V, R> R ifTrue(V value, Predicate<V> condition, Function<V, R> trueValue, R falseValue) {
+        if (condition.test(value))
+            return trueValue.apply(value);
+        return falseValue;
+    }
+
+    public static <V> V ifTrue(V value, Predicate<V> condition, V falseValue) {
+        if (condition.test(value))
+            return value;
+        return falseValue;
     }
 
     public static <V, R> R ifEquals(V one, V other, R trueValue, R falseValue) {

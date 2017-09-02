@@ -1,15 +1,13 @@
 package com.tny.game.actor;
 
 
-import java.util.concurrent.Executor;
-
 /**
  * Actor的引用,开发过程中,无法获取到实际的Actor对象,只能获取到对应的Actor引用,
  * 可以通过actor引用进行消息发送.
  *
  * @author KGTny
  */
-public interface Actor<ID, M> extends Executor { // TODO extends Executor
+public interface Actor<ID, M> { // TODO extends Executor
 
     /**
      * @return 获取Actor ID
