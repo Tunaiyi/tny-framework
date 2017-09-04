@@ -120,13 +120,18 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
                         break;
                     }
                 } else {
-                    if (this.start.compareAndSet(true, false)) {
-                        if (this.commandQueue.isEmpty() || !this.start.compareAndSet(false, true))
-                            break;
-                    }
+                    this.start.set(false);
+                    this.trySubmit();
+                    break;
                 }
             }
             this.thread = null;
+        }
+
+        private void trySubmit() {
+            if (!this.commandQueue.isEmpty() && this.start.compareAndSet(false, true)) {
+                this.executorService.submit(this);
+            }
         }
 
         @Override
