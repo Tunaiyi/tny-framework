@@ -1,6 +1,6 @@
 package com.tny.game.web;
 
-import com.tny.game.common.utils.ByteAide;
+import com.tny.game.common.utils.BytesAide;
 import com.tny.game.common.utils.md5.MD5;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public interface WebAuthChecker {
             IOUtils.write(host, output, "UTF-8");
             if (data == null)
                 IOUtils.write(data, output);
-            IOUtils.write(ByteAide.longToByte(date), output);
+            IOUtils.write(BytesAide.long2Bytes(date), output);
             IOUtils.write(key, output, "UTF-8");
             return MD5.md5(output.toByteArray());
         } catch (IOException e) {

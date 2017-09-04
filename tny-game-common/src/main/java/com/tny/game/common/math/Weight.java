@@ -3,7 +3,7 @@ package com.tny.game.common.math;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
-import com.tny.game.common.collection.CollectionAdie;
+import com.tny.game.common.collection.CollectionAide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class Weight<V> {
         int weightNum = 0;
         try {
             weightNum = this.weight.createFormula()
-                    .putAll(CollectionAdie.attributes2Map(params))
+                    .putAll(CollectionAide.attributes2Map(params))
                     .execute(Integer.class);
         } catch (Throwable e) {
             LOGGER.error("", e);

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  *
  * @author KGTny
  */
-public abstract class ActorPath {
+public abstract class URL {
 
     public static String ELEMENT_REGEX_STR = "(?:[-\\w:@&=+,.!~*'_;]|%\\p{XDigit}{2})(?:[-\\w:@&=+,.!~*'$_;]|%\\p{XDigit}{2})*";
     public static Pattern ELEMENT_REGEX = Pattern.compile(ELEMENT_REGEX_STR);
@@ -28,12 +28,12 @@ public abstract class ActorPath {
      * @param aid
      * @return
      */
-    public abstract ActorPath withUid(long aid);
+    public abstract URL withUid(long aid);
 
     /**
      * @return 获取父路径对象
      */
-    public abstract ActorPath getParent();
+    public abstract URL getParent();
 
     /**
      * 获取当前路径下,child为子接点路径的ActorPath
@@ -41,7 +41,7 @@ public abstract class ActorPath {
      * @param child
      * @return child的ActorPath
      */
-    public abstract ActorPath child(Iterable<String> child);
+    public abstract URL child(Iterable<String> child);
 
     /**
      * 获取当前路径下,child为子接点路径的ActorPath
@@ -49,7 +49,7 @@ public abstract class ActorPath {
      * @param child
      * @return child的ActorPath
      */
-    public abstract ActorPath child(String child);
+    public abstract URL child(String child);
 
     /**
      * 子接点
@@ -61,7 +61,7 @@ public abstract class ActorPath {
     /**
      * @return 获取根节点
      */
-    public abstract ActorPath root();
+    public abstract URL root();
 
     /**
      * 是否是根
@@ -109,9 +109,9 @@ public abstract class ActorPath {
         if (this == o) return true;
         if (o == null)
             return false;
-        if (!(o instanceof ActorPath))
+        if (!(o instanceof URL))
             return false;
-        ActorPath actorPath = (ActorPath) o;
+        URL actorPath = (URL) o;
         if (!getName().equals(actorPath.getName())) return false;
         return getParent().equals(actorPath.getParent());
 

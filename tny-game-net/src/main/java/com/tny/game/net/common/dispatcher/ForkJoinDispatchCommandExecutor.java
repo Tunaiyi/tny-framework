@@ -4,6 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
@@ -11,14 +12,16 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.RunnableCommand;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
-import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Unit("ForkJoinDispatchCommandExecutor")
@@ -26,10 +29,11 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
 
     private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttrKeys.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
-
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
 
     private ForkJoinPool executorService;
+
+    private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
 
     public ForkJoinDispatchCommandExecutor(int threads) {
         init(threads);
@@ -116,7 +120,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
                     if (cmd.isDone()) {
                         this.commandQueue.poll();
                     } else {
-                        this.executorService.submit(this);
+                        scheduledExecutorService.schedule(() -> this.executorService.submit(this), 15, TimeUnit.MILLISECONDS);
                         break;
                     }
                 } else {

@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.ActorPath;
+import com.tny.game.actor.URL;
 import com.tny.game.actor.Answer;
 
 /**
@@ -10,7 +10,7 @@ import com.tny.game.actor.Answer;
  */
 class ActorCell implements ActorDispatcher {
 
-    private ActorPath actorPath;
+    private URL actorPath;
 
     private Actor<?, ?> actor;
 
@@ -22,12 +22,12 @@ class ActorCell implements ActorDispatcher {
 
     private int stepSize;
 
-    ActorCell(Object id, ActorPath path, ActorProps props) {
+    ActorCell(Object id, URL path, ActorProps props) {
         this.actorPath = path;
         this.handler = props.getActorHandler();
         this.handler = this.handler != null ? handler : (mail) -> null;
         this.lifeCycle = props.getLifeCycle();
-        this.actor = new LocalTypeActor<>(id, this);
+        this.actor = new DefaultLocalActor<>(id, this);
         this.commandBox = props.getCommandBoxFactory().create(this);
         this.stepSize = props.getStepSize();
     }
@@ -122,7 +122,7 @@ class ActorCell implements ActorDispatcher {
         this.commandBox.terminate();
     }
 
-    public ActorPath getActorPath() {
+    public URL getActorPath() {
         return actorPath;
     }
 
