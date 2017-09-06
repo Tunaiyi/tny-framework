@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.ActorPath;
+import com.tny.game.actor.URL;
 import com.tny.game.actor.Answer;
 
 
@@ -9,13 +9,13 @@ import com.tny.game.actor.Answer;
  * 本地Actor对象
  * Created by Kun Yang on 16/4/25.
  */
-class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
+class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
 
     private ID actorID;
 
     private ActorCell actorCell;
 
-    LocalTypeActor(ID actorID, ActorCell cell) {
+    DefaultLocalActor(ID actorID, ActorCell cell) {
         this.actorID = actorID;
         this.actorCell = cell;
     }
@@ -52,7 +52,7 @@ class LocalTypeActor<ID, M> extends LocalActor<ID, M> {
     }
 
     @Override
-    public ActorPath getPath() {
+    public URL getURL() {
         return null;
     }
 

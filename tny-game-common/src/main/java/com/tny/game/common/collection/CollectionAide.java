@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class CollectionAdie {
+public class CollectionAide {
 
     public final static char[] CHAR_EMPTY_ARRAY = new char[0];
     public final static byte[] BYTE_EMPTY_ARRAY = new byte[0];

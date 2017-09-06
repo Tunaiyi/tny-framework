@@ -14,7 +14,8 @@ import java.util.concurrent.Future;
  */
 public class MessageContent<R> implements Protocol {
 
-    private static final long SEND_TIMEOUT = 30000;
+    private static final long SEND_TIMEOUT = 5000;
+    private static final long RESPONSE_TIMEOUT = 10000;
 
     private ResultCode code = ResultCode.SUCCESS;
 
@@ -30,7 +31,7 @@ public class MessageContent<R> implements Protocol {
 
     private volatile MessageFuture<R> messageFuture;
 
-    private long sentTimeout = -1;
+    private long sentTimeout = SEND_TIMEOUT;
 
     public static <O> MessageContent<O> toPush(Protocol protocol, ResultCode code, Object body) {
         return new MessageContent<>(protocol, code, body, -1);
@@ -121,7 +122,7 @@ public class MessageContent<R> implements Protocol {
     }
 
     public MessageFuture<R> createMessageFuture() {
-        return createMessageFuture(-1);
+        return createMessageFuture(RESPONSE_TIMEOUT);
     }
 
     public MessageFuture<R> createMessageFuture(long timeout) {

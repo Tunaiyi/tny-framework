@@ -3,7 +3,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
 import com.tny.game.actor.ActorContext;
-import com.tny.game.actor.ActorPath;
+import com.tny.game.actor.URL;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,29 +11,29 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by Kun Yang on 16/3/2.
  */
-public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor<ID, M>> {
+public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalActor<ID, M>> {
 
-    private ActorPath rootPath;
+    private URL rootPath;
 
     private ActorTheatre defaultTheatre = ActorTheatres.getDefault();
 
-    private ConcurrentHashMap<ID, LocalTypeActor<ID, M>> actorMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<ID, DefaultLocalActor<ID, M>> actorMap = new ConcurrentHashMap<>();
 
     private ActorProps defaultProps = ActorProps.of();
 
-    public LocalActorContext(ActorPath rootPath) {
+    public LocalActorContext(URL rootPath) {
         this(rootPath, null, null);
     }
 
-    public LocalActorContext(ActorPath rootPath, ActorTheatre defaultTheatre) {
+    public LocalActorContext(URL rootPath, ActorTheatre defaultTheatre) {
         this(rootPath, null, defaultTheatre);
     }
 
-    public LocalActorContext(ActorPath rootPath, ActorProps defaultProps) {
+    public LocalActorContext(URL rootPath, ActorProps defaultProps) {
         this(rootPath, defaultProps, null);
     }
 
-    public LocalActorContext(ActorPath rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
+    public LocalActorContext(URL rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
         this.rootPath = rootPath;
         if (defaultTheatre != null)
             this.defaultTheatre = defaultTheatre;
@@ -45,8 +45,8 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
             this.defaultProps = ActorProps.of();
     }
 
-    public LocalTypeActor<ID, M> actorOf(ID id, ActorPath path, ActorProps props) {
-        LocalTypeActor<ID, M> actor = actorMap.get(id);
+    public DefaultLocalActor<ID, M> actorOf(ID id, URL path, ActorProps props) {
+        DefaultLocalActor<ID, M> actor = actorMap.get(id);
         if (actor != null)
             return actor;
         ActorCell cell = new ActorCell(id, path, props == null ? defaultProps : props);
@@ -60,17 +60,17 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
         return add(actor);
     }
 
-    public LocalTypeActor<ID, M> actorOf(ID id, ActorPath path, ActorTheatre theatre) {
+    public DefaultLocalActor<ID, M> actorOf(ID id, URL path, ActorTheatre theatre) {
         return actorOf(id, path, ActorProps.of(defaultProps).setActorTheatre(theatre));
     }
 
     @Override
-    public LocalTypeActor<ID, M> actorOf(ID id, ActorPath path) {
+    public DefaultLocalActor<ID, M> actorOf(ID id, URL path) {
         return actorOf(id, path, (ActorProps) null);
     }
 
     @Override
-    public LocalTypeActor<ID, M> actorOf(ID id) {
+    public DefaultLocalActor<ID, M> actorOf(ID id) {
         return actorOf(id, null, this.defaultProps);
     }
 
@@ -82,17 +82,17 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
         return actorMap.remove(actor.getActorID(), actor);
     }
 
-    protected LocalTypeActor<ID, M> add(LocalTypeActor<ID, M> actor) {
-        LocalTypeActor<ID, M> old = this.actorMap.putIfAbsent(actor.getActorID(), actor);
+    protected DefaultLocalActor<ID, M> add(DefaultLocalActor<ID, M> actor) {
+        DefaultLocalActor<ID, M> old = this.actorMap.putIfAbsent(actor.getActorID(), actor);
         return old != null ? old : actor;
     }
 
     @Override
     public boolean stop(Actor<?, ?> actor) {
-        if (actor instanceof LocalTypeActor && this.isExist(actor)) {
+        if (actor instanceof DefaultLocalActor && this.isExist(actor)) {
             if (this.remove(actor)) {
                 if (!actor.isTerminated())
-                    ((LocalTypeActor) actor).terminate();
+                    ((DefaultLocalActor) actor).terminate();
                 return true;
             }
         }
@@ -101,9 +101,9 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, LocalTypeActor
 
     @Override
     public void stopAll() {
-        Map<ID, LocalTypeActor<ID, M>> removes = this.actorMap;
+        Map<ID, DefaultLocalActor<ID, M>> removes = this.actorMap;
         this.actorMap = new ConcurrentHashMap<>();
-        removes.values().forEach(LocalTypeActor::terminate);
+        removes.values().forEach(DefaultLocalActor::terminate);
     }
 
 }
