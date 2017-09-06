@@ -5,7 +5,7 @@ import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import com.tny.game.suite.cluster.game.ServerState;
 
-public abstract class ShardDataSourceCluster extends WebServerCluster {
+public abstract class ShardDataSourceCluster extends ServiceCluster {
 
     private ShardDataSourceFactory dataSourceFactory;
 

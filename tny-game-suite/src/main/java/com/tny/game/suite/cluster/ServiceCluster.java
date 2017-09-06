@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class WebServerCluster extends SpringBaseCluster implements ServerPostStart {
+public abstract class ServiceCluster extends SpringBaseCluster implements ServerPostStart {
 
     @Autowired
     private ProtoExSchemaIniter protoExSchemaIniter;
@@ -136,11 +136,11 @@ public abstract class WebServerCluster extends SpringBaseCluster implements Serv
         this.init();
     }
 
-    public WebServerCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
+    public ServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
         this(serverType, watchSetting, Arrays.asList(monitorWebTypes));
     }
 
-    public WebServerCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
+    public ServiceCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
         super(monitorWebTypes);
         int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID);
         this.serverType = serverType;
@@ -180,7 +180,7 @@ public abstract class WebServerCluster extends SpringBaseCluster implements Serv
         String port = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_PORT);
         String part = this.getWebServiceNodePath();
         String url = "http://" + host + ":" + port + part;
-        WebServiceNode node = new WebServiceNode(this.webServerID, url);
+        ServiceNode node = new ServiceNode(this.webServerID, url);
         String nodePath = ClusterUtils.getWebNodePath(this.serverType, this.webServerID);
         this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, node, nodePath);
         LOGGER.info("注册 {} web service url [ {} ] 到 {}", this.serverType, url, nodePath);

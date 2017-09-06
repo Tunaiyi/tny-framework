@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @Unit("CommonSessionHolder")
 public class CommonSessionHolder extends AbstractNetSessionHolder {
@@ -122,8 +123,13 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
     }
 
     @Override
-    public int send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
-        return this.doSendMultiSessionID(userGroup, uidColl, content);
+    public void send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
+        this.doSendMultiSessionID(userGroup, uidColl.stream(), content);
+    }
+
+    @Override
+    public void send2Users(String userGroup, Stream<?> stream, MessageContent<?> content) {
+        this.doSendMultiSessionID(userGroup, stream, content);
     }
 
     @Override
@@ -157,16 +163,13 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
             session.send(content);
     }
 
-    private int doSendMultiSessionID(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
-        int num = 0;
-        for (Object uid : uidColl) {
+    private void doSendMultiSessionID(String userGroup, Stream<?> uidColl, MessageContent<?> content) {
+        uidColl.forEach(uid -> {
             NetSession<Object> session = this.getSession0(userGroup, uid);
             if (session != null) {
                 session.send(content);
-                num++;
             }
-        }
-        return num;
+        });
     }
 
 

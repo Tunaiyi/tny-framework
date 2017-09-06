@@ -6,7 +6,7 @@ import com.tny.game.suite.cluster.game.ServerSetting;
 
 import java.util.Collection;
 
-public abstract class ClientWebServerCluster extends WebServerCluster {
+public abstract class ClientServiceCluster extends ServiceCluster {
 
     // @Autowired
     // private KafkaNetBootstrap kafkaNetBootstrap;
@@ -15,11 +15,11 @@ public abstract class ClientWebServerCluster extends WebServerCluster {
     //     return kafkaNetBootstrap.getClient(Servers.GAME, serverID);
     // }
 
-    public ClientWebServerCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
+    public ClientServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
         super(serverType, watchSetting, monitorWebTypes);
     }
 
-    public ClientWebServerCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
+    public ClientServiceCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
         super(serverType, watchSetting, monitorWebTypes);
     }
 

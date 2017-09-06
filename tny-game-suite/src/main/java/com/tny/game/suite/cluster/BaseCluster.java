@@ -26,7 +26,7 @@ public abstract class BaseCluster {
 
     protected Set<String> monitorServerTypes = new HashSet<>();
 
-    protected ConcurrentMap<String, WebServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
+    protected ConcurrentMap<String, ServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
 
     public BaseCluster(String... monitorServerTypes) {
         this(Arrays.asList(monitorServerTypes));
@@ -37,7 +37,7 @@ public abstract class BaseCluster {
         this.monitorServerTypes.addAll(monitorServerTypes);
     }
 
-    public Collection<WebServiceNodeHolder> getAllWebHolders() {
+    public Collection<ServiceNodeHolder> getAllWebHolders() {
         return this.webHolderMap.values();
     }
 
@@ -57,7 +57,7 @@ public abstract class BaseCluster {
                 throw new NullPointerException("RemoteMonitor IP is null");
             this.remoteMonitor = new ZKMonitor(ips, ClusterUtils.PROTO_FORMATTER);
             for (String serverType : this.monitorServerTypes) {
-                WebServiceNodeHolder holder = new WebServiceNodeHolder(serverType);
+                ServiceNodeHolder holder = new ServiceNodeHolder(serverType);
                 String path = ClusterUtils.getWebNodesPath(serverType);
                 this.webHolderMap.put(serverType, holder);
                 this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType.toString(), holder));
@@ -68,7 +68,7 @@ public abstract class BaseCluster {
 
     }
 
-    private NodeWatcher<WebServiceNode> createWebServerWatcher(String name, WebServiceNodeHolder holder) {
+    private NodeWatcher<ServiceNode> createWebServerWatcher(String name, ServiceNodeHolder holder) {
         return (path, state, old, data) -> {
             switch (state) {
                 case CREATE:
@@ -97,17 +97,17 @@ public abstract class BaseCluster {
     }
 
     public Optional<String> webUrl(String type, String path) {
-        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        ServiceNodeHolder holder = this.webHolderMap.get(type);
         if (holder == null)
             return Optional.empty();
         return Optional.of(holder.selectUrl() + path);
     }
 
     public Optional<String> webUrl(String type, int id, String path) {
-        WebServiceNodeHolder holder = this.webHolderMap.get(type);
+        ServiceNodeHolder holder = this.webHolderMap.get(type);
         if (holder == null)
             return Optional.empty();
-        WebServiceNode node = holder.getNode(id);
+        ServiceNode node = holder.getNode(id);
         if (node == null)
             return Optional.empty();
         return Optional.of(node.getUrl() + path);

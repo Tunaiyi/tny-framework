@@ -7,6 +7,7 @@ import com.tny.game.net.session.holder.listener.SessionHolderListener;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author KGTny
@@ -58,7 +59,17 @@ public interface SessionHolder {
      * @param content   消息内容
      * @return 返回发送数量
      */
-    int send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content);
+    void send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content);
+
+    /**
+     * 发信息给用户集合 <br>
+     *
+     * @param userGroup  用户组
+     * @param uidsStream 用户ID流
+     * @param content    消息内容
+     * @return 返回发送数量
+     */
+    void send2Users(String userGroup, Stream<?> uidsStream, MessageContent<?> content);
 
     /**
      * 发送给所有在线的用户 <br>

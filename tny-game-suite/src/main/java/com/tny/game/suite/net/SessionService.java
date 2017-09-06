@@ -2,10 +2,9 @@ package com.tny.game.suite.net;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.message.MessageContent;
+import com.tny.game.net.message.Protocol;
 import com.tny.game.net.message.ProtocolAide;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
@@ -13,14 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import static com.tny.game.net.base.AppConstants.*;
+import static com.tny.game.net.message.MessageContent.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -31,103 +28,559 @@ public class SessionService {
     private SessionHolder sessionHolder;
 
     /**
-     * <p>
-     * <p>
-     * 获取指定key对应的Session <br>
+     * 获取默认用户组中与指定uid对应的Session <br>
      *
-     * @param key 指定的Key
+     * @param uid 用户ID
      * @return 返回获取的session, 无session返回null
      */
-    public Session getSession(Object key) {
-        return this.sessionHolder.getSession(AppConstants.DEFAULT_USER_GROUP, key);
+    public <UID> Session<UID> getSession(UID uid) {
+        return this.sessionHolder.getSession(DEFAULT_USER_GROUP, uid);
     }
 
-    public void sendResponse2User(Identifiable gamer, CommandResult message) {
-        this.sessionHolder.send2User(
-                AppConstants.DEFAULT_USER_GROUP,
-                gamer.getPlayerID(),
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        message.getResultCode(),
-                        message.getBody()
-                ));
+
+    /**
+     * 获取group用户组中与指定uid对应的Session <br>
+     *
+     * @param group 用户组
+     * @param uid   用户ID
+     * @return 返回获取的session, 无session返回null
+     */
+    public <UID> Session<UID> getSession(String group, UID uid) {
+        return this.sessionHolder.getSession(DEFAULT_USER_GROUP, uid);
     }
 
-    public void sendResponse2User(Identifiable gamer, Object body) {
-        this.sessionHolder.send2User(
-                AppConstants.DEFAULT_USER_GROUP,
-                gamer.getPlayerID(),
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        CoreResponseCode.SUCCESS,
-                        body
-                ));
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group      用户组
+     * @param uid        用户ID
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(String group, long uid, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(group, uid, toPush(protocol, resultCode, body));
     }
 
-    public void sendResponse2User(Identifiable gamer, ResultCode resultCode) {
-        this.sessionHolder.send2User(
-                AppConstants.DEFAULT_USER_GROUP,
-                gamer.getPlayerID(),
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        resultCode
-                ));
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group    用户组
+     * @param uid      用户ID
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2User(String group, long uid, Protocol protocol, Object body) {
+        this.push2User(group, uid, protocol, CoreResponseCode.SUCCESS, body);
     }
 
-    public void sendResponse2User(Identifiable gamer, ResultCode resultCode, Object body) {
-        this.sessionHolder.send2User(
-                AppConstants.DEFAULT_USER_GROUP,
-                gamer.getPlayerID(),
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        resultCode,
-                        body
-                ));
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group    用户组
+     * @param uid      用户ID
+     * @param protocol 协议
+     */
+    public void push2User(String group, long uid, Protocol protocol, CommandResult message) {
+        this.push2User(group, uid, protocol, message.getResultCode(), message.getBody());
     }
 
-    public void sendResponse2User(Collection<? extends Identifiable> gamerList, Object body, Long... filterPlayerIDs) {
-        if (gamerList.isEmpty())
-            return;
-        List<Long> userIDSet = new ArrayList<>(gamerList.size());
-        List<Long> filter = Collections.emptyList();
-        if (filterPlayerIDs.length > 0)
-            filter = Arrays.asList(filterPlayerIDs);
-        for (Identifiable gamer : gamerList) {
-            if (!filter.contains(gamer.getPlayerID()))
-                userIDSet.add(gamer.getPlayerID());
-        }
-        this.sessionHolder.send2Users(
-                AppConstants.DEFAULT_USER_GROUP,
-                userIDSet,
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        ResultCode.SUCCESS,
-                        body
-                ));
+    /**
+     * 推送消息给用户
+     *
+     * @param group      用户组
+     * @param uid        用户ID
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(String group, long uid, ResultCode resultCode, Object body) {
+        this.push2User(group, uid, ProtocolAide.PUSH, resultCode, body);
     }
 
-    public void sendResponse2UserID(Collection<Long> gamerList, Object body) {
-        if (gamerList.isEmpty())
-            return;
-        this.sessionHolder.send2Users(
-                AppConstants.DEFAULT_USER_GROUP,
-                gamerList,
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        ResultCode.SUCCESS,
-                        body
-                ));
+    /**
+     * 推送消息给用户
+     *
+     * @param group 用户组
+     * @param uid   用户ID
+     * @param body  消息体
+     */
+    public void push2User(String group, long uid, Object body) {
+        this.push2User(group, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
     }
 
-    public void sendResponse2Online(Object body) {
-        this.sessionHolder.send2AllOnline(
-                AppConstants.DEFAULT_USER_GROUP,
-                MessageContent.toPush(
-                        ProtocolAide.PUSH,
-                        ResultCode.SUCCESS,
-                        body
-                ));
+    /**
+     * 推送消息给用户
+     *
+     * @param group 用户组
+     * @param uid   用户ID
+     */
+    public void push2User(String group, long uid, CommandResult message) {
+        this.push2User(group, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
     }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid        用户ID
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(long uid, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(DEFAULT_USER_GROUP, uid, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid      用户ID
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2User(long uid, Protocol protocol, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, uid, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid      用户ID
+     * @param protocol 协议
+     */
+    public void push2User(long uid, Protocol protocol, CommandResult message) {
+        this.push2User(DEFAULT_USER_GROUP, uid, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid        用户ID
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(long uid, ResultCode resultCode, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid  用户ID
+     * @param body 消息体
+     */
+    public void push2User(long uid, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param uid 用户ID
+     */
+    public void push2User(long uid, CommandResult message) {
+        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group      用户组
+     * @param user       可标识用户的对象
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(String group, Identifiable user, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(group, user, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group    用户组
+     * @param user     可标识用户的对象
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2User(String group, Identifiable user, Protocol protocol, Object body) {
+        this.push2User(group, user, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group    用户组
+     * @param user     可标识用户的对象
+     * @param protocol 协议
+     */
+    public void push2User(String group, Identifiable user, Protocol protocol, CommandResult message) {
+        this.push2User(group, user, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group      用户组
+     * @param user       可标识用户的对象
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(String group, Identifiable user, ResultCode resultCode, Object body) {
+        this.push2User(group, user, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group 用户组
+     * @param user  可标识用户的对象
+     * @param body  消息体
+     */
+    public void push2User(String group, Identifiable user, Object body) {
+        this.push2User(group, user, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param group 用户组
+     * @param user  可标识用户的对象
+     */
+    public void push2User(String group, Identifiable user, CommandResult message) {
+        this.push2User(group, user, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user       可标识用户的对象
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(Identifiable user, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(DEFAULT_USER_GROUP, user, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user     可标识用户的对象
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2User(Identifiable user, Protocol protocol, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, user, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user     可标识用户的对象
+     * @param protocol 协议
+     */
+    public void push2User(Identifiable user, Protocol protocol, CommandResult message) {
+        this.push2User(DEFAULT_USER_GROUP, user, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user       可标识用户的对象
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2User(Identifiable user, ResultCode resultCode, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, user, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user 可标识用户的对象
+     * @param body 消息体
+     */
+    public void push2User(Identifiable user, Object body) {
+        this.push2User(DEFAULT_USER_GROUP, user, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给用户
+     *
+     * @param user 可标识用户的对象
+     */
+    public void push2User(Identifiable user, CommandResult message) {
+        this.push2User(DEFAULT_USER_GROUP, user, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group      用户组
+     * @param users      用户流
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(group, users, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group    用户组
+     * @param users    用户流
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, Protocol protocol, Object body) {
+        this.push2Users(group, users, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group    用户组
+     * @param users    用户流
+     * @param protocol 协议
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, Protocol protocol, CommandResult message) {
+        this.push2Users(group, users, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group      用户组
+     * @param users      用户流
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, ResultCode resultCode, Object body) {
+        this.push2Users(group, users, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group 用户组
+     * @param users 用户流
+     * @param body  消息体
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, Object body) {
+        this.push2Users(group, users, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param group 用户组
+     * @param users 用户流
+     */
+    public void push2Users(String group, Stream<? extends Identifiable> users, CommandResult message) {
+        this.push2Users(group, users, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users      用户流
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Users(Stream<? extends Identifiable> users, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2User(DEFAULT_USER_GROUP, users, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users    用户流
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2Users(Stream<? extends Identifiable> users, Protocol protocol, Object body) {
+        this.push2Users(DEFAULT_USER_GROUP, users, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users    用户流
+     * @param protocol 协议
+     */
+    public void push2Users(Stream<? extends Identifiable> users, Protocol protocol, CommandResult message) {
+        this.push2Users(DEFAULT_USER_GROUP, users, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users      用户流
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Users(Stream<? extends Identifiable> users, ResultCode resultCode, Object body) {
+        this.push2Users(DEFAULT_USER_GROUP, users, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users 用户流
+     * @param body  消息体
+     */
+    public void push2Users(Stream<? extends Identifiable> users, Object body) {
+        this.push2Users(DEFAULT_USER_GROUP, users, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给用户流
+     *
+     * @param users 用户流
+     */
+    public void push2Users(Stream<? extends Identifiable> users, CommandResult message) {
+        this.push2Users(DEFAULT_USER_GROUP, users, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group      用户组
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Online(String group, Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2AllOnline(group, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group    用户组
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2Online(String group, Protocol protocol, Object body) {
+        this.push2Online(group, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group    用户组
+     * @param protocol 协议
+     */
+    public void push2Online(String group, Protocol protocol, CommandResult message) {
+        this.push2Online(group, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group      用户组
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Online(String group, ResultCode resultCode, Object body) {
+        this.push2Online(group, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group 用户组
+     * @param body  消息体
+     */
+    public void push2Online(String group, Object body) {
+        this.push2Online(group, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param group 用户组
+     */
+    public void push2Online(String group, CommandResult message) {
+        this.push2Online(group, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param protocol   协议
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Online(Protocol protocol, ResultCode resultCode, Object body) {
+        this.sessionHolder.send2AllOnline(DEFAULT_USER_GROUP, toPush(protocol, resultCode, body));
+    }
+
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param protocol 协议
+     * @param body     消息体
+     */
+    public void push2Online(Protocol protocol, Object body) {
+        this.push2Online(DEFAULT_USER_GROUP, protocol, CoreResponseCode.SUCCESS, body);
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param protocol 协议
+     */
+    public void push2Online(Protocol protocol, CommandResult message) {
+        this.push2Online(DEFAULT_USER_GROUP, protocol, message.getResultCode(), message.getBody());
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param resultCode 结果码
+     * @param body       消息体
+     */
+    public void push2Online(ResultCode resultCode, Object body) {
+        this.push2Online(DEFAULT_USER_GROUP, ProtocolAide.PUSH, resultCode, body);
+    }
+
+    /**
+     * 推送消息给所有在线
+     *
+     * @param body 消息体
+     */
+    public void push2Online(Object body) {
+        this.push2Online(DEFAULT_USER_GROUP, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    }
+
+
+    /**
+     * 推送消息给所有在线
+     */
+    public void push2Online(CommandResult message) {
+        this.push2Online(DEFAULT_USER_GROUP, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    }
+
 
     /**
      * 指定用户 playerID 是否在线
@@ -136,28 +589,28 @@ public class SessionService {
      * @return 返回ture 表示在线, 否则表示是下线
      */
     public boolean isOnline(long playerID) {
-        return this.sessionHolder.isOnline(AppConstants.DEFAULT_USER_GROUP, playerID);
+        return this.sessionHolder.isOnline(DEFAULT_USER_GROUP, playerID);
     }
 
     /**
      * @return 默认用户组session数量
      */
     public int size() {
-        return this.sessionHolder.getSessionsByGroup(AppConstants.DEFAULT_USER_GROUP).size();
+        return this.sessionHolder.getSessionsByGroup(DEFAULT_USER_GROUP).size();
     }
 
     /**
      * @return 获取所有默认组用户session
      */
     public Set<Session> getAllUserSession() {
-        return new HashSet<>(this.sessionHolder.getSessionsByGroup(AppConstants.DEFAULT_USER_GROUP).values());
+        return new HashSet<>(this.sessionHolder.getSessionsByGroup(DEFAULT_USER_GROUP).values());
     }
 
     /**
      * 将所有session下线
      */
     public void offlineAll() {
-        this.sessionHolder.offlineAll(AppConstants.DEFAULT_USER_GROUP);
+        this.sessionHolder.offlineAll(DEFAULT_USER_GROUP);
     }
 
     /**
@@ -166,8 +619,9 @@ public class SessionService {
      * @param playerID 指定玩家ID
      */
     public void offline(long playerID) {
-        this.sessionHolder.offline(AppConstants.DEFAULT_USER_GROUP, playerID);
+        this.sessionHolder.offline(DEFAULT_USER_GROUP, playerID);
     }
+
     // /**
     //  * 创建会话组,无则创建,无则不操作 <br>
     //  *

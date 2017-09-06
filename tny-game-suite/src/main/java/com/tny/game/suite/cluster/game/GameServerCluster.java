@@ -59,7 +59,7 @@ public class GameServerCluster extends SpringBaseCluster {
     };
 
     public GameServerCluster() {
-        super(Servers.GIFT);
+        super(Servers.GAME);
     }
 
     @Override
