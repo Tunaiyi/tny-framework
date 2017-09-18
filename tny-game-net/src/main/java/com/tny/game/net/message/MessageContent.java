@@ -31,7 +31,7 @@ public class MessageContent<R> implements Protocol {
 
     private volatile MessageFuture<R> messageFuture;
 
-    private long sentTimeout = SEND_TIMEOUT;
+    private long sentTimeout = -1;
 
     public static <O> MessageContent<O> toPush(Protocol protocol, ResultCode code, Object body) {
         return new MessageContent<>(protocol, code, body, -1);
