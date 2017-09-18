@@ -28,7 +28,7 @@ public class MessageContent<UID> implements Protocol {
 
     private volatile MessageFuture<UID> messageFuture;
 
-    private long waitSendTimeout = SEND_TIMEOUT;
+    private long sentTimeout = -1;
 
     public static <O> MessageContent<O> toPush(Protocol protocol, ResultCode code, Object body) {
         return new MessageContent<>(protocol, code, body, -1);
