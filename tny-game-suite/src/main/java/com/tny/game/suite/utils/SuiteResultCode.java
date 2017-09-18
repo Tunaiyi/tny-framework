@@ -13,6 +13,7 @@ public enum SuiteResultCode implements ResultCode {
     AUTH_NO_TICKET(2003, "登陆票据不存在", ResultCodeType.ERROR),
     AUTH_ERROR(2004, "登陆认证错误", ResultCodeType.ERROR),
     AUTH_NO_ACCOUNT(2005, "登陆认证账号不存在", ResultCodeType.ERROR),
+    AUTH_TICKET_TIMEOUT(2006, "登陆票据超时", ResultCodeType.ERROR),
 
     ITEM_WAREHOUSE_NO_EXIST(2010, "目标不存在"),
     ITEM_WAREHOUSE_TRADE_FAILED(2011, "交易失败"),

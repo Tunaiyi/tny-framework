@@ -7,7 +7,7 @@ import com.tny.game.suite.scheduler.cache.CacheSchedulerBackup;
 import com.tny.game.suite.utils.Configs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class DBSchedulerStore implements SchedulerStore {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DBSchedulerStore.class);
 
-    @Autowired
+    @Resource
     private SchedulerObjectManager schedulerObjectManager;
 
     private static String getKey(Object id) {

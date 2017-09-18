@@ -23,6 +23,7 @@ public class DetectMessage<UID> implements NetMessage<UID> {
     }
 
     private DetectMessage(int protocol, MessageMode messageMode) {
+        this.time = System.currentTimeMillis();
         this.protocol = protocol;
         this.messageMode = messageMode;
     }
@@ -38,6 +39,11 @@ public class DetectMessage<UID> implements NetMessage<UID> {
     @Override
     public int getID() {
         return 0;
+    }
+
+    @Override
+    public long getSessionID() {
+        return 0L;
     }
 
     @Override

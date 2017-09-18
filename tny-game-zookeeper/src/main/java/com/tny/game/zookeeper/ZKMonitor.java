@@ -206,7 +206,7 @@ public class ZKMonitor {
             //若存在路径设置值
             if (stat != null) {
                 if (setIfExist)
-                    return this.keeper.setData(path, leafValue, stat.getVersion());
+                    return this.keeper.setData(path, leafValue, -1);
                 return stat;
             } else {
                 no_path = true;
@@ -254,7 +254,7 @@ public class ZKMonitor {
                 LOGGER.debug("创建路径{}成功", path);
             } else {
                 if (setIfExist)
-                    this.keeper.setData(path, value, stat.getVersion());
+                    this.keeper.setData(path, value, -1);
             }
             return new Stat();
         } catch (KeeperException e) {

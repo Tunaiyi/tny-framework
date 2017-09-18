@@ -1,21 +1,18 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.net.session.MessageFuture;
-import com.tny.game.net.tunnel.Tunnel;
 
-import java.rmi.server.UID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Future;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public class MessageContent<R> implements Protocol {
+public class MessageContent<UID> implements Protocol {
 
-    private static final long SEND_TIMEOUT = 5000;
-    private static final long RESPONSE_TIMEOUT = 10000;
+    private static final long SEND_TIMEOUT = 0;
+    private static final long RESPONSE_TIMEOUT = 6000;
 
     private ResultCode code = ResultCode.SUCCESS;
 
@@ -27,11 +24,11 @@ public class MessageContent<R> implements Protocol {
 
     private MessageMode mode;
 
-    private volatile CompletableFuture<Tunnel<UID>> sendFuture;
+    private volatile CompletableFuture<Message<UID>> sendFuture;
 
-    private volatile MessageFuture<R> messageFuture;
+    private volatile MessageFuture<UID> messageFuture;
 
-    private long sentTimeout = SEND_TIMEOUT;
+    private long waitSendTimeout = SEND_TIMEOUT;
 
     public static <O> MessageContent<O> toPush(Protocol protocol, ResultCode code, Object body) {
         return new MessageContent<>(protocol, code, body, -1);
@@ -88,7 +85,7 @@ public class MessageContent<R> implements Protocol {
         return toMessage;
     }
 
-    private CompletableFuture<Tunnel<UID>> createSentFuture() {
+    public CompletableFuture<Message<UID>> sendFuture() {
         if (this.sendFuture != null)
             return this.sendFuture;
         synchronized (this) {
@@ -98,77 +95,95 @@ public class MessageContent<R> implements Protocol {
         return this.sendFuture;
     }
 
-    public CompletionStage<Tunnel<UID>> sendCompletionStage() {
-        return createSentFuture();
+    public CompletableFuture<Message<UID>> messageFuture() {
+        return messageFuture(RESPONSE_TIMEOUT);
     }
 
-    public Future<Tunnel<UID>> sendFuture() {
-        return createSentFuture();
-    }
-
-    public Future<Tunnel<UID>> getSendFailure() {
-        return this.sendFuture;
-    }
-
-    public MessageContent<R> setWaitForSent() {
-        this.sentTimeout = SEND_TIMEOUT;
-        return this;
-    }
-
-    public MessageContent<R> setWaitForSent(long sentTimeout) {
-        this.sentTimeout = sentTimeout;
-        createSentFuture();
-        return this;
-    }
-
-    public MessageFuture<R> createMessageFuture() {
-        return createMessageFuture(RESPONSE_TIMEOUT);
-    }
-
-    public MessageFuture<R> createMessageFuture(long timeout) {
-        if (MessageAide.isRequest(this.toMessage)) {
+    public CompletableFuture<Message<UID>> messageFuture(long timeout) {
+        Throws.checkArgument(MessageAide.isRequest(this.toMessage), "请求模式非 {}, 无法创建MessageFuture", MessageMode.REQUEST);
+        if (this.messageFuture != null)
+            return this.messageFuture;
+        synchronized (this) {
             if (this.messageFuture != null)
                 return this.messageFuture;
-            synchronized (this) {
-                if (this.messageFuture != null)
-                    return this.messageFuture;
-                if (timeout > 0)
-                    this.messageFuture = new MessageFuture<>(timeout);
-                else
-                    this.messageFuture = new MessageFuture<>();
-            }
+            if (timeout > 0)
+                this.messageFuture = new MessageFuture<>(timeout);
+            else
+                this.messageFuture = new MessageFuture<>();
         }
         return this.messageFuture;
     }
 
-    public MessageFuture<R> getMessageFuture() {
-        return messageFuture;
+    public MessageContent<UID> waitForSent() {
+        return this.waitForSent(SEND_TIMEOUT);
     }
 
-    public boolean hasMessageFuture() {
-        return this.messageFuture != null;
+    public MessageContent<UID> waitForSent(long sentTimeout) {
+        this.waitSendTimeout = sentTimeout;
+        this.sendFuture = sendFuture();
+        return this;
     }
-
-    // @SuppressWarnings("unchecked")
-    // public <U> Tunnel<U> getTunnel() {
-    //     return (Tunnel<U>) this.tunnel;
-    // }
 
     @Override
     public int getProtocol() {
         return protocol;
     }
 
-    public long getSentTimeout() {
-        return sentTimeout;
+    public long getWaitForSentTimeout() {
+        return waitSendTimeout;
     }
 
     public boolean isWaitForSent() {
-        return sentTimeout >= 0;
+        return waitSendTimeout > 0;
     }
 
     public MessageMode getMode() {
         return this.mode;
     }
 
+    void cancelSendWait(boolean mayInterruptIfRunning) {
+        if (this.sendFuture != null) {
+            CompletableFuture<Message<UID>> sendFuture = this.sendFuture;
+            if (!sendFuture.isDone()) {
+                sendFuture.cancel(mayInterruptIfRunning);
+            }
+        }
+        if (this.messageFuture != null) {
+            CompletableFuture<Message<UID>> messageFuture = this.sendFuture;
+            if (!messageFuture.isDone()) {
+                messageFuture.cancel(mayInterruptIfRunning);
+            }
+        }
+    }
+
+    void sendSuccess(Message<UID> message) {
+        if (this.sendFuture != null) {
+            CompletableFuture<Message<UID>> sendFuture = this.sendFuture;
+            if (!sendFuture.isDone()) {
+                sendFuture.complete(message);
+            }
+        }
+        if (this.messageFuture != null) {
+            MessageFuture.putFuture(message, this.messageFuture);
+        }
+    }
+
+    void sendFailed(Throwable cause) {
+        if (this.sendFuture != null) {
+            CompletableFuture<Message<UID>> sendFuture = this.sendFuture;
+            if (!sendFuture.isDone()) {
+                sendFuture.completeExceptionally(cause);
+            }
+        }
+        if (this.messageFuture != null) {
+            CompletableFuture<Message<UID>> messageFuture = this.messageFuture;
+            if (!messageFuture.isDone()) {
+                messageFuture.completeExceptionally(cause);
+            }
+        }
+    }
+
+    public boolean isHasFuture() {
+        return this.sendFuture != null || this.messageFuture != null;
+    }
 }

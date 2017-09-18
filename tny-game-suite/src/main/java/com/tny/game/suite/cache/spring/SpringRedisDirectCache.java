@@ -5,6 +5,8 @@ import com.tny.game.cache.RawCacheItemFactory;
 import com.tny.game.cache.ToCacheClassHolderFactory;
 import com.tny.game.cache.mysql.DBCacheItem;
 import com.tny.game.cache.redis.BaseRedisCacheClient;
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;

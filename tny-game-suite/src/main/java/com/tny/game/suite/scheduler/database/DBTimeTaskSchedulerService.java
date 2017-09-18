@@ -8,16 +8,16 @@ import com.tny.game.suite.scheduler.TaskReceiverBuilder;
 import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBTimeTaskSchedulerService.class);
 
-    @Autowired
+    @Resource
     private TimeTaskScheduler scheduler;
 
-    @Autowired
+    @Resource
     private SchedulerObjectManager schedulerObjectManager;
 
     private GameTaskReceiver taskReceiver;

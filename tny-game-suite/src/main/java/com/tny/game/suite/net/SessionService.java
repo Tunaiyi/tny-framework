@@ -8,10 +8,10 @@ import com.tny.game.net.message.Protocol;
 import com.tny.game.net.message.ProtocolAide;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -24,7 +24,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({SERVER, GAME_KAFKA, SERVER_KAFKA, GAME})
 public class SessionService {
 
-    @Autowired
+    @Resource
     private SessionHolder sessionHolder;
 
     /**
@@ -59,7 +59,7 @@ public class SessionService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(String group, long uid, Protocol protocol, ResultCode resultCode, Object body) {
+    public void pushByUID(String group, Object uid, Protocol protocol, ResultCode resultCode, Object body) {
         this.sessionHolder.send2User(group, uid, toPush(protocol, resultCode, body));
     }
 
@@ -72,8 +72,8 @@ public class SessionService {
      * @param protocol 协议
      * @param body     消息体
      */
-    public void push2User(String group, long uid, Protocol protocol, Object body) {
-        this.push2User(group, uid, protocol, CoreResponseCode.SUCCESS, body);
+    public void pushByUID(String group, Object uid, Protocol protocol, Object body) {
+        this.pushByUID(group, uid, protocol, CoreResponseCode.SUCCESS, body);
     }
 
 
@@ -84,8 +84,8 @@ public class SessionService {
      * @param uid      用户ID
      * @param protocol 协议
      */
-    public void push2User(String group, long uid, Protocol protocol, CommandResult message) {
-        this.push2User(group, uid, protocol, message.getResultCode(), message.getBody());
+    public void pushByUID(String group, Object uid, Protocol protocol, CommandResult message) {
+        this.pushByUID(group, uid, protocol, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -96,8 +96,8 @@ public class SessionService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(String group, long uid, ResultCode resultCode, Object body) {
-        this.push2User(group, uid, ProtocolAide.PUSH, resultCode, body);
+    public void pushByUID(String group, Object uid, ResultCode resultCode, Object body) {
+        this.pushByUID(group, uid, ProtocolAide.PUSH, resultCode, body);
     }
 
     /**
@@ -107,8 +107,8 @@ public class SessionService {
      * @param uid   用户ID
      * @param body  消息体
      */
-    public void push2User(String group, long uid, Object body) {
-        this.push2User(group, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    public void pushByUID(String group, Object uid, Object body) {
+        this.pushByUID(group, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
     }
 
     /**
@@ -117,8 +117,8 @@ public class SessionService {
      * @param group 用户组
      * @param uid   用户ID
      */
-    public void push2User(String group, long uid, CommandResult message) {
-        this.push2User(group, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    public void pushByUID(String group, Object uid, CommandResult message) {
+        this.pushByUID(group, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -129,7 +129,7 @@ public class SessionService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(long uid, Protocol protocol, ResultCode resultCode, Object body) {
+    public void pushByUID(Object uid, Protocol protocol, ResultCode resultCode, Object body) {
         this.sessionHolder.send2User(DEFAULT_USER_GROUP, uid, toPush(protocol, resultCode, body));
     }
 
@@ -141,8 +141,8 @@ public class SessionService {
      * @param protocol 协议
      * @param body     消息体
      */
-    public void push2User(long uid, Protocol protocol, Object body) {
-        this.push2User(DEFAULT_USER_GROUP, uid, protocol, CoreResponseCode.SUCCESS, body);
+    public void pushByUID(Object uid, Protocol protocol, Object body) {
+        this.pushByUID(DEFAULT_USER_GROUP, uid, protocol, CoreResponseCode.SUCCESS, body);
     }
 
     /**
@@ -151,8 +151,8 @@ public class SessionService {
      * @param uid      用户ID
      * @param protocol 协议
      */
-    public void push2User(long uid, Protocol protocol, CommandResult message) {
-        this.push2User(DEFAULT_USER_GROUP, uid, protocol, message.getResultCode(), message.getBody());
+    public void pushByUID(Object uid, Protocol protocol, CommandResult message) {
+        this.pushByUID(DEFAULT_USER_GROUP, uid, protocol, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -162,8 +162,8 @@ public class SessionService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(long uid, ResultCode resultCode, Object body) {
-        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, resultCode, body);
+    public void pushByUID(Object uid, ResultCode resultCode, Object body) {
+        this.pushByUID(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, resultCode, body);
     }
 
     /**
@@ -172,8 +172,8 @@ public class SessionService {
      * @param uid  用户ID
      * @param body 消息体
      */
-    public void push2User(long uid, Object body) {
-        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+    public void pushByUID(Object uid, Object body) {
+        this.pushByUID(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
     }
 
 
@@ -182,8 +182,8 @@ public class SessionService {
      *
      * @param uid 用户ID
      */
-    public void push2User(long uid, CommandResult message) {
-        this.push2User(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+    public void pushByUID(Object uid, CommandResult message) {
+        this.pushByUID(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -196,7 +196,7 @@ public class SessionService {
      * @param body       消息体
      */
     public void push2User(String group, Identifiable user, Protocol protocol, ResultCode resultCode, Object body) {
-        this.sessionHolder.send2User(group, user, toPush(protocol, resultCode, body));
+        this.sessionHolder.send2User(group, user.getPlayerID(), toPush(protocol, resultCode, body));
     }
 
 
@@ -332,7 +332,7 @@ public class SessionService {
      * @param body       消息体
      */
     public void push2Users(String group, Stream<? extends Identifiable> users, Protocol protocol, ResultCode resultCode, Object body) {
-        this.sessionHolder.send2User(group, users, toPush(protocol, resultCode, body));
+        this.sessionHolder.send2Users(group, users.map(Identifiable::getPlayerID), toPush(protocol, resultCode, body));
     }
 
 
@@ -604,6 +604,13 @@ public class SessionService {
      */
     public Set<Session> getAllUserSession() {
         return new HashSet<>(this.sessionHolder.getSessionsByGroup(DEFAULT_USER_GROUP).values());
+    }
+
+    /**
+     * @return 获取所有默认组用户session
+     */
+    public Set<Session> getAllSession(String group) {
+        return new HashSet<>(this.sessionHolder.getSessionsByGroup(group).values());
     }
 
     /**

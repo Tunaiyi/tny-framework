@@ -1,20 +1,26 @@
 package com.tny.game.net.netty;
 
+import com.tny.game.common.config.Config;
+import com.tny.game.common.utils.URL;
+import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.Client;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.coder.ChannelMaker;
+import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.RemotingException;
-import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.Protocol;
-import com.tny.game.net.session.MessageFuture;
-import com.tny.game.net.session.ResendMessage;
 import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.tunnel.Tunnels;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -22,8 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
 
 
 public class NettyClient<UID> extends NettyApp implements Client<UID> {
@@ -32,162 +43,187 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
 
     private static final boolean EPOLL = isEpoll();
 
-    private static EventLoopGroup workerGroup = createLoopGroup(EPOLL, 1, "Client-Work-LoopGroup");
+    private static final EventLoopGroup workerGroup = createLoopGroup(EPOLL, 1, "Client-Work-LoopGroup");
 
     private Bootstrap bootstrap = null;
 
-    private InetSocketAddress connectAddress;
+    private NettyAppConfiguration appConfiguration;
 
-    private long connectTimeout;
+    private Set<Channel> channels = new CopyOnWriteArraySet<>();
 
-    private long loginTimeout;
-
-    private Tunnel<UID> tunnel;
-
-    private Protocol loginProtocol;
-
-    private Supplier<Object> loginBodyCreator;
+    private AtomicBoolean close = new AtomicBoolean(false);
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> workerGroup.shutdownGracefully()));
-    }
-
-    public NettyClient(String name, InetSocketAddress connectAddress, NettyAppConfiguration appConfiguration) {
-        super(name);
-        this.connectAddress = connectAddress;
-        this.connectTimeout = 30000L;
-        this.loginTimeout = 30000L;
-        this.bootstrap = new Bootstrap();
-        ChannelMaker<Channel> channelMaker = appConfiguration.getChannelMaker();
-        NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
-        this.bootstrap.group(workerGroup)
-                .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new ChannelInitializer<Channel>() {
-
-                    @Override
-                    protected void initChannel(Channel ch) throws Exception {
-                        if (channelMaker != null)
-                            channelMaker.initChannel(ch);
-                        ch.pipeline().addLast("nettyMessageHandler", messageHandler);
-                    }
-
-                });
-        // this.addShutdownHook(workerGroup);
-    }
-
-    public NettyClient<UID> setConnectTimeout(long connectTimeout) {
-        this.connectTimeout = connectTimeout;
-        return this;
-    }
-
-    public NettyClient<UID> setLoginTimeout(long loginTimeout) {
-        this.loginTimeout = loginTimeout;
-        return this;
-    }
-
-
-    public NettyClient<UID> setLoginBodyCreator(Protocol loginProtocol, Supplier<Object> loginBodyCreator) {
-        this.loginProtocol = loginProtocol;
-        this.loginBodyCreator = loginBodyCreator;
-        return this;
-    }
-
-    @Override
-    public void reconnect() {
-        this.disconnect();
-        this.doConnect();
-    }
-
-    @Override
-    public void disconnect() {
-        Tunnel<UID> tunnel = this.tunnel;
-        if (tunnel != null)
-            tunnel.close();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void doConnect() {
-        // long startAt = System.currentTimeMillis();
-        ChannelFuture channelFuture = this.bootstrap.connect(connectAddress);
-        MessageFuture loginFuture = null;
-        try {
-            boolean result = channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS);
-            if (result && channelFuture.isSuccess()) {
-                Channel newChannel = channelFuture.channel();
-                Tunnel<UID> oldTunnel = this.tunnel;
-                this.tunnel = newChannel.attr(NettyAttrKeys.TUNNEL).get();
-                if (oldTunnel != null) {
-                    oldTunnel.close();
-                }
-                MessageContent<?> loginMessage = MessageContent.toRequest(loginProtocol, loginBodyCreator.get());
-                loginFuture = loginMessage.createMessageFuture(loginTimeout + 10000L);
-                this.tunnel.send(loginMessage);
-                loginFuture.get(loginTimeout, TimeUnit.MILLISECONDS);
+        Runtime.getRuntime().addShutdownHook(new Thread(workerGroup::shutdownGracefully) {
+            {
+                this.setName("ClientShutdownHookThread");
             }
-        } catch (Throwable e) {
-            throw new RemotingException(e);
-        } finally {
-            if (!isConnected()) {
-                if (channelFuture != null)
-                    channelFuture.cancel(true);
-                if (loginFuture != null)
-                    loginFuture.cancel(true);
-            }
+        });
+    }
+
+    @Sharable
+    private class RemoveTunnelHandler extends ChannelInboundHandlerAdapter {
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            channels.remove(ctx.channel());
+            ctx.fireChannelInactive();
         }
     }
 
-    @Override
-    public boolean isConnected() {
-        Tunnel<UID> tunnel = this.tunnel;
-        return tunnel != null && tunnel.isConnected();
+    public NettyClient(String name, NettyAppConfiguration appConfiguration) {
+        super(name);
+        this.appConfiguration = appConfiguration;
     }
 
-    @Override
-    public UID getUID() {
-        return null;
+    private Bootstrap bootstrap() {
+        if (this.bootstrap != null)
+            return this.bootstrap;
+        synchronized (this) {
+            if (this.bootstrap != null)
+                return this.bootstrap;
+            this.bootstrap = new Bootstrap();
+            NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
+            ChannelInboundHandler channelRemoveHandler = new RemoveTunnelHandler();
+            ChannelMaker<Channel> channelMaker = appConfiguration.getChannelMaker();
+            this.bootstrap.group(workerGroup)
+                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(new ChannelInitializer<Channel>() {
+
+                        @Override
+                        protected void initChannel(Channel ch) throws Exception {
+                            if (channelMaker != null)
+                                channelMaker.initChannel(ch);
+                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
+                            ch.pipeline().addLast("nettyChannelRemoveHandler", channelRemoveHandler);
+                        }
+
+                    });
+            return this.bootstrap;
+        }
+
     }
 
-    @Override
-    public String getUserGroup() {
-        return null;
+    public Tunnel<UID> connect(URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
+        if (this.isClosed())
+            throw new RemotingException("client is closed");
+        NettyClientTunnel<UID> tunnel = doConnect(null, url, loginContentCreator);
+        if (tunnel != null)
+            tunnel.login();
+        return tunnel;
     }
 
-    @Override
-    public void send(MessageContent<?> content) {
-        Tunnel<UID> tunnel = getAndCheckTunnel();
-        if (tunnel.isClosed())
-            this.doConnect();
-        if (tunnel.isConnected())
-            this.tunnel.send(content);
+    public Tunnel<UID> connect(URL url, MessageContent<UID> content) throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
+        return connect(url, (relogin, tunnel) -> content);
     }
 
-    @Override
-    public void receive(Message<UID> message) {
-        getAndCheckTunnel().receive(message);
+    void reconnect(NettyClientTunnel<UID> tunnel) {
+        if (this.isClosed())
+            throw new RemotingException("client is closed");
+        doConnect(tunnel, tunnel.getUrl(), tunnel.getLoginContentCreator());
     }
 
+    private long getConnectTimeout(URL url) {
+        Config config = appConfiguration.getProperties();
+        return url.getParameter(AppConstants.CONNECT_TIMEOUT_URL_PARAM, config.getLong(AppConstants.CONNECT_TIMEOUT_URL_PARAM, 5000L));
+    }
+
+    @SuppressWarnings("unchecked")
+    private NettyClientTunnel<UID> doConnect(NettyClientTunnel<UID> reconnectTunnel, URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) {
+        if (reconnectTunnel != null && reconnectTunnel.isConnected())
+            return reconnectTunnel;
+        ChannelFuture channelFuture = this.bootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
+        try {
+            long connectTimeout = getConnectTimeout(url);
+            channelFuture.get(connectTimeout, TimeUnit.MILLISECONDS);
+            if (channelFuture.isSuccess()) {
+                Channel channel = channelFuture.channel();
+                NettyClientTunnel<UID> tunnel = reconnectTunnel;
+                if (tunnel == null) {
+                    tunnel = new NettyClientTunnel<>(url, channel, appConfiguration, loginContentCreator);
+                    Tunnels.put(tunnel);
+                }
+                channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
+                channel.attr(NettyAttrKeys.CLIENT).set(NettyClient.this);
+                channels.add(channel);
+                if (reconnectTunnel != null)
+                    reconnectTunnel.resetChannel(channel);
+                return tunnel;
+            } else {
+                return null;
+            }
+        } catch (Throwable e) {
+            throw new RemotingException(e);
+        }
+    }
+
+
+    // Channel reconnect(NettyClientTunnel<UID> tunnel) {
+    //     synchronized (this) {
+    //         URL url = tunnel.getUrl();
+    //         ChannelFuture channelFuture = this.bootstrap.connect(new InetSocketAddress(url.getHost(), url.getPort()));
+    //         try {
+    //             boolean result = channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS);
+    //             if (result && channelFuture.isSuccess()) {
+    //                 Channel newChannel = channelFuture.channel();
+    //                 NettyClientTunnel<UID> tunnel = newChannel.attr(NETTY_TUNNEL).get();
+    //                 tunnel.setUrl(url)
+    //                         .setLoginContentCreator(loginContentCreator);
+    //                 MessageFuture loginFuture = tunnel.login();
+    //                 loginFuture.get(loginTimeout, TimeUnit.MILLISECONDS);
+    //                 this.session = tunnel.getSession();
+    //                 return this.session;
+    //             }
+    //         } catch (Throwable e) {
+    //             throw new RemotingException(e);
+    //         }
+    //         return null;
+    //     }
+    // }
+
+    // @Override
+    // public boolean isConnected() {
+    //     if (this.session == null)
+    //         return false;
+    //     Tunnel<UID> tunnel = this.session.getCurrentTunnel();
+    //     return tunnel != null && tunnel.isConnected();
+    // }
+
+
+    // @Override
+    // public boolean close() {
+    //     this.close.set(true);
+    //     // return getAndCheckSession().close();
+    // }
+
     @Override
-    public void resend(ResendMessage message) {
-        getAndCheckTunnel().resend(message);
+    public boolean isClosed() {
+        return this.close.get();
     }
 
     @Override
     public boolean close() {
-        return getAndCheckTunnel().close();
+        if (this.close.compareAndSet(false, true)) {
+            this.channels.forEach(ChannelOutboundInvoker::close);
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public boolean isClosed() {
-        return !isConnected();
-    }
+    // @Override
+    // public boolean isClosed() {
+    //     return !isConnected();
+    // }
 
-    private Tunnel<UID> getAndCheckTunnel() {
-        Tunnel<UID> tunnel = this.tunnel;
-        if (tunnel == null)
-            throw new RemotingException(this.getName() + " [" + this.connectAddress + "] tunnel is null");
-        return tunnel;
-    }
+    // private Session<UID> getAndCheckSession() {
+    //     Session<UID> session = this.session;
+    //     if (session == null)
+    //         throw new RemotingException(this.getName() + " [" + this.connectAddress + "] session is null");
+    //     if (!isConnected())
+    //         return doConnect();
+    //     return session;
+    // }
 
 }

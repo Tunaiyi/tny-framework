@@ -52,18 +52,16 @@ public class LoginAide {
         return MD5.md5(ticketStr);
     }
 
-    public static void setTicketMD5(GameTicket ticket, String key) {
-        ticket.setSecret(ticket2MD5(ticket, key));
-    }
+    // public static void setTicketMD5(GameTicket ticket, String key) {
+    //     ticket.setSecret(ticket2MD5(ticket, key));
+    // }
 
-    public static String ticket2MD5(ServeTicket ticket, String key) {
-        StringBuffer ticketBuffer = new StringBuffer(100);
-        ticketBuffer.append(ticket.getServerType());
-        ticketBuffer.append(key);
-        ticketBuffer.append(ticket.getServerID());
-        ticketBuffer.append(ticket.getTime());
-        ticketBuffer.append(key);
-        return MD5.md5(ticketBuffer.toString());
+    public static String ticket2MD5(ServerTicket ticket, String key) {
+        return MD5.md5(ticket.getServerType() +
+                ticket.getServerID() +
+                ticket.getTime() +
+                ticket.isConfirm() +
+                key);
     }
 
 }

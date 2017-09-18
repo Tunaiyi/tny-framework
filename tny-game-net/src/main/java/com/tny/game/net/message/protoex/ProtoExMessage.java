@@ -101,6 +101,7 @@ public class ProtoExMessage<UID> extends AbstractNetMessage<UID> {
         return this;
     }
 
+    @Override
     public ProtoExMessage<UID> setCode(int code) {
         this.code = code;
         return this;

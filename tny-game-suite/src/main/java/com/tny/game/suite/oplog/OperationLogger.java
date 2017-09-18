@@ -21,7 +21,7 @@ import com.tny.game.suite.oplog.dto.OperateLogDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Profile;
@@ -49,10 +49,10 @@ public class OperationLogger extends AbstractOpLogger implements ServerPrepareSt
 
     private static OpLogger instance;
 
-    @Autowired
+    @Resource
     private OpLogFactory opLogFactory;
 
-    @Autowired
+    @Resource
     private UserOpLogFactory userOpLogFactory;
 
     private ApplicationContext applicationContext;

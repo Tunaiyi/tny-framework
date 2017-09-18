@@ -1,7 +1,7 @@
 package com.tny.game.suite.login.spring;
 
 import com.tny.game.net.auth.AuthProvider;
-import com.tny.game.suite.login.ServeAuthProvider;
+import com.tny.game.suite.login.ServerAuthProvider;
 import com.tny.game.suite.login.UserLoginAuthProvider;
 import com.tny.game.suite.login.UserReloginAuthProvider;
 import org.springframework.context.annotation.Bean;
@@ -18,13 +18,13 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class AuthConfiguration {
 
     @Bean
-    @Profile({SERVER, GAME})
+    @Profile({GAME})
     public AuthProvider userLoginAuthProvider() {
         return new UserLoginAuthProvider();
     }
 
     @Bean
-    @Profile({SERVER, GAME})
+    @Profile({GAME})
     public AuthProvider userReloginAuthProvider() {
         return new UserReloginAuthProvider();
     }
@@ -32,7 +32,7 @@ public class AuthConfiguration {
     @Bean
     @Profile({SERVER, GAME, SERVER_AUTH})
     public AuthProvider serveAuthProvider() {
-        return new ServeAuthProvider();
+        return new ServerAuthProvider();
     }
 
 

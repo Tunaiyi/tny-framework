@@ -14,7 +14,17 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     private MessageSignGenerator<UID> signGenerator;
 
-    protected M message;
+    protected int id;
+
+    protected long sessionID;
+
+    private int protocol = -1;
+
+    private int code;
+
+    private Object body;
+
+    private int toMessage;
 
     protected Tunnel<UID> tunnel;
 
@@ -24,47 +34,43 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
         this.creator = creator;
     }
 
-    protected M getMessage() {
-        if (message == null)
-            this.message = creator.get();
-        return this.message;
-    }
-
     @Override
     public MessageBuilder<UID> setContent(MessageContent content) {
-        return this.setProtocol(content)
-                .setCode(content.getCode())
-                .setBody(content.getBody())
-                .setToMessage(content.getToMessage());
+        if (this.protocol <= 0)
+            this.protocol = content.getProtocol();
+        this.code = content.getCode().getCode();
+        this.body = content.getBody();
+        this.toMessage = content.getToMessage();
+        return this;
     }
 
     @Override
     public MessageBuilder<UID> setID(int id) {
-        getMessage().setID(id);
+        this.id = id;
+        return this;
+    }
+
+    @Override
+    public MessageBuilder<UID> setSessionID(long sessionID) {
+        this.sessionID = sessionID;
         return this;
     }
 
     @Override
     public MessageBuilder<UID> setCode(int code) {
-        getMessage().setCode(code);
+        this.code = code;
         return this;
     }
 
     @Override
     public MessageBuilder<UID> setBody(Object body) {
-        getMessage().setBody(body);
-        return this;
-    }
-
-    @Override
-    public MessageBuilder<UID> setTime(long time) {
-        getMessage().setTime(time);
+        this.body = body;
         return this;
     }
 
     @Override
     public MessageBuilder<UID> setToMessage(int toMessageID) {
-        getMessage().setToMessage(toMessageID);
+        this.toMessage = toMessageID;
         return this;
     }
 
@@ -82,33 +88,36 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     @Override
     public MessageBuilder<UID> setProtocol(Protocol protocol) {
-        M message = getMessage();
-        if (message.getProtocol() <= 0)
-            getMessage().setProtocol(protocol.getProtocol());
+        if (this.protocol <= 0)
+            this.protocol = protocol.getProtocol();
         return this;
     }
 
     @Override
     public MessageBuilder<UID> setCommandResult(CommandResult result) {
         Protocol protocol = result.getProtocol();
-        M message = getMessage();
         if (protocol != null)
-            message.setProtocol(protocol.getProtocol());
-        message.setCode(result.getResultCode().getCode())
-                .setBody(result.getBody());
+            this.protocol = protocol.getProtocol();
+        this.code = result.getResultCode().getCode();
+        this.body = result.getBody();
         return this;
     }
 
     @Override
     public Message<UID> build() {
-        M message = getMessage();
-        if (message.getProtocol() == 0)
+        M message = this.creator.get();
+        if (this.protocol == 0)
             throw new NullPointerException("protocol is 0");
-        message.setTime(System.currentTimeMillis())
+        message.setID(this.id)
+                .setSessionID(this.sessionID)
+                .setProtocol(this.protocol)
+                .setCode(this.code)
+                .setBody(this.body)
+                .setToMessage(this.toMessage)
+                .setTime(System.currentTimeMillis())
                 .setTunnel(this.tunnel);
         if (this.signGenerator != null)
             message.setSign(this.signGenerator.generate(this.tunnel, message));
-        this.message = null;
         return message;
     }
 

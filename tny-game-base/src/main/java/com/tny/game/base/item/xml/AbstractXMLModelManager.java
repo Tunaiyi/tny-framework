@@ -38,9 +38,9 @@ import com.tny.game.common.reflect.proxy.WrapperProxy;
 import com.tny.game.common.reflect.proxy.WrapperProxyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,13 +73,13 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     /**
      * 事物对象管理器
      */
-    @Autowired
+    @Resource
     protected ItemExplorer itemExplorer;
 
     /**
      * 事物对象模型管理器
      */
-    @Autowired
+    @Resource
     protected ModelExplorer itemModelExplorer;
 
     /**

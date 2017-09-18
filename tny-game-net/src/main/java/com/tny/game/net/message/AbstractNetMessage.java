@@ -1,9 +1,9 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.protoex.ProtoExEnum;
@@ -15,15 +15,21 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
 
     protected volatile transient Attributes attributes;
 
+    protected long sessionID;
+
     private MessageMode mode;
 
     protected Tunnel<UID> tunnel;
-
 
     @Override
     public UID getUserID() {
         Tunnel<UID> tunnel = this.tunnel;
         return tunnel == null ? null : tunnel.getUID();
+    }
+
+    @Override
+    public long getSessionID() {
+        return sessionID;
     }
 
     @Override
@@ -44,9 +50,9 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
         Type[] types = bodyClass.getClass().getGenericInterfaces();
         Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
         Class<T> clazz = null;
-        if(subType instanceof Class) {
+        if (subType instanceof Class) {
             clazz = (Class<T>) subType;
-        } else if(subType instanceof ParameterizedType) {
+        } else if (subType instanceof ParameterizedType) {
             clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
         }
         return getBody(clazz);
@@ -125,6 +131,7 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
 
     protected AbstractNetMessage<UID> setTunnel(Tunnel<UID> tunnel) {
         this.tunnel = tunnel;
+        this.sessionID = this.tunnel.getSession().getID();
         return this;
     }
 
@@ -143,6 +150,11 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
     protected abstract AbstractNetMessage<UID> setCode(int code);
 
     protected abstract AbstractNetMessage<UID> setToMessage(int toMessage);
+
+    protected AbstractNetMessage<UID> setSessionID(long sessionID) {
+        this.sessionID = sessionID;
+        return this;
+    }
 
     // protected abstract AbstractNetMessage<UID> setSession(Session<UID> session);
 

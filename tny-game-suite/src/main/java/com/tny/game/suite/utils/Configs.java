@@ -1,8 +1,10 @@
 package com.tny.game.suite.utils;
 
 import com.tny.game.common.config.Config;
+import com.tny.game.common.config.ConfigFormatter;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.common.utils.URL;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.suite.core.AppType;
 import org.apache.commons.lang3.StringUtils;
@@ -53,8 +55,9 @@ public interface Configs {
     String SUITE_EXECUTOR_THREAD_SIZE /*                */ = "tny.server.suite.executor.thread_size";
     String SUITE_EXECUTOR_THREAD_MAX_SIZE /*            */ = "tny.server.suite.executor.thread_max_size";
     String SUITE_EXECUTOR_KEEP_ALIVE_TIME /*            */ = "tny.server.suite.executor.keep_alive_time";
-    // String SUITE_MSG_CHECKER_DIRECT_PROTS /*            */ = "tny.server.suite.message_checker.direct_ports";
+    // String SUITE_MSG_CHECKER_DIRECT_PROTS /*         */ = "tny.server.suite.message_checker.direct_ports";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
+    String SUITE_MSG_SIGNER_SIGN_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC /*      */ = "tny.server.suite.auth.kafka_login.protocols.inc";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC /*      */ = "tny.server.suite.auth.kafka_login.protocols.exc";
     String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.inc_rg";
@@ -101,20 +104,33 @@ public interface Configs {
     }
     //endregion
 
+    ConfigFormatter URL_FORMATTER = new ConfigFormatter() {
+
+        @Override
+        public boolean isKey(String key) {
+            return key.equals(SERVER_URL) || key.startsWith(SERVER_URL + ".");
+        }
+
+        @Override
+        public Object formatObject(String value) {
+            return URL.valueOf(value);
+        }
+
+    };
+
     //region 服务器配置 service.properties
     String SERVICE_CONFIG_PATH = "service.properties";
     Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
-    String SERVER_ID /*                 */ = "tny.server.id";
-    String SERVER_LOCAL /*              */ = "tny.server.local";
-    String SERVER_SCOPE /*              */ = AppConstants.SCOPE_TYPE;
-    String SERVER_TYPE /*               */ = AppConstants.APP_TYPE;
-    String PUBLIC_HOST /*               */ = "tny.server.public_host";
-    String PRIVATE_HOST /*              */ = "tny.server.private_host";
-    String RMI_PORT /*                  */ = "tny.server.rmi.registryPort";
-    String PROJECT_NAME /*              */ = "tny.server.project_name";
-    String PROJECT /*                   */ = "tny.server.project";
-    String SERVICE_CONFIG_WEB_SERVICE_HOST = "tny.web_service.server.host";
-    String SERVICE_CONFIG_WEB_SERVICE_PORT = "tny.web_service.server.port";
+    String SERVER_ID /*                     */ = "tny.server.id";
+    String SERVER_URL /*                    */ = "tny.server.url";
+    String SERVER_LOCAL /*                  */ = "tny.server.local";
+    String SERVER_SCOPE /*                  */ = AppConstants.SCOPE_TYPE;
+    String SERVER_TYPE /*                   */ = AppConstants.APP_TYPE;
+    String PUBLIC_HOST /*                   */ = "tny.server.public_host";
+    String PRIVATE_HOST /*                  */ = "tny.server.private_host";
+    String RMI_PORT /*                      */ = "tny.server.rmi.registryPort";
+    String PROJECT_NAME /*                  */ = "tny.server.project_name";
+    String PROJECT /*                       */ = "tny.server.project";
     //endregion
 
     //region 授权认证配置 authz.properties

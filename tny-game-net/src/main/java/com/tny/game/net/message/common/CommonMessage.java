@@ -88,6 +88,12 @@ public class CommonMessage<UID> extends AbstractNetMessage<UID> {
     }
 
     @Override
+    protected AbstractNetMessage<UID> setSessionID(long sessionID) {
+        this.sessionID = sessionID;
+        return this;
+    }
+
+    @Override
     public CommonMessage<UID> setSign(String sign) {
         this.sign = sign;
         return this;

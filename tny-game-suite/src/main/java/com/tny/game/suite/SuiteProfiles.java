@@ -14,6 +14,7 @@ public interface SuiteProfiles {
 
     String AUTO = "suite.auto";
     String PROTOEX = "suite.protoex";
+    String TEXT_FILTER = "suite.controller.text_filter";
 
     String CACHE_ALL = "suite.cache.all";
     String CACHE_ASYNC = "suite.cache.async";

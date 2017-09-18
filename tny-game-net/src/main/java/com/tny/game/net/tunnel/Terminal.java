@@ -4,6 +4,8 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.session.ResendMessage;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Created by Kun Yang on 2017/3/26.
  */
@@ -45,7 +47,7 @@ public interface Terminal<UID> {
      *
      * @return 是否关闭成功, 成功返回true 失效返回false
      */
-    boolean close();
+    CompletableFuture<Void> close();
 
     /**
      * @return 是否关闭终端

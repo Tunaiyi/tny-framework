@@ -6,7 +6,7 @@ import com.tny.game.cache.testclass.CacheTestTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,11 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class RedisCacheObjectTest {
 
-    @Autowired()
+    @Resource()
     @Qualifier("cached")
     private DirectCache cache;
 
-    @Autowired
+    @Resource
     @Qualifier("client")
     private RedisCacheClient client;
 

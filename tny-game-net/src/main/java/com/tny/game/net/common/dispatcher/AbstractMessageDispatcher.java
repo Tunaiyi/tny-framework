@@ -372,7 +372,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             if (controller == null)
                 return String.valueOf(this.message.getProtocol());
             else
-                return controller.getClass() + controller.getName();
+                return controller.getControllerClass() + "." + controller.getName();
         }
 
         @Override
@@ -419,7 +419,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 return;
             try {
                 MessageContent<?> content = null;
-                ResultCode code = ResultCode.SUCCESS;
+                ResultCode code;
                 Object value = null;
                 if (this.result instanceof CommandResult) {
                     CommandResult commandResult = (CommandResult) this.result;
@@ -428,14 +428,14 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 } else if (this.result instanceof ResultCode) {
                     code = (ResultCode) this.result;
                 } else {
+                    code = ResultCode.SUCCESS;
                     value = this.result;
                 }
                 if (cause != null)
                     DISPATCHER_LOG.error("Controller [{}] 处理消息异常 {} - {} ", getName(), code, code.getCode(), cause);
-                boolean mustSend = this.result != null;
                 switch (message.getMode()) {
                     case PUSH:
-                        if (mustSend || code.isSuccess())
+                        if (code.isSuccess() && value != null)
                             content = MessageContent.toPush(this.message, code, value);
                         break;
                     case REQUEST:
@@ -446,8 +446,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                     if (code.getType() != ResultCodeType.ERROR) {
                         this.tunnel.send(content);
                     } else {
-                        content.sendCompletionStage()
-                                .whenComplete((tunnel, e) -> tunnel.close());
+                        content.sendFuture()
+                                .whenComplete((tunnel, e) -> this.tunnel.close());
                         this.tunnel.send(content);
                     }
                 }
@@ -561,9 +561,11 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         @SuppressWarnings("unchecked")
         private void postInvoke() {
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 执行AftertPlugins", getName());
-            controller.afterInvke(this.tunnel, this.message, this);
+            if (this.controller != null) {
+                if (DISPATCHER_LOG.isDebugEnabled())
+                    DISPATCHER_LOG.debug("Controller [{}] 执行AftertPlugins", getName());
+                controller.afterInvke(this.tunnel, this.message, this);
+            }
 
             // 执行结束触发命令执行完成事件
             if (DISPATCHER_LOG.isDebugEnabled())

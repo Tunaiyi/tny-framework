@@ -16,7 +16,7 @@ import com.tny.game.common.utils.DoneResults;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class GameWarehouseService implements WarehouseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameWarehouseService.class);
 
-    @Autowired
+    @Resource
     private GameWarehouseManager gameWarehouseManager;
 
     /**

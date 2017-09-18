@@ -1,9 +1,12 @@
 package com.tny.game.suite.cluster;
 
+import com.google.common.collect.ImmutableMap;
+import com.tny.game.common.utils.URL;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.core.AppType;
+
+import java.util.Map;
 
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$URL_WEB_SERVICE_NODE)
@@ -12,25 +15,45 @@ public class ServiceNode {
     @ProtoExField(1)
     private int serverID;
 
-    private AppType appType;
-
     @ProtoExField(2)
-    private String url;
+    private String[] urlStrings;
+
+    @ProtoExField(3)
+    private String appType;
+
+    private volatile Map<String, URL> urlMap = ImmutableMap.of();
 
     public ServiceNode() {
     }
 
-    public ServiceNode(int serverID, String url) {
+    public ServiceNode(String appType, int serverID, String... urls) {
+        this.appType = appType;
         this.serverID = serverID;
-        this.url = url;
+        this.urlStrings = urls;
     }
 
     public int getServerID() {
         return this.serverID;
     }
 
-    public String getUrl() {
-        return this.url;
+    public String getAppType() {
+        return appType;
+    }
+
+    public URL getURL(String protocol) {
+        return this.getUrlMap().get(protocol);
+    }
+
+    public Map<String, URL> getUrlMap() {
+        if (this.urlMap.size() != this.urlStrings.length) {
+            ImmutableMap.Builder<String, URL> urlMap = ImmutableMap.builder();
+            for (String value : this.urlStrings) {
+                URL url = URL.valueOf(value);
+                urlMap.put(url.getProtocol(), url);
+            }
+            this.urlMap = urlMap.build();
+        }
+        return this.urlMap;
     }
 
     @Override

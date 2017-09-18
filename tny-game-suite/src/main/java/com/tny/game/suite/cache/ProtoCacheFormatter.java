@@ -20,7 +20,7 @@ import com.tny.game.suite.base.GameExplorer;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
 
     private static final Logger LOG = LoggerFactory.getLogger(SuiteLog.FORMATTER);
 
-    @Autowired
+    @Resource
     protected GameExplorer godExplorer;
 
     @Override

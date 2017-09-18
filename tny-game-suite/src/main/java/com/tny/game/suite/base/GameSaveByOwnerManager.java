@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 /**
  * 存储当前存储的Item存储在一个Owner上的Manager
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner<?, S>> extends GameSaveByOtherManager<S, O> {
 
-    @Autowired
+    @Resource
     private GameWarehouseManager gameWarehouseManager;
 
     private ItemType ownItemType;

@@ -9,16 +9,16 @@ import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
 import com.tny.game.suite.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CacheTimeTaskSchedulerService.class);
 
-    @Autowired
+    @Resource
     private TimeTaskScheduler scheduler;
 
-    @Autowired
+    @Resource
     private TaskReceiverManager taskReceiverManager;
 
     private long serverID;

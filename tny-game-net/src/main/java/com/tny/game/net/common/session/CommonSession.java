@@ -8,12 +8,9 @@ import com.tny.game.common.utils.Logs;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.exception.RemotingException;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageBuilder;
-import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.LoginCertificate;
@@ -39,6 +36,8 @@ import org.slf4j.Logger;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.slf4j.LoggerFactory.*;
@@ -74,12 +73,6 @@ public class CommonSession<UID> implements NetSession<UID> {
     /* 认证 */
     private LoginCertificate<UID> certificate;
 
-    /* 消息工厂 */
-    protected MessageBuilderFactory<UID> messageBuilderFactory;
-
-    /* 消息校验码生成器 */
-    private MessageSignGenerator<UID> messageSignGenerator;
-
     private AtomicInteger sessionState = new AtomicInteger(SessionState.ONLINE.getId());
 
     private SessionInputEventHandler<UID, NetSession<UID>> inputEventHandler;
@@ -87,11 +80,9 @@ public class CommonSession<UID> implements NetSession<UID> {
     private SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler;
 
     @SuppressWarnings("unchecked")
-    public CommonSession(NetTunnel<UID> tunnel, UID unloginUID, MessageBuilderFactory<UID> messageBuilderFactory, SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler, SessionInputEventHandler<UID, NetSession<UID>> inputEventHandler, MessageSignGenerator<UID> messageSignGenerator, int cacheMessageSize) {
+    public CommonSession(NetTunnel<UID> tunnel, UID unloginUID, SessionOutputEventHandler<UID, NetSession<UID>> outputEventHandler, SessionInputEventHandler<UID, NetSession<UID>> inputEventHandler, int cacheMessageSize) {
         this.id = SessionAide.newSessionID();
         this.certificate = LoginCertificate.createUnLogin(unloginUID);
-        this.messageSignGenerator = messageSignGenerator;
-        this.messageBuilderFactory = messageBuilderFactory;
         this.outputEventHandler = outputEventHandler;
         this.inputEventHandler = inputEventHandler;
         this.eventBox = SessionEventsBox.create(this, cacheMessageSize);
@@ -201,22 +192,23 @@ public class CommonSession<UID> implements NetSession<UID> {
     }
 
     @Override
-    public boolean close() {
+    public CompletableFuture<Void> close() {
         int state = this.sessionState.get();
         while (state != SessionState.INVALID.getId()) {
+            CompletableFuture<Void> future = null;
             if (this.sessionState.compareAndSet(state, SessionState.INVALID.getId())) {
                 Tunnel<UID> tunnel = this.currentTunnel;
                 if (tunnel != null && tunnel.getSession() == this)
-                    tunnel.close();
+                    future = tunnel.close();
                 if (state == SessionState.ONLINE.getId())
                     ON_OFFLINE.notify(this, tunnel);
                 ON_CLOSE.notify(this, tunnel);
-                return true;
+                return future;
             } else {
                 state = this.sessionState.get();
             }
         }
-        return false;
+        return null;
     }
 
 
@@ -249,7 +241,7 @@ public class CommonSession<UID> implements NetSession<UID> {
                     MessageFuture<?> future = null;
                     if (MessageMode.RESPONSE.isMode(message)) {
                         int toMessage = message.getToMessage();
-                        future = MessageFuture.getFuture(this.getID(), toMessage);
+                        future = MessageFuture.pollFuture(this.getID(), toMessage);
                     }
                     this.eventBox.addInputEvent(receiveEvent(getTunnel(tunnel), message, future));
                     inputEventHandler.onInput(this);
@@ -274,27 +266,14 @@ public class CommonSession<UID> implements NetSession<UID> {
                 return;
             }
             tunnel = getTunnel(tunnel);
-            MessageBuilder<UID> builder = messageBuilderFactory.newMessageBuilder()
-                    .setContent(content)
-                    .setSignGenerator(this.messageSignGenerator)
-                    .setTime(System.currentTimeMillis())
-                    .setTunnel(tunnel);
             final SessionEventsBox eventBox = this.eventBox;
             SessionSendEvent<UID> event;
-            synchronized (eventBox) {
-                message = builder.setID(eventBox.allotMessageID())
-                        .build();
-                NetLogger.logSend(this, message);
-                event = sendEvent(tunnel, message, content);
-                eventBox.addOutputEvent(event);
-                if (content.hasMessageFuture()) {
-                    MessageFuture.putFuture(this, message, content
-                            .getMessageFuture());
-                }
-                outputEventHandler.onOutput(this);
-            }
+            NetLogger.logSend(this, message);
+            event = sendEvent(tunnel, content);
+            eventBox.addOutputEvent(event);
+            outputEventHandler.onOutput(this);
             if (content.isWaitForSent())
-                event.waitForSend(content.getSentTimeout());
+                content.sendFuture().get(content.getWaitForSentTimeout(), TimeUnit.MILLISECONDS);
         } catch (Throwable e) {
             LOGGER.error("send response exception", e);
             if (content.isWaitForSent())
@@ -328,13 +307,13 @@ public class CommonSession<UID> implements NetSession<UID> {
     }
 
     @Override
-    public List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range) {
-        return this.eventBox.getHandledSendEvents(range);
+    public List<Message<UID>> getHandledSendEvents(Range<Integer> range) {
+        return this.eventBox.getSentMessage(range);
     }
 
     @Override
-    public SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID) {
-        return this.eventBox.getHandledSendEventByToID(toMessageID);
+    public Message<UID> getHandledSendEventByToID(int toMessageID) {
+        return this.eventBox.getSentMessageByToID(toMessageID);
     }
 
     @Override
@@ -377,84 +356,26 @@ public class CommonSession<UID> implements NetSession<UID> {
         return currentTunnel;
     }
 
-    // protected void closeTunnel(String reason) {
-    //     Tunnel<UID> session = this.session;
-    //     if (session != null && session.isConnected()) {
-    //         if (LOGGER.isInfoEnabled())
-    //             LOGGER.info("Session主动断开## Tunnel {} ##通道 {}", reason, session);
-    //         session.close();
-    //     }
-    // }
-
-    protected MessageSignGenerator<UID> getMessageSignGenerator() {
-        return messageSignGenerator;
+    @Override
+    public Message<UID> createMessage(Tunnel<UID> tunnel, MessageContent<?> content) {
+        synchronized (this) {
+            Message<UID> message = tunnel.createMessage(this.getID(), eventBox.allotMessageID(), content);
+            eventBox.addSentMessage(message);
+            return message;
+        }
     }
 
     private SessionReceiveEvent receiveEvent(Tunnel<UID> tunnel, Message<UID> message, MessageFuture<?> future) {
         return new SessionReceiveEvent<>(tunnel, message, SessionEventType.MESSAGE, future);
     }
 
-    private SessionSendEvent<UID> sendEvent(Tunnel<UID> tunnel, Message<UID> message, MessageContent content) {
-        return new SessionSendEvent<>(tunnel, message, content.isWaitForSent(), ObjectAide.as(content.getSendFailure()));
+    private SessionSendEvent<UID> sendEvent(Tunnel<UID> tunnel, MessageContent content) {
+        return new SessionSendEvent<>(tunnel, content);
     }
 
     @Override
     public String toString() {
         return "Session [" + this.getUserGroup() + "." + this.getUID() + " | " + this.currentTunnel + "]";
     }
-    // protected abstract void connect() throws RemotingException;
 
-    // @Override
-    // public void pollInputEvent() {
-    //     int time = this.sendNumPerTime;
-    //     try {
-    //         while (time < 0 || time > 0 || this.outputEventQueue.isEmpty()) {
-    //             try {
-    //                 MessageOrder order = this.outputEventQueue.poll();
-    //                 if (order == null)
-    //                     break;
-    //                 switch (order.getOrderType()) {
-    //                     case SEND:
-    //                         this.addHandledOutputEvent((SessionSendEvent) order);
-    //                         break;
-    //                     case RESEND:
-    //                         break;
-    //                 }
-    //             } catch (Throwable e) {
-    //                 LOGGER.error("processSendMessages {} ", e);
-    //             }
-    //         }
-    //     } finally {
-    //         this.writeMessageLock.set(false);
-    //     }
-    //     if (this.hasInputEvent())
-    //         this.submitToWrite();
-    // }
-    //
-    // @Override
-    // public void processReceiveMessage(MessageDispatcher dispatcher) {
-    //     int time = this.receiveNamPerTime;
-    //     try {
-    //         while (time < 0 || time > 0 || this.receiveCommandQueue.isEmpty()) {
-    //             try {
-    //                 NetMessage message = this.receiveCommandQueue.poll();
-    //                 if (message == null)
-    //                     break;
-    //                 int toMessage = message.getToMessage();
-    //                 if (toMessage > 0 && this.futureHolder != null) {
-    //                     MessageFuture<?> future = this.futureHolder.takeFuture(message.getToMessage());
-    //                     if (future != null)
-    //                         future.setResponse(message);
-    //                 }
-    //                 dispatcher.dispatch(message, this);
-    //             } catch (Throwable e) {
-    //                 LOGGER.error("processSendMessages {} ", e);
-    //             }
-    //         }
-    //     } finally {
-    //         this.readMessageLock.set(false);
-    //     }
-    //     if (this.hasOutputEvent())
-    //         this.submitToRead();
-    // }
 }

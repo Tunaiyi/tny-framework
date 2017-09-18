@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
-@Profile({SERVER, GAME})
+@Profile({GAME, TEXT_FILTER})
 public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String> implements ApplicationContextAware, ServerPrepareStart {
 
     private List<WordsFilter> wordsFilters;

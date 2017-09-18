@@ -1,25 +1,26 @@
 package com.tny.game.suite.login;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +34,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({GAME})
 public class AccountService implements ServerPrepareStart {
 
-    @Autowired
+    @Resource
     private AccountManager accountManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger("validator");
@@ -64,7 +65,7 @@ public class AccountService implements ServerPrepareStart {
             try {
                 AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenID(), playerID);
                 accountObj = new Account(playerID, account, ticket);
-                int result = this.accountManager.update(accountObj, ticket);
+                int result = this.accountManager.updateIfNull(accountObj, ticket);
                 if (result > 0) {
                     accountObj.onCreate();
                     return accountObj;
@@ -100,24 +101,20 @@ public class AccountService implements ServerPrepareStart {
     public void updateOfflineAt(Account account) {
         try {
             account.offline();
-            DateTime dateTime = account.getOfflineTime();
-            if (dateTime == null)
-                dateTime = DateTime.now();
-            this.accountManager.updateOfflineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
+            this.accountManager.updateOfflineAt(account);
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOfflineAt exception", e);
         }
     }
 
-    public void updateOnlineAt(Account account, String ip, String device, String deviceID) {
+    public void updateOnlineAt(Account account, GameTicket ticket, String ip) {
         try {
             account.online(ip);
-            account.setDevice(device);
-            account.setDeviceID(deviceID);
-            DateTime dateTime = account.getOnlineTime();
-            if (dateTime == null)
-                dateTime = DateTime.now();
-            this.accountManager.updateOnlineAt(account.getPlayerID(), DateTimeAide.date2Int(dateTime), dateTime.getMillis(), device, deviceID);
+            account.setDevice(ticket.getDevice());
+            account.setDeviceID(ticket.getDeviceID());
+            if (StringUtils.isNoneBlank(ticket.getPf()) && !Objects.equals(account.getPf(), ticket.getPf()))
+                account.setPf(ticket.getPf());
+            this.accountManager.updateOnlineAt(account, ticket);
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOnlineAt exception", e);
         }
@@ -128,7 +125,7 @@ public class AccountService implements ServerPrepareStart {
             account.setName(name);
             account.createRole(dateTime);
             if (dateTime != null) {
-                this.accountManager.updateCreateRole(account.getUid(), name, DateTimeAide.date2Int(dateTime), dateTime.getMillis());
+                this.accountManager.updateCreateRole(account);
             }
         } catch (Exception e) {
             LOGGER.error("accountDAO.updateCreateRole exception", e);
@@ -138,7 +135,7 @@ public class AccountService implements ServerPrepareStart {
     public void updateName(Account account, String name) {
         try {
             account.setName(name);
-            this.accountManager.updateName(account.getUid(), name);
+            this.accountManager.updateName(account);
         } catch (Exception e) {
             LOGGER.error("accountDAO.updateName exception", e);
         }
@@ -235,7 +232,7 @@ public class AccountService implements ServerPrepareStart {
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_1);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
     }
 
     @Override

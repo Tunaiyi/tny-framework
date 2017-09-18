@@ -4,6 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.AppConstants;
@@ -11,9 +12,11 @@ import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.common.dispatcher.MessageDispatcher;
 import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.exception.NetException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.message.MessageWriteFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionInputEventHandler;
@@ -24,14 +27,16 @@ import com.tny.game.net.session.event.SessionResendEvent;
 import com.tny.game.net.session.event.SessionSendEvent;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.tunnel.TunnelContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * Created by Kun Yang on 2017/3/18.
@@ -116,9 +121,6 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         MessageDispatcher messageDispatcher = appConfiguration.getMessageDispatcher();
         DispatchCommandExecutor commandExecutor = appConfiguration.getDispatchCommandExecutor();
         Message<?> message = event.getMessage();
-        // AtomicInteger handledID = session.attributes().getAttribute(HANDLED_MSG_ID);
-        // if (handledID == null)
-        //     session.attributes().setAttribute(HANDLED_MSG_ID, handledID = new AtomicInteger(0));
         Tunnel<UID> tunnel = event.getTunnel().orElse(null);
         if (tunnel != null) {
             try {
@@ -143,16 +145,53 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
                     try {
                         switch (event.getEventType()) {
                             case MESSAGE:
-                                if (event instanceof SessionSendEvent)
-                                    doWrite((TunnelContent<UID>) event, event.getTunnel().orElse(null));
+                                if (event instanceof SessionSendEvent) {
+                                    SessionSendEvent<UID> sendEvent = as(event);
+                                    if (session.isClosed()) {
+                                        NetException exception = new NetException("session is close");
+                                        sendEvent.fail(exception);
+                                    } else {
+                                        Optional<Tunnel<UID>> tunnelOpt = sendEvent.getTunnel();
+                                        if (tunnelOpt.isPresent()) {
+                                            Tunnel<UID> tunnel = tunnelOpt.get();
+                                            Message<UID> message = session.createMessage(tunnel, sendEvent.getContent());
+                                            try {
+                                                write(tunnel, message, sendEvent);
+                                            } catch (Throwable e) {
+                                                sendEvent.fail(e);
+                                                return;
+                                            }
+                                        } else {
+                                            NetException exception = new NetException("tunnel is close");
+                                            sendEvent.fail(exception);
+                                        }
+                                    }
+                                }
                                 break;
                             case RESEND:
                                 if (event instanceof SessionResendEvent) {
                                     SessionResendEvent<UID> resendEvent = (SessionResendEvent) event;
-                                    Tunnel<UID> tunnel = resendEvent.getTunnel().orElse(null);
-                                    List<SessionSendEvent<UID>> resendEvents = session.getHandledSendEvents(resendEvent.getResendRange());
-                                    resendEvents.forEach(ev -> doWrite(ev, tunnel));
-                                    resendEvent.resendSuccess(tunnel);
+                                    if (session.isClosed()) {
+                                        NetException exception = new NetException("session is close");
+                                        resendEvent.resendFail(exception);
+                                    } else {
+                                        Tunnel<UID> tunnel = resendEvent.getTunnel().orElse(null);
+                                        if (tunnel != null) {
+                                            List<Message<UID>> resendEvents = session.getHandledSendEvents(resendEvent.getResendRange());
+                                            for (Message<UID> message : resendEvents) {
+                                                try {
+                                                    write(tunnel, message, null);
+                                                } catch (Throwable e) {
+                                                    resendEvent.resendFail(e);
+                                                    return;
+                                                }
+                                            }
+                                            resendEvent.resendSuccess(tunnel);
+                                        } else {
+                                            NetException exception = new NetException("tunnel is close");
+                                            resendEvent.resendFail(exception);
+                                        }
+                                    }
                                 }
                                 break;
                         }
@@ -166,22 +205,12 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         }
     }
 
-    private void doWrite(TunnelContent<UID> content, Tunnel<UID> tunnel) {
-        try {
-            if (tunnel == null)
-                content.cancelSendWait(true);
-            write(content, tunnel);
-        } catch (Throwable e) {
-            content.cancelSendWait(true);
-            LOGGER.error("Tunnel [{}] write message exception", tunnel, e);
-        }
-    }
 
-    protected void write(TunnelContent<UID> content, Tunnel<UID> tunnel) {
+    protected void write(Tunnel<UID> tunnel, Message<UID> message, MessageWriteFuture<UID> future) throws Throwable {
         if (tunnel instanceof NetTunnel) {
-            ((NetTunnel<UID>) tunnel).write(content);
+            ((NetTunnel<UID>) tunnel).write(message, future);
         } else {
-            content.cancelSendWait(true);
+            throw new NetException(Logs.format("未支持 {} Tunnel", tunnel.getClass()));
         }
     }
 

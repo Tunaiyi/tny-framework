@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class SessionHolderTest {
 
-//     @Autowired
+//     @Resource
 //     @Qualifier("testSessionHoslder")
 //     private AbstractNetSessionHolder sessionHolder;
 //

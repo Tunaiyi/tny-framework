@@ -13,12 +13,12 @@ public class CommonSessionFactory<UID> implements SessionFactory<UID> {
 
     private AppConfiguration appConfiguration;
 
-    private UID unlogUID;
+    private UID unloginUID;
 
     private int cacheMessageSize;
 
     public CommonSessionFactory(UID unloginUID, AppConfiguration appConfiguration) {
-        this.unlogUID = unloginUID;
+        this.unloginUID = unloginUID;
         this.appConfiguration = appConfiguration;
         Config config = appConfiguration.getProperties();
         this.cacheMessageSize = config.getInt(AppConstants.SESSION_CACHE_MESSAGE_SIZE, 0);
@@ -27,11 +27,9 @@ public class CommonSessionFactory<UID> implements SessionFactory<UID> {
     @Override
     @SuppressWarnings("unchecked")
     public NetSession<UID> createSession(NetTunnel<UID> tunnel) {
-        return new CommonSession<>(tunnel, this.unlogUID,
-                appConfiguration.getMessageBuilderFactory(),
+        return new CommonSession<>(tunnel, this.unloginUID,
                 appConfiguration.getOutputEventHandler(),
                 appConfiguration.getInputEventHandler(),
-                appConfiguration.getMessageSignGenerator(),
                 cacheMessageSize);
     }
 

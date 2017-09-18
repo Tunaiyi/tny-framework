@@ -1,5 +1,7 @@
 package com.tny.game.net.tunnel;
 
+import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageWriteFuture;
 import com.tny.game.net.session.NetSession;
 
 /**
@@ -13,11 +15,6 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
 
     void pong();
 
-    /**
-     * 写出内容太
-     *
-     * @param content 写出事件
-     */
-    void write(TunnelContent<UID> content);
+    void write(Message<UID> message, MessageWriteFuture<UID> writeFuture) throws Throwable;
 
 }

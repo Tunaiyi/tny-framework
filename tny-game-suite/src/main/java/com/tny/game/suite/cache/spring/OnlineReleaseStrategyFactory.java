@@ -9,13 +9,13 @@ import com.tny.game.base.item.Item;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.suite.login.IDAide;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
     private long defaultLifeTime = 60 * 1000 * 3;
 
-    @Autowired
+    @Resource
     private SessionHolder sessionHolder;
 
     public OnlineReleaseStrategyFactory(long defaultAddLife) {

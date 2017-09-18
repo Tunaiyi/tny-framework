@@ -4,19 +4,19 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.word.LocalWordsFilter;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.common.checker.MessageMD5Signer;
 import com.tny.game.net.common.checker.MessageSequenceChecker;
 import com.tny.game.net.common.checker.MessageTimeoutChecker;
-import com.tny.game.net.common.dispatcher.ForkJoinDispatchCommandExecutor;
 import com.tny.game.net.common.dispatcher.MessageDispatcher;
+import com.tny.game.net.common.executor.GroupBySessionDispatchCommandExecutor;
 import com.tny.game.net.common.handle.ForkJoinSessionEventHandler;
 import com.tny.game.net.common.session.CommonSessionFactory;
 import com.tny.game.net.common.session.CommonSessionHolder;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.netty.NettyServer;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.holder.SessionHolder;
@@ -42,14 +42,11 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({SERVER, CLIENT, GAME, SERVER_KAFKA, GAME_KAFKA})
+@Profile({GAME, SERVER_KAFKA, GAME_KAFKA})
 public class NetServerBeanFactory {
 
     @Resource(name = "gameServerConfiguration")
-    private AppConfiguration appConfiguration;
-
-    @Resource(name = "gameServerChannelMaker")
-    private ChannelMaker<Channel> channelMaker;
+    private NettyAppConfiguration appConfiguration;
 
     @Bean(name = "sessionHolder")
     public SessionHolder gameSessionHolder() {
@@ -68,7 +65,7 @@ public class NetServerBeanFactory {
 
     @Bean(name = "dispatchCommandExecutor")
     public DispatchCommandExecutor getDispatchCommandExecutor() {
-        return new ForkJoinDispatchCommandExecutor(this.appConfiguration.getProperties());
+        return new GroupBySessionDispatchCommandExecutor(this.appConfiguration.getProperties());
     }
 
     @Bean(name = "messageDispatcher")
@@ -84,13 +81,6 @@ public class NetServerBeanFactory {
     @Bean(name = "signGenerator")
     public MessageMD5Signer getMessageSignChecker() {
         Config config = Configs.SUITE_CONFIG;
-        // String protsWords = config.getStr(Configs.SUITE_MSG_CHECKER_DIRECT_PROTS);
-        // List<Integer> ports = new ArrayList<>();
-        // if (protsWords != null) {
-        //     ports = Arrays.stream(StringUtils.split(protsWords, ","))
-        //             .map(NumberUtils::toInt)
-        //             .collect(Collectors.toList());
-        // }
         String randomWords = config.getStr(Configs.SUITE_MSG_CHECKER_RANDOM_SEQ);
         short[] randomKey = new short[0];
         if (randomWords != null) {
@@ -100,8 +90,8 @@ public class NetServerBeanFactory {
                             .collect(Collectors.toList())
                             .toArray(new Short[0]));
         }
-        // return new  GameMD5VerifyChecker(randomKey, ImmutableSet.of(Session.UNLOGIN_USER_GROUP, Session.DEFAULT_USER_GROUP));
-        return new GameMessageMD5Signer(randomKey, ImmutableSet.of());
+        String signGroupsWords = config.getStr(Configs.SUITE_MSG_SIGNER_SIGN_GROUPS, "");
+        return new GameMessageMD5Signer(randomKey, ImmutableSet.copyOf(StringUtils.split(signGroupsWords, ",")));
     }
 
     @Bean(name = "messageSequenceChecker")
@@ -114,9 +104,9 @@ public class NetServerBeanFactory {
         return new MessageTimeoutChecker();
     }
 
-    @Bean(name = "messageDispatcher")
-    public SpringMessageDispatcher messageDispatcher() {
-        return new SpringMessageDispatcher(this.appConfiguration);
+    @Bean(name = "channelMaker")
+    public ChannelMaker<Channel> channelMaker() {
+        return new ReadTimeoutChannelMaker<>();
     }
 
     @Bean
@@ -131,7 +121,7 @@ public class NetServerBeanFactory {
     @Bean
     @Profile({SERVER, GAME})
     public NettyServer nettyServer() {
-        return new NettyServer(this.channelMaker, this.appConfiguration);
+        return new NettyServer(this.appConfiguration);
     }
 
 }

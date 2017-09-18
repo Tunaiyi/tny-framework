@@ -10,7 +10,7 @@ public interface ActorOf<ID, AC extends Actor<ID, ?>> {
      * @param id   actor名字
      * @return 返回ActorRef
      */
-    AC actorOf(URL path, ID id);
+    AC actorOf(ActorURL path, ID id);
 
     /**
      * 构建ActorRef

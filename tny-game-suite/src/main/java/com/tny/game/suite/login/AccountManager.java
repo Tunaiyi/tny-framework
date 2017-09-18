@@ -1,10 +1,12 @@
 package com.tny.game.suite.login;
 
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.suite.login.dao.AccountDAO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.joda.time.DateTime;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({GAME})
 public class AccountManager {
 
-    @Autowired
+    @Resource
     private AccountDAO accountDAO;
 
     public Account getAccount(String account) {
@@ -33,8 +35,12 @@ public class AccountManager {
         return this.accountDAO.findUIDByOpenID(serverID, openID);
     }
 
-    public int update(Account accountObj, GameTicket ticket) {
-        return this.accountDAO.update(
+    public List<String> findPF() {
+        return this.accountDAO.findAllFP();
+    }
+
+    public int updateIfNull(Account accountObj, GameTicket ticket) {
+        return this.accountDAO.updateIfNull(
                 accountObj.getUid(),
                 accountObj.getAccount(),
                 ticket.getOpenID(),
@@ -51,20 +57,45 @@ public class AccountManager {
                 accountObj.getOfflineAt());
     }
 
-    public void updateOfflineAt(long uid, int dateInt, long millis) {
-        this.accountDAO.updateOfflineAt(uid, dateInt, millis);
+    // public int update(Account accountObj, GameTicket ticket) {
+    //     return this.accountDAO.update(
+    //             accountObj.getUid(),
+    //             ticket.getDevice(),
+    //             ticket.getDeviceID(),
+    //             ticket.getPf(),
+    //             ticket.getZone(),
+    //             ticket.getEntry(),
+    //             accountObj.getOnlineAt(),
+    //             accountObj.getOfflineAt());
+    // }
+
+    public void updateOfflineAt(Account accountObj) {
+        DateTime dateTime = accountObj.getOfflineTime();
+        if (dateTime == null)
+            dateTime = DateTime.now();
+        this.accountDAO.updateOfflineAt(accountObj.getUid(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
     }
 
-    public void updateOnlineAt(long uid, int dateInt, long millis, String device, String deviceID) {
-        this.accountDAO.updateOnlineAt(uid, dateInt, millis, device, deviceID);
+    public void updateOnlineAt(Account account, GameTicket ticket) {
+        DateTime dateTime = account.getOnlineTime();
+        if (dateTime == null)
+            dateTime = DateTime.now();
+        this.accountDAO.updateOnlineAt(
+                account.getUid(),
+                DateTimeAide.date2Int(dateTime),
+                dateTime.getMillis(), ticket.getPf(), ticket.getDevice(), ticket.getDeviceID());
     }
 
-    public void updateCreateRole(long uid, String name, int dateInt, long millis) {
-        this.accountDAO.updateCreateRole(uid, name, dateInt, millis);
+    public void updateCreateRole(Account account) {
+        DateTime dateTime = account.getCreateDateTime();
+        if (dateTime == null)
+            return;
+        this.accountDAO.updateCreateRole(
+                account.getUid(), account.getName(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
     }
 
-    public void updateName(long uid, String name) {
-        this.accountDAO.updateName(uid, name);
+    public void updateName(Account account) {
+        this.accountDAO.updateName(account.getUid(), account.getName());
     }
 
     public List<Long> findEmptyUID(Long min, Long max) {

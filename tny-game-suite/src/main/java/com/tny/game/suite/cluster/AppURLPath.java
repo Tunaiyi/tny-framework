@@ -4,12 +4,13 @@ package com.tny.game.suite.cluster;
 /**
  * Created by Kun Yang on 16/8/11.
  */
-public interface WebPath {
+public interface AppURLPath {
 
     String getName();
 
-    String getServerType();
+    String getAppType();
 
     String getPath();
 
+    String getProtocol();
 }

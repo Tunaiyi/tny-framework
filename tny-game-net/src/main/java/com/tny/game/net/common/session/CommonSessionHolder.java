@@ -25,6 +25,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static com.tny.game.common.utils.ObjectAide.as;
+
 @Unit("CommonSessionHolder")
 public class CommonSessionHolder extends AbstractNetSessionHolder {
 
@@ -57,44 +59,9 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
     }
 
-    private void clearInvalidedSession() {
-        long now = System.currentTimeMillis();
-        for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
-            userGroupSessionMap.forEach((key, session) -> {
-                try {
-                    NetTunnel<?> tunnel = session.getCurrentTunnel();
-                    if (tunnel.isConnected() && tunnel.getLatestActiveAt() + keepIdleTime < now) {
-                        LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
-                        tunnel.close();
-                    }
-                    NetSession<?> closeSession = null;
-                    if (session.isClosed()) {
-                        userGroupSessionMap.remove(session.getUID(), session);
-                        closeSession = session;
-                    } else if (session.isOffline() && session.getOfflineTime() + sessionLife < now) {
-                        session.close();
-                        closeSession = session;
-                    }
-                    if (closeSession != null)
-                        userGroupSessionMap.remove(session.getUID(), session);
-                } catch (Throwable e) {
-                    LOG.error("clear {} invalided session exception", session.getUID(), e);
-                }
-            });
-        }
-    }
-
     @Override
     public <U> Session<U> getSession(String userGroup, U uid) {
         return this.getSession0(userGroup, uid);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <U> NetSession<U> getSession0(String userGroup, U uid) {
-        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
-        if (userGroupSessionMap == null)
-            return null;
-        return userGroupSessionMap.get(uid);
     }
 
     @Override
@@ -103,7 +70,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         Map<Object, ? extends Session> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return Collections.emptyMap();
-        return (Map<U, Session<U>>) userGroupSessionMap;
+        return as(Collections.unmodifiableMap(userGroupSessionMap));
     }
 
     @Override
@@ -157,21 +124,6 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
     public int countOnline(String userGroup) {
         return this.sessionMap.size();
     }
-
-    private void doSendMultiSession(Collection<NetSession> sessionCollection, MessageContent<?> content) {
-        for (NetSession<?> session : sessionCollection)
-            session.send(content);
-    }
-
-    private void doSendMultiSessionID(String userGroup, Stream<?> uidColl, MessageContent<?> content) {
-        uidColl.forEach(uid -> {
-            NetSession<Object> session = this.getSession0(userGroup, uid);
-            if (session != null) {
-                session.send(content);
-            }
-        });
-    }
-
 
     @Override
     public <U> Session<U> offline(String userGroup, U uid, boolean invalid) {
@@ -260,5 +212,53 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
+    private <U> NetSession<U> getSession0(String userGroup, U uid) {
+        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
+        if (userGroupSessionMap == null)
+            return null;
+        return userGroupSessionMap.get(uid);
+    }
+
+    private void doSendMultiSession(Collection<NetSession> sessionCollection, MessageContent<?> content) {
+        for (NetSession<?> session : sessionCollection)
+            session.send(content);
+    }
+
+    private void doSendMultiSessionID(String userGroup, Stream<?> uidColl, MessageContent<?> content) {
+        uidColl.forEach(uid -> {
+            NetSession<Object> session = this.getSession0(userGroup, uid);
+            if (session != null) {
+                session.send(content);
+            }
+        });
+    }
+
+    private void clearInvalidedSession() {
+        long now = System.currentTimeMillis();
+        for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
+            userGroupSessionMap.forEach((key, session) -> {
+                try {
+                    NetTunnel<?> tunnel = session.getCurrentTunnel();
+                    if (tunnel.isConnected() && tunnel.getLatestActiveAt() + keepIdleTime < now) {
+                        LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
+                        tunnel.close();
+                    }
+                    NetSession<?> closeSession = null;
+                    if (session.isClosed()) {
+                        userGroupSessionMap.remove(session.getUID(), session);
+                        closeSession = session;
+                    } else if (session.isOffline() && session.getOfflineTime() + sessionLife < now) {
+                        session.close();
+                        closeSession = session;
+                    }
+                    if (closeSession != null)
+                        userGroupSessionMap.remove(session.getUID(), session);
+                } catch (Throwable e) {
+                    LOG.error("clear {} invalided session exception", session.getUID(), e);
+                }
+            });
+        }
+    }
 
 }

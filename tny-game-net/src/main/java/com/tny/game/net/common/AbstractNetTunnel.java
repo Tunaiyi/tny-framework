@@ -3,7 +3,10 @@ package com.tny.game.net.common;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
+import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.NetSession;
@@ -16,17 +19,21 @@ import com.tny.game.net.tunnel.Tunnels;
 import java.util.Collection;
 import java.util.Set;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<UID> implements NetTunnel<UID> {
 
     private final long id;
 
     private long latestActiveAt;
 
     protected NetSession<UID> session;
+
+    protected AppConfiguration configuration;
 
     /* 附加属性 */
     private Attributes attributes;
@@ -37,10 +44,18 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
     /* 发送排除消息模型 */
     private Set<MessageMode> sendExcludes = ImmutableSet.of();
 
-    public AbstractTunnel(SessionFactory<UID> sessionFactory) {
+    private MessageBuilderFactory<UID> messageBuilderFactory;
+
+    private MessageSignGenerator<UID> messageSignGenerator;
+
+    public AbstractNetTunnel(AppConfiguration configuration) {
         this.id = Tunnels.newID();
+        this.configuration = configuration;
         this.latestActiveAt = System.currentTimeMillis();
-        this.session = sessionFactory.createSession(this);
+        SessionFactory<UID> factory = as(configuration.getSessionFactory());
+        this.session = factory.createSession(this);
+        this.messageBuilderFactory = as(configuration.getMessageBuilderFactory());
+        this.messageSignGenerator = as(configuration.getMessageSignGenerator());
     }
 
     @Override
@@ -128,5 +143,16 @@ public abstract class AbstractTunnel<UID> implements NetTunnel<UID> {
     @Override
     public Collection<MessageMode> getSendExcludes() {
         return this.sendExcludes;
+    }
+
+    @Override
+    public Message<UID> createMessage(long sessionID, int messageID, MessageContent<?> content) {
+        return messageBuilderFactory.newMessageBuilder()
+                .setID(messageID)
+                .setSessionID(sessionID)
+                .setContent(content)
+                .setSignGenerator(this.messageSignGenerator)
+                .setTunnel(this)
+                .build();
     }
 }

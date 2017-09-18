@@ -8,17 +8,17 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
-@Profile({SERVER, GAME})
+@Profile({GAME, TEXT_FILTER})
 public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String> {
 
-    @Autowired
+    @Resource
     private WordsFilter wordsFilter;
 
     protected NameLimit() {

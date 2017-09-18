@@ -3,7 +3,7 @@ package com.tny.game.suite.base;
 import com.tny.game.cache.async.AsyncCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GameCacheManager.class);
 
-    @Autowired
+    @Resource
     @Qualifier("asyncCache")
     protected AsyncCache cache;
 

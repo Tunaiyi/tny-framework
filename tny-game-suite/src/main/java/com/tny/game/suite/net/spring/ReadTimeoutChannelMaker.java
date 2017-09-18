@@ -6,7 +6,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +13,6 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Unit("ReadTimeoutChannelMaker")
 @Profile({SERVER, CLIENT, GAME})
-@Component("gameServerChannelMaker")
 public class ReadTimeoutChannelMaker<C extends Channel> extends ChannelMaker<C> {
 
     @Override

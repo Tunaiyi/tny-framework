@@ -1,27 +1,45 @@
 package com.tny.game.common.utils;
 
-import org.apache.http.util.NetUtils;
+import com.tny.game.common.collection.CollectionAide;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * Created by Kun Yang on 2017/9/7.
  */
 
 public final class URL implements Serializable {
+
+
+    public static final String BACKUP_KEY = "backup";
+
+    public static final String INTERFACE_KEY = "interface";
+
+    public static final String DEFAULT_KEY_PREFIX = "default.";
+
+    public static final String ANYHOST_KEY = "anyhost";
+
+    public static final String ANYHOST_VALUE = "0.0.0.0";
+
+    public static final String LOCALHOST_KEY = "localhost";
+
+    public static final String LOCALHOST_VALUE = "127.0.0.1";
+
+    public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
 
     private static final long serialVersionUID = -1985165475234910535L;
 
@@ -113,9 +131,9 @@ public final class URL implements Serializable {
         }
         this.path = path;
         if (parameters == null) {
-            parameters = new HashMap<String, String>();
+            parameters = new HashMap<>();
         } else {
-            parameters = new HashMap<String, String>(parameters);
+            parameters = new HashMap<>(parameters);
         }
         this.parameters = Collections.unmodifiableMap(parameters);
     }
@@ -141,7 +159,7 @@ public final class URL implements Serializable {
         int i = url.indexOf("?"); // seperator between body and parameters
         if (i >= 0) {
             String[] parts = url.substring(i + 1).split("\\&");
-            parameters = new HashMap<String, String>();
+            parameters = new HashMap<>();
             for (String part : parts) {
                 part = part.trim();
                 if (part.length() > 0) {
@@ -270,7 +288,7 @@ public final class URL implements Serializable {
      */
     public String getIp() {
         if (ip == null) {
-            ip = NetUtils.getIpByHost(host);
+            ip = NetAide.getIpByHost(host);
         }
         return ip;
     }
@@ -310,7 +328,7 @@ public final class URL implements Serializable {
 
     public String getBackupAddress(int defaultPort) {
         StringBuilder address = new StringBuilder(appendDefaultPort(getAddress(), defaultPort));
-        String[] backups = getParameter(Constants.BACKUP_KEY, new String[0]);
+        String[] backups = getParameter(BACKUP_KEY, new String[0]);
         if (backups != null && backups.length > 0) {
             for (String backup : backups) {
                 address.append(",");
@@ -321,9 +339,9 @@ public final class URL implements Serializable {
     }
 
     public List<URL> getBackupUrls() {
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         urls.add(this);
-        String[] backups = getParameter(Constants.BACKUP_KEY, new String[0]);
+        String[] backups = getParameter(BACKUP_KEY, new String[0]);
         if (backups != null && backups.length > 0) {
             for (String backup : backups) {
                 urls.add(this.setAddress(backup));
@@ -375,7 +393,7 @@ public final class URL implements Serializable {
     public String getParameter(String key) {
         String value = parameters.get(key);
         if (value == null || value.length() == 0) {
-            value = parameters.get(Constants.DEFAULT_KEY_PREFIX + key);
+            value = parameters.get(DEFAULT_KEY_PREFIX + key);
         }
         return value;
     }
@@ -393,19 +411,19 @@ public final class URL implements Serializable {
         if (value == null || value.length() == 0) {
             return defaultValue;
         }
-        return Constants.COMMA_SPLIT_PATTERN.split(value);
+        return COMMA_SPLIT_PATTERN.split(value);
     }
 
     private Map<String, Number> getNumbers() {
         if (numbers == null) { // 允许并发重复创建
-            numbers = new ConcurrentHashMap<String, Number>();
+            numbers = new ConcurrentHashMap<>();
         }
         return numbers;
     }
 
     private Map<String, URL> getUrls() {
         if (urls == null) { // 允许并发重复创建
-            urls = new ConcurrentHashMap<String, URL>();
+            urls = new ConcurrentHashMap<>();
         }
         return urls;
     }
@@ -508,72 +526,6 @@ public final class URL implements Serializable {
         return b;
     }
 
-    public float getPositiveParameter(String key, float defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        float value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public double getPositiveParameter(String key, double defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        double value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public long getPositiveParameter(String key, long defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        long value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public int getPositiveParameter(String key, int defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        int value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public short getPositiveParameter(String key, short defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        short value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public byte getPositiveParameter(String key, byte defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        byte value = getParameter(key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
     public char getParameter(String key, char defaultValue) {
         String value = getParameter(key);
         if (value == null || value.length() == 0) {
@@ -595,403 +547,12 @@ public final class URL implements Serializable {
         return value != null && value.length() > 0;
     }
 
-    public String getMethodParameterAndDecoded(String method, String key) {
-        return URL.decode(getMethodParameter(method, key));
-    }
-
-    public String getMethodParameterAndDecoded(String method, String key, String defaultValue) {
-        return URL.decode(getMethodParameter(method, key, defaultValue));
-    }
-
-    public String getMethodParameter(String method, String key) {
-        String value = parameters.get(method + "." + key);
-        if (value == null || value.length() == 0) {
-            return getParameter(key);
-        }
-        return value;
-    }
-
-    public String getMethodParameter(String method, String key, String defaultValue) {
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public double getMethodParameter(String method, String key, double defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.intValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        double d = Double.parseDouble(value);
-        getNumbers().put(methodKey, d);
-        return d;
-    }
-
-    public float getMethodParameter(String method, String key, float defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.intValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        float f = Float.parseFloat(value);
-        getNumbers().put(methodKey, f);
-        return f;
-    }
-
-    public long getMethodParameter(String method, String key, long defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.intValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        long l = Long.parseLong(value);
-        getNumbers().put(methodKey, l);
-        return l;
-    }
-
-    public int getMethodParameter(String method, String key, int defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.intValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        int i = Integer.parseInt(value);
-        getNumbers().put(methodKey, i);
-        return i;
-    }
-
-    public short getMethodParameter(String method, String key, short defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.shortValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        short s = Short.parseShort(value);
-        getNumbers().put(methodKey, s);
-        return s;
-    }
-
-    public byte getMethodParameter(String method, String key, byte defaultValue) {
-        String methodKey = method + "." + key;
-        Number n = getNumbers().get(methodKey);
-        if (n != null) {
-            return n.byteValue();
-        }
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        byte b = Byte.parseByte(value);
-        getNumbers().put(methodKey, b);
-        return b;
-    }
-
-    public double getMethodPositiveParameter(String method, String key, double defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        double value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public float getMethodPositiveParameter(String method, String key, float defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        float value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public long getMethodPositiveParameter(String method, String key, long defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        long value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public int getMethodPositiveParameter(String method, String key, int defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        int value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public short getMethodPositiveParameter(String method, String key, short defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        short value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public byte getMethodPositiveParameter(String method, String key, byte defaultValue) {
-        if (defaultValue <= 0) {
-            throw new IllegalArgumentException("defaultValue <= 0");
-        }
-        byte value = getMethodParameter(method, key, defaultValue);
-        if (value <= 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    public char getMethodParameter(String method, String key, char defaultValue) {
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        return value.charAt(0);
-    }
-
-    public boolean getMethodParameter(String method, String key, boolean defaultValue) {
-        String value = getMethodParameter(method, key);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        return Boolean.parseBoolean(value);
-    }
-
-    public boolean hasMethodParameter(String method, String key) {
-        if (method == null) {
-            String suffix = "." + key;
-            for (String fullKey : parameters.keySet()) {
-                if (fullKey.endsWith(suffix)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (key == null) {
-            String prefix = method + ".";
-            for (String fullKey : parameters.keySet()) {
-                if (fullKey.startsWith(prefix)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        String value = getMethodParameter(method, key);
-        return value != null && value.length() > 0;
-    }
-
     public boolean isLocalHost() {
-        return NetUtils.isLocalHost(host) || getParameter(Constants.LOCALHOST_KEY, false);
+        return NetAide.isLocalHost(host) || getParameter(LOCALHOST_KEY, false);
     }
 
     public boolean isAnyHost() {
-        return Constants.ANYHOST_VALUE.equals(host) || getParameter(Constants.ANYHOST_KEY, false);
-    }
-
-    public URL addParameterAndEncoded(String key, String value) {
-        if (value == null || value.length() == 0) {
-            return this;
-        }
-        return addParameter(key, encode(value));
-    }
-
-    public URL addParameter(String key, boolean value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, char value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, byte value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, short value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, int value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, long value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, float value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, double value) {
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, Enum<?> value) {
-        if (value == null) return this;
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, Number value) {
-        if (value == null) return this;
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, CharSequence value) {
-        if (value == null || value.length() == 0) return this;
-        return addParameter(key, String.valueOf(value));
-    }
-
-    public URL addParameter(String key, String value) {
-        if (key == null || key.length() == 0
-                || value == null || value.length() == 0) {
-            return this;
-        }
-        // 如果没有修改，直接返回。
-        if (value.equals(getParameters().get(key))) { // value != null
-            return this;
-        }
-
-        Map<String, String> map = new HashMap<String, String>(getParameters());
-        map.put(key, value);
-        return new URL(protocol, username, password, host, port, path, map);
-    }
-
-    public URL addParameterIfAbsent(String key, String value) {
-        if (key == null || key.length() == 0
-                || value == null || value.length() == 0) {
-            return this;
-        }
-        if (hasParameter(key)) {
-            return this;
-        }
-        Map<String, String> map = new HashMap<String, String>(getParameters());
-        map.put(key, value);
-        return new URL(protocol, username, password, host, port, path, map);
-    }
-
-    /**
-     * Add parameters to a new url.
-     *
-     * @param parameters
-     * @return A new URL
-     */
-    public URL addParameters(Map<String, String> parameters) {
-        if (parameters == null || parameters.size() == 0) {
-            return this;
-        }
-
-        boolean hasAndEqual = true;
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String value = getParameters().get(entry.getKey());
-            if (value == null && entry.getValue() != null || !value.equals(entry.getValue())) {
-                hasAndEqual = false;
-                break;
-            }
-        }
-        // 如果没有修改，直接返回。
-        if (hasAndEqual) return this;
-
-        Map<String, String> map = new HashMap<String, String>(getParameters());
-        map.putAll(parameters);
-        return new URL(protocol, username, password, host, port, path, map);
-    }
-
-    public URL addParametersIfAbsent(Map<String, String> parameters) {
-        if (parameters == null || parameters.size() == 0) {
-            return this;
-        }
-        Map<String, String> map = new HashMap<String, String>(parameters);
-        map.putAll(getParameters());
-        return new URL(protocol, username, password, host, port, path, map);
-    }
-
-    public URL addParameters(String... pairs) {
-        if (pairs == null || pairs.length == 0) {
-            return this;
-        }
-        if (pairs.length % 2 != 0) {
-            throw new IllegalArgumentException("Map pairs can not be odd number.");
-        }
-        Map<String, String> map = new HashMap<String, String>();
-        int len = pairs.length / 2;
-        for (int i = 0; i < len; i++) {
-            map.put(pairs[2 * i], pairs[2 * i + 1]);
-        }
-        return addParameters(map);
-    }
-
-    public URL addParameterString(String query) {
-        if (query == null || query.length() == 0) {
-            return this;
-        }
-        return addParameters(StringUtils.parseQueryString(query));
-    }
-
-    public URL removeParameter(String key) {
-        if (key == null || key.length() == 0) {
-            return this;
-        }
-        return removeParameters(key);
-    }
-
-    public URL removeParameters(Collection<String> keys) {
-        if (keys == null || keys.size() == 0) {
-            return this;
-        }
-        return removeParameters(keys.toArray(new String[0]));
-    }
-
-    public URL removeParameters(String... keys) {
-        if (keys == null || keys.length == 0) {
-            return this;
-        }
-        Map<String, String> map = new HashMap<String, String>(getParameters());
-        for (String key : keys) {
-            map.remove(key);
-        }
-        if (map.size() == getParameters().size()) {
-            return this;
-        }
-        return new URL(protocol, username, password, host, port, path, map);
-    }
-
-    public URL clearParameters() {
-        return new URL(protocol, username, password, host, port, path, new HashMap<String, String>());
+        return ANYHOST_VALUE.equals(host) || getParameter(ANYHOST_KEY, false);
     }
 
     public String getRawParameter(String key) {
@@ -1011,7 +572,7 @@ public final class URL implements Serializable {
     }
 
     public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<String, String>(parameters);
+        Map<String, String> map = new HashMap<>(parameters);
         if (protocol != null)
             map.put("protocol", protocol);
         if (username != null)
@@ -1077,7 +638,7 @@ public final class URL implements Serializable {
         if (getParameters() != null && getParameters().size() > 0) {
             List<String> includes = (parameters == null || parameters.length == 0 ? null : Arrays.asList(parameters));
             boolean first = true;
-            for (Map.Entry<String, String> entry : new TreeMap<String, String>(getParameters()).entrySet()) {
+            for (Map.Entry<String, String> entry : new TreeMap<>(getParameters()).entrySet()) {
                 if (entry.getKey() != null && entry.getKey().length() > 0
                         && (includes == null || includes.contains(entry.getKey()))) {
                     if (first) {
@@ -1097,10 +658,10 @@ public final class URL implements Serializable {
     }
 
     private String buildString(boolean appendUser, boolean appendParameter, String... parameters) {
-        return buildString(appendUser, appendParameter, false, false, parameters);
+        return buildString(appendUser, appendParameter, false, parameters);
     }
 
-    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, boolean useService, String... parameters) {
+    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, String... parameters) {
         StringBuilder buf = new StringBuilder();
         if (protocol != null && protocol.length() > 0) {
             buf.append(protocol);
@@ -1127,12 +688,7 @@ public final class URL implements Serializable {
                 buf.append(port);
             }
         }
-        String path;
-        if (useService) {
-            path = getServiceKey();
-        } else {
-            path = getPath();
-        }
+        String path = getPath();
         if (path != null && path.length() > 0) {
             buf.append("/");
             buf.append(path);
@@ -1155,43 +711,6 @@ public final class URL implements Serializable {
         return new InetSocketAddress(host, port);
     }
 
-    public String getServiceKey() {
-        String inf = getServiceInterface();
-        if (inf == null) return null;
-        StringBuilder buf = new StringBuilder();
-        String group = getParameter(Constants.GROUP_KEY);
-        if (group != null && group.length() > 0) {
-            buf.append(group).append("/");
-        }
-        buf.append(inf);
-        String version = getParameter(Constants.VERSION_KEY);
-        if (version != null && version.length() > 0) {
-            buf.append(":").append(version);
-        }
-        return buf.toString();
-    }
-
-    public String toServiceStringWithoutResolving() {
-        return buildString(true, false, false, true);
-    }
-
-    public String toServiceString() {
-        return buildString(true, false, true, true);
-    }
-
-    @Deprecated
-    public String getServiceName() {
-        return getServiceInterface();
-    }
-
-    public String getServiceInterface() {
-        return getParameter(Constants.INTERFACE_KEY, path);
-    }
-
-    public URL setServiceInterface(String service) {
-        return addParameter(Constants.INTERFACE_KEY, service);
-    }
-
     /**
      * @see #getParameter(String, int)
      * @deprecated Replace to <code>getParameter(String, int)</code>
@@ -1211,15 +730,6 @@ public final class URL implements Serializable {
     }
 
     /**
-     * @see #getPositiveParameter(String, int)
-     * @deprecated Replace to <code>getPositiveParameter(String, int)</code>
-     */
-    @Deprecated
-    public int getPositiveIntParameter(String key, int defaultValue) {
-        return getPositiveParameter(key, defaultValue);
-    }
-
-    /**
      * @see #getParameter(String, boolean)
      * @deprecated Replace to <code>getParameter(String, boolean)</code>
      */
@@ -1235,51 +745,6 @@ public final class URL implements Serializable {
     @Deprecated
     public boolean getBooleanParameter(String key, boolean defaultValue) {
         return getParameter(key, defaultValue);
-    }
-
-    /**
-     * @see #getMethodParameter(String, String, int)
-     * @deprecated Replace to <code>getMethodParameter(String, String, int)</code>
-     */
-    @Deprecated
-    public int getMethodIntParameter(String method, String key) {
-        return getMethodParameter(method, key, 0);
-    }
-
-    /**
-     * @see #getMethodParameter(String, String, int)
-     * @deprecated Replace to <code>getMethodParameter(String, String, int)</code>
-     */
-    @Deprecated
-    public int getMethodIntParameter(String method, String key, int defaultValue) {
-        return getMethodParameter(method, key, defaultValue);
-    }
-
-    /**
-     * @see #getMethodPositiveParameter(String, String, int)
-     * @deprecated Replace to <code>getMethodPositiveParameter(String, String, int)</code>
-     */
-    @Deprecated
-    public int getMethodPositiveIntParameter(String method, String key, int defaultValue) {
-        return getMethodPositiveParameter(method, key, defaultValue);
-    }
-
-    /**
-     * @see #getMethodParameter(String, String, boolean)
-     * @deprecated Replace to <code>getMethodParameter(String, String, boolean)</code>
-     */
-    @Deprecated
-    public boolean getMethodBooleanParameter(String method, String key) {
-        return getMethodParameter(method, key, false);
-    }
-
-    /**
-     * @see #getMethodParameter(String, String, boolean)
-     * @deprecated Replace to <code>getMethodParameter(String, String, boolean)</code>
-     */
-    @Deprecated
-    public boolean getMethodBooleanParameter(String method, String key, boolean defaultValue) {
-        return getMethodParameter(method, key, defaultValue);
     }
 
     @Override

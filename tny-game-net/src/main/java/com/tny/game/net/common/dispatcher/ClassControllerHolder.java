@@ -98,7 +98,7 @@ public final class ClassControllerHolder extends ControllerHolder {
 
     @Override
     public String getName() {
-        return this.controllerClass.getSimpleName();
+        return this.controllerClass.getCanonicalName();
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -33,13 +33,13 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
 
     private static FeatureService FUNC_SYS_SERVICE;
 
-    @Autowired
+    @Resource
     private FeatureExplorerManager featureExplorerManager;
 
-    @Autowired
+    @Resource
     private ModuleService<DTO> moduleService;
 
-    @Autowired
+    @Resource
     protected FeatureModelManager<? extends FeatureModel> featureModelManager;
 
     private ApplicationContext applicationContext;

@@ -4,6 +4,7 @@ import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.message.NetMessage;
 import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.tunnel.Tunnels;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,6 +35,10 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
     public NettyMessageHandler(AppConfiguration appConfiguration) {
         this.appConfiguration = appConfiguration;
+        // Config config = this.appConfiguration.getProperties();
+        // int interval = config.getInt(AppConstants.TUNNEL_PING_INTERVAL, 60000);
+        // private static final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("NettyTunnelPing"));
+        // service.scheduleAtFixedRate(() -> tunnelMap.values().forEach(NettyTunnel::ping), interval, interval, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -42,8 +47,6 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
         if (LOG.isInfoEnabled()) {
             Channel channel = ctx.channel();
             LOG.info("接受连接##通道 {} ==> {} 在 {} 时链接服务器", channel.remoteAddress(), channel.localAddress(), new Date());
-            Tunnel<?> tunnel = new NettyTunnel<>(channel, appConfiguration.getSessionFactory());
-            channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
         }
         super.channelRegistered(ctx);
     }
@@ -74,7 +77,6 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
         Channel channel = context.channel();
         if (message == null) {
             LOG.warn("读取的message为null 服务器主动断开 {} 连接", channel.localAddress());
-            // channel.write(new SimpleResponse(CoreResponseCode.DECODE_ERROR));
             channel.disconnect();
             return;
         }
@@ -94,6 +96,7 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         Tunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+        Tunnels.remove(tunnel);
         if (LOG.isInfoEnabled())
             LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
         if (tunnel != null)

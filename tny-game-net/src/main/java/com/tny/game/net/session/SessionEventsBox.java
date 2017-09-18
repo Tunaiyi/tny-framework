@@ -4,10 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.session.event.SessionEvent.SessionEventType;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionOutputEvent;
-import com.tny.game.net.session.event.SessionSendEvent;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.util.Collection;
@@ -47,15 +46,15 @@ public class SessionEventsBox<UID> {
     private ConcurrentLinkedDeque<SessionOutputEvent<UID>> outputEventQueue = new ConcurrentLinkedDeque<>();
 
     /* 发送缓存 */
-    private CircularFifoQueue<SessionSendEvent<UID>> handledSendEventQueue = null;
+    private CircularFifoQueue<Message<UID>> sentMessageQueue = null;
 
-    private StampedLock handledSendEventQueueLock;
+    private StampedLock sentMessageLock;
 
     public SessionEventsBox(long sessionID, int cacheMessageSize) {
         this.sessionID = sessionID;
         if (cacheMessageSize > 0) {
-            this.handledSendEventQueue = new CircularFifoQueue<>(cacheMessageSize);
-            handledSendEventQueueLock = new StampedLock();
+            this.sentMessageQueue = new CircularFifoQueue<>(cacheMessageSize);
+            sentMessageLock = new StampedLock();
         }
     }
 
@@ -121,35 +120,31 @@ public class SessionEventsBox<UID> {
         Queue<SessionOutputEvent<UID>> outputEventQueue = this.outputEventQueue;
         if (outputEventQueue == null || outputEventQueue.isEmpty())
             return null;
-        SessionOutputEvent event = outputEventQueue.poll();
-        if (event != null && event instanceof SessionSendEvent) {
-            addHandledOutputEvent((SessionSendEvent) event);
-        }
-        return event;
+        return outputEventQueue.poll();
     }
 
-    public List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range) {
-        if (this.handledSendEventQueue == null)
+    public List<Message<UID>> getSentMessage(Range<Integer> range) {
+        if (this.sentMessageQueue == null)
             return ImmutableList.of();
-        StampedLock lock = this.handledSendEventQueueLock;
+        StampedLock lock = this.sentMessageLock;
         long stamp = lock.readLock();
         try {
-            return this.handledSendEventQueue.stream()
-                    .filter(e -> range.contains(e.getMessage().getID()))
+            return this.sentMessageQueue.stream()
+                    .filter(e -> range.contains(e.getID()))
                     .collect(Collectors.toList());
         } finally {
             lock.unlockRead(stamp);
         }
     }
 
-    public SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID) {
-        if (this.handledSendEventQueue == null)
+    public Message<UID> getSentMessageByToID(int toMessageID) {
+        if (this.sentMessageQueue == null)
             return null;
-        StampedLock lock = this.handledSendEventQueueLock;
+        StampedLock lock = this.sentMessageLock;
         long stamp = lock.readLock();
         try {
-            return this.handledSendEventQueue.stream()
-                    .filter(e -> e.getMessage().getToMessage() == toMessageID)
+            return this.sentMessageQueue.stream()
+                    .filter(message -> message.getToMessage() == toMessageID)
                     .findFirst()
                     .orElse(null);
         } finally {
@@ -157,14 +152,12 @@ public class SessionEventsBox<UID> {
         }
     }
 
-    private void addHandledOutputEvent(SessionSendEvent event) {
-        if (event.getEventType() != SessionEventType.MESSAGE)
-            return;
-        if (this.handledSendEventQueue != null) {
-            StampedLock lock = this.handledSendEventQueueLock;
+    public void addSentMessage(Message<UID> message) {
+        if (this.sentMessageQueue != null) {
+            StampedLock lock = this.sentMessageLock;
             long stamp = lock.writeLock();
             try {
-                this.handledSendEventQueue.add(event);
+                this.sentMessageQueue.add(message);
             } finally {
                 lock.unlockWrite(stamp);
             }

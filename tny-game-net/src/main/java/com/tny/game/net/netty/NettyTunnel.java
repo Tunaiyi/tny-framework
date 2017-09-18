@@ -1,25 +1,24 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.common.AbstractTunnel;
+import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.common.AbstractNetTunnel;
 import com.tny.game.net.message.DetectMessage;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.tunnel.TunnelContent;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.Future;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Kun Yang on 2017/3/28.
  */
-public class NettyTunnel<UID> extends AbstractTunnel<UID> {
+public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
 
-    private Channel channel;
+    protected Channel channel;
 
-    public NettyTunnel(Channel channel, SessionFactory<UID> sessionFactory) {
-        super(sessionFactory);
+    public NettyTunnel(Channel channel, AppConfiguration configuration) {
+        super(configuration);
         this.channel = channel;
     }
 
@@ -34,17 +33,13 @@ public class NettyTunnel<UID> extends AbstractTunnel<UID> {
     }
 
     @Override
-    public boolean close() {
-        if (this.channel.isActive()) {
-            this.channel.disconnect().addListener(this::handleClose);
-            return true;
-        } else {
-            sessionOffline();
-        }
-        return false;
+    public CompletableFuture<Void> close() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        this.channel.close().addListener(f -> this.handleClose(f, future));
+        return future;
     }
 
-    private void handleClose(Future<?> future) {
+    private void handleClose(Future<?> future, CompletableFuture<Void> tunnelFuture) {
         if (future.isSuccess()) {
             sessionOffline();
         }
@@ -66,18 +61,6 @@ public class NettyTunnel<UID> extends AbstractTunnel<UID> {
         this.channel.writeAndFlush(DetectMessage.pong());
     }
 
-    @Override
-    public void write(TunnelContent<UID> content) {
-        ChannelFuture future = channel.writeAndFlush(content.getMessage());
-        if (content.hasSendFuture()) {
-            future.addListener(f -> {
-                if (f.isSuccess())
-                    content.sendSuccess(this);
-                else
-                    content.sendFailed(f.cause());
-            });
-        }
-    }
 
     @Override
     public boolean isClosed() {
@@ -88,4 +71,5 @@ public class NettyTunnel<UID> extends AbstractTunnel<UID> {
     public String toString() {
         return "NettyTunnel[" + channel + "]";
     }
+
 }

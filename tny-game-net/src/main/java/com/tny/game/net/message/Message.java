@@ -12,6 +12,11 @@ public interface Message<UID> extends Protocol, Serializable {
     int getID();
 
     /**
+     * @return 所属sesssion
+     */
+    long getSessionID();
+
+    /**
      * @return 用户ID 无用户ID返回-1
      */
     UID getUserID();

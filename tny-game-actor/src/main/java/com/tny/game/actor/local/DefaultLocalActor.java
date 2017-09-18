@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.URL;
+import com.tny.game.actor.ActorURL;
 import com.tny.game.actor.Answer;
 
 
@@ -52,7 +52,7 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     }
 
     @Override
-    public URL getURL() {
+    public ActorURL getURL() {
         return null;
     }
 

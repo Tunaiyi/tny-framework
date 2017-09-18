@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
         "classpath:/application.xml"})
 public class GameServerHandlerTest {
 
-    // @Autowired
+    // @Resource
     // private NettyAppConfiguration appContext;
     //
     // private NettyMessageHandler handler;

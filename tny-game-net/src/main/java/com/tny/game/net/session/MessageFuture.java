@@ -13,18 +13,18 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class MessageFuture<B> extends CompletableFuture<Message<B>> {
+public class MessageFuture<UID> extends CompletableFuture<Message<UID>> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NIO_CLIENT);
 
     private static final ConcurrentMap<String, MessageFuture<?>> FUTURE_MAP = new ConcurrentHashMap<>();
 
-    private static final long INIT_DELAY = 2;
-    private static final long PERIOD = 5;
+    private static final long INIT_DELAY = 20;
+    private static final long PERIOD = 20;
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
-                .scheduleAtFixedRate(MessageFuture::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.MINUTES);
+                .scheduleAtFixedRate(MessageFuture::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
     }
 
     private static void clearTimeoutFuture() {
@@ -43,8 +43,21 @@ public class MessageFuture<B> extends CompletableFuture<Message<B>> {
         return "future:" + id + "_" + messageID;
     }
 
-    public static void putFuture(Session<?> session, Message<?> message, MessageFuture<?> future) {
-        FUTURE_MAP.put(key(session.getID(), message.getID()), future);
+    private static String key(Message<?> message) {
+        return key(message.getSessionID(), message.getID());
+    }
+
+    public static void putFuture(Message<?> message, MessageFuture<?> future) {
+        FUTURE_MAP.put(key(message), future);
+    }
+
+    public static boolean existFuture(long sessionID, int messageID) {
+        return FUTURE_MAP.containsKey(key(sessionID, messageID));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <M> MessageFuture<M> pollFuture(long sessionID, int messageID) {
+        return (MessageFuture<M>) FUTURE_MAP.remove(key(sessionID, messageID));
     }
 
     @SuppressWarnings("unchecked")

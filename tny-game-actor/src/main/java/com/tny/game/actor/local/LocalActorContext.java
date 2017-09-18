@@ -3,7 +3,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.Actor;
 import com.tny.game.actor.ActorContext;
-import com.tny.game.actor.URL;
+import com.tny.game.actor.ActorURL;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalActor<ID, M>> {
 
-    private URL rootPath;
+    private ActorURL rootPath;
 
     private ActorTheatre defaultTheatre = ActorTheatres.getDefault();
 
@@ -21,19 +21,19 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
 
     private ActorProps defaultProps = ActorProps.of();
 
-    public LocalActorContext(URL rootPath) {
+    public LocalActorContext(ActorURL rootPath) {
         this(rootPath, null, null);
     }
 
-    public LocalActorContext(URL rootPath, ActorTheatre defaultTheatre) {
+    public LocalActorContext(ActorURL rootPath, ActorTheatre defaultTheatre) {
         this(rootPath, null, defaultTheatre);
     }
 
-    public LocalActorContext(URL rootPath, ActorProps defaultProps) {
+    public LocalActorContext(ActorURL rootPath, ActorProps defaultProps) {
         this(rootPath, defaultProps, null);
     }
 
-    public LocalActorContext(URL rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
+    public LocalActorContext(ActorURL rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
         this.rootPath = rootPath;
         if (defaultTheatre != null)
             this.defaultTheatre = defaultTheatre;
@@ -45,7 +45,7 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
             this.defaultProps = ActorProps.of();
     }
 
-    public DefaultLocalActor<ID, M> actorOf(ID id, URL path, ActorProps props) {
+    public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path, ActorProps props) {
         DefaultLocalActor<ID, M> actor = actorMap.get(id);
         if (actor != null)
             return actor;
@@ -60,12 +60,12 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
         return add(actor);
     }
 
-    public DefaultLocalActor<ID, M> actorOf(ID id, URL path, ActorTheatre theatre) {
+    public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path, ActorTheatre theatre) {
         return actorOf(id, path, ActorProps.of(defaultProps).setActorTheatre(theatre));
     }
 
     @Override
-    public DefaultLocalActor<ID, M> actorOf(ID id, URL path) {
+    public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path) {
         return actorOf(id, path, (ActorProps) null);
     }
 

@@ -14,7 +14,7 @@ import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -32,10 +32,10 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
 
     private Map<Module, GameModuleHandler> handlerMap = new HashMap<>();
 
-    @Autowired
+    @Resource
     protected FeatureModelManager featureModelManager;
 
-    @Autowired
+    @Resource
     protected FeatureExplorerManager featureExplorerManager;
 
     private ApplicationContext applicationContext;

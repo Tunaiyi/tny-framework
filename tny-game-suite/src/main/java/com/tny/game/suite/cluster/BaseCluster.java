@@ -1,5 +1,7 @@
 package com.tny.game.suite.cluster;
 
+import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.URL;
 import com.tny.game.zookeeper.NodeWatcher;
 import com.tny.game.zookeeper.ZKMonitor;
 import org.apache.zookeeper.KeeperException;
@@ -28,17 +30,21 @@ public abstract class BaseCluster {
 
     protected ConcurrentMap<String, ServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
 
-    public BaseCluster(String... monitorServerTypes) {
-        this(Arrays.asList(monitorServerTypes));
+    public BaseCluster(String... monitorAppTypes) {
+        this(Arrays.asList(monitorAppTypes));
     }
 
-    public BaseCluster(Collection<String> monitorServerTypes) {
+    public BaseCluster(Collection<String> monitorAppTypes) {
         this.LOGGER = LoggerFactory.getLogger(this.getClass());
-        this.monitorServerTypes.addAll(monitorServerTypes);
+        this.monitorServerTypes.addAll(monitorAppTypes);
     }
 
-    public Collection<ServiceNodeHolder> getAllWebHolders() {
+    public Collection<ServiceNodeHolder> getAllNodeHolders() {
         return this.webHolderMap.values();
+    }
+
+    public Optional<ServiceNodeHolder> getNodeHolder(String appType) {
+        return Optional.of(this.webHolderMap.get(appType));
     }
 
     protected void init() throws Exception {
@@ -60,7 +66,7 @@ public abstract class BaseCluster {
                 ServiceNodeHolder holder = new ServiceNodeHolder(serverType);
                 String path = ClusterUtils.getWebNodesPath(serverType);
                 this.webHolderMap.put(serverType, holder);
-                this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType.toString(), holder));
+                this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType, holder));
             }
             this.doMonitor();
             this.initHandlers().forEach(h -> h.onInit(this.remoteMonitor));
@@ -76,45 +82,49 @@ public abstract class BaseCluster {
                         return;
                     holder.addNode(data);
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerID(), data.getUrl());
+                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerID(), data.getUrlMap());
                     break;
                 case CHANGE:
                     if (data == null)
                         return;
                     holder.addNode(data);
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerID(), data.getUrl());
+                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerID(), data.getUrlMap());
                     break;
                 case DELETE:
                     if (old == null)
                         return;
                     holder.removeNode(old.getServerID());
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerID(), old.getUrl());
+                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerID(), old.getUrlMap());
                     break;
             }
         };
     }
 
-    public Optional<String> webUrl(String type, String path) {
+    public String urlByRand(String urlProtocol, String type, String path) {
         ServiceNodeHolder holder = this.webHolderMap.get(type);
-        if (holder == null)
-            return Optional.empty();
-        return Optional.of(holder.selectUrl() + path);
+        Throws.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
+        ServiceNode node = holder.randNode();
+        Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
+        URL url = node.getURL(urlProtocol);
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerID());
+        return url.toString() + path;
     }
 
-    public Optional<String> webUrl(String type, int id, String path) {
+    public String url(String urlProtocol, String type, int id, String path) {
         ServiceNodeHolder holder = this.webHolderMap.get(type);
-        if (holder == null)
-            return Optional.empty();
+        Throws.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
         ServiceNode node = holder.getNode(id);
-        if (node == null)
-            return Optional.empty();
-        return Optional.of(node.getUrl() + path);
+        Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
+        URL url = node.getURL(urlProtocol);
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerID());
+        return url.toString() + path;
     }
 
-    public Optional<String> webUrl(WebPath path) {
-        return webUrl(path.getServerType(), path.getPath());
+
+    public String urlByRand(AppURLPath path) {
+        return urlByRand(path.getProtocol(), path.getAppType(), path.getPath());
     }
 
 }

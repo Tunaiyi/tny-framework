@@ -14,7 +14,7 @@ import com.tny.game.suite.transaction.Transaction;
 import com.tny.game.suite.transaction.listener.TransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({AUTO, GAME})
 public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice, BeforeAdvice, ThrowsAdvice {
 
-    @Autowired
+    @Resource
     private AutoSnapMethodFactory methodFactory;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoSnapAdvice.class);

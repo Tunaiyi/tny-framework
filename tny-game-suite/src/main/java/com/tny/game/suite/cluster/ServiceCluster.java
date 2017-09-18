@@ -11,14 +11,14 @@ import com.tny.game.zookeeper.NodeWatcher;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletContext;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,11 +29,8 @@ import static com.tny.game.suite.utils.Configs.*;
 
 public abstract class ServiceCluster extends SpringBaseCluster implements ServerPostStart {
 
-    @Autowired
+    @Resource
     private ProtoExSchemaIniter protoExSchemaIniter;
-
-    @Autowired
-    private ServletContext servletContext;
 
     protected int webServerID;
 
@@ -174,16 +171,16 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
             this.remoteMonitor.monitorChildren(ClusterUtils.SETTING_LIST_PATH, this.settingHandler);
 
         this.postWebMonitor();
-        SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
-
-        String host = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_HOST);
-        String port = SERVICE_CONFIG.getStr(Configs.SERVICE_CONFIG_WEB_SERVICE_PORT);
-        String part = this.getWebServiceNodePath();
-        String url = "http://" + host + ":" + port + part;
-        ServiceNode node = new ServiceNode(this.webServerID, url);
+        String[] urls = clusterUrls();
+        ServiceNode node = new ServiceNode(this.serverType, this.webServerID, urls);
         String nodePath = ClusterUtils.getWebNodePath(this.serverType, this.webServerID);
         this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, node, nodePath);
-        LOGGER.info("注册 {} web service url [ {} ] 到 {}", this.serverType, url, nodePath);
+        LOGGER.info("注册 {} web service urls [\n{}\n] 到 {}", this.serverType, StringUtils.join(urls, "\n"), nodePath);
+    }
+
+    protected String[] clusterUrls() {
+        Map<String, String> urls = SERVICE_CONFIG.find(Configs.SERVER_URL + ".*");
+        return urls.values().toArray(new String[0]);
     }
 
     protected void postWebMonitor() {
@@ -214,10 +211,6 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
             }
         }
         return mains;
-    }
-
-    public String getWebServiceNodePath() {
-        return this.servletContext.getContextPath();
     }
 
     private ServerNode setOutline(ServerOutline outline) {
@@ -322,11 +315,16 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
         ServerNode node = getServerNode(serverID);
         if (node == null)
             return Optional.empty();
-        return node.getPrivateConnector(WebPaths.HTTP_INSIDE)
-                .map(c -> "http://" + c.getHost() + ":" + c.getPort() + "/" + StringUtils.join(paths, "/"));
+        return node.getPrivateConnector(AppURLPaths.HTTP_INSIDE)
+                .map(c -> {
+                    StringBuilder urlBuilder = new StringBuilder().append("http://").append(c.getHost()).append(":").append(c.getPort());
+                    for (String path : paths)
+                        urlBuilder.append(path.startsWith("/") ? "" : "/").append(path);
+                    return urlBuilder.toString();
+                });
     }
 
-    public Optional<String> gameUrl(int serverID, WebPath path) {
+    public Optional<String> gameUrl(int serverID, AppURLPath path) {
         return gameUrl(serverID, path.getPath());
     }
 

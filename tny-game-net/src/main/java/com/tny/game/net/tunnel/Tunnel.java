@@ -1,6 +1,8 @@
 package com.tny.game.net.tunnel;
 
 import com.tny.game.common.context.Attributes;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.Session;
 
@@ -70,5 +72,15 @@ public interface Tunnel<UID> extends Terminal<UID> {
      * @return 发送接收排除列表
      */
     Collection<MessageMode> getSendExcludes();
+
+    /**
+     * 创建消息
+     *
+     * @param sessionID 会话ID
+     * @param messageID 消息ID
+     * @param content   消息内容
+     * @return 返回消息
+     */
+    Message<UID> createMessage(long sessionID, int messageID, MessageContent<?> content);
 
 }

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class UpTest {
 
-    @Autowired
+    @Resource
     private UpObjectDAO dao;
 
     private static List<UpObject> objects = new ArrayList<UpObject>();

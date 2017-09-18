@@ -44,7 +44,7 @@ public class SessionResendEvent<UID> extends BaseSessionEvent<UID> implements Se
         }
     }
 
-    public void resendFailed(Throwable cause) {
+    public void resendFail(Throwable cause) {
         CompletableFuture<Tunnel<UID>> sendFuture = this.sendFuture;
         if (sendFuture != null && !sendFuture.isDone()) {
             sendFuture.completeExceptionally(cause);

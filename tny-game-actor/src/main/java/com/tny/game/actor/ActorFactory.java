@@ -10,7 +10,7 @@ public interface ActorFactory<ID, ACT extends Actor<ID, ?>> {
      * @param path actor路径
      * @return 返回ActorRef
      */
-    ACT actorOf(ID id, URL path);
+    ACT actorOf(ID id, ActorURL path);
 
     /**
      * 构建ActorRef

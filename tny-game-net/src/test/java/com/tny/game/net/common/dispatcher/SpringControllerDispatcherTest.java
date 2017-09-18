@@ -8,13 +8,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class SpringControllerDispatcherTest {
 
-    // @Autowired
+    // @Resource
     // private MessageDispatcher dispatcher;
     //
-    // @Autowired
+    // @Resource
     // private ControllerChecker checker;
     //
-    // @Autowired
+    // @Resource
     // private AppContext context;
     //
     // private static int number = 1;

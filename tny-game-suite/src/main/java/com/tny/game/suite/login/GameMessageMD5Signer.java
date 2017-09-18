@@ -10,6 +10,7 @@ import com.tny.game.net.message.MessageAide;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.Configs;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,12 +56,6 @@ public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
     protected String createSign(Tunnel<UID> tunnel, Message<UID> message) {
         StringBuilder signWordsBuilder = new StringBuilder(256);
         Attributes attributes = this.attributes(tunnel, message);
-        String group = message.getUserGroup();
-        String key;
-        if (group.equals(AppConstants.DEFAULT_USER_GROUP) || group.equals(AppConstants.UNLOGIN_USER_GROUP))
-            key = Configs.AUTH_CONFIG.getStr(Configs.AUTH_CLIENT_MESSAGE_KEY);
-        else
-            key = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(group));
         String openID = attributes.getAttribute(AttributesKeys.OPEN_ID_KEY);
         String openKey = attributes.getAttribute(AttributesKeys.OPEN_KEY_KEY);
         Object sysID = attributes.getAttribute(AttributesKeys.SYSTEM_USER_ID);
@@ -69,6 +64,12 @@ public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
         openKey = openKey == null ? "" : openKey;
         sysID = sysID == null ? "" : sysID;
         sysGroup = sysGroup == null ? "" : sysGroup;
+        String group = StringUtils.isNoneBlank(sysGroup) ? sysGroup : message.getUserGroup();
+        String key;
+        if (group.equals(AppConstants.DEFAULT_USER_GROUP) || group.equals(AppConstants.UNLOGIN_USER_GROUP))
+            key = Configs.AUTH_CONFIG.getStr(Configs.AUTH_CLIENT_MESSAGE_KEY);
+        else
+            key = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(group));
         signWordsBuilder.append(openID)
                 .append(openKey)
                 .append(sysID)

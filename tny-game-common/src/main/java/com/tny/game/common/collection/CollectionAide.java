@@ -1,9 +1,18 @@
 package com.tny.game.common.collection;
 
+import com.tny.game.common.utils.Throws;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 
 public class CollectionAide {
@@ -208,6 +217,18 @@ public class CollectionAide {
 
     public static <T> boolean isSuperset(List<T> setA, List<T> setB) {
         return setA.containsAll(setB);
+    }
+
+
+    public static Map<String, String> toStringMap(String... pairs) {
+        Map<String, String> map = new HashMap<>();
+        if (pairs.length > 0) {
+            Throws.checkArgument(pairs.length % 2 == 0, "pairs 数量非偶数");
+            for (int index = 0; index < pairs.length; index = index + 2) {
+                map.put(pairs[index], pairs[index + 1]);
+            }
+        }
+        return map;
     }
 
 }

@@ -14,6 +14,8 @@ public interface MessageBuilder<UID> {
 
     MessageBuilder<UID> setTunnel(Tunnel<UID> tunnel);
 
+    MessageBuilder<UID> setSessionID(long sessionID);
+
     MessageBuilder<UID> setCode(int code);
 
     MessageBuilder<UID> setProtocol(Protocol protocol);
@@ -24,8 +26,6 @@ public interface MessageBuilder<UID> {
     }
 
     MessageBuilder<UID> setBody(Object body);
-
-    MessageBuilder<UID> setTime(long time);
 
     MessageBuilder<UID> setToMessage(int toMessageID);
 

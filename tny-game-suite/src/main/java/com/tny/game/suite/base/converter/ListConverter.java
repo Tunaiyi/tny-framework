@@ -2,13 +2,13 @@ package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.tny.game.common.formula.Formula;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 import java.util.ArrayList;
 
 public class ListConverter extends AbstractSingleValueConverter {
 
-    @Autowired
+    @Resource
     protected GameFormulaConverter formulaConverter;
 
     @Override

@@ -6,7 +6,7 @@ import com.tny.game.cache.testclass.CacheTestTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -14,10 +14,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class ZAsyncCacheObjectTest {
 
-    @Autowired()
+    @Resource()
     private AsyncCache cache;
 
-    @Autowired()
+    @Resource()
     private AverageRateSyncDBExecutor syncDBExecutor;
 
     private CacheTestTask task;

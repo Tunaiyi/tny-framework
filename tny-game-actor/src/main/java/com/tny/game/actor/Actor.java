@@ -19,7 +19,7 @@ public interface Actor<ID, M> { // TODO extends Executor
      *
      * @return 路径信息对象
      */
-    URL getURL();
+    ActorURL getURL();
 
     /**
      * @return 是否终止

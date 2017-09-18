@@ -2,10 +2,12 @@ package com.tny.game.net.session;
 
 import com.google.common.collect.Range;
 import com.tny.game.net.exception.ValidatorFailException;
+import com.tny.game.net.message.Message;
+import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionOutputEvent;
-import com.tny.game.net.session.event.SessionSendEvent;
 import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.tunnel.Tunnel;
 
 import java.util.List;
 
@@ -25,19 +27,20 @@ public interface NetSession<UID> extends Session<UID> {
     SessionOutputEvent<UID> pollOutputEvent();
 
     /**
-     * 通过响应ID寻找已发送时间
+     * 通过响应ID寻找已发送消息
+     *
      * @param toMessageID 响应ID
-     * @return 返回对应时间
+     * @return 返回消息
      */
-    SessionSendEvent<UID> getHandledSendEventByToID(int toMessageID);
+    Message<UID> getHandledSendEventByToID(int toMessageID);
 
     /**
-     * 获取指定范围的已处理发送事件
+     * 获取指定范围的已发送消息
      *
-     * @param range 指定方位
-     * @return 获取事件列表
+     * @param range 指定范围
+     * @return 获取消息列表
      */
-    List<SessionSendEvent<UID>> getHandledSendEvents(Range<Integer> range);
+    List<Message<UID>> getHandledSendEvents(Range<Integer> range);
 
     /**
      * @return 是否有输入事件
@@ -69,4 +72,12 @@ public interface NetSession<UID> extends Session<UID> {
     @Override
     NetTunnel<UID> getCurrentTunnel();
 
+    /**
+     * 根据内容创建消息
+     *
+     * @param tunnel  发送终端
+     * @param content 内容
+     * @return 消息
+     */
+    Message<UID> createMessage(Tunnel<UID> tunnel, MessageContent<?> content);
 }

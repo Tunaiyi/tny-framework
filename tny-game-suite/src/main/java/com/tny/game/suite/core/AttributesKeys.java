@@ -4,6 +4,7 @@ import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.suite.login.Account;
 import com.tny.game.suite.login.GameTicket;
+import com.tny.game.suite.login.ServerTicket;
 
 /**
  * session key 常量
@@ -20,6 +21,7 @@ public interface AttributesKeys {
 
     AttrKey<Object> SYSTEM_USER_ID = AttrKeys.key(AttributesKeys.class, "SYSTEM_USER_ID");
     AttrKey<String> SYSTEM_USER_USER_GROUP = AttrKeys.key(AttributesKeys.class, "SYSTEM_USER_USER_GROUP");
-    AttrKey<String> SYSTEM_USER_PASSWORD = AttrKeys.key(AttributesKeys.class, "SYSTEM_USER_PASSWORD");
+    AttrKey<ServerTicket> SERVER_TICKET = AttrKeys.key(AttributesKeys.class, "SERVER_TICKET");
+    AttrKey<ServerTicket> LOCAL_SERVER_TICKET = AttrKeys.key(AttributesKeys.class, "LOCAL_SERVER_TICKET");
 
 }

@@ -1,14 +1,14 @@
 package com.tny.game.net.netty;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.config.Config;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.common.config.Config;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.Server;
 import com.tny.game.net.coder.ChannelMaker;
 import com.tny.game.net.listener.SeverClosedListener;
+import com.tny.game.net.tunnel.Tunnels;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -36,7 +36,9 @@ public class NettyServer extends NettyApp implements Server {
 
     private static final EventLoopGroup childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup");
 
-    private ServerBootstrap bootstrap;
+    private volatile ServerBootstrap bootstrap;
+
+    private volatile NettyAppConfiguration appConfiguration;
 
     private Collection<InetSocketAddress> bindAddresses;
 
@@ -47,33 +49,58 @@ public class NettyServer extends NettyApp implements Server {
      */
     private List<SeverClosedListener> listenerList = new CopyOnWriteArrayList<>();
 
-    public NettyServer(NettyAppConfiguration appConfiguration) {
-        this(appConfiguration.getChannelMaker(), appConfiguration);
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            parentGroup.shutdownGracefully();
+            childGroup.shutdownGracefully();
+        }) {
+
+            {
+                this.setName("ServerShutdownHookThread");
+            }
+
+        });
     }
 
+    private ServerBootstrap bootstrap() {
+        if (this.bootstrap != null)
+            return this.bootstrap;
+        synchronized (this) {
+            if (this.bootstrap != null)
+                return this.bootstrap;
+            this.bootstrap = new ServerBootstrap();
+            ChannelMaker<Channel> channelMaker = this.appConfiguration.getChannelMaker();
+            NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
+            this.bootstrap.group(parentGroup, childGroup)
+                    .channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childHandler(new ChannelInitializer<Channel>() {
 
-    public NettyServer(ChannelMaker<Channel> channelMaker, AppConfiguration appConfiguration) {
+                        @Override
+                        protected void initChannel(Channel ch) throws Exception {
+                            if (channelMaker != null)
+                                channelMaker.initChannel(ch);
+                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
+                            @SuppressWarnings("unchecked")
+                            NettyTunnel<?> tunnel = new NettyServerTunnel<>(ch, appConfiguration);
+                            Tunnels.put(tunnel);
+                            ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
+                        }
+                    });
+            return this.bootstrap;
+        }
+
+    }
+
+    public NettyServer(NettyAppConfiguration appConfiguration) {
         super(appConfiguration.getName());
+        this.appConfiguration = appConfiguration;
         Config properties = appConfiguration.getProperties();
-        this.bootstrap = new ServerBootstrap();
         this.bindAddresses = properties.getObject(AppConstants.SERVER_BIND_IPS);
         this.bindAddresses = ImmutableSet.copyOf(this.bindAddresses);
-        NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
-        this.bootstrap.group(parentGroup, childGroup)
-                .channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(new ChannelInitializer<Channel>() {
 
-                    @Override
-                    protected void initChannel(Channel ch) throws Exception {
-                        if (channelMaker != null)
-                            channelMaker.initChannel(ch);
-                        ch.pipeline().addLast("nettyMessageHandler", messageHandler);
-                    }
-                });
-        this.addShutdownHook(parentGroup, childGroup);
     }
 
     @Override
@@ -82,15 +109,15 @@ public class NettyServer extends NettyApp implements Server {
     }
 
     private void bind(final InetSocketAddress address) {
-        Channel channel = channels.get(address);
         String addressString = toAddressString(address);
+        Channel channel = channels.get(addressString);
         if (channel != null) {
             if (channel.close().awaitUninterruptibly(30000L)) {
                 channels.remove(addressString, channel);
             }
         }
         LOG.info("#NettyServer#正在打开监听{}端口", address);
-        ChannelFuture channelFuture = this.bootstrap.bind(address);
+        ChannelFuture channelFuture = this.bootstrap().bind(address);
         if (channelFuture.awaitUninterruptibly(30000L)) {
             this.channels.put(addressString, channelFuture.channel());
             LOG.info("#NettyServer#{}端口已监听", address);
@@ -135,18 +162,6 @@ public class NettyServer extends NettyApp implements Server {
     @Override
     public void clearClosedListener() {
         this.listenerList.clear();
-    }
-
-    private void addShutdownHook(final EventLoopGroup boss, final EventLoopGroup child) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-
-        }) {
-
-            {
-                this.setName("ServerShutdownHookThread");
-            }
-
-        });
     }
 
     private void fireServerClosed() {

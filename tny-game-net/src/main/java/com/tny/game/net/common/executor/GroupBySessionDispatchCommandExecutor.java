@@ -1,4 +1,4 @@
-package com.tny.game.net.common.dispatcher;
+package com.tny.game.net.common.executor;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
@@ -10,6 +10,7 @@ import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.RunnableCommand;
+import com.tny.game.net.common.dispatcher.MessageCommandBox;
 import com.tny.game.net.netty.NettyAttrKeys;
 import com.tny.game.net.session.Session;
 import org.slf4j.Logger;
@@ -22,10 +23,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@Unit("ForkJoinDispatchCommandExecutor")
-public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor {
+@Unit("GroupBySessionDispatchCommandExecutor")
+public class GroupBySessionDispatchCommandExecutor implements DispatchCommandExecutor {
 
     private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttrKeys.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
@@ -33,19 +34,28 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
 
     private ForkJoinPool executorService;
 
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
+    private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
 
-    public ForkJoinDispatchCommandExecutor(int threads) {
+    private static Queue<ChildExecutor> scheduledChildExecutors = new ConcurrentLinkedQueue<>();
+
+    public GroupBySessionDispatchCommandExecutor(int threads) {
         init(threads);
     }
 
-    public ForkJoinDispatchCommandExecutor(Config config) {
+    public GroupBySessionDispatchCommandExecutor(Config config) {
         int threads = config.getInt(AppConstants.DISPATCHER_EXECUTOR_THREADS, Runtime.getRuntime().availableProcessors() * 2);
         this.init(threads);
     }
 
     private void init(int threads) {
         this.executorService = new ForkJoinPool(threads, new CoreThreadFactory("DispatchCommandExecutorPool"), null, false);
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            while (!scheduledChildExecutors.isEmpty()) {
+                ChildExecutor executor = scheduledChildExecutors.poll();
+                if (executor != null)
+                    executor.submitWhenDelay();
+            }
+        }, 31, 31, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -66,11 +76,15 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
 
     private static class ChildExecutor implements MessageCommandBox, Runnable {
 
+        public static final int STOP = 0;
+        public static final int SUBMIT = 1;
+        public static final int DELAY = 2;
+
         private final Queue<Command> commandQueue = new ConcurrentLinkedQueue<>();
 
         private final ExecutorService executorService;
 
-        private volatile AtomicBoolean start = new AtomicBoolean(false);
+        private volatile AtomicInteger state = new AtomicInteger(STOP);
 
         private volatile Thread thread;
 
@@ -95,7 +109,7 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
                     this.commandQueue.offer(command);
             } else {
                 this.commandQueue.offer(command);
-                if (this.start.compareAndSet(false, true)) {
+                if (this.state.compareAndSet(STOP, SUBMIT)) {
                     this.executorService.submit(this);
                 }
             }
@@ -120,11 +134,12 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
                     if (cmd.isDone()) {
                         this.commandQueue.poll();
                     } else {
-                        scheduledExecutorService.schedule(() -> this.executorService.submit(this), 15, TimeUnit.MILLISECONDS);
+                        this.state.set(DELAY);
+                        scheduledChildExecutors.add(this);
                         break;
                     }
                 } else {
-                    this.start.set(false);
+                    this.state.set(STOP);
                     this.trySubmit();
                     break;
                 }
@@ -133,9 +148,14 @@ public class ForkJoinDispatchCommandExecutor implements DispatchCommandExecutor 
         }
 
         private void trySubmit() {
-            if (!this.commandQueue.isEmpty() && this.start.compareAndSet(false, true)) {
+            if (!this.commandQueue.isEmpty() && this.state.compareAndSet(STOP, SUBMIT)) {
                 this.executorService.submit(this);
             }
+        }
+
+        private void submitWhenDelay() {
+            if (this.state.get() == DELAY)
+                this.executorService.submit(this);
         }
 
         @Override

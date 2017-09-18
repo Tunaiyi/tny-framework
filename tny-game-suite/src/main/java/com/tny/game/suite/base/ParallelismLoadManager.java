@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.suite.cache.GameCacheDAO;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
 
     private boolean parallelism;
 
-    @Autowired
+    @Resource
     private GameCacheDAO cacheDAO;
 
     protected ParallelismLoadManager(Class<? extends O> entityClass, String tableHead) {

@@ -5,7 +5,7 @@ import com.tny.game.common.scheduler.SchedulerBackup;
 import com.tny.game.common.scheduler.SchedulerStore;
 import com.tny.game.common.scheduler.TimeTaskScheduler;
 import com.tny.game.suite.login.IDAide;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({SCHEDULER_CACHE, GAME})
 public class CacheSchedulerStore implements SchedulerStore {
 
-    @Autowired
+    @Resource
     protected AsyncCache cache;
 
     private static String getKey(Object id) {

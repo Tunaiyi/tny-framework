@@ -4,7 +4,6 @@ package com.tny.game.suite.cluster.game;
 import com.tny.game.common.event.BindP1EventBus;
 import com.tny.game.common.event.EventBuses;
 import com.tny.game.suite.cluster.ClusterUtils;
-import com.tny.game.suite.cluster.Servers;
 import com.tny.game.suite.cluster.SpringBaseCluster;
 import com.tny.game.suite.cluster.event.GameServerClusterListener;
 import com.tny.game.suite.core.GameInfo;
@@ -14,18 +13,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static com.tny.game.suite.SuiteProfiles.*;
-
-@Component
-@Profile({GAME})
 public class GameServerCluster extends SpringBaseCluster {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GameServerCluster.class);
@@ -58,8 +51,8 @@ public class GameServerCluster extends SpringBaseCluster {
         }
     };
 
-    public GameServerCluster() {
-        super(Servers.GAME);
+    public GameServerCluster(String... monitorServerTypes) {
+        super(monitorServerTypes);
     }
 
     @Override

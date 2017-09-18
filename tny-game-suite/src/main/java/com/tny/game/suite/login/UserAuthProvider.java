@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 import java.util.List;
 
@@ -24,10 +24,10 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthProvider.class);
 
-    @Autowired
+    @Resource
     private AccountService accountService;
 
-    @Autowired
+    @Resource
     private GameTicketMaker ticketMaker;
 
     private static BodyClass<List<String>> BODY_CLASS = new BodyClass<List<String>>() {

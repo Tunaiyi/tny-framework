@@ -32,6 +32,9 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("select `account` from " + TABLE + " where `uid` = :uid")
     String findAccount(@SQLParam("uid") long uid);
 
+    @SQL("SELECT DISTINCT `pf` FROM " + TABLE)
+    List<String> findAllFP();
+
     @ReturnGeneratedKeys
     @SQL("insert ignore into " + TABLE + "(`uid`) values(:uid)")
     int[] insert(@SQLParam("uid") Collection<Long> uid);
@@ -57,18 +60,37 @@ public interface AccountDAO extends AccountDBFields {
             + "`onlineAt`=:onlineAt, "
             + "`offlineAt`=:offlineAt "
             + "where `uid` = :uid and `account` is null")
+    int updateIfNull(@SQLParam("uid") long uid,
+                     @SQLParam("account") String account,
+                     @SQLParam("openID") String openID,
+                     @SQLParam("device") String device,
+                     @SQLParam("deviceID") String deviceID,
+                     @SQLParam("pf") String pf,
+                     @SQLParam("zone") long zone,
+                     @SQLParam("entry") int entry,
+                     @SQLParam("ad") String ad,
+                     @SQLParam("createSID") int createSID,
+                     @SQLParam("createDate") int createDate,
+                     @SQLParam("createAt") long createAt,
+                     @SQLParam("onlineAt") Long onlineAt,
+                     @SQLParam("offlineAt") Long offlineAt);
+
+    @SQL("update " + TABLE + " set "
+            + "`device`=:device, "
+            + "`deviceID`=:deviceID, "
+            + "`pf`=:pf, "
+            + "`zone`=:zone, "
+            + "`entry`=:entry, "
+            + "`pf`=:pf, "
+            + "`onlineAt`=:onlineAt, "
+            + "`offlineAt`=:offlineAt "
+            + "where `uid` = :uid")
     int update(@SQLParam("uid") long uid,
-               @SQLParam("account") String account,
-               @SQLParam("openID") String openID,
                @SQLParam("device") String device,
                @SQLParam("deviceID") String deviceID,
                @SQLParam("pf") String pf,
                @SQLParam("zone") long zone,
                @SQLParam("entry") int entry,
-               @SQLParam("ad") String ad,
-               @SQLParam("createSID") int createSID,
-               @SQLParam("createDate") int createDate,
-               @SQLParam("createAt") long createAt,
                @SQLParam("onlineAt") Long onlineAt,
                @SQLParam("offlineAt") Long offlineAt);
 
@@ -78,8 +100,8 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("update " + TABLE + " set `name`=:name where `uid` = :uid")
     int updateName(@SQLParam("uid") long uid, @SQLParam("name") String name);
 
-    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `device` = :device, `deviceID` = :deviceID, `onlineAt`=:actionAt where `uid` = :uid")
-    int updateOnlineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int activeDate, @SQLParam("actionAt") long onlineAt, @SQLParam("device") String device, @SQLParam("deviceID") String deviceID);
+    @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `pf`=:pf, `device` = :device, `deviceID` = :deviceID, `onlineAt`=:actionAt where `uid` = :uid")
+    int updateOnlineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int activeDate, @SQLParam("actionAt") long onlineAt, @SQLParam("pf") String pf, @SQLParam("device") String device, @SQLParam("deviceID") String deviceID);
 
     @SQL("update " + TABLE + " set `activeDate`=:actionDate, `activeAt`=:actionAt, `offlineAt`=:actionAt where `uid` = :uid")
     int updateOfflineAt(@SQLParam("uid") long uid, @SQLParam("actionDate") int actionDate, @SQLParam("actionAt") long offlineAt);
