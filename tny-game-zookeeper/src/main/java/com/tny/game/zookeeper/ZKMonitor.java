@@ -206,7 +206,7 @@ public class ZKMonitor {
             //若存在路径设置值
             if (stat != null) {
                 if (setIfExist)
-                    return this.keeper.setData(path, leafValue, stat.getVersion());
+                    return this.keeper.setData(path, leafValue, -1);
                 return stat;
             } else {
                 no_path = true;
@@ -229,7 +229,7 @@ public class ZKMonitor {
             for (int index = 1; index < paths.length; index++) {
                 currentPath += ("/" + paths[index]);
                 boolean last = index == paths.length - 1;
-                stat = this.createPath(currentPath, last ? leafValue : NOTE_DATE, last ? mode : CreateMode.PERSISTENT, last ? setIfExist : false);
+                stat = this.createPath(currentPath, last ? leafValue : NOTE_DATE, last ? mode : CreateMode.PERSISTENT, last && setIfExist);
                 if (stat == null)
                     return null;
             }
