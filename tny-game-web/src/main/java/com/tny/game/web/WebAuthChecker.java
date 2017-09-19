@@ -21,7 +21,7 @@ public interface WebAuthChecker {
         try (ByteArrayOutputStream output = new ByteArrayOutputStream(size)) {
             IOUtils.write(url, output, "UTF-8");
             IOUtils.write(host, output, "UTF-8");
-            if (data == null)
+            if (data != null)
                 IOUtils.write(data, output);
             IOUtils.write(BytesAide.long2Bytes(date), output);
             IOUtils.write(key, output, "UTF-8");
