@@ -16,8 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 public abstract class UserAuthProvider extends GameAuthProvider<Long> {
@@ -67,7 +67,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
                     long ticketID = System.currentTimeMillis();
                     if (StringUtils.isNumeric(openKey))
                         ticketID = NumberUtils.toLong(openKey);
-                    ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, pf, pf, zoneID, entryID, null, null, time, null);
+                    ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, "zh-CN", pf, pf, zoneID, entryID, null, null, time, null);
                 } else {
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);

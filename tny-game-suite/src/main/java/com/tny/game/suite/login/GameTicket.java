@@ -80,18 +80,21 @@ public class GameTicket {
     @ProtoExField(18)
     private boolean guest;
 
+    @JsonProperty
+    @ProtoExField(19)
+    private String lang;
 
     public GameTicket() {
         super();
     }
 
     public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, String openKey,
-                      String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
-        this(tokenID, server, openID, bindID, guest, false, openKey, pf, accountTag, zone, entry, device, deviceID, time, maker);
+                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
+        this(tokenID, server, openID, bindID, guest, false, openKey, lang, pf, accountTag, zone, entry, device, deviceID, time, maker);
     }
 
     public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, boolean interior, String openKey,
-                      String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
+                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
         super();
         this.tokenID = tokenID;
         this.openID = openID;
@@ -107,6 +110,7 @@ public class GameTicket {
         this.device = StringUtils.isBlank(deviceID) ? "NONE" : device;
         this.deviceID = StringUtils.isBlank(deviceID) ? openID : deviceID;
         this.interior = interior;
+        this.lang = lang;
         if (maker != null)
             this.secret = maker.make(this);
     }
@@ -169,6 +173,10 @@ public class GameTicket {
 
     public String getBindID() {
         return bindID == null ? openID : bindID;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public boolean isInterior() {
@@ -266,6 +274,11 @@ public class GameTicket {
 
     GameTicket setInterior(boolean interior) {
         this.interior = interior;
+        return this;
+    }
+
+    GameTicket setLang(String lang) {
+        this.lang = lang;
         return this;
     }
 
