@@ -1,9 +1,9 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.asyndb.log.LogName;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.utils.Logs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,8 +116,8 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
         Synchronizer<Object> synchronizer = this.getSynchronizer(holder);
         Object object = synchronizer.get(clazz, key);
         if (object != null)
-            this.put(key, object);
-        return (T) object;
+            return (T) this.put(key, object);
+        return null;
     }
 
     @Override
@@ -150,7 +150,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
             Object value = entry.getValue();
             if (value == null)
                 continue;
-            this.put(entry.getKey(), value);
+            value = this.put(entry.getKey(), value);
             returnMap.put(entry.getKey(), (T) value);
         }
         return returnMap;
@@ -186,7 +186,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
             Object value = entry.getValue();
             if (value == null)
                 continue;
-            this.put(entry.getKey(), value);
+            value = this.put(entry.getKey(), value);
             returnCollection.add((T) value);
         }
         return returnCollection;
