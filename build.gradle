@@ -28,6 +28,7 @@ allprojects {
     apply plugin: "idea"
 
     ext.pj_version = "3.0.x-SNAPSHOT"
+//    ext.pj_version = "3.0.x-RELEASE"
     version = pj_version
 
     ext {
