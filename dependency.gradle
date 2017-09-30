@@ -7,7 +7,7 @@ ext.vers = [
         slf4j  : '1.7.25',
         log4j  : '2.8.2',
         jackson: '2.8.6',
-        tny    : '3.0.x-SNAPSHOT',
+        tny    : '3.0.1-RELEASE',
 
 ]
 
