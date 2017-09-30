@@ -19,6 +19,10 @@ public class ObjectAide extends ObjectUtils {
         return null;
     }
 
+    public static <T> T none(Class<T> clazz) {
+        return null;
+    }
+
     public static <T> T ifNull(T object, T defObject) {
         return object == null ? defObject : object;
     }
