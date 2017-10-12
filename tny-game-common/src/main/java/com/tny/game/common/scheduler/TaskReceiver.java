@@ -74,10 +74,11 @@ public abstract class TaskReceiver {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " + event.getTimeTask().getHandlerList());
                 }
+                long executeTime = event.getTimeTask().getExecuteTime();
                 for (TimeTaskHandler handler : event.getHandlerList()) {
                     try {
                         if (handler.getHandleType() != HandleType.ONCE || runSet.add(handler.getHandlerName()))
-                            handler.handle(this, context);
+                            handler.handle(this, executeTime, context);
                     } catch (Throwable e) {
                         LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getHandlerName(), e);
                     }

@@ -40,11 +40,11 @@ public abstract class GameTimeTaskHandler implements TimeTaskHandler {
      * @param receiver 任务接收器
      */
     @Override
-    public void handle(TaskReceiver receiver, TriggerContext context) {
-        this.doHandle(receiver, context);
+    public void handle(TaskReceiver receiver, long executeTime, TriggerContext context) {
+        this.doHandle(receiver, executeTime, context);
     }
 
-    protected abstract void doHandle(TaskReceiver receiver, TriggerContext context);
+    protected abstract void doHandle(TaskReceiver receiver, long triggerTime, TriggerContext context);
 
     @Override
     public boolean isHandleWith(Object group) {

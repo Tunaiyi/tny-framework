@@ -15,7 +15,7 @@ public interface TimeTaskHandler {
      *
      * @param receiver 任务接收器
      */
-    void handle(TaskReceiver receiver, TriggerContext context);
+    void handle(TaskReceiver receiver, long executeTime, TriggerContext context);
 
     /**
      * 任务处理器名称 <br>
