@@ -41,7 +41,7 @@ public class AppURLPaths {
 
         @Override
         public String getAppType() {
-            return null;
+            return appType;
         }
 
         @Override

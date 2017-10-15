@@ -1,11 +1,14 @@
 package com.tny.game.suite.cluster;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.utils.URL;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -16,7 +19,7 @@ public class ServiceNode {
     private int serverID;
 
     @ProtoExField(2)
-    private String[] urlStrings;
+    private List<String> urlStrings = ImmutableList.of();
 
     @ProtoExField(3)
     private String appType;
@@ -29,7 +32,7 @@ public class ServiceNode {
     public ServiceNode(String appType, int serverID, String... urls) {
         this.appType = appType;
         this.serverID = serverID;
-        this.urlStrings = urls;
+        this.urlStrings = Arrays.asList(urls);
     }
 
     public int getServerID() {
@@ -45,7 +48,7 @@ public class ServiceNode {
     }
 
     public Map<String, URL> getUrlMap() {
-        if (this.urlMap.size() != this.urlStrings.length) {
+        if (this.urlMap.size() != this.urlStrings.size()) {
             ImmutableMap.Builder<String, URL> urlMap = ImmutableMap.builder();
             for (String value : this.urlStrings) {
                 URL url = URL.valueOf(value);

@@ -15,7 +15,7 @@ public abstract class GameTimeTaskHandler implements TimeTaskHandler {
 
     private HandleType handleType;
 
-    private Set<ReceiverType> receiverTypeSet = new HashSet<ReceiverType>();
+    private Set<ReceiverType> receiverTypeSet = new HashSet<>();
 
     protected GameTimeTaskHandler(String name, HandleType handleType, ReceiverType... receiverTypes) {
         super();
@@ -44,7 +44,7 @@ public abstract class GameTimeTaskHandler implements TimeTaskHandler {
         this.doHandle(receiver, executeTime, context);
     }
 
-    protected abstract void doHandle(TaskReceiver receiver, long triggerTime, TriggerContext context);
+    protected abstract void doHandle(TaskReceiver receiver, long executeTime, TriggerContext context);
 
     @Override
     public boolean isHandleWith(Object group) {
