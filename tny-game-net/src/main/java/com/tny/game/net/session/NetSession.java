@@ -1,11 +1,14 @@
 package com.tny.game.net.session;
 
 import com.google.common.collect.Range;
+import com.tny.game.common.event.BindP1EventBus;
+import com.tny.game.common.event.EventBuses;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.session.event.SessionInputEvent;
 import com.tny.game.net.session.event.SessionOutputEvent;
+import com.tny.game.net.session.holder.listener.SessionListener;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 
@@ -15,6 +18,15 @@ import java.util.List;
  * Created by Kun Yang on 2017/2/16.
  */
 public interface NetSession<UID> extends Session<UID> {
+
+    BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
+            EventBuses.of(SessionListener.class, SessionListener::onOnline);
+
+    BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
+            EventBuses.of(SessionListener.class, SessionListener::onOffline);
+
+    BindP1EventBus<SessionListener, Session, Tunnel> ON_CLOSE =
+            EventBuses.of(SessionListener.class, SessionListener::onClose);
 
     /**
      * @return 弹出输入事件

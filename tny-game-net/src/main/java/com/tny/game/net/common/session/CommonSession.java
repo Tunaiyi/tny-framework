@@ -2,8 +2,6 @@ package com.tny.game.net.common.session;
 
 import com.google.common.collect.Range;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.common.event.BindP1EventBus;
-import com.tny.game.common.event.EventBuses;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.base.CoreResponseCode;
@@ -17,7 +15,6 @@ import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.ResendMessage;
-import com.tny.game.net.session.Session;
 import com.tny.game.net.session.SessionAide;
 import com.tny.game.net.session.SessionEventsBox;
 import com.tny.game.net.session.SessionState;
@@ -29,7 +26,6 @@ import com.tny.game.net.session.event.SessionOutputEventHandler;
 import com.tny.game.net.session.event.SessionReceiveEvent;
 import com.tny.game.net.session.event.SessionResendEvent;
 import com.tny.game.net.session.event.SessionSendEvent;
-import com.tny.game.net.session.holder.listener.SessionListener;
 import com.tny.game.net.tunnel.NetTunnel;
 import com.tny.game.net.tunnel.Tunnel;
 import org.slf4j.Logger;
@@ -48,15 +44,6 @@ import static org.slf4j.LoggerFactory.*;
  * Created by Kun Yang on 2017/2/17.
  */
 public class CommonSession<UID> implements NetSession<UID> {
-
-    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
-            EventBuses.of(SessionListener.class, SessionListener::onOnline);
-
-    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
-            EventBuses.of(SessionListener.class, SessionListener::onOffline);
-
-    private static final BindP1EventBus<SessionListener, Session, Tunnel> ON_CLOSE =
-            EventBuses.of(SessionListener.class, SessionListener::onClose);
 
     public static final Logger LOGGER = getLogger(CommonSession.class);
 
