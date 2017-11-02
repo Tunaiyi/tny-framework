@@ -118,6 +118,14 @@ public class DateTimeAide {
                 now.getSecondOfMinute();
     }
 
+    public static long time2Minute(DateTime now) {
+        return ((((((((100L * now.getYear()) +
+                now.getMonthOfYear()) * 100) +
+                now.getDayOfMonth()) * 100) +
+                now.getHourOfDay()) * 100) +
+                now.getMinuteOfHour());
+    }
+
     public static DateTime second2Time(long timeInt) {
         int seconds = (int) (timeInt % 100);
         int minute = (int) ((timeInt = timeInt / 100) % 100);

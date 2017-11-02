@@ -7,6 +7,7 @@ ext.vers = [
         slf4j  : '1.7.25',
         log4j  : '2.8.2',
         jackson: '2.8.6',
+        jade   : '1.5.x-SNAPSHOT',
         tny    : '3.1.x-SNAPSHOT',
 
 ]
@@ -26,7 +27,6 @@ ext.libs = [
         'javassist'             : 'org.javassist:javassist:3.21.0-GA',
         'mvel'                  : "org.mvel:mvel2:2.3.1.Final",
         'groovy-all'            : 'org.codehaus.groovy:groovy-all:2.4.10',
-
 
         'jackson-core'          : "com.fasterxml.jackson.core:jackson-core:${vers.jackson}",
         'jackson-databind'      : "com.fasterxml.jackson.core:jackson-databind:${vers.jackson}",
@@ -71,7 +71,7 @@ ext.libs = [
         'mysql-connector'       : 'mysql:mysql-connector-java:5.1.43',
         'memcached-java-client' : 'com.whalin:Memcached-Java-Client:3.0.2',
         'jedis'                 : 'redis.clients:jedis:2.8.0',
-        'jade'                  : 'com.tny.paoding:paoding-rose-jade:1.4.0-SNAPSHOT',
+        'jade'                  : "com.tny.paoding:paoding-rose-jade:${vers.jade}",
         'javaee'                : 'javax:javaee-api:7.0',
 
 

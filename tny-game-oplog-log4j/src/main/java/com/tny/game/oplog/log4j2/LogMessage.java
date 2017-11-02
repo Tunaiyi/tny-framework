@@ -3,6 +3,7 @@ package com.tny.game.oplog.log4j2;
 import com.tny.game.oplog.Loggable;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
+import org.joda.time.DateTime;
 
 public class LogMessage extends MapMessage {
 
@@ -12,7 +13,15 @@ public class LogMessage extends MapMessage {
 
     public LogMessage(Loggable log) {
         this.log = log;
+        DateTime dateTime = log.getLogAt();
         this.put("sid", Integer.toString(log.getServerID()));
+        this.put("lyyyy", String.valueOf(dateTime.getYear()));
+        this.put("lMM", String.valueOf(dateTime.getMonthOfYear()));
+        this.put("ldd", String.valueOf(dateTime.getDayOfMonth()));
+        this.put("lHH", String.valueOf(dateTime.getHourOfDay()));
+        this.put("lmm", String.valueOf(dateTime.getMinuteOfHour()));
+        this.put("lss", String.valueOf(dateTime.getSecondOfDay()));
+        this.put("lSSS", String.valueOf(dateTime.getMillisOfSecond()));
     }
 
     public Loggable getLog() {
