@@ -90,6 +90,10 @@ public enum CoreResponseCode implements ResultCode {
      */
     MESSAGE_HANDLE(218, "请求序号错误", ResultCodeType.WARN),
     /**
+     * 证书无效
+     */
+    INVALID_CERTIFICATE(219, "验证无效", ResultCodeType.ERROR),
+    /**
      * 验证失败
      */
     SERVER_OFFLINE(220, "服务器未上线", ResultCodeType.ERROR),

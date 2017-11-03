@@ -223,6 +223,13 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
                 throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
             }
         } else {
+            if (oldSession != null) {
+                LoginCertificate<?> oldCert = oldSession.getCertificate();
+                if (cert.getID() < oldCert.getID()) {
+                    LOG.warn("旧session {} 已经关闭", session.getUID());
+                    throw new ValidatorFailException(CoreResponseCode.INVALID_CERTIFICATE);
+                }
+            }
             oldSession = userGroupSessionMap.put(session.getUID(), session);
             if (oldSession != null && oldSession != session) {
                 // 替换session成功, 并且任然存在oldSession
