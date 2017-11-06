@@ -4,6 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.thread.ForkJoinPools;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;
@@ -31,6 +32,7 @@ public class GroupBySessionDispatchCommandExecutor implements DispatchCommandExe
     private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttrKeys.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
+    private static final String POOL_NAME = "GroupBySessionDispatchCommandExecutor";
 
     private ForkJoinPool executorService;
 
@@ -48,7 +50,7 @@ public class GroupBySessionDispatchCommandExecutor implements DispatchCommandExe
     }
 
     private void init(int threads) {
-        this.executorService = new ForkJoinPool(threads, new CoreThreadFactory("DispatchCommandExecutorPool"), null, false);
+        this.executorService = ForkJoinPools.pool(threads, POOL_NAME);
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             while (!scheduledChildExecutors.isEmpty()) {
                 ChildExecutor executor = scheduledChildExecutors.poll();

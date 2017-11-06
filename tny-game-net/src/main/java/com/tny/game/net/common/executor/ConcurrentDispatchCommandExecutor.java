@@ -2,6 +2,7 @@ package com.tny.game.net.common.executor;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.thread.ForkJoinPools;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConstants;
 import com.tny.game.net.base.NetLogger;
@@ -24,6 +25,8 @@ public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecuto
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
 
+    private static final String POOL_NAME = "ConcurrentDispatchCommandExecutor";
+
     private ForkJoinPool executorService;
 
     private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
@@ -40,7 +43,7 @@ public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecuto
     }
 
     private void init(int threads) {
-        this.executorService = new ForkJoinPool(threads, new CoreThreadFactory("DispatchCommandExecutorPool"), null, false);
+        this.executorService = ForkJoinPools.pool(threads, POOL_NAME);
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             while (!scheduledChildExecutors.isEmpty()) {
                 Command command = scheduledChildExecutors.poll();

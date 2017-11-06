@@ -3,7 +3,7 @@ package com.tny.game.net.common.handle;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.thread.ForkJoinPools;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.AppConfiguration;
@@ -46,6 +46,7 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ForkJoinSessionEventHandler.class);
 
+    private static final String POOL_NAME = "SessionEventHandlerThread";
     private AppConfiguration appConfiguration;
 
     private ForkJoinPool forkJoinPool;
@@ -56,10 +57,7 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
     public ForkJoinSessionEventHandler(AppConfiguration appConfiguration) {
         Config config = appConfiguration.getProperties();
         this.appConfiguration = appConfiguration;
-        this.forkJoinPool = new ForkJoinPool(
-                config.getInt(AppConstants.SESSION_EXECUTOR_THREADS, Runtime.getRuntime().availableProcessors() * 2),
-                new CoreThreadFactory("SessionEventHandlerThread"),
-                null, false);
+        this.forkJoinPool = ForkJoinPools.pool(config.getInt(AppConstants.SESSION_EXECUTOR_THREADS, Runtime.getRuntime().availableProcessors() * 2), POOL_NAME);
     }
 
     private AtomicBoolean getInputHandleState(AttrKey<AtomicBoolean> key, S session) {
