@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
-import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
@@ -83,25 +81,25 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
             this.channel = channel;
     }
 
-    private static class NextTaskAction extends RecursiveAction {
+    // private static class NextTaskAction extends RecursiveAction {
+    //
+    //     @Override
+    //     protected void compute() {
+    //         ForkJoinTask<?> task = ForkJoinTask.pollTask();
+    //         if (task != null) {
+    //             task.quietlyInvoke();
+    //         } else {
+    //             try {
+    //                 Thread.sleep(20);
+    //             } catch (InterruptedException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
+    //
+    // }
 
-        @Override
-        protected void compute() {
-            ForkJoinTask<?> task = ForkJoinTask.pollTask();
-            if (task != null) {
-                task.quietlyInvoke();
-            } else {
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    private static NextTaskAction action = new NextTaskAction();
+    // private static NextTaskAction action = new NextTaskAction();
 
     @SuppressWarnings("unchecked")
     private void reconnect() throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
@@ -188,17 +186,17 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
     }
 
     private <T> void doWait(long timeout, Future<T> future) throws TimeoutException, ExecutionException, InterruptedException {
-        if (timeout > 0) {
-            if (ForkJoinTask.inForkJoinPool()) {
-                long loginTimeoutTime = System.currentTimeMillis() + timeout;
-                while (!future.isDone()) {
-                    if (System.currentTimeMillis() > loginTimeoutTime)
-                        throw new TimeoutException();
-                    action.compute();
-                }
-            }
-            future.get(timeout, TimeUnit.MILLISECONDS);
-        }
+        // if (timeout > 0) {
+        //     if (ForkJoinTask.inForkJoinPool()) {
+        //         long loginTimeoutTime = System.currentTimeMillis() + timeout;
+        //         while (!future.isDone()) {
+        //             if (System.currentTimeMillis() > loginTimeoutTime)
+        //                 throw new TimeoutException();
+        //             action.compute();
+        //         }
+        //     }
+        future.get(timeout, TimeUnit.MILLISECONDS);
+        // }
     }
 
 }
