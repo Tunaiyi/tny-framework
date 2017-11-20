@@ -1,6 +1,6 @@
 package com.tny.game.oplog.log4j2.appender;
 
-import com.tny.game.oplog.Loggable;
+import com.tny.game.oplog.Log;
 import com.tny.game.oplog.log4j2.KafkaOplogManager;
 import com.tny.game.oplog.log4j2.LogMessage;
 import org.apache.logging.log4j.core.Filter;
@@ -76,7 +76,7 @@ public class KafkaOpLogAppender extends AbstractAppender {
                     Message message = event.getMessage();
                     if (message instanceof LogMessage) {
                         LogMessage logMessage = (LogMessage) message;
-                        Loggable loggable = logMessage.getLog();
+                        Log loggable = logMessage.getLog();
                         String key = loggable.getServerID() + "-" + loggable.getDate();
                         manager.send(loggable.getServerID(), key, data);
                     }

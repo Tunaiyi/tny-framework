@@ -2,11 +2,11 @@ package com.tny.game.suite.oplog;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.utils.IDCreator;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.utils.IDCreator;
 import com.tny.game.oplog.AbstractOpLogger;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;
@@ -17,16 +17,17 @@ import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.UserOpLog;
 import com.tny.game.oplog.annotation.SnapBy;
 import com.tny.game.oplog.log4j2.LogMessage;
-import com.tny.game.suite.oplog.dto.OperateLogDTO;
+import com.tny.game.oplog.record.OperateRecord;
+import com.tny.game.oplog.record.UserStuffRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
-import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,8 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class OperationLogger extends AbstractOpLogger implements ServerPrepareStart, ApplicationContextAware {
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");
+
+    private static final Logger stuffLogger = LogManager.getLogger("stuffLogger");
 
     private static IDCreator creator = new IDCreator(16);
 
@@ -135,10 +138,18 @@ public class OperationLogger extends AbstractOpLogger implements ServerPrepareSt
     @Override
     protected void doSubmit(OpLog log) {
         for (UserOpLog userOpLog : log.getUserLogs()) {
-            int index = 0;
+            if (!userOpLog.getStuffSettleLogs().isEmpty()) {
+                try {
+                    UserStuffRecord dto = new UserStuffRecord(creator.getHexID(), log, userOpLog);
+                    LogMessage message = new LogMessage(dto);
+                    stuffLogger.info(message);
+                } catch (Exception e) {
+                    LOGGER.error("", e);
+                }
+            }
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
-                    OperateLogDTO dto = new OperateLogDTO(creator.getHexID(), log, userOpLog, actionLog, index++);
+                    OperateRecord dto = new OperateRecord(creator.getHexID(), log, userOpLog, actionLog);
                     LogMessage message = new LogMessage(dto);
                     oplogLogger.info(message);
                 } catch (Exception e) {

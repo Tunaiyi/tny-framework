@@ -82,11 +82,13 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
     }
 
     private void onOffline(Session<UID> session, Tunnel<UID> tunnel) {
-        if (session.isOffline())
+        if (session.isLogin() && session.isOffline())
             offlineSessionQueue(session.getUserGroup()).add(as(session));
     }
 
     private void onClose(Session<UID> session, Tunnel<UID> tunnel) {
+        if (!session.isLogin())
+            return;
         Map<Object, ? extends Session> userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
         userGroupSessionMap.remove(session.getUID(), session);
         this.offlineSessionQueue(session.getUserGroup()).remove(session);
@@ -279,7 +281,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         // int size = this.offlineSessions.size() - sessionOfflineSize;
         Set<NetSession> closeSessions = new HashSet<>();
         offlineSessionMap.forEach((group, offlineSessions) -> {
-                    Map<Object, Session<Object>> groupMap = getSessionsByGroup(group);
+                    Map<Object, ? extends Session> groupMap = this.sessionMap.get(group);
                     for (NetSession<?> session : offlineSessions) {
                         try {
                             NetTunnel<?> tunnel = session.getCurrentTunnel();
@@ -298,8 +300,9 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
                                 closeSession = session;
                             }
                             if (closeSession != null) {
-                                groupMap.remove(session.getUID(), session);
-                                closeSessions.add(session);
+                                if (groupMap != null)
+                                    groupMap.remove(closeSession.getUID(), closeSession);
+                                closeSessions.add(closeSession);
                             }
                         } catch (Throwable e) {
                             LOG.error("clear {} invalided session exception", session.getUID(), e);

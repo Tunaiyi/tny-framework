@@ -2,7 +2,7 @@ package com.tny.game.oplog.log4j2.layout;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tny.game.oplog.Loggable;
+import com.tny.game.oplog.Log;
 import com.tny.game.oplog.log4j2.LogMessage;
 import com.tny.game.oplog.utils.OpLogMapper;
 import com.tny.game.oplog.simple.LogRecord;
@@ -44,7 +44,7 @@ public class KafkaOpLogLayout extends AbstractStringLayout {
         Message message = event.getMessage();
         if (message instanceof LogMessage) {
             LogMessage logMessage = (LogMessage) message;
-            Loggable loggable = logMessage.getLog();
+            Log loggable = logMessage.getLog();
             ObjectMapper mapper = OpLogMapper.getMapper();
             try {
                 LogRecord record = new LogRecord(loggable.getLogID(), loggable.getType(), mapper.writeValueAsString(logMessage.getLog()));

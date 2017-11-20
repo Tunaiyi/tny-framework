@@ -1,13 +1,12 @@
-package com.tny.game.suite.oplog.dto;
+package com.tny.game.oplog.record;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.oplog.StuffLog;
-import com.tny.game.oplog.TradeLog;
+import com.tny.game.oplog.StuffTradeLog;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class ReceiveLogDTO implements StuffLog {
+public class ReceiveRecord implements StuffTradeLog {
 
     /**
      * id
@@ -24,25 +23,30 @@ public class ReceiveLogDTO implements StuffLog {
     /**
      * old Number
      */
-
     @JsonProperty(index = 3)
     private long ronum;
 
+    /**
+     * new Number
+     */
     @JsonProperty(index = 4)
     private long rnnum;
 
+    /**
+     * alter Number
+     */
     @JsonProperty(index = 5)
     private Long ralter;
 
-    public ReceiveLogDTO() {
+    public ReceiveRecord() {
     }
 
-    public ReceiveLogDTO(TradeLog log) {
+    public ReceiveRecord(StuffTradeLog log) {
         this.rid = log.getID() == log.getItemID() ? null : log.getID();
         this.riid = log.getItemID();
         this.ronum = log.getOldNum();
         this.rnnum = log.getNewNum();
-        this.ralter = log.getAlter();
+        this.ralter = log.getAlterNum();
     }
 
     @Override

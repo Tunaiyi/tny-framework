@@ -1,6 +1,6 @@
 package com.tny.game.oplog.log4j2;
 
-import com.tny.game.oplog.Loggable;
+import com.tny.game.oplog.Log;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.joda.time.DateTime;
@@ -9,9 +9,9 @@ public class LogMessage extends MapMessage {
 
     private static final long serialVersionUID = 1L;
 
-    private Loggable log;
+    private Log log;
 
-    public LogMessage(Loggable log) {
+    public LogMessage(Log log) {
         this.log = log;
         DateTime dateTime = log.getLogAt();
         this.put("sid", Integer.toString(log.getServerID()));
@@ -24,7 +24,7 @@ public class LogMessage extends MapMessage {
         this.put("lSSS", String.valueOf(dateTime.getMillisOfSecond()));
     }
 
-    public Loggable getLog() {
+    public Log getLog() {
         return this.log;
     }
 

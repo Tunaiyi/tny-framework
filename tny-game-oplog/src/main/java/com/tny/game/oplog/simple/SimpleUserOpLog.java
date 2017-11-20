@@ -3,12 +3,16 @@ package com.tny.game.oplog.simple;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.oplog.ActionLog;
+import com.tny.game.oplog.StuffSettleLog;
 import com.tny.game.oplog.UserOpLog;
+import com.tny.game.oplog.record.StuffRecord;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户操作日志
@@ -21,7 +25,9 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private String openID;
 
-    private int createSID;
+    private String pf;
+
+    private int serverID;
 
     private String name;
 
@@ -33,11 +39,14 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private List<ActionLog> actionLogs = new ArrayList<>();
 
-    public SimpleUserOpLog(long userID, String openID, int createSID, String name, int level, int vip) {
+    private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
+
+    public SimpleUserOpLog(long userID, String pf, String openID, int serverID, String name, int level, int vip) {
         super();
         this.userID = userID;
         this.openID = openID;
-        this.createSID = createSID;
+        this.pf = pf;
+        this.serverID = serverID;
         this.name = name;
         this.vip = vip;
         this.level = level;
@@ -49,8 +58,8 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
-    public int getCreateSID() {
-        return this.createSID;
+    public int getServerID() {
+        return this.serverID;
     }
 
     @Override
@@ -69,6 +78,11 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
+    public String getPF() {
+        return pf;
+    }
+
+    @Override
     public String getOpenID() {
         return this.openID;
     }
@@ -81,12 +95,17 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
+    public Collection<StuffSettleLog> getStuffSettleLogs() {
+        return stuffLogs.values();
+    }
+
+    @Override
     public Attributes attributes() {
         return this.attributes;
     }
 
     @Override
-    protected ActionLog getBaseActionLog(Action action) {
+    protected ActionLog getActionLog(Action action) {
         for (int index = 0; index < this.actionLogs.size(); index++) {
             ActionLog log = this.actionLogs.get(index);
             if (log.getActionID() == action.getID())
@@ -95,6 +114,11 @@ public class SimpleUserOpLog extends UserOpLog {
         ActionLog actionLog = new SimpleActionLog(action);
         this.actionLogs.add(actionLog);
         return actionLog;
+    }
+
+    @Override
+    protected StuffSettleLog getStuffFlowLog(int itemID) {
+        return stuffLogs.computeIfAbsent(itemID, StuffRecord::new);
     }
 
 }

@@ -111,7 +111,8 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
+    @SafeVarargs
+    public final OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
         try {
             action = this.transAction(action);
             if (snapperTypes.length == 0)

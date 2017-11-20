@@ -23,14 +23,14 @@ public abstract class ActionLog {
      *
      * @return
      */
-    public abstract Collection<TradeLog> getReceiveLogs();
+    public abstract Collection<StuffTradeLog> getReceiveLogs();
 
     /**
      * 交易日志
      *
      * @return
      */
-    public abstract Collection<TradeLog> getConsumeLogs();
+    public abstract Collection<StuffTradeLog> getConsumeLogs();
 
     /**
      * 快照

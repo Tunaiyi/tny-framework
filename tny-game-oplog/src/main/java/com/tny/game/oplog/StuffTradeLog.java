@@ -1,6 +1,6 @@
 package com.tny.game.oplog;
 
-public interface StuffLog {
+public interface StuffTradeLog {
 
     long getID();
 

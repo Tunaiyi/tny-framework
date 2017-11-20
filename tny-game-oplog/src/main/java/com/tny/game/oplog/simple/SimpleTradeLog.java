@@ -2,11 +2,9 @@ package com.tny.game.oplog.simple;
 
 import com.tny.game.base.item.Item;
 import com.tny.game.oplog.OpTradeType;
-import com.tny.game.oplog.TradeLog;
+import com.tny.game.oplog.StuffTradeLog;
 
-public class SimpleTradeLog implements TradeLog {
-
-    private byte tradeType;
+public class SimpleTradeLog implements StuffTradeLog {
 
     private long id;
 
@@ -20,7 +18,6 @@ public class SimpleTradeLog implements TradeLog {
 
     public SimpleTradeLog(Item<?> item, OpTradeType tradeType, long oldNumber, long alter, long newNumber) {
         super();
-        this.tradeType = tradeType.ID;
         this.id = item.getID();
         this.itemID = item.getItemID();
         this.oldNum = oldNumber;
@@ -30,7 +27,6 @@ public class SimpleTradeLog implements TradeLog {
 
     public SimpleTradeLog(long id, int itemID, OpTradeType tradeType, long oldNum, long alter, long newNum) {
         super();
-        this.tradeType = tradeType.ID;
         this.id = id;
         this.itemID = itemID;
         this.oldNum = oldNum;
@@ -38,19 +34,16 @@ public class SimpleTradeLog implements TradeLog {
         this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
     }
 
-    public void merge(long alter, long newNum) {
-        if (this.tradeType == OpTradeType.CONSUME.ID) {
-            this.alter -= alter;
-        } else {
-            this.alter += alter;
-        }
+    public void receive(long alter, long newNum) {
+        this.alter += alter;
         this.newNum = newNum;
     }
 
-    @Override
-    public byte getTradeType() {
-        return this.tradeType;
+    public void consume(long alter, long newNum) {
+        this.alter -= alter;
+        this.newNum = newNum;
     }
+
 
     @Override
     public long getID() {
@@ -63,11 +56,6 @@ public class SimpleTradeLog implements TradeLog {
     }
 
     @Override
-    public long getAlter() {
-        return this.alter;
-    }
-
-    @Override
     public long getOldNum() {
         return this.oldNum;
     }
@@ -75,6 +63,11 @@ public class SimpleTradeLog implements TradeLog {
     @Override
     public long getNewNum() {
         return this.newNum;
+    }
+
+    @Override
+    public long getAlterNum() {
+        return this.alter;
     }
 
 }

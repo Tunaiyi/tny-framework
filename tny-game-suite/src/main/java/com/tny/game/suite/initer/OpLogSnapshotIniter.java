@@ -7,9 +7,9 @@ import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.utils.OpLogMapper;
-import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.scanner.ClassSelector;
-import com.tny.game.scanner.filter.AnnotationClassFilter;
+import com.tny.game.scanner.filter.ClassFilterHelper;
+import com.tny.game.scanner.filter.SubOfClassFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,9 @@ public class OpLogSnapshotIniter implements ServerPrepareStart {
     private List<String> scanPaths = new ArrayList<>();
 
     private static ClassSelector selector = ClassSelector
-            .instance(AnnotationClassFilter.ofInclude(ProtoEx.class))
+            .instance(
+                    SubOfClassFilter.ofInclude(Snapshot.class),
+                    ClassFilterHelper.ofExclude(r -> r.getClassMetadata().isAbstract()))
             .setHandler(OpLogSnapshotIniter::loadClasses);
 
     public static ClassSelector selector() {

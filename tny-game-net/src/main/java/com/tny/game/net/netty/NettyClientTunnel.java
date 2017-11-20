@@ -1,5 +1,6 @@
 package com.tny.game.net.netty;
 
+import com.tny.game.common.concurrent.FutureManagedBlocker;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.URL;
@@ -18,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 
@@ -185,18 +186,12 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
         }
     }
 
+
     private <T> void doWait(long timeout, Future<T> future) throws TimeoutException, ExecutionException, InterruptedException {
-        // if (timeout > 0) {
-        //     if (ForkJoinTask.inForkJoinPool()) {
-        //         long loginTimeoutTime = System.currentTimeMillis() + timeout;
-        //         while (!future.isDone()) {
-        //             if (System.currentTimeMillis() > loginTimeoutTime)
-        //                 throw new TimeoutException();
-        //             action.compute();
-        //         }
-        //     }
-        future.get(timeout, TimeUnit.MILLISECONDS);
-        // }
+        if (timeout > 0) {
+            FutureManagedBlocker blocker = new FutureManagedBlocker(future, timeout);
+            ForkJoinPool.managedBlock(blocker);
+        }
     }
 
 }

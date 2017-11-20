@@ -1,13 +1,12 @@
-package com.tny.game.suite.oplog.dto;
+package com.tny.game.oplog.record;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.oplog.StuffLog;
-import com.tny.game.oplog.TradeLog;
+import com.tny.game.oplog.StuffTradeLog;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class ConsumeLogDTO implements StuffLog {
+public class ConsumeRecord implements StuffTradeLog {
 
     /**
      * id
@@ -24,7 +23,6 @@ public class ConsumeLogDTO implements StuffLog {
     /**
      * old Number
      */
-
     @JsonProperty(index = 3)
     private long conum;
 
@@ -34,18 +32,21 @@ public class ConsumeLogDTO implements StuffLog {
     @JsonProperty(index = 4)
     private long cnnum;
 
+    /**
+     * alter Number
+     */
     @JsonProperty(index = 5)
     private Long calter;
 
-    public ConsumeLogDTO() {
+    public ConsumeRecord() {
     }
 
-    public ConsumeLogDTO(TradeLog log) {
+    public ConsumeRecord(StuffTradeLog log) {
         this.cid = log.getID() == log.getItemID() ? null : log.getID();
         this.ciid = log.getItemID();
         this.conum = log.getOldNum();
         this.cnnum = log.getNewNum();
-        this.calter = log.getAlter();
+        this.calter = log.getAlterNum();
     }
 
     @Override

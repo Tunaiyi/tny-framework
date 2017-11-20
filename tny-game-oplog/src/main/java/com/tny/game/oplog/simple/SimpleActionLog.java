@@ -36,14 +36,14 @@ public class SimpleActionLog extends ActionLog {
     }
 
     @Override
-    public Collection<TradeLog> getReceiveLogs() {
-        Collection<? extends TradeLog> logs = this.receiveLogs;
+    public Collection<StuffTradeLog> getReceiveLogs() {
+        Collection<? extends StuffTradeLog> logs = this.receiveLogs;
         return Collections.unmodifiableCollection(logs);
     }
 
     @Override
-    public Collection<TradeLog> getConsumeLogs() {
-        Collection<? extends TradeLog> logs = this.consumeLogs;
+    public Collection<StuffTradeLog> getConsumeLogs() {
+        Collection<? extends StuffTradeLog> logs = this.consumeLogs;
         return Collections.unmodifiableCollection(logs);
     }
 
@@ -62,7 +62,7 @@ public class SimpleActionLog extends ActionLog {
             return this;
         SimpleTradeLog log = this.findTradeLog(this.receiveLogs, id);
         if (log != null) {
-            log.merge(alter, newNum);
+            log.receive(alter, newNum);
         } else {
             log = new SimpleTradeLog(id, itemID, OpTradeType.RECEIVE, oldNum, alter, newNum);
             this.receiveLogs.add(log);
@@ -76,7 +76,7 @@ public class SimpleActionLog extends ActionLog {
             return this;
         SimpleTradeLog log = this.findTradeLog(this.consumeLogs, id);
         if (log != null) {
-            log.merge(alter, newNum);
+            log.consume(alter, newNum);
         } else {
             log = new SimpleTradeLog(id, itemID, OpTradeType.CONSUME, oldNum, alter, newNum);
             this.consumeLogs.add(log);
@@ -86,17 +86,15 @@ public class SimpleActionLog extends ActionLog {
 
     @Override
     protected ActionLog logSnapshot(Snapshot snapshot) {
-        List<Snapshot> snaps = this.snapshotMap.get(snapshot.getID());
-        if (snaps == null) {
-            snaps = new ArrayList<>();
-            this.snapshotMap.put(snapshot.getID(), snaps);
-        }
-        boolean exsist = false;
+        List<Snapshot> snaps = this.snapshotMap.computeIfAbsent(snapshot.getID(), k -> new ArrayList<>());
+        boolean exist = false;
         for (Snapshot snap : snaps) {
-            if (snap.getType() == snapshot.getType())
-                exsist = true;
+            if (snap.getType() == snapshot.getType()) {
+                exist = true;
+                break;
+            }
         }
-        if (!exsist) {
+        if (!exist) {
             snaps.add(snapshot);
             this.snapshots.add(snapshot);
         }
