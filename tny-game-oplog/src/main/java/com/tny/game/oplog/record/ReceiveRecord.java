@@ -108,7 +108,7 @@ public class ReceiveRecord implements StuffTradeLog {
         return rnnum;
     }
 
-    public void setRnnum(int rnnum) {
+    public void setRnnum(long rnnum) {
         this.rnnum = rnnum;
     }
 
@@ -116,7 +116,7 @@ public class ReceiveRecord implements StuffTradeLog {
         return ronum;
     }
 
-    public void setRonum(int ronum) {
+    public void setRonum(long ronum) {
         this.ronum = ronum;
     }
 

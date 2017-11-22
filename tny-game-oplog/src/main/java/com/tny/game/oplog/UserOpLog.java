@@ -2,6 +2,7 @@ package com.tny.game.oplog;
 
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.context.Attributes;
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 
@@ -43,6 +44,11 @@ public abstract class UserOpLog {
     public abstract int getServerID();
 
     /**
+     * @return 创建角色时间
+     */
+    public abstract DateTime getCreateAt();
+
+    /**
      * @return 日志操作日志Map
      */
     public abstract Collection<ActionLog> getActionLogs();
@@ -59,19 +65,27 @@ public abstract class UserOpLog {
 
     protected abstract ActionLog getActionLog(Action action);
 
-    protected abstract StuffSettleLog getStuffFlowLog(int itemID);
+    protected abstract StuffSettleLog getStuffSettleLog(int itemID);
 
     protected UserOpLog logReceive(long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         ActionLog log = this.getActionLog(action);
         log.logReceive(id, itemID, oldNum, alter, newNum);
-        getStuffFlowLog(itemID).receive(newNum, alter);
         return this;
     }
 
     protected UserOpLog logConsume(long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         ActionLog log = this.getActionLog(action);
         log.logConsume(id, itemID, oldNum, alter, newNum);
-        getStuffFlowLog(itemID).consume(newNum, alter);
+        return this;
+    }
+
+    protected UserOpLog settleReceive(int itemID, long alter, long newNum) {
+        getStuffSettleLog(itemID).receive(newNum, alter);
+        return this;
+    }
+
+    protected UserOpLog settleConsume(int itemID, long alter, long newNum) {
+        getStuffSettleLog(itemID).consume(newNum, alter);
         return this;
     }
 

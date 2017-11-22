@@ -6,6 +6,7 @@ import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.StuffSettleLog;
 import com.tny.game.oplog.UserOpLog;
 import com.tny.game.oplog.record.StuffRecord;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,16 +36,19 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private int vip;
 
+    private DateTime createAt;
+
     private Attributes attributes;
 
     private List<ActionLog> actionLogs = new ArrayList<>();
 
     private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
 
-    public SimpleUserOpLog(long userID, String pf, String openID, int serverID, String name, int level, int vip) {
+    public SimpleUserOpLog(long userID, String pf, String openID, int serverID, String name, DateTime createAt, int level, int vip) {
         super();
         this.userID = userID;
         this.openID = openID;
+        this.createAt = createAt;
         this.pf = pf;
         this.serverID = serverID;
         this.name = name;
@@ -88,6 +92,11 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
+    public DateTime getCreateAt() {
+        return createAt;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Collection<ActionLog> getActionLogs() {
         Collection<? extends ActionLog> logs = Collections.unmodifiableCollection(this.actionLogs);
@@ -117,7 +126,7 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
-    protected StuffSettleLog getStuffFlowLog(int itemID) {
+    protected StuffSettleLog getStuffSettleLog(int itemID) {
         return stuffLogs.computeIfAbsent(itemID, StuffRecord::new);
     }
 

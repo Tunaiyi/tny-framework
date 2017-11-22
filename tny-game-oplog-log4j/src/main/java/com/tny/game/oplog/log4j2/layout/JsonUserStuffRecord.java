@@ -16,11 +16,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
         getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class JsonUserStuffRecord {
 
-    @JsonProperty(index = 0)
-    private long rcid;
-
     @JsonProperty(index = 1)
-    private long at;
+    private long rcid;
 
     @JsonProperty(index = 2)
     private long uid;
@@ -28,22 +25,10 @@ public class JsonUserStuffRecord {
     @JsonProperty(index = 3)
     private String name;
 
-    @JsonProperty(index = 7)
+    @JsonProperty(index = 4)
     private int sid;
 
-    @JsonProperty(index = 9)
-    private int lv;
-
-    @JsonProperty(index = 10)
-    private String opid;
-
-    @JsonProperty(index = 11)
-    private String pf;
-
-    @JsonProperty(index = 12)
-    private int vip;
-
-    @JsonProperty(index = 13)
+    @JsonProperty(index = 5)
     private List<StuffRecord> stuffs;
 
     public JsonUserStuffRecord() {
@@ -52,14 +37,9 @@ public class JsonUserStuffRecord {
     @SuppressWarnings("unchecked")
     public JsonUserStuffRecord(long rcid, UserStuffRecord log) {
         this.rcid = rcid;
-        this.at = log.getAt();
         this.uid = log.getUserID();
         this.name = log.getName();
         this.sid = log.getServerID();
-        this.lv = log.getLevel();
-        this.opid = log.getOpenID();
-        this.pf = log.getPF();
-        this.vip = log.getVip();
         this.stuffs = log.getStuffLogs()
                 .stream()
                 .map(JsonUserStuffRecord::log2Record)
@@ -80,32 +60,13 @@ public class JsonUserStuffRecord {
         return uid;
     }
 
-    public long getAt() {
-        return at;
-    }
 
     public int getServerID() {
         return sid;
     }
 
-    public String getPF() {
-        return pf;
-    }
-
-    public int getVip() {
-        return vip;
-    }
-
-    public String getOpenID() {
-        return opid;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public int getLevel() {
-        return lv;
     }
 
     public List<StuffRecord> getStuffs() {

@@ -14,7 +14,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractOpLogger.class);
 
     @Override
-    public boolean isLogging() {
+    public boolean isLogged() {
         return this.localOpLog.get() != null;
     }
 
@@ -68,6 +68,33 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
+    public OpLogger settleReceive(Item<?> item, long alter, long newNum) {
+        if (item == null)
+            return this;
+        return settleReceive(item.getPlayerID(), item.getItemID(), alter, newNum);
+    }
+
+    @Override
+    public OpLogger settleReceive(long playerID, ItemModel model, long alter, long newNum) {
+        if (model == null)
+            return this;
+        return settleReceive(playerID, model.getID(), alter, newNum);
+    }
+
+    @Override
+    public OpLogger settleReceive(long playerID, int itemID, long alter, long newNum) {
+        try {
+            UserOpLog log = this.getUserLogger(playerID);
+            if (log == null)
+                return this;
+            log.settleReceive(itemID, alter, newNum);
+        } catch (Exception e) {
+            LOGGER.error("{} | {} | settleReceive exception", playerID, e);
+        }
+        return this;
+    }
+
+    @Override
     public OpLogger logConsume(Item<?> item, Action action, long oldNum, long alter, long newNum) {
         if (item == null)
             return this;
@@ -91,6 +118,33 @@ public abstract class AbstractOpLogger implements OpLogger {
             log.logConsume(id, itemID, action, oldNum, alter, newNum);
         } catch (Exception e) {
             LOGGER.error("{} | {} | logConsume exception", playerID, action, e);
+        }
+        return this;
+    }
+
+    @Override
+    public OpLogger settleConsume(Item<?> item, long alter, long newNum) {
+        if (item == null)
+            return this;
+        return settleConsume(item.getPlayerID(), item.getItemID(), alter, newNum);
+    }
+
+    @Override
+    public OpLogger settleConsume(long playerID, ItemModel model, long alter, long newNum) {
+        if (model == null)
+            return this;
+        return settleConsume(playerID, model.getID(), alter, newNum);
+    }
+
+    @Override
+    public OpLogger settleConsume(long playerID, int itemID, long alter, long newNum) {
+        try {
+            UserOpLog log = this.getUserLogger(playerID);
+            if (log == null)
+                return this;
+            log.settleConsume(itemID, alter, newNum);
+        } catch (Exception e) {
+            LOGGER.error("{} | {} | settleReceive exception", playerID, e);
         }
         return this;
     }
