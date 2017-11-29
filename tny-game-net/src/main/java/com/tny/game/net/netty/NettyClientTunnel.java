@@ -1,6 +1,5 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.common.concurrent.FutureManagedBlocker;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.URL;
@@ -19,8 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 
@@ -82,25 +83,25 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
             this.channel = channel;
     }
 
-    // private static class NextTaskAction extends RecursiveAction {
-    //
-    //     @Override
-    //     protected void compute() {
-    //         ForkJoinTask<?> task = ForkJoinTask.pollTask();
-    //         if (task != null) {
-    //             task.quietlyInvoke();
-    //         } else {
-    //             try {
-    //                 Thread.sleep(20);
-    //             } catch (InterruptedException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
-    //
-    // }
+    private static class NextTaskAction extends RecursiveAction {
 
-    // private static NextTaskAction action = new NextTaskAction();
+        @Override
+        protected void compute() {
+            ForkJoinTask<?> task = ForkJoinTask.pollTask();
+            if (task != null) {
+                task.quietlyInvoke();
+            } else {
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private static NextTaskAction action = new NextTaskAction();
 
     @SuppressWarnings("unchecked")
     private void reconnect() throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
@@ -186,11 +187,17 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
         }
     }
 
-
     private <T> void doWait(long timeout, Future<T> future) throws TimeoutException, ExecutionException, InterruptedException {
         if (timeout > 0) {
-            FutureManagedBlocker blocker = new FutureManagedBlocker(future, timeout);
-            ForkJoinPool.managedBlock(blocker);
+            if (ForkJoinTask.inForkJoinPool()) {
+                long loginTimeoutTime = System.currentTimeMillis() + timeout;
+                while (!future.isDone()) {
+                    if (System.currentTimeMillis() > loginTimeoutTime)
+                        throw new TimeoutException();
+                    action.compute();
+                }
+            }
+            future.get(timeout, TimeUnit.MILLISECONDS);
         }
     }
 
