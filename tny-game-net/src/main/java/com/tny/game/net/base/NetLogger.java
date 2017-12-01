@@ -2,6 +2,7 @@ package com.tny.game.net.base;
 
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.Session;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,12 +66,39 @@ public class NetLogger {
         return null;
     }
 
+    public static void debugReceive(Message message, String msg, Object... args) {
+        Logger logger = getReceiveLogger(message);
+        if (logger != null && logger.isDebugEnabled()) {
+            Object[] msgArgs = new Object[5 + args.length];
+            msgArgs[0] = message.getMode();
+            msgArgs[1] = message.getProtocol();
+            msgArgs[2] = message.getID();
+            msgArgs[3] = message.getToMessage();
+            msgArgs[4] = message.getBody(Object.class);
+            ArrayUtils.addAll(msgArgs, args);
+            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" + msg + "#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+        }
+    }
+
+    public static void debugSend(Message message, String msg, Object... args) {
+        Logger logger = getSendLogger(message);
+        if (logger != null && logger.isDebugEnabled()) {
+            Object[] msgArgs = new Object[5 + args.length];
+            msgArgs[0] = message.getMode();
+            msgArgs[1] = message.getProtocol();
+            msgArgs[2] = message.getID();
+            msgArgs[3] = message.getToMessage();
+            msgArgs[4] = message.getBody(Object.class);
+            ArrayUtils.addAll(msgArgs, args);
+            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" + msg + "#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+        }
+    }
+
     public static void logSend(Session session, Message message) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled())
             logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
                     message.getMode(),
-                    session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
     }

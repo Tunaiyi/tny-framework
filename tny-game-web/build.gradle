@@ -20,9 +20,9 @@ dependencies {
             project(":tny-game-common"),
             project(":tny-game-base"),
     )
-
-    compile(libs.'shiro') {
-        exclude module: 'guava'
-    }
+//
+//    compile(libs.'shiro') {
+//        exclude module: 'guava'
+//    }
 
 }
