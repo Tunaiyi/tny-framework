@@ -1,6 +1,7 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageWriteFuture;
 import io.netty.channel.Channel;
@@ -17,6 +18,7 @@ public class NettyServerTunnel<UID> extends NettyTunnel<UID> {
 
     @Override
     public void write(Message<UID> message, MessageWriteFuture<UID> writeFuture) {
+        NetLogger.logSend(this.session, message);
         ChannelFuture future = channel.writeAndFlush(message);
         if (writeFuture != null && writeFuture.isHasFuture()) {
             future.addListener(f -> {

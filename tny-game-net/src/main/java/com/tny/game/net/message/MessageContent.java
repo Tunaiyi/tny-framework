@@ -3,6 +3,7 @@ package com.tny.game.net.message;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.net.session.MessageFuture;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -185,5 +186,16 @@ public class MessageContent<UID> implements Protocol {
 
     public boolean isHasFuture() {
         return this.sendFuture != null || this.messageFuture != null;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("protocol", protocol)
+                .append("mode", mode)
+                .append("toMessage", toMessage)
+                .append("code", code)
+                .append("body", body)
+                .toString();
     }
 }

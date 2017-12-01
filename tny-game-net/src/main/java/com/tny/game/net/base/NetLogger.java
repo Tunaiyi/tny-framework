@@ -29,7 +29,7 @@ public class NetLogger {
 
     public static void logSend(Session session, Message message) {
         if (SEND_LOGGER.isDebugEnabled())
-            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#<< 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+            SEND_LOGGER.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
                     message.getMode(),
                     session,
                     message.getProtocol(), message.getID(), message.getToMessage(),

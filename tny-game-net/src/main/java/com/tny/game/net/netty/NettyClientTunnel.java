@@ -4,6 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.URL;
 import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
@@ -142,6 +143,7 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
             }
             try {
                 long sendTimeout = getSendTimeout();
+                NetLogger.logSend(this.session, message);
                 ChannelFuture future = channel.writeAndFlush(message);
                 if (writeFuture != null && writeFuture.isHasFuture()) {
                     future.addListener(f -> {

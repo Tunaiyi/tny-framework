@@ -255,7 +255,7 @@ public class CommonSession<UID> implements NetSession<UID> {
             tunnel = getTunnel(tunnel);
             final SessionEventsBox eventBox = this.eventBox;
             SessionSendEvent<UID> event;
-            NetLogger.logSend(this, message);
+            // NetLogger.logSend(this, message);
             event = sendEvent(tunnel, content);
             eventBox.addOutputEvent(event);
             outputEventHandler.onOutput(this);
@@ -264,7 +264,7 @@ public class CommonSession<UID> implements NetSession<UID> {
         } catch (Throwable e) {
             LOGGER.error("send response exception", e);
             if (content.isWaitForSent())
-                throw new RemotingException(Logs.format("{} send {} failed", this, message));
+                throw new RemotingException(Logs.format("{} send {} failed", this, content));
         }
     }
 
