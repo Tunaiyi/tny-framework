@@ -118,10 +118,12 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
                     }
                     this.login(this.getLoginTimeout());
                 } catch (Throwable e) {
-                    if (i >= time)
-                        throw e;
-                    this.session.close();
+                    this.close();
                     LOGGER.warn("{} 发送消息失败", this, e);
+                    if (i >= time) {
+                        this.session.close();
+                        throw e;
+                    }
                 }
             }
         }
