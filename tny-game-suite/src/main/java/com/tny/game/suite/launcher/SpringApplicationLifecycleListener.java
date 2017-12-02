@@ -54,7 +54,7 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ExeAide.runUnchecked(() -> processor.onClosed(false));
+        ExeAide.runUnchecked(() -> processor.onClosed(true));
     }
 
 }

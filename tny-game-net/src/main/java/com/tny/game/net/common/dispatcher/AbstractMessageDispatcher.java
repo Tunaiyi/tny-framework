@@ -32,6 +32,7 @@ import com.tny.game.net.session.MessageFuture;
 import com.tny.game.net.session.NetSession;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.tunnel.Tunnel;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -488,22 +489,19 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         @SuppressWarnings("unchecked")
         private void handleException(Throwable e) {
             if (e instanceof DispatchException) {
-                // DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
                 DispatchException dex = (DispatchException) e;
                 DISPATCHER_LOG.error(dex.getMessage(), dex);
                 fireInvokeException(this, dex);
-                if (!this.isInterrupted())
-                    this.done(dex.getResultCode());
+                this.done(dex.getResultCode());
                 fireInvokeFinish(this, e);
             } else if (e instanceof InvocationTargetException) {
                 this.handleException(((InvocationTargetException) e).getTargetException());
             } else if (e instanceof ExecutionException) {
                 this.handleException(e.getCause());
             } else {
-                // DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
+                DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
                 fireInvokeException(this, e);
-                if (!this.isInterrupted())
-                    this.done(CoreResponseCode.EXECUTE_EXCEPTION);
+                this.done(CoreResponseCode.EXECUTE_EXCEPTION);
                 fireInvokeFinish(this, e);
             }
         }
@@ -547,8 +545,9 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 DISPATCHER_LOG.debug("Controller [{}] 执行BeforePlugins", getName());
             controller.beforeInvoke(this.tunnel, this.message, this);
 
-            if (this.isInterrupted())
+            if (this.isInterrupted()) {
                 return;
+            }
 
             if (DISPATCHER_LOG.isDebugEnabled())
                 DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
@@ -654,6 +653,12 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             }
         }
 
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .append("message", message)
+                    .toString();
+        }
     }
 
     private interface CommandFuture {

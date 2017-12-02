@@ -109,9 +109,16 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
     public Tunnel<UID> connect(URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
         if (this.isClosed())
             throw new RemotingException("client is closed");
-        NettyClientTunnel<UID> tunnel = doConnect(null, url, loginContentCreator);
-        if (tunnel != null)
-            tunnel.login();
+        NettyClientTunnel<UID> tunnel = null;
+        try {
+            tunnel = doConnect(null, url, loginContentCreator);
+            if (tunnel != null)
+                tunnel.login();
+        } catch (Throwable e) {
+            if (tunnel != null)
+                tunnel.close();
+            throw e;
+        }
         return tunnel;
     }
 

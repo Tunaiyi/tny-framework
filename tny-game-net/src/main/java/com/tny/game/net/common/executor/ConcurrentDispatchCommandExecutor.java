@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecutor, SessionHolderListener {
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
+    private static final Logger LOG_TEST = LoggerFactory.getLogger("test");
 
     private static final String POOL_NAME = "ConcurrentDispatchCommandExecutor";
 
@@ -51,6 +52,10 @@ public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecuto
                     doSubmit(command);
             }
         }, 31, 31, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            LOG_NET.info("[scheduledChildExecutors size {}] [executorService size : {} | Parallelism : {} | PoolSize : {}]", scheduledChildExecutors.size(),
+                    executorService.getQueuedSubmissionCount(), executorService.getParallelism(), executorService.getPoolSize());
+        }, 15000, 15000, TimeUnit.MILLISECONDS);
     }
 
     @Override

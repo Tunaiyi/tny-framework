@@ -38,67 +38,64 @@ public class NetLogger {
     public static final String EXECUTOR = "executor";
 
 
-    private static Logger getSendLogger(Message message) {
+    private static Logger getLoggerByMessage(Message message, Logger pushLogger, Logger rqsLogger, Logger rspLogger) {
         if (message == null)
             return null;
         switch (message.getMode()) {
             case PUSH:
-                return SEND_PUSH_LOGGER;
+                return pushLogger;
             case REQUEST:
-                return SEND_RQS_LOGGER;
+                return rqsLogger;
             case RESPONSE:
-                return SEND_RSP_LOGGER;
+                return rspLogger;
         }
         return null;
     }
 
+    private static Logger getSendLogger(Message message) {
+        return getLoggerByMessage(message, SEND_PUSH_LOGGER, SEND_RQS_LOGGER, SEND_RSP_LOGGER);
+    }
+
     private static Logger getReceiveLogger(Message message) {
-        if (message == null)
-            return null;
-        switch (message.getMode()) {
-            case PUSH:
-                return RECEIVE_PUSH_LOGGER;
-            case REQUEST:
-                return RECEIVE_RQS_LOGGER;
-            case RESPONSE:
-                return RECEIVE_RSP_LOGGER;
-        }
-        return null;
+        return getLoggerByMessage(message, RECEIVE_PUSH_LOGGER, RECEIVE_RQS_LOGGER, RECEIVE_RSP_LOGGER);
     }
 
     public static void debugReceive(Message message, String msg, Object... args) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = new Object[5 + args.length];
+            Object[] msgArgs = new Object[5];
             msgArgs[0] = message.getMode();
             msgArgs[1] = message.getProtocol();
             msgArgs[2] = message.getID();
             msgArgs[3] = message.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
-            ArrayUtils.addAll(msgArgs, args);
-            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" + msg + "#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+            if (args.length > 0)
+                msgArgs = ArrayUtils.addAll(msgArgs, args);
+            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
     public static void debugSend(Message message, String msg, Object... args) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = new Object[5 + args.length];
+            Object[] msgArgs = new Object[5];
             msgArgs[0] = message.getMode();
             msgArgs[1] = message.getProtocol();
             msgArgs[2] = message.getID();
             msgArgs[3] = message.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
-            ArrayUtils.addAll(msgArgs, args);
-            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" + msg + "#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+            if (args.length > 0)
+                msgArgs = ArrayUtils.addAll(msgArgs, args);
+            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
     public static void logSend(Session session, Message message) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled())
-            logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}#---------------------------------------------",
+            logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
+                    session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
                     message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
     }
@@ -106,7 +103,7 @@ public class NetLogger {
     public static void logReceive(Session session, Message message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled())
-            logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}#---------------------------------------------",
+            logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     session,
                     message.getProtocol(), message.getID(), message.getToMessage(),
