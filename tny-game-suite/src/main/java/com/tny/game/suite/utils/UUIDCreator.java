@@ -1,8 +1,8 @@
 package com.tny.game.suite.utils;
 
+import com.tny.game.common.RunningChecker;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.utils.Throws;
-import com.tny.game.common.RunningChecker;
 import org.joda.time.DateTime;
 
 import java.util.concurrent.locks.StampedLock;
@@ -73,8 +73,8 @@ public class UUIDCreator {
         try {
             long timestamp;
             long seq = 0;
+            lockStamp = lock.readLock();
             while (true) {
-                lockStamp = lock.readLock();
                 long lastTime = this.lastTimestamp;
                 timestamp = timeGenerate();
                 if (timestamp < lastTime)
@@ -89,7 +89,7 @@ public class UUIDCreator {
                         this.lastTimestamp = timestamp;
                         break;
                     } else {
-                        lock.unlock(lockStamp);
+                        lock.unlockRead(lockStamp);
                         lockStamp = lock.writeLock();
                     }
                 } else {
@@ -100,7 +100,7 @@ public class UUIDCreator {
                         this.lastTimestamp = timestamp;
                         break;
                     } else {
-                        lock.unlock(lockStamp);
+                        lock.unlockRead(lockStamp);
                         lockStamp = lock.writeLock();
                     }
                 }
