@@ -155,11 +155,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
             if (state != this.state)
                 return false;
             Synchronizer<?> synchronizer = synchronizable.getSynchronizer();
-            Set<Object> syncSet = this.syncerMap.get(synchronizer);
-            if (syncSet == null) {
-                syncSet = new HashSet<>();
-                this.syncerMap.put(synchronizer, syncSet);
-            }
+            Set<Object> syncSet = this.syncerMap.computeIfAbsent(synchronizer, k -> new HashSet<>());
             if (syncSet.add(value))
                 this.objectSyncMap.put(value, synchronizable);
             return true;

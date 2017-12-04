@@ -50,11 +50,6 @@ public interface Configs {
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
     String SUITE_SERVER_TYPE_CLASS /*                   */ = "tny.server.suite.server.server_type_class";
     String SUITE_SCOPE_TYPE_CLASS /*                    */ = "tny.server.suite.server.scope_type_class";
-    String SUITE_SESSION_OFFLINE_WAIT /*                */ = "tny.server.suite.session.offline_wait";
-    String SUITE_SESSION_CACHE_RESP_SIZE /*             */ = "tny.server.suite.session.cache_resp_size";
-    String SUITE_EXECUTOR_THREAD_SIZE /*                */ = "tny.server.suite.executor.thread_size";
-    String SUITE_EXECUTOR_THREAD_MAX_SIZE /*            */ = "tny.server.suite.executor.thread_max_size";
-    String SUITE_EXECUTOR_KEEP_ALIVE_TIME /*            */ = "tny.server.suite.executor.keep_alive_time";
     // String SUITE_MSG_CHECKER_DIRECT_PROTS /*         */ = "tny.server.suite.message_checker.direct_ports";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
     String SUITE_MSG_SIGNER_SIGN_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
