@@ -3,7 +3,7 @@ package com.tny.game.doc.controller;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.ClassDocHolder;
 import com.tny.game.doc.holder.FunDocHolder;

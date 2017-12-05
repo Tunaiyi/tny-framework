@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.tny.game.suite.base.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_SUPPLIER_DTO)
 @DTODoc(value = "游戏能力相关对象DTO")

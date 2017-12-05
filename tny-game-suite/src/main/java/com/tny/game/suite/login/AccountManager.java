@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.suite.base.DateTimeAide;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.suite.login.dao.AccountDAO;
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Profile;

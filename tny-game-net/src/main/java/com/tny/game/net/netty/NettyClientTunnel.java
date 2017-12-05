@@ -2,7 +2,7 @@ package com.tny.game.net.netty;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
-import com.tny.game.suite.base.URL;
+import com.tny.game.common.utils.URL;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.exception.DispatchException;
@@ -51,7 +51,7 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
         this.url = url;
         this.loginContentCreator = loginContentCreator;
         Config config = configuration.getProperties();
-        loginTimeout = url.getParameter(LOGING_TIMEOUT_URL_PARAM, config.getLong(LOGING_TIMEOUT_URL_PARAM, 15000L));
+        loginTimeout = url.getParameter(LOGIN_TIMEOUT_URL_PARAM, config.getLong(LOGIN_TIMEOUT_URL_PARAM, 15000L));
         sendTimeout = url.getParameter(SEND_TIMEOUT_URL_PARAM, config.getLong(SEND_TIMEOUT_URL_PARAM, 0L));
         resendTimes = url.getParameter(RESEND_TIMES_URL_PARAM, config.getInt(RESEND_TIMES_URL_PARAM, 1));
         reconnectTimes = url.getParameter(CONNECT_TIMEOUT_URL_PARAM, config.getInt(CONNECT_TIMEOUT_URL_PARAM, 0));

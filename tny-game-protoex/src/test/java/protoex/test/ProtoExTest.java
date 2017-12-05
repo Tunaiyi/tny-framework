@@ -1,6 +1,6 @@
 package protoex.test;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.collection.MapBuilder;
 import com.tny.game.protoex.ProtoExReader;
 import com.tny.game.protoex.ProtoExWriter;

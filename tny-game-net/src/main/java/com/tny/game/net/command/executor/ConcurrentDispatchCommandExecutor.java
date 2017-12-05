@@ -1,8 +1,8 @@
 package com.tny.game.net.command.executor;
 
 import com.tny.game.common.config.Config;
-import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.common.thread.ForkJoinPools;
+import com.tny.game.common.concurrent.CoreThreadFactory;
+import com.tny.game.common.concurrent.ForkJoinPools;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.base.NetLogger;

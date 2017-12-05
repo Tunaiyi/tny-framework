@@ -4,7 +4,7 @@ import com.google.common.collect.Range;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;

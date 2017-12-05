@@ -1,6 +1,6 @@
 package com.tny.game.doc.output;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.table.ConfigTable;
 import com.tny.game.doc.table.TableAttribute;

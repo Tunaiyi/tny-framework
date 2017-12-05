@@ -1,6 +1,6 @@
 package com.tny.game.common.enums;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.collection.CopyOnWriteMap;
 
 import java.util.Collections;

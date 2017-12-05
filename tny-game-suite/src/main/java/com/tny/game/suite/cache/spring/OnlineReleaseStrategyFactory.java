@@ -6,9 +6,10 @@ import com.tny.game.asyndb.ReleaseStrategyFactory;
 import com.tny.game.asyndb.TimeoutReleaseStrategy;
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.Item;
-import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.session.holder.SessionHolder;
+import com.tny.game.net.utils.AppConstants;
 import com.tny.game.suite.login.IDAide;
+
 import javax.annotation.Resource;
 
 public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
@@ -44,7 +45,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || OnlineReleaseStrategyFactory.this.sessionHolder.isOnline(NetConfigs.DEFAULT_USER_GROUP, this.playerID)));
+            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || OnlineReleaseStrategyFactory.this.sessionHolder.isOnline(AppConstants.DEFAULT_USER_GROUP, this.playerID)));
         }
 
     }

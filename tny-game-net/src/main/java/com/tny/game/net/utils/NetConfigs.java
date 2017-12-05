@@ -13,11 +13,15 @@ public interface NetConfigs {
     Config NET_CONFIG = ConfigLib.getConfig(NET_CONFIG_PATH);
 
     /* App 类型*/
-    String SERVER_APP_TYPE = "tny.net.server.app_type";
+    String SERVER_APP_TYPE = "tny.net.server.type";
     /* App作用域*/
     String SERVER_SCOPE_TYPE = "tny.net.server.scope";
     /* 绑定IP*/
     String SERVER_BIND_IPS = "tny.net.server.bind.ips";
+
+    String BASE_APP_TYPE_CLASS = "tny.net.base.app_type_class";
+    String BASE_SCOPE_TYPE_CLASS = "tny.net.base.scope_type_class";
+
 
     /* Session 缓存message数量*/
     String SESSION_CACHE_MESSAGE_SIZE = "tny.net.session.cache_message_size";
@@ -45,14 +49,9 @@ public interface NetConfigs {
     /* MessageDispatchCommandExecutor 运行时间*/
     String DISPATCHER_EXECUTOR_THREADS = "tny.net.dispatcher.executor.threads";
 
-    String TUNNEL_PING_INTERVAL = "tny.server.tunnel.ping_interval";
-
-    String DEFAULT_USER_GROUP = "USER";
-    String UNLOGIN_USER_GROUP = "UNLOGIN";
-
     String CONNECT_TIMEOUT_URL_PARAM = "connect_timeout";
     String SEND_TIMEOUT_URL_PARAM = "send_timeout";
-    String LOGING_TIMEOUT_URL_PARAM = "login_timeout";
+    String LOGIN_TIMEOUT_URL_PARAM = "login_timeout";
     String RESEND_TIMES_URL_PARAM = "resend_times";
 
 

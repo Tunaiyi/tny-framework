@@ -2,7 +2,7 @@ package com.tny.game.actor.stage;
 
 
 import com.tny.game.actor.stage.exception.StageInterruptedException;
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.concurrent.Executor;
 

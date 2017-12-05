@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.suite.base.Abilities;
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.protobuf.PBCapacity.CapacityGoalProto;
 import com.tny.game.protobuf.PBCapacity.CapacityStoreProto;
 import com.tny.game.protobuf.PBCapacity.CapacitySupplierProto;

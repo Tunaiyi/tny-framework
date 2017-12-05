@@ -1,6 +1,6 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.doc.annotation.ClassDoc;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;

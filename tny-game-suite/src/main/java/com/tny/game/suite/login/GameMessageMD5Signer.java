@@ -5,7 +5,7 @@ import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.sign.MessageMD5Signer;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.utils.AppConstants;
 import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +53,7 @@ public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
         sysGroup = sysGroup == null ? "" : sysGroup;
         String group = StringUtils.isNoneBlank(sysGroup) ? sysGroup : message.getUserGroup();
         String key;
-        if (group.equals(NetConfigs.DEFAULT_USER_GROUP) || group.equals(NetConfigs.UNLOGIN_USER_GROUP))
+        if (group.equals(AppConstants.DEFAULT_USER_GROUP) || group.equals(AppConstants.UNLOGIN_USER_GROUP))
             key = Configs.AUTH_CONFIG.getStr(Configs.AUTH_CLIENT_MESSAGE_KEY);
         else
             key = Configs.AUTH_CONFIG.getStr(Configs.createAuthKey(group));

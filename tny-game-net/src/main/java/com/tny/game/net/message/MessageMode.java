@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 
 import java.util.function.Predicate;
 

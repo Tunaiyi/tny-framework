@@ -1,6 +1,6 @@
 package com.tny.game.common.lifecycle;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.lifecycle.annotaion.AsLifecycle;
 import com.tny.game.common.lifecycle.annotaion.StaticInit;
 

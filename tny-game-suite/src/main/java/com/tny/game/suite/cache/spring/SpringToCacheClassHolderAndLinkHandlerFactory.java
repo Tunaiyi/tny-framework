@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.cache.CacheTrigger;
 import com.tny.game.cache.CacheTriggerFactory;
 import com.tny.game.cache.ToCacheClassHolder;

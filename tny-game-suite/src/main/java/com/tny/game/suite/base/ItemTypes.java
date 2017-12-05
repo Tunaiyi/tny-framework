@@ -2,6 +2,7 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.ItemType;
 import com.tny.game.common.enums.EnumeratorHolder;
+import com.tny.game.common.utils.ClassImporter;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
 

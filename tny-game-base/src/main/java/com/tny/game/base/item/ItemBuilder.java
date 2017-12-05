@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 
 /**
  * item构建器

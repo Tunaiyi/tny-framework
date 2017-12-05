@@ -8,7 +8,7 @@ import com.tny.game.base.item.behavior.simple.SimpleActionResult;
 import com.tny.game.base.item.behavior.simple.SimpleAwardList;
 import com.tny.game.base.item.behavior.simple.SimpleCostList;
 import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.common.formula.FormulaHolder;
 
 import java.util.ArrayList;

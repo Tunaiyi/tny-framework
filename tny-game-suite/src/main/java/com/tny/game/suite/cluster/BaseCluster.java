@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster;
 
-import com.tny.game.suite.base.Throws;
-import com.tny.game.suite.base.URL;
+import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.URL;
 import com.tny.game.zookeeper.NodeWatcher;
 import com.tny.game.zookeeper.ZKMonitor;
 import org.apache.zookeeper.KeeperException;

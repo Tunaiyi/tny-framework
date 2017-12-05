@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.FeatureHandler;

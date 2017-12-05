@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;

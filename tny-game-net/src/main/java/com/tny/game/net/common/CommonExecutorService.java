@@ -1,6 +1,6 @@
 package com.tny.game.net.common;
 
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

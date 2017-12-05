@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureExplorer;
 import com.tny.game.base.module.Module;
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;

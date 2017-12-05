@@ -1,4 +1,4 @@
-package com.tny.game.common.thread;
+package com.tny.game.common.concurrent;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ForkJoinPool;

@@ -1,6 +1,6 @@
-package com.tny.game.suite.base.rsa;
+package com.tny.game.common.utils.rsa;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;

@@ -6,6 +6,7 @@ import com.tny.game.base.item.behavior.DemandResult;
 import com.tny.game.base.item.behavior.DemandType;
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.base.utlis.TryResult;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.suite.base.dto.TryToDoFailDTO;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.ResultFactory;

@@ -1,6 +1,6 @@
 package com.tny.game.net.session;
 
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.utils.AppConstants;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -19,12 +19,12 @@ public final class LoginCertificate<UID> implements Serializable {
     private final Instant loginAt;
 
     public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID) {
-        return new LoginCertificate<>(loginID, LoginState.LOGIN, userID, NetConfigs.DEFAULT_USER_GROUP);
+        return new LoginCertificate<>(loginID, LoginState.LOGIN, userID, AppConstants.DEFAULT_USER_GROUP);
     }
 
     public static <UID> LoginCertificate<UID> createLogin(long loginID, UID userID, boolean relogin) {
         return new LoginCertificate<>(loginID, relogin ? LoginState.RELOGIN : LoginState.LOGIN,
-                userID, NetConfigs.DEFAULT_USER_GROUP);
+                userID, AppConstants.DEFAULT_USER_GROUP);
     }
 
     public static <UID> LoginCertificate<UID> createRelogin(long loginID, UID userID, String userGroup) {
@@ -40,11 +40,11 @@ public final class LoginCertificate<UID> implements Serializable {
     }
 
     public static <UID> LoginCertificate<UID> createUnLogin() {
-        return new LoginCertificate<>(-1, LoginState.UNLOGIN, null, NetConfigs.UNLOGIN_USER_GROUP);
+        return new LoginCertificate<>(-1, LoginState.UNLOGIN, null, AppConstants.UNLOGIN_USER_GROUP);
     }
 
     public static <UID> LoginCertificate<UID> createUnLogin(UID defUnloginID) {
-        return new LoginCertificate<>(-1, LoginState.UNLOGIN, defUnloginID, NetConfigs.UNLOGIN_USER_GROUP);
+        return new LoginCertificate<>(-1, LoginState.UNLOGIN, defUnloginID, AppConstants.UNLOGIN_USER_GROUP);
     }
 
     private LoginCertificate(long ID, LoginState loginState, UID userID, String userGroup) {

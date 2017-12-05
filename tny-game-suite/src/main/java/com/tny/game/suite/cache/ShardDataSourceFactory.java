@@ -3,7 +3,7 @@ package com.tny.game.suite.cache;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.google.common.collect.Maps;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.config.FileLoader;
 import net.paoding.rose.jade.context.spring.SpringDataSourceFactory;
 import net.paoding.rose.jade.dataaccess.DataSourceFactory;

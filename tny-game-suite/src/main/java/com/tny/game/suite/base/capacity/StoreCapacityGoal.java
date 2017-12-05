@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.stream.Stream;
 

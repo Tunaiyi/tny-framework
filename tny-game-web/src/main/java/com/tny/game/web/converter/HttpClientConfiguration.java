@@ -1,6 +1,6 @@
 package com.tny.game.web.converter;
 
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpHost;

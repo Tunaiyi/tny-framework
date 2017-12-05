@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.tny.game.net.utils.NetConfigs.*;
 import static com.tny.game.net.message.MessageContent.*;
+import static com.tny.game.net.utils.AppConstants.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component

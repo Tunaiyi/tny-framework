@@ -1,6 +1,6 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.asyndb.annotation.Replace;
 
 import java.lang.ref.WeakReference;

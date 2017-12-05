@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster.game;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.tny.game.suite.base.DateTimeAide;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.protobuf.PBCommon.StringEntryProto;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;

@@ -7,7 +7,7 @@ import com.tny.game.common.context.AttrKeys;
 import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
 import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.net.command.dispatcher.CurrentCommand;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.persistent.annotation.AutoDB;

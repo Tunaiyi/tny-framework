@@ -1,6 +1,6 @@
 package com.tny.game.net.command;
 
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;

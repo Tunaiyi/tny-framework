@@ -1,6 +1,6 @@
 package com.tny.game.zookeeper;
 
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.zookeeper.retry.UntilSuccRetryPolicy;
 import org.apache.zookeeper.AsyncCallback;
 import org.apache.zookeeper.AsyncCallback.Children2Callback;

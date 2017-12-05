@@ -5,7 +5,7 @@ import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
-import com.tny.game.suite.base.DoneResults;
+import com.tny.game.common.utils.DoneResults;
 import org.jmock.Expectations;
 import org.junit.Test;
 

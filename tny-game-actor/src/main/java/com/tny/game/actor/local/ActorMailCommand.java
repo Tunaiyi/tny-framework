@@ -2,8 +2,8 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.Actor;
-import com.tny.game.suite.base.Done;
-import com.tny.game.suite.base.DoneResults;
+import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.DoneResults;
 
 /**
  * Actor Message 命令

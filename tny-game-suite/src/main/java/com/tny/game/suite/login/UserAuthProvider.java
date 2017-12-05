@@ -7,7 +7,7 @@ import com.tny.game.net.message.BodyClass;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.base.md5.MD5;
+import com.tny.game.common.utils.md5.MD5;
 import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.Configs;

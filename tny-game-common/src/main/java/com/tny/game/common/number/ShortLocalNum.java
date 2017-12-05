@@ -1,6 +1,6 @@
 package com.tny.game.common.number;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 
 /**
  * 本地变量

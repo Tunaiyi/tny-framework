@@ -6,7 +6,7 @@ import com.tny.game.asyndb.Synchronizable;
 import com.tny.game.asyndb.Synchronizer;
 import com.tny.game.asyndb.TrySyncDone;
 import com.tny.game.asyndb.log.LogName;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

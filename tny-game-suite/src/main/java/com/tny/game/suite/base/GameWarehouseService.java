@@ -11,6 +11,8 @@ import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.TradeType;
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.context.AttrEntry;
+import com.tny.game.common.utils.DoneResult;
+import com.tny.game.common.utils.DoneResults;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

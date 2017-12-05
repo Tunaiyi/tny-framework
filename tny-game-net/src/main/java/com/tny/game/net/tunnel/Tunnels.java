@@ -1,6 +1,6 @@
 package com.tny.game.net.tunnel;
 
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.net.netty.NettyTunnel;
 
 import java.lang.ref.Reference;

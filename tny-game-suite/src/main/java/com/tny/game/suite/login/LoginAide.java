@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.suite.base.md5.MD5;
+import com.tny.game.common.utils.md5.MD5;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.math.NumberUtils;
 

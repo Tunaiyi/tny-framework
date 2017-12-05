@@ -2,7 +2,7 @@ package com.tny.game.suite.cluster;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.suite.base.URL;
+import com.tny.game.common.utils.URL;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;

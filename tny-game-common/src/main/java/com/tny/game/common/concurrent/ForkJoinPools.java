@@ -1,4 +1,4 @@
-package com.tny.game.common.thread;
+package com.tny.game.common.concurrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

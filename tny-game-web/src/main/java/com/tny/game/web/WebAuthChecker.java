@@ -1,7 +1,7 @@
 package com.tny.game.web;
 
-import com.tny.game.suite.base.BytesAide;
-import com.tny.game.suite.base.md5.MD5;
+import com.tny.game.common.utils.BytesAide;
+import com.tny.game.common.utils.md5.MD5;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

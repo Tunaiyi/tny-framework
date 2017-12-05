@@ -2,7 +2,7 @@ package com.tny.game.net.command.filter;
 
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;

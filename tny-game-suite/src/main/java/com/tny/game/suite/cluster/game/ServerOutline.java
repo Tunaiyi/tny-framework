@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.DateTimeAide;
+import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.suite.core.InetConnector;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;

@@ -8,7 +8,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;

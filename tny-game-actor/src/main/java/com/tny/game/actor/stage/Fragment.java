@@ -1,6 +1,6 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 
 /**
  * 代码片段对象

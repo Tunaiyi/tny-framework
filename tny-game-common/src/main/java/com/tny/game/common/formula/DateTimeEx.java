@@ -1,6 +1,6 @@
 package com.tny.game.common.formula;
 
-import com.tny.game.suite.base.DateTimeAide;
+import com.tny.game.common.utils.DateTimeAide;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormatter;
 

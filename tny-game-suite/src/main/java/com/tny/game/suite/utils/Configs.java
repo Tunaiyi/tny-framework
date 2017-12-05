@@ -3,8 +3,8 @@ package com.tny.game.suite.utils;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigFormatter;
 import com.tny.game.common.config.ConfigLib;
-import com.tny.game.suite.base.DateTimeAide;
-import com.tny.game.suite.base.URL;
+import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.common.utils.URL;
 import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.base.AppType;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +49,7 @@ public interface Configs {
     String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
-    String SUITE_MSG_SIGNER_SIGN_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
+    String SUITE_MSG_CHECKER_CHECK_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
     String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";
     String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.server.suite.async_db.executor.step";
     String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.server.suite.async_db.executor.wait_time";
@@ -111,6 +111,8 @@ public interface Configs {
     String SERVER_SCOPE /*                  */ = NetConfigs.SERVER_SCOPE_TYPE;
     String SERVER_LOCAL /*                  */ = "tny.net.server.local";
     String SERVER_URL /*                    */ = "tny.net.server.url";
+    String PROJECT_NAME /*                  */ = "tny.net.server.project_name";
+    String PROJECT /*                       */ = "tny.net.server.project";
     //endregion
 
     //region 授权认证配置 authz.properties

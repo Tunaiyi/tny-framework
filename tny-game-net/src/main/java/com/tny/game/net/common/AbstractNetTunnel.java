@@ -19,7 +19,7 @@ import com.tny.game.net.tunnel.Tunnels;
 import java.util.Collection;
 import java.util.Set;
 
-import static com.tny.game.suite.base.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * 抽象通道

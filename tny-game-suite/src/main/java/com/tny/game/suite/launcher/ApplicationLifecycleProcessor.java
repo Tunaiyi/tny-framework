@@ -1,8 +1,8 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.suite.base.ExeAide;
+import com.tny.game.common.utils.ExeAide;
 import com.tny.game.common.lifecycle.Lifecycle;
 import com.tny.game.common.lifecycle.LifecycleHandler;
 import com.tny.game.common.lifecycle.ServerClosed;

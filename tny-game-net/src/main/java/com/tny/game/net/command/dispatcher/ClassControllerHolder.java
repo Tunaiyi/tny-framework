@@ -8,7 +8,7 @@ import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.reflect.MethodFilter;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;

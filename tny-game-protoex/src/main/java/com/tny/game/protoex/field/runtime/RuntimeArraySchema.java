@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.protoex.BaseProtoExSchema;
 import com.tny.game.protoex.ProtoExInputStream;
 import com.tny.game.protoex.ProtoExOutputStream;

@@ -1,7 +1,7 @@
 package com.tny.game.suite.initer;
 
 import com.tny.game.base.item.probability.RandomCreatorFactory;
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
 

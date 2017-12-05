@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.suite.base.capacity.event.CapacityStorerListener;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.event.BindP1EventBus;

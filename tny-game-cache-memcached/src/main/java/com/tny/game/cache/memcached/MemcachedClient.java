@@ -7,7 +7,7 @@ import com.tny.game.cache.CacheItem;
 import com.tny.game.cache.CasItem;
 import com.tny.game.cache.simple.SimpleCacheItem;
 import com.tny.game.cache.simple.SimpleCasItem;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
 

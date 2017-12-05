@@ -2,7 +2,7 @@ package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.OpenMode;
 import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.suite.base.ClassImporter;
+import com.tny.game.common.utils.ClassImporter;
 import com.tny.game.suite.utils.Configs;
 
 import java.util.Collection;

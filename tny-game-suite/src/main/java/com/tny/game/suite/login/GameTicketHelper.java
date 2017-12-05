@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.suite.base.rsa.RSAUtils;
+import com.tny.game.common.utils.rsa.RSAUtils;
 import com.tny.game.protoex.ProtoExReader;
 import com.tny.game.protoex.ProtoExWriter;
 import com.tny.game.protoex.annotations.TypeEncode;

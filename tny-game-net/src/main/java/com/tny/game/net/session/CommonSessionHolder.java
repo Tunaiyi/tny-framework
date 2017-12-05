@@ -2,7 +2,7 @@ package com.tny.game.net.session;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.config.Config;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
@@ -28,7 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import static com.tny.game.suite.base.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.utils.NetConfigs.*;
 
 @Unit("CommonSessionHolder")

@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.suite.base.ClassImporter;
+import com.tny.game.common.utils.ClassImporter;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public final class AppTypes extends ClassImporter {
     };
 
     static {
-        loadClass(NetConfigs.NET_CONFIG, NetConfigs.SERVER_APP_TYPE);
+        loadClass(NetConfigs.NET_CONFIG, NetConfigs.BASE_APP_TYPE_CLASS);
     }
 
     private AppTypes() {

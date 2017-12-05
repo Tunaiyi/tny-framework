@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster;
 
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.zookeeper.NodeDataFormatter;
 
 import static com.tny.game.suite.utils.Configs.*;

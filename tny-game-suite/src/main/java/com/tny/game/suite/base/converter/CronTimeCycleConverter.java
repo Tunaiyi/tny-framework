@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.SingleValueConverter;
-import com.tny.game.suite.base.ObjectAide;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.scheduler.cycle.CronTimeCycle;
 
 import java.text.ParseException;

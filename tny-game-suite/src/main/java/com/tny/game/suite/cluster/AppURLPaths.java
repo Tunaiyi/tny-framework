@@ -2,7 +2,7 @@ package com.tny.game.suite.cluster;
 
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.suite.base.Throws;
+import com.tny.game.common.utils.Throws;
 import com.tny.game.suite.utils.Configs;
 
 /**

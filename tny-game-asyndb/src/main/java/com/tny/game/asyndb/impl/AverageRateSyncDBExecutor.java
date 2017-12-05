@@ -2,7 +2,7 @@ package com.tny.game.asyndb.impl;
 
 import com.tny.game.asyndb.*;
 import com.tny.game.asyndb.log.LogName;
-import com.tny.game.common.thread.CoreThreadFactory;
+import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.common.collection.LinkedTransferQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

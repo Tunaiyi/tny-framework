@@ -5,7 +5,7 @@ import com.tny.game.actor.DoneSupplier;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
-import com.tny.game.suite.base.Done;
+import com.tny.game.common.utils.Done;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;

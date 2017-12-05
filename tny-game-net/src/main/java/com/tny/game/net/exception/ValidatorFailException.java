@@ -1,6 +1,6 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
 

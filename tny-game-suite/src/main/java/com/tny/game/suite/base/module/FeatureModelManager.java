@@ -3,7 +3,7 @@ package com.tny.game.suite.base.module;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.suite.base.Logs;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.base.module.Feature;
 import com.tny.game.base.module.FeatureModel;
 import com.tny.game.base.module.Module;
