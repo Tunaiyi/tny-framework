@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.LongRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class LongRangeLimitFilter extends RangeLimitFilter<LongRange, Long> {
 
-    protected LongRangeLimitFilter() {
+    private final static LongRangeLimitFilter INSTANCE = new LongRangeLimitFilter();
+
+    public static LongRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private LongRangeLimitFilter() {
         super(LongRange.class, Long.class);
     }
 

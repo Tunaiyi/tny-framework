@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.DoubleRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DoubleRangeLimitFilter extends RangeLimitFilter<DoubleRange, Double> {
 
-    protected DoubleRangeLimitFilter() {
+    private final static DoubleRangeLimitFilter INSTANCE = new DoubleRangeLimitFilter();
+
+    public static DoubleRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private  DoubleRangeLimitFilter() {
         super(DoubleRange.class, Double.class);
     }
 

@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.CharRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CharRangeLimitFilter extends RangeLimitFilter<CharRange, Character> {
 
-    protected CharRangeLimitFilter() {
+    private final static CharRangeLimitFilter INSTANCE = new CharRangeLimitFilter();
+
+    public static CharRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private CharRangeLimitFilter() {
         super(CharRange.class, Character.class);
     }
 

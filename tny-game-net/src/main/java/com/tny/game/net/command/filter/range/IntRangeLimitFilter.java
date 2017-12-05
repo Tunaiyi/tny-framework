@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.IntRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class IntRangeLimitFilter extends RangeLimitFilter<IntRange, Integer> {
 
-    protected IntRangeLimitFilter() {
+    private final static IntRangeLimitFilter INSTANCE = new IntRangeLimitFilter();
+
+    public static IntRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private IntRangeLimitFilter() {
         super(IntRange.class, Integer.class);
     }
 

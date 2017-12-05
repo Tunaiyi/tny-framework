@@ -1,36 +1,56 @@
 package com.tny.game.net.command.filter;
 
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
+import com.tny.game.net.command.filter.range.ByteRangeLimitFilter;
+import com.tny.game.net.command.filter.range.CharRangeLimitFilter;
+import com.tny.game.net.command.filter.range.DoubleRangeLimitFilter;
+import com.tny.game.net.command.filter.range.FloatRangeLimitFilter;
+import com.tny.game.net.command.filter.range.IntRangeLimitFilter;
+import com.tny.game.net.command.filter.range.LongRangeLimitFilter;
+import com.tny.game.net.command.filter.range.ShortRangeLimitFilter;
+import com.tny.game.net.command.filter.string.StringLengthLimitFilter;
+import com.tny.game.net.command.filter.string.StringPatternLimitFilter;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import com.tny.game.suite.app.CoreResponseCode;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-@Component
-public class FilterPlugin<UID> implements ControllerPlugin<UID>, ApplicationContextAware {
+public class FilterPlugin<UID> implements ControllerPlugin<UID> {
 
-    private Map<Class<?>, ParamFilter> filterMap = new ConcurrentHashMap<>();
+    private Map<Class<?>, ParamFilter> filterMap = new CopyOnWriteMap<>();
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, ParamFilter> appFilter = applicationContext.getBeansOfType(ParamFilter.class);
-        for (ParamFilter filter : appFilter.values()) {
-            this.filterMap.put(filter.getAnnotationClass(), filter);
-        }
+    public FilterPlugin() {
+        Collection<ParamFilter> filters = new ArrayList<>();
+        filters.add(ByteRangeLimitFilter.getInstance());
+        filters.add(CharRangeLimitFilter.getInstance());
+        filters.add(DoubleRangeLimitFilter.getInstance());
+        filters.add(FloatRangeLimitFilter.getInstance());
+        filters.add(IntRangeLimitFilter.getInstance());
+        filters.add(LongRangeLimitFilter.getInstance());
+        filters.add(ShortRangeLimitFilter.getInstance());
+        filters.add(StringLengthLimitFilter.getInstance());
+        filters.add(StringPatternLimitFilter.getInstance());
+        this.addParamFilters(filters);
     }
 
+    protected void addParamFilters(Collection<ParamFilter> filters) {
+        filterMap.putAll(filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self)));
+    }
 
-    @Override
+    protected void addParamFilter(ParamFilter<?> filter) {
+        filterMap.put(filter.getClass(), filter);
+    }
+
     public void execute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) throws Exception {
         MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();

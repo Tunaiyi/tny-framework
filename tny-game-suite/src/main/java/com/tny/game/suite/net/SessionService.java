@@ -21,7 +21,7 @@ import static com.tny.game.net.message.MessageContent.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
-@Profile({SERVER, GAME_KAFKA, SERVER_KAFKA, GAME})
+@Profile({SERVER, GAME})
 public class SessionService {
 
     @Resource

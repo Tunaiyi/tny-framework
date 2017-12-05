@@ -1,18 +1,22 @@
 package com.tny.game.net.command.filter.string;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.command.filter.string.annotation.StrLength;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import org.springframework.stereotype.Component;
+import com.tny.game.suite.app.CoreResponseCode;
 
-@Component
-public class StringLengthLimit extends AbstractParamFilter<Object, StrLength, String> {
+public class StringLengthLimitFilter extends AbstractParamFilter<Object, StrLength, String> {
 
-    protected StringLengthLimit() {
+    private final static StringLengthLimitFilter INSTANCE = new StringLengthLimitFilter();
+
+    public static StringLengthLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private StringLengthLimitFilter() {
         super(StrLength.class, String.class);
     }
 

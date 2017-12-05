@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.ByteRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ByteRangeLimitFilter extends RangeLimitFilter<ByteRange, Byte> {
 
-    protected ByteRangeLimitFilter() {
+    private final static ByteRangeLimitFilter INSTANCE = new ByteRangeLimitFilter();
+
+    public static ByteRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private ByteRangeLimitFilter() {
         super(ByteRange.class, Byte.class);
     }
 

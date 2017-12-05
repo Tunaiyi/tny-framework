@@ -20,7 +20,6 @@ import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.netty.NettyServer;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.holder.SessionHolder;
-import com.tny.game.net.spring.SpringMessageDispatcher;
 import com.tny.game.suite.login.GameMessageMD5Signer;
 import com.tny.game.suite.utils.Configs;
 import io.netty.channel.Channel;
@@ -42,7 +41,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({GAME, SERVER_KAFKA, GAME_KAFKA})
+@Profile({GAME})
 public class NetServerBeanFactory {
 
     @Resource(name = "gameServerConfiguration")

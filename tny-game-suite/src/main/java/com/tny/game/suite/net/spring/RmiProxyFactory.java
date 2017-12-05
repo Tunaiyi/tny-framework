@@ -1,4 +1,4 @@
-package com.tny.game.net.client.rmi;
+package com.tny.game.suite.net.spring;
 
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.remoting.rmi.RmiClientInterceptor;

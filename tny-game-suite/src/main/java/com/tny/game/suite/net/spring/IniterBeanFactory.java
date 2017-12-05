@@ -17,7 +17,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class IniterBeanFactory {
 
     @Bean
-    @Profile({PROTOEX, SERVER, SERVER_KAFKA, GAME_KAFKA, GAME})
+    @Profile({PROTOEX, SERVER, GAME})
     public ProtoExSchemaIniter protoExSchemaIniter() {
         return new ProtoExSchemaIniter();
     }

@@ -32,7 +32,4 @@ public interface SuiteProfiles {
     String CLIENT = "suite.client";
     String SERVER_AUTH = "suite.server_auth";
 
-    String GAME_KAFKA = "suite.game.kafka";
-    String SERVER_KAFKA = "suite.server.kafka";
-
 }

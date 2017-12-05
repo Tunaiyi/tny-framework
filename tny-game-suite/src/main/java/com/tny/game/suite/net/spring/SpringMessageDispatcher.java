@@ -1,4 +1,4 @@
-package com.tny.game.net.spring;
+package com.tny.game.suite.net.spring;
 
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;

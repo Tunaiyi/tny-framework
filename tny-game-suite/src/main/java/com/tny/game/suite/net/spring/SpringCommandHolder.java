@@ -1,4 +1,4 @@
-package com.tny.game.telnet.spring;
+package com.tny.game.suite.net.spring;
 
 import com.tny.game.telnet.command.BaseTelnetCommandHolder;
 import com.tny.game.telnet.command.CommandType;
@@ -19,11 +19,7 @@ public class SpringCommandHolder extends BaseTelnetCommandHolder implements Teln
         Map<String, TelnetCommand> map = applicationContext.getBeansOfType(TelnetCommand.class);
         for (TelnetCommand command : map.values()) {
             CommandType commandType = command.getCommandType();
-            List<TelnetCommand> commandList = commandTypeMap.get(commandType);
-            if (commandList == null) {
-                commandList = new ArrayList<TelnetCommand>();
-                commandTypeMap.put(commandType, commandList);
-            }
+            List<TelnetCommand> commandList = commandTypeMap.computeIfAbsent(commandType, k -> new ArrayList<TelnetCommand>());
             commandList.add(command);
             commandMap.put(command.command().toLowerCase(), command);
         }

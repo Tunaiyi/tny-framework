@@ -1,24 +1,28 @@
 package com.tny.game.net.command.filter.string;
 
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.command.filter.string.annotation.PatternMatch;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import org.springframework.stereotype.Component;
+import com.tny.game.suite.app.CoreResponseCode;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-@Component
-public class StringPatternMatchLimit extends AbstractParamFilter<Object, PatternMatch, String> {
+public class StringPatternLimitFilter extends AbstractParamFilter<Object, PatternMatch, String> {
 
-    private ConcurrentMap<String, Pattern> patternMap = new ConcurrentHashMap<String, Pattern>();
+    private Map<String, Pattern> patternMap = new CopyOnWriteMap<>();
 
-    protected StringPatternMatchLimit() {
+    private final static StringPatternLimitFilter INSTANCE = new StringPatternLimitFilter();
+
+    public static StringPatternLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private StringPatternLimitFilter() {
         super(PatternMatch.class, String.class);
     }
 

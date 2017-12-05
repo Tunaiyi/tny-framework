@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.FloatRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class FloatRangeLimitFilter extends RangeLimitFilter<FloatRange, Float> {
 
-    protected FloatRangeLimitFilter() {
+    private final static FloatRangeLimitFilter INSTANCE = new FloatRangeLimitFilter();
+
+    public static FloatRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private FloatRangeLimitFilter() {
         super(FloatRange.class, Float.class);
     }
 

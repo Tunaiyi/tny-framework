@@ -1,12 +1,16 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.net.command.filter.range.annotation.ShortRange;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ShortRangeLimitFilter extends RangeLimitFilter<ShortRange, Short> {
 
-    protected ShortRangeLimitFilter() {
+    private final static ShortRangeLimitFilter INSTANCE = new ShortRangeLimitFilter();
+
+    public static ShortRangeLimitFilter getInstance() {
+        return INSTANCE;
+    }
+
+    private  ShortRangeLimitFilter() {
         super(ShortRange.class, Short.class);
     }
 
