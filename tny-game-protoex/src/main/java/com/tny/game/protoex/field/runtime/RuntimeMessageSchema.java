@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.protoex.*;

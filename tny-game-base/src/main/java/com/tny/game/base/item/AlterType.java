@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.exception.StuffAlertException;
 import com.tny.game.common.number.NumberAide;

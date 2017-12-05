@@ -2,13 +2,13 @@ package com.tny.game.suite.login;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodes;
+import com.tny.game.net.base.AppType;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.base.AppType;
-import com.tny.game.net.base.AttributesKeys;
+import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.SuiteResultCode;
 
 import javax.annotation.Resource;

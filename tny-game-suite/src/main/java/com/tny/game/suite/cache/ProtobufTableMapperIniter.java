@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.collection.CollectorsAide;
 import com.tny.game.common.lifecycle.ServerPostStart;

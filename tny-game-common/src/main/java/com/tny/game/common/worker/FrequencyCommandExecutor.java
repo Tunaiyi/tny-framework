@@ -1,6 +1,6 @@
 package com.tny.game.common.worker;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.thread.CoreThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

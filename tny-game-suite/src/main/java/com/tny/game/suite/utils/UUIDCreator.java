@@ -1,8 +1,8 @@
 package com.tny.game.suite.utils;
 
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.suite.base.Logs;
+import com.tny.game.suite.base.Throws;
 import org.joda.time.DateTime;
 
 import java.util.concurrent.locks.StampedLock;

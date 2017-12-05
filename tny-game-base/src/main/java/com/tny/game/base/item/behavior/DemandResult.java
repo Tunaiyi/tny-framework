@@ -1,7 +1,7 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.ItemModel;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.ObjectAide;
 import com.tny.game.common.result.ResultCode;
 
 import java.util.Collections;

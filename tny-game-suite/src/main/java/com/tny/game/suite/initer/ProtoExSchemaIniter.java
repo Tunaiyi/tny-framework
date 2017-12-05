@@ -1,6 +1,6 @@
 package com.tny.game.suite.initer;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;

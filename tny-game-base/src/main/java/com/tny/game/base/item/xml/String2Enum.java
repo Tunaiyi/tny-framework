@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.text.MessageFormat;

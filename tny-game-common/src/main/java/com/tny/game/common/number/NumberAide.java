@@ -1,7 +1,7 @@
 package com.tny.game.common.number;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.Logs;
+import com.tny.game.suite.base.ObjectAide;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**

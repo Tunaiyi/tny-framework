@@ -4,8 +4,8 @@ import com.tny.game.actor.DoneSupplier;
 import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.TypeFlow;
 import com.tny.game.actor.stage.VoidFlow;
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.suite.base.Done;
+import com.tny.game.suite.base.DoneResults;
 import org.jmock.Expectations;
 import org.junit.Test;
 

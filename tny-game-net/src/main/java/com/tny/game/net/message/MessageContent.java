@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.suite.base.Throws;
 import com.tny.game.net.session.MessageFuture;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.protoex.ProtoExInputStream;
 import com.tny.game.protoex.ProtoExOutputStream;
 import com.tny.game.protoex.Tag;

@@ -1,7 +1,7 @@
 package com.tny.game.common.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.tny.game.common.utils.json.JSONAide;
+import com.tny.game.suite.base.json.JSONAide;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

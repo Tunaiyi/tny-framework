@@ -6,7 +6,7 @@ import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.common.utils.IDCreator;
+import com.tny.game.suite.base.IDCreator;
 import com.tny.game.oplog.AbstractOpLogger;
 import com.tny.game.oplog.ActionLog;
 import com.tny.game.oplog.OpLog;

@@ -2,14 +2,14 @@ package com.tny.game.common.enums;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.suite.base.Throws;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.suite.base.ObjectAide.*;
 
 /**
  * Created by Kun Yang on 16/2/3.

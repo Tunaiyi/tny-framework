@@ -2,7 +2,7 @@ package com.tny.game.base.utlis;
 
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.utils.DoneResult;
+import com.tny.game.suite.base.DoneResult;
 
 import java.util.function.Consumer;
 

@@ -1,6 +1,6 @@
 package com.tny.game.common.result;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -9,7 +9,7 @@ import com.tny.game.oplog.record.UserStuffRecord;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.suite.base.ObjectAide.*;
 
 @JsonAutoDetect(
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,

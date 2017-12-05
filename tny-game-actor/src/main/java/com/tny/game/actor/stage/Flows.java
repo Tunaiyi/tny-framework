@@ -3,8 +3,8 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.Completable;
 import com.tny.game.actor.DoneSupplier;
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.suite.base.Done;
+import com.tny.game.suite.base.DoneResults;
 
 import java.time.Duration;
 import java.util.ArrayList;

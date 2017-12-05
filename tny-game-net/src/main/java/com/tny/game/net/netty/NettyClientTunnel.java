@@ -2,7 +2,7 @@ package com.tny.game.net.netty;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
-import com.tny.game.common.utils.URL;
+import com.tny.game.suite.base.URL;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.exception.DispatchException;

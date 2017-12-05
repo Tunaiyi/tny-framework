@@ -1,7 +1,7 @@
 package com.tny.game.common.worker;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.worker.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

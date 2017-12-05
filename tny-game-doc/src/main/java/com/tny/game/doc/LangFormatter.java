@@ -1,7 +1,7 @@
 package com.tny.game.doc;
 
 import com.tny.game.common.enums.EnumID;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

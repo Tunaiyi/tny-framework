@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.thread.CoreThreadFactory;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.monitor.FileAlterationListener;

@@ -1,0 +1,108 @@
+package com.tny.game.suite.base.capacity;
+
+
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.tny.game.base.item.ItemModels;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * 游戏能力值提供器
+ * Created by Kun Yang on 16/2/15.
+ */
+public class StoreByCopyCapacityGoal extends BaseStoreCapacitiable implements StoreCapacityGoal {
+
+    private long id;
+
+    private int itemID;
+
+    private Set<Long> suppliers;
+
+    private Set<CapacityGroup> groups;
+
+    private CapacityVisitor visitor;
+
+    StoreByCopyCapacityGoal(long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemID = itemID;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        suppliers.forEach(suppliersBuilder::add);
+        this.suppliers = suppliersBuilder.build();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        groups.forEach(groupsBuilder::add);
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
+    StoreByCopyCapacityGoal(long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemID = itemID;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        suppliers.forEach(s->{
+            suppliersBuilder.add(s.getID());
+            groupsBuilder.addAll(s.getAllCapacityGroups());
+        });
+        this.suppliers = suppliersBuilder.build();
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
+
+    @Override
+    public long getID() {
+        return id;
+    }
+
+    @Override
+    public int getItemID() {
+        return itemID;
+    }
+
+    @Override
+    public long getPlayerID() {
+        return visitor.getPlayerID();
+    }
+
+    @Override
+    public Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return groups;
+    }
+
+    @Override
+    public Collection<? extends CapacitySupplier> suppliers() {
+        if (suppliers.isEmpty())
+            return ImmutableList.of();
+        return suppliers.stream()
+                .map(visitor::findSupplier)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Stream<? extends CapacitySupplier> suppliersStream() {
+        if (suppliers.isEmpty())
+            return Stream.empty();
+        return suppliers.stream()
+                .map(visitor::findSupplier)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("itemID", itemID)
+                .add("name", ItemModels.name(itemID))
+                .add("suppliers", suppliers)
+                .toString();
+    }
+}

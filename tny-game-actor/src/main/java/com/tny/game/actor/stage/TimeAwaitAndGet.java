@@ -1,7 +1,7 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.common.utils.DoneResults;
-import com.tny.game.common.utils.Done;
+import com.tny.game.suite.base.DoneResults;
+import com.tny.game.suite.base.Done;
 
 import java.time.Duration;
 import java.util.function.Supplier;

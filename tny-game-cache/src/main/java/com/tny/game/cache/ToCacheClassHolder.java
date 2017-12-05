@@ -1,6 +1,6 @@
 package com.tny.game.cache;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.cache.annotation.CacheID;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.reflect.GClass;

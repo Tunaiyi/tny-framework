@@ -1,12 +1,12 @@
 package com.tny.game.suite.login;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.base.AttributesKeys;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.sign.MessageMD5Signer;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
 

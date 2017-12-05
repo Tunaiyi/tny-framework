@@ -2,7 +2,7 @@ package com.tny.game.doc.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.doc.LangFormatter;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.FieldDocHolder;

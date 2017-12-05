@@ -30,7 +30,7 @@
 
 package com.tny.game.protoex;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.protoex.field.IOConfiger;
 import com.tny.game.protoex.field.MapIOConfiger;
 import com.tny.game.protoex.field.RepeatIOConfiger;

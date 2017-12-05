@@ -2,8 +2,8 @@ package com.tny.game.net.session;
 
 import com.google.common.collect.Range;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.Logs;
+import com.tny.game.suite.base.ObjectAide;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.exception.RemotingException;

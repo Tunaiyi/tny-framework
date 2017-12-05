@@ -1,6 +1,6 @@
 package com.tny.game.common.scheduler;
 
-import com.tny.game.common.utils.Throws;
+import com.tny.game.suite.base.Throws;
 import com.tny.game.common.scheduler.cycle.TimeCycle;
 import org.joda.time.DateTime;
 

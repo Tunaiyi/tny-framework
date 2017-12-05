@@ -1,7 +1,7 @@
 package com.tny.game.suite.cache;
 
 import com.google.protobuf.Message;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

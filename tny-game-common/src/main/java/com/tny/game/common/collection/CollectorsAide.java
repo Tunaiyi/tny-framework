@@ -1,6 +1,6 @@
 package com.tny.game.common.collection;
 
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.ObjectAide;
 
 import java.util.Map;
 import java.util.function.Function;

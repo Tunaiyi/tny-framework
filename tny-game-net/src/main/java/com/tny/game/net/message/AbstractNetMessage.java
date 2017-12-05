@@ -3,7 +3,7 @@ package com.tny.game.net.message;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.protoex.ProtoExEnum;

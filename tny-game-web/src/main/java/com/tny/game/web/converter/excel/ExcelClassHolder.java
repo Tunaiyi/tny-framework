@@ -1,7 +1,7 @@
 package com.tny.game.web.converter.excel;
 
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GPropertyAccessor;
 import com.tny.game.common.reflect.ReflectAide;

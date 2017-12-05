@@ -1,6 +1,6 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.utils.ExeAide;
+import com.tny.game.suite.base.ExeAide;
 import com.tny.game.suite.SuiteProfiles;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

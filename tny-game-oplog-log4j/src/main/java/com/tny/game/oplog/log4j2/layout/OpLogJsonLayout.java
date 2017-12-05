@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.suite.base.ObjectAide.*;
 import static org.slf4j.LoggerFactory.*;
 
 @Plugin(name = "OpLogJsonLayout", category = "Core", elementType = "layout", printObject = true)

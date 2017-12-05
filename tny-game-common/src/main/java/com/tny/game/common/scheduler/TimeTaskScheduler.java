@@ -1,7 +1,7 @@
 package com.tny.game.common.scheduler;
 
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.thread.CoreThreadFactory;
 import org.apache.commons.io.monitor.FileAlterationListener;

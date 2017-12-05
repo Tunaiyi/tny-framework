@@ -1,6 +1,6 @@
 package com.tny.game.oplog.record;
 
-import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.suite.base.DateTimeAide;
 import com.tny.game.oplog.Log;
 import com.tny.game.oplog.OpLog;
 import com.tny.game.oplog.UserOpLog;

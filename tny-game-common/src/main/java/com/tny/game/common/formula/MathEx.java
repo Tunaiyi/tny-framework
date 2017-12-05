@@ -1,7 +1,7 @@
 package com.tny.game.common.formula;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.ObjectAide;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

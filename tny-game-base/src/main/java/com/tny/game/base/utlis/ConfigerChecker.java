@@ -1,6 +1,6 @@
 package com.tny.game.base.utlis;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.base.item.behavior.Behavior;
 import com.tny.game.base.module.Feature;

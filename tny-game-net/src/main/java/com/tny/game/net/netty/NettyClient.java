@@ -1,7 +1,7 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.common.config.Config;
-import com.tny.game.common.utils.URL;
+import com.tny.game.suite.base.URL;
 import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.base.Client;
 import com.tny.game.net.base.NetLogger;

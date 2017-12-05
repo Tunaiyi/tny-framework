@@ -2,7 +2,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.suite.base.Throws;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;

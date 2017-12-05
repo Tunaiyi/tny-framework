@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.common.utils.ClassImporter;
+import com.tny.game.suite.base.ClassImporter;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.util.Collection;

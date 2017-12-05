@@ -9,7 +9,7 @@ import com.tny.game.actor.stage.invok.CatcherRun;
 import com.tny.game.actor.stage.invok.CatcherSupplier;
 import com.tny.game.actor.stage.invok.RunDone;
 import com.tny.game.actor.stage.invok.SupplyDone;
-import com.tny.game.common.utils.Done;
+import com.tny.game.suite.base.Done;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;

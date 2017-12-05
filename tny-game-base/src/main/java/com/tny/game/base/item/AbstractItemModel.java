@@ -12,7 +12,7 @@ import com.tny.game.common.formula.Formula;
 import com.tny.game.common.formula.FormulaHolder;
 import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.suite.base.ObjectAide;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,8 +1,8 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.suite.base.Done;
+import com.tny.game.suite.base.DoneResults;
 
 import java.util.concurrent.Callable;
 

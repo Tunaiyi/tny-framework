@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.protoex.ProtoExType;
 import com.tny.game.protoex.ProtobufExException;
 import com.tny.game.protoex.annotations.ProtoExConf;

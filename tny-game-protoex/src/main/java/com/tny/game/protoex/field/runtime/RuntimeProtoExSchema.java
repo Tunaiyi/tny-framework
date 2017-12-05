@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.common.buff.LinkedByteBuffer;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.protoex.ProtoExSchema;

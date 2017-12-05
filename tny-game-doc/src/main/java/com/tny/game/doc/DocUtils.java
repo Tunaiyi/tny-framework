@@ -1,6 +1,6 @@
 package com.tny.game.doc;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.suite.base.Logs;
 import com.tny.game.doc.annotation.VarDoc;
 
 import java.lang.reflect.Field;
