@@ -16,6 +16,7 @@ import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.PluginContext;
+import com.tny.game.net.common.ControllerCheckerHolder;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageMode;
@@ -254,6 +255,11 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
+    public boolean isActiveByScope(String scope) {
+        return this.scopes != null ? super.isActiveByAppType(scope) : classController.isActiveByScope(scope);
+    }
+
+    @Override
     public boolean isAuth() {
         return this.auth != null ? super.isAuth() : classController.isAuth();
     }
@@ -261,6 +267,11 @@ public final class MethodControllerHolder extends ControllerHolder {
     @Override
     public Class<?> getAuthProvider() {
         return this.auth != null ? super.getAuthProvider() : classController.getAuthProvider();
+    }
+
+    @Override
+    public List<ControllerCheckerHolder> getCheckerHolders() {
+        return this.checkerHolders != null && !this.checkerHolders.isEmpty() ? Collections.unmodifiableList(this.checkerHolders) : this.classController.getCheckerHolders();
     }
 
     @Override

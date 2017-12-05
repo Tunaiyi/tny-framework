@@ -68,8 +68,10 @@ public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
         Object body = message.getBody(Object.class);
         if (body instanceof List)
             ((List) body).forEach(signWordsBuilder::append);
-        else
-            signWordsBuilder.append(body);
+        else {
+            if (body != null)
+                signWordsBuilder.append(body);
+        }
         return signWordsBuilder.toString();
     }
 

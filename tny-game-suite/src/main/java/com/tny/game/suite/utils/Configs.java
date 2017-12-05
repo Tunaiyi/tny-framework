@@ -49,7 +49,7 @@ public interface Configs {
     String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
-    String SUITE_MSG_CHECKER_CHECK_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
+    String SUITE_MSG_CHECKER_CHECK_GROUPS /*            */ = "tny.server.suite.message_checker.check_groups";
     String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";
     String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.server.suite.async_db.executor.step";
     String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.server.suite.async_db.executor.wait_time";
