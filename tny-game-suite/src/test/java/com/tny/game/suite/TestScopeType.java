@@ -1,7 +1,7 @@
 package com.tny.game.suite;
 
-import com.tny.game.suite.core.ScopeType;
-import com.tny.game.suite.core.AppType;
+import com.tny.game.suite.app.ScopeType;
+import com.tny.game.suite.app.AppType;
 
 /**
  * 服务器作用域类型

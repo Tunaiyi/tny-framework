@@ -1,7 +1,7 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.suite.app.NetLogger;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageWriteFuture;
 import io.netty.channel.Channel;

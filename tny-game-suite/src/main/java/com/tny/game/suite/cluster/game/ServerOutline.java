@@ -5,7 +5,7 @@ import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.core.InetConnector;
+import com.tny.game.suite.app.InetConnector;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;

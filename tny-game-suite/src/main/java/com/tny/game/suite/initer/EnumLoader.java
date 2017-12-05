@@ -13,9 +13,9 @@ import com.tny.game.common.enums.Enums;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.scanner.ClassSelector;
 import com.tny.game.scanner.filter.SubOfClassFilter;
-import com.tny.game.suite.base.capacity.CapacitySupplierType;
-import com.tny.game.suite.core.ScopeType;
-import com.tny.game.suite.core.AppType;
+import com.tny.game.common.utils.capacity.CapacitySupplierType;
+import com.tny.game.suite.app.ScopeType;
+import com.tny.game.suite.app.AppType;
 
 /**
  * Created by Kun Yang on 16/9/9.

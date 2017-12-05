@@ -1,21 +1,22 @@
 package com.tny.game.net.common;
 
+
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.base.AppConstants;
-import com.tny.game.net.checker.MessageSignGenerator;
+import com.tny.game.suite.app.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.common.dispatcher.MessageDispatcher;
+import com.tny.game.net.message.sign.MessageSignGenerator;
+import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.event.SessionInputEventHandler;
 import com.tny.game.net.session.event.SessionOutputEventHandler;
 import com.tny.game.net.session.holder.NetSessionHolder;
+import com.tny.game.net.utils.NetConfigs;
 
 import java.io.IOException;
 import java.util.List;
@@ -148,8 +149,8 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
 
     protected void loadConfig(Config config) {
         this.config = config;
-        this.appType = this.config.getStr(AppConstants.APP_TYPE, this.appType);
-        this.scopeType = this.config.getStr(AppConstants.SCOPE_TYPE, this.scopeType);
+        this.appType = this.config.getStr(NetConfigs.SERVER_APP_TYPE, this.appType);
+        this.scopeType = this.config.getStr(NetConfigs.SERVER_SCOPE_TYPE, this.scopeType);
     }
 
 

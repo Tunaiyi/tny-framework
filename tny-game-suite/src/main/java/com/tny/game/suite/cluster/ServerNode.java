@@ -9,7 +9,7 @@ import com.tny.game.suite.cluster.game.ServerLaunch;
 import com.tny.game.suite.cluster.game.ServerOutline;
 import com.tny.game.suite.cluster.game.ServerSetting;
 import com.tny.game.suite.cluster.game.ServerState;
-import com.tny.game.suite.core.InetConnector;
+import com.tny.game.suite.app.InetConnector;
 import org.joda.time.LocalDate;
 
 import java.util.Optional;

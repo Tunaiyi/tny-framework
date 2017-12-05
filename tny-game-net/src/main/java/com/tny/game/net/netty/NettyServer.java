@@ -3,11 +3,11 @@ package com.tny.game.net.netty;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.config.Config;
-import com.tny.game.net.base.AppConstants;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.base.Server;
-import com.tny.game.net.coder.ChannelMaker;
-import com.tny.game.net.listener.SeverClosedListener;
+import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.suite.app.NetLogger;
+import com.tny.game.suite.app.Server;
+import com.tny.game.net.netty.coder.ChannelMaker;
+import com.tny.game.suite.app.listener.SeverClosedListener;
 import com.tny.game.net.tunnel.Tunnels;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -98,7 +98,7 @@ public class NettyServer extends NettyApp implements Server {
         super(appConfiguration.getName());
         this.appConfiguration = appConfiguration;
         Config properties = appConfiguration.getProperties();
-        this.bindAddresses = properties.getObject(AppConstants.SERVER_BIND_IPS);
+        this.bindAddresses = properties.getObject(NetConfigs.SERVER_BIND_IPS);
         this.bindAddresses = ImmutableSet.copyOf(this.bindAddresses);
 
     }

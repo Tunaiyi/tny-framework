@@ -1,7 +1,7 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.coder.DataPacketEncoder;
+import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.netty.coder.DataPacketEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

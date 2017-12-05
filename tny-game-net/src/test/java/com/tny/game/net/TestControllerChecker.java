@@ -1,11 +1,11 @@
 package com.tny.game.net;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.checker.MessageSignGenerator;
-import com.tny.game.net.common.dispatcher.ControllerHolder;
+import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.command.checker.ControllerChecker;
+import com.tny.game.net.command.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;
+import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.tunnel.Tunnel;
 import org.springframework.stereotype.Component;
 

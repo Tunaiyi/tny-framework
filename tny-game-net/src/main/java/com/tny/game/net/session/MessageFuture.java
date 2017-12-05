@@ -1,7 +1,7 @@
 package com.tny.game.net.session;
 
 import com.tny.game.common.thread.CoreThreadFactory;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.suite.app.NetLogger;
 import com.tny.game.net.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

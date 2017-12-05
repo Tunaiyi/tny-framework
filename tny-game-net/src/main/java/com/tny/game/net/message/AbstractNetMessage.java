@@ -4,7 +4,7 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
 import com.tny.game.common.reflect.Wraper;
 import com.tny.game.common.utils.Logs;
-import com.tny.game.net.base.AppConstants;
+import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.protoex.ProtoExEnum;
 
@@ -35,7 +35,7 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
     @Override
     public String getUserGroup() {
         Tunnel<UID> tunnel = this.tunnel;
-        return tunnel == null ? AppConstants.DEFAULT_USER_GROUP : tunnel.getUserGroup();
+        return tunnel == null ? NetConfigs.DEFAULT_USER_GROUP : tunnel.getUserGroup();
     }
 
     @Override

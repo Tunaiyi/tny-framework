@@ -1,8 +1,8 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.coder.DataPacketDecoder;
-import com.tny.game.net.coder.PacketHeadException;
+import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.netty.coder.DataPacketDecoder;
+import com.tny.game.net.netty.coder.PacketHeadException;
 import com.tny.game.net.tunnel.Tunnel;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

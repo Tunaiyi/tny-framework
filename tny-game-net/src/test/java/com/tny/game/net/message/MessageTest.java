@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
 
-import com.tny.game.net.base.AppConstants;
+import com.tny.game.net.utils.NetConfigs;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -39,9 +39,9 @@ public abstract class MessageTest {
 
     @Test
     public void getUserGroup() throws Exception {
-        assertEquals(AppConstants.DEFAULT_USER_GROUP, message.getUserGroup());
-        assertEquals(AppConstants.UNLOGIN_USER_GROUP, unlogin0Message.getUserGroup());
-        assertEquals(AppConstants.UNLOGIN_USER_GROUP, unloginNullMessage.getUserGroup());
+        assertEquals(NetConfigs.DEFAULT_USER_GROUP, message.getUserGroup());
+        assertEquals(NetConfigs.UNLOGIN_USER_GROUP, unlogin0Message.getUserGroup());
+        assertEquals(NetConfigs.UNLOGIN_USER_GROUP, unloginNullMessage.getUserGroup());
     }
 
     @Test

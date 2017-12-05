@@ -2,10 +2,10 @@ package com.tny.game.net.netty;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.utils.URL;
-import com.tny.game.net.base.AppConstants;
-import com.tny.game.net.base.Client;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.coder.ChannelMaker;
+import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.suite.app.Client;
+import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.netty.coder.ChannelMaker;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.RemotingException;
 import com.tny.game.net.message.MessageContent;
@@ -134,7 +134,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
 
     private long getConnectTimeout(URL url) {
         Config config = appConfiguration.getProperties();
-        return url.getParameter(AppConstants.CONNECT_TIMEOUT_URL_PARAM, config.getLong(AppConstants.CONNECT_TIMEOUT_URL_PARAM, 5000L));
+        return url.getParameter(NetConfigs.CONNECT_TIMEOUT_URL_PARAM, config.getLong(NetConfigs.CONNECT_TIMEOUT_URL_PARAM, 5000L));
     }
 
     @SuppressWarnings("unchecked")

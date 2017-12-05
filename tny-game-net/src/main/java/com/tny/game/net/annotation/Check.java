@@ -1,6 +1,6 @@
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.checker.ControllerChecker;
+import com.tny.game.net.command.checker.ControllerChecker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

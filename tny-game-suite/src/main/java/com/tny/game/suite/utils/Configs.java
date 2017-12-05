@@ -5,8 +5,8 @@ import com.tny.game.common.config.ConfigFormatter;
 import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.common.utils.URL;
-import com.tny.game.net.base.AppConstants;
-import com.tny.game.suite.core.AppType;
+import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.suite.app.AppType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -50,13 +50,8 @@ public interface Configs {
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
     String SUITE_SERVER_TYPE_CLASS /*                   */ = "tny.server.suite.server.server_type_class";
     String SUITE_SCOPE_TYPE_CLASS /*                    */ = "tny.server.suite.server.scope_type_class";
-    // String SUITE_MSG_CHECKER_DIRECT_PROTS /*         */ = "tny.server.suite.message_checker.direct_ports";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
     String SUITE_MSG_SIGNER_SIGN_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
-    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC /*      */ = "tny.server.suite.auth.kafka_login.protocols.inc";
-    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC /*      */ = "tny.server.suite.auth.kafka_login.protocols.exc";
-    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_INC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.inc_rg";
-    String SUITE_AUTH_KAFKA_LOGIN_PROTOCOLS_EXC_RG /*   */ = "tny.server.suite.auth.kafka_login.protocols.exc_rg";
     String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";
     String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.server.suite.async_db.executor.step";
     String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.server.suite.async_db.executor.wait_time";
@@ -65,7 +60,6 @@ public interface Configs {
     String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*            */ = "tny.server.suite.async_db.object_pool.keep_time";
     String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*         */ = "tny.server.suite.async_db.object_pool.recycle_time";
     String SUITE_TIME_TASK_PATH /*                      */ = "tny.server.suite.time_task.path";
-    String SUITE_CLUSTER_GAME_MONITOR_SERVER_TYPES /*   */ = "tny.server.suite.cluster.game.monitor_server_types ";
     String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.server.suite.base.default_item_model.path";
     String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.server.suite.base.default_item_model.path";
     String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.server.suite.base.item_type_class";
@@ -114,18 +108,11 @@ public interface Configs {
     };
 
     //region 服务器配置 service.properties
-    String SERVICE_CONFIG_PATH = "service.properties";
-    Config SERVICE_CONFIG = ConfigLib.getConfigExist(SERVICE_CONFIG_PATH);
-    String SERVER_ID /*                     */ = "tny.server.id";
-    String SERVER_URL /*                    */ = "tny.server.url";
-    String SERVER_LOCAL /*                  */ = "tny.server.local";
-    String SERVER_SCOPE /*                  */ = AppConstants.SCOPE_TYPE;
-    String SERVER_TYPE /*                   */ = AppConstants.APP_TYPE;
-    String PUBLIC_HOST /*                   */ = "tny.server.public_host";
-    String PRIVATE_HOST /*                  */ = "tny.server.private_host";
-    String RMI_PORT /*                      */ = "tny.server.rmi.registryPort";
-    String PROJECT_NAME /*                  */ = "tny.server.project_name";
-    String PROJECT /*                       */ = "tny.server.project";
+    Config SERVICE_CONFIG = NetConfigs.NET_CONFIG;
+    String SERVER_ID /*                     */ = "tny.net.server.id";
+    String SERVER_SCOPE /*                  */ = NetConfigs.SERVER_SCOPE_TYPE;
+    String SERVER_LOCAL /*                  */ = "tny.net.server.local";
+    String SERVER_URL /*                    */ = "tny.net.server.url";
     //endregion
 
     //region 授权认证配置 authz.properties

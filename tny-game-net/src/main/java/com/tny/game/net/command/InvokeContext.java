@@ -1,8 +1,8 @@
 package com.tny.game.net.command;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.ResultFactory;
-import com.tny.game.net.common.dispatcher.MethodControllerHolder;
+import com.tny.game.suite.app.ResultFactory;
+import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 
 /**
  * Created by Kun Yang on 2017/5/26.

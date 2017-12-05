@@ -1,10 +1,11 @@
 package com.tny.game.net.common;
 
-import com.tny.game.net.checker.MessageSignGenerator;
+
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.common.dispatcher.MessageDispatcher;
-import com.tny.game.net.common.session.CommonSessionHolder;
+import com.tny.game.net.message.sign.MessageSignGenerator;
+import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.session.CommonSessionHolder;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.event.SessionInputEventHandler;
 import com.tny.game.net.session.event.SessionOutputEventHandler;

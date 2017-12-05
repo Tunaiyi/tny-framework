@@ -2,10 +2,10 @@ package com.tny.game.net.netty;
 
 import com.tny.game.common.context.AttrKey;
 import com.tny.game.common.context.AttrKeys;
-import com.tny.game.net.checker.ControllerChecker;
-import com.tny.game.net.coder.DataPacketDecoder;
-import com.tny.game.net.coder.DataPacketEncoder;
-import com.tny.game.net.common.dispatcher.MessageCommandBox;
+import com.tny.game.net.netty.coder.DataPacketDecoder;
+import com.tny.game.net.netty.coder.DataPacketEncoder;
+import com.tny.game.net.command.checker.ControllerChecker;
+import com.tny.game.net.command.dispatcher.MessageCommandBox;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.tunnel.Tunnel;

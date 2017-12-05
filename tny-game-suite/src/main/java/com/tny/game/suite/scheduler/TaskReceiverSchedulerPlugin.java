@@ -1,6 +1,6 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.net.base.AppConstants;
+import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.message.Message;
@@ -30,7 +30,7 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin<Long> {
 
     @Override
     public void execute(Tunnel<Long> tunnel, Message<Long> message, InvokeContext context) throws Exception {
-        if (tunnel.getUserGroup().equals(AppConstants.DEFAULT_USER_GROUP)) {
+        if (tunnel.getUserGroup().equals(NetConfigs.DEFAULT_USER_GROUP)) {
             if (IDAide.isSystem(message.getUserID())) {
                 Session<Long> session = tunnel.getSession();
                 TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | session {} | 请求 {} 协议", message.getUserID(), message.isLogin(), session, message.getProtocol(), new RuntimeException());

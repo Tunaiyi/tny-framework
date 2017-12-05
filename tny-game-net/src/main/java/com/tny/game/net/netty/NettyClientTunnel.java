@@ -3,8 +3,8 @@ package com.tny.game.net.netty;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.URL;
-import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.suite.app.NetLogger;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.message.MessageContent;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 
-import static com.tny.game.net.base.AppConstants.*;
+import static com.tny.game.net.utils.NetConfigs.*;
 import static org.apache.commons.lang3.ObjectUtils.*;
 
 /**

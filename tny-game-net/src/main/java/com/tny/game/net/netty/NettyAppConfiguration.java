@@ -1,7 +1,7 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.coder.ChannelMaker;
+import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.net.netty.coder.ChannelMaker;
 import io.netty.channel.Channel;
 
 public interface NettyAppConfiguration extends AppConfiguration {

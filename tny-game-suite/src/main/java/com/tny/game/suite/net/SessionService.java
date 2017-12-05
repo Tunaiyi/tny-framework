@@ -2,7 +2,7 @@ package com.tny.game.suite.net;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.suite.app.CoreResponseCode;
 import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.message.Protocol;
 import com.tny.game.net.message.ProtocolAide;
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.tny.game.net.base.AppConstants.*;
+import static com.tny.game.net.utils.NetConfigs.*;
 import static com.tny.game.net.message.MessageContent.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 

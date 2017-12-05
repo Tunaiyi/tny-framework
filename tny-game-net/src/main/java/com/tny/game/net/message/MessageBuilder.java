@@ -1,8 +1,8 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.checker.MessageSignGenerator;
 import com.tny.game.net.command.CommandResult;
+import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.tunnel.Tunnel;
 
 /**
