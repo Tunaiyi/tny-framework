@@ -7,7 +7,7 @@ import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;

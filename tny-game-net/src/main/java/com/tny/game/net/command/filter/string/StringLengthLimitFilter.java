@@ -6,7 +6,7 @@ import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.command.filter.string.annotation.StrLength;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 
 public class StringLengthLimitFilter extends AbstractParamFilter<Object, StrLength, String> {
 

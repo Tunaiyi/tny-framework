@@ -1,6 +1,6 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.common.AbstractNetTunnel;
 import com.tny.game.net.message.DetectMessage;
 import com.tny.game.net.session.Session;

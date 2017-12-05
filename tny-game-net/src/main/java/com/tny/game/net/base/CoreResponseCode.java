@@ -1,4 +1,4 @@
-package com.tny.game.suite.app;
+package com.tny.game.net.base;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.result.ResultCodeType;

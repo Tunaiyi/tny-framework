@@ -6,7 +6,7 @@ import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.thread.CoreThreadFactory;
 import com.tny.game.net.exception.DispatchException;
-import com.tny.game.suite.app.GameInfo;
+import com.tny.game.net.base.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;

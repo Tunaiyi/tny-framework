@@ -7,7 +7,7 @@ import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.command.filter.string.annotation.PatternMatch;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 
 import java.util.Map;
 import java.util.regex.Pattern;

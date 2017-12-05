@@ -1,7 +1,7 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.message.Message;

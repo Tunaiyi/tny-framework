@@ -8,7 +8,7 @@ import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.base.utlis.TryResult;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.dto.TryToDoFailDTO;
-import com.tny.game.suite.app.ResultFactory;
+import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.command.CommandResult;
 
 public class CommandResults extends ResultFactory {

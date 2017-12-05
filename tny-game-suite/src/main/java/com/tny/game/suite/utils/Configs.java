@@ -6,7 +6,7 @@ import com.tny.game.common.config.ConfigLib;
 import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.common.utils.URL;
 import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.suite.app.AppType;
+import com.tny.game.net.base.AppType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -48,8 +48,6 @@ public interface Configs {
     String SUITE_SCAN_PATHS /*                          */ = "tny.server.suite.scan_paths";
     String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
-    String SUITE_SERVER_TYPE_CLASS /*                   */ = "tny.server.suite.server.server_type_class";
-    String SUITE_SCOPE_TYPE_CLASS /*                    */ = "tny.server.suite.server.scope_type_class";
     String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
     String SUITE_MSG_SIGNER_SIGN_GROUPS /*              */ = "tny.server.suite.message_signer.sign_groups";
     String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";

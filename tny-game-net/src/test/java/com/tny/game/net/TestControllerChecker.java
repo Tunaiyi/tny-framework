@@ -1,7 +1,7 @@
 package com.tny.game.net;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;

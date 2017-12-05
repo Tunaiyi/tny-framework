@@ -4,7 +4,7 @@ import com.tny.game.common.formula.FormulaType;
 import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.annotation.Check;
-import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;

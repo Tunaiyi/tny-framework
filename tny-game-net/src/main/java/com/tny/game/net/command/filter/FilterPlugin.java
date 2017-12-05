@@ -17,7 +17,7 @@ import com.tny.game.net.command.filter.string.StringLengthLimitFilter;
 import com.tny.game.net.command.filter.string.StringPatternLimitFilter;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +44,8 @@ public class FilterPlugin<UID> implements ControllerPlugin<UID> {
     }
 
     protected void addParamFilters(Collection<ParamFilter> filters) {
-        filterMap.putAll(filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self)));
+        Map<Class<?>, ParamFilter> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
+        filterMap.putAll(maps);
     }
 
     protected void addParamFilter(ParamFilter<?> filter) {

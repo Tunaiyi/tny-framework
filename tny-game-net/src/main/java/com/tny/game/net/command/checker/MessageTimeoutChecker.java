@@ -1,8 +1,8 @@
 package com.tny.game.net.command.checker;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
-import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;

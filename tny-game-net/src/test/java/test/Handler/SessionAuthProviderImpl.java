@@ -1,6 +1,6 @@
 package test.Handler;
 
-import com.tny.game.net.auth.AuthProvider;
+import com.tny.game.net.command.auth.AuthProvider;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;

@@ -1,41 +1,28 @@
 package com.tny.game.suite.login;
 
-import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.suite.app.annotation.Unit;
-import com.tny.game.net.message.sign.MessageMD5Signer;
+import com.tny.game.net.base.AttributesKeys;
+import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageAide;
+import com.tny.game.net.message.sign.MessageMD5Signer;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.AttributesKeys;
+import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Unit("GameMessageMD5Signer")
 public class GameMessageMD5Signer<UID> extends MessageMD5Signer<UID> {
 
     private short[] randomKey;
 
-    private Set<String> checkGroups = ImmutableSet.of();
-
-    public GameMessageMD5Signer(short[] randomKey, Set<String> checkGroups) {
+    public GameMessageMD5Signer(short[] randomKey) {
         if (randomKey == null)
             this.randomKey = new short[0];
         else
             this.randomKey = Arrays.copyOf(randomKey, randomKey.length);
-        this.checkGroups = ImmutableSet.copyOf(checkGroups);
-    }
-
-    public boolean isCheck(Message<?> message) {
-        if (MessageAide.isResponse(message))
-            return false;
-        boolean check = Configs.DEVELOP_CONFIG.getBoolean(Configs.DEVELOP_VERIFY_CHECK, true);
-        return check && (checkGroups.isEmpty() || checkGroups.contains(message.getUserGroup()));
     }
 
     private Object getRandomKey(Message<?> message) {

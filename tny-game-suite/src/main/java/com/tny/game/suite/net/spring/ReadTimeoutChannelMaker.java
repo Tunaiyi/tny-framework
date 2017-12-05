@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.suite.app.annotation.Unit;
+import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.netty.coder.ChannelMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;

@@ -1,6 +1,6 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;

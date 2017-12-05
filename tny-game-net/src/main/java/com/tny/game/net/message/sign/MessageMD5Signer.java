@@ -1,7 +1,7 @@
 package com.tny.game.net.message.sign;
 
 import com.tny.game.common.utils.Throws;
-import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
 import org.apache.commons.codec.digest.DigestUtils;

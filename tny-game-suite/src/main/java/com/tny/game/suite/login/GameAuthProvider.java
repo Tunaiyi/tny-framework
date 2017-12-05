@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.net.auth.AuthProvider;
+import com.tny.game.net.command.auth.AuthProvider;
 import com.tny.game.suite.utils.Configs;
 
 public abstract class GameAuthProvider<UID> implements AuthProvider<UID> {

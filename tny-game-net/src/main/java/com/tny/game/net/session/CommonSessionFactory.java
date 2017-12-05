@@ -1,9 +1,9 @@
 package com.tny.game.net.session;
 
 import com.tny.game.common.config.Config;
-import com.tny.game.suite.app.AppConfiguration;
+import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.suite.app.annotation.Unit;
+import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.tunnel.NetTunnel;
 
 @Unit("CommonSessionFactory")

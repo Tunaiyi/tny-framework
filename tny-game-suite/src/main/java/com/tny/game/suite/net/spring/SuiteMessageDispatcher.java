@@ -4,9 +4,9 @@ import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.net.annotation.Controller;
-import com.tny.game.net.auth.AuthProvider;
-import com.tny.game.suite.app.AppConfiguration;
-import com.tny.game.suite.app.annotation.Unit;
+import com.tny.game.net.command.auth.AuthProvider;
+import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.dispatcher.CommonMessageDispatcher;
@@ -17,12 +17,12 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
 
-@Unit("SpringMessageDispatcher")
-public final class SpringMessageDispatcher extends CommonMessageDispatcher implements ApplicationContextAware, ServerPrepareStart {
+@Unit("SuiteMessageDispatcher")
+public final class SuiteMessageDispatcher extends CommonMessageDispatcher implements ApplicationContextAware, ServerPrepareStart {
 
     private ApplicationContext applicationContext;
 
-    public SpringMessageDispatcher(AppConfiguration appConfiguration) {
+    public SuiteMessageDispatcher(AppConfiguration appConfiguration) {
         super(appConfiguration);
     }
 

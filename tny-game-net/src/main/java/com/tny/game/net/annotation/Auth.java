@@ -1,6 +1,6 @@
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.auth.AuthProvider;
+import com.tny.game.net.command.auth.AuthProvider;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

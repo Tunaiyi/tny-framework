@@ -1,6 +1,6 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.suite.app.listener.SeverClosedListener;
+import com.tny.game.net.base.listener.SeverClosedListener;
 import com.tny.game.net.netty.NettyServer;
 import com.tny.game.net.session.holder.SessionHolder;
 import com.tny.game.net.session.holder.listener.SessionHolderListener;

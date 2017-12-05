@@ -6,7 +6,7 @@ import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.utils.Throws;
-import com.tny.game.suite.app.AppUtils;
+import com.tny.game.net.base.AppUtils;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.common.AbstractAppConfiguration;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 // @Component
 // @Profile({GAME, SERVER})
-public class SpringAppConfiguration extends AbstractAppConfiguration implements NettyAppConfiguration, ApplicationContextAware, ServerPrepareStart {
+public class SuiteAppConfiguration extends AbstractAppConfiguration implements NettyAppConfiguration, ApplicationContextAware, ServerPrepareStart {
 
     private ApplicationContext applicationContext;
 
@@ -59,15 +59,15 @@ public class SpringAppConfiguration extends AbstractAppConfiguration implements 
 
     private String channelMakerName;
 
-    public SpringAppConfiguration(String name) {
+    public SuiteAppConfiguration(String name) {
         super(name);
     }
 
-    public SpringAppConfiguration(String name, String path) throws IOException {
+    public SuiteAppConfiguration(String name, String path) throws IOException {
         super(name, path);
     }
 
-    public SpringAppConfiguration(String name, List<String> paths) throws IOException {
+    public SuiteAppConfiguration(String name, List<String> paths) throws IOException {
         super(name, paths);
     }
 

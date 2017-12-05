@@ -2,7 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 
 public class ValidatorFailException extends DispatchException {
 

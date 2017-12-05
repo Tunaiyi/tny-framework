@@ -12,7 +12,7 @@ import com.tny.game.common.result.ResultCodes;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.annotation.*;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.PluginContext;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class SpringFilterPlugin<UID> extends FilterPlugin<UID> implements ApplicationContextAware {
+public class SuiteFilterPlugin<UID> extends FilterPlugin<UID> implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

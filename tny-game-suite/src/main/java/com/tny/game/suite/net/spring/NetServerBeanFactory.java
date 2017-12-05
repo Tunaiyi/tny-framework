@@ -4,22 +4,24 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.word.LocalWordsFilter;
 import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.netty.coder.ChannelMaker;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.message.sign.MessageMD5Signer;
+import com.tny.game.net.command.checker.MessageMD5Checker;
 import com.tny.game.net.command.checker.MessageSequenceChecker;
 import com.tny.game.net.command.checker.MessageTimeoutChecker;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.command.executor.GroupBySessionDispatchCommandExecutor;
 import com.tny.game.net.common.session.handle.ForkJoinSessionEventHandler;
-import com.tny.game.net.session.CommonSessionFactory;
-import com.tny.game.net.session.CommonSessionHolder;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.message.sign.MessageMD5Signer;
 import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.netty.NettyServer;
+import com.tny.game.net.netty.coder.ChannelMaker;
+import com.tny.game.net.session.CommonSessionFactory;
+import com.tny.game.net.session.CommonSessionHolder;
 import com.tny.game.net.session.SessionFactory;
 import com.tny.game.net.session.holder.SessionHolder;
+import com.tny.game.suite.login.GameMessageMD5Checker;
 import com.tny.game.suite.login.GameMessageMD5Signer;
 import com.tny.game.suite.utils.Configs;
 import io.netty.channel.Channel;
@@ -69,7 +71,7 @@ public class NetServerBeanFactory {
 
     @Bean(name = "messageDispatcher")
     public MessageDispatcher getMessageDispatcher() {
-        return new SpringMessageDispatcher(this.appConfiguration);
+        return new SuiteMessageDispatcher(this.appConfiguration);
     }
 
     @Bean(name = "messageBuilderFactory")
@@ -78,8 +80,21 @@ public class NetServerBeanFactory {
     }
 
     @Bean(name = "signGenerator")
-    public MessageMD5Signer getMessageSignChecker() {
+    public MessageMD5Signer getMessageSignSigner() {
         Config config = Configs.SUITE_CONFIG;
+        short[] randomKey = md5RandomKey(config);
+        return new GameMessageMD5Signer(randomKey);
+    }
+
+    @Bean(name = "messageChecker")
+    public MessageMD5Checker getMessageSignChecker() {
+        Config config = Configs.SUITE_CONFIG;
+        short[] randomKey = md5RandomKey(config);
+        String signGroupsWords = config.getStr(Configs.SUITE_MSG_SIGNER_SIGN_GROUPS, "");
+        return new GameMessageMD5Checker(randomKey, ImmutableSet.copyOf(StringUtils.split(signGroupsWords, ",")));
+    }
+
+    private short[] md5RandomKey(Config config) {
         String randomWords = config.getStr(Configs.SUITE_MSG_CHECKER_RANDOM_SEQ);
         short[] randomKey = new short[0];
         if (randomWords != null) {
@@ -89,8 +104,7 @@ public class NetServerBeanFactory {
                             .collect(Collectors.toList())
                             .toArray(new Short[0]));
         }
-        String signGroupsWords = config.getStr(Configs.SUITE_MSG_SIGNER_SIGN_GROUPS, "");
-        return new GameMessageMD5Signer(randomKey, ImmutableSet.copyOf(StringUtils.split(signGroupsWords, ",")));
+        return randomKey;
     }
 
     @Bean(name = "messageSequenceChecker")

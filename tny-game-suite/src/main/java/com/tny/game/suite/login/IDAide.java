@@ -2,7 +2,7 @@ package com.tny.game.suite.login;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
-import com.tny.game.suite.app.GameInfo;
+import com.tny.game.net.base.GameInfo;
 
 
 public class IDAide {

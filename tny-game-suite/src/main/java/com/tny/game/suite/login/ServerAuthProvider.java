@@ -7,8 +7,8 @@ import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.AppType;
-import com.tny.game.suite.app.AttributesKeys;
+import com.tny.game.net.base.AppType;
+import com.tny.game.net.base.AttributesKeys;
 import com.tny.game.suite.utils.SuiteResultCode;
 
 import javax.annotation.Resource;

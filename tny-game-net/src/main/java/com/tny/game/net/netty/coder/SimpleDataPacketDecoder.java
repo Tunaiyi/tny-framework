@@ -1,6 +1,6 @@
 package com.tny.game.net.netty.coder;
 
-import com.tny.game.suite.app.NetLogger;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.message.DetectMessage;
 import com.tny.game.net.message.coder.CoderContent;
 import com.tny.game.net.message.coder.MessageCoder;

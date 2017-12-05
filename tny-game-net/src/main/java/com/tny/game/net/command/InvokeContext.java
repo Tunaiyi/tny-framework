@@ -1,7 +1,7 @@
 package com.tny.game.net.command;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.suite.app.ResultFactory;
+import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 
 /**

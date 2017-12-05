@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.annotations.ProtoExField;
 import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.app.AppType;
-import com.tny.game.suite.app.AppTypes;
+import com.tny.game.net.base.AppType;
+import com.tny.game.net.base.AppTypes;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.io.Serializable;

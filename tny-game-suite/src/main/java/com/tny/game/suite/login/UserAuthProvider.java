@@ -1,15 +1,15 @@
 package com.tny.game.suite.login;
 
 import com.tny.game.common.utils.md5.MD5;
-import com.tny.game.suite.app.CoreResponseCode;
+import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.BodyClass;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.suite.app.AttributesKeys;
-import com.tny.game.suite.app.GameInfo;
+import com.tny.game.net.base.AttributesKeys;
+import com.tny.game.net.base.GameInfo;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.apache.commons.lang3.StringUtils;
