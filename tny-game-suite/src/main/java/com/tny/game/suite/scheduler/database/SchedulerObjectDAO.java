@@ -22,7 +22,8 @@ public interface SchedulerObjectDAO {
 	@SQL("select `data` from " + TABLE + " where `key` = :key")
 	Blob get(@SQLParam("key") String key);
 
-	@SQL("replace into " + TABLE + "(" + FIELDS + ") values(:key, :data)")
+	// @SQL("replace into " + TABLE + "(" + FIELDS + ") values(:key, :data)")
+	@SQL("INSERT INTO " + TABLE + " (" + FIELDS + ") VALUES (:key, :data) ON DUPLICATE KEY UPDATE `data`=VALUES(`data`)")
 	int set(@SQLParam("key") String key, @SQLParam("data") Blob blob);
 
 }

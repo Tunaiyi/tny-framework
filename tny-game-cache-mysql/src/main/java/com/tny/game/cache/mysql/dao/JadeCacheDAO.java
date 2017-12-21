@@ -1,13 +1,9 @@
 package com.tny.game.cache.mysql.dao;
 
-import com.tny.game.cache.mysql.DBCacheItem;
-import net.paoding.rose.jade.annotation.DAO;
-import net.paoding.rose.jade.annotation.SQL;
-import net.paoding.rose.jade.annotation.SQLParam;
-import net.paoding.rose.jade.annotation.ShardBy;
+import com.tny.game.cache.mysql.*;
+import net.paoding.rose.jade.annotation.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @DAO
 public interface JadeCacheDAO extends CacheDAO, ShardCacheDAO {
@@ -35,11 +31,13 @@ public interface JadeCacheDAO extends CacheDAO, ShardCacheDAO {
     int[] add(@ShardBy @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
-    @SQL("REPLACE INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
+    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
+            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
     int set(@SQLParam("i") DBCacheItem item);
 
     @Override
-    @SQL("REPLACE INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt)")
+    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
+            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
     int[] set(@ShardBy @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
