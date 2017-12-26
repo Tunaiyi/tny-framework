@@ -59,6 +59,22 @@ public class Version implements Comparable<Version> {
         return this.subVersions.length;
     }
 
+    public boolean greaterThan(Version version) {
+        return this.compareTo(version) > 0;
+    }
+
+    public boolean greaterEqualsThan(Version version) {
+        return this.compareTo(version) >= 0;
+    }
+
+    public boolean lessThan(Version version) {
+        return this.compareTo(version) < 0;
+    }
+
+    public boolean lessEqualsThan(Version version) {
+        return this.compareTo(version) <= 0;
+    }
+
     private static final Comparator<String> comparator = (one, other) -> {
         one = format(one);
         other = format(other);
@@ -75,6 +91,8 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int compareTo(Version other) {
+        if (this.fullVersion.equals(other.getFullVersion()))
+            return 0;
         int length = Math.min(this.subVersions.length, other.subVersions.length);
         for (int index = 0; index < length; index++) {
             String thisSubVer = this.subVersions[index];
@@ -84,6 +102,20 @@ public class Version implements Comparable<Version> {
                 return subCpResult;
         }
         return this.subVersions.length - other.subVersions.length;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Version)) return false;
+        Version version = (Version) o;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(getSubVersions(), version.getSubVersions());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(getSubVersions());
     }
 
     private static String format(String value) {

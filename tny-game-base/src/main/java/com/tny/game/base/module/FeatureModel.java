@@ -2,12 +2,17 @@ package com.tny.game.base.module;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.Model;
+import com.tny.game.common.utils.version.*;
 
-import java.util.Set;
+import java.util.*;
 
 public interface FeatureModel extends Model, Comparable<FeatureModel> {
 
     Feature getFeature();
+
+    Optional<Feature> getParent();
+
+    Optional<Version> getOpenVersion();
 
     OpenMode<?> getOpenMode();
 

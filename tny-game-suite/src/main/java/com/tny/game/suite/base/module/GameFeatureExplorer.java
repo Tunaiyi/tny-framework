@@ -1,13 +1,11 @@
 package com.tny.game.suite.base.module;
 
-import com.google.common.collect.ImmutableSet;
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.Module;
-import com.tny.game.common.utils.Throws;
+import com.google.common.collect.*;
+import com.tny.game.base.module.*;
+import com.tny.game.common.utils.*;
 
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
+import java.util.concurrent.atomic.*;
 
 /**
  * 默认的功能开放管理器
@@ -52,7 +50,6 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     protected boolean open(Module module) {
         return open(openedModules, module);
     }
-
 
     @Override
     public boolean isModuleOpened(Module moduleType) {

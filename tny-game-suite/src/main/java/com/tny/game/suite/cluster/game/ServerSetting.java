@@ -19,6 +19,9 @@ public class ServerSetting {
 	@ProtoExField(5)
 	private String name;
 
+	@ProtoExField(6)
+	private String url;
+
 	public ServerSetting() {
 	}
 

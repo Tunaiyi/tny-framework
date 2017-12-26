@@ -1,19 +1,13 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.common.config.Config;
-import com.tny.game.common.config.ConfigFormatter;
-import com.tny.game.common.config.ConfigLib;
-import com.tny.game.common.utils.DateTimeAide;
-import com.tny.game.common.utils.URL;
-import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.net.base.AppType;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import com.tny.game.common.config.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.utils.*;
+import org.apache.commons.lang3.*;
+import org.joda.time.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 16/1/27.
@@ -145,7 +139,15 @@ public interface Configs {
     String VERSION_CONFIG_PATH = "version.properties";
     Config VERSION_CONFIG = ConfigLib.getConfigExist(Configs.VERSION_CONFIG_PATH);
     String VERSION_KEY = "tny.server.version";
+    String VERSION_FEATURE_VERSION = "tny.server.feature_version";
     String VERSION_NO = "tny.server.version_no";
+    //endregion
+
+    //region 版本配置 version.properties
+    // String VERSION_CONFIG_PATH = "version.properties";
+    // Config VERSION_CONFIG = ConfigLib.getConfigExist(Configs.VERSION_CONFIG_PATH);
+    // String VERSION_KEY = "tny.server.version";
+    // String VERSION_NO = "tny.server.version_no";
     //endregion
 
     //region 开发调试测试参数 develop.properties
@@ -164,6 +166,7 @@ public interface Configs {
     String DEVELOP_VERIFY_CHECK /*          */ = "tny.server.dev.verify.check";
     String DEVELOP_PAY_PRICE /*             */ = "tny.server.dev.pay.pay_price";
     String DEVELOP_MODULE_TIME_CONSUMING /* */ = "tny.server.dev.module.time_consuming";
+    String DEVELOP_FEATURE_VERSION /*       */ = "tny.server.dev.feature_version";
 
 
     static LocalDate devDate(String key, LocalDate... defaultValue) {

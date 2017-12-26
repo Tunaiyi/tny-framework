@@ -1,9 +1,9 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.FeatureModel;
-import com.tny.game.base.module.OpenMode;
+import com.tny.game.base.module.*;
+import com.tny.game.common.utils.version.*;
+
+import java.util.*;
 
 public class GameFeatureModel implements FeatureModel {
 
@@ -16,6 +16,8 @@ public class GameFeatureModel implements FeatureModel {
     private Feature feature;
 
     private int openLevel;
+
+    private Version openVersion;
 
     private int priority;
 
@@ -33,8 +35,14 @@ public class GameFeatureModel implements FeatureModel {
         return alias;
     }
 
+    @Override
     public String getDesc() {
         return desc;
+    }
+
+    @Override
+    public Optional<Feature> getParent() {
+        return feature.getParent();
     }
 
     @Override
@@ -47,6 +55,9 @@ public class GameFeatureModel implements FeatureModel {
         return this.priority;
     }
 
+    public Optional<Version> getOpenVersion() {
+        return Optional.ofNullable(openVersion);
+    }
 
     @Override
     public Feature getFeature() {

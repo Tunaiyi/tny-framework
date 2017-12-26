@@ -1,22 +1,17 @@
 package com.tny.game.suite.base.module;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.thoughtworks.xstream.XStream;
-import com.tny.game.common.utils.Logs;
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureModel;
-import com.tny.game.base.module.Module;
-import com.tny.game.base.module.OpenMode;
-import com.tny.game.suite.base.GameItemModelManager;
-import com.tny.game.suite.utils.Configs;
+import com.google.common.collect.*;
+import com.thoughtworks.xstream.*;
+import com.thoughtworks.xstream.converters.*;
+import com.tny.game.base.module.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.version.*;
+import com.tny.game.suite.base.*;
+import com.tny.game.suite.utils.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelManager<FM> {
 
@@ -25,6 +20,25 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
     private List<FM> models;
 
     private Map<OpenMode, List<FM>> modelsMap;
+
+    private static final SingleValueConverter versionConverter = new SingleValueConverter() {
+
+            @Override
+            public String toString(Object o) {
+                return as(o, Version.class).getFullVersion();
+            }
+
+            @Override
+            public Object fromString(String s) {
+                return Version.of(s);
+            }
+
+            @Override
+            public boolean canConvert(Class aClass) {
+                return aClass == Version.class;
+            }
+        };
+
 
 
     protected FeatureModelManager(Class<? extends FM> modelClass) {
@@ -40,6 +54,7 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
         xStream.alias("feature", Feature.class);
         xStream.alias("module", Module.class);
         xStream.alias("openMode", OpenMode.class);
+        xStream.registerConverter(versionConverter);
     }
 
     @Override
@@ -48,10 +63,7 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
         Map<OpenMode, SortedSet<FM>> modelSetMap = new HashMap<>();
         for (FM model : this.modelMap.values()) {
             typeMap.put(model.getFeature(), model);
-            SortedSet<FM> models = modelSetMap.get(model.getOpenMode());
-            if (models == null)
-                modelSetMap.put(model.getOpenMode(), models = new TreeSet<>());
-            models.add(model);
+            modelSetMap.computeIfAbsent(model.getOpenMode(), k -> new TreeSet<>()).add(model);
         }
         this.typeMap = Collections.unmodifiableMap(typeMap);
         Map<OpenMode, List<FM>> modelsMap = new HashMap<>();

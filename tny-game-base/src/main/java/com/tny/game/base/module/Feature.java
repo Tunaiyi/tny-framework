@@ -2,7 +2,7 @@ package com.tny.game.base.module;
 
 import com.tny.game.common.enums.EnumID;
 
-import java.util.Collection;
+import java.util.*;
 
 public interface Feature extends EnumID<Integer> {
 
@@ -16,4 +16,5 @@ public interface Feature extends EnumID<Integer> {
 
     boolean isHasHandler();
 
+    Optional<Feature> getParent();
 }

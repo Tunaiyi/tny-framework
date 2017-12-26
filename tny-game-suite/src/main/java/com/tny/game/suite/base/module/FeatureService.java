@@ -1,31 +1,18 @@
 package com.tny.game.suite.base.module;
 
-import com.google.common.collect.ImmutableList;
-import com.tny.game.common.utils.Logs;
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.FeatureHandler;
-import com.tny.game.base.module.FeatureModel;
-import com.tny.game.base.module.Module;
-import com.tny.game.base.module.OpenMode;
-import com.tny.game.common.RunningChecker;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.suite.utils.SuiteLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import javax.annotation.Resource;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.google.common.collect.*;
+import com.tny.game.base.module.*;
+import com.tny.game.common.*;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.version.*;
+import com.tny.game.suite.utils.*;
+import org.slf4j.*;
+import org.springframework.beans.*;
+import org.springframework.context.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.*;
+import java.util.*;
 
 public abstract class FeatureService<DTO> implements ServerPrepareStart, ApplicationContextAware {
 
@@ -40,7 +27,9 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
     private ModuleService<DTO> moduleService;
 
     @Resource
-    protected FeatureModelManager<? extends FeatureModel> featureModelManager;
+    private FeatureModelManager<? extends FeatureModel> featureModelManager;
+
+    private FeatureVersionHolder versionHolder = new FeatureVersionHolder();
 
     private ApplicationContext applicationContext;
 
@@ -51,22 +40,6 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
     public FeatureService() {
         FUNC_SYS_SERVICE = this;
     }
-
-    // public void openModule(ModuleOwner explorer) {
-    // MODULE_SERVICE.doOpenModule(explorer, null, null, false, true);
-    // }
-    //
-    // public boolean openModule(ModuleOwner explorer, Module moduleType) {
-    // return MODULE_SERVICE.doOpenModule(explorer, null, moduleType, false, true).contains(moduleType);
-    // }
-    //
-    // public boolean openModule(ModuleOwner explorer, Module moduleType, boolean enforce) {
-    // return MODULE_SERVICE.doOpenModule(explorer, null, moduleType, enforce, true).contains(moduleType);
-    // }
-    //
-    // public boolean openModule(ModuleOwner explorer, Module moduleType, boolean enforce, boolean checkOpened) {
-    // return MODULE_SERVICE.doOpenModule(explorer, null, moduleType, enforce, checkOpened).contains(moduleType);
-    // }
 
     public static boolean isFeatureOpened(long explorerID, Feature feature) {
         return FUNC_SYS_SERVICE.doIsOpen(explorerID, feature);
@@ -107,7 +80,13 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
             FeatureModel featureModel = getModel(handler.getFeature());
             if (!featureModel.isEffect() || !openMode.check(explorer, featureModel, context))
                 continue;
-            if (!featureModel.isCanOpen(explorer, openMode))
+            if (!featureModel.isCanOpen(explorer, openMode)
+                    && featureModel.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)
+                    && explorer.getFeatureVersion()
+                    .map(current -> featureModel.getOpenVersion()
+                            .map(ver -> ver.lessThan(current))
+                            .orElse(false))
+                    .orElse(false))
                 continue;
             Feature feature = handler.getFeature();
             try {
@@ -118,8 +97,7 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
                         RunningChecker.start(featureModel.getFeature());
                         LOGGER.info("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
                     }
-                    if (this.moduleService.openModule(explorer, feature.dependModules()) &&
-                            handler.openFeature(explorer)) {
+                    if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
                         explorer.open(feature);
                         okList.add(feature);
                     }
@@ -179,6 +157,14 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         return dto;
     }
 
+    protected FeatureVersionHolder getVersionHolder() {
+        return versionHolder;
+    }
+
+    void updateOpenedFeature() {
+
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -189,9 +175,14 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_5);
     }
 
+    public void updateFeatureVersion(Version version) {
+        this.getVersionHolder();
+    }
+
     @Override
     public void prepareStart() throws Exception {
         List<GameFeatureHandler> featureHandlers = new ArrayList<>(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
+        this.versionHolder = new FeatureVersionHolder();
         for (GameFeatureHandler feature : featureHandlers) {
             this.handlerMap.put(feature.getFeature(), feature);
         }
