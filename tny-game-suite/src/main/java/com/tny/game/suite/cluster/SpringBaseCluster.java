@@ -1,9 +1,7 @@
 package com.tny.game.suite.cluster;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PostStarter;
-import com.tny.game.common.lifecycle.ServerPostStart;
+import com.tny.game.common.lifecycle.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -14,7 +12,7 @@ import java.util.List;
 /**
  * Created by Kun Yang on 2017/8/3.
  */
-public class SpringBaseCluster extends BaseCluster implements ServerPostStart, ApplicationContextAware {
+public class SpringBaseCluster extends BaseCluster implements ServerPrepareStart, ServerPostStart, ApplicationContextAware {
 
     private List<ZKMonitorInitHandler> initHandlers = ImmutableList.of();
 
@@ -34,8 +32,19 @@ public class SpringBaseCluster extends BaseCluster implements ServerPostStart, A
     }
 
     @Override
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
+    }
+
+    @Override
+    public void prepareStart() throws Throwable {
+        this.monitor();
+    }
+
+    @Override
     public void postStart() throws Throwable {
         initHandlers = ImmutableList.copyOf(applicationContext.getBeansOfType(ZKMonitorInitHandler.class).values());
+        this.register();
     }
 
     @Override
@@ -47,4 +56,5 @@ public class SpringBaseCluster extends BaseCluster implements ServerPostStart, A
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 }

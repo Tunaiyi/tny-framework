@@ -143,13 +143,6 @@ public interface Configs {
     String VERSION_NO = "tny.server.version_no";
     //endregion
 
-    //region 版本配置 version.properties
-    // String VERSION_CONFIG_PATH = "version.properties";
-    // Config VERSION_CONFIG = ConfigLib.getConfigExist(Configs.VERSION_CONFIG_PATH);
-    // String VERSION_KEY = "tny.server.version";
-    // String VERSION_NO = "tny.server.version_no";
-    //endregion
-
     //region 开发调试测试参数 develop.properties
     String DEVELOP_CONFIG_PATH = "develop.properties";
     Config DEVELOP_CONFIG = ConfigLib.getConfigExist(Configs.DEVELOP_CONFIG_PATH);

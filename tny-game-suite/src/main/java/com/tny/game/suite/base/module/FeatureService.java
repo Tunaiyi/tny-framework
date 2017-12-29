@@ -1,10 +1,8 @@
 package com.tny.game.suite.base.module;
 
-import com.google.common.collect.*;
 import com.tny.game.base.module.*;
 import com.tny.game.common.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.common.utils.version.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
@@ -29,13 +27,9 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
     @Resource
     private FeatureModelManager<? extends FeatureModel> featureModelManager;
 
-    private FeatureVersionHolder versionHolder = new FeatureVersionHolder();
-
     private ApplicationContext applicationContext;
 
     private Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
-
-    private Map<OpenMode, List<FeatureHandler>> handlersMap = new HashMap<>();
 
     public FeatureService() {
         FUNC_SYS_SERVICE = this;
@@ -66,27 +60,26 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         return featureModelManager.getAndCheckModelBy(feature);
     }
 
+    // private boolean isActiveFeature(Version current, FeatureModel model) {
+    //     if (current == null)
+    //         return true;
+    //     return model.getOpenVersion()
+    //             .map(ver -> ver.greaterEqualsThan(current))
+    //             .orElse(true);
+    // }
+
+    public Optional<Version> getFeatureVersion() {
+        return featureModelManager.getVersionHolder().getFeatureVersion();
+    }
+
     @SuppressWarnings("unchecked")
-    private <C> List<Feature> doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
-        List<Feature> okList = new ArrayList<>();
-        List<FeatureHandler> handlers = this.handlersMap.getOrDefault(openMode, ImmutableList.of());
-        // String alRunningCheck = null;
-        // if (LOGGER.isInfoEnabled()) {
-        //     alRunningCheck = explorer.getPlayerID() + "-" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-        //     RunningChecker.start("doOpenFeature");
-        //     LOGGER.info("{} 玩家尝试开启功能", explorer.getPlayerID());
-        // }
-        for (FeatureHandler handler : handlers) {
-            FeatureModel featureModel = getModel(handler.getFeature());
-            if (!featureModel.isEffect() || !openMode.check(explorer, featureModel, context))
+    private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
+        for (FeatureModel model : this.featureModelManager.getModels(openMode)) {
+            FeatureHandler handler = handlerMap.get(model.getFeature());
+            if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context))
                 continue;
-            if (!featureModel.isCanOpen(explorer, openMode)
-                    && featureModel.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)
-                    && explorer.getFeatureVersion()
-                    .map(current -> featureModel.getOpenVersion()
-                            .map(ver -> ver.lessThan(current))
-                            .orElse(false))
-                    .orElse(false))
+            if (!model.isCanOpen(explorer, openMode)
+                    && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false))
                 continue;
             Feature feature = handler.getFeature();
             try {
@@ -94,16 +87,15 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
                     if (explorer.isFeatureOpened(feature))
                         continue;
                     if (LOGGER.isInfoEnabled()) {
-                        RunningChecker.start(featureModel.getFeature());
-                        LOGGER.info("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
+                        RunningChecker.start(model.getFeature());
+                        LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
                     }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
                         explorer.open(feature);
-                        okList.add(feature);
                     }
                     if (LOGGER.isInfoEnabled()) {
-                        long time = RunningChecker.end(featureModel.getFeature()).cost();
-                        LOGGER.info("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerID(), feature, time);
+                        long time = RunningChecker.end(model.getFeature()).cost();
+                        LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerID(), feature, time);
                     }
                 }
             } catch (Throwable e) {
@@ -114,7 +106,6 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         //     long time = RunningChecker.end(alRunningCheck).cost();
         //     LOGGER.info("{} 玩家尝试开启功能完成! 总耗时 {} ms", explorer.getPlayerID(), time);
         // }
-        return okList;
     }
 
     private void doLoadFeature(final GameFeatureExplorer explorer) {
@@ -157,12 +148,8 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         return dto;
     }
 
-    protected FeatureVersionHolder getVersionHolder() {
-        return versionHolder;
-    }
-
-    void updateOpenedFeature() {
-
+    public void updateFeatureVersion(String featureVersion) {
+        this.featureModelManager.getVersionHolder().updateVersion(featureVersion);
     }
 
     @Override
@@ -170,19 +157,10 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
         this.applicationContext = applicationContext;
     }
 
-    @Override
-    public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_5);
-    }
-
-    public void updateFeatureVersion(Version version) {
-        this.getVersionHolder();
-    }
 
     @Override
     public void prepareStart() throws Exception {
         List<GameFeatureHandler> featureHandlers = new ArrayList<>(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
-        this.versionHolder = new FeatureVersionHolder();
         for (GameFeatureHandler feature : featureHandlers) {
             this.handlerMap.put(feature.getFeature(), feature);
         }
@@ -192,18 +170,6 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
                 this.handlerMap.put(feature, handler);
             }
         }
-        this.featureModelManager.getModelsMap().forEach(
-                (openMode, featureModels) -> {
-                    ArrayList<FeatureHandler> handlers = new ArrayList<>();
-                    for (FeatureModel model : featureModels) {
-                        FeatureHandler handler = this.handlerMap.get(model.getFeature());
-                        if (handler == null)
-                            throw new NullPointerException(Logs.format("{} feature handler is null", model.getFeature()));
-                        handlers.add(handler);
-                    }
-                    this.handlersMap.put(openMode, handlers);
-                }
-        );
     }
 
 }

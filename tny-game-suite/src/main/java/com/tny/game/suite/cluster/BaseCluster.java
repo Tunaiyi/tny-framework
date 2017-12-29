@@ -1,22 +1,11 @@
 package com.tny.game.suite.cluster;
 
-import com.tny.game.common.utils.Throws;
-import com.tny.game.common.utils.URL;
-import com.tny.game.zookeeper.NodeWatcher;
-import com.tny.game.zookeeper.ZKMonitor;
-import org.apache.zookeeper.KeeperException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.utils.*;
+import com.tny.game.zookeeper.*;
+import org.slf4j.*;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 public abstract class BaseCluster {
 
@@ -47,16 +36,12 @@ public abstract class BaseCluster {
         return Optional.of(this.webHolderMap.get(appType));
     }
 
-    protected void init() throws Exception {
-        this.monitor();
-    }
-
     protected void doMonitor() {
     }
 
     protected abstract List<ZKMonitorInitHandler> initHandlers();
 
-    protected void monitor() throws IOException, KeeperException, InterruptedException {
+    protected void monitor() throws Exception {
         if (this.remoteMonitor == null) {
             String ips = System.getProperty(ClusterUtils.IP_LIST);
             if (ips == null)
@@ -72,6 +57,9 @@ public abstract class BaseCluster {
             this.initHandlers().forEach(h -> h.onInit(this.remoteMonitor));
         }
 
+    }
+
+    protected void register() {
     }
 
     private NodeWatcher<ServiceNode> createWebServerWatcher(String name, ServiceNodeHolder holder) {

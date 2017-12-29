@@ -1,9 +1,9 @@
 package com.tny.game.suite.base.capacity;
 
-import org.springframework.stereotype.Component;
+import org.slf4j.*;
+import org.springframework.stereotype.*;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 游戏能力值Service
@@ -11,6 +11,8 @@ import java.util.Collection;
  */
 @Component
 public class CapacityService {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(CapacityService.class);
 
     public void accept(CapacityGoalItem<?> goal, CapacitySupplier... suppliers) {
         this.accept(goal, Arrays.asList(suppliers));

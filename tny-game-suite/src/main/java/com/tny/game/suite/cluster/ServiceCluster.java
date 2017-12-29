@@ -1,29 +1,18 @@
 package com.tny.game.suite.cluster;
 
 
-import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.suite.cluster.game.ServerLaunch;
-import com.tny.game.suite.cluster.game.ServerOutline;
-import com.tny.game.suite.cluster.game.ServerSetting;
-import com.tny.game.suite.initer.ProtoExSchemaIniter;
-import com.tny.game.suite.utils.Configs;
-import com.tny.game.zookeeper.NodeWatcher;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.zookeeper.CreateMode;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.suite.cluster.game.*;
+import com.tny.game.suite.initer.*;
+import com.tny.game.suite.utils.*;
+import com.tny.game.zookeeper.*;
+import org.apache.commons.lang3.*;
+import org.apache.zookeeper.*;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
+import javax.annotation.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.*;
 
 import static com.tny.game.suite.utils.Configs.*;
 
@@ -122,15 +111,10 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
     };
 
     @Override
-    protected void init() throws Exception {
+    public void prepareStart() throws Throwable {
+        super.prepareStart();
         this.protoExSchemaIniter.prepareStart();
-        super.monitor();
-    }
-
-    @Override
-    public void postStart() throws Throwable {
-        super.postStart();
-        this.init();
+        this.monitor();
     }
 
     public ServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
@@ -171,6 +155,10 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
             this.remoteMonitor.monitorChildren(ClusterUtils.SETTING_LIST_PATH, this.settingHandler);
 
         this.postWebMonitor();
+    }
+
+    @Override
+    protected void register() {
         String[] urls = clusterUrls();
         ServiceNode node = new ServiceNode(this.serverType, this.webServerID, urls);
         String nodePath = ClusterUtils.getWebNodePath(this.serverType, this.webServerID);

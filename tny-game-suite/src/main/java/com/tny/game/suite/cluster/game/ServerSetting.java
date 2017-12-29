@@ -1,98 +1,109 @@
 package com.tny.game.suite.cluster.game;
 
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_SETTING)
 public class ServerSetting {
 
-	@ProtoExField(1)
-	private int serverID;
+    @ProtoExField(1)
+    private int serverID;
 
-	@ProtoExField(2)
-	private ServerState serverState;
+    @ProtoExField(2)
+    private ServerState serverState;
 
-	@ProtoExField(4)
-	private String clientVersion;
+    @ProtoExField(3)
+    private String featureVersion;
 
-	@ProtoExField(5)
-	private String name;
+    @ProtoExField(4)
+    private String clientVersion;
 
-	@ProtoExField(6)
-	private String url;
+    @ProtoExField(5)
+    private String name;
 
-	public ServerSetting() {
-	}
+    @ProtoExField(6)
+    private String properties;
 
-	public ServerSetting(ServerOutline outline) {
-		this.setName("s" + outline.getServerID() + " 服")
-				.setServerID(outline.getServerID())
-				.setClientVersion("")
-				.setServerState(ServerState.OFFLINE);
-	}
+    public ServerSetting() {
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public ServerSetting(ServerOutline outline) {
+        this.setName("s" + outline.getServerID() + " 服")
+                .setServerID(outline.getServerID())
+                .setClientVersion("")
+                .setServerState(ServerState.OFFLINE);
+    }
 
-	public ServerSetting setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public int getServerID() {
-		return this.serverID;
-	}
+    public ServerSetting setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	protected ServerSetting setServerID(int serverID) {
-		this.serverID = serverID;
-		return this;
-	}
+    public int getServerID() {
+        return this.serverID;
+    }
 
-	public ServerState getServerState() {
-		return this.serverState;
-	}
+    protected ServerSetting setServerID(int serverID) {
+        this.serverID = serverID;
+        return this;
+    }
 
-	public ServerSetting setServerState(ServerState serverState) {
-		this.serverState = serverState;
-		return this;
-	}
+    public ServerState getServerState() {
+        return this.serverState;
+    }
 
-	public String getClientVersion() {
-		return this.clientVersion;
-	}
+    public ServerSetting setServerState(ServerState serverState) {
+        this.serverState = serverState;
+        return this;
+    }
 
-	public ServerSetting setClientVersion(String clientVersion) {
-		this.clientVersion = clientVersion;
-		return this;
-	}
+    public String getClientVersion() {
+        return this.clientVersion;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.serverID;
-		return result;
-	}
+    public ServerSetting setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+        return this;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		ServerSetting other = (ServerSetting) obj;
-		if (this.serverID != other.serverID)
-			return false;
-		return true;
-	}
+    public String getFeatureVersion() {
+        return featureVersion;
+    }
 
-	@Override
-	public String toString() {
-		return "ServerSetting [serverState=" + this.serverState + ", clientVersion=" + this.clientVersion + "]";
-	}
+    public ServerSetting setFeatureVersion(String featureVersion) {
+        this.featureVersion = featureVersion;
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + this.serverID;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        ServerSetting other = (ServerSetting) obj;
+        if (this.serverID != other.serverID)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerSetting [serverState=" + this.serverState + ", clientVersion=" + this.clientVersion + "]";
+    }
 
 }

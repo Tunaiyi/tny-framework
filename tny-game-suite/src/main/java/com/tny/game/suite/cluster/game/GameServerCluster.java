@@ -1,23 +1,17 @@
 package com.tny.game.suite.cluster.game;
 
 
-import com.tny.game.common.event.BindP1EventBus;
-import com.tny.game.common.event.EventBuses;
-import com.tny.game.suite.cluster.ClusterUtils;
-import com.tny.game.suite.cluster.SpringBaseCluster;
-import com.tny.game.suite.cluster.event.GameServerClusterListener;
-import com.tny.game.suite.core.GameInfo;
-import com.tny.game.suite.core.InetConnector;
-import com.tny.game.zookeeper.NodeWatcher;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.zookeeper.CreateMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.event.*;
+import com.tny.game.suite.cluster.*;
+import com.tny.game.suite.cluster.event.*;
+import com.tny.game.suite.core.*;
+import com.tny.game.zookeeper.*;
+import org.apache.commons.lang3.math.*;
+import org.apache.zookeeper.*;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class GameServerCluster extends SpringBaseCluster {
 
@@ -56,29 +50,29 @@ public class GameServerCluster extends SpringBaseCluster {
     }
 
     @Override
-    protected void doMonitor() {
-        this.register();
-    }
-
-    private void register() {
+    protected void register() {
         List<ServerOutline> outlines = this.currentConfiger();
         for (ServerOutline outline : outlines) {
             String currentOutlinePath = ClusterUtils.getServerOutlinePath(outline.getServerID());
             String currentLaunchPath = ClusterUtils.getServerLaunchPath(outline.getServerID());
-            String currentSettingPath = ClusterUtils.getServerSettingPath(outline.getServerID());
             // 注册outline
             //	if (this.remoteMonitor.getKeeper().exists(this.currentOutlinePath, false) == null)
             this.remoteMonitor.putNodeData(CreateMode.PERSISTENT, outline, currentOutlinePath);
-            if (GameInfo.getMainInfo().getServerID() == outline.getServerID()) {
-                // 注册监听setting
-                //	ServerSetting setting = new ServerSetting(outline);
-                this.remoteMonitor.createFullNode(currentSettingPath, new byte[0], CreateMode.PERSISTENT, false, ClusterUtils.NO_FORMATTER);
-                this.remoteMonitor.monitorNode(currentSettingPath, this.settingHandler);
-            }
             // 注册launchState
             ServerLaunch launch = new ServerLaunch(outline.getServerID());
             this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, launch, currentLaunchPath);
         }
+    }
+
+    @Override
+    protected void monitor() throws Exception {
+        super.monitor();
+        int serverID = GameInfo.getMainInfo().getServerID();
+        String currentSettingPath = ClusterUtils.getServerSettingPath(serverID);
+        // 注册监听setting
+        //	ServerSetting setting = new ServerSetting(outline);
+        this.remoteMonitor.createFullNode(currentSettingPath, new byte[0], CreateMode.PERSISTENT, false, ClusterUtils.NO_FORMATTER);
+        this.remoteMonitor.monitorNode(currentSettingPath, this.settingHandler);
     }
 
     public ServerSetting getServerSetting() {
@@ -118,12 +112,6 @@ public class GameServerCluster extends SpringBaseCluster {
             outlines.add(outline);
         }
         return outlines;
-    }
-
-    @Override
-    public void postStart() throws Throwable {
-        super.postStart();
-        this.monitor();
     }
 
 
