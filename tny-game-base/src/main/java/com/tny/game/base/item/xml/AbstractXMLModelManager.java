@@ -43,15 +43,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * xml映射事物模型管理器
@@ -124,9 +117,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             Class<? extends Enum<?>>[] enumClasses,
             String... paths) {
         this(modelClass, paths);
-        for (Class<? extends Enum<?>> clazz : enumClasses) {
-            this.enumClassSet.add(clazz);
-        }
+        this.enumClassSet.addAll(Arrays.asList(enumClasses));
     }
 
     protected AbstractXMLModelManager(
@@ -262,12 +253,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
                 }
             }
             if (!find) {
-                List<Class<? extends Enum>> list = map.get(clazz);
-                if (list == null) {
-                    list = new ArrayList<>();
-                    map.put(clazz, list);
-                }
-                list.add(clazz);
+                map.computeIfAbsent(clazz, k -> new ArrayList<>()).add(clazz);
             }
         }
 

@@ -1,11 +1,13 @@
 package com.tny.game.suite.cluster;
 
+import com.google.common.collect.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.zookeeper.*;
 import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.*;
 
 public abstract class BaseCluster {
 
@@ -15,16 +17,27 @@ public abstract class BaseCluster {
 
     protected final byte[] NOTHING = new byte[0];
 
+    protected boolean monitorAllServices;
+
     protected Set<String> monitorServerTypes = new HashSet<>();
 
     protected ConcurrentMap<String, ServiceNodeHolder> webHolderMap = new ConcurrentHashMap<>();
 
     public BaseCluster(String... monitorAppTypes) {
-        this(Arrays.asList(monitorAppTypes));
+        this(false, Arrays.asList(monitorAppTypes));
+    }
+
+    public BaseCluster(boolean monitorAllServices) {
+        this(monitorAllServices, ImmutableList.of());
     }
 
     public BaseCluster(Collection<String> monitorAppTypes) {
+        this(false, monitorAppTypes);
+    }
+
+    protected BaseCluster(boolean monitorAllServices, Collection<String> monitorAppTypes) {
         this.LOGGER = LoggerFactory.getLogger(this.getClass());
+        this.monitorAllServices = monitorAllServices;
         this.monitorServerTypes.addAll(monitorAppTypes);
     }
 
@@ -47,11 +60,23 @@ public abstract class BaseCluster {
             if (ips == null)
                 throw new NullPointerException("RemoteMonitor IP is null");
             this.remoteMonitor = new ZKMonitor(ips, ClusterUtils.PROTO_FORMATTER);
-            for (String serverType : this.monitorServerTypes) {
-                ServiceNodeHolder holder = new ServiceNodeHolder(serverType);
-                String path = ClusterUtils.getWebNodesPath(serverType);
-                this.webHolderMap.put(serverType, holder);
-                this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType, holder));
+            if (monitorAllServices) {
+                ClusterUtils.getAllWebNodesPaths().forEach((k, v) -> {
+                    Matcher matcher = ClusterUtils.WS_NOTES_PATH_REGEX.matcher(k);
+                    if (matcher.find()) {
+                        String serverType = matcher.group(1);
+                        ServiceNodeHolder holder = new ServiceNodeHolder(serverType);
+                        this.webHolderMap.put(serverType, holder);
+                        this.remoteMonitor.monitorChildren(v, createWebServerWatcher(serverType, holder));
+                    }
+                });
+            } else {
+                for (String serverType : this.monitorServerTypes) {
+                    ServiceNodeHolder holder = new ServiceNodeHolder(serverType);
+                    String path = ClusterUtils.getWebNodesPath(serverType);
+                    this.webHolderMap.put(serverType, holder);
+                    this.remoteMonitor.monitorChildren(path, createWebServerWatcher(serverType, holder));
+                }
             }
             this.doMonitor();
             this.initHandlers().forEach(h -> h.onInit(this.remoteMonitor));

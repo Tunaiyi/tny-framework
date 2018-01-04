@@ -3,6 +3,7 @@ package com.tny.game.suite.base.capacity;
 import com.tny.game.base.item.*;
 import com.tny.game.suite.base.*;
 import org.slf4j.*;
+import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 import javax.annotation.*;
@@ -11,6 +12,7 @@ import java.util.stream.*;
 
 import static com.tny.game.common.utils.Logs.*;
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.suite.SuiteProfiles.*;
 import static com.tny.game.suite.base.capacity.CapacityObjectType.*;
 
 /**
@@ -18,6 +20,7 @@ import static com.tny.game.suite.base.capacity.CapacityObjectType.*;
  * Created by Kun Yang on 16/2/17.
  */
 @Component
+@Profile({CAPACITY})
 public class CapacityDebugger {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CapacityDebugger.class);

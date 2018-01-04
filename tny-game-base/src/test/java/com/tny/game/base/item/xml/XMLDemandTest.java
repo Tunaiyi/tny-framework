@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-public class XMLDemainTest {
+public class XMLDemandTest {
     /**
      * 消耗物品在公式中的名字
      */
@@ -43,7 +43,7 @@ public class XMLDemainTest {
     ItemModel model = new AbstractItemModel() {
 
         {
-            this.alias = XMLDemainTest.this.itemAlias;
+            this.alias = XMLDemandTest.this.itemAlias;
         }
 
         @SuppressWarnings("unchecked")
@@ -68,21 +68,6 @@ public class XMLDemainTest {
 
                 @Override
                 public String getDesc() {
-                    return null;
-                }
-
-                @Override
-                public Class<?> getItemManagerClass() {
-                    return null;
-                }
-
-                @Override
-                public Class<?> getOwnerManagerClass() {
-                    return null;
-                }
-
-                @Override
-                public Class<?> getItemModelManagerClass() {
                     return null;
                 }
 

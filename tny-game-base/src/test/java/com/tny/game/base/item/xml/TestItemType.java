@@ -30,18 +30,4 @@ public enum TestItemType implements ItemType {
         return null;
     }
 
-    @Override
-    public Class<?> getItemManagerClass() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getOwnerManagerClass() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getItemModelManagerClass() {
-        return null;
-    }
 }

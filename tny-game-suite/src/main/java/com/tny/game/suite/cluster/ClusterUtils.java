@@ -1,8 +1,11 @@
 package com.tny.game.suite.cluster;
 
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.zookeeper.NodeDataFormatter;
+import com.tny.game.common.utils.*;
+import com.tny.game.zookeeper.*;
+
+import java.util.*;
+import java.util.regex.*;
 
 import static com.tny.game.suite.utils.Configs.*;
 
@@ -51,6 +54,12 @@ public class ClusterUtils {
         if (path == null)
             throw new NullPointerException(Logs.format("{} web 服务没有zookeeper节点路径", serverType));
         return path;
+    }
+
+    public final static Pattern WS_NOTES_PATH_REGEX = Pattern.compile("tny\\.server\\.monitor\\.ws\\.([1-9A-Za-z_]+)\\.list");
+
+    public static Map<String, String> getAllWebNodesPaths() {
+        return MONITOR_CONFIG.find(WS_NOTES_PATH_REGEX);
     }
 
     public static final NodeDataFormatter STRING_FORMATTER = new NodeDataFormatter() {

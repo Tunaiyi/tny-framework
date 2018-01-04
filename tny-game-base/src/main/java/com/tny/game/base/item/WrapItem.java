@@ -50,7 +50,7 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     }
 
     @Override
-    public <IT extends ItemType> IT getItemType() {
+    public ItemType getItemType() {
         return this.item.getItemType();
     }
 

@@ -1,10 +1,8 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 抽象事物拥有者对象
@@ -52,8 +50,8 @@ public abstract class StuffOwner<IM extends ItemModel, SM extends ItemModel, S e
 
     @Override
     @SuppressWarnings("unchecked")
-    public <IT extends ItemType> IT getItemType() {
-        return (IT) ownItemType;
+    public ItemType getItemType() {
+        return ownItemType;
     }
 
     protected Collection<S> getItemCollection() {

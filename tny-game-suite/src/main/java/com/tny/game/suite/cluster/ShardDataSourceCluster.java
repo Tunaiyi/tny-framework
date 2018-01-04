@@ -1,19 +1,32 @@
 package com.tny.game.suite.cluster;
 
-import com.tny.game.suite.cache.ShardDataSourceFactory;
-import com.tny.game.suite.cluster.game.ServerOutline;
-import com.tny.game.suite.cluster.game.ServerSetting;
-import com.tny.game.suite.cluster.game.ServerState;
+import com.google.common.collect.*;
+import com.tny.game.suite.cache.*;
+import com.tny.game.suite.cluster.game.*;
+
+import java.util.*;
 
 public abstract class ShardDataSourceCluster extends ServiceCluster {
 
     private ShardDataSourceFactory dataSourceFactory;
 
-    public ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory) {
-        super(serverType, true);
-        this.dataSourceFactory = dataSourceFactory;
+    public ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, String... monitorWebTypes) {
+        this(serverType, dataSourceFactory, false, Arrays.asList(monitorWebTypes));
     }
 
+    public ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, Collection<String> monitorWebTypes) {
+        this(serverType, dataSourceFactory, false, monitorWebTypes);
+    }
+
+    public ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, boolean monitorAllServices) {
+        this(serverType, dataSourceFactory, monitorAllServices, ImmutableList.of());
+    }
+
+
+    protected ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, boolean monitorAllServices, Collection<String> monitorWebTypes) {
+        super(serverType, true, monitorAllServices, monitorWebTypes);
+        this.dataSourceFactory = dataSourceFactory;
+    }
 
     @Override
     protected void postUpdateSetting(ServerNode node, ServerSetting serverSetting, boolean create) {

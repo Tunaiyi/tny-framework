@@ -234,14 +234,14 @@ public interface Config {
     /**
      * 添加可重读接口 <br>
      *
-     * @param reloadable 添加的可重读接口
+     * @param reload 添加的可重读接口
      */
     void addConfigReload(ConfigReload reload);
 
     /**
      * 移除可重读接口 <br>
      *
-     * @param reloadable 移除的可重读接口
+     * @param reload 移除的可重读接口
      */
     void removeConfigReload(ConfigReload reload);
 

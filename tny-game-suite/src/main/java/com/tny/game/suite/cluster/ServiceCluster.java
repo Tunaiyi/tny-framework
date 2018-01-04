@@ -1,6 +1,7 @@
 package com.tny.game.suite.cluster;
 
 
+import com.google.common.collect.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.suite.cluster.game.*;
 import com.tny.game.suite.initer.*;
@@ -117,12 +118,22 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
         this.monitor();
     }
 
+
     public ServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
-        this(serverType, watchSetting, Arrays.asList(monitorWebTypes));
+        this(serverType, watchSetting, false, Arrays.asList(monitorWebTypes));
     }
 
     public ServiceCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
-        super(monitorWebTypes);
+        this(serverType, watchSetting, false, monitorWebTypes);
+    }
+
+    public ServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices) {
+        this(serverType, watchSetting, monitorAllServices, ImmutableList.of());
+    }
+
+
+    protected ServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices, Collection<String> monitorWebTypes) {
+        super(monitorAllServices, monitorWebTypes);
         int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID);
         this.serverType = serverType;
         this.watchSetting = watchSetting;

@@ -26,6 +26,7 @@ public interface SuiteProfiles {
     String SCHEDULER_DB = "suite.scheduler_db";
     String ITEM = "suite.item";
     String ITEM_OPLOG = "suite.item.oplog";
+    String CAPACITY = "suite.capacity";
     String PROTOBUF_MAPPER = "suite.item.protobuf_mapper";
 
     String SERVER = "suite.server";

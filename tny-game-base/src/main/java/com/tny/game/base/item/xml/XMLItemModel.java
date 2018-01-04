@@ -1,16 +1,11 @@
 package com.tny.game.base.item.xml;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.tny.game.base.item.AbstractItemModel;
-import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ItemType;
-import com.tny.game.base.item.ModelExplorer;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.collection.EmptyImmutableMap;
+import com.google.common.collect.*;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.collection.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 抽象xml映射事物模型
@@ -32,8 +27,8 @@ public abstract class XMLItemModel extends AbstractItemModel {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <IT extends ItemType> IT getItemType() {
-        return (IT) itemType();
+    public ItemType getItemType() {
+        return itemType();
     }
 
     protected abstract ItemType itemType();

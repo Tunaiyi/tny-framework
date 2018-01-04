@@ -34,7 +34,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
     @Override
-    public <IT extends ItemType> IT getItemType() {
+    public ItemType getItemType() {
         return this.getModel().getItemType();
     }
 

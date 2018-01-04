@@ -1,14 +1,13 @@
 package com.tny.game.suite.cluster;
 
 
-import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.suite.utils.Configs;
+import com.google.common.collect.*;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.suite.utils.*;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletContext;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import javax.annotation.*;
+import javax.servlet.*;
+import java.util.*;
 
 import static com.tny.game.suite.utils.Configs.*;
 
@@ -17,13 +16,19 @@ public abstract class WebServiceCluster extends ServiceCluster implements Server
     @Resource
     private ServletContext servletContext;
 
+
     public WebServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
-        this(serverType, watchSetting, Arrays.asList(monitorWebTypes));
+        super(serverType, watchSetting, false, Arrays.asList(monitorWebTypes));
     }
 
     public WebServiceCluster(String serverType, boolean watchSetting, Collection<String> monitorWebTypes) {
-        super(serverType, watchSetting, monitorWebTypes);
+        super(serverType, watchSetting, false, monitorWebTypes);
     }
+
+    public WebServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices) {
+        super(serverType, watchSetting, monitorAllServices, ImmutableList.of());
+    }
+
 
     @Override
     protected String[] clusterUrls() {

@@ -25,9 +25,9 @@ public interface ItemType extends EnumID<Integer> {
 
     String getDesc();
 
-    Class<?> getItemManagerClass();
+    // Class<?> getItemManagerClass();
 
-    Class<?> getOwnerManagerClass();
+    // Class<?> getOwnerManagerClass();
 
-    Class<?> getItemModelManagerClass();
+    // Class<?> getItemModelManagerClass();
 }

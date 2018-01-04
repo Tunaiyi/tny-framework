@@ -15,7 +15,7 @@ import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelManager<FM> implements ServerPrepareStart {
+public class FeatureModelManager<FM extends FeatureModel> extends GameModelManager<FM> implements ServerPrepareStart {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 

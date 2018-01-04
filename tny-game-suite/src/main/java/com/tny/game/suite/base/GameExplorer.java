@@ -1,21 +1,19 @@
 package com.tny.game.suite.base;
 
+import com.google.common.collect.*;
 import com.tny.game.base.item.*;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.suite.base.annotation.*;
+import org.springframework.beans.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
+import org.springframework.stereotype.*;
 
-import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.text.*;
+import java.util.*;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -23,9 +21,9 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, ServerPrepareStart {
 
-    private final Map<Class<?>, GameManager<Object>> managerMap = new HashMap<>();
+    private Map<ItemType, GameManager<Object>> managerMap = ImmutableMap.of();
 
-    private final Map<Class<?>, ModelManager<Model>> modelManagerMap = new HashMap<>();
+    private Map<ItemType, ModelManager<Model>> modelManagerMap = ImmutableMap.of();
 
     private ApplicationContext applicationContext;
 
@@ -260,27 +258,17 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     private GameManager<Object> getOwnerManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemID(itemID);
-        if (itemType.getOwnerManagerClass() == null)
-            return null;
-        GameManager<Object> manager = this.managerMap
-                .get(itemType.getOwnerManagerClass());
+        GameManager<Object> manager = this.managerMap.get(itemType);
         if (manager == null)
-            throw new NullPointerException(MessageFormat.format(
-                    "获取{0}事物的owner manager[{1}]为null", itemType,
-                    itemType.getOwnerManagerClass()));
+            throw new NullPointerException(MessageFormat.format("获取{0}事物的owner manager 为null", itemType));
         return manager;
     }
 
     private GameManager<Object> getItemManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemID(itemID);
-        if (itemType.getItemManagerClass() == null)
-            return null;
-        GameManager<Object> manager = this.managerMap
-                .get(itemType.getItemManagerClass());
+        GameManager<Object> manager = this.managerMap.get(itemType);
         if (manager == null)
-            throw new NullPointerException(MessageFormat.format(
-                    "获取{0}事物的item manager[{1}]为null", itemType,
-                    itemType.getItemManagerClass()));
+            throw new NullPointerException(MessageFormat.format("获取{0}事物的item manager 为null", itemType));
         return manager;
     }
 
@@ -291,36 +279,25 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     @Override
     public <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType) {
-        ModelManager<Model> manager = this.modelManagerMap
-                .get(itemType.getItemModelManagerClass());
-        if (itemType.getItemModelManagerClass() == null)
-            return null;
+        ModelManager<Model> manager = this.modelManagerMap.get(itemType);
         if (manager == null)
-            throw new NullPointerException(MessageFormat.format(
-                    "获取{0}事物的model manager[{1}]为null", itemType,
-                    itemType.getItemModelManagerClass()));
+            throw new NullPointerException(MessageFormat.format("获取{0}事物的model manager 为null", itemType));
         return (M) manager;
     }
 
     private ModelManager<Model> getModelManager(String alias) {
         ItemType itemType = ItemTypes.ofAlias(alias);
-        ModelManager<Model> manager = this.modelManagerMap
-                .get(itemType.getItemModelManagerClass());
+        ModelManager<Model> manager = this.modelManagerMap.get(itemType);
         if (manager == null)
-            throw new NullPointerException(MessageFormat.format(
-                    "获取{0}事物的model manager[{1}]为null", itemType,
-                    itemType.getItemModelManagerClass()));
+            throw new NullPointerException(MessageFormat.format("获取{0}事物的model manager 为null", itemType));
         return manager;
     }
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         this.applicationContext = applicationContext;
-    }
-
-    public void insertObject(Warehouse warehouse) {
-
     }
 
     public Manager<?> getManager(Class<?> clazz) {
@@ -330,15 +307,41 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     @Override
     public void prepareStart() {
         Map<String, GameManager> map = this.applicationContext.getBeansOfType(GameManager.class);
+        Map<ItemType, GameManager<Object>> managerMap = new HashMap<>();
+        Map<ItemType, ModelManager<Model>> modelManagerMap = new HashMap<>();
         for (GameManager<Object> manager : map.values()) {
-            this.managerMap.put(manager.getClass(), manager);
+            putMananger(managerMap, manager);
         }
-        Map<String, ModelManager> modelMap = this.applicationContext
-                .getBeansOfType(ModelManager.class);
+        Map<String, ModelManager> modelMap = this.applicationContext.getBeansOfType(ModelManager.class);
         for (ModelManager<Model> manager : modelMap.values()) {
-            this.modelManagerMap.put(manager.getClass(), manager);
+            putMananger(modelManagerMap, manager);
         }
+        this.managerMap = ImmutableMap.copyOf(managerMap);
+        this.modelManagerMap = ImmutableMap.copyOf(modelManagerMap);
     }
+
+    public <M> void putMananger(Map<ItemType, M> managerMap, M manager) {
+        Class<?> mClass = manager.getClass();
+        ManageItemType manageItemType = mClass.getAnnotation(ManageItemType.class);
+        if (manageItemType != null) {
+            for (int id : manageItemType.value())
+                putMananger(managerMap, ItemTypes.of(id), manager);
+        }
+        if (manager instanceof ItemTypeManageable) {
+            ItemTypeManageable manageable = as(manager);
+            for (ItemType itemType : manageable.manageTypes())
+                putMananger(managerMap, itemType, manager);
+        }
+
+    }
+
+
+    public <M> void putMananger(Map<ItemType, M> managerMap, ItemType itemType, M manager) {
+        M oldManager = managerMap.putIfAbsent(itemType, manager);
+        if (oldManager != null && oldManager != manager)
+            throw new NullPointerException(Logs.format("{} 与 {} 管理着相同的ItemType {}", manager.getClass(), oldManager.getClass(), itemType));
+    }
+
 
     @Override
     public PrepareStarter getPrepareStarter() {

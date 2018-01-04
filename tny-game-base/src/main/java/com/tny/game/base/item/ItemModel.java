@@ -1,19 +1,9 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.exception.TryToDoException;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.ActionResult;
-import com.tny.game.base.item.behavior.AwardList;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.item.behavior.BehaviorResult;
-import com.tny.game.base.item.behavior.CostList;
-import com.tny.game.base.item.behavior.Option;
-import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.common.formula.Formula;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.formula.*;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 游戏中所有事物的模型
@@ -23,11 +13,9 @@ import java.util.Set;
 public interface ItemModel extends Model {
 
     /**
-     * 事物类型
-     *
-     * @return
+     * @return 事物类型
      */
-    <IT extends ItemType> IT getItemType();
+    ItemType getItemType();
 
     /**
      * 尝试让某事物做某事,失败立即返回
@@ -36,7 +24,6 @@ public interface ItemModel extends Model {
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDo(Item<?> item, Action action, Object... attributes);
 
@@ -48,7 +35,6 @@ public interface ItemModel extends Model {
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes);
 
@@ -59,7 +45,6 @@ public interface ItemModel extends Model {
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDo(long playerID, Action action, Object... attributes);
 
@@ -71,7 +56,6 @@ public interface ItemModel extends Model {
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
 
@@ -82,7 +66,6 @@ public interface ItemModel extends Model {
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDoAll(Item<?> item, Action action, Object... attributes);
 
@@ -94,7 +77,6 @@ public interface ItemModel extends Model {
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDoAll(Item<?> item, Action action, boolean award, Object... attributes);
 
@@ -105,7 +87,6 @@ public interface ItemModel extends Model {
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDoAll(long playerID, Action action, Object... attributes);
 
@@ -117,7 +98,6 @@ public interface ItemModel extends Model {
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
-     * @throws TryToDoException
      */
     TryToDoResult tryToDoAll(long playerID, Action action, boolean award, Object... attributes);
 

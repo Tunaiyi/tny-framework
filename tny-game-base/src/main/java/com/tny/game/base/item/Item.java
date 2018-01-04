@@ -26,7 +26,7 @@ public interface Item<M extends ItemModel> extends Any<M> {
      *
      * @return
      */
-    <IT extends ItemType> IT getItemType();
+    ItemType getItemType();
 
     /**
      * 尝试让该事物对象执行某指定操作,失败立即返回

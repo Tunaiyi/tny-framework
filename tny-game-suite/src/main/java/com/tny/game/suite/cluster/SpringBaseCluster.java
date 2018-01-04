@@ -1,13 +1,11 @@
 package com.tny.game.suite.cluster;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.*;
 import com.tny.game.common.lifecycle.*;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.*;
+import org.springframework.context.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/8/3.
@@ -18,12 +16,20 @@ public class SpringBaseCluster extends BaseCluster implements ServerPrepareStart
 
     private ApplicationContext applicationContext;
 
-    public SpringBaseCluster(String... monitorServerTypes) {
-        super(monitorServerTypes);
+    public SpringBaseCluster(String... monitorAppTypes) {
+        super(false, Arrays.asList(monitorAppTypes));
     }
 
-    public SpringBaseCluster(Collection<String> monitorServerTypes) {
-        super(monitorServerTypes);
+    public SpringBaseCluster(Collection<String> monitorAppTypes) {
+        super(false, monitorAppTypes);
+    }
+
+    public SpringBaseCluster(boolean monitorAllServices) {
+        super(monitorAllServices, ImmutableList.of());
+    }
+
+    protected SpringBaseCluster(boolean monitorAllServices, Collection<String> monitorAppTypes) {
+        super(monitorAllServices, monitorAppTypes);
     }
 
     @Override
