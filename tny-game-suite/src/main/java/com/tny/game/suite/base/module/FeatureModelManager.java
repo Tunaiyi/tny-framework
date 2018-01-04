@@ -21,6 +21,8 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
 
     private Map<Feature, FM> typeMap;
 
+    private Set<Feature> features;
+
     private Map<OpenMode, List<FM>> modelsMap;
 
     private FeatureVersionHolder versionHolder = new FeatureVersionHolder();
@@ -76,6 +78,7 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
             }
         }
         this.typeMap = Collections.unmodifiableMap(typeMap);
+        this.features = ImmutableSet.copyOf(typeMap.keySet());
         Map<OpenMode, List<FM>> modelsMap = new HashMap<>();
         modelSetMap.forEach((openMode, models) -> modelsMap.put(openMode, ImmutableList.copyOf(models)));
         this.modelsMap = ImmutableMap.copyOf(modelsMap);
@@ -100,6 +103,10 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameItemModelM
 
     public Collection<FM> getModels() {
         return this.typeMap.values();
+    }
+
+    public Set<Feature> getFeatures() {
+        return features;
     }
 
     public FM getModelBy(Feature feature) {
