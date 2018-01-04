@@ -1,17 +1,13 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.AbstractItemModel;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemType;
-import com.tny.game.base.item.ItemsImportKey;
-import com.tny.game.base.item.behavior.DemandType;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.collection.MapBuilder;
-import com.tny.game.common.collection.MapRef;
-import org.junit.Assert;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.result.*;
+import org.junit.*;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class XMLDemandTest {
     /**
@@ -48,8 +44,8 @@ public class XMLDemandTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        public <IT extends ItemType> IT getItemType() {
-            return (IT) new ItemType() {
+        public ItemType getItemType() {
+            return new ItemType() {
 
                 @Override
                 public Integer getID() {

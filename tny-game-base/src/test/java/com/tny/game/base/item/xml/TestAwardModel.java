@@ -1,7 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.AbstractItemModel;
-import com.tny.game.base.item.ItemType;
+import com.tny.game.base.item.*;
 
 public class TestAwardModel extends AbstractItemModel {
 
@@ -11,8 +10,8 @@ public class TestAwardModel extends AbstractItemModel {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IT extends ItemType> IT getItemType() {
-        return (IT) new ItemType() {
+    public ItemType getItemType() {
+        return new ItemType() {
 
             @Override
             public Integer getID() {
