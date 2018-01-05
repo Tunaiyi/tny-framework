@@ -58,11 +58,6 @@ public class XMLDemandTest {
                 }
 
                 @Override
-                public boolean hasEntity() {
-                    return true;
-                }
-
-                @Override
                 public String getDesc() {
                     return null;
                 }

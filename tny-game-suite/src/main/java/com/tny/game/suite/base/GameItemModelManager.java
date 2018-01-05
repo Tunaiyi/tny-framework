@@ -1,10 +1,11 @@
 package com.tny.game.suite.base;
 
 import com.google.common.collect.*;
-import com.thoughtworks.xstream.*;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.utils.*;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -50,12 +51,11 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
     }
 
     @Override
-    protected void initXStream(XStream xStream) {
-        super.initXStream(xStream);
+    protected void loadAndInitModel(String path, InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
+        super.loadAndInitModel(path, inputStream, reload);
         this.itemTypes = ImmutableSet.copyOf(this.modelMap.values().stream()
-                .map(ItemModel::getItemType)
+                .map(m -> Throws.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
                 .collect(Collectors.toSet()));
-        // for (ItemType itemType : v)
     }
 
     @Override

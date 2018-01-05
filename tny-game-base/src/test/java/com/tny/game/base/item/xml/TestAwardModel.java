@@ -24,12 +24,6 @@ public class TestAwardModel extends AbstractItemModel {
             }
 
             @Override
-            public boolean hasEntity() {
-
-                return false;
-            }
-
-            @Override
             public String getDesc() {
                 return null;
             }

@@ -190,7 +190,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         ItemModel model = this.getItemModel(alias);
         Item<?> item;
         attributeMap.put(DEMAND_MODEL, model);
-        if (model.getItemType().hasEntity()) {
+        if (itemExplorer.hasItemMannager(model.getItemType())) {
             item = this.itemExplorer.getItem(playerID, model.getID());
             if (this.name != null)
                 attributeMap.put(this.name, item);

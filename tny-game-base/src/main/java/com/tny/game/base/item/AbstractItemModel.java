@@ -1,28 +1,15 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.exception.GameRuningException;
-import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.exception.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.behavior.simple.SimpleBehaviorResult;
-import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
-import com.tny.game.base.item.behavior.simple.SimpleTryToDoResult;
-import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
-import com.tny.game.common.formula.Formula;
-import com.tny.game.common.formula.FormulaHolder;
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.MvelFormulaFactory;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.base.item.behavior.simple.*;
+import com.tny.game.base.item.xml.XMLDemand.*;
+import com.tny.game.common.formula.*;
+import com.tny.game.common.utils.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.Map.*;
+import java.util.stream.*;
 
 /**
  * 抽象事物模型
@@ -122,7 +109,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
-        if (model.getItemType().hasEntity()) {
+        if (itemExplorer.hasItemMannager(model.getItemType())) {
             Item<?> item = this.itemExplorer.getItem(playerID, model.getID());
             attributeMap.put(alias, item);
             return item;
@@ -508,7 +495,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     protected void setAttrMap(long playerID, Map<String, Object> attributeMap, Item<?> item, Object... attributes) {
         String key = null;
         if (item == null) {
-            if (this.getItemType().hasEntity())
+            if (itemExplorer.hasItemMannager(this.getItemType()))
                 item = itemExplorer.getItem(playerID, this.getID());
         }
         attributeMap.put(ACTION_ITEM_NAME, item);

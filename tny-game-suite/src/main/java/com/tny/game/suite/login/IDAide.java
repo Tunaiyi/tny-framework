@@ -10,6 +10,7 @@ public class IDAide {
     // long SYSTEM_PLAYER_ID = 0;
 
     public static long PLAYER_ID_OFFSET = 10000000;
+    public static int SERVER_ID_OFFSET = 1000000;
 
     private static char[] digits = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',

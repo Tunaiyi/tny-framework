@@ -46,6 +46,11 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     }
 
     @Override
+    public boolean hasItemMannager(ItemType itemType) {
+        return false;
+    }
+
+    @Override
     public <I extends Any<?>> I getItem(long playerID, int id, Object... object) {
         return null;
     }

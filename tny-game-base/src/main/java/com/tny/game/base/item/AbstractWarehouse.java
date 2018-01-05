@@ -1,23 +1,17 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.listener.TradeEvents;
-import com.tny.game.base.log.LogName;
-import com.tny.game.common.context.AttrEntry;
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.common.collection.CopyOnWriteMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.simple.*;
+import com.tny.game.base.item.listener.*;
+import com.tny.game.base.log.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.context.*;
+import org.slf4j.*;
 
-import java.lang.ref.WeakReference;
-import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.lang.ref.*;
+import java.text.*;
+import java.util.*;
+import java.util.stream.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O> {
@@ -126,7 +120,7 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
             O owner = this.getOwner(model.getItemType(), ownerClass);
             if (owner != null) {
                 synchronized (owner) {
-                     this.doConsume(owner, tradeItem, action, attributes);
+                    this.doConsume(owner, tradeItem, action, attributes);
                 }
             } else {
                 LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());

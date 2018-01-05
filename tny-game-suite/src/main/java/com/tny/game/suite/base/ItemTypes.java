@@ -1,10 +1,12 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.ItemType;
-import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.common.utils.ClassImporter;
-import com.tny.game.suite.utils.Configs;
-import org.apache.commons.lang3.StringUtils;
+import com.tny.game.base.item.*;
+import com.tny.game.common.enums.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.suite.utils.*;
+import org.apache.commons.lang3.*;
+
+import static com.tny.game.base.item.ItemType.ID_TAIL_SIZE;
 
 /**
  * 服务器工具栏
@@ -52,9 +54,8 @@ public class ItemTypes extends ClassImporter {
     }
 
     public static <T extends ItemType> T ofItemID(int itemID) {
-        int typeID = itemID / 1000000 * 1000000;
+        int typeID = itemID / ID_TAIL_SIZE * ID_TAIL_SIZE;
         return of(typeID);
     }
-
 
 }

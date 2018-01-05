@@ -1,19 +1,9 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.exception.GameRuningException;
-import com.tny.game.base.exception.ItemResultCode;
-import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ModelExplorer;
+import com.tny.game.base.exception.*;
+import com.tny.game.base.item.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class DemandHolderObject {
 
@@ -42,16 +32,14 @@ public abstract class DemandHolderObject {
             setAttrMap(playerID, alias, itemModelExplorer, itemExplorer, attributeMap);
     }
 
-    public static Item<?> setAttrMap(long playerID, String alias, ModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
+    private static void setAttrMap(long playerID, String alias, ModelExplorer itemModelExplorer, ItemExplorer itemExplorer, Map<String, Object> attributeMap) {
         ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
-        Item<?> item = null;
-        if (model.getItemType().hasEntity()) {
-            item = itemExplorer.getItem(playerID, model.getID());
+        if (itemExplorer.hasItemMannager(model.getItemType())) {
+            Item<?> item = itemExplorer.getItem(playerID, model.getID());
             attributeMap.put(alias, item);
         }
-        return item;
     }
 
     protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
@@ -92,7 +80,6 @@ public abstract class DemandHolderObject {
             this.demandList = new ArrayList<>();
         if (this.attrAliasSet == null)
             this.attrAliasSet = new HashSet<>(0);
-
         for (AbstractDemand demand : this.demandList) {
             demand.init(itemModel, itemExplorer, itemModelExplorer);
         }

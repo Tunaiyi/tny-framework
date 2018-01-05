@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.*;
 
 /**
  * 事物类型接口
@@ -9,6 +9,9 @@ import com.tny.game.common.enums.EnumID;
  */
 public interface ItemType extends EnumID<Integer> {
 
+    int ID_TAIL_SIZE = 1000000;
+
+
     /**
      * 获取别名头
      *
@@ -16,14 +19,11 @@ public interface ItemType extends EnumID<Integer> {
      */
     String getAliasHead();
 
-    /**
-     * 是否有实体
-     *
-     * @return
-     */
-    boolean hasEntity();
-
     String getDesc();
+
+    default int getIDHead() {
+        return getID() / ID_TAIL_SIZE;
+    }
 
     // Class<?> getItemManagerClass();
 
