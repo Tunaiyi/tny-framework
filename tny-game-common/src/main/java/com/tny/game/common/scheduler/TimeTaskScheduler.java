@@ -388,7 +388,7 @@ public class TimeTaskScheduler {
         for (TimeTaskListener listener : this.listenerList) {
             try {
                 listener.trigger(timeTask);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOG.error("trigger listener handle exception", e);
             }
         }

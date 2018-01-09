@@ -2,10 +2,7 @@ package com.tny.game.suite.scheduler.cache;
 
 import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.common.scheduler.SchedulerBackup;
-import com.tny.game.common.scheduler.TimeTask;
-import com.tny.game.common.scheduler.TimeTaskQueue;
-import com.tny.game.common.scheduler.TimeTaskScheduler;
+import com.tny.game.common.scheduler.*;
 import com.tny.game.suite.SuiteDBHead;
 import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 
@@ -55,6 +52,9 @@ public class CacheSchedulerBackup extends SchedulerBackup {
         for (TimeTask task : taskCollection) {
             this.timeTaskQueue.put(task);
         }
+        // taskCollection.stream().findFirst().ifPresent(t -> {
+        //     this.stopTime = t.getExecuteTime();
+        // });
     }
 
 }
