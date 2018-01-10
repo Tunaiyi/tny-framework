@@ -1,14 +1,12 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
+import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
 import com.tny.game.base.item.probability.Probability;
 
 import java.util.Map;
 
-import static com.tny.game.base.item.ItemsImportKey.*;
+import static com.tny.game.base.item.ItemsImportKey.DEMAND_PARAMS;
 
 /**
  * 奖励
@@ -30,7 +28,7 @@ public interface Award extends Probability {
      * @param attributes 附加参数
      * @return 返回奖励数量
      */
-    int countNumber(ItemModel awardModel, Map<String, Object> attributes);
+    Number countNumber(ItemModel awardModel, Map<String, Object> attributes);
 
     /**
      * 获取改变方式
@@ -57,8 +55,8 @@ public interface Award extends Probability {
         AlterType type = this.getAlterType();
         Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
         attributeMap.put(DEMAND_PARAMS, paramMap);
-        int number = this.countNumber(awardModel, attributeMap);
-        if (number > 0) {
+        Number number = this.countNumber(awardModel, attributeMap);
+        if (number.doubleValue() > 0.0) {
             return new SimpleTradeItem<>(awardModel, number, type == null ? AlterType.IGNORE : type, valid, paramMap);
         } else {
             return null;

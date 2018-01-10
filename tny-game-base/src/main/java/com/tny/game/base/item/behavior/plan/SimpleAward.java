@@ -57,11 +57,11 @@ public class SimpleAward extends AbstractAward {
     }
 
     @Override
-    public int countNumber(ItemModel model, Map<String, Object> attributes) {
+    public Number countNumber(ItemModel model, Map<String, Object> attributes) {
         return this.fx.createFormula()
                 .putAll(attributes)
                 .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
-                .execute(Integer.class);
+                .execute(Number.class);
     }
 
     @Override

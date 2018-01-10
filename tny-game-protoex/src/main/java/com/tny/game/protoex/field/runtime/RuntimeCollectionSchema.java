@@ -113,7 +113,6 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
         int repeatChildID = WireFormat.getRepeatChildID(repeatOption);
         boolean raw = WireFormat.isRepeatChildRaw(repeatOption);
         Tag elementTag = new Tag(repeatChildID, raw, tag);
-
         if (packed) {
             return this.doReadPackedElements(valueList, inputStream, length, elementTag, elementDesc);
         } else {

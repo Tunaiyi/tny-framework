@@ -103,7 +103,7 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
         }
         if (number != null) {
             Number old = abilityMap.put(ability, number);
-            return (old == null ? number : old).intValue();
+            return old == null ? number : old;
         }
         return null;
     }

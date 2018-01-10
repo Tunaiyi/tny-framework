@@ -36,7 +36,7 @@ public class XMLAwardPlanTest {
         }
 
         @Override
-        public int countNumber(ItemModel model, Map<String, Object> attributes) {
+        public Number countNumber(ItemModel model, Map<String, Object> attributes) {
             return 10;
         }
 
