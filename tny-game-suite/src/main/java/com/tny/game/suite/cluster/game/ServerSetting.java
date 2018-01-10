@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster.game;
 
 import com.tny.game.protoex.annotations.*;
-import com.tny.game.suite.*;
+import com.tny.game.suite.SuiteProtoIDs;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_SETTING)
 public class ServerSetting {
@@ -103,7 +103,11 @@ public class ServerSetting {
 
     @Override
     public String toString() {
-        return "ServerSetting [serverState=" + this.serverState + ", clientVersion=" + this.clientVersion + "]";
+        return "ServerSetting{" + "serverID=" + serverID +
+                ", serverState=" + serverState +
+                ", featureVersion='" + featureVersion + '\'' +
+                ", clientVersion='" + clientVersion + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
-
 }
