@@ -1,7 +1,6 @@
 package com.tny.game.common.number;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -269,6 +268,13 @@ public class NumberAide {
         return one.doubleValue() >= other.doubleValue();
     }
 
+    public static Number min(Number one, Number other) {
+        return lessEqual(one, other) ? one : other;
+    }
+
+    public static Number max(Number one, Number other) {
+        return greaterEqual(one, other) ? one : other;
+    }
 
     public static boolean equal(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());

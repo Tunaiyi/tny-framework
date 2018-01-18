@@ -14,9 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -41,7 +39,10 @@ public class ServerLauncher {
 
     private static Logger LOG = LoggerFactory.getLogger(ServerLauncher.class);
 
+    private long startAt;
+
     public ServerLauncher(String... contextFile) throws Throwable {
+        this.startAt = System.currentTimeMillis();
         this.processor.onStaticInit();
         GenericXmlApplicationContext context = new GenericXmlApplicationContext();
         String profiles = Configs.SUITE_CONFIG.getStr(Configs.SUITE_LAUNCHER_PROFILES);
@@ -52,6 +53,8 @@ public class ServerLauncher {
     }
 
     private void init(ConfigurableApplicationContext context) {
+        startAt = System.currentTimeMillis();
+        LOG.info("开始启动服务加载配置");
         this.context = context;
         this.context.refresh();
     }
@@ -113,6 +116,7 @@ public class ServerLauncher {
             });
             // complete
             runPoint(complete);
+            LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - startAt);
         } finally {
             TransactionManager.close();
         }

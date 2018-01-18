@@ -1,15 +1,15 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.*;
-import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.version.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.RunningChecker;
+import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.utils.version.Version;
+import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.*;
-import org.springframework.beans.*;
+import org.springframework.beans.BeansException;
 import org.springframework.context.*;
 
-import javax.annotation.*;
+import javax.annotation.Resource;
 import java.util.*;
 
 public abstract class FeatureService<DTO> implements ServerPrepareStart, ApplicationContextAware {
@@ -58,6 +58,10 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
 
     private FeatureModel getModel(Feature feature) {
         return featureModelManager.getAndCheckModelBy(feature);
+    }
+
+    public boolean isEffect(Feature feature) {
+        return handlerMap.containsKey(feature);
     }
 
     // private boolean isActiveFeature(Version current, FeatureModel model) {

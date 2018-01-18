@@ -15,6 +15,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.tny.game.common.number.NumberAide.max;
+import static com.tny.game.common.number.NumberAide.min;
+
 public class MathEx {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MathEx.class);
@@ -470,6 +473,18 @@ public class MathEx {
      */
     public static double clamp(double value, double minValue, double maxValue) {
         return Math.min(Math.max(minValue, value), maxValue);
+    }
+
+    /**
+     * 获取value取值范围的有效数 最大值maxValue, 最小值minValue
+     *
+     * @param value    取值数
+     * @param minValue 最小范围
+     * @param maxValue 最大范围
+     * @return 返回有效数
+     */
+    public static Number clamp(Number value, Number minValue, Number maxValue) {
+        return min(max(value, minValue), maxValue);
     }
 
     /**

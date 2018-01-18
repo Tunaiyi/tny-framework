@@ -42,6 +42,30 @@ public class MvelEx {
         return value;
     }
 
+    public static Range<Byte> range(Byte min, Byte max) {
+        return Range.closed(min, max);
+    }
+
+    public static Range<Short> range(Short min, Short max) {
+        return Range.closed(min, max);
+    }
+
+    public static Range<Integer> range(Integer min, Integer max) {
+        return Range.closed(min, max);
+    }
+
+    public static Range<Long> range(Long min, Long max) {
+        return Range.closed(min, max);
+    }
+
+    public static Range<Float> range(Float min, Float max) {
+        return Range.closed(min, max);
+    }
+
+    public static Range<Double> range(Double min, Double max) {
+        return Range.closed(min, max);
+    }
+
     public static <T extends Comparable<T>> Range<T> range(T min, T max) {
         return Range.closed(min, max);
     }
