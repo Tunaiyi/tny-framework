@@ -2,34 +2,21 @@ package com.tny.game.net.session;
 
 import com.google.common.collect.Range;
 import com.tny.game.common.context.Attributes;
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.exception.RemotingException;
-import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.MessageMode;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.session.event.SessionEvent.SessionEventType;
-import com.tny.game.net.session.event.SessionInputEvent;
-import com.tny.game.net.session.event.SessionInputEventHandler;
-import com.tny.game.net.session.event.SessionOutputEvent;
-import com.tny.game.net.session.event.SessionOutputEventHandler;
-import com.tny.game.net.session.event.SessionReceiveEvent;
-import com.tny.game.net.session.event.SessionResendEvent;
-import com.tny.game.net.session.event.SessionSendEvent;
-import com.tny.game.net.tunnel.NetTunnel;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.session.event.*;
+import com.tny.game.net.tunnel.*;
 import org.slf4j.Logger;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.slf4j.LoggerFactory.*;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * 通用Session
@@ -238,11 +225,23 @@ public class CommonSession<UID> implements NetSession<UID> {
 
     @Override
     public void send(Tunnel<UID> tunnel, MessageContent<?> content) {
-        Message<UID> message = null;
         try {
+            int state = this.sessionState.get();
+            if (state == SessionState.INVALID.getId()) {
+                String exMessage = Logs.format("Session [{}] 已经关闭, 无法发送", this);
+                if (content.isWaitForSent())
+                    content.sendFuture().completeExceptionally(new SessionException(exMessage));
+                else
+                    LOGGER.debug(exMessage);
+                return;
+            }
             MessageMode mode = content.getMode();
             if (tunnel.getSendExcludes().contains(mode)) {
-                LOGGER.debug("{}无法发送 {} 信息[{}]", tunnel, mode, content.getProtocol());
+                String exMessage = Logs.format("Tunnel [{}] 无法发送 {} 信息[{}]", tunnel, mode, content.getProtocol());
+                if (content.isWaitForSent())
+                    content.sendFuture().completeExceptionally(new TunnelException(exMessage));
+                else
+                    LOGGER.debug(exMessage);
                 return;
             }
             tunnel = getTunnel(tunnel);

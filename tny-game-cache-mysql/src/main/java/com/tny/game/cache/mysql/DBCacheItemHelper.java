@@ -1,9 +1,9 @@
 package com.tny.game.cache.mysql;
 
-import com.mysql.jdbc.Statement;
 import com.tny.game.cache.CacheItem;
 import com.tny.game.cache.CacheItemHelper;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
