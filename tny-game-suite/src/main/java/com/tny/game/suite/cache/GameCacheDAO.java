@@ -40,15 +40,26 @@ public interface GameCacheDAO extends CacheDAO, ShardCacheDAO {
     int[] add(@ShardBy("item") @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
-    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
-            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
+    @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+            "`flags`=VALUES(`flags`), `data`=VALUES(`data`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`expire`), `uid`=VALUES(`uid`), `itemID`=VALUES(`itemID`), `number`=VALUES(`number`)")
+    // @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+    //         "`flags`=:i.flags, `data`=:i.data, `expire`=:i.expire, `saveAt`=:i.saveAt, `uid`=:i.uid, `itemID`=:i.itemID, `number`=:i.number")
     int set(@SQLParam("i") DBCacheItem item);
 
     @Override
-    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
-            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
+    @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+            "`flags`=VALUES(`flags`), `data`=VALUES(`data`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`expire`), `uid`=VALUES(`uid`), `itemID`=VALUES(`itemID`), `number`=VALUES(`number`)")
     int[] set(@ShardBy @SQLParam("i") Collection<? extends DBCacheItem> items);
 
+    // @Override
+    // @SQL("REPLACE INTO " + ITEM_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number)")
+    // int set(@SQLParam("i") DBCacheItem item);
+    //
+    // @Override
+    // @SQL("REPLACE INTO " + ITEMS_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number)")
+    // int[] set(@ShardBy("item") @SQLParam("i") Collection<? extends DBCacheItem> items);
+
+    @Override
     @SQL("UPDATE " + ITEM_TABLE + " SET  `data`=:i.data, `flags`=:i.flags, `expire`=:i.expire, `saveAt`=:i.saveAt, `number`=:i.number WHERE `key` = :i.key")
     int update(@SQLParam("i") DBCacheItem item);
 

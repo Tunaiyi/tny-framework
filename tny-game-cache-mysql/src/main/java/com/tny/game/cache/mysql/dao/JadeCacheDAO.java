@@ -31,13 +31,15 @@ public interface JadeCacheDAO extends CacheDAO, ShardCacheDAO {
     int[] add(@ShardBy @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
-    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
-            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
+    @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+            "`flags`=VALUES(`flags`), `data`=VALUES(`data`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`expire`), `uid`=VALUES(`uid`), `itemID`=VALUES(`itemID`), `number`=VALUES(`number`)")
+    // @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FULL_FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+    //         "`flags`=:i.flags, `data`=:i.data, `expire`=:i.expire, `saveAt`=:i.saveAt, `uid`=:i.uid, `itemID`=:i.itemID, `number`=:i.number")
     int set(@SQLParam("i") DBCacheItem item);
 
     @Override
-    @SQL("INSERT INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt) ON DUPLICATE KEY UPDATE " +
-            "`data`=VALUES(`data`), `flags`=VALUES(`flags`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`saveAt`)")
+    @SQL("INSERT IGNORE INTO " + ITEM_TABLE + " (" + FIELD + ") VALUES (:i.key, :i.flags, :i.data, :i.expire, :i.saveAt, :i.uid, :i.itemID, :i.number) ON DUPLICATE KEY UPDATE " +
+            "`flags`=VALUES(`flags`), `data`=VALUES(`data`), `expire`=VALUES(`expire`), `saveAt`=VALUES(`expire`), `uid`=VALUES(`uid`), `itemID`=VALUES(`itemID`), `number`=VALUES(`number`)")
     int[] set(@ShardBy @SQLParam("i") Collection<? extends DBCacheItem> items);
 
     @Override
