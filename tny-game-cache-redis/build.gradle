@@ -8,7 +8,7 @@ dependencies {
 
     compile(
             libs.'spring-context-support',
-
+            libs.'commons-beanutils',
             libs.'jedis',
 
             project(":tny-game-cache"),
