@@ -1,32 +1,23 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.exception.ItemResultCode;
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.CountableStuffModel;
-import com.tny.game.base.item.CountableStuffOwner;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.base.item.behavior.TryToDoResult;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.AttrEntry;
-import com.tny.game.common.utils.DoneResult;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.common.utils.*;
 import com.tny.game.suite.utils.SuiteResultCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.function.BiConsumer;
 
 import static com.tny.game.base.item.behavior.TradeType.*;
-import static com.tny.game.suite.SuiteProfiles.*;
+import static com.tny.game.suite.SuiteProfiles.GAME;
 
 @Component
-@Profile({ITEM, GAME})
+@Profile(GAME)
 public class GameWarehouseService implements WarehouseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameWarehouseService.class);

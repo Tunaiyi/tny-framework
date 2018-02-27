@@ -61,7 +61,7 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
     }
 
     public boolean isEffect(Feature feature) {
-        return handlerMap.containsKey(feature);
+        return featureModelManager.getModelBy(feature) != null;
     }
 
     // private boolean isActiveFeature(Version current, FeatureModel model) {

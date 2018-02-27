@@ -8,8 +8,13 @@ import com.tny.game.suite.SuiteDBHead;
 import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 import com.tny.game.suite.scheduler.cache.TaskReceiverFormatter;
 
+import static com.tny.game.suite.SuiteProfiles.GAME;
+import static com.tny.game.suite.SuiteProfiles.SCHEDULER_CACHE;
+
 @Persistent(synchronizerClass = DBCacheSynchronizer.class)
-@ToCache(prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,
+@ToCache(
+        profiles = {SCHEDULER_CACHE, GAME},
+        prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,
         cacheKeys = "playerID")
 public class GameTaskReceiver extends TaskReceiver implements Identifiable {
 

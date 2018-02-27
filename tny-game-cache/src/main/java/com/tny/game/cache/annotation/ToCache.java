@@ -47,4 +47,11 @@ public @interface ToCache {
      * @return
      */
     String source() default "";
+
+    /**
+     * 起效描述
+     *
+     * @return
+     */
+    String[] profiles() default {};
 }

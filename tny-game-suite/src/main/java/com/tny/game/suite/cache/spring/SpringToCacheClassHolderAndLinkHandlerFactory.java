@@ -1,35 +1,22 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.cache.CacheTrigger;
-import com.tny.game.cache.CacheTriggerFactory;
-import com.tny.game.cache.ToCacheClassHolder;
-import com.tny.game.cache.ToCacheClassHolderFactory;
-import com.tny.game.cache.TriggerHolder;
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.cache.annotation.Trigger;
+import com.tny.game.cache.*;
+import com.tny.game.cache.annotation.*;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.ClassSelector;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.suite.utils.Configs;
+import org.slf4j.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, ServerPrepareStart {
@@ -37,6 +24,8 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
     private volatile boolean init = false;
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proto");
+
+    private static final Collection<String> profiles = Configs.getProfiles();
 
     private final Map<Class<?>, CacheTrigger> triggerMap = new CopyOnWriteMap<>();
 
@@ -80,6 +69,9 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
             TriggerHolder triggerHolder = new TriggerHolder(cacheTriggers);
             this.triggerHolderMap.put(objectClass, triggerHolder);
         } else {
+            String[] cacheProfiles = toCache.profiles();
+            if (cacheProfiles.length > 0 && Stream.of(cacheProfiles).noneMatch(profiles::contains))
+                return;
             ToCacheClassHolder toCacheClassHolder = new ToCacheClassHolder(objectClass, this);
             this.holderMap.put(objectClass, toCacheClassHolder);
             this.triggerHolderMap.put(objectClass, toCacheClassHolder);

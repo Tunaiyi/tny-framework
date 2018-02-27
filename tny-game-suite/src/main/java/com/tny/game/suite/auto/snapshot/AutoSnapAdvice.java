@@ -25,7 +25,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Listener
 @Component
-@Profile({AUTO, GAME})
+@Profile({AUTO, GAME, AUTO_SNAP})
 public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice, BeforeAdvice, ThrowsAdvice {
 
     @Resource

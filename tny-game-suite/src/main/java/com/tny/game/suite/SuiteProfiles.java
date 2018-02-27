@@ -13,6 +13,8 @@ public interface SuiteProfiles {
     String LOG = "suite.log";
 
     String AUTO = "suite.auto";
+    String AUTO_SNAP = "suite.auto.snap";
+    String AUTO_PERSISTENT = "suite.auto.persistent";
     String PROTOEX = "suite.protoex";
     String TEXT_FILTER = "suite.controller.text_filter";
 
