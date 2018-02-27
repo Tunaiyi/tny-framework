@@ -1,10 +1,8 @@
 package com.tny.game.cache;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class TriggerHolder {
@@ -23,6 +21,8 @@ public class TriggerHolder {
     public Object triggerLoad(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
+            if (value == null)
+                break;
             value = trigger.triggerLoad(key, object, value);
         }
         return value;
@@ -31,6 +31,8 @@ public class TriggerHolder {
     public Object triggerUpdate(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
+            if (value == null)
+                break;
             value = trigger.triggerReplace(key, object, value);
         }
         return value;
@@ -39,6 +41,8 @@ public class TriggerHolder {
     public Object triggerInsert(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
+            if (value == null)
+                break;
             value = trigger.triggerAdd(key, object, value);
         }
         return value;
@@ -47,6 +51,8 @@ public class TriggerHolder {
     public Object triggerSave(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
+            if (value == null)
+                break;
             value = trigger.triggerSet(key, object, value);
         }
         return value;

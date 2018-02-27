@@ -1,9 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 可通过能力接口

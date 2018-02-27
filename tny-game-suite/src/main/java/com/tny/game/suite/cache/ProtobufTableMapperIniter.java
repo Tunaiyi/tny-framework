@@ -1,25 +1,23 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.collection.CollectorsAide;
 import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.ClassSelector;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Stream;
 
-import static com.tny.game.suite.SuiteProfiles.*;
+import static com.tny.game.suite.SuiteProfiles.PROTOBUF_MAPPER;
 
 /**
  * Created by Kun Yang on 2017/1/18.
@@ -44,6 +42,7 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
     @Override
     public void postStart() throws Exception {
         task.join();
+        Collection<String> profiles = Configs.getProfiles();
         Map<Class<?>, ProtoCacheFormatter> formatterMap =
                 context.getBeansOfType(ProtoCacheFormatter.class)
                         .values()
@@ -51,6 +50,9 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
                         .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
         for (Class<?> clazz : selector.getClasses()) {
             ToCache cache = clazz.getAnnotation(ToCache.class);
+            String[] cacheProfiles = cache.profiles();
+            if (cacheProfiles.length > 0 && Stream.of(cacheProfiles).noneMatch(profiles::contains))
+                continue;
             String table = cache.prefix();
             if (StringUtils.isBlank(table))
                 throw new IllegalArgumentException(

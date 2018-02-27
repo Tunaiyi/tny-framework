@@ -1,10 +1,11 @@
 package com.tny.game.suite.utils;
 
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
-import com.tny.game.net.utils.*;
-import org.apache.commons.lang3.*;
+import com.tny.game.net.base.AppType;
+import com.tny.game.net.utils.NetConfigs;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.*;
 
 import java.util.*;
@@ -63,6 +64,11 @@ public interface Configs {
     String SUITE_BASE_MODULE_CLASS /*                   */ = "tny.server.suite.base.module_class";
     String SUITE_BASE_FEATURE_CLASS /*                  */ = "tny.server.suite.base.feature_class";
     String SUITE_BASE_OPEN_MODE_CLASS /*                */ = "tny.server.suite.base.open_mode_class";
+
+    static Collection<String> getProfiles() {
+        String profiles = Configs.SUITE_CONFIG.getStr(Configs.SUITE_LAUNCHER_PROFILES);
+        return ImmutableSet.copyOf(StringUtils.split(profiles, ","));
+    }
 
     static List<String> getScanPaths() {
         List<String> paths = new ArrayList<>();

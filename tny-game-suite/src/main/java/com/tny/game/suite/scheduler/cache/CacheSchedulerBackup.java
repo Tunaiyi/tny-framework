@@ -8,9 +8,12 @@ import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
 
 import java.util.Collection;
 
+import static com.tny.game.suite.SuiteProfiles.*;
+
 @Persistent(asyn = false, synchronizerClass = DBCacheSynchronizer.class)
-@ToCache(prefix = SuiteDBHead.CACHE_KEY_GAME_SERVER, triggers = CacheSchedulerBackupFormatter.class,
-        cacheKeys = {"key"})
+@ToCache(
+        profiles = {SCHEDULER_CACHE, SCHEDULER_DB, GAME},
+        prefix = SuiteDBHead.CACHE_KEY_GAME_SERVER, triggers = CacheSchedulerBackupFormatter.class, cacheKeys = {"key"})
 public class CacheSchedulerBackup extends SchedulerBackup {
 
     /**

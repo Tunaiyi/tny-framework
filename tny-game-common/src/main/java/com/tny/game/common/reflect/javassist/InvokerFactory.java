@@ -1,20 +1,14 @@
 package com.tny.game.common.reflect.javassist;
 
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.common.reflect.ReflectAide;
 import com.tny.game.common.collection.ConcurrentHashSet;
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import com.tny.game.common.context.*;
+import com.tny.game.common.reflect.ReflectAide;
+import javassist.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 
 public class InvokerFactory {
     /**
@@ -41,23 +35,25 @@ public class InvokerFactory {
         if (invoker != null) {
             return invoker;
         }
-        StringBuilder proxyClassNameBuilder = null;
-        proxyClassNameBuilder = new StringBuilder();
+        StringBuilder proxyClassNameBuilder = new StringBuilder();
         if (method.getDeclaringClass().getCanonicalName().startsWith("java.util"))
             proxyClassNameBuilder.append(method.getDeclaringClass().getCanonicalName().replace("java.util", "javaproxy.util"));
         else
             proxyClassNameBuilder.append(method.getDeclaringClass().getCanonicalName());
+        int hash = method.getDeclaringClass().getName().hashCode() ^ method.getName().hashCode();
+        for (Class<?> paramClass : method.getParameterTypes())
+            hash ^= paramClass.getName().hashCode();
         proxyClassNameBuilder.append("$");
         proxyClassNameBuilder.append(method.getName());
         proxyClassNameBuilder.append("$");
-        proxyClassNameBuilder.append(Math.abs(method.hashCode()));
+        proxyClassNameBuilder.append(Math.abs(hash));
         String proxyClassName = proxyClassNameBuilder.toString();
         StringBuilder invokeCode = new StringBuilder();
         try {
             synchronized (method.getDeclaringClass()) {
                 Class<?> proxyClass;
                 try {
-                    proxyClass = Class.forName(proxyClassName);
+                    Class.forName(proxyClassName);
                 } catch (Throwable e) {
                     invoker = INVOKER_MAP.get(method);
                     if (invoker != null)

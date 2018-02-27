@@ -1,17 +1,13 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.asyndb.ReleaseStrategyFactory;
-import com.tny.game.asyndb.SyncDBExecutor;
-import com.tny.game.asyndb.SynchronizerHolder;
+import com.tny.game.asyndb.*;
 import com.tny.game.asyndb.impl.AverageRateBatchSyncDBExecutor;
 import com.tny.game.asyndb.spring.SpringSynchronizerHolder;
 import com.tny.game.cache.RawCacheItemFactory;
 import com.tny.game.common.config.Config;
 import com.tny.game.suite.cache.DomainItemDBItemFactory;
 import com.tny.game.suite.utils.Configs;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 
 import java.time.Duration;
 
@@ -22,7 +18,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@Profile({CACHE_DB, CACHE_ALL})
+@Profile({CACHE_ASYNC, CACHE_DB, CACHE_REDIS, CACHE_ALL})
 public class CacheConfiguration {
 
 

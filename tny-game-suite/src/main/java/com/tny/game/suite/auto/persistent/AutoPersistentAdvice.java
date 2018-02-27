@@ -2,41 +2,30 @@ package com.tny.game.suite.auto.persistent;
 
 import com.tny.game.base.item.Manager;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttrKeys;
+import com.tny.game.common.context.*;
 import com.tny.game.common.event.annotation.Listener;
-import com.tny.game.common.reflect.aop.AfterReturningAdvice;
-import com.tny.game.common.reflect.aop.ThrowsAdvice;
+import com.tny.game.common.reflect.aop.*;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.net.command.dispatcher.CurrentCommand;
 import com.tny.game.suite.auto.AutoMethodHolder;
-import com.tny.game.suite.auto.persistent.annotation.AutoDB;
-import com.tny.game.suite.auto.persistent.annotation.AutoDBBy;
-import com.tny.game.suite.auto.persistent.annotation.AutoDBParam;
-import com.tny.game.suite.auto.persistent.annotation.AutoDBReturn;
-import com.tny.game.suite.auto.persistent.annotation.AutoOP;
+import com.tny.game.suite.auto.persistent.annotation.*;
 import com.tny.game.suite.base.GameExplorer;
-import com.tny.game.suite.transaction.Transaction;
-import com.tny.game.suite.transaction.TransactionManager;
+import com.tny.game.suite.transaction.*;
 import com.tny.game.suite.transaction.listener.TransactionListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Listener
 @Component
-@Profile({AUTO, GAME})
+@Profile({AUTO, GAME, AUTO_PERSISTENT})
 public class AutoPersistentAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
 
     @Resource
