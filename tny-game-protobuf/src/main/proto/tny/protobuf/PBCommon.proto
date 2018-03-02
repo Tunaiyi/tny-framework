@@ -103,7 +103,9 @@ message StuffProto {
 
 message TimeTaskProto {
     optional uint64 executTime = 1;
+    // 旧handler
     repeated string handlerList = 2;
+    repeated int32 handlers = 3;
 }
 
 message TaskReceiverProto {
@@ -116,4 +118,5 @@ message TaskReceiverProto {
 message SchedulerBackupProto {
     optional int64 stopTime = 1;
     repeated TimeTaskProto timeTaskQueue = 2;
+    map<int32, string> handlers = 3;
 }

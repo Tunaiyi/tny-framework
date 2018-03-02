@@ -1,16 +1,11 @@
 package com.tny.game.common.word;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.config.FileLoader;
+import org.apache.commons.io.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * 敏感词过滤
@@ -146,25 +141,16 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
 
     @Override
     protected void doLoad(InputStream inputStream, boolean reload) {
-        List<String> badWords = new ArrayList<>();
+        List<String> badWords = ImmutableList.of();
         try {
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(inputStream));
-            String line;
-            line = reader.readLine();
-            while (line != null) {
-                badWords.add(line);
-                line = reader.readLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            badWords = IOUtils.readLines(inputStream, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
         Node node = new Node('R');
         for (String str : badWords) {
             if (str != null && str.length() > 0) {
-                char[] chars = str.toCharArray();
+                char[] chars = str.toLowerCase().toCharArray();
                 if (chars.length > 0)
                     this.insertNode(node, chars, 0);
             }

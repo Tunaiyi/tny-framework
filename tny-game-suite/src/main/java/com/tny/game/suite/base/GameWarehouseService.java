@@ -65,6 +65,7 @@ public class GameWarehouseService implements WarehouseService {
 //            }
 //        }
 //    }
+
     @Override
     public void consume(long playerID, Trade trade, AttrEntry<?>... entries) {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
@@ -135,7 +136,6 @@ public class GameWarehouseService implements WarehouseService {
     }
 
 
-    @Override
     @SuppressWarnings("unchecked")
     public DoneResult<Boolean> checkTradeBound(long playerID, Trade trade) {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
