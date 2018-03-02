@@ -1,11 +1,8 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.TryToDoResult;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.AttrEntry;
-import com.tny.game.common.utils.DoneResult;
 
 public interface WarehouseService {
 
@@ -21,6 +18,6 @@ public interface WarehouseService {
 
     void deal(long playerID, TryToDoResult result, AttrEntry<?>... entries);
 
-    DoneResult<Boolean> checkTradeBound(long playerID, Trade trade);
+    // DoneResult<Boolean> checkTradeBound(long playerID, Trade trade);
 
 }

@@ -10380,23 +10380,52 @@ public final class PBCommon {
     long getExecutTime();
 
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     java.util.List<java.lang.String>
         getHandlerListList();
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     int getHandlerListCount();
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     java.lang.String getHandlerList(int index);
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     com.google.protobuf.ByteString
         getHandlerListBytes(int index);
+
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    java.util.List<java.lang.Integer> getHandlersList();
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    int getHandlersCount();
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    int getHandlers(int index);
   }
   /**
    * Protobuf type {@code TimeTaskProto}
@@ -10412,6 +10441,7 @@ public final class PBCommon {
     private TimeTaskProto() {
       executTime_ = 0L;
       handlerList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      handlers_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -10456,6 +10486,27 @@ public final class PBCommon {
               handlerList_.add(bs);
               break;
             }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                handlers_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              handlers_.add(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                handlers_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                handlers_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -10466,6 +10517,9 @@ public final class PBCommon {
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           handlerList_ = handlerList_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          handlers_ = java.util.Collections.unmodifiableList(handlers_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -10502,6 +10556,10 @@ public final class PBCommon {
     public static final int HANDLERLIST_FIELD_NUMBER = 2;
     private com.google.protobuf.LazyStringList handlerList_;
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     public com.google.protobuf.ProtocolStringList
@@ -10509,23 +10567,57 @@ public final class PBCommon {
       return handlerList_;
     }
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     public int getHandlerListCount() {
       return handlerList_.size();
     }
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     public java.lang.String getHandlerList(int index) {
       return handlerList_.get(index);
     }
     /**
+     * <pre>
+     * 旧handler
+     * </pre>
+     *
      * <code>repeated string handlerList = 2;</code>
      */
     public com.google.protobuf.ByteString
         getHandlerListBytes(int index) {
       return handlerList_.getByteString(index);
+    }
+
+    public static final int HANDLERS_FIELD_NUMBER = 3;
+    private java.util.List<java.lang.Integer> handlers_;
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getHandlersList() {
+      return handlers_;
+    }
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    public int getHandlersCount() {
+      return handlers_.size();
+    }
+    /**
+     * <code>repeated int32 handlers = 3;</code>
+     */
+    public int getHandlers(int index) {
+      return handlers_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -10546,6 +10638,9 @@ public final class PBCommon {
       for (int i = 0; i < handlerList_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, handlerList_.getRaw(i));
       }
+      for (int i = 0; i < handlers_.size(); i++) {
+        output.writeInt32(3, handlers_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -10565,6 +10660,15 @@ public final class PBCommon {
         }
         size += dataSize;
         size += 1 * getHandlerListList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < handlers_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(handlers_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getHandlersList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -10590,6 +10694,8 @@ public final class PBCommon {
       }
       result = result && getHandlerListList()
           .equals(other.getHandlerListList());
+      result = result && getHandlersList()
+          .equals(other.getHandlersList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -10609,6 +10715,10 @@ public final class PBCommon {
       if (getHandlerListCount() > 0) {
         hash = (37 * hash) + HANDLERLIST_FIELD_NUMBER;
         hash = (53 * hash) + getHandlerListList().hashCode();
+      }
+      if (getHandlersCount() > 0) {
+        hash = (37 * hash) + HANDLERS_FIELD_NUMBER;
+        hash = (53 * hash) + getHandlersList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -10732,6 +10842,8 @@ public final class PBCommon {
         bitField0_ = (bitField0_ & ~0x00000001);
         handlerList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
+        handlers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -10765,6 +10877,11 @@ public final class PBCommon {
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.handlerList_ = handlerList_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          handlers_ = java.util.Collections.unmodifiableList(handlers_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.handlers_ = handlers_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10817,6 +10934,16 @@ public final class PBCommon {
           } else {
             ensureHandlerListIsMutable();
             handlerList_.addAll(other.handlerList_);
+          }
+          onChanged();
+        }
+        if (!other.handlers_.isEmpty()) {
+          if (handlers_.isEmpty()) {
+            handlers_ = other.handlers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureHandlersIsMutable();
+            handlers_.addAll(other.handlers_);
           }
           onChanged();
         }
@@ -10888,6 +11015,10 @@ public final class PBCommon {
          }
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public com.google.protobuf.ProtocolStringList
@@ -10895,18 +11026,30 @@ public final class PBCommon {
         return handlerList_.getUnmodifiableView();
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public int getHandlerListCount() {
         return handlerList_.size();
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public java.lang.String getHandlerList(int index) {
         return handlerList_.get(index);
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public com.google.protobuf.ByteString
@@ -10914,6 +11057,10 @@ public final class PBCommon {
         return handlerList_.getByteString(index);
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder setHandlerList(
@@ -10927,6 +11074,10 @@ public final class PBCommon {
         return this;
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder addHandlerList(
@@ -10940,6 +11091,10 @@ public final class PBCommon {
         return this;
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder addAllHandlerList(
@@ -10951,6 +11106,10 @@ public final class PBCommon {
         return this;
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder clearHandlerList() {
@@ -10960,6 +11119,10 @@ public final class PBCommon {
         return this;
       }
       /**
+       * <pre>
+       * 旧handler
+       * </pre>
+       *
        * <code>repeated string handlerList = 2;</code>
        */
       public Builder addHandlerListBytes(
@@ -10969,6 +11132,72 @@ public final class PBCommon {
   }
   ensureHandlerListIsMutable();
         handlerList_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> handlers_ = java.util.Collections.emptyList();
+      private void ensureHandlersIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          handlers_ = new java.util.ArrayList<java.lang.Integer>(handlers_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getHandlersList() {
+        return java.util.Collections.unmodifiableList(handlers_);
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public int getHandlersCount() {
+        return handlers_.size();
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public int getHandlers(int index) {
+        return handlers_.get(index);
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public Builder setHandlers(
+          int index, int value) {
+        ensureHandlersIsMutable();
+        handlers_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public Builder addHandlers(int value) {
+        ensureHandlersIsMutable();
+        handlers_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public Builder addAllHandlers(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureHandlersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, handlers_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handlers = 3;</code>
+       */
+      public Builder clearHandlers() {
+        handlers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
@@ -11865,6 +12094,40 @@ public final class PBCommon {
      */
     com.tny.game.protobuf.PBCommon.TimeTaskProtoOrBuilder getTimeTaskQueueOrBuilder(
         int index);
+
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+    int getHandlersCount();
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+    boolean containsHandlers(
+        int key);
+    /**
+     * Use {@link #getHandlersMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.String>
+    getHandlers();
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.String>
+    getHandlersMap();
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    java.lang.String getHandlersOrDefault(
+        int key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    java.lang.String getHandlersOrThrow(
+        int key);
   }
   /**
    * Protobuf type {@code SchedulerBackupProto}
@@ -11924,6 +12187,19 @@ public final class PBCommon {
                   input.readMessage(com.tny.game.protobuf.PBCommon.TimeTaskProto.PARSER, extensionRegistry));
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                handlers_ = com.google.protobuf.MapField.newMapField(
+                    HandlersDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000004;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.String>
+              handlers__ = input.readMessage(
+                  HandlersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              handlers_.getMutableMap().put(
+                  handlers__.getKey(), handlers__.getValue());
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -11944,6 +12220,17 @@ public final class PBCommon {
       return com.tny.game.protobuf.PBCommon.internal_static_SchedulerBackupProto_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetHandlers();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.tny.game.protobuf.PBCommon.internal_static_SchedulerBackupProto_fieldAccessorTable
@@ -12002,6 +12289,82 @@ public final class PBCommon {
       return timeTaskQueue_.get(index);
     }
 
+    public static final int HANDLERS_FIELD_NUMBER = 3;
+    private static final class HandlersDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.String>newDefaultInstance(
+                  com.tny.game.protobuf.PBCommon.internal_static_SchedulerBackupProto_HandlersEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.String> handlers_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.String>
+    internalGetHandlers() {
+      if (handlers_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            HandlersDefaultEntryHolder.defaultEntry);
+      }
+      return handlers_;
+    }
+
+    public int getHandlersCount() {
+      return internalGetHandlers().getMap().size();
+    }
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    public boolean containsHandlers(
+        int key) {
+      
+      return internalGetHandlers().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getHandlersMap()} instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.String> getHandlers() {
+      return getHandlersMap();
+    }
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    public java.util.Map<java.lang.Integer, java.lang.String> getHandlersMap() {
+      return internalGetHandlers().getMap();
+    }
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    public java.lang.String getHandlersOrDefault(
+        int key,
+        java.lang.String defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.String> map =
+          internalGetHandlers().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;int32, string&gt; handlers = 3;</code>
+     */
+
+    public java.lang.String getHandlersOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.String> map =
+          internalGetHandlers().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -12020,6 +12383,12 @@ public final class PBCommon {
       for (int i = 0; i < timeTaskQueue_.size(); i++) {
         output.writeMessage(2, timeTaskQueue_.get(i));
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetHandlers(),
+          HandlersDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -12035,6 +12404,16 @@ public final class PBCommon {
       for (int i = 0; i < timeTaskQueue_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, timeTaskQueue_.get(i));
+      }
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.String> entry
+           : internalGetHandlers().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.String>
+        handlers__ = HandlersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, handlers__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -12060,6 +12439,8 @@ public final class PBCommon {
       }
       result = result && getTimeTaskQueueList()
           .equals(other.getTimeTaskQueueList());
+      result = result && internalGetHandlers().equals(
+          other.internalGetHandlers());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -12079,6 +12460,10 @@ public final class PBCommon {
       if (getTimeTaskQueueCount() > 0) {
         hash = (37 * hash) + TIMETASKQUEUE_FIELD_NUMBER;
         hash = (53 * hash) + getTimeTaskQueueList().hashCode();
+      }
+      if (!internalGetHandlers().getMap().isEmpty()) {
+        hash = (37 * hash) + HANDLERS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetHandlers().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -12174,6 +12559,28 @@ public final class PBCommon {
         return com.tny.game.protobuf.PBCommon.internal_static_SchedulerBackupProto_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetHandlers();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableHandlers();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.tny.game.protobuf.PBCommon.internal_static_SchedulerBackupProto_fieldAccessorTable
@@ -12207,6 +12614,7 @@ public final class PBCommon {
         } else {
           timeTaskQueueBuilder_.clear();
         }
+        internalGetMutableHandlers().clear();
         return this;
       }
 
@@ -12244,6 +12652,8 @@ public final class PBCommon {
         } else {
           result.timeTaskQueue_ = timeTaskQueueBuilder_.build();
         }
+        result.handlers_ = internalGetHandlers();
+        result.handlers_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -12315,6 +12725,8 @@ public final class PBCommon {
             }
           }
         }
+        internalGetMutableHandlers().mergeFrom(
+            other.internalGetHandlers());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -12614,6 +13026,129 @@ public final class PBCommon {
         }
         return timeTaskQueueBuilder_;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.String> handlers_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.String>
+      internalGetHandlers() {
+        if (handlers_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              HandlersDefaultEntryHolder.defaultEntry);
+        }
+        return handlers_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.String>
+      internalGetMutableHandlers() {
+        onChanged();;
+        if (handlers_ == null) {
+          handlers_ = com.google.protobuf.MapField.newMapField(
+              HandlersDefaultEntryHolder.defaultEntry);
+        }
+        if (!handlers_.isMutable()) {
+          handlers_ = handlers_.copy();
+        }
+        return handlers_;
+      }
+
+      public int getHandlersCount() {
+        return internalGetHandlers().getMap().size();
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public boolean containsHandlers(
+          int key) {
+        
+        return internalGetHandlers().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getHandlersMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.String> getHandlers() {
+        return getHandlersMap();
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public java.util.Map<java.lang.Integer, java.lang.String> getHandlersMap() {
+        return internalGetHandlers().getMap();
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public java.lang.String getHandlersOrDefault(
+          int key,
+          java.lang.String defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.String> map =
+            internalGetHandlers().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public java.lang.String getHandlersOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.String> map =
+            internalGetHandlers().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearHandlers() {
+        internalGetMutableHandlers().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public Builder removeHandlers(
+          int key) {
+        
+        internalGetMutableHandlers().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.String>
+      getMutableHandlers() {
+        return internalGetMutableHandlers().getMutableMap();
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+      public Builder putHandlers(
+          int key,
+          java.lang.String value) {
+        
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableHandlers().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; handlers = 3;</code>
+       */
+
+      public Builder putAllHandlers(
+          java.util.Map<java.lang.Integer, java.lang.String> values) {
+        internalGetMutableHandlers().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -12728,6 +13263,11 @@ public final class PBCommon {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SchedulerBackupProto_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SchedulerBackupProto_HandlersEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SchedulerBackupProto_HandlersEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12773,13 +13313,17 @@ public final class PBCommon {
       "\"N\n\nTradeProto\022\016\n\006action\030\001 \001(\005\022\035\n\004item\030\002" +
       " \003(\0132\017.TradeItemProto\022\021\n\ttradeType\030\003 \001(\005" +
       "\",\n\nStuffProto\022\016\n\006itemID\030\001 \001(\005\022\016\n\006number" +
-      "\030\002 \001(\003\"8\n\rTimeTaskProto\022\022\n\nexecutTime\030\001 " +
-      "\001(\004\022\023\n\013handlerList\030\002 \003(\t\"l\n\021TaskReceiver" +
-      "Proto\022\020\n\010playerID\030\001 \001(\003\022\r\n\005group\030\002 \001(\t\022\027" +
-      "\n\017lastHandlerTime\030\003 \001(\004\022\035\n\025actualLastHan",
-      "dlerTime\030\004 \001(\004\"O\n\024SchedulerBackupProto\022\020" +
-      "\n\010stopTime\030\001 \001(\003\022%\n\rtimeTaskQueue\030\002 \003(\0132" +
-      "\016.TimeTaskProtoB\027\n\025com.tny.game.protobuf"
+      "\030\002 \001(\003\"J\n\rTimeTaskProto\022\022\n\nexecutTime\030\001 " +
+      "\001(\004\022\023\n\013handlerList\030\002 \003(\t\022\020\n\010handlers\030\003 \003" +
+      "(\005\"l\n\021TaskReceiverProto\022\020\n\010playerID\030\001 \001(" +
+      "\003\022\r\n\005group\030\002 \001(\t\022\027\n\017lastHandlerTime\030\003 \001(",
+      "\004\022\035\n\025actualLastHandlerTime\030\004 \001(\004\"\267\001\n\024Sch" +
+      "edulerBackupProto\022\020\n\010stopTime\030\001 \001(\003\022%\n\rt" +
+      "imeTaskQueue\030\002 \003(\0132\016.TimeTaskProto\0225\n\010ha" +
+      "ndlers\030\003 \003(\0132#.SchedulerBackupProto.Hand" +
+      "lersEntry\032/\n\rHandlersEntry\022\013\n\003key\030\001 \001(\005\022" +
+      "\r\n\005value\030\002 \001(\t:\0028\001B\027\n\025com.tny.game.proto" +
+      "buf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -12858,7 +13402,7 @@ public final class PBCommon {
     internal_static_TimeTaskProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TimeTaskProto_descriptor,
-        new java.lang.String[] { "ExecutTime", "HandlerList", });
+        new java.lang.String[] { "ExecutTime", "HandlerList", "Handlers", });
     internal_static_TaskReceiverProto_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_TaskReceiverProto_fieldAccessorTable = new
@@ -12870,7 +13414,13 @@ public final class PBCommon {
     internal_static_SchedulerBackupProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SchedulerBackupProto_descriptor,
-        new java.lang.String[] { "StopTime", "TimeTaskQueue", });
+        new java.lang.String[] { "StopTime", "TimeTaskQueue", "Handlers", });
+    internal_static_SchedulerBackupProto_HandlersEntry_descriptor =
+      internal_static_SchedulerBackupProto_descriptor.getNestedTypes().get(0);
+    internal_static_SchedulerBackupProto_HandlersEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SchedulerBackupProto_HandlersEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
