@@ -24,7 +24,7 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
      */
     private static final Logger LOG = LoggerFactory.getLogger(CacheSchedulerBackupFormatter.class);
 
-    private static final Logger TEST_LOG = LoggerFactory.getLogger("test");
+    // private static final Logger TEST_LOG = LoggerFactory.getLogger("test");
 
     @Override
     public Object format2Save(String key, CacheSchedulerBackup backup) {
@@ -45,7 +45,7 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
                         Entry::getKey
                 )))
                 .build().toByteArray();
-        TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Save", data.length);
+        // TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Save", data.length);
         return data;
     }
 
@@ -53,7 +53,7 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
     public Object format2Load(String key, byte[] data) {
         SchedulerBackupProto proto;
         try {
-            TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Load", data.length);
+            // TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Load", data.length);
             proto = SchedulerBackupProto.parseFrom(data);
         } catch (InvalidProtocolBufferException e) {
             LOG.error("解析 SchedulerBackupProto 异常", e);

@@ -47,7 +47,7 @@ public class TimeTaskQueue implements Serializable {
     private NavigableSet<TimeTask> handlerList = new ConcurrentSkipListSet<TimeTask>();
 
     public TimeTaskQueue() {
-        String maxStr = System.getProperty(TIME_TASK_KEY, "6000");
+        String maxStr = System.getProperty(TIME_TASK_KEY, "3000");
         this.maxSize = Integer.parseInt(maxStr);
         LOG.info("#TimeTaskQueue#初始化#时间任务队列数量为{}# ", this.maxSize);
     }

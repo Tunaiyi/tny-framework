@@ -134,11 +134,11 @@ public class TimeTaskScheduler {
     /**
      * 构造器
      *
-     * @param handlerHodler
+     * @param handlerHolder
      * @throws Exception
      */
-    public TimeTaskScheduler(TimeTaskHandlerHolder handlerHodler, SchedulerStore store) throws Exception {
-        this(TIME_CONFIG_PATH, handlerHodler, store);
+    public TimeTaskScheduler(TimeTaskHandlerHolder handlerHolder, SchedulerStore store) throws Exception {
+        this(TIME_CONFIG_PATH, handlerHolder, store);
     }
 
     /**

@@ -3,27 +3,19 @@ package com.tny.game.net.netty;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.config.Config;
-import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.base.Server;
-import com.tny.game.net.netty.coder.ChannelMaker;
+import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.SeverClosedListener;
+import com.tny.game.net.netty.coder.ChannelMaker;
 import com.tny.game.net.tunnel.Tunnels;
+import com.tny.game.net.utils.NetConfigs;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NettyServer extends NettyApp implements Server {
@@ -48,19 +40,6 @@ public class NettyServer extends NettyApp implements Server {
      * 服务器关闭监听器
      */
     private List<SeverClosedListener> listenerList = new CopyOnWriteArrayList<>();
-
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            parentGroup.shutdownGracefully();
-            childGroup.shutdownGracefully();
-        }) {
-
-            {
-                this.setName("ServerShutdownHookThread");
-            }
-
-        });
-    }
 
     private ServerBootstrap bootstrap() {
         if (this.bootstrap != null)
@@ -137,13 +116,15 @@ public class NettyServer extends NettyApp implements Server {
         this.channels.forEach((address, channel) -> {
             try {
                 NettyServer.LOG.info("#NettyServer# Channel {} 关闭中......", channel);
-                channel.disconnect().awaitUninterruptibly();
+                channel.disconnect();
                 NettyServer.LOG.info("#NettyServer# Channel {} 关闭完成", channel);
             } catch (Throwable e) {
                 NettyServer.LOG.error("#NettyServer# Channel {} 关闭异常!!!", channel, e);
                 LOG.error("{} close exception", address, e);
             }
         });
+        parentGroup.shutdownGracefully();
+        childGroup.shutdownGracefully();
         NettyServer.this.fireServerClosed();
         NettyServer.LOG.info("#NettyServer#服务器已关闭!!!");
         return true;
