@@ -27,9 +27,9 @@ allprojects {
     group "com.tny.game"
     apply plugin: "idea"
 
-    ext.verNumber = '3.4.x'
-//    ext.pj_version = verNumber + '-RELEASE'
-    ext.pj_version = verNumber + '-SNAPSHOT'
+    ext.verNumber = '3.4.1'
+    ext.pj_version = verNumber + '-RELEASE'
+//    ext.pj_version = verNumber + '-SNAPSHOT'
     version = pj_version
 
     ext {
