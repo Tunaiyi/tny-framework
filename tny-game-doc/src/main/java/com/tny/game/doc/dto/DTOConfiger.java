@@ -1,19 +1,12 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.DTODocHolder;
-import com.tny.game.doc.holder.FieldDocHolder;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @XStreamAlias("dto")
@@ -93,12 +86,16 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
         Map<Integer, FieldConfiger> fieldMap = new HashMap<>();
         List<FieldConfiger> fieldList = new ArrayList<>();
         for (FieldDocHolder fieldDocHolder : holder.getFieldList()) {
-            FieldConfiger configer = new FieldConfiger(fieldDocHolder, typeFormatter);
-            fieldList.add(configer);
-            FieldConfiger old = fieldMap.put(configer.getFieldID(), configer);
-            if (old != null) {
-                throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} 字段 ID 都为 {}",
-                        holder.getEntityClass(), configer.getFieldName(), old.getFieldName(), configer.getFieldID()));
+            try {
+                FieldConfiger configer = new FieldConfiger(fieldDocHolder, typeFormatter);
+                fieldList.add(configer);
+                FieldConfiger old = fieldMap.put(configer.getFieldID(), configer);
+                if (old != null) {
+                    throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} 字段 ID 都为 {}",
+                            holder.getEntityClass(), configer.getFieldName(), old.getFieldName(), configer.getFieldID()));
+                }
+            } catch (Throwable e) {
+                throw new IllegalArgumentException(Logs.format("{} 类 解析一次", holder.getEntityClass()));
             }
         }
         this.fieldList.fieldList = Collections.unmodifiableList(fieldList);

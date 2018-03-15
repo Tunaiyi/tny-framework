@@ -2,37 +2,22 @@ package com.tny.game.net.netty;
 
 import com.tny.game.common.config.Config;
 import com.tny.game.common.utils.URL;
-import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.net.base.Client;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.exception.DispatchException;
-import com.tny.game.net.exception.RemotingException;
+import com.tny.game.net.base.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.tunnel.Tunnels;
+import com.tny.game.net.netty.coder.ChannelMaker;
+import com.tny.game.net.tunnel.*;
+import com.tny.game.net.utils.NetConfigs;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelOutboundInvoker;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.net.InetSocketAddress;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
@@ -52,14 +37,6 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
     private Set<Channel> channels = new CopyOnWriteArraySet<>();
 
     private AtomicBoolean close = new AtomicBoolean(false);
-
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(workerGroup::shutdownGracefully) {
-            {
-                this.setName("ClientShutdownHookThread");
-            }
-        });
-    }
 
     @Sharable
     private class RemoveTunnelHandler extends ChannelInboundHandlerAdapter {
@@ -214,6 +191,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
     public boolean close() {
         if (this.close.compareAndSet(false, true)) {
             this.channels.forEach(ChannelOutboundInvoker::close);
+            workerGroup.shutdownGracefully();
             return true;
         }
         return false;
