@@ -94,10 +94,8 @@ subprojects {
 
     repositories {
         mavenLocal()        //使用本地仓库
+        maven { url "http://maven.lingqugame.net/repository/maven-public/" }
         mavenCentral()
-//        maven {
-//            url "http://nexus.coolfunny.net/nexus/content/groups/public"
-//        }
     }
 
     dependencies {
