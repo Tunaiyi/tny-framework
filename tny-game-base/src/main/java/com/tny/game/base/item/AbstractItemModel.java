@@ -3,13 +3,13 @@ package com.tny.game.base.item;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
-import com.tny.game.base.item.xml.XMLDemand.*;
+import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
 import com.tny.game.common.formula.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.ObjectAide;
 
 import java.util.*;
-import java.util.Map.*;
-import java.util.stream.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * 抽象事物模型
@@ -500,6 +500,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         }
         attributeMap.put(ACTION_ITEM_NAME, item);
         attributeMap.put(ACTION_ITEM_MODEL_NAME, this);
+        attributeMap.computeIfAbsent($CONTEXT, k -> new HashMap<>());
         for (Object object : attributes) {
             if (key == null) {
                 key = object.toString();

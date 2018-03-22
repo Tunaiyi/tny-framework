@@ -124,10 +124,11 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         ItemModel demandModel = this.getItemModel(alias);
         this.setAttrMap(playerID, alias, attributeMap);
         Formula currentFormula = getCurrentFormula(demandModel);
+        Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
+        attributeMap.put($PARAMS, paramMap);
         Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
         Object expect = this.expect != null ? this.expect.createFormula().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
-        Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
         if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE)
             return new CostDemandResult(id, demandModel, this.demandType, current, expect, satisfy, this.alertType, paramMap);
         else

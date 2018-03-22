@@ -2,8 +2,7 @@ package com.tny.game.base.utlis;
 
 import com.tny.game.base.item.behavior.TryToDoResult;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.utils.DoneResult;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.*;
 
 /**
  * Created by Kun Yang on 16/7/29.
@@ -62,6 +61,17 @@ public class TryResults {
      * @return 返回结果
      */
     public static <M> TryResult<M> fail(ResultCode code) {
+        Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
+        return new TryResult<>(null, code);
+    }
+
+    /**
+     * 返回一个以code为结果码的失败结果
+     *
+     * @param code 结果码
+     * @return 返回结果
+     */
+    public static <M> TryResult<M> fail(ResultCode code, Class<? extends M> clazz) {
         Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
         return new TryResult<>(null, code);
     }
