@@ -1,7 +1,9 @@
 package com.tny.game.suite.base.capacity;
 
+import java.util.function.BiFunction;
+
 public interface CapacityCounter {
 
-    Number count(Capacity current, Number base, CapacityGather goal);
+    <C extends Capacitiable> Number count(Capacity capacity, Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter);
 
 }

@@ -1,6 +1,9 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.common.number.NumberAide;
+import com.tny.game.common.utils.ObjectAide;
+
+import java.util.function.*;
 
 /**
  * CapacityUtils
@@ -12,7 +15,12 @@ public interface CapacityUtils {
         return NumberAide.add(baseValue, gather.getBaseCapacity(valueCap, valueCap.getDefault()));
     }
 
-    static Number countFinalValue(Number baseValue, CapacityGather gather, Capacity... capacities) {
+    static <C extends Capacitiable> Number getValue(C owner, BiFunction<C, Capacity, Number> valueGetter, Capacity capacity, Number defNumber) {
+        Number number = valueGetter.apply(owner, capacity);
+        return ObjectAide.ifNull(number, defNumber);
+    }
+
+    static <C extends Capacitiable> Number countFinalValue(Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter, Capacity... capacities) {
         int base = baseValue.intValue();
         if (capacities.length == 0)
             return base;
@@ -23,25 +31,25 @@ public interface CapacityUtils {
         for (Capacity capacity : capacities) {
             switch (capacity.getValueType()) {
                 case BASE:
-                    base += gather.getIntBaseCapacity(capacity);
+                    base += getValue(owner, valueGetter, capacity, 0).intValue();
                     break;
                 case INC:
-                    alterValue += gather.getIntBaseCapacity(capacity);
+                    alterValue += getValue(owner, valueGetter, capacity, 0).intValue();
                     break;
                 case INC_PCT:
-                    pctValue += gather.getFloatBaseCapacity(capacity);
+                    pctValue += getValue(owner, valueGetter, capacity, 0.F).floatValue();
                     break;
                 case INC_EFF:
-                    effValue += gather.getFloatBaseCapacity(capacity);
+                    effValue += getValue(owner, valueGetter, capacity, 0.F).floatValue();
                     break;
                 case RED:
-                    alterValue -= gather.getIntBaseCapacity(capacity);
+                    alterValue -= getValue(owner, valueGetter, capacity, 0).intValue();
                     break;
                 case RED_PCT:
-                    pctValue -= gather.getFloatBaseCapacity(capacity);
+                    pctValue -= getValue(owner, valueGetter, capacity, 0.F).floatValue();
                     break;
                 case RED_EFF:
-                    effValue -= gather.getFloatBaseCapacity(capacity);
+                    effValue -= getValue(owner, valueGetter, capacity, 0.F).floatValue();
                     break;
             }
         }

@@ -19,6 +19,14 @@ public class ExportHolder {
         return output;
     }
 
+    private ExportHolder() {
+    }
+
+    public ExportHolder(String template, String output) {
+        this.template = template;
+        this.output = output;
+    }
+
     public static ExportHolder create(Class<?> clazz) {
         Export export = clazz.getAnnotation(Export.class);
         ExportHolder holder = new ExportHolder();
