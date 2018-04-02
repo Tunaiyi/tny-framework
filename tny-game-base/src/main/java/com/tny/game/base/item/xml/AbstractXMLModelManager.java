@@ -274,7 +274,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
         for (M model : list) {
             if (model instanceof XMLItemModel) {
-                ((XMLItemModel) model).init(this.itemExplorer, this.itemModelExplorer);
+                ((XMLItemModel) model).init(this.itemExplorer, this.itemModelExplorer, this.getFormulaConverter());
             } else if (model instanceof XMLModel) {
                 ((XMLModel) model).init();
             }

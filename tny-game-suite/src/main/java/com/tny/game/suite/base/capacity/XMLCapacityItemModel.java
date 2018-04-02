@@ -1,5 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.item.ItemExplorer;
 import com.tny.game.base.item.ModelExplorer;
 import com.tny.game.base.item.xml.XMLItemModel;
@@ -18,8 +19,8 @@ public abstract class XMLCapacityItemModel extends XMLItemModel implements Capac
     private Set<CapacityGroup> capacityGroups;
 
     @Override
-    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
-        super.init(itemExplorer, itemModelExplorer);
+    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer, SingleValueConverter formulaConverter) {
+        super.init(itemExplorer, itemModelExplorer, formulaConverter);
         capacities = Collections.unmodifiableSet(this.getAbilityTypes(Capacity.class));
         capacityGroups = Collections.unmodifiableSet(this.capacities.stream()
         .map(Capacity::getGroup)

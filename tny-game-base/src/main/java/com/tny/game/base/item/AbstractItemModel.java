@@ -500,6 +500,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         }
         attributeMap.put(ACTION_ITEM_NAME, item);
         attributeMap.put(ACTION_ITEM_MODEL_NAME, this);
+        attributeMap.putIfAbsent($PLAYER_ID, playerID);
         attributeMap.computeIfAbsent($CONTEXT, k -> new HashMap<>());
         for (Object object : attributes) {
             if (key == null) {

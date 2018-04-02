@@ -27,7 +27,6 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
             if (this.formulaConverter != null)
                 return this.formulaConverter;
             this.formulaConverter = this.applicationContext.getBean(MvelFormulaConverter.class);
-
         }
         return formulaConverter;
     }

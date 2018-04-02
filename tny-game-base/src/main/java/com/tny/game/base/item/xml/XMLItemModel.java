@@ -1,11 +1,14 @@
 package com.tny.game.base.item.xml;
 
 import com.google.common.collect.*;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.base.item.behavior.Action;
+import com.tny.game.common.collection.EmptyImmutableMap;
 
-import java.util.*;
+import java.util.List;
+
+import static com.tny.game.common.utils.ObjectAide.as;
 
 /**
  * 抽象xml映射事物模型
@@ -43,7 +46,7 @@ public abstract class XMLItemModel extends AbstractItemModel {
         return this.demandFormula == null ? super.getDemandFormula() : this.demandFormula;
     }
 
-    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
+    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer, SingleValueConverter formulaConverter) {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.init)
@@ -84,6 +87,8 @@ public abstract class XMLItemModel extends AbstractItemModel {
         for (String alias : this.attrAliasSet) {
             AliasCollectUtils.addAlias(alias);
         }
+        this.currentFormulaHolder = as(formulaConverter.fromString(this.getCurrentFormula()));
+        this.demandFormulaHolder = as(formulaConverter.fromString(this.getDemandFormula()));
     }
 
 }

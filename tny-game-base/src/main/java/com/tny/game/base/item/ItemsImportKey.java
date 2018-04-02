@@ -22,6 +22,11 @@ public interface ItemsImportKey {
     String $PARAMS = "$params";
 
     /**
+     * 事物对象在有自己相关的行为和操作中上下问对象, 生命周期, 当前Demand计算checkDemandResult
+     */
+    String $PLAYER_ID = "$playerID";
+
+    /**
      * 事物对象模型在有自己相关的行为和操作中所代表的引用名字
      */
     String ACTION_ITEM_MODEL_NAME = "model";
