@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 import com.tny.game.common.collection.CopyOnWriteMap;
 
 import java.util.Collections;
@@ -28,6 +28,13 @@ public class Capacities {
         capacities.add(capacity);
     }
 
+    static void register(CapacityGroup group) {
+        Set<Capacity> capacities = groupCapacities.get(group);
+        if (capacities == null)
+            groupCapacities.putIfAbsent(group, new CopyOnWriteArraySet<>());
+        groupMap.put(group.getID(), group);
+    }
+
     public static Set<Capacity> getCapacities(CapacityGroup group) {
         Set<Capacity> capacities = groupCapacities.get(group);
         if (capacities == null)
@@ -37,7 +44,7 @@ public class Capacities {
 
 
     public static CapacityGroup getGroup(int id) {
-        return groupMap.get(id);
+        return Throws.checkNotNull(groupMap.get(id), "CapacityGroup [{}] is not exist", id);
     }
 
 

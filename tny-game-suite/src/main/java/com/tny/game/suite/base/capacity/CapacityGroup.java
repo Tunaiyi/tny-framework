@@ -11,4 +11,8 @@ public interface CapacityGroup extends EnumID<Integer> {
 
     List<Capacity> getCapacities();
 
+    default void registerSelf() {
+        Capacities.register(this);
+    }
+
 }

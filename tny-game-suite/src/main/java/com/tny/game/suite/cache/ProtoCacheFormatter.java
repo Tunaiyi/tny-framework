@@ -1,30 +1,18 @@
 package com.tny.game.suite.cache;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Message;
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeInfo;
-import com.tny.game.base.item.TradeItem;
+import com.google.protobuf.*;
+import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.base.item.behavior.simple.SimpleTrade;
-import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
+import com.tny.game.base.item.behavior.simple.*;
 import com.tny.game.base.item.behavior.trade.CollectionTrade;
 import com.tny.game.cache.CacheFormatter;
-import com.tny.game.protobuf.PBCommon.TradeItemProto;
-import com.tny.game.protobuf.PBCommon.TradeProto;
-import com.tny.game.suite.base.Actions;
-import com.tny.game.suite.base.GameExplorer;
+import com.tny.game.protobuf.PBCommon.*;
+import com.tny.game.suite.base.*;
 import com.tny.game.suite.utils.SuiteLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
 
 
 public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFormatter<I, Object> {
@@ -39,12 +27,17 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         P proto = this.object2Proto(key, object);
         if (proto == null)
             return null;
-        if (object instanceof Item) {
-            Item<?> item = (Item<?>) object;
-            return new ProtoItem(proto.toByteArray(), item, this.getNumber(object), this.getState(object));
-        } else {
-            return proto.toByteArray();
+        try {
+            if (object instanceof Item) {
+                Item<?> item = (Item<?>) object;
+                return new ProtoItem(proto2Bytes(proto), item, this.getNumber(object), this.getState(object));
+            } else {
+                return proto2Bytes(proto);
+            }
+        } catch (Exception e) {
+            LOG.error("{}解析异常", this.getClass().getName(), e);
         }
+        return null;
     }
 
     @Override
@@ -121,6 +114,10 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     public abstract P bytes2Proto(byte[] data) throws InvalidProtocolBufferException;
+
+    public byte[] proto2Bytes(P proto) throws Exception {
+        return proto.toByteArray();
+    }
 
     public abstract P object2Proto(String key, I object);
 
