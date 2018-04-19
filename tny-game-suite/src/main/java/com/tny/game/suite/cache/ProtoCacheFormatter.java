@@ -45,7 +45,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         try {
             P proto = this.bytes2Proto((byte[]) data);
             return this.proto2Object(key, proto);
-        } catch (InvalidProtocolBufferException e) {
+        } catch (Exception e) {
             LOG.error("{}解析异常", this.getClass().getName(), e);
         }
         return null;
@@ -113,7 +113,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         return tradeProtos;
     }
 
-    public abstract P bytes2Proto(byte[] data) throws InvalidProtocolBufferException;
+    public abstract P bytes2Proto(byte[] data) throws Exception;
 
     public byte[] proto2Bytes(P proto) throws Exception {
         return proto.toByteArray();

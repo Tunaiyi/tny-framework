@@ -3,7 +3,7 @@ package com.tny.game.suite.base.capacity;
 import com.tny.game.common.number.NumberAide;
 import com.tny.game.common.utils.ObjectAide;
 
-import java.util.function.*;
+import java.util.function.BiFunction;
 
 /**
  * CapacityUtils
@@ -21,52 +21,52 @@ public interface CapacityUtils {
     }
 
     static <C extends Capacitiable> Number countFinalValue(Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter, Capacity... capacities) {
-        int base = baseValue.intValue();
+        long base = baseValue.longValue();
         if (capacities.length == 0)
             return base;
         Capacity baseCapacity = capacities[0];
-        int alterValue = 0;
-        float pctValue = 0.F;
-        float effValue = 0.F;
+        long alterValue = 0L;
+        double pctValue = 0.0;
+        double effValue = 0.0;
         for (Capacity capacity : capacities) {
             switch (capacity.getValueType()) {
                 case BASE:
-                    base += getValue(owner, valueGetter, capacity, 0).intValue();
+                    base += getValue(owner, valueGetter, capacity, 0L).intValue();
                     break;
                 case INC:
-                    alterValue += getValue(owner, valueGetter, capacity, 0).intValue();
+                    alterValue += getValue(owner, valueGetter, capacity, 0L).intValue();
                     break;
                 case INC_PCT:
-                    pctValue += getValue(owner, valueGetter, capacity, 0.F).floatValue();
+                    pctValue += getValue(owner, valueGetter, capacity, 0.0).floatValue();
                     break;
                 case INC_EFF:
-                    effValue += getValue(owner, valueGetter, capacity, 0.F).floatValue();
+                    effValue += getValue(owner, valueGetter, capacity, 0.0).floatValue();
                     break;
                 case RED:
-                    alterValue -= getValue(owner, valueGetter, capacity, 0).intValue();
+                    alterValue -= getValue(owner, valueGetter, capacity, 0L).intValue();
                     break;
                 case RED_PCT:
-                    pctValue -= getValue(owner, valueGetter, capacity, 0.F).floatValue();
+                    pctValue -= getValue(owner, valueGetter, capacity, 0.0).floatValue();
                     break;
                 case RED_EFF:
-                    effValue -= getValue(owner, valueGetter, capacity, 0.F).floatValue();
+                    effValue -= getValue(owner, valueGetter, capacity, 0.0).floatValue();
                     break;
             }
         }
         switch (baseCapacity.getValueType()) {
             case BASE:
-                return Math.max((base * Math.max(((10000.F + pctValue) / 10000.F), 0.F) + alterValue), 0) / ((10000.F + Math.max(effValue, 0)) / 10000.F);
+                return Math.max((base * Math.max(((10000.0 + pctValue) / 10000.0), 0.0) + alterValue), 0) / ((10000.0 + Math.max(effValue, 0)) / 10000.0);
             case INC:
             case RED:
-                return Math.max(base + alterValue, 0.F);
+                return Math.max(base + alterValue, 0.0);
             case INC_PCT:
             case RED_PCT:
-                return Math.max(base + pctValue, 0.F);
+                return Math.max(base + pctValue, 0.0);
             case INC_EFF:
             case RED_EFF:
-                return Math.max(base + effValue, 0.F);
+                return Math.max(base + effValue, 0.0);
         }
-        return Math.max((base * Math.max(((10000.F + pctValue) / 10000.F), 0.F) + alterValue), 0) / ((10000.F + Math.max(effValue, 0)) / 10000.F);
+        return Math.max((base * Math.max(((10000.0 + pctValue) / 10000.0), 0.0) + alterValue), 0) / ((10000.0 + Math.max(effValue, 0)) / 10000.0);
     }
 
 }
