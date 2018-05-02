@@ -4,22 +4,12 @@ import com.tny.game.asyndb.annotation.Persistent;
 import com.tny.game.asyndb.log.LogName;
 import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.common.utils.Logs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 本地内存异步持久化对象对象池
@@ -82,8 +72,8 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
                 for (Entry<String, AsyncDBEntity> entry : LocalAsyncDBObjectPool.this.entityMap.entrySet()) {
                     try {
                         if (entry.getValue().release(releaseAt)) {
-                            LocalAsyncDBObjectPool.this.entityMap.remove(entry.getKey(), entry.getValue());
-                            removeSize++;
+                            if (LocalAsyncDBObjectPool.this.entityMap.remove(entry.getKey(), entry.getValue()))
+                                removeSize++;
                             POOL_LOGGER.debug("释放 {} ", entry.getKey());
                         } else {
                             POOL_LOGGER.debug("存在 {} {}", new Object[]{entry.getKey(), entry.getValue().getState()});
@@ -221,6 +211,7 @@ public class LocalAsyncDBObjectPool implements DBObjectPool {
                     } catch (AsyncDBReleaseException e) {
                         // 对象被释放，尝试插入
                         this.entityMap.remove(key, asyncDBEntity);
+                        return this.insert(key, object);
                     } catch (SubmitAtWrongStateException e) {
                         // 对象状态无法进行该操作
                         LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", e.getState(), object, e.getOperation()), e);
