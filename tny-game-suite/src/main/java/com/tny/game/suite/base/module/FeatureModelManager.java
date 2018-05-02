@@ -1,21 +1,21 @@
 package com.tny.game.suite.base.module;
 
 import com.google.common.collect.*;
-import com.thoughtworks.xstream.*;
-import com.thoughtworks.xstream.converters.*;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.module.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.*;
-import com.tny.game.common.utils.version.*;
-import com.tny.game.suite.base.*;
+import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.version.Version;
+import com.tny.game.suite.base.GameModelManager;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
 import java.util.*;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.as;
 
-public class FeatureModelManager<FM extends FeatureModel> extends GameModelManager<FM> implements ServerPrepareStart {
+public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelManager<FM> implements ServerPrepareStart {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 
@@ -58,8 +58,30 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameModelManag
     protected void initXStream(XStream xStream) {
         xStream.alias("feature", Feature.class);
         xStream.alias("module", Module.class);
-        xStream.alias("openMode", OpenMode.class);
+        // xStream.alias("openModes", Set.class);
+        xStream.alias("mode", OpenMode.class);
+        xStream.alias("openPlan", OpenPlan.class);
         xStream.registerConverter(versionConverter);
+    }
+
+    private static class FeatureComparator<FM extends FeatureModel> implements Comparator<FM> {
+
+        private OpenMode<?> mode;
+
+        private FeatureComparator(OpenMode<?> mode) {
+            this.mode = mode;
+        }
+
+        @Override
+        public int compare(FM o1, FM o2) {
+        int levelComp;
+        if ((levelComp = o1.getOpenLevel(mode) - o2.getOpenLevel(mode)) != 0)
+            return levelComp;
+        int proComp;
+        if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
+            return proComp;
+        return o1.getID() - o2.getID();
+        }
     }
 
     @Override
@@ -72,7 +94,7 @@ public class FeatureModelManager<FM extends FeatureModel> extends GameModelManag
         for (FM model : this.modelMap.values()) {
             if (current.map(currVer -> model.getOpenVersion().map(v -> v.lessEqualsThan(currVer)).orElse(true)).orElse(true)) {
                 typeMap.put(model.getFeature(), model);
-                modelSetMap.computeIfAbsent(model.getOpenMode(), k -> new TreeSet<>()).add(model);
+                model.getOpenPlan().forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
             } else {
                 LOGGER.warn("当前版本 {} | 功能 {}({}) | 激活版本 [{}] | 未激活", version, model.getDesc(), model.getAlias(), model.getOpenVersion().orElse(null));
             }

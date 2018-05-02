@@ -6,6 +6,6 @@ package com.tny.game.base.module;
  */
 public interface OpenModelCondition<FM extends FeatureModel, C> {
 
-    boolean check(FeatureExplorer explorer, FM model, C context);
+    boolean check(FeatureExplorer explorer, FM model, OpenMode<?> mode, C context);
 
 }

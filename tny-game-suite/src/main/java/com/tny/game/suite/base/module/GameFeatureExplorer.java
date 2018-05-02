@@ -1,11 +1,11 @@
 package com.tny.game.suite.base.module;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.module.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.Throws;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 默认的功能开放管理器
@@ -43,12 +43,19 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
 
     }
 
-    protected boolean open(Feature feature) {
-        return open(openedFeatures, feature);
+    protected boolean open(FeatureModel model) {
+        if (open(openedFeatures, model.getFeature())) {
+            this.doOpen(model);
+            return true;
+        }
+        return false;
     }
 
     protected boolean open(Module module) {
         return open(openedModules, module);
+    }
+
+    protected void doOpen(FeatureModel model) {
     }
 
     @Override

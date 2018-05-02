@@ -95,7 +95,7 @@ public abstract class FeatureService<DTO> implements ServerPrepareStart, Applica
                         LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
                     }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
-                        explorer.open(feature);
+                        explorer.open(model);
                     }
                     if (LOGGER.isInfoEnabled()) {
                         long time = RunningChecker.end(model.getFeature()).cost();

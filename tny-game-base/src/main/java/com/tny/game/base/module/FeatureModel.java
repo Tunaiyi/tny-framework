@@ -6,7 +6,7 @@ import com.tny.game.common.utils.version.*;
 
 import java.util.*;
 
-public interface FeatureModel extends Model, Comparable<FeatureModel> {
+public interface FeatureModel extends Model {
 
     Feature getFeature();
 
@@ -14,9 +14,9 @@ public interface FeatureModel extends Model, Comparable<FeatureModel> {
 
     Optional<Version> getOpenVersion();
 
-    OpenMode<?> getOpenMode();
+    Collection<OpenPlan> getOpenPlan();
 
-    int getOpenLevel();
+    int getOpenLevel(OpenMode<?> mode);
 
     boolean isCanOpen(FeatureExplorer explorer, OpenMode openMode);
 
@@ -27,20 +27,6 @@ public interface FeatureModel extends Model, Comparable<FeatureModel> {
     @Override
     default Set<Object> tags() {
         return ImmutableSet.of();
-    }
-
-    @Override
-    default int compareTo(FeatureModel other) {
-        int openModelComp;
-        if ((openModelComp = this.getOpenMode().getID() - other.getOpenMode().getID()) != 0)
-            return openModelComp;
-        int levelComp;
-        if ((levelComp = this.getOpenLevel() - other.getOpenLevel()) != 0)
-            return levelComp;
-        int proComp;
-        if ((proComp = this.getPriority() - other.getPriority()) != 0)
-            return proComp;
-        return other.getID() - this.getID();
     }
 
 }
