@@ -24,7 +24,7 @@ public class CommandResults extends ResultFactory {
     }
 
     public static CommandResult fail(TryResult<?> done) {
-        Throws.checkArgument(done.isFail(), "TryDone is success");
+        Throws.checkArgument(done.isFailed(), "TryDone is success");
         if (done.isTryFailed())
             return fail(done.getResult());
         else

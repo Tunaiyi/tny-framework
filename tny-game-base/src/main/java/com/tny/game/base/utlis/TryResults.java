@@ -105,7 +105,7 @@ public class TryResults {
      * @return 返
      */
     public static <M> TryResult<M> fail(TryResult<?> result) {
-        Throws.checkArgument(result.isFail(), "code [{}] is success", result.getCode());
+        Throws.checkArgument(result.isFailed(), "code [{}] is success", result.getCode());
         return map(result, null);
     }
 

@@ -1,10 +1,9 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.Results;
+import com.tny.game.common.result.*;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.Optional;
+import java.util.function.*;
 
 /**
  * 做完的结果
@@ -37,7 +36,7 @@ public class DoneResult<M> implements Done<M> {
      *
      * @return
      */
-    public boolean isFail() {
+    public boolean isFailed() {
         return !Results.isSucc(this.code);
     }
 
@@ -49,6 +48,13 @@ public class DoneResult<M> implements Done<M> {
     @Override
     public boolean isPresent() {
         return this.returnValue != null;
+    }
+
+    /**
+     * @return 转成Optional
+     */
+    public Optional<M> optional() {
+        return Optional.ofNullable(this.returnValue);
     }
 
     public void ifSuccess(Consumer<? super M> consumer) {

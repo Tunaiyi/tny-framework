@@ -87,7 +87,7 @@ public class DoneResults {
      * @return 返回结果
      */
     public static <M> DoneResult<M> fail(DoneResult result) {
-        Throws.checkArgument(result.isFail(), "code [{}] is success", result.getCode());
+        Throws.checkArgument(result.isFailed(), "code [{}] is success", result.getCode());
         return fail(result.getCode());
     }
 
