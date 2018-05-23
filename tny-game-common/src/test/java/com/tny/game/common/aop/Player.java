@@ -1,7 +1,5 @@
 package com.tny.game.common.aop;
 
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.reflect.aop.annotation.AOP;
 
 public class Player extends Person {
@@ -51,32 +49,32 @@ public class Player extends Person {
         return null;
     }
 
-    public static void main(String[] args) {
-        // TreeSet<DateTime> date = new TreeSet<>();
-        // date.add(DateTime.now());
-        // date.add(DateTime.now().plusDays(1));
-        // date.add(DateTime.now().plusDays(2));
-        // date.add(DateTime.now().plusDays(3));
-        // date.stream().map(d -> d.toString(DateTimeHelper.DATE_TIME_MIN_FORMAT))
-        //         .forEach(System.out::println);
-
-        String reg = " ~= '(.*return .*)|[{(.\\\"\\')].+'";
-        String[] fxs = {
-                "return { abc }",
-                "{ abc }",
-                "{ abc",
-                "abc return ",
-                "(abc",
-                "\"abc\"",
-                "'abc'",
-                "return abc",
-        };
-        for (String fx : fxs) {
-            System.out.println(fx + " = " + MvelFormulaFactory.create("fx " + reg, FormulaType.EXPRESSION)
-                    .createFormula()
-                    .put("fx", fx)
-                    .execute(Object.class));
-        }
-    }
+    // public static void main(String[] args) {
+    //     // TreeSet<DateTime> date = new TreeSet<>();
+    //     // date.add(DateTime.now());
+    //     // date.add(DateTime.now().plusDays(1));
+    //     // date.add(DateTime.now().plusDays(2));
+    //     // date.add(DateTime.now().plusDays(3));
+    //     // date.stream().map(d -> d.toString(DateTimeHelper.DATE_TIME_MIN_FORMAT))
+    //     //         .forEach(System.out::println);
+    //
+    //     String reg = " ~= '(.*return .*)|[{(.\\\"\\')].+'";
+    //     String[] fxs = {
+    //             "return { abc }",
+    //             "{ abc }",
+    //             "{ abc",
+    //             "abc return ",
+    //             "(abc",
+    //             "\"abc\"",
+    //             "'abc'",
+    //             "return abc",
+    //     };
+    //     for (String fx : fxs) {
+    //         System.out.println(fx + " = " + MvelFormulaFactory.create("fx " + reg, FormulaType.EXPRESSION)
+    //                 .createFormula()
+    //                 .put("fx", fx)
+    //                 .execute(Object.class));
+    //     }
+    // }
 
 }

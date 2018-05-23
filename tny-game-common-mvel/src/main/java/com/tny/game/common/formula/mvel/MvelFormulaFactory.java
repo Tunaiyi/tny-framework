@@ -1,6 +1,7 @@
-package com.tny.game.common.formula;
+package com.tny.game.common.formula.mvel;
 
 import com.tny.game.common.config.ConfigLoader;
+import com.tny.game.common.formula.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mvel2.ParserContext;
@@ -29,8 +30,8 @@ public class MvelFormulaFactory {
     private static final boolean CACHED = System.getProperty(CACHED_KEY, "true").equals("true");
     public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
 
-    public static final int size = 1;
-    private static Map<String, Expression>[] expressionMaps;
+    private static final int size = 1;
+    private static Map<String, MvelExpression>[] expressionMaps;
     private static ReadWriteLock[] locks;
 
     static {
@@ -94,33 +95,33 @@ public class MvelFormulaFactory {
     public static FormulaHolder create(final String formula, final FormulaType type, Map<String, Object> context, boolean lazy) {
         if (type == FormulaType.EXPRESSION)
             return getExpression(formula, context, lazy);
-        return new Template(formula, context, lazy);
+        return new MvelTemplate(formula, context, lazy);
     }
 
     public static FormulaHolder create(final String formula, final FormulaType type, ParserContext parserContext, boolean lazy) {
         if (type == FormulaType.EXPRESSION)
             return getExpression(formula, parserContext, lazy);
-        return new Template(formula, parserContext, lazy);
+        return new MvelTemplate(formula, parserContext, lazy);
     }
 
-    private static Expression getExpression(String expression, ParserContext parserContext, boolean lazy) {
-        return getExpression(expression, () -> new Expression(expression, parserContext, lazy));
+    private static MvelExpression getExpression(String expression, ParserContext parserContext, boolean lazy) {
+        return getExpression(expression, () -> new MvelExpression(expression, parserContext, lazy));
     }
 
-    private static Expression getExpression(String expression, Map<String, Object> context, boolean lazy) {
-        return getExpression(expression, () -> new Expression(expression, context, lazy));
+    private static MvelExpression getExpression(String expression, Map<String, Object> context, boolean lazy) {
+        return getExpression(expression, () -> new MvelExpression(expression, context, lazy));
     }
 
     private static int toHash(String expression) {
         return Math.abs(expression.hashCode()) % size;
     }
 
-    private static Expression getExpression(String expression, Supplier<Expression> creator) {
+    private static MvelExpression getExpression(String expression, Supplier<MvelExpression> creator) {
         expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
         int index = toHash(expression);
         if (CACHED) {
-            Expression exp;
-            Map<String, Expression> expressionMap = expressionMaps[index];
+            MvelExpression exp;
+            Map<String, MvelExpression> expressionMap = expressionMaps[index];
             Lock lock = locks[index].readLock();
             lock.lock();
             try {
@@ -137,7 +138,7 @@ public class MvelFormulaFactory {
                 if (exp != null)
                     return exp;
                 exp = creator.get();
-                Expression oldExpression = expressionMap.putIfAbsent(expression, exp);
+                MvelExpression oldExpression = expressionMap.putIfAbsent(expression, exp);
                 return oldExpression != null ? oldExpression : exp;
             } finally {
                 lock.unlock();

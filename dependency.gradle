@@ -76,6 +76,7 @@ ext.libs = [
 
 
         'tny-game-common'       : "com.tny.game:tny-game-common:${vers.tny}",
+        'tny-game-common-mvel'       : "com.tny.game:tny-game-common-mvel:${vers.tny}",
         'tny-game-net'          : "com.tny.game:tny-game-net:${vers.tny}",
         'tny-game-base'         : "com.tny.game:tny-game-base:${vers.tny}",
         'tny-game-doc'          : "com.tny.game:tny-game-doc:${vers.tny}",

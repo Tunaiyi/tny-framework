@@ -1,5 +1,6 @@
-package com.tny.game.common.formula;
+package com.tny.game.common.formula.mvel;
 
+import com.tny.game.common.formula.Formula;
 import org.mvel2.ParserContext;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateCompiler;
@@ -23,7 +24,7 @@ import java.util.Map.Entry;
  * <p>
  * <br>
  */
-class Template extends AbstractMvelFormula {
+class MvelTemplate extends AbstractMvelFormula {
 
     /**
      * 表达式
@@ -37,7 +38,7 @@ class Template extends AbstractMvelFormula {
      */
     private final String expressionStr;
 
-    protected Template(final String expression, Map<String, Object> context, boolean lazy) {
+    protected MvelTemplate(final String expression, Map<String, Object> context, boolean lazy) {
         this.expressionStr = expression;
         if (this.parserContext == null)
             this.parserContext = new ParserContext();
@@ -59,7 +60,7 @@ class Template extends AbstractMvelFormula {
     }
 
 
-    protected Template(final String expression, ParserContext context, boolean lazy) {
+    protected MvelTemplate(final String expression, ParserContext context, boolean lazy) {
         this.expressionStr = expression;
         if (context != null) {
             this.parserContext = context;
@@ -71,7 +72,7 @@ class Template extends AbstractMvelFormula {
     }
 
 
-    private Template(final Template template) {
+    private MvelTemplate(final MvelTemplate template) {
         this.expression = template.getExpression();
         this.expressionStr = template.expressionStr;
     }
@@ -97,7 +98,7 @@ class Template extends AbstractMvelFormula {
 
     @Override
     public Formula createFormula() {
-        return new Template(this);
+        return new MvelTemplate(this);
     }
 
     @Override

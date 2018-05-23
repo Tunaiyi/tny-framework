@@ -1,5 +1,6 @@
 package com.tny.game.common.math;
 
+@Deprecated
 public class WeightNum<V> {
 
     private V value;

@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+@Deprecated
 public class WeightCounter<V> {
 
     private Integer totalPro;
 
-    private List<Weight<V>> weights = new ArrayList<Weight<V>>();
+    private List<Weight<V>> weights = new ArrayList<>();
 
     public WeightCounter() {
     }
@@ -24,10 +25,10 @@ public class WeightCounter<V> {
     }
 
     public SortedMap<Integer, V> parseProMap(Object... params) {
-        SortedMap<Integer, V> proMap = new TreeMap<Integer, V>();
+        SortedMap<Integer, V> proMap = new TreeMap<>();
         if (this.weights.isEmpty())
             return proMap;
-        List<WeightNum<V>> weightNums = new ArrayList<WeightNum<V>>();
+        List<WeightNum<V>> weightNums = new ArrayList<>();
         int allWeight = 0;
         for (Weight<V> weight : this.weights) {
             WeightNum<V> num = weight.getWeight(params);
@@ -52,11 +53,11 @@ public class WeightCounter<V> {
     }
 
     public static void main(String[] args) {
-        List<Weight<String>> weights = new ArrayList<Weight<String>>();
-        weights.add(new Weight<String>("A", "3000"));
-        weights.add(new Weight<String>("B", "3000"));
-        weights.add(new Weight<String>("C", "3000"));
-        WeightCounter<String> counter = new WeightCounter<String>(10000, weights);
+        List<Weight<String>> weights = new ArrayList<>();
+        weights.add(new Weight<>("A", "3000"));
+        weights.add(new Weight<>("B", "3000"));
+        weights.add(new Weight<>("C", "3000"));
+        WeightCounter<String> counter = new WeightCounter<>(10000, weights);
         System.out.println(counter.parseProMap());
     }
 }

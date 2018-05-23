@@ -1,13 +1,9 @@
-package com.tny.game.common.formula;
+package com.tny.game.common.formula.mvel;
 
 
 import com.google.common.collect.Range;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/5/30.

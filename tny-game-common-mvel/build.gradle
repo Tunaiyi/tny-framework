@@ -1,0 +1,12 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            project(":tny-game-common"),
+            libs.'mvel',
+    )
+
+}

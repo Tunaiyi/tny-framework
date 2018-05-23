@@ -1,12 +1,10 @@
 package com.tny.game.common.math;
 
-import com.tny.game.common.formula.FormulaHolder;
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.MvelFormulaFactory;
 import com.tny.game.common.collection.CollectionAide;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.formula.FormulaHolder;
+import org.slf4j.*;
 
+@Deprecated
 public class Weight<V> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(Weight.class);
@@ -20,7 +18,7 @@ public class Weight<V> {
 
     public Weight(V value, String weight) {
         this.value = value;
-        this.weight = MvelFormulaFactory.create(weight, FormulaType.EXPRESSION);
+        // this.weight = MvelFormulaFactory.create(weight, FormulaType.EXPRESSION);
     }
 
     public Weight(V value, FormulaHolder weight) {

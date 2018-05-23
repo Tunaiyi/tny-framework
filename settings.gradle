@@ -1,5 +1,6 @@
 rootProject.name = 'tny-framework'
 include 'tny-game-common'
+include 'tny-game-common-mvel'
 include 'tny-game-protoex'
 include 'tny-game-net'
 include 'tny-game-base'

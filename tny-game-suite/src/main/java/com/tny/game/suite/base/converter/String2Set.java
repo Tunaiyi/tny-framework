@@ -2,12 +2,10 @@ package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.MvelFormulaFactory;
+import com.tny.game.common.formula.mvel.MvelFormulaFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class String2Set extends AbstractSingleValueConverter {

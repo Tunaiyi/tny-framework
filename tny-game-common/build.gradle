@@ -5,7 +5,7 @@ apply plugin: "maven"
 dependencies {
 
     compile(
-            libs.'mvel',
+//            libs.'mvel',
 //            libs.'groovy-all',
             libs.'jackson-core',
             libs.'jackson-databind',

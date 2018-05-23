@@ -9,7 +9,7 @@ dependencies {
             'io.netty:netty-all:4.1.15.Final',
 //            libs.'spring-context-support',
 
-            project(":tny-game-common"),
+            project(":tny-game-common-mvel"),
             project(":tny-game-protoex"),
     )
 

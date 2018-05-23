@@ -1,5 +1,6 @@
-package com.tny.game.common.formula;
+package com.tny.game.common.formula.mvel;
 
+import com.tny.game.common.formula.Formula;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mvel2.MVEL;
@@ -21,7 +22,7 @@ import java.util.Map.Entry;
  * <p>
  * <br>
  */
-public class Expression extends AbstractMvelFormula {
+class MvelExpression extends AbstractMvelFormula {
 
     /**
      * 表达式
@@ -36,7 +37,7 @@ public class Expression extends AbstractMvelFormula {
 
     private Number number;
 
-    protected Expression(String expression, ParserContext parserContext, boolean lazy) {
+    protected MvelExpression(String expression, ParserContext parserContext, boolean lazy) {
         if (StringUtils.isNumeric(expression)) {
             this.number = NumberUtils.createNumber(expression);
         } else {
@@ -52,7 +53,7 @@ public class Expression extends AbstractMvelFormula {
         }
     }
 
-    protected Expression(String expression, Map<String, Object> context, boolean lazy) {
+    protected MvelExpression(String expression, Map<String, Object> context, boolean lazy) {
         expression = StringUtils.replace(expression, "\n", "");
         if (StringUtils.isNumeric(expression)) {
             this.number = NumberUtils.createNumber(expression);
@@ -74,7 +75,7 @@ public class Expression extends AbstractMvelFormula {
         }
     }
 
-    private Expression(final Expression expression) {
+    private MvelExpression(final MvelExpression expression) {
         if (expression.number != null) {
             this.number = expression.number;
         } else {
@@ -113,7 +114,7 @@ public class Expression extends AbstractMvelFormula {
 
     @Override
     public Formula createFormula() {
-        return new Expression(this);
+        return new MvelExpression(this);
     }
 
     @Override

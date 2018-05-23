@@ -1,14 +1,8 @@
 package com.tny.game;
 
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.formula.Formula;
-import com.tny.game.common.formula.FormulaHolder;
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.MvelFormulaFactory;
 
 import javax.script.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JSTest {
 
@@ -33,16 +27,16 @@ public class JSTest {
             compiledNoFun.eval();
         RunningChecker.endPrint("nofunction end");
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("name", "abc");
+        // Map<String, Object> map = new HashMap<String, Object>();
+        //         // map.put("name", "abc");
 
-        script = "data.name";
-        FormulaHolder formulaHolder = MvelFormulaFactory.create(script, FormulaType.EXPRESSION);
-        Formula formula = formulaHolder.createFormula();
-        System.out.println(formula.put("data", map).execute(Object.class));
-        RunningChecker.start("mvel");
-        for (int index = 0; index < time; index++)
-            formula.execute(Number.class);
-        RunningChecker.endPrint("mvel end");
+        // script = "data.name";
+        // FormulaHolder formulaHolder = MvelFormulaFactory.create(script, FormulaType.EXPRESSION);
+        // Formula formula = formulaHolder.createFormula();
+        // System.out.println(formula.put("data", map).execute(Object.class));
+        // RunningChecker.start("mvel");
+        // for (int index = 0; index < time; index++)
+        //     formula.execute(Number.class);
+        // RunningChecker.endPrint("mvel end");
     }
 }
