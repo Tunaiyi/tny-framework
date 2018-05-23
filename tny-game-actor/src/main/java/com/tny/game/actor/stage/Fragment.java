@@ -1,12 +1,15 @@
 package com.tny.game.actor.stage;
 
 import com.tny.game.common.utils.Throws;
+import org.slf4j.*;
 
 /**
  * 代码片段对象
  * Created by Kun Yang on 16/1/22.
  */
 public abstract class Fragment<V, R> {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(Fragment.class);
 
 
     /* 片段是否完成 */
@@ -38,6 +41,7 @@ public abstract class Fragment<V, R> {
             doExecute((V) returnVal, cause);
         } catch (Throwable e) {
             fail(e);
+            LOGGER.error("", e);
         }
     }
 

@@ -7,7 +7,7 @@ import org.mvel2.ParserContext;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.locks.StampedLock;
+import java.util.concurrent.locks.*;
 import java.util.function.Supplier;
 
 /**
@@ -29,27 +29,27 @@ public class MvelFormulaFactory {
     private static final boolean CACHED = System.getProperty(CACHED_KEY, "true").equals("true");
     public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
 
-    public static final int size = 16;
+    public static final int size = 1;
     private static Map<String, Expression>[] expressionMaps;
-    private static StampedLock[] locks;
+    private static ReadWriteLock[] locks;
 
     static {
-        expressionMaps = new HashMap[16];
-        locks = new StampedLock[16];
+        expressionMaps = new HashMap[size];
+        locks = new ReadWriteLock[size];
         for (int i = 0; i < size; i++) {
             expressionMaps[i] = new HashMap<>();
-            locks[i] = new StampedLock();
+            locks[i] = new ReentrantReadWriteLock();
         }
     }
 
     public static void cleanCache() {
         for (int i = 0; i < size; i++) {
-            StampedLock lock = locks[i];
-            long rs = lock.writeLock();
+            Lock lock = locks[i].writeLock();
+            lock.lock();
             try {
                 expressionMaps[i].clear();
             } finally {
-                lock.unlockWrite(rs);
+                lock.unlock();
             }
         }
     }
@@ -118,30 +118,42 @@ public class MvelFormulaFactory {
     private static Expression getExpression(String expression, Supplier<Expression> creator) {
         expression = StringUtils.replace(StringUtils.trim(expression), "\n", "");
         int index = toHash(expression);
-        Map<String, Expression> expressionMap = expressionMaps[index];
-        Expression exp;
         if (CACHED) {
-            StampedLock lock = locks[index];
-            long rs = lock.readLock();
+            Expression exp;
+            Map<String, Expression> expressionMap = expressionMaps[index];
+            Lock lock = locks[index].readLock();
+            lock.lock();
             try {
                 exp = expressionMap.get(expression);
                 if (exp != null)
                     return exp;
             } finally {
-                lock.unlockRead(rs);
+                lock.unlock();
             }
-            long ws = lock.writeLock();
+            lock = locks[index].writeLock();
+            lock.lock();
             try {
+                exp = expressionMap.get(expression);
+                if (exp != null)
+                    return exp;
                 exp = creator.get();
                 Expression oldExpression = expressionMap.putIfAbsent(expression, exp);
                 return oldExpression != null ? oldExpression : exp;
             } finally {
-                lock.unlockWrite(ws);
+                lock.unlock();
             }
+        } else {
+            return creator.get();
         }
-        return creator.get();
     }
 
+    // public static void main(String[] args) {
+    //
+    //     FormulaHolder formulaHolder = MvelFormulaFactory.create("floor(10.0 + 11 * obj.value)", FormulaType.EXPRESSION);
+    //     System.out.println(formulaHolder.createFormula().put("obj", new A())
+    //             .execute(Float.class));
+    //
+    // }
 
 //	public static void main(final String[] args) {
 //		Map<String, Object> map = new HashMap<String, Object>();
