@@ -1,15 +1,13 @@
 package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.mvel.MvelFormulaFactory;
+import com.tny.game.expr.FormulaType;
+import com.tny.game.expr.mvel.MvelFormulaFactory;
 
 import java.util.*;
 
 @SuppressWarnings("rawtypes")
 public class String2EnumCollection<T extends Enum<T>> extends AbstractSingleValueConverter {
-
-    private List<Class<T>> enumClassList = new ArrayList<>();
 
     private Class<? extends Collection> collectionClass;
 
@@ -19,7 +17,6 @@ public class String2EnumCollection<T extends Enum<T>> extends AbstractSingleValu
     public String2EnumCollection(Class<? extends Collection> collectionClass, Class<T>... enumClasses) {
         super();
         this.collectionClass = collectionClass;
-        this.enumClassList.addAll(Arrays.asList(enumClasses));
         for (Class<T> enumClass : enumClasses) {
             for (Enum<?> enumValue : EnumSet.allOf(enumClass))
                 enumValueMap.put(enumValue.name(), enumValue);
@@ -40,9 +37,7 @@ public class String2EnumCollection<T extends Enum<T>> extends AbstractSingleValu
             collection = collectionClass.newInstance();
             collection.addAll(MvelFormulaFactory.create(str, FormulaType.EXPRESSION).createFormula().putAll(enumValueMap).execute(List.class));
             return collection;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

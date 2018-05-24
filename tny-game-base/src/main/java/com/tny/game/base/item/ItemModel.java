@@ -1,7 +1,7 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.formula.*;
+import com.tny.game.expr.Formula;
 
 import java.util.*;
 

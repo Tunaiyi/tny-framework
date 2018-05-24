@@ -1,4 +1,4 @@
-package com.tny.game.common.formula.mvel;
+package com.tny.game.common.formula;
 
 
 import com.google.common.collect.Range;
@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Created by Kun Yang on 2017/5/30.
  */
-public class MvelEx {
+public class CollectionEx {
 
     public static int[] ints(int... value) {
         return value;

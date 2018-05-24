@@ -1,7 +1,5 @@
 package com.tny.game.common.math;
 
-import com.tny.game.common.collection.CollectionAide;
-import com.tny.game.common.formula.FormulaHolder;
 import org.slf4j.*;
 
 @Deprecated
@@ -11,7 +9,7 @@ public class Weight<V> {
 
     private V value;
 
-    private FormulaHolder weight;
+    // private FormulaHolder weight;
 
     public Weight() {
     }
@@ -21,10 +19,10 @@ public class Weight<V> {
         // this.weight = MvelFormulaFactory.create(weight, FormulaType.EXPRESSION);
     }
 
-    public Weight(V value, FormulaHolder weight) {
-        this.value = value;
-        this.weight = weight;
-    }
+    // public Weight(V value, FormulaHolder weight) {
+    //     this.value = value;
+    //     this.weight = weight;
+    // }
 
     public V getValue() {
         return this.value;
@@ -33,9 +31,9 @@ public class Weight<V> {
     public WeightNum<V> getWeight(Object... params) {
         int weightNum = 0;
         try {
-            weightNum = this.weight.createFormula()
-                    .putAll(CollectionAide.attributes2Map(params))
-                    .execute(Integer.class);
+            // weightNum = this.weight.createFormula()
+            //         .putAll(CollectionAide.attributes2Map(params))
+            //         .execute(Integer.class);
         } catch (Throwable e) {
             LOGGER.error("", e);
             weightNum = 0;

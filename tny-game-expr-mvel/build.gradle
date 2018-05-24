@@ -5,6 +5,7 @@ apply plugin: "maven"
 dependencies {
 
     compile(
+            project(":tny-game-expr"),
             project(":tny-game-common"),
             libs.'mvel',
     )

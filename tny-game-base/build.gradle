@@ -8,7 +8,7 @@ dependencies {
             libs.'xstream',
             libs.'spring-context-support',
 
-            project(":tny-game-common-mvel"),
+            project(":tny-game-expr-mvel"),
     )
 
 }

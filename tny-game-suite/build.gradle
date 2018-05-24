@@ -12,7 +12,7 @@ dependencies {
             libs.'jade',
             libs.'druid',
             libs.'guava',
-            project(":tny-game-common-mvel"),
+            project(":tny-game-expr-mvel"),
             project(":tny-game-base"),
             project(":tny-game-doc"),
             project(":tny-game-cache"),

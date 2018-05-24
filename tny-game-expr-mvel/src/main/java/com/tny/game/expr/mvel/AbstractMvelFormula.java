@@ -1,7 +1,8 @@
-package com.tny.game.common.formula.mvel;
+package com.tny.game.expr.mvel;
 
 import com.tny.game.common.formula.*;
 import com.tny.game.common.number.NumberAide;
+import com.tny.game.expr.AbstractFormula;
 import org.mvel2.ParserContext;
 
 import java.lang.reflect.Method;
@@ -12,7 +13,7 @@ public abstract class AbstractMvelFormula extends AbstractFormula {
     protected final static Set<Method> methodSet = new HashSet<>();
 
     static {
-        Collections.addAll(methodSet, MvelEx.class.getMethods());
+        Collections.addAll(methodSet, CollectionEx.class.getMethods());
         Collections.addAll(methodSet, Math.class.getMethods());
         Collections.addAll(methodSet, MathEx.class.getMethods());
         Collections.addAll(methodSet, NumberAide.class.getDeclaredMethods());

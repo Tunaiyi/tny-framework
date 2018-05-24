@@ -1,4 +1,4 @@
-package com.tny.game.common.formula;
+package com.tny.game.expr;
 
 public class FormulaException extends RuntimeException {
 

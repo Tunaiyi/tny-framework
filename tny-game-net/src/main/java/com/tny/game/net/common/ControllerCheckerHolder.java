@@ -1,8 +1,8 @@
 package com.tny.game.net.common;
 
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.mvel.MvelFormulaFactory;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.expr.FormulaType;
+import com.tny.game.expr.mvel.MvelFormulaFactory;
 import com.tny.game.net.annotation.Check;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.checker.ControllerChecker;

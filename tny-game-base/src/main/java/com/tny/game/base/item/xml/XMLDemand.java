@@ -3,9 +3,9 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.formula.FormulaType;
-import com.tny.game.common.formula.mvel.MvelFormulaFactory;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.expr.FormulaType;
+import com.tny.game.expr.mvel.MvelFormulaFactory;
 
 /**
  * xml映射条件对象

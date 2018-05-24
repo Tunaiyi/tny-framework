@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.converter;
 
 import com.tny.game.base.converter.MvelFormulaConverter;
-import com.tny.game.common.formula.FormulaType;
+import com.tny.game.expr.FormulaType;
 
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package com.tny.game.suite.base.converter;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.common.formula.Formula;
-import javax.annotation.Resource;
+import com.tny.game.expr.Formula;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 
 public class ListConverter extends AbstractSingleValueConverter {

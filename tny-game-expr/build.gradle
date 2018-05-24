@@ -1,0 +1,3 @@
+group "com.tny.game"
+
+apply plugin: "maven"

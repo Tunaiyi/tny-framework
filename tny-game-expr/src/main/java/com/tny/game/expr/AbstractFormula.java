@@ -1,7 +1,6 @@
-package com.tny.game.common.formula;
+package com.tny.game.expr;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractFormula implements Formula, FormulaHolder {
 
