@@ -1,6 +1,6 @@
 package com.tny.game.expr;
 
-import java.util.*;
+import java.util.Map;
 
 public abstract class AbstractFormula implements Formula, FormulaHolder {
 
@@ -9,7 +9,11 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
      * <p>
      * qualifier="key:java.lang.String java.lang.Object"
      */
-    protected Map<String, Object> attribute = new HashMap<String, Object>();
+    protected Map<String, Object> attribute;
+
+    protected AbstractFormula(Map<String, Object> attribute) {
+        this.attribute = attribute;
+    }
 
     @Override
     public Formula put(final String key, final Object value) {
@@ -24,7 +28,7 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
         return this;
     }
 
-    protected abstract Object execute();
+    protected abstract Object execute() throws Exception;
 
     @Override
     public Formula clear() {
@@ -47,29 +51,33 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T execute(final Class<T> clazz) {
-        Object object = this.execute();
-        if (object == null)
-            return null;
-        if (clazz == null)
+        try {
+            Object object = this.execute();
+            if (object == null)
+                return null;
+            if (clazz == null)
+                return (T) object;
+            if (object instanceof Number) {
+                final Number number = (Number) object;
+                if (Long.class == clazz || long.class == clazz)
+                    object = number.longValue();
+                if (Integer.class == clazz || int.class == clazz)
+                    object = number.intValue();
+                if (Double.class == clazz || double.class == clazz)
+                    object = number.doubleValue();
+                if (Float.class == clazz || float.class == clazz)
+                    object = number.floatValue();
+                if (Byte.class == clazz || byte.class == clazz)
+                    object = number.byteValue();
+            }
+            if (Boolean.class == clazz || boolean.class == clazz)
+                object = Boolean.parseBoolean(object.toString());
+            if (String.class == clazz)
+                object = object.toString();
             return (T) object;
-        if (object instanceof Number) {
-            final Number number = (Number) object;
-            if (Long.class == clazz || long.class == clazz)
-                object = number.longValue();
-            if (Integer.class == clazz || int.class == clazz)
-                object = number.intValue();
-            if (Double.class == clazz || double.class == clazz)
-                object = number.doubleValue();
-            if (Float.class == clazz || float.class == clazz)
-                object = number.floatValue();
-            if (Byte.class == clazz || byte.class == clazz)
-                object = number.byteValue();
+        } catch (Exception e) {
+            throw new FormulaException("Formula : [\n" + this.getClass() + "\n] execute exception", e);
         }
-        if (Boolean.class == clazz || boolean.class == clazz)
-            object = Boolean.parseBoolean(object.toString());
-        if (String.class == clazz)
-            object = object.toString();
-        return (T) object;
     }
 
 }

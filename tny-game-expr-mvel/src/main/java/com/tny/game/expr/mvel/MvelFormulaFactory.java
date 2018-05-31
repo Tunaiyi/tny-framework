@@ -1,10 +1,12 @@
 package com.tny.game.expr.mvel;
 
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.expr.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mvel2.ParserContext;
+import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
@@ -29,6 +31,8 @@ public class MvelFormulaFactory {
     private static final boolean LAZY = System.getProperty(LAZY_KEY, "false").equals("true");
     private static final boolean CACHED = System.getProperty(CACHED_KEY, "true").equals("true");
     public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(MvelFormulaFactory.class);
 
     private static final int size = 1;
     private static Map<String, MvelExpression>[] expressionMaps;
@@ -104,12 +108,25 @@ public class MvelFormulaFactory {
         return new MvelTemplate(formula, parserContext, lazy);
     }
 
+    // @Override
+    // public FormulaHolder create(String formula, FormulaContext context) {
+    //     return getExpression(formula, context, false);
+    // }
+
+    private static MvelExpression getExpression(String expression, FormulaImporter context, boolean lazy) {
+        return getExpression(expression, context.getImportClasses(), context.getAttributes(), lazy);
+    }
+
     private static MvelExpression getExpression(String expression, ParserContext parserContext, boolean lazy) {
         return getExpression(expression, () -> new MvelExpression(expression, parserContext, lazy));
     }
 
     private static MvelExpression getExpression(String expression, Map<String, Object> context, boolean lazy) {
-        return getExpression(expression, () -> new MvelExpression(expression, context, lazy));
+        return getExpression(expression, ImmutableSet.of(), context, lazy);
+    }
+
+    private static MvelExpression getExpression(String expression, Set<Class<?>> importClasses, Map<String, Object> context, boolean lazy) {
+        return getExpression(expression, () -> new MvelExpression(expression, importClasses, context, lazy));
     }
 
     private static int toHash(String expression) {
@@ -148,13 +165,13 @@ public class MvelFormulaFactory {
         }
     }
 
-    // public static void main(String[] args) {
-    //
-    //     FormulaHolder formulaHolder = MvelFormulaFactory.create("floor(10.0 + 11 * obj.value)", FormulaType.EXPRESSION);
-    //     System.out.println(formulaHolder.createFormula().put("obj", new A())
-    //             .execute(Float.class));
-    //
-    // }
+    public static void main(String[] args) {
+        ParserContext context = new ParserContext();
+        context.getImport("com.tny.game.common.formula.MathEx.*");
+        FormulaHolder formulaHolder = MvelFormulaFactory.create("rand(10)", FormulaType.EXPRESSION, context, false);
+        System.out.println(formulaHolder.createFormula().execute(Object.class));
+
+    }
 
 //	public static void main(final String[] args) {
 //		Map<String, Object> map = new HashMap<String, Object>();

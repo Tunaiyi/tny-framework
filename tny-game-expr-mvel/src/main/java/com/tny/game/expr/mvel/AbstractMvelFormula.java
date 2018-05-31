@@ -22,6 +22,10 @@ public abstract class AbstractMvelFormula extends AbstractFormula {
 
     protected ParserContext parserContext;
 
+    protected AbstractMvelFormula() {
+        super(new HashMap<>());
+    }
+
     public static ParserContext createParserContext() {
         ParserContext parserContext = new ParserContext();
         init(parserContext);

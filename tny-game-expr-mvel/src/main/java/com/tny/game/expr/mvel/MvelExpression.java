@@ -8,7 +8,7 @@ import org.mvel2.util.MethodStub;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -52,13 +52,15 @@ class MvelExpression extends AbstractMvelFormula {
         }
     }
 
-    protected MvelExpression(String expression, Map<String, Object> context, boolean lazy) {
+    protected MvelExpression(String expression, Set<Class<?>> importClasses, Map<String, Object> context, boolean lazy) {
         expression = StringUtils.replace(expression, "\n", "");
         if (StringUtils.isNumeric(expression)) {
             this.number = NumberUtils.createNumber(expression);
         } else {
             this.expressionStr = expression;
             this.parserContext = createParserContext();
+            for (Class<?> cl : importClasses)
+                this.parserContext.addImport(cl);
             if (context != null) {
                 for (Entry<String, Object> entry : context.entrySet()) {
                     Object value = entry.getValue();
