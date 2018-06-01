@@ -1,20 +1,13 @@
 package com.tny.game.base.item.behavior.plan;
 
-import com.tny.game.base.item.AbstractItemModel;
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.AbstractAward;
-import com.tny.game.base.item.behavior.DemandParam;
 import com.tny.game.base.item.xml.AliasCollectUtils;
 import com.tny.game.base.log.LogName;
 import com.tny.game.common.formula.FormulaHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class SimpleAward extends AbstractAward {
 
@@ -45,11 +38,6 @@ public class SimpleAward extends AbstractAward {
      */
     protected FormulaHolder fx;
 
-    /**
-     * 参数
-     */
-    protected Map<DemandParam, FormulaHolder> paramMap;
-
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
         return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
@@ -62,23 +50,6 @@ public class SimpleAward extends AbstractAward {
                 .putAll(attributes)
                 .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
                 .execute(Number.class);
-    }
-
-    @Override
-    public Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap) {
-        if (this.paramMap == null || this.paramMap.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        Map<DemandParam, Object> paramMap = new HashMap<>();
-        for (Entry<DemandParam, FormulaHolder> entry : this.paramMap.entrySet()) {
-            try {
-                Object value = entry.getValue().createFormula().putAll(attributeMap).execute(Object.class);
-                paramMap.put(entry.getKey(), value);
-            } catch (Exception e) {
-                LOGGER.error("", e);
-            }
-        }
-        return paramMap;
     }
 
     @Override
@@ -95,6 +66,7 @@ public class SimpleAward extends AbstractAward {
         } else {
             AliasCollectUtils.addAlias(this.itemAlias);
         }
+        this.initParamMap();
     }
 
     @Override

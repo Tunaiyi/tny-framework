@@ -1,19 +1,11 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.behavior.Award;
-import com.tny.game.base.item.behavior.AwardGroup;
-import com.tny.game.base.item.behavior.AwardPlan;
-import com.tny.game.base.item.behavior.DemandParam;
-import com.tny.game.base.item.behavior.plan.SimpleAwardGroup;
-import com.tny.game.base.item.behavior.plan.SimpleAwardPlan;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.behavior.plan.*;
 import com.tny.game.base.item.probability.RandomCreator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public class XMLAwardPlanTest {
 
@@ -46,7 +38,7 @@ public class XMLAwardPlanTest {
         }
 
         @Override
-        public Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap) {
+        public TradeItem<ItemModel> createTradeItem(boolean valid, ItemModel awardModel, Map<String, Object> attributeMap) {
             return null;
         }
 

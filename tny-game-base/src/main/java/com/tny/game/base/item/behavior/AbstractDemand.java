@@ -1,31 +1,20 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.exception.GameRuningException;
-import com.tny.game.base.exception.ItemResultCode;
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemExplorer;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemsImportKey;
-import com.tny.game.base.item.ModelExplorer;
+import com.tny.game.base.exception.*;
+import com.tny.game.base.item.*;
 import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.formula.Formula;
-import com.tny.game.common.formula.FormulaHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.formula.*;
+import org.slf4j.*;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 事物执行行为操作的条件
  *
  * @author KGTny
  */
-public abstract class AbstractDemand implements Demand, ItemsImportKey {
+public abstract class AbstractDemand extends DemandParamsObject implements Demand, ItemsImportKey {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
 
@@ -69,11 +58,6 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
      */
     protected AlterType alertType;
 
-    /**
-     * 参数
-     */
-    protected Map<DemandParam, FormulaHolder> paramMap;
-
     protected ItemExplorer itemExplorer;
 
     protected ModelExplorer itemModelExplorer;
@@ -103,6 +87,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         if (alias == null)
             return null;
         this.setAttrMap(playerID, alias, attributeMap);
+        this.countAndSetDemandParams($PARAMS, attributeMap);
         return this.expect.createFormula().putAll(attributeMap).execute(Object.class);
     }
 
@@ -112,6 +97,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         if (alias == null)
             return null;
         ItemModel demandModel = this.setAttrMap(playerID, alias, attributeMap);
+        this.countAndSetDemandParams($PARAMS, attributeMap);
         return demandModel.currentFormula().putAll(attributeMap).execute(Object.class);
     }
 
@@ -123,9 +109,8 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         long id = 0;
         ItemModel demandModel = this.getItemModel(alias);
         this.setAttrMap(playerID, alias, attributeMap);
+        Map<DemandParam, Object> paramMap = this.countAndSetDemandParams($PARAMS, attributeMap);
         Formula currentFormula = getCurrentFormula(demandModel);
-        Map<DemandParam, Object> paramMap = this.countDemandParam(attributeMap);
-        attributeMap.put($PARAMS, paramMap);
         Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
         Object expect = this.expect != null ? this.expect.createFormula().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
@@ -165,21 +150,6 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         return fxFormula.putAll(attribute).put(CURRENT_VALUE, current).put(EXPECT_VALUE, expect).execute(Boolean.class);
     }
 
-    private Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap) {
-        if (this.paramMap == null || this.paramMap.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        Map<DemandParam, Object> paramMap = new HashMap<>();
-        for (Entry<DemandParam, FormulaHolder> entry : this.paramMap.entrySet()) {
-            try {
-                paramMap.put(entry.getKey(), entry.getValue().createFormula().putAll(attributeMap).execute(Object.class));
-            } catch (Exception e) {
-                LOGGER.error("", e);
-            }
-        }
-        return paramMap;
-    }
-
     private ItemModel getItemModel(String alias) {
         ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
         if (model == null)
@@ -198,6 +168,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
             attributeMap.put(alias, item);
             attributeMap.put(DEMAND_ITEM, item);
         }
+        attributeMap.putIfAbsent(DEMAND_ITEM, null);
         return model;
     }
 
@@ -209,6 +180,7 @@ public abstract class AbstractDemand implements Demand, ItemsImportKey {
         if (this.itemAlias == null) {
             this.itemAlias = itemModel.getAlias();
         }
+        this.initParamMap();
     }
 
 }

@@ -225,6 +225,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("awardGroup", SimpleAwardGroup.class);
         xStream.alias("award", XMLAward.class);
 
+        xStream.alias("paramEntry", Entry.class);
         xStream.alias("tradeParam", Entry.class);
         xStream.alias("param", DemandParam.class);
         xStream.alias("formula", FormulaHolder.class);

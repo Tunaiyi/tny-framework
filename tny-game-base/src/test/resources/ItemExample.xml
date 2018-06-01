@@ -4,6 +4,7 @@
     <!-- 对象事物 -->
     <item>
         <id>1</id>
+        <desc>testObject</desc>
         <alias>testObject</alias>
         <!-- 行为列表 -->
         <behaviorPlanList>

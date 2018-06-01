@@ -20,6 +20,22 @@ public interface ItemsImportKey {
      * 事物对象在有自己相关的行为和操作中上下问对象, 生命周期, 当前Demand计算checkDemandResult
      */
     String $PARAMS = "$params";
+    /**
+     * 内容
+     */
+    String $AWARD_PLAN_DEMAND_PARAMS = "$apParams";
+    /**
+     * 内容
+     */
+    String $COST_PLAN_DEMAND_PARAMS = "$cpParams";
+    /**
+     * 内容
+     */
+    String $ACTION_PLAN_DEMAND_PARAMS = "$acParams";
+    /**
+     * 内容
+     */
+    String $BEHAVIOR_PLAN_DEMAND_PARAMS = "$bhParams";
 
     /**
      * 事物对象在有自己相关的行为和操作中上下问对象, 生命周期, 当前Demand计算checkDemandResult
@@ -59,9 +75,5 @@ public interface ItemsImportKey {
      * 计算物品的当前数量
      */
     String CURRENT_FORMULA = DEMAND_ITEM + " == null ? 0 : " + DEMAND_ITEM + ".number";
-    /**
-     * 内容
-     */
-    String DEMAND_PARAMS = "params";
 
 }

@@ -1,11 +1,12 @@
 package com.tny.game.base.item.behavior;
 
+import com.google.common.collect.*;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
 
 import java.util.*;
 
-public abstract class DemandHolderObject {
+public abstract class DemandHolderObject extends DemandParamsObject {
 
     /**
      * 操作条件
@@ -42,8 +43,10 @@ public abstract class DemandHolderObject {
         }
     }
 
-    protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
+    protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll,
+                                                DemandResultCollector collector, String paramsKey, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(paramsKey, attributeMap);
         if (collector == null)
             collector = new DemandResultCollector();
         for (Demand demand : demandList) {
@@ -62,8 +65,9 @@ public abstract class DemandHolderObject {
     }
 
     protected List<DemandResult> countAllDemandResults(long playerID, List<AbstractDemand> demandList,
-                                                       Map<String, Object> attributeMap) {
+                                                       String paramsKey, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(paramsKey, attributeMap);
         List<DemandResult> demandResults = new ArrayList<>();
         for (Demand demand : demandList) {
             DemandResult result = demand.checkDemandResult(playerID, attributeMap);
@@ -77,14 +81,15 @@ public abstract class DemandHolderObject {
         this.itemExplorer = itemExplorer;
         this.itemModelExplorer = itemModelExplorer;
         if (this.demandList == null)
-            this.demandList = new ArrayList<>();
+            this.demandList = ImmutableList.of();
         if (this.attrAliasSet == null)
-            this.attrAliasSet = new HashSet<>(0);
+            this.attrAliasSet = ImmutableSet.of();
         for (AbstractDemand demand : this.demandList) {
             demand.init(itemModel, itemExplorer, itemModelExplorer);
         }
         this.demandList = Collections.unmodifiableList(this.demandList);
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
+        this.initParamMap();
     }
 
 }
