@@ -31,11 +31,11 @@ public interface ItemsImportKey {
     /**
      * 内容
      */
-    String $ACTION_PLAN_DEMAND_PARAMS = "$acParams";
+    String $ACTION_DEMAND_PARAMS = "$acParams";
     /**
      * 内容
      */
-    String $BEHAVIOR_PLAN_DEMAND_PARAMS = "$bhParams";
+    String $BEHAVIOR_DEMAND_PARAMS = "$bhParams";
 
     /**
      * 事物对象在有自己相关的行为和操作中上下问对象, 生命周期, 当前Demand计算checkDemandResult

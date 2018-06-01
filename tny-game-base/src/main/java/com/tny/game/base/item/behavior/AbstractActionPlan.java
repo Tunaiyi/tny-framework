@@ -54,7 +54,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
 
     @Override
     public DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
-        this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributeMap);
+        this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         if (!tryAll && collector.isFailed())
             return collector;
         if (this.costPlan != null) {
@@ -65,12 +65,12 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
 
     @Override
     public List<DemandResult> countDemandResult(long playerID, Map<String, Object> map) {
-        return this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, map);
+        return this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, map);
     }
 
     @Override
     public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         List<DemandResult> costResultList = this.costPlan == null ? new ArrayList<>() : this.costPlan.countDemandResultList(playerID, attributeMap);
         return new SimpleActionResult(checkAction(action), resultList, costResultList, this.doAwardList(playerID, action, attributeMap));
     }
@@ -89,7 +89,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         if (this.costPlan == null)
             return new SimpleCostList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         return this.costPlan.getCostList(playerID, action, attributeMap);
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         Trade award = null;
         Trade cost = null;
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         if (this.awardPlan != null)
             award = this.awardPlan.createTrade(playerID, action, attributes);
         if (this.costPlan != null)
@@ -113,7 +113,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         if (this.awardPlan == null)
             return new SimpleTrade(action, TradeType.AWARD);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.createTrade(playerID, action, attributes);
     }
 
@@ -123,7 +123,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         if (this.costPlan == null)
             return new SimpleTrade(action, TradeType.COST);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.costPlan.createTrade(playerID, action, attributes);
     }
 
@@ -136,14 +136,14 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         if (this.awardPlan == null)
             return new SimpleAwardList(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.getAwardList(playerID, action, attributes);
     }
 
     @Override
     public <O> O countOption(long playerID, Option option, Map<String, Object> attributes) {
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
-        this.countAndSetDemandParams(ItemsImportKey.$ACTION_PLAN_DEMAND_PARAMS, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         FormulaHolder formula = this.optionMap.get(option);
         if (formula == null)
             throw new GameRuningException(option, ItemResultCode.ACTION_NO_EXIST);
