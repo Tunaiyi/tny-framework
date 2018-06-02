@@ -46,15 +46,15 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public List<DemandResult> countAllDemandResults(long playerID, Map<String, Object> map) {
-        return this.countAllDemandResults(playerID, this.demandList, map);
+    public List<DemandResult> countAllDemandResults(long playerID, Map<String, Object> attributes) {
+        return this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributes);
     }
 
     @Override
     public DemandResultCollector tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap) {
         DemandResultCollector collector = new DemandResultCollector();
         ActionPlan actionPlan = this.getActionPlan0(action);
-        this.checkResult(playerID, this.demandList, tryAll, collector, attributeMap);
+        this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         if (!tryAll && collector.isFailed()) {
             return collector;
         }
@@ -66,6 +66,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public Trade countCost(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         return actionPlan.createCost(playerID, action, attributeMap);
     }
 
@@ -73,6 +74,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public Trade countAward(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         return actionPlan.createAward(playerID, action, attributeMap);
     }
 
@@ -80,13 +82,15 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         return actionPlan.countTrades(playerID, action, attributeMap);
     }
 
     @Override
     public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
-        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         ActionPlan actionPlan = this.getActionPlan0(action);
         ActionResult actionResult = actionPlan.getActionResult(playerID, action, attributeMap);
         return new SimpleActionResult(action, resultList, actionResult);
@@ -96,6 +100,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         return actionPlan.getAwardList(playerID, action, attributeMap);
     }
 
@@ -103,12 +108,13 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         return actionPlan.getCostList(playerID, action, attributeMap);
     }
 
     @Override
     public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap) {
-        List<DemandResult> behaviorDemandResults = this.countAllDemandResults(playerID, this.demandList, attributeMap);
+        List<DemandResult> behaviorDemandResults = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : this.actionPlanMap.entrySet()) {
             for (Action action : entry.getValue().getActions())
@@ -120,6 +126,7 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     @Override
     public <O> O countOption(long playerID, Action action, Option option, Map<String, Object> attributes) {
         setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributes);
         ActionPlan actionPlan = this.getActionPlan0(action);
         if (actionPlan.isHasOption(option)) {
             return actionPlan.countOption(playerID, option, attributes);

@@ -36,10 +36,10 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
      */
     protected FormulaHolder number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
 
-    /*
-     * 产生奖励总类最大个数 -1为无限 默认值为 -1
-     */
-    protected FormulaHolder drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
+    // /*
+    //  * 产生奖励总类最大个数 -1为无限 默认值为 -1
+    //  */
+    // protected FormulaHolder drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
 
     /**
      *
@@ -60,15 +60,15 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         this.awardGroupSet = new ArrayList<>(treeSet);
     }
 
-    public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
-        if (this.drawNumber == null)
-            return awardNum;
-        Integer drawNumber = this.drawNumber.createFormula().putAll(attributeMap).execute(Integer.class);
-        if (drawNumber == null)
-            drawNumber = -1;
-        return drawNumber <= 0 ? awardNum : Math.min(drawNumber, awardNum);
-    }
-
+    // public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
+    //     if (this.drawNumber == null)
+    //         return awardNum;
+    //     Integer drawNumber = this.drawNumber.createFormula().putAll(attributeMap).execute(Integer.class);
+    //     if (drawNumber == null)
+    //         drawNumber = -1;
+    //     return drawNumber <= 0 ? awardNum : Math.min(drawNumber, awardNum);
+    // }
+    //
     @Override
     public int getNumber(Map<String, Object> attributeMap) {
         Integer awardNum = this.number.createFormula().putAll(attributeMap).execute(Integer.class);
@@ -79,6 +79,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     @Override
     public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap) {
+        countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
         List<AwardGroup> groupList = this.randomer.random(this, attributeMap);
         if (groupList == null || groupList.isEmpty())
             return new SimpleTrade(action, TradeType.AWARD);
@@ -101,6 +102,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     @Override
     public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
+        countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
         DemandHolderObject.setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
         List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
@@ -125,13 +127,14 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         }
         if (this.number == null)
             this.number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
-        if (this.drawNumber == null)
-            this.drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
+        // if (this.drawNumber == null)
+        //     this.drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
         //        Collections.sort(this.awardGroupSet);
         this.awardGroupSet = Collections.unmodifiableList(this.awardGroupSet);
         if (this.attrAliasSet == null)
             this.attrAliasSet = new HashSet<>(0);
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
+        this.initParamMap();
     }
 
     @Override

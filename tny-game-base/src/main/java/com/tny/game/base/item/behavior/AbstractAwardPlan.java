@@ -9,9 +9,8 @@ import com.tny.game.base.item.ModelExplorer;
  *
  * @author KGTny
  */
-public abstract class AbstractAwardPlan implements AwardPlan {
+public abstract class AbstractAwardPlan  extends DemandParamsObject implements AwardPlan {
 
     public abstract void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer);
-
 
 }

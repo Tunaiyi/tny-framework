@@ -8,7 +8,6 @@ import com.tny.game.expr.FormulaHolder;
 import org.slf4j.*;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 public class SimpleAward extends AbstractAward {
 
@@ -39,11 +38,6 @@ public class SimpleAward extends AbstractAward {
      */
     protected FormulaHolder fx;
 
-    /**
-     * 参数
-     */
-    protected Map<DemandParam, FormulaHolder> paramMap;
-
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
         return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
@@ -56,23 +50,6 @@ public class SimpleAward extends AbstractAward {
                 .putAll(attributes)
                 .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
                 .execute(Number.class);
-    }
-
-    @Override
-    public Map<DemandParam, Object> countDemandParam(Map<String, Object> attributeMap) {
-        if (this.paramMap == null || this.paramMap.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        Map<DemandParam, Object> paramMap = new HashMap<>();
-        for (Entry<DemandParam, FormulaHolder> entry : this.paramMap.entrySet()) {
-            try {
-                Object value = entry.getValue().createFormula().putAll(attributeMap).execute(Object.class);
-                paramMap.put(entry.getKey(), value);
-            } catch (Exception e) {
-                LOGGER.error("", e);
-            }
-        }
-        return paramMap;
     }
 
     @Override
@@ -89,6 +66,7 @@ public class SimpleAward extends AbstractAward {
         } else {
             AliasCollectUtils.addAlias(this.itemAlias);
         }
+        this.initParamMap();
     }
 
     @Override

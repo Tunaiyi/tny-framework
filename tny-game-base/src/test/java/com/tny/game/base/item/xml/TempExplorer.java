@@ -16,28 +16,31 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class TempExplorer implements ItemExplorer, ModelExplorer {
 
-    private Map<String, ItemModel> model = new HashMap<String, ItemModel>();
+    private Map<String, ItemModel> model = new HashMap<>();
+    private Map<Integer, ItemModel> idModel = new HashMap<>();
     private Item<?> item;
 
     public TempExplorer(ItemModel model, Item<?> item) {
         this.item = item;
         this.model.put(model.getAlias(), model);
+        this.idModel.put(model.getID(), model);
     }
 
     public TempExplorer(ItemModel... modelMap) {
         for (ItemModel model : modelMap) {
             this.model.put(model.getAlias(), model);
+            this.idModel.put(model.getID(), model);
         }
     }
 
     @Override
     public <IM extends Model> IM getModel(int itemID) {
-        return null;
+        return (IM) this.idModel.get(itemID);
     }
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return null;
+        return (IM) model.get(itemAlias);
     }
 
     @Override
@@ -47,12 +50,12 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     @Override
     public boolean hasItemMannager(ItemType itemType) {
-        return false;
+        return true;
     }
 
     @Override
     public <I extends Any<?>> I getItem(long playerID, int id, Object... object) {
-        return null;
+        return (I) item;
     }
 
     @Override

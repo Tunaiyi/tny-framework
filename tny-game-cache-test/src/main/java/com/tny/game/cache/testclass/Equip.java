@@ -22,8 +22,6 @@ public class Equip implements Serializable {
     public Equip() {
     }
 
-    ;
-
     public Equip(int id, long playerID, String name) {
         super();
         this.id = id;

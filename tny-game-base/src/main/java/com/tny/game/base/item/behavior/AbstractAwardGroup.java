@@ -156,7 +156,9 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     public List<TradeItem<ItemModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap) {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
         List<Award> awardList = this.randomer.random(this, attributeMap);
+        // 需要奖励数量
         int number = awardList.size();
+        // 抽中数, 一般number==drawNumber, 如果抽奖类型 number个抽drawNumber个. 并且要显示未抽中的物品,则drawNumber<=number
         int drawNumber = getDrawNumber(number, attributeMap);
         Map<Integer, CollectionTradeItem> itemMap = null;
         for (Award award : awardList) {
@@ -166,6 +168,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
             ItemModel awardModel = this.itemModelExplorer.getModelByAlias(awModelAlias);
             if (awardModel == null)
                 continue;
+            // drawNumber > 0 => 有效的作为奖励发放, 无效的作为显示, 如抽奖 number个抽drawNumber个
             TradeItem<ItemModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
             if (tradeItem != null) {
                 number--;
