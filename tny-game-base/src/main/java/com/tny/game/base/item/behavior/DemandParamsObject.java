@@ -2,7 +2,7 @@ package com.tny.game.base.item.behavior;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.formula.FormulaHolder;
+import com.tny.game.expr.FormulaHolder;
 import org.slf4j.*;
 
 import java.util.*;

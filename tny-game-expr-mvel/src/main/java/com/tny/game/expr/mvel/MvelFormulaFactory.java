@@ -113,9 +113,9 @@ public class MvelFormulaFactory {
     //     return getExpression(formula, context, false);
     // }
 
-    private static MvelExpression getExpression(String expression, FormulaImporter context, boolean lazy) {
-        return getExpression(expression, context.getImportClasses(), context.getAttributes(), lazy);
-    }
+    // private static MvelExpression getExpression(String expression, FormulaImporter context, boolean lazy) {
+    //     return getExpression(expression, context.getImportClasses(), context.getAttributes(), lazy);
+    // }
 
     private static MvelExpression getExpression(String expression, ParserContext parserContext, boolean lazy) {
         return getExpression(expression, () -> new MvelExpression(expression, parserContext, lazy));

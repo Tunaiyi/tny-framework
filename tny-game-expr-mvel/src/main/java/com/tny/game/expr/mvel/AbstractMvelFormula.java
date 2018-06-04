@@ -2,13 +2,13 @@ package com.tny.game.expr.mvel;
 
 import com.tny.game.common.formula.*;
 import com.tny.game.common.number.NumberAide;
-import com.tny.game.expr.AbstractFormula;
+import com.tny.game.expr.*;
 import org.mvel2.ParserContext;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
-public abstract class AbstractMvelFormula extends AbstractFormula {
+public abstract class AbstractMvelFormula extends MapFormula {
 
     protected final static Set<Method> methodSet = new HashSet<>();
 

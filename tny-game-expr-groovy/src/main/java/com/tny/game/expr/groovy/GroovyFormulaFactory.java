@@ -1,9 +1,11 @@
 package com.tny.game.expr.groovy;
 
+import com.tny.game.common.formula.MathEx;
 import com.tny.game.expr.FormulaHolder;
 import com.tny.game.expr.jsr223.ScriptFormulaFactory;
+import org.joda.time.DateTime;
 
-import java.util.Map;
+import javax.script.ScriptException;
 
 /**
  * Created by Kun Yang on 2018/5/24.
@@ -15,10 +17,14 @@ public class GroovyFormulaFactory extends ScriptFormulaFactory {
     private static volatile GroovyFormulaFactory factory;
 
     private GroovyFormulaFactory() {
-        super(LAN, new GroovyImportContext());
+        super(LAN, GroovyFormulaContext::new);
     }
 
-    public static GroovyFormulaFactory factory() {
+    public static GroovyFormulaFactory createFactroy() {
+        return new GroovyFormulaFactory();
+    }
+
+    public static GroovyFormulaFactory getDefault() {
         if (factory != null)
             return factory;
         synchronized (GroovyFormulaFactory.class) {
@@ -28,24 +34,14 @@ public class GroovyFormulaFactory extends ScriptFormulaFactory {
         }
     }
 
-    // @Override
-    // public FormulaHolder create(String formula, FormulaImportContext context) {
-    //     GroovyImportContext groovyContext;
-    //     if (context instanceof GroovyImportContext) {
-    //         groovyContext = (GroovyImportContext) context;
-    //     } else {
-    //         groovyContext = new GroovyImportContext(context);
-    //     }
-    //     engine().eval()
-    //     engine().eval()
-    //     engine().eval()
-    //     ScriptEngine engine = engine();
-    //     formula += groovyContext.getImportCode();
-    //     // return ;
-    // }
-
-    @Override
-    public FormulaHolder create(String formula, Map<String, Object> attributes) {
-        return null;
+    public static void main(String[] args) throws ScriptException {
+        GroovyFormulaFactory factory = new GroovyFormulaFactory();
+        factory.getEngineContext()
+                .importClasses(DateTime.class)
+                .importStaticClasses(MathEx.class)
+                .importClassAs("S", String.class);
+        FormulaHolder holder = factory.create("a + 100 + new S('__222__') + DateTime.now() + '---' + rand(200)");
+        System.out.println(holder.createFormula().put("a", 2000).execute(Integer.class));
     }
+
 }

@@ -4,27 +4,18 @@ import java.util.Map;
 
 public abstract class AbstractFormula implements Formula, FormulaHolder {
 
-    /**
-     * 屬性
-     * <p>
-     * qualifier="key:java.lang.String java.lang.Object"
-     */
-    protected Map<String, Object> attribute;
-
-    protected AbstractFormula(Map<String, Object> attribute) {
-        this.attribute = attribute;
-    }
+    protected abstract Map<String, Object> attribute();
 
     @Override
     public Formula put(final String key, final Object value) {
-        this.attribute.put(key, value);
+        this.attribute().put(key, value);
         return this;
     }
 
     @Override
     public Formula putAll(final Map<String, Object> attribute) {
         if (attribute != null)
-            this.attribute.putAll(attribute);
+            this.attribute().putAll(attribute);
         return this;
     }
 
@@ -32,13 +23,13 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
 
     @Override
     public Formula clear() {
-        this.attribute.clear();
+        this.attribute().clear();
         return this;
     }
 
     @Override
     public Formula remove(final String key) {
-        this.attribute.remove(key);
+        this.attribute().remove(key);
         return this;
     }
 

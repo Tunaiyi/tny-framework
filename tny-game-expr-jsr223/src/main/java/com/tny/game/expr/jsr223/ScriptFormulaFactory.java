@@ -1,71 +1,86 @@
 package com.tny.game.expr.jsr223;
 
-import com.tny.game.expr.*;
+import com.tny.game.expr.FormulaHolder;
 
 import javax.script.*;
 import java.util.*;
+import java.util.concurrent.locks.*;
+import java.util.function.Function;
+
+import static com.tny.game.common.utils.ObjectAide.ifNull;
 
 /**
  * Created by Kun Yang on 2018/5/24.
  */
-public abstract class ScriptFormulaFactory implements FormulaImporter {
+public abstract class ScriptFormulaFactory {
 
-    private static final String CACHED_KEY = "tny.common.formula.groovy.cached";
+    // private static final String CACHED_KEY = "tny.common.formula.groovy.cached";
 
     private ScriptEngine engine;
 
-    private ScriptContext context;
+    private ScriptFormulaContext context;
 
-    private ScriptImportContext importer;
+    private Function<ScriptEngine, ScriptFormulaContext> contextCreator;
 
-    public ScriptFormulaFactory(String lan, ScriptImportContext importContext) {
+    private Map<String, FormulaHolder> holderMap = new HashMap<>();
+
+    private int cacheGroupSize = 16;
+    private Map<String, FormulaHolder>[] formulaHolderMap;
+    private ReadWriteLock[] locks;
+
+    public ScriptFormulaFactory(String lan, Function<ScriptEngine, ScriptFormulaContext> contextCreator) {
         final ScriptEngineManager factory = new ScriptEngineManager();
+        this.contextCreator = contextCreator;
         this.engine = factory.getEngineByName(lan);
-        this.context = this.engine.getContext();
-        this.importer = importContext;
+        this.context = contextCreator.apply(this.engine);
+        this.engine.setBindings(context.bindings, ScriptContext.ENGINE_SCOPE);
+        formulaHolderMap = new HashMap[cacheGroupSize];
+        locks = new ReadWriteLock[cacheGroupSize];
+        for (int i = 0; i < cacheGroupSize; i++) {
+            formulaHolderMap[i] = new HashMap<>();
+            locks[i] = new ReentrantReadWriteLock();
+        }
     }
 
     protected ScriptEngine engine() {
         return engine;
     }
 
-    protected FormulaImporter importer() {
-        return importer;
+    public ScriptFormulaContext getEngineContext() {
+        return context;
     }
 
-    public String preprocess(String expression) {
-        return expression;
+    public ScriptFormulaContext createContext() {
+        return contextCreator.apply(this.engine);
     }
 
-    public abstract FormulaHolder create(String formula, Map<String, Object> attributes);
-
-    @Override
-    public void importClasses(Class<?>... classes) {
-        this.importer.importClasses(classes);
+    /**
+     * 使用默认Context, 创建公式Holder, 可缓存
+     *
+     * @param formula 表达式
+     * @return 返回公式Holder
+     * @throws ScriptException 脚本异常
+     */
+    public FormulaHolder create(String formula) throws ScriptException {
+        return create(formula, null);
     }
 
-    @Override
-    public void importClasses(Collection<Class<?>> classes) {
-        this.importer.importClasses(classes);
+    /**
+     * 使用指定Context, 创建公式Holder, 不可缓存
+     *
+     * @param formula 表达式
+     * @param context 指定Context
+     * @return 返回公式Holder
+     * @throws ScriptException 脚本异常
+     */
+    public FormulaHolder create(String formula, ScriptFormulaContext context) throws ScriptException {
+        String imports = this.context.getImportCode();
+        Map<String, Object> bindings = null;
+        if (context != null && context != this.context) {
+            imports += context.getImportCode();
+            bindings = context.getBindings();
+        }
+        return new ScriptFormula(engine, imports + formula, ifNull(context, this.context), bindings);
     }
 
-    @Override
-    public void importStaticClasses(Class<?>... classes) {
-        this.importer.importStaticClasses(classes);
-    }
-
-    @Override
-    public void importStaticClasses(Collection<Class<?>> classes) {
-        this.importer.importStaticClasses(classes);
-    }
-
-    @Override
-    public void importClassAs(String alias1, Class<?> clazz1) {
-        this.importer.importClassAs(alias1, clazz1);
-    }
-
-    @Override
-    public void importClassesAs(Map<String, Class<?>> aliasClassMap) {
-        this.importer.importClassesAs(aliasClassMap);
-    }
 }
