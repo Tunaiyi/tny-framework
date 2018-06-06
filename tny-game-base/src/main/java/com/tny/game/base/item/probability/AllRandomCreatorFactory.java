@@ -6,9 +6,11 @@ public class AllRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends Pr
 
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR = Probabilities::all;
 
+    private static AllRandomCreatorFactory factory = new AllRandomCreatorFactory<>();
+
     @SuppressWarnings("unchecked")
-    public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreator<G, P> getInstance() {
-        return (RandomCreator<G, P>) CREATOR;
+    public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreatorFactory<G, P> getInstance() {
+        return factory;
     }
 
     @Override

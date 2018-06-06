@@ -3,6 +3,7 @@ package com.tny.game.net.command.dispatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.utils.Throws;
+import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.AfterPlugin;
 import com.tny.game.net.annotation.AppProfile;
 import com.tny.game.net.annotation.Auth;
@@ -79,7 +80,7 @@ public abstract class ControllerHolder {
      */
     protected List<ControllerCheckerHolder> checkerHolders;
 
-    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile) {
+    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
@@ -108,19 +109,19 @@ public abstract class ControllerHolder {
                     .collect(Collectors.toList()), this.afterPlugins = new ArrayList<>());
 
         if (checkers != null)
-            this.initChecker(dispatcher, checkers);
+            this.initChecker(dispatcher, checkers, exprHolderFactory);
 
         if (filter != null)
             this.messageModes = ImmutableSet.copyOf(filter.modes());
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends ControllerPlugin> void initChecker(AbstractMessageDispatcher dispatcher, final Check[] checkers) {
+    private <E extends ControllerPlugin> void initChecker(AbstractMessageDispatcher dispatcher, final Check[] checkers, ExprHolderFactory exprHolderFactory) {
         List<ControllerCheckerHolder> checkerHolders = new ArrayList<>();
         for (Check check : checkers) {
             ControllerChecker checker = dispatcher.getChecker(check.value());
             Throws.checkNotNull(checker, "{} Checker is null", check.value());
-            checkerHolders.add(new ControllerCheckerHolder(this, checker, check));
+            checkerHolders.add(new ControllerCheckerHolder(this, checker, check, exprHolderFactory));
         }
         this.checkerHolders = ImmutableList.copyOf(checkerHolders);
     }

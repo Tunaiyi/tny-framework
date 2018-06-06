@@ -1,14 +1,13 @@
 package com.tny.game.net.common;
 
 
+import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.session.CommonSessionHolder;
-import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.SessionInputEventHandler;
-import com.tny.game.net.session.event.SessionOutputEventHandler;
+import com.tny.game.net.message.sign.MessageSignGenerator;
+import com.tny.game.net.session.*;
+import com.tny.game.net.session.event.*;
 import com.tny.game.net.session.holder.NetSessionHolder;
 
 import java.io.IOException;
@@ -65,6 +64,11 @@ public class CommonAppConfiguration extends AbstractAppConfiguration {
 
     public CommonAppConfiguration setMessageSignGenerator(MessageSignGenerator messageSignGenerator) {
         this.messageSignGenerator = messageSignGenerator;
+        return this;
+    }
+
+    protected CommonAppConfiguration setExprHolderFactory(ExprHolderFactory exprHolderFactory) {
+        this.exprHolderFactory = exprHolderFactory;
         return this;
     }
 

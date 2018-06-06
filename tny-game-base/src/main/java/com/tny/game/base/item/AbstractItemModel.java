@@ -1,16 +1,20 @@
 package com.tny.game.base.item;
 
+import com.google.common.collect.*;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
+import com.tny.game.base.item.xml.AliasCollectUtils;
 import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
+import com.tny.game.common.collection.EmptyImmutableMap;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.expr.*;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import static com.tny.game.common.utils.ObjectAide.as;
 
 /**
  * 抽象事物模型
@@ -52,12 +56,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     /**
      * 事物总管理器
      */
-    protected ItemExplorer itemExplorer;
-
-    /**
-     * 事物模型总管理器
-     */
-    protected ModelExplorer itemModelExplorer;
+    protected ItemModelContext context;
 
     /**
      * 对象计算附加参数列表
@@ -67,19 +66,21 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     /**
      * 对象能力 － 能力公式map
      */
-    protected Map<Ability, FormulaHolder> abilityMap;
+    protected Map<Ability, ExprHolder> abilityMap;
 
     /**
      * 能治值
      */
-    protected volatile FormulaHolder currentFormulaHolder;
+    protected volatile ExprHolder currentFormulaHolder;
 
     /**
      * 能治值
      */
-    protected volatile FormulaHolder demandFormulaHolder;
+    protected volatile ExprHolder demandFormulaHolder;
 
     protected Set<Object> tags;
+
+    protected boolean init = false;
 
     @Override
     public int getID() {
@@ -107,11 +108,13 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     protected Item<?> setAttrMap(long playerID, String alias, Map<String, Object> attributeMap) {
-        ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
+        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+        ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
-        if (itemExplorer.hasItemMannager(model.getItemType())) {
-            Item<?> item = this.itemExplorer.getItem(playerID, model.getID());
+        ItemExplorer itemExplorer = context.getItemExplorer();
+        if (itemExplorer.hasItemManager(model.getItemType())) {
+            Item<?> item = itemExplorer.getItem(playerID, model.getID());
             attributeMap.put(alias, item);
             return item;
         }
@@ -201,14 +204,14 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     protected <A> A doCountAbility(long playerID, Item<?> item, Ability ability, Class<A> clazz, Object... attributes) {
-        FormulaHolder formula = this.abilityMap.get(ability);
+        ExprHolder formula = this.abilityMap.get(ability);
         if (formula == null) {
             return null;
         }
         Map<String, Object> attributeMap = new HashMap<>();
         this.setAttrMap(playerID, attributeMap, item, attributes);
         this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
-        return formula.createFormula().putAll(attributeMap).execute(clazz);
+        return formula.createExpr().putAll(attributeMap).execute(clazz);
     }
 
     @Override
@@ -496,7 +499,8 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     protected void setAttrMap(long playerID, Map<String, Object> attributeMap, Item<?> item, Object... attributes) {
         String key = null;
         if (item == null) {
-            if (itemExplorer.hasItemMannager(this.getItemType()))
+            ItemExplorer itemExplorer = context.getItemExplorer();
+            if (itemExplorer.hasItemManager(this.getItemType()))
                 item = itemExplorer.getItem(playerID, this.getID());
         }
         attributeMap.put(ACTION_ITEM_NAME, item);
@@ -584,24 +588,24 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     }
 
     @Override
-    public Formula currentFormula() {
+    public Expr currentFormula() {
         if (this.currentFormulaHolder != null) {
-            return this.currentFormulaHolder.createFormula();
+            return this.currentFormulaHolder.createExpr();
         } else {
             String formula = this.getCurrentFormula();
-            this.currentFormulaHolder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
-            return this.currentFormulaHolder.createFormula();
+            this.currentFormulaHolder = context.getExprHolderFactory().create(formula);
+            return this.currentFormulaHolder.createExpr();
         }
     }
 
     @Override
-    public Formula demandFormula() {
+    public Expr demandFormula() {
         if (this.demandFormulaHolder != null) {
-            return this.demandFormulaHolder.createFormula();
+            return this.demandFormulaHolder.createExpr();
         } else {
             String formula = this.getDemandFormula();
-            this.demandFormulaHolder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
-            return this.demandFormulaHolder.createFormula();
+            this.demandFormulaHolder = context.getExprHolderFactory().create(formula);
+            return this.demandFormulaHolder.createExpr();
         }
     }
 
@@ -611,6 +615,41 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     protected String getDemandFormula() {
         return DEMAND_FORMULA;
+    }
+
+
+    protected void init(ItemModelContext context) {
+        this.context = context;
+        if (this.attrAliasSet == null)
+            this.attrAliasSet = ImmutableSet.of();
+
+        if (this.abilityMap == null)
+            this.abilityMap = ImmutableMap.of();
+
+        if (this.tags == null)
+            this.tags = ImmutableSet.of();
+
+        this.attrAliasSet = ImmutableSet.copyOf(this.attrAliasSet);
+        this.abilityMap = ImmutableMap.copyOf(this.abilityMap);
+        this.tags = ImmutableSet.copyOf(this.tags);
+        for (String alias : this.attrAliasSet) {
+            AliasCollectUtils.addAlias(alias);
+        }
+        ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
+        this.currentFormulaHolder = as(exprHolderFactory.create(this.getCurrentFormula()));
+        this.demandFormulaHolder = as(exprHolderFactory.create(this.getDemandFormula()));
+        if (this.actionBehaviorPlanMap == null)
+            this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
+
+        if (this.behaviorPlanMap == null)
+            this.behaviorPlanMap = new EmptyImmutableMap<>();
+        doInit(context);
+        this.behaviorPlanMap = ImmutableMap.copyOf(this.behaviorPlanMap);
+        this.actionBehaviorPlanMap = ImmutableMap.copyOf(this.actionBehaviorPlanMap);
+        this.init = true;
+    }
+
+    protected void doInit(ItemModelContext context) {
     }
 
     /*

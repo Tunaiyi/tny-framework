@@ -1,7 +1,7 @@
 package com.tny.game.base.item;
 
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.expr.Formula;
+import com.tny.game.expr.Expr;
 
 import java.util.*;
 
@@ -438,13 +438,13 @@ public interface ItemModel extends Model {
      *
      * @return 返回当前值公式
      */
-    Formula currentFormula();
+    Expr currentFormula();
 
     /**
      * 消耗条件公式
      *
      * @return 返回消耗条件公式
      */
-    Formula demandFormula();
+    Expr demandFormula();
 
 }

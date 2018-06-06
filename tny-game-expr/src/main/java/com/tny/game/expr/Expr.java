@@ -2,7 +2,7 @@ package com.tny.game.expr;
 
 import java.util.Map;
 
-public interface Formula {
+public interface Expr {
 
     /**
      * 设置属性 <br>
@@ -11,7 +11,7 @@ public interface Formula {
      * @param value 值
      * @return 表达式本身
      */
-    Formula put(final String key, final Object value);
+    Expr put(final String key, final Object value);
 
     /**
      * 设置属性Map <br>
@@ -19,14 +19,14 @@ public interface Formula {
      * @param attribute 属性Map
      * @return 表达式本身
      */
-    Formula putAll(final Map<String, Object> attribute);
+    Expr putAll(final Map<String, Object> attribute);
 
     /**
      * 清除所有属性 <br>
      *
      * @return 表达式本身
      */
-    Formula clear();
+    Expr clear();
 
     /**
      * 移除指定键对应的属性 <br>
@@ -34,7 +34,7 @@ public interface Formula {
      * @param key 指定键
      * @return 表达式本身
      */
-    Formula remove(final String key);
+    Expr remove(final String key);
 
     /**
      * 执行表达式计算,返回结果 <br>

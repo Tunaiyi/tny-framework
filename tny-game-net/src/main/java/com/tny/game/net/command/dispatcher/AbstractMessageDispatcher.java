@@ -9,6 +9,7 @@ import com.tny.game.common.utils.Logs;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.common.worker.command.Command;
+import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.command.auth.AuthProvider;
 import com.tny.game.net.base.AppConfiguration;
@@ -335,11 +336,12 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     protected void addController(Object object) {
+        ExprHolderFactory exprHolderFactory = appConfiguration.getExprHolderFactory();
         NetSessionHolder sessionHolder = appConfiguration.getSessionHolder();
         if (sessionHolder == null)
             throw new NullPointerException("sessionHolder is null");
         Map<Integer, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
-        final ClassControllerHolder holder = new ClassControllerHolder(object, this);
+        final ClassControllerHolder holder = new ClassControllerHolder(object, this, exprHolderFactory);
         for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
             MethodControllerHolder controller = entry.getValue();
             Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getID(), CopyOnWriteMap::new);

@@ -1,21 +1,20 @@
 package com.tny.game.suite.base.converter;
 
-import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.expr.FormulaType;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
+import com.tny.game.base.converter.String2ExprHolderConverter;
+import com.tny.game.expr.ExprHolderFactory;
 
 import java.util.*;
 
 @SuppressWarnings("rawtypes")
-public class String2EnumCollection<T extends Enum<T>> extends AbstractSingleValueConverter {
+public class String2Enums<T extends Enum<T>> extends String2ExprHolderConverter {
 
     private Class<? extends Collection> collectionClass;
 
     private Map<String, Object> enumValueMap = new HashMap<>();
 
     @SafeVarargs
-    public String2EnumCollection(Class<? extends Collection> collectionClass, Class<T>... enumClasses) {
-        super();
+    public String2Enums(ExprHolderFactory exprHolderFactory, Class<? extends Collection> collectionClass, Class<T>... enumClasses) {
+        super(exprHolderFactory);
         this.collectionClass = collectionClass;
         for (Class<T> enumClass : enumClasses) {
             for (Enum<?> enumValue : EnumSet.allOf(enumClass))
@@ -35,7 +34,7 @@ public class String2EnumCollection<T extends Enum<T>> extends AbstractSingleValu
         Collection<?> collection;
         try {
             collection = collectionClass.newInstance();
-            collection.addAll(MvelFormulaFactory.create(str, FormulaType.EXPRESSION).createFormula().putAll(enumValueMap).execute(List.class));
+            collection.addAll(exprHolderFactory.create(str).createExpr().putAll(enumValueMap).execute(List.class));
             return collection;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);

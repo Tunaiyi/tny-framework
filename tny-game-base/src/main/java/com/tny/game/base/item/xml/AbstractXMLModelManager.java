@@ -14,10 +14,10 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.config.FileLoader;
 import com.tny.game.common.reflect.proxy.*;
-import com.tny.game.expr.FormulaHolder;
+import com.tny.game.expr.ExprHolder;
 import org.slf4j.*;
 
-import javax.annotation.*;
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -28,7 +28,7 @@ import java.util.Map.Entry;
  * @param <M>
  * @author KGTny
  */
-public abstract class AbstractXMLModelManager<M extends Model> extends AbstractModelManager<M> {
+public abstract class AbstractXMLModelManager<M extends Model> extends AbstractModelManager<M> implements SingleValueConverter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
@@ -38,18 +38,6 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
      * 模型的实现类类型
      */
     protected final Class<? extends M> modelClass;
-
-    /**
-     * 事物对象管理器
-     */
-    @Resource
-    protected ItemExplorer itemExplorer;
-
-    /**
-     * 事物对象模型管理器
-     */
-    @Resource
-    protected ModelExplorer itemModelExplorer;
 
     /**
      * 文件读取器
@@ -129,7 +117,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     }
 
     @PostConstruct
-    protected void initManager() throws Exception {
+    protected void initManager() {
         this.fileLoaderList.parallelStream().forEach(loader -> {
             try {
                 loader.load();
@@ -145,6 +133,8 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     protected XStream createXStream() {
         return new XStream(new Xpp3DomDriver());
     }
+
+    protected abstract ItemModelContext context();
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void loadAndInitModel(String path, InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
@@ -176,8 +166,10 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         RunningChecker.start(this.getClass());
 
         xStream.autodetectAnnotations(true);
-        xStream.registerConverter(this.getFormulaConverter());
-        xStream.registerConverter(this.getRandomConverter());
+        String2Formula exprHolderConverter = new String2Formula(this.context().getExprHolderFactory());
+        xStream.registerConverter(exprHolderConverter);
+        String2RandomCreator randomConverter = new String2RandomCreator();
+        xStream.registerConverter(randomConverter);
         xStream.alias("itemList", ArrayList.class);
         xStream.alias("item", this.modelClass);
 
@@ -191,7 +183,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
         xStream.alias("actionOption", Entry.class);
         xStream.alias("option", Option.class);
-        xStream.alias("formula", FormulaHolder.class);
+        xStream.alias("formula", ExprHolder.class);
 
         xStream.alias("costPlan", AbstractCostPlan.class, SimpleCostPlan.class);
         xStream.alias("cost", XMLDemand.class);
@@ -204,7 +196,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("paramEntry", Entry.class);
         xStream.alias("tradeParam", Entry.class);
         xStream.alias("param", DemandParam.class);
-        xStream.alias("formula", FormulaHolder.class);
+        xStream.alias("formula", ExprHolder.class);
 
         xStream.alias("itemAbility", Entry.class);
         xStream.alias("ability", Ability.class);
@@ -249,9 +241,10 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         Map<Integer, M> modelMap = new HashMap<>();
         Map<String, M> modelAliasMap = new HashMap<>();
 
+        ItemModelContext context = context();
         for (M model : list) {
             if (model instanceof XMLItemModel) {
-                ((XMLItemModel) model).init(this.itemExplorer, this.itemModelExplorer, this.getFormulaConverter());
+                ((XMLItemModel) model).init(context);
             } else if (model instanceof XMLModel) {
                 ((XMLModel) model).init();
             }
@@ -304,15 +297,21 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
     protected void parseAllComplete() {
     }
 
-    public static void checkRepeatAlias() {
-        repeatAliasList.forEach(System.out::println);
-        if (!repeatAliasList.isEmpty())
-            throw new IllegalArgumentException("别名出现重复");
+    @Override
+    public String toString(Object obj) {
+        return obj == null ? null : obj.toString();
     }
 
-    protected abstract SingleValueConverter getFormulaConverter();
+    @Override
+    public Object fromString(String str) {
+        return this.getAndCheckModelByAlias(str);
+    }
 
-    protected abstract SingleValueConverter getRandomConverter();
+    @Override
+    @SuppressWarnings("rawtypes")
+    public boolean canConvert(Class type) {
+        return this.modelClass.isAssignableFrom(type);
+    }
 
     protected class XMLFileLoader extends FileLoader {
 

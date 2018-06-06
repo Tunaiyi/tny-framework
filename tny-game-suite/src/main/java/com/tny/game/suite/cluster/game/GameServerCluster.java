@@ -67,7 +67,7 @@ public class GameServerCluster extends SpringBaseCluster {
     @Override
     protected void monitor() throws Exception {
         super.monitor();
-        int serverID = GameInfo.getMainInfo().getServerID();
+        int serverID = GameInfo.info().getServerID();
         String currentSettingPath = ClusterUtils.getServerSettingPath(serverID);
         // 注册监听setting
         //	ServerSetting setting = new ServerSetting(outline);
@@ -86,7 +86,7 @@ public class GameServerCluster extends SpringBaseCluster {
 
     private List<ServerOutline> currentConfiger() {
         List<ServerOutline> outlines = new ArrayList<>();
-        GameInfo main = GameInfo.getMainInfo();
+        GameInfo main = GameInfo.info();
         for (GameInfo info : GameInfo.getAllGamesInfo()) {
             if (!info.isRegister())
                 continue;
@@ -98,7 +98,7 @@ public class GameServerCluster extends SpringBaseCluster {
                     .setServerType(info.getScopeType().getAppType().getName())
                     .setMain(info.isMainServer())
                     .setOpenDate(info.getOpenDate())
-                    .setVersion(GameInfo.getMainInfo().getVersion())
+                    .setVersion(GameInfo.info().getVersion())
                     // .setServerPort(ip.getPorts().get(0))
                     // .setPublicIP(config.getStr(Configs.PUBLIC_HOST))
                     // .setPrivateIP(config.getStr(Configs.PRIVATE_HOST))

@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface ItemExplorer {
 
-    boolean hasItemMannager(ItemType itemType);
+    boolean hasItemManager(ItemType itemType);
 
     <I extends Any<?>> I getItem(long playerID, int id, Object... object);
 

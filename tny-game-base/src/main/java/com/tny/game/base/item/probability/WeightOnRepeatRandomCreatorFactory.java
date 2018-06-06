@@ -7,6 +7,13 @@ public class WeightOnRepeatRandomCreatorFactory<G extends ProbabilityGroup<P>, P
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
             Probabilities::drawWeightsNoRepeat;
 
+    private static WeightOnRepeatRandomCreatorFactory factory = new WeightOnRepeatRandomCreatorFactory<>();
+
+    @SuppressWarnings("unchecked")
+    public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreatorFactory<G, P> getInstance() {
+        return factory;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public RandomCreator<G, P> getRandomCreator() {

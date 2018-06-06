@@ -1,11 +1,10 @@
 package com.tny.game.suite.net.spring;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 import com.tny.game.net.base.AppUtils;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
@@ -15,18 +14,15 @@ import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.netty.coder.ChannelMaker;
 import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.SessionInputEventHandler;
-import com.tny.game.net.session.event.SessionOutputEventHandler;
+import com.tny.game.net.session.event.*;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +54,8 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
     private String messageSignGeneratorName;
 
     private String channelMakerName;
+
+    private String exprHolderFactoryName;
 
     public SuiteAppConfiguration(String name) {
         super(name);
@@ -119,6 +117,10 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.channelMakerName = channelMaker;
     }
 
+    public void setExprHolderFactoryName(String exprHolderFactoryName) {
+        this.exprHolderFactoryName = exprHolderFactoryName;
+    }
+
     @Override
     public PrepareStarter getPrepareStarter() {
         return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
@@ -135,6 +137,11 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.messageDispatcher = load(MessageDispatcher.class, this.messageDispatcherName);
         this.messageSignGenerator = load(MessageSignGenerator.class, this.messageSignGeneratorName);
         this.channelMaker = load(ChannelMaker.class, this.channelMakerName);
+        if (StringUtils.isBlank(this.exprHolderFactoryName)) {
+            this.exprHolderFactory = new GroovyExprHolderFactory();
+        } else {
+            this.exprHolderFactory = load(ExprHolderFactory.class, this.exprHolderFactoryName);
+        }
     }
 
     private <T> T load(Class<T> clazz, String checkUnit) {

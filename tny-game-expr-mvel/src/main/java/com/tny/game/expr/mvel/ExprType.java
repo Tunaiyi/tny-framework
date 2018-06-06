@@ -1,6 +1,6 @@
-package com.tny.game.expr;
+package com.tny.game.expr.mvel;
 
-public enum FormulaType {
+public enum ExprType {
 
     /**
      * 表达式

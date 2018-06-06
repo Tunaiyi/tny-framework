@@ -4,7 +4,7 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.xml.AliasCollectUtils;
 import com.tny.game.base.log.LogName;
-import com.tny.game.expr.FormulaHolder;
+import com.tny.game.expr.ExprHolder;
 import org.slf4j.*;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public class SimpleAward extends AbstractAward {
     /**
      * 获得概率
      */
-    public FormulaHolder probability;
+    public ExprHolder probability;
 
     /**
      * 奖励物品id
@@ -31,22 +31,22 @@ public class SimpleAward extends AbstractAward {
     /**
      * 涉及Item
      */
-    protected FormulaHolder itemAliasFx;
+    protected ExprHolder itemAliasFx;
 
     /**
      * 奖励数量公式
      */
-    protected FormulaHolder fx;
+    protected ExprHolder fx;
 
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
-        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class)
+        return this.itemAliasFx != null ? this.itemAliasFx.createExpr().putAll(attributeMap).execute(String.class)
                 : this.itemAlias;
     }
 
     @Override
     public Number countNumber(ItemModel model, Map<String, Object> attributes) {
-        return this.fx.createFormula()
+        return this.fx.createExpr()
                 .putAll(attributes)
                 .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
                 .execute(Number.class);
@@ -66,12 +66,12 @@ public class SimpleAward extends AbstractAward {
         } else {
             AliasCollectUtils.addAlias(this.itemAlias);
         }
-        this.initParamMap();
+        this.init();
     }
 
     @Override
     public int getProbability(Map<String, Object> attributeMap) {
-        return this.probability.createFormula()
+        return this.probability.createExpr()
                 .putAll(attributeMap)
                 .execute(Integer.class);
     }

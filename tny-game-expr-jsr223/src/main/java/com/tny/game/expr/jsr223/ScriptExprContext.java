@@ -1,6 +1,6 @@
 package com.tny.game.expr.jsr223;
 
-import com.tny.game.expr.FormulaContext;
+import com.tny.game.expr.ExprContext;
 
 import javax.script.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 /**
  * Created by Kun Yang on 2018/5/24.
  */
-public abstract class ScriptFormulaContext implements FormulaContext {
+public abstract class ScriptExprContext implements ExprContext {
 
     private Set<Class<?>> importClasses = new HashSet<>();
 
@@ -19,35 +19,28 @@ public abstract class ScriptFormulaContext implements FormulaContext {
 
     private String importCode;
 
-    protected Bindings bindings;
-
     private ScriptEngine engine;
 
-    public ScriptFormulaContext(ScriptEngine engine) {
+    public ScriptExprContext(ScriptEngine engine) {
         this.engine = engine;
-        this.bindings = engine.createBindings();
     }
 
-    public ScriptFormulaContext() {
+    public ScriptExprContext() {
     }
 
     Bindings createBindings() {
         return engine.createBindings();
     }
 
-    Bindings getBindings() {
-        return bindings;
-    }
-
     @Override
-    public FormulaContext put(String key, Object object) {
-        this.bindings.put(key, object);
+    public ExprContext put(String key, Object object) {
+        this.engine.getBindings(ScriptContext.ENGINE_SCOPE).put(key, object);
         return this;
     }
 
     @Override
-    public FormulaContext putAll(Map<String, Object> attributes) {
-        this.bindings.putAll(attributes);
+    public ExprContext putAll(Map<String, Object> attributes) {
+        this.engine.getBindings(ScriptContext.ENGINE_SCOPE).putAll(attributes);
         return this;
     }
 
@@ -67,42 +60,42 @@ public abstract class ScriptFormulaContext implements FormulaContext {
     // }
 
     @Override
-    public FormulaContext importClasses(Class<?>... classes) {
+    public ExprContext importClasses(Class<?>... classes) {
         importClasses.addAll(Arrays.asList(classes));
         this.importCode = null;
         return this;
     }
 
     @Override
-    public FormulaContext importClasses(Collection<Class<?>> classes) {
+    public ExprContext importClasses(Collection<Class<?>> classes) {
         importClasses.addAll(classes);
         this.importCode = null;
         return this;
     }
 
     @Override
-    public FormulaContext importStaticClasses(Class<?>... classes) {
+    public ExprContext importStaticClasses(Class<?>... classes) {
         importStaticClasses.addAll(Arrays.asList(classes));
         this.importCode = null;
         return this;
     }
 
     @Override
-    public FormulaContext importStaticClasses(Collection<Class<?>> classes) {
+    public ExprContext importStaticClasses(Collection<Class<?>> classes) {
         importStaticClasses.addAll(classes);
         this.importCode = null;
         return this;
     }
 
     @Override
-    public FormulaContext importClassAs(String alias, Class<?> clazz) {
+    public ExprContext importClassAs(String alias, Class<?> clazz) {
         importAliasClasses.put(alias, clazz);
         this.importCode = null;
         return this;
     }
 
     @Override
-    public FormulaContext importClassesAs(Map<String, Class<?>> aliasClassMap) {
+    public ExprContext importClassesAs(Map<String, Class<?>> aliasClassMap) {
         this.importAliasClasses.putAll(aliasClassMap);
         this.importCode = null;
         return this;

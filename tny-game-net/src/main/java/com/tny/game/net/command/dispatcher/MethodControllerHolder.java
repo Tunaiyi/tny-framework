@@ -6,7 +6,6 @@ import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.*;
@@ -35,7 +34,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     // private static final String DEV_TIMEOUT_CHECK = "tny.server.dev.timeout.check";
 
-    protected static final ConcurrentHashMap<String, FormulaHolder> cache = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, ExprHolder> cache = new ConcurrentHashMap<>();
 
     /**
      * 执行对象
@@ -91,7 +90,7 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param executor 调用的执行对象
      * @param method   方法
      */
-    protected MethodControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
+    protected MethodControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
         super(executor, dispatcher, controller,
                 method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
                 method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
@@ -99,7 +98,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                 method.getJavaMethod().getAnnotationsByType(Check.class),
                 method.getJavaMethod().getAnnotation(MessageFilter.class),
                 method.getJavaMethod().getAnnotation(AppProfile.class),
-                method.getJavaMethod().getAnnotation(ScopeProfile.class));
+                method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
         try {
             this.methodName = method.getName();
             this.method = method;
@@ -113,7 +112,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                 for (int index = 0; index < parameterClasses.length; index++) {
                     Class<?> paramClass = parameterClasses[index];
                     List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
-                    ParamDesc paramDesc = new ParamDesc(this, paramClass, annotations, counter);
+                    ParamDesc paramDesc = new ParamDesc(this, paramClass, annotations, counter, exprHolderFactory);
                     parameterDescs.add(paramDesc);
                 }
             }
@@ -185,13 +184,13 @@ public final class MethodControllerHolder extends ControllerHolder {
         return executor.getClass();
     }
 
-    private static FormulaHolder formula(String formula) {
-        FormulaHolder holder = cache.get(formula);
-        if (holder != null)
-            return holder;
-        holder = MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
-        return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
-    }
+    // private static ExprHolder formula(String formula) {
+    //     ExprHolder holder = cache.get(formula);
+    //     if (holder != null)
+    //         return holder;
+    //     holder = MvelFormulaFactory.create(formula, ExprType.EXPRESSION);
+    //     return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
+    // }
 
     public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
         if (index >= this.parameterDescs.size())
@@ -340,7 +339,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         /* body 为Map时 key */
         private String name;
 
-        private FormulaHolder formula;
+        private ExprHolder formula;
 
         private ParamType paramType = ParamType.NONE;
 
@@ -356,7 +355,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
         private MethodControllerHolder holder;
 
-        private ParamDesc(MethodControllerHolder holder, Class<?> paramClass, List<Annotation> paramAnnotations, LocalNum<Integer> indexCounter) {
+        private ParamDesc(MethodControllerHolder holder, Class<?> paramClass, List<Annotation> paramAnnotations, LocalNum<Integer> indexCounter, ExprHolderFactory exprHolderFactory) {
             this.holder = holder;
             this.paramClass = paramClass;
             this.paramAnnotations = paramAnnotations;
@@ -377,7 +376,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                         this.require = this.msgParam.require();
                         if (StringUtils.isNoneBlank(this.msgParam.value())) {
                             this.name = this.msgParam.value();
-                            this.formula = formula("_body." + this.name.trim());
+                            this.formula = exprHolderFactory.create("_body." + this.name.trim());
                             this.paramType = ParamType.KEY_PARAM;
                         } else {
                             if (this.msgParam.index() >= 0) {
@@ -456,7 +455,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     if (body instanceof Map) {
                         value = ((Map) body).get(this.name);
                     } else {
-                        value = this.formula.createFormula()
+                        value = this.formula.createExpr()
                                 .put("_body", body)
                                 .execute(this.paramClass);
                     }

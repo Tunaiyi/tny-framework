@@ -4,8 +4,15 @@ public class NormalRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends
 
     private static final String NAME = "normal";
 
+    private static NormalRandomCreatorFactory factory = new NormalRandomCreatorFactory<>();
+
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
             Probabilities::drawProbabilities;
+
+    @SuppressWarnings("unchecked")
+    public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreatorFactory<G, P> getInstance() {
+        return factory;
+    }
 
     @Override
     @SuppressWarnings("unchecked")

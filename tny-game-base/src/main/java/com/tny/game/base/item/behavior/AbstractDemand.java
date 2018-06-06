@@ -2,9 +2,8 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
+import com.tny.game.base.item.xml.AliasCollectUtils;
 import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
-import com.tny.game.base.log.LogName;
-import org.slf4j.*;
 import com.tny.game.expr.*;
 
 import java.util.Map;
@@ -16,8 +15,6 @@ import java.util.Map;
  */
 public abstract class AbstractDemand extends DemandParamsObject implements Demand, ItemsImportKey {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
-
     /**
      * 条件所涉及的item ID
      */
@@ -26,7 +23,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     /**
      * 涉及Item
      */
-    protected FormulaHolder itemAliasFx;
+    protected ExprHolder itemAliasFx;
 
     /**
      * 条件涉及的item 别名，用于表达式
@@ -41,26 +38,22 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     /**
      * 当前值表达式
      */
-    protected FormulaHolder current;
+    protected ExprHolder current;
 
     /**
      * 希望值表达式
      */
-    protected FormulaHolder expect;
+    protected ExprHolder expect;
 
     /**
      * 条件判断表达式
      */
-    protected FormulaHolder fx;
+    protected ExprHolder fx;
 
     /**
      * 改变类型
      */
     protected AlterType alertType;
-
-    protected ItemExplorer itemExplorer;
-
-    protected ModelExplorer itemModelExplorer;
 
     public AlterType getAlertType() {
         return alertType;
@@ -68,7 +61,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
 
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
-        return this.itemAliasFx != null ? this.itemAliasFx.createFormula().putAll(attributeMap).execute(String.class) : this.itemAlias;
+        return this.itemAliasFx != null ? this.itemAliasFx.createExpr().putAll(attributeMap).execute(String.class) : this.itemAlias;
     }
 
     @Override
@@ -88,7 +81,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
             return null;
         this.setAttrMap(playerID, alias, attributeMap);
         this.countAndSetDemandParams($PARAMS, attributeMap);
-        return this.expect.createFormula().putAll(attributeMap).execute(Object.class);
+        return this.expect.createExpr().putAll(attributeMap).execute(Object.class);
     }
 
     @Override
@@ -110,9 +103,9 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
         ItemModel demandModel = this.getItemModel(alias);
         this.setAttrMap(playerID, alias, attributeMap);
         Map<DemandParam, Object> paramMap = this.countAndSetDemandParams($PARAMS, attributeMap);
-        Formula currentFormula = getCurrentFormula(demandModel);
+        Expr currentFormula = getCurrentFormula(demandModel);
         Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
-        Object expect = this.expect != null ? this.expect.createFormula().putAll(attributeMap).execute(Object.class) : null;
+        Object expect = this.expect != null ? this.expect.createExpr().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
         if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE)
             return new CostDemandResult(id, demandModel, this.demandType, current, expect, satisfy, this.alertType, paramMap);
@@ -120,9 +113,9 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
             return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
     }
 
-    private Formula getCurrentFormula(ItemModel demandModel) {
+    private Expr getCurrentFormula(ItemModel demandModel) {
         if (this.current != null) {
-            return this.current.createFormula();
+            return this.current.createExpr();
         } else {
             if (this.demandType.isCost())
                 return demandModel.currentFormula();
@@ -130,9 +123,9 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
         return null;
     }
 
-    private Formula getDemandFormula(ItemModel demandModel) {
+    private Expr getDemandFormula(ItemModel demandModel) {
         if (this.fx != null) {
-            return this.fx.createFormula();
+            return this.fx.createExpr();
         } else {
             if (this.demandType.isCost())
                 return demandModel.demandFormula();
@@ -146,12 +139,13 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     }
 
     protected boolean checkSatisfy(Object current, Object expect, ItemModel demandModel, Map<String, Object> attribute) {
-        Formula fxFormula = getDemandFormula(demandModel);
+        Expr fxFormula = getDemandFormula(demandModel);
         return fxFormula.putAll(attribute).put(CURRENT_VALUE, current).put(EXPECT_VALUE, expect).execute(Boolean.class);
     }
 
     private ItemModel getItemModel(String alias) {
-        ItemModel model = this.itemModelExplorer.getModelByAlias(alias);
+        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+        ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         return model;
@@ -161,8 +155,9 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
         ItemModel model = this.getItemModel(alias);
         Item<?> item;
         attributeMap.put(DEMAND_MODEL, model);
-        if (itemExplorer.hasItemMannager(model.getItemType())) {
-            item = this.itemExplorer.getItem(playerID, model.getID());
+        ItemExplorer itemExplorer = context.getItemExplorer();
+        if (itemExplorer.hasItemManager(model.getItemType())) {
+            item = itemExplorer.getItem(playerID, model.getID());
             if (this.name != null)
                 attributeMap.put(this.name, item);
             attributeMap.put(alias, item);
@@ -172,15 +167,26 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
         return model;
     }
 
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
-        this.itemExplorer = itemExplorer;
-        this.itemModelExplorer = itemModelExplorer;
+    public void init(ItemModel itemModel, ItemModelContext context) {
+        this.init(context);
         if (this.alertType == null)
             this.alertType = AlterType.CHECK;
         if (this.itemAlias == null) {
             this.itemAlias = itemModel.getAlias();
         }
-        this.initParamMap();
+        if (this.demandType == null)
+            this.demandType = TradeDemandType.COST_DEMAND_GE;
+        if (this.itemAlias == null) {
+            if (this.itemAliasFx == null)
+                AliasCollectUtils.addAlias(null);
+        } else {
+            AliasCollectUtils.addAlias(this.itemAlias);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " [demandType=" + this.demandType + ", expect=" + this.expect + "]";
     }
 
 }

@@ -49,7 +49,7 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     }
 
     @Override
-    public boolean hasItemMannager(ItemType itemType) {
+    public boolean hasItemManager(ItemType itemType) {
         return true;
     }
 

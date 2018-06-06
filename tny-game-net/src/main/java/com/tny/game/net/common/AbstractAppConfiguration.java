@@ -2,26 +2,21 @@ package com.tny.game.net.common;
 
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.config.Config;
-import com.tny.game.common.config.ConfigLib;
-import com.tny.game.common.config.ConfigLoader;
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
+import com.tny.game.common.config.*;
+import com.tny.game.common.context.*;
+import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.SessionInputEventHandler;
-import com.tny.game.net.session.event.SessionOutputEventHandler;
+import com.tny.game.net.session.event.*;
 import com.tny.game.net.session.holder.NetSessionHolder;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public abstract class AbstractAppConfiguration implements AppConfiguration {
 
@@ -50,6 +45,8 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     protected MessageDispatcher messageDispatcher;
 
     protected MessageSignGenerator messageSignGenerator;
+
+    protected ExprHolderFactory exprHolderFactory;
 
     protected AbstractAppConfiguration(String name) {
         this.name = name;
@@ -127,6 +124,11 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     @Override
     public MessageSignGenerator getMessageSignGenerator() {
         return messageSignGenerator;
+    }
+
+    @Override
+    public ExprHolderFactory getExprHolderFactory() {
+        return exprHolderFactory;
     }
 
     public AbstractAppConfiguration setConfig(Map<String, Object> config) {

@@ -1,8 +1,7 @@
 package com.tny.game.expr.mvel;
 
-import com.tny.game.expr.Formula;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
+import com.google.common.collect.ImmutableMap;
+import com.tny.game.expr.Expr;
 import org.mvel2.*;
 import org.mvel2.util.MethodStub;
 
@@ -21,7 +20,7 @@ import java.util.Map.Entry;
  * <p>
  * <br>
  */
-class MvelExpression extends AbstractMvelFormula {
+class MvelExpression extends AbstractMvelExpr {
 
     /**
      * 表达式
@@ -29,22 +28,13 @@ class MvelExpression extends AbstractMvelFormula {
      * @uml.property name="expression"
      */
     private volatile Serializable expression;
-    /**
-     * @uml.property name="expressionStr"
-     */
-    protected String expressionStr;
 
-    private Number number;
-
-    protected MvelExpression(String expression, ParserContext parserContext, boolean lazy) {
-        if (StringUtils.isNumeric(expression)) {
-            this.number = NumberUtils.createNumber(expression);
-        } else {
+    protected MvelExpression(String expression, MvelExprContext context, boolean lazy) {
+        super(expression, context);
+        if (this.number == null) {
             this.expressionStr = expression;
-            if (parserContext == null) {
-                this.parserContext = createParserContext();
-            } else {
-                this.parserContext = parserContext;
+            if (context == null) {
+                this.context = context;
             }
             this.expression = lazy ? null : this.getExpression();
             // System.out.println(lazy + " " + (this.expression == null) + " " +
@@ -53,23 +43,21 @@ class MvelExpression extends AbstractMvelFormula {
     }
 
     protected MvelExpression(String expression, Set<Class<?>> importClasses, Map<String, Object> context, boolean lazy) {
-        expression = StringUtils.replace(expression, "\n", "");
-        if (StringUtils.isNumeric(expression)) {
-            this.number = NumberUtils.createNumber(expression);
-        } else {
+        super(expression, new MvelExprContext());
+        if (this.number != null) {
             this.expressionStr = expression;
-            this.parserContext = createParserContext();
+            ParserContext parserContext = this.context.getParserContext();
             for (Class<?> cl : importClasses)
-                this.parserContext.addImport(cl);
+                parserContext.addImport(cl);
             if (context != null) {
                 for (Entry<String, Object> entry : context.entrySet()) {
                     Object value = entry.getValue();
                     if (value instanceof Class)
-                        this.parserContext.addImport(entry.getKey(), (Class<?>) value);
+                        parserContext.addImport(entry.getKey(), (Class<?>) value);
                     if (value instanceof Method)
-                        this.parserContext.addImport(entry.getKey(), (Method) value);
+                        parserContext.addImport(entry.getKey(), (Method) value);
                     if (value instanceof MethodStub)
-                        this.parserContext.addImport(entry.getKey(), (MethodStub) value);
+                        parserContext.addImport(entry.getKey(), (MethodStub) value);
                 }
             }
             this.expression = lazy ? null : this.getExpression();
@@ -77,10 +65,8 @@ class MvelExpression extends AbstractMvelFormula {
     }
 
     private MvelExpression(final MvelExpression expression) {
-        if (expression.number != null) {
-            this.number = expression.number;
-        } else {
-            this.expressionStr = expression.expressionStr;
+        super(expression);
+        if (expression.number == null) {
             this.expression = expression.getExpression();
         }
     }
@@ -104,26 +90,23 @@ class MvelExpression extends AbstractMvelFormula {
             synchronized (this) {
                 if (this.expression != null)
                     return this.expression;
-                this.expression = MVEL.compileExpression(this.expressionStr, this.parserContext);
-                if (!MvelFormulaFactory.EXPR_INFO)
+                this.expression = MVEL.compileExpression(this.expressionStr, this.context.getParserContext());
+                if (!MvelExprHolderFactory.EXPR_INFO)
                     this.expressionStr = null;
-                this.parserContext = null;
             }
         }
         return this.expression;
     }
 
     @Override
-    public Formula createFormula() {
+    public Expr createExpr() {
         return new MvelExpression(this);
     }
 
     @Override
     protected Object execute() {
-        if (this.number != null)
-            return this.number;
         try {
-            return MVEL.executeExpression(this.getExpression(), this.attribute);
+            return MVEL.executeExpression(this.getExpression(), this.attribute == null ? ImmutableMap.of() : this.attribute);
         } catch (Throwable e) {
             throw new RuntimeException("执行 [" + this.expressionStr + "] 异常 ", e);
         }

@@ -2,7 +2,6 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.tny.game.expr.*;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
 import org.slf4j.*;
 
 /**
@@ -14,10 +13,16 @@ public class String2Formula extends AbstractSingleValueConverter {
 
     private static Logger LOG = LoggerFactory.getLogger(String2Formula.class);
 
+    private ExprHolderFactory exprHolderFactory;
+
+    public String2Formula(ExprHolderFactory exprHolderFactory) {
+        this.exprHolderFactory = exprHolderFactory;
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public boolean canConvert(Class clazz) {
-        return FormulaHolder.class.isAssignableFrom(clazz);
+        return ExprHolder.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -25,7 +30,7 @@ public class String2Formula extends AbstractSingleValueConverter {
         if (formula == null || formula.equals(""))
             return null;
         try {
-            return MvelFormulaFactory.create(formula, FormulaType.EXPRESSION);
+            return exprHolderFactory.create(formula);
         } catch (RuntimeException e) {
             LOG.error(formula, e);
             throw e;

@@ -7,6 +7,13 @@ public class WeightRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends
     private static final RandomCreator<ProbabilityGroup<Probability>, Probability> CREATOR =
             Probabilities::drawWeights;
 
+    private static WeightRandomCreatorFactory factory = new WeightRandomCreatorFactory<>();
+
+    @SuppressWarnings("unchecked")
+    public static <G extends ProbabilityGroup<P>, P extends Probability> RandomCreatorFactory<G, P> getInstance() {
+        return factory;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public RandomCreator<G, P> getRandomCreator() {

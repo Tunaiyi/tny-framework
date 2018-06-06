@@ -1,14 +1,10 @@
 package com.tny.game.base.item.xml;
 
-import com.google.common.collect.*;
-import com.thoughtworks.xstream.converters.SingleValueConverter;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.collection.EmptyImmutableMap;
 
 import java.util.List;
-
-import static com.tny.game.common.utils.ObjectAide.as;
 
 /**
  * 抽象xml映射事物模型
@@ -46,49 +42,20 @@ public abstract class XMLItemModel extends AbstractItemModel {
         return this.demandFormula == null ? super.getDemandFormula() : this.demandFormula;
     }
 
-    protected void init(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer, SingleValueConverter formulaConverter) {
-        this.itemExplorer = itemExplorer;
-        this.itemModelExplorer = itemModelExplorer;
-        if (this.init)
-            return;
+    protected void doInit(ItemModelContext context) {
         if (this.behaviorPlanList == null)
             this.behaviorPlanList = ImmutableList.of();
-
-        if (this.attrAliasSet == null)
-            this.attrAliasSet = ImmutableSet.of();
-
-        if (this.abilityMap == null)
-            this.abilityMap = ImmutableMap.of();
-
-        if (this.tags == null)
-            this.tags = ImmutableSet.of();
-
-        this.attrAliasSet = ImmutableSet.copyOf(this.attrAliasSet);
         this.behaviorPlanList = ImmutableList.copyOf(this.behaviorPlanList);
-        this.abilityMap = ImmutableMap.copyOf(this.abilityMap);
-        this.tags = ImmutableSet.copyOf(this.tags);
-
-
-        if (this.actionBehaviorPlanMap == null)
-            this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
-
-        if (this.behaviorPlanMap == null)
-            this.behaviorPlanMap = new EmptyImmutableMap<>();
-
         for (XMLBehaviorPlan behaviorPlan : this.behaviorPlanList) {
-            behaviorPlan.init(this, itemExplorer, itemModelExplorer);
+            behaviorPlan.init(this, context);
             this.behaviorPlanMap.put(behaviorPlan.getBehavior(), behaviorPlan);
             for (Action action : behaviorPlan.getActionPlanMap().keySet())
                 this.actionBehaviorPlanMap.put(action, behaviorPlan);
         }
-        this.behaviorPlanMap = ImmutableMap.copyOf(this.behaviorPlanMap);
-        this.actionBehaviorPlanMap = ImmutableMap.copyOf(this.actionBehaviorPlanMap);
-        this.init = true;
-        for (String alias : this.attrAliasSet) {
-            AliasCollectUtils.addAlias(alias);
-        }
-        this.currentFormulaHolder = as(formulaConverter.fromString(this.getCurrentFormula()));
-        this.demandFormulaHolder = as(formulaConverter.fromString(this.getDemandFormula()));
     }
 
+    @Override
+    protected void init(ItemModelContext context) {
+        super.init(context);
+    }
 }

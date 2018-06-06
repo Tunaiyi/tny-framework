@@ -1,8 +1,8 @@
 package com.tny.game.net.common;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.expr.FormulaType;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 import com.tny.game.net.annotation.Check;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.checker.ControllerChecker;
@@ -26,13 +26,18 @@ public class ControllerCheckerHolder {
 
     private Object attributes;
 
+    private ExprHolderFactory exprHolderFactory;
+
     @SuppressWarnings("unchecked")
-    public ControllerCheckerHolder(ControllerHolder controller, ControllerChecker checker, Check check) {
+    public ControllerCheckerHolder(ControllerHolder controller, ControllerChecker checker, Check check, ExprHolderFactory exprHolderFactory) {
         this.checker = checker;
         this.controller = controller;
+        this.exprHolderFactory = exprHolderFactory;
+        if (this.exprHolderFactory == null)
+            this.exprHolderFactory = new GroovyExprHolderFactory();
         if (StringUtils.isNoneBlank(check.attributesFx()))
-            this.attributes = MvelFormulaFactory.create(check.attributesFx().substring(1), FormulaType.EXPRESSION)
-                    .createFormula()
+            this.attributes = exprHolderFactory.create(check.attributesFx().substring(1))
+                    .createExpr()
                     .execute(checker.getAttributesClass());
         else
             this.attributes = check.attributes();

@@ -4,6 +4,8 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.plan.*;
 import com.tny.game.base.item.probability.RandomCreator;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 
 import java.util.*;
 
@@ -12,10 +14,10 @@ public class XMLAwardPlanTest {
     int NUMBER;
 
     RandomCreator<AwardPlan, AwardGroup> randomer = (group, attributeMap) -> {
-            for (AwardGroup p : group.probabilities())
-                if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap))
-                    return Collections.singletonList(p);
-            return null;
+        for (AwardGroup p : group.probabilities())
+            if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap))
+                return Collections.singletonList(p);
+        return null;
     };
 
     class TeatAward implements Award {
@@ -66,17 +68,21 @@ public class XMLAwardPlanTest {
 
     TempExplorer explorer = new TempExplorer(this.award1, this.award2);
 
+    private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+
+    private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
+
     class TestAwardGroup extends SimpleAwardGroup {
 
         private int probability;
 
-        private TestAwardGroup(int id, int probability, Award... awards) {
+        private TestAwardGroup(int id, int probability, ItemModelContext context, Award... awards) {
             super();
             this.probability = probability;
-            this.awardList = new ArrayList<Award>();
+            this.awardList = new ArrayList<>();
             for (Award award : awards)
                 this.awardList.add(award);
-            this.itemModelExplorer = XMLAwardPlanTest.this.explorer;
+            this.context = context;
         }
 
         @Override
@@ -88,8 +94,8 @@ public class XMLAwardPlanTest {
     TreeSet<AwardGroup> treeSet = new TreeSet<AwardGroup>();
 
     {
-        this.treeSet.add(new TestAwardGroup(1, 30, new TeatAward(this.alias1)));
-        this.treeSet.add(new TestAwardGroup(2, 100, new TeatAward(this.alias2)));
+        this.treeSet.add(new TestAwardGroup(1, 30, context, new TeatAward(this.alias1)));
+        this.treeSet.add(new TestAwardGroup(2, 100, context, new TeatAward(this.alias2)));
     }
 
     AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);

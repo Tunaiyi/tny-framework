@@ -1,12 +1,20 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.ItemModel;
-import org.junit.Assert;
+import com.tny.game.base.item.*;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
+import org.junit.*;
 import org.junit.Test;
 
 public class AbstractXMLItemModelManagerTest {
 
-    TestItemModelManager manager = new TestItemModelManager("ItemExample.xml");
+    TempExplorer explorer = new TempExplorer();
+
+    private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+
+    private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
+
+    TestItemModelManager manager = new TestItemModelManager("ItemExample.xml", context);
     ItemModel itemModel = null;
 
     public AbstractXMLItemModelManagerTest() throws Exception {

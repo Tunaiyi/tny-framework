@@ -1,6 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.config.Config;
+import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
@@ -29,5 +30,7 @@ public interface AppConfiguration extends AppContext {
     MessageDispatcher getMessageDispatcher();
 
     MessageSignGenerator getMessageSignGenerator();
+
+    ExprHolderFactory getExprHolderFactory();
 
 }

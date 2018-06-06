@@ -5,7 +5,6 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
 import com.tny.game.base.item.probability.*;
 import com.tny.game.expr.*;
-import com.tny.game.expr.mvel.MvelFormulaFactory;
 
 import java.util.*;
 
@@ -34,7 +33,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     /*
      * 产生奖励总类最大个数 -1为无限 默认值为 -1
      */
-    protected FormulaHolder number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
+    protected ExprHolder number;
 
     // /*
     //  * 产生奖励总类最大个数 -1为无限 默认值为 -1
@@ -51,9 +50,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
      */
     protected Set<String> attrAliasSet;
 
-    protected ItemExplorer itemExplorer;
-
-    protected ModelExplorer itemModelExplorer;
+    protected ItemModelContext context;
 
     public SimpleAwardPlan(RandomCreator<AwardPlan, AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
         this.randomer = randomer;
@@ -71,7 +68,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     //
     @Override
     public int getNumber(Map<String, Object> attributeMap) {
-        Integer awardNum = this.number.createFormula().putAll(attributeMap).execute(Integer.class);
+        Integer awardNum = this.number.createExpr().putAll(attributeMap).execute(Integer.class);
         if (awardNum == null)
             awardNum = 1;
         return awardNum;
@@ -103,7 +100,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     @Override
     public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
         countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
-        DemandHolderObject.setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
         List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
             AwardDetail detail = new AwardDetail(group.countAwardNumber(this.merge, attributeMap));
@@ -114,19 +111,19 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
 
     @Override
-    public void init(ItemModel itemModel, ItemExplorer itemExplorer, ModelExplorer itemModelExplorer) {
+    public void init(ItemModel itemModel, ItemModelContext context) {
+        this.init(context);
         if (this.randomer == null)
-            this.randomer = SequenceRandomCreatorFactory.getInstance();
-        this.itemExplorer = itemExplorer;
-        this.itemModelExplorer = itemModelExplorer;
+            this.randomer = SequenceRandomCreatorFactory.<AwardPlan, AwardGroup>getInstance().getRandomCreator();
         if (this.awardGroupSet == null)
             this.awardGroupSet = new ArrayList<>();
         for (AwardGroup awardGroup : this.awardGroupSet) {
             if (awardGroup instanceof AbstractAwardGroup)
-                ((AbstractAwardGroup) awardGroup).init(itemExplorer, itemModelExplorer);
+                ((AbstractAwardGroup) awardGroup).init(context);
         }
+        ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
         if (this.number == null)
-            this.number = MvelFormulaFactory.create("1", FormulaType.EXPRESSION);
+            this.number = exprHolderFactory.create("1");
         // if (this.drawNumber == null)
         //     this.drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
         //        Collections.sort(this.awardGroupSet);
@@ -134,7 +131,6 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
         if (this.attrAliasSet == null)
             this.attrAliasSet = new HashSet<>(0);
         this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
-        this.initParamMap();
     }
 
     @Override

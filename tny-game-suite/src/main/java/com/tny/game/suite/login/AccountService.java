@@ -54,7 +54,7 @@ public class AccountService implements ServerPrepareStart {
 
     public Account loadOrCreateAccount(GameTicket ticket) throws DispatchException {
         String account = AccountUtils.openID2Account(ticket.getAccountTag(), ticket.getServer(), ticket.getOpenID());
-        int max = GameInfo.getMainInfo().getScopeType().isTest() ? Integer.MAX_VALUE : 10;
+        int max = GameInfo.info().getScopeType().isTest() ? Integer.MAX_VALUE : 10;
         int index = 0;
         Account accountObj = null;
         while (index < max) {
@@ -89,7 +89,7 @@ public class AccountService implements ServerPrepareStart {
                 creator = this.UIDCreatorMap.computeIfAbsent(serverID, UIDCreator::new);
             }
         }
-        if (!GameInfo.getMainInfo().getScopeType().isTest() && creator.isFull())
+        if (!GameInfo.info().getScopeType().isTest() && creator.isFull())
             throw new DispatchException(SuiteResultCode.AUTH_USER_IS_FULL);
         return creator;
     }

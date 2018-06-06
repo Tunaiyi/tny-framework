@@ -54,7 +54,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public boolean hasItemMannager(ItemType itemType) {
+    public boolean hasItemManager(ItemType itemType) {
         return this.typeManagerMap.containsKey(itemType);
     }
 

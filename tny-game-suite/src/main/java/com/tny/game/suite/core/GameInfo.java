@@ -90,7 +90,7 @@ public class GameInfo {
         LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunningChecker.end(GameInfo.class).cost());
     }
 
-    public static GameInfo getMainInfo() {
+    public static GameInfo info() {
         return GAMES_INFO;
     }
 
@@ -107,7 +107,7 @@ public class GameInfo {
     }
 
     public static int getMainServerID() {
-        return getMainInfo().getServerID();
+        return info().getServerID();
     }
 
     public static boolean isHasServer(int serverID) {

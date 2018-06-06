@@ -1,19 +1,40 @@
 package com.tny.game.expr;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.Map;
 
-public abstract class AbstractFormula implements Formula, FormulaHolder {
+public abstract class AbstractExpr implements Expr, ExprHolder {
+
+    protected Number number;
+
+    /**
+     * @uml.property name="expressionStr"
+     */
+    protected String expressionStr;
 
     protected abstract Map<String, Object> attribute();
 
+    public AbstractExpr(String expression) {
+        this.expressionStr = expression;
+        if (StringUtils.isNumeric(expression))
+            this.number = NumberUtils.createNumber(expression);
+    }
+
+    protected AbstractExpr(AbstractExpr expr) {
+        this.number = expr.number;
+        this.expressionStr = expr.expressionStr;
+    }
+
     @Override
-    public Formula put(final String key, final Object value) {
+    public Expr put(final String key, final Object value) {
         this.attribute().put(key, value);
         return this;
     }
 
     @Override
-    public Formula putAll(final Map<String, Object> attribute) {
+    public Expr putAll(final Map<String, Object> attribute) {
         if (attribute != null)
             this.attribute().putAll(attribute);
         return this;
@@ -22,13 +43,13 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
     protected abstract Object execute() throws Exception;
 
     @Override
-    public Formula clear() {
+    public Expr clear() {
         this.attribute().clear();
         return this;
     }
 
     @Override
-    public Formula remove(final String key) {
+    public Expr remove(final String key) {
         this.attribute().remove(key);
         return this;
     }
@@ -43,7 +64,11 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
     @SuppressWarnings("unchecked")
     public <T> T execute(final Class<T> clazz) {
         try {
-            Object object = this.execute();
+            Object object;
+            if (this.number != null)
+                object = this.number;
+            else
+                object = this.execute();
             if (object == null)
                 return null;
             if (clazz == null)
@@ -60,6 +85,8 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
                     object = number.floatValue();
                 if (Byte.class == clazz || byte.class == clazz)
                     object = number.byteValue();
+                if (Boolean.class == clazz || boolean.class == clazz)
+                    object = number.intValue() > 0;
             }
             if (Boolean.class == clazz || boolean.class == clazz)
                 object = Boolean.parseBoolean(object.toString());
@@ -67,8 +94,13 @@ public abstract class AbstractFormula implements Formula, FormulaHolder {
                 object = object.toString();
             return (T) object;
         } catch (Exception e) {
-            throw new FormulaException("Formula : [\n" + this.getClass() + "\n] execute exception", e);
+            throw new ExprException("Formula : [\n" + this.getClass() + "\n] execute exception", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " [expressionStr=" + (this.number != null ? this.number : this.expressionStr) + "]";
     }
 
 }

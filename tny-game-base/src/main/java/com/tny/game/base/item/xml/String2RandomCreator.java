@@ -1,13 +1,8 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
+import com.tny.game.base.item.probability.*;
 import com.tny.game.common.utils.Logs;
-import com.tny.game.base.item.probability.RandomCreator;
-import com.tny.game.base.item.probability.RandomCreatorFactory;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * string赚随机器
@@ -16,14 +11,8 @@ import java.util.Map;
  */
 public class String2RandomCreator extends AbstractSingleValueConverter {
 
-    private Map<String, RandomCreatorFactory> randomCreatorFactory;
 
-    public String2RandomCreator(Map<String, RandomCreatorFactory> randomCreatorFactory) {
-        if (randomCreatorFactory == null) {
-            this.randomCreatorFactory = Collections.emptyMap();
-        } else {
-            this.randomCreatorFactory = new HashMap<>(randomCreatorFactory);
-        }
+    public String2RandomCreator() {
     }
 
     @Override
@@ -34,7 +23,7 @@ public class String2RandomCreator extends AbstractSingleValueConverter {
 
     @Override
     public Object fromString(String name) {
-        RandomCreatorFactory factory = randomCreatorFactory.get(name);
+        RandomCreatorFactory factory = RandomCreators.getFactory(name);
         if (factory == null)
             throw new NullPointerException(Logs.format("找不到名字为 {} 的 RandomCreatorFactory", name));
         return factory.getRandomCreator();

@@ -1,13 +1,8 @@
 package com.tny.game.expr.mvel;
 
-import com.tny.game.expr.Formula;
-import org.mvel2.ParserContext;
+import com.google.common.collect.ImmutableMap;
+import com.tny.game.expr.Expr;
 import org.mvel2.templates.*;
-import org.mvel2.util.MethodStub;
-
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * @author KGTny
@@ -19,7 +14,7 @@ import java.util.Map.Entry;
  * <p>
  * <br>
  */
-class MvelTemplate extends AbstractMvelFormula {
+class MvelTemplate extends AbstractMvelExpr {
 
     /**
      * 表达式
@@ -28,48 +23,25 @@ class MvelTemplate extends AbstractMvelFormula {
      * @uml.associationEnd multiplicity="(1 1)"
      */
     private volatile CompiledTemplate expression;
-    /**
-     * @uml.property name="expressionStr"
-     */
-    private final String expressionStr;
 
-    protected MvelTemplate(final String expression, Map<String, Object> context, boolean lazy) {
-        this.expressionStr = expression;
-        if (this.parserContext == null)
-            this.parserContext = new ParserContext();
-        if (context != null) {
-            if (context != null) {
-                for (Entry<String, Object> entry : context.entrySet()) {
-                    Object value = entry.getValue();
-                    if (value instanceof Class)
-                        this.parserContext.addImport(entry.getKey(), (Class<?>) value);
-                    if (value instanceof Method)
-                        this.parserContext.addImport(entry.getKey(), (Method) value);
-                    if (value instanceof MethodStub)
-                        this.parserContext.addImport(entry.getKey(), (MethodStub) value);
-                }
+    protected MvelTemplate(String expression, MvelExprContext context, boolean lazy) {
+        super(expression, context);
+        if (this.number == null) {
+            this.expressionStr = expression;
+            if (context == null) {
+                this.context = context;
             }
+            this.expression = lazy ? null : this.getExpression();
+            // System.out.println(lazy + " " + (this.expression == null) + " " +
+            // (this.number == null));
         }
-        this.init(this.parserContext);
         this.expression = lazy ? null : this.getExpression();
     }
 
 
-    protected MvelTemplate(final String expression, ParserContext context, boolean lazy) {
-        this.expressionStr = expression;
-        if (context != null) {
-            this.parserContext = context;
-        } else {
-            this.parserContext = new ParserContext();
-        }
-        this.init(this.parserContext);
-        this.expression = lazy ? null : this.getExpression();
-    }
-
-
-    private MvelTemplate(final MvelTemplate template) {
+    protected MvelTemplate(final MvelTemplate template) {
+        super(template);
         this.expression = template.getExpression();
-        this.expressionStr = template.expressionStr;
     }
 
     private CompiledTemplate getExpression() {
@@ -78,28 +50,21 @@ class MvelTemplate extends AbstractMvelFormula {
                 if (this.expression != null) {
                     return this.expression;
                 }
-                for (final Method method : methodSet) {
-                    this.parserContext.addImport(method.getName(), method);
-                }
-                this.parserContext.addImport(ArrayList.class);
-                this.parserContext.addImport(HashSet.class);
-                this.parserContext.addImport(HashMap.class);
-                this.expression = TemplateCompiler.compileTemplate(this.expressionStr, this.parserContext);
-                this.parserContext = null;
+                this.expression = TemplateCompiler.compileTemplate(this.expressionStr, this.context.getParserContext());
             }
         }
         return this.expression;
     }
 
     @Override
-    public Formula createFormula() {
+    public Expr createExpr() {
         return new MvelTemplate(this);
     }
 
     @Override
     protected Object execute() {
         try {
-            return TemplateRuntime.execute(this.getExpression(), this.attribute);
+            return TemplateRuntime.execute(this.getExpression(), this.attribute == null ? ImmutableMap.of() : this.attribute);
         } catch (Exception e) {
             throw new RuntimeException("执行 [" + this.expressionStr + "] 异常 ", e);
         }

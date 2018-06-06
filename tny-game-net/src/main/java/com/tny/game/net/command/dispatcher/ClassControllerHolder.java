@@ -1,33 +1,18 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.reflect.GClass;
-import com.tny.game.common.reflect.GMethod;
-import com.tny.game.common.reflect.MethodFilter;
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
 import com.tny.game.common.utils.Logs;
-import com.tny.game.net.annotation.AfterPlugin;
-import com.tny.game.net.annotation.AppProfile;
-import com.tny.game.net.annotation.Auth;
-import com.tny.game.net.annotation.BeforePlugin;
-import com.tny.game.net.annotation.Check;
-import com.tny.game.net.annotation.Controller;
-import com.tny.game.net.annotation.MessageFilter;
-import com.tny.game.net.annotation.ScopeProfile;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.message.MessageMode;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
 public final class ClassControllerHolder extends ControllerHolder {
 
@@ -43,7 +28,7 @@ public final class ClassControllerHolder extends ControllerHolder {
      */
     private Map<Integer, MethodControllerHolder> methodHolderMap = new CopyOnWriteMap<>();
 
-    public ClassControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher) {
+    public ClassControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory) {
         super(executor, dispatcher,
                 executor.getClass().getAnnotation(Controller.class),
                 executor.getClass().getAnnotationsByType(BeforePlugin.class),
@@ -52,14 +37,14 @@ public final class ClassControllerHolder extends ControllerHolder {
                 executor.getClass().getAnnotationsByType(Check.class),
                 executor.getClass().getAnnotation(MessageFilter.class),
                 executor.getClass().getAnnotation(AppProfile.class),
-                executor.getClass().getAnnotation(ScopeProfile.class));
+                executor.getClass().getAnnotation(ScopeProfile.class), exprHolderFactory);
         if (this.controller == null)
             throw new IllegalArgumentException(this.controllerClass + " is not Controller Object");
         for (Annotation annotation : controllerClass.getAnnotations())
             this.annotationMap.put(annotation.getClass(), annotation);
         Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
         this.annotationMap = ImmutableMap.copyOf(annotationMap);
-        this.initMethodHolder(executor, dispatcher);
+        this.initMethodHolder(executor, dispatcher, exprHolderFactory);
         this.methodHolderMap = ImmutableMap.copyOf(this.methodHolderMap);
         if (messageModes == null)
             this.messageModes = ImmutableSet.copyOf(MessageMode.values());
@@ -68,13 +53,13 @@ public final class ClassControllerHolder extends ControllerHolder {
     private static final MethodFilter FILTER = method -> OBJECT_METHOD_LIST.indexOf(method) > -1 ||
             !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
-    private void initMethodHolder(final Object executor, final AbstractMessageDispatcher dispatcher) {
+    private void initMethodHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory) {
         GClass access = JSsistUtils.getGClass(executor.getClass(), FILTER);
         for (GMethod method : access.getGMethodList()) {
             Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
             if (controller == null)
                 continue;
-            MethodControllerHolder holder = new MethodControllerHolder(executor, dispatcher, this, method, controller);
+            MethodControllerHolder holder = new MethodControllerHolder(executor, dispatcher, exprHolderFactory, this, method, controller);
             if (holder.getID() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
                 if (last != null)

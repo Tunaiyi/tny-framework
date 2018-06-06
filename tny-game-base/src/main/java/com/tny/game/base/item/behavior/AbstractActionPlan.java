@@ -1,10 +1,12 @@
 package com.tny.game.base.item.behavior;
 
+import com.google.common.collect.*;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.simple.*;
+import com.tny.game.base.item.xml.AliasCollectUtils;
 import com.tny.game.common.utils.Throws;
-import com.tny.game.expr.FormulaHolder;
+import com.tny.game.expr.ExprHolder;
 
 import java.util.*;
 
@@ -38,7 +40,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     /**
      * 操作选项 － 操作选项公式map
      */
-    protected Map<Option, FormulaHolder> optionMap;
+    protected Map<Option, ExprHolder> optionMap;
 
     @Override
     public Set<Action> getActions() {
@@ -88,7 +90,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         action = checkAction(action);
         if (this.costPlan == null)
             return new SimpleCostList(action);
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributeMap);
+        setAttrMap(playerID, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         return this.costPlan.getCostList(playerID, action, attributeMap);
     }
@@ -98,7 +100,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         action = checkAction(action);
         Trade award = null;
         Trade cost = null;
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        setAttrMap(playerID, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         if (this.awardPlan != null)
             award = this.awardPlan.createTrade(playerID, action, attributes);
@@ -112,7 +114,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         action = checkAction(action);
         if (this.awardPlan == null)
             return new SimpleTrade(action, TradeType.AWARD);
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        setAttrMap(playerID, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.createTrade(playerID, action, attributes);
     }
@@ -122,7 +124,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         action = checkAction(action);
         if (this.costPlan == null)
             return new SimpleTrade(action, TradeType.COST);
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        setAttrMap(playerID, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.costPlan.createTrade(playerID, action, attributes);
     }
@@ -135,19 +137,39 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     private AwardList doAwardList(long playerID, Action action, Map<String, Object> attributes) {
         if (this.awardPlan == null)
             return new SimpleAwardList(action);
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        setAttrMap(playerID, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.getAwardList(playerID, action, attributes);
     }
 
     @Override
     public <O> O countOption(long playerID, Option option, Map<String, Object> attributes) {
-        setAttrMap(playerID, this.attrAliasSet, this.itemModelExplorer, this.itemExplorer, attributes);
+        setAttrMap(playerID, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
-        FormulaHolder formula = this.optionMap.get(option);
+        ExprHolder formula = this.optionMap.get(option);
         if (formula == null)
             throw new GameRuningException(option, ItemResultCode.ACTION_NO_EXIST);
-        return formula.createFormula().putAll(attributes).execute(null);
+        return formula.createExpr().putAll(attributes).execute(null);
+    }
+
+
+    @Override
+    public void init(ItemModel itemModel, ItemModelContext context) {
+        super.init(itemModel, context);
+        if (optionMap == null)
+            optionMap = ImmutableMap.of();
+        if (action != null) {
+            actions = ImmutableSet.of(action);
+        } else if (actions != null) {
+            actions = ImmutableSet.copyOf(actions);
+        }
+        if (this.awardPlan != null)
+            this.awardPlan.init(itemModel, context);
+        if (this.costPlan != null)
+            this.costPlan.init(itemModel, context);
+        for (String alias : this.attrAliasSet) {
+            AliasCollectUtils.addAlias(alias);
+        }
     }
 
 }

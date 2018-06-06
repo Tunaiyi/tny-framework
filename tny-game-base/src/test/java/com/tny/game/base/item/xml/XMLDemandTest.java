@@ -4,6 +4,8 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.result.*;
+import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 import org.junit.*;
 import org.junit.Test;
 
@@ -36,7 +38,7 @@ public class XMLDemandTest {
     String itemAlias = "pl$player";
     int number = 10;
 
-    ItemModel model = new AbstractItemModel() {
+    class TestDemandItemModel extends AbstractItemModel {
 
         {
             this.alias = XMLDemandTest.this.itemAlias;
@@ -65,7 +67,13 @@ public class XMLDemandTest {
             };
         }
 
+        @Override
+        protected void init(ItemModelContext context) {
+            super.init(context);
+        }
     };
+
+    private TestDemandItemModel model = new TestDemandItemModel();
 
     String name = "player";
     int level = 10;
@@ -74,22 +82,27 @@ public class XMLDemandTest {
 
     TempExplorer explorer = new TempExplorer(this.model, this.item);
 
-    XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "");
+    private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+
+    private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
+
+    XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
 
     XMLDemand demand = new XMLDemand("pl$player", null, this.demandType,
             "pl$player != null ? pl$player.level : 0",
             "10",
-            "pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE);
+            "pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE, exprHolderFactory);
 
     {
-        this.demand.init(this.model, this.explorer, this.explorer);
-        this.stuffDemand.init(this.model, this.explorer, this.explorer);
+        this.model.init(this.context);
+        this.demand.init(this.model, context);
+        this.stuffDemand.init(this.model, context);
     }
 
     @Test
     public void testGetItemID() {
-        Assert.assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<String, Object>()));
-        Assert.assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<String, Object>()));
+        Assert.assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<>()));
+        Assert.assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<>()));
     }
 
     @Test
