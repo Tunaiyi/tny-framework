@@ -4,20 +4,18 @@ import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.message.Protocol;
-import com.tny.game.net.message.ProtocolAide;
+import com.tny.game.net.message.*;
 import com.tny.game.net.session.Session;
 import com.tny.game.net.session.holder.SessionHolder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
-import static com.tny.game.net.message.MessageContent.*;
-import static com.tny.game.net.utils.AppConstants.*;
+import static com.tny.game.net.message.MessageContent.toPush;
+import static com.tny.game.net.utils.AppConstants.DEFAULT_USER_GROUP;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -614,19 +612,37 @@ public class SessionService {
     }
 
     /**
-     * 将所有session下线
+     * 将默认组所有session下线
      */
     public void offlineAll() {
         this.sessionHolder.offlineAll(DEFAULT_USER_GROUP);
     }
 
     /**
-     * 下线指定playerID的session
+     * 将指定用户组所有session下线
+     *
+     * @param group 用户组
+     */
+    public void offlineAll(String group) {
+        this.sessionHolder.offlineAll(group);
+    }
+
+    /**
+     * 下线默认组中指定playerID的session
      *
      * @param playerID 指定玩家ID
      */
     public void offline(long playerID) {
         this.sessionHolder.offline(DEFAULT_USER_GROUP, playerID);
+    }
+
+    /**
+     * 下线默认组中指定playerID的session
+     *
+     * @param playerID 指定玩家ID
+     */
+    public void offline(String group, Object playerID) {
+        this.sessionHolder.offline(group, playerID);
     }
 
     // /**

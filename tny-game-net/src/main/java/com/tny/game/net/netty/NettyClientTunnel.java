@@ -54,7 +54,7 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
         loginTimeout = url.getParameter(LOGIN_TIMEOUT_URL_PARAM, config.getLong(LOGIN_TIMEOUT_URL_PARAM, 15000L));
         sendTimeout = url.getParameter(SEND_TIMEOUT_URL_PARAM, config.getLong(SEND_TIMEOUT_URL_PARAM, 0L));
         resendTimes = url.getParameter(RESEND_TIMES_URL_PARAM, config.getInt(RESEND_TIMES_URL_PARAM, 1));
-        reconnectTimes = url.getParameter(CONNECT_TIMEOUT_URL_PARAM, config.getInt(CONNECT_TIMEOUT_URL_PARAM, 0));
+        reconnectTimes = url.getParameter(CONNECT_TIMEOUT_URL_PARAM, config.getInt(CONNECT_TIMEOUT_URL_PARAM, 3));
     }
 
     public BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> getLoginContentCreator() {
