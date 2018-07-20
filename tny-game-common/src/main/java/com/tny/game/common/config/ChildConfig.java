@@ -1,13 +1,11 @@
 package com.tny.game.common.config;
 
+
 import com.tny.game.common.utils.Throws;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -23,16 +21,13 @@ class ChildConfig implements Config {
 
     private String subKeyHead;
 
-    private String parentKeyHead;
-
     ChildConfig(String parentKey, String delimiter, Config parent) {
         Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
         Throws.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
-        this.parentKeyHead = parentKey + del;
-        this.subKeyHead = this.parentKeyHead;
+        this.subKeyHead = parentKey + del;
     }
 
     private ChildConfig(String parentKey, String subKeyHead, String delimiter, Config parent) {
@@ -41,9 +36,9 @@ class ChildConfig implements Config {
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
-        this.parentKeyHead = parentKey;
         this.subKeyHead = subKeyHead + del;
     }
+
 
     @Override
     public Config child(String key) {
@@ -52,14 +47,14 @@ class ChildConfig implements Config {
 
     @Override
     public Config child(String key, String delimiter) {
-        Throws.checkArgument(key.startsWith(this.parentKeyHead), "{} 不属于 {} 的子 key", key, this.parentKeyHead);
-        String subKey = key.replace(this.parentKeyHead, "");
+        Throws.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
+        String subKey = key.replace(this.subKeyHead, "");
         return new ChildConfig(key, subKey, delimiter, this);
     }
 
     @Override
     public Optional<Config> getParent() {
-        return parent == null ? Optional.empty() : Optional.of(parent);
+        return Optional.of(parent);
     }
 
     @Override
@@ -69,7 +64,7 @@ class ChildConfig implements Config {
 
     @Override
     public String parentHeadKey() {
-        return parentKeyHead;
+        return subKeyHead;
     }
 
     @Override
@@ -165,21 +160,21 @@ class ChildConfig implements Config {
     @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         return this.parent.entrySet().stream()
-                .filter((e) -> e.getKey().startsWith(parentKeyHead))
+                .filter((e) -> e.getKey().startsWith(subKeyHead))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> keySet() {
         return this.parent.keySet().stream()
-                .filter((e) -> e.startsWith(parentKeyHead))
+                .filter((e) -> e.startsWith(subKeyHead))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Object> values() {
         return this.parent.entrySet().stream()
-                .filter(e -> e.getKey().startsWith(parentKeyHead))
+                .filter(e -> e.getKey().startsWith(subKeyHead))
                 .map(Entry::getValue)
                 .collect(Collectors.toList());
     }
