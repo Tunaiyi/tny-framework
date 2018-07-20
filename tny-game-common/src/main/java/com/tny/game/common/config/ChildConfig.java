@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -20,7 +21,9 @@ class ChildConfig implements Config {
 
     private String parentKey;
 
-    private String parentHeadKey;
+    private String subKeyHead;
+
+    private String parentKeyHead;
 
     ChildConfig(String parentKey, String delimiter, Config parent) {
         Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
@@ -28,9 +31,19 @@ class ChildConfig implements Config {
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
-        this.parentHeadKey = parentKey + del;
+        this.parentKeyHead = parentKey + del;
+        this.subKeyHead = this.parentKeyHead;
     }
 
+    private ChildConfig(String parentKey, String subKeyHead, String delimiter, Config parent) {
+        Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Throws.checkNotNull(parent, "parent 不可为null");
+        this.parent = parent;
+        this.parentKey = parentKey;
+        String del = delimiter == null ? "." : delimiter;
+        this.parentKeyHead = parentKey;
+        this.subKeyHead = subKeyHead + del;
+    }
 
     @Override
     public Config child(String key) {
@@ -39,7 +52,9 @@ class ChildConfig implements Config {
 
     @Override
     public Config child(String key, String delimiter) {
-        return new ChildConfig(key, delimiter, this);
+        Throws.checkArgument(key.startsWith(this.parentKeyHead), "{} 不属于 {} 的子 key", key, this.parentKeyHead);
+        String subKey = key.replace(this.parentKeyHead, "");
+        return new ChildConfig(key, subKey, delimiter, this);
     }
 
     @Override
@@ -54,7 +69,7 @@ class ChildConfig implements Config {
 
     @Override
     public String parentHeadKey() {
-        return parentHeadKey;
+        return parentKeyHead;
     }
 
     @Override
@@ -150,22 +165,22 @@ class ChildConfig implements Config {
     @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         return this.parent.entrySet().stream()
-                .filter((e) -> e.getKey().startsWith(parentHeadKey))
+                .filter((e) -> e.getKey().startsWith(parentKeyHead))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> keySet() {
         return this.parent.keySet().stream()
-                .filter((e) -> e.startsWith(parentHeadKey))
+                .filter((e) -> e.startsWith(parentKeyHead))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Object> values() {
         return this.parent.entrySet().stream()
-                .filter(e -> e.getKey().startsWith(parentHeadKey))
-                .map(e -> e.getValue())
+                .filter(e -> e.getKey().startsWith(parentKeyHead))
+                .map(Entry::getValue)
                 .collect(Collectors.toList());
     }
 
@@ -195,6 +210,7 @@ class ChildConfig implements Config {
     }
 
     private String key(String childKey) {
-        return parentHeadKey + childKey;
+        return this.subKeyHead + childKey;
     }
+
 }
