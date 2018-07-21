@@ -206,7 +206,6 @@ public interface Config {
      * 通过Key获取枚举
      *
      * @param key
-     * @param defValue
      */
     <E extends Enum<E>> E getEnum(String key, Class<E> enumClass);
 
