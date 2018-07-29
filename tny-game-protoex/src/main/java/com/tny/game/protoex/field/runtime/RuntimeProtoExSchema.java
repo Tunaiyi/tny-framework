@@ -1,25 +1,16 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.buff.LinkedByteBuffer;
 import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.Logs;
 import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.FieldDesc;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 
 /**
  * 运行时类型描述结构
@@ -57,6 +48,10 @@ public class RuntimeProtoExSchema {
         putRawSchema(AtomicLong.class, RuntimePrimitiveSchema.ATOMIC_LONG_SCHEMA, false);
         putRawSchema(AtomicBoolean.class, RuntimePrimitiveSchema.ATOMIC_BOOLEAN_SCHEMA, false);
         putRawSchema(LinkedByteBuffer.class, RuntimePrimitiveSchema.LINKED_BUFFER_SCHEMA, false);
+        putRawSchema(Collection.class, RuntimeCollectionSchema.COLLECTION_SCHEMA, true);
+        putRawSchema(List.class, RuntimeCollectionSchema.COLLECTION_SCHEMA, false);
+        putRawSchema(Set.class, RuntimeCollectionSchema.COLLECTION_SCHEMA, false);
+        putRawSchema(Map.class, RuntimeMapSchema.MAP_SCHEMA, true);
     }
 
 

@@ -3,7 +3,7 @@ package com.tny.game.suite.login;
 import com.tny.game.net.base.CoreResponseCode;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.message.BodyClass;
+import com.tny.game.net.message.ReferenceType;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.session.LoginCertificate;
 import com.tny.game.net.tunnel.Tunnel;
@@ -30,7 +30,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
     @Resource
     private GameTicketMaker ticketMaker;
 
-    private static BodyClass<List<String>> BODY_CLASS = new BodyClass<List<String>>() {
+    private static ReferenceType<List<String>> BODY_CLASS = new ReferenceType<List<String>>() {
     };
 
     private volatile boolean online = true;

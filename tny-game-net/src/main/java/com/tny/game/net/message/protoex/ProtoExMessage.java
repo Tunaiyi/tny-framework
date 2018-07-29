@@ -1,16 +1,9 @@
 package com.tny.game.net.message.protoex;
 
 import com.tny.game.net.message.AbstractNetMessage;
-import com.tny.game.protoex.annotations.Packed;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExConf;
-import com.tny.game.protoex.annotations.ProtoExElement;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.protoex.annotations.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ProtoEx(ProtoExMessageCoder.MESSAGE_ID)
 public class ProtoExMessage<UID> extends AbstractNetMessage<UID> {
@@ -57,6 +50,11 @@ public class ProtoExMessage<UID> extends AbstractNetMessage<UID> {
     @Override
     public int getToMessage() {
         return toMessage;
+    }
+
+    @Override
+    public boolean isHasHead() {
+        return false;
     }
 
     @Override
@@ -137,5 +135,6 @@ public class ProtoExMessage<UID> extends AbstractNetMessage<UID> {
         this.time = time;
         return this;
     }
+
 }
 

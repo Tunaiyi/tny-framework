@@ -4,12 +4,7 @@ import com.tny.game.common.context.Attributes;
 
 import java.io.Serializable;
 
-public interface Message<UID> extends Protocol, Serializable {
-
-    /**
-     * @return 返回请求Id
-     */
-    int getID();
+public interface Message<UID> extends MessageHeader, Serializable {
 
     /**
      * @return 所属sesssion
@@ -31,21 +26,6 @@ public interface Message<UID> extends Protocol, Serializable {
      */
     String getUserGroup();
 
-    // /**
-    //  * @return 传输类型 请求|响应
-    //  */
-    // MessageType getMessage();
-
-    /**
-     * @return 消息响应码
-     */
-    int getCode();
-
-    /**
-     * @return 响应消息 -1 为无
-     */
-    int getToMessage();
-
     /**
      * @return 获取消息体
      */
@@ -54,17 +34,7 @@ public interface Message<UID> extends Protocol, Serializable {
     /**
      * @return 获取消息体
      */
-    <T> T getBody(BodyClass<T> clazz);
-
-    /**
-     * 获取请求时间
-     * <p>
-     * <p>
-     * 获取请求时间 <br>
-     *
-     * @return 返回请求时间
-     */
-    long getTime();
+    <T> T getBody(ReferenceType<T> clazz);
 
     /**
      * @return 校验码

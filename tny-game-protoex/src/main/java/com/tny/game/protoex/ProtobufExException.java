@@ -228,7 +228,6 @@ public class ProtobufExException extends RuntimeException {
     /**
      * 不存在类型描述结构
      *
-     * @param type
      * @return
      */
     public static ProtobufExException noSchema(int protoExID, boolean raw, Class<?> defaultType) {

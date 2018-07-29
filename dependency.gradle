@@ -27,6 +27,7 @@ ext.libs = [
         'javassist'             : 'org.javassist:javassist:3.21.0-GA',
         'mvel'                  : "org.mvel:mvel2:2.4.0.Final",
         'groovy-all'            : 'org.codehaus.groovy:groovy-all:2.4.15',
+        'luaj'                  : 'org.luaj:luaj-jse:3.0.1',
 
         'jackson-core'          : "com.fasterxml.jackson.core:jackson-core:${vers.jackson}",
         'jackson-databind'      : "com.fasterxml.jackson.core:jackson-databind:${vers.jackson}",
@@ -76,7 +77,7 @@ ext.libs = [
 
 
         'tny-game-common'       : "com.tny.game:tny-game-common:${vers.tny}",
-        'tny-game-common-mvel'       : "com.tny.game:tny-game-common-mvel:${vers.tny}",
+        'tny-game-common-mvel'  : "com.tny.game:tny-game-common-mvel:${vers.tny}",
         'tny-game-net'          : "com.tny.game:tny-game-net:${vers.tny}",
         'tny-game-base'         : "com.tny.game:tny-game-base:${vers.tny}",
         'tny-game-doc'          : "com.tny.game:tny-game-doc:${vers.tny}",

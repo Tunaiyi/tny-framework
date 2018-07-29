@@ -63,6 +63,7 @@ public class AsyncDBEntityTest {
         public Map<String, ? extends Object> get(Class<? extends Object> clazz, Collection<String> keyValues) {
             return null;
         }
+
     };
 
     private AsyncDBEntity create(AsyncDBState state) {

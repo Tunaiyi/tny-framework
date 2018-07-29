@@ -1,24 +1,27 @@
 package com.tny.game.protoex;
 
+import com.tny.game.common.enums.EnumID;
+
 /**
  * protoEx枚举接口
  *
  * @author KGTny
  */
-public interface ProtoExEnum {
+public interface ProtoExEnum extends EnumID<Integer> {
 
     /**
      * 枚举ID
      *
      * @return
      */
-    public int getID();
+    @Override
+    Integer getID();
 
     /**
      * 枚举名字
      *
      * @return
      */
-    public String name();
+    String name();
 
 }

@@ -21,7 +21,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     private IOConfiger<?> keyConfiger;
     private IOConfiger<?> valueConfiger;
 
-    public static <T> IOConfiger<T> createNomalConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+    public static <T> IOConfiger<T> createNormalConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
         return new RootIOConfiger<>(protoExType, type, packed, typeEncode, format);
     }
 

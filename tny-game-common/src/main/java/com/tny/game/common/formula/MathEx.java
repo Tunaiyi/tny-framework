@@ -1,22 +1,15 @@
 package com.tny.game.common.formula;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.tny.game.common.number.NumberAide.max;
-import static com.tny.game.common.number.NumberAide.min;
+import static com.tny.game.common.number.NumberAide.*;
 
 public class MathEx {
 
@@ -103,6 +96,14 @@ public class MathEx {
         return ThreadLocalRandom.current().nextInt(number);
     }
 
+    /**
+     * @return 随机 from 到 to 范围的随机数
+     */
+    public static int rand(final int from, final int to) {
+        if (to < from)
+            throw new IllegalArgumentException(StringAide.format("to {} < from {}", to, from));
+        return MathEx.rand((to - from) + 1) + from;
+    }
 
     /**
      * 抽签 (权重)
@@ -270,15 +271,6 @@ public class MathEx {
             }
         }
         return defaultObject;
-    }
-
-    /**
-     * @return 随机 from 到 to 范围的随机数
-     */
-    public static int rand(final int from, final int to) {
-        if (to < from)
-            throw new IllegalArgumentException("to : " + to + " < " + "from : " + from);
-        return MathEx.rand((to - from) + 1) + from;
     }
 
     /**

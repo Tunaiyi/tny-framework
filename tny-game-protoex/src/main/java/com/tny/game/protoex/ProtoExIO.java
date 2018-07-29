@@ -31,7 +31,7 @@ public class ProtoExIO {
     }
 
     public static <T> IOConfiger<T> createNormal(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
-        return RootIOConfiger.createNomalConfiger(protoExType, type, packed, typeEncode, format);
+        return RootIOConfiger.createNormalConfiger(protoExType, type, packed, typeEncode, format);
     }
 
     public static <C extends Collection<?>> RootIOConfiger<C> createRepeat(Class<C> collectionClass, Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {

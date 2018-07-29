@@ -21,6 +21,7 @@ public class CommonMessage<UID> extends AbstractNetMessage<UID> {
     private Object body;
 
     public CommonMessage() {
+        super();
     }
 
     @Override
@@ -70,6 +71,7 @@ public class CommonMessage<UID> extends AbstractNetMessage<UID> {
         return this;
     }
 
+    @Override
     public CommonMessage<UID> setCode(int code) {
         this.code = code;
         return this;
@@ -102,6 +104,12 @@ public class CommonMessage<UID> extends AbstractNetMessage<UID> {
     @Override
     public CommonMessage<UID> setTime(long time) {
         this.time = time;
+        return this;
+    }
+
+    @Override
+    protected CommonMessage<UID> setHead(Object head) {
+        super.setHead(head);
         return this;
     }
 

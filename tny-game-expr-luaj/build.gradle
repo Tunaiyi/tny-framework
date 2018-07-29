@@ -1,0 +1,13 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            project(":tny-game-expr-jsr223"),
+            project(":tny-game-common"),
+            libs."luaj",
+    )
+
+}

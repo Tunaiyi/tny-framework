@@ -101,13 +101,13 @@ public class MvelExprContext implements ExprContext {
 
     @Override
     public ExprContext put(String key, Object object) {
-        attributes.put(key, object);
+        this.attributes.put(key, object);
         return this;
     }
 
     @Override
     public ExprContext putAll(Map<String, Object> attributes) {
-        attributes.putAll(attributes);
+        this.attributes.putAll(attributes);
         return this;
     }
 

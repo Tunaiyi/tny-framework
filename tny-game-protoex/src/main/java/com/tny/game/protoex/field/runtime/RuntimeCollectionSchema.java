@@ -1,17 +1,9 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.protoex.BaseProtoExSchema;
-import com.tny.game.protoex.ProtoExInputStream;
-import com.tny.game.protoex.ProtoExOutputStream;
-import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.ProtoExSchemaContext;
-import com.tny.game.protoex.ProtobufExException;
-import com.tny.game.protoex.Tag;
-import com.tny.game.protoex.WireFormat;
-import com.tny.game.protoex.field.IOConfiger;
-import com.tny.game.protoex.field.RepeatIOConfiger;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.field.*;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -89,6 +81,8 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
 
     @Override
     public Collection<?> readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+        if (conf == null)
+            conf = ProtoExIO.createRepeat(ArrayList.class, Object.class, false);
         return readValue(CollectionCreator.createCollection(conf.getDefaultType()), inputStream, tag, conf);
     }
 

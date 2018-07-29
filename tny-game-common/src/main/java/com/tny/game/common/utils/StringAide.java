@@ -62,5 +62,9 @@ public class StringAide {
         return elseValue.get();
     }
 
+    public static String format(final String messagePattern, final Object... argArray) {
+        return Logs.format(messagePattern, argArray);
+    }
+
 
 }

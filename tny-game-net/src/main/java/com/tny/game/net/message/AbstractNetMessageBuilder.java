@@ -30,6 +30,8 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     private Supplier<M> creator;
 
+    private Object head;
+
     protected AbstractNetMessageBuilder(Supplier<M> creator) {
         this.creator = creator;
     }
@@ -93,6 +95,11 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
         return this;
     }
 
+    protected MessageBuilder<UID> setHead(Object head) {
+        this.head = head;
+        return this;
+    }
+
     @Override
     public MessageBuilder<UID> setCommandResult(CommandResult result) {
         Protocol protocol = result.getProtocol();
@@ -112,6 +119,7 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
                 .setSessionID(this.sessionID)
                 .setProtocol(this.protocol)
                 .setCode(this.code)
+                .setHead(this.head)
                 .setBody(this.body)
                 .setToMessage(this.toMessage)
                 .setTime(System.currentTimeMillis())

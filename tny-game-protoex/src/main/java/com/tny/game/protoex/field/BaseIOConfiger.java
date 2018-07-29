@@ -1,16 +1,11 @@
 package com.tny.game.protoex.field;
 
 import com.tny.game.common.utils.Logs;
-import com.tny.game.protoex.ProtoExType;
-import com.tny.game.protoex.ProtobufExException;
-import com.tny.game.protoex.annotations.ProtoExConf;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * @param <T>
@@ -80,7 +75,7 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
 
     protected static boolean checkExplicit(Class<?> type, boolean explicit) {
         if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type) &&
-                ((Modifier.isAbstract(type.getModifiers()) || type == Object.class) && !explicit)) {
+                ((Modifier.isAbstract(type.getModifiers())) && !explicit)) {
             return false;
         }
         return true;

@@ -19,30 +19,30 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class ProtoExTest {
 
-    char[] charValue = {0, (char) 1, (char) -1, Character.MAX_VALUE, Character.MIN_VALUE};
-    byte[] byteValue = {0, 1, -1, Byte.MAX_VALUE, Byte.MIN_VALUE};
-    short[] shortValue = {0, 1, -1, Short.MAX_VALUE, Short.MIN_VALUE};
-    int[] intValue = {0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE};
-    long[] longValue = {0, 1, -1, Long.MAX_VALUE, Long.MIN_VALUE};
-    float[] floatValue = {0, 1.5f, -1.5f, Float.MAX_VALUE, Float.MIN_VALUE};
-    double[] doubleValue = {0, 1.5, -1.5, Double.MAX_VALUE, Double.MIN_VALUE};
-    boolean[] booleanValue = {true, false};
-    String[] stringValue = {"abcdefghijklmnopqlstuvwxyz", "ABCDEFGHIJKLMNOPQLSTUVWXYZ"};
-    byte[][] bytesValue = {"abcdefghijklmnopqlstuvwxyz".getBytes(), "ABCDEFGHIJKLMNOPQLSTUVWXYZ".getBytes()};
-    Object[] objectValue = {this.createTestObject(), this.createTestObject()};
-    Collection<?>[] repeatMixValues = new Collection[]{
+    private char[] charValue = {0, (char) 1, (char) -1, Character.MAX_VALUE, Character.MIN_VALUE};
+    private byte[] byteValue = {0, 1, -1, Byte.MAX_VALUE, Byte.MIN_VALUE};
+    private short[] shortValue = {0, 1, -1, Short.MAX_VALUE, Short.MIN_VALUE};
+    private int[] intValue = {0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE};
+    private long[] longValue = {0, 1, -1, Long.MAX_VALUE, Long.MIN_VALUE};
+    private float[] floatValue = {0, 1.5f, -1.5f, Float.MAX_VALUE, Float.MIN_VALUE};
+    private double[] doubleValue = {0, 1.5, -1.5, Double.MAX_VALUE, Double.MIN_VALUE};
+    private boolean[] booleanValue = {true, false};
+    private String[] stringValue = {"abcdefghijklmnopqlstuvwxyz", "ABCDEFGHIJKLMNOPQLSTUVWXYZ"};
+    private byte[][] bytesValue = {"abcdefghijklmnopqlstuvwxyz".getBytes(), "ABCDEFGHIJKLMNOPQLSTUVWXYZ".getBytes()};
+    private Object[] objectValue = {this.createTestObject(), this.createTestObject()};
+    private Collection<?>[] repeatMixValues = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestSub(), 1000, 2000L, false, "abc", 100.1f, 200.123),
             Arrays.asList(this.createTestSub(), this.createTestSub(), 1000, 2000L, false, "abc", 100.1f, 200.123),
             Arrays.asList(this.createTestObject(), this.createTestObject(), 1000, 2000L, false, "abc", 100.1f, 200.123)};
-    Collection<?>[] repeatValues = new Collection[]{
+    private Collection<?>[] repeatValues = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestSub()),
             Arrays.asList(this.createTestSub(), this.createTestSub()),
             Arrays.asList(this.createTestObject(), this.createTestObject())};
-    Collection<?>[] repeatResult = new Collection[]{
+    private Collection<?>[] repeatResult = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestObject()),
             Arrays.asList(this.createTestObject(), this.createTestObject()),
             Arrays.asList(this.createTestObject(), this.createTestObject())};
-    Map<?, ?>[] mapMixValues = new Map[]{
+    private Map<?, ?>[] mapMixValues = new Map[]{
             MapBuilder.newBuilder()
                     .put(TestKey.key("testObject1"), this.createTestObject())
                     .put(TestKey.key("testObject2"), this.createTestObject())
@@ -68,7 +68,7 @@ public class ProtoExTest {
                     .put(100.321, 20000L)
                     .build(),
     };
-    Map<?, ?>[] map_KeyExp_ValueImp_Values = new Map[]{
+    private Map<?, ?>[] map_KeyExp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestSub("key2"), this.createTestObject("value2"))
@@ -76,7 +76,7 @@ public class ProtoExTest {
                     .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
-    Map<?, ?>[] map_KeyExp_ValueImp_Result = new Map[]{
+    private Map<?, ?>[] map_KeyExp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestSub("key2"), this.createTestObject("value2"))
@@ -84,7 +84,7 @@ public class ProtoExTest {
                     .put(this.createTestSub("key4"), this.createTestObject("value4"))
                     .build(),
     };
-    Map<?, ?>[] map_KeyImp_ValueExp_Values = new Map[]{
+    private Map<?, ?>[] map_KeyImp_ValueExp_Values = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestSub("key2"), this.createTestObject("value2"))
@@ -92,7 +92,7 @@ public class ProtoExTest {
                     .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
-    Map<?, ?>[] map_KeyImp_ValueExp_Result = new Map[]{
+    private Map<?, ?>[] map_KeyImp_ValueExp_Result = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestObject("key2"), this.createTestObject("value2"))
@@ -100,7 +100,7 @@ public class ProtoExTest {
                     .put(this.createTestObject("key4"), this.createTestSub("value4"))
                     .build(),
     };
-    Map<?, ?>[] map_KeyImp_ValueImp_Values = new Map[]{
+    private Map<?, ?>[] map_KeyImp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestSub("key2"), this.createTestObject("value2"))
@@ -108,7 +108,7 @@ public class ProtoExTest {
                     .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
-    Map<?, ?>[] map_KeyImp_ValueImp_Result = new Map[]{
+    private Map<?, ?>[] map_KeyImp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
                     .put(this.createTestObject("key1"), this.createTestObject("value1"))
                     .put(this.createTestObject("key2"), this.createTestObject("value2"))
@@ -209,13 +209,13 @@ public class ProtoExTest {
         this.read(reader, this.charValue);
     }
 
-    public void write(ProtoExWriter writer, char[] values) {
+    private void write(ProtoExWriter writer, char[] values) {
         for (char value : values) {
             writer.writeChar(value);
         }
     }
 
-    public void read(ProtoExReader reader, char[] values) {
+    private void read(ProtoExReader reader, char[] values) {
         int time = 1;
         for (char value : values) {
             char readValue = reader.readChar();
@@ -238,13 +238,13 @@ public class ProtoExTest {
         this.read(reader, this.bytesValue);
     }
 
-    public void write(ProtoExWriter writer, byte[] values) {
+    private void write(ProtoExWriter writer, byte[] values) {
         for (byte value : values) {
             writer.writeByte(value);
         }
     }
 
-    public void read(ProtoExReader reader, byte[] values) {
+    private void read(ProtoExReader reader, byte[] values) {
         int time = 1;
         for (byte value : values) {
             byte readValue = reader.readByte();
@@ -271,13 +271,13 @@ public class ProtoExTest {
         this.read(reader, this.shortValue, FieldFormat.Fixed);
     }
 
-    public void write(ProtoExWriter writer, short[] values, FieldFormat format) {
+    private void write(ProtoExWriter writer, short[] values, FieldFormat format) {
         for (short value : values) {
             writer.writeShort(value, format);
         }
     }
 
-    public void read(ProtoExReader reader, short[] values, FieldFormat format) {
+    private void read(ProtoExReader reader, short[] values, FieldFormat format) {
         int time = 1;
         for (short value : values) {
             short readValue = reader.readShort();
@@ -304,13 +304,13 @@ public class ProtoExTest {
         this.read(reader, this.intValue, FieldFormat.Fixed);
     }
 
-    public void write(ProtoExWriter writer, int[] values, FieldFormat format) {
+    private void write(ProtoExWriter writer, int[] values, FieldFormat format) {
         for (int value : values) {
             writer.writeInt(value, format);
         }
     }
 
-    public void read(ProtoExReader reader, int[] values, FieldFormat format) {
+    private void read(ProtoExReader reader, int[] values, FieldFormat format) {
         int time = 1;
         for (int value : values) {
             int readValue = reader.readInt();
@@ -337,13 +337,13 @@ public class ProtoExTest {
         this.read(reader, this.longValue, FieldFormat.Fixed);
     }
 
-    public void write(ProtoExWriter writer, long[] values, FieldFormat format) {
+    private void write(ProtoExWriter writer, long[] values, FieldFormat format) {
         for (long value : values) {
             writer.writeLong(value, format);
         }
     }
 
-    public void read(ProtoExReader reader, long[] values, FieldFormat format) {
+    private void read(ProtoExReader reader, long[] values, FieldFormat format) {
         int time = 1;
         for (long value : values) {
             long readValue = reader.readLong();
@@ -366,13 +366,13 @@ public class ProtoExTest {
         this.read(reader, this.floatValue);
     }
 
-    public void write(ProtoExWriter writer, float[] values) {
+    private void write(ProtoExWriter writer, float[] values) {
         for (float value : values) {
             writer.writeFloat(value);
         }
     }
 
-    public void read(ProtoExReader reader, float[] values) {
+    private void read(ProtoExReader reader, float[] values) {
         int time = 1;
         for (float value : values) {
             float readValue = reader.readFloat();
@@ -395,13 +395,13 @@ public class ProtoExTest {
         this.read(reader, this.doubleValue);
     }
 
-    public void write(ProtoExWriter writer, double[] values) {
+    private void write(ProtoExWriter writer, double[] values) {
         for (double value : values) {
             writer.writeDouble(value);
         }
     }
 
-    public void read(ProtoExReader reader, double[] values) {
+    private void read(ProtoExReader reader, double[] values) {
         int time = 1;
         for (double value : values) {
             double readValue = reader.readDouble();
@@ -424,13 +424,13 @@ public class ProtoExTest {
         this.read(reader, this.booleanValue);
     }
 
-    public void write(ProtoExWriter writer, boolean[] values) {
+    private void write(ProtoExWriter writer, boolean[] values) {
         for (boolean value : values) {
             writer.writeBoolean(value);
         }
     }
 
-    public void read(ProtoExReader reader, boolean[] values) {
+    private void read(ProtoExReader reader, boolean[] values) {
         int time = 1;
         for (boolean value : values) {
             boolean readValue = reader.readBoolean();
@@ -453,13 +453,13 @@ public class ProtoExTest {
         this.read(reader, this.stringValue);
     }
 
-    public void write(ProtoExWriter writer, String[] values) {
+    private void write(ProtoExWriter writer, String[] values) {
         for (String value : values) {
             writer.writeString(value);
         }
     }
 
-    public void read(ProtoExReader reader, String[] values) {
+    private void read(ProtoExReader reader, String[] values) {
         int time = 1;
         for (String value : values) {
             String readValue = reader.readString();
@@ -482,13 +482,13 @@ public class ProtoExTest {
         this.read(reader, this.bytesValue);
     }
 
-    public void write(ProtoExWriter writer, byte[][] values) {
+    private void write(ProtoExWriter writer, byte[][] values) {
         for (byte[] value : values) {
             writer.writeBytes(value);
         }
     }
 
-    public void read(ProtoExReader reader, byte[][] values) {
+    private void read(ProtoExReader reader, byte[][] values) {
         int time = 1;
         for (byte[] value : values) {
             byte[] readValue = reader.readBytes();
@@ -578,14 +578,14 @@ public class ProtoExTest {
         this.read(reader, this.objectValue, TypeEncode.IMPLICIT);
     }
 
-    public void write(ProtoExWriter writer, Object[] values, TypeEncode typeEncode) {
+    private void write(ProtoExWriter writer, Object[] values, TypeEncode typeEncode) {
         for (Object value : values) {
             writer.writeMessage(value, typeEncode);
             System.out.println("writer.size() = " + writer.size());
         }
     }
 
-    public void read(ProtoExReader reader, Object[] values, TypeEncode typeEncode) {
+    private void read(ProtoExReader reader, Object[] values, TypeEncode typeEncode) {
         int time = 1;
         for (Object value : values) {
             System.out.println(typeEncode + " " + time);
@@ -666,18 +666,17 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, values, TestObject.class, true, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, values, Object.class, true, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
         this.read(reader, values, TestObject.class, true, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, values, TestObject.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, values, Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
         this.read(reader, values, TestObject.class, false, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
     }
 
     @Test
-    public void testMixUnpackedExplicitCollection() {
+    public void testMixUnpackedExplicitCollectionReadMessage() {
 
         ProtoExWriter writer = this.createWrite();
-
         this.write(writer, this.repeatMixValues, TestObject.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
@@ -685,9 +684,7 @@ public class ProtoExTest {
         Assert.assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
-
-        this.read(reader, this.repeatMixValues, TestObject.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-
+        this.readMessage(reader, this.repeatMixValues, Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
     }
 
     @Test
@@ -741,7 +738,7 @@ public class ProtoExTest {
 
     }
 
-    public <T> void write(ProtoExWriter writer, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    private <T> void write(ProtoExWriter writer, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
             String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
@@ -750,10 +747,19 @@ public class ProtoExTest {
         }
     }
 
-    public <T> void read(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    private <T> void read(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readCollection(elementType);
+            String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
+            Assert.assertEquals(this.msg(value, method, time++), value, readValue);
+        }
+    }
+
+    private <T> void readMessage(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+        int time = 1;
+        for (Collection<?> value : values) {
+            Collection<?> readValue = reader.readMessage();
             String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);
         }
@@ -922,9 +928,9 @@ public class ProtoExTest {
 
     }
 
-    public <T> void write(ProtoExWriter writer, Map<?, ?>[] values,
-                          Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                          Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+    private <T> void write(ProtoExWriter writer, Map<?, ?>[] values,
+                           Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+                           Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         int time = 1;
         for (Map<?, ?> value : values) {
             String method = Logs.format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
@@ -934,9 +940,9 @@ public class ProtoExTest {
         }
     }
 
-    public <T> void read(ProtoExReader reader, Map<?, ?>[] values,
-                         Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                         Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+    private <T> void read(ProtoExReader reader, Map<?, ?>[] values,
+                          Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+                          Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         int time = 1;
         for (Map<?, ?> value : values) {
             Map<?, ?> readValue = reader.readMap(keyType, valueType);

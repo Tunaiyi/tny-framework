@@ -120,16 +120,10 @@ public abstract class ScriptExprContext implements ExprContext {
         return importCode.toString();
     }
 
-    protected String importStaticClassCode(Class<?> clazz) {
-        return "import static " + clazz.getName() + ".*\n";
-    }
+    protected abstract String importStaticClassCode(Class<?> clazz);
 
-    protected String importClassCode(Class<?> clazz) {
-        return "import " + clazz.getName() + "\n";
-    }
+    protected abstract String importClassCode(Class<?> clazz);
 
-    protected String importClassAsAliasCode(String alias, Class<?> clazz) {
-        return "import " + clazz.getName() + " as " + alias + "\n";
-    }
+    protected abstract String importClassAsAliasCode(String alias, Class<?> clazz);
 
 }

@@ -7,28 +7,35 @@ import com.tny.game.net.tunnel.Tunnel;
 /**
  * Created by Kun Yang on 2017/3/30.
  */
-public class DetectMessage<UID> implements NetMessage<UID> {
+public class DetectMessage<UID> extends AbstractMessageHeader implements NetMessage<UID> {
 
     private Tunnel<UID> tunnel;
     private int protocol;
     private long time;
-    private MessageMode messageMode;
+    private MessageMode mode;
+    private Object head;
 
     public static <UID> NetMessage<UID> ping() {
-        return new DetectMessage<>(PING_PROTOCOL_NUM, MessageMode.PING);
+        return new DetectMessage<>(PING_PROTOCOL_NUM, null, MessageMode.PING);
+    }
+
+    public static <UID> NetMessage<UID> ping(Object head) {
+        return new DetectMessage<>(PING_PROTOCOL_NUM, head, MessageMode.PING);
     }
 
     public static <UID> NetMessage<UID> pong() {
-        return new DetectMessage<>(PONG_PROTOCOL_NUM, MessageMode.PONG);
+        return new DetectMessage<>(PONG_PROTOCOL_NUM, null, MessageMode.PONG);
     }
 
-    private DetectMessage(int protocol, MessageMode messageMode) {
+    public static <UID> NetMessage<UID> pong(Object head) {
+        return new DetectMessage<>(PONG_PROTOCOL_NUM, head, MessageMode.PONG);
+    }
+
+    private DetectMessage(int protocol, Object head, MessageMode mode) {
         this.time = System.currentTimeMillis();
         this.protocol = protocol;
-        this.messageMode = messageMode;
-    }
-
-    private DetectMessage() {
+        this.mode = mode;
+        this.head = head;
     }
 
     @Override
@@ -72,12 +79,32 @@ public class DetectMessage<UID> implements NetMessage<UID> {
     }
 
     @Override
+    protected Object getHead() {
+        return null;
+    }
+
+    @Override
+    public boolean isHasHead() {
+        return false;
+    }
+
+    @Override
+    public <T> T getHead(Class<T> clazz) {
+        return null;
+    }
+
+    @Override
+    public <T> T getHead(ReferenceType<T> clazz) {
+        return null;
+    }
+
+    @Override
     public <T> T getBody(Class<T> clazz) {
         return null;
     }
 
     @Override
-    public <T> T getBody(BodyClass<T> clazz) {
+    public <T> T getBody(ReferenceType<T> clazz) {
         return null;
     }
 
@@ -98,7 +125,7 @@ public class DetectMessage<UID> implements NetMessage<UID> {
 
     @Override
     public MessageMode getMode() {
-        return messageMode;
+        return mode;
     }
 
     @Override
