@@ -23,8 +23,8 @@ public interface AccountDAO extends AccountDBFields {
     @SQL("select `uid` from " + TABLE + " where `createSID` = :sid and `deviceID` = :deviceID")
     Collection<Long> findUIDsByDeviceID(@SQLParam("sid") int serverID, @SQLParam("deviceID") String deviceID);
 
-    @SQL("select `uid` from " + TABLE + " where `createSID` = :sid and `deviceID` = :deviceID")
-    Long findUIDByOpenID(@SQLParam("sid") int serverID, @SQLParam("deviceID") String deviceID);
+    @SQL("select `uid` from " + TABLE + " where `createSID` = :sid and `openID` = :openID")
+    Long findUIDByOpenID(@SQLParam("sid") int serverID, @SQLParam("openID") String openID);
 
     @SQL("select `uid` from " + TABLE + " where `account` = :account")
     Long findUID(@SQLParam("account") String account);
