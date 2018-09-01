@@ -9,10 +9,8 @@ import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.message.sign.MessageSignGenerator;
-import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.*;
-import com.tny.game.net.session.holder.NetSessionHolder;
+import com.tny.game.net.session.*;
+import com.tny.game.net.session.NetSessionHolder;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.io.IOException;
@@ -43,8 +41,6 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     protected DispatchCommandExecutor dispatchCommandExecutor;
 
     protected MessageDispatcher messageDispatcher;
-
-    protected MessageSignGenerator messageSignGenerator;
 
     protected ExprHolderFactory exprHolderFactory;
 
@@ -119,11 +115,6 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     @Override
     public MessageDispatcher getMessageDispatcher() {
         return messageDispatcher;
-    }
-
-    @Override
-    public MessageSignGenerator getMessageSignGenerator() {
-        return messageSignGenerator;
     }
 
     @Override

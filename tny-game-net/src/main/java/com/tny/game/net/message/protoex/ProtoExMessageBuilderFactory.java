@@ -8,7 +8,7 @@ import com.tny.game.net.message.MessageBuilderFactory;
 public class ProtoExMessageBuilderFactory<UID> implements MessageBuilderFactory<UID> {
 
     @Override
-    public MessageBuilder<UID> newMessageBuilder() {
+    public MessageBuilder<UID> newBuilder() {
         return new ProtoExMessageBuilder<>();
     }
 }

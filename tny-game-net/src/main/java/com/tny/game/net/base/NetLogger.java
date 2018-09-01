@@ -1,10 +1,9 @@
 package com.tny.game.net.base;
 
-import com.tny.game.net.message.Message;
+import com.tny.game.net.message.*;
 import com.tny.game.net.session.Session;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Date;
 
@@ -19,12 +18,9 @@ public class NetLogger {
     private static final Logger SEND_PUSH_LOGGER = LoggerFactory.getLogger(NetLogger.SEND_PUSH);
 
     public static final String CODER = "netCoder";
-    public static final String CONTEXT = "appContext";
-    private static final String RECEIVE_MESSAGE = "receiveMessage";
     private static final String RECEIVE_RQS = "receiveRequest";
     private static final String RECEIVE_RSP = "receiveResponse";
     private static final String RECEIVE_PUSH = "receivePush";
-    private static final String SEND_MESSAGE = "sendMessage";
     private static final String SEND_RQS = "sendRequest";
     private static final String SEND_RSP = "sendResponse";
     private static final String SEND_PUSH = "sendPush";
@@ -34,7 +30,6 @@ public class NetLogger {
     public static final String NIO_CLIENT = "nioClient";
     public static final String CLIENT = "coreClient";
     public static final String SESSION = "session";
-    public static final String TELNET = "telnet";
     public static final String EXECUTOR = "executor";
 
 
@@ -64,10 +59,11 @@ public class NetLogger {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             Object[] msgArgs = new Object[5];
+            MessageHeader header = message.getHeader();
             msgArgs[0] = message.getMode();
-            msgArgs[1] = message.getProtocol();
-            msgArgs[2] = message.getID();
-            msgArgs[3] = message.getToMessage();
+            msgArgs[1] = header.getProtocol();
+            msgArgs[2] = header.getId();
+            msgArgs[3] = header.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
             if (args.length > 0)
                 msgArgs = ArrayUtils.addAll(msgArgs, args);
@@ -79,10 +75,11 @@ public class NetLogger {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             Object[] msgArgs = new Object[5];
+            MessageHeader header = message.getHeader();
             msgArgs[0] = message.getMode();
-            msgArgs[1] = message.getProtocol();
-            msgArgs[2] = message.getID();
-            msgArgs[3] = message.getToMessage();
+            msgArgs[1] = header.getProtocol();
+            msgArgs[2] = header.getId();
+            msgArgs[3] = header.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
             if (args.length > 0)
                 msgArgs = ArrayUtils.addAll(msgArgs, args);
@@ -92,22 +89,27 @@ public class NetLogger {
 
     public static void logSend(Session session, Message message) {
         Logger logger = getSendLogger(message);
-        if (logger != null && logger.isDebugEnabled())
-            logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 校验码 : {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
+        if (logger != null && logger.isDebugEnabled()) {
+            MessageHeader header = message.getHeader();
+            logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     session,
-                    message.getProtocol(), message.getID(), message.getToMessage(),
-                    message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
+                    header.getProtocol(), header.getId(), header.getToMessage(),
+                    new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
+        }
+
     }
 
     public static void logReceive(Session session, Message message) {
         Logger logger = getReceiveLogger(message);
-        if (logger != null && logger.isDebugEnabled())
-            logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 校验码 : {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
+        if (logger != null && logger.isDebugEnabled()) {
+            MessageHeader header = message.getHeader();
+            logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     session,
-                    message.getProtocol(), message.getID(), message.getToMessage(),
-                    message.getSign(), new Date(message.getTime()), message.getCode(), message.getBody(Object.class));
+                    header.getProtocol(), header.getId(), header.getToMessage(),
+                    new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
+        }
     }
 
     // public static void log(Session session, Protocol protocol, ResultCode code, Object body) {

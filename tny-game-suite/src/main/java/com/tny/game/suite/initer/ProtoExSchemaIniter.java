@@ -5,7 +5,7 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.net.message.protoex.ProtoExMessage;
+import com.tny.game.net.message.protoex.ProtoExMessageHeader;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.field.runtime.RuntimeProtoExSchema;
@@ -44,7 +44,7 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
             RunningChecker.start(ProtoExSchemaIniter.class);
             LOGGER.info("开始初始化 ProtoSchema .......");
             Map<Integer, Class<?>> classMap = new HashMap<>();
-            RuntimeProtoExSchema.getProtoSchema(ProtoExMessage.class);
+            RuntimeProtoExSchema.getProtoSchema(ProtoExMessageHeader.class);
             // RuntimeProtoExSchema.getProtoSchema(ProtoExResponse.class);
             for (Class<?> cl : classes) {
                 clazz = cl;

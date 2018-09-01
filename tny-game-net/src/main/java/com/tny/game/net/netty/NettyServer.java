@@ -6,7 +6,6 @@ import com.tny.game.common.config.Config;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.SeverClosedListener;
 import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.tunnel.Tunnels;
 import com.tny.game.net.utils.NetConfigs;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -63,8 +62,8 @@ public class NettyServer extends NettyApp implements Server {
                                 channelMaker.initChannel(ch);
                             ch.pipeline().addLast("nettyMessageHandler", messageHandler);
                             @SuppressWarnings("unchecked")
-                            NettyTunnel<?> tunnel = new NettyServerTunnel<>(ch, appConfiguration);
-                            Tunnels.put(tunnel);
+                            NettyTunnel<?> tunnel = new NettyServerTunnel<>(ch, appConfiguration.getSessionFactory(), appConfiguration.getMessageBuilderFactory());
+                            // Tunnels.put(tunnel);
                             ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
                         }
                     });

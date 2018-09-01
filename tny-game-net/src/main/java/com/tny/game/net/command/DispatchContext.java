@@ -3,14 +3,14 @@ package com.tny.game.net.command;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.tunnel.*;
 
 /**
  * Created by Kun Yang on 2017/5/27.
  */
 public abstract class DispatchContext extends InvokeContext {
 
-    protected Tunnel tunnel;
+    protected NetTunnel tunnel;
 
     protected Message message;
 
@@ -18,7 +18,7 @@ public abstract class DispatchContext extends InvokeContext {
         super(methodHolder);
     }
 
-    protected DispatchContext(MethodControllerHolder methodHolder, Tunnel tunnel, Message message) {
+    protected DispatchContext(MethodControllerHolder methodHolder, NetTunnel<?> tunnel, Message message) {
         super(methodHolder);
         this.tunnel = tunnel;
         this.message = message;

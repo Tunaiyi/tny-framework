@@ -4,9 +4,7 @@ package com.tny.game.net.session;
 import com.tny.game.common.event.BindP1EventBus;
 import com.tny.game.common.event.EventBuses;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.session.holder.NetSessionHolder;
-import com.tny.game.net.session.holder.SessionHolder;
-import com.tny.game.net.session.holder.listener.SessionHolderListener;
+import com.tny.game.net.session.listener.SessionHolderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

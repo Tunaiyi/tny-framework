@@ -9,7 +9,7 @@ import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.holder.listener.SessionHolderListener;
+import com.tny.game.net.session.listener.SessionHolderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

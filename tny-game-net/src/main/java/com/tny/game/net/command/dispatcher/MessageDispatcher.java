@@ -1,11 +1,10 @@
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.MessageFuture;
-import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.common.worker.command.Command;
+import com.tny.game.net.tunnel.*;
 
 import java.util.Collection;
 
@@ -31,7 +30,7 @@ public interface MessageDispatcher {
      * @param message 请求
      * @param tunnel  通道
      */
-    Command dispatch(Message message, MessageFuture<?> future, Tunnel<?> tunnel) throws DispatchException;
+    Command dispatch(Message message, NetTunnel<?> tunnel) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器

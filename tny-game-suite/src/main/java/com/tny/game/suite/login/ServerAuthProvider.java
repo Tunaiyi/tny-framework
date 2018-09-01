@@ -6,7 +6,7 @@ import com.tny.game.net.base.AppType;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.LoginCertificate;
+import com.tny.game.net.session.NetCertificate;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.suite.core.AttributesKeys;
 import com.tny.game.suite.utils.SuiteResultCode;
@@ -19,7 +19,7 @@ public class ServerAuthProvider extends GameAuthProvider<Integer> {
     private ServerTicketMaker maker;
 
     @Override
-    public LoginCertificate<Integer> validate(Tunnel<Integer> tunnel, Message<Integer> message) throws DispatchException {
+    public NetCertificate<Integer> validate(Tunnel<Integer> tunnel, Message<Integer> message) throws DispatchException {
         ResultCode code = ResultCodes.of(message.getCode());
         if (code.isFailure())
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT, new DispatchException(code));
@@ -28,7 +28,7 @@ public class ServerAuthProvider extends GameAuthProvider<Integer> {
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
         AppType serverType = ticket.asServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
-            LoginCertificate<Integer> info = LoginCertificate.createLogin(ticket.getTime(), ticket.getServerID(), serverType.getName(), false);
+            NetCertificate<Integer> info = NetCertificate.createLogin(ticket.getTime(), ticket.getServerID(), serverType.getName(), false);
             ServerTicket localTicket = tunnel.attributes().getAttribute(AttributesKeys.LOCAL_SERVER_TICKET);
             ServerTicket signTicket = localTicket != null ? localTicket : ticket;
             tunnel.attributes().setAttribute(AttributesKeys.SERVER_TICKET, ticket);
@@ -36,6 +36,6 @@ public class ServerAuthProvider extends GameAuthProvider<Integer> {
             tunnel.attributes().setAttribute(AttributesKeys.SYSTEM_USER_USER_GROUP, signTicket.getServerType());
             return info;
         }
-        return LoginCertificate.createUnLogin(-1);
+        return NetCertificate.createUnLogin(-1);
     }
 }

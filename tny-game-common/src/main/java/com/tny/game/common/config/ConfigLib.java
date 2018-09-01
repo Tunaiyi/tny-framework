@@ -47,7 +47,7 @@ public class ConfigLib {
         return properties;
     }
 
-    public static Config getConfigExist(String path, ConfigFormatter... formatter) {
+    public static Config getConfig(String path, ConfigFormatter... formatter) {
         PropertiesConfig config = configMap.get(path);
         if (config != null)
             return config;
@@ -67,7 +67,7 @@ public class ConfigLib {
         return old != null ? old : config;
     }
 
-    public static Config getConfig(String path, ConfigFormatter... formatter) {
+    public static Config getExistConfig(String path, ConfigFormatter... formatter) {
         PropertiesConfig config = configMap.get(path);
         if (config != null)
             return config;

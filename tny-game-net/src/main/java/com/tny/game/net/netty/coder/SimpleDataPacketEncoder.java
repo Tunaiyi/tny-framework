@@ -50,14 +50,12 @@ public class SimpleDataPacketEncoder implements DataPacketEncoder {
                 out.writeByte(CoderContent.PONG_OPTION);
                 out.writeInt(0); // BodySize
             } else {
-                boolean response = Message.class.isInstance(msg);
                 data = this.coder.encode((Message<?>) msg);
                 boolean compress = this.compress && data.length > 1024;
                 if (compress) {
                     data = CompressUtils.compressBytes(data);
                 }
-                out.writeByte((compress ? CoderContent.COMPRESS_OPTION : 0)
-                        | (response ? CoderContent.RESPONSE_OPTION : 0));
+                out.writeByte(compress ? CoderContent.COMPRESS_OPTION : 0);
                 out.writeInt(data.length);
                 out.writeBytes(data);
             }

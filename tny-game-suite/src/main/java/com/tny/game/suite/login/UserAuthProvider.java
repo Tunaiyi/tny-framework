@@ -1,11 +1,11 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.message.ReferenceType;
+import com.tny.game.common.utils.ReferenceType;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.LoginCertificate;
+import com.tny.game.net.session.NetCertificate;
 import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.common.utils.md5.MD5;
 import com.tny.game.suite.core.AttributesKeys;
@@ -51,7 +51,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
                 // 维护时候只有pf为inside才可以进入
                 String checkKey = this.ticketMaker.make(ticket);
                 if (!checkKey.equals(ticket.getSecret()))
-                    throw new ValidatorFailException(CoreResponseCode.VALIDATOR_FAIL, openID);
+                    throw new ValidatorFailException(NetResponseCode.VALIDATOR_FAIL, openID);
             } else {
                 if (ticketWord == null || ticketWord.equals("{}") || ticketWord.isEmpty()) {
                     int serverID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_SERVER_ID, GameInfo.getMainServerID());
@@ -72,7 +72,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
                     if (!checkKey.equals(ticket.getSecret()))
-                        throw new ValidatorFailException(CoreResponseCode.VALIDATOR_FAIL, openID);
+                        throw new ValidatorFailException(NetResponseCode.VALIDATOR_FAIL, openID);
                 }
             }
         } catch (Throwable e) {
@@ -84,7 +84,7 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
         return ticket;
     }
 
-    protected LoginCertificate<Long> checkUserLogin(Tunnel<Long> tunnel, Message<Long> message, boolean relogin) throws DispatchException {
+    protected NetCertificate<Long> checkUserLogin(Tunnel<Long> tunnel, Message<Long> message, boolean relogin) throws DispatchException {
         List<String> params = message.getBody(BODY_CLASS);
         String openID = params.get(0);
         String openKey = params.get(1);
@@ -101,8 +101,8 @@ public abstract class UserAuthProvider extends GameAuthProvider<Long> {
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_KEY_KEY, ticket.getOpenKey());
         tunnel.attributes().setAttribute(AttributesKeys.ACCOUNT_KEY, accountObj);
         tunnel.attributes().setAttribute(AttributesKeys.TICKET_KEY, ticket);
-        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.getHostName(), ticket.getOpenID(), accountObj.getUid());
-        return LoginCertificate.createLogin(ticket.getTokenID(), accountObj.getUid(), relogin);
+        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.remoteAddress(), ticket.getOpenID(), accountObj.getUid());
+        return NetCertificate.createLogin(ticket.getTokenID(), accountObj.getUid(), relogin);
     }
 
     public void setOnline(boolean online) {

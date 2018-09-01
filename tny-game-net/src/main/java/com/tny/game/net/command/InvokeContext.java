@@ -13,7 +13,9 @@ public class InvokeContext {
 
     protected Object result;
 
-    protected boolean interrupted = false;
+    protected Throwable cause;
+
+    protected boolean intercept = false;
 
     public InvokeContext(MethodControllerHolder controller) {
         this.controller = controller;
@@ -24,9 +26,9 @@ public class InvokeContext {
      *
      * @param result 运行结果
      */
-    public boolean done(CommandResult result) {
-        if (!this.interrupted) {
-            this.interrupted = true;
+    public boolean doneAndIntercept(CommandResult result) {
+        if (!this.intercept) {
+            this.intercept = true;
             this.setResult(result);
             return true;
         }
@@ -39,40 +41,10 @@ public class InvokeContext {
      * @param code 结果码
      */
 
-    public boolean done(ResultCode code) {
-        if (!this.interrupted) {
-            this.interrupted = true;
+    public boolean doneAndIntercept(ResultCode code) {
+        if (!this.intercept) {
+            this.intercept = true;
             this.setResult(code);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 设置结果码与消息体,并中断执行
-     *
-     * @param code 结果码
-     * @param body 消息体
-     */
-
-    public boolean done(ResultCode code, Object body) {
-        if (!this.interrupted) {
-            this.interrupted = true;
-            this.setResult(ResultFactory.create(code, body));
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 设置运行结果Object,并中断执行
-     *
-     * @param result 消息
-     */
-    public boolean done(Object result) {
-        if (!this.interrupted) {
-            this.interrupted = true;
-            this.result = result;
             return true;
         }
         return false;
@@ -124,8 +96,8 @@ public class InvokeContext {
         return result;
     }
 
-    public boolean isInterrupted() {
-        return interrupted;
+    public boolean isIntercept() {
+        return intercept;
     }
 
 }

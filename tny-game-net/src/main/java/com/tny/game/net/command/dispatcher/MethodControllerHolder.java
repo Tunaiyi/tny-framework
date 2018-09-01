@@ -7,7 +7,7 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 import com.tny.game.net.command.*;
 import com.tny.game.net.common.ControllerCheckerHolder;
 import com.tny.game.net.exception.DispatchException;
@@ -194,10 +194,10 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
         if (index >= this.parameterDescs.size())
-            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
+            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
-            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
         return desc.getValue(tunnel, message, body);
     }
 
@@ -320,7 +320,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         this.beforeContext.execute(tunnel, message, context);
     }
 
-    protected void afterInvke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+    protected void afterInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
         if (this.afterContext == null)
             return;
         this.afterContext.execute(tunnel, message, context);
@@ -407,6 +407,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             boolean require = this.require;
             if (body == null)
                 body = message.getBody(Object.class);
+            MessageHeader header = message.getHeader();
             Object value = null;
             switch (this.paramType) {
                 case MESSAGE:
@@ -437,12 +438,12 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 收到消息体为 {}, 不可通过index获取", holder.toString(), body.getClass()));
+                            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 收到消息体为 {}, 不可通过index获取", holder.toString(), body.getClass()));
                         }
                     } catch (DispatchException e) {
                         throw e;
                     } catch (Throwable e) {
-                        throw new DispatchException(CoreResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 调用异常", holder.toString()), e);
+                        throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 调用异常", holder.toString()), e);
                     }
                     break;
                 case KEY_PARAM:
@@ -461,10 +462,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                     }
                     break;
                 case CODE:
-                    value = ResultCodes.of(message.getCode());
+                    value = ResultCodes.of(header.getCode());
                     break;
                 case CODE_NUM:
-                    value = message.getCode();
+                    value = header.getCode();
                     break;
             }
             if (value != null && !this.paramClass.isInstance(value)) {

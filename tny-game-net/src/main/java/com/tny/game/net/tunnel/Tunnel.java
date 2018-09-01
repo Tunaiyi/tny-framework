@@ -1,30 +1,51 @@
 package com.tny.game.net.tunnel;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageContent;
-import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.net.*;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Terminal<UID> {
+public interface Tunnel<UID> extends Communicator<UID> {
 
-    long getID();
+    /**
+     * @return 通道 Id
+     */
+    long getId();
 
-    boolean isConnected();
+    /**
+     * @return 最后读取时间
+     */
+    long getLastReadAt();
 
-    long getLatestActiveAt();
+    /**
+     * @return 最后写时间
+     */
+    long getLastWriteAt();
 
+    /**
+     * @return 属性对象
+     */
     Attributes attributes();
 
+    /**
+     * @return 会话对象
+     */
     Session<UID> getSession();
 
-    String getHostName();
+    /**
+     * @return 返回远程地址
+     */
+    InetSocketAddress remoteAddress();
+
+    /**
+     * @return 返回本地地址
+     */
+    InetSocketAddress localAddress();
 
     /**
      * @return 是否登陆认证
@@ -63,24 +84,15 @@ public interface Tunnel<UID> extends Terminal<UID> {
      */
     void sendExcludes(Collection<MessageMode> modes);
 
+
     /**
      * @return 获取接收排除列表
      */
-    Collection<MessageMode> getReceiveExcludes();
+    boolean isReceiveExclude(MessageMode mode);
 
     /**
      * @return 发送接收排除列表
      */
-    Collection<MessageMode> getSendExcludes();
-
-    /**
-     * 创建消息
-     *
-     * @param sessionID 会话ID
-     * @param messageID 消息ID
-     * @param content   消息内容
-     * @return 返回消息
-     */
-    Message<UID> createMessage(long sessionID, int messageID, MessageContent<?> content);
+    boolean isSendExclude(MessageMode mode);
 
 }

@@ -20,12 +20,12 @@ public class ResultFactory {
     /**
      * 成功不返回数据
      */
-    public final static CommandResult NONE = new CommandResultImpl(CoreResponseCode.SUCCESS, null);
+    public final static CommandResult NONE = new CommandResultImpl(NetResponseCode.SUCCESS, null);
 
     /**
      * 成功返回数据
      */
-    public final static CommandResult SUCC = new CommandResultImpl(CoreResponseCode.SUCCESS, null);
+    public final static CommandResult SUCC = new CommandResultImpl(NetResponseCode.SUCCESS, null);
 
     /**
      * 创建成功响应结果
@@ -37,7 +37,7 @@ public class ResultFactory {
      * @return 返回响应结果
      */
     public static CommandResult success(Object message) {
-        return new CommandResultImpl(CoreResponseCode.SUCCESS, message);
+        return new CommandResultImpl(NetResponseCode.SUCCESS, message);
     }
 
     public static CommandResult result(ResultCode code) {

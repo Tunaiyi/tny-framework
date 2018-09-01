@@ -23,23 +23,23 @@ public interface Configs {
 
     String SNAP_REASON_PATH = "snap_reason.properties";
     String SNAP_REASON_SYS_KEY = "tny.oplog.reason.path";
-    Config SNAP_REASON_CONFIG = ConfigLib.getConfigExist(System.getProperty(SNAP_REASON_SYS_KEY, SNAP_REASON_PATH));
+    Config SNAP_REASON_CONFIG = ConfigLib.getConfig(System.getProperty(SNAP_REASON_SYS_KEY, SNAP_REASON_PATH));
 
     //region Kafka配置 kafka.properties
     String KAFKA_CONFIG_PATH = "kafka.properties";
-    Config KAFKA_CONFIG = ConfigLib.getConfigExist(KAFKA_CONFIG_PATH);
+    Config KAFKA_CONFIG = ConfigLib.getConfig(KAFKA_CONFIG_PATH);
     //endregion
 
     //region cluster.IP配置 cluster.properties
     String CLUSTER_CONFIG_PATH = "cluster.properties";
-    Config CLUSTER_CONFIG = ConfigLib.getConfigExist(CLUSTER_CONFIG_PATH);
+    Config CLUSTER_CONFIG = ConfigLib.getConfig(CLUSTER_CONFIG_PATH);
     String CLUSTER_KAFKA_PRODUCER_IP_LIST = "tny.kafka.producer.ip_list";
     String CLUSTER_KAFKA_CONSUMER_IP_LIST = "tny.kafka.consumer.ip_list";
     //endregion
 
     //region 套件配置 suite.properties
     String SUITE_CONFIG_PATH = "suite.properties";
-    Config SUITE_CONFIG = ConfigLib.getConfigExist(SUITE_CONFIG_PATH);
+    Config SUITE_CONFIG = ConfigLib.getConfig(SUITE_CONFIG_PATH);
     String SUITE_SCAN_PATHS /*                          */ = "tny.server.suite.scan_paths";
     String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
     String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
@@ -117,7 +117,7 @@ public interface Configs {
 
     //region 授权认证配置 authz.properties
     String AUTHZ_CONFIG_PATH = "authz.properties";
-    Config AUTH_CONFIG = ConfigLib.getConfigExist(Configs.AUTHZ_CONFIG_PATH);
+    Config AUTH_CONFIG = ConfigLib.getConfig(Configs.AUTHZ_CONFIG_PATH);
     String AUTH_GAME_TICKET_PUBLIC_KEY /*       */ = "tny.server.auth.game.ticket.pub_key";
     String AUTH_GAME_TICKET_PRIVATE_KEY /*      */ = "tny.server.auth.game.ticket.pri_key";
     String AUTH_PF_TOKEN_KEY /*                 */ = "tny.server.auth.game.pf_token_key";
@@ -138,12 +138,12 @@ public interface Configs {
 
     //region 服务器监控 monitor.properties
     String MONITOR_CONFIG_PATH = "monitor.properties";
-    Config MONITOR_CONFIG = ConfigLib.getConfigExist(MONITOR_CONFIG_PATH);
+    Config MONITOR_CONFIG = ConfigLib.getConfig(MONITOR_CONFIG_PATH);
     //endregion
 
     //region 版本配置 version.properties
     String VERSION_CONFIG_PATH = "version.properties";
-    Config VERSION_CONFIG = ConfigLib.getConfigExist(Configs.VERSION_CONFIG_PATH);
+    Config VERSION_CONFIG = ConfigLib.getConfig(Configs.VERSION_CONFIG_PATH);
     String VERSION_KEY = "tny.server.version";
     String VERSION_FEATURE_VERSION = "tny.server.feature_version";
     String VERSION_NO = "tny.server.version_no";
@@ -151,7 +151,7 @@ public interface Configs {
 
     //region 开发调试测试参数 develop.properties
     String DEVELOP_CONFIG_PATH = "develop.properties";
-    Config DEVELOP_CONFIG = ConfigLib.getConfigExist(Configs.DEVELOP_CONFIG_PATH);
+    Config DEVELOP_CONFIG = ConfigLib.getConfig(Configs.DEVELOP_CONFIG_PATH);
 
     String DEVELOP_AUTH_CHECK /*            */ = "tny.server.dev.auth.check";
     String DEVELOP_AUTH_OFFLINE_AT /*       */ = "tny.server.dev.auth.offline_at";
@@ -209,7 +209,7 @@ public interface Configs {
 
     //region 协议配置
     String PROTOCOLS_CONFIG_PATH = "protocols.properties";
-    Config PROTOCOLS_CONFIG = ConfigLib.getConfigExist(PROTOCOLS_CONFIG_PATH);
+    Config PROTOCOLS_CONFIG = ConfigLib.getConfig(PROTOCOLS_CONFIG_PATH);
     String PATH_HEAD = "tny.server.url.path";
     //endregion
 

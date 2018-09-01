@@ -22,9 +22,9 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
     @Override
     public final Object decodeObject(final ByteBuf buffer) throws Exception {
-
         if (buffer.readableBytes() < CoderContent.FRAME_MAGIC.length + CoderContent.OPTION_SIZE + CoderContent.MESSAGE_LENGTH_SIZE)
             return null;
+        buffer.markReaderIndex();
         // 检验消息头
         if (DECODER_LOG.isDebugEnabled())
             DECODER_LOG.debug("read head");
@@ -51,7 +51,7 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
         // 读取请求信息体
         if (buffer.readableBytes() < messageBodySize) {
-            buffer.readerIndex(buffer.readerIndex() - (CoderContent.FRAME_MAGIC.length + CoderContent.MESSAGE_LENGTH_SIZE + CoderContent.OPTION_SIZE));
+            buffer.resetReaderIndex();
             return null;
         }
 
@@ -67,7 +67,6 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
             messageBytes = CompressUtils.decompressBytes(messageBytes);
         }
         return this.coder.decode(messageBytes);
-
     }
 
     /**

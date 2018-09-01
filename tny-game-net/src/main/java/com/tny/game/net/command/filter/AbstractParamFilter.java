@@ -1,7 +1,7 @@
 package com.tny.game.net.command.filter;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.message.Message;
@@ -39,13 +39,13 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
             if (an != null) {
                 P param = (P) holder.getParameterValue(index, tunnel, message, body);
                 ResultCode result = this.doFilter(holder, tunnel, message, index, an, param);
-                if (result != CoreResponseCode.SUCCESS) {
+                if (result != NetResponseCode.SUCCESS) {
                     return result;
                 }
             }
             index++;
         }
-        return CoreResponseCode.SUCCESS;
+        return NetResponseCode.SUCCESS;
     }
 
     protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, A annotation, P param);

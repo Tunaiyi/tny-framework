@@ -1,17 +1,11 @@
 package com.tny.game.net.session;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Range;
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
+import com.google.common.collect.*;
+import com.tny.game.common.context.*;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.event.SessionInputEvent;
-import com.tny.game.net.session.event.SessionOutputEvent;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.StampedLock;
 import java.util.stream.Collectors;
@@ -32,10 +26,6 @@ public class SessionEventsBox<UID> {
     //             .scheduleAtFixedRate(SessionEventsBox::clearReferences, INIT_DELAY, PERIOD, TimeUnit.MINUTES);
     // }
 
-    private long sessionID;
-
-    private volatile int messageIDCounter = 0;
-
     /* 附加属性 */
     private Attributes attributes;
 
@@ -50,20 +40,11 @@ public class SessionEventsBox<UID> {
 
     private StampedLock sentMessageLock;
 
-    public SessionEventsBox(long sessionID, int cacheMessageSize) {
-        this.sessionID = sessionID;
+    public SessionEventsBox(int cacheMessageSize) {
         if (cacheMessageSize > 0) {
             this.sentMessageQueue = new CircularFifoQueue<>(cacheMessageSize);
             sentMessageLock = new StampedLock();
         }
-    }
-
-    public long getSessionID() {
-        return sessionID;
-    }
-
-    public Attributes getAttributes() {
-        return this.attributes;
     }
 
     public Attributes attributes() {
@@ -76,15 +57,11 @@ public class SessionEventsBox<UID> {
         }
     }
 
-    public int allotMessageID() {
-        return ++messageIDCounter;
-    }
-
-    public void addOutputEvent(SessionOutputEvent event) {
+    public void addOutputEvent(SessionOutputEvent<UID> event) {
         this.outputEventQueue.add(event);
     }
 
-    public void addInputEvent(SessionInputEvent event) {
+    public void addInputEvent(SessionInputEvent<UID> event) {
         this.inputEventQueue.add(event);
     }
 
@@ -102,6 +79,14 @@ public class SessionEventsBox<UID> {
 
     public boolean hasOutputEvent() {
         return !outputEventQueue.isEmpty();
+    }
+
+    public int getInputEventSize() {
+        return inputEventQueue.size();
+    }
+
+    public int getOutputEventSize() {
+        return outputEventQueue.size();
     }
 
     public void accept(SessionEventsBox<UID> eventBox) {
@@ -130,21 +115,21 @@ public class SessionEventsBox<UID> {
         long stamp = lock.readLock();
         try {
             return this.sentMessageQueue.stream()
-                    .filter(e -> range.contains(e.getID()))
+                    .filter(e -> range.contains(e.getId()))
                     .collect(Collectors.toList());
         } finally {
             lock.unlockRead(stamp);
         }
     }
 
-    public Message<UID> getSentMessageByToID(int toMessageID) {
+    public Message<UID> getSentMessageByToID(int messageId) {
         if (this.sentMessageQueue == null)
             return null;
         StampedLock lock = this.sentMessageLock;
         long stamp = lock.readLock();
         try {
             return this.sentMessageQueue.stream()
-                    .filter(message -> message.getToMessage() == toMessageID)
+                    .filter(message -> message.getHeader().getId() == messageId)
                     .findFirst()
                     .orElse(null);
         } finally {
@@ -164,40 +149,8 @@ public class SessionEventsBox<UID> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    // public static <UID> SessionEventsBox<UID> getEventBox(Session<UID> session) {
-    //     Reference<SessionEventsBox> boxReference = BOX_MAP.get(session.getID());
-    //     if (boxReference == null)
-    //         return null;
-    //     return boxReference.get();
-    // }
-
-    public static <UID> SessionEventsBox<UID> create(Session<UID> session, int cacheMessageSize) {
-        // SessionEventsBox<UID> box = getEventBox(session);
-        // if (box != null)
-        //     return box;
-        return new SessionEventsBox<>(session.getID(), cacheMessageSize);
-        // Reference<SessionEventsBox> boxReference = new WeakReference<>(box);
-        // BOX_MAP.put(box.getSessionID(), boxReference);
-        // return box;
+    public static <UID> SessionEventsBox<UID> create(int cacheMessageSize) {
+        return new SessionEventsBox<>(cacheMessageSize);
     }
-
-
-    // public static void removeEventBox(SessionEventsBox<?> box) {
-    //     BOX_MAP.remove(box.getSessionID());
-    // }
-
-    // public static void removeEventBox(Session<?> session) {
-    //     BOX_MAP.remove(session.getID());
-    // }
-
-    // private static void clearReferences() {
-    //     for (Entry<Long, Reference<SessionEventsBox>> entry : BOX_MAP.entrySet()) {
-    //         Reference<SessionEventsBox> reference = entry.getValue();
-    //         if (reference.get() == null)
-    //             BOX_MAP.remove(entry.getKey());
-    //     }
-    // }
-
 
 }

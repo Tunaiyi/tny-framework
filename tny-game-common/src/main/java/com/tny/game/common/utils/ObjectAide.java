@@ -1,14 +1,12 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.enums.EnumID;
-import com.tny.game.common.enums.Enums;
+import com.tny.game.common.enums.*;
+import com.tny.game.common.reflect.Wraper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.lang.reflect.*;
+import java.util.function.*;
 
 /**
  * Created by Kun Yang on 16/3/9.
@@ -27,7 +25,7 @@ public class ObjectAide extends ObjectUtils {
         return object == null ? defObject : object;
     }
 
-    public static <T> T ifNull(T object, Supplier<T> defObject) {
+    private static <T> T ifNull(T object, Supplier<T> defObject) {
         return object == null ? defObject.get() : object;
     }
 
@@ -35,7 +33,7 @@ public class ObjectAide extends ObjectUtils {
         return object == null ? defObject : mapper.apply(object);
     }
 
-    public static <T, O> O ifNotNullElse(T object, Function<T, O> mapper, Supplier<? extends O> supplier) {
+    private static <T, O> O ifNotNullElse(T object, Function<T, O> mapper, Supplier<? extends O> supplier) {
         return object == null ? supplier.get() : mapper.apply(object);
     }
 
@@ -161,6 +159,12 @@ public class ObjectAide extends ObjectUtils {
     }
 
     @SuppressWarnings("unchecked")
+    public static <T> T as(Object object) {
+        return (T) object;
+    }
+
+
+    @SuppressWarnings("unchecked")
     public static <T> T as(Object object, Class<T> clazz) {
         if (clazz.isInstance(object))
             return (T) object;
@@ -232,15 +236,69 @@ public class ObjectAide extends ObjectUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T as(Object object) {
-        return (T) object;
+    private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
+        Type[] types = referenceType.getClass().getGenericInterfaces();
+        Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
+        Class<T> clazz = null;
+        if (subType instanceof Class) {
+            clazz = (Class<T>) subType;
+        } else if (subType instanceof ParameterizedType) {
+            clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
+        }
+        return clazz;
     }
 
-    public static void main(String[] args) {
-        DateTime date = DateTime.now();
-        long test = 222L;
-        long value = ifNotNullElse(date, DateTime::getMillis, () -> test);
-        date = ifNull(date, DateTime::now);
+    @SuppressWarnings("unchecked")
+    public static <T> T converTo(Object object, ReferenceType<T> referenceType) {
+        return converTo(object, getClassType(referenceType));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T converTo(Object object, Class<T> clazz) {
+        if (object == null)
+            return null;
+        final Class<?> checkClass = !clazz.isPrimitive() ? clazz : Wraper.getWraper(clazz);
+        if (checkClass.isInstance(object)) {
+            return (T) object;
+        }
+        if (Enum.class.isAssignableFrom(checkClass) && object instanceof String) {
+            return (T) Enum.valueOf((Class<? extends Enum>) checkClass, object.toString());
+        }
+        if (checkClass == Long.class) {
+            Number number = Double.parseDouble(object.toString());
+            object = number.longValue();
+            return (T) object;
+        }
+        if (object instanceof Number) {
+            Number number = (Number) object;
+            if (checkClass == Integer.class) {
+                return (T) ((Object) number.intValue());
+            }
+            if (checkClass == Byte.class) {
+                return (T) ((Object) number.byteValue());
+            }
+            if (checkClass == Float.class) {
+                return (T) ((Object) number.floatValue());
+            }
+            if (checkClass == Short.class) {
+                return (T) ((Object) number.shortValue());
+            }
+            if (EnumID.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
+                for (T value : clazz.getEnumConstants()) {
+                    Object id = ((EnumID) value).getID();
+                    if (id instanceof Number) {
+                        if (((Number) id).intValue() == ((Number) object).intValue())
+                            return value;
+                    } else {
+                        throw new IllegalArgumentException(Logs.format(
+                                "can not find Enum {} where id is {}", clazz, object));
+                    }
+                }
+            }
+        }
+        if (!clazz.isAssignableFrom(object.getClass()))
+            throw  new ClassCastException(StringAide.format("{} can not conver to {}", object.getClass(), clazz));
+        return (T) object;
     }
 
 }

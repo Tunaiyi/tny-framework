@@ -26,8 +26,8 @@ public enum MessageMode {
      */
     PING() {
         @Override
-        public boolean isMode(Message<?> message) {
-            return message.getMode() == this;
+        public boolean isMode(MessageHeader header) {
+            return header.getMode() == this;
         }
     },
 
@@ -37,7 +37,7 @@ public enum MessageMode {
      */
     PONG() {
         @Override
-        public boolean isMode(Message<?> message) {
+        public boolean isMode(MessageHeader message) {
             return message.getMode() == this;
         }
     },
@@ -46,24 +46,24 @@ public enum MessageMode {
     ;
 
 
-    private Predicate<Message<?>> checkMode;
+    private Predicate<MessageHeader> checkMode;
 
     MessageMode() {
     }
 
-    MessageMode(Predicate<Message<?>> checkMode) {
+    MessageMode(Predicate<MessageHeader> checkMode) {
         this.checkMode = checkMode;
     }
 
-    public static MessageMode getMode(Message<?> message) {
-        if (REQUEST.isMode(message)) {
+    public static MessageMode getMode(MessageHeader header) {
+        if (REQUEST.isMode(header)) {
             return REQUEST;
-        } else if (RESPONSE.isMode(message)) {
+        } else if (RESPONSE.isMode(header)) {
             return RESPONSE;
-        } else if (PUSH.isMode(message)) {
+        } else if (PUSH.isMode(header)) {
             return PUSH;
         }
-        throw new NullPointerException(Logs.format("mode [{}] is null", message.getToMessage()));
+        throw new NullPointerException(Logs.format("mode [{}] is null", header.getToMessage()));
     }
 
     public static MessageMode getMode(int toMessage) {
@@ -77,8 +77,12 @@ public enum MessageMode {
         throw new NullPointerException(Logs.format("mode [{}] is null", toMessage));
     }
 
-    public boolean isMode(Message<?> message) {
-        return checkMode.test(message);
+    public boolean isMode(MessageHeader header) {
+        return checkMode.test(header);
+    }
+
+    public boolean isMode(Message message) {
+        return checkMode.test(message.getHeader());
     }
 
 }

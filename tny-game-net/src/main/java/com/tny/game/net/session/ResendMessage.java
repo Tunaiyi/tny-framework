@@ -2,11 +2,11 @@ package com.tny.game.net.session;
 
 
 import com.google.common.collect.Range;
+import com.tny.game.common.concurrent.StageableFuture;
+import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Future;
+import java.util.List;
 
 /**
  * 重发缓存消息的消息
@@ -17,21 +17,21 @@ public class ResendMessage<UID> {
 
     private Range<Integer> resendRange;
 
-    private volatile CompletableFuture<Tunnel<UID>> sendFuture;
+    private volatile CommonStageableFuture<ResendResult<UID>> sendFuture;
 
-    public static ResendMessage of(int messageID) {
+    public static <T> ResendMessage<T> of(int messageID) {
         return new ResendMessage(Range.singleton(messageID));
     }
 
-    public static ResendMessage from(int fromMessageID) {
+    public static <T> ResendMessage<T> from(int fromMessageID) {
         return new ResendMessage(Range.atLeast(fromMessageID));
     }
 
-    public static ResendMessage fromTo(int fromMessageID, int toMessageID) {
+    public static <T> ResendMessage<T> fromTo(int fromMessageID, int toMessageID) {
         return new ResendMessage(Range.closed(fromMessageID, toMessageID));
     }
 
-    public static ResendMessage ofRange(Range<Integer> resendRange) {
+    public static <T> ResendMessage<T> ofRange(Range<Integer> resendRange) {
         return new ResendMessage(resendRange);
     }
 
@@ -43,26 +43,39 @@ public class ResendMessage<UID> {
         return resendRange;
     }
 
-    private CompletableFuture<Tunnel<UID>> createSentFuture() {
+    private StageableFuture<ResendResult<UID>> createSendFuture() {
         if (this.sendFuture != null)
             return this.sendFuture;
         synchronized (this) {
             if (this.sendFuture == null)
-                this.sendFuture = new CompletableFuture<>();
+                this.sendFuture = new CommonStageableFuture<>();
         }
         return this.sendFuture;
     }
 
-    public CompletionStage<Tunnel<UID>> sendCompletionStage() {
-        return createSentFuture();
+    public boolean isHasFuture() {
+        return this.sendFuture != null;
     }
 
-    public Future<Tunnel<UID>> sendFuture() {
-        return createSentFuture();
+    public StageableFuture<ResendResult<UID>> sendFuture() {
+        return createSendFuture();
     }
 
-    public Future<Tunnel<UID>> getSendFuture() {
-        return this.sendFuture;
+    void resendSuccess(Tunnel<UID> tunnel, List<Message<UID>> messages) {
+        if (this.sendFuture != null) {
+            if (!sendFuture.isDone()) {
+                sendFuture.future().complete(new ResendResult<>(tunnel, messages));
+            }
+        }
     }
+
+    void resendFailed(Throwable cause) {
+        if (this.sendFuture != null) {
+            if (!sendFuture.isDone()) {
+                sendFuture.future().completeExceptionally(cause);
+            }
+        }
+    }
+
 
 }

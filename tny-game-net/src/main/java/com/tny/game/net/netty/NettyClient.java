@@ -4,9 +4,9 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.utils.URL;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.tunnel.*;
+import com.tny.game.net.session.MessageContent;
+import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.utils.NetConfigs;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -41,7 +41,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
     @Sharable
     private class RemoveTunnelHandler extends ChannelInboundHandlerAdapter {
         @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        public void channelInactive(ChannelHandlerContext ctx) {
             channels.remove(ctx.channel());
             ctx.fireChannelInactive();
         }
@@ -83,7 +83,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
 
     }
 
-    public Tunnel<UID> connect(URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
+    public Tunnel<UID> connect(URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) throws InterruptedException, ExecutionException, TimeoutException, TunnelWriteException {
         if (this.isClosed())
             throw new RemotingException("client is closed");
         NettyClientTunnel<UID> tunnel = null;
@@ -99,7 +99,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
         return tunnel;
     }
 
-    public Tunnel<UID> connect(URL url, MessageContent<UID> content) throws InterruptedException, ExecutionException, TimeoutException, DispatchException {
+    public Tunnel<UID> connect(URL url, MessageContent<UID> content) throws InterruptedException, ExecutionException, TimeoutException, TunnelWriteException {
         return connect(url, (relogin, tunnel) -> content);
     }
 
@@ -116,7 +116,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
 
     @SuppressWarnings("unchecked")
     private NettyClientTunnel<UID> doConnect(NettyClientTunnel<UID> reconnectTunnel, URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) {
-        if (reconnectTunnel != null && reconnectTunnel.isConnected())
+        if (reconnectTunnel != null && !reconnectTunnel.isClosed())
             return reconnectTunnel;
         ChannelFuture channelFuture = this.bootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
         try {
@@ -126,8 +126,8 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
                 Channel channel = channelFuture.channel();
                 NettyClientTunnel<UID> tunnel = reconnectTunnel;
                 if (tunnel == null) {
-                    tunnel = new NettyClientTunnel<>(url, channel, appConfiguration, loginContentCreator);
-                    Tunnels.put(tunnel);
+                    tunnel = new NettyClientTunnel<>(url, channel, appConfiguration);
+                    // Tunnels.put(tunnel);
                 }
                 channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
                 channel.attr(NettyAttrKeys.CLIENT).set(NettyClient.this);

@@ -1,23 +1,16 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.base.*;
 import com.tny.game.net.message.NetMessage;
-import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.tunnel.Tunnels;
-import io.netty.channel.Channel;
+import com.tny.game.net.session.NetSession;
+import com.tny.game.net.tunnel.*;
+import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.handler.timeout.ReadTimeoutException;
-import io.netty.handler.timeout.WriteTimeoutException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.netty.handler.timeout.*;
+import org.slf4j.*;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
-import java.rmi.server.UID;
 import java.util.Date;
 
 /**
@@ -73,7 +66,7 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void channelRead0(ChannelHandlerContext context, NetMessage message) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, NetMessage<?> message) {
         Channel channel = context.channel();
         if (message == null) {
             LOG.warn("读取的message为null 服务器主动断开 {} 连接", channel.localAddress());
@@ -81,10 +74,11 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
             return;
         }
         try {
-            Tunnel<UID> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+            NetTunnel tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
             if (tunnel != null) {
                 message.sendBy(tunnel);
-                tunnel.receive(message);
+                NetSession session = tunnel.getSession();
+                session.receive(tunnel, message);
             }
         } catch (Throwable ex) {
             LOG.error("#GameServerHandler#接受请求异常", ex);
@@ -96,11 +90,11 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         Tunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
-        Tunnels.remove(tunnel);
-        if (LOG.isInfoEnabled())
-            LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
-        if (tunnel != null)
+        if (tunnel != null) {
+            if (LOG.isInfoEnabled())
+                LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
             tunnel.close();
+        }
         super.channelInactive(ctx);
     }
 

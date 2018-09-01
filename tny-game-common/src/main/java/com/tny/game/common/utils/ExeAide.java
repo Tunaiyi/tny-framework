@@ -2,7 +2,7 @@ package com.tny.game.common.utils;
 
 import com.tny.game.common.concurrent.CallableWithThrowable;
 import com.tny.game.common.concurrent.ExeUncheckedException;
-import com.tny.game.common.concurrent.RunnableWithThrowable;
+import com.tny.game.common.concurrent.RunnableWithThrow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public interface ExeAide {
         runQuietly(runnable, LOGGER);
     }
 
-    static void runUnchecked(RunnableWithThrowable runnable, Logger logger) {
+    static void runUnchecked(RunnableWithThrow runnable, Logger logger) {
         try {
             runnable.run();
         } catch (Throwable e) {
@@ -37,7 +37,7 @@ public interface ExeAide {
         }
     }
 
-    static void runUnchecked(RunnableWithThrowable runnable) {
+    static void runUnchecked(RunnableWithThrow runnable) {
         runUnchecked(runnable, LOGGER);
     }
 

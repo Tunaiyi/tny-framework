@@ -2,11 +2,11 @@ package com.tny.game.suite.net;
 
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.message.*;
 import com.tny.game.net.session.Session;
-import com.tny.game.net.session.holder.SessionHolder;
+import com.tny.game.net.session.SessionHolder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +14,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.tny.game.net.message.MessageContent.toPush;
-import static com.tny.game.net.utils.AppConstants.DEFAULT_USER_GROUP;
+import static com.tny.game.net.session.MessageContent.toPush;
+import static com.tny.game.net.utils.SessionConstants.DEFAULT_USER_GROUP;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -71,7 +71,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void pushByUID(String group, Object uid, Protocol protocol, Object body) {
-        this.pushByUID(group, uid, protocol, CoreResponseCode.SUCCESS, body);
+        this.pushByUID(group, uid, protocol, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -106,7 +106,7 @@ public class SessionService {
      * @param body  消息体
      */
     public void pushByUID(String group, Object uid, Object body) {
-        this.pushByUID(group, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.pushByUID(group, uid, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -140,7 +140,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void pushByUID(Object uid, Protocol protocol, Object body) {
-        this.pushByUID(DEFAULT_USER_GROUP, uid, protocol, CoreResponseCode.SUCCESS, body);
+        this.pushByUID(DEFAULT_USER_GROUP, uid, protocol, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -171,7 +171,7 @@ public class SessionService {
      * @param body 消息体
      */
     public void pushByUID(Object uid, Object body) {
-        this.pushByUID(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.pushByUID(DEFAULT_USER_GROUP, uid, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -207,7 +207,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2User(String group, Identifiable user, Protocol protocol, Object body) {
-        this.push2User(group, user, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2User(group, user, protocol, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -242,7 +242,7 @@ public class SessionService {
      * @param body  消息体
      */
     public void push2User(String group, Identifiable user, Object body) {
-        this.push2User(group, user, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2User(group, user, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -276,7 +276,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2User(Identifiable user, Protocol protocol, Object body) {
-        this.push2User(DEFAULT_USER_GROUP, user, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2User(DEFAULT_USER_GROUP, user, protocol, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -307,7 +307,7 @@ public class SessionService {
      * @param body 消息体
      */
     public void push2User(Identifiable user, Object body) {
-        this.push2User(DEFAULT_USER_GROUP, user, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2User(DEFAULT_USER_GROUP, user, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -343,7 +343,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2Users(String group, Stream<? extends Identifiable> users, Protocol protocol, Object body) {
-        this.push2Users(group, users, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2Users(group, users, protocol, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -378,7 +378,7 @@ public class SessionService {
      * @param body  消息体
      */
     public void push2Users(String group, Stream<? extends Identifiable> users, Object body) {
-        this.push2Users(group, users, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2Users(group, users, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -412,7 +412,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2Users(Stream<? extends Identifiable> users, Protocol protocol, Object body) {
-        this.push2Users(DEFAULT_USER_GROUP, users, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2Users(DEFAULT_USER_GROUP, users, protocol, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -443,7 +443,7 @@ public class SessionService {
      * @param body  消息体
      */
     public void push2Users(Stream<? extends Identifiable> users, Object body) {
-        this.push2Users(DEFAULT_USER_GROUP, users, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2Users(DEFAULT_USER_GROUP, users, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -477,7 +477,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2Online(String group, Protocol protocol, Object body) {
-        this.push2Online(group, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2Online(group, protocol, NetResponseCode.SUCCESS, body);
     }
 
 
@@ -509,7 +509,7 @@ public class SessionService {
      * @param body  消息体
      */
     public void push2Online(String group, Object body) {
-        this.push2Online(group, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2Online(group, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -540,7 +540,7 @@ public class SessionService {
      * @param body     消息体
      */
     public void push2Online(Protocol protocol, Object body) {
-        this.push2Online(DEFAULT_USER_GROUP, protocol, CoreResponseCode.SUCCESS, body);
+        this.push2Online(DEFAULT_USER_GROUP, protocol, NetResponseCode.SUCCESS, body);
     }
 
     /**
@@ -568,7 +568,7 @@ public class SessionService {
      * @param body 消息体
      */
     public void push2Online(Object body) {
-        this.push2Online(DEFAULT_USER_GROUP, ProtocolAide.PUSH, CoreResponseCode.SUCCESS, body);
+        this.push2Online(DEFAULT_USER_GROUP, ProtocolAide.PUSH, NetResponseCode.SUCCESS, body);
     }
 
 

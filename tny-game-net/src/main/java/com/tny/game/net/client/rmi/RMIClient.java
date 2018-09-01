@@ -2,7 +2,6 @@ package com.tny.game.net.client.rmi;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.message.MessageBuilderFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,16 +10,13 @@ public class RMIClient {
 
     protected RMIService rmiService;
 
-    protected MessageSignGenerator verifier;
-
     protected AtomicInteger requestIDCreator = new AtomicInteger(1);
 
     protected MessageBuilderFactory messageBuilderFactory;
 
     private volatile transient Attributes attributes;
 
-    public RMIClient(RMIService rmiService, MessageSignGenerator verifier) {
-        this.verifier = verifier;
+    public RMIClient(RMIService rmiService) {
         this.rmiService = rmiService;
     }
 
@@ -50,7 +46,7 @@ public class RMIClient {
     //     Request request = messageBuilderFactory
     //             .newRequestBuilder(null)
     //             // .setAttributes(this.attributes())
-    //             .setID(this.requestIDCreator.getAndIncrement())
+    //             .setId(this.requestIDCreator.getAndIncrement())
     //             .setRequestVerifier(this.verifier)
     //             .setProtocol(protocol)
     //             .addParameter(params)

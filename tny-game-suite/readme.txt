@@ -1,6 +1,6 @@
 -- 3.0.x
 Message {
-    @ProtoExField(1) int ID : 消息ID递增,标识消息的唯一性
+    @ProtoExField(1) int id : 消息ID递增,标识消息的唯一性
     @ProtoExField(2) int protocol : 协议
     @ProtoExField(3) int code : 结果码, request时候为100
     @ProtoExField(4) Object body : 消息体, request时候为List

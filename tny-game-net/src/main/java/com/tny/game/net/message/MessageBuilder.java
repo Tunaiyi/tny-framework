@@ -2,7 +2,7 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.message.sign.MessageSignGenerator;
+import com.tny.game.net.session.MessageContent;
 import com.tny.game.net.tunnel.Tunnel;
 
 /**
@@ -28,8 +28,6 @@ public interface MessageBuilder<UID> {
     MessageBuilder<UID> setBody(Object body);
 
     MessageBuilder<UID> setToMessage(int toMessageID);
-
-    MessageBuilder<UID> setSignGenerator(MessageSignGenerator<UID> generator);
 
     MessageBuilder<UID> setCommandResult(CommandResult result);
 

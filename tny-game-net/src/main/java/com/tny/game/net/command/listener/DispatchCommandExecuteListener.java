@@ -14,7 +14,7 @@ import com.tny.game.net.command.DispatchContext;
 public interface DispatchCommandExecuteListener extends DispatchCommandListener {
 
     /**
-     * 开始消息处理 <br>
+     * 每次执行 Command <br>
      *
      * @param context
      */
@@ -22,7 +22,7 @@ public interface DispatchCommandExecuteListener extends DispatchCommandListener 
     }
 
     /**
-     * 开始成功处理 <br>
+     * 每次执行完 Command <br>
      *
      * @param context
      */
@@ -30,7 +30,7 @@ public interface DispatchCommandExecuteListener extends DispatchCommandListener 
     }
 
     /**
-     * 执行错误 <br>
+     * 执行错误 Command <br>
      *
      * @param context
      */
@@ -38,7 +38,7 @@ public interface DispatchCommandExecuteListener extends DispatchCommandListener 
     }
 
     /**
-     * 消息处理完成 <br>
+     * 消息处理完成 Command <br>
      *
      * @param context
      */

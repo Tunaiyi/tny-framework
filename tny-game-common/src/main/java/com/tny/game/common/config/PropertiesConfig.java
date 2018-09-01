@@ -51,7 +51,7 @@ class PropertiesConfig implements Config {
             configMap.put(key, value);
         }
         for (String importFile : imports) {
-            Config subConfig = ConfigLib.getConfig(importFile, this.formatterList.toArray(new ConfigFormatter[0]));
+            Config subConfig = ConfigLib.getExistConfig(importFile, this.formatterList.toArray(new ConfigFormatter[0]));
             subConfig.entrySet().forEach((entry) -> configMap.put(entry.getKey(), entry.getValue()));
         }
         this.configMap = configMap;

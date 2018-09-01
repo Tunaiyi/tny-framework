@@ -10,12 +10,10 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.common.AbstractAppConfiguration;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.*;
-import com.tny.game.net.session.holder.NetSessionHolder;
+import com.tny.game.net.session.*;
+import com.tny.game.net.session.NetSessionHolder;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -50,8 +48,6 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
     private String dispatchCommandExecutorName;
 
     private String messageDispatcherName;
-
-    private String messageSignGeneratorName;
 
     private String channelMakerName;
 
@@ -109,10 +105,6 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.messageDispatcherName = messageDispatcher;
     }
 
-    public void setMessageSignGenerator(String messageSignGenerator) {
-        this.messageSignGeneratorName = messageSignGenerator;
-    }
-
     public void setChannelMaker(String channelMaker) {
         this.channelMakerName = channelMaker;
     }
@@ -135,7 +127,6 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.outputEventHandler = load(SessionOutputEventHandler.class, this.outputEventHandlerName);
         this.dispatchCommandExecutor = load(DispatchCommandExecutor.class, this.dispatchCommandExecutorName);
         this.messageDispatcher = load(MessageDispatcher.class, this.messageDispatcherName);
-        this.messageSignGenerator = load(MessageSignGenerator.class, this.messageSignGeneratorName);
         this.channelMaker = load(ChannelMaker.class, this.channelMakerName);
         if (StringUtils.isBlank(this.exprHolderFactoryName)) {
             this.exprHolderFactory = new GroovyExprHolderFactory();

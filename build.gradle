@@ -108,8 +108,10 @@ subprojects {
         testCompile(
                 "junit:junit:${vers.junit}",
                 "org.jmock:jmock-junit4:${vers.jmock}",
+                libs.'mockito',
 //                "net.sourceforge.groboutils:groboutils-core:5",
                 libs.'spring-test',
+                libs.'slf4j-simple',
         )
 
         compile libs.'slf4j-api'

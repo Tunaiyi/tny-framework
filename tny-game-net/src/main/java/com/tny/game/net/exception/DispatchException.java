@@ -29,7 +29,7 @@ public class DispatchException extends Exception {
     }
 
     public DispatchException(ResultCode code, String message, Throwable cause) {
-        this(code, null, null, cause);
+        this(code, message, null, cause);
     }
 
     public DispatchException(ResultCode code, Object body) {

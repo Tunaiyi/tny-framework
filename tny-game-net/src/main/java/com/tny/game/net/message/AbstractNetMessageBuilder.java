@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.message.sign.MessageSignGenerator;
+import com.tny.game.net.session.MessageContent;
 import com.tny.game.net.tunnel.Tunnel;
 
 import java.util.function.Supplier;
@@ -12,11 +12,9 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessage<UID>> implements MessageBuilder<UID> {
 
-    private MessageSignGenerator<UID> signGenerator;
-
     protected int id;
 
-    protected long sessionID;
+    private long sessionID;
 
     private int protocol = -1;
 
@@ -28,22 +26,15 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     protected Tunnel<UID> tunnel;
 
-    private Supplier<M> creator;
+    private Supplier<M> messageCreator;
 
     private Object head;
 
-    protected AbstractNetMessageBuilder(Supplier<M> creator) {
-        this.creator = creator;
-    }
+    private Supplier<? extends AbstractNetMessageHeader> headCreator;
 
-    @Override
-    public MessageBuilder<UID> setContent(MessageContent content) {
-        if (this.protocol <= 0)
-            this.protocol = content.getProtocol();
-        this.code = content.getCode().getCode();
-        this.body = content.getBody();
-        this.toMessage = content.getToMessage();
-        return this;
+    protected AbstractNetMessageBuilder(Supplier<M> messageCreator, Supplier<? extends AbstractNetMessageHeader> headCreator) {
+        this.messageCreator = messageCreator;
+        this.headCreator = headCreator;
     }
 
     @Override
@@ -77,12 +68,6 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
     }
 
     @Override
-    public MessageBuilder<UID> setSignGenerator(MessageSignGenerator<UID> generator) {
-        this.signGenerator = generator;
-        return this;
-    }
-
-    @Override
     public MessageBuilder<UID> setTunnel(Tunnel<UID> tunnel) {
         this.tunnel = tunnel;
         return this;
@@ -101,6 +86,16 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
     }
 
     @Override
+    public MessageBuilder<UID> setContent(MessageContent content) {
+        if (this.protocol <= 0)
+            this.protocol = content.getProtocol();
+        this.code = content.getCode().getCode();
+        this.body = content.getBody();
+        this.toMessage = content.getToMessage();
+        return this;
+    }
+
+    @Override
     public MessageBuilder<UID> setCommandResult(CommandResult result) {
         Protocol protocol = result.getProtocol();
         if (protocol != null)
@@ -112,20 +107,20 @@ public abstract class AbstractNetMessageBuilder<UID, M extends AbstractNetMessag
 
     @Override
     public Message<UID> build() {
-        M message = this.creator.get();
+        M message = this.messageCreator.get();
         if (this.protocol == 0)
             throw new NullPointerException("protocol is 0");
-        message.setID(this.id)
-                .setSessionID(this.sessionID)
+        AbstractNetMessageHeader header = headCreator.get()
+                .setId(this.id)
                 .setProtocol(this.protocol)
                 .setCode(this.code)
-                .setHead(this.head)
-                .setBody(this.body)
                 .setToMessage(this.toMessage)
                 .setTime(System.currentTimeMillis())
+                .setHead(this.head);
+        message.setSessionID(this.sessionID)
+                .setHeader(header)
+                .setBody(this.body)
                 .setTunnel(this.tunnel);
-        if (this.signGenerator != null)
-            message.setSign(this.signGenerator.generate(this.tunnel, message));
         return message;
     }
 

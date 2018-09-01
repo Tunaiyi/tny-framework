@@ -2,6 +2,7 @@ ext.vers = [
 
         jmock  : '2.8.1',
         junit  : '4.12',
+        mockito: '1.9.5',
 
         spring : '4.3.7.RELEASE',
         slf4j  : '1.7.25',
@@ -75,6 +76,7 @@ ext.libs = [
         'jade'                  : "com.tny.paoding:paoding-rose-jade:${vers.jade}",
         'javaee'                : 'javax:javaee-api:7.0',
 
+        'mockito'               : "org.mockito:mockito-all:${vers.mockito}",
 
         'tny-game-common'       : "com.tny.game:tny-game-common:${vers.tny}",
         'tny-game-common-mvel'  : "com.tny.game:tny-game-common-mvel:${vers.tny}",
@@ -102,5 +104,6 @@ ext.libs = [
         'poi-ooxml'             : 'org.apache.poi:poi-ooxml:3.14',
         'poi-ooxml-schemas'     : 'org.apache.poi:poi-ooxml-schemas:3.14',
         'baratine'              : 'io.baratine:baratine:1.0.1',
+
 
 ]

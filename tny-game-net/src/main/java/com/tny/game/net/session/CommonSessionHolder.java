@@ -1,34 +1,20 @@
 package com.tny.game.net.session;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.config.Config;
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.net.base.CoreResponseCode;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.common.config.Config;
+import com.tny.game.net.base.*;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.message.MessageContent;
 import com.tny.game.net.tunnel.NetTunnel;
-import com.tny.game.net.tunnel.Tunnel;
 import com.tny.game.net.utils.NetConfigs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.rmi.server.UID;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.as;
 import static com.tny.game.net.utils.NetConfigs.*;
 
 @Unit("CommonSessionHolder")
@@ -36,62 +22,66 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    protected long sessionLife;
-    protected int sessionOfflineSize;
-    protected long keepIdleTime;
+    private long offlineSessionLifeTime;
+    private int offlineSessionMaxSize;
+    private long keepIdleTime;
 
-    protected final ConcurrentHashMap<String, Map<Object, NetSession>> sessionMap = new ConcurrentHashMap<>();
-    protected final ConcurrentHashMap<String, Queue<NetSession>> offlineSessionMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<Object, NetSession>> sessionMap = new ConcurrentHashMap<>();
+    private final Map<String, Queue<NetSession>> offlineSessionMap = new ConcurrentHashMap<>();
 
     public CommonSessionHolder() {
-        this(SESSION_HOLDER_DEFAULT_SESSION_LIVE,
-                SESSION_HOLDER_DEFAULT_SESSION_OFFLINE_SIZE,
+        this(SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_LIFE_TIME,
+                SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_MAX_SIZE,
                 SESSION_HOLDER_DEFAULT_KEEP_IDLE_TIME,
                 SESSION_HOLDER_DEFAULT_CLEAR_INTERVAL);
     }
 
     public CommonSessionHolder(Config config) {
-        this(config.getLong(SESSION_HOLDER_SESSION_LIVE, SESSION_HOLDER_DEFAULT_SESSION_LIVE),
-                config.getInt(NetConfigs.SESSION_HOLDER_SESSION_OFFLINE_SIZE, SESSION_HOLDER_DEFAULT_SESSION_OFFLINE_SIZE),
+        this(config.getLong(SESSION_HOLDER_OFFLINE_SESSION_LIFE_TIME, SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_LIFE_TIME),
+                config.getInt(NetConfigs.SESSION_HOLDER_OFFLINE_SESSION_MAX_SIZE, SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_MAX_SIZE),
                 config.getLong(NetConfigs.SESSION_HOLDER_KEEP_IDLE_TIME, SESSION_HOLDER_DEFAULT_KEEP_IDLE_TIME),
                 config.getLong(NetConfigs.SESSION_HOLDER_CLEAR_INTERVAL, SESSION_HOLDER_DEFAULT_CLEAR_INTERVAL));
     }
 
-    public CommonSessionHolder(long sessionLife, int sessionOfflineSize, long keepIdleTime, long clearInterval) {
-        this.sessionLife = sessionLife;
+    public CommonSessionHolder(long offlineSessionLive, int offlineSessionMaxSize, long keepIdleTime, long clearInterval) {
+        this.offlineSessionLifeTime = offlineSessionLive;
         this.keepIdleTime = keepIdleTime;
-        this.sessionOfflineSize = sessionOfflineSize;
+        this.offlineSessionMaxSize = offlineSessionMaxSize;
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
-        NetSession.ON_OFFLINE.add(this::onOffline);
-        NetSession.ON_ONLINE.add(this::onOnline);
-        NetSession.ON_CLOSE.add(this::onClose);
+        NetSession.ON_OFFLINE.add((session, tunnel) -> onOffline(session));
+        NetSession.ON_ONLINE.add((session, tunnel) -> onOnline(session));
+        NetSession.ON_CLOSE.add((session, tunnel) -> onClose(session));
     }
 
     private Queue<NetSession> offlineSessionQueue(String group) {
         return offlineSessionMap.computeIfAbsent(group, (k) -> new ConcurrentLinkedQueue<>());
     }
 
-    private void onOnline(Session<UID> session, Tunnel<UID> tunnel) {
-        offlineSessionQueue(session.getUserGroup()).remove(session);
+    private void onOnline(Session<?> session) {
+        Queue<? extends Session> sessions = offlineSessionQueue(session.getUserGroup());
+        sessions.remove(session);
     }
 
-    private void onOffline(Session<UID> session, Tunnel<UID> tunnel) {
-        if (session.isLogin() && session.isOffline())
-            offlineSessionQueue(session.getUserGroup()).add(as(session));
+    private void onOffline(Session<?> session) {
+        if (session.isLogin() && session.isOffline()) {
+            Queue<? extends Session> sessions = offlineSessionQueue(session.getUserGroup());
+            sessions.add(as(session));
+        }
     }
 
-    private void onClose(Session<UID> session, Tunnel<UID> tunnel) {
+    private void onClose(Session<?> session) {
         if (!session.isLogin())
             return;
         Map<Object, ? extends Session> userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
-        userGroupSessionMap.remove(session.getUID(), session);
-        this.offlineSessionQueue(session.getUserGroup()).remove(session);
+        userGroupSessionMap.remove(session.getUid(), session);
+        Queue<? extends Session> sessions = this.offlineSessionQueue(session.getUserGroup());
+        sessions.remove(session);
     }
 
     @Override
     public <U> Session<U> getSession(String userGroup, U uid) {
-        return this.getSession0(userGroup, uid);
+        return this.getNetSession(userGroup, uid);
     }
 
     @Override
@@ -105,36 +95,35 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     @Override
     public boolean isOnline(String userGroup, Object uid) {
-        Session session = this.getSession0(userGroup, uid);
+        Session session = this.getNetSession(userGroup, uid);
         return session != null && session.isOnline();
     }
 
     @Override
-    public boolean send2User(String userGroup, Object uid, MessageContent content) {
-        NetSession<Object> session = this.getSession0(userGroup, uid);
+    public <U> void send2User(String userGroup, U uid, MessageContent<U> content) {
+        NetSession<U> session = this.getNetSession(userGroup, uid);
         if (session != null) {
             session.send(content);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public void send2Users(String userGroup, Collection<?> uidColl, MessageContent<?> content) {
+    public <U> void send2Users(String userGroup, Collection<U> uidColl, MessageContent<U> content) {
         this.doSendMultiSessionID(userGroup, uidColl.stream(), content);
     }
 
     @Override
-    public void send2Users(String userGroup, Stream<?> stream, MessageContent<?> content) {
+    public <U> void send2Users(String userGroup, Stream<U> stream, MessageContent<U> content) {
         this.doSendMultiSessionID(userGroup, stream, content);
     }
 
     @Override
-    public void send2AllOnline(String userGroup, MessageContent<?> content) {
+    public <U> void send2AllOnline(String userGroup, MessageContent<U> content) {
         Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return;
-        this.doSendMultiSession(userGroupSessionMap.values(), content);
+        for (@SuppressWarnings("unchecked") NetSession<U> session : userGroupSessionMap.values())
+            session.send(content);
     }
 
     @Override
@@ -147,7 +136,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     private void debugSessionSize() {
         this.sessionMap.forEach((key, value) -> LOG.info("会话管理器#{} Group -> 会话数量为 {}", key, value.size()));
-        this.offlineSessionMap.forEach((key, value) -> LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", key, value.size(), this.sessionOfflineSize));
+        this.offlineSessionMap.forEach((key, value) -> LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", key, value.size(), this.offlineSessionMaxSize));
     }
 
     @Override
@@ -157,7 +146,7 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
     @Override
     public <U> Session<U> offline(String userGroup, U uid, boolean invalid) {
-        NetSession<U> session = this.getSession0(userGroup, uid);
+        NetSession<U> session = this.getNetSession(userGroup, uid);
         if (session != null) {
             if (invalid)
                 session.close();
@@ -191,58 +180,61 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <U> boolean online(NetSession<U> session, LoginCertificate<U> cert) throws ValidatorFailException {
+    public <U> boolean online(NetTunnel<U> tunnel, NetCertificate<U> cert) throws ValidatorFailException {
+        NetSession<U> session = tunnel.getSession();
         if (!this.loginSession(session, cert))
             return false;
         if (!session.isOnline())
             return false;
-        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
-        if (userGroupSessionMap == null) {
-            this.sessionMap.putIfAbsent(session.getUserGroup(), new ConcurrentHashMap<>());
-            userGroupSessionMap = this.sessionMap.get(session.getUserGroup());
-        }
-        NetSession oldSession = userGroupSessionMap.get(session.getUID());
+        //获取userGroup 与旧 session
+        NetSession<U> oldSession = getNetSession(cert.getUserGroup(), cert.getUserId());
         if (oldSession == session)
             return true;
-        if (cert.isRelogin()) {
-            if (oldSession != null)
-                oldSession.offline();
-            if (oldSession == null) {
-                LOG.warn("旧session {} 已经丢失", session.getUID());
-                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
-            }
-            if (oldSession.isClosed()) {
-                LOG.warn("旧session {} 已经关闭", session.getUID());
-                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
-            }
-            if (!oldSession.relogin(session)) {
-                throw new ValidatorFailException(CoreResponseCode.SESSION_LOSS);
-            }
-        } else {
-            if (oldSession != null) {
-                LoginCertificate<?> oldCert = oldSession.getCertificate();
-                if (cert.getID() < oldCert.getID()) {
-                    LOG.warn("旧session {} 已经关闭", session.getUID());
-                    throw new ValidatorFailException(CoreResponseCode.INVALID_CERTIFICATE);
-                }
-            }
-            oldSession = userGroupSessionMap.put(session.getUID(), session);
-            if (oldSession != null && oldSession != session) {
-                // 替换session成功, 并且任然存在oldSession
-                if (!oldSession.isClosed())
-                    oldSession.close();
-                onRemoveSession.notify(this, oldSession);
-            }
-            if (oldSession != session) {
-                onAddSession.notify(this, session);
-                this.debugSessionSize();
-            }
+        if (cert.isRelogin()) { // 处理重登
+            doSessionMerge(session, oldSession);
+        } else { // 处理登录
+            doSessionLogin(cert, session, oldSession);
         }
         return true;
     }
 
-    private <UID> boolean loginSession(NetSession<UID> session, LoginCertificate<UID> certificate) throws ValidatorFailException {
+    private <U> void doSessionMerge(NetSession<U> session, NetSession<U> oldSession) throws ValidatorFailException {
+        if (oldSession == null) { // 旧 session 失效
+            LOG.warn("旧session {} 已经丢失", session.getUid());
+            throw new ValidatorFailException(NetResponseCode.SESSION_LOSS);
+        }
+        if (oldSession.isClosed()) { // 旧 session 已经关闭(失效)
+            LOG.warn("旧session {} 已经关闭", session.getUid());
+            throw new ValidatorFailException(NetResponseCode.SESSION_LOSS);
+        }
+        oldSession.offline(); // 将旧 session 的 Tunnel T 下线
+        oldSession.mergeSession(session);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <U> void doSessionLogin(NetCertificate<U> cert, NetSession<U> session, NetSession<U> oldSession) throws ValidatorFailException {
+        if (oldSession != null) { // 如果旧 session 存在
+            NetCertificate<?> oldCert = oldSession.getCertificate();
+            if (cert.getId() < oldCert.getId()) { // 判断当前授权 ID 是旧的, 如果是旧的则无法登录
+                LOG.warn("旧session {} 已经关闭", session.getUid());
+                throw new ValidatorFailException(NetResponseCode.INVALID_CERTIFICATE);
+            }
+        }
+        Map<Object, NetSession> userGroupSessionMap = this.sessionMap.computeIfAbsent(session.getUserGroup(), k -> new ConcurrentHashMap<>());
+        oldSession = userGroupSessionMap.put(session.getUid(), session);
+        if (oldSession != null && oldSession != session) {
+            // 替换session成功, 并且任然存在oldSession
+            if (!oldSession.isClosed())
+                oldSession.close();
+            onRemoveSession.notify(this, oldSession);
+        }
+        if (oldSession != session) { // 防止同一个 session 添加多次
+            onAddSession.notify(this, session);
+            this.debugSessionSize();
+        }
+    }
+
+    private <U> boolean loginSession(NetSession<U> session, NetCertificate<U> certificate) throws ValidatorFailException {
         if (!certificate.isLogin())
             return false;
         session.login(certificate);
@@ -250,71 +242,69 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private <U> NetSession<U> getSession0(String userGroup, U uid) {
+    private <U> NetSession<U> getNetSession(String userGroup, U uid) {
         Map<Object, NetSession> userGroupSessionMap = this.sessionMap.get(userGroup);
         if (userGroupSessionMap == null)
             return null;
         return userGroupSessionMap.get(uid);
     }
 
-    private void doSendMultiSession(Collection<NetSession> sessionCollection, MessageContent<?> content) {
-        for (NetSession<?> session : sessionCollection)
-            session.send(content);
-    }
-
-    private void doSendMultiSessionID(String userGroup, Stream<?> uidColl, MessageContent<?> content) {
+    private <U> void doSendMultiSessionID(String userGroup, Stream<U> uidColl, MessageContent<U> content) {
         uidColl.forEach(uid -> {
-            NetSession<Object> session = this.getSession0(userGroup, uid);
+            NetSession<U> session = this.getNetSession(userGroup, uid);
             if (session != null) {
                 session.send(content);
             }
         });
     }
 
+    /**
+     * 清楚失效 Session
+     */
     private void clearInvalidedSession() {
         long now = System.currentTimeMillis();
-        // int size = this.offlineSessions.size() - sessionOfflineSize;
+        // int size = this.offlineSessions.size() - offlineSessionMaxSize;
         Set<NetSession> closeSessions = new HashSet<>();
         offlineSessionMap.forEach((group, offlineSessions) -> {
                     Map<Object, ? extends Session> groupMap = this.sessionMap.get(group);
                     for (NetSession<?> session : offlineSessions) {
                         try {
                             NetTunnel<?> tunnel = session.getCurrentTunnel();
-                            if (tunnel.isConnected() && tunnel.getLatestActiveAt() + keepIdleTime < now) {
+                            if (tunnel.isClosed() && tunnel.getLastReadAt() + keepIdleTime < now) {
                                 LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
                                 tunnel.close();
                             }
 
                             NetSession<?> closeSession = null;
                             if (session.isClosed()) {
-                                LOG.info("移除已关闭的OfflineSession {}", session.getUID());
+                                LOG.info("移除已关闭的OfflineSession {}", session.getUid());
                                 closeSession = session;
-                            } else if (session.isOffline() && session.getOfflineTime() + sessionLife < now) {
-                                LOG.info("移除下线超时的OfflineSession {}", session.getUID());
+                            } else if (session.isOffline() && session.getOfflineTime() + offlineSessionLifeTime < now) {
+                                LOG.info("移除下线超时的OfflineSession {}", session.getUid());
                                 session.close();
                                 closeSession = session;
                             }
                             if (closeSession != null) {
                                 if (groupMap != null)
-                                    groupMap.remove(closeSession.getUID(), closeSession);
+                                    groupMap.remove(closeSession.getUid(), closeSession);
                                 closeSessions.add(closeSession);
                             }
                         } catch (Throwable e) {
-                            LOG.error("clear {} invalided session exception", session.getUID(), e);
+                            LOG.error("clear {} invalided session exception", session.getUid(), e);
                         }
                     }
                     offlineSessions.removeAll(closeSessions);
-                    int size = offlineSessions.size() - sessionOfflineSize;
-                    if (sessionOfflineSize > 0 && size > 0) {
+                    int size = offlineSessions.size() - offlineSessionMaxSize;
+                    if (offlineSessionMaxSize > 0 && size > 0) {
                         for (int i = 0; i < size; i++) {
                             NetSession<?> session = offlineSessions.poll();
                             if (session == null)
                                 continue;
                             try {
-                                LOG.info("关闭第{}个 超过{}数量的OfflineSession {}", i, size, session.getUID());
+                                LOG.info("关闭第{}个 超过{}数量的OfflineSession {}", i, size, session.getUid());
                                 session.close();
                             } catch (Throwable e) {
-                                LOG.error("clear {} overmuch offline session exception", session.getUID(), e);
+                                LOG.error("clear {} overmuch offline session exception", session.getUid(), e);
                             }
                         }
                     }
@@ -322,29 +312,6 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
 
         );
         debugSessionSize();
-        // for (Map<Object, NetSession> userGroupSessionMap : this.sessionMap.values()) {
-        //     userGroupSessionMap.forEach((key, session) -> {
-        //         try {
-        //             NetTunnel<?> tunnel = session.getCurrentTunnel();
-        //             if (tunnel.isConnected() && tunnel.getLatestActiveAt() + keepIdleTime < now) {
-        //                 LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
-        //                 tunnel.close();
-        //             }
-        //             NetSession<?> closeSession = null;
-        //             if (session.isClosed()) {
-        //                 userGroupSessionMap.remove(session.getUID(), session);
-        //                 closeSession = session;
-        //             } else if (session.isOffline() && session.getOfflineTime() + sessionLife < now) {
-        //                 session.close();
-        //                 closeSession = session;
-        //             }
-        //             if (closeSession != null)
-        //                 userGroupSessionMap.remove(session.getUID(), session);
-        //         } catch (Throwable e) {
-        //             LOG.error("clear {} invalided session exception", session.getUID(), e);
-        //         }
-        //     });
-        // }
     }
 
 }

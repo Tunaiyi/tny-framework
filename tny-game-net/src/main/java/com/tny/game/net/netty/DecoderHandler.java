@@ -1,15 +1,12 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.netty.coder.DataPacketDecoder;
-import com.tny.game.net.netty.coder.PacketHeadException;
+import com.tny.game.net.netty.coder.*;
 import com.tny.game.net.tunnel.Tunnel;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.*;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.List;
 
@@ -37,9 +34,11 @@ public class DecoderHandler extends ByteToMessageDecoder {
                 channel = ctx.channel();
                 tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
             }
-            LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, tunnel == null ? "SOME ONE UNLOGION!" : tunnel.getUID(), exception);
-            if (exception instanceof PacketHeadException)
-                channel.close();
+            LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, tunnel == null ? "SOME ONE UNLOGION!" : tunnel.getUid(), exception);
+            if (exception instanceof PacketHeadException) {
+                if (channel != null)
+                    channel.close();
+            }
         }
     }
 }

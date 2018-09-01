@@ -2,7 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 
 public class ValidatorFailException extends DispatchException {
 
@@ -32,11 +32,11 @@ public class ValidatorFailException extends DispatchException {
     }
 
     public ValidatorFailException(String message, Throwable e) {
-        this(CoreResponseCode.VALIDATOR_FAIL, message, e);
+        this(NetResponseCode.VALIDATOR_FAIL, message, e);
     }
 
     public ValidatorFailException(String message) {
-        this(CoreResponseCode.VALIDATOR_FAIL, message);
+        this(NetResponseCode.VALIDATOR_FAIL, message);
     }
 
     public String getAccount() {

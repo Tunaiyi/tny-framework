@@ -7,6 +7,6 @@ package com.tny.game.net.message;
  */
 public interface MessageBuilderFactory<UID> {
 
-    MessageBuilder<UID> newMessageBuilder();
+    MessageBuilder<UID> newBuilder();
 
 }

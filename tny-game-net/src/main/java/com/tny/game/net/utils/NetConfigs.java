@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public interface NetConfigs {
 
     String NET_CONFIG_PATH = "service.properties";
-    Config NET_CONFIG = ConfigLib.getConfig(NET_CONFIG_PATH);
+    Config NET_CONFIG = ConfigLib.getExistConfig(NET_CONFIG_PATH);
 
     /* App 类型*/
     String SERVER_APP_TYPE = "tny.net.server.type";
@@ -30,13 +30,13 @@ public interface NetConfigs {
     /* SessionHolder 默认清除失效Session时间间隙 (1分钟)*/
     long SESSION_HOLDER_DEFAULT_CLEAR_INTERVAL = TimeUnit.MINUTES.toMillis(1);
     /* SessionHolder Session 离线之后的生命周期*/
-    String SESSION_HOLDER_SESSION_LIVE = "tny.net.session.holder.offline_session_live";
+    String SESSION_HOLDER_OFFLINE_SESSION_LIFE_TIME = "tny.net.session.holder.offline_session_life_time";
     /* SessionHolder 默认Session 离线之后的生命周期(10分钟)*/
-    long SESSION_HOLDER_DEFAULT_SESSION_LIVE = TimeUnit.MINUTES.toMillis(10);
+    long SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_LIFE_TIME = TimeUnit.MINUTES.toMillis(10);
     /* SessionHolder 离线Session队列数量*/
-    String SESSION_HOLDER_SESSION_OFFLINE_SIZE = "tny.net.session.holder.session_offline_size";
+    String SESSION_HOLDER_OFFLINE_SESSION_MAX_SIZE = "tny.net.session.holder.offline_session_max_size";
     /* SessionHolder 默认离线Session队列数量(1024)*/
-    int SESSION_HOLDER_DEFAULT_SESSION_OFFLINE_SIZE = 1024;
+    int SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_MAX_SIZE = 1024;
     /* Session 最大空闲时间(超过自动断线)*/
     String SESSION_HOLDER_KEEP_IDLE_TIME = "tny.net.session.holder.keep_idle_time";
     /* Session 默认最大空闲时间(超过自动断线) (3分钟)*/
@@ -44,7 +44,7 @@ public interface NetConfigs {
     /* SessionEventExecutor 处理Session事件的线程数*/
     String SESSION_EXECUTOR_THREADS = "tny.net.session.event_executor.threads";
     /* SessionEventExecutor 默认处理Session事件的线程数*/
-    int SESSION_EXECUTOR_DEFAULT_THREADS = Runtime.getRuntime().availableProcessors() * 2;
+    int SESSION_EXECUTOR_DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
 
     /* MessageDispatchCommandExecutor 运行时间*/
     String DISPATCHER_EXECUTOR_THREADS = "tny.net.dispatcher.executor.threads";

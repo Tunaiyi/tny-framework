@@ -3,13 +3,9 @@ package com.tny.game.net.base;
 import com.tny.game.common.config.Config;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.session.SessionFactory;
-import com.tny.game.net.session.event.SessionInputEventHandler;
-import com.tny.game.net.session.event.SessionOutputEventHandler;
-import com.tny.game.net.session.holder.NetSessionHolder;
+import com.tny.game.net.session.*;
 
 public interface AppConfiguration extends AppContext {
 
@@ -17,19 +13,17 @@ public interface AppConfiguration extends AppContext {
 
     NetSessionHolder getSessionHolder();
 
-    SessionFactory getSessionFactory();
+    <T> SessionFactory<T> getSessionFactory();
 
-    MessageBuilderFactory getMessageBuilderFactory();
+    <T> MessageBuilderFactory<T> getMessageBuilderFactory();
 
-    SessionOutputEventHandler getOutputEventHandler();
+    <T, S extends NetSession<T>> SessionOutputEventHandler<T, S> getOutputEventHandler();
 
-    SessionInputEventHandler getInputEventHandler();
+    <T, S extends NetSession<T>> SessionInputEventHandler<T, S> getInputEventHandler();
 
     DispatchCommandExecutor getDispatchCommandExecutor();
 
     MessageDispatcher getMessageDispatcher();
-
-    MessageSignGenerator getMessageSignGenerator();
 
     ExprHolderFactory getExprHolderFactory();
 

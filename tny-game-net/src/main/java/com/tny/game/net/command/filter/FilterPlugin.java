@@ -17,7 +17,7 @@ import com.tny.game.net.command.filter.string.StringLengthLimitFilter;
 import com.tny.game.net.command.filter.string.StringPatternLimitFilter;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.base.CoreResponseCode;
+import com.tny.game.net.base.NetResponseCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,9 +59,9 @@ public class FilterPlugin<UID> implements ControllerPlugin<UID> {
             ParamFilter paramFilter = this.filterMap.get(filterClass);
             if (paramFilter != null) {
                 ResultCode resultCode = paramFilter.filter(methodHolder, tunnel, message);
-                if (resultCode != CoreResponseCode.SUCCESS) {
+                if (resultCode != NetResponseCode.SUCCESS) {
                     // 完成 不继续执行
-                    context.done(resultCode);
+                    context.doneAndIntercept(resultCode);
                 }
             }
         }

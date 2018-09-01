@@ -5,10 +5,8 @@ import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.message.sign.MessageSignGenerator;
 import com.tny.game.net.session.*;
-import com.tny.game.net.session.event.*;
-import com.tny.game.net.session.holder.NetSessionHolder;
+import com.tny.game.net.session.NetSessionHolder;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,11 +57,6 @@ public class CommonAppConfiguration extends AbstractAppConfiguration {
 
     public CommonAppConfiguration setMessageDispatcher(MessageDispatcher messageDispatcher) {
         this.messageDispatcher = messageDispatcher;
-        return this;
-    }
-
-    public CommonAppConfiguration setMessageSignGenerator(MessageSignGenerator messageSignGenerator) {
-        this.messageSignGenerator = messageSignGenerator;
         return this;
     }
 

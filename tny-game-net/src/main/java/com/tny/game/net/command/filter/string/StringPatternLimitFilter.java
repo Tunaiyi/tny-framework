@@ -2,12 +2,12 @@ package com.tny.game.net.command.filter.string;
 
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.result.ResultCode;
+import com.tny.game.net.base.NetResponseCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
 import com.tny.game.net.command.filter.string.annotation.PatternMatch;
-import com.tny.game.net.message.Message;
+import com.tny.game.net.message.*;
 import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.base.CoreResponseCode;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -38,10 +38,11 @@ public class StringPatternLimitFilter extends AbstractParamFilter<Object, Patter
     @Override
     protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, PatternMatch annotation, String param) {
         if (!this.getPattern(annotation.pattern()).matcher(param).matches()) {
+            MessageHeader header = message.getHeader();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    message.getUserID(), message.getProtocol(),
+                    message.getUserID(), header.getProtocol(),
                     index, param, annotation.pattern());
-            return CoreResponseCode.ILLEGAL_PARAMETERS;
+            return NetResponseCode.ILLEGAL_PARAMETERS;
         }
         return ResultCode.SUCCESS;
     }
