@@ -38,6 +38,11 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
         this(url, channel, configuration.getProperties(), configuration.getSessionFactory(), configuration.getMessageBuilderFactory(), null);
     }
 
+
+    public NettyClientTunnel(URL url, Channel channel, AppConfiguration configuration, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) {
+        this(url, channel, configuration.getProperties(), configuration.getSessionFactory(), configuration.getMessageBuilderFactory(), loginContentCreator);
+    }
+
     public NettyClientTunnel(URL url, Channel channel, Config config, SessionFactory<UID> sessionFactory, MessageBuilderFactory<UID> messageBuilderFactory, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) {
         super(channel);
         this.url = url;
@@ -189,7 +194,7 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
             boolean relogin = oldSession != null && oldSession.isLogin();
             MessageContent<UID> loginMessage = loginContentCreator.apply(relogin, this);
             StageableFuture<Message<UID>> loginFuture = loginMessage.messageFuture(timeout + 10000L);
-            SessionSendEvent<UID> loginEvent = new SessionSendEvent<>(this, loginMessage);
+            MessageSendEvent<UID> loginEvent = new MessageSendEvent<>(this, loginMessage);
             this.session.write(loginEvent);
             this.doWait(timeout, loginFuture);
             Message result = loginFuture.get();

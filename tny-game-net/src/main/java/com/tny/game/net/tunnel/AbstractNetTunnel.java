@@ -1,11 +1,10 @@
-package com.tny.game.net.common;
+package com.tny.game.net.tunnel;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.*;
 import com.tny.game.net.exception.TunnelWriteException;
 import com.tny.game.net.message.*;
 import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -28,12 +27,14 @@ public abstract class AbstractNetTunnel<UID> implements NetTunnel<UID> {
     private final long id;
 
     private long lastReadAt;
-    protected long lastWriteAt;
+    private long lastWriteAt;
 
     protected NetSession<UID> session;
 
     /* 附加属性 */
     private Attributes attributes;
+
+    private MessageEventsBox<UID> eventsBox;
 
     /* 接收排除消息模型 */
     private Set<MessageMode> receiveExcludes = ImmutableSet.of();
@@ -48,6 +49,7 @@ public abstract class AbstractNetTunnel<UID> implements NetTunnel<UID> {
         long now = System.currentTimeMillis();
         this.lastReadAt = now;
         this.lastWriteAt = now;
+        this.eventsBox = MessageEventsBox.create();
     }
 
     protected void init(SessionFactory<UID> sessionFactory, MessageBuilderFactory<UID> messageBuilderFactory) {
@@ -91,6 +93,11 @@ public abstract class AbstractNetTunnel<UID> implements NetTunnel<UID> {
     }
 
     @Override
+    public NetCertificate<UID> getCertificate() {
+        return session.getCertificate();
+    }
+
+    @Override
     public MessageBuilderFactory<UID> getMessageBuilderFactory() {
         return messageBuilderFactory;
     }
@@ -102,6 +109,25 @@ public abstract class AbstractNetTunnel<UID> implements NetTunnel<UID> {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void addInputEvent(MessageInputEvent<UID> event) {
+        if (!isClosed())
+            this.lastReadAt = System.currentTimeMillis();
+        this.eventsBox.addInputEvent(event);
+    }
+
+    @Override
+    public void addOutputEvent(MessageOutputEvent<UID> event) {
+        if (!isClosed())
+            this.lastWriteAt = System.currentTimeMillis();
+        this.eventsBox.addOutputEvent(event);
+    }
+
+    @Override
+    public MessageEventsBox<UID> getEventsBox() {
+        return eventsBox;
     }
 
     // @Override

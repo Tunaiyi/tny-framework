@@ -6,11 +6,11 @@ import com.tny.game.net.tunnel.*;
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionSendEvent<UID> extends BaseSessionEvent<UID> implements SessionOutputEvent<UID>, WriteCallback<UID> {
+public class MessageSendEvent<UID> extends BaseMessageEvent<UID> implements MessageOutputEvent<UID>, WriteCallback<UID> {
 
     private MessageContent<UID> content;
 
-    public SessionSendEvent(NetTunnel<UID> tunnel, MessageContent<UID> content) {
+    public MessageSendEvent(NetTunnel<UID> tunnel, MessageContent<UID> content) {
         super(tunnel);
         this.content = content;
     }

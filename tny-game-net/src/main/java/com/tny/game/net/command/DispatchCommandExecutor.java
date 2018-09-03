@@ -1,7 +1,7 @@
 package com.tny.game.net.command;
 
-import com.tny.game.net.session.Session;
 import com.tny.game.common.worker.command.Command;
+import com.tny.game.net.tunnel.NetTunnel;
 
 /**
  * @author KGTny
@@ -10,6 +10,6 @@ public interface DispatchCommandExecutor {
 
     void shutdown();
 
-    void submit(Session session, Command command);
+    void submit(NetTunnel<?> tunnel, Command command);
 
 }

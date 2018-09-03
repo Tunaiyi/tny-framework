@@ -1,10 +1,10 @@
 package com.tny.game.net.tunnel;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.message.*;
+import com.tny.game.net.message.MessageMode;
 import com.tny.game.net.session.*;
 
-import java.net.*;
+import java.net.InetSocketAddress;
 import java.util.*;
 
 /**
@@ -48,11 +48,6 @@ public interface Tunnel<UID> extends Communicator<UID> {
     InetSocketAddress localAddress();
 
     /**
-     * @return 是否登陆认证
-     */
-    boolean isLogin();
-
-    /**
      * 设置接收排除
      *
      * @param modes 接收排除模型
@@ -83,7 +78,6 @@ public interface Tunnel<UID> extends Communicator<UID> {
      * @param modes 发送排除模型
      */
     void sendExcludes(Collection<MessageMode> modes);
-
 
     /**
      * @return 获取接收排除列表

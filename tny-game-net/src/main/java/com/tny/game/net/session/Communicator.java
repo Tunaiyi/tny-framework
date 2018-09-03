@@ -18,15 +18,25 @@ public interface Communicator<UID> {
     String getUserGroup();
 
     /**
-     * 关闭终端
-     *
-     * @return 是否关闭成功, 成功返回true 失效返回false
+     * @return 登陆凭证
      */
-    StageableFuture<Void> close();
+    NetCertificate<UID> getCertificate();
+
+    /**
+     * @return 是否登陆认证
+     */
+    boolean isLogin();
 
     /**
      * @return 是否关闭终端
      */
     boolean isClosed();
+
+    /**
+     * 关闭终端
+     *
+     * @return 是否关闭成功, 成功返回true 失效返回false
+     */
+    StageableFuture<Void> close();
 
 }

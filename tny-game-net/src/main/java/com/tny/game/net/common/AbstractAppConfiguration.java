@@ -34,9 +34,9 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
 
     protected MessageBuilderFactory messageBuilderFactory;
 
-    protected SessionInputEventHandler inputEventHandler;
+    protected MessageInputEventHandler inputEventHandler;
 
-    protected SessionOutputEventHandler outputEventHandler;
+    protected MessageOutputEventHandler outputEventHandler;
 
     protected DispatchCommandExecutor dispatchCommandExecutor;
 
@@ -98,12 +98,12 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     }
 
     @Override
-    public SessionOutputEventHandler getOutputEventHandler() {
+    public MessageOutputEventHandler getOutputEventHandler() {
         return outputEventHandler;
     }
 
     @Override
-    public SessionInputEventHandler getInputEventHandler() {
+    public MessageInputEventHandler getInputEventHandler() {
         return inputEventHandler;
     }
 

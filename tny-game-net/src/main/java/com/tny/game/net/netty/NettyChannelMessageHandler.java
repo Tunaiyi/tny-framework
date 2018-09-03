@@ -19,14 +19,14 @@ import java.util.Date;
  * @author KGTny
  */
 @Sharable
-public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<?>> {
+public class NettyChannelMessageHandler extends SimpleChannelInboundHandler<NetMessage<?>> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
 
     protected AppConfiguration appConfiguration;
 
-    public NettyMessageHandler(AppConfiguration appConfiguration) {
+    public NettyChannelMessageHandler(AppConfiguration appConfiguration) {
         this.appConfiguration = appConfiguration;
         // Config config = this.appConfiguration.getProperties();
         // int interval = config.getInt(AppConstants.TUNNEL_PING_INTERVAL, 60000);

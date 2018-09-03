@@ -5,7 +5,8 @@ import com.tny.game.common.concurrent.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.CommonMessageBuilderFactory;
-import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.session.MessageEvent.SessionEventType;
+import com.tny.game.net.tunnel.*;
 import org.junit.*;
 import org.mockito.*;
 import org.slf4j.*;
@@ -13,6 +14,7 @@ import test.TestAide;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static org.junit.Assert.*;
@@ -33,6 +35,11 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetSessionTest.class);
 
+
+    private static final AtomicLong TUNNEL_ID_CREATOR = new AtomicLong();
+
+
+
     protected CommonMessageBuilderFactory<Long> messageBuilderFactory = new CommonMessageBuilderFactory<>();
 
     private static ScheduledExecutorService service = Executors.newScheduledThreadPool(1, new CoreThreadFactory("NetSessionTestThread", true));
@@ -42,7 +49,11 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
 
     @Override
     protected S createUnloginSession() {
-        NetTunnel<Long> tunnel = as(Mockito.mock(NetTunnel.class));
+        MessageEventsBox<Long> eventsBox = mockAs(MessageEventsBox.class);
+        long tunnelId = TUNNEL_ID_CREATOR.incrementAndGet();
+        NetTunnel<Long> tunnel = mockAs(NetTunnel.class);
+        when(tunnel.getId()).thenReturn(tunnelId);
+        when(tunnel.getEventsBox()).thenReturn(eventsBox);
         return createUnloginSession(tunnel);
     }
 
@@ -50,19 +61,15 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
 
     @Override
     protected S createLoginSession() {
-        S session = createUnloginSession();
-        try {
-            session.login(createLoginCert(certificateId, uid));
-        } catch (ValidatorFailException e) {
-            fail("login fail");
-        }
-        return session;
+        return createLoginSession(certificateId, uid);
     }
 
     protected S createLoginSession(long certificateId, Long uid) {
         S session = createUnloginSession();
         try {
             session.login(createLoginCert(certificateId, uid));
+            NetTunnel<Long> tunnel = mockNetTunnel(session);
+            when(tunnel.getCertificate()).thenReturn(session.getCertificate());
         } catch (ValidatorFailException e) {
             fail("login fail");
         }
@@ -132,42 +139,6 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
     }
 
     @Test
-    public void pollInputEvent() {
-        NetSession<Long> session = createUnloginSession();
-        assertNull(session.pollInputEvent());
-        TestMessages messages = new TestMessages(session)
-                .addPush("request 1")
-                .addResponse("request 2", 1)
-                .addResponse("request 3", 1)
-                .addResponse("request 4", 1)
-                .addResponse("request 5", 1)
-                .addResponse("request 6", 1)
-                .addRequest("request 7");
-        messages.receive(session);
-        assertTrue(session.isHasInputEvent());
-        messages.messagesForEach(m -> assertNotNull(session.pollInputEvent()));
-        assertNull(session.pollInputEvent());
-    }
-
-    @Test
-    public void pollOutputEvent() {
-        NetSession<Long> session = createUnloginSession();
-        assertNull(session.pollOutputEvent());
-        TestMessages messages = new TestMessages(session)
-                .addPush("request 1")
-                .addResponse("request 2", 1)
-                .addResponse("request 3", 1)
-                .addResponse("request 4", 1)
-                .addResponse("request 5", 1)
-                .addResponse("request 6", 1)
-                .addRequest("request 7");
-        messages.send(session);
-        assertTrue(session.isHasOutputEvent());
-        messages.messagesForEach(m -> assertNotNull(session.pollOutputEvent()));
-        assertNull(session.pollOutputEvent());
-    }
-
-    @Test
     public void getSentMessageByToID() {
         NetSession<Long> session = createUnloginSession();
         TestMessages messages = new TestMessages(session)
@@ -179,8 +150,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addResponse("request 6", 1)
                 .addRequest("request 7");
         messages.messagesForEach(m -> assertNull(session.getSentMessageByToID(m.getId())));
-        messages.send(session);
-        processOutput(session);
+        sendAndProcessOutput(messages, session);
         messages.messagesForEach(m -> assertNotNull(session.getSentMessageByToID(m.getId())));
     }
 
@@ -197,47 +167,13 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addRequest("request 7");
         List<Message<Long>> sentMessages = session.getSentMessages(Range.closed(1, messages.getMessageSize()));
         assertTrue(sentMessages.isEmpty());
-        messages.send(session);
-        processOutput(session);
+        sendAndProcessOutput(messages, session);
         sentMessages = session.getSentMessages(Range.closed(1, messages.getMessageSize()));
         assertEquals(messages.getMessageSize(), sentMessages.size());
         sentMessages = session.getSentMessages(Range.closed(1, 2));
         assertEquals(2, sentMessages.size());
         sentMessages = session.getSentMessages(Range.closed(1, messages.getMessageSize() + 10));
         assertEquals(messages.getMessageSize(), sentMessages.size());
-    }
-
-    @Test
-    public void hasInputEvent() {
-        NetSession<Long> session = createUnloginSession();
-        assertFalse(session.isHasInputEvent());
-        assertEquals(0, session.getInputEventSize());
-        TestMessages messages = new TestMessages(session)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", 2)
-                .addPing()
-                .addPing()
-                .addPing()
-                .addPong()
-                .addPong();
-        messages.receive(session);
-        assertTrue(session.isHasInputEvent());
-        assertEquals(messages.getMessageSize(), session.getInputEventSize());
-    }
-
-    @Test
-    public void hasOutputEvent() {
-        NetSession<Long> session = createUnloginSession();
-        assertFalse(session.isHasOutputEvent());
-        assertEquals(0, session.getOutputEventSize());
-        TestMessages messages = new TestMessages(session)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", 2);
-        messages.send(session);
-        assertTrue(session.isHasOutputEvent());
-        assertEquals(messages.getMessageSize(), session.getOutputEventSize());
     }
 
     @Test
@@ -270,39 +206,36 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         TestMessages reloginMessages;
         // session
         NetSession<Long> session = createLoginSession();
-        assertEquals(0, session.getInputEventSize());
 
         // 重登 session
         NetSession<Long> reloginSession = createLoginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginOk(session, reloginSession, reloginMessages.getMessageSize());
-        clearEvent(session);
+        assertReloginOk(session, reloginSession.getCurrentTunnel());
 
         // session 再次重登
         reloginSession = createLoginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginOk(session, reloginSession, reloginMessages.getMessageSize());
-        clearEvent(session);
+        assertReloginOk(session, reloginSession.getCurrentTunnel());
 
         // session 同个 sesion
         session = createLoginSession();
-        assertReloginOk(session, session, 0);
+        assertReloginOk(session, session.getCurrentTunnel());
 
         // session Unlogin 重登
         session = createUnloginSession();
         reloginSession = createLoginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginException(session, reloginSession);
+        assertReloginException(session, reloginSession.getCurrentTunnel());
 
         // session 重登 reloginSession Unlogin
         session = createUnloginSession();
         reloginSession = createUnloginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginException(session, reloginSession);
+        assertReloginException(session, reloginSession.getCurrentTunnel());
 
         // session Offline 重登
         session = createLoginSession();
@@ -310,7 +243,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         reloginSession = createLoginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginOk(session, reloginSession, reloginMessages.getMessageSize());
+        assertReloginOk(session, reloginSession.getCurrentTunnel());
 
         // session close 重登
         session = createLoginSession();
@@ -318,21 +251,21 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         reloginSession = createLoginSession();
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginException(session, reloginSession);
+        assertReloginException(session, reloginSession.getCurrentTunnel());
 
         // session 不一致 uid
         session = createLoginSession();
         reloginSession = createLoginSession(certificateId, uid + 10);
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginException(session, reloginSession);
+        assertReloginException(session, reloginSession.getCurrentTunnel());
 
         // session 不一致 certificateId
         session = createLoginSession();
         reloginSession = createLoginSession(certificateId + 10, uid);
         reloginMessages = createMessage(reloginSession);
         reloginMessages.receive(reloginSession);
-        assertReloginException(session, reloginSession);
+        assertReloginException(session, reloginSession.getCurrentTunnel());
 
     }
 
@@ -342,16 +275,16 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         TestMessages messages;
         NetSession<Long> session;
         NetTunnel<Long> tunnel;
-        InOrder order;
 
         // 接受Message
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         messages = new TestMessages(session)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         messages.receive(session);
-        assertEquals(messages.getMessageSize(), session.getInputEventSize());
+        verify(tunnel, times(messages.getMessageSize())).addInputEvent(any(MessageReceiveEvent.class));
 
         // 接受ping
         session = createLoginSession();
@@ -361,7 +294,6 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPing()
                 .addPing();
         messages.receive(session);
-        assertEquals(0, session.getInputEventSize());
         verify(tunnel, times(messages.getPingSize())).pong();
         verify(tunnel, times(messages.getPingSize())).isReceiveExclude(MessageMode.PING);
         verifyNoMoreInteractions(tunnel);
@@ -374,7 +306,6 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPong()
                 .addPong();
         messages.receive(session);
-        assertEquals(0, session.getInputEventSize());
         verify(tunnel, times(messages.getPongSize())).isReceiveExclude(MessageMode.PONG);
         verify(tunnel, never()).pong();
         verifyNoMoreInteractions(tunnel);
@@ -388,11 +319,11 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addResponse("response", 1);
         when(tunnel.isReceiveExclude(any())).thenReturn(true);
         messages.receive(session);
-        assertEquals(0, session.getInputEventSize());
         verify(tunnel, times(messages.getMessageSize())).isReceiveExclude(any(MessageMode.class));
         verify(tunnel, times(messages.getMessageSize())).getSession();
         // request 有返回
         verify(tunnel, times(1)).isSendExclude(MessageMode.RESPONSE);
+        verify(tunnel, times(1)).addOutputEvent(any(MessageOutputEvent.class));
         verifyNoMoreInteractions(tunnel);
 
         // 排除接受
@@ -406,32 +337,34 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addResponse("response", 1);
         when(tunnel.isReceiveExclude(any())).thenReturn(true);
         messages.receive(session);
-        assertEquals(0, session.getInputEventSize());
         verify(tunnel, times(messages.getMessageSize())).isReceiveExclude(any(MessageMode.class));
         verify(tunnel, times(messages.getMessageSize())).getSession();
         // request 有返回
         verify(tunnel, times(messages.getRequestSize())).isSendExclude(MessageMode.RESPONSE);
+        verify(tunnel, times(messages.getRequestSize())).addOutputEvent(any(MessageSendEvent.class));
         verifyNoMoreInteractions(tunnel);
 
         // 离线接受message
         session = createLoginSession();
         session.offline();
+        tunnel = mockNetTunnel(session);
         messages = new TestMessages(session)
                 .addPush("push")
                 .addPush("push")
                 .addPush("push");
         messages.receive(session);
-        assertEquals(messages.getMessageSize(), session.getInputEventSize());
+        verify(tunnel, times(messages.getMessageSize())).addInputEvent(any());
 
         // 关闭接受message
         session = createLoginSession();
         session.close();
+        tunnel = mockNetTunnel(session);
         messages = new TestMessages(session)
                 .addPush("push")
                 .addPush("push")
                 .addPush("push");
         messages.receive(session);
-        assertEquals(0, session.getInputEventSize());
+        verify(tunnel, never()).addInputEvent(any());
 
     }
 
@@ -442,14 +375,16 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         TestMessages messages;
         NetSession<Long> session;
         NetTunnel<Long> tunnel;
+
         // 发送 message
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         messages = new TestMessages(session)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         messages.send(session);
-        assertEquals(messages.getMessageSize(), session.getOutputEventSize());
+        verify(tunnel, times(messages.getMessageSize())).addOutputEvent(any(MessageSendEvent.class));
 
         // 排除发送
         session = createLoginSession();
@@ -460,28 +395,29 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addResponse("response", 1);
         messages.send(session);
-        assertEquals(0, session.getOutputEventSize());
         when(tunnel.isSendExclude(any())).thenReturn(false);
 
         // 离线发送message
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         session.offline();
         messages = new TestMessages(session)
                 .addPush("push")
                 .addPush("push")
                 .addPush("push");
         messages.send(session);
-        assertEquals(messages.getMessageSize(), session.getOutputEventSize());
+        verify(tunnel, times(messages.getMessageSize())).addOutputEvent(any(MessageSendEvent.class));
 
         // 关闭发送message
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         session.close();
         messages = new TestMessages(session)
                 .addPush("push")
                 .addPush("push")
                 .addPush("push");
         messages.send(session);
-        assertEquals(0, session.getOutputEventSize());
+        verify(tunnel, never()).addOutputEvent(any(MessageSendEvent.class));
 
         // 发送 futureWaitSend
         session = createLoginSession();
@@ -580,6 +516,8 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
             responses.addResponse("response", message.getId());
         });
         scheduleReceive(session, responses);
+
+
         messages.send(session);
         assertWaitResponseOK(messages);
 
@@ -615,23 +553,28 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
     public void resend() {
         ResendMessage<Long> message = ResendMessage.fromTo(1, 7);
         NetSession<Long> session;
+        NetTunnel<Long> tunnel;
 
         // 在线 resend
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         session.resend(message);
-        assertEquals(1, session.getOutputEventSize());
+        // assertEquals(1, session.getOutputEventSize());
+        verify(tunnel, times(1)).addOutputEvent(any(MessageResendEvent.class));
 
         // 离线 resend
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         session.offline();
         assertResendException(session, message, ExecutionException.class);
-        assertEquals(0, session.getOutputEventSize());
+        verify(tunnel, never()).addOutputEvent(any(MessageResendEvent.class));
 
         // 离线 resend
         session = createLoginSession();
+        tunnel = mockNetTunnel(session);
         session.close();
         assertResendException(session, message, ExecutionException.class);
-        assertEquals(0, session.getOutputEventSize());
+        verify(tunnel, never()).addOutputEvent(any(MessageResendEvent.class));
 
     }
 
@@ -640,7 +583,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
     public void write() throws TunnelWriteException {
         NetSession<Long> session;
         NetTunnel<Long> tunnel;
-        SessionSendEvent<Long> event;
+        MessageSendEvent<Long> event;
         MessageContent<Long> messageContent;
 
         // 正常写出
@@ -695,11 +638,11 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
     }
 
 
-    private void assertSendEventOk(NetSession<Long> session, SessionSendEvent<Long> event) {
+    private void assertSendEventOk(NetSession<Long> session, MessageSendEvent<Long> event) {
         TestAide.assertRunWithoutException("assertSendEventOk", () -> session.write(event));
     }
 
-    private void assertSendEventException(NetSession<Long> session, SessionSendEvent<Long> event, Class<? extends Exception> exceptionClass) {
+    private void assertSendEventException(NetSession<Long> session, MessageSendEvent<Long> event, Class<? extends Exception> exceptionClass) {
         try {
             session.write(event);
             fail("write success");
@@ -713,22 +656,25 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         }
     }
 
-
-    private NetTunnel<Long> mockNetTunnel(NetSession<Long> session) {
+    protected NetTunnel<Long> mockNetTunnel(NetSession<Long> session) {
         return session.getCurrentTunnel();
     }
 
-    private SessionSendEvent<Long> mockSendEvent() {
-        return as(Mockito.mock(SessionSendEvent.class));
+
+    private MessageSendEvent<Long> mockSendEvent() {
+        return as(Mockito.mock(MessageSendEvent.class));
     }
 
     private void scheduleReceive(NetSession<Long> session, TestMessages responses) {
         service.schedule(() -> {
+            @SuppressWarnings("unchecked")
+            ArgumentCaptor<MessageReceiveEvent<Long>> receiveEvent = captorAs(MessageReceiveEvent.class);
+            NetTunnel<Long> tunnel = mockNetTunnel(session);
             responses.messagesForEach(session::receive);
-            while (session.isHasInputEvent()) {
-                SessionInputEvent<Long> event = session.pollInputEvent();
-                if (event instanceof SessionReceiveEvent)
-                    ((SessionReceiveEvent<Long>) event).completeResponse();
+            verify(tunnel, times(responses.getMessageSize())).addInputEvent(receiveEvent.capture());
+            List<MessageReceiveEvent<Long>> events = receiveEvent.getAllValues();
+            for (MessageReceiveEvent<Long> event : events) {
+                event.completeResponse();
             }
         }, 50, TimeUnit.MILLISECONDS);
     }
@@ -737,20 +683,22 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         service.schedule(() -> responses.forEach(MessageContent::sendSuccess), 50, TimeUnit.MILLISECONDS);
     }
 
-    private void processOutput(NetSession<Long> session) {
-        while (session.isHasOutputEvent()) {
-            SessionOutputEvent<Long> event = session.pollOutputEvent();
-            switch (event.getEventType()) {
-                case MESSAGE: {
-                    SessionSendEvent<Long> sendEvent = (SessionSendEvent<Long>) event;
-                    TestAide.assertRunWithoutException("processOutput", () -> session.write(sendEvent));
-                }
+    private void sendAndProcessOutput(TestMessages messages, NetSession<Long> session) {
+        ArgumentCaptor<MessageOutputEvent<Long>> outputEvent = captorAs(MessageOutputEvent.class);
+        NetTunnel<Long> tunnel = mockNetTunnel(session);
+        messages.contentsForEach(session::send);
+        verify(tunnel, times(messages.getMessageSize())).addOutputEvent(outputEvent.capture());
+        List<MessageOutputEvent<Long>> events = outputEvent.getAllValues();
+        for (MessageOutputEvent<Long> event : events) {
+            if (event.getEventType() == SessionEventType.MESSAGE) {
+                MessageSendEvent<Long> sendEvent = (MessageSendEvent<Long>) event;
+                TestAide.assertRunWithoutException("processOutput", () -> session.write(sendEvent));
             }
         }
     }
 
-    private void scheduleSendSuccess(NetSession<Long> session) {
-        service.schedule(() -> processOutput(session), 50, TimeUnit.MILLISECONDS);
+    private void scheduleSendSuccess(TestMessages messages, NetSession<Long> session) {
+        service.schedule(() -> sendAndProcessOutput(messages, session), 50, TimeUnit.MILLISECONDS);
     }
 
 
@@ -787,17 +735,14 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 () -> content.messageFuture().get(300, TimeUnit.MILLISECONDS), exceptionClass));
     }
 
-    protected void assertReloginOk(NetSession<Long> session, NetSession<Long> reloginSession, int expectedInputEventSize) {
-        TestAide.assertRunWithoutException("assertReloginOk", () -> {
-            session.mergeSession(reloginSession);
-            assertEquals(expectedInputEventSize, session.getInputEventSize());
-        });
+    protected void assertReloginOk(NetSession<Long> session, NetTunnel<Long> newTunnel) {
+        TestAide.assertRunWithoutException("assertReloginOk", () -> session.acceptTunnel(newTunnel));
     }
 
 
-    protected void assertReloginException(NetSession<Long> session, NetSession<Long> reloginSession) {
+    protected void assertReloginException(NetSession<Long> session, NetTunnel<Long> newTunne) {
         TestAide.assertRunWithException("assertReloginException",
-                () -> session.mergeSession(reloginSession), ValidatorFailException.class);
+                () -> session.acceptTunnel(newTunne), ValidatorFailException.class);
     }
 
     protected void assertLoginOk(NetSession<Long> session, NetCertificate<Long> certificate) {
@@ -811,18 +756,80 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
         TestAide.assertRunWithException("assertLoginException", () -> session.login(certificate), ValidatorFailException.class);
     }
 
-    protected void clearEvent(NetSession<Long> session) {
-        while (session.isHasInputEvent())
-            session.pollInputEvent();
-        while (session.isHasOutputEvent())
-            session.pollOutputEvent();
-    }
-
     protected TestMessages createMessage(NetSession<Long> session) {
         return new TestMessages(session)
                 .addPush("request 1")
                 .addRequest("request 2")
                 .addRequest("request 3");
     }
+
+    // @Test
+    // public void pollInputEvent() {
+    //     NetSession<Long> session = createUnloginSession();
+    //     assertNull(session.pollInputEvent());
+    //     TestMessages messages = new TestMessages(session)
+    //             .addPush("request 1")
+    //             .addResponse("request 2", 1)
+    //             .addResponse("request 3", 1)
+    //             .addResponse("request 4", 1)
+    //             .addResponse("request 5", 1)
+    //             .addResponse("request 6", 1)
+    //             .addRequest("request 7");
+    //     messages.receive(session);
+    //     assertTrue(session.isHasInputEvent());
+    //     messages.messagesForEach(m -> assertNotNull(session.pollInputEvent()));
+    //     assertNull(session.pollInputEvent());
+    // }
+    //
+    // @Test
+    // public void pollOutputEvent() {
+    //     NetSession<Long> session = createUnloginSession();
+    //     assertNull(session.pollOutputEvent());
+    //     TestMessages messages = new TestMessages(session)
+    //             .addPush("request 1")
+    //             .addResponse("request 2", 1)
+    //             .addResponse("request 3", 1)
+    //             .addResponse("request 4", 1)
+    //             .addResponse("request 5", 1)
+    //             .addResponse("request 6", 1)
+    //             .addRequest("request 7");
+    //     messages.send(session);
+    //     assertTrue(session.isHasOutputEvent());
+    //     messages.messagesForEach(m -> assertNotNull(session.pollOutputEvent()));
+    //     assertNull(session.pollOutputEvent());
+    // }
+    //
+    // @Test
+    // public void hasInputEvent() {
+    //     NetSession<Long> session = createUnloginSession();
+    //     assertFalse(session.isHasInputEvent());
+    //     assertEquals(0, session.getInputEventSize());
+    //     TestMessages messages = new TestMessages(session)
+    //             .addPush("push")
+    //             .addRequest("request")
+    //             .addResponse("response", 2)
+    //             .addPing()
+    //             .addPing()
+    //             .addPing()
+    //             .addPong()
+    //             .addPong();
+    //     messages.receive(session);
+    //     assertTrue(session.isHasInputEvent());
+    //     assertEquals(messages.getMessageSize(), session.getInputEventSize());
+    // }
+    //
+    // @Test
+    // public void hasOutputEvent() {
+    //     NetSession<Long> session = createUnloginSession();
+    //     assertFalse(session.isHasOutputEvent());
+    //     assertEquals(0, session.getOutputEventSize());
+    //     TestMessages messages = new TestMessages(session)
+    //             .addPush("push")
+    //             .addRequest("request")
+    //             .addResponse("response", 2);
+    //     messages.send(session);
+    //     assertTrue(session.isHasOutputEvent());
+    //     assertEquals(messages.getMessageSize(), session.getOutputEventSize());
+    // }
 
 }

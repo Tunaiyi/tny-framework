@@ -25,12 +25,13 @@ public class SingleTunnelSessionTest extends NetSessionTest<TestSingleTunnelSess
 
     @Override
     protected TestSingleTunnelSession createUnloginSession(NetTunnel<Long> tunnel) {
-        SessionInputEventHandler<Long, NetSession<Long>> inputEventHandler = mockAs(SessionInputEventHandler.class);
-        SessionOutputEventHandler<Long, NetSession<Long>> outputEventHandler = mockAs(SessionOutputEventHandler.class);
+        MessageInputEventHandler<Long, NetTunnel<Long>> inputEventHandler = mockAs(MessageInputEventHandler.class);
+        MessageOutputEventHandler<Long, NetTunnel<Long>> outputEventHandler = mockAs(MessageOutputEventHandler.class);
         TestSingleTunnelSession session = new TestSingleTunnelSession(tunnel, unloginUid, inputEventHandler, outputEventHandler, 30);
         when(tunnel.getSession()).thenReturn(session);
         when(tunnel.getMessageBuilderFactory()).thenReturn(messageBuilderFactory);
         when(tunnel.close()).thenReturn(CommonStageableFuture.createFuture());
+        when(tunnel.getCertificate()).thenReturn(session.getCertificate());
         verify(tunnel, times(1)).bind(eq(session));
         return session;
     }
@@ -44,7 +45,7 @@ public class SingleTunnelSessionTest extends NetSessionTest<TestSingleTunnelSess
                 if (session.offlineIfCurrent(session.getCurrentTunnel()))
                     break;
             }
-            session.mergeSession(createLoginSession(certificateId, uid));
+            session.acceptTunnel(createLoginSession(certificateId, uid).getCurrentTunnel());
         });
         assertEquals(taskNum, session.getOfflineTimes());
         assertEquals(taskNum, session.getReloginTimes());
@@ -57,7 +58,7 @@ public class SingleTunnelSessionTest extends NetSessionTest<TestSingleTunnelSess
                 TestTask.runnableTask("closeParallelChangeStatue", 30, () -> {
                     session.offlineIfCurrent(session.getCurrentTunnel());
                     try {
-                        session.mergeSession(createLoginSession(certificateId, uid));
+                        session.acceptTunnel(createLoginSession(certificateId, uid).getCurrentTunnel());
                     } catch (ValidatorFailException ignored) {
                     }
                 }),
@@ -75,14 +76,14 @@ public class SingleTunnelSessionTest extends NetSessionTest<TestSingleTunnelSess
         private LongAdder closeTimes = new LongAdder();
 
 
-        public TestSingleTunnelSession(NetTunnel<Long> tunnel, Long unloginLong, SessionInputEventHandler<Long, NetSession<Long>> inputEventHandler, SessionOutputEventHandler<Long, NetSession<Long>> outputEventHandler, int cacheMessageSize) {
+        public TestSingleTunnelSession(NetTunnel<Long> tunnel, Long unloginLong, MessageInputEventHandler<Long, NetTunnel<Long>> inputEventHandler, MessageOutputEventHandler<Long, NetTunnel<Long>> outputEventHandler, int cacheMessageSize) {
             super(tunnel, unloginLong, inputEventHandler, outputEventHandler, cacheMessageSize);
         }
 
         @Override
-        NetTunnel<Long> doMergeSession(NetCertificate<Long> newCertificate, NetSession<Long> newSession) {
+        NetTunnel<Long> doAcceptTunnel(NetCertificate<Long> newCertificate, NetTunnel<Long> newTunnel) {
             reloginTimes.increment();
-            return super.doMergeSession(newCertificate, newSession);
+            return super.doAcceptTunnel(newCertificate, newTunnel);
         }
 
         @Override

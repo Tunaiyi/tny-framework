@@ -123,8 +123,8 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.sessionHolder = load(NetSessionHolder.class, this.sessionHolderName);
         this.sessionFactory = load(SessionFactory.class, this.sessionFactoryName);
         this.messageBuilderFactory = load(MessageBuilderFactory.class, this.messageBuilderFactoryName);
-        this.inputEventHandler = load(SessionInputEventHandler.class, this.inputEventHandlerName);
-        this.outputEventHandler = load(SessionOutputEventHandler.class, this.outputEventHandlerName);
+        this.inputEventHandler = load(MessageInputEventHandler.class, this.inputEventHandlerName);
+        this.outputEventHandler = load(MessageOutputEventHandler.class, this.outputEventHandlerName);
         this.dispatchCommandExecutor = load(DispatchCommandExecutor.class, this.dispatchCommandExecutorName);
         this.messageDispatcher = load(MessageDispatcher.class, this.messageDispatcherName);
         this.channelMaker = load(ChannelMaker.class, this.channelMakerName);

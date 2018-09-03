@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Created by Kun Yang on 2017/3/18.
  */
-public interface SessionEvent<UID> {
+public interface MessageEvent<UID> {
 
     enum SessionEventType {
 

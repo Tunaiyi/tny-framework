@@ -9,11 +9,11 @@ import java.util.Optional;
 /**
  * Created by Kun Yang on 2017/3/18.
  */
-public abstract class BaseSessionEvent<UID> implements SessionEvent<UID> {
+public abstract class BaseMessageEvent<UID> implements MessageEvent<UID> {
 
     protected Reference<NetTunnel<UID>> tunnel;
 
-    protected BaseSessionEvent(NetTunnel<UID> tunnel) {
+    protected BaseMessageEvent(NetTunnel<UID> tunnel) {
         this.tunnel = new WeakReference<>(tunnel);
     }
 

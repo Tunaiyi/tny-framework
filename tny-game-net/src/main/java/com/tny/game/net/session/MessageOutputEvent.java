@@ -7,6 +7,6 @@ package com.tny.game.net.session;
 /**
  * Session 输出事件
  */
-public interface SessionOutputEvent<UID> extends SessionEvent<UID> {
+public interface MessageOutputEvent<UID> extends MessageEvent<UID> {
 
 }

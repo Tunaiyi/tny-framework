@@ -7,7 +7,7 @@ import com.tny.game.net.tunnel.*;
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionReceiveEvent<UID> extends BaseSessionEvent<UID> implements SessionInputEvent<UID> {
+public class MessageReceiveEvent<UID> extends BaseMessageEvent<UID> implements MessageInputEvent<UID> {
 
     private SessionEventType eventType;
 
@@ -15,7 +15,7 @@ public class SessionReceiveEvent<UID> extends BaseSessionEvent<UID> implements S
 
     private RespondMessageFuture<UID> messageFuture;
 
-    public SessionReceiveEvent(NetTunnel<UID> tunnel, Message<UID> message, SessionEventType eventType, RespondMessageFuture<UID> messageFuture) {
+    public MessageReceiveEvent(NetTunnel<UID> tunnel, Message<UID> message, SessionEventType eventType, RespondMessageFuture<UID> messageFuture) {
         super(tunnel);
         this.message = message;
         this.eventType = eventType;

@@ -1,7 +1,7 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.common.concurrent.StageableFuture;
-import com.tny.game.net.common.AbstractNetTunnel;
+import com.tny.game.net.tunnel.AbstractNetTunnel;
 import com.tny.game.net.message.*;
 import com.tny.game.net.session.*;
 import io.netty.channel.Channel;
@@ -67,7 +67,6 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
     Channel getChannel() {
         return channel;
     }
-
 
     @Override
     public String toString() {

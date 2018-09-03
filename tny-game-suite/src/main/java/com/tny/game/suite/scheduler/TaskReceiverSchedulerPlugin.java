@@ -32,8 +32,8 @@ public class TaskReceiverSchedulerPlugin implements ControllerPlugin<Long> {
     public void execute(Tunnel<Long> tunnel, Message<Long> message, InvokeContext context) throws Exception {
         if (tunnel.getUserGroup().equals(SessionConstants.DEFAULT_USER_GROUP)) {
             if (IDAide.isSystem(message.getUserID())) {
-                Session<Long> session = tunnel.getSession();
-                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | session {} | 请求 {} 协议", message.getUserID(), message.isLogin(), session, message.getProtocol(), new RuntimeException());
+                Session<Long> session = tunnel.getEventsBox();
+                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | eventsBox {} | 请求 {} 协议", message.getUserID(), message.isLogin(), session, message.getProtocol(), new RuntimeException());
             } else {
                 try {
                     this.taskSchedulerService.checkPlayerTask(message.getUserID(), ReceiverType.PLAYER);

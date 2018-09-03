@@ -85,8 +85,8 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
         assertTrue(lastReadAt >= now);
 
         now = System.currentTimeMillis();
-        messages = new TestMessages(tunnel);
-        tunnel.receive(messages.createPushMessage("1000"));
+        MessageInputEvent<Long> inputEvent = mockAs(MessageInputEvent.class);
+        tunnel.addInputEvent(inputEvent);
         lastReadAt = tunnel.getLastReadAt();
         assertTrue(lastReadAt >= now);
     }
@@ -105,7 +105,8 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
 
         now = System.currentTimeMillis();
         messages = new TestMessages(tunnel);
-        tunnel.send(messages.createPushContent("1000"));
+        MessageOutputEvent<Long> outputEvent = mockAs(MessageOutputEvent.class);
+        tunnel.addOutputEvent(outputEvent);
         lastWriteAt = tunnel.getLastWriteAt();
         assertTrue(lastWriteAt >= now);
     }

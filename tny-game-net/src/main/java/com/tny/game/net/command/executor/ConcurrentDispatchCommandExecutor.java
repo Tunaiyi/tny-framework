@@ -1,24 +1,18 @@
 package com.tny.game.net.command.executor;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.config.Config;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.concurrent.ForkJoinPools;
 import com.tny.game.common.worker.command.Command;
-import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.session.Session;
 import com.tny.game.net.session.listener.SessionHolderListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.utils.NetConfigs;
+import org.slf4j.*;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Unit("ConcurrentDispatchCommandExecutor")
 public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecutor, SessionHolderListener {
@@ -59,7 +53,7 @@ public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecuto
     }
 
     @Override
-    public void submit(Session session, Command command) {
+    public void submit(NetTunnel<?> tunnel, Command command) {
         doSubmit(command);
     }
 

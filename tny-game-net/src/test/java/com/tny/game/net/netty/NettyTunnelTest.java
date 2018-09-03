@@ -18,8 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static test.MockAide.atLeastOnce;
 import static test.MockAide.*;
-import static test.MockAide.eq;
 import static test.MockAide.never;
 
 /**
@@ -116,114 +116,114 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         testPingPong(T::pong, MessageMode.PONG);
     }
 
-    @Override
-    public void send() throws InterruptedException {
-        T tunnel;
-        Channel channel;
-        NetSession<Long> session;
-        MessageContent<Long> content;
-        int sleepTime = 10;
-        long lastWriteAt;
-
-        tunnel = createLoginTunnel();
-        lastWriteAt = tunnel.getLastWriteAt();
-        session = mockTunnelSession(tunnel);
-        channel = mockTunnelChannel(tunnel);
-        content = mockAs(MessageContent.class);
-        when(channel.isActive()).thenReturn(true);
-        Thread.sleep(sleepTime);
-        tunnel.send(content);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).send(eq(tunnel), eq(content));
-        verifyNoMoreInteractions(session, channel);
-        assertTrue(tunnel.getLastWriteAt() >= lastWriteAt + sleepTime);
-
-
-        tunnel = createLoginTunnel();
-        lastWriteAt = tunnel.getLastWriteAt();
-        session = mockTunnelSession(tunnel);
-        content = mockAs(MessageContent.class);
-        channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        tunnel.send(content);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).send(eq(tunnel), eq(content));
-        verifyNoMoreInteractions(session, channel);
-        assertEquals(lastWriteAt, tunnel.getLastWriteAt());
-    }
-
-    @Override
-    public void receive() throws InterruptedException {
-        T tunnel;
-        Channel channel;
-        NetSession<Long> session;
-        Message<Long> message;
-        int sleepTime = 10;
-        long lastReadAt;
-
-        tunnel = createLoginTunnel();
-        lastReadAt = tunnel.getLastReadAt();
-        session = mockTunnelSession(tunnel);
-        channel = mockTunnelChannel(tunnel);
-        message = mockAs(Message.class);
-        when(channel.isActive()).thenReturn(true);
-        Thread.sleep(sleepTime);
-        tunnel.receive(message);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).receive(eq(tunnel), eq(message));
-        verifyNoMoreInteractions(session, channel);
-        assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
-
-
-        tunnel = createLoginTunnel();
-        lastReadAt = tunnel.getLastReadAt();
-        session = mockTunnelSession(tunnel);
-        message = mockAs(Message.class);
-        channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        tunnel.receive(message);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).receive(eq(tunnel), eq(message));
-        verifyNoMoreInteractions(session, channel);
-        assertEquals(lastReadAt, tunnel.getLastReadAt());
-
-    }
-
-    @Override
-    public void resend() throws InterruptedException {
-        T tunnel;
-        Channel channel;
-        NetSession<Long> session;
-        ResendMessage<Long> message;
-        int sleepTime = 10;
-        long lastReadAt;
-
-        tunnel = createLoginTunnel();
-        lastReadAt = tunnel.getLastReadAt();
-        session = mockTunnelSession(tunnel);
-        channel = mockTunnelChannel(tunnel);
-        message = mockAs(ResendMessage.class);
-        when(channel.isActive()).thenReturn(true);
-        Thread.sleep(sleepTime);
-        tunnel.resend(message);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).resend(eq(tunnel), eq(message));
-        verifyNoMoreInteractions(session, channel);
-        assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
-
-
-        tunnel = createLoginTunnel();
-        lastReadAt = tunnel.getLastReadAt();
-        session = mockTunnelSession(tunnel);
-        message = mockAs(ResendMessage.class);
-        channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        tunnel.resend(message);
-        verify(channel, times(1)).isActive();
-        verify(session, times(1)).resend(eq(tunnel), eq(message));
-        verifyNoMoreInteractions(session, channel);
-        assertEquals(lastReadAt, tunnel.getLastReadAt());
-    }
+    // @Override
+    // public void send() throws InterruptedException {
+    //     T tunnel;
+    //     Channel channel;
+    //     NetSession<Long> session;
+    //     MessageContent<Long> content;
+    //     int sleepTime = 10;
+    //     long lastWriteAt;
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastWriteAt = tunnel.getLastWriteAt();
+    //     session = mockTunnelSession(tunnel);
+    //     channel = mockTunnelChannel(tunnel);
+    //     content = mockAs(MessageContent.class);
+    //     when(channel.isActive()).thenReturn(true);
+    //     Thread.sleep(sleepTime);
+    //     tunnel.send(content);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).send(eq(tunnel), eq(content));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertTrue(tunnel.getLastWriteAt() >= lastWriteAt + sleepTime);
+    //
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastWriteAt = tunnel.getLastWriteAt();
+    //     session = mockTunnelSession(tunnel);
+    //     content = mockAs(MessageContent.class);
+    //     channel = mockTunnelChannel(tunnel);
+    //     when(channel.isActive()).thenReturn(false);
+    //     tunnel.send(content);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).send(eq(tunnel), eq(content));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertEquals(lastWriteAt, tunnel.getLastWriteAt());
+    // }
+    //
+    // @Override
+    // public void receive() throws InterruptedException {
+    //     T tunnel;
+    //     Channel channel;
+    //     NetSession<Long> session;
+    //     Message<Long> message;
+    //     int sleepTime = 10;
+    //     long lastReadAt;
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastReadAt = tunnel.getLastReadAt();
+    //     session = mockTunnelSession(tunnel);
+    //     channel = mockTunnelChannel(tunnel);
+    //     message = mockAs(Message.class);
+    //     when(channel.isActive()).thenReturn(true);
+    //     Thread.sleep(sleepTime);
+    //     tunnel.receive(message);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).receive(eq(tunnel), eq(message));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
+    //
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastReadAt = tunnel.getLastReadAt();
+    //     session = mockTunnelSession(tunnel);
+    //     message = mockAs(Message.class);
+    //     channel = mockTunnelChannel(tunnel);
+    //     when(channel.isActive()).thenReturn(false);
+    //     tunnel.receive(message);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).receive(eq(tunnel), eq(message));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertEquals(lastReadAt, tunnel.getLastReadAt());
+    //
+    // }
+    //
+    // @Override
+    // public void resend() throws InterruptedException {
+    //     T tunnel;
+    //     Channel channel;
+    //     NetSession<Long> session;
+    //     ResendMessage<Long> message;
+    //     int sleepTime = 10;
+    //     long lastReadAt;
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastReadAt = tunnel.getLastReadAt();
+    //     session = mockTunnelSession(tunnel);
+    //     channel = mockTunnelChannel(tunnel);
+    //     message = mockAs(ResendMessage.class);
+    //     when(channel.isActive()).thenReturn(true);
+    //     Thread.sleep(sleepTime);
+    //     tunnel.resend(message);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).resend(eq(tunnel), eq(message));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
+    //
+    //
+    //     tunnel = createLoginTunnel();
+    //     lastReadAt = tunnel.getLastReadAt();
+    //     session = mockTunnelSession(tunnel);
+    //     message = mockAs(ResendMessage.class);
+    //     channel = mockTunnelChannel(tunnel);
+    //     when(channel.isActive()).thenReturn(false);
+    //     tunnel.resend(message);
+    //     verify(channel, times(1)).isActive();
+    //     verify(session, times(1)).resend(eq(tunnel), eq(message));
+    //     verifyNoMoreInteractions(session, channel);
+    //     assertEquals(lastReadAt, tunnel.getLastReadAt());
+    // }
 
     protected Channel mockTunnelChannel(T tunnel) {
         return tunnel.getChannel();

@@ -59,7 +59,7 @@ public class NettyClient<UID> extends NettyApp implements Client<UID> {
             if (this.bootstrap != null)
                 return this.bootstrap;
             this.bootstrap = new Bootstrap();
-            NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
+            NettyChannelMessageHandler messageHandler = new NettyChannelMessageHandler(appConfiguration);
             ChannelInboundHandler channelRemoveHandler = new RemoveTunnelHandler();
             ChannelMaker<Channel> channelMaker = appConfiguration.getChannelMaker();
             this.bootstrap.group(workerGroup)

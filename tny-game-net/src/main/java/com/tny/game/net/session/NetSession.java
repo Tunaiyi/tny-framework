@@ -1,10 +1,8 @@
 package com.tny.game.net.session;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.event.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.listener.SessionListener;
 import com.tny.game.net.tunnel.*;
 
 import java.util.List;
@@ -14,35 +12,13 @@ import java.util.List;
  */
 public interface NetSession<UID> extends Session<UID> {
 
-    @SuppressWarnings("unchecked")
-    BindP1EventBus<SessionListener, Session, Tunnel> ON_ONLINE =
-            EventBuses.of(SessionListener.class, SessionListener::onOnline);
-
-    @SuppressWarnings("unchecked")
-    BindP1EventBus<SessionListener, Session, Tunnel> ON_OFFLINE =
-            EventBuses.of(SessionListener.class, SessionListener::onOffline);
-
-    @SuppressWarnings("unchecked")
-    BindP1EventBus<SessionListener, Session, Tunnel> ON_CLOSE =
-            EventBuses.of(SessionListener.class, SessionListener::onClose);
-
-    /**
-     * @return 弹出输入事件
-     */
-    SessionInputEvent<UID> pollInputEvent();
-
-    /**
-     * @return 弹出输出事件
-     */
-    SessionOutputEvent<UID> pollOutputEvent();
-
     /**
      * 通过响应ID寻找已发送消息
-     *
-     * @param toMessageID 响应ID
+     *ø
+     * @param messageId 响应ID
      * @return 返回消息
      */
-    Message<UID> getSentMessageByToID(int toMessageID);
+    Message<UID> getSentMessageByToID(int messageId);
 
     /**
      * 获取指定范围的已发送消息
@@ -51,26 +27,6 @@ public interface NetSession<UID> extends Session<UID> {
      * @return 获取消息列表
      */
     List<Message<UID>> getSentMessages(Range<Integer> range);
-
-    /**
-     * @return 是否有输入事件
-     */
-    boolean isHasInputEvent();
-
-    /**
-     * @return 是否有输出事件
-     */
-    boolean isHasOutputEvent();
-
-    /**
-     * @return 获取输入事件数量
-     */
-    int getInputEventSize();
-
-    /**
-     * @return 获取输出事件数量
-     */
-    int getOutputEventSize();
 
     /**
      * 使用指定认证登陆
@@ -82,9 +38,9 @@ public interface NetSession<UID> extends Session<UID> {
     /**
      * 使用指定认证登陆
      *
-     * @param session 指定认证
+     * @param tunnel 指定认证
      */
-    void mergeSession(NetSession<UID> session) throws ValidatorFailException;
+    void acceptTunnel(NetTunnel<UID> tunnel) throws ValidatorFailException;
 
     /**
      * 接收消息
@@ -120,7 +76,7 @@ public interface NetSession<UID> extends Session<UID> {
      *
      * @param event 事件
      */
-    void write(SessionSendEvent<UID> event) throws TunnelWriteException;
+    void write(MessageSendEvent<UID> event) throws TunnelWriteException;
 
     /**
      * session下线, 不立即失效

@@ -129,6 +129,7 @@ public final class TestAide {
         try {
             run.run();
         } catch (Throwable e) {
+            LOGGER.error("", e);
             failWith(name, e);
         }
     }
@@ -141,6 +142,7 @@ public final class TestAide {
         try {
             return run.call();
         } catch (Throwable e) {
+            LOGGER.error("" ,e);
             failWith(name, e);
         }
         return null;
@@ -157,6 +159,7 @@ public final class TestAide {
         if (StringUtils.isBlank(name)) {
             fail(StringAide.format("assert fail with other exception {} and message : {}", e.getClass(), e.getMessage()));
         } else {
+            LOGGER.error("", e);
             fail(StringAide.format("[{}] assert fail with other exception {} and message : {}", name, e.getClass(), e.getMessage()));
         }
     }

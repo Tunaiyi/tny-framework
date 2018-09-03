@@ -4,8 +4,6 @@ import com.tny.game.common.context.Attributes;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.tunnel.Tunnel;
 
-import java.time.Instant;
-
 /**
  * 用户会话对象 此对象从Socket链接便创建,保存用户链接后的属性对象,直到Socket断开连接
  *
@@ -17,16 +15,6 @@ public interface Session<UID> extends Communicator<UID> {
      * @return 会话ID
      */
     long getId();
-
-    /**
-     * @return 登陆时间
-     */
-    Instant getLoginAt();
-
-    /**
-     * @return 是否登錄
-     */
-    boolean isLogin();
 
     /**
      * @return 获取会话属性
@@ -46,11 +34,6 @@ public interface Session<UID> extends Communicator<UID> {
      * @return 连接返回true 否则返回false
      */
     boolean isOffline();
-
-    /**
-     * @return 登陆凭证
-     */
-    NetCertificate<UID> getCertificate();
 
     /**
      * @return 获取下线时间

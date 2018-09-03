@@ -3,7 +3,6 @@ package com.tny.game.net.session;
 import com.tny.game.common.context.Attributes;
 import org.junit.*;
 
-import java.time.Instant;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,15 +40,6 @@ public abstract class SessionTest<S extends Session<Long>> extends CommunicatorT
         S session3 = createUnloginSession();
         assertEquals(1, session2.getId() - session1.getId());
         assertEquals(1, session3.getId() - session2.getId());
-    }
-
-    @Test
-    public void getLoginAt() {
-        Instant now = Instant.now();
-        S loginSession = createLoginSession();
-        S unloginSession = createUnloginSession();
-        assertFalse(loginSession.getLoginAt().isBefore(now));
-        assertFalse(unloginSession.getLoginAt().isBefore(now));
     }
 
     @Test
@@ -127,5 +117,14 @@ public abstract class SessionTest<S extends Session<Long>> extends CommunicatorT
         session.close();
         assertNotNull(session.getCurrentTunnel());
     }
+
+    @Test
+    public abstract void send() throws InterruptedException;
+
+    @Test
+    public abstract void receive() throws InterruptedException;
+
+    @Test
+    public abstract void resend() throws InterruptedException;
 
 }

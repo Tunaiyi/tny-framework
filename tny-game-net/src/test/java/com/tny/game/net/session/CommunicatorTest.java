@@ -49,15 +49,6 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
     }
 
     @Test
-    public abstract void send() throws InterruptedException;
-
-    @Test
-    public abstract void receive() throws InterruptedException;
-
-    @Test
-    public abstract void resend() throws InterruptedException;
-
-    @Test
     public void isClosed() {
         C unloginCommunicator = unloginCommunicator();
         Assert.assertFalse(unloginCommunicator.isClosed());

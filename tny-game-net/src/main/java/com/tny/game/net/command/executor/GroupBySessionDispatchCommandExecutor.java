@@ -1,29 +1,21 @@
 package com.tny.game.net.command.executor;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.config.Config;
-import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttrKeys;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.concurrent.ForkJoinPools;
+import com.tny.game.common.context.*;
 import com.tny.game.common.worker.command.Command;
-import com.tny.game.net.utils.NetConfigs;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.command.RunnableCommand;
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.MessageCommandBox;
 import com.tny.game.net.netty.NettyAttrKeys;
-import com.tny.game.net.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.session.*;
+import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.utils.NetConfigs;
+import org.slf4j.*;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Unit("GroupBySessionDispatchCommandExecutor")
@@ -61,7 +53,8 @@ public class GroupBySessionDispatchCommandExecutor implements DispatchCommandExe
     }
 
     @Override
-    public void submit(Session session, Command command) {
+    public void submit(NetTunnel<?> tunnel, Command command) {
+        NetSession<?> session = tunnel.getSession();
         ChildExecutor executor = session.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
         if (executor == null) {
             executor = new ChildExecutor(this.executorService);

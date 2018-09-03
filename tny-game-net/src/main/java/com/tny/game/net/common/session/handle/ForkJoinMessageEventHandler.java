@@ -11,13 +11,12 @@ import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.tunnel.*;
 import org.slf4j.*;
 
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 
 import static com.tny.game.net.utils.NetConfigs.*;
 
@@ -25,9 +24,9 @@ import static com.tny.game.net.utils.NetConfigs.*;
  * Created by Kun Yang on 2017/3/18.
  */
 @Unit("ForkJoinSessionEventHandler")
-public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> implements SessionInputEventHandler<UID, S>, SessionOutputEventHandler<UID, S> {
+public class ForkJoinMessageEventHandler<UID, T extends NetTunnel<UID>> implements MessageInputEventHandler<UID, T>, MessageOutputEventHandler<UID, T> {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ForkJoinSessionEventHandler.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ForkJoinMessageEventHandler.class);
 
     private static final String POOL_NAME = "SessionEventHandlerThread";
 
@@ -35,59 +34,64 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
 
     private ForkJoinPool forkJoinPool;
 
-    private final static AttrKey<AtomicBoolean> HANDLE_INPUT_STATE = AttrKeys.key(ForkJoinSessionEventHandler.class, "HANDLE_INPUT_STATE");
-    private final static AttrKey<AtomicBoolean> HANDLE_OUTPUT_STATE = AttrKeys.key(ForkJoinSessionEventHandler.class, "HANDLE_OUTPUT_STATE");
+    private final static AttrKey<AtomicBoolean> HANDLE_INPUT_STATE = AttrKeys.key(ForkJoinMessageEventHandler.class, "HANDLE_INPUT_STATE");
+    private final static AttrKey<AtomicBoolean> HANDLE_OUTPUT_STATE = AttrKeys.key(ForkJoinMessageEventHandler.class, "HANDLE_OUTPUT_STATE");
 
-    public ForkJoinSessionEventHandler(AppConfiguration appConfiguration) {
+    public ForkJoinMessageEventHandler(AppConfiguration appConfiguration) {
         Config config = appConfiguration.getProperties();
         this.appConfiguration = appConfiguration;
         this.forkJoinPool = ForkJoinPools.pool(config.getInt(SESSION_EXECUTOR_THREADS, SESSION_EXECUTOR_DEFAULT_THREADS), POOL_NAME);
     }
 
-    private AtomicBoolean getHandleState(AttrKey<AtomicBoolean> key, S session) {
-        AtomicBoolean state = session.attributes().getAttribute(key);
+    private AtomicBoolean getHandleState(AttrKey<AtomicBoolean> key, T tunnel) {
+        AtomicBoolean state = tunnel.attributes().getAttribute(key);
         if (state == null) {
-            synchronized (session) {
-                state = session.attributes().getAttribute(key);
+            synchronized (tunnel) {
+                state = tunnel.attributes().getAttribute(key);
                 if (state != null)
                     return state;
                 state = new AtomicBoolean(false);
-                session.attributes().setAttribute(key, state);
+                tunnel.attributes().setAttribute(key, state);
             }
         }
         return state;
     }
 
     @Override
-    public void onInput(S session) {
-        AtomicBoolean handled = getHandleState(HANDLE_INPUT_STATE, session);
+    public void onInput(T tunnel) {
+        AtomicBoolean handled = getHandleState(HANDLE_INPUT_STATE, tunnel);
         if (handled.get())
             return;
         if (handled.compareAndSet(false, true)) {
-            doInput(handled, session);
+            doInput(handled, tunnel);
         }
     }
 
     @Override
-    public void onOutput(S session) {
-        AtomicBoolean handled = getHandleState(HANDLE_OUTPUT_STATE, session);
+    public void onOutput(T tunnel) {
+        AtomicBoolean handled = getHandleState(HANDLE_OUTPUT_STATE, tunnel);
         if (handled.get())
             return;
         if (handled.compareAndSet(false, true)) {
-            forkJoinPool.submit(() -> doOutput(handled, session));
+            forkJoinPool.submit(() -> {
+                doOutput(handled, tunnel);
+                if (tunnel.getEventsBox().isHasOutputEvent())
+                    onOutput(tunnel);
+            });
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void doInput(AtomicBoolean handled, S session) {
+    private void doInput(AtomicBoolean handled, T tunnel) {
         try {
-            while (session.isHasInputEvent()) {
-                SessionInputEvent event = session.pollInputEvent();
+            MessageEventsBox<UID> eventsBox = tunnel.getEventsBox();
+            while (eventsBox.isHasInputEvent()) {
+                MessageInputEvent event = eventsBox.pollInputEvent();
                 if (event != null) {
                     try {
                         switch (event.getEventType()) {
                             case MESSAGE:
-                                handleMessageEvent(session, (SessionReceiveEvent<UID>) event);
+                                handleMessageEvent((MessageReceiveEvent<UID>) event);
                         }
                     } catch (Throwable e) {
                         LOGGER.error("", e);
@@ -99,49 +103,42 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         }
     }
 
-    private void tryHandle(AttrKey<AtomicBoolean> key, S session, BiConsumer<AtomicBoolean, S> consumer) {
-        AtomicBoolean handled = getHandleState(key, session);
-        if (handled.get())
-            return;
-        if (handled.compareAndSet(false, true)) {
-            forkJoinPool.submit(() -> consumer.accept(handled, session));
-        }
-    }
-
-    private void handleMessageEvent(S session, SessionReceiveEvent<UID> event) {
+    private void handleMessageEvent(MessageReceiveEvent<UID> event) {
         MessageDispatcher messageDispatcher = appConfiguration.getMessageDispatcher();
         DispatchCommandExecutor commandExecutor = appConfiguration.getDispatchCommandExecutor();
         Message<UID> message = event.getMessage();
         NetTunnel<UID> tunnel = event.getTunnel().orElse(null);
         if (tunnel != null) {
+            NetSession<UID> session = tunnel.getSession();
             if (message.getMode() == MessageMode.RESPONSE)
                 event.completeResponse();
             try {
                 Command command = messageDispatcher.dispatch(message, tunnel);
-                commandExecutor.submit(session, command);
+                commandExecutor.submit(tunnel, command);
             } catch (DispatchException e) {
                 if (message.getMode() == MessageMode.REQUEST)
-                    session.send(MessageContent.toResponse(message.getHeader(), e.getResultCode()));
+                    session.send(tunnel, MessageContent.toResponse(message.getHeader(), e.getResultCode()));
                 LOGGER.error("#ThreadPoolSessionInputEvetHandler#处理InputEvent异常", e);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void doOutput(AtomicBoolean handled, S session) {
+    private void doOutput(AtomicBoolean handled, T tunnel) {
+        MessageEventsBox<UID> eventsBox = tunnel.getEventsBox();
         try {
-            while (session.isHasOutputEvent()) {
-                SessionOutputEvent<UID> event = session.pollOutputEvent();
+            while (eventsBox.isHasOutputEvent()) {
+                MessageOutputEvent<UID> event = eventsBox.pollOutputEvent();
                 if (event != null) {
                     try {
                         switch (event.getEventType()) {
                             case MESSAGE:
-                                if (event instanceof SessionSendEvent)
-                                    doOutputMessage(session, (SessionSendEvent<UID>) event);
+                                if (event instanceof MessageSendEvent)
+                                    doOutputMessage(tunnel, (MessageSendEvent<UID>) event);
                                 break;
                             case RESEND:
-                                if (event instanceof SessionResendEvent)
-                                    doOutputResend(session, (SessionResendEvent<UID>) event);
+                                if (event instanceof MessageResendEvent)
+                                    doOutputResend(tunnel, (MessageResendEvent<UID>) event);
                                 break;
                             default:
                                 break;
@@ -156,11 +153,12 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         }
     }
 
-    private void doOutputMessage(S session, SessionSendEvent<UID> event) {
+    private void doOutputMessage(T tunnel, MessageSendEvent<UID> event) {
         try {
-            if (session.isClosed()) {
+            if (tunnel.isClosed()) {
                 throw new NetException("session is close");
             } else {
+                NetSession<UID> session = tunnel.getSession();
                 session.write(event);
             }
         } catch (Exception e) {
@@ -169,24 +167,20 @@ public class ForkJoinSessionEventHandler<UID, S extends NetSession<UID>> impleme
         }
     }
 
-    private void doOutputResend(S session, SessionResendEvent<UID> event) {
-        if (session.isClosed()) {
+    private void doOutputResend(T tunnel, MessageResendEvent<UID> event) {
+        if (tunnel.isClosed()) {
             NetException exception = new NetException("session is close");
             event.resendFailed(exception);
         } else {
-            NetTunnel<UID> tunnel = event.getTunnel().orElse(null);
-            if (tunnel != null) {
-                try {
-                    List<Message<UID>> resendMessages = session.getSentMessages(event.getResendRange());
-                    for (Message<UID> message : resendMessages) {
-                        tunnel.write(message, null);
-                    }
-                    event.resendSuccess(tunnel, resendMessages);
-                } catch (Throwable e) {
-                    event.resendFailed(e);
+            NetSession<UID> session = tunnel.getSession();
+            try {
+                List<Message<UID>> resendMessages = session.getSentMessages(event.getResendRange());
+                for (Message<UID> message : resendMessages) {
+                    tunnel.write(message, null);
                 }
-            } else {
-                event.resendFailed(new NetException("tunnel is close"));
+                event.resendSuccess(tunnel, resendMessages);
+            } catch (Throwable e) {
+                event.resendFailed(e);
             }
         }
     }

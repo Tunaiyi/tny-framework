@@ -6,6 +6,7 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.session.*;
+import com.tny.game.net.tunnel.NetTunnel;
 
 public interface AppConfiguration extends AppContext {
 
@@ -17,9 +18,9 @@ public interface AppConfiguration extends AppContext {
 
     <T> MessageBuilderFactory<T> getMessageBuilderFactory();
 
-    <T, S extends NetSession<T>> SessionOutputEventHandler<T, S> getOutputEventHandler();
+    <T, S extends NetTunnel<T>> MessageOutputEventHandler<T, S> getOutputEventHandler();
 
-    <T, S extends NetSession<T>> SessionInputEventHandler<T, S> getInputEventHandler();
+    <T, S extends NetTunnel<T>> MessageInputEventHandler<T, S> getInputEventHandler();
 
     DispatchCommandExecutor getDispatchCommandExecutor();
 

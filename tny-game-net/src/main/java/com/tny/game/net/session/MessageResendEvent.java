@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class SessionResendEvent<UID> extends BaseSessionEvent<UID> implements SessionOutputEvent<UID> {
+public class MessageResendEvent<UID> extends BaseMessageEvent<UID> implements MessageOutputEvent<UID> {
 
     private ResendMessage<UID> message;
 
-    public SessionResendEvent(NetTunnel<UID> tunnel, ResendMessage<UID> message) {
+    public MessageResendEvent(NetTunnel<UID> tunnel, ResendMessage<UID> message) {
         super(tunnel);
         this.message = message;
     }

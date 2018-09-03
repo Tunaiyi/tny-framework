@@ -48,7 +48,7 @@ public class NettyServer extends NettyApp implements Server {
                 return this.bootstrap;
             this.bootstrap = new ServerBootstrap();
             ChannelMaker<Channel> channelMaker = this.appConfiguration.getChannelMaker();
-            NettyMessageHandler messageHandler = new NettyMessageHandler(appConfiguration);
+            NettyChannelMessageHandler messageHandler = new NettyChannelMessageHandler(appConfiguration);
             this.bootstrap.group(parentGroup, childGroup)
                     .channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)

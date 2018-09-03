@@ -3,7 +3,7 @@ package com.tny.game.suite.net.spring;
 import com.tny.game.common.config.Config;
 import com.tny.game.net.command.checker.*;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.common.session.handle.ForkJoinSessionEventHandler;
+import com.tny.game.net.common.session.handle.ForkJoinMessageEventHandler;
 import com.tny.game.net.message.MessageBuilderFactory;
 import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.net.netty.NettyAppConfiguration;
@@ -40,8 +40,8 @@ public class NetBaseBeanFactory {
     }
 
     @Bean(name = "sessionEventHandler")
-    public ForkJoinSessionEventHandler getSessionEventHandler() {
-        return new ForkJoinSessionEventHandler(this.appConfiguration);
+    public ForkJoinMessageEventHandler getSessionEventHandler() {
+        return new ForkJoinMessageEventHandler(this.appConfiguration);
     }
 
     @Bean(name = "messageDispatcher")

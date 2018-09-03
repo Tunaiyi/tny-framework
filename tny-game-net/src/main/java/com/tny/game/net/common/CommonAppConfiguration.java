@@ -40,12 +40,12 @@ public class CommonAppConfiguration extends AbstractAppConfiguration {
         return this;
     }
 
-    public CommonAppConfiguration setInputEventHandler(SessionInputEventHandler inputEventHandler) {
+    public CommonAppConfiguration setInputEventHandler(MessageInputEventHandler inputEventHandler) {
         this.inputEventHandler = inputEventHandler;
         return this;
     }
 
-    public CommonAppConfiguration setOutputEventHandler(SessionOutputEventHandler outputEventHandler) {
+    public CommonAppConfiguration setOutputEventHandler(MessageOutputEventHandler outputEventHandler) {
         this.outputEventHandler = outputEventHandler;
         return this;
     }

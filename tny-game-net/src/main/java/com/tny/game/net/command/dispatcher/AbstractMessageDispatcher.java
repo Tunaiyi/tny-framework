@@ -580,8 +580,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                 // 是否需要做登录校验,判断是否已经登录
                 if (loginInfo != null && loginInfo.isLogin()) {
                     this.tunnel.getSession().login(loginInfo);
-                    NetSessionHolder sessionHolder = appConfiguration.getSessionHolder();
-                    sessionHolder.online(this.tunnel, loginInfo);
+                    // NetSessionHolder sessionHolder = appConfiguration.getSessionHolder();
+                    // sessionHolder.online(this.tunnel, loginInfo);
                 }
             }
         }

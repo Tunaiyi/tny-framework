@@ -7,7 +7,7 @@ import com.tny.game.suite.login.GameTicket;
 import com.tny.game.suite.login.ServerTicket;
 
 /**
- * session key 常量
+ * eventsBox key 常量
  * Created by Kun Yang on 16/1/27.
  */
 public interface AttributesKeys {

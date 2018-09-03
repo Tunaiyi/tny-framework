@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.utils.NetConfigs.*;
 
 @Unit("CommonSessionHolder")
@@ -49,9 +49,9 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         this.offlineSessionMaxSize = offlineSessionMaxSize;
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
-        NetSession.ON_OFFLINE.add((session, tunnel) -> onOffline(session));
-        NetSession.ON_ONLINE.add((session, tunnel) -> onOnline(session));
-        NetSession.ON_CLOSE.add((session, tunnel) -> onClose(session));
+        SessionEvents.ON_OFFLINE.add((session, tunnel) -> onOffline(session));
+        SessionEvents.ON_ONLINE.add((session, tunnel) -> onOnline(session));
+        SessionEvents.ON_CLOSE.add((session, tunnel) -> onClose(session));
     }
 
     private Queue<NetSession> offlineSessionQueue(String group) {
@@ -190,29 +190,29 @@ public class CommonSessionHolder extends AbstractNetSessionHolder {
         NetSession<U> oldSession = getNetSession(cert.getUserGroup(), cert.getUserId());
         if (oldSession == session)
             return true;
-        if (cert.isRelogin()) { // 处理重登
-            doSessionMerge(session, oldSession);
-        } else { // 处理登录
-            doSessionLogin(cert, session, oldSession);
+        if (cert.isNewSession()) { // 原有 Session 接受新 Tunnel
+            doAcceptTunnel(tunnel, oldSession);
+        } else { // 增加新 Session
+            doNewSession(cert, session, oldSession);
         }
         return true;
     }
 
-    private <U> void doSessionMerge(NetSession<U> session, NetSession<U> oldSession) throws ValidatorFailException {
-        if (oldSession == null) { // 旧 session 失效
-            LOG.warn("旧session {} 已经丢失", session.getUid());
+    private <U> void doAcceptTunnel(NetTunnel<U> newTunnel, NetSession<U> existSession) throws ValidatorFailException {
+        if (existSession == null) { // 旧 session 失效
+            LOG.warn("旧session {} 已经丢失", newTunnel.getUid());
             throw new ValidatorFailException(NetResponseCode.SESSION_LOSS);
         }
-        if (oldSession.isClosed()) { // 旧 session 已经关闭(失效)
-            LOG.warn("旧session {} 已经关闭", session.getUid());
+        if (existSession.isClosed()) { // 旧 session 已经关闭(失效)
+            LOG.warn("旧session {} 已经关闭", newTunnel.getUid());
             throw new ValidatorFailException(NetResponseCode.SESSION_LOSS);
         }
-        oldSession.offline(); // 将旧 session 的 Tunnel T 下线
-        oldSession.mergeSession(session);
+        existSession.offline(); // 将旧 session 的 Tunnel T 下线
+        existSession.acceptTunnel(newTunnel);
     }
 
     @SuppressWarnings("unchecked")
-    private <U> void doSessionLogin(NetCertificate<U> cert, NetSession<U> session, NetSession<U> oldSession) throws ValidatorFailException {
+    private <U> void doNewSession(NetCertificate<U> cert, NetSession<U> session, NetSession<U> oldSession) throws ValidatorFailException {
         if (oldSession != null) { // 如果旧 session 存在
             NetCertificate<?> oldCert = oldSession.getCertificate();
             if (cert.getId() < oldCert.getId()) { // 判断当前授权 ID 是旧的, 如果是旧的则无法登录
