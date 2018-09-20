@@ -1,14 +1,12 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.common.concurrent.StageableFuture;
-import com.tny.game.net.tunnel.AbstractNetTunnel;
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.*;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Future;
 
 import java.net.InetSocketAddress;
-import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -18,15 +16,9 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
 
     protected Channel channel;
 
-    protected NettyTunnel(Channel channel) {
-        super();
+    protected NettyTunnel(Channel channel, Certificate<UID> certificate) {
+        super(certificate);
         this.channel = channel;
-    }
-
-    protected NettyTunnel(Channel channel, SessionFactory<UID> sessionFactory, MessageBuilderFactory<UID> messageBuilderFactory) {
-        super();
-        this.channel = channel;
-        this.init(sessionFactory, messageBuilderFactory);
     }
 
     @Override
@@ -42,21 +34,25 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
     @Override
     public StageableFuture<Void> close() {
         CommonStageableFuture<Void> future = CommonStageableFuture.createFuture();
-        this.channel.close().addListener(f -> this.handleClose(f, future.future()));
+        try {
+            this.channel.close().addListener(f -> this.handleClose(f, future.future()));
+        } catch (Throwable e) {
+            LOGGER.error("", e);
+            future.future().completeExceptionally(e);
+        }
         return future;
     }
 
     private void handleClose(Future<?> future, CompletableFuture<Void> tunnelFuture) {
         if (future.isSuccess()) {
-            sessionOffline();
+            // NetSession<UID> session = this.session;
+            // if (session != null)
+            //     session.offlineIfCurrent(this);
             tunnelFuture.complete(null);
+            this.destroyFutureHolder();
+        } else {
+            tunnelFuture.completeExceptionally(future.cause());
         }
-    }
-
-    private void sessionOffline() {
-        NetSession<UID> session = this.session;
-        if (session != null)
-            session.offlineIfCurrent(this);
     }
 
     @Override
@@ -69,10 +65,26 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
     }
 
     @Override
-    public String toString() {
-        return new StringJoiner(", ", NettyTunnel.class.getSimpleName() + "[", "]")
-                .add("channel=" + channel)
-                .add("session=" + session)
-                .toString();
+    protected NettyTunnel<UID> setMessageBuilderFactory(MessageBuilderFactory<UID> messageBuilderFactory) {
+        super.setMessageBuilderFactory(messageBuilderFactory);
+        return this;
     }
+
+    @Override
+    protected NettyTunnel<UID> setInputEventHandler(MessageInputEventHandler<UID, NetTunnel<UID>> inputEventHandler) {
+        super.setInputEventHandler(inputEventHandler);
+        return this;
+    }
+
+    @Override
+    protected NettyTunnel<UID> setOutputEventHandler(MessageOutputEventHandler<UID, NetTunnel<UID>> outputEventHandler) {
+        super.setOutputEventHandler(outputEventHandler);
+        return this;
+    }
+
+    protected NettyTunnel<UID> setChannel(Channel channel) {
+        this.channel = channel;
+        return this;
+    }
+
 }

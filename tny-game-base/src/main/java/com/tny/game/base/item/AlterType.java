@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.base.exception.ItemResultCode;
 import com.tny.game.base.exception.StuffAlertException;
 import com.tny.game.common.number.NumberAide;
@@ -27,7 +27,7 @@ public enum AlterType {
                         model,
                         number,
                         alertNum,
-                        Logs.format("玩家({}) 物品[{}]数量为 {},不够扣除 {}", playerID, model.getID(), number, alertNum));
+                        format("玩家({}) 物品[{}]数量为 {},不够扣除 {}", playerID, model.getID(), number, alertNum));
             Number countNumber, currentNum;
             countNumber = currentNum = number;
             countNumber = sub(countNumber, alertNum);
@@ -44,21 +44,21 @@ public enum AlterType {
                         model,
                         number,
                         alertNum,
-                        Logs.format("玩家({}) 物品[{}]数量为 {},增加 {} 会超过上限 {}", playerID, model.getID(), number, alertNum, limit));
+                        format("玩家({}) 物品[{}]数量为 {},增加 {} 会超过上限 {}", playerID, model.getID(), number, alertNum, limit));
             return alertNum;
         }
 
         @Override
         public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}扣除物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}扣除物品数量{}小于0", model.getID(), alertNum));
             return greater(alertNum, number);
         }
 
         @Override
         public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}接受物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}接受物品数量{}小于0", model.getID(), alertNum));
             return greater(limit, -1) && greater(add(alertNum, number), limit);
         }
 
@@ -86,14 +86,14 @@ public enum AlterType {
         @Override
         public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}扣除物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}扣除物品数量{}小于0", model.getID(), alertNum));
             return false;
         }
 
         @Override
         public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}接受物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}接受物品数量{}小于0", model.getID(), alertNum));
             return false;
         }
     },
@@ -124,14 +124,14 @@ public enum AlterType {
         @Override
         public boolean overLowerLimit(ItemModel model, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}扣除物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}扣除物品数量{}小于0", model.getID(), alertNum));
             return false;
         }
 
         @Override
         public boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum) {
             if (less(alertNum, 0))
-                throw new IllegalArgumentException(Logs.format("{}接受物品数量{}小于0", model.getID(), alertNum));
+                throw new IllegalArgumentException(format("{}接受物品数量{}小于0", model.getID(), alertNum));
             return false;
         }
     };
@@ -151,7 +151,7 @@ public enum AlterType {
             if (type.ID == value)
                 return type;
         }
-        throw new NullPointerException(Logs.format(
+        throw new NullPointerException(format(
                 "ID 为 {} 的 {} 不能存在", value, AlterType.class));
     }
 

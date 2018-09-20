@@ -13,8 +13,9 @@ public class CommonMessageDispatcher extends AbstractMessageDispatcher {
         super(appConfiguration);
     }
 
+    @Override
     public void addController(Collection<Object> controller) {
-        controller.forEach(c -> addController(c));
+        controller.forEach(this::addController);
     }
 
 }

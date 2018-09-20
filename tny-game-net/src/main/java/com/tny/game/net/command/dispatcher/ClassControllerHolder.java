@@ -4,11 +4,11 @@ import com.google.common.collect.*;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.transport.message.MessageMode;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -33,7 +33,7 @@ public final class ClassControllerHolder extends ControllerHolder {
                 executor.getClass().getAnnotation(Controller.class),
                 executor.getClass().getAnnotationsByType(BeforePlugin.class),
                 executor.getClass().getAnnotationsByType(AfterPlugin.class),
-                executor.getClass().getAnnotation(Auth.class),
+                executor.getClass().getAnnotation(AuthenticationRequired.class),
                 executor.getClass().getAnnotationsByType(Check.class),
                 executor.getClass().getAnnotation(MessageFilter.class),
                 executor.getClass().getAnnotation(AppProfile.class),
@@ -63,7 +63,7 @@ public final class ClassControllerHolder extends ControllerHolder {
             if (holder.getID() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
                 if (last != null)
-                    throw new IllegalArgumentException(Logs.format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
+                    throw new IllegalArgumentException(format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.tny.game.net.netty.coder;
 
-import com.tny.game.net.message.protoex.ProtoExMessageCoder;
+import com.tny.game.net.transport.message.protoex.ProtoExMessageCoder;
 import com.tny.game.net.netty.DecoderHandler;
 import com.tny.game.net.netty.EncodeHandler;
 import io.netty.channel.Channel;

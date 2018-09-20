@@ -1,11 +1,11 @@
 package com.tny.game.common.lifecycle;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.utils.ObjectAide;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 初始化器
@@ -34,7 +34,7 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
     static void putLifecycle(Class<? extends Lifecycle> lifecycleClass, Lifecycle<?, ?> initer) {
         Lifecycle old = map(lifecycleClass).put(initer.getHandlerClass(), initer);
         if (old != null)
-            throw new IllegalArgumentException(Logs.format("{} 已经存在 {}, 无法添加 {}", initer.getHandlerClass(), old, initer));
+            throw new IllegalArgumentException(format("{} 已经存在 {}, 无法添加 {}", initer.getHandlerClass(), old, initer));
     }
 
     static <I extends Lifecycle> I getLifecycle(Class<? extends Lifecycle> lifecycleClass, Class<?> initerClass) {
@@ -72,9 +72,9 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
 
     public L append(L initer) {
         if (next != null)
-            throw new IllegalArgumentException(Logs.format("{} next is exist {}", this, this.next));
+            throw new IllegalArgumentException(format("{} next is exist {}", this, this.next));
         if (initer.getPriority() > this.getPriority())
-            throw new IllegalArgumentException(Logs.format("{} [{}] prior to {} [{}]", initer, initer.getPriority(), this, this.getPriority()));
+            throw new IllegalArgumentException(format("{} [{}] prior to {} [{}]", initer, initer.getPriority(), this, this.getPriority()));
         initer.setPrev(this);
         return next = initer;
     }
@@ -87,7 +87,7 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
 
     void setPrev(L initer) {
         if (prev != null)
-            throw new IllegalArgumentException(Logs.format("{} prev is exist {}", this, this.prev));
+            throw new IllegalArgumentException(format("{} prev is exist {}", this, this.prev));
         this.prev = initer;
     }
 

@@ -1,7 +1,7 @@
 package com.tny.game.web.converter.excel;
 
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.reflect.GClass;
 import com.tny.game.common.reflect.GPropertyAccessor;
 import com.tny.game.common.reflect.ReflectAide;
@@ -47,9 +47,9 @@ public class ExcelClassHolder {
 				name = field.getName();
 			GPropertyAccessor accessor = holder.gClass.getProperty(name);
 			if (accessor == null)
-				throw new NullPointerException(Logs.format("{} 不存在 {} property", clazz, name));
+				throw new NullPointerException(format("{} 不存在 {} property", clazz, name));
 			if (!holder.fieldHolders.add(new ExcelFieldHolder(column, accessor)))
-				throw new IllegalArgumentException(Logs.format("{} 属性 {} 字段索引 {} 有冲突", clazz, name, column.index()));
+				throw new IllegalArgumentException(format("{} 属性 {} 字段索引 {} 有冲突", clazz, name, column.index()));
 		}
 		return holder;
 	}

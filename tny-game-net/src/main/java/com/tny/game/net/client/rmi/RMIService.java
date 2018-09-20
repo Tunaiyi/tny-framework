@@ -1,6 +1,6 @@
 package com.tny.game.net.client.rmi;
 
-import com.tny.game.net.message.Message;
+import com.tny.game.net.transport.message.Message;
 
 import java.rmi.RemoteException;
 

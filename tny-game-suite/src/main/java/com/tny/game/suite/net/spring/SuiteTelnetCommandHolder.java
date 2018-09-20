@@ -1,9 +1,9 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.telnet.command.BaseTelnetCommandHolder;
-import com.tny.game.telnet.command.CommandType;
-import com.tny.game.telnet.command.TelnetCommand;
-import com.tny.game.telnet.command.TelnetCommandHolder;
+import com.tny.game.net.telnet.command.BaseTelnetCommandHolder;
+import com.tny.game.net.telnet.command.CommandType;
+import com.tny.game.net.telnet.command.TelnetCommand;
+import com.tny.game.net.telnet.command.TelnetCommandHolder;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

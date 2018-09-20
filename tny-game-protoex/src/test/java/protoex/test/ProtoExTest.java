@@ -1,6 +1,6 @@
 package protoex.test;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.collection.MapBuilder;
 import com.tny.game.protoex.ProtoExReader;
 import com.tny.game.protoex.ProtoExWriter;
@@ -126,7 +126,7 @@ public class ProtoExTest {
     }
 
     private String msg(Object value, Object format, int time) {
-        return Logs.format("read {} by {} at {} ", value.getClass(), format, time);
+        return format("read {} by {} at {} ", value.getClass(), format, time);
     }
 
     @Test
@@ -741,7 +741,7 @@ public class ProtoExTest {
     private <T> void write(ProtoExWriter writer, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
-            String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
+            String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             System.out.println(method + " time : " + time++);
             writer.writeCollection(value, elementType, packed, elTypeEncode, elFormat);
         }
@@ -751,7 +751,7 @@ public class ProtoExTest {
         int time = 1;
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readCollection(elementType);
-            String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
+            String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);
         }
     }
@@ -760,7 +760,7 @@ public class ProtoExTest {
         int time = 1;
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readMessage();
-            String method = Logs.format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
+            String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);
         }
     }
@@ -933,7 +933,7 @@ public class ProtoExTest {
                            Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         int time = 1;
         for (Map<?, ?> value : values) {
-            String method = Logs.format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
+            String method = format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
                     keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
             System.out.println(method + " time : " + time++);
             writer.writeMap(value, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
@@ -946,7 +946,7 @@ public class ProtoExTest {
         int time = 1;
         for (Map<?, ?> value : values) {
             Map<?, ?> readValue = reader.readMap(keyType, valueType);
-            String method = Logs.format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
+            String method = format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
                     keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
 
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);

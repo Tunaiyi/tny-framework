@@ -1,6 +1,6 @@
 package com.tny.game.net.exception;
 
-public class RemotingException extends RuntimeException {
+public class RemotingException extends Exception {
 
     /**
      *

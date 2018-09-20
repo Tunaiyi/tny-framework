@@ -8,6 +8,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.lang.reflect.*;
 import java.util.function.*;
 
+import static com.tny.game.common.utils.StringAide.format;
+
 /**
  * Created by Kun Yang on 16/3/9.
  */
@@ -290,14 +292,14 @@ public class ObjectAide extends ObjectUtils {
                         if (((Number) id).intValue() == ((Number) object).intValue())
                             return value;
                     } else {
-                        throw new IllegalArgumentException(Logs.format(
+                        throw new IllegalArgumentException(format(
                                 "can not find Enum {} where id is {}", clazz, object));
                     }
                 }
             }
         }
         if (!clazz.isAssignableFrom(object.getClass()))
-            throw  new ClassCastException(StringAide.format("{} can not conver to {}", object.getClass(), clazz));
+            throw  new ClassCastException(format("{} can not conver to {}", object.getClass(), clazz));
         return (T) object;
     }
 

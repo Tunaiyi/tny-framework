@@ -2,7 +2,7 @@ package com.tny.game.net.netty;
 
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.netty.coder.*;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.Tunnel;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -34,7 +34,7 @@ public class DecoderHandler extends ByteToMessageDecoder {
                 channel = ctx.channel();
                 tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
             }
-            LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, tunnel == null ? "SOME ONE UNLOGION!" : tunnel.getUid(), exception);
+            LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, tunnel == null ? "SOME ONE UNLOGION!" : tunnel.getUserId(), exception);
             if (exception instanceof PacketHeadException) {
                 if (channel != null)
                     channel.close();

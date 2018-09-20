@@ -10,7 +10,7 @@ public class RMISession<UID> {
     // }
     //
     // @Override
-    // public String getUserGroup() {
+    // public String getUserType() {
     //     return null;
     // }
     //

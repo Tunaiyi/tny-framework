@@ -3,7 +3,7 @@ package com.tny.game.suite.cache;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.collection.CollectorsAide;
 import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
 import com.tny.game.suite.utils.Configs;
@@ -56,7 +56,7 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
             String table = cache.prefix();
             if (StringUtils.isBlank(table))
                 throw new IllegalArgumentException(
-                        Logs.format("{} 没有 prefix 参数", clazz));
+                        format("{} 没有 prefix 参数", clazz));
             if (cache.triggers().length == 0)
                 continue;
             Class<?> triggerClass = cache.triggers()[0];
@@ -65,7 +65,7 @@ public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationCo
             ProtoCacheFormatter<?, ?> formatter = formatterMap.get(triggerClass);
             if (formatter == null)
                 throw new IllegalArgumentException(
-                        Logs.format("{} 找不到 {} formatter", clazz, triggerClass));
+                        format("{} 找不到 {} formatter", clazz, triggerClass));
             ProtobufTableMapper.loadOrCreate(table, formatter);
         }
     }

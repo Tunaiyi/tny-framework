@@ -1,37 +1,20 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.expr.ExprHolderFactory;
-import com.tny.game.net.annotation.AfterPlugin;
-import com.tny.game.net.annotation.AppProfile;
-import com.tny.game.net.annotation.Auth;
-import com.tny.game.net.annotation.BeforePlugin;
-import com.tny.game.net.annotation.Check;
-import com.tny.game.net.annotation.Controller;
-import com.tny.game.net.annotation.MessageFilter;
-import com.tny.game.net.annotation.ScopeProfile;
-import com.tny.game.net.command.auth.AuthProvider;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.command.auth.AuthenticateProvider;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.common.ControllerCheckerHolder;
-import com.tny.game.net.message.MessageMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.transport.message.MessageMode;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 public abstract class ControllerHolder {
-
-    private static final Logger LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
     /**
      * 控制器类型
@@ -45,7 +28,7 @@ public abstract class ControllerHolder {
     /**
      * 是否需要验证授权
      */
-    protected final Auth auth;
+    protected final AuthenticationRequired auth;
 
     /**
      * 消息处理
@@ -80,7 +63,7 @@ public abstract class ControllerHolder {
      */
     protected List<ControllerCheckerHolder> checkerHolders;
 
-    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final Auth auth, final Check[] checkers, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
+    protected ControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth, final Check[] checkers, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
@@ -145,7 +128,7 @@ public abstract class ControllerHolder {
     }
 
     public Class<?> getAuthProvider() {
-        if (this.auth != null && this.auth.enable() && this.auth.provider() != AuthProvider.class)
+        if (this.auth != null && this.auth.enable() && this.auth.provider() != AuthenticateProvider.class)
             return this.auth.provider();
         return null;
     }
@@ -206,6 +189,5 @@ public abstract class ControllerHolder {
     }
 
     public abstract boolean isParamsAnnotationExist(Class<? extends Annotation> clazz);
-
 
 }

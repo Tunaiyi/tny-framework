@@ -5,7 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.module.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.utils.version.Version;
 import com.tny.game.suite.base.GameModelManager;
 import com.tny.game.suite.utils.*;
@@ -115,7 +115,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
     public FeatureModel getAndCheckModelBy(Feature feature) {
         FeatureModel model = this.typeMap.get(feature);
         if (model == null)
-            throw new NullPointerException(Logs.format("{} 系统 model 为 null", feature));
+            throw new NullPointerException(format("{} 系统 model 为 null", feature));
         return model;
     }
 

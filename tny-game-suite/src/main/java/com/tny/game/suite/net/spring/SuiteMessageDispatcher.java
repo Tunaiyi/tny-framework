@@ -4,7 +4,7 @@ import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.net.annotation.Controller;
-import com.tny.game.net.command.auth.AuthProvider;
+import com.tny.game.net.command.auth.AuthenticateProvider;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.ControllerPlugin;
@@ -39,7 +39,7 @@ public final class SuiteMessageDispatcher extends CommonMessageDispatcher implem
 
     @Override
     public void prepareStart() throws Exception {
-        final Map<String, AuthProvider> providerMap = this.applicationContext.getBeansOfType(AuthProvider.class);
+        final Map<String, AuthenticateProvider> providerMap = this.applicationContext.getBeansOfType(AuthenticateProvider.class);
         this.addAuthProvider(providerMap.values());
         final Map<String, ControllerChecker> checkerMap = this.applicationContext.getBeansOfType(ControllerChecker.class);
         this.addControllerChecker(checkerMap.values());

@@ -98,7 +98,7 @@ subprojects {
     repositories {
         mavenLocal()        //使用本地仓库
         maven {
-            url "http://maven.lingqugame.net/repository/maven-public/"
+            url "http://maven.tnydev.com/repository/maven-public/"
         }
         mavenCentral()
     }

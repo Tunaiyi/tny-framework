@@ -1,15 +1,11 @@
 package com.tny.game.common.worker;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.utils.Logs;
+import org.slf4j.*;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 
 /**
  * Created by Kun Yang on 2017/6/12.

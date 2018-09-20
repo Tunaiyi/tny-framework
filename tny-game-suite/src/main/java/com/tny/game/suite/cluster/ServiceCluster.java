@@ -112,7 +112,7 @@ public abstract class ServiceCluster extends SpringBaseCluster implements Server
     };
 
     @Override
-    public void prepareStart() throws Throwable {
+    public void prepareStart() throws Exception {
         super.prepareStart();
         this.protoExSchemaIniter.prepareStart();
         this.monitor();

@@ -8,17 +8,18 @@ import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.session.*;
-import com.tny.game.net.session.NetSessionHolder;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.io.IOException;
 import java.util.*;
 
-public abstract class AbstractAppConfiguration implements AppConfiguration {
+import static com.tny.game.common.utils.ObjectAide.*;
 
-    private String name = "";
+public abstract class AbstractAppConfiguration<T> implements AppConfiguration<T> {
+
+    private String name;
 
     private String appType = "default";
 
@@ -28,15 +29,17 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
 
     private Attributes attributes = ContextAttributes.create();
 
-    protected NetSessionHolder sessionHolder;
+    protected T defaultUserId;
 
-    protected SessionFactory sessionFactory;
+    protected SessionFactory<T> sessionFactory;
 
-    protected MessageBuilderFactory messageBuilderFactory;
+    protected SessionKeeperFactory sessionKeeperFactory;
 
-    protected MessageInputEventHandler inputEventHandler;
+    protected MessageBuilderFactory<T> messageBuilderFactory;
 
-    protected MessageOutputEventHandler outputEventHandler;
+    protected MessageInputEventHandler<T, ? extends NetTunnel<T>> inputEventHandler;
+
+    protected MessageOutputEventHandler<T, ? extends NetTunnel<T>> outputEventHandler;
 
     protected DispatchCommandExecutor dispatchCommandExecutor;
 
@@ -44,17 +47,23 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
 
     protected ExprHolderFactory exprHolderFactory;
 
-    protected AbstractAppConfiguration(String name) {
+    protected AbstractAppConfiguration(String name, T defaultUserId) {
         this.name = name;
     }
 
-    protected AbstractAppConfiguration(String name, String path) throws IOException {
-        this(name, ImmutableList.of(path));
+    protected AbstractAppConfiguration(String name, T defaultUserId, String path) throws IOException {
+        this(name, defaultUserId, ImmutableList.of(path));
     }
 
-    protected AbstractAppConfiguration(String name, List<String> paths) throws IOException {
+    protected AbstractAppConfiguration(String name, T defaultUserId, List<String> paths) throws IOException {
         this.name = name;
-        this.setConfig(paths.toArray(new String[paths.size()]));
+        this.defaultUserId = defaultUserId;
+        this.setConfig(paths.toArray(new String[0]));
+    }
+
+    @Override
+    public T getDefaultUserId() {
+        return defaultUserId;
     }
 
     @Override
@@ -83,28 +92,28 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
     }
 
     @Override
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public SessionFactory<T> getSessionFactory() {
+        return as(sessionFactory);
     }
 
     @Override
-    public NetSessionHolder getSessionHolder() {
-        return sessionHolder;
+    public SessionKeeperFactory getSessionKeeperFactory() {
+        return sessionKeeperFactory;
     }
 
     @Override
-    public MessageBuilderFactory getMessageBuilderFactory() {
-        return messageBuilderFactory;
+    public MessageBuilderFactory<T> getMessageBuilderFactory() {
+        return as(messageBuilderFactory);
     }
 
     @Override
-    public MessageOutputEventHandler getOutputEventHandler() {
-        return outputEventHandler;
+    public MessageOutputEventHandler<T, NetTunnel<T>> getOutputEventHandler() {
+        return as(outputEventHandler);
     }
 
     @Override
-    public MessageInputEventHandler getInputEventHandler() {
-        return inputEventHandler;
+    public MessageInputEventHandler<T, NetTunnel<T>> getInputEventHandler() {
+        return as(inputEventHandler);
     }
 
     @Override
@@ -140,11 +149,10 @@ public abstract class AbstractAppConfiguration implements AppConfiguration {
         return this;
     }
 
-    protected void loadConfig(Config config) {
+    private void loadConfig(Config config) {
         this.config = config;
         this.appType = this.config.getStr(NetConfigs.SERVER_APP_TYPE, this.appType);
         this.scopeType = this.config.getStr(NetConfigs.SERVER_SCOPE_TYPE, this.scopeType);
     }
-
 
 }

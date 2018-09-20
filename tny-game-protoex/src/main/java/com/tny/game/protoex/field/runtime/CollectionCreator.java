@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.protoex.ProtobufExException;
 
 import java.lang.reflect.Modifier;
@@ -24,7 +24,7 @@ public class CollectionCreator {
                 return new TreeMap<>();
             else if (clazz == ConcurrentMap.class)
                 return new ConcurrentHashMap<>();
-            throw new IllegalArgumentException(Logs.format("{}无法找到对应的Collection", clazz));
+            throw new IllegalArgumentException(format("{}无法找到对应的Collection", clazz));
         } else {
             try {
                 return (Map<K, V>) clazz.newInstance();
@@ -45,7 +45,7 @@ public class CollectionCreator {
                 return new HashSet<>();
             else if (clazz == Queue.class || clazz == Deque.class)
                 return new ArrayDeque<>();
-            throw new IllegalArgumentException(Logs.format("{}无法找到对应的Collection", clazz));
+            throw new IllegalArgumentException(format("{}无法找到对应的Collection", clazz));
         } else {
             try {
                 return (Collection<T>) clazz.newInstance();

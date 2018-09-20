@@ -5,7 +5,7 @@ import com.tny.game.cache.annotation.*;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
 import com.tny.game.suite.utils.Configs;
@@ -169,7 +169,7 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
             }
             LOGGER.info("开始初始化 ToCacheClassHolder 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
-            throw new RuntimeException(Logs.format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
+            throw new RuntimeException(format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
         }
     }
 

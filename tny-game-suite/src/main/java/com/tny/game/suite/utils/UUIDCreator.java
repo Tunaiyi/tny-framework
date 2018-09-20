@@ -1,7 +1,7 @@
 package com.tny.game.suite.utils;
 
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.utils.Throws;
 import org.joda.time.DateTime;
 
@@ -78,7 +78,7 @@ public class UUIDCreator {
                 long lastTime = this.lastTimestamp;
                 timestamp = timeGenerate();
                 if (timestamp < lastTime)
-                    throw new IllegalArgumentException(Logs.format("时间发生回滚, {} milliseconds", lastTime - timestamp));
+                    throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp));
                 if (lastTime == timestamp) {
                     long writeStamp = lock.tryConvertToWriteLock(lockStamp);
                     if (writeStamp != 0L) {

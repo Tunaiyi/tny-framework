@@ -3,6 +3,8 @@ package com.tny.game.common.number;
 import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import static com.tny.game.common.utils.StringAide.format;
+
 /**
  * Created by Kun Yang on 16/2/17.
  */
@@ -33,7 +35,7 @@ public class NumberAide {
     public static <N extends Number> N as(Object source, Class<N> clazz) {
         Number value;
         if (!(source instanceof Number))
-            throw new ClassCastException(Logs.format("{} {} 不属于 {}", source, source.getClass(), Number.class));
+            throw new ClassCastException(format("{} {} 不属于 {}", source, source.getClass(), Number.class));
         value = (Number) source;
         if (Integer.class == clazz || int.class == clazz)
             value = value.intValue();
@@ -67,7 +69,7 @@ public class NumberAide {
         else if (Byte.class == clazz || byte.class == clazz)
             return ObjectAide.as(NumberUtils.toByte(source));
         throw new IllegalArgumentException(
-                Logs.format("{} is not number", source));
+                format("{} is not number", source));
     }
 
 

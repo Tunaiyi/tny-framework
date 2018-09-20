@@ -2,8 +2,7 @@ package com.tny.game.common.config;
 
 import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.io.*;
 import java.net.URL;

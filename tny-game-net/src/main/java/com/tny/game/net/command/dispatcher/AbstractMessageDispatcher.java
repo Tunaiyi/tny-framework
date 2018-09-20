@@ -1,7 +1,8 @@
 package com.tny.game.net.command.dispatcher;
 
+import com.google.common.base.MoreObjects;
 import com.tny.game.common.collection.*;
-import com.tny.game.common.concurrent.Waitable;
+import com.tny.game.common.concurrent.Waiter;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.common.worker.command.Command;
@@ -9,21 +10,21 @@ import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.auth.AuthProvider;
+import com.tny.game.net.command.auth.AuthenticateProvider;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.common.ControllerCheckerHolder;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.NetTunnel;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.*;
 import org.slf4j.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 抽象消息派发器
@@ -44,7 +45,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      */
     private Map<Integer, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
 
-    private AuthProvider authAllProvider;
+    private AuthenticateProvider authAllProvider;
 
     /**
      *
@@ -64,7 +65,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthProvider> authProviders = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticateProvider> authProviders = new CopyOnWriteMap<>();
 
     /**
      * 检测器Map
@@ -78,14 +79,15 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public Command dispatch(Message message, NetTunnel<?> tunnel) {
+    public Command dispatch(MessageReceiveEvent<?> event) {
         // 获取方法持有器
         MethodControllerHolder controller = null;
+        Message<?> message = event.getMessage();
         MessageHeader header = message.getHeader();
         final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(header.getProtocol());
         if (controllerMap != null)
             controller = controllerMap.get(message.getMode());
-        return new MessageDispatchCommand(message, tunnel, controller);
+        return new MessageDispatchCommand(controller, event);
 
     }
 
@@ -283,11 +285,11 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         this.checkerMap.put(checker.getClass(), checker);
     }
 
-    protected void addAuthProvider(Collection<AuthProvider> providers) {
+    protected void addAuthProvider(Collection<AuthenticateProvider> providers) {
         providers.forEach(this::addAuthProvider);
     }
 
-    protected void addAuthProvider(AuthProvider provider) {
+    protected void addAuthProvider(AuthenticateProvider provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
@@ -324,22 +326,22 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             for (MessageMode mode : controller.getMessageModes()) {
                 MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
                 if (old != null)
-                    throw new IllegalArgumentException(Logs.format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
+                    throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
             }
         }
     }
 
     private class MessageDispatchCommand extends DispatchContext implements Command {
 
-        private Waitable<Object> waitable;
+        private Waiter<Object> waiter;
 
         private long timeout;
 
         private boolean done;
 
         @SuppressWarnings("unchecked")
-        private MessageDispatchCommand(Message message, NetTunnel<?> tunnel, MethodControllerHolder controller) {
-            super(controller, tunnel, message);
+        private MessageDispatchCommand(MethodControllerHolder controller, MessageReceiveEvent<?> event) {
+            super(controller, event);
         }
 
         @Override
@@ -358,15 +360,42 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             return intercept || done;
         }
 
+        @Override
+        public void execute() {
+            MessageHeader header = message.getHeader();
+            CurrentCommand.setCurrent(this.message.getUserID(), header.getProtocol());
+            try {
+                if (isDone())
+                    return;
+                fireExecute(this);
+                if (waiter == null) {
+                    // 调用逻辑业务
+                    this.invoke();
+                    // 调用调用结果
+                    this.checkResult(null);
+                }
+                if (!this.isDone()) {
+                    this.checkWaiter();
+                }
+                fireExecuted(this);
+            } catch (Throwable e) {
+                this.handleException(e);
+                this.checkResult(e);
+                fireExecuteException(this, e);
+            } finally {
+                fireExecuteFinish(this, null);
+            }
+        }
+
         /* 检测结果 */
         private void checkResult(Throwable cause) {
             Object o = this.result;
-            if (o instanceof Waitable) { // 如果是结果为Future进入等待逻辑
-                this.waitable = ObjectAide.as(o);
+            if (o instanceof Waiter) { // 如果是结果为Future进入等待逻辑
+                this.waiter = ObjectAide.as(o);
                 this.timeout = System.currentTimeMillis() + 5000; // 超时
                 this.result = null;
             } else if (o instanceof Future) { // 如果是结果为Future进入等待逻辑
-                this.waitable = Waitable.of(ObjectAide.as(o));
+                this.waiter = Waiter.of(ObjectAide.as(o));
                 this.timeout = System.currentTimeMillis() + 5000; // 超时
                 this.result = null;
             } else { // 结果处理逻辑
@@ -377,21 +406,21 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         }
 
         /* 检测是否有waitable对象*/
-        private void checkWaitable() throws Throwable {
-            if (this.waitable != null) { // 检测是否
-                if (this.waitable.isDone()) {
-                    if (this.waitable.isSuccess()) {
-                        this.setResult(this.waitable.getResult());
+        private void checkWaiter() throws Throwable {
+            if (this.waiter != null) { // 检测是否
+                if (this.waiter.isDone()) {
+                    if (this.waiter.isSuccess()) {
+                        this.setResult(this.waiter.getResult());
                         this.checkResult(null);
                     } else {
-                        this.setResult(this.waitable.getResult());
-                        throw this.waitable.getCause();
+                        this.setResult(this.waiter.getResult());
+                        throw this.waiter.getCause();
                     }
                 } else {
                     if (System.currentTimeMillis() > timeout) {
                         this.result = null;
-                        throw new DispatchTimeoutException(NetResponseCode.EXECUTE_TIMEOUT,
-                                StringAide.format("执行 {} 超时", this.controller.getName()));
+                        throw new DispatchTimeoutException(NetResultCode.EXECUTE_TIMEOUT,
+                                format("执行 {} 超时", this.controller.getName()));
                     }
                 }
             }
@@ -401,7 +430,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         private void handleResult(Throwable cause) {
             if (!this.isDone())
                 return;
-            MessageContent<?> content = null;
+            MessageContext<Object> content = null;
             MessageHeader header = message.getHeader();
             ResultCode code;
             Object value = null;
@@ -420,49 +449,23 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             switch (message.getMode()) {
                 case PUSH:
                     if (value != null)
-                        content = MessageContent.toPush(header, code, value);
+                        content = MessageContext.toPush(header, code, value);
                     break;
                 case REQUEST:
-                    content = MessageContent.toResponse(header, code, value, header.getId());
+                    content = MessageContext.toResponse(header, code, value, header.getId());
                     break;
             }
             if (content != null) {
-                NetSession session = this.tunnel.getSession();
+                // NetSession session = this.tunnel.getSession();
                 if (code.getType() != ResultCodeType.ERROR) {
-                    session.send(this.tunnel, content);
+                    this.tunnel.send(content);
+                    // session.send(this.tunnel, content);
                 } else {
-                    content.sendFuture()
+                    content.willSendFuture()
                             .whenComplete((tunnel, e) -> this.tunnel.close());
-                    session.send(this.tunnel, content);
+                    this.tunnel.send(content);
+                    // session.send(this.tunnel, content);
                 }
-            }
-        }
-
-
-        @Override
-        public void execute() {
-            MessageHeader header = message.getHeader();
-            CurrentCommand.setCurrent(this.message.getUserID(), header.getProtocol());
-            try {
-                if (isDone())
-                    return;
-                fireExecute(this);
-                if (waitable == null) {
-                    // 调用逻辑业务
-                    this.invoke();
-                    // 调用调用结果
-                    this.checkResult(null);
-                }
-                if (!this.isDone()) {
-                    this.checkWaitable();
-                }
-                fireExecuted(this);
-            } catch (Throwable e) {
-                this.handleException(e);
-                this.checkResult(e);
-                fireExecuteException(this, e);
-            } finally {
-                fireExecuteFinish(this, null);
             }
         }
 
@@ -482,20 +485,15 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             } else {
                 DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
                 fireInvokeException(this, e);
-                this.setResult(NetResponseCode.EXECUTE_EXCEPTION);
+                this.setResult(NetResultCode.EXECUTE_EXCEPTION);
                 fireInvokeFinish(this, e);
             }
         }
 
-        private CommandResult getResult(MessageMode mode, CommandResult result) {
-            if (result != null)
-                return result;
-            return mode == MessageMode.REQUEST ? ResultFactory.success() : CommandResult.NO_RESULT;
-        }
-
         @SuppressWarnings("unchecked")
         private void invoke() throws Exception {
-
+            if (message.getMode() == MessageMode.RESPONSE)
+                event.completeResponse();
             //检测认证
             this.checkAuth();
 
@@ -506,38 +504,33 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             if (this.controller == null) {
                 MessageHeader header = message.getHeader();
                 DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", header.getProtocol());
-                this.doneAndIntercept(NetResponseCode.NO_SUCH_PROTOCOL);
+                this.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
                 return;
             }
 
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 开始处理Message : {}\n ", getName(), message.toString());
+            DISPATCHER_LOG.debug("Controller [{}] 开始处理Message : {}\n ", getName(), message);
 
             // 检测是否controller运行条件
             this.checkController();
 
             // 调用方法
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 触Message处理事件", getName());
+            DISPATCHER_LOG.debug("Controller [{}] 触Message处理事件", getName());
             fireInvoke(this);
             if (this.isIntercept())
                 return;
 
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 执行BeforePlugins", getName());
+            DISPATCHER_LOG.debug("Controller [{}] 执行BeforePlugins", getName());
             controller.beforeInvoke(this.tunnel, this.message, this);
 
             if (this.isIntercept()) {
                 return;
             }
 
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
+            DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
             controller.invoke(this.tunnel, this.message, this);
 
             fireInvoked(this);
-            if (DISPATCHER_LOG.isDebugEnabled())
-                DISPATCHER_LOG.debug("Controller [{}] 执行业务成功!", getName());
+            DISPATCHER_LOG.debug("Controller [{}] 执行业务成功!", getName());
         }
 
         @SuppressWarnings("unchecked")
@@ -560,7 +553,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         @SuppressWarnings("unchecked")
         private void checkAuth() throws DispatchException {
             if (!this.tunnel.isLogin()) {
-                AuthProvider provider = null;
+                AuthenticateProvider<Object> provider = null;
                 if (this.controller != null) {
                     Class<?> clazz = controller.getAuthProvider();
                     if (clazz != null) {
@@ -576,10 +569,16 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
                     return;
                 if (DISPATCHER_LOG.isDebugEnabled())
                     DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
-                NetCertificate loginInfo = provider.validate(this.tunnel, this.message);
+                Certificate<Object> certificate = provider.validate(this.tunnel, this.message);
                 // 是否需要做登录校验,判断是否已经登录
-                if (loginInfo != null && loginInfo.isLogin()) {
-                    this.tunnel.getSession().login(loginInfo);
+                if (certificate != null && certificate.isAutherized()) {
+                    this.tunnel.authenticate(certificate);
+                    if (this.message instanceof NetMessage)
+                        ((NetMessage<Object>) this.message).update(certificate);
+                    SessionKeeperFactory sessionKeeperFactory = appConfiguration.getSessionKeeperFactory();
+                    NetSessionKeeper<Object> keeper = sessionKeeperFactory.getKeeper(certificate.getUserType());
+                    keeper.online(tunnel);
+                    // this.tunnel.getSession().login(loginInfo);
                     // NetSessionHolder sessionHolder = appConfiguration.getSessionHolder();
                     // sessionHolder.online(this.tunnel, loginInfo);
                 }
@@ -588,23 +587,15 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         @SuppressWarnings("unchecked")
         private void checkController() throws DispatchException {
-
-
-            // @TODO 移到MessageChecker
-            // String serverType = appContext.getScopeType();
-            // if (serverType != null && !methodHolder.isCanCall(serverType)) {
-            //     NetMessageDispatcher.DISPATCHER_LOG.error("{} 服务器无法调用此协议", LogUtils.msg(serverType, methodHolder.getMethodClass(), methodHolder.getName()));
-            //     throw new DispatchException(CoreResponseCode.NO_SUCH_PROTOCOL);
-            // }
             String appType = appConfiguration.getAppType();
             if (!controller.isActiveByAppType(appType)) {
                 DISPATCHER_LOG.error("Controller [{}] 应用类型 {} 无法此协议", getName(), appType);
-                throw new DispatchException(NetResponseCode.NO_SUCH_PROTOCOL);
+                throw new DispatchException(NetResultCode.NO_SUCH_PROTOCOL);
             }
             String scopeType = appConfiguration.getScopeType();
             if (!controller.isActiveByScope(scopeType)) {
                 DISPATCHER_LOG.error("Controller [{}] 应用类型 {} 无法此协议", getName(), appType);
-                throw new DispatchException(NetResponseCode.NO_SUCH_PROTOCOL);
+                throw new DispatchException(NetResultCode.NO_SUCH_PROTOCOL);
             }
             if (DISPATCHER_LOG.isDebugEnabled())
                 DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
@@ -614,9 +605,9 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
             if (DISPATCHER_LOG.isDebugEnabled())
                 DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", getName());
-            if (!controller.isUserGroup(this.tunnel.getUserGroup())) {
-                DISPATCHER_LOG.error("Controller [{}] 用户为[{}]用户组, 无法调用此协议", getName(), this.tunnel.getUserGroup());
-                throw new DispatchException(NetResponseCode.NO_PERMISSIONS);
+            if (!controller.isUserGroup(this.tunnel.getUserType())) {
+                DISPATCHER_LOG.error("Controller [{}] 用户为[{}]用户组, 无法调用此协议", getName(), this.tunnel.getUserType());
+                throw new DispatchException(NetResultCode.NO_PERMISSIONS);
             }
 
             if (DISPATCHER_LOG.isDebugEnabled())
@@ -640,22 +631,10 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .append("message", message)
+            return MoreObjects.toStringHelper(this)
+                    .add("message", message)
                     .toString();
         }
-    }
-
-    private interface CommandFuture {
-
-        boolean isDone();
-
-        boolean isSuccess();
-
-        Throwable getCause();
-
-        Object getResult();
-
     }
 
 }

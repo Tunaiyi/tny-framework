@@ -1,41 +1,26 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.RunningChecker;
-import com.tny.game.common.utils.ExeAide;
-import com.tny.game.common.lifecycle.Lifecycle;
-import com.tny.game.common.lifecycle.LifecycleHandler;
-import com.tny.game.common.lifecycle.ServerClosed;
-import com.tny.game.common.lifecycle.ServerPostStart;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.common.lifecycle.StaticIniter;
-import com.tny.game.common.lifecycle.annotaion.AsLifecycle;
-import com.tny.game.common.lifecycle.annotaion.AsyncProcess;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.lifecycle.annotaion.*;
 import com.tny.game.common.number.IntLocalNum;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.ClassSelector;
+import com.tny.game.common.utils.ExeAide;
+import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
-import com.tny.game.suite.initer.EnumLoader;
-import com.tny.game.suite.initer.OpLogSnapshotIniter;
-import com.tny.game.suite.initer.ProtoExSchemaIniter;
-import com.tny.game.suite.initer.RandomCreatorIniter;
+import com.tny.game.suite.initer.*;
 import com.tny.game.suite.launcher.exception.LifecycleProcessException;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 16/5/31.
@@ -48,7 +33,7 @@ public class ApplicationLifecycleProcessor {
 
     private static Map<Lifecycle, LifecycleHandler> handlerMap = new HashMap<>();
 
-    public void onStaticInit() throws Throwable {
+    public void onStaticInit() throws Exception {
         Class<?> clazz = null;
         try {
             RunningChecker.start(this.getClass());
@@ -62,7 +47,7 @@ public class ApplicationLifecycleProcessor {
                     .scan(Configs.getScanPathArray());
             LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
-            throw new RuntimeException(Logs.format("获取 {} 类 ProtoExSchema 错误", clazz), e);
+            throw new RuntimeException(format("获取 {} 类 ProtoExSchema 错误", clazz), e);
         }
     }
 
@@ -84,15 +69,15 @@ public class ApplicationLifecycleProcessor {
                 ));
     }
 
-    public void onPrepareStart(boolean errorContinue) throws Throwable {
+    public void onPrepareStart(boolean errorContinue) throws Exception {
         this.process("prepareStart", ServerPrepareStart.class, ServerPrepareStart::prepareStart, errorContinue);
     }
 
-    public void onPostStart(boolean errorContinue) throws Throwable {
+    public void onPostStart(boolean errorContinue) throws Exception {
         this.process("postStart", ServerPostStart.class, ServerPostStart::postStart, errorContinue);
     }
 
-    public void onClosed(boolean errorContinue) throws Throwable {
+    public void onClosed(boolean errorContinue) throws Exception {
         this.process("onClosed", ServerClosed.class, ServerClosed::onClosed, errorContinue);
     }
 
@@ -115,7 +100,7 @@ public class ApplicationLifecycleProcessor {
                 .peek(i -> {
                     Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
                     if (i.getClass() != lifecycle.getHandlerClass())
-                        throw new IllegalArgumentException(Logs.format("{} 不符合 {}", i.getClass(), lifecycle));
+                        throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
                     handlerMap.put(lifecycle, i);
                 })
                 .map(lifecycleGetter)
@@ -124,7 +109,7 @@ public class ApplicationLifecycleProcessor {
         lifecycleMap.put(processorClass, process);
     }
 
-    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue) throws Throwable {
+    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue) throws Exception {
         String name = processorClass.getSimpleName();
         LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
         // Map<String, ? extends T> initerMap = this.appContext.getBeansOfType(processorClass);
@@ -138,6 +123,7 @@ public class ApplicationLifecycleProcessor {
             long current = System.currentTimeMillis();
             Lifecycle currentLifecycle = lifecycle.head();
             while (currentLifecycle != null) {
+                @SuppressWarnings("unchecked")
                 T processor = (T) cloneMap.remove(currentLifecycle);
                 if (processor != null) {
                     Method method = processor.getClass().getMethod(methodName);

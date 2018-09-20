@@ -1,6 +1,6 @@
 package com.tny.game.cache;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
                 try {
                     list.add(this.format2Load(key, value));
                 } catch (Throwable e) {
-                    LOGGER.error(Logs.format("parse {} exception", key), e);
+                    LOGGER.error(format("parse {} exception", key), e);
                 }
             }
             return list;
@@ -57,7 +57,7 @@ public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object>
             try {
                 return this.format2Load(key, object);
             } catch (Throwable e) {
-                LOGGER.error(Logs.format("parse 2 Load {} exception", key), e);
+                LOGGER.error(format("parse 2 Load {} exception", key), e);
             }
             return null;
         }

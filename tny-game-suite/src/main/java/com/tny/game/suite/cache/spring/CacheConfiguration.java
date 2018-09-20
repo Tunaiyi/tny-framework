@@ -5,6 +5,7 @@ import com.tny.game.asyndb.impl.AverageRateBatchSyncDBExecutor;
 import com.tny.game.asyndb.spring.SpringSynchronizerHolder;
 import com.tny.game.cache.RawCacheItemFactory;
 import com.tny.game.common.config.Config;
+import com.tny.game.net.transport.Certificates;
 import com.tny.game.suite.cache.DomainItemDBItemFactory;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.*;
@@ -20,7 +21,6 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Configuration
 @Profile({CACHE_ASYNC, CACHE_DB, CACHE_REDIS, CACHE_ALL})
 public class CacheConfiguration {
-
 
     @Bean
     public SynchronizerHolder synchronizerHolder() {
@@ -49,7 +49,7 @@ public class CacheConfiguration {
 
     @Bean
     public ReleaseStrategyFactory releaseStrategyFactory() {
-        return new OnlineReleaseStrategyFactory(
+        return new OnlineReleaseStrategyFactory(Certificates.DEFAULT_USER_TYPE,
                 Configs.SUITE_CONFIG.getLong(Configs.SUITE_ASYNC_OBJ_POOL_KEEP_TIME, Duration.ofMinutes(5).toMillis()));
     }
 

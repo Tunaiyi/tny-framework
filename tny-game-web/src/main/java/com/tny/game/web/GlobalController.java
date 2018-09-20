@@ -1,6 +1,6 @@
 package com.tny.game.web;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.web.utils.HttpAide;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class GlobalController {
         for (Entry<String, String[]> paramEntry : request.getParameterMap().entrySet()) {
             params += paramEntry.getKey() + ":" + StringUtils.join(paramEntry.getValue(), "|") + "\n";
         }
-        String requestStr = Logs.format("HttpServletRequest:\n url={}\nquery={}\nmethod={}\nhead:\n{}\nparams:\n{}",
+        String requestStr = format("HttpServletRequest:\n url={}\nquery={}\nmethod={}\nhead:\n{}\nparams:\n{}",
                 request.getRequestURL(),
                 request.getQueryString(),
                 request.getMethod(),

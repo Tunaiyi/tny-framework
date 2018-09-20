@@ -1,11 +1,10 @@
 package com.tny.game.common.lifecycle;
 
-import com.tny.game.common.utils.Logs;
-import com.tny.game.common.lifecycle.annotaion.AsLifecycle;
-import com.tny.game.common.lifecycle.annotaion.StaticInit;
+import com.tny.game.common.lifecycle.annotaion.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 2016/12/16.
@@ -18,14 +17,14 @@ public class StaticIniter {
         this.method = method;
     }
 
-    public void init() throws Throwable {
+    public void init() throws Exception {
         method.invoke(null);
     }
 
     public static StaticIniter instance(Class<?> clazz) {
         AsLifecycle lifecycle = clazz.getAnnotation(AsLifecycle.class);
         if (lifecycle == null)
-            throw new NullPointerException(Logs.format("{} 没有 {} 注解", clazz, AsLifecycle.class));
+            throw new NullPointerException(format("{} 没有 {} 注解", clazz, AsLifecycle.class));
         Method lifecycleMethod = null;
         for (Method method : clazz.getDeclaredMethods()) {
             int modifiers = method.getModifiers();
@@ -34,7 +33,7 @@ public class StaticIniter {
             method.setAccessible(true);
         }
         if (lifecycleMethod == null)
-            throw new IllegalArgumentException(Logs.format("{} 不存在 {} 方法", clazz, StaticInit.class));
+            throw new IllegalArgumentException(format("{} 不存在 {} 方法", clazz, StaticInit.class));
         return new StaticIniter(lifecycleMethod);
     }
 

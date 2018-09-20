@@ -2,15 +2,11 @@ package com.tny.game.common.config;
 
 import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
 

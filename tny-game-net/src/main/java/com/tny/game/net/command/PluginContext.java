@@ -1,7 +1,7 @@
 package com.tny.game.net.command;
 
-import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.transport.Tunnel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

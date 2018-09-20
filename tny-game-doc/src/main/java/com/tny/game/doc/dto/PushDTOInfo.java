@@ -2,7 +2,7 @@ package com.tny.game.doc.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.doc.holder.DTODocHolder;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,7 +33,7 @@ public class PushDTOInfo implements Comparable<PushDTOInfo> {
         this.text = holder.getDTODoc().text();
         if (StringUtils.isBlank(this.text))
             this.text = this.des;
-        this.handlerName = Logs.format("public function $send{}$S(dto : {}):void{}", clazz.getSimpleName(), clazz.getSimpleName());
+        this.handlerName = format("public function $send{}$S(dto : {}):void{}", clazz.getSimpleName(), clazz.getSimpleName());
     }
 
     public String getPackageName() {

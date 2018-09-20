@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.tny.game.base.item.probability.*;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * string赚随机器
@@ -25,7 +25,7 @@ public class String2RandomCreator extends AbstractSingleValueConverter {
     public Object fromString(String name) {
         RandomCreatorFactory factory = RandomCreators.getFactory(name);
         if (factory == null)
-            throw new NullPointerException(Logs.format("找不到名字为 {} 的 RandomCreatorFactory", name));
+            throw new NullPointerException(format("找不到名字为 {} 的 RandomCreatorFactory", name));
         return factory.getRandomCreator();
     }
 

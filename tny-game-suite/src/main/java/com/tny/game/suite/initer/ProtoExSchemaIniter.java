@@ -1,11 +1,11 @@
 package com.tny.game.suite.initer;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.net.message.protoex.ProtoExMessageHeader;
+import com.tny.game.net.transport.message.protoex.ProtoExMessageHeader;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.field.runtime.RuntimeProtoExSchema;
@@ -50,11 +50,11 @@ public class ProtoExSchemaIniter implements ServerPrepareStart {
                 clazz = cl;
                 ProtoExSchema<?> schema = RuntimeProtoExSchema.getProtoSchema(clazz);
                 if (schema == null) {
-                    throw new NullPointerException(Logs.format("{} 找不到对应的schema", clazz));
+                    throw new NullPointerException(format("{} 找不到对应的schema", clazz));
                 }
                 Class<?> old = classMap.put(schema.getProtoExID(), clazz);
                 if (old != null) {
-                    throw new IllegalArgumentException(Logs.format("{} protoID 与 {} protoID 都为 {}", clazz, old, schema.getProtoExID()));
+                    throw new IllegalArgumentException(format("{} protoID 与 {} protoID 都为 {}", clazz, old, schema.getProtoExID()));
                 }
             }
             LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunningChecker.end(ProtoExSchemaIniter.class).cost());

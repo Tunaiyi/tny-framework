@@ -1,6 +1,6 @@
 package com.tny.game.common.utils.rsa;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -24,6 +24,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
+import static com.tny.game.common.utils.StringAide.format;
 
 public class RSAUtils {
 
@@ -327,7 +329,7 @@ public class RSAUtils {
 
     public static RSAKeyPair getKeyPair(int size) throws Exception {
         if (size % 64 != 0)
-            throw new IllegalArgumentException(Logs.format("密码长度 {} 不为64的倍数", size));
+            throw new IllegalArgumentException(format("密码长度 {} 不为64的倍数", size));
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
         keyPairGenerator.initialize(KEY_SIZE);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();

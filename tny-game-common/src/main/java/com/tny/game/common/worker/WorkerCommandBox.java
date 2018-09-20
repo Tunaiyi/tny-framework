@@ -3,11 +3,9 @@ package com.tny.game.common.worker;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.worker.command.Command;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.Collection;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox> implements CommandBox<C> {

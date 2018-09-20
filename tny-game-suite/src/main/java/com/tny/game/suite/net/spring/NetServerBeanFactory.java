@@ -1,14 +1,11 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.common.word.LocalWordsFilter;
-import com.tny.game.common.word.WordsFilter;
+import com.tny.game.common.word.*;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.executor.GroupBySessionDispatchCommandExecutor;
-import com.tny.game.net.netty.NettyServer;
+import com.tny.game.net.netty.NettyBinder;
 import com.tny.game.suite.utils.Configs;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
@@ -36,8 +33,8 @@ public class NetServerBeanFactory extends NetBaseBeanFactory {
 
     @Bean
     @Profile({SERVER, GAME})
-    public NettyServer nettyServer() {
-        return new NettyServer(this.appConfiguration);
+    public NettyBinder nettyServer() {
+        return new NettyBinder(new ReadTimeoutChannelMaker<>(60000 * 3), this.appConfiguration);
     }
 
 }

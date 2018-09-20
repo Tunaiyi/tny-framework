@@ -9,12 +9,8 @@ import com.tny.game.net.base.AppUtils;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.common.AbstractAppConfiguration;
-import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.netty.NettyAppConfiguration;
-import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.session.*;
-import com.tny.game.net.session.NetSessionHolder;
-import io.netty.channel.Channel;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -29,13 +25,11 @@ import java.util.stream.Collectors;
  */
 // @Component
 // @Profile({GAME, SERVER})
-public class SuiteAppConfiguration extends AbstractAppConfiguration implements NettyAppConfiguration, ApplicationContextAware, ServerPrepareStart {
+public class SuiteAppConfiguration extends AbstractAppConfiguration implements ApplicationContextAware, ServerPrepareStart {
 
     private ApplicationContext applicationContext;
 
-    private ChannelMaker channelMaker;
-
-    private String sessionHolderName;
+    private String sessionKeeperFactoryName;
 
     private String sessionFactoryName;
 
@@ -49,20 +43,18 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
 
     private String messageDispatcherName;
 
-    private String channelMakerName;
-
     private String exprHolderFactoryName;
 
-    public SuiteAppConfiguration(String name) {
-        super(name);
+    public SuiteAppConfiguration(String name, Object defaultUserId) {
+        super(name, defaultUserId);
     }
 
-    public SuiteAppConfiguration(String name, String path) throws IOException {
-        super(name, path);
+    public SuiteAppConfiguration(String name, Object defaultUserId, String path) throws IOException {
+        super(name, defaultUserId, path);
     }
 
-    public SuiteAppConfiguration(String name, List<String> paths) throws IOException {
-        super(name, paths);
+    public SuiteAppConfiguration(String name, Object defaultUserId, List<String> paths) throws IOException {
+        super(name, defaultUserId, paths);
     }
 
     @Override
@@ -70,15 +62,8 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.applicationContext = applicationContext;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChannelMaker<Channel> getChannelMaker() {
-        return this.channelMaker;
-    }
-
-
     public void setSessionHolder(String sessionHolder) {
-        this.sessionHolderName = sessionHolder;
+        this.sessionKeeperFactoryName = sessionHolder;
     }
 
     public void setSessionFactory(String sessionFactory) {
@@ -105,10 +90,6 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
         this.messageDispatcherName = messageDispatcher;
     }
 
-    public void setChannelMaker(String channelMaker) {
-        this.channelMakerName = channelMaker;
-    }
-
     public void setExprHolderFactoryName(String exprHolderFactoryName) {
         this.exprHolderFactoryName = exprHolderFactoryName;
     }
@@ -119,15 +100,14 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements N
     }
 
     @Override
-    public void prepareStart() throws Exception {
-        this.sessionHolder = load(NetSessionHolder.class, this.sessionHolderName);
+    public void prepareStart() {
+        this.sessionKeeperFactory = load(SessionKeeperFactory.class, this.sessionKeeperFactoryName);
         this.sessionFactory = load(SessionFactory.class, this.sessionFactoryName);
         this.messageBuilderFactory = load(MessageBuilderFactory.class, this.messageBuilderFactoryName);
         this.inputEventHandler = load(MessageInputEventHandler.class, this.inputEventHandlerName);
         this.outputEventHandler = load(MessageOutputEventHandler.class, this.outputEventHandlerName);
         this.dispatchCommandExecutor = load(DispatchCommandExecutor.class, this.dispatchCommandExecutorName);
         this.messageDispatcher = load(MessageDispatcher.class, this.messageDispatcherName);
-        this.channelMaker = load(ChannelMaker.class, this.channelMakerName);
         if (StringUtils.isBlank(this.exprHolderFactoryName)) {
             this.exprHolderFactory = new GroovyExprHolderFactory();
         } else {

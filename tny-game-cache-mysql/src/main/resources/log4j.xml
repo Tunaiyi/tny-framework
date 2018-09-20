@@ -45,7 +45,7 @@
     </appender>
 
     <appender name="fileLogin" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${log4jdir}/login.log"/>
+        <param name="File" value="${log4jdir}/certified.log"/>
         <param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">

@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
@@ -87,26 +87,26 @@ public class NetLogger {
         }
     }
 
-    public static void logSend(Session session, Message message) {
+    public static void logSend(Tunnel<?> tunnel, Message<?> message) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHeader header = message.getHeader();
             logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
-                    session,
+                    tunnel,
                     header.getProtocol(), header.getId(), header.getToMessage(),
                     new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
         }
 
     }
 
-    public static void logReceive(Session session, Message message) {
+    public static void logReceive(Tunnel<?> tunnel, Message<?> message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHeader header = message.getHeader();
             logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
-                    session,
+                    tunnel,
                     header.getProtocol(), header.getId(), header.getToMessage(),
                     new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
         }

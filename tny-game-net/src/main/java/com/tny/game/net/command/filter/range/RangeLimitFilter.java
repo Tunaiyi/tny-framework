@@ -1,11 +1,11 @@
 package com.tny.game.net.command.filter.range;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetResponseCode;
+import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
-import com.tny.game.net.message.*;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.Tunnel;
+import com.tny.game.net.transport.message.*;
 
 import java.lang.annotation.Annotation;
 
@@ -25,7 +25,7 @@ public abstract class RangeLimitFilter<A extends Annotation, N extends Comparabl
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
                     message.getUserID(), header.getProtocol(),
                     index, number, low, high);
-            return NetResponseCode.ILLEGAL_PARAMETERS;
+            return NetResultCode.ILLEGAL_PARAMETERS;
         }
         return ResultCode.SUCCESS;
     }

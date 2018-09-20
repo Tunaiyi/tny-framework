@@ -2,7 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.utils.StringAide;
 
-public class SessionException extends RuntimeException {
+public class SessionException extends Exception {
 
     /**
      *

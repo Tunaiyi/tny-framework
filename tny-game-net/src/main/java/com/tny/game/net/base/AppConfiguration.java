@@ -4,23 +4,24 @@ import com.tny.game.common.config.Config;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 
-public interface AppConfiguration extends AppContext {
+public interface AppConfiguration<T> extends AppContext {
+
+    T getDefaultUserId();
 
     Config getProperties();
 
-    NetSessionHolder getSessionHolder();
+    SessionKeeperFactory getSessionKeeperFactory();
 
-    <T> SessionFactory<T> getSessionFactory();
+    SessionFactory<T> getSessionFactory();
 
-    <T> MessageBuilderFactory<T> getMessageBuilderFactory();
+    MessageBuilderFactory<T> getMessageBuilderFactory();
 
-    <T, S extends NetTunnel<T>> MessageOutputEventHandler<T, S> getOutputEventHandler();
+    MessageOutputEventHandler<T, NetTunnel<T>> getOutputEventHandler();
 
-    <T, S extends NetTunnel<T>> MessageInputEventHandler<T, S> getInputEventHandler();
+    MessageInputEventHandler<T, NetTunnel<T>> getInputEventHandler();
 
     DispatchCommandExecutor getDispatchCommandExecutor();
 

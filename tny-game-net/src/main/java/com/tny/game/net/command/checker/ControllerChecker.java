@@ -1,9 +1,9 @@
 package com.tny.game.net.command.checker;
 
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.Tunnel;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
-import com.tny.game.net.message.Message;
+import com.tny.game.net.transport.message.Message;
 
 /**
  * 消息校驗處理器

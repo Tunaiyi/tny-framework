@@ -2,7 +2,7 @@ package com.tny.game.net.client.rmi;
 
 import com.tny.game.common.context.Attributes;
 import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

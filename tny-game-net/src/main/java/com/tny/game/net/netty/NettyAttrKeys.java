@@ -3,9 +3,9 @@ package com.tny.game.net.netty;
 import com.tny.game.common.context.*;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.dispatcher.MessageCommandBox;
-import com.tny.game.net.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
 import com.tny.game.net.netty.coder.*;
-import com.tny.game.net.session.*;
+import com.tny.game.net.transport.*;
 import io.netty.util.AttributeKey;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface NettyAttrKeys {
     // AttributeKey<NetSession> SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".SESSION");
     AttributeKey<NettyTunnel> TUNNEL = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
     AttributeKey<NetSession> SESION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
-    AttributeKey<NettyClient> CLIENT = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".CLIENT");
+    // AttributeKey<NettyConnector> CLIENT = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".CLIENT");
 
     // public static final AttributeKey<NetSession<?>> SERVER_SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".SERVER_SESSION");
     // public static final AttributeKey<NetSession<?>> CLIENT_SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".CLIENT_SESSION");

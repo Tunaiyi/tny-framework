@@ -43,13 +43,13 @@ public class SpringBaseCluster extends BaseCluster implements ServerPrepareStart
     }
 
     @Override
-    public void prepareStart() throws Throwable {
+    public void prepareStart() throws Exception {
         initHandlers = ImmutableList.copyOf(applicationContext.getBeansOfType(ZKMonitorInitHandler.class).values());
         this.monitor();
     }
 
     @Override
-    public void postStart() throws Throwable {
+    public void postStart() {
         this.register();
     }
 

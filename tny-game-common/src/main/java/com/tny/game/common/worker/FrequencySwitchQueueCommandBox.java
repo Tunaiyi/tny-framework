@@ -2,13 +2,11 @@ package com.tny.game.common.worker;
 
 import com.tny.game.common.utils.Logs;
 import com.tny.game.common.worker.command.Command;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 public class FrequencySwitchQueueCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
 

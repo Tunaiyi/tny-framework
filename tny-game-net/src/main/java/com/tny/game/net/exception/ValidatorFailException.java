@@ -1,8 +1,8 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetResponseCode;
+import com.tny.game.net.base.NetResultCode;
 
 public class ValidatorFailException extends DispatchException {
 
@@ -16,7 +16,7 @@ public class ValidatorFailException extends DispatchException {
     private String ip;
 
     public ValidatorFailException(ResultCode code, String message, Throwable e) {
-        super(code, Logs.format("!!|({}) {} | {}", code.getCode(), code.getMessage(), message), e);
+        super(code, format("!!|({}) {} | {}", code.getCode(), code.getMessage(), message), e);
     }
 
     public ValidatorFailException(ResultCode code, String message) {
@@ -32,11 +32,11 @@ public class ValidatorFailException extends DispatchException {
     }
 
     public ValidatorFailException(String message, Throwable e) {
-        this(NetResponseCode.VALIDATOR_FAIL, message, e);
+        this(NetResultCode.VALIDATOR_FAIL, message, e);
     }
 
     public ValidatorFailException(String message) {
-        this(NetResponseCode.VALIDATOR_FAIL, message);
+        this(NetResultCode.VALIDATOR_FAIL, message);
     }
 
     public String getAccount() {

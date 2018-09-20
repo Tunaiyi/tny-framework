@@ -1,9 +1,8 @@
 package com.tny.game.lock;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.utils.Logs;
+import org.slf4j.*;
 
 import java.util.Map.Entry;
 import java.util.concurrent.*;

@@ -3,7 +3,7 @@ package com.tny.game.net.base;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.DoneResult;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.message.Protocol;
+import com.tny.game.net.transport.message.Protocol;
 
 /**
  * @author KGTny
@@ -20,12 +20,12 @@ public class ResultFactory {
     /**
      * 成功不返回数据
      */
-    public final static CommandResult NONE = new CommandResultImpl(NetResponseCode.SUCCESS, null);
+    public final static CommandResult NONE = new CommandResultImpl(NetResultCode.SUCCESS, null);
 
     /**
      * 成功返回数据
      */
-    public final static CommandResult SUCC = new CommandResultImpl(NetResponseCode.SUCCESS, null);
+    public final static CommandResult SUCC = new CommandResultImpl(NetResultCode.SUCCESS, null);
 
     /**
      * 创建成功响应结果
@@ -37,7 +37,7 @@ public class ResultFactory {
      * @return 返回响应结果
      */
     public static CommandResult success(Object message) {
-        return new CommandResultImpl(NetResponseCode.SUCCESS, message);
+        return new CommandResultImpl(NetResultCode.SUCCESS, message);
     }
 
     public static CommandResult result(ResultCode code) {

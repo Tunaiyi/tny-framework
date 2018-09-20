@@ -1,12 +1,12 @@
 package com.tny.game.suite.launcher;
 
 import com.tny.game.net.base.listener.SeverClosedListener;
-import com.tny.game.net.netty.NettyServer;
-import com.tny.game.net.session.SessionHolder;
-import com.tny.game.net.session.listener.SessionHolderListener;
+import com.tny.game.net.netty.NettyBinder;
+import com.tny.game.net.transport.SessionKeeper;
+import com.tny.game.net.transport.listener.SessionHolderListener;
 import com.tny.game.suite.transaction.TransactionManager;
 import com.tny.game.suite.utils.Configs;
-import com.tny.game.telnet.command.TelnetCommandHolder;
+import com.tny.game.net.telnet.command.TelnetCommandHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class ServerLauncher {
 
     private long startAt;
 
-    public ServerLauncher(String... contextFile) throws Throwable {
+    public ServerLauncher(String... contextFile) throws Exception {
         this.startAt = System.currentTimeMillis();
         this.processor.onStaticInit();
         GenericXmlApplicationContext context = new GenericXmlApplicationContext();
@@ -69,7 +69,7 @@ public class ServerLauncher {
             // processor.setApplicationContext(this.appContext);
             //per initServer
             runPoint(beforeInitServer);
-            NettyServer server = this.initServer();
+            NettyBinder server = this.initServer();
             ApplicationLifecycleProcessor.loadHandler(context);
             runPoint(afterInitServer);
             //post initServer
@@ -180,10 +180,10 @@ public class ServerLauncher {
         }
     }
 
-    private NettyServer initServer() {
-        NettyServer server = this.context.getBean(NettyServer.class);
+    private NettyBinder initServer() {
+        NettyBinder server = this.context.getBean(NettyBinder.class);
         server.addClosedListeners(this.context.getBeansOfType(SeverClosedListener.class).values());
-        SessionHolder sessionHolder = this.context.getBean(SessionHolder.class);
+        SessionKeeper sessionHolder = this.context.getBean(SessionKeeper.class);
         sessionHolder.addListener(this.context.getBeansOfType(SessionHolderListener.class).values());
         LOG.info("服务器实例化完成!");
         return server;

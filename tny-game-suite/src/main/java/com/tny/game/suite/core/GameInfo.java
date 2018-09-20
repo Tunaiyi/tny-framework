@@ -6,7 +6,7 @@ import com.tny.game.common.RunningChecker;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.formula.DateTimeEx;
 import com.tny.game.common.utils.DateTimeAide;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.net.base.AppType;
 import com.tny.game.net.base.ScopeType;
 import com.tny.game.net.base.ScopeTypes;
@@ -73,14 +73,14 @@ public class GameInfo {
             for (GameInfo info : list) {
                 if (info.isMainServer()) {
                     if (GAMES_INFO != null)
-                        throw new IllegalArgumentException(Logs.format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getServerID(), info.getServerID()));
+                        throw new IllegalArgumentException(format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getServerID(), info.getServerID()));
                     GAMES_INFO = info;
                 }
                 if (map.put(info.getServerID(), info) != null)
-                    throw new IllegalArgumentException(Logs.format("发现有重复 serverID {} 的服务器", info.getServerID()));
+                    throw new IllegalArgumentException(format("发现有重复 serverID {} 的服务器", info.getServerID()));
             }
             if (GAMES_INFO == null)
-                throw new IllegalArgumentException(Logs.format("未发现主服务器"));
+                throw new IllegalArgumentException(format("未发现主服务器"));
             LOGGER.info("#itemModelManager# 解析 <{}> xml完成! ", GameInfo.class.getName());
         } catch (IOException e) {
             LOGGER.error("", e);

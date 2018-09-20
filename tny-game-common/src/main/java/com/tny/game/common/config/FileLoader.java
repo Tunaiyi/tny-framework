@@ -2,14 +2,10 @@ package com.tny.game.common.config;
 
 import com.tny.game.common.utils.Logs;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public abstract class FileLoader implements Reloadable, NoticeReload {
 

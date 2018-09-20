@@ -6,8 +6,8 @@ import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.DispatchCommandExecutor;
-import com.tny.game.net.session.listener.SessionHolderListener;
-import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.transport.listener.SessionHolderListener;
+import com.tny.game.net.transport.NetTunnel;
 import com.tny.game.net.utils.NetConfigs;
 import org.slf4j.*;
 
@@ -18,7 +18,6 @@ import java.util.concurrent.*;
 public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecutor, SessionHolderListener {
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
-    private static final Logger LOG_TEST = LoggerFactory.getLogger("test");
 
     private static final String POOL_NAME = "ConcurrentDispatchCommandExecutor";
 

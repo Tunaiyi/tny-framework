@@ -2,8 +2,8 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.net.command.ControllerPlugin;
 import com.tny.game.net.command.InvokeContext;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.transport.Tunnel;
 import org.springframework.stereotype.Component;
 
 @Component

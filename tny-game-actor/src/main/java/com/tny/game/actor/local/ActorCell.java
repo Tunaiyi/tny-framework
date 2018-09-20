@@ -1,14 +1,15 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.actor.Actor;
-import com.tny.game.actor.ActorURL;
-import com.tny.game.actor.Answer;
+import com.tny.game.actor.*;
+import org.slf4j.*;
 
 /**
  * Actor单元,负责管理与当前Actor相关的对象
  * Created by Kun Yang on 16/4/25.
  */
 class ActorCell implements ActorDispatcher {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ActorCell.class);
 
     private ActorURL actorPath;
 
@@ -79,7 +80,7 @@ class ActorCell implements ActorDispatcher {
                 this.lifeCycle.postSucc(result);
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error("", e);
             this.lifeCycle.postFail(e);
         } finally {
             this.lifeCycle.postHandle(command);

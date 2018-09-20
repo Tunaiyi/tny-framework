@@ -252,7 +252,6 @@ public final class TestAide {
 
     public static TestTask<?>[] parallelTask(int threadSize, TestTask<?>... tasks) {
         ForkJoinPool forkJoinPool = ForkJoinPools.pool(threadSize, "parallelTask");
-        List<ForkJoinTask<?>> joinTasks = new ArrayList<>();
         final CountDownLatch latch = new CountDownLatch(1);
         for (TestTask<?> task : tasks) {
             for (int index = 0; index < task.getTimes(); index++) {

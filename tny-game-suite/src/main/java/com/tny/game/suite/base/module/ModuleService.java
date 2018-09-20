@@ -8,7 +8,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public abstract class ModuleService<DTO> implements ServerPrepareStart, Applicat
                             LOGGER.debug("{} 玩家开启 {} 模块", explorer.getPlayerID(), module);
                         ModuleHandler handler = this.handlerMap.get(module);
                         if (handler == null)
-                            throw new NullPointerException(Logs.format("{} module handler is null", module));
+                            throw new NullPointerException(format("{} module handler is null", module));
                         if (consuming)
                             RunningChecker.startPrint(module);
                         if (handler.openModule(explorer)) {

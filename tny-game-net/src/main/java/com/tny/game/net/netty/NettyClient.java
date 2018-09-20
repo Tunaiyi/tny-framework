@@ -1,214 +1,143 @@
-package com.tny.game.net.netty;
-
-import com.tny.game.common.config.Config;
-import com.tny.game.common.utils.URL;
-import com.tny.game.net.base.*;
-import com.tny.game.net.exception.*;
-import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.session.MessageContent;
-import com.tny.game.net.tunnel.Tunnel;
-import com.tny.game.net.utils.NetConfigs;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
-import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.*;
-
-import java.net.InetSocketAddress;
-import java.util.Set;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
-
-
-public class NettyClient<UID> extends NettyApp implements Client<UID> {
-
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.CLIENT);
-
-    private static final boolean EPOLL = isEpoll();
-
-    private static final EventLoopGroup workerGroup = createLoopGroup(EPOLL, 1, "Client-Work-LoopGroup");
-
-    private Bootstrap bootstrap = null;
-
-    private NettyAppConfiguration appConfiguration;
-
-    private Set<Channel> channels = new CopyOnWriteArraySet<>();
-
-    private AtomicBoolean close = new AtomicBoolean(false);
-
-    @Sharable
-    private class RemoveTunnelHandler extends ChannelInboundHandlerAdapter {
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) {
-            channels.remove(ctx.channel());
-            ctx.fireChannelInactive();
-        }
-    }
-
-    public NettyClient(String name, NettyAppConfiguration appConfiguration) {
-        super(name);
-        this.appConfiguration = appConfiguration;
-    }
-
-    private Bootstrap bootstrap() {
-        if (this.bootstrap != null)
-            return this.bootstrap;
-        synchronized (this) {
-            if (this.bootstrap != null)
-                return this.bootstrap;
-            this.bootstrap = new Bootstrap();
-            NettyChannelMessageHandler messageHandler = new NettyChannelMessageHandler(appConfiguration);
-            ChannelInboundHandler channelRemoveHandler = new RemoveTunnelHandler();
-            ChannelMaker<Channel> channelMaker = appConfiguration.getChannelMaker();
-            this.bootstrap.group(workerGroup)
-                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<Channel>() {
-
-                        @Override
-                        protected void initChannel(Channel ch) throws Exception {
-                            if (channelMaker != null)
-                                channelMaker.initChannel(ch);
-                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
-                            ch.pipeline().addLast("nettyChannelRemoveHandler", channelRemoveHandler);
-                        }
-
-                    });
-            return this.bootstrap;
-        }
-
-    }
-
-    public Tunnel<UID> connect(URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) throws InterruptedException, ExecutionException, TimeoutException, TunnelWriteException {
-        if (this.isClosed())
-            throw new RemotingException("client is closed");
-        NettyClientTunnel<UID> tunnel = null;
-        try {
-            tunnel = doConnect(null, url, loginContentCreator);
-            if (tunnel != null)
-                tunnel.login();
-        } catch (Throwable e) {
-            if (tunnel != null)
-                tunnel.close();
-            throw e;
-        }
-        return tunnel;
-    }
-
-    public Tunnel<UID> connect(URL url, MessageContent<UID> content) throws InterruptedException, ExecutionException, TimeoutException, TunnelWriteException {
-        return connect(url, (relogin, tunnel) -> content);
-    }
-
-    void reconnect(NettyClientTunnel<UID> tunnel) {
-        if (this.isClosed())
-            throw new RemotingException("client is closed");
-        doConnect(tunnel, tunnel.getUrl(), tunnel.getLoginContentCreator());
-    }
-
-    private long getConnectTimeout(URL url) {
-        Config config = appConfiguration.getProperties();
-        return url.getParameter(NetConfigs.CONNECT_TIMEOUT_URL_PARAM, config.getLong(NetConfigs.CONNECT_TIMEOUT_URL_PARAM, 5000L));
-    }
-
-    @SuppressWarnings("unchecked")
-    private NettyClientTunnel<UID> doConnect(NettyClientTunnel<UID> reconnectTunnel, URL url, BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator) {
-        if (reconnectTunnel != null && !reconnectTunnel.isClosed())
-            return reconnectTunnel;
-        ChannelFuture channelFuture = this.bootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
-        try {
-            long connectTimeout = getConnectTimeout(url);
-            channelFuture.get(connectTimeout, TimeUnit.MILLISECONDS);
-            if (channelFuture.isSuccess()) {
-                Channel channel = channelFuture.channel();
-                NettyClientTunnel<UID> tunnel = reconnectTunnel;
-                if (tunnel == null) {
-                    tunnel = new NettyClientTunnel<>(url, channel, appConfiguration);
-                    // Tunnels.put(tunnel);
-                }
-                channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
-                channel.attr(NettyAttrKeys.CLIENT).set(NettyClient.this);
-                channels.add(channel);
-                if (reconnectTunnel != null)
-                    reconnectTunnel.resetChannel(channel);
-                return tunnel;
-            } else {
-                return null;
-            }
-        } catch (Throwable e) {
-            throw new RemotingException(e);
-        }
-    }
-
-
-    // Channel reconnect(NettyClientTunnel<UID> tunnel) {
-    //     synchronized (this) {
-    //         URL url = tunnel.getUrl();
-    //         ChannelFuture channelFuture = this.bootstrap.connect(new InetSocketAddress(url.getHost(), url.getPort()));
-    //         try {
-    //             boolean result = channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS);
-    //             if (result && channelFuture.isSuccess()) {
-    //                 Channel newChannel = channelFuture.channel();
-    //                 NettyClientTunnel<UID> tunnel = newChannel.attr(NETTY_TUNNEL).get();
-    //                 tunnel.setUrl(url)
-    //                         .setLoginContentCreator(loginContentCreator);
-    //                 MessageFuture loginFuture = tunnel.login();
-    //                 loginFuture.get(loginTimeout, TimeUnit.MILLISECONDS);
-    //                 this.session = tunnel.getSession();
-    //                 return this.session;
-    //             }
-    //         } catch (Throwable e) {
-    //             throw new RemotingException(e);
-    //         }
-    //         return null;
-    //     }
-    // }
-
-    // @Override
-    // public boolean isConnected() {
-    //     if (this.session == null)
-    //         return false;
-    //     Tunnel<UID> tunnel = this.session.getCurrentTunnel();
-    //     return tunnel != null && tunnel.isConnected();
-    // }
-
-
-    // @Override
-    // public boolean close() {
-    //     this.close.set(true);
-    //     // return getAndCheckSession().close();
-    // }
-
-    @Override
-    public boolean isClosed() {
-        return this.close.get();
-    }
-
-    @Override
-    public boolean close() {
-        if (this.close.compareAndSet(false, true)) {
-            this.channels.forEach(ChannelOutboundInvoker::close);
-            workerGroup.shutdownGracefully();
-            return true;
-        }
-        return false;
-    }
-
-    // @Override
-    // public boolean isClosed() {
-    //     return !isConnected();
-    // }
-
-    // private Session<UID> getAndCheckSession() {
-    //     Session<UID> session = this.session;
-    //     if (session == null)
-    //         throw new RemotingException(this.getName() + " [" + this.connectAddress + "] session is null");
-    //     if (!isConnected())
-    //         return doConnect();
-    //     return session;
-    // }
-
-}
+// package com.tny.game.net.netty;
+//
+// import com.tny.game.common.concurrent.StageableFuture;
+// import com.tny.game.common.result.ResultCodes;
+// import com.tny.game.common.utils.URL;
+// import com.tny.game.net.base.NetResponseCode;
+// import com.tny.game.net.exception.*;
+// import com.tny.game.net.transport.*;
+// import com.tny.game.net.transport.message.Message;
+// import org.slf4j.*;
+//
+// import java.util.concurrent.*;
+// import java.util.function.BiFunction;
+//
+// import static org.apache.commons.lang3.ObjectUtils.*;
+//
+// /**
+//  * Created by Kun Yang on 2018/8/28.
+//  */
+// public class NettyClient<UID> implements Communicator<UID> {
+//
+//     public static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
+//
+//     private NettyConnector<UID> connector;
+//
+//     private NetSession<UID> seesion;
+//
+//     private URL url;
+//     private long loginTimeout;
+//     private long sendTimeout;
+//     private int resendTimes;
+//     private int reconnectTimes;
+//     private BiFunction<Boolean, Tunnel<UID>, MessageContent<UID>> loginContentCreator;
+//
+//     @Override
+//     public UID getUid() {
+//         return this.seesion.getUid();
+//     }
+//
+//     @Override
+//     public String getUserType() {
+//         return this.seesion.getUserType();
+//     }
+//
+//     @Override
+//     public Certificate<UID> getCertificate() {
+//         return null;
+//     }
+//
+//     @Override
+//     public boolean isLogin() {
+//         return false;
+//     }
+//
+//     @SuppressWarnings("unchecked")
+//     private void reconnect() throws TunnelWriteException {
+//         if (this.isClosed()) {
+//             int time = max(this.reconnectTimes, 0);
+//             for (int i = 1; i <= time; i++) {
+//                 try {
+//                     synchronized (this) {
+//                         if (this.isClosed())
+//                             return;
+//                         Tunnel<UID> tunnel = connector.connect(url);
+//                         login(true, tunnel);
+//                     }
+//                 } catch (TunnelWriteException e) {
+//                     LOGGER.warn("{} 发送消息失败", this, e);
+//                     this.close();
+//                     throw e;
+//                 } catch (Exception e) {
+//                     LOGGER.warn("{} 发送消息失败", this, e);
+//                     this.close();
+//                     throw new TunnelWriteException(e);
+//                 }
+//             }
+//         }
+//     }
+//
+//
+//     @SuppressWarnings("unchecked")
+//     private void login(boolean relogin, Tunnel<UID> tunnel) throws InterruptedException, ExecutionException, TunnelWriteException, TimeoutException {
+//         if (loginContentCreator != null) {
+//             MessageContent<UID> loginMessage = loginContentCreator.apply(relogin, tunnel);
+//             StageableFuture<Message<UID>> loginFuture = loginMessage.messageFuture(this.loginTimeout + 1000L);
+//             // tunnel.send(loginMessage);
+//             // this.doWait(timeout, loginFuture);
+//             Message result = loginFuture.get();
+//             if (!ResultCodes.isSuccess(result.getCode()))
+//                 throw new TunnelWriteException(new ValidatorFailException(NetResponseCode.VALIDATOR_FAIL));
+//         }
+//     }
+//
+//     @Override
+//     public void resend(ResendMessage<UID> message) {
+//         seesion.resend(message);
+//     }
+//
+//     @Override
+//     public StageableFuture<Void> close() {
+//         return seesion.close();
+//     }
+//
+//     @Override
+//     public boolean isClosed() {
+//         return seesion.isClosed();
+//     }
+//
+//     private static NextTaskAction action = new NextTaskAction();
+//
+//     private <T> void doWait(long timeout, Future<T> future) throws TimeoutException, ExecutionException, InterruptedException {
+//         if (timeout > 0) {
+//             if (ForkJoinTask.inForkJoinPool()) {
+//                 long loginTimeoutTime = System.currentTimeMillis() + timeout;
+//                 while (!future.isDone()) {
+//                     if (System.currentTimeMillis() > loginTimeoutTime)
+//                         throw new TimeoutException();
+//                     action.compute();
+//                 }
+//             }
+//             future.get(timeout, TimeUnit.MILLISECONDS);
+//         }
+//     }
+//
+//     private static class NextTaskAction extends RecursiveAction {
+//
+//         @Override
+//         protected void compute() {
+//             ForkJoinTask<?> task = ForkJoinTask.pollTask();
+//             if (task != null) {
+//                 task.quietlyInvoke();
+//             } else {
+//                 try {
+//                     Thread.sleep(20);
+//                 } catch (InterruptedException e) {
+//                     e.printStackTrace();
+//                 }
+//             }
+//         }
+//
+//     }
+//
+// }

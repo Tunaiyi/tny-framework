@@ -1,10 +1,10 @@
 package com.tny.game.net.base.listener;
 
-import com.tny.game.net.netty.NettyServer;
+import com.tny.game.net.netty.NettyBinder;
 
 @FunctionalInterface
 public interface SeverClosedListener {
 
-    void onClosed(NettyServer server);
+    void onClosed(NettyBinder server);
 
 }

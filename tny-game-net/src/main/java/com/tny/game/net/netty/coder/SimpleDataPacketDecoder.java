@@ -1,13 +1,10 @@
 package com.tny.game.net.netty.coder;
 
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.message.DetectMessage;
-import com.tny.game.net.message.coder.CoderContent;
-import com.tny.game.net.message.coder.MessageCoder;
-import com.tny.game.utils.CompressUtils;
+import com.tny.game.net.transport.message.DetectMessage;
+import com.tny.game.net.transport.message.coder.*;
 import io.netty.buffer.ByteBuf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 public class SimpleDataPacketDecoder implements DataPacketDecoder {
 
@@ -63,9 +60,9 @@ public class SimpleDataPacketDecoder implements DataPacketDecoder {
         if (DECODER_LOG.isDebugEnabled())
             DECODER_LOG.debug("do decoder");
 
-        if ((option & CoderContent.COMPRESS_OPTION) > 0) {
-            messageBytes = CompressUtils.decompressBytes(messageBytes);
-        }
+        // if ((option & CoderContent.COMPRESS_OPTION) > 0) {
+        //     messageBytes = CompressUtils.decompressBytes(messageBytes);
+        // }
         return this.coder.decode(messageBytes);
     }
 

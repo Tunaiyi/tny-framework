@@ -1,13 +1,12 @@
 package com.tny.game.common.enums;
 
-import com.tny.game.common.utils.Logs;
 import com.tny.game.common.collection.CopyOnWriteMap;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 16/1/29.
@@ -58,7 +57,7 @@ public class EnumeratorHolder<O> {
         if (enumeratorMap.containsKey(key)) {
             O old = enumeratorMap.get(key);
             if (old != null)
-                throw new IllegalStateException(Logs.format(
+                throw new IllegalStateException(format(
                         "注册 {} [key:{}, object:{}] 发现已存在对象 {}", o.getClass(), key, o, old));
         }
         enumeratorMap.put(key, o);
@@ -71,7 +70,7 @@ public class EnumeratorHolder<O> {
     public <T extends O> T ofAndCheck(Object key, String message, Object... args) {
         T value = (T) enumeratorMap.get(key);
         if (value == null)
-            throw new NullPointerException(Logs.format(message, args));
+            throw new NullPointerException(format(message, args));
         return value;
     }
 

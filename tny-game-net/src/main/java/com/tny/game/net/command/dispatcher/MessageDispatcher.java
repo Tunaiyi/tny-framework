@@ -3,8 +3,7 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import com.tny.game.net.exception.DispatchException;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.*;
+import com.tny.game.net.transport.MessageReceiveEvent;
 
 import java.util.Collection;
 
@@ -22,15 +21,14 @@ import java.util.Collection;
 public interface MessageDispatcher {
 
     /**
-     * 派发请求
+     * 派发消息事件
      * <p>
      * <p>
-     * 派发请求到相对应的Controller<br>
+     * 派发消息事件到相对应的Controller<br>
      *
-     * @param message 请求
-     * @param tunnel  通道
+     * @param event 收到消息事件
      */
-    Command dispatch(Message message, NetTunnel<?> tunnel) throws DispatchException;
+    Command dispatch(MessageReceiveEvent<?> event) throws DispatchException;
 
     /**
      * 添加请求派发错误监听器

@@ -1,62 +1,44 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.*;
+import com.tny.game.net.exception.SessionException;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.*;
 import io.netty.channel.*;
 import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.Future;
 import org.junit.*;
 import org.mockito.ArgumentCaptor;
+import test.TestAide;
 
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static test.MockAide.atLeastOnce;
 import static test.MockAide.*;
-import static test.MockAide.never;
 
 /**
  * Created by Kun Yang on 2018/8/25.
  */
 public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTunnelTest<T> {
 
-
-    protected abstract T createUnloginTunnel(SessionFactory<Long> sessionFactory, MessageBuilderFactory<Long> messageBuilderFactory);
+    protected abstract T newTunnel(Certificate<Long> certificate);
 
     @Override
-    protected T createUnloginTunnel() {
-        NetSession<Long> session = mockAs(NetSession.class);
-        SessionFactory<Long> sessionFactory = mockAs(SessionFactory.class);
+    protected T createTunnel(Certificate<Long> certificate) {
+        MessageInputEventHandler<Long, NetTunnel<Long>> inputEventHandler = mockAs(MessageInputEventHandler.class);
+        MessageOutputEventHandler<Long, NetTunnel<Long>> outputEventHandler = mockAs(MessageOutputEventHandler.class);
         MessageBuilderFactory<Long> messageBuilderFactory = mockAs(MessageBuilderFactory.class);
-        when(sessionFactory.createSession(as(any(NetTunnel.class)))).thenReturn(session);
-        T tunnel = createUnloginTunnel(sessionFactory, messageBuilderFactory);
-        when(session.getCurrentTunnel()).thenReturn(tunnel);
-        bindMockSessionWith(session, createUnLoginCert());
+        T tunnel = newTunnel(certificate);
+        tunnel.setInputEventHandler(inputEventHandler)
+                .setOutputEventHandler(outputEventHandler)
+                .setMessageBuilderFactory(messageBuilderFactory);
         return tunnel;
-    }
-
-    @Override
-    @Test
-    public void bind() {
-        NetSession<Long> session;
-        NetSession<Long> otherSession;
-        T tunnel;
-        T other;
-
-        tunnel = createLoginTunnel();
-        other = createLoginTunnel();
-        session = mockTunnelSession(tunnel);
-        otherSession = mockTunnelSession(other);
-
-        assertTrue(tunnel.bind(session));
-        assertFalse(tunnel.bind(otherSession));
     }
 
     @Override
@@ -106,151 +88,292 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
     @Override
     @Test
     public void ping() {
-        testPingPong(T::ping, MessageMode.PING);
+        testPingPong(1, T::ping, MessageMode.PING);
     }
-
 
     @Override
     @Test
     public void pong() {
-        testPingPong(T::pong, MessageMode.PONG);
+        testPingPong(1, T::pong, MessageMode.PONG);
     }
 
-    // @Override
-    // public void send() throws InterruptedException {
-    //     T tunnel;
-    //     Channel channel;
-    //     NetSession<Long> session;
-    //     MessageContent<Long> content;
-    //     int sleepTime = 10;
-    //     long lastWriteAt;
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastWriteAt = tunnel.getLastWriteAt();
-    //     session = mockTunnelSession(tunnel);
-    //     channel = mockTunnelChannel(tunnel);
-    //     content = mockAs(MessageContent.class);
-    //     when(channel.isActive()).thenReturn(true);
-    //     Thread.sleep(sleepTime);
-    //     tunnel.send(content);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).send(eq(tunnel), eq(content));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertTrue(tunnel.getLastWriteAt() >= lastWriteAt + sleepTime);
-    //
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastWriteAt = tunnel.getLastWriteAt();
-    //     session = mockTunnelSession(tunnel);
-    //     content = mockAs(MessageContent.class);
-    //     channel = mockTunnelChannel(tunnel);
-    //     when(channel.isActive()).thenReturn(false);
-    //     tunnel.send(content);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).send(eq(tunnel), eq(content));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertEquals(lastWriteAt, tunnel.getLastWriteAt());
-    // }
-    //
-    // @Override
-    // public void receive() throws InterruptedException {
-    //     T tunnel;
-    //     Channel channel;
-    //     NetSession<Long> session;
-    //     Message<Long> message;
-    //     int sleepTime = 10;
-    //     long lastReadAt;
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastReadAt = tunnel.getLastReadAt();
-    //     session = mockTunnelSession(tunnel);
-    //     channel = mockTunnelChannel(tunnel);
-    //     message = mockAs(Message.class);
-    //     when(channel.isActive()).thenReturn(true);
-    //     Thread.sleep(sleepTime);
-    //     tunnel.receive(message);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).receive(eq(tunnel), eq(message));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
-    //
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastReadAt = tunnel.getLastReadAt();
-    //     session = mockTunnelSession(tunnel);
-    //     message = mockAs(Message.class);
-    //     channel = mockTunnelChannel(tunnel);
-    //     when(channel.isActive()).thenReturn(false);
-    //     tunnel.receive(message);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).receive(eq(tunnel), eq(message));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertEquals(lastReadAt, tunnel.getLastReadAt());
-    //
-    // }
-    //
-    // @Override
-    // public void resend() throws InterruptedException {
-    //     T tunnel;
-    //     Channel channel;
-    //     NetSession<Long> session;
-    //     ResendMessage<Long> message;
-    //     int sleepTime = 10;
-    //     long lastReadAt;
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastReadAt = tunnel.getLastReadAt();
-    //     session = mockTunnelSession(tunnel);
-    //     channel = mockTunnelChannel(tunnel);
-    //     message = mockAs(ResendMessage.class);
-    //     when(channel.isActive()).thenReturn(true);
-    //     Thread.sleep(sleepTime);
-    //     tunnel.resend(message);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).resend(eq(tunnel), eq(message));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertTrue(tunnel.getLastReadAt() >= lastReadAt + sleepTime);
-    //
-    //
-    //     tunnel = createLoginTunnel();
-    //     lastReadAt = tunnel.getLastReadAt();
-    //     session = mockTunnelSession(tunnel);
-    //     message = mockAs(ResendMessage.class);
-    //     channel = mockTunnelChannel(tunnel);
-    //     when(channel.isActive()).thenReturn(false);
-    //     tunnel.resend(message);
-    //     verify(channel, times(1)).isActive();
-    //     verify(session, times(1)).resend(eq(tunnel), eq(message));
-    //     verifyNoMoreInteractions(session, channel);
-    //     assertEquals(lastReadAt, tunnel.getLastReadAt());
-    // }
+    @Override
+    @Test
+    public void receive() throws ExecutionException, InterruptedException {
+        TestMessages messages;
+        T tunnel;
+        MessageEventsBox<Long> eventsBox;
+
+        // 接受Message
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addPush("push")
+                .addRequest("request")
+                .addResponse("response", 1);
+        messages.receive(tunnel);
+        assertEquals(messages.getMessageSize(), eventsBox.getInputEventSize());
+
+        // 接受ping
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addPing()
+                .addPing()
+                .addPing();
+        messages.receive(tunnel);
+        assertPingPong(messages.getPingSize(), tunnel, MessageMode.PONG);
+        // verify(channel, times(messages.getPingSize())).writeAndFlush(any(MessageReceiveEvent.class));
+        // verify(tunnel, times(messages.getPingSize())).pong();
+        // verify(tunnel, times(messages.getPingSize())).isExcludeReceiveMode(MessageMode.PING);
+        // verifyNoMoreInteractions(tunnel);
+
+        // 接受pong
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addPong()
+                .addPong()
+                .addPong();
+        messages.receive(tunnel);
+        assertPingPong(0, tunnel, MessageMode.PONG);
+        // verify(tunnel, times(messages.getPongSize())).isExcludeReceiveMode(MessageMode.PONG);
+        // verify(tunnel, never()).pong();
+        // verifyNoMoreInteractions(tunnel);
+
+        // 排除接受 all
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addRequest("request")
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeReceiveModes(MessageMode.values());
+        messages.receive(tunnel);
+        assertEquals(messages.getRequestSize(), eventsBox.getOutputEventSize());
+        assertEquals(0, eventsBox.getInputEventSize());
+
+        // 排除接受 REQUEST
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addRequest("request")
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeReceiveModes(MessageMode.REQUEST);
+        messages.receive(tunnel);
+        assertEquals(messages.getPushSize() + messages.getResponseSize(), eventsBox.getInputEventSize());
+        assertEquals(messages.getRequestSize(), eventsBox.getOutputEventSize());
+
+        // 排除接受 PUSH
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeReceiveModes(MessageMode.PUSH);
+        messages.receive(tunnel);
+        assertEquals(messages.getRequestSize() + messages.getResponseSize(), eventsBox.getInputEventSize());
+        assertEquals(0, eventsBox.getOutputEventSize());
+
+        // 排除接受 RESPONSE
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeReceiveModes(MessageMode.RESPONSE);
+        messages.receive(tunnel);
+        assertEquals(messages.getRequestSize() + messages.getPushSize(), eventsBox.getInputEventSize());
+        assertEquals(0, eventsBox.getOutputEventSize());
+
+    }
+
+    @Override
+    @Test
+    public void send() throws ExecutionException, InterruptedException {
+        T tunnel;
+        MessageEventsBox<Long> eventsBox;
+        TestMessages messages;
+
+        // 接受Message
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addPush("push")
+                .addRequest("request")
+                .addResponse("response", 1);
+        messages.send(tunnel);
+        assertEquals(messages.getMessageSize(), eventsBox.getOutputEventSize());
+
+        // 排除接受 all
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addRequest("request")
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeSendModes(MessageMode.values());
+        messages.send(tunnel);
+        assertEquals(0, eventsBox.getInputEventSize());
+        assertEquals(0, eventsBox.getOutputEventSize());
+
+        // 排除接受 REQUEST
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addRequest("request")
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeSendModes(MessageMode.REQUEST);
+        messages.send(tunnel);
+        assertEquals(messages.getPushSize() + messages.getResponseSize(), eventsBox.getOutputEventSize());
+        assertEquals(0, eventsBox.getInputEventSize());
+
+        // 排除接受 PUSH
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeSendModes(MessageMode.PUSH);
+        messages.send(tunnel);
+        assertEquals(messages.getRequestSize() + messages.getResponseSize(), eventsBox.getOutputEventSize());
+        assertEquals(0, eventsBox.getInputEventSize());
+
+        // 排除接受 RESPONSE
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        messages = new TestMessages(tunnel)
+                .addRequest("request")
+                .addPush("push")
+                .addResponse("response", 1);
+        tunnel.excludeSendModes(MessageMode.RESPONSE);
+        messages.send(tunnel);
+        assertEquals(messages.getRequestSize() + messages.getPushSize(), eventsBox.getOutputEventSize());
+        assertEquals(0, eventsBox.getInputEventSize());
+
+        // 发送 futureWaitSend
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addPush("push")
+                .addRequest("request")
+                .addResponse("response", 2);
+        messages.contentsForEach(MessageContext::willSendFuture);
+        messages.send(tunnel);
+        messages.contentsForEach(c ->
+                TestAide.assertRunWithoutException("get send result", () -> assertFalse(c.willSendFuture().isDone())));
+        scheduleSendSuccess(tunnel, messages);
+        assertWaitSendOk(messages);
+
+        // 发送 futureWaitSend Timeout
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addPush("push")
+                .addRequest("request")
+                .addResponse("response", 2);
+        messages.contentsForEach(MessageContext::willSendFuture);
+        messages.send(tunnel);
+        assertWaitSendException(messages, TimeoutException.class);
+
+        // 发送 Wait Response
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addRequest("request 1")
+                .addRequest("request 2")
+                .addRequest("request 3");
+        TestMessages responses = new TestMessages(tunnel);
+        messages.forEach((content, message) -> {
+            content.willResponseFuture();
+            responses.addResponse("response", message.getId());
+        });
+        messages.send(tunnel);
+        messages.sendSuccess(tunnel);
+        scheduleReceive(tunnel, responses).get();
+        assertWaitResponseOK(messages);
+
+        // 发送 Wait Response Timeout
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addRequest("request 1")
+                .addRequest("request 2")
+                .addRequest("request 3");
+        messages.forEach((content, message) -> {
+            content.willResponseFuture();
+            responses.addResponse("response", message.getId());
+        });
+        messages.send(tunnel);
+        messages.sendSuccess(tunnel);
+        assertWaitResponseException(messages, TimeoutException.class);
+
+        // 发送 Wait Response  发送失败
+        tunnel = createLoginTunnel();
+        messages = new TestMessages(tunnel)
+                .addRequest("request 1")
+                .addRequest("request 2")
+                .addRequest("request 3");
+        messages.forEach((content, message) -> {
+            content.willResponseFuture();
+        });
+        messages.sendFailed(new SessionException(""));
+        assertWaitResponseException(messages, ExecutionException.class);
+    }
+
+    @Override
+    @Test
+    public void resend() {
+        T tunnel;
+        MessageEventsBox<Long> eventsBox;
+
+        // 接受ResendMessage
+        tunnel = createLoginTunnel();
+        eventsBox = tunnel.getEventsBox();
+        tunnel.resend(ResendMessage.fromTo(10, 20));
+        tunnel.resend(ResendMessage.fromTo(10, 20));
+        tunnel.resend(ResendMessage.fromTo(10, 20));
+        assertEquals(3, eventsBox.getOutputEventSize());
+    }
 
     protected Channel mockTunnelChannel(T tunnel) {
         return tunnel.getChannel();
     }
 
     protected NetSession<Long> mockTunnelSession(T tunnel) {
-        return as(tunnel.getSession());
+        return as(tunnel.getSession().orElse(null));
     }
 
-    private void testPingPong(Consumer<T> consumer, MessageMode mode) {
-        T tunnel;
-        Channel channel;
-        tunnel = createLoginTunnel();
-        ArgumentCaptor<DetectMessage<Long>> message = captorAs(DetectMessage.class);
-        channel = mockTunnelChannel(tunnel);
+    private void testPingPong(int times, Consumer<T> consumer, MessageMode mode) {
+        T tunnel = createLoginTunnel();
+        Channel channel = mockTunnelChannel(tunnel);
+        when(channel.isActive()).thenReturn(true);
         consumer.accept(tunnel);
-        verify(channel, atLeastOnce()).isActive();
-        verify(channel).writeAndFlush(message.capture());
-        assertEquals(mode, message.getValue().getMode());
-        verifyNoMoreInteractions(channel);
+        assertPingPong(times, tunnel, mode);
+        // verify(channel, times(times)).isActive();
+        // verify(channel, times(times)).writeAndFlush(message.capture());
+        // assertEquals(times, message.getAllValues().size());
+        // for (DetectMessage<Long> value : message.getAllValues())
+        //     assertEquals(mode, value.getMode());
+        // verifyNoMoreInteractions(channel);
 
-        tunnel = createLoginTunnel();
-        channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        consumer.accept(tunnel);
-        verify(channel, times(1)).isActive();
-        verify(channel, never()).writeAndFlush(message.capture());
+    }
+
+    private void assertPingPong(int times, T tunnel, MessageMode mode) {
+        ArgumentCaptor<DetectMessage<Long>> message = captorAs(DetectMessage.class);
+        Channel channel = mockTunnelChannel(tunnel);
+        verify(channel, times(times)).isActive();
+        verify(channel, times(times)).writeAndFlush(message.capture());
+        assertEquals(times, message.getAllValues().size());
+        for (DetectMessage<Long> value : message.getAllValues())
+            assertEquals(mode, value.getMode());
         verifyNoMoreInteractions(channel);
     }
 

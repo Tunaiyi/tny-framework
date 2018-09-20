@@ -1,15 +1,14 @@
 package com.tny.game.net.netty.coder;
 
-import com.tny.game.net.message.Message;
-import com.tny.game.net.message.MessageMode;
-import com.tny.game.net.message.coder.CoderContent;
-import com.tny.game.net.message.coder.MessageCoder;
-import com.tny.game.utils.CompressUtils;
+import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.transport.message.MessageMode;
+import com.tny.game.net.transport.message.coder.CoderContent;
+import com.tny.game.net.transport.message.coder.MessageCoder;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.tny.game.net.message.coder.CoderContent.*;
+import static com.tny.game.net.transport.message.coder.CoderContent.FRAME_MAGIC;
 
 public class SimpleDataPacketEncoder implements DataPacketEncoder {
 
@@ -51,10 +50,10 @@ public class SimpleDataPacketEncoder implements DataPacketEncoder {
                 out.writeInt(0); // BodySize
             } else {
                 data = this.coder.encode((Message<?>) msg);
-                boolean compress = this.compress && data.length > 1024;
-                if (compress) {
-                    data = CompressUtils.compressBytes(data);
-                }
+                // boolean compress = this.compress && data.length > 1024;
+                // if (compress) {
+                //     data = CompressUtils.compressBytes(data);
+                // }
                 out.writeByte(compress ? CoderContent.COMPRESS_OPTION : 0);
                 out.writeInt(data.length);
                 out.writeBytes(data);

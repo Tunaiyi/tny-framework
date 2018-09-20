@@ -5,8 +5,8 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.filter.AbstractParamFilter;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.transport.Tunnel;
 import com.tny.game.suite.net.filter.annotation.TextFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.springframework.beans.BeansException;
@@ -59,7 +59,7 @@ public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String>
     }
 
     @Override
-    public void prepareStart() throws Throwable {
+    public void prepareStart() throws Exception {
         Map<String, WordsFilter> filtersMap = this.applicationContext.getBeansOfType(WordsFilter.class);
         wordsFilters = filtersMap.values().stream()
                 .sorted(Comparator.comparing(WordsFilter::order))

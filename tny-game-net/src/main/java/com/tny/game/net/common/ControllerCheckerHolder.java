@@ -7,8 +7,8 @@ import com.tny.game.net.annotation.Check;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.command.checker.ControllerChecker;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.transport.Tunnel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
@@ -26,15 +26,13 @@ public class ControllerCheckerHolder {
 
     private Object attributes;
 
-    private ExprHolderFactory exprHolderFactory;
 
     @SuppressWarnings("unchecked")
     public ControllerCheckerHolder(ControllerHolder controller, ControllerChecker checker, Check check, ExprHolderFactory exprHolderFactory) {
         this.checker = checker;
         this.controller = controller;
-        this.exprHolderFactory = exprHolderFactory;
-        if (this.exprHolderFactory == null)
-            this.exprHolderFactory = new GroovyExprHolderFactory();
+        if (exprHolderFactory == null)
+            exprHolderFactory = new GroovyExprHolderFactory();
         if (StringUtils.isNoneBlank(check.attributesFx()))
             this.attributes = exprHolderFactory.create(check.attributesFx().substring(1))
                     .createExpr()

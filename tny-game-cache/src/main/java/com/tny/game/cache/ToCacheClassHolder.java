@@ -1,6 +1,6 @@
 package com.tny.game.cache;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.cache.annotation.CacheID;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.reflect.GClass;
@@ -51,7 +51,7 @@ public class ToCacheClassHolder extends TriggerHolder {
             if (trigger != null)
                 triggerList.add(trigger);
             else
-                throw new NullPointerException(Logs.format("没有找到 {} 的 {} 触发器!", this.cacheClass, clazz));
+                throw new NullPointerException(format("没有找到 {} 的 {} 触发器!", this.cacheClass, clazz));
         }
         if (triggerList.isEmpty())
             return Collections.emptyList();

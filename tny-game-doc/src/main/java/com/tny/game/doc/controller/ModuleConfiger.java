@@ -3,7 +3,7 @@ package com.tny.game.doc.controller;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.doc.TypeFormatter;
 import com.tny.game.doc.holder.ClassDocHolder;
 import com.tny.game.doc.holder.FunDocHolder;
@@ -59,18 +59,18 @@ public class ModuleConfiger {
             if (configer != null) {
                 if (configer.getClassName().equals(holder.getClassName()))
                     return configer;
-                throw new IllegalArgumentException(Logs.format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
+                throw new IllegalArgumentException(format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
             } else {
                 configer = new ModuleConfiger(holder, typeFormatter);
                 old = configerMap.putIfAbsent(configer.getModuleID(), configer);
                 if (old != null) {
-                    throw new IllegalArgumentException(Logs.format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
+                    throw new IllegalArgumentException(format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleID()));
                 } else {
                     return configer;
                 }
             }
         }
-        throw new IllegalArgumentException(Logs.format("{} ModuleID 不存在", holder.getEntityClass()));
+        throw new IllegalArgumentException(format("{} ModuleID 不存在", holder.getEntityClass()));
     }
 
     private ModuleConfiger(ClassDocHolder holder, TypeFormatter typeFormatter) {
@@ -89,7 +89,7 @@ public class ModuleConfiger {
             operationList.add(configer);
             OperationConfiger old = fieldMap.put(configer.getOpID(), configer);
             if (old != null) {
-                throw new IllegalArgumentException(Logs.format("{} 类 {} 与 {} 字段 OpID 都为 {}",
+                throw new IllegalArgumentException(format("{} 类 {} 与 {} 字段 OpID 都为 {}",
                         holder.getEntityClass(), configer.getMethodName(), old.getMethodName(), configer.getOpID()));
             }
         }

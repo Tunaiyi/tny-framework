@@ -1,7 +1,7 @@
 package com.tny.game.expr.luaj;
 
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.expr.jsr223.ScriptExprContext;
 import org.slf4j.*;
 
@@ -21,17 +21,17 @@ public class LuajExprContext extends ScriptExprContext {
     @Override
     protected String importStaticClassCode(Class<?> clazz) {
         LOGGER.warn("import static class {} on luaj is same ad import class", clazz);
-        return Logs.format("local {} = luajava.bindClass('{}');\n", clazz.getSimpleName(), clazz.getName());
+        return format("local {} = luajava.bindClass('{}');\n", clazz.getSimpleName(), clazz.getName());
     }
 
     @Override
     protected String importClassCode(Class<?> clazz) {
-        return Logs.format("local {} = luajava.bindClass('{}');\n", clazz.getSimpleName(), clazz.getName());
+        return format("local {} = luajava.bindClass('{}');\n", clazz.getSimpleName(), clazz.getName());
     }
 
     @Override
     protected String importClassAsAliasCode(String alias, Class<?> clazz) {
-        return Logs.format("local {} = luajava.bindClass('{}');\n", alias, clazz.getName());
+        return format("local {} = luajava.bindClass('{}');\n", alias, clazz.getName());
     }
 
 }

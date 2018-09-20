@@ -1,13 +1,8 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.asyndb.AsyncDBEntity;
-import com.tny.game.asyndb.ReleaseStrategy;
-import com.tny.game.asyndb.ReleaseStrategyFactory;
-import com.tny.game.asyndb.TimeoutReleaseStrategy;
-import com.tny.game.base.item.Identifiable;
-import com.tny.game.base.item.Item;
-import com.tny.game.net.session.SessionHolder;
-import com.tny.game.net.utils.SessionConstants;
+import com.tny.game.asyndb.*;
+import com.tny.game.base.item.*;
+import com.tny.game.net.transport.*;
 import com.tny.game.suite.login.IDAide;
 
 import javax.annotation.Resource;
@@ -17,9 +12,12 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
     private long defaultLifeTime = 60 * 1000 * 3;
 
     @Resource
-    private SessionHolder sessionHolder;
+    private SessionKeeperFactory sessionKeeperFactory;
 
-    public OnlineReleaseStrategyFactory(long defaultAddLife) {
+    private String userType;
+
+    public OnlineReleaseStrategyFactory(String userType, long defaultAddLife) {
+        this.userType = userType;
         this.defaultLifeTime = defaultAddLife;
     }
 
@@ -45,7 +43,8 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || OnlineReleaseStrategyFactory.this.sessionHolder.isOnline(SessionConstants.DEFAULT_USER_GROUP, this.playerID)));
+            SessionKeeper<Object> keeper = sessionKeeperFactory.getKeeper(userType);
+            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
         }
 
     }

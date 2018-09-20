@@ -1,6 +1,6 @@
 package com.tny.game.common;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.utils.ObjectAide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tny.game.common.utils.StringAide.format;
 
 public class RunningChecker {
 
@@ -92,7 +94,7 @@ public class RunningChecker {
     public static RunnerCounter end(Object task) {
         RunnerCounter counter = removeCounter(task);
         if (counter == null)
-            throw new NullPointerException(Logs.format("未开始计算! {} ", task));
+            throw new NullPointerException(format("未开始计算! {} ", task));
         counter.end();
         return counter;
     }

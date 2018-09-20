@@ -1,9 +1,11 @@
 package com.tny.game.common.result;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tny.game.common.utils.StringAide.format;
 
 public class ResultCodes {
 
@@ -16,7 +18,7 @@ public class ResultCodes {
     static void registerCode(ResultCode code) {
         ResultCode old = codeMap.put(code.getCode(), code);
         if (old != null) {
-            IllegalArgumentException e = new IllegalArgumentException(Logs.format("{}.{} 与 {}.{} id 都为 {}",
+            IllegalArgumentException e = new IllegalArgumentException(format("{}.{} 与 {}.{} id 都为 {}",
                     code.getClass(), code, old.getClass(), old, old.getCode()));
             e.printStackTrace();
             throw e;

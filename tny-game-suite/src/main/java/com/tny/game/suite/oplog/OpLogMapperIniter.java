@@ -1,7 +1,7 @@
 package com.tny.game.suite.oplog;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
@@ -55,7 +55,7 @@ public class OpLogMapperIniter implements ServerPrepareStart {
                 }
             } catch (Throwable e) {
                 OpLogMapperIniter.this.exception = new IllegalStateException(e);
-                throw new RuntimeException(Logs.format("获取 {} 类错误", clazz), OpLogMapperIniter.this.exception);
+                throw new RuntimeException(format("获取 {} 类错误", clazz), OpLogMapperIniter.this.exception);
             } finally {
                 OpLogMapperIniter.this.latch.countDown();
             }

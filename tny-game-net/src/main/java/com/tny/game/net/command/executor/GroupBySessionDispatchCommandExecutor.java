@@ -9,8 +9,8 @@ import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.MessageCommandBox;
 import com.tny.game.net.netty.NettyAttrKeys;
-import com.tny.game.net.session.*;
-import com.tny.game.net.tunnel.NetTunnel;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.NetTunnel;
 import com.tny.game.net.utils.NetConfigs;
 import org.slf4j.*;
 
@@ -54,12 +54,12 @@ public class GroupBySessionDispatchCommandExecutor implements DispatchCommandExe
 
     @Override
     public void submit(NetTunnel<?> tunnel, Command command) {
-        NetSession<?> session = tunnel.getSession();
-        ChildExecutor executor = session.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
+        // NetSession<?> session = tunnel.getSession();
+        ChildExecutor executor = tunnel.attributes().getAttribute(COMMAND_CHILD_EXECUTOR);
         if (executor == null) {
             executor = new ChildExecutor(this.executorService);
-            session.attributes().setAttribute(COMMAND_CHILD_EXECUTOR, executor);
-            session.attributes().setAttribute(NettyAttrKeys.USER_COMMAND_BOX, executor);
+            tunnel.attributes().setAttribute(COMMAND_CHILD_EXECUTOR, executor);
+            tunnel.attributes().setAttribute(NettyAttrKeys.USER_COMMAND_BOX, executor);
         }
         executor.accept(command);
     }

@@ -1,6 +1,6 @@
 package protoex;
 
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.protoex.ProtoExReader;
 import com.tny.game.protoex.ProtoExWriter;
 import com.tny.game.protoex.annotations.TypeEncode;
@@ -287,7 +287,7 @@ public class ContentCodecTest {
         ProtoExWriter writer = new ProtoExWriter();
         writer.writeMessage(instance, TypeEncode.EXPLICIT);
         byte[] data = writer.toByteArray();
-        String message = Logs.format("格式化{}大小:{},{}", type.getTypeName(), data.length, Arrays.toString(data));
+        String message = format("格式化{}大小:{},{}", type.getTypeName(), data.length, Arrays.toString(data));
         System.out.println(message);
 
         Instant now = null;
@@ -297,14 +297,14 @@ public class ContentCodecTest {
             writer = new ProtoExWriter();
             writer.writeMessage(instance, TypeEncode.EXPLICIT);
         }
-        System.out.println(Logs.format("编码{}次一共消耗{}毫秒.", times, System.currentTimeMillis() - now.toEpochMilli()));
+        System.out.println(format("编码{}次一共消耗{}毫秒.", times, System.currentTimeMillis() - now.toEpochMilli()));
 
         now = Instant.now();
         for (int index = 0; index < times; index++) {
             ProtoExReader reader = new ProtoExReader(data);
             reader.readMessage((Class<?>) type);
         }
-        System.out.println(Logs.format("解码{}次一共消耗{}毫秒.", times, System.currentTimeMillis() - now.toEpochMilli()));
+        System.out.println(format("解码{}次一共消耗{}毫秒.", times, System.currentTimeMillis() - now.toEpochMilli()));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class ContentCodecTest {
         // CodecDefinition definition = CodecDefinition.valueOf(protocolClasses);
         // ContentCodec contentCodec = this.getContentCodec(definition);
 
-        String message = Logs.format("[ProtoEx]编解码性能测试");
+        String message = format("[ProtoEx]编解码性能测试");
         System.out.println(message);
 
         int size = 100;

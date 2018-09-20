@@ -5,7 +5,7 @@ import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.context.*;
 import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.common.reflect.aop.*;
-import com.tny.game.common.utils.Logs;
+import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.net.command.dispatcher.CurrentCommand;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.persistent.annotation.*;
@@ -158,10 +158,10 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             if (manager == null) {
                 AutoDBBy saveBy = clazz.getAnnotation(AutoDBBy.class);
                 if (saveBy == null)
-                    throw new NullPointerException(Logs.format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
+                    throw new NullPointerException(format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
                 manager = (Manager<Object>) this.explorer.getManager(saveBy.manager());
                 if (manager == null)
-                    throw new NullPointerException(Logs.format("{} 类找不到 {} manager", clazz, saveBy.manager()));
+                    throw new NullPointerException(format("{} 类找不到 {} manager", clazz, saveBy.manager()));
                 this.classManagerMap.put(clazz, manager);
             }
             switch (operation) {

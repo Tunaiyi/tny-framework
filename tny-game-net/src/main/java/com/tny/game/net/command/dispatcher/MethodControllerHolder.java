@@ -7,19 +7,20 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.NetResponseCode;
+import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.*;
 import com.tny.game.net.common.ControllerCheckerHolder;
 import com.tny.game.net.exception.DispatchException;
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.Session;
-import com.tny.game.net.tunnel.Tunnel;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.tny.game.common.utils.StringAide.format;
 
 /**
  * @author KGTny
@@ -76,14 +77,6 @@ public final class MethodControllerHolder extends ControllerHolder {
      */
     private PluginContext afterContext;
 
-    private boolean isUserID(Annotation[][] value) {
-        for (Annotation annotation : value[0]) {
-            if (UserID.class.isInstance(annotation))
-                return true;
-        }
-        return false;
-    }
-
     /**
      * 构造方法
      *
@@ -94,7 +87,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         super(executor, dispatcher, controller,
                 method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
                 method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
-                method.getJavaMethod().getAnnotation(Auth.class),
+                method.getJavaMethod().getAnnotation(AuthenticationRequired.class),
                 method.getJavaMethod().getAnnotationsByType(Check.class),
                 method.getJavaMethod().getAnnotation(MessageFilter.class),
                 method.getJavaMethod().getAnnotation(AppProfile.class),
@@ -146,7 +139,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             for (ControllerPlugin plugin : this.getControllerAfterPlugins())
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
         } catch (Exception e) {
-            throw new IllegalArgumentException(Logs.format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
+            throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
     }
 
@@ -192,12 +185,12 @@ public final class MethodControllerHolder extends ControllerHolder {
     //     return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
     // }
 
-    public Object getParameterValue(int index, Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
+    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
         if (index >= this.parameterDescs.size())
-            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
+            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
-            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
         return desc.getValue(tunnel, message, body);
     }
 
@@ -222,10 +215,9 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param params 调用参数
      * @return 返回值
      * @throws IllegalArgumentException  参数异常
-     * @throws IllegalAccessException    进入异常
      * @throws InvocationTargetException 调用异常
      */
-    private Object invoke(final Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    private Object invoke(final Object[] params) throws IllegalArgumentException, InvocationTargetException {
         return this.method.invoke(this.executor, params);
     }
 
@@ -304,7 +296,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return (A) this.methodAnnotationMap.get(annotationClass);
     }
 
-    protected void invoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) throws Exception {
+    protected void invoke(NetTunnel<?> tunnel, Message<?> message, InvokeContext context) throws Exception {
         // 获取调用方法的参数类型
         Object[] param = new Object[this.getParametersSize()];
         Object body = message.getBody(Object.class);
@@ -395,7 +387,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
                             this.paramType = ParamType.CODE;
                         } else {
-                            throw new IllegalArgumentException(Logs.format("{} 类型参数只能是 {} {} {}, 无法为 {}",
+                            throw new IllegalArgumentException(format("{} 类型参数只能是 {} {} {}, 无法为 {}",
                                     MsgCode.class, Integer.class, int.class, ResultCode.class));
                         }
                     }
@@ -403,7 +395,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
         }
 
-        private Object getValue(Tunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
+        private Object getValue(NetTunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
             boolean require = this.require;
             if (body == null)
                 body = message.getBody(Object.class);
@@ -414,7 +406,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = message;
                     break;
                 case SESSION:
-                    value = tunnel.getSession();
+                    Optional<? extends NetSession<?>> session = tunnel.getSession();
+                    if (!session.isPresent())
+                        throw new NullPointerException(format("{} session is null", tunnel));
+                    value = session.get();
                     break;
                 case TUNNEL:
                     value = tunnel;
@@ -429,7 +424,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     try {
                         if (body == null) {
                             if (require)
-                                throw new NullPointerException(Logs.format("{} 收到消息体为 null"));
+                                throw new NullPointerException(format("{} 收到消息体为 null"));
                             else
                                 break;
                         }
@@ -438,18 +433,18 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 收到消息体为 {}, 不可通过index获取", holder.toString(), body.getClass()));
+                            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", holder, body.getClass()));
                         }
                     } catch (DispatchException e) {
                         throw e;
                     } catch (Throwable e) {
-                        throw new DispatchException(NetResponseCode.EXECUTE_EXCEPTION, Logs.format("{} 调用异常", holder.toString()), e);
+                        throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", holder), e);
                     }
                     break;
                 case KEY_PARAM:
                     if (body == null) {
                         if (require)
-                            throw new NullPointerException(Logs.format("{} 收到消息体为 null"));
+                            throw new NullPointerException(format("{} 收到消息体为 null"));
                         else
                             break;
                     }

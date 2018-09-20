@@ -1,17 +1,14 @@
 package com.tny.game.net.command.checker;
 
-import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttrKeys;
+import com.tny.game.common.context.*;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetResponseCode;
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.dispatcher.ControllerHolder;
-import com.tny.game.net.message.*;
-import com.tny.game.net.session.Session;
-import com.tny.game.net.tunnel.Tunnel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.*;
+import org.slf4j.*;
 
+@Deprecated
 public class MessageSequenceChecker implements ControllerChecker<Object, Object> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
@@ -23,13 +20,13 @@ public class MessageSequenceChecker implements ControllerChecker<Object, Object>
 
     @Override
     public ResultCode check(Tunnel<Object> tunnel, Message<Object> message, ControllerHolder holder, Object attribute) {
-        Session session = tunnel.getSession();
-        Integer number = session.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
-        MessageHeader header = message.getHeader();
-        if (header.getId() > number) {
-            session.attributes().setAttribute(CHECK_MESSAGE_ID, number);
-            return ResultCode.SUCCESS;
-        }
-        return NetResponseCode.MESSAGE_HANDLE;
+        // Session session = tunnel.getSession();
+        // Integer number = session.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
+        // MessageHeader header = message.getHeader();
+        // if (header.getId() > number) {
+        //     session.attributes().setAttribute(CHECK_MESSAGE_ID, number);
+        //     return ResultCode.SUCCESS;
+        // }
+        return NetResultCode.MESSAGE_HANDLE;
     }
 }

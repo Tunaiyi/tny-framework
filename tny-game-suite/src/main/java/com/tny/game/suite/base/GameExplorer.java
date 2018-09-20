@@ -15,6 +15,7 @@ import java.util.*;
 
 import static com.tny.game.base.item.ItemType.*;
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.StringAide.format;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
@@ -394,7 +395,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     private <K, M> void putManager(Map<K, M> managerMap, K itemType, M manager) {
         M oldManager = managerMap.putIfAbsent(itemType, manager);
         if (oldManager != null && oldManager != manager)
-            throw new IllegalArgumentException(Logs.format("{} 与 {} 管理着相同的ItemType {}", manager.getClass(), oldManager.getClass(), itemType));
+            throw new IllegalArgumentException(format("{} 与 {} 管理着相同的ItemType {}", manager.getClass(), oldManager.getClass(), itemType));
     }
 
 

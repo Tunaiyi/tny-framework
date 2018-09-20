@@ -3,15 +3,12 @@ package com.tny.game.suite.net.spring;
 import com.tny.game.common.config.Config;
 import com.tny.game.net.command.checker.*;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.common.session.handle.ForkJoinMessageEventHandler;
-import com.tny.game.net.message.MessageBuilderFactory;
-import com.tny.game.net.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.common.ForkJoinMessageEventHandler;
 import com.tny.game.net.netty.NettyAppConfiguration;
-import com.tny.game.net.netty.coder.ChannelMaker;
-import com.tny.game.net.session.*;
-import com.tny.game.net.session.SessionHolder;
+import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.protoex.ProtoExMessageBuilderFactory;
 import com.tny.game.suite.utils.Configs;
-import io.netty.channel.Channel;
 import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.annotation.Bean;
@@ -29,14 +26,19 @@ public class NetBaseBeanFactory {
     @Resource(name = "gameServerConfiguration")
     protected NettyAppConfiguration appConfiguration;
 
-    @Bean(name = "sessionHolder")
-    public SessionHolder gameSessionHolder() {
-        return new CommonSessionHolder(this.appConfiguration.getProperties());
+    // @Bean(name = "sessionHolder")
+    // public SessionKeeper gameSessionHolder() {
+    //     return new CommonSessionKeeper(this.appConfiguration.getProperties());
+    // }
+
+    @Bean(name = "sessionKeeperFactory")
+    public SessionKeeperFactory gameSessionKeeperFactory() {
+        return new CommonSessionKeeperFactory(this.appConfiguration);
     }
 
     @Bean(name = "sessionFactory")
     public SessionFactory gameSessionFactory() {
-        return new SingleTunnelSessionFactory<Object>(0L, this.appConfiguration);
+        return new CommonSessionFactory<>(this.appConfiguration);
     }
 
     @Bean(name = "sessionEventHandler")
@@ -62,11 +64,6 @@ public class NetBaseBeanFactory {
     @Bean(name = "messageTimeoutChecker")
     public MessageTimeoutChecker messageTimeoutChecker() {
         return new MessageTimeoutChecker();
-    }
-
-    @Bean(name = "channelMaker")
-    public ChannelMaker<Channel> channelMaker() {
-        return new ReadTimeoutChannelMaker<>();
     }
 
     private short[] md5RandomKey(Config config) {
