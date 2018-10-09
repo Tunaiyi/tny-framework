@@ -1,11 +1,6 @@
 package com.tny.game.net.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Created by Kun Yang on 2017/4/1.
@@ -17,14 +12,9 @@ import java.lang.annotation.Target;
 public @interface AuthProtocol {
 
     /**
-     * 用户组名称
-     * <p>
-     * <p>
-     * 当userType System<br>
-     *
-     * @return
+     * @return 协议号
      */
-    int[] value();
+    int[] protocol();
 
     /**
      * @return 是否是全部

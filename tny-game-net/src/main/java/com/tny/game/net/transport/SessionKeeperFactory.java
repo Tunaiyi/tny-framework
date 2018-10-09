@@ -10,6 +10,6 @@ package com.tny.game.net.transport;
  */
 public interface SessionKeeperFactory {
 
-    <UID> NetSessionKeeper<UID> getKeeper(String userType);
+    <UID> SessionKeeper<UID> getKeeper(String userType);
 
 }

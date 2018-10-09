@@ -1,6 +1,6 @@
 package com.tny.game.batch;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

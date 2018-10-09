@@ -1,15 +1,19 @@
 package com.tny.game.net.transport;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.context.*;
+import com.tny.game.common.utils.Throws;
+import com.tny.game.net.base.NetResultCode;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.message.*;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 
-import java.util.List;
-import java.util.concurrent.locks.StampedLock;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.locks.*;
 
+import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.net.transport.SessionEvents.*;
 import static org.slf4j.LoggerFactory.*;
 
 /**
@@ -26,21 +30,35 @@ public abstract class AbstractSession<UID> extends AbstractCommunicator<UID> imp
     /* 身份凭证 */
     protected Certificate<UID> certificate;
 
+    /* 状态 */
+    protected SessionState state = SessionState.OFFLINE;
+
+    /* 离线时间 */
+    protected volatile long offlineTime;
+
     /* 附加属性 */
     private Attributes attributes;
 
-    private StampedLock sentMessageLock = new StampedLock();
-
     /* 发送缓存 */
-    private CircularFifoQueue<Message<UID>> sentMessageQueue = null;
+    private Deque<Message<UID>> sentMessageQueue = null;
 
-    @SuppressWarnings("unchecked")
-    public AbstractSession(Certificate<UID> certificate, int cacheMessageSize) {
+    /* 缓存数量 */
+    private SessionConfigurer configurer;
+
+    /* 缓存队列锁 */
+    private ReadWriteLock cacheLock;
+
+    private MessageIdCreator idCreator = new MessageIdCreator(MessageIdCreator.SESSION_MESSAGE_ID_MARK);
+
+    public AbstractSession(Certificate<UID> certificate, SessionConfigurer configurer) {
         super(MessageIdCreator.SESSION_MESSAGE_ID_MARK);
         this.certificate = certificate;
         this.id = NetAide.newSessionID();
-        if (cacheMessageSize > 0)
-            sentMessageQueue = new CircularFifoQueue<>(cacheMessageSize);
+        this.configurer = configurer;
+        if (configurer.getMaxCacheMessageSize() > 0) {
+            sentMessageQueue = new ConcurrentLinkedDeque<>();
+            cacheLock = new ReentrantReadWriteLock();
+        }
     }
 
     @Override
@@ -64,6 +82,26 @@ public abstract class AbstractSession<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
+    public SessionState getState() {
+        return state;
+    }
+
+    @Override
+    public boolean isOnline() {
+        return this.state == SessionState.ONLINE;
+    }
+
+    @Override
+    public boolean isOffline() {
+        return this.state == SessionState.OFFLINE;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return this.state == SessionState.CLOSE;
+    }
+
+    @Override
     public Attributes attributes() {
         if (this.attributes != null)
             return this.attributes;
@@ -80,17 +118,28 @@ public abstract class AbstractSession<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public List<Message<UID>> getSentMessages(Range<Long> range) {
+    public List<Message<UID>> getSentMessages(long from, long to) {
         if (this.sentMessageQueue == null)
             return ImmutableList.of();
-        StampedLock lock = this.sentMessageLock;
-        long stamp = lock.readLock();
+        Lock lock = this.cacheLock.readLock();
+        lock.lock();
         try {
-            return this.sentMessageQueue.stream()
-                    .filter(e -> range.contains(e.getId()))
-                    .collect(Collectors.toList());
+            List<Message<UID>> messages = new ArrayList<>();
+            boolean start = from < 0;
+            for (Message<UID> message : this.sentMessageQueue) {
+                if (!start) {
+                    if (message.getId() == from)
+                        start = true;
+                    else
+                        continue;
+                }
+                messages.add(message);
+                if (message.getId() == to)
+                    break;
+            }
+            return messages;
         } finally {
-            lock.unlockRead(stamp);
+            lock.unlock();
         }
     }
 
@@ -98,30 +147,71 @@ public abstract class AbstractSession<UID> extends AbstractCommunicator<UID> imp
     public Message<UID> getSentMessage(long messageId) {
         if (this.sentMessageQueue == null)
             return null;
-        StampedLock lock = this.sentMessageLock;
-        long stamp = lock.readLock();
+        Lock lock = this.cacheLock.readLock();
+        lock.lock();
         try {
             return this.sentMessageQueue.stream()
                     .filter(message -> message.getHeader().getId() == messageId)
                     .findFirst()
                     .orElse(null);
         } finally {
-            lock.unlockRead(stamp);
+            lock.unlock();
         }
     }
 
     @Override
     public void addSentMessage(Message<UID> message) {
         if (this.sentMessageQueue != null) {
-            StampedLock lock = this.sentMessageLock;
-            long stamp = lock.writeLock();
-            try {
-                this.sentMessageQueue.add(message);
-            } finally {
-                lock.unlockWrite(stamp);
+            this.sentMessageQueue.add(message);
+            int maxCacheMessageSize = configurer.getMaxCacheMessageSize();
+            if (this.sentMessageQueue.size() <= maxCacheMessageSize)
+                return;
+            Lock lock = this.cacheLock.writeLock();
+            if (lock.tryLock()) {
+                try {
+                    while (this.sentMessageQueue.size() > maxCacheMessageSize)
+                        this.sentMessageQueue.poll();
+                } finally {
+                    lock.unlock();
+                }
             }
         }
     }
+
+    @Override
+    public SendContext<UID> sendAsyn(MessageSubject subject, MessageContext<UID> messageContext) {
+        try {
+            select(subject, messageContext).sendAsyn(subject, messageContext);
+        } catch (Throwable e) {
+            completeExceptionally(messageContext, e);
+            LOGGER.warn(e.getMessage());
+        }
+        return messageContext;
+    }
+
+    @Override
+    public SendContext<UID> sendSync(MessageSubject subject, MessageContext<UID> messageContext, long timeout) throws NetException {
+        try {
+            return select(subject, messageContext).sendSync(subject, messageContext, timeout);
+        } catch (NetException e) {
+            completeExceptionally(messageContext, e);
+            throw e;
+        } catch (Throwable e) {
+            completeExceptionally(messageContext, e);
+            throw new NetException(e);
+        }
+    }
+
+    private Tunnel<UID> select(MessageSubject subject, MessageContext<UID> messageContext) throws SessionException {
+        if (isClosed())
+            throw new SessionException("Session [{}] 已经关闭, 无法发送", this);
+        Tunnel<UID> tunnel = selectTunnel(subject, messageContext);
+        if (tunnel == null)
+            throw new NullPointerException(format("{} is no tunnel", this));
+        return tunnel;
+    }
+
+    protected abstract Tunnel<UID> selectTunnel(MessageSubject subject, MessageContext<UID> messageContext);
 
     @Override
     public RespondFuture<UID> removeFuture(long messageId) {
@@ -132,5 +222,54 @@ public abstract class AbstractSession<UID> extends AbstractCommunicator<UID> imp
     public void registerFuture(long messageId, RespondFuture<UID> respondFuture) {
         super.registerFuture(messageId, respondFuture);
     }
+
+    @Override
+    public long createMessageId() {
+        return this.idCreator.createId();
+    }
+
+    @Override
+    public void acceptTunnel(NetTunnel<UID> tunnel) throws ValidatorFailException {
+        Throws.checkNotNull(tunnel, "newSession is null");
+        Certificate<UID> newCertificate = tunnel.getCertificate();
+        if (!newCertificate.isAutherized()) {
+            throw new ValidatorFailException(NetResultCode.UNLOGIN);
+        }
+        if (!certificate.isSameCertificate(newCertificate)) { // 是否是同一个授权
+            throw new ValidatorFailException(format("Certificate new [{}] 与 old [{}] 不同", newCertificate, this.certificate));
+        }
+        if (this.state == SessionState.CLOSE) // 判断 session 状态是否可以重登
+            throw new ValidatorFailException(NetResultCode.SESSION_LOSS);
+        synchronized (this) {
+            if (this.state == SessionState.CLOSE) // 判断 session 状态是否可以重登
+                throw new ValidatorFailException(NetResultCode.SESSION_LOSS);
+            NetTunnel<UID> current = doAcceptTunnel(tunnel);
+            if (current != null) {
+                this.offlineTime = 0;
+                this.state = SessionState.ONLINE;
+                ON_ACCEPT.notify(this, current);
+            }
+        }
+    }
+
+    @Override
+    public long getOfflineTime() {
+        return offlineTime;
+    }
+
+    protected abstract NetTunnel<UID> doAcceptTunnel(NetTunnel<UID> newTunnel) throws ValidatorFailException;
+
+    void setOffline() {
+        this.offlineTime = System.currentTimeMillis();
+        this.state = SessionState.OFFLINE;
+        ON_OFFLINE.notify(this);
+    }
+
+    void setClose() {
+        this.state = SessionState.CLOSE;
+        this.destroyFutureHolder();
+        ON_CLOSE.notify(this);
+    }
+
 
 }

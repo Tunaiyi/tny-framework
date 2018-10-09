@@ -9,7 +9,7 @@ import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.*;
 import com.tny.game.net.utils.NetConfigs;
 
 import java.io.IOException;
@@ -31,15 +31,11 @@ public abstract class AbstractAppConfiguration<T> implements AppConfiguration<T>
 
     protected T defaultUserId;
 
-    protected SessionFactory<T> sessionFactory;
-
     protected SessionKeeperFactory sessionKeeperFactory;
 
-    protected MessageBuilderFactory<T> messageBuilderFactory;
+    protected MessageFactory<T> messageBuilderFactory;
 
-    protected MessageInputEventHandler<T, ? extends NetTunnel<T>> inputEventHandler;
-
-    protected MessageOutputEventHandler<T, ? extends NetTunnel<T>> outputEventHandler;
+    protected MessageHandler<T> messageHandler;
 
     protected DispatchCommandExecutor dispatchCommandExecutor;
 
@@ -92,28 +88,13 @@ public abstract class AbstractAppConfiguration<T> implements AppConfiguration<T>
     }
 
     @Override
-    public SessionFactory<T> getSessionFactory() {
-        return as(sessionFactory);
-    }
-
-    @Override
-    public SessionKeeperFactory getSessionKeeperFactory() {
-        return sessionKeeperFactory;
-    }
-
-    @Override
-    public MessageBuilderFactory<T> getMessageBuilderFactory() {
+    public MessageFactory<T> getMessageFactory() {
         return as(messageBuilderFactory);
     }
 
     @Override
-    public MessageOutputEventHandler<T, NetTunnel<T>> getOutputEventHandler() {
-        return as(outputEventHandler);
-    }
-
-    @Override
-    public MessageInputEventHandler<T, NetTunnel<T>> getInputEventHandler() {
-        return as(inputEventHandler);
+    public MessageHandler<T> getMessageHandler() {
+        return as(messageHandler);
     }
 
     @Override
@@ -130,6 +111,7 @@ public abstract class AbstractAppConfiguration<T> implements AppConfiguration<T>
     public ExprHolderFactory getExprHolderFactory() {
         return exprHolderFactory;
     }
+
 
     public AbstractAppConfiguration setConfig(Map<String, Object> config) {
         loadConfig(ConfigLib.newConfig(config, InetSocketAddressConfigFormatter.FORMATTER));

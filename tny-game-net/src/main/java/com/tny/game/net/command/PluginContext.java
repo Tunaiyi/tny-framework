@@ -1,9 +1,9 @@
 package com.tny.game.net.command;
 
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.common.ControllerPluginHolder;
 import com.tny.game.net.transport.Tunnel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.net.transport.message.Message;
+import org.slf4j.*;
 
 public class PluginContext {
 
@@ -11,9 +11,9 @@ public class PluginContext {
 
     private PluginContext nextContext;
 
-    private ControllerPlugin plugin;
+    private ControllerPluginHolder plugin;
 
-    public PluginContext(ControllerPlugin plugin) {
+    public PluginContext(ControllerPluginHolder plugin) {
         this.plugin = plugin;
         this.nextContext = null;
     }
@@ -23,7 +23,7 @@ public class PluginContext {
         if (this.plugin == null || context.isIntercept())
             return;
         try {
-            this.plugin.execute(tunnel, message, context);
+            this.plugin.invokePlugin(tunnel, message, context);
         } catch (Throwable e) {
             LOGGER.error("invoke plugin {} exception", this.plugin.getClass(), e);
         }

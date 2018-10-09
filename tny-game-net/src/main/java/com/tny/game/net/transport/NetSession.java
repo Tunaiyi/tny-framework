@@ -1,8 +1,7 @@
 package com.tny.game.net.transport;
 
-import com.google.common.collect.Range;
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.transport.message.*;
+import com.tny.game.net.transport.message.Message;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ public interface NetSession<UID> extends Session<UID> {
 
     /**
      * 通过响应ID寻找已发送消息
-     * ø
      *
      * @param messageId 响应ID
      * @return 返回消息
@@ -28,10 +26,16 @@ public interface NetSession<UID> extends Session<UID> {
     /**
      * 获取指定范围的已发送消息
      *
-     * @param range 指定范围
+     * @param from 指定开始 Id 如果 Id < 0, 表示从缓存第一个开始
+     * @param to   指定结束 Id 如果 Id < 0, 表示到缓存最后一个结束
      * @return 获取消息列表
      */
-    List<Message<UID>> getSentMessages(Range<Long> range);
+    List<Message<UID>> getSentMessages(long from, long to);
+
+    /**
+     * @return 获取 session 状态
+     */
+    SessionState getState();
 
     /**
      * 使用指定认证登陆
@@ -41,16 +45,16 @@ public interface NetSession<UID> extends Session<UID> {
     void acceptTunnel(NetTunnel<UID> tunnel) throws ValidatorFailException;
 
     /**
+     * 使用指定认证登陆
+     *
+     * @param tunnel 指定认证
+     */
+    void discardTunnel(NetTunnel<UID> tunnel);
+
+    /**
      * session下线, 不立即失效
      */
     void offline();
-
-    /**
-     * 使下线如果当前通道为指定通道
-     *
-     * @param tunnel 指定通道
-     */
-    boolean offlineIf(Tunnel<UID> tunnel);
 
     /**
      * 注册回调future对象
@@ -73,4 +77,8 @@ public interface NetSession<UID> extends Session<UID> {
      */
     long createMessageId();
 
+    /**
+     * 心跳
+     */
+    void heartbeat();
 }

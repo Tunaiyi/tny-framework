@@ -38,27 +38,4 @@ public interface Session<UID> extends Communicator<UID> {
      */
     long getOfflineTime();
 
-    /**
-     * 发送消息
-     *
-     * @param content 消息内容
-     */
-    void send(MessageContext<UID> content);
-
-    /**
-     * 重发消息
-     *
-     * @param tunnelId 指定 tunnel 重发
-     * @param message  重发消息
-     */
-    void resend(long tunnelId, ResendMessage<UID> message);
-
-    /**
-     * 重发消息
-     *
-     * @param message 重发消息
-     */
-    default void resend(ResendMessage<UID> message) {
-        resend(-1, message);
-    }
 }

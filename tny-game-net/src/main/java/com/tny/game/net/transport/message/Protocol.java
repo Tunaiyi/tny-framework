@@ -4,14 +4,14 @@ public interface Protocol {
 
     int PING_PONG_PROTOCOL_NUM = 0;
 
-    int getProtocol();
+    int getNumber();
 
     default boolean isOwn(MessageHeader header) {
-        return this.getProtocol() == header.getProtocol();
+        return this.getNumber() == header.getNumber();
     }
 
     default boolean isOwn(Message message) {
-        return this.getProtocol() == message.getHeader().getProtocol();
+        return this.getNumber() == message.getProtocol();
     }
 
 }

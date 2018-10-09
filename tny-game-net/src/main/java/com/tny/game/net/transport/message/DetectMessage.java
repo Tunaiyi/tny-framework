@@ -5,7 +5,7 @@ import com.tny.game.common.context.Attributes;
 /**
  * Created by Kun Yang on 2017/3/30.
  */
-public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMessage<UID> {
+public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMessage<UID>, Message<UID> {
 
     public static <UID> NetMessage<UID> ping() {
         return new DetectMessage<>(DetectMessageHeader.ping());
@@ -15,13 +15,8 @@ public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMe
         return new DetectMessage<>(DetectMessageHeader.pong());
     }
 
-    private DetectMessage(MessageHeader header) {
-        super(null);
-        this.setHeader(header);
-    }
-
-    @Override
-    public void setId(long id) {
+    private DetectMessage(NetMessageHeader header) {
+        super(header);
     }
 
     @Override
@@ -34,8 +29,4 @@ public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMe
         return null;
     }
 
-    @Override
-    protected AbstractNetMessage<UID> setBody(Object body) {
-        return null;
-    }
 }

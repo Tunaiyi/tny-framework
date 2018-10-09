@@ -45,4 +45,28 @@ public abstract class AbstractCommunicator<UID> implements Communicator<UID> {
         RespondFutureHolder.removeHolder(this);
     }
 
+    protected <T> void completeFuture(NetStageableFuture<T> future, T message) {
+        if (future != null)
+            future.complete(message);
+    }
+
+    protected <T> void completeExceptionally(NetStageableFuture<T> future, Throwable e) {
+        if (future != null)
+            future.completeExceptionally(e);
+    }
+
+    protected void completeFuture(MessageContext<UID> context, Message<UID> message) {
+        if (context == null)
+            return;
+        completeFuture(context.getSendFuture(), message);
+        completeFuture(context.getRespondFuture(), message);
+    }
+
+    protected void completeExceptionally(MessageContext<UID> context, Throwable e) {
+        if (context == null)
+            return;
+        completeExceptionally(context.getSendFuture(), e);
+        completeExceptionally(context.getRespondFuture(), e);
+    }
+
 }

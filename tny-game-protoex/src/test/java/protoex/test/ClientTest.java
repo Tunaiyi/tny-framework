@@ -1,6 +1,6 @@
 package protoex.test;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.protoex.ProtoExWriter;
 import com.tny.game.protoex.annotations.TypeEncode;
 import org.junit.Test;

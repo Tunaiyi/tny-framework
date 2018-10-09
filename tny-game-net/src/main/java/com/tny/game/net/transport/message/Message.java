@@ -58,7 +58,7 @@ public interface Message<UID> extends Serializable {
      * @return 获取协议码
      */
     default int getProtocol() {
-        return this.getHeader().getProtocol();
+        return this.getHeader().getNumber();
     }
 
     /**

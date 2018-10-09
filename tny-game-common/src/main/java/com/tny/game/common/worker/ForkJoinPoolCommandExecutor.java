@@ -55,12 +55,13 @@ public class ForkJoinPoolCommandExecutor implements CommandExecutor, CommandWork
 
                     long finishAt = System.currentTimeMillis();
 
-                    sleepTime = nextRunningTime - finishAt;
+                    long sleepTime = nextRunningTime - finishAt;
                     sleepTime = sleepTime < 0 ? 0 : sleepTime;
 
                     if (sleepTime > 0) {
                         Thread.sleep(sleepTime);
                     }
+                    this.sleepTime = sleepTime;
                 } catch (InterruptedException e) {
                     LOGGER.warn("InterruptedException by ActorCommandExecutor " + Thread.currentThread().getName(), e);
                 } catch (Exception e) {

@@ -4,15 +4,16 @@ import com.google.common.collect.*;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.JSsistUtils;
-import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.common.ControllerPluginHolder;
 import com.tny.game.net.transport.message.MessageMode;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public final class ClassControllerHolder extends ControllerHolder {
 
@@ -28,13 +29,12 @@ public final class ClassControllerHolder extends ControllerHolder {
      */
     private Map<Integer, MethodControllerHolder> methodHolderMap = new CopyOnWriteMap<>();
 
-    public ClassControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory) {
-        super(executor, dispatcher,
+    public ClassControllerHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory) {
+        super(executor, context,
                 executor.getClass().getAnnotation(Controller.class),
                 executor.getClass().getAnnotationsByType(BeforePlugin.class),
                 executor.getClass().getAnnotationsByType(AfterPlugin.class),
                 executor.getClass().getAnnotation(AuthenticationRequired.class),
-                executor.getClass().getAnnotationsByType(Check.class),
                 executor.getClass().getAnnotation(MessageFilter.class),
                 executor.getClass().getAnnotation(AppProfile.class),
                 executor.getClass().getAnnotation(ScopeProfile.class), exprHolderFactory);
@@ -44,7 +44,7 @@ public final class ClassControllerHolder extends ControllerHolder {
             this.annotationMap.put(annotation.getClass(), annotation);
         Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
         this.annotationMap = ImmutableMap.copyOf(annotationMap);
-        this.initMethodHolder(executor, dispatcher, exprHolderFactory);
+        this.initMethodHolder(executor, context, exprHolderFactory);
         this.methodHolderMap = ImmutableMap.copyOf(this.methodHolderMap);
         if (messageModes == null)
             this.messageModes = ImmutableSet.copyOf(MessageMode.values());
@@ -53,13 +53,13 @@ public final class ClassControllerHolder extends ControllerHolder {
     private static final MethodFilter FILTER = method -> OBJECT_METHOD_LIST.indexOf(method) > -1 ||
             !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
-    private void initMethodHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory) {
+    private void initMethodHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory) {
         GClass access = JSsistUtils.getGClass(executor.getClass(), FILTER);
         for (GMethod method : access.getGMethodList()) {
             Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
             if (controller == null)
                 continue;
-            MethodControllerHolder holder = new MethodControllerHolder(executor, dispatcher, exprHolderFactory, this, method, controller);
+            MethodControllerHolder holder = new MethodControllerHolder(executor, context, exprHolderFactory, this, method, controller);
             if (holder.getID() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
                 if (last != null)
@@ -132,14 +132,14 @@ public final class ClassControllerHolder extends ControllerHolder {
     // }
 
     @Override
-    protected List<ControllerPlugin> getControllerBeforePlugins() {
+    protected List<ControllerPluginHolder> getControllerBeforePlugins() {
         if (this.beforePlugins == null)
             return ImmutableList.of();
         return Collections.unmodifiableList(this.beforePlugins);
     }
 
     @Override
-    protected List<ControllerPlugin> getControllerAfterPlugins() {
+    protected List<ControllerPluginHolder> getControllerAfterPlugins() {
         if (this.afterPlugins == null)
             return ImmutableList.of();
         return Collections.unmodifiableList(this.afterPlugins);

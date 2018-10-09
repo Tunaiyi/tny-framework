@@ -36,26 +36,26 @@ public abstract class ProtocolTest {
     @Test
     public void getProtocol() {
         Protocol protocol = protocol();
-        assertEquals(protocolId, protocol.getProtocol());
+        assertEquals(protocolId, protocol.getNumber());
     }
 
     @Test
     public void isOwn() {
         Protocol protocol = protocol();
         when(message.getHeader()).thenReturn(header);
-        when(header.getProtocol()).thenReturn(-1000);
+        when(header.getNumber()).thenReturn(-1000);
         assertFalse(protocol.isOwn(message));
         when(message.getHeader()).thenReturn(header);
-        when(header.getProtocol()).thenReturn(protocol.getProtocol());
+        when(header.getNumber()).thenReturn(protocol.getNumber());
         assertTrue(protocol.isOwn(message));
     }
 
     @Test
     public void isOwn1() {
         Protocol protocol = protocol();
-        when(header.getProtocol()).thenReturn(-1000);
+        when(header.getNumber()).thenReturn(-1000);
         assertFalse(protocol.isOwn(header));
-        when(header.getProtocol()).thenReturn(protocol.getProtocol());
+        when(header.getNumber()).thenReturn(protocol.getNumber());
         assertTrue(protocol.isOwn(header));
     }
 

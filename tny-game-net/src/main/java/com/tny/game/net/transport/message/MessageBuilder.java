@@ -22,13 +22,13 @@ public interface MessageBuilder<UID> {
 
     MessageBuilder<UID> setBody(Object body);
 
-    MessageBuilder<UID> setToMessage(long toMessageID);
-
     MessageBuilder<UID> setCommandResult(CommandResult result);
 
     MessageBuilder<UID> setCertificate(Certificate<UID> tunnel);
 
-    MessageBuilder<UID> setContent(MessageContext content);
+    Message<UID> buildPush();
 
-    Message<UID> build();
+    Message<UID> buildRequest();
+
+    Message<UID> buildResponse(long toMessage);
 }

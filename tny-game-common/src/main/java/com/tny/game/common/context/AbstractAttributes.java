@@ -50,7 +50,7 @@ public abstract class AbstractAttributes implements Attributes {
 
     protected AbstractAttributes(boolean init) {
         if (init)
-            this.attributeMap = new HashMap<AttrKey<?>, Object>();
+            this.attributeMap = new HashMap<>();
     }
 
     protected Map<AttrKey<?>, Object> getMap() {
@@ -59,7 +59,7 @@ public abstract class AbstractAttributes implements Attributes {
         } else {
             if (this.attributeMap != null)
                 return this.attributeMap;
-            this.attributeMap = new HashMap<AttrKey<?>, Object>();
+            this.attributeMap = new HashMap<>();
         }
         return this.attributeMap;
     }

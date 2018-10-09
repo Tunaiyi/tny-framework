@@ -2,6 +2,7 @@ package com.tny.game.net.transport.message;
 
 import com.google.common.collect.*;
 import com.tny.game.common.concurrent.CoreThreadFactory;
+import com.tny.game.net.transport.RespondFuture;
 import org.slf4j.*;
 
 import java.util.*;
@@ -18,6 +19,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class RespondFutureHolder {
 
+    private static final long INIT_DELAY = 20;
+    private static final long PERIOD = 20;
     private static final ConcurrentMap<Object, RespondFutureHolder> FUTURE_HOLDER_MAP = new MapMaker()
             .concurrencyLevel(32)
             .weakKeys()
@@ -26,8 +29,6 @@ public class RespondFutureHolder {
     public static final Logger LOGGER = LoggerFactory.getLogger(RespondFutureHolder.class);
 
     private volatile boolean close = false;
-    private static final long INIT_DELAY = 20;
-    private static final long PERIOD = 20;
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))

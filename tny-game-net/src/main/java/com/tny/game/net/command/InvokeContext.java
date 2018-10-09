@@ -7,18 +7,24 @@ import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 /**
  * Created by Kun Yang on 2017/5/26.
  */
-public class InvokeContext {
+public abstract class InvokeContext {
 
     protected MethodControllerHolder controller;
 
-    protected Object result;
+    private Object result;
 
-    protected Throwable cause;
-
-    protected boolean intercept = false;
+    private boolean intercept = false;
 
     public InvokeContext(MethodControllerHolder controller) {
         this.controller = controller;
+    }
+
+    public MethodControllerHolder getController() {
+        return controller;
+    }
+
+    public Object getResult() {
+        return result;
     }
 
     /**
@@ -26,13 +32,11 @@ public class InvokeContext {
      *
      * @param result 运行结果
      */
-    public boolean doneAndIntercept(CommandResult result) {
+    public void doneAndIntercept(CommandResult result) {
         if (!this.intercept) {
             this.intercept = true;
             this.setResult(result);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -41,13 +45,11 @@ public class InvokeContext {
      * @param code 结果码
      */
 
-    public boolean doneAndIntercept(ResultCode code) {
+    public void doneAndIntercept(ResultCode code) {
         if (!this.intercept) {
             this.intercept = true;
             this.setResult(code);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -88,16 +90,14 @@ public class InvokeContext {
         this.result = result;
     }
 
-    public MethodControllerHolder getController() {
-        return controller;
-    }
-
-    public Object getResult() {
-        return result;
-    }
-
     public boolean isIntercept() {
         return intercept;
     }
+
+    public abstract String getName();
+
+    public abstract String getAppType();
+
+    public abstract String getScopeType();
 
 }

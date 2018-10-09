@@ -2,7 +2,7 @@ package com.tny.game.suite.cache.spring;
 
 import com.tny.game.cache.*;
 import com.tny.game.cache.annotation.*;
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.lifecycle.*;
 import static com.tny.game.common.utils.StringAide.*;

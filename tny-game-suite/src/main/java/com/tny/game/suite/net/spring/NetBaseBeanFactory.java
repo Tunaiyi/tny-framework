@@ -1,13 +1,13 @@
 package com.tny.game.suite.net.spring;
 
 import com.tny.game.common.config.Config;
-import com.tny.game.net.command.checker.*;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.common.ForkJoinMessageEventHandler;
+import com.tny.game.net.command.plugins.*;
+import com.tny.game.net.common.NetMessageHandler;
 import com.tny.game.net.netty.NettyAppConfiguration;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageBuilderFactory;
-import com.tny.game.net.transport.message.protoex.ProtoExMessageBuilderFactory;
+import com.tny.game.net.transport.message.MessageFactory;
+import com.tny.game.net.transport.message.protoex.ProtoExMessageFactory;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -38,12 +38,12 @@ public class NetBaseBeanFactory {
 
     @Bean(name = "sessionFactory")
     public SessionFactory gameSessionFactory() {
-        return new CommonSessionFactory<>(this.appConfiguration);
+        return new SingleTunnelSessionFactory<>(this.appConfiguration);
     }
 
     @Bean(name = "sessionEventHandler")
-    public ForkJoinMessageEventHandler getSessionEventHandler() {
-        return new ForkJoinMessageEventHandler(this.appConfiguration);
+    public NetMessageHandler getSessionEventHandler() {
+        return new NetMessageHandler(this.appConfiguration);
     }
 
     @Bean(name = "messageDispatcher")
@@ -52,18 +52,18 @@ public class NetBaseBeanFactory {
     }
 
     @Bean(name = "messageBuilderFactory")
-    public MessageBuilderFactory getMessageBuilderFactory() {
-        return new ProtoExMessageBuilderFactory<>();
+    public MessageFactory getMessageBuilderFactory() {
+        return new ProtoExMessageFactory<>();
     }
 
     @Bean(name = "messageSequenceChecker")
-    public MessageSequenceChecker messageSequenceChecker() {
-        return new MessageSequenceChecker();
+    public MessageSequenceCheckerPlugin messageSequenceChecker() {
+        return new MessageSequenceCheckerPlugin();
     }
 
     @Bean(name = "messageTimeoutChecker")
-    public MessageTimeoutChecker messageTimeoutChecker() {
-        return new MessageTimeoutChecker();
+    public MessageTimeoutCheckerPlugin messageTimeoutChecker() {
+        return new MessageTimeoutCheckerPlugin();
     }
 
     private short[] md5RandomKey(Config config) {

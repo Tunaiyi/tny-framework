@@ -1,6 +1,6 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.annotaion.*;
 import com.tny.game.common.number.IntLocalNum;

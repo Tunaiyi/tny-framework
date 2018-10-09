@@ -10,7 +10,7 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.plan.*;
 import com.tny.game.base.log.LogName;
 import com.tny.game.base.module.*;
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.config.FileLoader;
 import com.tny.game.common.reflect.proxy.*;

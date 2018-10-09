@@ -1,6 +1,6 @@
 package sg.game;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 
 import java.util.function.Consumer;
 

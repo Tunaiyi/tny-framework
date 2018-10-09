@@ -1,8 +1,8 @@
 package com.tny.game.net.netty;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.NetMessage;
+import com.tny.game.net.transport.message.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.*;
@@ -12,15 +12,23 @@ import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.util.Date;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * 游戏请求处理器. 负责获取请求并将请求传给分发器
  *
  * @author KGTny
  */
 @Sharable
-public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<?>> {
+public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+
+    private MessageHandler messageHandler;
+
+    public NettyMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -54,24 +62,25 @@ public class NettyMessageHandler extends SimpleChannelInboundHandler<NetMessage<
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void channelRead0(ChannelHandlerContext context, NetMessage<?> message) {
+    public void channelRead(ChannelHandlerContext context, Object object) {
         Channel channel = context.channel();
-        if (message == null) {
-            LOG.warn("读取的message为null 服务器主动断开 {} 连接", channel.localAddress());
+        if (object == null) {
+            LOG.warn("读取的message为null 服务器主动断开 {} 连接", channel);
             channel.disconnect();
             return;
         }
-        try {
-            NetTunnel tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
-            if (tunnel != null) {
-                message.update(tunnel.getCertificate());
-                tunnel.receive(message);
+        if (object instanceof NetMessage) {
+            try {
+                NetMessage<Object> message = as(object);
+                NetTunnel<Object> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+                if (tunnel != null)
+                    messageHandler.handle(tunnel, message);
+            } catch (Throwable ex) {
+                LOG.error("#GameServerHandler#接受请求异常", ex);
             }
-        } catch (Throwable ex) {
-            LOG.error("#GameServerHandler#接受请求异常", ex);
         }
-
     }
+
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {

@@ -61,7 +61,7 @@ public class NetLogger {
             Object[] msgArgs = new Object[5];
             MessageHeader header = message.getHeader();
             msgArgs[0] = message.getMode();
-            msgArgs[1] = header.getProtocol();
+            msgArgs[1] = header.getId();
             msgArgs[2] = header.getId();
             msgArgs[3] = header.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
@@ -77,7 +77,7 @@ public class NetLogger {
             Object[] msgArgs = new Object[5];
             MessageHeader header = message.getHeader();
             msgArgs[0] = message.getMode();
-            msgArgs[1] = header.getProtocol();
+            msgArgs[1] = header.getId();
             msgArgs[2] = header.getId();
             msgArgs[3] = header.getToMessage();
             msgArgs[4] = message.getBody(Object.class);
@@ -94,7 +94,7 @@ public class NetLogger {
             logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
-                    header.getProtocol(), header.getId(), header.getToMessage(),
+                    header.getId(), header.getId(), header.getToMessage(),
                     new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
         }
 
@@ -107,7 +107,7 @@ public class NetLogger {
             logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
-                    header.getProtocol(), header.getId(), header.getToMessage(),
+                    header.getId(), header.getId(), header.getToMessage(),
                     new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
         }
     }

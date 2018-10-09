@@ -1,7 +1,9 @@
 package com.tny.game.net.transport;
 
 
+import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.transport.listener.SessionHolderListener;
+import com.tny.game.net.transport.message.MessageSubject;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -54,30 +56,45 @@ public interface SessionKeeper<UID> {
      * 发信息给用户 <br>
      *
      * @param userId  用户ID
-     * @param content 消息内容
+     * @param subject 消息内容
      */
-    void send2User(UID userId, MessageContext<UID> content);
+    void send2User(UID userId, MessageSubject subject);
 
     /**
      * 发信息给用户集合 <br>
      *
      * @param userIds 用户ID列表
-     * @param content    消息内容
+     * @param subject 消息内容
      */
-    void send2Users(Collection<UID> userIds, MessageContext<UID> content);
+    void send2Users(Collection<UID> userIds, MessageSubject subject);
 
     /**
      * 发信息给用户集合 <br>
      *
      * @param userIdsStream 用户ID流
-     * @param content       消息内容
+     * @param subject       消息内容
      */
-    void send2Users(Stream<UID> userIdsStream, MessageContext<UID> content);
+    void send2Users(Stream<UID> userIdsStream, MessageSubject subject);
 
     /**
      * 发送给所有在线的用户 <br>
      */
-    void send2AllOnline(MessageContext<UID> content);
+    void send2AllOnline(MessageSubject subject);
+
+    /**
+     * <p>
+     * <p>
+     * 添加指定的session<br>
+     *
+     * @param tunnel 注册tunnel
+     * @throws ValidatorFailException 认证异常
+     */
+    boolean online(NetTunnel<UID> tunnel) throws ValidatorFailException;
+
+    /**
+     * @return 会话工厂
+     */
+    SessionFactory<UID> getSessionFactory();
 
     /**
      * 使指定userId的session下线

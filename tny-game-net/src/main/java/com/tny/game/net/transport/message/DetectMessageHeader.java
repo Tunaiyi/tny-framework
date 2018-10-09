@@ -5,7 +5,7 @@ import com.tny.game.common.result.ResultCode;
 /**
  * Created by Kun Yang on 2018/8/20.
  */
-public class DetectMessageHeader extends AbstractMessageHeader {
+public class DetectMessageHeader extends AbstractNetMessageHeader {
 
     private int protocol;
     private long time;
@@ -24,8 +24,7 @@ public class DetectMessageHeader extends AbstractMessageHeader {
         this.protocol = protocol;
     }
 
-    @Override
-    public int getProtocol() {
+    public int getNumber() {
         return protocol;
     }
 
@@ -59,4 +58,8 @@ public class DetectMessageHeader extends AbstractMessageHeader {
         return time;
     }
 
+    @Override
+    public NetMessageHeader setId(long id) {
+        return this;
+    }
 }

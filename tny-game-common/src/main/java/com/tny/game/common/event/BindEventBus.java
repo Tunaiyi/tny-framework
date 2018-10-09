@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Kun Yang on 16/2/4.
  */
-public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
+public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> implements ListenerRegister<L> {
 
     protected H invoker;
 
@@ -18,12 +18,12 @@ public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> {
         this.bindWith = bindWith;
         this.invoker = invoker;
         this.global = global;
-//        this.global = global;
     }
 
-    public abstract void addListener(L handler);
-
-    public abstract void removeListener(L handler);
+    @Override
+    public void clearListener() {
+        this.listeners.clear();
+    }
 
     public Class<L> getBindWith() {
         return bindWith;

@@ -4,8 +4,7 @@ package com.tny.game.net.common;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,42 +24,29 @@ public abstract class CommonAppConfiguration<T> extends AbstractAppConfiguration
         super(name, defaultUserId, paths);
     }
 
-    public CommonAppConfiguration setSessionFactory(SessionFactory<T> sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        return this;
-    }
 
-    public CommonAppConfiguration setSessionKeeperFactory(SessionKeeperFactory sessionKeeperFactory) {
-        this.sessionKeeperFactory = sessionKeeperFactory;
-        return this;
-    }
-
-    public CommonAppConfiguration setMessageBuilderFactory(MessageBuilderFactory<T> messageBuilderFactory) {
+    public CommonAppConfiguration<T> setMessageBuilderFactory(MessageFactory<T> messageBuilderFactory) {
         this.messageBuilderFactory = messageBuilderFactory;
         return this;
     }
 
-    public CommonAppConfiguration setInputEventHandler(MessageInputEventHandler<T, ? extends NetTunnel<T>> inputEventHandler) {
-        this.inputEventHandler = inputEventHandler;
+
+    protected CommonAppConfiguration<T> setMessageHandler(MessageHandler<T> messageHandler) {
+        this.messageHandler = messageHandler;
         return this;
     }
 
-    public CommonAppConfiguration setOutputEventHandler(MessageOutputEventHandler<T, ? extends NetTunnel<T>> outputEventHandler) {
-        this.outputEventHandler = outputEventHandler;
-        return this;
-    }
-
-    public CommonAppConfiguration setDispatchCommandExecutor(DispatchCommandExecutor dispatchCommandExecutor) {
+    public CommonAppConfiguration<T> setDispatchCommandExecutor(DispatchCommandExecutor dispatchCommandExecutor) {
         this.dispatchCommandExecutor = dispatchCommandExecutor;
         return this;
     }
 
-    public CommonAppConfiguration setMessageDispatcher(MessageDispatcher messageDispatcher) {
+    public CommonAppConfiguration<T> setMessageDispatcher(MessageDispatcher messageDispatcher) {
         this.messageDispatcher = messageDispatcher;
         return this;
     }
 
-    protected CommonAppConfiguration setExprHolderFactory(ExprHolderFactory exprHolderFactory) {
+    public CommonAppConfiguration setExprHolderFactory(ExprHolderFactory exprHolderFactory) {
         this.exprHolderFactory = exprHolderFactory;
         return this;
     }

@@ -3,14 +3,15 @@ package com.tny.game.suite.net.filter;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.command.filter.AbstractParamFilter;
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
 import com.tny.game.net.transport.Tunnel;
+import com.tny.game.net.transport.message.Message;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
-import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
@@ -22,7 +23,7 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
     private WordsFilter wordsFilter;
 
     protected NameLimit() {
-        super(NameFilter.class, String.class);
+        super(NameFilter.class);
     }
 
     @Override

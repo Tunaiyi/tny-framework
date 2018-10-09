@@ -1,7 +1,6 @@
 package com.tny.game.common.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,13 +21,13 @@ public class BaseEventBus<D> implements EventBus<D> {
     }
 
     @Override
-    public void add(D delegate) {
-        listeners.add(delegate);
+    public void add(D listener) {
+        listeners.add(listener);
     }
 
     @Override
-    public void remove(D delegate) {
-        listeners.remove(delegate);
+    public void remove(D listener) {
+        listeners.remove(listener);
     }
 
     @Override

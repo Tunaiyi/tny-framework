@@ -1,10 +1,9 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.config.Config;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.transport.message.MessageSubject;
 import org.slf4j.*;
 
 import java.util.*;
@@ -13,69 +12,27 @@ import java.util.stream.Stream;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.utils.NetConfigs.*;
 
-public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
+public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    private long offlineSessionLifeTime;
-    private int offlineSessionMaxSize;
+    private SessionKeeperConfigurer<UID> configurer;
 
     private final Map<UID, NetSession<UID>> sessionMap = new ConcurrentHashMap<>();
     private final Queue<NetSession<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
     private SessionFactory<UID> sessionFactory;
 
-    public CommonSessionKeeper(String userType, SessionFactory<UID> sessionFactory) {
-        this(userType, sessionFactory,
-                SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_LIFE_TIME,
-                SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_MAX_SIZE,
-                SESSION_HOLDER_DEFAULT_CLEAR_INTERVAL);
-    }
-
-    public CommonSessionKeeper(String userType, SessionFactory<UID> sessionFactory, Config config) {
-        this(userType, sessionFactory,
-                config.getLong(SESSION_HOLDER_OFFLINE_SESSION_LIFE_TIME, SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_LIFE_TIME),
-                config.getInt(NetConfigs.SESSION_HOLDER_OFFLINE_SESSION_MAX_SIZE, SESSION_HOLDER_DEFAULT_OFFLINE_SESSION_MAX_SIZE),
-                config.getLong(NetConfigs.SESSION_HOLDER_CLEAR_INTERVAL, SESSION_HOLDER_DEFAULT_CLEAR_INTERVAL));
-    }
-
-    public CommonSessionKeeper(String userType, SessionFactory<UID> sessionFactory, long offlineSessionLive, int offlineSessionMaxSize, long clearInterval) {
+    public CommonSessionKeeper(String userType, SessionKeeperConfigurer<UID> configurer) {
         super(userType);
-        this.sessionFactory = sessionFactory;
-        this.offlineSessionLifeTime = offlineSessionLive;
-        this.offlineSessionMaxSize = offlineSessionMaxSize;
+        this.sessionFactory = configurer.getSessionFactory();
+        this.configurer = configurer;
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
-        sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, clearInterval, clearInterval, TimeUnit.MILLISECONDS);
-        SessionEvents.ON_OFFLINE.add((session, tunnel) -> onOffline(session));
-        SessionEvents.ON_ONLINE.add((session, tunnel) -> onOnline(session));
-        SessionEvents.ON_CLOSE.add((session, tunnel) -> onClose(session));
-    }
-
-    private void onOnline(Session<?> session) {
-        if (!this.getUserType().equals(session.getUserType()))
-            return;
-        // Queue<? extends Session> sessions = offlineSessionQueue(session.getUserType());
-        NetSession<UID> netSession = as(session);
-        this.offlineSessionQueue.remove(netSession);
-    }
-
-    private void onOffline(Session<?> session) {
-        if (!this.getUserType().equals(session.getUserType()))
-            return;
-        if (session.isLogin() && session.isOffline()) {
-            this.offlineSessionQueue.add(as(session));
-        }
-    }
-
-    private void onClose(Session<?> session) {
-        if (!this.getUserType().equals(session.getUserType()))
-            return;
-        if (!session.isLogin())
-            return;
-        NetSession<UID> netSession = as(session);
-        this.sessionMap.remove(netSession.getUserId(), netSession);
-        this.offlineSessionQueue.remove(netSession);
+        sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, configurer.getClearInterval(), configurer.getClearInterval(), TimeUnit.MILLISECONDS);
+        SessionEvents.ON_ONLINE.add(this::onOnline);
+        SessionEvents.ON_OFFLINE.add(this::onOffline);
+        SessionEvents.ON_ACCEPT.add((session, tunnel) -> onOnline(session));
+        SessionEvents.ON_CLOSE.add(this::onClose);
     }
 
     @Override
@@ -95,27 +52,27 @@ public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
     }
 
     @Override
-    public void send2User(UID userId, MessageContext<UID> content) {
+    public void send2User(UID userId, MessageSubject subject) {
         NetSession<UID> session = this.getNetSession(userId);
         if (session != null) {
-            session.send(content);
+            session.sendAsyn(subject);
         }
     }
 
     @Override
-    public void send2Users(Collection<UID> userIds, MessageContext<UID> content) {
-        this.doSendMultiSessionID(userIds.stream(), content);
+    public void send2Users(Collection<UID> userIds, MessageSubject subject) {
+        this.doSendMultiSessionID(userIds.stream(), subject);
     }
 
     @Override
-    public void send2Users(Stream<UID> userIdsStream, MessageContext<UID> content) {
-        this.doSendMultiSessionID(userIdsStream, content);
+    public void send2Users(Stream<UID> userIdsStream, MessageSubject subject) {
+        this.doSendMultiSessionID(userIdsStream, subject);
     }
 
     @Override
-    public void send2AllOnline(MessageContext<UID> content) {
+    public void send2AllOnline(MessageSubject subject) {
         for (NetSession<UID> session : this.sessionMap.values())
-            session.send(content);
+            session.sendAsyn(subject);
     }
 
     @Override
@@ -231,13 +188,38 @@ public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
         return this.sessionMap.get(userId);
     }
 
-    private void doSendMultiSessionID(Stream<UID> userIds, MessageContext<UID> content) {
+    private void doSendMultiSessionID(Stream<UID> userIds, MessageSubject subject) {
         userIds.forEach(userId -> {
             NetSession<UID> session = this.getNetSession(userId);
             if (session != null) {
-                session.send(content);
+                session.sendAsyn(subject);
             }
         });
+    }
+
+    private void onOnline(Session<?> session) {
+        if (!this.getUserType().equals(session.getUserType()))
+            return;
+        NetSession<UID> netSession = as(session);
+        this.offlineSessionQueue.remove(netSession);
+    }
+
+    private void onOffline(Session<?> session) {
+        if (!this.getUserType().equals(session.getUserType()))
+            return;
+        if (session.isLogin() && session.isOffline()) {
+            this.offlineSessionQueue.add(as(session));
+        }
+    }
+
+    private void onClose(Session<?> session) {
+        if (!this.getUserType().equals(session.getUserType()))
+            return;
+        if (!session.isLogin())
+            return;
+        NetSession<UID> netSession = as(session);
+        this.sessionMap.remove(netSession.getUserId(), netSession);
+        this.offlineSessionQueue.remove(netSession);
     }
 
     /**
@@ -249,17 +231,11 @@ public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
         Set<NetSession> closeSessions = new HashSet<>();
         offlineSessionQueue.forEach(session -> {
                     try {
-                        // TODO 监控读取数据时间
-                        // NetTunnel<UID> tunnel = session.getTunnel();
-                        // if (tunnel.isClosed() && tunnel.getLastReadAt() + keepIdleTime < now) {
-                        //     LOG.warn("服务器主动关闭空闲终端 : {}", tunnel);
-                        //     tunnel.close();
-                        // }
                         NetSession<UID> closeSession = null;
                         if (session.isClosed()) {
                             LOG.info("移除已关闭的OfflineSession {}", session.getUserId());
                             closeSession = session;
-                        } else if (session.isOffline() && session.getOfflineTime() + offlineSessionLifeTime < now) {
+                        } else if (session.isOffline() && session.getOfflineTime() + configurer.getOfflineCloseDelay() < now) {
                             LOG.info("移除下线超时的OfflineSession {}", session.getUserId());
                             session.close();
                             closeSession = session;
@@ -274,8 +250,9 @@ public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
                 }
         );
         offlineSessionQueue.removeAll(closeSessions);
-        if (offlineSessionMaxSize > 0) {
-            int size = offlineSessionQueue.size() - offlineSessionMaxSize;
+        int maxSize = configurer.getOfflineMaxSize();
+        if (maxSize > 0) {
+            int size = offlineSessionQueue.size() - maxSize;
             for (int i = 0; i < size; i++) {
                 NetSession<UID> session = offlineSessionQueue.poll();
                 if (session == null)
@@ -300,7 +277,7 @@ public class CommonSessionKeeper<UID> extends AbstractNetSessionKeeper<UID> {
                 online++;
         }
         LOG.info("会话管理器#{} Group -> 会话数量为 {} | 在线数 {}", this.getUserType(), size, online);
-        LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", this.getUserType(), this.offlineSessionQueue.size(), this.offlineSessionMaxSize);
+        LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", this.getUserType(), this.offlineSessionQueue.size(), this.configurer.getOfflineMaxSize());
     }
 
 }

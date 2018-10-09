@@ -5,10 +5,10 @@ import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.config.Config;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.SeverClosedListener;
+import com.tny.game.net.common.NetMessageHandler;
 import com.tny.game.net.netty.coder.ChannelMaker;
 import com.tny.game.net.transport.*;
 import com.tny.game.net.utils.NetConfigs;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public class NettyBinder extends NettyBootstrap implements Server {
+public class NettyBinder extends NettyBootstrap implements ServerBootstrap {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
@@ -30,13 +30,11 @@ public class NettyBinder extends NettyBootstrap implements Server {
 
     private static final EventLoopGroup childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup");
 
-    private volatile ServerBootstrap bootstrap;
+    private volatile io.netty.bootstrap.ServerBootstrap bootstrap;
 
     private volatile NettyAppConfiguration<Object> appConfiguration;
 
     private Collection<InetSocketAddress> bindAddresses;
-
-    private ChannelMaker<Channel> channelMaker;
 
     private Map<String, Channel> channels = new CopyOnWriteMap<>();
 
@@ -45,14 +43,14 @@ public class NettyBinder extends NettyBootstrap implements Server {
      */
     private List<SeverClosedListener> listenerList = new CopyOnWriteArrayList<>();
 
-    private ServerBootstrap bootstrap() {
+    private io.netty.bootstrap.ServerBootstrap bootstrap() {
         if (this.bootstrap != null)
             return this.bootstrap;
         synchronized (this) {
             if (this.bootstrap != null)
                 return this.bootstrap;
-            this.bootstrap = new ServerBootstrap();
-            NettyMessageHandler messageHandler = new NettyMessageHandler();
+            this.bootstrap = new io.netty.bootstrap.ServerBootstrap();
+            NettyMessageHandler messageHandler = new NettyMessageHandler(new NetMessageHandler(appConfiguration));
             this.bootstrap.group(parentGroup, childGroup)
                     .channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)
@@ -64,12 +62,11 @@ public class NettyBinder extends NettyBootstrap implements Server {
                         protected void initChannel(Channel ch) throws Exception {
                             if (channelMaker != null)
                                 channelMaker.initChannel(ch);
-                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
+                            ch.pipeline() .addLast("nettyMessageHandler", messageHandler);
                             Certificate<Object> defaultCertificate = Certificates.createUnautherized(appConfiguration.getDefaultUserId());
                             NettyTunnel<Object> tunnel = new NettyServerTunnel<>(ch, defaultCertificate)
-                                    .setInputEventHandler(appConfiguration.getInputEventHandler())
-                                    .setOutputEventHandler(appConfiguration.getOutputEventHandler())
-                                    .setMessageBuilderFactory(appConfiguration.getMessageBuilderFactory());
+                                    .setMessageHandler(appConfiguration.getMessageHandler())
+                                    .setMessageFactory(appConfiguration.getMessageFactory());
                             ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
                         }
                     });
@@ -79,9 +76,8 @@ public class NettyBinder extends NettyBootstrap implements Server {
     }
 
     public NettyBinder(ChannelMaker<Channel> channelMaker, NettyAppConfiguration<?> appConfiguration) {
-        super(appConfiguration.getName());
+        super(appConfiguration.getName(), channelMaker);
         this.appConfiguration = as(appConfiguration);
-        this.channelMaker = channelMaker;
         Config properties = appConfiguration.getProperties();
         this.bindAddresses = properties.getObject(NetConfigs.SERVER_BIND_IPS);
         this.bindAddresses = ImmutableSet.copyOf(this.bindAddresses);

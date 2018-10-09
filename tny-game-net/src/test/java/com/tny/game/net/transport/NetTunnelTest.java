@@ -1,15 +1,18 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.net.exception.ValidatorFailException;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.netty.NettyTunnel;
-import com.tny.game.net.transport.message.RespondFutureHolder;
+import com.tny.game.net.transport.message.*;
 import org.junit.*;
 import test.TestAide;
 
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,6 +58,34 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
         when(session.removeFuture(anyLong())).thenAnswer(
                 (mk) -> holder.pollFuture(as(mk.getArguments()[0]))
         );
+        List<Message<Long>> sentMessages = new ArrayList<>();
+        doAnswer(mk -> {
+            sentMessages.add(as(mk.getArguments()[0]));
+            return null;
+        }).when(session).addSentMessage(any(Message.class));
+        when(session.getSentMessages(anyLong(), anyLong())).thenAnswer((mk) -> {
+            long from = as(mk.getArguments()[0]);
+            long to = as(mk.getArguments()[1]);
+            AtomicBoolean ok = new AtomicBoolean(false);
+            return sentMessages
+                    .stream()
+                    .filter(m -> {
+                        if (!ok.get()) {
+                            if (m.getId() == from) {
+                                ok.set(true);
+                                return true;
+                            }
+                        } else {
+                            if (m.getId() == to)
+                                ok.set(false);
+                            return true;
+                        }
+                        return false;
+                    })
+                    .collect(toList());
+        });
+        MessageIdCreator idCreator = new MessageIdCreator(MessageIdCreator.SESSION_MESSAGE_ID_MARK);
+        when(session.createMessageId()).thenAnswer((mk) -> idCreator.createId());
         when(session.getUserId()).thenReturn(certificate.getUserId());
         when(session.isLogin()).thenReturn(certificate.isAutherized());
         when(session.getUserType()).thenReturn(certificate.getUserType());
@@ -132,10 +163,10 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
     public abstract void receive() throws ExecutionException, InterruptedException;
 
     @Test
-    public abstract void resend();
+    public abstract void resend() throws NetException;
 
-    @Test
-    public abstract void write() throws Exception;
+    // @Test
+    // public abstract void write() throws Exception;
 
     // @Override
     // @Test
@@ -399,55 +430,42 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
     @Test
     public void getSession() {
         T loginTunnel = createLoginTunnel();
-        assertTrue(loginTunnel.getSession().isPresent());
+        assertTrue(loginTunnel.getBindSession().isPresent());
         T unloginTunnel = createUnloginTunnel();
-        assertFalse(unloginTunnel.getSession().isPresent());
+        assertFalse(unloginTunnel.getBindSession().isPresent());
     }
 
-    @Test
-    public void getMessageBuilderFactory() {
-        NetTunnel<Long> tunnel;
-        tunnel = createLoginTunnel();
-        assertNotNull(tunnel.getMessageBuilderFactory());
+    protected void assertSendOk(TestMessages messages) {
+        messages.contentsForEach(content -> TestAide.assertRunComplete("assertWaitSendOk",
+                () -> assertNotNull(content.getSendFuture().get(1000, TimeUnit.MILLISECONDS))));
     }
-
-    protected void assertWaitSendOk(TestMessages messages) {
-        messages.contentsForEach(content -> TestAide.assertRunWithoutException("assertWaitSendOk",
-                () -> assertNotNull(content.willSendFuture().get())));
-    }
-
 
     protected void assertWaitSendException(TestMessages messages, Class<? extends Exception> exceptionClass) {
         messages.contentsForEach(content -> TestAide.assertRunWithException("assertWaitSendException",
-                () -> content.willSendFuture().get(100, TimeUnit.MILLISECONDS), exceptionClass));
+                () -> content.getSendFuture().get(100, TimeUnit.MILLISECONDS), exceptionClass));
     }
 
     protected void assertWaitResponseOK(TestMessages messages) {
-        messages.contentsForEach(content -> TestAide.assertRunWithoutException("assertWaitResponseOK", () ->
-                assertNotNull(content.willResponseFuture().get(300, TimeUnit.MILLISECONDS))));
+        messages.contentsForEach(content -> TestAide.assertRunComplete("assertWaitResponseOK", () ->
+                assertNotNull(content.getRespondFuture().get(300, TimeUnit.MILLISECONDS))));
     }
 
     protected void assertWaitResponseException(TestMessages messages, Class<? extends Exception> exceptionClass) {
         messages.contentsForEach(content -> TestAide.assertRunWithException("assertWaitResponseException",
-                () -> content.willResponseFuture().get(300, TimeUnit.MILLISECONDS), exceptionClass));
+                () -> content.getRespondFuture().get(300, TimeUnit.MILLISECONDS), exceptionClass));
     }
 
     protected ScheduledFuture<?> scheduleReceive(NettyTunnel<Long> tunnel, TestMessages responses) {
         return service.schedule(() -> {
-            responses.messagesForEach(tunnel::receive);
-            MessageEventsBox<Long> eventsBox = tunnel.getEventsBox();
-            assertEquals(responses.getMessageSize(), eventsBox.getInputEventSize());
-            while (eventsBox.isHasInputEvent()) {
-                MessageInputEvent<Long> event = eventsBox.pollInputEvent();
-                if (event instanceof MessageReceiveEvent)
-                    ((MessageReceiveEvent<Long>) event).completeResponse();
-            }
+            responses.messagesForEach(tunnel::callbackFuture);
+            // MessageEventsBox<Long> eventsBox = tunnel.getEventsBox();
+            // assertEquals(responses.getMessageSize(), eventsBox.getInputEventSize());
+            // while (eventsBox.isHasInputEvent()) {
+            //     MessageInputEvent<Long> event = eventsBox.pollInputEvent();
+            //     if (event instanceof MessageReceiveEvent)
+            //         ((MessageReceiveEvent<Long>) event).completeResponse();
+            // }
         }, 50, TimeUnit.MILLISECONDS);
-    }
-
-
-    protected void scheduleSendSuccess(NetTunnel<Long> tunnel, TestMessages messages) {
-        service.schedule(() -> messages.sendSuccess(tunnel), 50, TimeUnit.MILLISECONDS);
     }
 
 }

@@ -2,7 +2,7 @@ package com.tny.game.suite.core;
 
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.formula.DateTimeEx;
 import com.tny.game.common.utils.DateTimeAide;

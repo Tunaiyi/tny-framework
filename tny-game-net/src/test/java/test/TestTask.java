@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static test.TestAide.*;
 
 /**
  * Created by Kun Yang on 2018/8/27.
@@ -68,7 +67,7 @@ public class TestTask<T> {
         int index = 0;
         for (ForkJoinTask<?> joinTask : joinTasks) {
             String taskName = taskName(name, index++);
-            Object result = assertCallWithoutException(taskName, joinTask::get);
+            Object result = TestAide.assertCallComplete(taskName, joinTask::get);
             results.add(as(result));
         }
     }

@@ -47,9 +47,9 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
     public void isClosed() {
         C loginCommunicator = communicator(createLoginCert());
         Assert.assertFalse(loginCommunicator.isClosed());
-        Assert.assertNotNull(loginCommunicator.close());
+        loginCommunicator.close();
         Assert.assertTrue(loginCommunicator.isClosed());
-        Assert.assertNotNull(loginCommunicator.close());
+        loginCommunicator.close();
         Assert.assertTrue(loginCommunicator.isClosed());
     }
 }

@@ -6,7 +6,7 @@ import com.tny.game.common.context.*;
 import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.common.reflect.aop.*;
 import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.net.command.dispatcher.CurrentCommand;
+import com.tny.game.net.command.dispatcher.ControllerContext;
 import com.tny.game.suite.auto.AutoMethodHolder;
 import com.tny.game.suite.auto.persistent.annotation.*;
 import com.tny.game.suite.base.GameExplorer;
@@ -191,7 +191,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
         try {
             this.toDB(source);
         } catch (Throwable e) {
-            CurrentCommand cmd = CurrentCommand.getCurrent();
+            ControllerContext cmd = ControllerContext.getCurrent();
             LOGGER.error("{} 协议[{}] handleClose 异常", source, cmd.getProtocol(), e);
         } finally {
             source.attributes().removeAttribute(OP_DB_MAP);
@@ -204,7 +204,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
         try {
             this.toDB(source);
         } catch (Throwable e) {
-            CurrentCommand cmd = CurrentCommand.getCurrent();
+            ControllerContext cmd = ControllerContext.getCurrent();
             LOGGER.error("{} 协议[{}] handleRollback 异常", source, cmd.getProtocol(), e);
         }
     }

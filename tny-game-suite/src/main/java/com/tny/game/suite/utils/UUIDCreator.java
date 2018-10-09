@@ -1,6 +1,6 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.utils.Throws;
 import org.joda.time.DateTime;

@@ -2,13 +2,7 @@ package com.tny.game.net.annotation;
 
 import com.tny.game.net.command.ControllerPlugin;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author KGTny
@@ -36,5 +30,12 @@ public @interface BeforePlugin {
      * @return
      */
     Class<? extends ControllerPlugin> value();
+
+    /**
+     * 插件参数, 已@开始为公式
+     *
+     * @return 获取插件参数
+     */
+    String attribute() default "@null";
 
 }

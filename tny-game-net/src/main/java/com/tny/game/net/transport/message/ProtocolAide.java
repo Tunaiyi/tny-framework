@@ -13,7 +13,7 @@ public class ProtocolAide {
         }
 
         @Override
-        public int getProtocol() {
+        public int getNumber() {
             return this.protocol;
         }
 
@@ -38,7 +38,7 @@ public class ProtocolAide {
             if (getClass() != obj.getClass())
                 return false;
             Protocol other = (Protocol) obj;
-            return protocol == other.getProtocol();
+            return protocol == other.getNumber();
         }
 
     }

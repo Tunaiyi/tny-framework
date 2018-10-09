@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class EmptyImmutableList<V> implements List<V> {
 
-    private List<V> list = ImmutableList.of();
+    private volatile List<V> list = ImmutableList.of();
 
     private Supplier<List<V>> creator;
 

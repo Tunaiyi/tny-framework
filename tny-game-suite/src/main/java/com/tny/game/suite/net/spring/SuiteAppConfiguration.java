@@ -10,7 +10,7 @@ import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.common.AbstractAppConfiguration;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.MessageFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -103,8 +103,8 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements A
     public void prepareStart() {
         this.sessionKeeperFactory = load(SessionKeeperFactory.class, this.sessionKeeperFactoryName);
         this.sessionFactory = load(SessionFactory.class, this.sessionFactoryName);
-        this.messageBuilderFactory = load(MessageBuilderFactory.class, this.messageBuilderFactoryName);
-        this.inputEventHandler = load(MessageInputEventHandler.class, this.inputEventHandlerName);
+        this.messageBuilderFactory = load(MessageFactory.class, this.messageBuilderFactoryName);
+        this.messageHandler = load(MessageInputEventHandler.class, this.inputEventHandlerName);
         this.outputEventHandler = load(MessageOutputEventHandler.class, this.outputEventHandlerName);
         this.dispatchCommandExecutor = load(DispatchCommandExecutor.class, this.dispatchCommandExecutorName);
         this.messageDispatcher = load(MessageDispatcher.class, this.messageDispatcherName);

@@ -1,6 +1,6 @@
 package com.tny.game.net.transport.message.common;
 
-import com.tny.game.net.transport.message.AbstractNetMessageHeader;
+import com.tny.game.net.transport.message.*;
 
 /**
  * Created by Kun Yang on 2018/8/20.
@@ -19,8 +19,21 @@ public class CommonMessageHeader extends AbstractNetMessageHeader {
 
     private Object head;
 
+    protected CommonMessageHeader() {
+    }
+
+    public CommonMessageHeader(long id, MessageSubject subject) {
+        super(subject.getMode());
+        this.id = id;
+        this.protocol = subject.getNumber();
+        this.code = subject.getCode().getCode();
+        this.toMessage = subject.getToMessage();
+        this.time = System.currentTimeMillis();
+        this.head = subject.getHeader();
+    }
+
     @Override
-    protected Object getHead() {
+    public Object getHead() {
         return this.head;
     }
 
@@ -45,42 +58,37 @@ public class CommonMessageHeader extends AbstractNetMessageHeader {
     }
 
     @Override
-    public int getProtocol() {
+    public int getNumber() {
         return this.protocol;
     }
 
     @Override
-    protected CommonMessageHeader setId(long id) {
+    public CommonMessageHeader setId(long id) {
         this.id = id;
         return this;
     }
 
-    @Override
-    protected CommonMessageHeader setCode(int code) {
+    CommonMessageHeader setCode(int code) {
         this.code = code;
         return this;
     }
 
-    @Override
-    protected CommonMessageHeader setTime(long time) {
+    CommonMessageHeader setTime(long time) {
         this.time = time;
         return this;
     }
 
-    @Override
-    protected CommonMessageHeader setToMessage(long toMessage) {
+    CommonMessageHeader setToMessage(long toMessage) {
         this.toMessage = toMessage;
         return this;
     }
 
-    @Override
-    protected CommonMessageHeader setProtocol(int protocol) {
+    CommonMessageHeader setProtocol(int protocol) {
         this.protocol = protocol;
         return this;
     }
 
-    @Override
-    protected CommonMessageHeader setHead(Object head) {
+    CommonMessageHeader setHead(Object head) {
         this.head = head;
         return this;
     }

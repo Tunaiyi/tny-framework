@@ -4,12 +4,13 @@ import com.google.common.collect.*;
 import com.tny.game.common.number.LocalNum;
 import com.tny.game.common.reflect.GMethod;
 import com.tny.game.common.result.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.*;
-import com.tny.game.net.common.ControllerCheckerHolder;
+import com.tny.game.net.command.auth.AuthenticateProvider;
+import com.tny.game.net.common.ControllerPluginHolder;
 import com.tny.game.net.exception.DispatchException;
 import com.tny.game.net.transport.*;
 import com.tny.game.net.transport.message.*;
@@ -20,7 +21,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * @author KGTny
@@ -83,12 +84,11 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param executor 调用的执行对象
      * @param method   方法
      */
-    protected MethodControllerHolder(final Object executor, final AbstractMessageDispatcher dispatcher, ExprHolderFactory exprHolderFactory, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
-        super(executor, dispatcher, controller,
+    protected MethodControllerHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
+        super(executor, context, controller,
                 method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
                 method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
                 method.getJavaMethod().getAnnotation(AuthenticationRequired.class),
-                method.getJavaMethod().getAnnotationsByType(Check.class),
                 method.getJavaMethod().getAnnotation(MessageFilter.class),
                 method.getJavaMethod().getAnnotation(AppProfile.class),
                 method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
@@ -134,9 +134,9 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
             this.paramAnnotationsMap = ImmutableMap.copyOf(annotationsMap);
             this.parameterDescs = ImmutableList.copyOf(parameterDescs);
-            for (ControllerPlugin plugin : this.getControllerBeforePlugins())
+            for (ControllerPluginHolder plugin : this.getControllerBeforePlugins())
                 this.beforeContext = this.putPlugin(this.beforeContext, plugin);
-            for (ControllerPlugin plugin : this.getControllerAfterPlugins())
+            for (ControllerPluginHolder plugin : this.getControllerAfterPlugins())
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
         } catch (Exception e) {
             throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
@@ -165,7 +165,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.parameterDescs.size();
     }
 
-    private PluginContext putPlugin(PluginContext context, ControllerPlugin plugin) {
+    private PluginContext putPlugin(PluginContext context, ControllerPluginHolder plugin) {
         if (context == null)
             context = new PluginContext(plugin);
         context.setNext(new PluginContext(plugin));
@@ -242,22 +242,17 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public Class<?> getAuthProvider() {
+    public Class<? extends AuthenticateProvider>  getAuthProvider() {
         return this.auth != null ? super.getAuthProvider() : classController.getAuthProvider();
     }
 
     @Override
-    public List<ControllerCheckerHolder> getCheckerHolders() {
-        return this.checkerHolders != null && !this.checkerHolders.isEmpty() ? Collections.unmodifiableList(this.checkerHolders) : this.classController.getCheckerHolders();
-    }
-
-    @Override
-    protected List<ControllerPlugin> getControllerBeforePlugins() {
+    protected List<ControllerPluginHolder> getControllerBeforePlugins() {
         return this.beforePlugins != null && !this.beforePlugins.isEmpty() ? Collections.unmodifiableList(this.beforePlugins) : this.classController.getControllerBeforePlugins();
     }
 
     @Override
-    protected List<ControllerPlugin> getControllerAfterPlugins() {
+    protected List<ControllerPluginHolder> getControllerAfterPlugins() {
         return this.afterPlugins != null && !this.afterPlugins.isEmpty() ? Collections.unmodifiableList(this.afterPlugins) : this.classController.getControllerAfterPlugins();
     }
 
@@ -281,10 +276,6 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.parameterDescs.get(index).getParamAnnotations();
     }
 
-    public Set<Class<?>> getParamAnnotationClass() {
-        return this.paramAnnotationsMap.keySet();
-    }
-
     @Override
     public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
         return this.classController.getAnnotation(annotationClass);
@@ -294,6 +285,10 @@ public final class MethodControllerHolder extends ControllerHolder {
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
         return (A) this.methodAnnotationMap.get(annotationClass);
+    }
+
+    public Set<Class<?>> getParamAnnotationClass() {
+        return this.paramAnnotationsMap.keySet();
     }
 
     protected void invoke(NetTunnel<?> tunnel, Message<?> message, InvokeContext context) throws Exception {
@@ -406,7 +401,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = message;
                     break;
                 case SESSION:
-                    Optional<? extends NetSession<?>> session = tunnel.getSession();
+                    Optional<? extends NetSession<?>> session = tunnel.getBindSession();
                     if (!session.isPresent())
                         throw new NullPointerException(format("{} session is null", tunnel));
                     value = session.get();

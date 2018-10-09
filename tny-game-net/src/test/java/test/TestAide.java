@@ -121,11 +121,11 @@ public final class TestAide {
         }
     }
 
-    public static void assertRunWithoutException(RunnableWithThrow run) {
-        assertRunWithoutException(null, run);
+    public static void assertRunComplete(RunnableWithThrow run) {
+        assertRunComplete(null, run);
     }
 
-    public static void assertRunWithoutException(String name, RunnableWithThrow run) {
+    public static void assertRunComplete(String name, RunnableWithThrow run) {
         try {
             run.run();
         } catch (Throwable e) {
@@ -134,11 +134,11 @@ public final class TestAide {
         }
     }
 
-    public static <T> T assertCallWithoutException(Callable<T> run) {
-        return assertCallWithoutException(null, run);
+    public static <T> T assertCallComplete(Callable<T> run) {
+        return assertCallComplete(null, run);
     }
 
-    public static <T> T assertCallWithoutException(String name, Callable<T> run) {
+    public static <T> T assertCallComplete(String name, Callable<T> run) {
         try {
             return run.call();
         } catch (Throwable e) {
@@ -189,7 +189,7 @@ public final class TestAide {
         List<ForkJoinTask<?>> joinTasks = new ArrayList<>();
         final CountDownLatch latch = new CountDownLatch(1);
         for (int index = 0; index < taskNum; index++) {
-            ForkJoinTask<?> joinTask = forkJoinPool.submit(() -> assertRunWithoutException(name, () -> {
+            ForkJoinTask<?> joinTask = forkJoinPool.submit(() -> assertRunComplete(name, () -> {
                 latch.await();
                 task.run();
             }));
@@ -197,7 +197,7 @@ public final class TestAide {
         }
         latch.countDown();
         for (ForkJoinTask<?> joinTask : joinTasks) {
-            assertCallWithoutException(joinTask::join);
+            assertCallComplete(joinTask::join);
         }
         forkJoinPool.shutdown();
     }
@@ -228,7 +228,7 @@ public final class TestAide {
         final CountDownLatch latch = new CountDownLatch(1);
         for (int index = 0; index < taskNum; index++) {
             String taskName = taskName(name, index);
-            ForkJoinTask<T> joinTask = forkJoinPool.submit(() -> assertCallWithoutException(taskName, () -> {
+            ForkJoinTask<T> joinTask = forkJoinPool.submit(() -> assertCallComplete(taskName, () -> {
                 latch.await();
                 return task.call();
             }));
@@ -239,7 +239,7 @@ public final class TestAide {
         int index = 0;
         for (ForkJoinTask<T> joinTask : joinTasks) {
             String taskName = taskName(name, index++);
-            T result = assertCallWithoutException(taskName, joinTask::get);
+            T result = assertCallComplete(taskName, joinTask::get);
             results.add(result);
         }
         forkJoinPool.shutdown();
@@ -256,7 +256,7 @@ public final class TestAide {
         for (TestTask<?> task : tasks) {
             for (int index = 0; index < task.getTimes(); index++) {
                 String taskName = taskName(task.getName(), index);
-                ForkJoinTask<?> joinTask = forkJoinPool.submit(() -> assertCallWithoutException(taskName, () -> {
+                ForkJoinTask<?> joinTask = forkJoinPool.submit(() -> assertCallComplete(taskName, () -> {
                     latch.await();
                     return task.getCallable().call();
                 }));

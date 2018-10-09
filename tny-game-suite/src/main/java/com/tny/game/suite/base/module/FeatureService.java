@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.utils.version.Version;
 import com.tny.game.suite.utils.SuiteLog;

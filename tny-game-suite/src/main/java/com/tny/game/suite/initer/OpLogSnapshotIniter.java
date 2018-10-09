@@ -1,7 +1,7 @@
 package com.tny.game.suite.initer;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;

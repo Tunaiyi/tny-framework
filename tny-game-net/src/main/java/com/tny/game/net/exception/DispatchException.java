@@ -50,4 +50,7 @@ public class DispatchException extends Exception {
         return this.resultCode;
     }
 
+    public Object getBody() {
+        return body;
+    }
 }

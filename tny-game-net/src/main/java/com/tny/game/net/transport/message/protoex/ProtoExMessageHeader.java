@@ -1,10 +1,10 @@
 package com.tny.game.net.transport.message.protoex;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.net.transport.message.AbstractNetMessageHeader;
+import com.tny.game.net.transport.message.*;
 import com.tny.game.protoex.annotations.*;
 
-import java.util.*;
+import java.util.Objects;
 
 @ProtoEx(ProtoExMessageCoder.MESSAGE_HEAD_ID)
 public class ProtoExMessageHeader extends AbstractNetMessageHeader {
@@ -32,6 +32,16 @@ public class ProtoExMessageHeader extends AbstractNetMessageHeader {
     public ProtoExMessageHeader() {
     }
 
+    public ProtoExMessageHeader(long id, MessageSubject subject) {
+        super(subject.getMode());
+        this.id = id;
+        this.protocol = subject.getNumber();
+        this.code = subject.getCode().getCode();
+        this.toMessage = subject.getToMessage();
+        this.time = System.currentTimeMillis();
+        this.head = subject.getHeader();
+    }
+
 
     @Override
     public long getId() {
@@ -53,50 +63,13 @@ public class ProtoExMessageHeader extends AbstractNetMessageHeader {
         return this.time;
     }
 
-    @Override
-    public int getProtocol() {
+    public int getNumber() {
         return this.protocol;
     }
 
     @Override
     protected Object getHead() {
         return head;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setId(long id) {
-        this.id = id;
-        return this;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setProtocol(int protocol) {
-        this.protocol = protocol;
-        return this;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setCode(int code) {
-        this.code = code;
-        return this;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setHead(Object head) {
-        this.head = head;
-        return this;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setToMessage(long toMessage) {
-        this.toMessage = toMessage;
-        return this;
-    }
-
-    @Override
-    protected ProtoExMessageHeader setTime(long time) {
-        this.time = time;
-        return this;
     }
 
     @Override
@@ -117,7 +90,7 @@ public class ProtoExMessageHeader extends AbstractNetMessageHeader {
         if (!(o instanceof ProtoExMessageHeader)) return false;
         ProtoExMessageHeader that = (ProtoExMessageHeader) o;
         return getId() == that.getId() &&
-                getProtocol() == that.getProtocol() &&
+                this.getId() == this.getId() &&
                 getCode() == that.getCode() &&
                 getToMessage() == that.getToMessage() &&
                 getTime() == that.getTime() &&
@@ -126,8 +99,38 @@ public class ProtoExMessageHeader extends AbstractNetMessageHeader {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getProtocol(), getCode(), getToMessage(), getTime(), getHead());
+        return Objects.hash(getId(), this.getId(), getCode(), getToMessage(), getTime(), getHead());
     }
 
+    @Override
+    public ProtoExMessageHeader setId(long id) {
+        this.id = id;
+        return this;
+    }
+
+    ProtoExMessageHeader setProtocol(int protocol) {
+        this.protocol = protocol;
+        return this;
+    }
+
+    ProtoExMessageHeader setCode(int code) {
+        this.code = code;
+        return this;
+    }
+
+    ProtoExMessageHeader setToMessage(long toMessage) {
+        this.toMessage = toMessage;
+        return this;
+    }
+
+    ProtoExMessageHeader setTime(long time) {
+        this.time = time;
+        return this;
+    }
+
+    ProtoExMessageHeader setHead(Object head) {
+        this.head = head;
+        return this;
+    }
 }
 

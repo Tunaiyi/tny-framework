@@ -1,6 +1,6 @@
 package com.tny.game;
 
-import com.tny.game.common.RunningChecker;
+import com.tny.game.common.runtime.RunningChecker;
 
 import javax.script.*;
 

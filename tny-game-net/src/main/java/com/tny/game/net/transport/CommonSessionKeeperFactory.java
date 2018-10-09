@@ -1,11 +1,14 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.net.base.annotation.Unit;
+import com.tny.game.net.exception.SessionException;
 
+import java.util.Map;
 import java.util.concurrent.*;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 默认 SessionKeeper 工厂
@@ -17,22 +20,36 @@ import static com.tny.game.common.utils.ObjectAide.as;
 @Unit("CommonSessionKeeperFactory")
 public class CommonSessionKeeperFactory implements SessionKeeperFactory {
 
-    private static final ConcurrentMap<String, NetSessionKeeper<?>> KEEPER_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, SessionKeeper<?>> KEEPER_MAP = new ConcurrentHashMap<>();
 
-    private AppConfiguration appConfiguration;
+    private SessionKeeperConfigurer<?> defaultFactory;
 
-    public CommonSessionKeeperFactory(AppConfiguration appConfiguration) {
-        this.appConfiguration = appConfiguration;
-    }
+    private Map<String, SessionKeeperConfigurer<?>> configurers = new CopyOnWriteMap<>();
 
     @Override
-    public <UID> NetSessionKeeper<UID> getKeeper(String userType) {
+    public <UID> SessionKeeper<UID> getKeeper(String userType) {
         return as(KEEPER_MAP.computeIfAbsent(userType, this::create));
     }
 
-    private <UID> NetSessionKeeper<UID> create(String userType) {
-        return new CommonSessionKeeper<>(userType,
-                appConfiguration.getSessionFactory(), appConfiguration.getProperties());
+    private <UID> SessionKeeper<UID> create(String userType) {
+        SessionKeeperConfigurer<?> configurer = configurers.getOrDefault(userType, defaultFactory);
+        if (configurer == null)
+            throw new SessionException(format("userType {} on exist configurer", userType));
+        return new CommonSessionKeeper<>(userType, as(configurer));
     }
 
+    public CommonSessionKeeperFactory setDefaultFactory(SessionKeeperConfigurer<?> defaultFactory) {
+        this.defaultFactory = defaultFactory;
+        return this;
+    }
+
+    public CommonSessionKeeperFactory addSessionFactory(String userType, SessionKeeperConfigurer<?> configurer) {
+        this.configurers.put(userType, configurer);
+        return this;
+    }
+
+    public CommonSessionKeeperFactory addSessionFactories(Map<String, SessionKeeperConfigurer<?>> configurers) {
+        this.configurers.putAll(configurers);
+        return this;
+    }
 }

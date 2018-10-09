@@ -2,13 +2,13 @@ package com.tny.game.net.transport.message;
 
 import com.tny.game.common.context.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.transport.Certificate;
 
 public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
 
     private volatile transient Attributes attributes;
 
-    private MessageHeader header;
+    private NetMessageHeader header;
 
     private Object body;
 
@@ -17,8 +17,13 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
     protected AbstractNetMessage() {
     }
 
-    protected AbstractNetMessage(Certificate<UID> certificate) {
+    protected AbstractNetMessage(NetMessageHeader header) {
+        this.header = header;
+    }
+
+    protected AbstractNetMessage(Certificate<UID> certificate, NetMessageHeader header) {
         this.certificate = certificate;
+        this.header = header;
     }
 
     @Override
@@ -74,20 +79,20 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
     }
 
     @Override
-    public void update(Certificate<UID> certificate) {
+    public NetMessage<UID> setId(long messageID) {
+        this.header.setId(messageID);
+        return this;
+    }
+
+    @Override
+    public NetMessage<UID> update(Certificate<UID> certificate) {
         this.setCertificate(certificate);
-    }
-
-    protected AbstractNetMessage<UID> setBody(Object body) {
-        this.body = body;
         return this;
     }
 
-    protected AbstractNetMessage<UID> setHeader(MessageHeader header) {
-        this.header = header;
-        return this;
-    }
-
-    // protected abstract AbstractNetMessage<UID> setSession(Session<UID> session);
+    // protected AbstractNetMessage<UID> setBody(Object body) {
+    //     this.body = body;
+    //     return this;
+    // }
 
 }

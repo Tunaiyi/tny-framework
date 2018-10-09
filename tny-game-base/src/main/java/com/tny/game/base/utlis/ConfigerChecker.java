@@ -1,14 +1,12 @@
 package com.tny.game.base.utlis;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.Behavior;
+import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.module.Feature;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
+import java.util.concurrent.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class ConfigerChecker {
 
@@ -17,7 +15,7 @@ public class ConfigerChecker {
     private static Set<Object> getCheckSet(Object key) {
         Set<Object> idSet = ID_CHECK_MAP.get(key);
         if (idSet == null) {
-            idSet = new HashSet<Object>();
+            idSet = new HashSet<>();
             Set<Object> oldSet = ID_CHECK_MAP.putIfAbsent(key, idSet);
             if (oldSet != null)
                 idSet = oldSet;

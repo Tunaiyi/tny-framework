@@ -1,7 +1,6 @@
 package com.tny.game.net.base;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.ResultCodeType;
+import com.tny.game.common.result.*;
 
 public enum NetResultCode implements ResultCode {
 
@@ -86,22 +85,31 @@ public enum NetResultCode implements ResultCode {
      */
     SESSION_TIMEOUT(217, "会话超时", ResultCodeType.ERROR),
     /**
+     * 会话丢失
+     */
+    SESSION_CREATE_FAILED(218, "会话创建失败", ResultCodeType.GENERAL),
+
+    /**
      * 请求序号错误
      */
-    MESSAGE_HANDLE(218, "消息已处理过", ResultCodeType.WARN),
+    MESSAGE_HANDLED(219, "消息已处理过", ResultCodeType.WARN),
     /**
      * 证书无效
      */
-    INVALID_CERTIFICATE(219, "验证无效", ResultCodeType.ERROR),
+    INVALID_CERTIFICATE(220, "验证无效", ResultCodeType.ERROR),
     /**
      * 验证失败
      */
-    SERVER_OFFLINE(220, "服务器未上线", ResultCodeType.ERROR),
+    SERVER_OFFLINE(221, "服务器未上线", ResultCodeType.ERROR),
 
     /**
      * 服务端执行业务超时
      */
-    EXECUTE_TIMEOUT(221, "服务端执行业超时", ResultCodeType.GENERAL),
+    EXECUTE_TIMEOUT(222, "服务端执行业超时", ResultCodeType.GENERAL),
+    /**
+     * 用户未登录
+     */
+    LOGINED(223, "用户已登录", ResultCodeType.GENERAL),
 
     /**
      * 客户端IO异常

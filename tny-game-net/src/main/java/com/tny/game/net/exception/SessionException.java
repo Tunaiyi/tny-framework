@@ -2,7 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.utils.StringAide;
 
-public class SessionException extends Exception {
+public class SessionException extends NetException {
 
     /**
      *

@@ -228,8 +228,59 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
         return new StageableFuture<>(future().handleAsync(fn, executor));
     }
 
+    protected void complete(T message) {
+        if (!this.future.isDone())
+            this.future.complete(message);
+    }
+
+    protected void completeExceptionally(Throwable e) {
+        if (!this.future.isDone())
+            this.future.completeExceptionally(e);
+    }
+
     @Override
     public CompletableFuture<T> toCompletableFuture() {
         throw new UnsupportedOperationException("unsupport toCompletableFuture");
     }
+
+    public boolean await() throws InterruptedException {
+        if (future.isDone())
+            return !future.isCompletedExceptionally();
+        try {
+            future.get();
+            return true;
+        } catch (ExecutionException e) {
+            future.completeExceptionally(e);
+        }
+        return false;
+    }
+
+    public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
+        try {
+            future.get(timeout, unit);
+            return true;
+        } catch (ExecutionException | TimeoutException e) {
+            future.completeExceptionally(e);
+        }
+        return false;
+    }
+
+    public boolean awaitUninterruptibly() {
+        try {
+            return await();
+        } catch (InterruptedException e) {
+            future.completeExceptionally(e);
+        }
+        return false;
+    }
+
+    public boolean awaitUninterruptibly(long timeout, TimeUnit unit) {
+        try {
+            return await(timeout, unit);
+        } catch (InterruptedException e) {
+            future.completeExceptionally(e);
+        }
+        return false;
+    }
+
 }

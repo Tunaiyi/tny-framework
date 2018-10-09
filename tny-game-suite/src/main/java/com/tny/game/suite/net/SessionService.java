@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static com.tny.game.net.transport.Certificates.*;
-import static com.tny.game.net.transport.MessageContext.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component

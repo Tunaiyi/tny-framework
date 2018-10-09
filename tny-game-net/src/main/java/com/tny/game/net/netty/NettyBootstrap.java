@@ -1,7 +1,8 @@
 package com.tny.game.net.netty;
 
 import com.tny.game.net.base.NetLogger;
-import io.netty.channel.EventLoopGroup;
+import com.tny.game.net.netty.coder.ChannelMaker;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -16,9 +17,11 @@ public abstract class NettyBootstrap {
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
     protected String name;
+    protected ChannelMaker<Channel> channelMaker;
 
-    public NettyBootstrap(String name) {
+    public NettyBootstrap(String name, ChannelMaker<Channel> channelMaker) {
         this.name = name;
+        this.channelMaker = channelMaker;
     }
 
     public String getName() {

@@ -13,10 +13,10 @@ public interface MessageHeaderBuilder {
     MessageHeaderBuilder setCode(int code);
 
     default MessageHeaderBuilder setProtocol(Protocol protocol) {
-        return this.setProtocol(protocol.getProtocol());
+        return this.setProtocolId(protocol.getNumber());
     }
 
-    MessageHeaderBuilder setProtocol(int protocol);
+    MessageHeaderBuilder setProtocolId(int protocol);
 
     default MessageHeaderBuilder setCode(ResultCode code) {
         this.setCode(code.getCode());

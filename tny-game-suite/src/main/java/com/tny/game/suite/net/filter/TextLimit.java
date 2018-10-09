@@ -4,7 +4,7 @@ import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.command.filter.AbstractParamFilter;
+import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
 import com.tny.game.net.transport.message.Message;
 import com.tny.game.net.transport.Tunnel;
 import com.tny.game.suite.net.filter.annotation.TextFilter;
@@ -34,7 +34,7 @@ public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String>
     private Pattern fullPattern = Pattern.compile("[\\p{P}a-zA-Z0-9\u4e00-\u9fff]*");
 
     protected TextLimit() {
-        super(TextFilter.class, String.class);
+        super(TextFilter.class);
     }
 
     @Override

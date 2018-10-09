@@ -2,7 +2,7 @@ package com.tny.game.net.exception;
 
 import com.tny.game.common.utils.StringAide;
 
-public class TunnelException extends Exception {
+public class TunnelException extends NetException {
 
     /**
      *

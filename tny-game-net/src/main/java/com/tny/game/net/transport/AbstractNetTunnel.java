@@ -2,13 +2,17 @@ package com.tny.game.net.transport;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.*;
+import com.tny.game.common.event.BindVoidEventBus;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.transport.listener.*;
 import com.tny.game.net.transport.message.*;
 import org.slf4j.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
@@ -21,15 +25,13 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
 
     private final long id;
 
+    private TunnelMode mode;
+
     /* 附加属性 */
     private Attributes attributes;
 
-    /**
-     * 认证
-     */
+    /* 认证 */
     private Certificate<UID> certificate;
-
-    private MessageEventsBox<UID> eventsBox;
 
     /* 接收排除消息模型 */
     private Set<MessageMode> receiveExcludes = ImmutableSet.of();
@@ -37,39 +39,38 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     /* 发送排除消息模型 */
     private Set<MessageMode> sendExcludes = ImmutableSet.of();
 
-    private NetSession<UID> session;
+    private MessageHandler<UID> messageHandler;
 
-    private MessageBuilderFactory<UID> messageBuilderFactory;
+    protected NetSession<UID> session;
 
-    private MessageInputEventHandler<UID, NetTunnel<UID>> inputEventHandler;
+    protected MessageFactory<UID> messageBuilderFactory;
 
-    private MessageOutputEventHandler<UID, NetTunnel<UID>> outputEventHandler;
-
-    protected AbstractNetTunnel(Certificate<UID> certificate) {
+    protected AbstractNetTunnel(Certificate<UID> certificate, TunnelMode mode) {
         super(MessageIdCreator.TUNNEL_MESSAGE_ID_MARK);
-        this.eventsBox = MessageEventsBox.create();
+        this.mode = mode;
         this.certificate = certificate;
         this.id = NetAide.newTunnelID();
     }
 
-    protected AbstractNetTunnel<UID> setMessageBuilderFactory(MessageBuilderFactory<UID> messageBuilderFactory) {
-        this.messageBuilderFactory = messageBuilderFactory;
+    protected AbstractNetTunnel<UID> setMessageFactory(MessageFactory<UID> messageFactory) {
+        this.messageBuilderFactory = messageFactory;
         return this;
     }
 
-    protected AbstractNetTunnel<UID> setInputEventHandler(MessageInputEventHandler<UID, NetTunnel<UID>> inputEventHandler) {
-        this.inputEventHandler = inputEventHandler;
+    protected AbstractNetTunnel<UID> setMessageHandler(MessageHandler<UID> messageHandler) {
+        this.messageHandler = messageHandler;
         return this;
     }
 
-    protected AbstractNetTunnel<UID> setOutputEventHandler(MessageOutputEventHandler<UID, NetTunnel<UID>> outputEventHandler) {
-        this.outputEventHandler = outputEventHandler;
-        return this;
-    }
 
     @Override
     public long getId() {
         return id;
+    }
+
+    @Override
+    public TunnelMode getMode() {
+        return mode;
     }
 
     @Override
@@ -92,25 +93,6 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         return certificate;
     }
 
-    @Override
-    public MessageEventsBox<UID> getEventsBox() {
-        return eventsBox;
-    }
-
-    @Override
-    public MessageBuilderFactory<UID> getMessageBuilderFactory() {
-        return messageBuilderFactory;
-    }
-
-    private void addInputEvent(MessageInputEvent<UID> event) {
-        this.eventsBox.addInputEvent(event);
-    }
-
-    private void addOutputEvent(MessageOutputEvent<UID> event) {
-        this.eventsBox.addOutputEvent(event);
-    }
-
-
     /**
      * 使用指定认证登陆
      *
@@ -121,7 +103,7 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         if (!certificate.isAutherized())
             throw new ValidatorFailException("无效授权");
         if (this.certificate.isAutherized())
-            throw new ValidatorFailException(format("{} 已经授权", this));
+            throw new ValidatorFailException(NetResultCode.UNLOGIN, format("{} 已经授权", this));
         this.certificate = certificate;
     }
 
@@ -133,28 +115,26 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         return super.createMessageID();
     }
 
+
     @Override
-    public void receive(Message<UID> message) {
+    public void receive(NetMessage<UID> message) {
         NetLogger.logReceive(this, message);
         MessageMode mode = message.getMode();
         if (this.isExcludeReceiveMode(mode)) {
-            LOGGER.debug("{}无法接收 {} 信息[{}]", this, mode, message.getProtocol());
+            LOGGER.warn("{} can not receive message {} mode is {}", this, message, mode);
             if (mode == MessageMode.REQUEST)
-                this.send(MessageContext.toResponse(message, NetResultCode.NO_RECEIVE_MODE));
+                this.sendAsyn(MessageSubjectBuilder
+                        .respondBuilder(message.getHeader(), NetResultCode.NO_RECEIVE_MODE, message.getId())
+                        .build());
+            if (mode == MessageMode.REQUEST)
+                this.callbackFuture(message);
             return;
         }
         switch (mode) {
             case PUSH:
             case REQUEST:
             case RESPONSE:
-                RespondFuture<UID> future = null;
-                if (MessageMode.RESPONSE.isMode(message)) {
-                    MessageHeader header = message.getHeader();
-                    long toMessage = header.getToMessage();
-                    future = this.removeFuture(toMessage);
-                }
-                this.addInputEvent(receiveEvent(this, message, future));
-                this.inputEventHandler.onInput(this);
+                this.messageHandler.handle(this, message);
                 return;
             case PING:
                 this.pong();
@@ -164,89 +144,76 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     }
 
     @Override
-    public void send(MessageContext<UID> context) {
-        try {
-            MessageMode mode = context.getMode();
-            if (this.isExcludeSendMode(mode)) {
-                LOGGER.warn("{} can not send message mode {}", this, context.getMode());
-                context.sendFailed(new TunnelException("can not send message mode {}", context.getMode()));
-            } else {
-                switch (context.getMode()) {
-                    case PUSH:
-                    case REQUEST:
-                    case RESPONSE:
-                        this.addOutputEvent(sendEvent(this, context));
-                        this.outputEventHandler.onOutput(this);
-                        break;
-                    case PING:
-                        this.ping();
-                        break;
-                    case PONG:
-                        this.pong();
-                        break;
-                    default:
-                }
-            }
-        } catch (Throwable e) {
-            LOGGER.warn("send exception: {} | message: {}", e.getClass(), e.getMessage());
-            if (context.isHasFuture())
-                context.sendFailed(e);
-            throw new NetException(format("{} send {} failed", this, context), e);
-        }
+    public void resend(long from, long to) throws NetException {
+        if (this.session == null)
+            throw new NetException(format("{} no bind session", this));
+        List<Message<UID>> messages = this.session.getSentMessages(from, to);
+        if (messages.isEmpty())
+            throw new NetException(format("form {} to {} cached message is missing", from, to, this));
+        for (Message<UID> message : messages)
+            doWrite(message);
     }
 
     @Override
-    public void resend(ResendMessage<UID> message) throws NetException {
-        try {
-            this.addOutputEvent(resendEvent(this, message));
-            this.outputEventHandler.onOutput(this);
-        } catch (Throwable e) {
-            LOGGER.warn("resend exception: {} | message: {}", e.getClass(), e.getMessage());
-            throw new NetException(format("{} resend {} failed", this, message), e);
-        }
+    public SendContext<UID> sendAsyn(MessageSubject subject, MessageContext<UID> messageContext) {
+        if (this.checkExcludeSendMode(subject, messageContext))
+            return ifNull(messageContext, EmptySendContext.empty());
+        write(subject, messageContext);
+        return ifNull(messageContext, EmptySendContext.empty());
     }
 
     @Override
-    public void write(Message<UID> message, WriteCallback<UID> callback) throws TunnelWriteException {
-        this.doWrite(message, callback);
+    public SendContext<UID> sendSync(MessageSubject subject, MessageContext<UID> messageContext, long timeout) {
+        if (this.checkExcludeSendMode(subject, messageContext))
+            return ifNull(messageContext, EmptySendContext.empty());
+        if (messageContext == null)
+            messageContext = MessageContexts.createContext();
+        write(subject, messageContext, timeout);
+        if (!messageContext.getSendFuture().awaitUninterruptibly(timeout + 3000, TimeUnit.MILLISECONDS))
+            throw new SendTimeoutException(format("{} send message {} timeout", this, subject));
+        return ifNull(messageContext, EmptySendContext.empty());
     }
 
-    private MessageReceiveEvent<UID> receiveEvent(NetTunnel<UID> tunnel, Message<UID> message, RespondFuture<UID> future) {
-        return new MessageReceiveEvent<>(tunnel, message, future);
+    private boolean checkExcludeSendMode(MessageSubject subject, MessageContext<UID> messageContext) {
+        MessageMode mode = subject.getMode();
+        if (this.isExcludeSendMode(mode)) {
+            LOGGER.warn("{} can not send message {} mode is {}", this, subject, mode);
+            TunnelException cause = new TunnelException("{} can not send message {} mode is {}", this, subject, mode);
+            completeExceptionally(messageContext, cause);
+            return true;
+        }
+        return false;
     }
 
-    private MessageSendEvent<UID> sendEvent(NetTunnel<UID> tunnel, MessageContext<UID> content) {
-        return new MessageSendEvent<>(tunnel, content);
+    protected void write(MessageSubject subject, MessageContext<UID> context) {
+        try {
+            write(subject, context, 0);
+        } catch (Throwable e) {
+            LOGGER.error("", e);
+        }
     }
 
-    private MessageResendEvent<UID> resendEvent(NetTunnel<UID> tunnel, ResendMessage<UID> message) {
-        return new MessageResendEvent<>(tunnel, message);
+    private void write(MessageSubject subject, MessageContext<UID> context, long waitForSendTimeout) {
+        doWrite(subject, context, waitForSendTimeout);
     }
 
+    protected abstract void doWrite(Message<UID> message);
+
+    protected abstract void doWrite(MessageSubject message, MessageContext<UID> context, long waitForSendTimeout) throws NetException;
 
     @Override
     public void ping() {
-        if (!isClosed()) {
-            try {
-                this.doWrite(DetectMessage.ping(), null);
-            } catch (TunnelWriteException e) {
-                LOGGER.warn("{} | ping", e);
-            }
+        if (!isActive()) {
+            this.doWrite(DetectMessage.ping());
         }
     }
 
     @Override
     public void pong() {
-        if (!isClosed()) {
-            try {
-                this.doWrite(DetectMessage.pong(), null);
-            } catch (TunnelWriteException e) {
-                LOGGER.warn("{} | pong", e);
-            }
+        if (!isActive()) {
+            this.doWrite(DetectMessage.pong());
         }
     }
-
-    protected abstract void doWrite(Message<UID> message, WriteCallback<UID> callback) throws TunnelWriteException;
 
     @Override
     public Attributes attributes() {
@@ -258,11 +225,6 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
             return this.attributes = ContextAttributes.create();
         }
     }
-
-    // @Override
-    // public Session<UID> getSession() {
-    //     return session;
-    // }
 
     @Override
     public void excludeReceiveModes(Collection<MessageMode> modes) {
@@ -285,7 +247,7 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     }
 
     @Override
-    public Optional<NetSession<UID>> getSession() {
+    public Optional<NetSession<UID>> getBindSession() {
         return Optional.ofNullable(session);
     }
 
@@ -298,6 +260,11 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isBind() {
+        return this.session != null;
     }
 
     @Override
@@ -328,11 +295,15 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         }
     }
 
-    /**
-     * 注册回调future对象
-     *
-     * @param messageId 消息 Id
-     */
+    @Override
+    public void callbackFuture(Message<UID> message) {
+        if (message.getMode() != MessageMode.RESPONSE)
+            return;
+        RespondFuture<UID> future = this.removeFuture(message.getHeader().getToMessage());
+        if (future != null)
+            future.complete(message);
+    }
+
     @Override
     protected RespondFuture<UID> removeFuture(long messageId) {
         if (MessageIdCreator.getMark(messageId) == MessageIdCreator.SESSION_MESSAGE_ID_MARK) {
@@ -343,6 +314,18 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         } else {
             return super.removeFuture(messageId);
         }
+    }
+
+    protected BindVoidEventBus<TunnelOpenListener, Tunnel> openEvent() {
+        return TunnelEvents.ON_OPEN;
+    }
+
+    protected BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
+        return TunnelEvents.ON_CLOSE;
+    }
+
+    protected MessageHandler<UID> getMessageHandler() {
+        return messageHandler;
     }
 
 }

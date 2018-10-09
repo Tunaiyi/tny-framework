@@ -4,8 +4,7 @@ import com.tny.game.common.config.Config;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.command.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageBuilderFactory;
+import com.tny.game.net.transport.message.*;
 
 public interface AppConfiguration<T> extends AppContext {
 
@@ -13,15 +12,9 @@ public interface AppConfiguration<T> extends AppContext {
 
     Config getProperties();
 
-    SessionKeeperFactory getSessionKeeperFactory();
+    MessageFactory<T> getMessageFactory();
 
-    SessionFactory<T> getSessionFactory();
-
-    MessageBuilderFactory<T> getMessageBuilderFactory();
-
-    MessageOutputEventHandler<T, NetTunnel<T>> getOutputEventHandler();
-
-    MessageInputEventHandler<T, NetTunnel<T>> getInputEventHandler();
+    MessageHandler<T> getMessageHandler();
 
     DispatchCommandExecutor getDispatchCommandExecutor();
 
