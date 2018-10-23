@@ -6,11 +6,11 @@ import com.tny.game.common.utils.*;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 import com.tny.game.net.base.AppUtils;
-import com.tny.game.net.command.DispatchCommandExecutor;
+import com.tny.game.net.command.executor.DispatchCommandExecutor;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
-import com.tny.game.net.common.AbstractAppConfiguration;
-import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageFactory;
+import com.tny.game.net.base.configuration.AbstractAppConfiguration;
+import com.tny.game.net.session.*;
+import com.tny.game.net.message.MessageFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -101,7 +101,7 @@ public class SuiteAppConfiguration extends AbstractAppConfiguration implements A
 
     @Override
     public void prepareStart() {
-        this.sessionKeeperFactory = load(SessionKeeperFactory.class, this.sessionKeeperFactoryName);
+        this.sessionKeeperFactory = load(SessionKeeperMannager.class, this.sessionKeeperFactoryName);
         this.sessionFactory = load(SessionFactory.class, this.sessionFactoryName);
         this.messageBuilderFactory = load(MessageFactory.class, this.messageBuilderFactoryName);
         this.messageHandler = load(MessageInputEventHandler.class, this.inputEventHandlerName);

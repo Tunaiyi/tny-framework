@@ -33,6 +33,10 @@ public class ProtoExInputStream implements ProtoExStream {
             this.schemaContext = DefaultProtoExSchemaContext.getDefault();
     }
 
+    public long remaining() {
+        return buffer.remaining();
+    }
+
     public Tag readTag() {
         int typeTag = this.doReadRawVarint32();
         int fieldTag = this.doReadRawVarint32();
@@ -321,6 +325,10 @@ public class ProtoExInputStream implements ProtoExStream {
 
     public int position() {
         return this.buffer.position();
+    }
+
+    public int limit() {
+        return this.buffer.limit();
     }
 
 }

@@ -5,7 +5,7 @@ import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
 import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
 import com.tny.game.net.transport.Tunnel;
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.message.Message;
 import com.tny.game.suite.net.filter.annotation.NameFilter;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.springframework.context.annotation.Profile;

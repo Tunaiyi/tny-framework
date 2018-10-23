@@ -59,6 +59,8 @@ public interface NetConfigs {
     String DISPATCHER_EXECUTOR_THREADS = "tny.net.dispatcher.executor.threads";
 
     String CONNECT_TIMEOUT_URL_PARAM = "connect_timeout";
+    long CONNECT_TIMEOUT_DEFAULT_VALUE = 5000L;
+
     String SEND_TIMEOUT_URL_PARAM = "send_timeout";
     String LOGIN_TIMEOUT_URL_PARAM = "login_timeout";
     String RESEND_TIMES_URL_PARAM = "resend_times";

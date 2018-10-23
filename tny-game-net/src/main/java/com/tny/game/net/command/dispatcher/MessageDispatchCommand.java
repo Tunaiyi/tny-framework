@@ -5,10 +5,10 @@ import com.tny.game.common.concurrent.Waiter;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.command.auth.AuthenticateProvider;
-import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.command.auth.AuthenticateValidator;
+import com.tny.game.net.exception.CommandException;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.*;
 import org.slf4j.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +26,8 @@ public class MessageDispatchCommand extends DispatchContext {
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
+    private boolean start = false;
+
     protected MessageDispatchCommand(MessageDispatcherContext context, MethodControllerHolder methodHolder, NetTunnel<?> tunnel, Message<?> message) {
         super(context, methodHolder, tunnel, message);
     }
@@ -33,21 +35,27 @@ public class MessageDispatchCommand extends DispatchContext {
     @Override
     public void execute() {
         MessageHeader header = message.getHeader();
-        ControllerContext.setCurrent(this.message.getUserID(), header.getNumber());
+        ControllerContext.setCurrent(this.message.getUserID(), header.getProtocolNumber());
         Throwable cause = null;
         try {
             if (isDone())
                 return;
             this.fireExecuteStart();
-            if (!this.isWaiting()) {
-                // 调用逻辑业务
-                this.invoke();
-                // 调用调用结果
-                this.checkAndHandleResult(null);
+            if (!start) {
+                try {
+                    // 调用逻辑业务
+                    this.invoke();
+                    // 调用调用结果
+                    this.checkAndHandleResult(null);
+                } finally {
+                    this.start = true;
+                }
             }
-            if (!this.isDone()) {
+            if (!this.isDone() && this.isWaiting()) {
                 // 检测等待者是否完成
                 this.checkWaiter();
+            } else {
+                throw new CommandException(NetResultCode.DISPATCH_EXCEPTION);
             }
         } catch (Throwable e) {
             cause = e;
@@ -88,8 +96,8 @@ public class MessageDispatchCommand extends DispatchContext {
 
     @SuppressWarnings("unchecked")
     private void handleException(Throwable e) {
-        if (e instanceof DispatchException) {
-            DispatchException dex = (DispatchException) e;
+        if (e instanceof CommandException) {
+            CommandException dex = (CommandException) e;
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             this.setResult(dex.getResultCode(), dex.getBody());
         } else if (e instanceof InvocationTargetException) {
@@ -103,8 +111,6 @@ public class MessageDispatchCommand extends DispatchContext {
     }
 
     private void invoke() throws Exception {
-        if (message.getMode() == MessageMode.RESPONSE)
-            tunnel.callbackFuture(message);
         if (this.controller == null) {
             MessageHeader header = message.getHeader();
             DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", header.getId());
@@ -166,13 +172,13 @@ public class MessageDispatchCommand extends DispatchContext {
         this.fireDone(cause);
     }
 
-    private void checkAuthenticate() throws DispatchException {
+    private void checkAuthenticate() throws CommandException {
         if (!this.tunnel.isLogin()) {
-            AuthenticateProvider<Object> provider = as(context.getProvider(message.getProtocol(), controller.getAuthProvider()));
-            if (provider == null)
+            AuthenticateValidator<Object> validator = as(context.getValidator(message.getProtocol(), controller.getAuthValidator()));
+            if (validator == null)
                 return;
             DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
-            Certificate<Object> certificate = provider.validate(this.tunnel, this.message);
+            Certificate<Object> certificate = validator.validate(this.tunnel, this.message);
             // 是否需要做登录校验,判断是否已经登录
             if (certificate != null && certificate.isAutherized()) {
                 this.tunnel.authenticate(certificate);
@@ -214,13 +220,11 @@ public class MessageDispatchCommand extends DispatchContext {
                 subject = MessageSubjectBuilder.respondBuilder(code, header).setBody(body).build();
                 break;
         }
-        if (code.getType() == ResultCodeType.ERROR) {
-            if (subject != null) {
-                this.tunnel.sendAsyn(subject, MessageContexts.createContext()
-                        .willSendFuture(future -> future.whenComplete((msg, e) -> this.tunnel.close())));
-            } else {
+        if (subject != null) {
+            TunnelsUtils.responseMessage(tunnel, message, subject);
+        } else {
+            if (code.getType() == ResultCodeType.ERROR)
                 this.tunnel.close();
-            }
         }
     }
 

@@ -5,12 +5,12 @@ import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.dispatcher.MethodControllerHolder;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.filter.range.*;
 import com.tny.game.net.command.plugins.filter.string.*;
-import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.exception.CommandException;
 import com.tny.game.net.transport.Tunnel;
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.message.Message;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,7 +57,7 @@ public class ParamFilterPlugin<UID> implements VoidControllerPlugin<UID> {
                         // 完成 不继续执行
                         context.doneAndIntercept(resultCode);
                     }
-                } catch (DispatchException e) {
+                } catch (CommandException e) {
                     context.doneAndIntercept(ResultFactory.fail(e.getResultCode(), e.getBody()));
                 }
             }

@@ -24,10 +24,7 @@ import java.util.regex.Pattern;
 
 public final class URL implements Serializable {
 
-
     public static final String BACKUP_KEY = "backup";
-
-    public static final String INTERFACE_KEY = "interface";
 
     public static final String DEFAULT_KEY_PREFIX = "default.";
 
@@ -36,8 +33,6 @@ public final class URL implements Serializable {
     public static final String ANYHOST_VALUE = "0.0.0.0";
 
     public static final String LOCALHOST_KEY = "localhost";
-
-    public static final String LOCALHOST_VALUE = "127.0.0.1";
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
 

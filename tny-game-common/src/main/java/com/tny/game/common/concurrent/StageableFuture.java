@@ -19,11 +19,6 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        return future().cancel(mayInterruptIfRunning);
-    }
-
-    @Override
     public boolean isCancelled() {
         return future().isCancelled();
     }
@@ -31,6 +26,11 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
     @Override
     public boolean isDone() {
         return future().isDone();
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return future().cancel(mayInterruptIfRunning);
     }
 
     @Override
@@ -236,6 +236,11 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
     protected void completeExceptionally(Throwable e) {
         if (!this.future.isDone())
             this.future.completeExceptionally(e);
+    }
+
+    protected void cancel() {
+        if (!this.future.isDone())
+            this.future.cancel(true);
     }
 
     @Override

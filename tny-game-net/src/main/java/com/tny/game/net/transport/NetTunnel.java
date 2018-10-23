@@ -1,7 +1,8 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.transport.message.*;
+
+import java.util.Optional;
 
 /**
  * Created by Kun Yang on 2017/3/26.
@@ -19,21 +20,14 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
     void pong();
 
     /**
-     * 开启
+     * 打开
      */
-    void open() throws ValidatorFailException;
+    boolean open();
 
     /**
-     * 是否活跃
+     * 断开
      */
-    boolean isActive();
-
-    /**
-     * 接收消息
-     *
-     * @param message 消息
-     */
-    void receive(NetMessage<UID> message);
+    void disconnect();
 
     /**
      * 认证
@@ -44,27 +38,29 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
     void authenticate(Certificate<UID> certificate) throws ValidatorFailException;
 
     /**
-     * 注册回调future对象
-     *
-     * @param messageId     消息 Id
-     * @param respondFuture future 对象
+     * @return 返回是否绑定终端
      */
-    void registerFuture(long messageId, RespondFuture<UID> respondFuture);
+    boolean isBind();
 
     /**
-     * 回调消息的响应Future
+     * 终端 Endpoint
      *
-     * @param message 消息
-     */
-    void callbackFuture(Message<UID> message);
-
-    /**
-     * 绑定 Session
-     *
-     * @param session 会话
+     * @param endpoint 终端
      * @return 返回是否绑定成功
      */
-    boolean bind(NetSession<UID> session);
+    boolean bind(NetEndpoint<UID> endpoint);
+
+    /**
+     * @return 获取绑定中断
+     */
+    Optional<Endpoint<UID>> getBindEndpoint();
+
+    /**
+     * 设置访问 Id
+     *
+     * @param accessId 访问 Id
+     */
+    NetTunnel<UID> setAccessId(long accessId);
 
 }
 

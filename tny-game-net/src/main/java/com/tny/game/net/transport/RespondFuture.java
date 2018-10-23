@@ -1,6 +1,6 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.message.Message;
 
 import java.util.concurrent.CompletableFuture;
 

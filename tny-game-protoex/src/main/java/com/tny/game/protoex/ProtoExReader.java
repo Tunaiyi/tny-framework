@@ -1,13 +1,9 @@
 package com.tny.game.protoex;
 
 import com.tny.game.common.utils.ExeAide;
-import com.tny.game.protoex.field.runtime.RuntimeCollectionSchema;
-import com.tny.game.protoex.field.runtime.RuntimeMapSchema;
-import com.tny.game.protoex.field.runtime.RuntimePrimitiveSchema;
+import com.tny.game.protoex.field.runtime.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -25,6 +21,10 @@ public class ProtoExReader {
 
     public ProtoExReader(ProtoExInputStream inputStream) {
         this.inputStream = inputStream;
+    }
+
+    public boolean isCanRead() {
+        return inputStream.remaining() > 0;
     }
 
     /*
@@ -191,13 +191,16 @@ public class ProtoExReader {
         return map;
     }
 
-	/*
+    /*
      * ======================= END =======================
-	 */
+     */
 
     public void checkType(ProtoExType type, Tag tag) {
         if (type.isRaw() != tag.isRaw() || (type.getID() != tag.getProtoExID()))
             throw ProtobufExException.readTypeError(type, tag);
     }
 
+    public ProtoExInputStream getInputStream() {
+        return inputStream;
+    }
 }

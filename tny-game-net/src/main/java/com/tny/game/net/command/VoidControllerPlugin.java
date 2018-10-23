@@ -1,7 +1,9 @@
 package com.tny.game.net.command;
 
+import com.tny.game.net.command.dispatcher.InvokeContext;
+import com.tny.game.net.command.plugins.ControllerPlugin;
 import com.tny.game.net.transport.Tunnel;
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.message.Message;
 
 public interface VoidControllerPlugin<UID> extends ControllerPlugin<UID, Void> {
 

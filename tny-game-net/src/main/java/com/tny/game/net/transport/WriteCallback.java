@@ -1,13 +1,21 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.transport.message.Message;
-
+import com.tny.game.net.message.Message;
 
 /**
- * Created by Kun Yang on 2017/9/9.
+ * <p>
+ *
+ * @author: Kun Yang
+ * @date: 2018-10-19 19:21
  */
 public interface WriteCallback<UID> {
 
-    void onWrite(Message<UID> message, boolean success, Throwable cause);
+    /**
+     * 发送完成
+     *
+     * @param message 消息
+     * @param context 消息上下文
+     */
+    void onWrite(boolean success, Throwable cause, Message<UID> message, MessageContext<UID> context);
 
 }

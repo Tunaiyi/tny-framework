@@ -3,11 +3,10 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.concurrent.Waiter;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.NetResultCode;
-import com.tny.game.net.command.InvokeContext;
 import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.exception.DispatchTimeoutException;
+import com.tny.game.net.exception.CommandTimeoutException;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.*;
 import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -109,7 +108,7 @@ public abstract class DispatchContext extends InvokeContext implements Command {
                 if (System.currentTimeMillis() > timeout) {
                     this.waiter = null;
                     this.setResult((Object) null);
-                    throw new DispatchTimeoutException(NetResultCode.EXECUTE_TIMEOUT, format("执行 {} 超时", this.controller.getName()));
+                    throw new CommandTimeoutException(NetResultCode.EXECUTE_TIMEOUT, format("执行 {} 超时", this.controller.getName()));
                 }
             }
         }

@@ -8,12 +8,12 @@ import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.NetResultCode;
-import com.tny.game.net.command.*;
-import com.tny.game.net.command.auth.AuthenticateProvider;
-import com.tny.game.net.common.ControllerPluginHolder;
-import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.command.auth.AuthenticateValidator;
+import com.tny.game.net.exception.CommandException;
+import com.tny.game.net.message.*;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.*;
+import com.tny.game.net.utils.NetAttrKeys;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -185,12 +185,12 @@ public final class MethodControllerHolder extends ControllerHolder {
     //     return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
     // }
 
-    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
+    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
         if (index >= this.parameterDescs.size())
-            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
+            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
-            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
         return desc.getValue(tunnel, message, body);
     }
 
@@ -242,8 +242,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public Class<? extends AuthenticateProvider>  getAuthProvider() {
-        return this.auth != null ? super.getAuthProvider() : classController.getAuthProvider();
+    public Class<? extends AuthenticateValidator> getAuthValidator() {
+        return this.auth != null ? super.getAuthValidator() : classController.getAuthValidator();
     }
 
     @Override
@@ -390,7 +390,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
         }
 
-        private Object getValue(NetTunnel<?> tunnel, Message<?> message, Object body) throws DispatchException {
+        private Object getValue(NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
             boolean require = this.require;
             if (body == null)
                 body = message.getBody(Object.class);
@@ -401,11 +401,15 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = message;
                     break;
                 case SESSION:
-                    Optional<? extends NetSession<?>> session = tunnel.getBindSession();
-                    if (!session.isPresent())
+                    Optional<? extends Endpoint<?>> endpoint = tunnel.getBindEndpoint();
+                    if (endpoint.isPresent()) {
+                        value = endpoint.get();
+                        if (value instanceof Session)
+                            break;
+                    }
+                    value = tunnel.attributes().getAttribute(NetAttrKeys.SESSION_KEY);
+                    if (value == null)
                         throw new NullPointerException(format("{} session is null", tunnel));
-                    value = session.get();
-                    break;
                 case TUNNEL:
                     value = tunnel;
                     break;
@@ -428,12 +432,12 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", holder, body.getClass()));
+                            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", holder, body.getClass()));
                         }
-                    } catch (DispatchException e) {
+                    } catch (CommandException e) {
                         throw e;
                     } catch (Throwable e) {
-                        throw new DispatchException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", holder), e);
+                        throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", holder), e);
                     }
                     break;
                 case KEY_PARAM:

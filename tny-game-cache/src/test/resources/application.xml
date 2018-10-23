@@ -14,9 +14,9 @@
 
     <context:component-scan base-package="cndw"/>
 
-    <bean name="decoder" class="cndw.framework.net.coder.amf3.Amf3Decoder"/>
+    <bean name="decoder" class="cndw.framework.net.body.amf3.Amf3Decoder"/>
 
-    <bean name="encoder" class="cndw.framework.net.coder.amf3.Amf3Encoder"/>
+    <bean name="encoder" class="cndw.framework.net.body.amf3.Amf3Encoder"/>
 
     <bean name="serverContextFactory"
           class="cndw.framework.net.context.properties.PropertiesServiceContextFactory"/>

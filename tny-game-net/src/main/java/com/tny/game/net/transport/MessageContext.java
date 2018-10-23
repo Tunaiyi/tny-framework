@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.StageableFuture;
-import com.tny.game.net.transport.message.*;
+import com.tny.game.net.message.Message;
 
 import java.util.function.Consumer;
 
@@ -9,6 +9,12 @@ import java.util.function.Consumer;
  * Created by Kun Yang on 2017/2/16.
  */
 public interface MessageContext<UID> extends SendContext<UID> {
+
+    Object getAttachment();
+
+    boolean isHasAttachment();
+
+    MessageContext<UID> setAttachment(Object attachment);
 
     MessageContext<UID> willSendFuture(Consumer<MessageSendFuture<UID>> consumer);
 
@@ -25,4 +31,5 @@ public interface MessageContext<UID> extends SendContext<UID> {
     MessageContext<UID> willResponseFuture(long lifeTime, Consumer<StageableFuture<Message<UID>>> consumer);
 
     MessageContext<UID> willResponseFuture(long lifeTime);
+
 }

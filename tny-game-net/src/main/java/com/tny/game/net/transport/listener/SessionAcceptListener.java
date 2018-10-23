@@ -1,5 +1,6 @@
 package com.tny.game.net.transport.listener;
 
+import com.tny.game.net.session.Session;
 import com.tny.game.net.transport.*;
 
 public interface SessionAcceptListener<UID> {

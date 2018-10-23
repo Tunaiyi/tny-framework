@@ -34,4 +34,10 @@ public class NetStageableFuture<T> extends StageableFuture<T> {
     protected void completeExceptionally(Throwable e) {
         super.completeExceptionally(e);
     }
+
+    @Override
+    protected void cancel() {
+        super.cancel();
+    }
+
 }

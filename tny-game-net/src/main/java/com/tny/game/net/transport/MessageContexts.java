@@ -2,7 +2,7 @@ package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.concurrent.StageableFuture;
-import com.tny.game.net.transport.message.Message;
+import com.tny.game.net.message.Message;
 
 import java.util.function.Consumer;
 
@@ -28,7 +28,15 @@ public class MessageContexts {
          */
         private volatile RespondFuture<UID> respondFuture;
 
+        private Object attachment;
+
         private DefaultMessageContent() {
+        }
+
+        @Override
+        public MessageContext<UID> setAttachment(Object attachment) {
+            this.attachment = attachment;
+            return this;
         }
 
         @Override
@@ -93,6 +101,16 @@ public class MessageContexts {
         @Override
         public RespondFuture<UID> getRespondFuture() {
             return respondFuture;
+        }
+
+        @Override
+        public Object getAttachment() {
+            return attachment;
+        }
+
+        @Override
+        public boolean isHasAttachment() {
+            return this.attachment != null;
         }
 
         @Override

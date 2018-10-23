@@ -116,12 +116,4 @@ public class RunningChecker {
         LOGGER.debug(log + "\n\t" + ObjectAide.defaultIfNull(message, ""), args);
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        RunningChecker.startPrint("testGG", "aa{}ddd", "cc");
-
-        Thread.sleep(100);
-
-        RunningChecker.endPrint("aa{}ddd", "cc");
-    }
-
 }

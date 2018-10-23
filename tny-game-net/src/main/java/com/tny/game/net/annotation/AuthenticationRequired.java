@@ -1,6 +1,6 @@
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.command.auth.AuthenticateProvider;
+import com.tny.game.net.command.auth.AuthenticateValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -31,7 +31,7 @@ public @interface AuthenticationRequired {
     /**
      * @return 验证器
      */
-    Class<? extends AuthenticateProvider> provider() default AuthenticateProvider.class;
+    Class<? extends AuthenticateValidator> validator() default AuthenticateValidator.class;
 
     boolean enable() default true;
 

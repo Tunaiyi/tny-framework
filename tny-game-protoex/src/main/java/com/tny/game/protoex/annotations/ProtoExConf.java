@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  *
  * @author KGTny
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
@@ -35,5 +35,5 @@ public @interface ProtoExConf {
      *
      * @return
      */
-    Class<?> ues() default Void.class;
+    Class<?> use() default Void.class;
 }

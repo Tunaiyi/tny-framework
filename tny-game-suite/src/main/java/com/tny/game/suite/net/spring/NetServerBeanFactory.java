@@ -1,9 +1,9 @@
 package com.tny.game.suite.net.spring;
 
 import com.tny.game.common.word.*;
-import com.tny.game.net.command.DispatchCommandExecutor;
+import com.tny.game.net.command.executor.DispatchCommandExecutor;
 import com.tny.game.net.command.executor.PerTunnelDispatchCommandExecutor;
-import com.tny.game.net.netty.NettyBinder;
+import com.tny.game.net.netty4.NettyBinder;
 import com.tny.game.suite.utils.Configs;
 import org.springframework.context.annotation.*;
 

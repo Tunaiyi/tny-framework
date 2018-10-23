@@ -4,7 +4,8 @@ import com.tny.game.base.item.Identifiable;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.CommandResult;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.message.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class SessionService {
 
     @Resource
-    private SessionKeeperFactory sessionKeeperFactory;
+    private SessionKeeperMannager sessionKeeperFactory;
 
     /**
      * 获取默认用户组中与指定uid对应的Session <br>

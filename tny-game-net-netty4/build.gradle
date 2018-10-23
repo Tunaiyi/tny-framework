@@ -1,0 +1,17 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    compile(
+            'io.netty:netty-all:4.1.30.Final',
+            project(":tny-game-net"),
+    )
+
+    testCompile (
+            libs.'spring-context-support',
+            project(":tny-game-net-test"),
+    )
+
+}

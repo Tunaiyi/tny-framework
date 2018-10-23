@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
-import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.Tunnel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
@@ -27,7 +27,6 @@ public class NetLogger {
     public static final String CHECKER = "signGenerator";
     public static final String DISPATCHER = "dispatcher";
     public static final String NET = "coreLogger";
-    public static final String NIO_CLIENT = "nioClient";
     public static final String CLIENT = "coreClient";
     public static final String SESSION = "session";
     public static final String EXECUTOR = "executor";

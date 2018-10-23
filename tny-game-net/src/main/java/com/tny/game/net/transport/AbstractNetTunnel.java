@@ -1,29 +1,31 @@
 package com.tny.game.net.transport;
 
-import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.context.*;
 import com.tny.game.common.event.BindVoidEventBus;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.listener.*;
-import com.tny.game.net.transport.message.*;
 import org.slf4j.*;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.ObjectAide.ifNull;
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> implements NetTunnel<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
+    protected volatile TunnelState state = TunnelState.INIT;
+
     private final long id;
+
+    private long accessId;
 
     private TunnelMode mode;
 
@@ -33,35 +35,19 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     /* 认证 */
     private Certificate<UID> certificate;
 
-    /* 接收排除消息模型 */
-    private Set<MessageMode> receiveExcludes = ImmutableSet.of();
-
-    /* 发送排除消息模型 */
-    private Set<MessageMode> sendExcludes = ImmutableSet.of();
-
-    private MessageHandler<UID> messageHandler;
-
-    protected NetSession<UID> session;
-
-    protected MessageFactory<UID> messageBuilderFactory;
+    private volatile NetEndpoint<UID> endpoint;
 
     protected AbstractNetTunnel(Certificate<UID> certificate, TunnelMode mode) {
         super(MessageIdCreator.TUNNEL_MESSAGE_ID_MARK);
         this.mode = mode;
         this.certificate = certificate;
-        this.id = NetAide.newTunnelID();
+        this.id = NetAide.newTunnelId();
     }
 
-    protected AbstractNetTunnel<UID> setMessageFactory(MessageFactory<UID> messageFactory) {
-        this.messageBuilderFactory = messageFactory;
-        return this;
+    @Override
+    public long getAccessId() {
+        return accessId;
     }
-
-    protected AbstractNetTunnel<UID> setMessageHandler(MessageHandler<UID> messageHandler) {
-        this.messageHandler = messageHandler;
-        return this;
-    }
-
 
     @Override
     public long getId() {
@@ -89,8 +75,29 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     }
 
     @Override
+    public boolean isClosed() {
+        return state == TunnelState.CLOSE;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return state == TunnelState.ALIVE;
+    }
+
+    @Override
+    public TunnelState getState() {
+        return state;
+    }
+
+    @Override
     public Certificate<UID> getCertificate() {
         return certificate;
+    }
+
+    @Override
+    public NetTunnel<UID> setAccessId(long accessId) {
+        this.accessId = accessId;
+        return this;
     }
 
     /**
@@ -105,114 +112,90 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
         if (this.certificate.isAutherized())
             throw new ValidatorFailException(NetResultCode.UNLOGIN, format("{} 已经授权", this));
         this.certificate = certificate;
+        this.authenticateEvent().notify(this);
     }
 
     @Override
-    protected long createMessageID() {
-        NetSession<UID> session = this.session;
-        if (session != null)
-            return session.createMessageId();
-        return super.createMessageID();
-    }
-
-
-    @Override
-    public void receive(NetMessage<UID> message) {
+    public boolean receive(Message<UID> message) {
         NetLogger.logReceive(this, message);
         MessageMode mode = message.getMode();
-        if (this.isExcludeReceiveMode(mode)) {
-            LOGGER.warn("{} can not receive message {} mode is {}", this, message, mode);
-            if (mode == MessageMode.REQUEST)
-                this.sendAsyn(MessageSubjectBuilder
-                        .respondBuilder(message.getHeader(), NetResultCode.NO_RECEIVE_MODE, message.getId())
-                        .build());
-            if (mode == MessageMode.REQUEST)
-                this.callbackFuture(message);
-            return;
-        }
         switch (mode) {
             case PUSH:
             case REQUEST:
             case RESPONSE:
-                this.messageHandler.handle(this, message);
-                return;
-            case PING:
-                this.pong();
-                return;
+                try {
+                    NetEndpoint<UID> endpoint = this.endpoint;
+                    if (endpoint != null)
+                        return endpoint.receive(this, message);
+                } finally {
+                    if (mode == MessageMode.RESPONSE)
+                        this.callbackFuture(message);
+                }
+                return true;
             default:
+                break;
         }
+        return true;
     }
 
     @Override
-    public void resend(long from, long to) throws NetException {
-        if (this.session == null)
-            throw new NetException(format("{} no bind session", this));
-        List<Message<UID>> messages = this.session.getSentMessages(from, to);
-        if (messages.isEmpty())
-            throw new NetException(format("form {} to {} cached message is missing", from, to, this));
-        for (Message<UID> message : messages)
-            doWrite(message);
-    }
-
-    @Override
-    public SendContext<UID> sendAsyn(MessageSubject subject, MessageContext<UID> messageContext) {
-        if (this.checkExcludeSendMode(subject, messageContext))
-            return ifNull(messageContext, EmptySendContext.empty());
-        write(subject, messageContext);
-        return ifNull(messageContext, EmptySendContext.empty());
-    }
-
-    @Override
-    public SendContext<UID> sendSync(MessageSubject subject, MessageContext<UID> messageContext, long timeout) {
-        if (this.checkExcludeSendMode(subject, messageContext))
-            return ifNull(messageContext, EmptySendContext.empty());
-        if (messageContext == null)
-            messageContext = MessageContexts.createContext();
-        write(subject, messageContext, timeout);
-        if (!messageContext.getSendFuture().awaitUninterruptibly(timeout + 3000, TimeUnit.MILLISECONDS))
-            throw new SendTimeoutException(format("{} send message {} timeout", this, subject));
-        return ifNull(messageContext, EmptySendContext.empty());
-    }
-
-    private boolean checkExcludeSendMode(MessageSubject subject, MessageContext<UID> messageContext) {
-        MessageMode mode = subject.getMode();
-        if (this.isExcludeSendMode(mode)) {
-            LOGGER.warn("{} can not send message {} mode is {}", this, subject, mode);
-            TunnelException cause = new TunnelException("{} can not send message {} mode is {}", this, subject, mode);
-            completeExceptionally(messageContext, cause);
-            return true;
-        }
-        return false;
-    }
-
-    protected void write(MessageSubject subject, MessageContext<UID> context) {
+    public SendContext<UID> sendAsyn(MessageSubject subject, MessageContext<UID> context) {
         try {
-            write(subject, context, 0);
+            NetEndpoint<UID> endpoint = this.endpoint;
+            if (endpoint != null)
+                return endpoint.sendAsyn(this, subject, context);
+            else
+                return send(subject, context, 0);
+        } catch (Throwable e) {
+            return ifNull(context, EmptySendContext.empty());
+        }
+    }
+
+    @Override
+    public SendContext<UID> sendSync(MessageSubject subject, MessageContext<UID> context, long timeout) {
+        NetEndpoint<UID> endpoint = this.endpoint;
+        if (endpoint != null)
+            return endpoint.sendSync(this, subject, context, timeout);
+        else
+            return send(subject, context, timeout);
+    }
+
+    protected SendContext<UID> send(MessageSubject subject, MessageContext<UID> context, long waitForSendTimeout) throws NetException {
+        try {
+            Message<UID> message = this.createMessage(subject, context);
+            return write(message, context, waitForSendTimeout, this);
+        } catch (RuntimeException e) {
+            LOGGER.error("", e);
+            this.completeExceptionally(context, e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            this.completeExceptionally(context, e);
+            throw new NetException(e);
+        }
+    }
+
+    @Override
+    public SendContext<UID> write(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException {
+        try {
+            return doWrite(message, context, waitForSendTimeout, callback);
         } catch (Throwable e) {
             LOGGER.error("", e);
+            this.completeExceptionally(context, e);
+            throw e;
         }
     }
 
-    private void write(MessageSubject subject, MessageContext<UID> context, long waitForSendTimeout) {
-        doWrite(subject, context, waitForSendTimeout);
-    }
-
-    protected abstract void doWrite(Message<UID> message);
-
-    protected abstract void doWrite(MessageSubject message, MessageContext<UID> context, long waitForSendTimeout) throws NetException;
+    protected abstract SendContext<UID> doWrite(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException;
 
     @Override
     public void ping() {
-        if (!isActive()) {
-            this.doWrite(DetectMessage.ping());
-        }
+        this.write(DetectMessage.ping(), null, 0, null);
     }
 
     @Override
     public void pong() {
-        if (!isActive()) {
-            this.doWrite(DetectMessage.pong());
-        }
+        this.write(DetectMessage.pong(), null, 0, null);
     }
 
     @Override
@@ -227,44 +210,100 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     }
 
     @Override
-    public void excludeReceiveModes(Collection<MessageMode> modes) {
-        this.receiveExcludes = ImmutableSet.copyOf(modes);
-    }
-
-    @Override
-    public void excludeSendModes(Collection<MessageMode> modes) {
-        this.sendExcludes = ImmutableSet.copyOf(modes);
-    }
-
-    @Override
-    public boolean isExcludeReceiveMode(MessageMode mode) {
-        return this.receiveExcludes.contains(mode);
-    }
-
-    @Override
-    public boolean isExcludeSendMode(MessageMode mode) {
-        return this.sendExcludes.contains(mode);
-    }
-
-    @Override
-    public Optional<NetSession<UID>> getBindSession() {
-        return Optional.ofNullable(session);
-    }
-
-    @Override
-    public boolean bind(NetSession<UID> session) {
-        if (this.session != null)
-            return false;
-        if (this.getCertificate().isSameCertificate(session.getCertificate())) {
-            this.session = session;
-            return true;
-        }
-        return false;
+    public Optional<Endpoint<UID>> getBindEndpoint() {
+        return Optional.ofNullable(this.endpoint);
     }
 
     @Override
     public boolean isBind() {
-        return this.session != null;
+        return this.endpoint != null;
+    }
+
+    @Override
+    public boolean bind(NetEndpoint<UID> endpoint) {
+        if (this.endpoint != null)
+            return false;
+        synchronized (this) {
+            if (this.endpoint != null)
+                return false;
+            if (this.getCertificate().isSameCertificate(endpoint.getCertificate())) {
+                this.endpoint = endpoint;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean open() {
+        if (this.isAvailable())
+            return true;
+        if (this.isClosed())
+            return false;
+        synchronized (this) {
+            if (this.isAvailable())
+                return true;
+            if (this.isClosed())
+                return false;
+            if (!this.onOpen())
+                return false;
+        }
+        this.state = TunnelState.ALIVE;
+        this.openEvent().notify(this);
+        return true;
+    }
+
+    @Override
+    public void disconnect() {
+        synchronized (this) {
+            if (state == TunnelState.CLOSE || state == TunnelState.UNALIVE)
+                return;
+            this.doDisconnect();
+            this.state = TunnelState.UNALIVE;
+        }
+        this.unaliveEvent().notify(this);
+        NetEndpoint<UID> endpoint = this.endpoint;
+        if (endpoint != null)
+            endpoint.onDisable(this);
+    }
+
+    @Override
+    public void close() {
+        if (state == TunnelState.CLOSE)
+            return;
+        synchronized (this) {
+            if (state == TunnelState.CLOSE)
+                return;
+            this.onClose();
+            this.state = TunnelState.CLOSE;
+        }
+        this.closeEvent().notify(this);
+        NetEndpoint<UID> endpoint = this.endpoint;
+        if (endpoint != null)
+            endpoint.onDisable(this);
+    }
+
+    protected abstract void onClose();
+
+    protected abstract boolean onOpen();
+
+    protected abstract void doDisconnect();
+
+    protected BindVoidEventBus<TunnelAuthenticateListener, Tunnel> authenticateEvent() {
+        return TunnelEvents.ON_AUTHENTICATE;
+    }
+
+    protected BindVoidEventBus<TunnelOpenListener, Tunnel> openEvent() {
+        return TunnelEvents.ON_OPEN;
+    }
+
+    protected BindVoidEventBus<TunnelUnaliveListener, Tunnel> unaliveEvent() {
+        return TunnelEvents.ON_UNALIVE;
+    }
+
+    protected BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
+        return TunnelEvents.ON_CLOSE;
     }
 
     @Override
@@ -278,54 +317,6 @@ public abstract class AbstractNetTunnel<UID> extends AbstractCommunicator<UID> i
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public void registerFuture(long messageId, RespondFuture<UID> respondFuture) {
-        if (respondFuture == null)
-            return;
-        if (MessageIdCreator.getMark(messageId) == MessageIdCreator.SESSION_MESSAGE_ID_MARK) {
-            NetSession<UID> session = this.session;
-            if (session != null)
-                session.registerFuture(messageId, respondFuture);
-            else
-                respondFuture.cancel(true);
-        } else {
-            super.registerFuture(messageId, respondFuture);
-        }
-    }
-
-    @Override
-    public void callbackFuture(Message<UID> message) {
-        if (message.getMode() != MessageMode.RESPONSE)
-            return;
-        RespondFuture<UID> future = this.removeFuture(message.getHeader().getToMessage());
-        if (future != null)
-            future.complete(message);
-    }
-
-    @Override
-    protected RespondFuture<UID> removeFuture(long messageId) {
-        if (MessageIdCreator.getMark(messageId) == MessageIdCreator.SESSION_MESSAGE_ID_MARK) {
-            NetSession<UID> session = this.session;
-            if (session != null)
-                return session.removeFuture(messageId);
-            return null;
-        } else {
-            return super.removeFuture(messageId);
-        }
-    }
-
-    protected BindVoidEventBus<TunnelOpenListener, Tunnel> openEvent() {
-        return TunnelEvents.ON_OPEN;
-    }
-
-    protected BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
-        return TunnelEvents.ON_CLOSE;
-    }
-
-    protected MessageHandler<UID> getMessageHandler() {
-        return messageHandler;
     }
 
 }

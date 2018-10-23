@@ -4,8 +4,8 @@ import com.tny.game.common.lifecycle.*;
 import com.tny.game.net.annotation.Controller;
 import com.tny.game.net.base.AppConfiguration;
 import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.auth.AuthenticateProvider;
+import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.command.dispatcher.CommonMessageDispatcher;
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import org.springframework.beans.BeansException;
@@ -35,7 +35,7 @@ public final class SuiteMessageDispatcher extends CommonMessageDispatcher implem
 
     @Override
     public void prepareStart() throws Exception {
-        final Map<String, AuthenticateProvider> providerMap = this.applicationContext.getBeansOfType(AuthenticateProvider.class);
+        final Map<String, AuthenticateValidator> providerMap = this.applicationContext.getBeansOfType(AuthenticateValidator.class);
         this.addAuthProvider(providerMap.values());
         // final Map<String, ControllerChecker> checkerMap = this.applicationContext.getBeansOfType(ControllerChecker.class);
         // this.addControllerChecker(checkerMap.values());

@@ -4,10 +4,9 @@ import com.google.common.collect.*;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.auth.AuthenticateProvider;
-import com.tny.game.net.common.ControllerPluginHolder;
-import com.tny.game.net.transport.message.MessageMode;
+import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.auth.AuthenticateValidator;
+import com.tny.game.net.message.MessageMode;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -113,9 +112,9 @@ public abstract class ControllerHolder {
         return this.auth != null && this.auth.enable();
     }
 
-    public Class<? extends AuthenticateProvider> getAuthProvider() {
-        if (this.auth != null && this.auth.enable() && this.auth.provider() != AuthenticateProvider.class)
-            return this.auth.provider();
+    public Class<? extends AuthenticateValidator> getAuthValidator() {
+        if (this.auth != null && this.auth.enable() && this.auth.validator() != AuthenticateValidator.class)
+            return this.auth.validator();
         return null;
     }
 

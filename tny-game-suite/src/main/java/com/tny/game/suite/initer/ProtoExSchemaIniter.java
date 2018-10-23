@@ -5,7 +5,7 @@ import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
-import com.tny.game.net.transport.message.protoex.ProtoExMessageHeader;
+import com.tny.game.net.message.protoex.ProtoExMessageHeader;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.field.runtime.RuntimeProtoExSchema;

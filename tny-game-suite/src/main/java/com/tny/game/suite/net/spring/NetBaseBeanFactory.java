@@ -3,11 +3,11 @@ package com.tny.game.suite.net.spring;
 import com.tny.game.common.config.Config;
 import com.tny.game.net.command.dispatcher.MessageDispatcher;
 import com.tny.game.net.command.plugins.*;
-import com.tny.game.net.common.NetMessageHandler;
-import com.tny.game.net.netty.NettyAppConfiguration;
-import com.tny.game.net.transport.*;
-import com.tny.game.net.transport.message.MessageFactory;
-import com.tny.game.net.transport.message.protoex.ProtoExMessageFactory;
+import com.tny.game.net.command.DefaultMessageHandler;
+import com.tny.game.net.netty4.NettyAppConfiguration;
+import com.tny.game.net.session.*;
+import com.tny.game.net.message.MessageFactory;
+import com.tny.game.net.message.protoex.ProtoExMessageFactory;
 import com.tny.game.suite.utils.Configs;
 import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -32,8 +32,8 @@ public class NetBaseBeanFactory {
     // }
 
     @Bean(name = "sessionKeeperFactory")
-    public SessionKeeperFactory gameSessionKeeperFactory() {
-        return new CommonSessionKeeperFactory(this.appConfiguration);
+    public SessionKeeperMannager gameSessionKeeperFactory() {
+        return new CommonSessionKeeperMannager(this.appConfiguration);
     }
 
     @Bean(name = "sessionFactory")
@@ -42,8 +42,8 @@ public class NetBaseBeanFactory {
     }
 
     @Bean(name = "sessionEventHandler")
-    public NetMessageHandler getSessionEventHandler() {
-        return new NetMessageHandler(this.appConfiguration);
+    public DefaultMessageHandler getSessionEventHandler() {
+        return new DefaultMessageHandler(this.appConfiguration);
     }
 
     @Bean(name = "messageDispatcher")

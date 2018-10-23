@@ -3,11 +3,11 @@ package com.tny.game.net.transport;
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.Throws;
-import com.tny.game.net.transport.message.*;
+import com.tny.game.net.message.*;
 
 import java.util.*;
 
-import static com.tny.game.net.transport.message.MessageAide.*;
+import static com.tny.game.net.message.MessageAide.*;
 
 /**
  * 消息上下文
@@ -118,20 +118,6 @@ public class MessageSubjectBuilder {
         return this;
     }
 
-    public MessageSubjectBuilder setHead(Object head) {
-        this.subject().setHead(head);
-        return this;
-    }
-
-    public MessageSubjectBuilder setHeads(Object... heads) {
-        return setHeads(heads);
-    }
-
-    public MessageSubjectBuilder setHeads(Collection<?> heads) {
-        this.subject().setHead(heads);
-        return this;
-    }
-
     public MessageSubject build() {
         MessageSubject subject = this.subject();
         this.subject = null;
@@ -156,8 +142,6 @@ public class MessageSubjectBuilder {
 
         private Object body;
 
-        private Object head;
-
         private DefaultMessageSubject() {
         }
 
@@ -173,7 +157,7 @@ public class MessageSubjectBuilder {
         private DefaultMessageSubject init(Protocol protocol, ResultCode code, Long toMessage) {
             Throws.checkNotNull(protocol, "protocol is null");
             Throws.checkNotNull(code, "code is null");
-            this.protocol = protocol.getNumber();
+            this.protocol = protocol.getProtocolNumber();
             this.code = code;
             this.toMessage = toMessage;
             this.mode = MessageMode.getMode(toMessage);
@@ -181,7 +165,7 @@ public class MessageSubjectBuilder {
         }
 
         @Override
-        public int getNumber() {
+        public int getProtocolNumber() {
             return protocol;
         }
 
@@ -193,11 +177,6 @@ public class MessageSubjectBuilder {
         @Override
         public Object getBody() {
             return body;
-        }
-
-        @Override
-        public Object getHeader() {
-            return head;
         }
 
         @Override
@@ -227,11 +206,5 @@ public class MessageSubjectBuilder {
             this.body = body;
         }
 
-        private DefaultMessageSubject setHead(Object head) {
-            if (this.head != null)
-                throw new IllegalArgumentException("head is exist");
-            this.head = head;
-            return this;
-        }
     }
 }

@@ -18,7 +18,7 @@
     <bean name="testSessionHoslder" class="com.tny.game.net.transport.holder.DefaultSessionHolder">
     </bean>
 
-    <bean name="authProvider" class="test.Handler.SessionAuthenticateProviderImpl"/>
+    <bean name="authProvider" class="test.Handler.SessionAuthenticateValidatorImpl"/>
 
     <bean name="dispatcher" class="com.tny.game.net.messageDispatcher.spring.SpringMessageDispatcher">
         <constructor-arg value="true"/>
@@ -34,7 +34,7 @@
         <property name="messageDispatcher" ref="dispatcher"/>
     </bean>
 
-    <bean name="gameServer" class="com.tny.game.net.netty.NettyBinder">
+    <bean name="gameServer" class="com.tny.game.net.netty4.NettyBinder">
         <constructor-arg ref="serverAppContext"/>
     </bean>
 

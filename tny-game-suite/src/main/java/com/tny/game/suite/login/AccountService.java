@@ -5,7 +5,7 @@ import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
 import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.exception.CommandException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +52,7 @@ public class AccountService implements ServerPrepareStart {
         return null;
     }
 
-    public Account loadOrCreateAccount(GameTicket ticket) throws DispatchException {
+    public Account loadOrCreateAccount(GameTicket ticket) throws CommandException {
         String account = AccountUtils.openID2Account(ticket.getAccountTag(), ticket.getServer(), ticket.getOpenID());
         int max = GameInfo.info().getScopeType().isTest() ? Integer.MAX_VALUE : 10;
         int index = 0;
@@ -80,9 +80,9 @@ public class AccountService implements ServerPrepareStart {
         return accountObj;
     }
 
-    private UIDCreator getUIDCreator(int serverID) throws DispatchException {
+    private UIDCreator getUIDCreator(int serverID) throws CommandException {
         if (!GameInfo.isHasServer(serverID))
-            throw new DispatchException(SuiteResultCode.AUTH_USER_LOGIN_ERROR_SID);
+            throw new CommandException(SuiteResultCode.AUTH_USER_LOGIN_ERROR_SID);
         UIDCreator creator = this.UIDCreatorMap.get(serverID);
         if (creator == null) {
             synchronized (this) {
@@ -90,11 +90,11 @@ public class AccountService implements ServerPrepareStart {
             }
         }
         if (!GameInfo.info().getScopeType().isTest() && creator.isFull())
-            throw new DispatchException(SuiteResultCode.AUTH_USER_IS_FULL);
+            throw new CommandException(SuiteResultCode.AUTH_USER_IS_FULL);
         return creator;
     }
 
-    private long createUID(int serverID) throws DispatchException {
+    private long createUID(int serverID) throws CommandException {
         return this.getUIDCreator(serverID).createID();
     }
 

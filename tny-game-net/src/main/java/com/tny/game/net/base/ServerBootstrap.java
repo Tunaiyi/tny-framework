@@ -1,6 +1,6 @@
 package com.tny.game.net.base;
 
-import com.tny.game.net.base.listener.SeverClosedListener;
+import com.tny.game.net.base.listener.ServerClosedListener;
 
 import java.util.Collection;
 
@@ -17,9 +17,9 @@ public interface ServerBootstrap {
 
     boolean close();
 
-    void addClosedListener(SeverClosedListener listener);
+    void addClosedListener(ServerClosedListener listener);
 
-    void addClosedListeners(Collection<SeverClosedListener> listenerCollection);
+    void addClosedListeners(Collection<ServerClosedListener> listenerCollection);
 
     void clearClosedListener();
 }

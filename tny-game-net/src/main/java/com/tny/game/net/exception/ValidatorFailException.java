@@ -1,10 +1,11 @@
 package com.tny.game.net.exception;
 
-import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.base.NetResultCode;
 
-public class ValidatorFailException extends DispatchException {
+import static com.tny.game.common.utils.StringAide.*;
+
+public class ValidatorFailException extends CommandException {
 
     /**
      *

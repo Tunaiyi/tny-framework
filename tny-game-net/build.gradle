@@ -5,9 +5,6 @@ apply plugin: "maven"
 dependencies {
 
     compile(
-//            'io.netty:netty-all:5.0.0.Alpha2',
-            'io.netty:netty-all:4.1.15.Final',
-//            libs.'spring-context-support',
             project(":tny-game-expr-groovy"),
             project(":tny-game-protoex"),
     )

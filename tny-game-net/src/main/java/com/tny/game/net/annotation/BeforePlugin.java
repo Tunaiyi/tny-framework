@@ -1,6 +1,6 @@
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.command.ControllerPlugin;
+import com.tny.game.net.command.plugins.ControllerPlugin;
 
 import java.lang.annotation.*;
 

@@ -51,10 +51,10 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
             throw new NullPointerException(format("{} 类 {} 字段 ProtoField.value = {} <= 0", field.getDeclaringClass(), field, member.value()));
         ProtoExConf conf = member.conf();
         Class<T> type = (Class<T>) field.getType();
-        if (conf.ues() != Void.class) {
-            if (!type.isAssignableFrom(conf.ues()))
+        if (conf.use() != Void.class) {
+            if (!type.isAssignableFrom(conf.use()))
                 throw new IllegalArgumentException(format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
-            this.use = (Class<T>) conf.ues();
+            this.use = (Class<T>) conf.use();
         } else {
             this.use = type;
         }

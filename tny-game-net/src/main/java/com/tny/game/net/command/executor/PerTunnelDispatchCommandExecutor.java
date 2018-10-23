@@ -6,12 +6,10 @@ import com.tny.game.common.context.*;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.NetLogger;
 import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.command.*;
-import com.tny.game.net.command.dispatcher.MessageCommandBox;
-import com.tny.game.net.netty.NettyAttrKeys;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.session.Session;
 import com.tny.game.net.transport.NetTunnel;
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.utils.*;
 import org.slf4j.*;
 
 import java.util.Queue;
@@ -59,7 +57,7 @@ public class PerTunnelDispatchCommandExecutor implements DispatchCommandExecutor
         if (executor == null) {
             executor = new ChildExecutor(this.executorService);
             tunnel.attributes().setAttribute(COMMAND_CHILD_EXECUTOR, executor);
-            tunnel.attributes().setAttribute(NettyAttrKeys.USER_COMMAND_BOX, executor);
+            tunnel.attributes().setAttribute(NetAttrKeys.USER_COMMAND_BOX, executor);
         }
         executor.accept(command);
     }
@@ -149,8 +147,9 @@ public class PerTunnelDispatchCommandExecutor implements DispatchCommandExecutor
         }
 
         private void submitWhenDelay() {
-            if (this.state.get() == DELAY)
+            if (this.state.get() == DELAY && this.state.compareAndSet(DELAY, SUBMIT)) {
                 this.executorService.submit(this);
+            }
         }
 
         @Override

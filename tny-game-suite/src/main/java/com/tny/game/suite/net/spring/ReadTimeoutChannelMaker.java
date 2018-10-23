@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.netty.coder.ChannelMaker;
+import com.tny.game.net.netty4.ChannelMaker;
 import io.netty.channel.*;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 

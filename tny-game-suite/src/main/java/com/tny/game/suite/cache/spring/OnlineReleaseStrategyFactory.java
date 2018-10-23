@@ -2,7 +2,7 @@ package com.tny.game.suite.cache.spring;
 
 import com.tny.game.asyndb.*;
 import com.tny.game.base.item.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.session.*;
 import com.tny.game.suite.login.IDAide;
 
 import javax.annotation.Resource;
@@ -12,7 +12,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
     private long defaultLifeTime = 60 * 1000 * 3;
 
     @Resource
-    private SessionKeeperFactory sessionKeeperFactory;
+    private SessionKeeperMannager sessionKeeperFactory;
 
     private String userType;
 

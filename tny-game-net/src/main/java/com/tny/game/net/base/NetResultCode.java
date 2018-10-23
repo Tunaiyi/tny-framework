@@ -8,6 +8,24 @@ public enum NetResultCode implements ResultCode {
 
 //	/** 请求处理成功 100*/
 //	SUCCESS(ResultCode.SUCCESS_CODE, "请求处理成功", ResultCodeType.GENERAL),
+
+    /**
+     * 服务端接受请求解码格式错误
+     */
+    DECODE_ERROR(190, "解码格式错误", ResultCodeType.ERROR),
+    /**
+     * 服务端返回响应编码响应异常
+     */
+    ENCODE_ERROR(191, "编码响应异常", ResultCodeType.WARN),
+    /**
+     * 收到的网络包超时失效
+     */
+    PACKET_TIMEOUT(192, "网络包超时失效", ResultCodeType.WARN),
+    /**
+     * 网络包校验失败
+     */
+    PACKET_VERIFY_FAILED(193, "网络包校验失败", ResultCodeType.WARN),
+
     /**
      * 服务端接受请求异常
      */
@@ -16,14 +34,6 @@ public enum NetResultCode implements ResultCode {
      * 服务端执行业务异常
      */
     EXECUTE_EXCEPTION(201, "服务端执行业务异常", ResultCodeType.GENERAL),
-    /**
-     * 服务端接受请求解码格式错误
-     */
-    DECODE_ERROR(202, "服务端接受请求解码格式错误", ResultCodeType.WARN),
-    /**
-     * 服务端返回响应编码响应异常
-     */
-    ENCODE_ERROR(203, "服务端返回响应编码响应异常", ResultCodeType.WARN),
     /**
      * 请求模块不存在
      */

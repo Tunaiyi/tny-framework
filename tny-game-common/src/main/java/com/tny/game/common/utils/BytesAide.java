@@ -1,7 +1,7 @@
 package com.tny.game.common.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.*;
 
 /**
  * Easily convert byte with short, int, long, float, double.
@@ -128,6 +128,74 @@ public class BytesAide {
      */
     public static int bytes2UnsignedInt(byte b) {
         return b & 0xfff;
+    }
+
+    public static String toBinaryString(byte n) {
+        StringBuilder sb = new StringBuilder("00000000");
+        for (int bit = 0; bit < 8; bit++) {
+            if (((n >> bit) & 1) > 0) {
+                sb.setCharAt(7 - bit, '1');
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String toBinaryString(byte[]... bytesArrays) {
+        return toBinaryString("", bytesArrays);
+    }
+
+    public static String toBinaryString(String separator, byte[]... bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte[] binary : bytes)
+            appendBinaryString(builder, separator, binary);
+        return builder.toString();
+    }
+
+    private static void appendBinaryString(StringBuilder bodyBinary, String separator, byte[] bytes) {
+        int index = bodyBinary.length() + 7;
+        for (byte data : bytes) {
+            bodyBinary.append("00000000");
+            for (int bit = 0; bit < 8; bit++) {
+                if (((data >> bit) & 1) > 0) {
+                    bodyBinary.setCharAt(index - bit, '1');
+                }
+            }
+            int separatorLength = separator.length();
+            if (separatorLength > 0)
+                bodyBinary.append(separator);
+            index += (separatorLength + 8);
+        }
+    }
+
+    public static String toHexString(byte[] bytes) {
+        return Hex.encodeHexString(bytes);
+    }
+
+    public static String toHexString(byte[]... bytesArrays) {
+        StringBuilder builder = new StringBuilder();
+        for (byte[] bytes : bytesArrays)
+            builder.append(Hex.encodeHex(bytes));
+        return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        byte[] message = {Byte.MIN_VALUE, Byte.MIN_VALUE / 2, 0, Byte.MAX_VALUE / 2, Byte.MAX_VALUE};
+        System.out.println(Hex.encodeHex(new byte[]{0}));
+        for (byte b : message)
+            System.out.print(toBinaryString(b) + " ");
+        System.out.println();
+        System.out.println(toHexString(message));
+        System.out.println(toBinaryString(" ", message, message));
+        System.out.println(toHexString(message, message));
+    }
+
+    public static byte[] xor(byte[] data, byte[]... keyBytes) {
+        for (int i = 0; i < data.length; i++) {
+            for (byte[] keys : keyBytes) {
+                data[i] = (byte) (data[i] ^ keys[i % keys.length]);
+            }
+        }
+        return data;
     }
 
 }

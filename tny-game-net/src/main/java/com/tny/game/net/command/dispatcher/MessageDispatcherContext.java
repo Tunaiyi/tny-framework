@@ -1,10 +1,10 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.net.base.AppConfiguration;
-import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.auth.AuthenticateProvider;
+import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.transport.message.MessageMode;
+import com.tny.game.net.message.MessageMode;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public interface MessageDispatcherContext {
      * @param protocol 协议
      * @return 返回身份校验器
      */
-    AuthenticateProvider getProvider(Object protocol, Class<? extends AuthenticateProvider> providerClass);
+    AuthenticateValidator getValidator(Object protocol, Class<? extends AuthenticateValidator> validatorClass);
 
     /**
      * @return 获取所有监听器

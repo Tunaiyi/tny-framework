@@ -6,12 +6,12 @@ import com.tny.game.common.worker.command.Command;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.ControllerPlugin;
-import com.tny.game.net.command.auth.AuthenticateProvider;
+import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.exception.DispatchException;
+import com.tny.game.net.exception.CommandException;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.NetTunnel;
-import com.tny.game.net.transport.message.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -40,7 +40,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     /**
      * 所有协议身法验证器
      */
-    private AuthenticateProvider authAllProvider;
+    private AuthenticateValidator fullValidator;
 
     /**
      *
@@ -55,7 +55,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthenticateProvider<?>> authProviders = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticateValidator<?>> authValidators = new CopyOnWriteMap<>();
 
     private AppConfiguration appConfiguration;
 
@@ -64,11 +64,11 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws DispatchException {
+    public Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
         if (controller == null)
-            throw new DispatchException(NetResultCode.NO_SUCH_PROTOCOL);
+            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL);
         return new MessageDispatchCommand(this, controller, tunnel, message);
     }
 
@@ -93,16 +93,16 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public AuthenticateProvider getProvider(Object protocol, Class<? extends AuthenticateProvider> clazz) {
-        AuthenticateProvider<Object> provider = null;
-        if (clazz != null) {
-            provider = as(authProviders.get(clazz));
-            Throws.checkNotNull(provider, "{} 认证器不存在", clazz);
+    public AuthenticateValidator getValidator(Object protocol, Class<? extends AuthenticateValidator> validatorClass) {
+        AuthenticateValidator<Object> validator = null;
+        if (validatorClass != null) {
+            validator = as(authValidators.get(validatorClass));
+            Throws.checkNotNull(validator, "{} 认证器不存在", validatorClass);
         }
-        if (provider == null) {
-            provider = as(authProviders.getOrDefault(protocol, authAllProvider));
+        if (validator == null) {
+            validator = as(authValidators.getOrDefault(protocol, fullValidator));
         }
-        return provider;
+        return validator;
     }
 
     @Override
@@ -154,20 +154,20 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      *
      * @param provider 身份校验器
      */
-    protected void addAuthProvider(AuthenticateProvider provider) {
+    protected void addAuthProvider(AuthenticateValidator provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                Throws.checkNotNull(this.authAllProvider, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, authAllProvider.getClass());
-                this.authAllProvider = provider;
+                Throws.checkNotNull(this.fullValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, fullValidator.getClass());
+                this.fullValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {
-                    putObject(this.authProviders, value, provider);
+                    putObject(this.authValidators, value, provider);
                 }
             }
         }
-        putObject(this.authProviders, provider.getClass(), provider);
+        putObject(this.authValidators, provider.getClass(), provider);
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      *
      * @param providers 身份校验器列表
      */
-    protected void addAuthProvider(Collection<AuthenticateProvider> providers) {
+    protected void addAuthProvider(Collection<AuthenticateValidator> providers) {
         providers.forEach(this::addAuthProvider);
     }
 

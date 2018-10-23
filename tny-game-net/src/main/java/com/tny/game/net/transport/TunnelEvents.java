@@ -12,22 +12,22 @@ import com.tny.game.net.transport.listener.*;
 public class TunnelEvents {
 
     @SuppressWarnings("unchecked")
-    protected static final BindVoidEventBus<TunnelOpenListener, Tunnel> ON_OPEN=
+    protected static final BindVoidEventBus<TunnelAuthenticateListener, Tunnel> ON_AUTHENTICATE=
+            EventBuses.of(TunnelAuthenticateListener.class, TunnelAuthenticateListener::onAuthenticate);
+
+    @SuppressWarnings("unchecked")
+    protected static final BindVoidEventBus<TunnelOpenListener, Tunnel> ON_OPEN =
             EventBuses.of(TunnelOpenListener.class, TunnelOpenListener::onOpen);
+
+    @SuppressWarnings("unchecked")
+    protected static final BindVoidEventBus<TunnelUnaliveListener, Tunnel> ON_UNALIVE =
+            EventBuses.of(TunnelUnaliveListener.class, TunnelUnaliveListener::onUnalive);
 
     @SuppressWarnings("unchecked")
     protected static final BindVoidEventBus<TunnelCloseListener, Tunnel> ON_CLOSE =
             EventBuses.of(TunnelCloseListener.class, TunnelCloseListener::onClose);
 
     protected TunnelEvents() {
-    }
-
-    public static ListenerRegister<TunnelOpenListener> openEventBus() {
-        return ON_OPEN;
-    }
-
-    public static ListenerRegister<TunnelCloseListener> closeEventBus() {
-        return ON_CLOSE;
     }
 
 }
