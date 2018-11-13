@@ -68,8 +68,8 @@ class ChildConfig implements Config {
     }
 
     @Override
-    public String getStr(String key) {
-        return parent.getStr(key(key));
+    public String getString(String key) {
+        return parent.getString(key(key));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.tny.game.net.message;
 
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -11,23 +10,12 @@ import com.tny.game.net.transport.*;
  */
 public class TestMessagePack {
 
-    private MessageSubject subject;
-    private MessageContext<Long> context;
+    private RequestContext<Long> context;
     private NetMessage<Long> message;
 
-    public TestMessagePack(MessageSubject subject, NetMessage<Long> message) {
-        this.subject = subject;
+    public TestMessagePack(MessageContext<Long> context, NetMessage<Long> message) {
+        this.context = (RequestContext<Long>) context;
         this.message = message;
-    }
-
-    public MessageSubject getSubject() {
-        return subject;
-    }
-
-    public MessageContext<Long> context() {
-        if (context == null)
-            context = MessageContexts.createContext();
-        return context;
     }
 
     public NetMessage<Long> getMessage() {
@@ -38,9 +26,13 @@ public class TestMessagePack {
         return context;
     }
 
+    public RequestContext<Long> getRequestContext() {
+        return context;
+    }
+
     public MessageMode getMode() {
-        if (this.subject != null)
-            return this.subject.getMode();
+        if (this.context != null)
+            return this.context.getMode();
         if (this.message != null)
             return this.message.getMode();
         return null;

@@ -3,33 +3,20 @@ package com.tny.game.suite.oplog;
 import com.tny.game.base.item.Identifiable;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.utils.IDCreator;
-import com.tny.game.oplog.AbstractOpLogger;
-import com.tny.game.oplog.ActionLog;
-import com.tny.game.oplog.OpLog;
-import com.tny.game.oplog.OpLogger;
-import com.tny.game.oplog.Snapper;
-import com.tny.game.oplog.SnapperType;
-import com.tny.game.oplog.Snapshot;
-import com.tny.game.oplog.UserOpLog;
+import com.tny.game.oplog.*;
 import com.tny.game.oplog.annotation.SnapBy;
 import com.tny.game.oplog.log4j2.LogMessage;
-import com.tny.game.oplog.record.OperateRecord;
-import com.tny.game.oplog.record.UserStuffRecord;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.tny.game.oplog.record.*;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
@@ -39,7 +26,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
  */
 @Component
 @Profile({ITEM_OPLOG, GAME})
-public class OperationLogger extends AbstractOpLogger implements ServerPrepareStart, ApplicationContextAware {
+public class OperationLogger extends AbstractOpLogger implements AppPrepareStart, ApplicationContextAware {
 
     private static final Logger oplogLogger = LogManager.getLogger("opTradeLogger");
 

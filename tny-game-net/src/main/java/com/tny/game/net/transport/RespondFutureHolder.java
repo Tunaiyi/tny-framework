@@ -115,7 +115,7 @@ public class RespondFutureHolder {
             ConcurrentMap<Long, RespondFuture<?>> map = map();
             RespondFuture<?> oldFuture = map.put(messageId, future);
             if (oldFuture != null && !oldFuture.isDone())
-                oldFuture.cancel();
+                oldFuture.cancel(true);
         } else {
             future.cancel(true);
         }

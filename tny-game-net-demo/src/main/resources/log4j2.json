@@ -1,0 +1,335 @@
+{
+  "configuration": {
+    "shutdownHook": "disable",
+    "status": "WARN",
+    "packages": "",
+    "monitorInterval": 15,
+    "properties": {
+      "property": [
+        {
+          "name": "msg_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.message}.log"
+        },
+        {
+          "name": "msg_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.message}.%i.log.zip"
+        },
+        {
+          "name": "console_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.console}.log"
+        },
+        {
+          "name": "console_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.console}.%i.log.zip"
+        },
+        {
+          "name": "error_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.error}.log"
+        },
+        {
+          "name": "error_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.error}.%i.log.zip"
+        },
+        {
+          "name": "val_err_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.validator_error}.log"
+        },
+        {
+          "name": "val_err_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.validator_error}.%i.log.zip"
+        }
+      ]
+    },
+    "ThresholdFilter": {
+      "level": "DEBUG"
+    },
+    "appenders": {
+      "Console": {
+        "name": "stdout",
+        "PatternLayout": {
+          "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+        }
+      },
+      "Routing": [
+        {
+          "name": "oplog",
+          "Routes": {
+            "pattern": "$${map:sid}",
+            "Route": [
+              {
+                "RollingRandomAccessFile": {
+                  "name": "trade_log_s${map:sid}",
+                  "immediateFlush": true,
+                  "fileName": "${bundle:log:oplog.path}/log/op_trade_s${map:sid}.log",
+                  "filePattern": "${bundle:log:oplog.zip_path}/s${map:sid}/op_trade_s${map:sid}_%d{yyyyMMddHHmm}.log.zip",
+                  "OpLogJsonLayout": {
+                  },
+                  "TimeBasedTriggeringPolicy": {
+                    "interval": 1,
+                    "modulate": true
+                  },
+                  "RolloverWithTempStrategy": {
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "stuff",
+          "Routes": {
+            "pattern": "$${map:sid}",
+            "Route": [
+              {
+                "RollingRandomAccessFile": {
+                  "name": "stuff_s${map:sid}",
+                  "immediateFlush": true,
+                  "fileName": "${bundle:log:oplog.path}/log/stuff_s${map:sid}.log",
+                  "filePattern": "${bundle:log:oplog.zip_path}/s${map:sid}/stuff_s${map:sid}_%d{yyyyMMddHHmm}.log.zip",
+                  "OpLogJsonLayout": {
+                  },
+                  "TimeBasedTriggeringPolicy": {
+                    "interval": 1,
+                    "modulate": true
+                  },
+                  "RolloverWithTempStrategy": {
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "rank",
+          "Routes": {
+            "pattern": "$${map:rankKey}",
+            "Route": [
+              {
+                "RollingRandomAccessFile": {
+                  "name": "rank_s${map:rankKey}",
+                  "immediateFlush": true,
+                  "fileName": "${bundle:log:rank.log_path}/rank/rank_s${map:rankKey}.log",
+                  "filePattern": "${bundle:log:rank.zip_path}/s${map:sid}/rank_s${map:rankKey}_%d{yyyyMMddHH}.log.zip",
+                  "RankJsonLayout": {
+                  },
+                  "TimeBasedTriggeringPolicy": {
+                    "interval": 1,
+                    "modulate": true
+                  },
+                  "RolloverWithTempStrategy": {
+                    "Delete": {
+                      "basePath": "${bundle:log:rank.zip_path}/s${map:sid}",
+                      "maxDepth": 1,
+                      "IfFileName": {
+                        "glob": "rank_s*_*_*.log.zip"
+                      },
+                      "IfLastModified": {
+                        "age": "7D"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "RollingRandomAccessFile": [
+        {
+          "name": "toMessage",
+          "immediateFlush": false,
+          "fileName": "${msg_file}",
+          "filePattern": "${msg_file_zip}",
+          "PatternLayout": {
+            "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+          },
+          "filters": {
+            "ThresholdFilter": [
+              {
+                "level": "DEBUG",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "INFO",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "WARN",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "ERROR",
+                "onMatch": "ACCEPT",
+                "onMismatch": "DENY"
+              }
+            ]
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "50MB"
+          },
+          "DefaultRolloverStrategy": {
+            "fileIndex": "min",
+            "max": 1
+          }
+        },
+        {
+          "name": "toConsole",
+          "immediateFlush": false,
+          "fileName": "${console_file}",
+          "filePattern": "${console_file_zip}",
+          "PatternLayout": {
+            "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+          },
+          "filters": {
+            "ThresholdFilter": [
+              {
+                "level": "DEBUG",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "INFO",
+                "onMatch": "ACCEPT",
+                "onMismatch": "DENY"
+              }
+            ]
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "50MB"
+          },
+          "DefaultRolloverStrategy": {
+            "fileIndex": "min",
+            "max": 1
+          }
+        },
+        {
+          "name": "toError",
+          "immediateFlush": false,
+          "fileName": "${error_file}",
+          "filePattern": "${error_file_zip}",
+          "PatternLayout": {
+            "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+          },
+          "filters": {
+            "ThresholdFilter": [
+              {
+                "level": "WARN",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "ERROR",
+                "onMatch": "ACCEPT",
+                "onMismatch": "DENY"
+              }
+            ]
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "50MB"
+          },
+          "DefaultRolloverStrategy": {
+            "fileIndex": "min",
+            "max": 1
+          }
+        },
+        {
+          "name": "toValidator",
+          "immediateFlush": false,
+          "fileName": "${val_err_file}",
+          "filePattern": "${val_err_file_zip}",
+          "PatternLayout": {
+            "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+          },
+          "filters": {
+            "ThresholdFilter": [
+              {
+                "level": "WARN",
+                "onMatch": "ACCEPT",
+                "onMismatch": "NEUTRAL"
+              },
+              {
+                "level": "ERROR",
+                "onMatch": "ACCEPT",
+                "onMismatch": "DENY"
+              }
+            ]
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "50MB"
+          },
+          "DefaultRolloverStrategy": {
+            "fileIndex": "min",
+            "max": 1
+          }
+        }
+      ]
+    },
+    "loggers": {
+      "asyncLogger": [
+        {
+          "name": "opTradeLogger",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "oplog"
+            }
+          ]
+        },
+        {
+          "name": "rankLogger",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "rank"
+            }
+          ]
+        },
+        {
+          "name": "stuffLogger",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "stuff"
+            }
+          ]
+        },
+        {
+          "name": "org.springframework",
+          "includeLocation": "true",
+          "level": "WARN",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            },
+            {
+              "ref": "${bundle:log:log.warn.appender}"
+            }
+          ]
+        }
+      ],
+      "asyncRoot": {
+        "includeLocation": "true",
+        "level": "INFO",
+        "additivity": "false",
+        "AppenderRef": [
+          {
+            "ref": "${bundle:log:log.debug.appender}"
+          },
+          {
+            "ref": "${bundle:log:log.warn.appender}"
+          }
+        ]
+      }
+    }
+  }
+}

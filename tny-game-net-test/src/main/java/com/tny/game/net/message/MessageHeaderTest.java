@@ -30,7 +30,7 @@ public abstract class MessageHeaderTest extends ProtocolTest {
     private MessageHeader REQUEST_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, 0, head);
     private MessageHeader SUCCESS_RESPONSE_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, toMessage, listHead);
     private MessageHeader FAIL_RESPONSE_HEAD = create(id, protocol, ResultCode.FAILURE_CODE, now, toMessage, null);
-    private MessageHeader PUSH_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.PUSH_TO_MESSAGE_MAX_ID, null);
+    private MessageHeader PUSH_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.PUSH_TO_MESSAGE_ID, null);
 
     public MessageHeaderTest() {
         super(protocol);
@@ -72,7 +72,7 @@ public abstract class MessageHeaderTest extends ProtocolTest {
         assertEquals(REQUEST_HEAD.getToMessage(), MessageAide.REQUEST_TO_MESSAGE_ID);
         assertEquals(SUCCESS_RESPONSE_HEAD.getToMessage(), toMessage);
         assertEquals(FAIL_RESPONSE_HEAD.getToMessage(), toMessage);
-        assertEquals(PUSH_HEAD.getToMessage(), MessageAide.PUSH_TO_MESSAGE_MAX_ID);
+        assertEquals(PUSH_HEAD.getToMessage(), MessageAide.PUSH_TO_MESSAGE_ID);
     }
 
     @Test

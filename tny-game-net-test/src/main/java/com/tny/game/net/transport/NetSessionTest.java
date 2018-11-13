@@ -2,18 +2,23 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.session.*;
+import com.tny.game.net.message.common.CommonMessageFactory;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.test.TestAide;
 import org.junit.*;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.tny.game.test.MockAide.mockAs;
+import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.test.MockAide.eq;
+import static com.tny.game.test.MockAide.isNull;
+import static com.tny.game.test.MockAide.*;
+import static com.tny.game.test.MockAide.never;
+import static com.tny.game.test.MockAide.times;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static com.tny.game.test.MockAide.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.
@@ -44,10 +49,18 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
 
     protected NetTunnel<Long> mockTunnel(Certificate<Long> certificate) {
         long tunnelId = TUNNEL_ID_CREATOR.incrementAndGet();
+        MessageFactory<Long> messageFactory = new CommonMessageFactory<>();
         NetTunnel<Long> tunnel = mockAs(NetTunnel.class);
         when(tunnel.bind(any())).thenReturn(true);
         when(tunnel.getCertificate()).thenReturn(certificate);
         when(tunnel.getId()).thenReturn(tunnelId);
+        when(tunnel.createMessage(any(), any())).thenAnswer(a -> {
+            Object[] args = a.getArguments();
+            long id = as(args[0]);
+            MessageContext<Long> context = as(args[1]);
+            return messageFactory.create(id, context, certificate);
+        });
+
         return tunnel;
     }
 
@@ -85,22 +98,22 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
 
         assertFalse(loginSession.isOffline());
         when(loginTunnel.isClosed()).thenReturn(false);
-        loginSession.onDisable(loginTunnel);
+        loginSession.onUnactivated(loginTunnel);
         assertEquals(SessionState.ONLINE, loginSession.getState());
 
         // 当前 tunnel 下线
         when(loginTunnel.isClosed()).thenReturn(true);
-        loginSession.onDisable(loginTunnel);
+        loginSession.onUnactivated(loginTunnel);
         assertEquals(SessionState.OFFLINE, loginSession.getState());
 
         // 当前 tunnel 下线
-        loginSession.onDisable(loginTunnel);
+        loginSession.onUnactivated(loginTunnel);
         assertEquals(SessionState.OFFLINE, loginSession.getState());
 
         // 关闭后下线
         loginSession = createSession();
         loginSession.close();
-        loginSession.onDisable(loginTunnel);
+        loginSession.onUnactivated(loginTunnel);
         assertEquals(SessionState.CLOSE, loginSession.getState());
     }
 
@@ -201,7 +214,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.forEach(p -> p.context().willSendFuture());
+        messages.forEach(p -> p.getContext().willSendFuture());
         messages.sendAsyn(session);
         verify(tunnel, times(messages.getMessageSize())).write(any(Message.class), any(MessageContext.class), eq(0L), any());
 
@@ -212,7 +225,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.forEach(p -> p.context().willResponseFuture());
+        messages.forEach(p -> p.getRequestContext().willResponseFuture());
         messages.sendAsyn(session);
         verify(tunnel, times(messages.getMessageSize())).write(any(Message.class), any(MessageContext.class), eq(0L), any());
 
@@ -233,7 +246,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.forEach(p -> p.context().willResponseFuture());
+        messages.forEach(p -> p.getRequestContext().willResponseFuture());
         messages.sendSync(session, timeout);
         verify(tunnel, times(messages.getMessageSize())).write(any(Message.class), any(MessageContext.class), eq(timeout), any());
 
@@ -244,7 +257,7 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.forEach(p -> p.context().willResponseFuture());
+        messages.forEach(p -> p.getRequestContext().willResponseFuture());
         messages.sendSync(session, timeout);
         verify(tunnel, times(messages.getMessageSize())).write(any(Message.class), any(MessageContext.class), eq(timeout), any());
 
@@ -268,10 +281,10 @@ public abstract class NetSessionTest<S extends NetSession<Long>> extends Session
                 .addPush("push")
                 .addPush("push");
         NetSession<Long> closeSession = session;
-        messages.subjcetForEach(c ->
+        messages.contextsForEach(c ->
                 TestAide.assertRunWithException("close session.send",
                         () -> closeSession.sendAsyn(c), NetException.class));
-        verify(tunnel, never()).sendAsyn(any(MessageSubject.class));
+        verify(tunnel, never()).sendAsyn(any(MessageContext.class));
 
         // filter 发送
         tunnel = mockTunnel();

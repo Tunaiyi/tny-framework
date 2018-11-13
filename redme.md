@@ -10,7 +10,7 @@
     [包头|4字节][Option][Payload长度|4字节]
     PayLoad {
         [accessId|动态字节][number|动态字节][time|动态字节]
-        [wasteBytes][Body][wasteBytes]
+        [wasteBytes][Message][wasteBytes]
     }
     [checkcode|4字节]
     

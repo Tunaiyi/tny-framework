@@ -2,31 +2,19 @@ package com.tny.game.suite.initer;
 
 import com.tny.game.common.event.GlobalListenerHolder;
 import com.tny.game.common.event.annotation.Listener;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
-import org.springframework.beans.BeansException;
+import com.tny.game.common.lifecycle.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
-@Component
-public class EventDispatcherIniter implements ApplicationContextAware, ServerPrepareStart {
+public class EventDispatcherIniter implements AppPrepareStart {
 
+    @Resource
     private ApplicationContext context;
 
     @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
-    }
-
-    @Override
-    public void prepareStart() throws Exception {
+    public void prepareStart() {
         Map<String, Object> listenerMap = this.context.getBeansWithAnnotation(Listener.class);
         List<Object> listenerList = new ArrayList<>(listenerMap.values());
         Collections.sort(listenerList, (o1, o2) -> {

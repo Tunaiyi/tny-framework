@@ -1,6 +1,6 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.base.AppConfiguration;
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.plugins.ControllerPlugin;
 import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.command.listener.DispatchCommandListener;
@@ -19,7 +19,7 @@ public interface MessageDispatcherContext {
     /**
      * @return 获取应用配置
      */
-    AppConfiguration<?> getAppConfiguration();
+    AppContext getAppContext();
 
     /**
      * 获取 ControllerHolder

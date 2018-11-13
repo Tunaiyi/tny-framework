@@ -17,6 +17,7 @@ import org.slf4j.*;
 public class ControllerPluginHolder {
 
     private static final String EXPR_PREFIX = "@";
+    private static final String NULL_EXPR = "@null";
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
@@ -30,20 +31,22 @@ public class ControllerPluginHolder {
 
     @SuppressWarnings("unchecked")
     public ControllerPluginHolder(ControllerHolder controller, ControllerPlugin<?, ?> plugin, BeforePlugin annotation, ExprHolderFactory exprHolderFactory) {
-        this(controller, plugin, PluginTrigger.BEFORE, annotation.attribute(), exprHolderFactory);
+        this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
     public ControllerPluginHolder(ControllerHolder controller, ControllerPlugin<?, ?> plugin, AfterPlugin annotation, ExprHolderFactory exprHolderFactory) {
-        this(controller, plugin, PluginTrigger.AFTER, annotation.attribute(), exprHolderFactory);
+        this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
-    private ControllerPluginHolder(ControllerHolder controller, ControllerPlugin<?, ?> plugin, PluginTrigger trigger, String attributes, ExprHolderFactory exprHolderFactory) {
+    private ControllerPluginHolder(ControllerHolder controller, ControllerPlugin<?, ?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
         this.plugin = plugin;
         this.controller = controller;
         if (exprHolderFactory == null)
             exprHolderFactory = new GroovyExprHolderFactory();
-        if (StringUtils.startsWith(attributes, EXPR_PREFIX))
-            this.attributes = exprHolderFactory.create(attributes)
+        if (attributes.equals(NULL_EXPR))
+            this.attributes = null;
+        else if (StringUtils.startsWith(attributes, EXPR_PREFIX))
+            this.attributes = exprHolderFactory.create(attributes.substring(1))
                     .createExpr()
                     .execute(plugin.getAttributesClass());
         else

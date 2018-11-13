@@ -2,7 +2,7 @@ package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
 import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.AppPrepareStart;
 import com.tny.game.common.utils.version.Version;
 import com.tny.game.suite.utils.SuiteLog;
 import org.slf4j.*;
@@ -12,7 +12,7 @@ import org.springframework.context.*;
 import javax.annotation.Resource;
 import java.util.*;
 
-public abstract class FeatureService<DTO> implements ServerPrepareStart, ApplicationContextAware {
+public abstract class FeatureService<DTO> implements AppPrepareStart, ApplicationContextAware {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 

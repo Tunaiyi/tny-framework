@@ -1,17 +1,18 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.BindVoidEventBus;
 import com.tny.game.net.base.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.listener.*;
 import org.slf4j.*;
 
 import java.util.*;
+import java.util.concurrent.locks.*;
 
-import static com.tny.game.common.utils.ObjectAide.ifNull;
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
 
 /**
  * 抽象通道
@@ -37,11 +38,16 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
 
     private volatile NetEndpoint<UID> endpoint;
 
-    protected AbstractNetTunnel(Certificate<UID> certificate, TunnelMode mode) {
-        super(MessageIdCreator.TUNNEL_MESSAGE_ID_MARK);
+    private MessageFactory<UID> messageBuilderFactory;
+
+    protected Lock lock = new ReentrantLock();
+
+    protected AbstractNetTunnel(Certificate<UID> certificate, TunnelMode mode, MessageFactory<UID> messageBuilderFactory) {
+        super(MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
         this.mode = mode;
         this.certificate = certificate;
         this.id = NetAide.newTunnelId();
+        this.messageBuilderFactory = messageBuilderFactory;
     }
 
     @Override
@@ -81,7 +87,7 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
 
     @Override
     public boolean isAlive() {
-        return state == TunnelState.ALIVE;
+        return state == TunnelState.ACTIVATE;
     }
 
     @Override
@@ -112,7 +118,7 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
         if (this.certificate.isAutherized())
             throw new ValidatorFailException(NetResultCode.UNLOGIN, format("{} 已经授权", this));
         this.certificate = certificate;
-        this.authenticateEvent().notify(this);
+        buses().authenticateEvent().notify(this);
     }
 
     @Override
@@ -125,8 +131,12 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
             case RESPONSE:
                 try {
                     NetEndpoint<UID> endpoint = this.endpoint;
-                    if (endpoint != null)
-                        return endpoint.receive(this, message);
+                    if (endpoint != null) {
+                        if (endpoint.receive(this, message))
+                            return true;
+                        if (mode == MessageMode.REQUEST)
+                            this.sendAsyn(MessageContexts.respond(message.getHeader(), NetResultCode.NO_RECEIVE_MODE, message.getId()));
+                    }
                 } finally {
                     if (mode == MessageMode.RESPONSE)
                         this.callbackFuture(message);
@@ -139,54 +149,36 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
     }
 
     @Override
-    public SendContext<UID> sendAsyn(MessageSubject subject, MessageContext<UID> context) {
+    public SendContext<UID> sendAsyn(MessageContext<UID> context) {
         try {
             NetEndpoint<UID> endpoint = this.endpoint;
             if (endpoint != null)
-                return endpoint.sendAsyn(this, subject, context);
+                return endpoint.sendAsyn(this, context);
             else
-                return send(subject, context, 0);
+                return send(context, 0);
         } catch (Throwable e) {
             return ifNull(context, EmptySendContext.empty());
         }
     }
 
     @Override
-    public SendContext<UID> sendSync(MessageSubject subject, MessageContext<UID> context, long timeout) {
+    public SendContext<UID> sendSync(MessageContext<UID> context, long timeout) {
         NetEndpoint<UID> endpoint = this.endpoint;
         if (endpoint != null)
-            return endpoint.sendSync(this, subject, context, timeout);
+            return endpoint.sendSync(this, context, timeout);
         else
-            return send(subject, context, timeout);
+            return send(context, timeout);
     }
 
-    protected SendContext<UID> send(MessageSubject subject, MessageContext<UID> context, long waitForSendTimeout) throws NetException {
-        try {
-            Message<UID> message = this.createMessage(subject, context);
-            return write(message, context, waitForSendTimeout, this);
-        } catch (RuntimeException e) {
-            LOGGER.error("", e);
-            this.completeExceptionally(context, e);
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("", e);
-            this.completeExceptionally(context, e);
-            throw new NetException(e);
-        }
+    protected SendContext<UID> send(MessageContext<UID> context, long waitForSendTimeout) throws NetException {
+        Message<UID> message = this.createMessage(createMessageID(), context);
+        return write(message, context, waitForSendTimeout, this);
     }
 
     @Override
-    public SendContext<UID> write(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException {
-        try {
-            return doWrite(message, context, waitForSendTimeout, callback);
-        } catch (Throwable e) {
-            LOGGER.error("", e);
-            this.completeExceptionally(context, e);
-            throw e;
-        }
+    public Message<UID> createMessage(long messageId, MessageContext<UID> context) {
+        return this.messageBuilderFactory.create(messageId, context, this.getCertificate());
     }
-
-    protected abstract SendContext<UID> doWrite(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException;
 
     @Override
     public void ping() {
@@ -241,70 +233,63 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
             return true;
         if (this.isClosed())
             return false;
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.isAvailable())
                 return true;
             if (this.isClosed())
                 return false;
             if (!this.onOpen())
                 return false;
+        } finally {
+            lock.unlock();
         }
-        this.state = TunnelState.ALIVE;
-        this.openEvent().notify(this);
+        this.state = TunnelState.ACTIVATE;
+        buses().activateEvent().notify(this);
         return true;
     }
 
     @Override
     public void disconnect() {
-        synchronized (this) {
-            if (state == TunnelState.CLOSE || state == TunnelState.UNALIVE)
+        lock.lock();
+        try {
+            if (state == TunnelState.CLOSE || state == TunnelState.UNACTIVATED)
                 return;
             this.doDisconnect();
-            this.state = TunnelState.UNALIVE;
+            this.state = TunnelState.UNACTIVATED;
+        } finally {
+            lock.unlock();
         }
-        this.unaliveEvent().notify(this);
+        buses().unactivatedEvent().notify(this);
         NetEndpoint<UID> endpoint = this.endpoint;
         if (endpoint != null)
-            endpoint.onDisable(this);
+            endpoint.onUnactivated(this);
     }
 
     @Override
     public void close() {
         if (state == TunnelState.CLOSE)
             return;
-        synchronized (this) {
+        lock.lock();
+        try {
             if (state == TunnelState.CLOSE)
                 return;
             this.onClose();
             this.state = TunnelState.CLOSE;
+        } finally {
+            lock.unlock();
         }
-        this.closeEvent().notify(this);
+        buses().closeEvent().notify(this);
         NetEndpoint<UID> endpoint = this.endpoint;
         if (endpoint != null)
-            endpoint.onDisable(this);
+            endpoint.onUnactivated(this);
     }
-
-    protected abstract void onClose();
 
     protected abstract boolean onOpen();
 
+    protected abstract void onClose();
+
     protected abstract void doDisconnect();
-
-    protected BindVoidEventBus<TunnelAuthenticateListener, Tunnel> authenticateEvent() {
-        return TunnelEvents.ON_AUTHENTICATE;
-    }
-
-    protected BindVoidEventBus<TunnelOpenListener, Tunnel> openEvent() {
-        return TunnelEvents.ON_OPEN;
-    }
-
-    protected BindVoidEventBus<TunnelUnaliveListener, Tunnel> unaliveEvent() {
-        return TunnelEvents.ON_UNALIVE;
-    }
-
-    protected BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
-        return TunnelEvents.ON_CLOSE;
-    }
 
     @Override
     public boolean equals(Object o) {

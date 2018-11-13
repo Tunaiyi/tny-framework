@@ -1,8 +1,8 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.concurrent.CallableWithThrowable;
+import com.tny.game.common.concurrent.ThrowableCallable;
 import com.tny.game.common.concurrent.ExeUncheckedException;
-import com.tny.game.common.concurrent.RunnableWithThrow;
+import com.tny.game.common.concurrent.ThrowableRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public interface ExeAide {
         runQuietly(runnable, LOGGER);
     }
 
-    static void runUnchecked(RunnableWithThrow runnable, Logger logger) {
+    static void runUnchecked(ThrowableRunnable runnable, Logger logger) {
         try {
             runnable.run();
         } catch (Throwable e) {
@@ -37,7 +37,7 @@ public interface ExeAide {
         }
     }
 
-    static void runUnchecked(RunnableWithThrow runnable) {
+    static void runUnchecked(ThrowableRunnable runnable) {
         runUnchecked(runnable, LOGGER);
     }
 
@@ -58,16 +58,16 @@ public interface ExeAide {
         return callQuietly(callable, null, LOGGER);
     }
 
-    static <R> Optional<R> callUnchecked(CallableWithThrowable<R> callable, Logger logger) {
+    static <R> Optional<R> callUnchecked(ThrowableCallable<R> callable, Logger logger) {
         try {
             return Optional.ofNullable(callable.call());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.error("run {} exception", callable.getClass(), e);
             throw new ExeUncheckedException(e);
         }
     }
 
-    static <R> Optional<R> callUnchecked(CallableWithThrowable<R> callable) {
+    static <R> Optional<R> callUnchecked(ThrowableCallable<R> callable) {
         return callUnchecked(callable, LOGGER);
     }
 

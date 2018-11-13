@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date: 2018/8/31 下午10:23
  */
 
-public interface Message<UID> extends Serializable {
+public interface Message<UID> extends Serializable, Protocol {
 
     /**
      * @return 获取消息 ID
@@ -66,6 +66,11 @@ public interface Message<UID> extends Serializable {
      */
     default int getCode() {
         return this.getHeader().getCode();
+    }
+
+    @Override
+    default int getProtocolNumber() {
+        return getHeader().getProtocolNumber();
     }
 
     /**

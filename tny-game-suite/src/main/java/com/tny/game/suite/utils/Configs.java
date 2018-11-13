@@ -40,39 +40,40 @@ public interface Configs {
     //region 套件配置 suite.properties
     String SUITE_CONFIG_PATH = "suite.properties";
     Config SUITE_CONFIG = ConfigLib.getConfig(SUITE_CONFIG_PATH);
-    String SUITE_SCAN_PATHS /*                          */ = "tny.server.suite.scan_paths";
-    String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.server.suite.word.filter_path";
-    String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.server.suite.word.replace_symbol";
-    String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.server.suite.message_checker.random_seq";
-    String SUITE_MSG_CHECKER_CHECK_GROUPS /*            */ = "tny.server.suite.message_checker.check_groups";
-    String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.server.suite.launcher.profiles";
-    String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.server.suite.async_db.executor.step";
-    String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.server.suite.async_db.executor.wait_time";
-    String SUITE_ASYNC_DB_EXE_TRY_TIME /*               */ = "tny.server.suite.async_db.executor.try_time";
-    String SUITE_ASYNC_DB_EXE_THREAD_SIZE /*            */ = "tny.server.suite.async_db.executor.thread_size";
-    String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*            */ = "tny.server.suite.async_db.object_pool.keep_time";
-    String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*         */ = "tny.server.suite.async_db.object_pool.recycle_time";
-    String SUITE_TIME_TASK_PATH /*                      */ = "tny.server.suite.time_task.path";
-    String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.server.suite.base.default_item_model.path";
-    String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.server.suite.base.default_item_model.path";
-    String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.server.suite.base.item_type_class";
-    String SUITE_BASE_ABILITY_CLASS /*                  */ = "tny.server.suite.base.ability_class";
-    String SUITE_BASE_ACTION_CLASS /*                   */ = "tny.server.suite.base.action_class";
-    String SUITE_BASE_BEHAVIOR_CLASS /*                 */ = "tny.server.suite.base.behavior_class";
-    String SUITE_BASE_DEMAND_TYPE_CLASS /*              */ = "tny.server.suite.base.demand_type_class";
-    String SUITE_BASE_DEMAND_PARAM_CLASS /*             */ = "tny.server.suite.base.demand_param_class";
-    String SUITE_BASE_MODULE_CLASS /*                   */ = "tny.server.suite.base.module_class";
-    String SUITE_BASE_FEATURE_CLASS /*                  */ = "tny.server.suite.base.feature_class";
-    String SUITE_BASE_OPEN_MODE_CLASS /*                */ = "tny.server.suite.base.open_mode_class";
+    String SUITE_SCAN_PATHS /*                          */ = "tny.app.scan_paths";
+
+    String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.app.word.filter_path";
+    String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.app.word.replace_symbol";
+    String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.app.message_checker.random_seq";
+    String SUITE_MSG_CHECKER_CHECK_GROUPS /*            */ = "tny.app.message_checker.check_groups";
+    String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.app.launcher.profiles";
+    String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.app.async_db.executor.step";
+    String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.app.async_db.executor.wait_time";
+    String SUITE_ASYNC_DB_EXE_TRY_TIME /*               */ = "tny.app.async_db.executor.try_time";
+    String SUITE_ASYNC_DB_EXE_THREAD_SIZE /*            */ = "tny.app.async_db.executor.thread_size";
+    String SUITE_ASYNC_OBJ_POOL_KEEP_TIME /*            */ = "tny.app.async_db.object_pool.keep_time";
+    String SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME /*         */ = "tny.app.async_db.object_pool.recycle_time";
+    String SUITE_TIME_TASK_PATH /*                      */ = "tny.app.time_task.path";
+    String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.app.base.default_item_model.path";
+    String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.app.base.default_item_model.path";
+    String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.app.base.item_type_class";
+    String SUITE_BASE_ABILITY_CLASS /*                  */ = "tny.app.base.ability_class";
+    String SUITE_BASE_ACTION_CLASS /*                   */ = "tny.app.base.action_class";
+    String SUITE_BASE_BEHAVIOR_CLASS /*                 */ = "tny.app.base.behavior_class";
+    String SUITE_BASE_DEMAND_TYPE_CLASS /*              */ = "tny.app.base.demand_type_class";
+    String SUITE_BASE_DEMAND_PARAM_CLASS /*             */ = "tny.app.base.demand_param_class";
+    String SUITE_BASE_MODULE_CLASS /*                   */ = "tny.app.base.module_class";
+    String SUITE_BASE_FEATURE_CLASS /*                  */ = "tny.app.base.feature_class";
+    String SUITE_BASE_OPEN_MODE_CLASS /*                */ = "tny.app.base.open_mode_class";
 
     static Collection<String> getProfiles() {
-        String profiles = Configs.SUITE_CONFIG.getStr(Configs.SUITE_LAUNCHER_PROFILES);
+        String profiles = Configs.SUITE_CONFIG.getString(Configs.SUITE_LAUNCHER_PROFILES);
         return ImmutableSet.copyOf(StringUtils.split(profiles, ","));
     }
 
     static List<String> getScanPaths() {
         List<String> paths = new ArrayList<>();
-        String pathsWords = Configs.SUITE_CONFIG.getStr(Configs.SUITE_SCAN_PATHS);
+        String pathsWords = Configs.SUITE_CONFIG.getString(Configs.SUITE_SCAN_PATHS);
         if (pathsWords != null) {
             paths.addAll(Arrays.asList(StringUtils.split(pathsWords, ",")));
             paths.add("com.tny.game.suite");
@@ -82,7 +83,7 @@ public interface Configs {
 
     static String[] getScanPathArray() {
         List<String> paths = new ArrayList<>();
-        String pathsWords = Configs.SUITE_CONFIG.getStr(Configs.SUITE_SCAN_PATHS);
+        String pathsWords = Configs.SUITE_CONFIG.getString(Configs.SUITE_SCAN_PATHS);
         if (pathsWords != null) {
             paths.addAll(Arrays.asList(StringUtils.split(pathsWords, ",")));
             paths.add("com.tny.game.suite");
@@ -111,8 +112,6 @@ public interface Configs {
     String SERVER_SCOPE /*                  */ = NetConfigs.SERVER_SCOPE_TYPE;
     String SERVER_LOCAL /*                  */ = "tny.net.server.local";
     String SERVER_URL /*                    */ = "tny.net.server.url";
-    String PROJECT_NAME /*                  */ = "tny.net.server.project_name";
-    String PROJECT /*                       */ = "tny.net.server.project";
     //endregion
 
     //region 授权认证配置 authz.properties
@@ -169,7 +168,7 @@ public interface Configs {
 
 
     static LocalDate devDate(String key, LocalDate... defaultValue) {
-        String crateAt = DEVELOP_CONFIG.getStr(key);
+        String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
                 return DateTimeAide.DATE_TIME_MIN_FORMAT.parseLocalDate(crateAt);
@@ -181,7 +180,7 @@ public interface Configs {
     }
 
     static DateTime devDateTime(String key, DateTime... defaultValue) {
-        String crateAt = DEVELOP_CONFIG.getStr(key);
+        String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
                 return DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
@@ -193,7 +192,7 @@ public interface Configs {
     }
 
     static long devDateTime(String key, long defaultValue) {
-        String crateAt = DEVELOP_CONFIG.getStr(key);
+        String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
                 DateTime dateTime = DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);

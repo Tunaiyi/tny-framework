@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.filter;
 
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.AppPrepareStart;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.word.WordsFilter;
 import com.tny.game.net.command.dispatcher.MethodControllerHolder;
@@ -25,7 +25,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({GAME, TEXT_FILTER})
-public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String> implements ApplicationContextAware, ServerPrepareStart {
+public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String> implements ApplicationContextAware, AppPrepareStart {
 
     private List<WordsFilter> wordsFilters;
 

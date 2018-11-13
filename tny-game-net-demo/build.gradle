@@ -1,0 +1,36 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+buildscript {
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+configurations {
+   providedRuntime
+   all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+
+    implementation('org.springframework.boot:spring-boot-starter')
+    compile(
+            libs.'log4j-api',
+            libs.'log4j-core',
+            libs.'log4j-slf4j-impl',
+            libs.'disruptor',
+            libs.'spring-boot-starter-log4j2',
+            project(":tny-game-suite"),
+    )
+
+}

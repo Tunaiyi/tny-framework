@@ -1,10 +1,10 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.net.endpoint.NetEndpoint;
 import com.tny.game.net.exception.SendTimeoutException;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.common.CommonMessageFactory;
 import com.tny.game.net.transport.*;
-import com.tny.game.test.*;
+import com.tny.game.test.TestAide;
 import io.netty.channel.*;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.*;
@@ -17,10 +17,18 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.test.MockAide.captorAs;
-import static com.tny.game.test.TestAide.assertRunWithException;
+import static com.tny.game.test.MockAide.*;
+import static com.tny.game.test.TestAide.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -42,7 +50,6 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
     @Override
     protected T createTunnel(Certificate<Long> certificate) {
         T tunnel = newTunnel(certificate);
-        tunnel.setMessageFactory(new CommonMessageFactory<>());
         return tunnel;
     }
 
@@ -151,6 +158,7 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         Channel channel;
         ArgumentCaptor<NetMessage<Long>> messageCaptor;
         int times;
+        long respontsId = MessageAide.RESPONSE_TO_MESSAGE_MIN_ID;
 
         // 发送Message 有 endpoint
         tunnel = createBindTunnel();
@@ -161,7 +169,7 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
                 .addResponse("response", 1);
         messages.sendAsyn(tunnel);
         times = messages.getMessageSize();
-        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any(), any());
+        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any());
         verifyNoMoreInteractions(endpoint);
 
         // 发送Message 无 endpoint
@@ -184,10 +192,10 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
-                .addResponse("response", 1);
+                .addResponse("response", respontsId++);
         messages.sendAsyn(tunnel);
         times = messages.getMessageSize();
-        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any(), any());
+        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any());
 
         // 发送 willSendFuture
         tunnel = createUnbindTunnel();
@@ -195,9 +203,9 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
-                .addResponse("response", 2);
-        messages.contentsForEach(MessageContext::willSendFuture);
-        messages.contentsForEach(c ->
+                .addResponse("response", respontsId++);
+        messages.contextsForEach(MessageContext::willSendFuture);
+        messages.contextsForEach(c ->
                 TestAide.assertRunComplete("get send result", () -> assertFalse(c.getSendFuture().isDone())));
         times = messages.getMessageSize();
         mockChannelWrite(tunnel.getChannel());
@@ -212,8 +220,8 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
-                .addResponse("response", 2);
-        messages.contentsForEach(MessageContext::willSendFuture);
+                .addResponse("response", respontsId++);
+        messages.contextsForEach(MessageContext::willSendFuture);
         messages.sendAsyn(tunnel);
         times = messages.getMessageSize();
         // verify(channel, times(times)).newPromise();
@@ -226,9 +234,9 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
-                .addResponse("response", 2);
-        messages.contentsForEach(MessageContext::willSendFuture);
-        messages.contentsForEach(c ->
+                .addResponse("response", respontsId++);
+        messages.contextsForEach(MessageContext::willSendFuture);
+        messages.contextsForEach(c ->
                 TestAide.assertRunComplete("get send result", () -> assertFalse(c.getSendFuture().isDone())));
         mockChannelWrite(tunnel.getChannel());
         messages.sendSync(tunnel, 5000L);
@@ -240,10 +248,10 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         tunnel = createUnbindTunnel();
         channel = tunnel.getChannel();
         messages = new TestMessages(tunnel)
-                .addResponse("response", 2);
+                .addResponse("response", respontsId++);
         times = messages.getMessageSize();
         NetTunnel<Long> waitForSendTimeoutTunnel = tunnel;
-        messages.subjcetForEach(c -> assertRunWithException(() ->
+        messages.contextsForEach(c -> assertRunWithException(() ->
                 waitForSendTimeoutTunnel.sendSync(c, 1000L), SendTimeoutException.class));
         // verify(channel, times(times)).newPromise();
         verify(channel, times(times)).writeAndFlush(any());
@@ -258,7 +266,7 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
                 .addRequest("request 3");
         times = messages.getMessageSize();
         TestMessages responses = new TestMessages(tunnel);
-        messages.contentsForEach(MessageContext::willResponseFuture);
+        messages.requestContextsForEach(RequestContext::willResponseFuture);
         mockChannelWrite(tunnel.getChannel());
         messages.sendAsyn(tunnel);
         verify(channel, times(times)).writeAndFlush(messageCaptor.capture());
@@ -272,7 +280,7 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
                 .addRequest("request 1")
                 .addRequest("request 2")
                 .addRequest("request 3");
-        messages.contentsForEach(MessageContext::willResponseFuture);
+        messages.requestContextsForEach(RequestContext::willResponseFuture);
         mockChannelWrite(tunnel.getChannel());
         messages.sendAsyn(tunnel);
         assertWaitResponseException(messages, TimeoutException.class);
@@ -283,7 +291,7 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
                 .addRequest("request 1")
                 .addRequest("request 2")
                 .addRequest("request 3");
-        messages.contentsForEach(MessageContext::willResponseFuture);
+        messages.requestContextsForEach(RequestContext::willResponseFuture);
         mockChannelWriteException(tunnel.getChannel(), new TimeoutException());
         messages.sendAsyn(tunnel);
         assertWaitResponseException(messages, TimeoutException.class);

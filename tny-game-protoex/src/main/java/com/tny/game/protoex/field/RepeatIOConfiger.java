@@ -13,6 +13,6 @@ public interface RepeatIOConfiger<M> extends IOConfiger<M> {
      *
      * @return
      */
-    public IOConfiger<?> getElementConfiger();
+    IOConfiger<?> getElementConfiger();
 
 }

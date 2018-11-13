@@ -1,6 +1,7 @@
 package com.tny.game.net.message.protoex;
 
 import com.tny.game.common.buff.LinkedByteBuffer;
+import com.tny.game.common.unit.annotation.Unit;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.coder.Codec;
 import com.tny.game.net.message.common.*;
@@ -11,11 +12,13 @@ import java.util.Arrays;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
+@Unit
 public class ProtoExCodec<T> implements Codec<Message<T>> {
 
     public final static int MESSAGE_HEAD_ID = 1;
+    public final static int MESSAGE_BODY_ID = 2;
 
-    public MessageFactory<T> messageFactory;
+    private MessageFactory<T> messageFactory;
 
     public ProtoExCodec() {
         this(null);

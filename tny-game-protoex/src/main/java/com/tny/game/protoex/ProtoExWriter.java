@@ -4,8 +4,9 @@ import com.tny.game.common.buff.LinkedByteBuffer;
 import com.tny.game.protoex.annotations.TypeEncode;
 import com.tny.game.protoex.field.FieldFormat;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
+
+import static com.tny.game.common.utils.ObjectAide.as;
 
 /**
  * ProtoEx类型写入器
@@ -49,9 +50,9 @@ public class ProtoExWriter {
                 ProtoExIO.createNormal(ProtoExType.CHAR, value, TypeEncode.DEFAULT));
     }
 
-	/*
+    /*
      * ======================= byte =======================
-	 */
+     */
 
     public void writeByte(byte value) {
         ProtoExSchema<Byte> schema = ProtoExIO.getSchema(this.outputStream, byte.class);
@@ -152,8 +153,13 @@ public class ProtoExWriter {
 
     public void writeMessage(Object value, TypeEncode typeEncode) {
         ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, value.getClass());
-        schema.writeMessage(this.outputStream, value,
-                ProtoExIO.createNormal(ProtoExType.MESSAGE, value, typeEncode));
+        if (value instanceof Collection) {
+            schema.writeMessage(this.outputStream, value,
+                    ProtoExIO.createRepeat(as(value.getClass()), Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT));
+        } else {
+            schema.writeMessage(this.outputStream, value,
+                    ProtoExIO.createNormal(ProtoExType.MESSAGE, value, typeEncode));
+        }
     }
 
     /*
@@ -173,9 +179,9 @@ public class ProtoExWriter {
                 ProtoExIO.createRepeat(value.getClass(), elementType, packed, elTypeEncode, elFormat));
     }
 
-	/*
+    /*
      * ======================= map =======================
-	 */
+     */
 
     public <K, V> void writeMap(Map<?, ?> map, Class<K> keyType, Class<V> valueType) {
         this.writeMap(map, keyType, TypeEncode.DEFAULT, FieldFormat.DEFAULT, valueType, TypeEncode.DEFAULT, FieldFormat.DEFAULT);

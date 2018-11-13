@@ -4,11 +4,12 @@ import com.tny.game.common.collection.*;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.expr.groovy.GroovyExprHolderFactory;
 import com.tny.game.net.annotation.AuthProtocol;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.plugins.ControllerPlugin;
 import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.command.listener.DispatchCommandListener;
+import com.tny.game.net.command.plugins.ControllerPlugin;
 import com.tny.game.net.exception.CommandException;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.NetTunnel;
@@ -19,6 +20,7 @@ import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.net.message.MessageMode.*;
 
 /**
  * 抽象消息派发器
@@ -31,11 +33,6 @@ import static com.tny.game.common.utils.StringAide.*;
  * 实现对controllerMap的初始化,派发消息流程<br>
  */
 public abstract class AbstractMessageDispatcher implements MessageDispatcher {
-
-    /**
-     * Controller Map
-     */
-    private Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
 
     /**
      * 所有协议身法验证器
@@ -57,24 +54,33 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      */
     private final Map<Object, AuthenticateValidator<?>> authValidators = new CopyOnWriteMap<>();
 
-    private AppConfiguration appConfiguration;
+    /**
+     * Controller Map
+     */
+    private Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
 
-    public AbstractMessageDispatcher(AppConfiguration appConfiguration) {
-        this.appConfiguration = appConfiguration;
+    private ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+
+    private AppContext appContext;
+
+    public AbstractMessageDispatcher(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
+    @Override
+    public AppContext getAppContext() {
+        return appContext;
     }
 
     @Override
     public Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
-        if (controller == null)
-            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL);
-        return new MessageDispatchCommand(this, controller, tunnel, message);
-    }
-
-    @Override
-    public AppConfiguration getAppConfiguration() {
-        return appConfiguration;
+        if (controller != null)
+            return new MessageDispatchCommand(this, controller, tunnel, message);
+        if (message.getMode() == REQUEST)
+            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL, format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
+        return null;
     }
 
     @Override
@@ -194,7 +200,6 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      * @param object 控制器对象
      */
     protected void addController(Object object) {
-        ExprHolderFactory exprHolderFactory = appConfiguration.getExprHolderFactory();
         Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
         final ClassControllerHolder holder = new ClassControllerHolder(object, this, exprHolderFactory);
         for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {

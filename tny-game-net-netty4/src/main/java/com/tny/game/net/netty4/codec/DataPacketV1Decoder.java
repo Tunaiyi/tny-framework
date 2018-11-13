@@ -1,25 +1,26 @@
 package com.tny.game.net.netty4.codec;
 
 import com.tny.game.net.codec.*;
+import com.tny.game.net.codec.v1.DataPacketV1Config;
 import com.tny.game.net.exception.CodecException;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.coder.CodecContent;
-import com.tny.game.net.netty4.NettyAttrKeys;
+import com.tny.game.net.netty4.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import org.slf4j.*;
 
 import static com.tny.game.net.message.coder.CodecContent.*;
 
-public class DataPacketV1Decoder implements DataPacketDecoder {
+public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPacketDecoder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataPacketV1Decoder.class);
 
-    private CodecConfig config;
+    public DataPacketV1Decoder(DataPacketV1Config config) {
+        super(config);
+    }
 
-    public DataPacketV1Decoder(CodecConfig config) {
-        super();
-        this.config = config;
+    public DataPacketV1Decoder() {
     }
 
     @Override
@@ -52,65 +53,60 @@ public class DataPacketV1Decoder implements DataPacketDecoder {
             in.resetReaderIndex();
             return null;
         }
-        // 获取打包器
-        long accessId = NettyVarintCoder.readVarint64(in);
-        DataPackager packager = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
-        if (packager == null) {
-            packager = new DataPackager(accessId, config.getPacketConfig());
-            channel.attr(NettyAttrKeys.READ_PACKAGER).set(packager);
-        }
 
-        final int payloadSize = in.readInt();
-        // 检测 payload 长度
-        if (in.readableBytes() < payloadSize) {
-            in.resetReaderIndex();
-            return null;
-        }
-        return readPayload(packager, in, option, payloadSize);
+        return readPayload(channel, in, option, payloadLength);
     }
 
 
-    private Message<?> readPayload(DataPackager packager, ByteBuf in, byte option, int payloadSize) throws Exception {
+    private Message<?> readPayload(Channel channel, ByteBuf in, byte option, int payloadLength) throws Exception {
 
+        // 获取打包器
         int index = in.readerIndex();
-        int number = NettyVarintCoder.readVarint32(in);
-        int time = NettyVarintCoder.readVarint32(in);
+        long accessId = NettyVarintCoder.readVarint64(in);
+        DataPackager packager = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
+        if (packager == null) {
+            packager = new DataPackager(accessId, config);
+            NettyTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+            tunnel.setAccessId(accessId);
+            channel.attr(NettyAttrKeys.READ_PACKAGER).set(packager);
+        }
 
-        DataPacketConfig packetConfig = config.getPacketConfig();
+        int number = NettyVarintCoder.readVarint32(in);
+        long time = NettyVarintCoder.readVarint64(in);
 
         // 移动到当前包序号
         packager.goToAndCheck(number);
 
         boolean verifyEnable = isOption(option, OPTION_VERIFY);
-        if (packetConfig.isVerifyOpen() && !verifyEnable)
+        if (config.isVerifyEnable() && !verifyEnable)
             throw CodecException.causeDecode("packet need verify!");
         boolean encryptEnable = isOption(option, OPTION_ENCRYPT);
-        if (packetConfig.isEncryptOpen() && !encryptEnable)
+        if (config.isEncryptEnable() && !encryptEnable)
             throw CodecException.causeDecode("packet need encrypt!");
         boolean wasteBytesEnable = isOption(option, OPTION_WASTE_BYTES);
-        if (packetConfig.isWasteBytesOpen() && !wasteBytesEnable)
+        if (config.isWasteBytesEnable() && !wasteBytesEnable)
             throw CodecException.causeDecode("packet need waste bytes!");
 
         // 检测时间
         packager.checkPacketTime(time);
 
         //计算 body length
-        NettyWasteReader reader = new NettyWasteReader(packager, wasteBytesEnable, packetConfig);
-        int verifyLength = verifyEnable ? config.getVerifier().getCodeLength() : 0;
-        int bodyLength = payloadSize - verifyLength - (in.readerIndex() - index);
+        NettyWasteReader reader = new NettyWasteReader(packager, wasteBytesEnable, config);
+        int verifyLength = verifyEnable ? verifier.getCodeLength() : 0;
+        int bodyLength = payloadLength - verifyLength - (in.readerIndex() - index);
         // 读取废字节中的 bodyBytes
-        byte[] bodyBytes = reader.read(bodyLength);
+        LOGGER.debug("in payloadIndex start {}", in.readerIndex());
+        byte[] bodyBytes = reader.read(in, bodyLength);
+        LOGGER.debug("in payloadIndex end {}", in.readerIndex());
 
         // 加密
         if (encryptEnable) {
-            CodecCryptology cryptology = config.getCryptology();
-            bodyBytes = cryptology.decrypt(packager, bodyBytes);
+            bodyBytes = crypto.decrypt(packager, bodyBytes);
             CodecLogger.logBinary(LOGGER, "sendMessage body decryption |  body  {} ", bodyBytes);
         }
 
         // 加密
         if (verifyEnable) {
-            CodecVerifier verifier = config.getVerifier();
             byte[] verifyCode = new byte[verifyLength];
             in.readBytes(verifyCode);
             if (verifier.verify(packager, bodyBytes, time, verifyCode))
@@ -120,7 +116,7 @@ public class DataPacketV1Decoder implements DataPacketDecoder {
         // if ((option & CoderContent.COMPRESS_OPTION) > 0) {
         //     messageBytes = CompressUtils.decompressBytes(messageBytes);
         // }
-        return this.config.getMessageCodec().decode(bodyBytes);
+        return this.codec.decode(bodyBytes);
     }
 
 }

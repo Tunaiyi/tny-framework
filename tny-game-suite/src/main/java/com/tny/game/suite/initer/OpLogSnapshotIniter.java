@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.AppPrepareStart;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.utils.OpLogMapper;
 import com.tny.game.scanner.ClassSelector;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
-public class OpLogSnapshotIniter implements ServerPrepareStart {
+public class OpLogSnapshotIniter implements AppPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogSnapshotIniter.class);
 

@@ -85,7 +85,7 @@ class PropertiesConfig implements Config {
     }
 
     @Override
-    public String getStr(String key) {
+    public String getString(String key) {
         Object object = this.configMap.get(key);
         if (object != null)
             return String.valueOf(object);
@@ -95,13 +95,13 @@ class PropertiesConfig implements Config {
 
     @Override
     public String getStr(String key, String defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         return StringUtils.isBlank(value) ? defValue : value;
     }
 
     @Override
     public int getInt(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return 0;
         return Integer.parseInt(value);
@@ -109,7 +109,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public int getInt(String key, int defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Integer.parseInt(value);
@@ -117,7 +117,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public long getLong(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return 0;
         return Long.parseLong(value);
@@ -125,7 +125,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public long getLong(String key, long defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Long.parseLong(value);
@@ -133,7 +133,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public double getDouble(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return 0.0;
         return Double.parseDouble(value);
@@ -141,7 +141,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public double getDouble(String key, double defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Double.parseDouble(value);
@@ -149,7 +149,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public float getFloat(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return 0.0F;
         return Float.parseFloat(value);
@@ -157,7 +157,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public float getFloat(String key, float defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Float.parseFloat(value);
@@ -165,13 +165,13 @@ class PropertiesConfig implements Config {
 
     @Override
     public boolean getBoolean(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         return !StringUtils.isBlank(value) && Boolean.parseBoolean(value);
     }
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Boolean.parseBoolean(value);
@@ -179,7 +179,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public byte getByte(String key) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return 0;
         return Byte.parseByte(value);
@@ -187,7 +187,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public byte getByte(String key, byte defValue) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return defValue;
         return Byte.parseByte(value);
@@ -253,7 +253,7 @@ class PropertiesConfig implements Config {
 
     @Override
     public <E extends Enum<E>> E getEnum(String key, Class<E> enumClass) {
-        String value = this.getStr(key);
+        String value = this.getString(key);
         if (StringUtils.isBlank(value))
             return null;
         return Enum.valueOf(enumClass, value);

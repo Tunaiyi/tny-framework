@@ -34,15 +34,16 @@ public class ProtoExCodecTest {
     private ProtoExMessageFactory<Long> factory = new ProtoExMessageFactory<>();
 
     private Message<Long> createMessage(Object body, Object attachment) {
-        return factory.create(1L, MessageSubjectBuilder.requestBuilder(ProtocolAide.protocol(100_100)).setBody(body).build(),
-                attachment, Certificates.createAutherized(123456L, uid, Instant.now()));
+        return factory.create(1L, MessageContexts.<Long>request(ProtocolAide.protocol(100_100), body)
+                        .setAttachment(attachment),
+                Certificates.createAutherized(123456L, uid, Instant.now()));
     }
 
     @Test
     public void encodeDecode() {
         TestMsgOject body = new TestMsgOject(100, "I am test body!");
         TestMsgOject attachment = new TestMsgOject(100, "I am test attachment!");
-        byte[] data  = null;
+        byte[] data = null;
         BodyBytes bodyBytes;
 
 

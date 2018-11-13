@@ -13,7 +13,7 @@ public class TunnelException extends NetException {
         super(message);
     }
 
-    public TunnelException(Throwable cause, String message) {
+    public TunnelException(String message, Throwable cause) {
         super(message, cause);
     }
 

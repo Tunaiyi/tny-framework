@@ -1,13 +1,10 @@
 package com.tny.game.net.netty4;
 
-import com.google.common.base.MoreObjects;
-import com.tny.game.common.utils.URL;
 import com.tny.game.net.exception.TunnelException;
+import com.tny.game.net.message.MessageFactory;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 import org.slf4j.*;
-
-import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 2017/9/11.
@@ -16,33 +13,28 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClientTunnel.class);
 
-    private URL url;
-
     private NettyClient<UID> client;
 
-    public NettyClientTunnel(NettyClient<UID> client, Certificate<UID> certificate, Channel channel) {
-        super(null, certificate, TunnelMode.CLIENT);
-        this.client = client;
-    }
+    private int failedTimes = 0;
 
-    public URL getUrl() {
-        return url;
+    public NettyClientTunnel(NettyClient<UID> client, Certificate<UID> certificate, MessageFactory<UID> messageBuilderFactory) {
+        super(null, certificate, TunnelMode.CLIENT, messageBuilderFactory);
+        this.client = client;
     }
 
     void reset() {
         if (state == TunnelState.INIT)
             return;
-        synchronized (this) {
+        this.lock.lock();
+        try {
             if (state == TunnelState.INIT)
                 return;
-            if (!this.isClosed())
-                this.close();
+            if (!this.isAvailable())
+                this.doDisconnect();
             this.state = TunnelState.INIT;
+        } finally {
+            this.lock.unlock();
         }
-    }
-
-    public void borrow() {
-
     }
 
     @Override
@@ -55,14 +47,31 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
                     this.channel = channel;
                     channel.attr(NettyAttrKeys.TUNNEL).set(this);
                     client.connectSuccess(this);
+                    this.resetFailedTimes();
                     return true;
                 }
+                this.failedTimes++;
             } catch (Exception e) {
-                throw new TunnelException(format("{} failed to connect to server", this, e));
+                this.failedTimes++;
+                this.disconnect();
+                throw new TunnelException(e, "{} failed to connect to server", this);
             }
         }
         LOGGER.warn("{} is available", this);
         return false;
+    }
+
+    int getFailedTimes() {
+        return failedTimes;
+    }
+
+    void resetFailedTimes() {
+        this.failedTimes = 0;
+    }
+
+    @Override
+    public String toString() {
+        return "NettyClientTunnel{" + "channel=" + channel + '}';
     }
 
     // @SuppressWarnings("unchecked")
@@ -175,13 +184,14 @@ public class NettyClientTunnel<UID> extends NettyTunnel<UID> {
     //         future.get(timeout, TimeUnit.MILLISECONDS);
     //     }
     // }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("channel", channel)
-                .add("url", url)
-                .add("state", state)
-                .toString();
-    }
+    //
+    // @Override
+    // public String toString() {
+    //     return MoreObjects.toStringHelper(this)
+    //             .add("channel", channel)
+    //             .add("url", url)
+    //             .add("state", state)
+    //             .toString();
+    //
+    // }
 }

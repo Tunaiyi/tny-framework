@@ -1,38 +1,21 @@
 package com.tny.game.suite.login;
 
 import com.google.common.collect.Range;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
 import com.tny.game.common.concurrent.CoreThreadFactory;
+import com.tny.game.common.lifecycle.*;
 import com.tny.game.net.exception.CommandException;
 import com.tny.game.suite.core.GameInfo;
 import com.tny.game.suite.utils.SuiteResultCode;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.slf4j.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.tny.game.suite.SuiteProfiles.*;
-
-@Component
-@Profile({GAME})
-public class AccountService implements ServerPrepareStart {
+public class AccountService implements AppPrepareStart {
 
     @Resource
     private AccountManager accountManager;
@@ -232,7 +215,7 @@ public class AccountService implements ServerPrepareStart {
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_6);
     }
 
     @Override

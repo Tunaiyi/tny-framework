@@ -11,8 +11,18 @@ import static com.tny.game.net.transport.CertificateStatus.*;
 
 public final class Certificates {
 
-    public static final String DEFAULT_USER_TYPE = "#USER";
+    public static final String DEFAULT_USER_TYPE = "user";
     public static final String UNLOGIN_USER_TYPE = "#UNLOGIN";
+
+    public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID) {
+        Throws.checkArgument(id > 0, "loginId must > 0");
+        return createAutherized(id, userID, DEFAULT_USER_TYPE, Instant.now());
+    }
+
+    public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, String userType) {
+        Throws.checkArgument(id > 0, "loginId must > 0");
+        return createAutherized(id, userID, userType, Instant.now());
+    }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, Instant authenticateAt) {
         Throws.checkArgument(id > 0, "loginId must > 0");

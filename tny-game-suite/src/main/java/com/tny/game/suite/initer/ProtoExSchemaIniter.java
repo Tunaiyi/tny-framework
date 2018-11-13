@@ -4,7 +4,7 @@ import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.AppPrepareStart;
 import com.tny.game.net.message.protoex.ProtoExMessageHeader;
 import com.tny.game.protoex.ProtoExSchema;
 import com.tny.game.protoex.annotations.ProtoEx;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinTask;
 
-public class ProtoExSchemaIniter implements ServerPrepareStart {
+public class ProtoExSchemaIniter implements AppPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proto");
 

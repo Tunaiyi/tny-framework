@@ -27,7 +27,7 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class ApplicationLifecycleProcessor {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ServerLauncher.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(SuitApplication.class);
 
     private static Map<Class<?>, List<Lifecycle>> lifecycleMap = new HashMap<>();
 
@@ -70,15 +70,15 @@ public class ApplicationLifecycleProcessor {
     }
 
     public void onPrepareStart(boolean errorContinue) throws Exception {
-        this.process("prepareStart", ServerPrepareStart.class, ServerPrepareStart::prepareStart, errorContinue);
+        this.process("prepareStart", AppPrepareStart.class, AppPrepareStart::prepareStart, errorContinue);
     }
 
     public void onPostStart(boolean errorContinue) throws Exception {
-        this.process("postStart", ServerPostStart.class, ServerPostStart::postStart, errorContinue);
+        this.process("postStart", AppPostStart.class, AppPostStart::postStart, errorContinue);
     }
 
     public void onClosed(boolean errorContinue) throws Exception {
-        this.process("onClosed", ServerClosed.class, ServerClosed::onClosed, errorContinue);
+        this.process("onClosed", AppClosed.class, AppClosed::onClosed, errorContinue);
     }
 
     @FunctionalInterface
@@ -89,9 +89,9 @@ public class ApplicationLifecycleProcessor {
     }
 
     public static void loadHandler(ApplicationContext context) {
-        loadHandler(ServerPrepareStart.class, ServerPrepareStart::getPrepareStarter, context);
-        loadHandler(ServerPostStart.class, ServerPostStart::getPostStarter, context);
-        loadHandler(ServerClosed.class, ServerClosed::getPostCloser, context);
+        loadHandler(AppPrepareStart.class, AppPrepareStart::getPrepareStarter, context);
+        loadHandler(AppPostStart.class, AppPostStart::getPostStarter, context);
+        loadHandler(AppClosed.class, AppClosed::getPostCloser, context);
     }
 
     private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter, ApplicationContext context) {

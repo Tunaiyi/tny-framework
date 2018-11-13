@@ -1,40 +1,52 @@
 package com.tny.game.net.netty4;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.utils.URL;
+import com.tny.game.net.base.PostConnect;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.message.MessageSubject;
-import com.tny.game.net.session.AbstractSession;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 import org.slf4j.*;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
+import java.util.concurrent.locks.Lock;
 
 import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 import static com.tny.game.net.utils.NetConfigs.*;
 
 /**
  * Created by Kun Yang on 2018/8/28.
  */
-public class NettyClient<UID> extends AbstractSession<UID> implements Client<UID> {
+public class NettyClient<UID> extends AbstractEndpoint<UID> implements Client<UID> {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
+
+    private static final ExecutorService CONNECT_EXECUTOR_SERVICE = new StandardThreadExecutor(1, 30,
+            20000, new CoreThreadFactory("NettyClientConnect"));
 
     private AtomicInteger indexCounter = new AtomicInteger(0);
 
     private URL url;
 
+    private ClientState state = ClientState.INIT;
+
     private List<NettyClientTunnel<UID>> tunnels = ImmutableList.of();
 
-    private NettyClientBootstrap<UID> connector;
+    private NettyClientGuide guide;
 
-    private Predicate<Tunnel<UID>> postConnect;
+    private PostConnect<UID> postConnect;
 
-    public NettyClient(Certificate<UID> certificate) {
-        super(certificate);
+    public NettyClient(NettyClientGuide guide, URL url, Certificate<UID> certificate, PostConnect<UID> postConnect) {
+        super(certificate, MessageIdCreator.ENDPOINT_SENDER_MESSAGE_ID_MARK);
+        this.url = url;
+        this.guide = guide;
+        this.postConnect = postConnect;
     }
 
     @Override
@@ -42,65 +54,170 @@ public class NettyClient<UID> extends AbstractSession<UID> implements Client<UID
         return url;
     }
 
+    private long getConnectTimeout() {
+        return url.getParameter(CONNECT_TIMEOUT_URL_PARAM, CONNECT_TIMEOUT_DEFAULT_VALUE);
+    }
+
+    private int getConnectionSize() {
+        return url.getParameter(CONNECTION_SIZE_URL_PARAM, CONNECTION_SIZE_DEFAULT_VALUE);
+    }
+
+    private boolean getInitConnectAsyn() {
+        return url.getParameter(INIT_CONNECT_ASYN_URL_PARAM, INIT_CONNECT_ASYN_DEFAULT_VALUE);
+    }
+
     @Override
-    public void offline() {
+    public void disconnect() {
         synchronized (this) {
             for (NetTunnel<UID> tunnel : this.tunnels) {
                 if (!tunnel.isClosed())
                     tunnel.close();
             }
             this.tunnels.clear();
-            this.setOffline();
         }
     }
 
     @Override
     public void heartbeat() {
-        for (NetTunnel<UID> tunnel : tunnels)
-            tunnel.ping();
+        for (NetTunnel<UID> tunnel : tunnels) {
+            if (tunnel.isAvailable())
+                tunnel.ping();
+        }
+    }
+
+    synchronized void open() {
+        int size = getConnectionSize();
+        List<NettyClientTunnel<UID>> tunnels = new ArrayList<>();
+        for (int index = 0; index < size; index++) {
+            NettyClientTunnel<UID> tunnel = new NettyClientTunnel<>(this, certificate, guide.getMessageFactory());
+            tunnels.add(tunnel);
+        }
+        this.tunnels = ImmutableList.copyOf(tunnels);
+        this.initTunnels(tunnels);
+        this.state = ClientState.OPEN;
+        buses().openEvent().notify(this);
+    }
+
+    private void initTunnels(List<NettyClientTunnel<UID>> tunnels) {
+        boolean initAsyn = getInitConnectAsyn();
+        for (NettyClientTunnel<UID> tunnel : tunnels) {
+            openTunnel(tunnel, initAsyn);
+        }
+    }
+
+    private void openTunnel(NettyClientTunnel<UID> tunnel, boolean asyn) {
+        if (this.isClosed())
+            return;
+        if (asyn) {
+            CONNECT_EXECUTOR_SERVICE.submit(() -> connectTunnel(tunnel));
+        } else {
+            tunnel.open();
+        }
+    }
+
+    private void connectTunnel(NettyClientTunnel<UID> tunnel) {
+        if (tunnel.isAvailable())
+            return;
+        Lock lock = tunnel.getLock();
+        lock.lock();
+        try {
+            if (tunnel.isAvailable())
+                return;
+            LOGGER.info("try connect {}", this);
+            if (tunnel.open()) {
+                buses().activateEvent().notify(this, tunnel);
+            }
+        } catch (Exception e) {
+            LOGGER.error("{} reconnect {} exception", this, tunnel, e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void reconnectTunnel(NettyClientTunnel<UID> tunnel) {
+        if (this.isClosed())
+            return;
+        Lock lock = tunnel.getLock();
+        if (lock.tryLock()) {
+            try {
+                int times = tunnel.getFailedTimes();
+                if (times >= 3) {
+                    LOGGER.warn("{} reconnect {} failed times {} >= 3, stop reconnect", this, tunnel, times);
+                    tunnel.resetFailedTimes();
+                    return;
+                }
+                LOGGER.info("{} is ready to submit reconnect task", this, tunnel, times);
+                if (!tunnel.isAvailable() && tunnel.getState() != TunnelState.INIT) {
+                    LOGGER.info("{} submit reconnect task", this, tunnel, times);
+                    tunnel.reset();
+                    CONNECT_EXECUTOR_SERVICE.submit(() -> connectTunnel(tunnel));
+                }
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            LOGGER.info("{} reconnect try lock failed", this, tunnel);
+        }
     }
 
     @Override
-    protected NetTunnel<UID> selectTunnel(MessageSubject subject, MessageContext<UID> messageContext) {
+    protected NetTunnel<UID> selectTunnel(MessageContext<UID> messageContext) {
         int startIndex = indexCounter.incrementAndGet();
         int size = tunnels.size();
         if (size == 0)
             throw new SessionException(format("{} no tunnels exist", this));
         for (int index = startIndex; index < startIndex + size; index++) {
-            NetTunnel<UID> tunnel = tunnels.get(index % size);
+            NettyClientTunnel<UID> tunnel = tunnels.get(index % size);
             if (tunnel.isAvailable())
                 return tunnel;
+            else
+                reconnectTunnel(tunnel);
         }
-        throw new SessionException(format("select tunnel {} is close", this));
+        throw new SessionException(format("{} not available tunnel", this));
     }
 
-    @SuppressWarnings("unchecked")
     Channel connect() throws NetException {
-        return connector.connect(url, getConnectTimeout());
+        return guide.connect(url, getConnectTimeout());
     }
 
     void connectSuccess(NettyClientTunnel<UID> tunnel) {
         if (this.tunnels.contains(tunnel)) {
-            if (!postConnect.test(tunnel))
-                throw new TunnelException(format("{} tunnel post connect failed", tunnel));
+            try {
+                if (!postConnect.onConnected(tunnel))
+                    throw new TunnelException("{} tunnel post connect failed", tunnel);
+            } catch (Exception e) {
+                throw new TunnelException(e, "{} tunnel post connect failed", tunnel);
+            }
             if (!tunnel.isBind())
                 tunnel.bind(this);
         }
     }
 
     @Override
-    protected NetTunnel<UID> doAcceptTunnel(NetTunnel<UID> newTunnel) throws ValidatorFailException {
-        throw new UnsupportedOperationException();
+    public void onUnactivated(NetTunnel<UID> tunnel) {
+        buses().unactivatedEvent().notify(this, tunnel);
+        reconnectTunnel((NettyClientTunnel<UID>) tunnel);
     }
-
-    private long getConnectTimeout() {
-        return url.getParameter(CONNECT_TIMEOUT_URL_PARAM, CONNECT_TIMEOUT_DEFAULT_VALUE);
-    }
-
 
     @Override
-    public void onDisable(NetTunnel<UID> tunnel) {
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("url", url)
+                .toString();
+    }
 
+    @Override
+    public boolean isClosed() {
+        return this.state == ClientState.CLOSE;
+    }
+
+    @Override
+    public synchronized void close() {
+        if (this.state != ClientState.CLOSE) {
+            this.state = ClientState.CLOSE;
+            this.disconnect();
+            buses().closeEvent().notify(this);
+        }
     }
 
 }

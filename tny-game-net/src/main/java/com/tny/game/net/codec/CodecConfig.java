@@ -6,27 +6,26 @@ import com.tny.game.net.message.coder.Codec;
 /**
  * Created by Kun Yang on 2018/8/13.
  */
-public class CodecConfig {
+public interface CodecConfig {
 
-    private DataPacketConfig packetConfig;
-    private Codec<Message<?>> messageCodec;
-    private CodecVerifier verifier;
-    private CodecCryptology cryptology;
+    // /**
+    //  * @return 数据打包包配置
+    //  */
+    // DataPacketConfig getPacketConfig();
 
-    public Codec<Message<?>> getMessageCodec() {
-        return messageCodec;
-    }
+    /**
+     * @return 消息编解码器
+     */
+    Codec<Message<?>> getMessageCodec();
 
-    public DataPacketConfig getPacketConfig() {
-        return packetConfig;
-    }
+    /**
+     * @return 数据包校验器
+     */
+    CodecVerifier getVerifier();
 
-    public CodecVerifier getVerifier() {
-        return verifier;
-    }
-
-    public CodecCryptology getCryptology() {
-        return cryptology;
-    }
+    /**
+     * @return 数据包加密器
+     */
+    CodecCrypto getCryptology();
 
 }

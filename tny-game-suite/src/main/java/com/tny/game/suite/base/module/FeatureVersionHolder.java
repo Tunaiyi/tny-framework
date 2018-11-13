@@ -112,8 +112,8 @@ public class FeatureVersionHolder {
     }
 
     private FeatureVersionHolder initConfigVersion(Config config, String key, Supplier<Version> versionGetter, Consumer<Version> versionSetter) {
-        this.doUpdateVersion(config.getStr(key), versionGetter, versionSetter, false);
-        config.addConfigReload(c -> this.doUpdateVersion(config.getStr(key), versionGetter, versionSetter, true));
+        this.doUpdateVersion(config.getString(key), versionGetter, versionSetter, false);
+        config.addConfigReload(c -> this.doUpdateVersion(config.getString(key), versionGetter, versionSetter, true));
         return this;
     }
 

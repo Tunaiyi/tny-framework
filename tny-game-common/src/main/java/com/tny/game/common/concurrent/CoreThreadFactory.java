@@ -1,10 +1,8 @@
 package com.tny.game.common.concurrent;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
-import java.util.concurrent.ForkJoinWorkerThread;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFactory {
@@ -51,8 +49,7 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
     @Override
     public Thread newThread(Runnable paramRunnable) {
         Thread localThread = new Thread(this.group, paramRunnable, threadName(), 0L);
-        if (this.daemon)
-            localThread.setDaemon(this.daemon);
+        localThread.setDaemon(this.daemon);
         if (localThread.getPriority() != 5)
             localThread.setPriority(5);
         return localThread;

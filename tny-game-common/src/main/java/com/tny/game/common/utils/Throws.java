@@ -22,6 +22,18 @@ public class Throws {
         throw creator.create(format(errorMessageTemplate, errorMessageArgs), e);
     }
 
+    public static void checkClass(Object object, Class<?> clazz) {
+        if (!clazz.isInstance(object)) {
+            throw new ClassCastException(format("{} not instance of {}", object, clazz));
+        }
+    }
+
+    public static void checkInstanceOf(Object object, Class<?> clazz, String errorMessageTemplate, Object... errorMessageArgs) {
+        if (!clazz.isInstance(object)) {
+            throw new ClassCastException(format(errorMessageTemplate, errorMessageArgs));
+        }
+    }
+
     /**
      * Ensures the truth of an expression involving one or more parameters to the calling method.
      *

@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4.codec;
 
-import com.tny.game.net.codec.*;
+import com.tny.game.net.codec.DataPackager;
+import com.tny.game.net.codec.v1.DataPacketV1Config;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -11,16 +12,13 @@ import io.netty.buffer.ByteBuf;
  */
 public class NettyWasteReader extends NettyBytesWaster {
 
-    public NettyWasteReader(DataPackager packager, boolean waste, DataPacketConfig config) {
+    public NettyWasteReader(DataPackager packager, boolean waste, DataPacketV1Config config) {
         super(packager, waste, config);
     }
 
-    @Override
-    protected void setWasteBuffer(ByteBuf byteBuf) {
-        wasteBuffer.skipBytes(fullWasteByteSize);
-    }
 
-    public byte[] read(int length) {
+    public byte[] read(ByteBuf wasteBuffer, int length) {
+        wasteBuffer.skipBytes(fullWasteByteSize);
         byte[] bytes = new byte[length - totalWasteByteSize];
         if (rightShiftBits == 0) {
             wasteBuffer.readBytes(bytes);

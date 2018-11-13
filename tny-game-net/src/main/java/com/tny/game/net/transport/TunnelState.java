@@ -17,14 +17,14 @@ public enum TunnelState implements EnumID<Integer> {
     INIT(1),
 
     /**
-     * 存活
+     * 激活
      **/
-    ALIVE(2),
+    ACTIVATE(2),
 
     /**
-     * 不可以
+     * 未激活
      */
-    UNALIVE(3),
+    UNACTIVATED(3),
 
     /**
      * 关闭
@@ -43,7 +43,6 @@ public enum TunnelState implements EnumID<Integer> {
     public Integer getID() {
         return id;
     }
-
 
 
 }

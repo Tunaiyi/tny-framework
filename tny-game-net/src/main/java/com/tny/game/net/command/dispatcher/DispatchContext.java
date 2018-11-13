@@ -55,12 +55,12 @@ public abstract class DispatchContext extends InvokeContext implements Command {
 
     @Override
     public String getAppType() {
-        return context.getAppConfiguration().getAppType();
+        return context.getAppContext().getAppType();
     }
 
     @Override
     public String getScopeType() {
-        return context.getAppConfiguration().getScopeType();
+        return context.getAppContext().getScopeType();
     }
 
     @Override

@@ -1,8 +1,7 @@
 package com.tny.game.net.transport;
 
+import com.tny.game.net.endpoint.NetEndpoint;
 import com.tny.game.net.exception.ValidatorFailException;
-
-import java.util.Optional;
 
 /**
  * Created by Kun Yang on 2017/3/26.
@@ -49,11 +48,6 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
      * @return 返回是否绑定成功
      */
     boolean bind(NetEndpoint<UID> endpoint);
-
-    /**
-     * @return 获取绑定中断
-     */
-    Optional<Endpoint<UID>> getBindEndpoint();
 
     /**
      * 设置访问 Id

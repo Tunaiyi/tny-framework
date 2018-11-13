@@ -1,11 +1,11 @@
 package com.tny.game.net.base.listener;
 
 
-import com.tny.game.net.base.ServerBootstrap;
+import com.tny.game.net.base.ServerGuide;
 
 @FunctionalInterface
 public interface ServerClosedListener {
 
-    void onClosed(ServerBootstrap serverBootstrap);
+    void onClosed(ServerGuide serverBootstrap);
 
 }

@@ -4,13 +4,13 @@ package com.tny.game.common.lifecycle;
  * 启动后初始化器
  * Created by Kun Yang on 16/7/24.
  */
-public final class PrepareStarter extends Lifecycle<PrepareStarter, ServerPrepareStart> {
+public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareStart> {
 
-    public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz) {
+    public static PrepareStarter value(Class<? extends AppPrepareStart> clazz) {
         return value(clazz, LifecycleLevel.CUSTOM_LEVEL_5);
     }
 
-    public static PrepareStarter value(Class<? extends ServerPrepareStart> clazz, LifecyclePriority lifeCycleLevel) {
+    public static PrepareStarter value(Class<? extends AppPrepareStart> clazz, LifecyclePriority lifeCycleLevel) {
         PrepareStarter lifecycle = getLifecycle(PrepareStarter.class, clazz);
         if (lifecycle == null) {
             lifecycle = new PrepareStarter(clazz, lifeCycleLevel);
@@ -19,7 +19,7 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, ServerPrepar
         return lifecycle;
     }
 
-    private PrepareStarter(Class<? extends ServerPrepareStart> initerClass, LifecyclePriority lifeCycleLevel) {
+    private PrepareStarter(Class<? extends AppPrepareStart> initerClass, LifecyclePriority lifeCycleLevel) {
         super(initerClass, lifeCycleLevel);
     }
 

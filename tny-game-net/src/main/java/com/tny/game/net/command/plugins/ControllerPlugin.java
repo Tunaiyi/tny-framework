@@ -1,9 +1,11 @@
 package com.tny.game.net.command.plugins;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
 import com.tny.game.net.command.dispatcher.InvokeContext;
 import com.tny.game.net.transport.Tunnel;
 import com.tny.game.net.message.Message;
 
+@UnitInterface
 public interface ControllerPlugin<UID, O> {
 
     /**

@@ -1,21 +1,17 @@
 package protoex.test;
 
-import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.common.collection.MapBuilder;
-import com.tny.game.protoex.ProtoExReader;
-import com.tny.game.protoex.ProtoExWriter;
+import com.tny.game.common.utils.BytesAide;
+import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.TypeEncode;
 import com.tny.game.protoex.field.FieldFormat;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.commons.collections4.CollectionUtils;
+import org.junit.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class ProtoExTest {
 
@@ -480,6 +476,22 @@ public class ProtoExTest {
         ProtoExReader reader = this.createReader(data);
 
         this.read(reader, this.bytesValue);
+    }
+
+
+    @Test
+    public void writeMessageWithCollection() {
+        ProtoExWriter writer = this.createWrite();
+        Collection<Object> writeMessage = Arrays.asList(1000, "OK");
+        writer.writeMessage(writeMessage, TypeEncode.EXPLICIT);
+
+        byte[] data = writer.toByteArray();
+        System.out.println(BytesAide.toHexString(data));
+
+        System.out.println(data.length);
+        ProtoExReader reader = this.createReader(data);
+        Collection<Object> readMessage = reader.readMessage();
+        Assert.assertTrue(CollectionUtils.isEqualCollection(writeMessage, readMessage));
     }
 
     private void write(ProtoExWriter writer, byte[][] values) {

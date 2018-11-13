@@ -2,30 +2,20 @@ package com.tny.game.suite.core;
 
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.base.log.LogName;
-import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.config.ConfigLoader;
 import com.tny.game.common.formula.DateTimeEx;
+import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.utils.DateTimeAide;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.net.base.AppType;
-import com.tny.game.net.base.ScopeType;
-import com.tny.game.net.base.ScopeTypes;
+import com.tny.game.net.base.*;
 import com.tny.game.net.utils.NetConfigs;
-import com.tny.game.suite.utils.Configs;
-import com.tny.game.suite.utils.DateTimeConverter;
+import com.tny.game.suite.utils.*;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.*;
+import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class GameInfo {
 
@@ -39,14 +29,14 @@ public class GameInfo {
 
     private static Map<Integer, GameInfo> GAMES_INFO_MAP;
 
-    private DateTime openDate;
-
     private int serverID;
-
-    private boolean mainServer = false;
 
     private boolean register;
 
+    private boolean mainServer = false;
+
+    private DateTime openDate;
+    
     private List<InetConnector> publicConnectors;
 
     private List<InetConnector> privateConnectors;
@@ -54,7 +44,7 @@ public class GameInfo {
     private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
     static {
-        String scopeStr = NetConfigs.NET_CONFIG.getStr(Configs.SERVER_SCOPE);
+        String scopeStr = NetConfigs.NET_CONFIG.getString(Configs.SERVER_SCOPE);
         GameInfo.local = NetConfigs.NET_CONFIG.getStr(Configs.SERVER_LOCAL, "zh-cn");
         GameInfo.scopeType = ScopeTypes.of(scopeStr.toUpperCase());
         LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
@@ -179,7 +169,7 @@ public class GameInfo {
     }
 
     public String getVersion() {
-        return Configs.VERSION_CONFIG.getStr(Configs.VERSION_KEY);
+        return Configs.VERSION_CONFIG.getString(Configs.VERSION_KEY);
     }
 
     public int getVersionNumber() {

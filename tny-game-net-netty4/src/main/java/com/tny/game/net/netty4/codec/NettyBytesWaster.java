@@ -1,8 +1,7 @@
 package com.tny.game.net.netty4.codec;
 
-import com.tny.game.common.utils.Throws;
-import com.tny.game.net.codec.*;
-import io.netty.buffer.ByteBuf;
+import com.tny.game.net.codec.DataPackager;
+import com.tny.game.net.codec.v1.DataPacketV1Config;
 
 /**
  * <p>
@@ -23,9 +22,7 @@ public abstract class NettyBytesWaster {
     // 总废字节数
     protected int totalWasteByteSize;
 
-    protected ByteBuf wasteBuffer;
-
-    public NettyBytesWaster(DataPackager packager, boolean waste, DataPacketConfig config) {
+    public NettyBytesWaster(DataPackager packager, boolean waste, DataPacketV1Config config) {
         if (waste) {
             this.wasteBitSize = packager.getPacketCode() % config.getMaxWasteBitSize();
             this.fullWasteByteSize = wasteBitSize / 8;
@@ -40,13 +37,6 @@ public abstract class NettyBytesWaster {
             this.totalWasteByteSize = 0;          // 总废字节数
         }
     }
-
-    public void wasteBuffer(ByteBuf byteBuf) {
-        Throws.checkArgument(this.wasteBuffer == null, "waster is exist");
-        this.setWasteBuffer(byteBuf);
-    }
-
-    protected abstract void setWasteBuffer(ByteBuf byteBuf);
 
     public int getWasteBitSize() {
         return wasteBitSize;

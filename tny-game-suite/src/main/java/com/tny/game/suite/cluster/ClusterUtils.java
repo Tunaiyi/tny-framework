@@ -21,11 +21,11 @@ public class ClusterUtils {
 
     private static final String ZONE_CHANGE = "tny.server.monitor.doors.zone_change";
 
-    public static final String OUTLINE_LIST_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_OUTLINE_LIST);
-    public static final String GAMES_LAUNCH_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_LAUNCH_LIST);
-    public static final String SETTING_LIST_PATH = MONITOR_CONFIG.getStr(ClusterUtils.GAMES_SETTING_LIST);
-    public static final String VERSION_PATH = MONITOR_CONFIG.getStr(ClusterUtils.CLIENT_VERSION_CHANGE);
-    public static final String ZONE_CHANGE_PATH = MONITOR_CONFIG.getStr(ClusterUtils.ZONE_CHANGE);
+    public static final String OUTLINE_LIST_PATH = MONITOR_CONFIG.getString(ClusterUtils.GAMES_OUTLINE_LIST);
+    public static final String GAMES_LAUNCH_PATH = MONITOR_CONFIG.getString(ClusterUtils.GAMES_LAUNCH_LIST);
+    public static final String SETTING_LIST_PATH = MONITOR_CONFIG.getString(ClusterUtils.GAMES_SETTING_LIST);
+    public static final String VERSION_PATH = MONITOR_CONFIG.getString(ClusterUtils.CLIENT_VERSION_CHANGE);
+    public static final String ZONE_CHANGE_PATH = MONITOR_CONFIG.getString(ClusterUtils.ZONE_CHANGE);
 
 
     public static final NodeDataFormatter PROTO_FORMATTER = new ProtoNodeDataFormatter();
@@ -50,7 +50,7 @@ public class ClusterUtils {
     }
 
     public static String getWebNodesPath(String serverType) {
-        String path = MONITOR_CONFIG.getStr("tny.server.monitor.ws." + serverType.toLowerCase() + ".list");
+        String path = MONITOR_CONFIG.getString("tny.server.monitor.ws." + serverType.toLowerCase() + ".list");
         if (path == null)
             throw new NullPointerException(format("{} web 服务没有zookeeper节点路径", serverType));
         return path;

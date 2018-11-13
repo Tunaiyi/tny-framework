@@ -12,8 +12,12 @@ dependencies {
             libs.'jade',
             libs.'druid',
             libs.'guava',
+            libs.'spring-boot-autoconfigure',
+            libs.'spring-boot-configuration-processor',
+
             project(":tny-game-expr-mvel"),
             project(":tny-game-base"),
+            project(":tny-game-net-netty4"),
             project(":tny-game-doc"),
             project(":tny-game-cache"),
             project(":tny-game-oplog"),
@@ -22,8 +26,7 @@ dependencies {
             project(":tny-game-cache-mysql"),
             project(":tny-game-protobuf"),
             project(":tny-game-cache-redis"),
-            project(":tny-game-oplog-log4j2kafka"),
-//            project(":tny-game-net-kafka")
+            project(":tny-game-oplog-log4j"),
     )
 
 }

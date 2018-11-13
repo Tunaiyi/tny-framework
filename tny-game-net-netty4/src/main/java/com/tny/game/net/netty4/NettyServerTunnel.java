@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4;
 
 import com.tny.game.net.exception.TunnelException;
+import com.tny.game.net.message.MessageFactory;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 
@@ -9,8 +10,8 @@ import io.netty.channel.Channel;
  */
 public class NettyServerTunnel<UID> extends NettyTunnel<UID> {
 
-    public NettyServerTunnel(Channel channel, Certificate<UID> certificate) {
-        super(channel, certificate, TunnelMode.SERVER);
+    public NettyServerTunnel(Channel channel, Certificate<UID> certificate, MessageFactory<UID> messageBuilderFactory) {
+        super(channel, certificate, TunnelMode.SERVER, messageBuilderFactory);
     }
 
     @Override

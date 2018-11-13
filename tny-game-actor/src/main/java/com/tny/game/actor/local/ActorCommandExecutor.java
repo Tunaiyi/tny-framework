@@ -1,21 +1,21 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.common.worker.ForkJoinPoolCommandExecutor;
+import com.tny.game.common.worker.DefaultCommandExecutor;
 
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 
 /**
  * Actor 执行器
  * Created by Kun Yang on 16/4/26.
  */
-public class ActorCommandExecutor extends ForkJoinPoolCommandExecutor implements ActorWorker {
+public class ActorCommandExecutor extends DefaultCommandExecutor implements ActorWorker {
 
     public ActorCommandExecutor(String name) {
         this(name, ForkJoinPool.commonPool());
     }
 
-    public ActorCommandExecutor(String name, ForkJoinPool pool) {
-        super(name, pool);
+    public ActorCommandExecutor(String name, ExecutorService executor) {
+        super(name, executor);
     }
 
     @Override

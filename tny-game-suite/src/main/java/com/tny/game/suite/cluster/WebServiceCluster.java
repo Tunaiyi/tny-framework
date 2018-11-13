@@ -11,7 +11,7 @@ import java.util.*;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class WebServiceCluster extends ServiceCluster implements ServerPostStart {
+public abstract class WebServiceCluster extends ServiceCluster implements AppPostStart {
 
     @Resource
     private ServletContext servletContext;

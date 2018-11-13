@@ -1,53 +1,33 @@
 package com.tny.game.net.command.executor;
 
-import com.tny.game.common.concurrent.*;
-import com.tny.game.common.config.Config;
 import com.tny.game.common.context.*;
+import com.tny.game.common.unit.annotation.Unit;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.base.annotation.Unit;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.endpoint.Session;
 import com.tny.game.net.transport.NetTunnel;
-import com.tny.game.net.utils.*;
+import com.tny.game.net.utils.NetAttrKeys;
 import org.slf4j.*;
 
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Unit("GroupBySessionDispatchCommandExecutor")
-public class PerTunnelDispatchCommandExecutor implements DispatchCommandExecutor {
+@Unit
+public class PerTunnelDispatchCommandExecutor extends ThreadPoolCommandExecutor {
 
     private static final AttrKey<ChildExecutor> COMMAND_CHILD_EXECUTOR = AttrKeys.key(Session.class + "COMMAND_CHILD_EXECUTOR");
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
-    private static final String POOL_NAME = "GroupBySessionDispatchCommandExecutor";
-
-    private ForkJoinPool executorService;
-
-    private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
 
     private static Queue<ChildExecutor> scheduledChildExecutors = new ConcurrentLinkedQueue<>();
 
+    public PerTunnelDispatchCommandExecutor() {
+    }
+
     public PerTunnelDispatchCommandExecutor(int threads) {
-        init(threads);
-    }
-
-    public PerTunnelDispatchCommandExecutor(Config config) {
-        int threads = config.getInt(NetConfigs.DISPATCHER_EXECUTOR_THREADS, Runtime.getRuntime().availableProcessors() * 2);
-        this.init(threads);
-    }
-
-    private void init(int threads) {
-        this.executorService = ForkJoinPools.pool(threads, POOL_NAME);
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            while (!scheduledChildExecutors.isEmpty()) {
-                ChildExecutor executor = scheduledChildExecutors.poll();
-                if (executor != null)
-                    executor.submitWhenDelay();
-            }
-        }, 31, 31, TimeUnit.MILLISECONDS);
+        super(threads);
     }
 
     @Override
@@ -63,14 +43,24 @@ public class PerTunnelDispatchCommandExecutor implements DispatchCommandExecutor
     }
 
     @Override
-    public void shutdown() {
-        this.executorService.shutdown();
+    public void prepareStart() {
+        super.prepareStart();
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            while (!scheduledChildExecutors.isEmpty()) {
+                ChildExecutor executor = scheduledChildExecutors.poll();
+                if (executor != null)
+                    executor.submitWhenDelay();
+            }
+        }, childDelayTime, childDelayTime, TimeUnit.MILLISECONDS);
     }
 
     private static class ChildExecutor implements MessageCommandBox, Runnable {
 
+        /* executor停止 */
         public static final int STOP = 0;
+        /* executor提交 */
         public static final int SUBMIT = 1;
+        /* executor未完成延迟 */
         public static final int DELAY = 2;
 
         private final Queue<Command> commandQueue = new ConcurrentLinkedQueue<>();

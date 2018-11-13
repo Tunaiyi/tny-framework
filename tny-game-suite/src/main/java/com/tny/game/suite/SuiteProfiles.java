@@ -7,10 +7,8 @@ public interface SuiteProfiles {
 
     String WEB = "suite.web";
     String GAME = "suite.game";
-    String DOORS = "suite.doors";
+    String REMOTE = "suite.remote";
     String ACCESS = "suite.access";
-    String GM = "suite.gm";
-    String LOG = "suite.log";
 
     String AUTO = "suite.auto";
     String AUTO_SNAP = "suite.auto.snap";

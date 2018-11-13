@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
  */
 public class MessageIdCreatorTest {
 
-    private MessageIdCreator oneCreator = new MessageIdCreator(MessageIdCreator.TUNNEL_MESSAGE_ID_MARK);
-    private MessageIdCreator otherCreator = new MessageIdCreator(MessageIdCreator.SESSION_MESSAGE_ID_MARK);
+    private MessageIdCreator oneCreator = new MessageIdCreator(MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
+    private MessageIdCreator otherCreator = new MessageIdCreator(MessageIdCreator.ENDPOINT_SENDER_MESSAGE_ID_MARK);
 
     @Test
     public void isCreate() {

@@ -2,7 +2,7 @@ package com.tny.game.suite.cache.spring;
 
 import com.tny.game.asyndb.*;
 import com.tny.game.base.item.*;
-import com.tny.game.net.session.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.suite.login.IDAide;
 
 import javax.annotation.Resource;
@@ -12,7 +12,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
     private long defaultLifeTime = 60 * 1000 * 3;
 
     @Resource
-    private SessionKeeperMannager sessionKeeperFactory;
+    private EndpointKeeperManager endpointKeeperManager;
 
     private String userType;
 
@@ -43,7 +43,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            SessionKeeper<Object> keeper = sessionKeeperFactory.getKeeper(userType);
+            SessionKeeper<Object> keeper = endpointKeeperManager.loadOcCreate(userType, EndpointType.SESSION);
             return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
         }
 

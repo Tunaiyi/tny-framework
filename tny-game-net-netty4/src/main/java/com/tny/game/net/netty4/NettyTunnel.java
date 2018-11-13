@@ -7,6 +7,7 @@ import io.netty.channel.*;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -18,8 +19,8 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
 
     protected volatile Channel channel;
 
-    protected NettyTunnel(Channel channel, Certificate<UID> certificate, TunnelMode mode) {
-        super(certificate, mode);
+    protected NettyTunnel(Channel channel, Certificate<UID> certificate, TunnelMode mode, MessageFactory<UID> messageBuilderFactory) {
+        super(certificate, mode, messageBuilderFactory);
         this.channel = channel;
     }
 
@@ -35,17 +36,21 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
 
     @Override
     public boolean isAvailable() {
-        return this.getState() == TunnelState.ALIVE && this.channel != null && this.channel.isActive();
+        return this.getState() == TunnelState.ACTIVATE && this.channel != null && this.channel.isActive();
     }
 
     Channel getChannel() {
         return channel;
     }
 
+    protected Lock getLock() {
+        return this.lock;
+    }
+
     @Override
     protected void doDisconnect() {
         Channel channel = this.channel;
-        if (channel != null && this.channel.isActive()) {
+        if (channel != null && channel.isActive()) {
             channel.close();
         }
     }
@@ -55,7 +60,6 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
         if (this.channel.isActive()) {
             try {
                 this.channel.close();
-                // this.destroyFutureHolder();
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }
@@ -63,7 +67,7 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
     }
 
     @Override
-    public SendContext<UID> doWrite(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException {
+    public SendContext<UID> write(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException {
         ChannelFuture writeFuture = channel.writeAndFlush(message);
         if (callback != null) {
             writeFuture.addListener((f) -> {
@@ -79,12 +83,6 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
             throw new SendTimeoutException(format("{} send message timeout {} ms", this, waitForSendTimeout));
         }
         return ifNull(context, EmptySendContext.empty());
-    }
-
-    @Override
-    protected NettyTunnel<UID> setMessageFactory(MessageFactory<UID> messageFactory) {
-        super.setMessageFactory(messageFactory);
-        return this;
     }
 
     protected NettyTunnel<UID> setChannel(Channel channel) {

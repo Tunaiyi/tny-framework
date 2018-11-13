@@ -94,10 +94,7 @@ public class LinkedLock implements Lock {
         try {
             if (next != null)
                 next.lockInterruptibly();
-        } catch (InterruptedException e) {
-            current.unlock();
-            throw e;
-        } catch (RuntimeException e) {
+        } catch (InterruptedException | RuntimeException e) {
             current.unlock();
             throw e;
         }

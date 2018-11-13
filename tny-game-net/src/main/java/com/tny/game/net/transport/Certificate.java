@@ -61,7 +61,7 @@ public interface Certificate<UID> extends Serializable {
         if (thisInstant.isPresent() && otherInstant.isPresent()) {
             return thisInstant.get().isAfter(otherInstant.get());
         }
-        return false;
+        return true;
     }
 
     /**

@@ -8,9 +8,9 @@ import com.tny.game.net.transport.Tunnel;
  * @author: Kun Yang
  * @date: 2018-10-08 16:03
  */
+@FunctionalInterface
 public interface TunnelAuthenticateListener<UID> {
 
-    default void onAuthenticate(Tunnel<UID> tunnel) {
-    }
+    void onAuthenticate(Tunnel<UID> tunnel);
 
 }

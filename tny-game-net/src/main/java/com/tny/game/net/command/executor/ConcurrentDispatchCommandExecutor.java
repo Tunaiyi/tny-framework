@@ -1,54 +1,42 @@
 package com.tny.game.net.command.executor;
 
-import com.tny.game.common.concurrent.*;
-import com.tny.game.common.config.Config;
+import com.tny.game.common.unit.annotation.Unit;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.base.annotation.Unit;
-import com.tny.game.net.transport.listener.SessionHolderListener;
 import com.tny.game.net.transport.NetTunnel;
-import com.tny.game.net.utils.NetConfigs;
 import org.slf4j.*;
 
 import java.util.Queue;
 import java.util.concurrent.*;
 
-@Unit("ConcurrentDispatchCommandExecutor")
-public class ConcurrentDispatchCommandExecutor implements DispatchCommandExecutor, SessionHolderListener {
+@Unit
+public class ConcurrentDispatchCommandExecutor extends ThreadPoolCommandExecutor {
 
     private static final Logger LOG_NET = LoggerFactory.getLogger(NetLogger.EXECUTOR);
 
-    private static final String POOL_NAME = "ConcurrentDispatchCommandExecutor";
-
-    private ForkJoinPool executorService;
-
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("DispatchCommandScheduledExecutor"));
-
     private static Queue<Command> scheduledChildExecutors = new ConcurrentLinkedQueue<>();
 
+    public ConcurrentDispatchCommandExecutor() {
+    }
+
     public ConcurrentDispatchCommandExecutor(int threads) {
-        init(threads);
+        super(threads);
     }
 
-    public ConcurrentDispatchCommandExecutor(Config config) {
-        int threads = config.getInt(NetConfigs.DISPATCHER_EXECUTOR_THREADS, Runtime.getRuntime().availableProcessors() * 2);
-        this.init(threads);
-    }
-
-    private void init(int threads) {
-        this.executorService = ForkJoinPools.pool(threads, POOL_NAME);
+    @Override
+    public void prepareStart() {
+        super.prepareStart();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             while (!scheduledChildExecutors.isEmpty()) {
                 Command command = scheduledChildExecutors.poll();
                 if (command != null)
                     doSubmit(command);
             }
-        }, 31, 31, TimeUnit.MILLISECONDS);
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            LOG_NET.info("[scheduledChildExecutors size {}] [executorService size : {} | Parallelism : {} | PoolSize : {}]", scheduledChildExecutors.size(),
-                    executorService.getQueuedSubmissionCount(), executorService.getParallelism(), executorService.getPoolSize());
-        }, 15000, 15000, TimeUnit.MILLISECONDS);
+        }, this.childDelayTime, this.childDelayTime, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> LOG_NET.info("[scheduledChildExecutors size {}] [executorService size : {} | Parallelism : {} | PoolSize : {}]",
+                scheduledChildExecutors.size(), scheduledChildExecutors.size(), this.threads, this.maxThreads), 15000, 15000, TimeUnit.MILLISECONDS);
     }
+
 
     @Override
     public void submit(NetTunnel<?> tunnel, Command command) {

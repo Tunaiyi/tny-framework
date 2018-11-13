@@ -57,7 +57,7 @@ public interface Config {
      * @param key 指定key
      * @return 字符串值, 无则返回null
      */
-    String getStr(String key);
+    String getString(String key);
 
     /**
      * 获取指定key的字符串值, 无则返回defValue <br>

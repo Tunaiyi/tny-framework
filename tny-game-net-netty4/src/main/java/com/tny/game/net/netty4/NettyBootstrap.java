@@ -1,30 +1,36 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.unit.UnitLoader;
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.MessageHandler;
+import com.tny.game.net.message.MessageFactory;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
+
+import static com.tny.game.common.lifecycle.LifecycleLevel.*;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * Created by Kun Yang on 2017/3/24.
  */
-public abstract class NettyBootstrap {
+public abstract class NettyBootstrap implements AppPrepareStart {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
-    protected String name;
+    private NettyUnitSetting unitSetting;
+
     protected ChannelMaker<Channel> channelMaker;
 
-    public NettyBootstrap(String name, ChannelMaker<Channel> channelMaker) {
-        this.name = name;
-        this.channelMaker = channelMaker;
-    }
+    protected MessageHandler<Object> messageHandler;
 
-    public String getName() {
-        return name;
+    protected MessageFactory<Object> messageFactory;
+
+    public NettyBootstrap(NettyUnitSetting unitSetting) {
+        this.unitSetting = unitSetting;
     }
 
     protected static boolean isEpoll() {
@@ -55,5 +61,20 @@ public abstract class NettyBootstrap {
             return new NioEventLoopGroup(threads, new DefaultThreadFactory(name, true));
     }
 
+    @Override
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
+    }
+
+    protected <T> MessageFactory<T> getMessageFactory() {
+        return as(messageFactory);
+    }
+
+    @Override
+    public void prepareStart() {
+        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(unitSetting.getChannelMaker());
+        this.messageHandler = as(UnitLoader.getLoader(MessageHandler.class).getUnitAnCheck(unitSetting.getMessageHandler()));
+        this.messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(unitSetting.getMessageFactory()));
+    }
 
 }

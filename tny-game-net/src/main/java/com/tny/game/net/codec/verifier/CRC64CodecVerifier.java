@@ -1,5 +1,6 @@
 package com.tny.game.net.codec.verifier;
 
+import com.tny.game.common.unit.annotation.Unit;
 import com.tny.game.common.utils.BytesAide;
 import com.tny.game.net.codec.*;
 import org.slf4j.*;
@@ -14,6 +15,7 @@ import static com.tny.game.common.utils.BytesAide.*;
  * @author: Kun Yang
  * @date: 2018-10-18 15:17
  */
+@Unit
 public class CRC64CodecVerifier implements CodecVerifier {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CRC64CodecVerifier.class);

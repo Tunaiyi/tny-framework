@@ -175,11 +175,11 @@
 //     }
 //
 //     protected BindVoidEventBus<TunnelOpenListener, Tunnel> openEvent() {
-//         return TunnelEvents.ON_OPEN;
+//         return TunnelEvents.ON_ACTIVATE;
 //     }
 //
 //     protected BindVoidEventBus<TunnelUnaliveListener, Tunnel> unaliveEvent() {
-//         return TunnelEvents.ON_UNALIVE;
+//         return TunnelEvents.ON_UNACTIVATED;
 //     }
 //
 //     protected BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {

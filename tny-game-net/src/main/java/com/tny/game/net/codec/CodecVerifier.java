@@ -1,11 +1,14 @@
 package com.tny.game.net.codec;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
+
 /**
  * <p>
  *
  * @author: Kun Yang
  * @date: 2018 -10-16 21:06
  */
+@UnitInterface
 public interface CodecVerifier {
 
     /**

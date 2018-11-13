@@ -4,13 +4,13 @@ package com.tny.game.common.lifecycle;
  * 启动后初始化器
  * Created by Kun Yang on 16/7/24.
  */
-public final class PostStarter extends Lifecycle<PostStarter, ServerPostStart> {
+public final class PostStarter extends Lifecycle<PostStarter, AppPostStart> {
 
-    public static PostStarter value(Class<? extends ServerPostStart> clazz) {
+    public static PostStarter value(Class<? extends AppPostStart> clazz) {
         return value(clazz, LifecycleLevel.CUSTOM_LEVEL_5);
     }
 
-    public static PostStarter value(Class<? extends ServerPostStart> clazz, LifecyclePriority lifeCycleLevel) {
+    public static PostStarter value(Class<? extends AppPostStart> clazz, LifecyclePriority lifeCycleLevel) {
         PostStarter lifecycle = getLifecycle(PostStarter.class, clazz);
         if (lifecycle == null) {
             lifecycle = new PostStarter(clazz, lifeCycleLevel);
@@ -19,12 +19,12 @@ public final class PostStarter extends Lifecycle<PostStarter, ServerPostStart> {
         return lifecycle;
     }
 
-    private PostStarter(Class<? extends ServerPostStart> initerClass, LifecyclePriority lifeCycleLevel) {
+    private PostStarter(Class<? extends AppPostStart> initerClass, LifecyclePriority lifeCycleLevel) {
         super(initerClass, lifeCycleLevel);
     }
 
     @Override
-    protected PostStarter of(Class<? extends ServerPostStart> clazz) {
+    protected PostStarter of(Class<? extends AppPostStart> clazz) {
         return value(clazz);
     }
 }

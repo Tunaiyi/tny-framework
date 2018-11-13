@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Created by Kun Yang on 2017/8/3.
  */
-public class SpringBaseCluster extends BaseCluster implements ServerPrepareStart, ServerPostStart, ApplicationContextAware {
+public class SpringBaseCluster extends BaseCluster implements AppPrepareStart, AppPostStart, ApplicationContextAware {
 
     private List<ZKMonitorInitHandler> initHandlers = ImmutableList.of();
 

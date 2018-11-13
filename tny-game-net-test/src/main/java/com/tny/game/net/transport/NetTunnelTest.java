@@ -3,7 +3,7 @@ package com.tny.game.net.transport;
 import com.tny.game.common.concurrent.CoreThreadFactory;
 import com.tny.game.net.exception.ValidatorFailException;
 import com.tny.game.net.message.Message;
-import com.tny.game.net.session.NetSession;
+import com.tny.game.net.endpoint.NetSession;
 import com.tny.game.test.TestAide;
 import org.junit.*;
 
@@ -61,7 +61,7 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
             holder.pollFuture(as(message.getHeader().getToMessage()));
             return null;
         }).when(session).receive(any(), any());
-        // MessageIdCreator idCreator = new MessageIdCreator(MessageIdCreator.SESSION_MESSAGE_ID_MARK);
+        // MessageIdCreator idCreator = new MessageIdCreator(MessageIdCreator.ENDPOINT_SENDER_MESSAGE_ID_MARK);
         // when(session.createMessage(any())).thenAnswer((mk) ->
         //         messageBuilderFactory.create(idCreator.createId(), as(mk.getArguments()[0]), certificate));
         when(session.getUserId()).thenReturn(certificate.getUserId());
@@ -411,22 +411,22 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>> extends TunnelTes
     }
 
     protected void assertSendOk(TestMessages messages) {
-        messages.contentsForEach(content -> TestAide.assertRunComplete("assertWaitSendOk",
+        messages.contextsForEach(content -> TestAide.assertRunComplete("assertWaitSendOk",
                 () -> assertNotNull(content.getSendFuture().get(1000, TimeUnit.MILLISECONDS))));
     }
 
     protected void assertWaitSendException(TestMessages messages, Class<? extends Exception> exceptionClass) {
-        messages.contentsForEach(content -> TestAide.assertRunWithException("assertWaitSendException",
+        messages.contextsForEach(content -> TestAide.assertRunWithException("assertWaitSendException",
                 () -> content.getSendFuture().get(100, TimeUnit.MILLISECONDS), exceptionClass));
     }
 
     protected void assertWaitResponseOK(TestMessages messages) {
-        messages.contentsForEach(content -> TestAide.assertRunComplete("assertWaitResponseOK", () ->
+        messages.contextsForEach(content -> TestAide.assertRunComplete("assertWaitResponseOK", () ->
                 assertNotNull(content.getRespondFuture().get(300, TimeUnit.MILLISECONDS))));
     }
 
     protected void assertWaitResponseException(TestMessages messages, Class<? extends Exception> exceptionClass) {
-        messages.contentsForEach(content -> TestAide.assertRunWithException("assertWaitResponseException",
+        messages.contextsForEach(content -> TestAide.assertRunWithException("assertWaitResponseException",
                 () -> content.getRespondFuture().get(300, TimeUnit.MILLISECONDS), exceptionClass));
     }
 

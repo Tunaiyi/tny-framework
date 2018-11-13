@@ -1,5 +1,6 @@
 package com.tny.game.net.command.listener;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
 import com.tny.game.net.command.dispatcher.DispatchContext;
 
 /**
@@ -11,6 +12,7 @@ import com.tny.game.net.command.dispatcher.DispatchContext;
  * <p>
  * <br>
  */
+@UnitInterface
 public interface DispatchCommandListener {
 
     /**

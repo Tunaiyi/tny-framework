@@ -3,7 +3,7 @@ package com.tny.game.net.transport;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.CommonMessageFactory;
-import com.tny.game.net.session.NetSession;
+import com.tny.game.net.endpoint.NetSession;
 
 import java.util.*;
 import java.util.function.*;
@@ -20,7 +20,7 @@ public class TestMessages {
 
     private MessageFactory<Long> messageBuilderFactory = new CommonMessageFactory<>();
     private Certificate<Long> certificate;
-    private int id = 0;
+    private MessageIdCreator idCreator;
     private int pingSize = 0;
     private int pongSize = 0;
     private int messageSize = 0;
@@ -31,10 +31,12 @@ public class TestMessages {
 
     public TestMessages(NetTunnel<Long> tunnel) {
         this.certificate = tunnel.getCertificate();
+        idCreator = new MessageIdCreator(MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
     }
 
     TestMessages(NetSession<Long> session) {
         this.certificate = session.getCertificate();
+        idCreator = new MessageIdCreator(MessageIdCreator.ENDPOINT_SENDER_MESSAGE_ID_MARK);
     }
 
     public List<? extends Message<Long>> getMessages() {
@@ -50,7 +52,7 @@ public class TestMessages {
     }
 
     public List<MessageSubject> getSubject() {
-        return messages.stream().map(TestMessagePack::getSubject).collect(Collectors.toList());
+        return messages.stream().map(TestMessagePack::getContext).collect(Collectors.toList());
     }
 
     public TestMessages addPush(Object body) {
@@ -58,31 +60,19 @@ public class TestMessages {
     }
 
     public TestMessages addPush(ResultCode code, Object body) {
-        MessageSubject subject = MessageSubjectBuilder.pushBuilder(ProtocolAide.protocol(protocol), code)
-                .setBody(body)
-                .build();
-        return addMessageSubject(subject);
+        return addMessageContext(MessageContexts.push(ProtocolAide.protocol(protocol), code, body));
     }
 
     public TestMessages addRequest(Object body) {
-        MessageSubject subject = MessageSubjectBuilder.requestBuilder(ProtocolAide.protocol(protocol))
-                .setBody(body)
-                .build();
-        return addMessageSubject(subject);
+        return addMessageContext(MessageContexts.request(ProtocolAide.protocol(protocol), body));
     }
 
     public TestMessages addResponse(Object body, long toMessage) {
-        MessageSubject subject = MessageSubjectBuilder.respondBuilder(ProtocolAide.protocol(protocol), ResultCode.SUCCESS, toMessage)
-                .setBody(body)
-                .build();
-        return addMessageSubject(subject);
+        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(protocol), body, toMessage));
     }
 
     public TestMessages addResponse(ResultCode code, Object body, long toMessage) {
-        MessageSubject subject = MessageSubjectBuilder.respondBuilder(ProtocolAide.protocol(protocol), code, toMessage)
-                .setBody(body)
-                .build();
-        return addMessageSubject(subject);
+        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(protocol), code, body, toMessage));
     }
 
     public TestMessages addPing() {
@@ -123,12 +113,12 @@ public class TestMessages {
     }
 
 
-    public TestMessages addMessageSubject(MessageSubject subject) {
-        return this.addMessagePack(new TestMessagePack(subject, createMessage(subject)));
+    public TestMessages addMessageContext(MessageContext<Long> context) {
+        return this.addMessagePack(new TestMessagePack(context, createMessage(context)));
     }
 
-    private NetMessage<Long> createMessage(MessageSubject subject) {
-        return messageBuilderFactory.create(++id, subject, null, certificate);
+    private NetMessage<Long> createMessage(MessageContext<Long> context) {
+        return messageBuilderFactory.create(idCreator.createId(), context, certificate);
     }
 
     public int getPingSize() {
@@ -173,12 +163,12 @@ public class TestMessages {
 
     public void sendAsyn(Sender<Long> sender) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> sender.sendAsyn(p.getSubject(), p.getContext()));
+        this.messages.forEach(p -> sender.sendAsyn(p.getContext()));
     }
 
     public void sendSync(Sender<Long> sender, long timeout) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> sender.sendSync(p.getSubject(), p.getContext(), timeout));
+        this.messages.forEach(p -> sender.sendSync(p.getContext(), timeout));
     }
 
     // public void sendSuccess(NetTunnel<Long> tunnel) {
@@ -210,16 +200,17 @@ public class TestMessages {
         this.messages.forEach(action);
     }
 
-    public void subjcetForEach(Consumer<MessageSubject> action) {
-        this.messages.stream().map(TestMessagePack::getSubject).forEach(action);
-    }
-
     public void messagesForEach(Consumer<NetMessage<Long>> action) {
         this.messages.stream().map(TestMessagePack::getMessage).forEach(action);
     }
 
-    public void contentsForEach(Consumer<MessageContext<Long>> action) {
-        this.messages.stream().map(TestMessagePack::context).forEach(action);
+    public void contextsForEach(Consumer<MessageContext<Long>> action) {
+        this.messages.stream().map(TestMessagePack::getContext).forEach(action);
     }
+
+    public void requestContextsForEach(Consumer<RequestContext<Long>> action) {
+        this.messages.stream().map(TestMessagePack::getRequestContext).forEach(action);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.tny.game.net.command.auth;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
 import com.tny.game.net.exception.CommandException;
 import com.tny.game.net.message.Message;
 import com.tny.game.net.transport.Certificate;
@@ -10,6 +11,7 @@ import com.tny.game.net.transport.Tunnel;
  *
  * @author KGTny
  */
+@UnitInterface
 public interface AuthenticateValidator<UID> {
 
     /**

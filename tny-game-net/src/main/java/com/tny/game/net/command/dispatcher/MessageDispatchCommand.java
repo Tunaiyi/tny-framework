@@ -51,11 +51,13 @@ public class MessageDispatchCommand extends DispatchContext {
                     this.start = true;
                 }
             }
-            if (!this.isDone() && this.isWaiting()) {
-                // 检测等待者是否完成
-                this.checkWaiter();
-            } else {
-                throw new CommandException(NetResultCode.DISPATCH_EXCEPTION);
+            if (!this.isDone()) {
+                if (this.isWaiting()) {
+                    // 检测等待者是否完成
+                    this.checkWaiter();
+                } else {
+                    throw new CommandException(NetResultCode.DISPATCH_EXCEPTION);
+                }
             }
         } catch (Throwable e) {
             cause = e;
@@ -184,7 +186,7 @@ public class MessageDispatchCommand extends DispatchContext {
                 this.tunnel.authenticate(certificate);
                 this.message.update(certificate);
                 // if (this.tunnel.getMode() == TunnelMode.SERVER) {
-                //     SessionKeeperFactory sessionKeeperFactory = context.getAppConfiguration().getSessionKeeperFactory();
+                //     SessionKeeperFactory sessionKeeperFactory = context.getAppConfiguration().getKeeperFactory();
                 //     SessionKeeper<Object> sessionKeeper = sessionKeeperFactory.getKeeper(this.tunnel.getUserType());
                 //     sessionKeeper.online(this.tunnel);
                 // }
@@ -210,19 +212,20 @@ public class MessageDispatchCommand extends DispatchContext {
             code = ResultCode.SUCCESS;
             body = result;
         }
-        MessageSubject subject = null;
+        MessageContext<Object> context = null;
         switch (message.getMode()) {
             case PUSH:
                 if (body != null)
-                    subject = MessageSubjectBuilder.pushBuilder(header, code).setBody(body).build();
+                    context = MessageContexts.push(header, code, body);
                 break;
             case REQUEST:
-                subject = MessageSubjectBuilder.respondBuilder(code, header).setBody(body).build();
+                context = MessageContexts.respond(message, code, body, message.getId());
                 break;
         }
-        if (subject != null) {
-            TunnelsUtils.responseMessage(tunnel, message, subject);
+        if (context != null) {
+            TunnelsUtils.responseMessage(tunnel, message, context);
         } else {
+            LOGGER.info("~~~~~~~~~~~~~~~~~~~" + code.getType());
             if (code.getType() == ResultCodeType.ERROR)
                 this.tunnel.close();
         }

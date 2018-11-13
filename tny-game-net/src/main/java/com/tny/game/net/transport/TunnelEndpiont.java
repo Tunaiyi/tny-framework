@@ -26,7 +26,7 @@
 //     private NetEndpoint<UID> endpoint;
 //
 //     protected TunnelEndpiont(Certificate<UID> certificate) {
-//         super(certificate, MessageIdCreator.TUNNEL_MESSAGE_ID_MARK);
+//         super(certificate, MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
 //     }
 //
 //     @Override

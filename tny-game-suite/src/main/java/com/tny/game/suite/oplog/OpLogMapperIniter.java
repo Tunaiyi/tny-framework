@@ -1,18 +1,13 @@
 package com.tny.game.suite.oplog;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.*;
 import com.tny.game.oplog.Snapshot;
 import com.tny.game.oplog.utils.OpLogMapper;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.ClassSelector;
+import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.ClassFilterHelper;
 import com.tny.game.suite.utils.Configs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +16,12 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
+import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({ITEM_OPLOG, GAME})
-public class OpLogMapperIniter implements ServerPrepareStart {
+public class OpLogMapperIniter implements AppPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogMapperIniter.class);
 
@@ -34,7 +30,7 @@ public class OpLogMapperIniter implements ServerPrepareStart {
     private CountDownLatch latch = new CountDownLatch(1);
 
     @PostConstruct
-    public void init() throws InstantiationException, IllegalAccessException {
+    public void init() {
         LOGGER.info("启动初始化OpLogMapper任务!");
         Thread thread = new Thread(() -> {
             Class<?> clazz = null;

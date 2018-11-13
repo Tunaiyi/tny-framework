@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4.codec;
 
-import com.tny.game.net.codec.*;
+import com.tny.game.net.codec.DataPackager;
+import com.tny.game.net.codec.v1.DataPacketV1Config;
 import io.netty.buffer.ByteBuf;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,29 +14,22 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class NettyWasteWriter extends NettyBytesWaster {
 
-    public NettyWasteWriter(DataPackager packager, DataPacketConfig config) {
-        super(packager, config.isWasteBytesOpen(), config);
+    public NettyWasteWriter(DataPackager packager, DataPacketV1Config config) {
+        super(packager, config.isWasteBytesEnable(), config);
     }
 
-    @Override
-    protected void setWasteBuffer(ByteBuf byteBuf) {
-        this.wasteBuffer = byteBuf;
+
+    public void write(ByteBuf wasteBuffer, byte[] data) {
         for (int index = 0; index < fullWasteByteSize; index++) {
-            byteBuf.writeByte(getWasteByte());
+            wasteBuffer.writeByte(getWasteByte());
         }
         if (rightShiftBits > 0) {
             byte firstByte = getWasteByte();
             firstByte = (byte) ((firstByte & 0xff) << leftShiftBits);
-            byteBuf.writeByte(firstByte);
-        }
-    }
-
-    public void write(byte[] data) {
-        if (rightShiftBits > 0) {
+            wasteBuffer.writeByte(firstByte);
             int leftShiftBits = 8 - rightShiftBits;
             for (int index = 0; index < data.length; index++) {
                 if (index == 0) {
-                    byte firstByte = wasteBuffer.getByte(wasteBuffer.writerIndex() - 1);
                     firstByte = (byte) ((firstByte & 0xff) << leftShiftBits);
                     firstByte = (byte) (firstByte | (byte) ((data[index] & 0xff) >>> rightShiftBits));
                     wasteBuffer.setByte(wasteBuffer.writerIndex() - 1, firstByte);

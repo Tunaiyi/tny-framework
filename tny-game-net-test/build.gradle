@@ -5,9 +5,8 @@ apply plugin: "maven"
 dependencies {
 
     compile(
-            "junit:junit:${vers.junit}",
-            libs.'mockito',
             project(":tny-game-net"),
+            project(":tny-game-tester"),
     )
 
 

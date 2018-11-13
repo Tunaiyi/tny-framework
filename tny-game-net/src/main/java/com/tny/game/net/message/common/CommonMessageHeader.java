@@ -1,6 +1,7 @@
 package com.tny.game.net.message.common;
 
-import com.tny.game.net.message.*;
+import com.tny.game.net.message.AbstractNetMessageHeader;
+import com.tny.game.net.transport.MessageContext;
 
 /**
  * Created by Kun Yang on 2018/8/20.
@@ -22,14 +23,14 @@ public class CommonMessageHeader extends AbstractNetMessageHeader {
     protected CommonMessageHeader() {
     }
 
-    public CommonMessageHeader(long id, MessageSubject subject, Object attachment) {
-        super(subject.getMode());
+    public CommonMessageHeader(long id, MessageContext<?> context) {
+        super(context.getMode());
         this.id = id;
-        this.protocol = subject.getProtocolNumber();
-        this.code = subject.getCode().getCode();
-        this.toMessage = subject.getToMessage();
+        this.protocol = context.getProtocolNumber();
+        this.code = context.getCode().getCode();
+        this.toMessage = context.getToMessage();
         this.time = System.currentTimeMillis();
-        this.attachment = attachment;
+        this.attachment = context.getAttachment();
     }
 
     @Override

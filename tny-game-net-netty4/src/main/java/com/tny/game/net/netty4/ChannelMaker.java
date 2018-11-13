@@ -1,25 +1,20 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
 import com.tny.game.net.netty4.codec.*;
-import com.tny.game.net.message.protoex.ProtoExCodec;
 import io.netty.channel.*;
 
+@UnitInterface
 public abstract class ChannelMaker<C extends Channel> {
 
-    protected DataPacketEncoder encoder;
+    private DataPacketEncoder encoder;
 
-    protected DataPacketDecoder decoder;
+    private DataPacketDecoder decoder;
 
-
-    public ChannelMaker() {
-        super();
-        ProtoExCodec coder = new ProtoExCodec();
-        this.encoder = new DataPacketV1Encoder(null);
-        this.decoder = new DataPacketV1Decoder(null);
+    protected ChannelMaker() {
     }
 
-    public ChannelMaker(
-            DataPacketEncoder encoder, DataPacketDecoder decoder) {
+    public ChannelMaker(DataPacketEncoder encoder, DataPacketDecoder decoder) {
         super();
         this.encoder = encoder;
         this.decoder = decoder;
@@ -31,10 +26,6 @@ public abstract class ChannelMaker<C extends Channel> {
         channelPipeline.addLast("frameDecoder", new DecoderHandler(this.decoder));
         channelPipeline.addLast("encoder", new EncodeHandler(this.encoder));
         this.postAddCoder(channelPipeline);
-        // channel.attr(NettyAttrKeys.DATA_PACKET_DECODER)
-        //         .set(this.decoder);
-        // channel.attr(NettyAttrKeys.DATA_PACKET_ENCODER)
-        //         .set(this.encoder);
         this.postInitChannel(channel);
     }
 
@@ -47,8 +38,14 @@ public abstract class ChannelMaker<C extends Channel> {
     protected void postInitChannel(C channel) {
     }
 
-    // public void setCheckers(List<ControllerChecker> checkers) {
-    //     this.checkers = checkers == null ? ImmutableList.of() : ImmutableList.copyOf(checkers);
-    // }
+    public ChannelMaker<C> setEncoder(DataPacketEncoder encoder) {
+        this.encoder = encoder;
+        return this;
+    }
+
+    public ChannelMaker<C> setDecoder(DataPacketDecoder decoder) {
+        this.decoder = decoder;
+        return this;
+    }
 
 }

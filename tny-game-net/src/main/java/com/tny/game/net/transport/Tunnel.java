@@ -1,8 +1,11 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.Attributes;
+import com.tny.game.net.endpoint.Endpoint;
+import com.tny.game.net.message.Message;
 
 import java.net.InetSocketAddress;
+import java.util.Optional;
 
 /**
  * 通道
@@ -46,6 +49,11 @@ public interface Tunnel<UID> extends Netter<UID>, Transport<UID>, Sender<UID>, R
     TunnelState getState();
 
     /**
+     * @return 获取绑定中断
+     */
+    Optional<Endpoint<UID>> getBindEndpoint();
+
+    /**
      * @return 返回远程地址
      */
     InetSocketAddress getRemoteAddress();
@@ -54,5 +62,14 @@ public interface Tunnel<UID> extends Netter<UID>, Transport<UID>, Sender<UID>, R
      * @return 返回本地地址
      */
     InetSocketAddress getLocalAddress();
+
+    /**
+     * 创建消息
+     *
+     * @param messageId 消息 Id
+     * @param context   消息上下文
+     * @return 返回消息 Id
+     */
+    Message<UID> createMessage(long messageId, MessageContext<UID> context);
 
 }

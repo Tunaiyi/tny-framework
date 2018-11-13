@@ -21,8 +21,8 @@ public class GameTicketHelper {
     private static RSAPrivateKey PRIVATE_KEY;// = RSAUtils.toPrivateKey(this.priKey);
 
     static {
-        String pubKey = Configs.AUTH_CONFIG.getStr(Configs.AUTH_GAME_TICKET_PUBLIC_KEY);
-        String priKey = Configs.AUTH_CONFIG.getStr(Configs.AUTH_GAME_TICKET_PRIVATE_KEY);
+        String pubKey = Configs.AUTH_CONFIG.getString(Configs.AUTH_GAME_TICKET_PUBLIC_KEY);
+        String priKey = Configs.AUTH_CONFIG.getString(Configs.AUTH_GAME_TICKET_PRIVATE_KEY);
         try {
             if (pubKey != null)
                 GameTicketHelper.PUBLIC_KEY = RSAUtils.toPublicKey(pubKey);

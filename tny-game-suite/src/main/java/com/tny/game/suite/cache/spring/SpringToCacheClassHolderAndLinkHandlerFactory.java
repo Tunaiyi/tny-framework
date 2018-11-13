@@ -19,7 +19,7 @@ import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, ServerPrepareStart {
+public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, AppPrepareStart {
 
     private volatile boolean init = false;
 

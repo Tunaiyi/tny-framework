@@ -12,7 +12,7 @@ public class GameTicketMaker implements TicketMaker<GameTicket> {
 
     @Override
     public String make(GameTicket ticket) {
-        String ticketKey = Configs.AUTH_CONFIG.getStr(Configs.AUTH_GAMES_TICKET_KEY);
+        String ticketKey = Configs.AUTH_CONFIG.getString(Configs.AUTH_GAMES_TICKET_KEY);
         if (ticketKey == null)
             throw new NullPointerException("ticketKey 为空");
         return LoginAide.ticket2MD5(ticket, ticketKey);

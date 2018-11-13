@@ -1,14 +1,8 @@
 package com.tny.game.common.reflect;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class ReflectAide {
 
@@ -37,15 +31,29 @@ public class ReflectAide {
 
     }
 
-    public static List<Class<?>> getDeepInterface(Class<?> clazz) {
-        List<Class<?>> interfaceClassList = new ArrayList<Class<?>>();
-        for (Class<?> interfacer : clazz.getInterfaces()) {
-            interfaceClassList.add(interfacer);
+    public static Set<Class<?>> getDeepInterfaces(Class<?> clazz) {
+        Set<Class<?>> interfaceClasses = new HashSet<>();
+        for (Class<?> interfaceClass : clazz.getInterfaces()) {
+            interfaceClasses.add(interfaceClass);
+            interfaceClasses.addAll(getDeepInterfaces(interfaceClass));
         }
         Class<?> superClass = clazz.getSuperclass();
         if (superClass != null && superClass != Object.class)
-            interfaceClassList.addAll(getDeepInterface(superClass));
-        return interfaceClassList;
+            interfaceClasses.addAll(getDeepInterfaces(superClass));
+        return interfaceClasses;
+    }
+
+    public static Set<Class<?>> getDeepClasses(Class<?> clazz) {
+        Set<Class<?>> classes = new HashSet<>();
+        classes.add(clazz);
+        for (Class<?> interfaceClass : clazz.getInterfaces()) {
+            classes.add(interfaceClass);
+            classes.addAll(getDeepInterfaces(interfaceClass));
+        }
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null && superClass != Object.class)
+            classes.addAll(getDeepClasses(superClass));
+        return classes;
     }
 
     public static Field getDeepField(Class<?> clazz, String name) {
@@ -63,7 +71,7 @@ public class ReflectAide {
 
     @SafeVarargs
     public static List<Field> getDeepFieldByAnnotation(Class<?> clazz, Class<? extends Annotation>... annotations) {
-        List<Field> fieldList = new ArrayList<Field>();
+        List<Field> fieldList = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             for (Class<? extends Annotation> annotation : annotations) {
                 if (field.isAnnotationPresent(annotation)) {
@@ -81,7 +89,7 @@ public class ReflectAide {
 
     @SafeVarargs
     public static List<Method> getDeepMethodByAnnotation(Class<?> clazz, Class<? extends Annotation>... annotations) {
-        List<Method> methodList = new ArrayList<Method>();
+        List<Method> methodList = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             for (Class<? extends Annotation> annotation : annotations) {
                 if (method.isAnnotationPresent(annotation)) {
@@ -98,7 +106,7 @@ public class ReflectAide {
     }
 
     public static List<Field> getDeepField(Class<?> clazz) {
-        List<Field> fieldList = new ArrayList<Field>();
+        List<Field> fieldList = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             fieldList.add(field);
@@ -110,7 +118,7 @@ public class ReflectAide {
     }
 
     public static List<Method> getDeepMethod(Class<?> clazz) {
-        List<Method> methodList = new ArrayList<Method>();
+        List<Method> methodList = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             method.setAccessible(true);
             methodList.add(method);
@@ -174,7 +182,7 @@ public class ReflectAide {
 
     public static List<Method> getPropertyMethod(Class<?> clazz, MethodType methodType, String[] names,
                                                  Class<?>[][] paramTypes) {
-        List<Method> methodList = new ArrayList<Method>();
+        List<Method> methodList = new ArrayList<>();
         for (int index = 0; index < names.length; index++) {
             String name = names[index];
             Class<?>[] params = null;

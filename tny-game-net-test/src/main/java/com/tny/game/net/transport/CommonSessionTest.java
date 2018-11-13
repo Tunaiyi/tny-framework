@@ -1,8 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.exception.ValidatorFailException;
-import com.tny.game.net.message.common.CommonMessageFactory;
-import com.tny.game.net.session.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.CommonSessionTest.TestCommonSession;
 import com.tny.game.test.*;
 import org.junit.*;
@@ -22,7 +21,6 @@ public class CommonSessionTest extends NetSessionTest<TestCommonSession> {
     @Override
     protected TestCommonSession newSession(Certificate<Long> certificate) {
         TestCommonSession session = new TestCommonSession(certificate);
-        session.setMessageFactory(new CommonMessageFactory<>());
         return session;
     }
 

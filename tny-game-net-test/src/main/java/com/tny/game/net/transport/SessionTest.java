@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.Attributes;
-import com.tny.game.net.session.Session;
+import com.tny.game.net.endpoint.Session;
 import org.junit.*;
 
 import java.util.List;

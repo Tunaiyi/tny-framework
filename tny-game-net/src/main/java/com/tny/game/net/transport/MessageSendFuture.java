@@ -10,10 +10,6 @@ import java.util.concurrent.CompletableFuture;
  * @author: Kun Yang
  * @date: 2018-09-21 21:51
  */
-public class MessageSendFuture<UID> extends NetStageableFuture<Message<UID>> {
-
-    protected MessageSendFuture() {
-        super(new CompletableFuture<>());
-    }
+public class MessageSendFuture<UID> extends CompletableFuture<Message<UID>> {
 
 }

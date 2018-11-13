@@ -1,5 +1,6 @@
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.common.unit.annotation.UnitInterface;
 import com.tny.game.common.worker.command.Command;
 import com.tny.game.net.command.listener.DispatchCommandListener;
 import com.tny.game.net.exception.CommandException;
@@ -19,6 +20,7 @@ import java.util.Collection;
  * <p>
  * 将请求派发到相对应的Controller上<br>
  */
+@UnitInterface
 public interface MessageDispatcher extends MessageDispatcherContext {
 
     /**

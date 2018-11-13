@@ -111,6 +111,7 @@ subprojects {
                 libs.'mockito',
                 libs.'spring-test',
                 libs.'slf4j-simple',
+                project(":tny-game-tester"),
         )
 
         compile libs.'slf4j-api'

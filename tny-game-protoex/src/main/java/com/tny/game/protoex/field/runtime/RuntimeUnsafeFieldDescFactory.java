@@ -1,20 +1,13 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.reflect.Wraper;
 import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.ProtoExType;
-import com.tny.game.protoex.ProtobufExException;
-import com.tny.game.protoex.annotations.Packed;
-import com.tny.game.protoex.annotations.ProtoExElement;
-import com.tny.game.protoex.annotations.ProtoExEntry;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.common.reflect.Wraper;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
 
 import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 运行时非安全访问字段描述
@@ -309,7 +302,39 @@ public class RuntimeUnsafeFieldDescFactory {
 
     public static final FieldDescFactory<Enum<?>> ENUM = field -> new UnsafeFieldDesc<>(ProtoExType.ENUM, field);
 
-    public static final FieldDescFactory<Object> OBJECT = field -> new UnsafeFieldDesc<>(ProtoExType.MESSAGE, field);
+    public static final FieldDescFactory<Object> OBJECT = field -> new UnsafeMessageFieldDesc(field);
+
+    public static class UnsafeMessageFieldDesc extends UnsafeFieldDesc<Object> implements RepeatIOConfiger<Object> {
+
+        private IOConfiger<?> elementDesc;
+
+        @SuppressWarnings("unchecked")
+        protected UnsafeMessageFieldDesc(Field field) {
+            super(ProtoExType.MESSAGE, field);
+            ProtoExElement protoExElement = field.getAnnotation(ProtoExElement.class);
+            if (protoExElement == null) {
+                //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExElement.class));
+                this.elementDesc = new SimpleIOConfiger<>(Object.class, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+            } else {
+                this.elementDesc = new SimpleIOConfiger<>(Object.class, 0, protoExElement.value());
+            }
+            this.packed = false;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void setValue(Object message, Object value) {
+            if (value == null)
+                return;
+            super.setValue(message, value);
+        }
+
+        @Override
+        public IOConfiger<?> getElementConfiger() {
+            return this.elementDesc;
+        }
+
+    }
 
     public static class UnsafeRepeatFieldDesc extends UnsafeFieldDesc<Object> implements RepeatIOConfiger<Object> {
 

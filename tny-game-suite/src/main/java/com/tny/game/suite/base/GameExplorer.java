@@ -1,27 +1,26 @@
 package com.tny.game.suite.base;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMap;
 import com.tny.game.base.item.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.suite.base.annotation.*;
-import org.springframework.beans.*;
+import org.springframework.beans.BeansException;
 import org.springframework.context.*;
-import org.springframework.context.annotation.*;
-import org.springframework.stereotype.*;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
-import java.text.*;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static com.tny.game.base.item.ItemType.*;
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile({ITEM, GAME})
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, ServerPrepareStart {
+public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, AppPrepareStart {
 
     private Map<Class<?>, GameManager<Object>> managerMap = ImmutableMap.of();
 
@@ -401,7 +400,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_10);
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_6);
     }
 
 

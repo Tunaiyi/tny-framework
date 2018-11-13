@@ -3,7 +3,6 @@ package com.tny.game.asyndb.impl;
 import com.tny.game.asyndb.*;
 import com.tny.game.asyndb.log.LogName;
 import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.collection.LinkedTransferQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +70,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
     /**
      * 提交队列
      */
-    private final BlockingQueue<Synchronizable> sumitQueue = new LinkedTransferQueue<Synchronizable>();
+    private final BlockingQueue<Synchronizable> sumitQueue = new LinkedTransferQueue<>();
 
     private ScheduledExecutorService monitor;
 
@@ -143,7 +142,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
                 this.stop = false;
 
                 for (int index = 0; index < this.syncingQueueArray.length; index++) {
-                    this.syncingQueueArray[index] = new LinkedTransferQueue<Synchronizable>();
+                    this.syncingQueueArray[index] = new LinkedTransferQueue<>();
                     final BlockingQueue<Synchronizable> synchronizableQueue = this.syncingQueueArray[index];
                     this.executorService.execute(new Runnable() {
 

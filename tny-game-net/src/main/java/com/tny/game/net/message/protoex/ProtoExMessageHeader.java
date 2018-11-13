@@ -1,7 +1,8 @@
 package com.tny.game.net.message.protoex;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.net.message.*;
+import com.tny.game.net.message.AbstractNetMessageHeader;
+import com.tny.game.net.transport.MessageContext;
 import com.tny.game.protoex.annotations.*;
 
 import java.util.Objects;
@@ -31,14 +32,14 @@ public class ProtoExMessageHeader extends AbstractNetMessageHeader {
     public ProtoExMessageHeader() {
     }
 
-    public ProtoExMessageHeader(long id, MessageSubject subject, Object attachment) {
-        super(subject.getMode());
+    public ProtoExMessageHeader(long id, MessageContext<?> context) {
+        super(context.getMode());
         this.id = id;
-        this.protocol = subject.getProtocolNumber();
-        this.code = subject.getCode().getCode();
-        this.toMessage = subject.getToMessage();
+        this.protocol = context.getProtocolNumber();
+        this.code = context.getCode().getCode();
+        this.toMessage = context.getToMessage();
         this.time = System.currentTimeMillis();
-        this.attachment = attachment;
+        this.attachment = context.getAttachment();
     }
 
 

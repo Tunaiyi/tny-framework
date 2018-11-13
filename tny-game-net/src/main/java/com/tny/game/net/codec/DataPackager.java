@@ -1,6 +1,7 @@
 package com.tny.game.net.codec;
 
 import com.tny.game.common.utils.HashAide;
+import com.tny.game.net.codec.v1.DataPacketV1Config;
 import com.tny.game.net.exception.CodecException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -40,9 +41,9 @@ public class DataPackager {
     // 服务端Time
     private long localTime;
 
-    private DataPacketConfig config;
+    private DataPacketV1Config config;
 
-    public DataPackager(long accessId, DataPacketConfig config) {
+    public DataPackager(long accessId, DataPacketV1Config config) {
         String key = accessId + config.getSecurityKeys(accessId);
         this.config = config;
         this.accessId = accessId;
@@ -100,7 +101,7 @@ public class DataPackager {
     public void goToAndCheck(int number) {
         if (this.packetNumber >= number)
             throw CodecException.causeDecode("id " + number + " is handled!");
-        long maxSkipNumber = config.getPacketMaxSkipNumber();
+        long maxSkipNumber = config.getSkipNumberStep();
         if (number - this.packetNumber > maxSkipNumber)
             throw CodecException.causeDecode("id " + number + " is illegal!");
         while (this.packetNumber < number) {
@@ -136,7 +137,7 @@ public class DataPackager {
         return accessKey;
     }
 
-    public DataPacketConfig getConfig() {
+    public DataPacketV1Config getConfig() {
         return config;
     }
 }

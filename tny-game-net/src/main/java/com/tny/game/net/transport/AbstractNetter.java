@@ -4,6 +4,8 @@ import com.tny.game.common.utils.StringAide;
 import com.tny.game.net.exception.TunnelException;
 import com.tny.game.net.message.*;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * <p>
  *
@@ -15,8 +17,6 @@ public abstract class AbstractNetter<UID> implements Netter<UID>, WriteCallback<
     private MessageIdCreator idCreator;
 
     private volatile RespondFutureHolder respondFutureHolder;
-
-    private MessageFactory<UID> messageBuilderFactory;
 
     protected AbstractNetter(int mark) {
         this.idCreator = new MessageIdCreator(mark);
@@ -70,17 +70,17 @@ public abstract class AbstractNetter<UID> implements Netter<UID>, WriteCallback<
         RespondFutureHolder.removeHolder(this);
     }
 
-    protected <T> void cancelFuture(NetStageableFuture<T> future) {
+    protected <T> void cancelFuture(CompletableFuture<T> future) {
         if (future != null)
-            future.cancel();
+            future.cancel(true);
     }
 
-    protected <T> void completeFuture(NetStageableFuture<T> future, T message) {
+    protected <T> void completeFuture(CompletableFuture<T> future, T message) {
         if (future != null)
             future.complete(message);
     }
 
-    protected <T> void completeExceptionally(NetStageableFuture<T> future, Throwable e) {
+    protected <T> void completeExceptionally(CompletableFuture<T> future, Throwable e) {
         if (future != null)
             future.completeExceptionally(e);
     }
@@ -104,15 +104,6 @@ public abstract class AbstractNetter<UID> implements Netter<UID>, WriteCallback<
             return;
         completeExceptionally(context.getSendFuture(), e);
         completeExceptionally(context.getRespondFuture(), e);
-    }
-
-    protected AbstractNetter<UID> setMessageFactory(MessageFactory<UID> messageFactory) {
-        this.messageBuilderFactory = messageFactory;
-        return this;
-    }
-
-    protected NetMessage<UID> createMessage(MessageSubject subject, MessageContext<UID> context) {
-        return this.messageBuilderFactory.create(createMessageID(), subject, context != null ? context.getAttachment() : null, this.getCertificate());
     }
 
 }

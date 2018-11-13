@@ -17,7 +17,7 @@ import java.util.stream.*;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class ServiceCluster extends SpringBaseCluster implements ServerPostStart {
+public abstract class ServiceCluster extends SpringBaseCluster implements AppPostStart {
 
     @Resource
     private ProtoExSchemaIniter protoExSchemaIniter;

@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.net.message.common.CommonMessageFactory;
 import com.tny.game.net.transport.Certificate;
 
 /**
@@ -9,7 +10,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NettyServerTunnel<Lon
 
     @Override
     protected NettyServerTunnel<Long> newTunnel(Certificate<Long> certificate) {
-        NettyServerTunnel<Long> tunnel = new NettyServerTunnel<>(mockChannel(), certificate);
+        NettyServerTunnel<Long> tunnel = new NettyServerTunnel<>(mockChannel(), certificate, new CommonMessageFactory<>());
         tunnel.open();
         return tunnel;
     }

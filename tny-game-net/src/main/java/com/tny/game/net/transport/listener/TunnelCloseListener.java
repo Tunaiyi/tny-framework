@@ -8,9 +8,9 @@ import com.tny.game.net.transport.Tunnel;
  * @author: Kun Yang
  * @date: 2018-10-08 16:03
  */
+@FunctionalInterface
 public interface TunnelCloseListener<UID> {
 
-    default void onClose(Tunnel<UID> session) {
-    }
+    void onClose(Tunnel<UID> session);
 
 }

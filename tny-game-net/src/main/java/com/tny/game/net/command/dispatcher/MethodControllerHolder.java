@@ -9,11 +9,10 @@ import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.auth.AuthenticateValidator;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.CommandException;
 import com.tny.game.net.message.*;
-import com.tny.game.net.session.Session;
 import com.tny.game.net.transport.*;
-import com.tny.game.net.utils.NetAttrKeys;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -347,12 +346,16 @@ public final class MethodControllerHolder extends ControllerHolder {
             this.paramClass = paramClass;
             this.paramAnnotations = paramAnnotations;
             this.require = true;
-            if (paramClass == Session.class) {
+            if (paramClass == Endpoint.class) {
+                this.paramType = ParamType.ENDPOINT;
+            } else if (paramClass == Session.class) {
                 this.paramType = ParamType.SESSION;
             } else if (paramClass == Tunnel.class) {
                 this.paramType = ParamType.TUNNEL;
             } else if (paramClass == Message.class) {
                 this.paramType = ParamType.MESSAGE;
+            } else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
+                this.paramType = ParamType.CODE;
             } else {
                 for (Annotation anno : this.paramAnnotations) {
                     if (anno.annotationType() == MsgBody.class) {
@@ -400,16 +403,23 @@ public final class MethodControllerHolder extends ControllerHolder {
                 case MESSAGE:
                     value = message;
                     break;
-                case SESSION:
+                case ENDPOINT: {
+                    Optional<? extends Endpoint<?>> endpoint = tunnel.getBindEndpoint();
+                    if (endpoint.isPresent()) {
+                        value = endpoint.get();
+                        break;
+                    }
+                    throw new NullPointerException(format("{} endpint is null", tunnel));
+                }
+                case SESSION: {
                     Optional<? extends Endpoint<?>> endpoint = tunnel.getBindEndpoint();
                     if (endpoint.isPresent()) {
                         value = endpoint.get();
                         if (value instanceof Session)
                             break;
                     }
-                    value = tunnel.attributes().getAttribute(NetAttrKeys.SESSION_KEY);
-                    if (value == null)
-                        throw new NullPointerException(format("{} session is null", tunnel));
+                    throw new NullPointerException(format("{} session is null", tunnel));
+                }
                 case TUNNEL:
                     value = tunnel;
                     break;

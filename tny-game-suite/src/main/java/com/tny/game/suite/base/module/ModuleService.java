@@ -7,7 +7,7 @@ import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.config.Config;
 import com.tny.game.common.lifecycle.LifecycleLevel;
 import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.ServerPrepareStart;
+import com.tny.game.common.lifecycle.AppPrepareStart;
 import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.suite.utils.Configs;
 import com.tny.game.suite.utils.SuiteLog;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 import static com.tny.game.suite.utils.Configs.*;
 
-public abstract class ModuleService<DTO> implements ServerPrepareStart, ApplicationContextAware {
+public abstract class ModuleService<DTO> implements AppPrepareStart, ApplicationContextAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 

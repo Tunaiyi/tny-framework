@@ -2,8 +2,7 @@ package com.tny.game.suite.cache;
 
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.collection.CollectorsAide;
-import com.tny.game.common.lifecycle.ServerPostStart;
-import static com.tny.game.common.utils.StringAide.*;
+import com.tny.game.common.lifecycle.AppPostStart;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.AnnotationClassFilter;
 import com.tny.game.suite.utils.Configs;
@@ -17,14 +16,15 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
-import static com.tny.game.suite.SuiteProfiles.PROTOBUF_MAPPER;
+import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.suite.SuiteProfiles.*;
 
 /**
  * Created by Kun Yang on 2017/1/18.
  */
 @Component
 @Profile(PROTOBUF_MAPPER)
-public class ProtobufTableMapperIniter implements ServerPostStart, ApplicationContextAware {
+public class ProtobufTableMapperIniter implements AppPostStart, ApplicationContextAware {
 
     private ClassSelector selector = ClassSelector.instance(AnnotationClassFilter.ofInclude(ToCache.class));
 

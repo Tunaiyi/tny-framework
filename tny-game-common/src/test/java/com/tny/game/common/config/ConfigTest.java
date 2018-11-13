@@ -122,8 +122,8 @@ public class ConfigTest {
 
     @Test
     public void getStr() {
-        map.forEach((k, v) -> assertEquals(config.getStr(k.toString()), v));
-        map.forEach((k, v) -> assertNull(config.getStr(k.toString() + 1)));
+        map.forEach((k, v) -> assertEquals(config.getString(k.toString()), v));
+        map.forEach((k, v) -> assertNull(config.getString(k.toString() + 1)));
     }
 
     @Test
@@ -300,11 +300,11 @@ public class ConfigTest {
         Collection<Entry<String, Object>> l4l5Entries = l4Config.entrySet();
         assertEquals(TYPE_SIZE * 2, l4l5Entries.size());
         assertEquals(config.getInt(L4_NUM_1), l4Config.getInt(L4_NUM_1));
-        assertEquals(config.getStr(L4_STR_2), l4Config.getStr(L4_STR_2));
+        assertEquals(config.getString(L4_STR_2), l4Config.getString(L4_STR_2));
         assertEquals(config.getBoolean(L4_BOOLEAN_3), l4Config.getBoolean(L4_BOOLEAN_3));
         assertEquals(config.getEnum(L4_EUMN_4, Type.class), l4Config.getEnum(L4_BOOLEAN_3, Type.class));
         assertEquals(config.getInt("l5." + L4_NUM_1), l4Config.getInt(L5_NUM_1));
-        assertEquals(config.getStr("l5." + L4_STR_2), l4Config.getStr(L5_STR_2));
+        assertEquals(config.getString("l5." + L4_STR_2), l4Config.getString(L5_STR_2));
         assertEquals(config.getBoolean("l5." + L4_BOOLEAN_3), l4Config.getBoolean(L5_BOOLEAN_3));
         assertEquals(config.getEnum("l5." + L4_EUMN_4, Type.class), l4Config.getEnum(L5_BOOLEAN_3, Type.class));
 
@@ -312,7 +312,7 @@ public class ConfigTest {
         Collection<Entry<String, Object>> l5Entries = l5Config.entrySet();
         assertEquals(TYPE_SIZE * 1, l5Entries.size());
         assertEquals(config.getInt(L4_NUM_1), l5Config.getInt(L5_NUM_1));
-        assertEquals(config.getStr(L4_STR_2), l5Config.getStr(L5_STR_2));
+        assertEquals(config.getString(L4_STR_2), l5Config.getString(L5_STR_2));
         assertEquals(config.getBoolean(L4_BOOLEAN_3), l5Config.getBoolean(L5_BOOLEAN_3));
         assertEquals(config.getEnum(L4_EUMN_4, Type.class), l5Config.getEnum(L5_BOOLEAN_3, Type.class));
     }
