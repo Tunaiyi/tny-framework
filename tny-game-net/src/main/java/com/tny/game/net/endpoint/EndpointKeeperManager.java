@@ -1,26 +1,24 @@
 package com.tny.game.net.endpoint;
 
 
-import com.tny.game.common.unit.annotation.UnitInterface;
+import com.tny.game.common.unit.annotation.*;
+import com.tny.game.net.transport.*;
 
 import java.util.Optional;
 
 /**
  * 会话管理者
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-09-18 15:37
  */
 @UnitInterface
 public interface EndpointKeeperManager {
 
-    <K extends EndpointKeeper<?, ?>> K loadOcCreate(String userType, EndpointType endpointType);
+    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode);
 
-    <K extends EndpointKeeper<?, ?>> Optional<K> getKeeper(String userType);
+    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType);
 
-    <K extends SessionKeeper<?>> Optional<K> getSessionKeeper(String userType);
+    <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType);
 
-    <K extends ClientKeeper<?>> Optional<K> getClientKeeper(String userType);
+    <UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType);
 
 }

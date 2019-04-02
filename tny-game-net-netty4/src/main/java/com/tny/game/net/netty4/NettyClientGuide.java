@@ -3,18 +3,23 @@ package com.tny.game.net.netty4;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.listener.ClientCloseListener;
-import com.tny.game.net.exception.NetException;
-import com.tny.game.net.transport.Certificate;
+import com.tny.game.net.endpoint.listener.*;
+import com.tny.game.net.exception.*;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -35,17 +40,10 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
     private AtomicBoolean close = new AtomicBoolean(false);
 
-    private EndpointKeeperManager endpointKeeperManager;
+    private ClientCloseListener<?> closeListener = (client) -> clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
 
-    private ClientCloseListener<?> closeListener = (client) -> clients.remove(clientKey(client.getUrl()), client);
-
-    public NettyClientGuide(NettyClientUnitSetting clientSetting) {
-        this(clientSetting, null);
-    }
-
-    public NettyClientGuide(NettyClientUnitSetting clientSetting, EndpointKeeperManager endpointKeeperManager) {
+    public NettyClientGuide(NettyClientBootstrapSetting clientSetting) {
         super(clientSetting);
-        this.endpointKeeperManager = endpointKeeperManager;
         buses().closeEvent().addListener(closeListener);
     }
 
@@ -54,15 +52,16 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
     }
 
     @Override
-    public <UID> Client<UID> connect(URL url, Certificate<UID> certificate, PostConnect<UID> connect) {
-        NettyClient<UID> client = new NettyClient<>(this, url, certificate, connect);
+    public <UID> Client<UID> connect(URL url, UID unloginUid, PostConnect<UID> connect) {
+        NettyClient<UID> client = new NettyClient<>(this, url, unloginUid, connect,
+                this.getEventHandler(), 0);
         NettyClient<UID> old = as(clients.putIfAbsent(clientKey(url), client));
         if (old != null) {
             return old;
         } else {
             client.open();
-            ClientKeeper<UID> keeper = this.endpointKeeperManager.loadOcCreate(client.getUserType(), EndpointType.CLIENT);
-            keeper.register(client);
+            // ClientKeeper<UID> keeper = this.endpointKeeperManager.loadOrCreate(client.getUserType(), TunnelMode.CLIENT);
+            // keeper.register(client);
             return client;
         }
     }
@@ -74,7 +73,7 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
             if (this.bootstrap != null)
                 return this.bootstrap;
             this.bootstrap = new Bootstrap();
-            NettyMessageHandler messageHandler = new NettyMessageHandler(this.messageHandler);
+            NettyMessageHandler messageHandler = new NettyMessageHandler();
             this.bootstrap.group(workerGroup)
                     .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)
@@ -95,7 +94,6 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
     }
 
-    @SuppressWarnings("unchecked")
     Channel connect(URL url, long connectTimeout) throws NetException {
         Throws.checkNotNull(url, "url is null");
         ChannelFuture channelFuture = null;
@@ -143,9 +141,5 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
         return false;
     }
 
-    public NettyClientGuide setEndpointKeeperManager(EndpointKeeperManager endpointKeeperManager) {
-        this.endpointKeeperManager = endpointKeeperManager;
-        return this;
-    }
 
 }

@@ -1,12 +1,12 @@
 package com.tny.game.net.message.coder;
 
-import com.tny.game.common.unit.annotation.UnitInterface;
+import com.tny.game.common.unit.annotation.*;
 
 @UnitInterface
 public interface Codec<I> {
 
-    I decode(byte[] bodyBytes) throws Exception;
+    I decode(byte[] bytes) throws Exception;
 
-    byte[] encode(I message) throws Exception;
+    byte[] encode(I object) throws Exception;
 
 }

@@ -1,26 +1,34 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.message.MessageMode;
-import org.junit.*;
+import com.tny.game.net.message.*;
+import org.junit.Test;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Kun Yang on 2018/8/25.
  */
 public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
 
-    protected abstract T createBindTunnel();
+    protected T createBindTunnel() {
+        return this.createTunnel(createLoginCert());
+    }
 
-    protected abstract T createUnbindTunnel();
+    protected T createUnbindTunnel() {
+        return this.createTunnel(createUnLoginCert());
+    }
 
     protected abstract T createTunnel(Certificate<Long> certificate);
 
     @Override
-    public T communicator(Certificate<Long> certificate) {
+    public T createNetter(Certificate<Long> certificate) {
         return createTunnel(certificate);
     }
 
@@ -41,17 +49,6 @@ public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
         assertNotNull(tunnel.attributes());
     }
 
-    @Test
-    public void remoteAddress() {
-        T tunnel = createBindTunnel();
-        assertNotNull(tunnel.getRemoteAddress());
-    }
-
-    @Test
-    public void localAddress() {
-        T tunnel = createBindTunnel();
-        assertNotNull(tunnel.getLocalAddress());
-    }
 
     @Test
     public void isLogin() {

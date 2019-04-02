@@ -1,14 +1,17 @@
 package com.tny.game.net.netty4.codec;
 
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.DataPacketV1Config;
+import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.coder.CodecContent;
+import com.tny.game.net.message.coder.*;
 import com.tny.game.net.netty4.*;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import org.slf4j.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.coder.CodecContent.*;
 
 public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPacketEncoder {
@@ -28,20 +31,16 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
         Channel channel = ctx.channel();
         try {
             out.writeBytes(FRAME_MAGIC);
-            if (message.getMode() == MessageMode.PING) {
-                out.writeByte(CodecContent.PING_OPTION);
-                out.writeInt(0); // BodySize
-                return;
-            }
-            if (message.getMode() == MessageMode.PONG) {
-                out.writeByte(CodecContent.PONG_OPTION);
-                out.writeInt(0); // BodySize
+            MessageType messageType = message.getMode().getType();
+            if (messageType != MessageType.MESSAGE) {
+                out.writeByte(messageType.getOption());
+                // out.writeInt(0); // BodySize
                 return;
             }
             // 获取打包器
             DataPackager packager = channel.attr(NettyAttrKeys.WRITE_PACKAGER).get();
             if (packager == null) {
-                NettyTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+                NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
                 packager = new DataPackager(tunnel.getAccessId(), config);
                 channel.attr(NettyAttrKeys.WRITE_PACKAGER).set(packager);
             }
@@ -75,8 +74,8 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
         NettyWasteWriter wasteWriter = new NettyWasteWriter(packager, config);
         payloadLength += wasteWriter.getTotalWasteByteSize();
 
-        // 包头 包体
-        byte[] body = this.codec.encode(message);
+        // 包头
+        byte[] body = this.messageCodec.encode(as(message));
 
         byte[] verifyCodeBytes = new byte[0];
         if (config.isVerifyEnable()) {

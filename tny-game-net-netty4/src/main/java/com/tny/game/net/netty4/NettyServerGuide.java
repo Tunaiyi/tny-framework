@@ -1,19 +1,25 @@
 package com.tny.game.net.netty4;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.*;
 import com.tny.game.common.event.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.base.listener.ServerClosedListener;
+import com.tny.game.net.base.listener.*;
 import com.tny.game.net.transport.*;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -29,7 +35,7 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
 
     private volatile ServerBootstrap bootstrap;
 
-    private volatile ServerUnitSetting serverUnitSetting;
+    private volatile ServerBootstrapSetting serverUnitSetting;
 
     private Collection<InetSocketAddress> bindAddresses;
 
@@ -41,7 +47,7 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
     private BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
-    public NettyServerGuide(NettyServerUnitSetting unitSetting) {
+    public NettyServerGuide(NettyServerBootstrapSetting unitSetting) {
         super(unitSetting);
         this.serverUnitSetting = as(unitSetting);
         this.bindAddresses = ImmutableSet.copyOf(this.serverUnitSetting.getBindAddresses());
@@ -125,25 +131,26 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
             if (this.bootstrap != null)
                 return this.bootstrap;
             this.bootstrap = new io.netty.bootstrap.ServerBootstrap();
-            NettyMessageHandler nettyMessageHandler = new NettyMessageHandler(this.messageHandler);
-            this.bootstrap.group(parentGroup, childGroup)
-                    .channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .childOption(ChannelOption.TCP_NODELAY, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childHandler(new ChannelInitializer<Channel>() {
+            NettyMessageHandler nettyMessageHandler = new NettyMessageHandler();
+            this.bootstrap.group(parentGroup, childGroup);
+            this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
+            this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+            this.bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+            this.bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            this.bootstrap.childHandler(new ChannelInitializer<Channel>() {
 
-                        @Override
-                        protected void initChannel(Channel ch) throws Exception {
-                            if (channelMaker != null)
-                                channelMaker.initChannel(ch);
-                            ch.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
-                            Certificate<Object> defaultCertificate = Certificates.createUnautherized();
-                            NettyTunnel<Object> tunnel = new NettyServerTunnel<>(ch, defaultCertificate, messageFactory);
-                            ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
-                            tunnel.open();
-                        }
-                    });
+                @Override
+                protected void initChannel(Channel ch) throws Exception {
+                    if (channelMaker != null)
+                        channelMaker.initChannel(ch);
+                    ch.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
+                    Certificate<Object> defaultCertificate = Certificates.createUnautherized();
+                    NettyTunnel<Object, ?> tunnel = new NettyServerTunnel<>(ch, defaultCertificate,
+                            getEventHandler(), messageFactory);
+                    ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
+                    tunnel.open();
+                }
+            });
             return this.bootstrap;
         }
 

@@ -2,11 +2,12 @@ package com.tny.game.net.demo.client;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.demo.common.CtrlerIDs;
-import com.tny.game.net.demo.common.dto.LoginDTO;
+import com.tny.game.net.demo.common.*;
+import com.tny.game.net.demo.common.dto.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.suite.net.spring.SuiteParamFilterPlugin;
-import org.slf4j.*;
+import com.tny.game.suite.net.spring.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.tny.game.net.message.MessageMode.*;
 
@@ -26,6 +27,7 @@ public class ClientLoginController {
 
     @Controller(CtrlerIDs.LOGIN$LOGIN)
     @BeforePlugin(SuiteParamFilterPlugin.class)
+    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
     public void login(@MsgCode int code, @MsgBody LoginDTO dto) {
         if (!ResultCodes.isSuccess(code)) {
             LOGGER.info("Login failed : {}", code);

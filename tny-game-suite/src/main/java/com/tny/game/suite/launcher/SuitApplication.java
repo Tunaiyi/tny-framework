@@ -1,26 +1,32 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.runtime.ShutdownHook;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.net.base.ServerGuide;
-import com.tny.game.net.telnet.TelnetCommandHolder;
-import com.tny.game.suite.transaction.TransactionManager;
+import com.tny.game.common.runtime.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.telnet.*;
+import com.tny.game.suite.transaction.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public class SuitApplication {
+public class SuitApplication implements InitializingBean {
 
-    private ApplicationContext context;
+    private ApplicationContext applicationContext;
 
-    private Supplier<ApplicationContext> contextSupplier;
+    private AppContext appContext;
 
     private Consumer<ApplicationContext> beforeInitServer;
 
@@ -36,50 +42,35 @@ public class SuitApplication {
 
     private static Logger LOG = LoggerFactory.getLogger(SuitApplication.class);
 
-    private long startAt;
+    private Instant startAt;
 
     // public Application(String... contextFile) throws Exception {
     //     this.startAt = System.currentTimeMillis();
     //     this.processor.onStaticInit();
-    //     GenericXmlApplicationContext context = new GenericXmlApplicationContext();
+    //     GenericXmlApplicationContext applicationContext = new GenericXmlApplicationContext();
     //     String profiles = Configs.SUITE_CONFIG.getString(Configs.SUITE_LAUNCHER_PROFILES);
-    //     context.getEnvironment().setActiveProfiles(StringUtils.split(profiles, ","));
+    //     applicationContext.getEnvironment().setActiveProfiles(StringUtils.split(profiles, ","));
     //     LOG.info("服务器启动配置Profiles : {}", profiles);
-    //     context.load(contextFile);
-    //     init(context);
+    //     applicationContext.load(contextFile);
+    //     init(applicationContext);
     // }
 
-    private void init(ApplicationContext context) {
-        startAt = System.currentTimeMillis();
 
-        this.context = context;
-        // this.context.refresh();
+    public SuitApplication(ApplicationContext applicationContext, AppContext appContext) {
+        LOG.info("开始启动服务加载配置");
+        this.applicationContext = applicationContext;
+        this.appContext = appContext;
     }
 
-    public SuitApplication(ApplicationContext context) {
-        this.context = context;
-    }
-
-    public SuitApplication(Supplier<ApplicationContext> contextSupplier) {
-        this.contextSupplier = contextSupplier;
-    }
 
     public SuitApplication start() throws Throwable {
-        this.startAt = System.currentTimeMillis();
-        LOG.info("开始启动服务加载配置");
-        this.processor.onStaticInit();
-        if (this.context == null) {
-            if (contextSupplier != null)
-                this.context = contextSupplier.get();
-            Throws.checkNotNull(this.context, "SuitApplication context is null");
-        }
         TransactionManager.open();
         try {
             // processor.setApplicationContext(this.appContext);
             //per initServer
             runPoint(beforeInitServer);
             Collection<ServerGuide> servers = this.initApplication();
-            ApplicationLifecycleProcessor.loadHandler(context);
+            ApplicationLifecycleProcessor.loadHandler(applicationContext);
             runPoint(afterInitServer);
             //post initServer
 
@@ -92,8 +83,8 @@ public class SuitApplication {
             runPoint(afterStartServer);
             // post start
 
-            // if (this.context.getBeanNamesForType(TelnetServer.class).length > 0) {
-            //     TelnetServer telnetServer = this.context.getBean(TelnetServer.class);
+            // if (this.applicationContext.getBeanNamesForType(TelnetServer.class).length > 0) {
+            //     TelnetServer telnetServer = this.applicationContext.getBean(TelnetServer.class);
             //     if (telnetServer != null)
             //         telnetServer.start();
             // }
@@ -116,7 +107,7 @@ public class SuitApplication {
 
             // complete
             runPoint(complete);
-            LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - startAt);
+            LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - startAt.toEpochMilli());
         } finally {
             TransactionManager.close();
         }
@@ -148,8 +139,8 @@ public class SuitApplication {
         return this;
     }
 
-    public ApplicationContext getContext() {
-        return context;
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public void waitForConsole(String closeKey) {
@@ -157,7 +148,7 @@ public class SuitApplication {
     }
 
     public void waitForConsole(String closeKey, BiConsumer<String, String[]> handler) {
-        Map<String, TelnetCommandHolder> map = this.context.getBeansOfType(TelnetCommandHolder.class);
+        Map<String, TelnetCommandHolder> map = this.applicationContext.getBeansOfType(TelnetCommandHolder.class);
         TelnetCommandHolder commandHolder = null;
         for (TelnetCommandHolder holder : map.values()) {
             commandHolder = holder;
@@ -191,16 +182,20 @@ public class SuitApplication {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Collection<ServerGuide> initApplication() {
-        Map<String, ServerGuide> servers = this.context.getBeansOfType(ServerGuide.class);
+        Map<String, ServerGuide> servers = this.applicationContext.getBeansOfType(ServerGuide.class);
         LOG.info("服务器实例化完成!");
         return servers.values();
     }
 
     private void runPoint(Consumer<ApplicationContext> fn) {
         if (fn != null)
-            fn.accept(this.context);
+            fn.accept(this.applicationContext);
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        this.startAt = Instant.now();
+        this.processor.onStaticInit(appContext);
+    }
 }

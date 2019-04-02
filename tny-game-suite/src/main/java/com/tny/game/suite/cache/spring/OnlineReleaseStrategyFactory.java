@@ -3,9 +3,10 @@ package com.tny.game.suite.cache.spring;
 import com.tny.game.asyndb.*;
 import com.tny.game.base.item.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.suite.login.IDAide;
+import com.tny.game.suite.login.*;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
@@ -43,7 +44,10 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            SessionKeeper<Object> keeper = endpointKeeperManager.loadOcCreate(userType, EndpointType.SESSION);
+            Optional<SessionKeeper<Long>> keeperOpt = endpointKeeperManager.getSessionKeeper(userType);
+            if (!keeperOpt.isPresent())
+                return true;
+            EndpointKeeper<Long, Session<Long>> keeper = keeperOpt.get();
             return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
         }
 

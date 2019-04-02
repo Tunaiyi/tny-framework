@@ -1,17 +1,17 @@
 package com.tny.game.net.netty4.codec;
 
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.unit.UnitLoader;
+import com.tny.game.common.unit.*;
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.DataPacketV1Config;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.message.coder.Codec;
+import com.tny.game.net.codec.v1.*;
+import com.tny.game.net.message.coder.*;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class DataPacketV1BaseCodec implements AppPrepareStart {
 
-    protected Codec<Message<?>> codec;
+    protected MessageCodec<Object> messageCodec;
 
     protected CodecVerifier verifier;
 
@@ -34,7 +34,14 @@ public abstract class DataPacketV1BaseCodec implements AppPrepareStart {
 
     @Override
     public void prepareStart() {
-        this.codec = as(UnitLoader.getLoader(Codec.class).getUnitAnCheck(config.getCodec()));
+        Codec<Object> bodyCoder = as(UnitLoader.getLoader(Codec.class).getUnitAnCheck(config.getBodyCodec()));
+        Codec<Object> tailCoder = as(UnitLoader.getLoader(Codec.class).getUnit(config.getTailCodec(), null));
+        DecodeStrategy decodeStrategy;
+        if (StringUtils.isBlank(config.getBodyDecodeStrategy()))
+            decodeStrategy = DecodeStrategy.DECODE_ALL_STRATEGY;
+        else
+            decodeStrategy = as(UnitLoader.getLoader(DecodeStrategy.class).getUnitAnCheck(config.getBodyDecodeStrategy()));
+        this.messageCodec = new DefaultMessageCodec<>(bodyCoder, tailCoder, decodeStrategy);
         this.verifier = UnitLoader.getLoader(CodecVerifier.class).getUnitAnCheck(config.getVerifier());
         this.crypto = UnitLoader.getLoader(CodecCrypto.class).getUnitAnCheck(config.getCrypto());
     }

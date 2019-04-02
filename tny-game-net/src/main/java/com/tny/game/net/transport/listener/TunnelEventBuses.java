@@ -12,9 +12,9 @@ import com.tny.game.net.transport.Tunnel;
  */
 public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
 
-    @SuppressWarnings("unchecked")
-    private final BindVoidEventBus<TunnelAuthenticateListener, Tunnel> ON_AUTHENTICATE =
-            EventBuses.of(TunnelAuthenticateListener.class, TunnelAuthenticateListener::onAuthenticate);
+    // @SuppressWarnings("unchecked")
+    // private final BindVoidEventBus<TunnelAuthenticateListener, Tunnel> ON_AUTHENTICATE =
+    //         EventBuses.of(TunnelAuthenticateListener.class, TunnelAuthenticateListener::onAuthenticate);
 
     @SuppressWarnings("unchecked")
     private final BindVoidEventBus<TunnelActivateListener, Tunnel> ON_ACTIVATE =
@@ -38,9 +38,9 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
         return eventBuses;
     }
 
-    public BindVoidEventBus<TunnelAuthenticateListener, Tunnel> authenticateEvent() {
-        return ON_AUTHENTICATE;
-    }
+    // public BindVoidEventBus<TunnelAuthenticateListener, Tunnel> authenticateEvent() {
+    //     return ON_AUTHENTICATE;
+    // }
 
     public BindVoidEventBus<TunnelActivateListener, Tunnel> activateEvent() {
         return ON_ACTIVATE;

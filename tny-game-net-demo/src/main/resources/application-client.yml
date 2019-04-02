@@ -1,0 +1,26 @@
+tny:
+  app:
+    name: GameClientApp
+    app-type: game
+    scope-type: online
+    scan-paths: com.tny.game.net.demo,com.tny.game.net.common
+  net:
+    client:
+      game-client:
+        channel:
+          idle-timeout: 360000
+        encoder:
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
+        decoder:
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
+    event-handler:
+      default:
+        threads: 1
+    command-executor:
+      default:
+        class: com.tny.game.net.command.executor.ConcurrentMessageCommandExecutor
+        threads: 10

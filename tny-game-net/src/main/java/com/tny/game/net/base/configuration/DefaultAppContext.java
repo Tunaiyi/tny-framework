@@ -47,7 +47,7 @@ public class DefaultAppContext implements AppContext {
     }
 
     @Override
-    public List<String> getScanPaths() {
+    public List<String> getScanPathList() {
         return Arrays.asList(this.scanPaths);
     }
 

@@ -1,12 +1,25 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.endpoint.NetEndpoint;
-import com.tny.game.net.exception.ValidatorFailException;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
 
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel<UID> extends Tunnel<UID> {
+public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID> {
+
+    /**
+     * @return 获取绑定中断
+     */
+    @Override
+    NetEndpoint<UID> getEndpoint();
+
+    /**
+     * 设置访问 Id
+     *
+     * @param accessId 访问 Id
+     */
+    void setAccessId(long accessId);
 
     /**
      * ping
@@ -28,18 +41,6 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
      */
     void disconnect();
 
-    /**
-     * 认证
-     *
-     * @param certificate 认证的凭证
-     * @throws ValidatorFailException 接受凭证失败
-     */
-    void authenticate(Certificate<UID> certificate) throws ValidatorFailException;
-
-    /**
-     * @return 返回是否绑定终端
-     */
-    boolean isBind();
 
     /**
      * 终端 Endpoint
@@ -50,11 +51,15 @@ public interface NetTunnel<UID> extends Tunnel<UID> {
     boolean bind(NetEndpoint<UID> endpoint);
 
     /**
-     * 设置访问 Id
-     *
-     * @param accessId 访问 Id
+     * @return 创建写出 Future
+     * @param timeout
      */
-    NetTunnel<UID> setAccessId(long accessId);
+    WriteMessagePromise createWritePromise(long timeout);
+
+    /**
+     * @return message factory
+     */
+    MessageFactory<UID> getMessageFactory();
 
 }
 

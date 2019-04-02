@@ -1,24 +1,30 @@
 package com.tny.game.suite.net.configuration;
 
-import com.tny.game.net.base.NetUnitSetting;
+import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.env.*;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-11-03 10:59
  */
 public interface NetConfigurationAide {
 
+    String DEFAULT_NAME_KEY = "default";
 
     String HEAD_KEY = "tny";
 
@@ -26,40 +32,60 @@ public interface NetConfigurationAide {
     String APP_CONTEXT_BEAN_NAME = "appContext";
 
     String NET_HEAD = key(HEAD_KEY, "net");
-    String NET_SETTING_NODE = "setting";
+    String NET_CHANNEL_NODE = "channel";
+    String NET_ENCODER_NODE = "encoder";
+    String NET_DECODER_NODE = "decoder";
+    String CLASS_NODE = "class";
+    String SETTING_CLASS_NODE = "setting-class";
     String NET_NAMES_NODE = "names";
 
     String SERVER_HEAD = key(NET_HEAD, "server");
-    String SERVER_NAMES_KEY = key(SERVER_HEAD, NET_NAMES_NODE);
 
     String CLIENT_HEAD = key(NET_HEAD, "client");
-    String CLIENT_NAMES_KEY = key(CLIENT_HEAD, NET_NAMES_NODE);
 
-    String HANDLER_HEAD = key(NET_HEAD, "handler");
-    String EXECUTOR_HEAD = key(NET_HEAD, "executor");
+    String EVENT_HANDLER_HEAD = key(NET_HEAD, "event-handler");
+
+    // String MESSAGE_HANDLER_HEAD = key(NET_HEAD, "message-handler");
+
+    String COMMAND_EXECUTOR_HEAD = key(NET_HEAD, "command-executor");
+
+    String COMMAND_DISPATCHER_HEAD = key(NET_HEAD, "command-dispatcher");
 
     String SESSION_HEAD = key(NET_HEAD, "session");
-    String FACTORY_KEY = "keeper_factory";
+    String TERMINAL_HEAD = key(NET_HEAD, "terminal");
+
+    String SESSION_KEEPER_HEAD = key(NET_HEAD, "session-keeper");
+    String TERMINAL_KEEPER_HEAD = key(NET_HEAD, "terminal-keeper");
+
+    String SESSION_FACTORY_HEAD = key(NET_HEAD, "session-factory");
+
+    static String getBeanName(String beanName, Class<?> unitInterface) {
+        if (beanName.equals(DEFAULT_NAME_KEY)) {
+            return DEFAULT_NAME_KEY + unitInterface.getSimpleName();
+        } else {
+            return beanName;
+        }
+    }
 
     enum NetType {
 
-        SERVER(SERVER_HEAD, NettyServerUnitSetting::new),
+        SERVER(SERVER_HEAD, NettyServerBootstrapSetting::new),
 
-        CLIENT(CLIENT_HEAD, NettyClientUnitSetting::new),
+        CLIENT(CLIENT_HEAD, NettyClientBootstrapSetting::new),
 
         //
         ;
 
         private String head;
 
-        private Function<String, NetUnitSetting> settingCreator;
+        private Function<String, NetBootstrapSetting> settingCreator;
 
-        NetType(String head, Function<String, NetUnitSetting> settingCreator) {
+        NetType(String head, Function<String, NetBootstrapSetting> settingCreator) {
             this.head = head;
             this.settingCreator = settingCreator;
         }
 
-        public NetUnitSetting createSetting(String name) {
+        public NetBootstrapSetting createSetting(String name) {
             return settingCreator.apply(name);
         }
 
@@ -81,7 +107,7 @@ public interface NetConfigurationAide {
         } else {
             MutablePropertySources propertySources = ((ConfigurableEnvironment) environment).getPropertySources();
             return StreamSupport.stream(propertySources.spliterator(), true)
-                    .filter(ps -> ps instanceof EnumerablePropertySource)
+                    .filter(EnumerablePropertySource.class::isInstance)
                     .map(ps -> ((EnumerablePropertySource) ps).getPropertyNames())
                     .flatMap(Arrays::stream)
                     .filter(propName -> propName.startsWith(keyHead + "."))

@@ -1,6 +1,7 @@
 package com.tny.game.suite.launcher;
 
 import com.tny.game.common.utils.ExeAide;
+import com.tny.game.net.base.*;
 import com.tny.game.suite.SuiteProfiles;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +26,9 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
     private static ApplicationLifecycleProcessor processor = new ApplicationLifecycleProcessor();
 
     private ApplicationContext context;
+
+    @Resource
+    private AppContext appContext;
 
     private AtomicBoolean contextInit = new AtomicBoolean(false);
 
@@ -49,7 +54,7 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ExeAide.runUnchecked(() -> processor.onStaticInit());
+        ExeAide.runUnchecked(() -> processor.onStaticInit(appContext));
     }
 
     @Override

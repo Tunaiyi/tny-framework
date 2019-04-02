@@ -1,13 +1,18 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.command.MessageHandler;
-import com.tny.game.net.message.NetMessage;
+import com.tny.game.net.base.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.handler.timeout.*;
-import org.slf4j.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.WriteTimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
@@ -24,12 +29,6 @@ import static com.tny.game.common.utils.ObjectAide.*;
 public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
-
-    private MessageHandler messageHandler;
-
-    public NettyMessageHandler(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -74,7 +73,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 NetMessage<Object> message = as(object);
                 NetTunnel<Object> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
                 if (tunnel != null)
-                    messageHandler.handle(tunnel, message);
+                    tunnel.receive(message);
             } catch (Throwable ex) {
                 LOG.error("#GameServerHandler#接受请求异常", ex);
             }
@@ -89,7 +88,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NettyTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
+        NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
             if (LOG.isInfoEnabled())
                 LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());

@@ -9,10 +9,9 @@ import com.tny.game.base.utlis.TryResult;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.suite.base.dto.TryToDoFailDTO;
 import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.ResultFactory;
 import com.tny.game.net.command.CommandResult;
 
-public class CommandResults extends ResultFactory {
+public class CommandResults extends com.tny.game.net.base.CommandResults {
 
     public static CommandResult fail(TryToDoResult tryToDoResult) {
         DemandResult result = tryToDoResult.getFailResult();

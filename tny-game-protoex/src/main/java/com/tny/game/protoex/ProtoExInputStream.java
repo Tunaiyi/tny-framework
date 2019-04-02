@@ -331,4 +331,8 @@ public class ProtoExInputStream implements ProtoExStream {
         return this.buffer.limit();
     }
 
+    public ByteBuffer getBuffer() {
+        return this.buffer;
+    }
+
 }

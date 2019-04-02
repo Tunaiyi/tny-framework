@@ -18,7 +18,7 @@ public class PluginContext {
     }
 
     @SuppressWarnings("unchecked")
-    public void execute(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+    public void execute(Tunnel<?> tunnel, Message<?> message, CommandContext context) {
         if (this.plugin == null || context.isIntercept())
             return;
         try {

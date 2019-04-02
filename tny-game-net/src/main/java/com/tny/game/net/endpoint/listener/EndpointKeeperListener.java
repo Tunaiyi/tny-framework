@@ -1,7 +1,6 @@
 package com.tny.game.net.endpoint.listener;
 
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.Endpoint;
 
 public interface EndpointKeeperListener<UID> {
 

@@ -3,12 +3,16 @@ package com.tny.game.suite.utils;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.config.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.AppType;
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.base.*;
+import com.tny.game.net.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.*;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Kun Yang on 16/1/27.
@@ -71,7 +75,7 @@ public interface Configs {
         return ImmutableSet.copyOf(StringUtils.split(profiles, ","));
     }
 
-    static List<String> getScanPaths() {
+    static List<String> getScanPathList() {
         List<String> paths = new ArrayList<>();
         String pathsWords = Configs.SUITE_CONFIG.getString(Configs.SUITE_SCAN_PATHS);
         if (pathsWords != null) {
@@ -82,13 +86,8 @@ public interface Configs {
     }
 
     static String[] getScanPathArray() {
-        List<String> paths = new ArrayList<>();
-        String pathsWords = Configs.SUITE_CONFIG.getString(Configs.SUITE_SCAN_PATHS);
-        if (pathsWords != null) {
-            paths.addAll(Arrays.asList(StringUtils.split(pathsWords, ",")));
-            paths.add("com.tny.game.suite");
-        }
-        return paths.toArray(new String[paths.size()]);
+        List<String> paths = getScanPathList();
+        return paths.toArray(new String[0]);
     }
     //endregion
 

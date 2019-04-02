@@ -1,24 +1,21 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.common.context.*;
-import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.locks.*;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
 
 /**
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends AbstractNetter<UID> implements NetTunnel<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
@@ -30,24 +27,17 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
 
     private TunnelMode mode;
 
-    /* 附加属性 */
-    private Attributes attributes;
+    private MessageFactory<UID> messageFactory;
 
-    /* 认证 */
-    private Certificate<UID> certificate;
-
-    private volatile NetEndpoint<UID> endpoint;
-
-    private MessageFactory<UID> messageBuilderFactory;
+    protected volatile E endpoint;
 
     protected Lock lock = new ReentrantLock();
 
-    protected AbstractNetTunnel(Certificate<UID> certificate, TunnelMode mode, MessageFactory<UID> messageBuilderFactory) {
-        super(MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
-        this.mode = mode;
-        this.certificate = certificate;
+    protected AbstractNetTunnel(TunnelMode mode, E endpoint, MessageFactory<UID> messageFactory) {
         this.id = NetAide.newTunnelId();
-        this.messageBuilderFactory = messageBuilderFactory;
+        this.mode = mode;
+        this.messageFactory = messageFactory;
+        this.endpoint = endpoint;
     }
 
     @Override
@@ -67,17 +57,17 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
 
     @Override
     public UID getUserId() {
-        return certificate.getUserId();
+        return this.getCertificate().getUserId();
     }
 
     @Override
     public String getUserType() {
-        return this.certificate.getUserType();
+        return this.getCertificate().getUserType();
     }
 
     @Override
     public boolean isLogin() {
-        return certificate.isAutherized();
+        return getCertificate().isAutherized();
     }
 
     @Override
@@ -97,154 +87,62 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
 
     @Override
     public Certificate<UID> getCertificate() {
-        return certificate;
+        return this.endpoint.getCertificate();
     }
 
     @Override
-    public NetTunnel<UID> setAccessId(long accessId) {
+    public void setAccessId(long accessId) {
         this.accessId = accessId;
-        return this;
-    }
-
-    /**
-     * 使用指定认证登陆
-     *
-     * @param certificate 指定认证
-     */
-    @Override
-    public void authenticate(Certificate<UID> certificate) throws ValidatorFailException {
-        if (!certificate.isAutherized())
-            throw new ValidatorFailException("无效授权");
-        if (this.certificate.isAutherized())
-            throw new ValidatorFailException(NetResultCode.UNLOGIN, format("{} 已经授权", this));
-        this.certificate = certificate;
-        buses().authenticateEvent().notify(this);
-    }
-
-    @Override
-    public boolean receive(Message<UID> message) {
-        NetLogger.logReceive(this, message);
-        MessageMode mode = message.getMode();
-        switch (mode) {
-            case PUSH:
-            case REQUEST:
-            case RESPONSE:
-                try {
-                    NetEndpoint<UID> endpoint = this.endpoint;
-                    if (endpoint != null) {
-                        if (endpoint.receive(this, message))
-                            return true;
-                        if (mode == MessageMode.REQUEST)
-                            this.sendAsyn(MessageContexts.respond(message.getHeader(), NetResultCode.NO_RECEIVE_MODE, message.getId()));
-                    }
-                } finally {
-                    if (mode == MessageMode.RESPONSE)
-                        this.callbackFuture(message);
-                }
-                return true;
-            default:
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public SendContext<UID> sendAsyn(MessageContext<UID> context) {
-        try {
-            NetEndpoint<UID> endpoint = this.endpoint;
-            if (endpoint != null)
-                return endpoint.sendAsyn(this, context);
-            else
-                return send(context, 0);
-        } catch (Throwable e) {
-            return ifNull(context, EmptySendContext.empty());
-        }
-    }
-
-    @Override
-    public SendContext<UID> sendSync(MessageContext<UID> context, long timeout) {
-        NetEndpoint<UID> endpoint = this.endpoint;
-        if (endpoint != null)
-            return endpoint.sendSync(this, context, timeout);
-        else
-            return send(context, timeout);
-    }
-
-    protected SendContext<UID> send(MessageContext<UID> context, long waitForSendTimeout) throws NetException {
-        Message<UID> message = this.createMessage(createMessageID(), context);
-        return write(message, context, waitForSendTimeout, this);
-    }
-
-    @Override
-    public Message<UID> createMessage(long messageId, MessageContext<UID> context) {
-        return this.messageBuilderFactory.create(messageId, context, this.getCertificate());
     }
 
     @Override
     public void ping() {
-        this.write(DetectMessage.ping(), null, 0, null);
+        this.write(DetectMessage.ping(), null);
     }
 
     @Override
     public void pong() {
-        this.write(DetectMessage.pong(), null, 0, null);
+        this.write(DetectMessage.pong(), null);
     }
 
     @Override
-    public Attributes attributes() {
-        if (this.attributes != null)
-            return this.attributes;
-        synchronized (this) {
-            if (this.attributes != null)
-                return this.attributes;
-            return this.attributes = ContextAttributes.create();
-        }
+    public NetEndpoint<UID> getEndpoint() {
+        return this.endpoint;
     }
 
     @Override
-    public Optional<Endpoint<UID>> getBindEndpoint() {
-        return Optional.ofNullable(this.endpoint);
+    public MessageFactory<UID> getMessageFactory() {
+        return this.messageFactory;
     }
 
     @Override
-    public boolean isBind() {
-        return this.endpoint != null;
+    public boolean receive(Message<UID> message) {
+        return endpoint.receive(this, message);
     }
 
     @Override
-    public boolean bind(NetEndpoint<UID> endpoint) {
-        if (this.endpoint != null)
-            return false;
-        synchronized (this) {
-            if (this.endpoint != null)
-                return false;
-            if (this.getCertificate().isSameCertificate(endpoint.getCertificate())) {
-                this.endpoint = endpoint;
-                return true;
-            }
-        }
-
-        return false;
+    public SendContext<UID> send(MessageContext<UID> messageContext) {
+        return endpoint.send(this, messageContext);
     }
 
     @Override
     public boolean open() {
-        if (this.isAvailable())
-            return true;
         if (this.isClosed())
             return false;
+        if (this.isAvailable())
+            return true;
         lock.lock();
         try {
-            if (this.isAvailable())
-                return true;
             if (this.isClosed())
                 return false;
+            if (this.isAvailable())
+                return true;
             if (!this.onOpen())
                 return false;
+            this.state = TunnelState.ACTIVATE;
         } finally {
             lock.unlock();
         }
-        this.state = TunnelState.ACTIVATE;
         buses().activateEvent().notify(this);
         return true;
     }
@@ -295,7 +193,7 @@ public abstract class AbstractNetTunnel<UID> extends AbstractNetter<UID> impleme
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AbstractNetTunnel)) return false;
-        AbstractNetTunnel<?> that = (AbstractNetTunnel<?>) o;
+        AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>) o;
         return id == that.id;
     }
 

@@ -1,8 +1,7 @@
 package com.tny.game.net.utils;
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.command.dispatcher.MessageCommandBox;
-import com.tny.game.net.endpoint.Session;
+import com.tny.game.net.command.dispatcher.*;
 
 /**
  * <p>
@@ -12,6 +11,6 @@ import com.tny.game.net.endpoint.Session;
  */
 public interface NetAttrKeys {
 
-    AttrKey<MessageCommandBox> USER_COMMAND_BOX = AttrKeys.key(Session.class.getName() + "USER_COMMAND_BOX");
-
+    AttrKey<MessageCommandBox> USER_COMMAND_BOX = AttrKeys.key(NetAttrKeys.class.getName() + "USER_COMMAND_BOX");
+    
 }

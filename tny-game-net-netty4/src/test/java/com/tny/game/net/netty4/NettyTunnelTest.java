@@ -1,66 +1,39 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.net.endpoint.NetEndpoint;
-import com.tny.game.net.exception.SendTimeoutException;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.test.TestAide;
-import io.netty.channel.*;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.*;
+import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.*;
-import org.mockito.ArgumentCaptor;
+import org.junit.Test;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.*;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.test.MockAide.*;
-import static com.tny.game.test.TestAide.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTunnelTest<T> {
+public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends NettyTunnel<Long, E>, ME extends MockNetEndpoint> extends NetTunnelTest<T, ME> {
 
-    protected abstract T newTunnel(Certificate<Long> certificate);
-
-    protected Channel mockChannel() {
-        Channel channel = mock(Channel.class);
-        when(channel.isActive()).thenReturn(true);
-        when(channel.writeAndFlush(any())).thenAnswer(mk -> mock(ChannelPromise.class));
-        when(channel.remoteAddress()).thenReturn(new InetSocketAddress("127.0.0.1", 1000));
-        when(channel.localAddress()).thenReturn(new InetSocketAddress("127.0.0.1", 9000));
-        // when(channel.newPromise()).thenAnswer(m -> mock(ChannelPromise.class));
-        return channel;
+    protected EmbeddedChannel mockChannel() {
+        return new MockChannel(new InetSocketAddress(8080), new InetSocketAddress(8081));
     }
 
-    @Override
-    protected T createTunnel(Certificate<Long> certificate) {
-        T tunnel = newTunnel(certificate);
-        return tunnel;
-    }
-
-    @Override
     @Test
     public void remoteAddress() {
         T tunnel = createBindTunnel();
         assertNotNull(tunnel.getRemoteAddress());
     }
 
-    @Override
     @Test
     public void localAddress() {
         T tunnel = createBindTunnel();
@@ -73,36 +46,120 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
         T tunnel = createBindTunnel();
         assertFalse(tunnel.isClosed());
         assertTrue(tunnel.isAvailable());
-        Channel channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        assertFalse(tunnel.isAvailable());
         assertFalse(tunnel.isClosed());
         tunnel.close();
         assertTrue(tunnel.isClosed());
+        assertFalse(tunnel.isAvailable());
     }
 
     @Test
-    public void close() throws Exception {
+    public void bind() {
+        NetTunnel<Long> tunnel;
+        MockNetEndpoint endpoint;
+        TunnelTestInstance<T, ME> object;
+        // 正常绑定
+        object = create(createUnLoginCert(), false);
+        tunnel = object.getTunnel();
+        if (tunnel.getMode() == TunnelMode.CLIENT) {
+            endpoint = object.getEndpoint();
+            endpoint.online(createLoginCert(), tunnel);
+            assertTrue(tunnel.bind(endpoint));
+            assertTrue(tunnel.isLogin());
+        } else {
+            endpoint = createEndpoint();
+            assertTrue(tunnel.bind(endpoint));
+            assertTrue(tunnel.isLogin());
+        }
+
+        // 重复绑定 同一终端
+        assertTrue(tunnel.bind(endpoint));
+        assertTrue(tunnel.isLogin());
+
+        // 重复绑定 不同终端
+        endpoint = createEndpoint();
+        assertFalse(tunnel.bind(endpoint));
+
+        // 接受未认证凭证
+        tunnel = createUnbindTunnel();
+        endpoint = createEndpoint(createUnLoginCert());
+        assertFalse(tunnel.bind(endpoint));
+
+    }
+
+    @Test
+    public void open() {
         T tunnel;
-        Channel channel;
+
+        // 正常开启
+        tunnel = createTunnel(createLoginCert(), false);
+        assertFalse(tunnel.isAvailable());
+        assertTrue(tunnel.open());
+        assertTrue(tunnel.isAvailable());
+        assertTrue(tunnel.isAlive());
+
+        // 重复开启
+        assertTrue(tunnel.open());
+        assertTrue(tunnel.isAvailable());
+        assertTrue(tunnel.isAlive());
+
+        // 关闭再打开
         tunnel = createBindTunnel();
-        channel = mockTunnelChannel(tunnel);
+        tunnel.close();
+        assertFalse(tunnel.open());
+        assertTrue(tunnel.isClosed());
+        assertFalse(tunnel.isAvailable());
+        assertFalse(tunnel.isAlive());
+
+        // 断开再打开
+        tunnel = createTunnel(createLoginCert(), true);
+        tunnel.disconnect();
+        if (tunnel.getMode() == TunnelMode.SERVER) {
+            assertFalse(tunnel.open());
+            assertFalse(tunnel.isClosed());
+            assertFalse(tunnel.isAvailable());
+            assertFalse(tunnel.isAlive());
+        } else {
+            assertTrue(tunnel.open());
+            assertFalse(tunnel.isClosed());
+            assertTrue(tunnel.isAvailable());
+            assertTrue(tunnel.isAlive());
+        }
+    }
+
+    @Test
+    public void disconnect() {
+        T tunnel;
+
+        // 正常开启
+        tunnel = createBindTunnel();
+        assertTrue(tunnel.isAvailable());
+        assertTrue(tunnel.isAlive());
+        tunnel.disconnect();
+        assertFalse(tunnel.isAvailable());
+        assertFalse(tunnel.isAlive());
+
+        // 重复开启
+        tunnel.disconnect();
+        assertFalse(tunnel.isAvailable());
+        assertFalse(tunnel.isAlive());
+
+    }
+
+    @Test
+    public void close() {
+        T tunnel;
+        tunnel = createBindTunnel();
+
         // 正常关闭
+        assertFalse(tunnel.isClosed());
+        assertTrue(tunnel.isAvailable());
         tunnel.close();
-        verify(channel, times(1)).close();
         assertTrue(tunnel.isClosed());
+        assertFalse(tunnel.isAvailable());
 
         tunnel.close();
-        verify(channel, times(1)).close();
         assertTrue(tunnel.isClosed());
-
-
-        tunnel = createBindTunnel();
-        channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(false);
-        tunnel.close();
-        verify(channel, never()).close();
-        assertTrue(tunnel.isClosed());
+        assertFalse(tunnel.isAvailable());
     }
 
     @Override
@@ -120,293 +177,209 @@ public abstract class NettyTunnelTest<T extends NettyTunnel<Long>> extends NetTu
     @Override
     @Test
     public void receive() {
-        TestMessages messages;
-        NetEndpoint<Long> endpoint;
-        ArgumentCaptor<NetMessage<Long>> messageCaptor;
         T tunnel;
+        TestMessages messages;
+        ME endpoint;
+        TunnelTestInstance<T, ME> object;
+
         // 接受Message
-        tunnel = createBindTunnel();
-        messageCaptor = captorAs(NetMessage.class);
+        object = create();
+        tunnel = object.getTunnel();
+        endpoint = object.getEndpoint();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         messages.receive(tunnel);
-        assertTrue(CollectionUtils.containsAll(messages.getMessages(), messageCaptor.getAllValues()));
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
 
-        // 排除接受 all
-        tunnel = createBindTunnel();
-        endpoint = mockEndpoint(tunnel);
-
+        // 关闭 接受Message
+        object = create();
+        tunnel = object.getTunnel();
+        endpoint = object.getEndpoint();
         messages = new TestMessages(tunnel)
-                .addRequest("request")
-                .addRequest("request")
-                .addRequest("request")
                 .addPush("push")
+                .addRequest("request")
                 .addResponse("response", 1);
-        when(endpoint.getReceiveFilter()).thenReturn(m -> false);
-        messages.receive(tunnel, (m, r) -> assertFalse(r));
+        tunnel.close();
+        messages.receive(tunnel);
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
 
     }
 
     @Override
     @Test
-    public void send() throws ExecutionException, InterruptedException {
+    public void send() {
         T tunnel;
         TestMessages messages;
-        NetEndpoint<Long> endpoint;
-        Channel channel;
-        ArgumentCaptor<NetMessage<Long>> messageCaptor;
-        int times;
-        long respontsId = MessageAide.RESPONSE_TO_MESSAGE_MIN_ID;
+        ME endpoint;
+        TunnelTestInstance<T, ME> object;
 
-        // 发送Message 有 endpoint
-        tunnel = createBindTunnel();
-        endpoint = mockEndpoint(tunnel);
+        // 接受Message
+        object = create();
+        tunnel = object.getTunnel();
+        endpoint = object.getEndpoint();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.sendAsyn(tunnel);
-        times = messages.getMessageSize();
-        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any());
-        verifyNoMoreInteractions(endpoint);
+        messages.send(tunnel);
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
 
-        // 发送Message 无 endpoint
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
+        // 关闭 接受Message
+        object = create();
+        tunnel = object.getTunnel();
+        endpoint = object.getEndpoint();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
-        messages.sendAsyn(tunnel);
-        times = messages.getMessageSize();
-        // verify(channel, times(times)).newPromise();
-        verify(channel, times(times)).writeAndFlush(any());
+        tunnel.close();
+        messages.send(tunnel);
+        assertTrue(endpoint.getReceiveQueue().isEmpty());
+    }
 
+    @Test
+    public void write() {
+        T tunnel;
+        EmbeddedChannel channel;
+        TestMessages messages;
 
-        // 发送Message 有 endpoint 有 filter
+        // 写出 message 成功
         tunnel = createBindTunnel();
-        endpoint = mockEndpoint(tunnel);
-        when(endpoint.getSendFilter()).thenReturn(m -> false);
-        messages = new TestMessages(tunnel)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", respontsId++);
-        messages.sendAsyn(tunnel);
-        times = messages.getMessageSize();
-        verify(endpoint, times(times)).sendAsyn(eq(tunnel), any());
+        channel = embeddedChannel(tunnel);
+        messages = TestMessages.createMessages(tunnel);
+        messages.write(tunnel, f -> {
+            assertTrue(f.isDone());
+            assertTrue(f.isSuccess());
+        });
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), channel.outboundMessages()));
 
-        // 发送 willSendFuture
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
-        messages = new TestMessages(tunnel)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", respontsId++);
-        messages.contextsForEach(MessageContext::willSendFuture);
-        messages.contextsForEach(c ->
-                TestAide.assertRunComplete("get send result", () -> assertFalse(c.getSendFuture().isDone())));
-        times = messages.getMessageSize();
-        mockChannelWrite(tunnel.getChannel());
-        messages.sendAsyn(tunnel);
-        // verify(channel, times(times)).newPromise();
-        verify(channel, times(times)).writeAndFlush(any());
-        assertSendOk(messages);
-
-        // 发送 willSendFuture Timeout
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
-        messages = new TestMessages(tunnel)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", respontsId++);
-        messages.contextsForEach(MessageContext::willSendFuture);
-        messages.sendAsyn(tunnel);
-        times = messages.getMessageSize();
-        // verify(channel, times(times)).newPromise();
-        verify(channel, times(times)).writeAndFlush(any());
-        assertWaitSendException(messages, TimeoutException.class);
-
-        // 发送 sendSync
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
-        messages = new TestMessages(tunnel)
-                .addPush("push")
-                .addRequest("request")
-                .addResponse("response", respontsId++);
-        messages.contextsForEach(MessageContext::willSendFuture);
-        messages.contextsForEach(c ->
-                TestAide.assertRunComplete("get send result", () -> assertFalse(c.getSendFuture().isDone())));
-        mockChannelWrite(tunnel.getChannel());
-        messages.sendSync(tunnel, 5000L);
-        // verify(channel, times(times)).newPromise();
-        verify(channel, times(times)).writeAndFlush(any());
-        assertSendOk(messages);
-
-        // 发送 waitForSend Timeout
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
-        messages = new TestMessages(tunnel)
-                .addResponse("response", respontsId++);
-        times = messages.getMessageSize();
-        NetTunnel<Long> waitForSendTimeoutTunnel = tunnel;
-        messages.contextsForEach(c -> assertRunWithException(() ->
-                waitForSendTimeoutTunnel.sendSync(c, 1000L), SendTimeoutException.class));
-        // verify(channel, times(times)).newPromise();
-        verify(channel, times(times)).writeAndFlush(any());
-
-        // 发送 Wait Response
-        tunnel = createUnbindTunnel();
-        channel = tunnel.getChannel();
-        messageCaptor = captorAs(NetMessage.class);
-        messages = new TestMessages(tunnel)
-                .addRequest("request 1")
-                .addRequest("request 2")
-                .addRequest("request 3");
-        times = messages.getMessageSize();
-        TestMessages responses = new TestMessages(tunnel);
-        messages.requestContextsForEach(RequestContext::willResponseFuture);
-        mockChannelWrite(tunnel.getChannel());
-        messages.sendAsyn(tunnel);
-        verify(channel, times(times)).writeAndFlush(messageCaptor.capture());
-        messageCaptor.getAllValues().forEach(m -> responses.addResponse("response", m.getId()));
-        responses.receive(tunnel);
-        assertWaitResponseOK(messages);
-
-        // 发送 Wait Response Timeout
-        tunnel = createUnbindTunnel();
-        messages = new TestMessages(tunnel)
-                .addRequest("request 1")
-                .addRequest("request 2")
-                .addRequest("request 3");
-        messages.requestContextsForEach(RequestContext::willResponseFuture);
-        mockChannelWrite(tunnel.getChannel());
-        messages.sendAsyn(tunnel);
-        assertWaitResponseException(messages, TimeoutException.class);
-
-        // 发送 Wait Response  发送失败
+        // 写出 message 成功
         tunnel = createBindTunnel();
-        messages = new TestMessages(tunnel)
-                .addRequest("request 1")
-                .addRequest("request 2")
-                .addRequest("request 3");
-        messages.requestContextsForEach(RequestContext::willResponseFuture);
-        mockChannelWriteException(tunnel.getChannel(), new TimeoutException());
-        messages.sendAsyn(tunnel);
-        assertWaitResponseException(messages, TimeoutException.class);
-    }
-
-    // @Override
-    // @Test
-    // public void resend() throws NetException {
-    //     T tunnel;
-    //     TestMessages messages;
-    //     NetSession<Long> session;
-    //     Channel channel;
-    //     int times;
-    //     // tunnel = createUnloginTunnel();
-    //
-    //     // 接受ResendMessage
-    //     tunnel = createBindTunnel();
-    //     channel = tunnel.getChannel();
-    //     session = tunnel.getBindSession().orElse(null);
-    //     messages = new TestMessages(tunnel)
-    //             .addRequest("request 1")
-    //             .addRequest("request 2")
-    //             .addRequest("request 3");
-    //     messages.send(tunnel);
-    //     mockChannelWrite(tunnel.getChannel());
-    //     tunnel.resend(3L, 7L);
-    //     times = messages.getMessageSize() * 2;
-    //     verify(channel, times(times)).writeAndFlush(any());
-    //     verify(session, times(messages.getMessageSize())).addSentMessage(any(NetMessage.class));
-    //     verify(session, times(messages.getMessageSize())).createMessageId();
-    //     verify(session, times(1)).getSentMessages(anyLong(), anyLong());
-    //     verifyNoMoreInteractions(channel, session);
-    //
-    //     // 接受ResendMessage
-    //     tunnel = createBindTunnel();
-    //     channel = tunnel.getChannel();
-    //     session = tunnel.getBindSession().orElse(null);
-    //     messages = new TestMessages(tunnel)
-    //             .addRequest("request 1")
-    //             .addRequest("request 2")
-    //             .addRequest("request 3");
-    //     messages.send(tunnel);
-    //     mockChannelWrite(tunnel.getChannel());
-    //     NetTunnel<Long> noInRangeTunnel = tunnel;
-    //     assertRunWithException(() -> noInRangeTunnel.resend(1L, 7L), NetException.class);
-    //
-    //     // 没有 session
-    //     tunnel = createUnloginTunnel();
-    //     messages = new TestMessages(tunnel)
-    //             .addRequest("request 1")
-    //             .addRequest("request 2")
-    //             .addRequest("request 3");
-    //     messages.send(tunnel);
-    //     NetTunnel<Long> noSessionTunnel = tunnel;
-    //     assertRunWithException(() -> noSessionTunnel.resend(3L, 7L), NetException.class);
-    // }
-
-    protected void mockChannelWrite(Channel channel) {
-        when(channel.writeAndFlush(any())).thenAnswer(mk -> {
-            ChannelPromise channelFuture = mock(ChannelPromise.class);
-            when(channelFuture.isSuccess()).thenReturn(true);
-            when(channelFuture.addListener(any())).thenAnswer((mkListener) -> {
-                GenericFutureListener<Future<Void>> listener = as(mkListener.getArguments()[0]);
-                listener.operationComplete(channelFuture);
-                return null;
-            });
-            when(channelFuture.awaitUninterruptibly(anyLong(), eq(TimeUnit.MILLISECONDS))).thenReturn(true);
-            return channelFuture;
+        channel = embeddedChannel(tunnel);
+        messages = TestMessages.createMessages(tunnel);
+        channel.close();
+        messages.write(tunnel, f -> {
+            assertTrue(f.isDone());
+            assertFalse(f.isSuccess());
         });
-    }
+        assertTrue(channel.outboundMessages().isEmpty());
 
-    protected void mockChannelWriteException(Channel channel, Throwable cause) {
-        when(channel.writeAndFlush(any())).thenAnswer(mk -> {
-            ChannelFuture channelFuture = mock(ChannelFuture.class);
-            when(channelFuture.awaitUninterruptibly(anyLong(), eq(TimeUnit.MILLISECONDS))).thenReturn(false);
-            when(channelFuture.isSuccess()).thenReturn(false);
-            when(channelFuture.cause()).thenReturn(cause);
-            when(channelFuture.addListener(any())).thenAnswer((mkListener) -> {
-                GenericFutureListener<Future<Void>> listener = as(mkListener.getArguments()[0]);
-                listener.operationComplete(channelFuture);
-                return null;
-            });
-            return channelFuture;
+        // 写出 message 非 NettyWriteMessagePromise 异常
+        tunnel = createBindTunnel();
+        channel = embeddedChannel(tunnel);
+        messages = TestMessages.createMessages(tunnel);
+        T t1 = tunnel;
+        messages.messagesForEach(m -> {
+            try {
+                t1.write(m, new MockWriteMessagePromise());
+                fail("write success");
+            } catch (TunnelException e) {
+                assertTrue(true);
+            } catch (Throwable e) {
+                fail("write success " + e);
+            }
         });
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), channel.outboundMessages()));
+
+        //     // 写出 message 异常
+        //     tunnel = createLoginTunnel();
+        //     channel = mockTunnelChannel(tunnel);
+        //     message = mockAs(Message.class);
+        //     when(message.getMode()).thenReturn(MessageMode.PUSH);
+        //     when(channel.writeAndFlush(message)).thenThrow(NullPointerException.class);
+        //     Thread.sleep(sleepTime);
+        //     tunnel.write(message);
+        //     verify(channel, times(1)).writeAndFlush(eq(message));
+        //     verifyNoMoreInteractions(channel);
+        //
+        //     // 写出 message callback 成功
+        //     tunnel = createLoginTunnel();
+        //     channel = mockTunnelChannel(tunnel);
+        //     message = mockAs(Message.class);
+        //     future = mockAs(ChannelFuture.class);
+        //     when(message.getMode()).thenReturn(MessageMode.PUSH);
+        //     when(channel.writeAndFlush(message)).thenReturn(future);
+        //     when(future.isSuccess()).thenReturn(true);
+        //     Thread.sleep(sleepTime);
+        //     tunnel.write(message, callback);
+        //     verify(channel, times(1)).writeAndFlush(eq(message));
+        //     verify(future, times(1)).addListener(listener.capture());
+        //     listener.getValue().operationComplete(future);
+        //     verify(future, times(1)).isSuccess();
+        //     assertTrue(writeResult.get());
+        //     verifyNoMoreInteractions(channel, future);
+        //     writeResult.set(false);
+        //
+        //     // 写出 message callback 失败
+        //     writeResult.set(true);
+        //     tunnel = createLoginTunnel();
+        //     channel = mockTunnelChannel(tunnel);
+        //     message = mockAs(Message.class);
+        //     future = mockAs(ChannelFuture.class);
+        //     when(message.getMode()).thenReturn(MessageMode.PUSH);
+        //     when(channel.writeAndFlush(message)).thenReturn(future);
+        //     when(future.isSuccess()).thenReturn(false);
+        //     Thread.sleep(sleepTime);
+        //     tunnel.write(message, callback);
+        //     verify(channel, times(1)).writeAndFlush(eq(message));
+        //     verify(future, times(1)).addListener(listener.capture());
+        //     listener.getValue().operationComplete(future);
+        //     verify(future, times(1)).isSuccess();
+        //     verify(future, times(1)).cause();
+        //     assertFalse(writeResult.get());
+        //     verifyNoMoreInteractions(channel, future);
+        //     writeResult.set(false);
+        //
+        //     // 写出 message callback channel 异常
+        //     writeResult.set(true);
+        //     tunnel = createLoginTunnel();
+        //     channel = mockTunnelChannel(tunnel);
+        //     message = mockAs(Message.class);
+        //     when(message.getMode()).thenReturn(MessageMode.PUSH);
+        //     when(channel.writeAndFlush(message)).thenThrow(NullPointerException.class);
+        //     Thread.sleep(sleepTime);
+        //     tunnel.write(message, callback);
+        //     verify(channel, times(1)).writeAndFlush(eq(message));
+        //     verifyNoMoreInteractions(channel);
+        //     assertFalse(writeResult.get());
+        // }
+        //     channel = mockTunnelChannel(tunnel);
+        //     message = mockAs(Message.class);
+        //     when(message.getMode()).thenReturn(MessageMode.PUSH);
+        //     when(channel.writeAndFlush(message)).thenThrow(NullPointerException.class);
+        //     Thread.sleep(sleepTime);
+        //     tunnel.write(message, callback);
+        //     verify(channel, times(1)).writeAndFlush(eq(message));
+        //     verifyNoMoreInteractions(channel);
+        //     assertFalse(writeResult.get());
     }
 
-    protected Channel mockTunnelChannel(T tunnel) {
-        return tunnel.getChannel();
-    }
-
-    protected NetEndpoint<Long> mockEndpoint(T tunnel) {
-        return (NetEndpoint<Long>) tunnel.getBindEndpoint().orElse(null);
+    protected EmbeddedChannel embeddedChannel(T tunnel) {
+        return as(tunnel.getChannel());
     }
 
     private void testPingPong(int times, Consumer<T> consumer, MessageMode mode) {
-        T tunnel = createBindTunnel();
-        Channel channel = mockTunnelChannel(tunnel);
-        when(channel.isActive()).thenReturn(true);
-        consumer.accept(tunnel);
-        assertPingPong(times, tunnel, mode);
-        // verify(channel, times(times)).isActive();
-        // verify(channel, times(times)).writeAndFlush(message.capture());
-        // assertEquals(times, message.getAllValues().size());
-        // for (DetectMessage<Long> value : message.getAllValues())
-        //     assertEquals(mode, value.getMode());
-        // verifyNoMoreInteractions(channel);
+        T activeTunnel = createBindTunnel();
+        T closeTunnel = createBindTunnel();
+        closeTunnel.close();
+        for (int i = 0; i < times; i++) {
+            consumer.accept(activeTunnel);
+            consumer.accept(closeTunnel);
+        }
+        assertPingPong(times, activeTunnel, mode);
+        assertPingPong(0, closeTunnel, mode);
     }
 
     private void assertPingPong(int times, T tunnel, MessageMode mode) {
-        ArgumentCaptor<DetectMessage<Long>> message = captorAs(DetectMessage.class);
-        Channel channel = mockTunnelChannel(tunnel);
-        verify(channel, times(times)).writeAndFlush(message.capture());
-        assertEquals(times, message.getAllValues().size());
-        for (DetectMessage<Long> value : message.getAllValues())
-            assertEquals(mode, value.getMode());
+        EmbeddedChannel channel = embeddedChannel(tunnel);
+        assertEquals(times, channel.outboundMessages().size());
+        for (Object value : channel.outboundMessages()) {
+            assertTrue(value instanceof DetectMessage);
+            assertEquals(mode, Objects.requireNonNull(as(value, DetectMessage.class)).getMode());
+        }
     }
+
 
 }

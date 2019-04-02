@@ -1,5 +1,7 @@
 package com.tny.game.net.transport;
 
+import com.tny.game.common.context.*;
+
 /**
  * 网络用户
  * Created by Kun Yang on 2017/3/26.
@@ -35,5 +37,10 @@ public interface Netter<UID> {
      * 关闭终端
      */
     void close();
+
+    /**
+     * @return 获取会话属性
+     */
+    Attributes attributes();
 
 }

@@ -13,6 +13,8 @@ public enum ParamType {
 
     SESSION,
 
+    CLIENT,
+
     ENDPOINT,
 
     BODY,

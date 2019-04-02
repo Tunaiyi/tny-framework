@@ -33,23 +33,6 @@ public interface DispatchCommandListener {
     }
 
     /**
-     * 执行Command异常完成 <br>
-     *
-     * @param context 分发上下文
-     * @param cause   失败异常
-     */
-    default void onDoneError(DispatchContext context, Throwable cause) {
-    }
-
-    /**
-     * Command任务成功完成  <br>
-     *
-     * @param context 分发上下文
-     */
-    default void onDoneSuccess(DispatchContext context) {
-    }
-
-    /**
      * 执行Command任务完成  <br>
      *
      * @param context 分发上下文

@@ -6,8 +6,9 @@ dependencies {
 
     compile(
             project(":tny-game-net"),
-            project(":tny-game-tester"),
+            "org.jmock:jmock-junit4:${vers.jmock}",
+            "junit:junit:${vers.junit}",
+            libs.'mockito',
     )
-
 
 }

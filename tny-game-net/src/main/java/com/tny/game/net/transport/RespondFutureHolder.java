@@ -43,8 +43,8 @@ public class RespondFutureHolder {
         if (holder == null)
             return;
         holder.close();
-
     }
+
 
     private static void clearTimeoutFuture() {
         for (Entry<Object, RespondFutureHolder> entry : FUTURE_HOLDER_MAP.entrySet()) {
@@ -119,6 +119,13 @@ public class RespondFutureHolder {
         } else {
             future.cancel(true);
         }
+    }
+
+    public int size() {
+        ConcurrentMap<Long, RespondFuture<?>> map = this.futureMap;
+        if (map == null)
+            return 0;
+        return map.size();
     }
 
     public <M> RespondFuture<M> pollFuture(long messageId) {

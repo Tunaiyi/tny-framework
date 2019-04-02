@@ -8,15 +8,15 @@ import com.tny.game.common.context.Attributes;
 public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMessage<UID>, Message<UID> {
 
     public static <UID> NetMessage<UID> ping() {
-        return new DetectMessage<>(DetectMessageHeader.ping());
+        return new DetectMessage<>(DetectMessageHead.ping());
     }
 
     public static <UID> NetMessage<UID> pong() {
-        return new DetectMessage<>(DetectMessageHeader.pong());
+        return new DetectMessage<>(DetectMessageHead.pong());
     }
 
-    private DetectMessage(NetMessageHeader header) {
-        super(header);
+    private DetectMessage(NetMessageHead head) {
+        super(head);
     }
 
     @Override
@@ -25,8 +25,8 @@ public class DetectMessage<UID> extends AbstractNetMessage<UID> implements NetMe
     }
 
     @Override
-    protected Object getBody() {
-        return null;
+    public long getToMessage() {
+        return 0;
     }
 
 }

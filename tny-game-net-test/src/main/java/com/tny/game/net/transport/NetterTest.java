@@ -1,6 +1,7 @@
 package com.tny.game.net.transport;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.time.Instant;
 
@@ -29,23 +30,23 @@ public abstract class NetterTest<C extends Netter<Long>> {
     protected NetterTest() {
     }
 
-    public abstract C communicator(Certificate<Long> certificate);
+    public abstract C createNetter(Certificate<Long> certificate);
 
     @Test
     public void getUserId() {
-        C loginCommunicator = communicator(createLoginCert());
+        C loginCommunicator = createNetter(createLoginCert());
         Assert.assertEquals(uid, loginCommunicator.getUserId());
     }
 
     @Test
     public void getUserType() {
-        C loginCommunicator = communicator(createLoginCert());
+        C loginCommunicator = createNetter(createLoginCert());
         Assert.assertEquals(userGroup, loginCommunicator.getUserType());
     }
 
     @Test
     public void isClosed() {
-        C loginCommunicator = communicator(createLoginCert());
+        C loginCommunicator = createNetter(createLoginCert());
         Assert.assertFalse(loginCommunicator.isClosed());
         loginCommunicator.close();
         Assert.assertTrue(loginCommunicator.isClosed());

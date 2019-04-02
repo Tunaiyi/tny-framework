@@ -1,11 +1,11 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.unit.annotation.UnitInterface;
-import com.tny.game.common.worker.command.Command;
-import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.exception.CommandException;
-import com.tny.game.net.transport.NetTunnel;
-import com.tny.game.net.message.Message;
+import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.worker.command.*;
+import com.tny.game.net.command.listener.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 import java.util.Collection;
 
@@ -13,15 +13,9 @@ import java.util.Collection;
  * 请求派发器
  *
  * @author KGTny
- * @ClassName: ControllerDispatcher
- * @Description:
- * @date 2011-9-13 下午1:23:19
- * <p>
- * <p>
- * 将请求派发到相对应的Controller上<br>
  */
 @UnitInterface
-public interface MessageDispatcher extends MessageDispatcherContext {
+public interface MessageDispatcher {
 
     /**
      * 派发消息事件
@@ -32,7 +26,6 @@ public interface MessageDispatcher extends MessageDispatcherContext {
      * @param tunnel  通道
      * @param message 消息
      * @return
-     * @throws CommandException
      */
     Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException;
 

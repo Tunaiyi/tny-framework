@@ -24,7 +24,11 @@ public class DataPacketV1Config {
     // 最大废字节数
     private int maxWasteBitSize = 0;
     // 消息体编码器
-    private String codec = ProtoExCodec.class.getSimpleName();
+    private String bodyCodec = ProtoExCodec.class.getSimpleName();
+    // 消息尾编码器
+    private String tailCodec = ProtoExCodec.class.getSimpleName();
+    // 消息体解码测刘娥
+    private String bodyDecodeStrategy = null;
     // 消息体验证器
     private String verifier = CRC64CodecVerifier.class.getSimpleName();
     // 消息体加密器
@@ -85,22 +89,25 @@ public class DataPacketV1Config {
         return verifyEnable;
     }
 
-
     public int getMaxWasteBitSize() {
         return maxWasteBitSize;
     }
-
 
     public long getPacketTimeout() {
         return this.packetTimeout;
     }
 
-
-    public String getCodec() {
-        return codec;
+    public String getBodyCodec() {
+        return bodyCodec;
     }
 
+    public String getTailCodec() {
+        return tailCodec;
+    }
 
+    public String getBodyDecodeStrategy() {
+        return bodyDecodeStrategy;
+    }
     public String getVerifier() {
         return verifier;
     }
@@ -145,11 +152,6 @@ public class DataPacketV1Config {
         return this;
     }
 
-    public DataPacketV1Config setCodec(String codec) {
-        this.codec = codec;
-        return this;
-    }
-
     public DataPacketV1Config setVerifier(String verifier) {
         this.verifier = verifier;
         return this;
@@ -159,4 +161,20 @@ public class DataPacketV1Config {
         this.crypto = crypto;
         return this;
     }
+
+    public DataPacketV1Config setBodyCodec(String bodyCodec) {
+        this.bodyCodec = bodyCodec;
+        return this;
+    }
+
+    public DataPacketV1Config setTailCodec(String tailCodec) {
+        this.tailCodec = tailCodec;
+        return this;
+    }
+
+    public DataPacketV1Config setBodyDecodeStrategy(String bodyDecodeStrategy) {
+        this.bodyDecodeStrategy = bodyDecodeStrategy;
+        return this;
+    }
+
 }

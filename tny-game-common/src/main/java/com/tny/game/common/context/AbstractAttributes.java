@@ -1,9 +1,6 @@
 package com.tny.game.common.context;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
@@ -28,19 +25,19 @@ public abstract class AbstractAttributes implements Attributes {
         return this.lock;
     }
 
-    protected void writeLock() {
+    private void writeLock() {
         this.getLock().writeLock().lock();
     }
 
-    protected void writeUnlock() {
+    private void writeUnlock() {
         this.getLock().writeLock().unlock();
     }
 
-    protected void readLock() {
+    private void readLock() {
         this.getLock().readLock().lock();
     }
 
-    protected void readUnlock() {
+    private void readUnlock() {
         this.getLock().readLock().unlock();
     }
 
@@ -186,13 +183,7 @@ public abstract class AbstractAttributes implements Attributes {
     public void setAttribute(AttrEntry<?>... entries) {
         if (entries.length == 0)
             return;
-        this.writeLock();
-        try {
-            for (AttrEntry<?> entry : entries)
-                this.getMap().put(entry.getKey(), entry.getValue());
-        } finally {
-            this.writeUnlock();
-        }
+        this.setAttribute(Arrays.asList(entries));
     }
 
     @Override

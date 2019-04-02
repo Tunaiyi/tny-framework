@@ -5,7 +5,9 @@ import com.tny.game.common.unit.UnitLoader;
 import com.tny.game.net.codec.cryptoloy.XOrCodecCrypto;
 import com.tny.game.net.codec.v1.DataPacketV1Config;
 import com.tny.game.net.codec.verifier.CRC64CodecVerifier;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.message.common.*;
 import com.tny.game.net.message.protoex.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.transport.*;
@@ -31,7 +33,7 @@ public class DataPacketV1CodecTest {
 
     private ChannelHandlerContext ctx;
 
-    private ProtoExMessageFactory<Long> factory = new ProtoExMessageFactory<>();
+    private CommonMessageFactory<Long> factory = new CommonMessageFactory<>();
 
     private DataPacketV1Decoder decoder;
 
@@ -56,6 +58,7 @@ public class DataPacketV1CodecTest {
         when(ctx.channel()).thenReturn(channel);
         NettyTunnel tunnel = mockAs(NettyTunnel.class);
         when(tunnel.getAccessId()).thenReturn(2018L);
+        when(tunnel.getMessageFactory()).thenReturn(factory);
         channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
         DataPacketV1Config config = new DataPacketV1Config()
                 .setSecurityKeys(new String[]{"1s1394d3kssvonxasanfkwhzfk0jy0zm"});
@@ -71,7 +74,7 @@ public class DataPacketV1CodecTest {
         ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(400);
         encoder.encodeObject(ctx, message, buffer);
         Message<?> readMessage = decoder.decodeObject(ctx, buffer);
-        assertEquals(message.getHeader(), readMessage.getHeader());
+        assertEquals(message.getHead(), readMessage.getHead());
         assertTrue(CollectionUtils.isEqualCollection(message.getBody(Collection.class), readMessage.getBody(Collection.class)));
     }
 }

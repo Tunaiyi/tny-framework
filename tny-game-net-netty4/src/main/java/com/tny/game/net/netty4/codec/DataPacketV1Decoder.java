@@ -1,15 +1,18 @@
 package com.tny.game.net.netty4.codec;
 
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.DataPacketV1Config;
-import com.tny.game.net.exception.CodecException;
+import com.tny.game.net.codec.v1.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.coder.CodecContent;
+import com.tny.game.net.message.coder.*;
 import com.tny.game.net.netty4.*;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import org.slf4j.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.coder.CodecContent.*;
 
 public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPacketDecoder {
@@ -39,11 +42,9 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
 
         final byte option = in.readByte();
 
-        if (isOption(option, PING_OPTION)) {
+        if (isOption(option, DATA_PACK_OPTION_PING)) {
             return DetectMessage.ping();
-        }
-
-        if (isOption(option, PONG_OPTION)) {
+        } else if (isOption(option, DATA_PACK_OPTION_PONG)) {
             return DetectMessage.pong();
         }
 
@@ -64,9 +65,9 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
         int index = in.readerIndex();
         long accessId = NettyVarintCoder.readVarint64(in);
         DataPackager packager = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
+        NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
         if (packager == null) {
             packager = new DataPackager(accessId, config);
-            NettyTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
             tunnel.setAccessId(accessId);
             channel.attr(NettyAttrKeys.READ_PACKAGER).set(packager);
         }
@@ -116,7 +117,7 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
         // if ((option & CoderContent.COMPRESS_OPTION) > 0) {
         //     messageBytes = CompressUtils.decompressBytes(messageBytes);
         // }
-        return this.codec.decode(bodyBytes);
+        return this.messageCodec.decode(bodyBytes, as(tunnel.getMessageFactory()));
     }
 
 }

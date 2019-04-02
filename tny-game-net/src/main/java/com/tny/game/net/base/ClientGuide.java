@@ -1,8 +1,7 @@
 package com.tny.game.net.base;
 
-import com.tny.game.common.utils.URL;
-import com.tny.game.net.endpoint.Client;
-import com.tny.game.net.transport.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.endpoint.*;
 
 /**
  * Created by Kun Yang on 2017/3/28.
@@ -22,20 +21,36 @@ public interface ClientGuide {
 
     /**
      * @param url         url
-     * @param certificate 登录凭证
      * @param postConnect 连接后处理
      * @param <UID>
      * @return
      */
-    <UID> Client<UID> connect(URL url, Certificate<UID> certificate, PostConnect<UID> postConnect);
+    <UID> Client<UID> connect(URL url, UID unloginUid, PostConnect<UID> postConnect);
+
+    /**
+     * @param url   url
+     * @param <UID> * @return
+     */
+    default <UID> Client<UID> connect(URL url, UID unloginUid) {
+        return connect(url, unloginUid, null);
+    }
 
     /**
      * @param url         url
-     * @param certificate 登录凭证
-     * @param <UID>       * @return
+     * @param postConnect 连接后处理
+     * @param <UID>
+     * @return
      */
-    default <UID> Client<UID> connect(URL url, Certificate<UID> certificate) {
-        return connect(url, certificate, null);
+    default <UID> Client<UID> connect(URL url, PostConnect<UID> postConnect) {
+        return connect(url, null, postConnect);
+    }
+
+    /**
+     * @param url   url
+     * @param <UID> * @return
+     */
+    default <UID> Client<UID> connect(URL url) {
+        return connect(url, null);
     }
 
 }

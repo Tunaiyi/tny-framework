@@ -1,15 +1,18 @@
 package com.tny.game.net.netty4;
 
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.unit.UnitLoader;
+import com.tny.game.common.unit.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.MessageHandler;
-import com.tny.game.net.message.MessageFactory;
-import io.netty.channel.*;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.tny.game.common.lifecycle.LifecycleLevel.*;
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -21,15 +24,15 @@ public abstract class NettyBootstrap implements AppPrepareStart {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
-    private NettyUnitSetting unitSetting;
+    private NettyBootstrapSetting unitSetting;
 
     protected ChannelMaker<Channel> channelMaker;
 
-    protected MessageHandler<Object> messageHandler;
-
     protected MessageFactory<Object> messageFactory;
 
-    public NettyBootstrap(NettyUnitSetting unitSetting) {
+    protected EndpointEventHandler<?, NetEndpoint<?>> eventHandler;
+
+    public NettyBootstrap(NettyBootstrapSetting unitSetting) {
         this.unitSetting = unitSetting;
     }
 
@@ -53,6 +56,9 @@ public abstract class NettyBootstrap implements AppPrepareStart {
         return false;
     }
 
+    protected <UID> EndpointEventHandler<UID, NetEndpoint<UID>> getEventHandler() {
+        return as(eventHandler);
+    }
 
     public static EventLoopGroup createLoopGroup(boolean epoll, int threads, String name) {
         if (epoll)
@@ -73,8 +79,8 @@ public abstract class NettyBootstrap implements AppPrepareStart {
     @Override
     public void prepareStart() {
         this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(unitSetting.getChannelMaker());
-        this.messageHandler = as(UnitLoader.getLoader(MessageHandler.class).getUnitAnCheck(unitSetting.getMessageHandler()));
         this.messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(unitSetting.getMessageFactory()));
+        this.eventHandler = as(UnitLoader.getLoader(EndpointEventHandler.class).getUnitAnCheck(unitSetting.getEventHandler()));
     }
 
 }

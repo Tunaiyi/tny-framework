@@ -1,11 +1,12 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.common.runtime.RunningChecker;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.runtime.*;
+import com.tny.game.common.utils.*;
 import org.joda.time.DateTime;
 
 import java.util.concurrent.locks.StampedLock;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 16/8/13.
@@ -127,7 +128,8 @@ public class UUIDCreator {
 
     public static void main(String[] args) {
         System.out.println(Math.pow(2, 13));
-        UUIDCreator creator = new UUIDCreator(1, 13);
+        UUIDCreator creator = new UUIDCreator(0, 1);
+
         RunningChecker.startPrint(UUIDCreator.class);
         for (int i = 0; i < 1000000; i++) {
             creator.createID();

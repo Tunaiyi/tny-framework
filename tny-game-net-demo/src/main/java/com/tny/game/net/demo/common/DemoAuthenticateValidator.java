@@ -1,29 +1,36 @@
 package com.tny.game.net.demo.common;
 
-import com.tny.game.net.command.auth.AuthenticateValidator;
-import com.tny.game.net.exception.CommandException;
-import com.tny.game.net.message.Message;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.demo.common.dto.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.ValidationException;
 import java.time.Instant;
 import java.util.List;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-10-31 16:44
  */
 @Component
 public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 
     @Override
-    public Certificate<Long> validate(Tunnel<Long> tunnel, Message<Long> message) throws CommandException {
-        List value = message.getBody(List.class);
-        return Certificates.createAutherized(as(value.get(0)), as(value.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
+    public Certificate<Long> validate(Tunnel<Long> tunnel, Message<Long> message) throws CommandException, ValidationException {
+        Object value = message.getBody(Object.class);
+        if (value instanceof List) {
+            List paramList = as(value);
+            return Certificates.createAutherized(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
+        }
+        if (value instanceof LoginDTO) {
+            LoginDTO dto = as(value);
+            return Certificates.createAutherized(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
+        }
+        throw new ValidationException("登录失败");
     }
 
 }

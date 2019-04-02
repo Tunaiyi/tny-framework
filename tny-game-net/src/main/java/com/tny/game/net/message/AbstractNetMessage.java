@@ -2,29 +2,30 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.context.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.transport.Certificate;
+import com.tny.game.net.transport.*;
 
-public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
+public abstract class AbstractNetMessage<UID> extends AttributesHolder implements NetMessage<UID> {
 
-    private volatile transient Attributes attributes;
-
-    private NetMessageHeader header;
+    private NetMessageHead head;
 
     private Object body;
+
+    private Object tail;
 
     protected Certificate<UID> certificate;
 
     protected AbstractNetMessage() {
     }
 
-    protected AbstractNetMessage(NetMessageHeader header) {
-        this.header = header;
+    protected AbstractNetMessage(NetMessageHead head) {
+        this.head = head;
     }
 
-    protected AbstractNetMessage(Certificate<UID> certificate, NetMessageHeader header, Object body) {
+    protected AbstractNetMessage(Certificate<UID> certificate, NetMessageHead head, Object body, Object tail) {
         this.certificate = certificate;
-        this.header = header;
+        this.head = head;
         this.body = body;
+        this.tail = tail;
     }
 
     @Override
@@ -43,31 +44,38 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
     }
 
     @Override
-    public MessageHeader getHeader() {
-        return header;
+    public MessageHead getHead() {
+        return head;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getBody(ReferenceType<T> type) {
-        return ObjectAide.converTo(getBody(), type);
+        return ObjectAide.converTo(this.body, type);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getBody(Class<T> clazz) {
-        return ObjectAide.converTo(this.getBody(), clazz);
+        return ObjectAide.converTo(this.body, clazz);
     }
 
     @Override
-    public Attributes attributes() {
-        if (this.attributes != null)
-            return this.attributes;
-        synchronized (this) {
-            if (this.attributes != null)
-                return this.attributes;
-            return this.attributes = ContextAttributes.create();
-        }
+    public boolean existBody() {
+        return this.body != null;
+    }
+
+    @Override
+    public boolean existTail() {
+        return this.tail != null;
+    }
+
+    @Override
+    public <T> T getTail(Class<T> clazz) {
+        return ObjectAide.converTo(this.tail, clazz);
+    }
+
+    @Override
+    public <T> T getTail(ReferenceType<T> clazz) {
+        return ObjectAide.converTo(this.tail, clazz);
     }
 
     protected AbstractNetMessage<UID> setCertificate(Certificate<UID> certificate) {
@@ -75,15 +83,16 @@ public abstract class AbstractNetMessage<UID> implements NetMessage<UID> {
         return this;
     }
 
-    protected Object getBody() {
-        return this.body;
-    }
+    // @Override
+    // public Object getBody() {
+    //     return this.body;
+    // }
 
-    @Override
-    public NetMessage<UID> setId(long messageID) {
-        this.header.setId(messageID);
-        return this;
-    }
+    // @Override
+    // public NetMessage<UID> setId(long messageID) {
+    //     this.head.setId(messageID);
+    //     return this;
+    // }
 
     @Override
     public NetMessage<UID> update(Certificate<UID> certificate) {

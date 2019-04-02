@@ -26,9 +26,9 @@ public class StringLengthLimitFilter extends AbstractParamFilter<Object, StrLeng
             return NetResultCode.ILLEGAL_PARAMETERS;
         int length = param.length();
         if (length < annotation.low() || annotation.high() < length) {
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串长度超过 {} - {} 范围",
-                    message.getUserID(), header.getId(),
+                    message.getUserID(), head.getId(),
                     index, param, annotation.low(), annotation.high());
             return NetResultCode.ILLEGAL_PARAMETERS;
         }

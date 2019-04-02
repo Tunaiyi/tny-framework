@@ -4,7 +4,7 @@ import com.google.common.collect.*;
 import com.tny.game.common.utils.Throws;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.plugins.CommandPlugin;
 import com.tny.game.net.command.auth.AuthenticateValidator;
 import com.tny.game.net.message.MessageMode;
 
@@ -89,13 +89,13 @@ public abstract class ControllerHolder {
     private <A extends Annotation> ImmutableList<ControllerPluginHolder> initPlugins(MessageDispatcherContext context,
                                                                                      final Collection<A> pluginAnnotations,
                                                                                      ExprHolderFactory exprHolderFactory,
-                                                                                     Function<A, Class<? extends ControllerPlugin>> pluginClassGetter,
+                                                                                     Function<A, Class<? extends CommandPlugin>> pluginClassGetter,
                                                                                      ControllerPluginHolderConstructor<A> holderFatory,
                                                                                      ControllerPluginHolder... defaultHolders) {
         List<ControllerPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
         for (A pluginAnnotation : pluginAnnotations) {
-            Class<? extends ControllerPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
-            final ControllerPlugin plugin = context.getPlugin(pluginClass);
+            Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
+            final CommandPlugin plugin = context.getPlugin(pluginClass);
             Throws.checkNotNull(plugin, "{} plugin is null", pluginClass);
             plugins.add(holderFatory.create(this, plugin, pluginAnnotation, exprHolderFactory));
         }
@@ -104,7 +104,7 @@ public abstract class ControllerHolder {
 
     private interface ControllerPluginHolderConstructor<T> {
 
-        ControllerPluginHolder create(ControllerHolder controller, ControllerPlugin<?, ?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
+        ControllerPluginHolder create(ControllerHolder controller, CommandPlugin<?, ?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
 
     }
 

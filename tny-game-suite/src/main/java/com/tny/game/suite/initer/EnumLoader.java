@@ -22,6 +22,7 @@ import com.tny.game.net.base.AppType;
  */
 public class EnumLoader {
 
+    @SuppressWarnings("unchecked")
     public static ClassSelector selector() {
         return ClassSelector.instance()
                 .addFilter(SubOfClassFilter.ofInclude(
@@ -40,7 +41,7 @@ public class EnumLoader {
                         CapacitySupplierType.class))
                 .setHandler((classes) -> classes.stream()
                         .filter(Class::isEnum)
-                        .map(c -> (Class<? extends Enum>) c)
+                        .map(c -> (Class<Enum>) c)
                         .forEach(Enums::getEnumList)
                 );
     }

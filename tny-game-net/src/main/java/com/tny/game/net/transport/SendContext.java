@@ -6,9 +6,9 @@ package com.tny.game.net.transport;
 public interface SendContext<UID> {
 
     /**
-     * @return 获取发送 Future, 如果没有返回 null
+     * @return 获取发送超时
      */
-    MessageSendFuture<UID> getSendFuture();
+    long getSendTimeout();
 
     /**
      * @return 获取响应 Future, 如果没有返回 null
@@ -16,18 +16,13 @@ public interface SendContext<UID> {
     RespondFuture<UID> getRespondFuture();
 
     /**
-     * @return 是否有发送 Future
-     */
-    boolean isHasSendFuture();
-
-    /**
      * @return 是否有响应 Future
      */
     boolean isHasRespondFuture();
 
     /**
-     * @return 是否有 Future
+     * @return 获取发送 Future, 如果没有返回 null
      */
-    boolean isHasFuture();
+    WriteMessagePromise getWritePromise();
 
 }

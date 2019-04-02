@@ -1,10 +1,13 @@
 package com.tny.game.net.endpoint;
 
 
-import com.tny.game.net.transport.MessageContext;
-import com.tny.game.net.endpoint.listener.EndpointKeeperListener;
+import com.tny.game.net.endpoint.listener.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.transport.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -75,6 +78,20 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
     E close(UID userId);
 
     /**
+     * 使指定userId的endpoint下线
+     *
+     * @param userId 指定userId
+     * @return 返回下线endpoint
+     */
+    E offline(UID userId);
+
+    /**
+     * 使所有endpoint下线
+     */
+    void offlineAll();
+
+
+    /**
      * 是所有session关闭
      */
     void closeAll();
@@ -104,5 +121,29 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param listener 监听器
      */
     void removeListener(EndpointKeeperListener<UID> listener);
+
+    /**
+     * 计算在线人数
+     */
+    int countOnlineSize();
+
+    /**
+     * <p>
+     * 添加指定的endpoint<br>
+     *
+     * @param tunnel 注册tunnel
+     * @throws ValidatorFailException 认证异常
+     */
+    Optional<E> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException;
+
+    /**
+     * <p>
+     * <p>
+     * 获取指定userId对应的Session <br>
+     *
+     * @param userId 指定的Key
+     * @return 返回获取的endpoint, 无endpoint返回null
+     */
+    boolean isOnline(UID userId);
 
 }

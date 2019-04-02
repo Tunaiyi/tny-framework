@@ -15,14 +15,24 @@ public class CodecContent {
 
     public static final int MESSAGE_LENGTH_SIZE = 4;
 
-    public static final byte PONG_OPTION = (byte) 1;
-    public static final byte PING_OPTION = (byte) (1 << 1);
+    public static final byte DATA_PACK_OPTION_MESSAGE = (byte) 0;
+    public static final byte DATA_PACK_OPTION_PING = (byte) 1;
+    public static final byte DATA_PACK_OPTION_PONG = (byte) (1 << 1) | 1;
+
+    public static final byte HEAD_OPTION_MODE_MASK = (byte) (1 << 1) | 1;
+    public static final byte HEAD_OPTION_EMPTY = (byte) 0;
+    public static final byte HEAD_OPTION_REQUEST = (byte) 1;
+    public static final byte HEAD_OPTION_RESPONSE = (byte) (1 << 1);
+    public static final byte HEAD_OPTION_PUSH = (byte) (1 << 1) | 1;
+
+    public static final byte HEAD_OPTION_EXIST_BODY = (byte) (1 << 2);
+    public static final byte HEAD_OPTION_EXIST_TAIL = (byte) (1 << 3);
 
 
-    public static final byte OPTION_COMPRESS = (byte) (1 << 2); // 选项(是否有加密)
-    public static final byte OPTION_VERIFY = (byte) (1 << 3); // 选项(是否有校验)
-    public static final byte OPTION_ENCRYPT = (byte) (1 << 4); // 选项(是否有加密)
-    public static final byte OPTION_WASTE_BYTES = (byte) (1 << 5); // 选项(是否有加密)
+    // public static final byte OPTION_COMPRESS = (byte) (1 << 2); // 选项(是否有加密)
+    public static final byte OPTION_VERIFY = (byte) (1 << 2); // 选项(是否有校验)
+    public static final byte OPTION_ENCRYPT = (byte) (1 << 3); // 选项(是否有加密)
+    public static final byte OPTION_WASTE_BYTES = (byte) (1 << 4); // 选项(是否有加密)
 
     public static final int OPTION_LENGTH = 1;                  // 选项长度
     public static final int VERIFIER_CODE_LENGTH = 8;           // 校验码长度
@@ -45,9 +55,8 @@ public class CodecContent {
         return true;
     }
 
-
     public static boolean isOption(byte option, byte mark) {
-        return (option & mark) != 0;
+        return (option & mark) == mark;
     }
 
     public static byte setOption(byte option, byte mark, boolean effect) {

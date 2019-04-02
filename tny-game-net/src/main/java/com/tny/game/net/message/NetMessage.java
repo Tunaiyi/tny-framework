@@ -12,12 +12,12 @@ public interface NetMessage<UID> extends Message<UID> {
      */
     NetMessage<UID> update(Certificate<UID> certificate);
 
-    /**
-     * 设置消息 Id
-     *
-     * @param messageID 消息 Id
-     * @return 返回 this
-     */
-    NetMessage<UID> setId(long messageID);
+    // /**
+    //  * 设置消息 Id
+    //  *
+    //  * @param messageID 消息 Id
+    //  * @return 返回 this
+    //  */
+    // NetMessage<UID> setId(long messageID);
 
 }

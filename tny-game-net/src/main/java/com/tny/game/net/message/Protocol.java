@@ -9,12 +9,24 @@ public interface Protocol {
      */
     int getProtocolNumber();
 
-    default boolean isOwn(MessageHeader header) {
-        return this.getProtocolNumber() == header.getProtocolNumber();
+    /**
+     * 指定消息是否是属于此协议
+     *
+     * @param head 消息头
+     * @return
+     */
+    default boolean isOwn(MessageHead head) {
+        return this.getProtocolNumber() == head.getProtocolNumber();
     }
 
-    default boolean isOwn(Message message) {
-        return this.getProtocolNumber() == message.getProtocol();
+    /**
+     * 指定消息是否是属于此协议
+     *
+     * @param subject 消息
+     * @return
+     */
+    default boolean isOwn(MessageSubject subject) {
+        return this.getProtocolNumber() == subject.getProtocolNumber();
     }
 
 }

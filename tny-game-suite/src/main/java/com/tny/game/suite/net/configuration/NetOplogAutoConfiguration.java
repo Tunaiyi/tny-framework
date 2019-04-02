@@ -13,7 +13,7 @@ public class NetOplogAutoConfiguration {
 
     @Bean
     public OpLogSnapshotIniter opLogSnapshotIniter() {
-        return new OpLogSnapshotIniter(Configs.getScanPaths());
+        return new OpLogSnapshotIniter(Configs.getScanPathList());
     }
 
 }

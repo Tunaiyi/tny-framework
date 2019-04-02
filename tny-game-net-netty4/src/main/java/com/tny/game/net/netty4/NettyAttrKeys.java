@@ -1,15 +1,16 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.net.codec.DataPackager;
+import com.tny.game.net.codec.*;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.codec.*;
-import com.tny.game.net.message.MessageFactory;
 import io.netty.util.AttributeKey;
 
 public interface NettyAttrKeys {
 
-    // AttributeKey<NetSession> SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".SESSION");
+    AttributeKey<NetEndpoint> ENDPOINT = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".ENDPOINT");
     AttributeKey<NettyTunnel> TUNNEL = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
-    // AttributeKey<NetSession<?>> SESION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
+    // AttributeKey<NetSession<?>> SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
     // AttributeKey<NettyConnector> CLIENT = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".CLIENT");
 
     // public static final AttributeKey<NetSession<?>> SERVER_SESSION = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".SERVER_SESSION");

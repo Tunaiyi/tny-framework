@@ -1,8 +1,17 @@
 package com.tny.game.common.reflect;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ReflectAide {
 
@@ -12,14 +21,12 @@ public class ReflectAide {
     public enum MethodType {
 
         /**
-         * @uml.property name="getter"
-         * @uml.associationEnd
+         *
          */
         Getter("get", "is"),
 
         /**
-         * @uml.property name="setter"
-         * @uml.associationEnd
+         *
          */
         Setter("set");
 
@@ -234,6 +241,47 @@ public class ReflectAide {
         return true;
     }
 
+    private static class FClass {
+
+        private ArrayList<Set<Integer>> integers;
+
+    }
+
+    public static void main(String[] args) throws NoSuchFieldException {
+        Field field = FClass.class.getDeclaredField("integers");
+        System.out.println(getFieldGenericTypes(field));
+    }
+
+    public static List<Type> getFieldGenericTypes(Field field) {
+        Type type = field.getGenericType();
+        List<Type> types = new ArrayList<>();
+        if (type instanceof Class) {
+            return Collections.emptyList();
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) type;
+            Type[] genericTypes = paramType.getActualTypeArguments();
+            Collections.addAll(types, genericTypes);
+        }
+        return types;
+    }
+
+    public static List<Class<?>> getFieldGenericClasses(Field field) {
+        List<Type> genTypes = getFieldGenericTypes(field);
+        List<Class<?>> classes = new ArrayList<>();
+        for (Type type : genTypes) {
+            if (type instanceof Class)
+                classes.add((Class<?>) type);
+            else if (type instanceof ParameterizedType)
+                classes.add((Class<?>) ((ParameterizedType) type).getRawType());
+        }
+        return classes;
+    }
+
+    /**
+     * @param clazz        泛型
+     * @param genericClass 泛型接口
+     * @return
+     */
     public static List<Class<?>> getComponentType(Class<?> clazz, Class<?> genericClass) {
         List<Class<?>> classes = new ArrayList<>();
         if (genericClass.isInterface()) {
@@ -243,8 +291,13 @@ public class ReflectAide {
                 ParameterizedType paramType = (ParameterizedType) type;
                 if (paramType.getRawType() != genericClass)
                     continue;
-                for (Type t : paramType.getActualTypeArguments())
-                    classes.add((Class<?>) t);
+                for (Type t : paramType.getActualTypeArguments()) {
+                    if (t instanceof Class) {
+                        classes.add((Class<?>) t);
+                    } else if (t instanceof ParameterizedType) {
+                        classes.add((Class<?>) ((ParameterizedType) t).getRawType());
+                    }
+                }
             }
         } else {
             Type type = clazz.getGenericSuperclass();
@@ -253,8 +306,13 @@ public class ReflectAide {
             ParameterizedType paramType = (ParameterizedType) type;
             if (paramType.getRawType() != genericClass)
                 return classes;
-            for (Type t : paramType.getActualTypeArguments())
-                classes.add((Class<?>) t);
+            for (Type t : paramType.getActualTypeArguments()) {
+                if (t instanceof Class) {
+                    classes.add((Class<?>) t);
+                } else if (t instanceof ParameterizedType) {
+                    classes.add((Class<?>) ((ParameterizedType) t).getRawType());
+                }
+            }
         }
         return classes;
     }

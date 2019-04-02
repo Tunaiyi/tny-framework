@@ -1,19 +1,25 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.common.collection.CollectorsAide;
-import com.tny.game.common.lifecycle.AppPostStart;
+import com.tny.game.cache.annotation.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.net.base.*;
 import com.tny.game.scanner.*;
-import com.tny.game.scanner.filter.AnnotationClassFilter;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.scanner.filter.*;
+import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.context.*;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.*;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.stream.Stream;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -24,19 +30,26 @@ import static com.tny.game.suite.SuiteProfiles.*;
  */
 @Component
 @Profile(PROTOBUF_MAPPER)
-public class ProtobufTableMapperIniter implements AppPostStart, ApplicationContextAware {
+public class ProtobufTableMapperIniter implements InitializingBean, AppPostStart, ApplicationContextAware {
 
     private ClassSelector selector = ClassSelector.instance(AnnotationClassFilter.ofInclude(ToCache.class));
 
     private ApplicationContext context;
 
+    @Resource
+    private AppContext appContext;
+
     private ForkJoinTask<?> task;
 
     public ProtobufTableMapperIniter() {
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
         task = ForkJoinPool.commonPool()
                 .submit(() -> ClassScanner.instance()
                         .addSelector(selector)
-                        .scan(Configs.getScanPathArray()));
+                        .scan(appContext.getScanPathArray()));
     }
 
     @Override

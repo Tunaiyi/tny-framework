@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.Tunnel;
+import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
@@ -57,15 +57,7 @@ public class NetLogger {
     public static void debugReceive(Message message, String msg, Object... args) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = new Object[5];
-            MessageHeader header = message.getHeader();
-            msgArgs[0] = message.getMode();
-            msgArgs[1] = header.getId();
-            msgArgs[2] = header.getId();
-            msgArgs[3] = header.getToMessage();
-            msgArgs[4] = message.getBody(Object.class);
-            if (args.length > 0)
-                msgArgs = ArrayUtils.addAll(msgArgs, args);
+            Object[] msgArgs = toMessageArgs(message, args);
             logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
@@ -73,28 +65,33 @@ public class NetLogger {
     public static void debugSend(Message message, String msg, Object... args) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = new Object[5];
-            MessageHeader header = message.getHeader();
-            msgArgs[0] = message.getMode();
-            msgArgs[1] = header.getId();
-            msgArgs[2] = header.getId();
-            msgArgs[3] = header.getToMessage();
-            msgArgs[4] = message.getBody(Object.class);
-            if (args.length > 0)
-                msgArgs = ArrayUtils.addAll(msgArgs, args);
+            Object[] msgArgs = toMessageArgs(message, args);
             logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
+    }
+
+    private static Object[] toMessageArgs(Message message, Object[] args) {
+        Object[] msgArgs = new Object[5];
+        MessageHead head = message.getHead();
+        msgArgs[0] = message.getMode();
+        msgArgs[1] = head.getId();
+        msgArgs[2] = head.getId();
+        msgArgs[3] = head.getToMessage();
+        msgArgs[4] = message.getBody(Object.class);
+        if (args.length > 0)
+            msgArgs = ArrayUtils.addAll(msgArgs, args);
+        return msgArgs;
     }
 
     public static void logSend(Tunnel<?> tunnel, Message<?> message) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
-                    header.getId(), header.getId(), header.getToMessage(),
-                    new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
+                    head.getId(), head.getId(), head.getToMessage(),
+                    new Date(head.getTime()), head.getCode(), message.getBody(Object.class));
         }
 
     }
@@ -102,12 +99,12 @@ public class NetLogger {
     public static void logReceive(Tunnel<?> tunnel, Message<?> message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
-                    header.getId(), header.getId(), header.getToMessage(),
-                    new Date(header.getTime()), header.getCode(), message.getBody(Object.class));
+                    head.getId(), head.getId(), head.getToMessage(),
+                    new Date(head.getTime()), head.getCode(), message.getBody(Object.class));
         }
     }
 

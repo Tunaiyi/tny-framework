@@ -1,13 +1,13 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Lock;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -15,12 +15,12 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * Created by Kun Yang on 2017/3/28.
  */
-public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
+public abstract class NettyTunnel<UID, E extends NetEndpoint<UID>> extends AbstractNetTunnel<UID, E> {
 
     protected volatile Channel channel;
 
-    protected NettyTunnel(Channel channel, Certificate<UID> certificate, TunnelMode mode, MessageFactory<UID> messageBuilderFactory) {
-        super(certificate, mode, messageBuilderFactory);
+    protected NettyTunnel(Channel channel, TunnelMode mode, E endpoint, MessageFactory<UID> messageFactory) {
+        super(mode, endpoint, messageFactory);
         this.channel = channel;
     }
 
@@ -67,25 +67,27 @@ public abstract class NettyTunnel<UID> extends AbstractNetTunnel<UID> {
     }
 
     @Override
-    public SendContext<UID> write(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException {
-        ChannelFuture writeFuture = channel.writeAndFlush(message);
-        if (callback != null) {
-            writeFuture.addListener((f) -> {
-                if (f.isSuccess()) {
-                    callback.onWrite(true, null, message, context);
-                } else {
-                    callback.onWrite(false, f.cause(), message, context);
-                }
-            });
+    public WriteMessageFuture write(Message<UID> message, WriteMessagePromise promise) throws NetException {
+        if (promise == null)
+            promise = createWritePromise(-1);
+        if (!this.isAvailable()) {
+            promise.failed(new TunnelCloseException(format("{} is close {}", this)));
+            return promise;
         }
-        if (waitForSendTimeout > 0 && !writeFuture.awaitUninterruptibly(waitForSendTimeout, TimeUnit.MILLISECONDS)) {
-            writeFuture.cancel(true);
-            throw new SendTimeoutException(format("{} send message timeout {} ms", this, waitForSendTimeout));
+        if (promise instanceof NettyWriteMessagePromise) {
+            channel.writeAndFlush(message, as(promise));
+            return promise;
+        } else {
+            throw new TunnelException("Cannot support {} WriteMessageFuture", promise.getClass());
         }
-        return ifNull(context, EmptySendContext.empty());
     }
 
-    protected NettyTunnel<UID> setChannel(Channel channel) {
+    @Override
+    public WriteMessagePromise createWritePromise(long sendTimeout) {
+        return new NettyWriteMessagePromise(this.channel, sendTimeout);
+    }
+
+    protected NettyTunnel<UID, E> setChannel(Channel channel) {
         this.channel = channel;
         return this;
     }

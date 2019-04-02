@@ -1,10 +1,12 @@
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.plugins.ControllerPlugin;
-import com.tny.game.net.command.auth.AuthenticateValidator;
-import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.listener.*;
+import com.tny.game.net.command.plugins.*;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
  * @author: Kun Yang
  * @date: 2018-09-30 18:03
  */
+@UnitInterface
 public interface MessageDispatcherContext {
 
     /**
@@ -35,7 +38,7 @@ public interface MessageDispatcherContext {
      * @param pluginClass 抄件类型
      * @return 返回 ControllerHolder
      */
-    ControllerPlugin getPlugin(Class<? extends ControllerPlugin> pluginClass);
+    CommandPlugin getPlugin(Class<? extends CommandPlugin> pluginClass);
 
     /**
      * 获取身份校验器
@@ -49,5 +52,10 @@ public interface MessageDispatcherContext {
      * @return 获取所有监听器
      */
     List<DispatchCommandListener> getDispatchListeners();
+
+    /**
+     * @return 获取 endpoint
+     */
+    EndpointKeeperManager getEndpointKeeperManager();
 
 }

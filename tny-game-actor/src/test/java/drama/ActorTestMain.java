@@ -7,6 +7,8 @@ import com.tny.game.actor.local.LocalActorContext;
 import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.VoidFlow;
 
+import java.util.concurrent.*;
+
 /**
  * Created by Kun Yang on 16/4/30.
  */
@@ -29,7 +31,6 @@ public class ActorTestMain {
         }
 
     }
-
 
     private static LocalActorContext<String, Object> context = new LocalActorContext<>(null);
 
@@ -56,8 +57,8 @@ public class ActorTestMain {
 
         long time = System.currentTimeMillis() + 5000;
 
+        Future<String> future = new CompletableFuture<>();
         flow = Flows.of(actor1)
-                .waitUntil(() -> System.currentTimeMillis() > time)
                 .thenRun(() -> System.out.println("finish tell until"))
                 .start();
 

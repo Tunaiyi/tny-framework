@@ -1,73 +1,53 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.net.base.NetLogger;
-import com.tny.game.net.endpoint.listener.SessionEventBuses;
-import org.slf4j.*;
+import com.tny.game.common.concurrent.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.endpoint.listener.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<UID, Session<UID>, NetSession<UID>> implements SessionKeeper<UID> {
+public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<UID, Session<UID>, NetSession<UID>> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    protected SessionKeeperSetting setting;
+    protected SessionSetting setting;
 
     /* 离线session */
-    protected final Queue<NetSession<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<Session<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
 
-    public AbstractSessionKeeper(String userType, SessionKeeperSetting setting) {
+    protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
+
+    public AbstractSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory, SessionSetting setting) {
         super(userType);
         this.setting = setting;
+        this.factory = as(factory);
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
         sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, setting.getClearInterval(), setting.getClearInterval(), TimeUnit.MILLISECONDS);
-        SessionEventBuses buses = SessionEventBuses.buses();
+        EndpointEventBuses buses = EndpointEventBuses.buses();
         buses.onlineEvent().add(this::onOnline);
         buses.offlineEvent().add(this::onOffline);
         buses.onlineEvent().add(this::onOnline);
         buses.closeEvent().add(this::onClose);
     }
 
-    @Override
-    public boolean isOnline(UID userId) {
-        Session<UID> session = this.getEndpoint(userId);
-        return session != null && session.isOnline();
-    }
-
-    @Override
-    public int onlineSize() {
-        int online = 0;
-        for (NetSession<UID> session : this.endpointMap.values()) {
-            if (session.isOnline())
-                online++;
-        }
-        return online;
-    }
-
-    @Override
-    public Session<UID> offline(UID userId) {
-        NetSession<UID> session = this.endpointMap.get(userId);
-        if (session != null)
-            session.offline();
-        return session;
-    }
-
-    @Override
-    public void offlineAll() {
-        this.endpointMap.forEach((key, session) -> session.offline());
-    }
-
-    private void onOnline(Session<?> session) {
+    private void onOnline(Endpoint<?> session) {
         if (!this.getUserType().equals(session.getUserType()))
             return;
-        NetSession<UID> netSession = as(session);
+        Session<UID> netSession = as(session);
         this.offlineSessionQueue.remove(netSession);
     }
 
-    private void onOffline(Session<?> session) {
+    private void onOffline(Endpoint<?> session) {
         if (!this.getUserType().equals(session.getUserType()))
             return;
         if (session.isLogin() && session.isOffline()) {
@@ -75,12 +55,12 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
         }
     }
 
-    private void onClose(Session<?> session) {
+    private void onClose(Endpoint<?> session) {
         if (!this.getUserType().equals(session.getUserType()))
             return;
         if (!session.isLogin())
             return;
-        NetSession<UID> netSession = as(session);
+        Session<UID> netSession = as(session);
         this.endpointMap.remove(netSession.getUserId(), netSession);
         this.offlineSessionQueue.remove(netSession);
     }
@@ -91,10 +71,10 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     private void clearInvalidedSession() {
         long now = System.currentTimeMillis();
         // int size = this.offlineSessions.size() - offlineSessionMaxSize;
-        Set<NetSession> closeSessions = new HashSet<>();
+        Set<Session> closeSessions = new HashSet<>();
         offlineSessionQueue.forEach(session -> {
                     try {
-                        NetSession<UID> closeSession = null;
+                        Session<UID> closeSession = null;
                         if (session.isClosed()) {
                             LOG.info("移除已关闭的 OfflineSession userId : {}", session.getUserId());
                             closeSession = session;
@@ -117,7 +97,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
         if (maxSize > 0) {
             int size = offlineSessionQueue.size() - maxSize;
             for (int i = 0; i < size; i++) {
-                NetSession<UID> session = offlineSessionQueue.poll();
+                Session<UID> session = offlineSessionQueue.poll();
                 if (session == null)
                     continue;
                 try {
@@ -134,7 +114,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     protected void debugSessionSize() {
         int size = 0;
         int online = 0;
-        for (NetSession<UID> session : this.endpointMap.values()) {
+        for (Session<UID> session : this.endpointMap.values()) {
             size++;
             if (session.isOnline())
                 online++;

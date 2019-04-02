@@ -53,10 +53,28 @@ public class SuitDataPacketV1Config extends DataPacketV1Config {
         return super.setSecurityKeys(securityKeys);
     }
 
+    // @Override
+    // @Value("${bodyCoder:ProtoExCodec}")
+    // public DataPacketV1Config setMessageCodec(String messageCodec) {
+    //     return super.setMessageCodec(messageCodec);
+    // }
+
+
     @Override
-    @Value("${codec:ProtoExCodec}")
-    public DataPacketV1Config setCodec(String codec) {
-        return super.setCodec(codec);
+    @Value("${bodyCodec:ProtoExCodec}")
+    public DataPacketV1Config setBodyCodec(String bodyCodec) {
+        return super.setBodyCodec(bodyCodec);
+    }
+
+    @Override
+    @Value("${tailCodec:ProtoExCodec}")
+    public DataPacketV1Config setTailCodec(String tailCodec) {
+        return super.setTailCodec(tailCodec);
+    }
+
+    @Override
+    public DataPacketV1Config setBodyDecodeStrategy(String bodyDecodeStrategy) {
+        return super.setBodyDecodeStrategy(bodyDecodeStrategy);
     }
 
     @Override

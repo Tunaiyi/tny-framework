@@ -1,7 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.utils.ReferenceType;
+import com.tny.game.common.context.*;
 
 import java.io.Serializable;
 
@@ -13,13 +12,40 @@ import java.io.Serializable;
  * @date: 2018/8/31 下午10:23
  */
 
-public interface Message<UID> extends Serializable, Protocol {
+public interface Message<UID> extends Serializable, MessageSubject {
 
     /**
      * @return 获取消息 ID
      */
     default long getId() {
-        return this.getHeader().getId();
+        return this.getHead().getId();
+    }
+
+    @Override
+    default MessageMode getMode() {
+        return getHead().getMode();
+    }
+
+    @Override
+    default long getToMessage() {
+        return this.getHead().getToMessage();
+    }
+
+    @Override
+    default int getCode() {
+        return this.getHead().getCode();
+    }
+
+    /**
+     * @return 获取协议码
+     */
+    default int getProtocol() {
+        return this.getHead().getProtocolNumber();
+    }
+
+    @Override
+    default int getProtocolNumber() {
+        return getHead().getProtocolNumber();
     }
 
     /**
@@ -35,7 +61,7 @@ public interface Message<UID> extends Serializable, Protocol {
     /**
      * @return 获取消息头
      */
-    MessageHeader getHeader();
+    MessageHead getHead();
 
     /**
      * @return 獲取用户类型
@@ -47,40 +73,5 @@ public interface Message<UID> extends Serializable, Protocol {
      */
     Attributes attributes();
 
-    /**
-     * @return 获取消息模式
-     */
-    default MessageMode getMode() {
-        return getHeader().getMode();
-    }
-
-    /**
-     * @return 获取协议码
-     */
-    default int getProtocol() {
-        return this.getHeader().getProtocolNumber();
-    }
-
-    /**
-     * @return 获取结果码
-     */
-    default int getCode() {
-        return this.getHeader().getCode();
-    }
-
-    @Override
-    default int getProtocolNumber() {
-        return getHeader().getProtocolNumber();
-    }
-
-    /**
-     * @return 获取消息体
-     */
-    <T> T getBody(Class<T> clazz);
-
-    /**
-     * @return 获取消息体
-     */
-    <T> T getBody(ReferenceType<T> clazz);
 
 }

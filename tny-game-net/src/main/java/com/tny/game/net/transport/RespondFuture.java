@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RespondFuture<UID> extends CompletableFuture<Message<UID>> {
 
-    public static final long DEFAULT_FUTURE_TIMEOUT = 30000L;
+    public static final long DEFAULT_FUTURE_TIMEOUT = 10000L;
 
     private long timeout;
 
@@ -18,6 +18,11 @@ public class RespondFuture<UID> extends CompletableFuture<Message<UID>> {
         if (timeout <= 0)
             timeout = DEFAULT_FUTURE_TIMEOUT;
         this.timeout = System.currentTimeMillis() + timeout;
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return super.cancel(mayInterruptIfRunning);
     }
 
     public boolean isTimeout() {

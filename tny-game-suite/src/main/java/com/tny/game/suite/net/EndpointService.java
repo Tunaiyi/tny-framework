@@ -7,7 +7,6 @@ import com.tny.game.net.base.NetResultCode;
 import com.tny.game.net.command.CommandResult;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -664,7 +663,7 @@ public class EndpointService {
      * 指定用户 playerID 是否在线
      *
      * @param playerID 玩家ID
-     * @return 返回ture 表示在线, 否则表示是下线
+     * @return 返回 true 表示在线, 否则表示是下线
      */
     public boolean isOnline(long playerID) {
         return this.isOnline(DEFAULT_USER_TYPE, playerID);
@@ -675,7 +674,7 @@ public class EndpointService {
      *
      * @param userType 玩家ID
      * @param playerID 玩家ID
-     * @return 返回ture 表示在线, 否则表示是下线
+     * @return true 表示在线, 否则表示是下线
      */
     public boolean isOnline(String userType, long playerID) {
         Optional<SessionKeeper<Object>> keeperOpt = endpointKeeperManager.getSessionKeeper(userType);

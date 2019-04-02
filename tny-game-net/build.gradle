@@ -9,6 +9,8 @@ dependencies {
             project(":tny-game-protoex"),
     )
 
-    testCompile libs.'spring-context-support'
+    testCompile (
+            project(":tny-game-net-test"),
+    )
 
 }

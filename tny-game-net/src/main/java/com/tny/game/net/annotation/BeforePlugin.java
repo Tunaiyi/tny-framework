@@ -1,6 +1,6 @@
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.command.plugins.ControllerPlugin;
+import com.tny.game.net.command.plugins.CommandPlugin;
 
 import java.lang.annotation.*;
 
@@ -29,7 +29,7 @@ public @interface BeforePlugin {
      *
      * @return
      */
-    Class<? extends ControllerPlugin> value();
+    Class<? extends CommandPlugin> value();
 
     /**
      * 插件参数, 已@开始为公式

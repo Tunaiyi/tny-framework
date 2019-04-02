@@ -1,37 +1,35 @@
 package com.tny.game.net.demo.server;
 
-import com.tny.game.net.annotation.Controller;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.netty4.codec.*;
-import com.tny.game.suite.annotation.EnableNetAutoConfiguration;
-import com.tny.game.suite.launcher.SuitApplication;
-import com.tny.game.suite.net.spring.ReadTimeoutChannelMaker;
-import org.slf4j.*;
-import org.springframework.boot.*;
+import com.tny.game.suite.launcher.*;
+import com.tny.game.suite.net.spring.*;
+import com.tny.game.suite.spring.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 
 /**
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-10-30 16:49
  */
 @SpringBootConfiguration
 @EnableNetAutoConfiguration
 @ComponentScan(
         value = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common"},
         includeFilters = @Filter(Controller.class))
-@PropertySource("classpath:server-application.properties")
 public class GameServerApp {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameServerApp.class);
 
     public static void main(String[] args) {
         try {
-            SuitApplication application = new SuitApplication(() -> SpringApplication.run(GameServerApp.class, args));
+            ApplicationContext context = SpringApplication.run(GameServerApp.class, args);
+            SuitApplication application = context.getBean(SuitApplication.class);
             application.start();
-            ApplicationContext context = application.getContext();
             context.getBeansOfType(DataPacketV1Encoder.class).forEach((k, v) -> System.out.println(k + " : " + v));
             context.getBeansOfType(DataPacketV1Decoder.class).forEach((k, v) -> System.out.println(k + " : " + v));
             context.getBeansOfType(ReadTimeoutChannelMaker.class).forEach((k, v) -> System.out.println(k + " : " + v.getIdleTimeout()));

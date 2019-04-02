@@ -38,9 +38,9 @@ public class StringPatternLimitFilter extends AbstractParamFilter<Object, Patter
     @Override
     protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, PatternMatch annotation, String param) {
         if (!this.getPattern(annotation.pattern()).matcher(param).matches()) {
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    message.getUserID(), header.getId(),
+                    message.getUserID(), head.getId(),
                     index, param, annotation.pattern());
             return NetResultCode.ILLEGAL_PARAMETERS;
         }

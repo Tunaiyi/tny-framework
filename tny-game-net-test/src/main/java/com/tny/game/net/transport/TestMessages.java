@@ -1,15 +1,18 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.common.CommonMessageFactory;
-import com.tny.game.net.endpoint.NetSession;
+import com.tny.game.net.message.common.*;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Created by Kun Yang on 2018/8/24.
@@ -20,7 +23,7 @@ public class TestMessages {
 
     private MessageFactory<Long> messageBuilderFactory = new CommonMessageFactory<>();
     private Certificate<Long> certificate;
-    private MessageIdCreator idCreator;
+    private AtomicInteger idCreator;
     private int pingSize = 0;
     private int pongSize = 0;
     private int messageSize = 0;
@@ -31,12 +34,12 @@ public class TestMessages {
 
     public TestMessages(NetTunnel<Long> tunnel) {
         this.certificate = tunnel.getCertificate();
-        idCreator = new MessageIdCreator(MessageIdCreator.TUNNEL_SENDER_MESSAGE_ID_MARK);
+        idCreator = new AtomicInteger(0);
     }
 
-    TestMessages(NetSession<Long> session) {
-        this.certificate = session.getCertificate();
-        idCreator = new MessageIdCreator(MessageIdCreator.ENDPOINT_SENDER_MESSAGE_ID_MARK);
+    public TestMessages(NetEndpoint<Long> endpoint) {
+        this.certificate = endpoint.getCertificate();
+        idCreator = new AtomicInteger(0);
     }
 
     public List<? extends Message<Long>> getMessages() {
@@ -118,7 +121,7 @@ public class TestMessages {
     }
 
     private NetMessage<Long> createMessage(MessageContext<Long> context) {
-        return messageBuilderFactory.create(idCreator.createId(), context, certificate);
+        return messageBuilderFactory.create(idCreator.incrementAndGet(), context, certificate);
     }
 
     public int getPingSize() {
@@ -145,31 +148,40 @@ public class TestMessages {
         return responseSize;
     }
 
-    public List<Boolean> receive(NetTunnel<Long> tunnel) {
-        return this.receive(tunnel, null);
+    public void receive(Receiver<Long> receiver) {
+        assertFalse(this.messages.isEmpty());
+        this.messages.forEach(p -> receiver.receive(p.getMessage()));
     }
 
-    public List<Boolean> receive(NetTunnel<Long> tunnel, BiConsumer<Message<Long>, Boolean> consumer) {
-        assertFalse(this.messages.isEmpty());
-        return this.messages.stream().map(TestMessagePack::getMessage)
-                .map(m -> {
-                    boolean result = tunnel.receive(m);
-                    if (consumer != null)
-                        consumer.accept(m, result);
-                    return result;
-                })
-                .collect(Collectors.toList());
+    public void send(Sender<Long> sender) {
+        send(sender, null);
     }
 
-    public void sendAsyn(Sender<Long> sender) {
+    public void send(Sender<Long> sender, Consumer<SendContext<Long>> check) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> sender.sendAsyn(p.getContext()));
+        if (check == null)
+            check = f -> {
+            };
+        Consumer<SendContext<Long>> consumer = check;
+        this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
     }
 
-    public void sendSync(Sender<Long> sender, long timeout) {
-        assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> sender.sendSync(p.getContext(), timeout));
+    public void write(Transport<Long> transport) {
+        write(transport, null);
     }
+
+    public void write(Transport<Long> transport, Consumer<WriteMessageFuture> check) {
+        assertFalse(this.messages.isEmpty());
+        if (check == null)
+            check = f -> {
+            };
+        final Consumer<WriteMessageFuture> consumer = check;
+        this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
+    }
+    // public void sendSync(Sender<Long> sender, long timeout) {
+    //     assertFalse(this.messages.isEmpty());
+    //     this.messages.forEach(p -> sender.sendSync(p.getContext(), timeout));
+    // }
 
     // public void sendSuccess(NetTunnel<Long> tunnel) {
     //     this.forEach((c, m) -> {
@@ -210,6 +222,24 @@ public class TestMessages {
 
     public void requestContextsForEach(Consumer<RequestContext<Long>> action) {
         this.messages.stream().map(TestMessagePack::getRequestContext).forEach(action);
+    }
+
+    public static TestMessages createMessages(NetTunnel<Long> tunnel) {
+        return createMessages(new TestMessages(tunnel));
+    }
+
+    public static TestMessages createMessages(NetEndpoint<Long> endpoint) {
+        return createMessages(new TestMessages(endpoint));
+    }
+
+    private static TestMessages createMessages(TestMessages messages) {
+        return messages.addPush("push 1")
+                .addResponse("request 2", 1)
+                .addResponse("request 3", 1)
+                .addResponse("request 4", 1)
+                .addResponse("request 5", 1)
+                .addResponse("request 6", 1)
+                .addRequest("request 7");
     }
 
 

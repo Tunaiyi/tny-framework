@@ -1,7 +1,7 @@
 package com.tny.game.common.utils;
 
 import com.tny.game.common.enums.*;
-import com.tny.game.common.reflect.Wraper;
+import com.tny.game.common.reflect.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -9,7 +9,7 @@ import java.lang.reflect.*;
 import java.util.Objects;
 import java.util.function.*;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 16/3/9.
@@ -81,6 +81,8 @@ public class ObjectAide extends ObjectUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object, Class<T> clazz) {
+        if (object == null)
+            return null;
         if (clazz.isInstance(object))
             return (T) object;
         else if (clazz == int.class || clazz == Integer.class) {
@@ -163,40 +165,42 @@ public class ObjectAide extends ObjectUtils {
         return clazz;
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T converTo(Object object, ReferenceType<T> referenceType) {
         return converTo(object, getClassType(referenceType));
     }
 
-    @SuppressWarnings("unchecked")
+
     public static <T> T converTo(Object object, Class<T> clazz) {
         if (object == null)
             return null;
         final Class<?> checkClass = !clazz.isPrimitive() ? clazz : Wraper.getWraper(clazz);
         if (checkClass.isInstance(object)) {
-            return (T) object;
+            return as(object);
         }
         if (Enum.class.isAssignableFrom(checkClass) && object instanceof String) {
-            return (T) Enum.valueOf((Class<? extends Enum>) checkClass, object.toString());
+            Class<? extends Enum> enumClass = as(checkClass);
+            @SuppressWarnings("unchecked")
+            Object enumObject = Enum.valueOf(enumClass, object.toString());
+            return as(enumObject);
         }
         if (checkClass == Long.class) {
             Number number = Double.parseDouble(object.toString());
             object = number.longValue();
-            return (T) object;
+            return as(object);
         }
         if (object instanceof Number) {
             Number number = (Number) object;
             if (checkClass == Integer.class) {
-                return (T) ((Object) number.intValue());
+                return as(number.intValue());
             }
             if (checkClass == Byte.class) {
-                return (T) ((Object) number.byteValue());
+                return as(number.byteValue());
             }
             if (checkClass == Float.class) {
-                return (T) ((Object) number.floatValue());
+                return as(number.floatValue());
             }
             if (checkClass == Short.class) {
-                return (T) ((Object) number.shortValue());
+                return as(number.shortValue());
             }
             if (EnumID.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
                 for (T value : clazz.getEnumConstants()) {
@@ -205,15 +209,14 @@ public class ObjectAide extends ObjectUtils {
                         if (((Number) id).intValue() == ((Number) object).intValue())
                             return value;
                     } else {
-                        throw new IllegalArgumentException(format(
-                                "can not find Enum {} where id is {}", clazz, object));
+                        throw new IllegalArgumentException(format("can not find Enum {} where id is {}", clazz, object));
                     }
                 }
             }
         }
         if (!clazz.isAssignableFrom(object.getClass()))
-            throw  new ClassCastException(format("{} can not conver to {}", object.getClass(), clazz));
-        return (T) object;
+            throw new ClassCastException(format("{} can not conver to {}", object.getClass(), clazz));
+        return as(object);
     }
 
 }

@@ -4,8 +4,8 @@ import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.result.ResultCode;
 import com.tny.game.common.utils.ObjectAide;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.range.*;
 import com.tny.game.net.command.plugins.filter.string.*;
 import com.tny.game.net.exception.CommandException;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public class ParamFilterPlugin<UID> implements VoidControllerPlugin<UID> {
+public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
 
     private Map<Class<?>, ParamFilter> filterMap = new CopyOnWriteMap<>();
 
@@ -58,7 +58,7 @@ public class ParamFilterPlugin<UID> implements VoidControllerPlugin<UID> {
                         context.doneAndIntercept(resultCode);
                     }
                 } catch (CommandException e) {
-                    context.doneAndIntercept(ResultFactory.fail(e.getResultCode(), e.getBody()));
+                    context.doneAndIntercept(CommandResults.fail(e.getResultCode(), e.getBody()));
                 }
             }
         }

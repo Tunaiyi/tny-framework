@@ -1,26 +1,30 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.collection.*;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.common.worker.command.Command;
-import com.tny.game.expr.ExprHolderFactory;
-import com.tny.game.expr.groovy.GroovyExprHolderFactory;
-import com.tny.game.net.annotation.AuthProtocol;
+import com.tny.game.common.utils.*;
+import com.tny.game.common.worker.command.*;
+import com.tny.game.expr.*;
+import com.tny.game.expr.groovy.*;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.auth.AuthenticateValidator;
-import com.tny.game.net.command.listener.DispatchCommandListener;
-import com.tny.game.net.command.plugins.ControllerPlugin;
-import com.tny.game.net.exception.CommandException;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.listener.*;
+import com.tny.game.net.command.plugins.*;
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.NetTunnel;
+import com.tny.game.net.transport.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.message.MessageMode.*;
 
 /**
  * 抽象消息派发器
@@ -32,17 +36,22 @@ import static com.tny.game.net.message.MessageMode.*;
  * <p>
  * 实现对controllerMap的初始化,派发消息流程<br>
  */
-public abstract class AbstractMessageDispatcher implements MessageDispatcher {
+public abstract class AbstractMessageDispatcher implements MessageDispatcher, MessageDispatcherContext {
 
     /**
      * 所有协议身法验证器
      */
-    private AuthenticateValidator fullValidator;
+    private AuthenticateValidator defaultValidator;
 
     /**
-     *
+     * 所有协议身法验证器
      */
-    private Map<Class<?>, ControllerPlugin> pluginMap = new CopyOnWriteMap<>();
+    private EndpointKeeperManager endpointKeeperManager;
+
+    /**
+     * 插件管理器
+     */
+    private Map<Class<?>, CommandPlugin> pluginMap = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -77,8 +86,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
         if (controller != null)
-            return new MessageDispatchCommand(this, controller, tunnel, message);
-        if (message.getMode() == REQUEST)
+            return new ControllerMessageCommand(this, controller, tunnel, message);
+        if (message.getMode() == MessageMode.REQUEST)
             throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL, format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
         return null;
     }
@@ -94,7 +103,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public ControllerPlugin getPlugin(Class<? extends ControllerPlugin> pluginClass) {
+    public CommandPlugin getPlugin(Class<? extends CommandPlugin> pluginClass) {
         return this.pluginMap.get(pluginClass);
     }
 
@@ -106,7 +115,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             Throws.checkNotNull(validator, "{} 认证器不存在", validatorClass);
         }
         if (validator == null) {
-            validator = as(authValidators.getOrDefault(protocol, fullValidator));
+            validator = as(authValidators.getOrDefault(protocol, defaultValidator));
         }
         return validator;
     }
@@ -114,6 +123,16 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     @Override
     public List<DispatchCommandListener> getDispatchListeners() {
         return Collections.unmodifiableList(dispatchListeners);
+    }
+
+    @Override
+    public EndpointKeeperManager getEndpointKeeperManager() {
+        return endpointKeeperManager;
+    }
+
+    protected AbstractMessageDispatcher setEndpointKeeperManager(EndpointKeeperManager endpointKeeperManager) {
+        this.endpointKeeperManager = endpointKeeperManager;
+        return this;
     }
 
     @Override
@@ -136,14 +155,19 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         this.dispatchListeners.clear();
     }
 
+    protected AbstractMessageDispatcher setAppContext(AppContext appContext) {
+        this.appContext = appContext;
+        return this;
+    }
+
     /**
      * 添加插件列表
      *
      * @param plugins 插件列表
      */
-    protected void addControllerPlugin(Collection<ControllerPlugin> plugins) {
+    protected void addControllerPlugin(Collection<CommandPlugin> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                .collect(CollectorsAide.toMap(ControllerPlugin::getClass)));
+                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
 
     /**
@@ -151,7 +175,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
      *
      * @param plugin 插件
      */
-    protected void addControllerPlugin(ControllerPlugin plugin) {
+    protected void addControllerPlugin(CommandPlugin plugin) {
         this.pluginMap.put(plugin.getClass(), plugin);
     }
 
@@ -165,8 +189,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                Throws.checkNotNull(this.fullValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, fullValidator.getClass());
-                this.fullValidator = provider;
+                Throws.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, defaultValidator.getClass());
+                this.defaultValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {
                     putObject(this.authValidators, value, provider);

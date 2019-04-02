@@ -20,9 +20,9 @@ public abstract class RangeLimitParamFilter<A extends Annotation, N extends Comp
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         if (!this.filterRange(low, param, high)) {
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    message.getUserID(), header.getId(),
+                    message.getUserID(), head.getId(),
                     index, param, low, high);
             return NetResultCode.ILLEGAL_PARAMETERS;
         }

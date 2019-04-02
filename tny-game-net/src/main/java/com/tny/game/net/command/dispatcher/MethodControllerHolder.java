@@ -1,35 +1,37 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.google.common.collect.*;
-import com.tny.game.common.number.LocalNum;
-import com.tny.game.common.reflect.GMethod;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.tny.game.common.number.*;
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.result.*;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.NetResultCode;
-import com.tny.game.net.command.auth.AuthenticateValidator;
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.auth.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.CommandException;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * @author KGTny
- * @ClassName: MethodHolder
- * @Description: 业务方法持有对象
- * @date 2011-8-16 上午11:19:03
- * <p>
- * <p>
- * <br>
  */
 public final class MethodControllerHolder extends ControllerHolder {
 
@@ -48,7 +50,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 方法名字
      */
-    private final String methodName;
+    private final String name;
     /**
      * 控制器操作配置
      */
@@ -92,10 +94,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                 method.getJavaMethod().getAnnotation(AppProfile.class),
                 method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
         try {
-            this.methodName = method.getName();
+            this.classController = classController;
+            this.name = executor.getClass().getSimpleName() + "." + method.getName();
             this.method = method;
             this.executor = executor;
-            this.classController = classController;
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
             List<ParamDesc> parameterDescs = new ArrayList<>();
             Annotation[][] parameterAnnotations = method.getJavaMethod().getParameterAnnotations();
@@ -200,7 +202,7 @@ public final class MethodControllerHolder extends ControllerHolder {
      */
     @Override
     public String getName() {
-        return this.methodName;
+        return this.name;
     }
 
     @Override
@@ -290,7 +292,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.paramAnnotationsMap.keySet();
     }
 
-    protected void invoke(NetTunnel<?> tunnel, Message<?> message, InvokeContext context) throws Exception {
+    protected void invoke(NetTunnel<?> tunnel, Message<?> message, CommandContext context) throws Exception {
         // 获取调用方法的参数类型
         Object[] param = new Object[this.getParametersSize()];
         Object body = message.getBody(Object.class);
@@ -300,7 +302,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         context.setResult(this.invoke(param));
     }
 
-    protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+    protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, CommandContext context) {
         if (this.beforeContext == null)
             return;
         this.beforeContext.execute(tunnel, message, context);
@@ -397,27 +399,26 @@ public final class MethodControllerHolder extends ControllerHolder {
             boolean require = this.require;
             if (body == null)
                 body = message.getBody(Object.class);
-            MessageHeader header = message.getHeader();
+            MessageHead head = message.getHead();
             Object value = null;
             switch (this.paramType) {
                 case MESSAGE:
                     value = message;
                     break;
                 case ENDPOINT: {
-                    Optional<? extends Endpoint<?>> endpoint = tunnel.getBindEndpoint();
-                    if (endpoint.isPresent()) {
-                        value = endpoint.get();
-                        break;
-                    }
-                    throw new NullPointerException(format("{} endpint is null", tunnel));
+                    value = tunnel.getEndpoint();
+                    break;
                 }
                 case SESSION: {
-                    Optional<? extends Endpoint<?>> endpoint = tunnel.getBindEndpoint();
-                    if (endpoint.isPresent()) {
-                        value = endpoint.get();
-                        if (value instanceof Session)
-                            break;
-                    }
+                    value = tunnel.getEndpoint();
+                    if (value instanceof Session)
+                        break;
+                    throw new NullPointerException(format("{} session is null", tunnel));
+                }
+                case CLIENT: {
+                    value = tunnel.getEndpoint();
+                    if (value instanceof Client)
+                        break;
                     throw new NullPointerException(format("{} session is null", tunnel));
                 }
                 case TUNNEL:
@@ -466,10 +467,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                     }
                     break;
                 case CODE:
-                    value = ResultCodes.of(header.getCode());
+                    value = ResultCodes.of(head.getCode());
                     break;
                 case CODE_NUM:
-                    value = header.getCode();
+                    value = head.getCode();
                     break;
             }
             if (value != null && !this.paramClass.isInstance(value)) {

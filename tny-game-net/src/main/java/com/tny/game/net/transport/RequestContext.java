@@ -1,31 +1,34 @@
 package com.tny.game.net.transport;
 
-import java.util.function.Consumer;
+import com.tny.game.net.endpoint.*;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public interface RequestContext<UID> extends MessageContext<UID> {
+public abstract class RequestContext<UID> extends MessageContext<UID> {
+
+    /**
+     * @param body 设置 Message Body
+     * @return 返回 context 自身
+     */
+    @Override
+    public abstract RequestContext<UID> setBody(Object body);
+
+    /**
+     * @param tail 设置 Message tail
+     * @return 返回 context 自身
+     */
+    @Override
+    public abstract RequestContext<UID> setTail(Object tail);
+
 
     @Override
-    RequestContext<UID> setAttachment(Object attachment);
+    public abstract RequestContext<UID> setSendTimeout(long timeout);
 
-    @Override
-    RequestContext<UID> willSendFuture(Consumer<MessageSendFuture<UID>> consumer);
-
-    @Override
-    RequestContext<UID> willSendFuture();
-
-    default RequestContext<UID> willResponseFuture(Consumer<RespondFuture<UID>> consumer) {
-        return willResponseFuture(consumer, RespondFuture.DEFAULT_FUTURE_TIMEOUT);
-    }
-
-    default RequestContext<UID> willResponseFuture() {
+    public RequestContext<UID> willResponseFuture() {
         return willResponseFuture(RespondFuture.DEFAULT_FUTURE_TIMEOUT);
     }
 
-    RequestContext<UID> willResponseFuture(Consumer<RespondFuture<UID>> consumer, long timeoutMills);
-
-    RequestContext<UID> willResponseFuture(long timeoutMills);
+    public abstract RequestContext<UID> willResponseFuture(long timeoutMills);
 
 }

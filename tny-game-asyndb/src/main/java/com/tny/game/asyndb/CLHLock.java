@@ -4,24 +4,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CLHLock {
 
-    AtomicReference<QNode> tail = new AtomicReference<QNode>(new QNode());
-    ThreadLocal<QNode> myPred;
-    ThreadLocal<QNode> myNode;
+    private AtomicReference<QNode> tail;
+    private ThreadLocal<QNode> myPred;
+    private ThreadLocal<QNode> myNode;
 
     public CLHLock() {
         this.tail = new AtomicReference<QNode>(new QNode());
-        this.myNode = new ThreadLocal<QNode>() {
-            @Override
-            protected QNode initialValue() {
-                return new QNode();
-            }
-        };
-        this.myPred = new ThreadLocal<QNode>() {
-            @Override
-            protected QNode initialValue() {
-                return null;
-            }
-        };
+        this.myNode = ThreadLocal.withInitial(QNode::new);
+        this.myPred = ThreadLocal.withInitial(() -> null);
     }
 
     public void lock() {

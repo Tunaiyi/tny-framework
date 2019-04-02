@@ -1,22 +1,25 @@
 package com.tny.game.common.unit;
 
-import com.tny.game.common.collection.ConcurrentHashSet;
-import com.tny.game.common.reflect.ReflectAide;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.unit.annotation.*;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-10-24 19:40
  */
 public class UnitLoader<T> {
 
@@ -84,6 +87,16 @@ public class UnitLoader<T> {
         T old = this.unitMap.putIfAbsent(name, unit);
         Throws.checkArgument(old == null, "UnitLoader [{}] loading unit, Unit {} and Unit {} have the same name {}", unitInterface, unit, old, name);
         this.unitSet.add(unit);
+    }
+
+    public T getOneUnitAnCheck() {
+        T unit = getOne().orElse(null);
+        Throws.checkNotNull(unit, "UnitLoader [{}] is not exist unit", unitInterface, 0);
+        return unit;
+    }
+
+    public Optional<T> getOne() {
+        return unitSet.stream().findFirst();
     }
 
     public Collection<T> getAllUnits() {

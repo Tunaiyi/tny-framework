@@ -1,16 +1,13 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.common.unit.annotation.UnitInterface;
+import com.tny.game.common.unit.annotation.*;
 
 /**
  * <p>
- *
- * @author: Kun Yang
- * @date: 2018-10-31 11:54
  */
 @UnitInterface
-public interface EndpointKeeperFactory<UID, E extends Endpoint<UID>, S extends EndpointKeeperSetting> {
+public interface EndpointKeeperFactory<UID, E extends EndpointKeeper<UID, ?>, S extends EndpointSetting> {
 
-    EndpointKeeper<UID, E> createKeeper(String userType, S setting);
+    E createKeeper(String userType, S setting);
 
 }

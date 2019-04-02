@@ -1,22 +1,29 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.runtime.RunningChecker;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.annotaion.*;
-import com.tny.game.common.number.IntLocalNum;
-import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.number.*;
+import com.tny.game.common.runtime.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
 import com.tny.game.scanner.*;
-import com.tny.game.scanner.filter.AnnotationClassFilter;
+import com.tny.game.scanner.filter.*;
 import com.tny.game.suite.initer.*;
-import com.tny.game.suite.launcher.exception.LifecycleProcessException;
-import com.tny.game.suite.transaction.TransactionManager;
-import com.tny.game.suite.utils.Configs;
-import org.slf4j.*;
+import com.tny.game.suite.launcher.exception.*;
+import com.tny.game.suite.transaction.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,9 +38,9 @@ public class ApplicationLifecycleProcessor {
 
     private static Map<Class<?>, List<Lifecycle>> lifecycleMap = new HashMap<>();
 
-    private static Map<Lifecycle, LifecycleHandler> handlerMap = new HashMap<>();
+    private static Map<Lifecycle, List<LifecycleHandler>> handlerMap = new HashMap<>();
 
-    public void onStaticInit() throws Exception {
+    public void onStaticInit(AppContext context) {
         Class<?> clazz = null;
         try {
             RunningChecker.start(this.getClass());
@@ -44,7 +51,7 @@ public class ApplicationLifecycleProcessor {
                     .addSelector(ProtoExSchemaIniter.selector())
                     .addSelector(OpLogSnapshotIniter.selector())
                     .addSelector(RandomCreatorIniter.selector())
-                    .scan(Configs.getScanPathArray());
+                    .scan(context.getScanPathArray());
             LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         } catch (Throwable e) {
             throw new RuntimeException(format("获取 {} 类 ProtoExSchema 错误", clazz), e);
@@ -101,7 +108,7 @@ public class ApplicationLifecycleProcessor {
                     Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
                     if (i.getClass() != lifecycle.getHandlerClass())
                         throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
-                    handlerMap.put(lifecycle, i);
+                    handlerMap.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
                 })
                 .map(lifecycleGetter)
                 .sorted((o1, o2) -> 0 - (o1.getPriority() - o2.getPriority()))
@@ -116,7 +123,9 @@ public class ApplicationLifecycleProcessor {
         List<Lifecycle> lifecycleList = lifecycleMap.getOrDefault(processorClass, Collections.emptyList());
         int index = 0;
 
-        Map<Lifecycle, ? extends LifecycleHandler> cloneMap = new HashMap<>(handlerMap);
+        Map<Lifecycle, List<LifecycleHandler>> cloneMap = handlerMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
 
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (Lifecycle lifecycle : lifecycleList) {
@@ -124,37 +133,39 @@ public class ApplicationLifecycleProcessor {
             Lifecycle currentLifecycle = lifecycle.head();
             while (currentLifecycle != null) {
                 @SuppressWarnings("unchecked")
-                T processor = (T) cloneMap.remove(currentLifecycle);
-                if (processor != null) {
-                    Method method = processor.getClass().getMethod(methodName);
-                    AsyncProcess asyncProcess = method.getAnnotation(AsyncProcess.class);
-                    LOGGER.info("服务生命周期 {} # 处理器 [{}] : {}", name, index, currentLifecycle);
-                    int currentIndex = index;
-                    if (asyncProcess != null) {
-                        ForkJoinTask<?> task = ForkJoinPool.commonPool().submit(() -> {
-                            TransactionManager.open();
+                List<T> processors = (List<T>) cloneMap.remove(currentLifecycle);
+                if (processors != null) {
+                    for (T processor : processors) {
+                        Method method = processor.getClass().getMethod(methodName);
+                        AsyncProcess asyncProcess = method.getAnnotation(AsyncProcess.class);
+                        LOGGER.info("服务生命周期 {} # 处理器 [{}] : {}", name, index, currentLifecycle);
+                        int currentIndex = index;
+                        if (asyncProcess != null) {
+                            ForkJoinTask<?> task = ForkJoinPool.commonPool().submit(() -> {
+                                TransactionManager.open();
+                                try {
+                                    runner.process(processor);
+                                    TransactionManager.close();
+                                } catch (Throwable e) {
+                                    LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
+                                    TransactionManager.rollback(e);
+                                    throw new LifecycleProcessException(e);
+                                }
+                            });
+                            tasks.add(task);
+                        } else {
                             try {
                                 runner.process(processor);
-                                TransactionManager.close();
                             } catch (Throwable e) {
-                                LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
-                                TransactionManager.rollback(e);
-                                throw new LifecycleProcessException(e);
+                                if (errorContinue)
+                                    LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
+                                else
+                                    throw new LifecycleProcessException(e);
                             }
-                        });
-                        tasks.add(task);
-                    } else {
-                        try {
-                            runner.process(processor);
-                        } catch (Throwable e) {
-                            if (errorContinue)
-                                LOGGER.error("服务生命周期 {} # 处理器 [{}] 异常", name, currentIndex, e);
-                            else
-                                throw new LifecycleProcessException(e);
                         }
+                        LOGGER.info("服务生命周期 {} # 处理器 [{}] : 耗时 {} -> {} 完成", name, index, System.currentTimeMillis() - current, currentLifecycle);
+                        index++;
                     }
-                    LOGGER.info("服务生命周期 {} # 处理器 [{}] : 耗时 {} -> {} 完成", name, index, System.currentTimeMillis() - current, currentLifecycle);
-                    index++;
                 }
                 currentLifecycle = currentLifecycle.getNext();
             }

@@ -1,21 +1,23 @@
 package com.tny.game.suite.net.configuration;
 
-import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.*;
 import com.tny.game.net.codec.cryptoloy.*;
-import com.tny.game.net.codec.verifier.CRC64CodecVerifier;
-import com.tny.game.net.command.dispatcher.MessageDispatcher;
+import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.command.plugins.*;
-import com.tny.game.net.command.plugins.filter.ParamFilterPlugin;
-import com.tny.game.net.message.MessageFactory;
-import com.tny.game.net.message.protoex.*;
+import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.protoex.*;
 import com.tny.game.suite.initer.*;
+import com.tny.game.suite.launcher.*;
 import com.tny.game.suite.net.spring.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.*;
-
-import javax.annotation.Resource;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 
 /**
  * Game Suite 的默认配置
@@ -23,9 +25,6 @@ import javax.annotation.Resource;
  */
 @Configuration
 public class NetCommonAutoConfiguration {
-
-    @Resource
-    private EndpointKeeperManager endpointKeeperManager;
 
     @Bean
     public ProtoExSchemaIniter protoExSchemaIniter() {
@@ -43,34 +42,23 @@ public class NetCommonAutoConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties("tny.app")
-    public AppContext appContext() {
-        return new SuiteAppContext();
-    }
-
-    // @Bean
-    // public SuitApplication application() {
-    //     return new SuitApplication(applicationContext);
-    // }
-
-    @Bean
-    public MessageFactory protoExMessageFactory() {
-        return new ProtoExMessageFactory<>();
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public AppContext appContext(ApplicationContext applicationContext) {
+        Environment environment = applicationContext.getEnvironment();
+        return Binder.get(environment)
+                .bind("tny.app", Bindable.ofInstance(new SuiteAppContext()))
+                .get();
     }
 
     @Bean
-    public MessageDispatcher messageDispatcher(@Qualifier("appContext") AppContext appContext) {
-        return new SuiteMessageDispatcher(appContext);
-    }
-
-    @Bean
-    public ClientKeeperFactory clientKeeperFactory() {
-        return new DefaultClientKeeperFactory();
+    @Order(-99999)
+    public SuitApplication suitApplication(ApplicationContext applicationContext, AppContext appContext) {
+        return new SuitApplication(applicationContext, appContext);
     }
 
     @Bean
     public EndpointKeeperManager endpointKeeperManager() {
-        return new DefaultEndpointKeeperManager();
+        return new CommonEndpointKeeperManager();
     }
 
     @Bean
@@ -84,13 +72,8 @@ public class NetCommonAutoConfiguration {
     }
 
     @Bean
-    public BindSessionPlugin bindSessionPlugin() {
-        return new BindSessionPlugin(endpointKeeperManager);
-    }
-
-    @Bean
-    public ProtoExCodec<?> protoExCodec(MessageFactory<Object> messageFactory) {
-        return new ProtoExCodec<>(messageFactory);
+    public ProtoExCodec<?> protoExCodec() {
+        return new ProtoExCodec<>();
     }
 
     @Bean

@@ -6,6 +6,8 @@ import com.tny.game.net.message.Message;
 import com.tny.game.net.transport.Certificate;
 import com.tny.game.net.transport.Tunnel;
 
+import javax.xml.bind.ValidationException;
+
 /**
  * Session登录验证器
  *
@@ -21,6 +23,6 @@ public interface AuthenticateValidator<UID> {
      * @return 带有验证结果的Session对象
      * @throws CommandException
      */
-    Certificate<UID> validate(Tunnel<UID> tunnel, Message<UID> message) throws CommandException;
+    Certificate<UID> validate(Tunnel<UID> tunnel, Message<UID> message) throws CommandException, ValidationException;
 
 }

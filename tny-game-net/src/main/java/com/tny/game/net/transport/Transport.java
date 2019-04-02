@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.exception.NetException;
-import com.tny.game.net.message.Message;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
 
 /**
  * <p>
@@ -14,11 +14,10 @@ public interface Transport<UID> {
     /**
      * 写出消息
      *
-     * @param message            发送消息
-     * @param context            发送上下文
-     * @param waitForSendTimeout 等待发送时间(ms) <0 不等待
+     * @param message 发送消息
+     * @param promise  发送promise
      * @throws NetException
      */
-    SendContext<UID> write(Message<UID> message, MessageContext<UID> context, long waitForSendTimeout, WriteCallback<UID> callback) throws NetException;
+    WriteMessageFuture write(Message<UID> message, WriteMessagePromise promise) throws NetException;
 
 }

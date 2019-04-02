@@ -55,7 +55,7 @@ public class CacheConfiguration {
 
     @Bean
     public SpringToCacheClassHolderAndLinkHandlerFactory toCacheClassHolderAndLinkHandlerFactory() {
-        return new SpringToCacheClassHolderAndLinkHandlerFactory(Configs.getScanPaths());
+        return new SpringToCacheClassHolderAndLinkHandlerFactory(Configs.getScanPathList());
     }
 
 

@@ -1,88 +1,62 @@
 package com.tny.game.net.message;
 
-import static com.tny.game.common.utils.StringAide.*;
-
-import java.util.function.Predicate;
+import com.tny.game.net.message.coder.*;
 
 public enum MessageMode {
 
     /**
      * 处理推送
      */
-    PUSH(MessageAide::isPush),
+    PUSH(MessageType.MESSAGE, CodecContent.HEAD_OPTION_PUSH),
 
     /**
      * 处理请求
      */
-    REQUEST(MessageAide::isRequest),
+    REQUEST(MessageType.MESSAGE, CodecContent.HEAD_OPTION_REQUEST),
 
     /**
      * 处理响应
      */
-    RESPONSE(MessageAide::isResponse),
+    RESPONSE(MessageType.MESSAGE, CodecContent.HEAD_OPTION_RESPONSE),
 
     /**
      * PING
      */
-    PING() {
-        @Override
-        public boolean isMode(MessageHeader header) {
-            return header.getMode() == this;
-        }
-    },
+    PING(MessageType.PING, CodecContent.HEAD_OPTION_EMPTY),
 
 
     /**
      * PONG
      */
-    PONG() {
-        @Override
-        public boolean isMode(MessageHeader message) {
-            return message.getMode() == this;
-        }
-    },
+    PONG(MessageType.PONE, CodecContent.HEAD_OPTION_EMPTY),
 
     //
     ;
 
+    private MessageType type;
 
-    private Predicate<MessageHeader> checkMode;
+    private byte option;
 
-    MessageMode() {
+
+    MessageMode(MessageType type, byte option) {
+        this.type = type;
+        this.option = option;
     }
 
-    MessageMode(Predicate<MessageHeader> checkMode) {
-        this.checkMode = checkMode;
+    public MessageType getType() {
+        return type;
     }
 
-    public static MessageMode getMode(MessageHeader header) {
-        if (REQUEST.isMode(header)) {
-            return REQUEST;
-        } else if (RESPONSE.isMode(header)) {
-            return RESPONSE;
-        } else if (PUSH.isMode(header)) {
-            return PUSH;
+    public byte getOption() {
+        return option;
+    }
+
+    public static MessageMode valueOf(MessageType type, byte option) {
+        for (MessageMode mode : MessageMode.values()) {
+            if (mode.getType() == type && mode.option == option)
+                return mode;
         }
-        throw new NullPointerException(format("mode [{}] is null", header.getToMessage()));
-    }
-
-    public static MessageMode getMode(long toMessage) {
-        if (MessageAide.isRequest(toMessage)) {
-            return REQUEST;
-        } else if (MessageAide.isResponse(toMessage)) {
-            return RESPONSE;
-        } else if (MessageAide.isPush(toMessage)) {
-            return PUSH;
-        }
-        throw new NullPointerException(format("mode [{}] is null", toMessage));
-    }
-
-    public boolean isMode(MessageHeader header) {
-        return checkMode.test(header);
-    }
-
-    public boolean isMode(Message message) {
-        return checkMode.test(message.getHeader());
+        return null;
     }
 
 }
