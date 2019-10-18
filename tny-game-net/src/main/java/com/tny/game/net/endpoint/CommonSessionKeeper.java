@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.lock.*;
+import com.tny.game.common.lock.locker.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
@@ -16,7 +16,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    private static HashLock<Lock> hashLock = new HashLock<>(10000);
+    private static ObjectLocker<Object> locker = new ObjectLocker<>();
 
     public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory, SessionSetting setting) {
         super(userType, factory, setting);
@@ -28,8 +28,8 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} is unauthentic", certificate));
         if (!this.getUserType().equals(certificate.getUserType()))
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} userType is {}, not {}", certificate, certificate.getUserType(), this.getUserType()));
-        Lock lock = hashLock.getLock(certificate.getUserId());
-        lock.lock();
+        UID uid = certificate.getUserId();
+        Lock lock = locker.lock(uid);
         try {
             if (certificate.getStatus() == CertificateStatus.AUTHERIZED) { // 登录创建 Session
                 return Optional.ofNullable(doNewSession(certificate, tunnel));
@@ -37,7 +37,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
                 return Optional.ofNullable(doAcceptTunnel(certificate, tunnel));
             }
         } finally {
-            lock.unlock();
+            locker.unlock(uid, lock);
         }
     }
 

@@ -49,7 +49,7 @@ public class ProtobufTableMapperIniter implements InitializingBean, AppPostStart
         task = ForkJoinPool.commonPool()
                 .submit(() -> ClassScanner.instance()
                         .addSelector(selector)
-                        .scan(appContext.getScanPathArray()));
+                        .scan(appContext.getScanPackages()));
     }
 
     @Override

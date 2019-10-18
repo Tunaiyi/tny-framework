@@ -44,7 +44,7 @@ public class TunnelAides {
         //     context.setTail(request.getTail(Object.class));
         SendContext<UID> sendContext = tunnel.send(context);
         if (code.getType() == ResultCodeType.ERROR) {
-            sendContext.getWritePromise().addWriteListener(future -> tunnel.close());
+            sendContext.getWriteFuture().addWriteListener(future -> tunnel.close());
         }
     }
 

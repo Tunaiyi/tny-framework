@@ -10,6 +10,12 @@ import java.util.concurrent.TimeoutException;
  * <p>
  */
 public class MockWriteMessagePromise implements WriteMessagePromise {
+
+    @Override
+    public void setRespondFuture(RespondFuture<?> respondFuture) {
+
+    }
+
     @Override
     public void success() {
 

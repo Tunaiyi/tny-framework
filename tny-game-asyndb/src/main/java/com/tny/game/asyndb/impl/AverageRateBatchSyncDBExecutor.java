@@ -2,7 +2,7 @@ package com.tny.game.asyndb.impl;
 
 import com.tny.game.asyndb.AsyncDBState;
 import com.tny.game.asyndb.SyncDBExecutor;
-import com.tny.game.asyndb.Synchronizable;
+import com.tny.game.asyndb.PersistentObject;
 import com.tny.game.asyndb.Synchronizer;
 import com.tny.game.asyndb.TrySyncDone;
 import com.tny.game.asyndb.log.LogName;
@@ -67,7 +67,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
      */
     //	private final BlockingQueue<Synchronizable> sumitQueue = new LinkedTransferQueue<Synchronizable>();
 
-    private final BlockingQueue<Synchronizable>[] sumitQueues;
+    private final BlockingQueue<PersistentObject>[] sumitQueues;
 
     @SuppressWarnings("unchecked")
     public AverageRateBatchSyncDBExecutor(int step, long waitTime, int tryTime, int syncThreadSize) {
@@ -76,16 +76,16 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
         this.tryTime = tryTime;
         this.sumitQueues = new BlockingQueue[syncThreadSize];
         for (int index = 0; index < syncThreadSize; index++) {
-            this.sumitQueues[index] = new LinkedTransferQueue<Synchronizable>();
+            this.sumitQueues[index] = new LinkedTransferQueue<PersistentObject>();
         }
         this.start();
     }
 
     @Override
-    public boolean sumit(Synchronizable synchronizable) {
+    public boolean sumit(PersistentObject synchronizable) {
         if (this.stop)
             return false;
-        Object value = synchronizable.getValue();
+        Object value = synchronizable.getObject();
         if (value != null) {
             int hashCode = Math.abs(value.hashCode());
             this.sumitQueues[hashCode % this.sumitQueues.length].add(synchronizable);
@@ -116,7 +116,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                 LOGGER.info("#SyncDBExecutor#正在启动同步执行器......");
                 this.stop = false;
                 int id = 0;
-                for (BlockingQueue<Synchronizable> queues : this.sumitQueues) {
+                for (BlockingQueue<PersistentObject> queues : this.sumitQueues) {
                     this.submitSyncDBTaskExecutor.submit(new SyncController(id++, queues));
                 }
                 LOGGER.info("#SyncDBExecutor#同步执行器启动!");
@@ -144,20 +144,20 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
         private boolean finish = false;
         private AsyncDBState state;
 
-        private Map<Synchronizer<?>, Set<Object>> syncerMap = new HashMap<>();
-        private Map<Object, Synchronizable> objectSyncMap = new HashMap<>();
+        private Map<Synchronizer<?>, Set<Object>> synchronizerMap = new HashMap<>();
+        private Map<Object, PersistentObject> persistentObjectMap = new HashMap<>();
 
         public SyncTask(AsyncDBState state) {
             this.state = state;
         }
 
-        public boolean put(AsyncDBState state, Object value, Synchronizable synchronizable) {
+        public boolean put(AsyncDBState state, Object value, PersistentObject synchronizable) {
             if (state != this.state)
                 return false;
             Synchronizer<?> synchronizer = synchronizable.getSynchronizer();
-            Set<Object> syncSet = this.syncerMap.computeIfAbsent(synchronizer, k -> new HashSet<>());
+            Set<Object> syncSet = this.synchronizerMap.computeIfAbsent(synchronizer, k -> new HashSet<>());
             if (syncSet.add(value))
-                this.objectSyncMap.put(value, synchronizable);
+                this.persistentObjectMap.put(value, synchronizable);
             return true;
         }
 
@@ -168,7 +168,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
         public void sync() {
             long time = System.currentTimeMillis();
             Collection<Object> fails = Collections.emptyList();
-            for (Entry<Synchronizer<?>, Set<Object>> entry : this.syncerMap.entrySet()) {
+            for (Entry<Synchronizer<?>, Set<Object>> entry : this.synchronizerMap.entrySet()) {
                 Synchronizer<?> synchronizer = entry.getKey();
                 Set<Object> syncSet = entry.getValue();
                 for (int trySyncCount = 0; trySyncCount++ < AverageRateBatchSyncDBExecutor.this.tryTime; trySyncCount++) {
@@ -182,8 +182,8 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                     }
                 }
                 for (Object fail : fails) {
-                    Synchronizable synchronizable = this.objectSyncMap.get(fail);
-                    synchronizable.syncFail(this.state);
+                    PersistentObject persistentObject = this.persistentObjectMap.get(fail);
+                    persistentObject.syncFail(this.state);
                 }
                 if (LOGGER.isDebugEnabled())
                     LOGGER.info("SyncTask 通过 {} 执行 {} 同步size = {} 消耗 : {}", synchronizer.getClass().getName(), this.state, syncSet.size(), System.currentTimeMillis() - time);
@@ -198,9 +198,9 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
 
         private int syncID;
 
-        private BlockingQueue<Synchronizable> sumitQueue;
+        private BlockingQueue<PersistentObject> sumitQueue;
 
-        public SyncController(int syncID, BlockingQueue<Synchronizable> sumitQueue) {
+        public SyncController(int syncID, BlockingQueue<PersistentObject> sumitQueue) {
             super();
             this.syncID = syncID;
             this.sumitQueue = sumitQueue;
@@ -215,24 +215,24 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                     long startAt = System.currentTimeMillis();
                     if (time == 0 || System.currentTimeMillis() > time) {
                         SyncTask task = null;
-                        int syncSize = 0;
+                        int syncSize;
                         for (syncSize = 0; syncSize < AverageRateBatchSyncDBExecutor.this.step && !this.sumitQueue.isEmpty(); ) {
                             try {
-                                final Synchronizable synchronizable = this.sumitQueue.poll();
-                                if (synchronizable == null)
+                                final PersistentObject persistentObject = this.sumitQueue.poll();
+                                if (persistentObject == null)
                                     continue;
-                                TrySyncDone done = synchronizable.trySync();
+                                TrySyncDone done = persistentObject.trySync();
                                 if (!done.isSync())
                                     continue;
                                 syncSize++;
                                 AsyncDBState state = done.getState();
                                 if (task == null)
                                     task = new SyncTask(state);
-                                if (!task.put(state, done.getValue(), synchronizable)) {
+                                if (!task.put(state, done.getValue(), persistentObject)) {
                                     if (!task.isFinish())
                                         task.sync();
                                     task = new SyncTask(state);
-                                    task.put(state, done.getValue(), synchronizable);
+                                    task.put(state, done.getValue(), persistentObject);
                                 }
                             } catch (Throwable e) {
                                 LOGGER.error("同步对象异常", e);
@@ -240,7 +240,6 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                         }
                         if (task != null && !task.isFinish())
                             task.sync();
-                        task = null;
                         int size = this.sumitQueue.size();
                         costTime = System.currentTimeMillis() - startAt;
                         if (LOGGER.isInfoEnabled() && syncSize > 0)

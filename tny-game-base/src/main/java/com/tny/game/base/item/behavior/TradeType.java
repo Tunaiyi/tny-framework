@@ -23,7 +23,7 @@ public enum TradeType {
         this.id = id;
     }
 
-    public int getID() {
+    public int getId() {
         return this.id;
     }
 

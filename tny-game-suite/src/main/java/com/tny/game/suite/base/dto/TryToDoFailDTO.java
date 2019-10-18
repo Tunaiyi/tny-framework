@@ -36,14 +36,14 @@ public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
             return null;
         TryToDoFailDTO dto = new TryToDoFailDTO();
         setDTO(dto, result.getFailResult());
-        dto.action = result.getAction().getID();
+        dto.action = result.getAction().getId();
         return dto;
     }
 
     public static TryToDoFailDTO exception2DTO(TryToDoException exception) {
         TryToDoFailDTO dto = new TryToDoFailDTO();
         setDTO(dto, exception.getDemandResult());
-        dto.action = exception.getAction().getID();
+        dto.action = exception.getAction().getId();
         return dto;
     }
 }

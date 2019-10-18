@@ -56,7 +56,7 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
 
     @Override
     protected O get(long playerID, Object... object) {
-        return super.get(playerID, this.itemType.getID());
+        return super.get(playerID, this.itemType.getId());
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
             return false;
         }
         if (item instanceof Item) {
-            O owner = this.getOwner(((Item<?>) item).getPlayerID());
+            O owner = this.getOwner(((Item<?>) item).getPlayerId());
             if (owner != null)
                 return super.save(owner);
         }
@@ -86,7 +86,7 @@ public abstract class GameOwnerManager<O> extends GameCacheManager<O> {
                 continue;
             }
             if (item instanceof Item) {
-                O owner = this.getOwner(((Item<?>) item).getPlayerID());
+                O owner = this.getOwner(((Item<?>) item).getPlayerId());
                 if (owner != null)
                     saveCollection.add(owner);
             }

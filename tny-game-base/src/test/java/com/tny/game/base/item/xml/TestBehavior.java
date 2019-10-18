@@ -9,7 +9,7 @@ public enum TestBehavior implements Behavior {
     UPGRATE;
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return 0;
     }
 

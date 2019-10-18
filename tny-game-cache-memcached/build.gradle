@@ -4,15 +4,13 @@ apply plugin: "maven"
 
 dependencies {
 
-    testCompile project(":tny-game-cache-test")
+    testImplementation project(":tny-game-cache-test")
 
-    compile(
-            libs.'commons-pool2',
-            libs.'spring-context-support',
-            libs.'memcached-java-client',
+    api libs.commons_pool2
+    api libs.spring_context_support
+    api libs.memcached_java_client
 
-            project(":tny-game-common"),
-            project(":tny-game-cache"),
-    )
+    api project(":tny-game-common")
+    api project(":tny-game-cache")
 
 }

@@ -58,12 +58,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
 
     @Override
     public void send2Users(Collection<UID> userIds, MessageContext<UID> context) {
-        this.doSendMultiID(userIds.stream(), context);
+        this.doSendMultiId(userIds.stream(), context);
     }
 
     @Override
     public void send2Users(Stream<UID> userIdsStream, MessageContext<UID> context) {
-        this.doSendMultiID(userIdsStream, context);
+        this.doSendMultiId(userIdsStream, context);
     }
 
     @Override
@@ -141,7 +141,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
         onRemoveSession.removeListener(listener);
     }
 
-    private void doSendMultiID(Stream<UID> userIds, MessageContext<UID> context) {
+    private void doSendMultiId(Stream<UID> userIds, MessageContext<UID> context) {
         userIds.forEach(userId -> {
             E endpoint = this.getEndpoint(userId);
             if (endpoint != null) {

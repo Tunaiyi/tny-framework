@@ -63,7 +63,7 @@ public class ControllerContext<UID> {
      *
      * @return 当前线程请求对象
      */
-    public UID getUserID() {
+    public UID getUserId() {
         return this.userID;
     }
 

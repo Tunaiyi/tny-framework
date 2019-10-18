@@ -96,6 +96,10 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
         // payloadLength += NettyVarintCoder.varint32Size(body.length);
         payloadLength += body.length;
 
+        if (payloadLength > config.getMaxPayloadLength())
+            LOGGER.warn("encode message {} failed payloadLength {} > maxPayloadLength {}",
+                    message, payloadLength, config.getMaxPayloadLength());
+
         // 写入包长度
         out.writeInt(payloadLength);
 

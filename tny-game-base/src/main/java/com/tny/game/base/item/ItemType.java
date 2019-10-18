@@ -7,7 +7,7 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface ItemType extends EnumID<Integer> {
+public interface ItemType extends EnumIdentifiable<Integer> {
 
     int ID_TAIL_SIZE = 1000000;
 
@@ -21,8 +21,8 @@ public interface ItemType extends EnumID<Integer> {
 
     String getDesc();
 
-    default int getIDHead() {
-        return getID() / ID_TAIL_SIZE;
+    default int getIdHead() {
+        return getId() / ID_TAIL_SIZE;
     }
 
     // Class<?> getItemManagerClass();

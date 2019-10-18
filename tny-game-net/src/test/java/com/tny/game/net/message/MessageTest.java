@@ -26,16 +26,16 @@ public abstract class MessageTest {
     protected abstract Message<Long> unloginMessage(Long unloginID);
 
     @Test
-    public void getID() throws Exception {
+    public void getId() throws Exception {
         Message<Long> message = message();
         assertEquals(MESSAGE_ID, message.getId());
     }
 
     @Test
-    public void getUserID() throws Exception {
-        assertEquals(UID, message.getUserID());
-        assertEquals(unloginUID, unloginMessage.getUserID());
-        assertNull(unloginNullMessage.getUserID());
+    public void getUserId() throws Exception {
+        assertEquals(UID, message.getUserId());
+        assertEquals(unloginUID, unloginMessage.getUserId());
+        assertNull(unloginNullMessage.getUserId());
     }
 
     @Test

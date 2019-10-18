@@ -1,7 +1,7 @@
 package com.tny.game.base.utlis;
 
-import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 
 /**
@@ -10,33 +10,31 @@ import com.tny.game.common.utils.*;
 public class TryResults {
 
     /**
-     * 返回一个成功的结果, value 为null
-     *
-     * @return
+     * @return 返回一个成功的结果, value 为null
      */
-    public static <M> DoneResult<M> succ() {
-        return new TryResult<>(null, ResultCode.SUCCESS);
+    public static <M> DoneResult<M> success() {
+        return new DefaultTryResult<>(ResultCode.SUCCESS, null);
     }
 
     /**
      * 返回一个成功的结果, value 不能为null
      *
-     * @param value
-     * @return
+     * @param value 成功值
+     * @return 返回 TryResult
      */
-    public static <M, MC extends M> TryResult<M> succ(MC value) {
+    public static <M, MC extends M> TryResult<M> success(MC value) {
         Throws.checkNotNull(value, "TryDone.value is null");
-        return new TryResult<>(value, ResultCode.SUCCESS);
+        return new DefaultTryResult<>(ResultCode.SUCCESS, value);
     }
 
     /**
      * 返回一个成功的结果, value 可为null
      *
-     * @param value
-     * @return
+     * @param value 成功值
+     * @return 返回TryResult
      */
-    public static <M, MC extends M> TryResult<M> succNullable(MC value) {
-        return new TryResult<>(value, ResultCode.SUCCESS);
+    public static <M, MC extends M> TryResult<M> successNullable(MC value) {
+        return new DefaultTryResult<>(ResultCode.SUCCESS, value);
     }
 
     /**
@@ -46,11 +44,11 @@ public class TryResults {
      * @param nullCode 失败时结果码
      * @return 返回结果
      */
-    public static <M, MC extends M> TryResult<M> succIfNotNull(MC value, ResultCode nullCode) {
+    public static <M, MC extends M> TryResult<M> successIfNotNull(MC value, ResultCode nullCode) {
         if (value != null) {
-            return succ(value);
+            return success(value);
         } else {
-            return fail(nullCode);
+            return failure(nullCode);
         }
     }
 
@@ -60,20 +58,9 @@ public class TryResults {
      * @param code 结果码
      * @return 返回结果
      */
-    public static <M> TryResult<M> fail(ResultCode code) {
+    public static <M> TryResult<M> failure(ResultCode code) {
         Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
-        return new TryResult<>(null, code);
-    }
-
-    /**
-     * 返回一个以code为结果码的失败结果
-     *
-     * @param code 结果码
-     * @return 返回结果
-     */
-    public static <M> TryResult<M> fail(ResultCode code, Class<? extends M> clazz) {
-        Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
-        return new TryResult<>(null, code);
+        return new DefaultTryResult<>(code, null);
     }
 
     /**
@@ -82,8 +69,8 @@ public class TryResults {
      * @param result 尝试结果
      * @return 返回结果
      */
-    public static <M> TryResult<M> fail(TryToDoResult result) {
-        return new TryResult<>(null, result);
+    public static <M> TryResult<M> failure(TryToDoResult result) {
+        return new DefaultTryResult<>(result, null);
     }
 
     /**
@@ -93,9 +80,9 @@ public class TryResults {
      * @param result 尝试结果
      * @return 返回结果
      */
-    public static <M, MC extends M> TryResult<M> fail(TryToDoResult result, MC value) {
+    public static <M, MC extends M> TryResult<M> failure(TryToDoResult result, MC value) {
         Throws.checkArgument(result.isUnsatisfied(), "TryToDoResult [{}] is satisfied", result);
-        return new TryResult<>(value, result);
+        return new DefaultTryResult<>(result, value);
     }
 
     /**
@@ -104,13 +91,13 @@ public class TryResults {
      * @param result 失败结果
      * @return 返
      */
-    public static <M> TryResult<M> fail(TryResult<?> result) {
-        Throws.checkArgument(result.isFailed(), "code [{}] is success", result.getCode());
+    public static <M> TryResult<M> failure(TryResult<?> result) {
+        Throws.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return map(result, null);
     }
 
-    public static <M> TryResult<M> fail() {
-        return new TryResult<>(null, ResultCode.FAILURE);
+    public static <M> TryResult<M> failure() {
+        return new DefaultTryResult<>(ResultCode.FAILURE, null);
     }
 
     /**
@@ -120,40 +107,70 @@ public class TryResults {
      * @param code  结果码
      * @return 返回结果
      */
-    public static <M, MC extends M> TryResult<M> done(MC value, ResultCode code) {
-        return new TryResult<>(value, code);
+    public static <M, MC extends M> TryResult<M> done(ResultCode code, MC value) {
+        return new DefaultTryResult<>(code, value);
     }
 
     /**
      * 返回一个成功的结果, value 不能为null
      *
-     * @param value
-     * @return
+     * @param value 结果内容
+     * @return TryResult
      */
     public static <M, MC extends M> TryResult<M> done(TryToDoResult result, MC value) {
         Throws.checkNotNull(value, "TryDone.value is null");
-        return new TryResult<>(value, result);
+        return new DefaultTryResult<>(result, value);
     }
 
     /**
      * 返回一个成功的结果, value 不能为null
      *
-     * @return
+     * @return TryResult
      */
     public static TryResult<Void> done(TryToDoResult result) {
-        return new TryResult<>(null, result);
+        return new DefaultTryResult<>(result, null);
     }
 
+    /**
+     * 返回一个结果 可成功或失败, 由code决定
+     *
+     * @param value 结果值
+     * @param code  结果码
+     * @return 返回结果
+     */
+    public static <M, MC extends M> DoneMessager<M, ? extends TryResult<M>> with(ResultCode code, MC value) {
+        return new DefaultTryResult<>(code, value);
+    }
+
+    /**
+     * 返回一个成功的结果, value 不能为null
+     *
+     * @param value 结果内容
+     * @return TryResult
+     */
+    public static <M, MC extends M> DoneMessager<M, ? extends TryResult<M>> with(TryToDoResult result, MC value) {
+        Throws.checkNotNull(value, "TryDone.value is null");
+        return new DefaultTryResult<>(result, value);
+    }
+
+    /**
+     * 返回一个成功的结果, value 不能为null
+     *
+     * @return TryResult
+     */
+    public static DoneMessager<Void, ? extends TryResult<Void>> with(TryToDoResult result) {
+        return new DefaultTryResult<>(result, null);
+    }
 
     /**
      * 返回一个结果码为result的结果码的失败结果
      *
-     * @return 返
+     * @return 返回 TryResult
      */
     public static <M, MC extends M> TryResult<MC> map(TryResult<?> result, MC value) {
         if (result.getResult() != null)
-            return new TryResult<>(value, result.getResult());
+            return new DefaultTryResult<>(result.getResult(), value);
         else
-            return new TryResult<>(value, result.getCode());
+            return new DefaultTryResult<>(result.getCode(), value);
     }
 }

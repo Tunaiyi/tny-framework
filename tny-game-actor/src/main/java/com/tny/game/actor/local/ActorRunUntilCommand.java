@@ -26,9 +26,9 @@ public class ActorRunUntilCommand extends BaseActorCommand<Void> {
     @Override
     protected Done<Void> doHandle() {
         if (this.predicate.test(actorCell.getActor()))
-            return DoneResults.succNullable(null);
+            return DoneResults.successNullable(null);
         else
-            return DoneResults.fail();
+            return DoneResults.failure();
     }
 
 }

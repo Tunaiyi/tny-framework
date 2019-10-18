@@ -11,7 +11,7 @@ public abstract class UserOpLog {
     /**
      * @return 日志所属用户ID
      */
-    public abstract long getUserID();
+    public abstract long getUserId();
 
     /**
      * @return vip
@@ -36,12 +36,12 @@ public abstract class UserOpLog {
     /**
      * @return 平台用户ID
      */
-    public abstract String getOpenID();
+    public abstract String getOpenId();
 
     /**
      * @return 创建角色服务器ID
      */
-    public abstract int getServerID();
+    public abstract int getServerId();
 
     /**
      * @return 创建角色时间

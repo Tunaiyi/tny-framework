@@ -4,23 +4,20 @@ apply plugin: "maven"
 
 dependencies {
 
-    provided libs.'javaee'
+    compileOnly libs.'javaee'
 
-    compile(
-            libs.'aspectjrt',
-            libs.'spring-webmvc',
-            libs.'spring-aspects',
-            libs.'spring-orm',
-            libs.'guava',
-            libs.'poi',
-            libs.'poi-ooxml',
-            libs.'poi-ooxml-schemas',
+    api libs.aspectjrt
+    api libs.spring_webmvc
+    api libs.spring_aspects
+    api libs.spring_orm
+    api libs.guava
+    api libs.poi
+    api libs.poi_ooxml
+    api libs.poi_ooxml_schemas
 
-            project(":tny-game-protoex"),
-            project(":tny-game-common"),
-            project(":tny-game-base"),
-    )
-//
+    api project(":tny-game-protoex")
+    api project(":tny-game-common")
+    api project(":tny-game-base")
 //    compile(libs.'shiro') {
 //        exclude module: 'guava'
 //    }

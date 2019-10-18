@@ -50,7 +50,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
                     throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, openID);
             } else {
                 if (ticketWord == null || ticketWord.equals("{}") || ticketWord.isEmpty()) {
-                    int serverID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_SERVER_ID, GameInfo.getMainServerID());
+                    int serverID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_SERVER_ID, GameInfo.getMainZoneId());
                     int zoneID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_ZONE_ID, 1);
                     int entryID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_ENTRY_ID, 1);
                     String pf = Configs.DEVELOP_CONFIG.getStr(Configs.DEVELOP_AUTH_PF, "lingqu");
@@ -93,12 +93,12 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         if (accountObj == null)
             throw new ValidatorFailException(SuiteResultCode.AUTH_NO_ACCOUNT, openID + (relogin ? "重登" : "登录"));
         // accountObj.online(tunnel.getHostName());
-        tunnel.attributes().setAttribute(AttributesKeys.OPEN_ID_KEY, ticket.getOpenID());
+        tunnel.attributes().setAttribute(AttributesKeys.OPEN_ID_KEY, ticket.getOpenId());
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_KEY_KEY, ticket.getOpenKey());
         tunnel.attributes().setAttribute(AttributesKeys.ACCOUNT_KEY, accountObj);
         tunnel.attributes().setAttribute(AttributesKeys.TICKET_KEY, ticket);
-        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.getRemoteAddress(), ticket.getOpenID(), accountObj.getUid());
-        return Certificates.createAutherized(ticket.getTokenID(), accountObj.getUid(), Instant.ofEpochMilli(ticket.getTime()), relogin);
+        LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.getRemoteAddress(), ticket.getOpenId(), accountObj.getUid());
+        return Certificates.createAutherized(ticket.getTokenId(), accountObj.getUid(), Instant.ofEpochMilli(ticket.getTime()), relogin);
     }
 
     public void setOnline(boolean online) {

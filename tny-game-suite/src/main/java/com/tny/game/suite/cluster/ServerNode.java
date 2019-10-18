@@ -49,7 +49,7 @@ public class ServerNode {
         return this.outline != null;
     }
 
-    public int getServerID() {
+    public int getServerId() {
         return this.serverID;
     }
 

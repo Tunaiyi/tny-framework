@@ -1,16 +1,18 @@
 package com.tny.game.cache;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.cache.annotation.CacheID;
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.common.reflect.GClass;
-import com.tny.game.common.reflect.GPropertyAccessor;
-import com.tny.game.common.reflect.ReflectAide;
-import com.tny.game.common.reflect.javassist.JSsistUtils;
+import com.tny.game.cache.annotation.*;
+import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.javassist.*;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 @SuppressWarnings("deprecation")
 public class ToCacheClassHolder extends TriggerHolder {
@@ -22,13 +24,13 @@ public class ToCacheClassHolder extends TriggerHolder {
     /**
      * 次级标识获取方法
      */
-    private List<GPropertyAccessor> keyIDMethods;
+    private List<PropertyAccessor> keyIDMethods;
 
     public ToCacheClassHolder(Class<?> cacheClass, CacheTriggerFactory factory) {
         if (cacheClass == null)
             throw new NullPointerException("init ToCacheClassHolder class is null");
         this.cacheClass = cacheClass;
-        GClass gClass = JSsistUtils.getGClass(cacheClass);
+        ClassAccessor gClass = JavassistAccessors.getGClass(cacheClass);
         this.toCache = this.cacheClass.getAnnotation(ToCache.class);
         if (this.toCache == null)
             throw new NullPointerException("init ToCacheClassHolder " + cacheClass + " don't have Item annotation");
@@ -58,22 +60,22 @@ public class ToCacheClassHolder extends TriggerHolder {
         return triggerList;
     }
 
-    public void initIDMethods(GClass gClass, List<Field> idFieldList) {
-        this.keyIDMethods = new ArrayList<GPropertyAccessor>(idFieldList.size());
-        SortedMap<Integer, GPropertyAccessor> idMethodMap = new TreeMap<Integer, GPropertyAccessor>();
+    public void initIDMethods(ClassAccessor gClass, List<Field> idFieldList) {
+        this.keyIDMethods = new ArrayList<PropertyAccessor>(idFieldList.size());
+        SortedMap<Integer, PropertyAccessor> idMethodMap = new TreeMap<Integer, PropertyAccessor>();
         for (Field field : idFieldList) {
             CacheID cacheID = field.getAnnotation(CacheID.class);
             if (cacheID == null)
                 continue;
             String propertyName = cacheID.name().equals("") ? field.getName() : cacheID.name();
-            GPropertyAccessor accessor = gClass.getProperty(propertyName);
+            PropertyAccessor accessor = gClass.getProperty(propertyName);
             if (accessor == null) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " - " + propertyName + " is not exist");
             }
             if (!accessor.isReadable()) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " - " + accessor.getName() + " is unreadable");
             }
-            GPropertyAccessor old = idMethodMap.put(cacheID.index(), accessor);
+            PropertyAccessor old = idMethodMap.put(cacheID.index(), accessor);
             if (old != null) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " exist " + old.getName()
                         + ",  so can't put " + accessor.getName());
@@ -81,14 +83,14 @@ public class ToCacheClassHolder extends TriggerHolder {
         }
         if (idMethodMap.isEmpty())
             throw new IllegalArgumentException("[" + this.cacheClass + "] is not exist @CacheID");
-        for (Entry<Integer, GPropertyAccessor> entry : idMethodMap.entrySet())
+        for (Entry<Integer, PropertyAccessor> entry : idMethodMap.entrySet())
             this.keyIDMethods.add(entry.getValue());
     }
 
-    public void initIDMethods(GClass gClass, String[] idKeys) {
-        this.keyIDMethods = new ArrayList<GPropertyAccessor>(idKeys.length);
+    public void initIDMethods(ClassAccessor gClass, String[] idKeys) {
+        this.keyIDMethods = new ArrayList<PropertyAccessor>(idKeys.length);
         for (String idKey : idKeys) {
-            GPropertyAccessor accessor = gClass.getProperty(idKey);
+            PropertyAccessor accessor = gClass.getProperty(idKey);
             if (accessor == null) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + idKey + " is not exist");
             }
@@ -103,9 +105,9 @@ public class ToCacheClassHolder extends TriggerHolder {
         Object[] values = new Object[this.keyIDMethods.size()];
         for (int index = 0; index < this.keyIDMethods.size(); index++) {
             Object value;
-            GPropertyAccessor keyMethod = this.keyIDMethods.get(index);
+            PropertyAccessor keyMethod = this.keyIDMethods.get(index);
             try {
-                value = keyMethod.getPorpertyValue(object);
+                value = keyMethod.getPropertyValue(object);
             } catch (Exception e) {
                 throw new RuntimeException("invoke keyMethod as " + keyMethod + " exception", e);
             }
@@ -119,10 +121,10 @@ public class ToCacheClassHolder extends TriggerHolder {
     public String getKey(Object object) {
         String key = CacheUtils.getKeyHead(this.toCache.prefix());
         String separator = CacheUtils.getSeparator();
-        for (GPropertyAccessor keyMethod : this.keyIDMethods) {
+        for (PropertyAccessor keyMethod : this.keyIDMethods) {
             Object value;
             try {
-                value = keyMethod.getPorpertyValue(object);
+                value = keyMethod.getPropertyValue(object);
             } catch (Exception e) {
                 throw new RuntimeException("invoke keyMethod as " + keyMethod + " exception", e);
             }

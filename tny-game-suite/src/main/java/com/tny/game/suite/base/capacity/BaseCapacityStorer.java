@@ -56,7 +56,7 @@ public class BaseCapacityStorer implements CapacityStorer {
             = new CopyOnWriteMap<>();
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return playerID;
     }
 
@@ -94,8 +94,8 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public void linkSupplier(CapacitySupplier supplier, long timeoutAt) {
         StoreCapacitySupplier linked;
-        suppliersMap(supplier.getID())
-                .put(supplier.getID(), linked = supplier2Link(supplier, timeoutAt));
+        suppliersMap(supplier.getId())
+                .put(supplier.getId(), linked = supplier2Link(supplier, timeoutAt));
         ON_LINK_SUPPLIER.notify(this, singleton(linked));
     }
 
@@ -103,9 +103,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     public void linkSupplier(Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
         Map<String, Map<Long, StoreCapacitySupplier>> map =
                 suppliers.stream().collect(Collectors.groupingBy(
-                        s -> key(s.getID()),
+                        s -> key(s.getId()),
                         Collectors.toMap(
-                                CapacitySupplier::getID,
+                                CapacitySupplier::getId,
                                 s -> supplier2Link(s, timeoutAt))));
         List<ExpireCapacitySupplier> linked = new ArrayList<>();
         map.forEach((k, m) -> {
@@ -120,8 +120,8 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public void saveSupplier(CapacitySupplier supplier, long timeoutAt) {
         StoreCapacitySupplier saved;
-        suppliersMap(supplier.getID())
-                .put(supplier.getID(), saved = supplier2Save(supplier, timeoutAt));
+        suppliersMap(supplier.getId())
+                .put(supplier.getId(), saved = supplier2Save(supplier, timeoutAt));
         ON_SAVE_SUPPLIER.notify(this, singleton(saved));
     }
 
@@ -137,9 +137,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     public void saveSupplier(Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
         Map<String, Map<Long, StoreCapacitySupplier>> map =
                 suppliers.stream().collect(Collectors.groupingBy(
-                        s -> key(s.getID()),
+                        s -> key(s.getId()),
                         Collectors.toMap(
-                                CapacitySupplier::getID,
+                                CapacitySupplier::getId,
                                 s -> supplier2Save(s, timeoutAt))));
         List<ExpireCapacitySupplier> saved = new ArrayList<>();
         map.forEach((k, m) -> {
@@ -179,14 +179,14 @@ public class BaseCapacityStorer implements CapacityStorer {
     }
 
     @Override
-    public void deleteSupplierByID(long id) {
+    public void deleteSupplierById(long id) {
         StoreCapacitySupplier supplier = suppliersMap(id).remove(id);
         if (supplier != null)
             ON_DELETE_SUPPLIER.notify(this, singleton(supplier));
     }
 
     @Override
-    public void deleteSuppliersByID(Collection<Long> supplierIDs) {
+    public void deleteSuppliersById(Collection<Long> supplierIDs) {
         Map<String, List<Long>> map = supplierIDs.stream()
                 .collect(Collectors.groupingBy(this::key));
         List<ExpireCapacitySupplier> deleted = map.entrySet().stream()
@@ -201,8 +201,8 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public void saveGoal(CapacityGoal goal, long timeoutAt) {
         StoreCapacityGoal saved;
-        goalsMap(goal.getID())
-                .put(goal.getID(), saved = goal2Save(goal, timeoutAt));
+        goalsMap(goal.getId())
+                .put(goal.getId(), saved = goal2Save(goal, timeoutAt));
         ON_SAVE_GOAL.notify(this, singleton(saved));
     }
 
@@ -226,9 +226,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     public void saveGoal(Collection<? extends CapacityGoal> goals, long timeoutAt) {
         Map<String, Map<Long, StoreCapacityGoal>> map =
                 goals.stream().collect(Collectors.groupingBy(
-                        g -> key(g.getID()),
+                        g -> key(g.getId()),
                         Collectors.toMap(
-                                CapacityGoal::getID,
+                                CapacityGoal::getId,
                                 g -> goal2Save(g, timeoutAt))));
         List<ExpireCapacityGoal> saved = new ArrayList<>();
         map.forEach((k, m) -> {
@@ -260,14 +260,14 @@ public class BaseCapacityStorer implements CapacityStorer {
     }
 
     @Override
-    public void deleteGoalByID(long id) {
+    public void deleteGoalById(long id) {
         StoreCapacityGoal goal = goalsMap(id).remove(id);
         if (goal != null)
             ON_DELETE_GOAL.notify(this, singleton(goal));
     }
 
     @Override
-    public void deleteGoalsByID(Collection<Long> goalIDs) {
+    public void deleteGoalsById(Collection<Long> goalIDs) {
         Map<String, List<Long>> map = goalIDs.stream()
                 .collect(Collectors.groupingBy(this::key));
         List<ExpireCapacityGoal> deleted = map.entrySet().stream()
@@ -305,7 +305,7 @@ public class BaseCapacityStorer implements CapacityStorer {
     }
 
     private StoreCapacitySupplier supplier2Save(CapacitySupplierType type, long id, int itemID, CapacitySupply supply, long expireAt) {
-        return StoreCapacitySupplier.saveBySupply(type, id, itemID, this.getPlayerID(), supply, expireAt);
+        return StoreCapacitySupplier.saveBySupply(type, id, itemID, this.getPlayerId(), supply, expireAt);
     }
 
     private StoreCapacitySupplier comboSupplier2Save(CapacitySupplierType type, long id, int itemID, Collection<? extends CapacitySupplier> supplier, long expireAt) {
@@ -350,7 +350,7 @@ public class BaseCapacityStorer implements CapacityStorer {
         return goal;
     }
 
-    protected BaseCapacityStorer setPlayerID(long playerID) {
+    protected BaseCapacityStorer setPlayerId(long playerID) {
         this.playerID = playerID;
         return this;
     }
@@ -380,9 +380,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     protected BaseCapacityStorer addStoreSuppliers(Stream<StoreCapacitySupplier> suppliers) {
         Map<String, Map<Long, StoreCapacitySupplier>> map =
                 suppliers.collect(Collectors.groupingBy(
-                        s -> key(s.getID()),
+                        s -> key(s.getId()),
                         Collectors.toMap(
-                                CapacitySupplier::getID,
+                                CapacitySupplier::getId,
                                 ObjectAide::self)));
         map.forEach((k, m) -> suppliersMap(k).putAll(m));
         return this;
@@ -391,9 +391,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     protected BaseCapacityStorer addStoreGoals(Stream<StoreCapacityGoal> goals) {
         Map<String, Map<Long, StoreCapacityGoal>> map =
                 goals.collect(Collectors.groupingBy(
-                        g -> key(g.getID()),
+                        g -> key(g.getId()),
                         Collectors.toMap(
-                                StoreCapacityGoal::getID,
+                                StoreCapacityGoal::getId,
                                 ObjectAide::self)));
         map.forEach((k, m) -> goalsMap(k).putAll(m));
         return this;

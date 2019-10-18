@@ -3,17 +3,10 @@ package com.tny.game.net.base;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.message.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author KGTny
- * @ClassName: ResultFactory
- * @Description: 响应结果工厂
- * @date 2011-9-19 上午10:56:55
- * <p>
- * 创建响应结果工厂
- * <p>
- * 提供创建响应结果的方法<br>
  */
 public class CommandResults {
 
@@ -40,6 +33,12 @@ public class CommandResults {
         return new CommandResultImpl(NetResultCode.SUCCESS, message);
     }
 
+    /**
+     * 请求结果
+     *
+     * @param code 消息码
+     * @return 返回
+     */
     public static CommandResult result(ResultCode code) {
         if (code.isSuccess())
             return success();
@@ -72,8 +71,8 @@ public class CommandResults {
         return NONE;
     }
 
-    public static CommandResult create(ResultCode code, Object message) {
-        return new CommandResultImpl(code, message);
+    public static CommandResult create(ResultCode code, Object body) {
+        return new CommandResultImpl(code, body);
     }
 
     /**
@@ -82,12 +81,12 @@ public class CommandResults {
      * <p>
      * 创建失败响应结果<br>
      *
-     * @param code    结果码
-     * @param message 消息体
+     * @param code 结果码
+     * @param body 消息体
      * @return 返回响应结果
      */
-    public static CommandResult fail(ResultCode code, Object message) {
-        return new CommandResultImpl(code, message);
+    public static CommandResult fail(ResultCode code, Object body) {
+        return new CommandResultImpl(code, body);
     }
 
     /**
@@ -119,7 +118,7 @@ public class CommandResults {
 
         private final ResultCode resultCode;
         private final Object body;
-        private Protocol protocol;
+        private String descriptions;
 
         private CommandResultImpl(ResultCode code) {
             super();
@@ -127,17 +126,11 @@ public class CommandResults {
             this.body = null;
         }
 
-        private CommandResultImpl(ResultCode code, Object message) {
+        private CommandResultImpl(ResultCode code, Object body) {
             super();
             this.resultCode = code;
-            this.body = message;
+            this.body = body;
         }
-
-        //		private CommandResultImpl(int code, Object body) {
-        //			super();
-        //			this.resultCode = code;
-        //			this.body = body;
-        //		}
 
         @Override
         public ResultCode getResultCode() {
@@ -145,13 +138,15 @@ public class CommandResults {
         }
 
         @Override
-        public Object getBody() {
-            return this.body;
+        public String getDescriptions() {
+            if (StringUtils.isNoneBlank(descriptions))
+                return descriptions;
+            return resultCode.getMessage();
         }
 
         @Override
-        public Protocol getProtocol() {
-            return protocol;
+        public Object getBody() {
+            return this.body;
         }
 
     }

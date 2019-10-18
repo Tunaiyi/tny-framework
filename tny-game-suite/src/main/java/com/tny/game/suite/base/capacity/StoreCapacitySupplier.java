@@ -26,9 +26,9 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
         }
         return new StoreByCopyCapacitySupplier(
                 supplier.getSupplierType(),
-                supplier.getID(),
-                supplier.getItemID(),
-                supplier.getPlayerID(),
+                supplier.getId(),
+                supplier.getItemId(),
+                supplier.getPlayerId(),
                 supplier.getAllValues(),
                 supplier.getAllCapacityGroups(),
                 expireAtOf(supplier, expireAt));
@@ -45,8 +45,8 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
         }
         return saveByDependSuppliers(
                 supplier.getSupplierType(),
-                supplier.getID(),
-                supplier.getItemID(),
+                supplier.getId(),
+                supplier.getItemId(),
                 supplier.dependSuppliersStream(),
                 visitor,
                 expireAtOf(supplier, expireAt));

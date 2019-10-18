@@ -291,9 +291,9 @@ public class TypeStageTest extends FlowTestUnits {
                             assertEquals(value, FlowTestUnits.value);
                             times.getAndIncrement();
                             if (System.currentTimeMillis() < time + TIME_100.toMillis())
-                                return DoneResults.fail();
+                                return DoneResults.failure();
                             else
-                                return DoneResults.succ(other);
+                                return DoneResults.success(other);
                         })
                         .thenApply(tfn)
                 , true, other
@@ -321,9 +321,9 @@ public class TypeStageTest extends FlowTestUnits {
                             assertEquals(value, FlowTestUnits.value);
                             times1.getAndIncrement();
                             if (System.currentTimeMillis() < time1 + TIME_100.toMillis())
-                                return DoneResults.fail();
+                                return DoneResults.failure();
                             else
-                                return DoneResults.succ(other);
+                                return DoneResults.success(other);
                         }, TIME_200)
                         .thenApply(tfn)
                 , true, other
@@ -343,9 +343,9 @@ public class TypeStageTest extends FlowTestUnits {
                         .waitFor((value) -> {
                             times2.getAndIncrement();
                             if (System.currentTimeMillis() < time2 + TIME_200.toMillis())
-                                return DoneResults.fail();
+                                return DoneResults.failure();
                             else
-                                return DoneResults.succ(other);
+                                return DoneResults.success(other);
                         }, TIME_100)
                         .thenApply(tfn)
                 , false

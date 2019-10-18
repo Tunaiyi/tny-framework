@@ -25,13 +25,13 @@ public class CacheSchedulerStore implements SchedulerStore {
     @Override
     public void save(TimeTaskScheduler timeTaskScheduler) {
         CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
-                getKey(IDAide.getSystemID()), timeTaskScheduler);
+                getKey(IDAide.getSystemId()), timeTaskScheduler);
         this.cache.setObject(cacheSchedulerBackup);
     }
 
     @Override
     public SchedulerBackup load() {
-        return this.cache.getObject(CacheSchedulerBackup.class, getKey(IDAide.getSystemID()));
+        return this.cache.getObject(CacheSchedulerBackup.class, getKey(IDAide.getSystemId()));
     }
 
 }

@@ -6,7 +6,7 @@ package com.tny.game.net.base;
  */
 public interface ScopeType {
 
-    int getID();
+    int getId();
 
     String getName();
 

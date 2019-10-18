@@ -13,8 +13,15 @@ public class MockWriteMessagePromise extends CompletableFuture<Void> implements 
 
     private List<WriteMessageListener> listeners = new ArrayList<>();
 
+    private RespondFuture<?> respondFuture;
+
     public MockWriteMessagePromise(long timeout) {
         this.timeout = timeout;
+    }
+
+    @Override
+    public void setRespondFuture(RespondFuture<?> respondFuture) {
+        this.respondFuture = respondFuture;
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.AbstractWarehouse;
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.Trade;
 import com.tny.game.base.item.TradeItem;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.context.AttrEntry;
 import com.tny.game.common.context.Attributes;
 
-public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements Identifiable {
+public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements Identifier {
 
 //	protected Queue<Trade> trades;
 //

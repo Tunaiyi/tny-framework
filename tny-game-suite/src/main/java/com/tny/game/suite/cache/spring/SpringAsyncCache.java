@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.asyndb.DBObjectPool;
+import com.tny.game.asyndb.ObjectPool;
 import com.tny.game.cache.ToCacheClassHolderFactory;
 import com.tny.game.cache.async.AsyncCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 public class SpringAsyncCache extends AsyncCache {
 
     @Autowired
-    public SpringAsyncCache(ToCacheClassHolderFactory toCacheClassHolderFactory, DBObjectPool pool) {
+    public SpringAsyncCache(ToCacheClassHolderFactory toCacheClassHolderFactory, ObjectPool pool) {
         super(toCacheClassHolderFactory, pool);
     }
 

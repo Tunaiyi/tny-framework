@@ -1,29 +1,27 @@
 package com.tny.game.suite.launcher;
 
-import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.utils.*;
+import com.tny.game.loader.lifecycle.*;
 import com.tny.game.net.base.*;
-import com.tny.game.suite.SuiteProfiles;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Kun Yang on 16/5/31.
  */
-@Component
-@Profile(SuiteProfiles.WEB)
+@WebListener
 public class SpringApplicationLifecycleListener implements ApplicationListener<ContextRefreshedEvent>, ServletContextListener, ApplicationContextAware {
 
-    private static ApplicationLifecycleProcessor processor = new ApplicationLifecycleProcessor();
+    private static AppLifecycleProcessor processor = new AppLifecycleProcessor();
 
     private ApplicationContext context;
 
@@ -40,7 +38,7 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (contextInit.compareAndSet(false, true)) {
-            ApplicationLifecycleProcessor.loadHandler(context);
+            AppLifecycleProcessor.loadHandler(context);
             // processor.setApplicationContext(this.appContext);
             try {
                 processor.onPrepareStart(true);
@@ -51,10 +49,9 @@ public class SpringApplicationLifecycleListener implements ApplicationListener<C
         }
     }
 
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ExeAide.runUnchecked(() -> processor.onStaticInit(appContext));
+        ExeAide.runUnchecked(() -> processor.onStaticInit(appContext.getScanPackages()));
     }
 
     @Override

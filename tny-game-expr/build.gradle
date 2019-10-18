@@ -4,6 +4,6 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile libs.'commons-lang3'
+    api libs.commons_lang3
 
 }

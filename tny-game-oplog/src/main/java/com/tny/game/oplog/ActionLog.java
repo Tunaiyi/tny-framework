@@ -9,14 +9,14 @@ public abstract class ActionLog {
      *
      * @return
      */
-    public abstract int getBehaviorID();
+    public abstract int getBehaviorId();
 
     /**
      * 动作 ID
      *
      * @return
      */
-    public abstract int getActionID();
+    public abstract int getActionId();
 
     /**
      * 交易日志

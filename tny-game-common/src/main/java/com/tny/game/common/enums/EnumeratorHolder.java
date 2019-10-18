@@ -14,9 +14,9 @@ import static com.tny.game.common.utils.StringAide.*;
 @SuppressWarnings("unchecked")
 public class EnumeratorHolder<O> {
 
-    protected Map<Object, O> enumeratorMap;
+    private Map<Object, O> enumeratorMap;
 
-    protected Set<O> enumerators;
+    private Set<O> enumerators;
 
     protected Set<Class<? extends O>> classes;
 
@@ -44,8 +44,8 @@ public class EnumeratorHolder<O> {
         if (object.getClass().isEnum()) {
             putAndCheck(((Enum<?>) object).name(), object);
         }
-        if (object instanceof EnumID) {
-            putAndCheck(((EnumID) object).getID(), object);
+        if (object instanceof EnumIdentifiable) {
+            putAndCheck(((EnumIdentifiable) object).getId(), object);
         }
         postRegister(object);
     }

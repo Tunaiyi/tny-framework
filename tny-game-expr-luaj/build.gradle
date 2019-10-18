@@ -4,10 +4,8 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            project(":tny-game-expr-jsr223"),
-            project(":tny-game-common"),
-            libs."luaj",
-    )
+    api project(":tny-game-expr-jsr223")
+    api project(":tny-game-common")
+    api libs.luaj
 
 }

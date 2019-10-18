@@ -4,15 +4,15 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.tny.game.common.enums.EnumID;
-import com.tny.game.common.enums.Enums;
+import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.EnumAide;
 
 import java.io.IOException;
 
 /**
  * Created by Kun Yang on 16/8/12.
  */
-public class EnumIDJsonDeserializer<E extends Enum<E> & EnumID<ID>, ID> extends JsonDeserializer<E> {
+public class EnumIDJsonDeserializer<E extends Enum<E> & EnumIdentifiable<ID>, ID> extends JsonDeserializer<E> {
 
     private Class<E> enumClass;
     private Class<ID> idClass;
@@ -24,7 +24,7 @@ public class EnumIDJsonDeserializer<E extends Enum<E> & EnumID<ID>, ID> extends 
 
     @Override
     public E deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        return Enums.of(enumClass, p.readValueAs(idClass));
+        return EnumAide.of(enumClass, p.readValueAs(idClass));
     }
 
 }

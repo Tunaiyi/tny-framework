@@ -1,13 +1,9 @@
 package com.tny.game.web.converter.excel;
 
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.reflect.GClass;
-import com.tny.game.common.reflect.GPropertyAccessor;
-import com.tny.game.common.reflect.ReflectAide;
-import com.tny.game.common.reflect.javassist.JSsistUtils;
-import com.tny.game.web.converter.excel.annotation.ExcelColumn;
-import com.tny.game.web.converter.excel.annotation.ExcelSheet;
+import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.javassist.*;
+import com.tny.game.web.converter.excel.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -16,9 +12,11 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 public class ExcelClassHolder {
 
-	private GClass gClass;
+	private ClassAccessor gClass;
 
 	private ExcelSheet sheet;
 
@@ -37,7 +35,7 @@ public class ExcelClassHolder {
 			return null;
 		ExcelClassHolder holder = new ExcelClassHolder();
 		holder.sheet = sheet;
-		holder.gClass = JSsistUtils.getGClass(clazz);
+		holder.gClass = JavassistAccessors.getGClass(clazz);
 		for (Field field : ReflectAide.getDeepField(clazz)) {
 			ExcelColumn column = field.getAnnotation(ExcelColumn.class);
 			if (column == null)
@@ -45,7 +43,7 @@ public class ExcelClassHolder {
 			String name = column.name();
 			if (StringUtils.isBlank(name))
 				name = field.getName();
-			GPropertyAccessor accessor = holder.gClass.getProperty(name);
+			PropertyAccessor accessor = holder.gClass.getProperty(name);
 			if (accessor == null)
 				throw new NullPointerException(format("{} 不存在 {} property", clazz, name));
 			if (!holder.fieldHolders.add(new ExcelFieldHolder(column, accessor)))
@@ -54,7 +52,7 @@ public class ExcelClassHolder {
 		return holder;
 	}
 
-	protected GClass getgClass() {
+	protected ClassAccessor getgClass() {
 		return gClass;
 	}
 

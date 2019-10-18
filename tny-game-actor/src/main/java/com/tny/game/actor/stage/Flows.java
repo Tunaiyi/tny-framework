@@ -23,8 +23,8 @@ public class Flows {
 
     public static Done<Throwable> getCause(Stage stage) {
         if (!stage.isDone())
-            return DoneResults.fail();
-        return DoneResults.succNullable(stage.getCause());
+            return DoneResults.failure();
+        return DoneResults.successNullable(stage.getCause());
     }
 
     public static Completable time(Duration duration) {
@@ -115,11 +115,11 @@ public class Flows {
             for (Supplier<Done<T>> fn : fns) {
                 Done<T> done = fn.get();
                 if (!done.isSuccess())
-                    return DoneResults.fail();
+                    return DoneResults.failure();
                 else
                     result.add(done.get());
             }
-            return DoneResults.succ(result);
+            return DoneResults.success(result);
         }, timeout);
     }
 
@@ -132,9 +132,9 @@ public class Flows {
             for (Supplier<Done<T>> fn : fns.values()) {
                 Done<T> done = fn.get();
                 if (!done.isSuccess())
-                    return DoneResults.fail();
+                    return DoneResults.failure();
             }
-            return DoneResults.succ(fns.entrySet().stream()
+            return DoneResults.success(fns.entrySet().stream()
                     .collect(Collectors.toMap(
                             Entry::getKey,
                             e -> e.getValue().get().get()

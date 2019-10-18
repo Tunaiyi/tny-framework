@@ -20,7 +20,7 @@ public class SpringSchedulerConfiguration {
     @Bean
     @Profile({GAME})
     public TimeTaskSchedulerService gameSchedulerService() {
-        return new CacheTimeTaskSchedulerService(IDAide.getSystemID());
+        return new CacheTimeTaskSchedulerService(IDAide.getSystemId());
     }
 
     @Bean

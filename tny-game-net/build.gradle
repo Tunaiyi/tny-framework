@@ -4,13 +4,9 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            project(":tny-game-expr-groovy"),
-            project(":tny-game-protoex"),
-    )
+    api project(":tny-game-expr-groovy")
+    api project(":tny-game-protoex")
 
-    testCompile (
-            project(":tny-game-net-test"),
-    )
+    testImplementation project(":tny-game-net-test")
 
 }

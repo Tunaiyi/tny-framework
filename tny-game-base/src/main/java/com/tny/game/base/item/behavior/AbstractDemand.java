@@ -157,7 +157,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
         attributeMap.put(DEMAND_MODEL, model);
         ItemExplorer itemExplorer = context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
-            item = itemExplorer.getItem(playerID, model.getID());
+            item = itemExplorer.getItem(playerID, model.getId());
             if (this.name != null)
                 attributeMap.put(this.name, item);
             attributeMap.put(alias, item);

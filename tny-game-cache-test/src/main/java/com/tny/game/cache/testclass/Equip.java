@@ -7,7 +7,7 @@ import com.tny.game.cache.async.CacheSynchronizer;
 import java.io.Serializable;
 
 @ToCache(prefix = "equip", triggers = TestLinkHandler.class,
-        cacheKeys = {"playerID", "ID"})
+        cacheKeys = {"playerId", "id"})
 @Persistent(synchronizerClass = CacheSynchronizer.class)
 public class Equip implements Serializable {
 
@@ -15,29 +15,29 @@ public class Equip implements Serializable {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-    private long playerID;
+    private long playerId;
     private int id;
     private String name;
 
     public Equip() {
     }
 
-    public Equip(int id, long playerID, String name) {
+    public Equip(int id, long playerId, String name) {
         super();
         this.id = id;
-        this.playerID = playerID;
+        this.playerId = playerId;
         this.name = name;
     }
 
     public Equip coppy() {
-        return new Equip(id + 20000000, playerID, name);
+        return new Equip(id + 20000000, playerId, name);
     }
 
-    public long getPlayerID() {
-        return playerID;
+    public long getPlayerId() {
+        return playerId;
     }
 
-    public int getID() {
+    public int getId() {
         return id;
     }
 
@@ -55,7 +55,7 @@ public class Equip implements Serializable {
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (int) (playerID ^ (playerID >>> 32));
+        result = prime * result + (int) (playerId ^ (playerId >>> 32));
         return result;
     }
 
@@ -75,14 +75,14 @@ public class Equip implements Serializable {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (playerID != other.playerID)
+        if (playerId != other.playerId)
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Equip [playerID=" + playerID + ", id=" + id + ", name=" + name + "]";
+        return "Equip [playerId=" + playerId + ", id=" + id + ", name=" + name + "]";
     }
 
 }

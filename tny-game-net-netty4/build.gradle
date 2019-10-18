@@ -4,14 +4,10 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            'io.netty:netty-all:4.1.30.Final',
-            project(":tny-game-net"),
-    )
+    api libs.netty
+    api project(":tny-game-net")
 
-    testCompile (
-            libs.'spring-context-support',
-            project(":tny-game-net-test"),
-    )
+    testImplementation libs.spring_context_support
+    testImplementation project(":tny-game-net-test")
 
 }

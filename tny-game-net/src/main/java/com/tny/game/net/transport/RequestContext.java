@@ -22,13 +22,18 @@ public abstract class RequestContext<UID> extends MessageContext<UID> {
     public abstract RequestContext<UID> setTail(Object tail);
 
 
-    @Override
-    public abstract RequestContext<UID> setSendTimeout(long timeout);
-
     public RequestContext<UID> willResponseFuture() {
         return willResponseFuture(RespondFuture.DEFAULT_FUTURE_TIMEOUT);
     }
 
     public abstract RequestContext<UID> willResponseFuture(long timeoutMills);
+
+    @Override
+    public RequestContext<UID> willWriteFuture() {
+        return willWriteFuture(-1);
+    }
+
+    @Override
+    public abstract RequestContext<UID> willWriteFuture(long timeoutMills);
 
 }

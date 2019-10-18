@@ -8,16 +8,16 @@ public interface CapacityObject {
     /**
      * @return 获取ID
      */
-    long getID();
+    long getId();
 
     /**
      * @return 获取能力提供者ID
      */
-    int getItemID();
+    int getItemId();
 
     /**
      * @return 玩家ID
      */
-    long getPlayerID();
+    long getPlayerId();
 
 }

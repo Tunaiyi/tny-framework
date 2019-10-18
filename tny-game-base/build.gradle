@@ -4,11 +4,9 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            libs.'xstream',
-            libs.'spring-context-support',
-
-            project(":tny-game-expr-groovy"),
-    )
+    api libs.xstream
+    api libs.spring_context_support
+    api project(":tny-game-scanning")
+    api project(":tny-game-expr-groovy")
 
 }

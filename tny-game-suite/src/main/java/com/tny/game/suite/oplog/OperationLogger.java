@@ -1,6 +1,6 @@
 package com.tny.game.suite.oplog;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.lifecycle.*;
@@ -34,8 +34,8 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     private static IDCreator creator = new IDCreator(16);
 
-    private Map<Object, Snapper<Identifiable, Snapshot>> snapperMap = new CopyOnWriteMap<>();
-    private Map<Class<?>, Snapper<Identifiable, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
+    private Map<Object, Snapper<Identifier, Snapshot>> snapperMap = new CopyOnWriteMap<>();
+    private Map<Class<?>, Snapper<Identifier, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
 
     private static OpLogger instance;
 
@@ -63,21 +63,21 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
     }
 
     @Override
-    protected void doLogSnapshot(Action action, Identifiable item, SnapperType type) {
-        Snapper<Identifiable, Snapshot> snapper = this.getSnapper(type);
+    protected void doLogSnapshot(Action action, Identifier item, SnapperType type) {
+        Snapper<Identifier, Snapshot> snapper = this.getSnapper(type);
         this.doSnapshot(action, item, snapper);
     }
 
     @Override
-    protected void doLogSnapshot(Action action, Identifiable item, Class<? extends Snapper> type) {
-        Snapper<Identifiable, Snapshot> snapper = this.getSnapper(type);
+    protected void doLogSnapshot(Action action, Identifier item, Class<? extends Snapper> type) {
+        Snapper<Identifier, Snapshot> snapper = this.getSnapper(type);
         this.doSnapshot(action, item, snapper);
     }
 
     @Override
-    protected void doLogSnapshot(Action action, Identifiable item) {
+    protected void doLogSnapshot(Action action, Identifier item) {
         Class<?> clazz = item.getClass();
-        Snapper<Identifiable, Snapshot> snapper = this.targetClassSnapperMap.get(clazz);
+        Snapper<Identifier, Snapshot> snapper = this.targetClassSnapperMap.get(clazz);
         if (snapper == null) {
             SnapBy snapBy = clazz.getAnnotation(SnapBy.class);
             if (snapBy == null)
@@ -91,9 +91,9 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     }
 
-    private void doSnapshot(Action action, Identifiable item, Snapper<Identifiable, Snapshot> snapper) {
-        long id = snapper.getSnapshotID(item);
-        Snapshot snapshot = this.getSnapshot(item.getPlayerID(), id, action, snapper.getSnapshotType());
+    private void doSnapshot(Action action, Identifier item, Snapper<Identifier, Snapshot> snapper) {
+        long id = snapper.getSnapshotId(item);
+        Snapshot snapshot = this.getSnapshot(item.getPlayerId(), id, action, snapper.getSnapshotType());
         if (snapshot != null) {
             this.updateSnapshot(snapper, item, snapshot);
         } else {
@@ -103,7 +103,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         }
     }
 
-    protected void updateSnapshot(Snapper<Identifiable, Snapshot> snapper, Identifiable item, Snapshot snapshot) {
+    protected void updateSnapshot(Snapper<Identifier, Snapshot> snapper, Identifier item, Snapshot snapshot) {
         try {
             if (snapper != null)
                 snapper.update(snapshot, item);
@@ -112,7 +112,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         }
     }
 
-    protected Snapshot createSnapshot(Snapper<Identifiable, Snapshot> snapper, Identifiable item) {
+    protected Snapshot createSnapshot(Snapper<Identifier, Snapshot> snapper, Identifier item) {
         try {
             return snapper.toSnapshot(item);
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         for (UserOpLog userOpLog : log.getUserLogs()) {
             if (!userOpLog.getStuffSettleLogs().isEmpty()) {
                 try {
-                    UserStuffRecord dto = new UserStuffRecord(creator.getHexID(), log, userOpLog);
+                    UserStuffRecord dto = new UserStuffRecord(creator.getHexId(), log, userOpLog);
                     LogMessage message = new LogMessage(dto);
                     stuffLogger.info(message);
                 } catch (Exception e) {
@@ -136,7 +136,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
             }
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
-                    OperateRecord dto = new OperateRecord(creator.getHexID(), log, userOpLog, actionLog);
+                    OperateRecord dto = new OperateRecord(creator.getHexId(), log, userOpLog, actionLog);
                     LogMessage message = new LogMessage(dto);
                     oplogLogger.info(message);
                 } catch (Exception e) {
@@ -170,7 +170,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
     @SuppressWarnings("unchecked")
     public void prepareStart() throws Exception {
         Map<String, Snapper> snapperMap = this.applicationContext.getBeansOfType(Snapper.class);
-        Map<Object, Snapper<Identifiable, Snapshot>> map = new HashMap<>();
+        Map<Object, Snapper<Identifier, Snapshot>> map = new HashMap<>();
         for (Snapper snapper : snapperMap.values()) {
             map.put(snapper.getSnapperType(), snapper);
             map.put(snapper.getClass(), snapper);
@@ -178,7 +178,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         this.snapperMap.putAll(map);
     }
 
-    private Snapper<Identifiable, Snapshot> getSnapper(Object type) {
+    private Snapper<Identifier, Snapshot> getSnapper(Object type) {
         return this.snapperMap.get(type);
     }
 

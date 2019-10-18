@@ -29,7 +29,7 @@ public class CapacityDTO {
 
     public static CapacityDTO value2DTO(Capacity capacity, Number number) {
         CapacityDTO dto = new CapacityDTO();
-        dto.capacity = capacity.getID();
+        dto.capacity = capacity.getId();
         dto.value = number.intValue();
         return dto;
     }

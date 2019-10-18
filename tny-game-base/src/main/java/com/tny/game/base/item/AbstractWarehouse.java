@@ -18,7 +18,7 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
 
-    protected long playerID;
+    protected long playerId;
 
     protected OwnerExplorer ownerExplorer;
 
@@ -30,9 +30,8 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
         this.ownerClass = ownerClass;
     }
 
-    @Override
-    public long getPlayerID() {
-        return this.playerID;
+    public long getPlayerId() {
+        return this.playerId;
     }
 
     @Override
@@ -45,9 +44,9 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
             else
                 throw new ClassCastException(MessageFormat.format("owner的对象类型为{0},而非{1}", owner.getClass(), clazz));
         }
-        owner = this.ownerExplorer.getOwner(this.playerID, itemType.getID());
+        owner = this.ownerExplorer.getOwner(this.playerId, itemType.getId());
         if (owner == null)
-            throw new NullPointerException(MessageFormat.format("{0} 玩家 {1} {2} owner的对象为 null", this.playerID, clazz, itemType));
+            throw new NullPointerException(MessageFormat.format("{0} 玩家 {1} {2} owner的对象为 null", this.playerId, clazz, itemType));
         reference = new WeakReference<>(owner);
         this.ownerMap.put(itemType, reference);
         if (clazz.isInstance(owner)) {
@@ -58,19 +57,19 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
     }
 
     @Override
-    public <I extends Item<?>> I getItemByID(ItemType itemType, long id, Class<I> clazz) {
+    public <I extends Item<?>> I getItemById(ItemType itemType, long id, Class<I> clazz) {
         Owner<?, Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return null;
-        return (I) owner.getItemByID(id);
+        return (I) owner.getItemById(id);
     }
 
     @Override
-    public <I extends Item<?>> List<I> getItemByItemID(ItemType itemType, int itemID, Class<I> clazz) {
+    public <I extends Item<?>> List<I> getItemByItemId(ItemType itemType, int itemId, Class<I> clazz) {
         Owner<?, Stuff<?>> owner = this.getOwner(itemType, ownerClass);
         if (owner == null)
             return Collections.emptyList();
-        return owner.getItemsByItemID(itemID)
+        return owner.getItemsByItemId(itemId)
                 .stream()
                 .map(item -> (I) item)
                 .collect(Collectors.toList());
@@ -104,8 +103,8 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
         TradeEvents.RECEIVE_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), attributes);
     }
 
-    protected void setPlayerID(long playerID) {
-        this.playerID = playerID;
+    protected void setPlayerId(long playerId) {
+        this.playerId = playerId;
     }
 
     protected void setOwnerExplorer(OwnerExplorer ownerExplorer) {
@@ -123,10 +122,10 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
                     this.doConsume(owner, tradeItem, action, attributes);
                 }
             } else {
-                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
+                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerId, model.getItemType());
             }
         } catch (Throwable e) {
-            LOGGER.error("{}玩家 consume {} - {}", this.playerID, model.getItemType(), model.getID(), e);
+            LOGGER.error("{}玩家 consume {} - {}", this.playerId, model.getItemType(), model.getId(), e);
         }
     }
 
@@ -141,10 +140,10 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
                     this.doReceive(owner, tradeItem, action, attributes);
                 }
             } else {
-                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerID, model.getItemType());
+                LOGGER.warn("{}玩家没有 {} Owner对象", this.playerId, model.getItemType());
             }
         } catch (Throwable e) {
-            LOGGER.error("{}玩家 consume {} - {}", this.playerID, model.getItemType(), model.getID(), e);
+            LOGGER.error("{}玩家 consume {} - {}", this.playerId, model.getItemType(), model.getId(), e);
         }
     }
 

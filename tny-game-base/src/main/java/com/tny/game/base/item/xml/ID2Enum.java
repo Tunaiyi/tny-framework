@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.text.MessageFormat;
@@ -16,7 +16,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @param <T>
  * @author KGTny
  */
-public class ID2Enum<ID, T extends Enum<T> & EnumID<ID>> extends AbstractSingleValueConverter {
+public class ID2Enum<ID, T extends Enum<T> & EnumIdentifiable<ID>> extends AbstractSingleValueConverter {
 
     private List<Class<T>> enumClassList = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class ID2Enum<ID, T extends Enum<T> & EnumID<ID>> extends AbstractSingleV
         for (Class<T> clazz : enumClasses) {
             List<T> enums = EnumUtils.getEnumList(clazz);
             for (T e : enums) {
-                Enum<?> oldEnum = this.enumMap.put(e.getID(), e);
+                Enum<?> oldEnum = this.enumMap.put(e.getId(), e);
                 if (oldEnum != null) {
                     throw new IllegalArgumentException(format("{}.{} 与 {}.{} name 相同!",
                             oldEnum.getClass(), oldEnum.name(),

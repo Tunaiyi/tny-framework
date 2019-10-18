@@ -22,7 +22,7 @@ public class TimeoutReleaseStrategy implements ReleaseStrategy {
     @Override
     public void update() {
         if (this.addLife > 0)
-            this.timeOut += addLife;
+            this.timeOut = System.currentTimeMillis() + addLife;
     }
 
 }

@@ -5,6 +5,7 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.locks.Lock;
@@ -66,25 +67,39 @@ public abstract class NettyTunnel<UID, E extends NetEndpoint<UID>> extends Abstr
         }
     }
 
+    protected void onWriteUnavailable(Message<UID> message, WriteMessagePromise promise) {
+
+    }
+
     @Override
     public WriteMessageFuture write(Message<UID> message, WriteMessagePromise promise) throws NetException {
-        if (promise == null)
-            promise = createWritePromise(-1);
         if (!this.isAvailable()) {
-            promise.failed(new TunnelCloseException(format("{} is close {}", this)));
-            return promise;
+            this.onWriteUnavailable(message, promise);
+            if (promise != null)
+                failAndThrow(promise, new TunnelDisconnectException(format("{} is disconnect {}", this)));
         }
-        if (promise instanceof NettyWriteMessagePromise) {
-            channel.writeAndFlush(message, as(promise));
-            return promise;
-        } else {
+        if (promise != null && !(promise instanceof NettyWriteMessagePromise)) {
+            promise.failed(new TunnelException("Cannot support {} WriteMessageFuture", promise.getClass()));
             throw new TunnelException("Cannot support {} WriteMessageFuture", promise.getClass());
         }
+        ChannelPromise channelPromise = this.channel.newPromise();
+        if (promise != null) {
+            NettyWriteMessagePromise messagePromise = as(promise);
+            if (!messagePromise.channelPromise(channelPromise))
+                failAndThrow(messagePromise, new TunnelException("WriteMessageFuture {} is done", messagePromise));
+        }
+        channel.writeAndFlush(message, channelPromise);
+        return promise;
+    }
+
+    private void failAndThrow(WriteMessagePromise promise, NetException exception) throws NetException {
+        promise.failed(exception);
+        throw exception;
     }
 
     @Override
     public WriteMessagePromise createWritePromise(long sendTimeout) {
-        return new NettyWriteMessagePromise(this.channel, sendTimeout);
+        return new NettyWriteMessagePromise(sendTimeout);
     }
 
     protected NettyTunnel<UID, E> setChannel(Channel channel) {

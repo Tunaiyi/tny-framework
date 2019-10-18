@@ -34,6 +34,11 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
     }
 
     @Override
+    public void reconnectTunnel(NettyTerminalTunnel<Long> tunnel) {
+
+    }
+
+    @Override
     public void connectSuccess(NettyTerminalTunnel<Long> tunnel) {
 
     }

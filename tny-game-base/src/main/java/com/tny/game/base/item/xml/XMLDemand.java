@@ -47,7 +47,7 @@ public class XMLDemand extends AbstractDemand {
         }
 
         @Override
-        public Integer getID() {
+        public Integer getId() {
             return this.id;
         }
 

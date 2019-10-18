@@ -51,7 +51,7 @@ public class EndpointWorkerMessageCommandExecutor extends ForkJoinMessageCommand
     @Override
     public void prepareStart() {
         super.prepareStart();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
+        scheduledExecutor().scheduleAtFixedRate(() -> {
             while (!scheduledChildExecutors.isEmpty()) {
                 ChildExecutor executor = scheduledChildExecutors.poll();
                 if (executor != null)

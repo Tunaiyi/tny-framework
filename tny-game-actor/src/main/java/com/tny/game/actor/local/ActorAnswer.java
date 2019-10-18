@@ -20,8 +20,8 @@ class ActorAnswer<T> extends AbstractFuture<T> implements Answer<T> {
     @Override
     public Done<T> getDone() {
         if (!this.isDone())
-            return DoneResults.fail();
-        return DoneResults.succNullable(this.getRawValue());
+            return DoneResults.failure();
+        return DoneResults.successNullable(this.getRawValue());
     }
 
     protected boolean success(T value) {
@@ -33,7 +33,7 @@ class ActorAnswer<T> extends AbstractFuture<T> implements Answer<T> {
     }
 
     protected boolean fail(Throwable cause) {
-        if (super.setException(cause)) {
+        if (super.setFailure(cause)) {
             fire();
             return true;
         }

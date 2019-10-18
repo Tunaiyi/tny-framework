@@ -28,7 +28,7 @@ public class StuffDTO implements Serializable {
     @VarDoc("条件相关的itemID")
     @ProtoExField(1)
     @JsonProperty
-    private int itemID;
+    private int itemId;
 
     @VarDoc("条件相关的数量")
     @ProtoExField(3)
@@ -45,10 +45,10 @@ public class StuffDTO implements Serializable {
 
     public static void mergeAward(Map<Integer, StuffDTO> awardMap, TradeItem<?> tradItem) {
         if (tradItem.getNumber().longValue() >= 0) {
-            StuffDTO award = awardMap.get(tradItem.getItemModel().getID());
+            StuffDTO award = awardMap.get(tradItem.getItemModel().getId());
             if (award == null) {
                 award = tradeItem2DTO(tradItem);
-                awardMap.put(award.itemID, award);
+                awardMap.put(award.itemId, award);
             } else {
                 award.alterNumber(tradItem.getNumber().longValue());
             }
@@ -71,20 +71,20 @@ public class StuffDTO implements Serializable {
 
     public static StuffDTO dealedItem2DTO(DealedItem<?> dealedItem) {
         StuffDTO dto = new StuffDTO();
-        dto.itemID = dealedItem.getItemModel().getID();
+        dto.itemId = dealedItem.getItemModel().getId();
         dto.number = dealedItem.getNumber().longValue();
         return dto;
     }
 
     public static StuffDTO attr2DTO(int itemID, long number) {
         StuffDTO dto = new StuffDTO();
-        dto.itemID = itemID;
+        dto.itemId = itemID;
         dto.number = number;
         return dto;
     }
 
-    public int getItemID() {
-        return itemID;
+    public int getItemId() {
+        return itemId;
     }
 
     public long getNumber() {

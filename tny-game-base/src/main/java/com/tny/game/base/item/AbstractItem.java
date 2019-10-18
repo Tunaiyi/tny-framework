@@ -19,13 +19,13 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     protected IM model;
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return this.playerID;
     }
 
     @Override
-    public int getItemID() {
-        return model.getID();
+    public int getItemId() {
+        return model.getId();
     }
 
     @Override
@@ -44,7 +44,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     }
 
 
-    protected void setPlayerID(long playerID) {
+    protected void setPlayerId(long playerID) {
         this.playerID = playerID;
     }
 
@@ -62,7 +62,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
         int result = 1;
         result = prime * result + ((this.model == null) ? 0 : this.getModel().hashCode());
         result = prime * result + (int) (this.playerID ^ (this.playerID >>> 32));
-        result = prime * result + (int) this.getID();
+        result = prime * result + (int) this.getId();
         return result;
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
             return false;
         if (this.playerID != other.playerID)
             return false;
-        if (this.getID() != other.getID())
+        if (this.getId() != other.getId())
             return false;
         return true;
     }
@@ -98,7 +98,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
      */
     @Override
     public String toString() {
-        return "AbstractItem [playerID=" + this.playerID + ", model=" + this.model + "]";
+        return "AbstractItem [playerId=" + this.playerID + ", model=" + this.model + "]";
     }
 
 }

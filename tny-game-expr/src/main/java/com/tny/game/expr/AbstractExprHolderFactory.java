@@ -1,16 +1,18 @@
 package com.tny.game.expr;
 
 
-import javax.script.ScriptException;
-import java.util.*;
-import java.util.concurrent.locks.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by Kun Yang on 2018/6/4.
  */
 public abstract class AbstractExprHolderFactory implements ExprHolderFactory {
 
-    private int cacheGroupSize = 16;
+    private int cacheGroupSize;
     private boolean cached;
     private Map<String, ExprHolder>[] exprHolderMap;
     private ReadWriteLock[] locks;
@@ -19,6 +21,7 @@ public abstract class AbstractExprHolderFactory implements ExprHolderFactory {
         this(Runtime.getRuntime().availableProcessors() * 2);
     }
 
+    @SuppressWarnings("unchecked")
     public AbstractExprHolderFactory(int cacheGroupSize) {
         this.cacheGroupSize = cacheGroupSize;
         this.cached = this.cacheGroupSize > 0;
@@ -37,7 +40,7 @@ public abstract class AbstractExprHolderFactory implements ExprHolderFactory {
      *
      * @param expression 表达式
      * @return 返回公式Holder
-     * @throws ScriptException 脚本异常
+     * @throws ExprException 脚本异常
      */
     @Override
     public ExprHolder create(String expression) throws ExprException {

@@ -24,7 +24,6 @@ public enum MessageMode {
      */
     PING(MessageType.PING, CodecContent.HEAD_OPTION_EMPTY),
 
-
     /**
      * PONG
      */

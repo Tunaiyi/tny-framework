@@ -28,8 +28,8 @@ public abstract class ActorCommand<T> implements Command {
 
     public Done<T> getDone() {
         if (this.isDone())
-            return DoneResults.fail();
-        return DoneResults.succNullable(this.getResult());
+            return DoneResults.failure();
+        return DoneResults.successNullable(this.getResult());
     }
 
     @Override

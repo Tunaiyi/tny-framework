@@ -30,8 +30,8 @@ public enum TestScopeType implements ScopeType {
 
 
     @Override
-    public int getID() {
-        return 0;
+    public int getId() {
+        return id;
     }
 
     @Override

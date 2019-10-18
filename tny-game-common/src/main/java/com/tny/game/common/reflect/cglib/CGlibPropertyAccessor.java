@@ -1,16 +1,16 @@
 package com.tny.game.common.reflect.cglib;
 
-import com.tny.game.common.reflect.GMethod;
-import com.tny.game.common.reflect.GPropertyAccessor;
+import com.tny.game.common.reflect.MethodAccessor;
+import com.tny.game.common.reflect.PropertyAccessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
-public class CGlibPropertyAccessor implements GPropertyAccessor {
+public class CGlibPropertyAccessor implements PropertyAccessor {
 
     private String name;
-    private GMethod reader;
-    private GMethod writer;
+    private MethodAccessor reader;
+    private MethodAccessor writer;
     private Class<?> type;
 
     @Override
@@ -44,7 +44,7 @@ public class CGlibPropertyAccessor implements GPropertyAccessor {
     }
 
     @Override
-    public Object getPorpertyValue(Object instance) throws InvocationTargetException {
+    public Object getPropertyValue(Object instance) throws InvocationTargetException {
         if (instance == null)
             return null;
         if (reader == null)
@@ -56,11 +56,11 @@ public class CGlibPropertyAccessor implements GPropertyAccessor {
         this.name = name;
     }
 
-    protected void setReader(GMethod reader) {
+    protected void setReader(MethodAccessor reader) {
         this.reader = reader;
     }
 
-    protected void setWriter(GMethod writer) {
+    protected void setWriter(MethodAccessor writer) {
         this.writer = writer;
     }
 

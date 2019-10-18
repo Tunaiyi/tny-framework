@@ -4,25 +4,24 @@ apply plugin: "maven"
 
 dependencies {
 
-    testCompile project(":tny-game-cache-test")
+    testImplementation project(":tny-game-cache-test")
 
-    compile(
-            libs.'spring-context-support',
-            libs.'spring-jdbc',
-            libs.'spring-tx',
-            libs.'spring-core',
-            libs.'spring-beans',
+    api libs.spring_context_support
+    api libs.spring_jdbc
+    api libs.spring_tx
+    api libs.spring_core
+    api libs.spring_beans
 
-            libs.'commons-dbcp2',
-            libs.'commons-pool2',
+    api libs.commons_dbcp2
+    api libs.commons_pool2
 
-            libs.'mysql-connector',
+    api libs.mysql_connector
 
-            'com.jolbox:bonecp:0.8.0.RELEASE',
+    api 'com.jolbox:bonecp:0.8.0.RELEASE'
 
-            project(":tny-game-cache"),
-    )
-    compile(libs.'jade') {
+    api project(":tny-game-cache")
+
+    api(libs.'jade') {
         exclude group: 'com.tny.game', module: 'tny-game-common'
     }
 }

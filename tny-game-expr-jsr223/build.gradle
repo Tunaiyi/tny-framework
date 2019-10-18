@@ -4,9 +4,7 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            project(":tny-game-expr"),
-            project(":tny-game-common"),
-    )
+    api project(":tny-game-expr")
+    api project(":tny-game-common")
 
 }

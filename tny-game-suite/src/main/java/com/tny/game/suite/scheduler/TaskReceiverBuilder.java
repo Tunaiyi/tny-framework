@@ -9,7 +9,7 @@ public class TaskReceiverBuilder {
      *
      * @uml.property name="receicerId"
      */
-    protected long playerID;
+    protected long playerId;
 
     /**
      * 任务组
@@ -38,8 +38,8 @@ public class TaskReceiverBuilder {
         return new TaskReceiverBuilder();
     }
 
-    public TaskReceiverBuilder setPlayerID(long playerID) {
-        this.playerID = playerID;
+    public TaskReceiverBuilder setPlayerId(long playerId) {
+        this.playerId = playerId;
         return this;
     }
 
@@ -60,7 +60,7 @@ public class TaskReceiverBuilder {
 
     public TaskReceiver build() {
         GameTaskReceiver receiver = new GameTaskReceiver();
-        receiver.setPlayerID(playerID);
+        receiver.setPlayerId(playerId);
         receiver.setActualLastHandlerTime(actualLastHandlerTime == -1 ? System.currentTimeMillis() : actualLastHandlerTime);
         receiver.setLastHandlerTime(lastHandlerTime == -1 ? System.currentTimeMillis() : lastHandlerTime);
         if (group == null)

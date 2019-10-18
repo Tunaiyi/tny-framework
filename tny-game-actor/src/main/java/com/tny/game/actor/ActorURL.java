@@ -15,7 +15,7 @@ public abstract class ActorURL {
     /**
      * @return 获取ActorID
      */
-    public abstract int getAID();
+    public abstract int getAid();
 
     /**
      * @return 获取当前路径的叶子节点名字

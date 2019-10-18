@@ -1,21 +1,21 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.module.Feature;
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
 /**
  * 行为的操作类型接口
  *
  * @author KGTny
  */
-public interface Action extends EnumID<Integer> {
+public interface Action extends EnumIdentifiable<Integer> {
 
     /**
      * 行为的操作ID
      *
      * @return
      */
-    Integer getID();
+    Integer getId();
 
     /**
      * 所属行为

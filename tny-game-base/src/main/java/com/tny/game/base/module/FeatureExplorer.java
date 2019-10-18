@@ -4,7 +4,7 @@ import java.util.*;
 
 public interface FeatureExplorer {
 
-    long getPlayerID();
+    long getPlayerId();
 
     int getLevel();
 

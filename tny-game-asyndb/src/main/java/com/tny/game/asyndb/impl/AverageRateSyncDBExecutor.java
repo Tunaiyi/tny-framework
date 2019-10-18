@@ -65,12 +65,12 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
     /**
      * 同步队列
      */
-    private BlockingQueue<Synchronizable>[] syncingQueueArray;
+    private BlockingQueue<PersistentObject>[] syncingQueueArray;
 
     /**
      * 提交队列
      */
-    private final BlockingQueue<Synchronizable> sumitQueue = new LinkedTransferQueue<>();
+    private final BlockingQueue<PersistentObject> sumitQueue = new LinkedTransferQueue<>();
 
     private ScheduledExecutorService monitor;
 
@@ -85,7 +85,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
     }
 
     @Override
-    public boolean sumit(Synchronizable synchronizable) {
+    public boolean sumit(PersistentObject synchronizable) {
         if (this.stop)
             return false;
         return this.sumitQueue.add(synchronizable);
@@ -125,7 +125,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
         return false;
     }
 
-    private void recordSucc() {
+    private void recordSuccess() {
         if (this.countSync.get() == Long.MAX_VALUE) {
             this.countSync.compareAndSet(Long.MAX_VALUE, 0);
         }
@@ -143,16 +143,15 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
 
                 for (int index = 0; index < this.syncingQueueArray.length; index++) {
                     this.syncingQueueArray[index] = new LinkedTransferQueue<>();
-                    final BlockingQueue<Synchronizable> synchronizableQueue = this.syncingQueueArray[index];
+                    final BlockingQueue<PersistentObject> synchronizableQueue = this.syncingQueueArray[index];
                     this.executorService.execute(new Runnable() {
 
                         @Override
                         public void run() {
-                            BlockingQueue<Synchronizable> queue = synchronizableQueue;
                             while (!AverageRateSyncDBExecutor.this.stop || !synchronizableQueue.isEmpty() || !AverageRateSyncDBExecutor.this.sumitQueue.isEmpty()) {
-                                Synchronizable synchronizable;
+                                PersistentObject synchronizable;
                                 try {
-                                    synchronizable = queue.poll(1000, TimeUnit.MILLISECONDS);
+                                    synchronizable = synchronizableQueue.poll(1000, TimeUnit.MILLISECONDS);
                                     if (synchronizable == null)
                                         continue;
                                     try {
@@ -162,7 +161,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
                                         Synchronizer<?> synchronizer = synchronizable.getSynchronizer();
                                         AsyncDBState state = done.getState();
                                         if (AverageRateSyncDBExecutor.this.doSync(synchronizer, done.getValue(), state))
-                                            AverageRateSyncDBExecutor.this.recordSucc();
+                                            AverageRateSyncDBExecutor.this.recordSuccess();
                                         else
                                             synchronizable.syncFail(state);
                                     } catch (Exception e) {
@@ -187,7 +186,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
                     public void run() {
                         long thisTime = AverageRateSyncDBExecutor.this.countSync.get();
                         int syncingSize = 0;
-                        for (BlockingQueue<Synchronizable> queue : AverageRateSyncDBExecutor.this.syncingQueueArray)
+                        for (BlockingQueue<PersistentObject> queue : AverageRateSyncDBExecutor.this.syncingQueueArray)
                             syncingSize += queue.size();
                         LOGGER.debug(
                                 "#SyncDBExecutor#同步器启动时间{} # 已提交同步队列数量: {} # 提交线程队列的任务数量 : {} # 已同步的任务数量 : {} # 单位时间执行数量 : {} # 停止时间 {}",
@@ -218,7 +217,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
             while (true) {
                 ThreadPoolExecutor pool = (ThreadPoolExecutor) currentService;
                 for (int i = 0; i < AverageRateSyncDBExecutor.this.step; i++) {
-                    final Synchronizable synchronizable = AverageRateSyncDBExecutor.this.sumitQueue.poll();
+                    final PersistentObject synchronizable = AverageRateSyncDBExecutor.this.sumitQueue.poll();
                     if (synchronizable == null)
                         continue;
                     LOGGER.trace("#SyncDBExecutor#提交同步线程池# : {}", synchronizable);

@@ -1,15 +1,21 @@
 package protoex.test;
 
-import com.tny.game.common.collection.MapBuilder;
-import com.tny.game.common.utils.BytesAide;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.protoex.*;
-import com.tny.game.protoex.annotations.TypeEncode;
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -570,6 +576,11 @@ public class ProtoExTest {
         object.integers = new Integer[]{1, 2, 3};
         object.ints = new int[]{1, 2, 3};
         object.keys = new TestKey[]{TestKey.key("keys1"), TestKey.key("keys2"), TestKey.key("keys3")};
+    }
+
+    @Test
+    public void json() {
+        TestObject object = createTestObject();
     }
 
     @Test

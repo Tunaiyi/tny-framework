@@ -1,9 +1,10 @@
 package com.tny.game.common.lifecycle;
 
-import com.tny.game.common.collection.CopyOnWriteMap;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.utils.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -12,7 +13,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * Created by Kun Yang on 16/7/24.
  */
 @SuppressWarnings("unchecked")
-public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler> {
+public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler> implements Comparable<Lifecycle> {
 
     private static Map<Class<? extends Lifecycle>, Map<Class<? extends LifecycleHandler>, Lifecycle>> initerMap = new CopyOnWriteMap<>();
 
@@ -84,6 +85,14 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
     }
 
     protected abstract L of(Class<? extends P> clazz);
+
+    @Override
+    public int compareTo(Lifecycle o) {
+        int value = o.getPriority() - this.getPriority();
+        if (value == 0)
+            return this.processorClass.getName().compareTo(o.processorClass.getName());
+        return value;
+    }
 
     void setPrev(L initer) {
         if (prev != null)

@@ -128,7 +128,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
      * @param throwable the exception that the task failed with.
      * @return true if the state was successfully changed.
      */
-    protected boolean setException(Throwable throwable) {
+    protected boolean setFailure(Throwable throwable) {
         if (throwable == null)
             throw new NullPointerException();
         return sync.setException(throwable);

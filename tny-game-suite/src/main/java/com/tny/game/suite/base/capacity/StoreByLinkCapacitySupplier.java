@@ -21,18 +21,18 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapacitiable implement
     }
 
     @Override
-    public long getID() {
-        return supplier.getID();
+    public long getId() {
+        return supplier.getId();
     }
 
     @Override
-    public int getItemID() {
-        return supplier.getItemID();
+    public int getItemId() {
+        return supplier.getItemId();
     }
 
     @Override
-    public long getPlayerID() {
-        return supplier.getPlayerID();
+    public long getPlayerId() {
+        return supplier.getPlayerId();
     }
 
     @Override
@@ -73,9 +73,9 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapacitiable implement
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", supplier.getID())
-                .add("itemID", supplier.getItemID())
-                .add("name", ItemModels.name(supplier.getItemID()))
+                .add("id", supplier.getId())
+                .add("itemId", supplier.getItemId())
+                .add("name", ItemModels.name(supplier.getItemId()))
                 .toString();
     }
 

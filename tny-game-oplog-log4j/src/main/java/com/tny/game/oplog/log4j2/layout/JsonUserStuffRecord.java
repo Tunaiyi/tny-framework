@@ -37,9 +37,9 @@ public class JsonUserStuffRecord {
     @SuppressWarnings("unchecked")
     public JsonUserStuffRecord(long rcid, UserStuffRecord log) {
         this.rcid = rcid;
-        this.uid = log.getUserID();
+        this.uid = log.getUserId();
         this.name = log.getName();
-        this.sid = log.getServerID();
+        this.sid = log.getServerId();
         this.stuffs = log.getStuffLogs()
                 .stream()
                 .map(JsonUserStuffRecord::log2Record)
@@ -52,16 +52,16 @@ public class JsonUserStuffRecord {
         return new StuffRecord(log);
     }
 
-    public long getRecordID() {
+    public long getRecordId() {
         return rcid;
     }
 
-    public long getUserID() {
+    public long getUserId() {
         return uid;
     }
 
 
-    public int getServerID() {
+    public int getServerId() {
         return sid;
     }
 

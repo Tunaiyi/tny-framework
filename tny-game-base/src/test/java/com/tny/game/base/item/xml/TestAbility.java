@@ -9,7 +9,7 @@ public enum TestAbility implements Ability {
     DEFEND;
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return 0;
     }
 

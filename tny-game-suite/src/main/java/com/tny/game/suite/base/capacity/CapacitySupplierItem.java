@@ -21,7 +21,7 @@ public abstract class CapacitySupplierItem<IM extends CapacityItemModel> extends
     }
 
     @Override
-    public abstract long getID();
+    public abstract long getId();
 
     protected void refresh() {
         this.capacitySupply.refresh(this);

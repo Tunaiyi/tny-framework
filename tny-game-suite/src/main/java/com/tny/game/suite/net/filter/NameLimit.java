@@ -31,7 +31,7 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    message.getUserID(), message.getProtocol(),
+                    message.getUserId(), message.getProtocol(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return SuiteResultCode.NAME_LENGTH_ILLEGAL;
         }

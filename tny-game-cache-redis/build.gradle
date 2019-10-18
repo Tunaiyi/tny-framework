@@ -4,14 +4,11 @@ apply plugin: "maven"
 
 dependencies {
 
-    testCompile project(":tny-game-cache-test")
+    testImplementation project(":tny-game-cache-test")
 
-    compile(
-            libs.'spring-context-support',
-            libs.'commons-beanutils',
-            libs.'jedis',
-
-            project(":tny-game-cache"),
-    )
+    api libs.spring_context_support
+    api libs.commons_beanutils
+    api libs.jedis
+    api project(":tny-game-cache")
 
 }

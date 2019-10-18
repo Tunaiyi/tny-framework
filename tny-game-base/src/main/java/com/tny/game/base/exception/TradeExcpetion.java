@@ -16,14 +16,14 @@ public class TradeExcpetion extends GameException {
 
     private int number;
 
-    private long stuffID;
+    private long stuffId;
 
     private int alertNumber;
 
-    public TradeExcpetion(ResultCode resultCode, long stuffID, int number, int alert, Object... messages) {
-        super(resultCode.getCode(), resultCode, format(stuffID, resultCode, messages));
+    public TradeExcpetion(ResultCode resultCode, long stuffId, int number, int alert, Object... messages) {
+        super(resultCode.getCode(), resultCode, format(stuffId, resultCode, messages));
         this.number = number;
-        this.stuffID = stuffID;
+        this.stuffId = stuffId;
         this.alertNumber = alert;
     }
 
@@ -31,8 +31,8 @@ public class TradeExcpetion extends GameException {
         return number;
     }
 
-    public long getStuffID() {
-        return stuffID;
+    public long getStuffId() {
+        return stuffId;
     }
 
     public int getAlertNumber() {

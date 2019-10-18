@@ -32,7 +32,7 @@ public class AccountUtils {
         return StringUtils.split(account, SEPARATOR)[PF_INDEX];
     }
 
-    public static String account2OpenID(String account) {
+    public static String account2OpenId(String account) {
         String[] accWords = StringUtils.split(account, SEPARATOR);
         if (accWords.length == 3)
             return accWords[OPEN_ID_INDEX];
@@ -51,7 +51,7 @@ public class AccountUtils {
      * @param account
      * @return
      */
-    public static int account2SID(String account) {
+    public static int account2Sid(String account) {
         return NumberUtils.toInt(StringUtils.split(account, SEPARATOR)[SERVER_ID_INDEX], -1);
     }
 

@@ -28,7 +28,7 @@ public class ServerLaunch {
         this.launchTime = current.toString(DateTimeAide.TIME_FORMAT);
     }
 
-    public int getServerID() {
+    public int getServerId() {
         return this.serverID;
     }
 

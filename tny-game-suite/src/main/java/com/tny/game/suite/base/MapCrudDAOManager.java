@@ -27,11 +27,11 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
 
     public void load() {
         Collection<T> objects = super.findAll();
-        objects.forEach(o -> taskMap.putIfAbsent(getID(o), o));
+        objects.forEach(o -> taskMap.putIfAbsent(getId(o), o));
         this.findAll();
     }
 
-    protected abstract ID getID(T object);
+    protected abstract ID getId(T object);
 
     private Collection<T> collection2DB(Collection<? extends T> entities,
                                         Function<Collection<? extends T>, Collection<T>> dbOp,
@@ -46,17 +46,17 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     }
 
     private T putObject(T object) {
-        return this.taskMap.put(getID(object), object);
+        return this.taskMap.put(getId(object), object);
     }
 
     private T putIfAbsent(T object) {
-        return this.taskMap.putIfAbsent(getID(object), object);
+        return this.taskMap.putIfAbsent(getId(object), object);
     }
 
     private Collection<T> putIfAbsent(Collection<T> objects) {
         Collection<T> os = new ArrayList<>();
         for (T o : objects) {
-            T old = this.taskMap.putIfAbsent(getID(o), o);
+            T old = this.taskMap.putIfAbsent(getId(o), o);
             os.add(old != null ? old : old);
         }
         return os;
@@ -65,7 +65,7 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     @Override
     public boolean add(T entity) {
         if (super.add(entity)) {
-            this.taskMap.put(getID(entity), entity);
+            this.taskMap.put(getId(entity), entity);
             return true;
         }
         return false;
@@ -79,7 +79,7 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     @Override
     public boolean save(T entity) {
         if (super.save(entity)) {
-            this.taskMap.put(getID(entity), entity);
+            this.taskMap.put(getId(entity), entity);
             return true;
         }
         return false;
@@ -99,13 +99,13 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     @Override
     public void remove(T entity) {
         dao().delete(object2VO(entity));
-        this.taskMap.remove(getID(entity));
+        this.taskMap.remove(getId(entity));
     }
 
     @Override
     public void remove(Collection<? extends T> entities) {
         dao().delete(objects2VOs(entities));
-        entities.forEach((o) -> this.taskMap.remove(getID(o)));
+        entities.forEach((o) -> this.taskMap.remove(getId(o)));
     }
 
     @Override
@@ -117,7 +117,7 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     @Override
     public boolean update(@SQLParam("e") T entity) {
         if (super.update(entity)) {
-            this.taskMap.put(getID(entity), entity);
+            this.taskMap.put(getId(entity), entity);
             return true;
         }
         return false;
@@ -138,7 +138,7 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
             return null;
         object = vo2Object(vo);
         if (object != null) {
-            T old = this.taskMap.putIfAbsent(getID(object), object);
+            T old = this.taskMap.putIfAbsent(getId(object), object);
             if (old != null)
                 object = old;
         }

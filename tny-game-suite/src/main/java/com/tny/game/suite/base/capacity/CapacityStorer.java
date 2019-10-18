@@ -73,7 +73,7 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param supply supply
      */
     default void saveSupplier(CapacitySupplierType type, Item<?> item, CapacitySupply supply) {
-        this.saveSupplier(type, item.getID(), item.getItemID(), supply, 0);
+        this.saveSupplier(type, item.getId(), item.getItemId(), supply, 0);
     }
 
     /**
@@ -141,7 +141,7 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param suppliers 依赖列表
      */
     default <S extends CapacitySupplier & Item<?>> void saveComboSupplier(S item, Collection<? extends CapacitySupplier> suppliers) {
-        this.saveComboSupplier(item.getSupplierType(), item.getID(), item.getItemID(), suppliers, 0);
+        this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), suppliers, 0);
     }
 
     /**
@@ -179,7 +179,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default void saveSupplier(CapacitySupplierType type, Item<?> item, CapacitySupply supply, long expireAt) {
-        this.saveSupplier(type, item.getID(), item.getItemID(), supply, expireAt);
+        this.saveSupplier(type, item.getId(), item.getItemId(), supply, expireAt);
     }
 
     /**
@@ -193,7 +193,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default <S extends CapacitySupplier & Item<?>> void saveSupplier(S item, CapacitySupply supply, long expireAt) {
-        this.saveSupplier(item.getSupplierType(), item.getID(), item.getItemID(), supply, expireAt);
+        this.saveSupplier(item.getSupplierType(), item.getId(), item.getItemId(), supply, expireAt);
     }
 
     /**
@@ -244,7 +244,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default void saveComboSupplier(CapacitySupplierType type, Item<?> item, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-        this.saveComboSupplier(type, item.getID(), item.getItemID(), suppliers, expireAt);
+        this.saveComboSupplier(type, item.getId(), item.getItemId(), suppliers, expireAt);
     }
 
     /**
@@ -257,7 +257,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default <S extends ComboCapacitySupplier & Item<?>> void saveComboSupplier(S item, long expireAt) {
-        this.saveComboSupplier(item.getSupplierType(), item.getID(), item.getItemID(), item.dependSuppliers(), expireAt);
+        this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), item.dependSuppliers(), expireAt);
     }
 
     /**
@@ -271,7 +271,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default <S extends CapacitySupplier & Item<?>> void saveComboSupplier(S item, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-        this.saveComboSupplier(item.getSupplierType(), item.getID(), item.getItemID(), suppliers, expireAt);
+        this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), suppliers, expireAt);
     }
 
     /**
@@ -322,7 +322,7 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param supplier 删除能力值提供器
      */
     default void deleteSupplier(CapacitySupplier supplier) {
-        deleteSupplierByID(supplier.getID());
+        deleteSupplierById(supplier.getId());
     }
 
     /**
@@ -331,8 +331,8 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param suppliers 删除能力值提供器列表
      */
     default void deleteSuppliers(Collection<? extends CapacitySupplier> suppliers) {
-        deleteSuppliersByID(suppliers.stream()
-                .map(CapacitySupplier::getID)
+        deleteSuppliersById(suppliers.stream()
+                .map(CapacitySupplier::getId)
                 .collect(Collectors.toList()));
     }
 
@@ -341,14 +341,14 @@ public interface CapacityStorer extends CapacityVisitor {
      *
      * @param id 删除能力值提供器ID
      */
-    void deleteSupplierByID(long id);
+    void deleteSupplierById(long id);
 
     /**
      * 删除suppliers
      *
      * @param ids 删除能力值提供器ID列表
      */
-    void deleteSuppliersByID(Collection<Long> ids);
+    void deleteSuppliersById(Collection<Long> ids);
 
     /**
      * 存储goal (复制)
@@ -468,7 +468,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default void saveGoal(Item<?> item, CapacityGather gather, long expireAt) {
-        saveGoal(item.getID(), item.getItemID(), gather, expireAt);
+        saveGoal(item.getId(), item.getItemId(), gather, expireAt);
     }
 
     /**
@@ -481,7 +481,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default void saveGoal(CapacityGoalItem<?> item, long expireAt) {
-        saveGoal(item.getID(), item.getItemID(), item.gather(), expireAt);
+        saveGoal(item.getId(), item.getItemId(), item.gather(), expireAt);
     }
 
     /**
@@ -495,7 +495,7 @@ public interface CapacityStorer extends CapacityVisitor {
      *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
      */
     default void saveGoal(Item<?> item, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-        saveGoal(item.getID(), item.getItemID(), suppliers, expireAt);
+        saveGoal(item.getId(), item.getItemId(), suppliers, expireAt);
     }
 
     /**
@@ -557,7 +557,7 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param goal 删除能力值目标
      */
     default void deleteGoal(CapacityGoal goal) {
-        deleteGoalByID(goal.getID());
+        deleteGoalById(goal.getId());
     }
 
     /**
@@ -566,8 +566,8 @@ public interface CapacityStorer extends CapacityVisitor {
      * @param goals 删除能力值目标列表
      */
     default void deleteGoals(Collection<? extends CapacityGoal> goals) {
-        deleteGoalsByID(goals.stream()
-                .map(CapacityGoal::getID)
+        deleteGoalsById(goals.stream()
+                .map(CapacityGoal::getId)
                 .collect(Collectors.toList()));
     }
 
@@ -576,14 +576,14 @@ public interface CapacityStorer extends CapacityVisitor {
      *
      * @param goalID 删除能力值目标ID
      */
-    void deleteGoalByID(long goalID);
+    void deleteGoalById(long goalID);
 
     /**
      * 删除goals
      *
      * @param goalIDs 删除能力值目标ID列表
      */
-    void deleteGoalsByID(Collection<Long> goalIDs);
+    void deleteGoalsById(Collection<Long> goalIDs);
 
     Stream<CapacitySupplier> getAllSuppliersSteam();
 

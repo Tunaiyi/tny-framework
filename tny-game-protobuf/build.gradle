@@ -6,7 +6,7 @@ apply plugin: 'com.google.protobuf'
 
 dependencies {
 
-    compile libs.'protobuf-java'
+    api libs.protobuf_java3
 
 }
 
@@ -15,7 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
     }
 }
 
@@ -36,7 +36,7 @@ jar {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.2.0'
+        artifact = 'com.google.protobuf:protoc:3.8.0'
     }
 
     generateProtoTasks.generatedFilesBaseDir = file('src')

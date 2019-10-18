@@ -35,7 +35,7 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
             if (outline.isHasDB()) {
                 ServerSetting setting = node.getSetting();
                 if (setting != null && setting.getServerState() != ServerState.INVALID)
-                    this.dataSourceFactory.register(outline.getServerID(),
+                    this.dataSourceFactory.register(outline.getServerId(),
                             outline.getDbHost(), outline.getDbPort(), outline.getDb());
             }
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
             if (outline.isHasDB()) {
                 ServerSetting setting = node.getSetting();
                 if (setting != null && setting.getServerState() != ServerState.INVALID)
-                    this.dataSourceFactory.register(outline.getServerID(),
+                    this.dataSourceFactory.register(outline.getServerId(),
                             outline.getDbHost(), outline.getDbPort(), outline.getDb());
             }
         } catch (Exception e) {

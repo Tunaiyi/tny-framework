@@ -87,9 +87,9 @@ public class FlowsTest extends FlowTestUnits {
         context.checking(new Expectations() {{
             exactly(3).of(fn).get();
             will(onConsecutiveCalls(
-                    returnValue(DoneResults.fail()),
-                    returnValue(DoneResults.fail()),
-                    returnValue(DoneResults.succ(value))
+                    returnValue(DoneResults.failure()),
+                    returnValue(DoneResults.failure()),
+                    returnValue(DoneResults.success(value))
             ));
         }});
         checkFlow(
@@ -102,7 +102,7 @@ public class FlowsTest extends FlowTestUnits {
 
     @Test
     public void testAwaitSupply1() throws Exception {
-        DoneSupplier<String> fn = DoneResults::fail;
+        DoneSupplier<String> fn = DoneResults::failure;
         TypeFlow<String> flow = checkFlow(
                 Flows.waitFor(fn, TIME_100)
                 , false, null

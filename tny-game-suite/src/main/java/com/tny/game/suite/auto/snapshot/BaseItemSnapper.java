@@ -10,8 +10,8 @@ public abstract class BaseItemSnapper<I extends Item<?>, S extends ItemSnapshot>
     }
 
     @Override
-    public long getSnapshotID(I item) {
-        return item.getID();
+    public long getSnapshotId(I item) {
+        return item.getId();
     }
 
     @Override

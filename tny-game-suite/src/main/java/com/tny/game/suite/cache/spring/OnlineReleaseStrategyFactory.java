@@ -26,9 +26,9 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
     public ReleaseStrategy createStrategy(Object object, long addLife) {
         Long playerID = null;
         if (object instanceof Item) {
-            playerID = ((Item<?>) object).getPlayerID();
-        } else if (object instanceof Identifiable) {
-            playerID = ((Identifiable) object).getPlayerID();
+            playerID = ((Item<?>) object).getPlayerId();
+        } else if (object instanceof Identifier) {
+            playerID = ((Identifier) object).getPlayerId();
         }
         return new LoginTimeStrategy(playerID, addLife == Long.MIN_VALUE ? defaultLifeTime : addLife);
     }

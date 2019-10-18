@@ -1,9 +1,9 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 
 public interface GroupType {
 
-    Object createGroupID(Identifiable identifiable);
+    Object createGroupId(Identifier identifiable);
 
 }

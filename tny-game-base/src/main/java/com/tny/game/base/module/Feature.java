@@ -1,10 +1,10 @@
 package com.tny.game.base.module;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
 import java.util.*;
 
-public interface Feature extends EnumID<Integer> {
+public interface Feature extends EnumIdentifiable<Integer> {
 
     String name();
 

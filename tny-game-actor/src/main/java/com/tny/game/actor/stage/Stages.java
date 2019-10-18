@@ -3,6 +3,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.Completable;
 import com.tny.game.actor.DoneSupplier;
+import com.tny.game.actor.stage.exception.*;
 import com.tny.game.actor.stage.invok.AcceptDone;
 import com.tny.game.actor.stage.invok.ApplyDone;
 import com.tny.game.actor.stage.invok.ApplyStageable;
@@ -13,7 +14,6 @@ import com.tny.game.actor.stage.invok.SupplyDone;
 import com.tny.game.actor.stage.invok.SupplyStageable;
 import com.tny.game.common.utils.Done;
 import com.tny.game.common.utils.DoneResults;
-import org.springframework.core.task.TaskTimeoutException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ class Stages {
 
     public static Done<Throwable> getCause(Stage stage) {
         if (!stage.isDone())
-            return DoneResults.fail();
-        return DoneResults.succNullable(stage.getCause());
+            return DoneResults.failure();
+        return DoneResults.successNullable(stage.getCause());
     }
 
     public static Completable time(Duration duration) {
@@ -591,7 +591,7 @@ class Stages {
 
         void checkTimeout() {
             if (timeout > 0 && System.currentTimeMillis() > timeout)
-                throw new TaskTimeoutException("等待任务超时");
+                throw new StageTimeoutException("等待任务超时");
         }
 
     }
@@ -653,11 +653,11 @@ class Stages {
                 for (Supplier<Done<R>> fn : fns) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return DoneResults.fail();
+                        return DoneResults.failure();
                     else
                         result.add(done.get());
                 }
-                return DoneResults.succ(result);
+                return DoneResults.success(result);
             }, timeout);
         }
 
@@ -675,9 +675,9 @@ class Stages {
                 for (Supplier<Done<R>> fn : fns.values()) {
                     Done<R> done = fn.get();
                     if (!done.isSuccess())
-                        return DoneResults.fail();
+                        return DoneResults.failure();
                 }
-                return DoneResults.succ(fns.entrySet().stream()
+                return DoneResults.success(fns.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Entry::getKey,
                                 e -> e.getValue().get().get()

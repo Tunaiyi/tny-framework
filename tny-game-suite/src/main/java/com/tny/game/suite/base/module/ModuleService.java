@@ -77,7 +77,7 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
                 synchronized (explorer) {
                     if (!explorer.isModuleOpened(module)) {
                         if (LOGGER.isDebugEnabled())
-                            LOGGER.debug("{} 玩家开启 {} 模块", explorer.getPlayerID(), module);
+                            LOGGER.debug("{} 玩家开启 {} 模块", explorer.getPlayerId(), module);
                         ModuleHandler handler = this.handlerMap.get(module);
                         if (handler == null)
                             throw new NullPointerException(format("{} module handler is null", module));
@@ -92,7 +92,7 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
                     }
                 }
             } catch (Throwable e) {
-                LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerID(), module, e);
+                LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerId(), module, e);
             }
         }
         return succList;
@@ -111,7 +111,7 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
                 moduleHandler.loadModule(explorer);
             }
         } catch (Throwable e) {
-            LOGGER.error("玩家[{}] 预加载 {} 模块异常", explorer.getPlayerID(), module, e);
+            LOGGER.error("玩家[{}] 预加载 {} 模块异常", explorer.getPlayerId(), module, e);
         }
     }
 
@@ -123,7 +123,7 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
                     doUpdateDTO(module, featureExplorer, dto);
                 }
             } catch (Throwable e) {
-                LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerID(), moduleType, e);
+                LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerId(), moduleType, e);
             }
         }
         return dto;
@@ -151,10 +151,10 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
     private void doUpdateDTO(GameModuleHandler handler, FeatureExplorer featureExplorer, DTO dto) {
         try {
             if (LOGGER.isDebugEnabled())
-                LOGGER.debug("读取 {} 玩家 {} 模块获取重新登录信息", featureExplorer.getPlayerID(), handler.getModule());
+                LOGGER.debug("读取 {} 玩家 {} 模块获取重新登录信息", featureExplorer.getPlayerId(), handler.getModule());
             handler.updateDTO(featureExplorer, dto);
         } catch (Throwable e) {
-            LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerID(), handler.getModule(), e);
+            LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerId(), handler.getModule(), e);
         }
     }
 

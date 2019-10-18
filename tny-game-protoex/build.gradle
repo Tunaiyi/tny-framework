@@ -4,12 +4,11 @@ apply plugin: "maven"
 
 dependencies {
 
-    testCompile libs.'protobuf-java'
+    testImplementation libs.protobuf_java3
+    testImplementation libs.jackson_databind
 
-    compile(
-            libs.'commons-lang3',
-
-            project(":tny-game-common"),
-    )
+    api libs.commons_lang3
+    api project(":tny-game-common")
+    api project(":tny-game-scanning")
 
 }

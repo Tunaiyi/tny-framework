@@ -1,8 +1,8 @@
 package com.tny.game.suite.net.configuration;
 
-import com.tny.game.suite.initer.OpLogSnapshotIniter;
-import com.tny.game.suite.utils.Configs;
-import org.springframework.context.annotation.*;
+import com.tny.game.suite.initer.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Game Suite 的默认配置
@@ -13,7 +13,7 @@ public class NetOplogAutoConfiguration {
 
     @Bean
     public OpLogSnapshotIniter opLogSnapshotIniter() {
-        return new OpLogSnapshotIniter(Configs.getScanPathList());
+        return new OpLogSnapshotIniter();
     }
 
 }

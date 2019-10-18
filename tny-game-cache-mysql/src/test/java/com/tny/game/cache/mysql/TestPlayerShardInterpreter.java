@@ -13,7 +13,7 @@ public class TestPlayerShardInterpreter extends CacheShardInterpreter<TestPlayer
 
     @Override
     protected String getTable(TestPlayer param) {
-        return "CPlayer" + (param.getPlayerID() % 10);
+        return "CPlayer" + (param.getPlayerId() % 10);
     }
 
 }

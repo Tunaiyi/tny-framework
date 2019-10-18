@@ -25,7 +25,7 @@ class ActorCallCommand<T> extends BaseActorCommand<T> {
 
     @Override
     protected Done<T> doHandle() throws Exception {
-        return DoneResults.succNullable(this.callable.call());
+        return DoneResults.successNullable(this.callable.call());
     }
 
 }

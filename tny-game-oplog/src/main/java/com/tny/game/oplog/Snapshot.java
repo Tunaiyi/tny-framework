@@ -14,13 +14,13 @@ public interface Snapshot {
      *
      * @return
      */
-    long getID();
+    long getId();
 
     /**
      * PlayerID
      *
      * @return
      */
-    long getPlayerID();
+    long getPlayerId();
 
 }

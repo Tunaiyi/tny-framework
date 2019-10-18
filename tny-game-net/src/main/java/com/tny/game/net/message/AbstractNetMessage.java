@@ -29,7 +29,7 @@ public abstract class AbstractNetMessage<UID> extends AttributesHolder implement
     }
 
     @Override
-    public UID getUserID() {
+    public UID getUserId() {
         return certificate.getUserId();
     }
 

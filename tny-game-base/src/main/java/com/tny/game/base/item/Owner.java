@@ -21,7 +21,7 @@ public interface Owner<M extends ItemModel, S extends Stuff<?>> extends Item<M> 
      * @param id 物品ID
      * @return 物品信息
      */
-    S getItemByID(long id);
+    S getItemById(long id);
 
     /**
      * 获取某事物的信息 <br>
@@ -29,8 +29,8 @@ public interface Owner<M extends ItemModel, S extends Stuff<?>> extends Item<M> 
      * @param itemID 物品ID
      * @return 物品信息
      */
-    default List<S> getItemsByItemID(int itemID) {
-        S stuff = getItemByItemID(itemID);
+    default List<S> getItemsByItemId(int itemID) {
+        S stuff = getItemByItemId(itemID);
         if (stuff != null) {
             return ImmutableList.of(stuff);
         }
@@ -43,6 +43,6 @@ public interface Owner<M extends ItemModel, S extends Stuff<?>> extends Item<M> 
      * @param itemID 物品ID
      * @return 物品信息
      */
-    S getItemByItemID(int itemID);
+    S getItemByItemId(int itemID);
 
 }

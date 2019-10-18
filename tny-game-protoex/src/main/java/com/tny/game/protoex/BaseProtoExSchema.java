@@ -26,7 +26,7 @@ public abstract class BaseProtoExSchema<T> implements ProtoExSchema<T> {
     }
 
     @Override
-    public int getProtoExID() {
+    public int getProtoExId() {
         return this.protoExID;
     }
 

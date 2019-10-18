@@ -23,13 +23,13 @@ public class IDCreator {
             this.indexOffset *= 10;
     }
 
-    public long getID() {
+    public long getId() {
         int index = Math.abs(Thread.currentThread().hashCode() % creators.length);
         return creators[index].incrementAndGet() * indexOffset + index;
     }
 
-    public String getHexID() {
-        return Long.toHexString(getID());
+    public String getHexId() {
+        return Long.toHexString(getId());
     }
 
 }

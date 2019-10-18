@@ -1,6 +1,6 @@
 package cywl.proto.test;
 
-import com.tny.game.common.reflect.javassist.JSsistUtils;
+import com.tny.game.common.reflect.javassist.JavassistAccessors;
 
 public class TestClassDTO {
 
@@ -18,7 +18,7 @@ public class TestClassDTO {
     }
 
     public static void main(String[] args) {
-        JSsistUtils.getGClass(TestClassDTO.class);
+        JavassistAccessors.getGClass(TestClassDTO.class);
     }
 
     //	", friend=" + ArrayUtils.toString(friendIDList) + ", equip=" + equip + ", goodsList=" + ArrayUtils.toString(goodsList) +

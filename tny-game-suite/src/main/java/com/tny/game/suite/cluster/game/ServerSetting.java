@@ -7,7 +7,7 @@ import com.tny.game.suite.SuiteProtoIDs;
 public class ServerSetting {
 
     @ProtoExField(1)
-    private int serverID;
+    private int serverId;
 
     @ProtoExField(2)
     private ServerState serverState;
@@ -28,8 +28,8 @@ public class ServerSetting {
     }
 
     public ServerSetting(ServerOutline outline) {
-        this.setName("s" + outline.getServerID() + " 服")
-                .setServerID(outline.getServerID())
+        this.setName("s" + outline.getServerId() + " 服")
+                .setServerId(outline.getServerId())
                 .setClientVersion("")
                 .setServerState(ServerState.OFFLINE);
     }
@@ -43,12 +43,12 @@ public class ServerSetting {
         return this;
     }
 
-    public int getServerID() {
-        return this.serverID;
+    public int getServerId() {
+        return this.serverId;
     }
 
-    protected ServerSetting setServerID(int serverID) {
-        this.serverID = serverID;
+    protected ServerSetting setServerId(int serverId) {
+        this.serverId = serverId;
         return this;
     }
 
@@ -83,7 +83,7 @@ public class ServerSetting {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.serverID;
+        result = prime * result + this.serverId;
         return result;
     }
 
@@ -96,14 +96,14 @@ public class ServerSetting {
         if (this.getClass() != obj.getClass())
             return false;
         ServerSetting other = (ServerSetting) obj;
-        if (this.serverID != other.serverID)
+        if (this.serverId != other.serverId)
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "ServerSetting{" + "serverID=" + serverID +
+        return "ServerSetting{" + "serverId=" + serverId +
                 ", serverState=" + serverState +
                 ", featureVersion='" + featureVersion + '\'' +
                 ", clientVersion='" + clientVersion + '\'' +

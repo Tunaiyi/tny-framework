@@ -4,10 +4,8 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            project(":tny-game-expr"),
-            project(":tny-game-common"),
-            libs.'mvel',
-    )
+    api project(":tny-game-expr")
+    api project(":tny-game-common")
+    api libs.mvel
 
 }

@@ -17,7 +17,7 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
 
     @Override
     default boolean isHasValue(Capacity capacity) {
-        return isSupplying() && visitor().findSupplier(this.getID())
+        return isSupplying() && visitor().findSupplier(this.getId())
                 .map(s -> s.isHasValue(capacity))
                 .orElse(false);
     }
@@ -31,7 +31,7 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
     default Number getValue(Capacity capacity, Number defaultNum) {
         if (!isSupplying())
             return null;
-        return visitor().findSupplier(this.getID())
+        return visitor().findSupplier(this.getId())
                 .map(s -> s.getValue(capacity))
                 .orElse(defaultNum);
     }
@@ -40,20 +40,20 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
     default Map<Capacity, Number> getAllValues() {
         if (!isSupplying())
             return ImmutableMap.of();
-        return visitor().findSupplier(this.getID())
+        return visitor().findSupplier(this.getId())
                 .map(CapacitySupplier::getAllValues)
                 .orElse(ImmutableMap.of());
     }
 
     @Override
     default void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
-        visitor().findSupplier(this.getID())
+        visitor().findSupplier(this.getId())
                 .ifPresent(s -> s.collectValues(collector, capacities));
     }
 
     @Override
     default Set<CapacityGroup> getAllCapacityGroups() {
-        return visitor().findSupplier(this.getID())
+        return visitor().findSupplier(this.getId())
                 .map(CapacitySupply::getAllCapacityGroups)
                 .orElse(ImmutableSet.of());
     }

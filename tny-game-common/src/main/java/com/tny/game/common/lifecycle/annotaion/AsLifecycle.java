@@ -16,4 +16,10 @@ import java.lang.annotation.Target;
 @Documented
 public @interface AsLifecycle {
 
+    /**
+     * order 越大越先执行
+     * @return
+     */
+    int order() default 0;
+
 }

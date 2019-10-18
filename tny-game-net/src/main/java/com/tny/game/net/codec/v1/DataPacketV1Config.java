@@ -1,8 +1,8 @@
 package com.tny.game.net.codec.v1;
 
-import com.tny.game.net.codec.cryptoloy.XOrCodecCrypto;
-import com.tny.game.net.codec.verifier.CRC64CodecVerifier;
-import com.tny.game.net.message.protoex.ProtoExCodec;
+import com.tny.game.net.codec.cryptoloy.*;
+import com.tny.game.net.codec.verifier.*;
+import com.tny.game.net.message.protoex.*;
 
 /**
  * Created by Kun Yang on 2018/8/13.
@@ -33,6 +33,8 @@ public class DataPacketV1Config {
     private String verifier = CRC64CodecVerifier.class.getSimpleName();
     // 消息体加密器
     private String crypto = XOrCodecCrypto.class.getSimpleName();
+    // 默认最大包大小
+    private int maxPayloadLength = 1024 * 1024;
 
     // 密钥字节
     private volatile byte[][] securityKeysBytes;
@@ -108,13 +110,17 @@ public class DataPacketV1Config {
     public String getBodyDecodeStrategy() {
         return bodyDecodeStrategy;
     }
+
     public String getVerifier() {
         return verifier;
     }
 
-
     public String getCrypto() {
         return crypto;
+    }
+
+    public int getMaxPayloadLength() {
+        return maxPayloadLength;
     }
 
     public DataPacketV1Config setEncryptEnable(boolean encryptEnable) {
@@ -177,4 +183,8 @@ public class DataPacketV1Config {
         return this;
     }
 
+    public DataPacketV1Config setMaxPayloadLength(int maxPayloadLength) {
+        this.maxPayloadLength = maxPayloadLength;
+        return this;
+    }
 }

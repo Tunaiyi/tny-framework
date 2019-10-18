@@ -8,11 +8,6 @@ import com.tny.game.net.message.coder.Codec;
  */
 public interface CodecConfig {
 
-    // /**
-    //  * @return 数据打包包配置
-    //  */
-    // DataPacketConfig getPacketConfig();
-
     /**
      * @return 消息编解码器
      */

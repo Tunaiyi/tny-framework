@@ -58,29 +58,29 @@ public class RuntimeProtoExSchema {
     private static void putTypeSchema(Type type, ProtoExSchema<?> schema) {
         ProtoExSchema<?> last = schemaMap.putIfAbsent(type, schema);
         if (last != null)
-            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
     }
 
     private static void putRawSchema(Type type, ProtoExSchema<?> schema, boolean defSchema) {
         putTypeSchema(type, schema);
-        Map<Object, ProtoExSchema<?>> map = rawSchemaMap.computeIfAbsent(schema.getProtoExID(), k -> new CopyOnWriteMap<>());
+        Map<Object, ProtoExSchema<?>> map = rawSchemaMap.computeIfAbsent(schema.getProtoExId(), k -> new CopyOnWriteMap<>());
         map.put(type, schema);
         if (defSchema) {
-            ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExID(), schema);
+            ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExId(), schema);
             if (last != null)
-                throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+                throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
         }
     }
 
     private static void putCustomSchema(Type type, ProtoExSchema<?> schema) {
         putTypeSchema(type, schema);
-        ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExID(), schema);
+        ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExId(), schema);
         if (last != null)
-            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExID()));
+            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
     }
 
     private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
-        if (schema.getProtoExID() >= 0) {
+        if (schema.getProtoExId() >= 0) {
             if (schema.isRaw()) {
                 putRawSchema(type, schema, false);
             } else {
@@ -105,7 +105,7 @@ public class RuntimeProtoExSchema {
         ProtoExSchema<T> schema;
         if (type != null && type != Object.class) {
             schema = getProtoSchema(type);
-            if (schema != null && (id == 0 || (schema.isRaw() == raw && schema.getProtoExID() == id)))
+            if (schema != null && (id == 0 || (schema.isRaw() == raw && schema.getProtoExId() == id)))
                 return schema;
         }
         if (raw) {

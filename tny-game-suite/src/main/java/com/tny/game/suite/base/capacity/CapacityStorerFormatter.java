@@ -23,7 +23,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
 
     default CapacityStoreProto store2Proto(S object) {
         return CapacityStoreProto.newBuilder()
-                .setPlayerID(object.getPlayerID())
+                .setPlayerId(object.getPlayerId())
                 .addAllSuppliers(object.getStoreSuppliersSteam()
                         .filter(s -> !s.isLinked())
                         .map(CapacityStorerFormatter::supplier2Proto)
@@ -36,7 +36,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
 
     default S proto2Store(CapacityStoreProto proto) {
         S storer = createStore(proto);
-        storer.setPlayerID(proto.getPlayerID())
+        storer.setPlayerId(proto.getPlayerId())
                 .addStoreGoals(proto.getGoalsList().stream()
                         .map(g -> proto2Goal(g, storer)))
                 .addStoreSuppliers(proto.getSuppliersList().stream()
@@ -53,14 +53,14 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
 
     static CapacityGoalProto goal2Proto(StoreCapacityGoal goal) {
         return CapacityGoalProto.newBuilder()
-                .setId(goal.getID())
-                .setItemID(goal.getItemID())
+                .setId(goal.getId())
+                .setItemId(goal.getItemId())
                 .addAllSuppliers(goal.suppliersStream()
-                        .map(CapacitySupplier::getID)
+                        .map(CapacitySupplier::getId)
                         .collect(Collectors.toList()))
                 .setExpireAt(goal.getExpireAt())
                 .addAllGroup(goal.getSuppliersCapacityGroups().stream()
-                        .map(CapacityGroup::getID)
+                        .map(CapacityGroup::getId)
                         .collect(Collectors.toSet()))
                 .build();
     }
@@ -68,7 +68,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
     static StoreCapacityGoal proto2Goal(CapacityGoalProto proto, CapacityVisitor visitor) {
         return StoreCapacityGoal.saveBySupplierIDs(
                 proto.getId(),
-                proto.getItemID(),
+                proto.getItemId(),
                 proto.getSuppliersList().stream(),
                 proto.getGroupList().stream().map(Capacities::getGroup),
                 visitor,
@@ -77,19 +77,19 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
 
     static CapacitySupplierProto supplier2Proto(StoreCapacitySupplier supplier) {
         CapacitySupplierProto.Builder builder = CapacitySupplierProto.newBuilder()
-                .setId(supplier.getID())
-                .setItemID(supplier.getItemID())
-                .setType(supplier.getSupplierType().getID())
+                .setId(supplier.getId())
+                .setItemId(supplier.getItemId())
+                .setType(supplier.getSupplierType().getId())
                 .setExpireAt(supplier.getExpireAt())
                 .addAllGroup(supplier.getAllCapacityGroups().stream()
-                        .map(CapacityGroup::getID)
+                        .map(CapacityGroup::getId)
                         .collect(Collectors.toSet()));
         if (supplier instanceof ComboCapacitySupplier) {
             ComboCapacitySupplier comboSupplier = ObjectAide.as(supplier);
             builder.setCombo(true)
                     .addAllSuppliers(comboSupplier
                             .dependSuppliersStream()
-                            .map(CapacitySupplier::getID)
+                            .map(CapacitySupplier::getId)
                             .collect(Collectors.toList()));
         } else {
             builder.setCombo(false)
@@ -103,7 +103,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
             return StoreCapacitySupplier.saveByDependSupplierIDs(
                     CapacitySupplierTypes.of(proto.getType()),
                     proto.getId(),
-                    proto.getItemID(),
+                    proto.getItemId(),
                     proto.getSuppliersList().stream(),
                     proto.getGroupList().stream().map(Capacities::getGroup),
                     visitor,
@@ -112,8 +112,8 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
             return StoreCapacitySupplier.saveByCapacities(
                     CapacitySupplierTypes.of(proto.getType()),
                     proto.getId(),
-                    proto.getItemID(),
-                    visitor.getPlayerID(),
+                    proto.getItemId(),
+                    visitor.getPlayerId(),
                     intEntries2Map(proto.getCapacityMapList()),
                     proto.getGroupList().stream()
                             .map(Capacities::getGroup)
@@ -136,7 +136,7 @@ public interface CapacityStorerFormatter<S extends BaseCapacityStorer> {
     }
 
     static IntEntryProto entry2IntEntry(Entry<Capacity, Number> entry) {
-        IntEntryProto.Builder builder = IntEntryProto.newBuilder().setKey(entry.getKey().getID());
+        IntEntryProto.Builder builder = IntEntryProto.newBuilder().setKey(entry.getKey().getId());
         Number value = entry.getValue();
         if (value instanceof Integer)
             return builder.setIntValue(value.intValue()).build();

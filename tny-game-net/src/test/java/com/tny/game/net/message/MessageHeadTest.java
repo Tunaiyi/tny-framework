@@ -29,10 +29,10 @@ public abstract class MessageHeadTest extends ProtocolTest {
     private static ReferenceType<Map<String, String>> MAP_HEAD_TYPE = new ReferenceType<Map<String, String>>() {
     };
 
-    private MessageHead REQUEST_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, 0);
-    private MessageHead SUCCESS_RESPONSE_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, toMessage);
-    private MessageHead FAIL_RESPONSE_HEAD = create(id, protocol, ResultCode.FAILURE_CODE, now, toMessage);
-    private MessageHead PUSH_HEAD = create(id, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
+    private MessageHead REQUEST_HEAD = create(id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
+    private MessageHead SUCCESS_RESPONSE_HEAD = create(id, MessageMode.RESPONSE, protocol, ResultCode.SUCCESS_CODE, now, toMessage);
+    private MessageHead FAIL_RESPONSE_HEAD = create(id, MessageMode.RESPONSE, protocol, ResultCode.FAILURE_CODE, now, toMessage);
+    private MessageHead PUSH_HEAD = create(id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
 
     public MessageHeadTest() {
         super(protocol);
@@ -40,10 +40,10 @@ public abstract class MessageHeadTest extends ProtocolTest {
 
     @Override
     protected Protocol protocol() {
-        return create(id, protocol, ResultCode.SUCCESS_CODE, now, 0);
+        return create(id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
     }
 
-    public abstract MessageHead create(long id, int protocol, int code, long time, long toMessage);
+    public abstract MessageHead create(long id, MessageMode mode, int protocol, int code, long time, long toMessage);
 
     @Test
     public void getId() {

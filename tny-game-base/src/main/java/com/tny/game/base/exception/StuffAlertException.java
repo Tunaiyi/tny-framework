@@ -13,27 +13,27 @@ public class StuffAlertException extends GameRuningException {
 
     private Number number;
 
-    private Number stuffID;
+    private Number stuffId;
 
     private Number alertNumber;
 
     public StuffAlertException(ResultCode code, long playerID, ItemModel model, Number number, Number alert, Object... messages) {
         super(code, messages);
         this.number = number;
-        this.stuffID = model.getID();
+        this.stuffId = model.getId();
         this.alertNumber = alert;
     }
 
     public StuffAlertException(ResultCode code, CountableStuff<?, ?> stuff, Number alert, Object... messages) {
-        this(code, stuff.getPlayerID(), stuff.getModel(), stuff.getNumber(), alert, messages);
+        this(code, stuff.getPlayerId(), stuff.getModel(), stuff.getNumber(), alert, messages);
     }
 
     public Number getNumber() {
         return this.number;
     }
 
-    public Number getStuffID() {
-        return this.stuffID;
+    public Number getStuffId() {
+        return this.stuffId;
     }
 
     public Number getAlertNumber() {

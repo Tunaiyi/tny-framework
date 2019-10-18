@@ -20,13 +20,13 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     @SuppressWarnings("unchecked")
     protected WrapItem(I item) {
         this.item = item;
-        this.playerID = item.getPlayerID();
+        this.playerID = item.getPlayerId();
         this.model = item.getModel();
     }
 
     @Override
-    public long getID() {
-        return this.item.getID();
+    public long getId() {
+        return this.item.getId();
     }
 
     @Override
@@ -35,13 +35,13 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     }
 
     @Override
-    public int getItemID() {
-        return this.item.getItemID();
+    public int getItemId() {
+        return this.item.getItemId();
     }
 
     @Override
-    public long getPlayerID() {
-        return this.item.getPlayerID();
+    public long getPlayerId() {
+        return this.item.getPlayerId();
     }
 
     @Override

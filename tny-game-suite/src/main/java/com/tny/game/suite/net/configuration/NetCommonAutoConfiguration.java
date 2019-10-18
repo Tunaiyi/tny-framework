@@ -27,11 +27,6 @@ import org.springframework.core.env.Environment;
 public class NetCommonAutoConfiguration {
 
     @Bean
-    public ProtoExSchemaIniter protoExSchemaIniter() {
-        return new ProtoExSchemaIniter();
-    }
-
-    @Bean
     public UnitLoadIniter unitLoadIniter() {
         return new UnitLoadIniter();
     }

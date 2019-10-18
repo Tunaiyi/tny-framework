@@ -228,7 +228,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
         final ClassControllerHolder holder = new ClassControllerHolder(object, this, exprHolderFactory);
         for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
             MethodControllerHolder controller = entry.getValue();
-            Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getID(), k -> new CopyOnWriteMap<>());
+            Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
             for (MessageMode mode : controller.getMessageModes()) {
                 MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
                 if (old != null)

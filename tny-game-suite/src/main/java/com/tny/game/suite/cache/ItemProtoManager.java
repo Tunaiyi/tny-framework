@@ -2,15 +2,16 @@ package com.tny.game.suite.cache;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
-import com.tny.game.cache.mysql.DBCacheItem;
+import com.tny.game.cache.mysql.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -24,8 +25,8 @@ public class ItemProtoManager {
     @Resource
     private ItemFindDAO findDAO;
 
-    public UIDRange getUIDRange(String table) {
-        return this.findDAO.getUIDRange(table);
+    public UidRange getUidRange(String table) {
+        return this.findDAO.getUidRange(table);
     }
 
     public List<Message> findAll(String table) {
@@ -33,65 +34,65 @@ public class ItemProtoManager {
         return parser(table, dbItems);
     }
 
-    public List<Message> findByItemID(String table, Integer... itemID) {
+    public List<Message> findByItemId(String table, Integer... itemIds) {
         List<DBCacheItem> dbItems;
-        switch (itemID.length) {
+        switch (itemIds.length) {
             case 0:
                 dbItems = this.findDAO.findAll(table);
                 break;
             case 1:
-                dbItems = this.findDAO.findByItemID(table, itemID[0]);
+                dbItems = this.findDAO.findByItemId(table, itemIds[0]);
                 break;
             default:
-                dbItems = this.findDAO.findByItemID(table, Arrays.asList(itemID));
+                dbItems = this.findDAO.findByItemId(table, Arrays.asList(itemIds));
                 break;
         }
         return parser(table, dbItems);
     }
 
-    public List<Message> findByUID(String table, long uid, Integer... itemIDs) {
+    public List<Message> findByUid(String table, long uid, Integer... itemIDs) {
         List<DBCacheItem> dbItems;
         switch (itemIDs.length) {
             case 0:
-                dbItems = this.findDAO.findByUID(table, uid);
+                dbItems = this.findDAO.findByUid(table, uid);
                 break;
             case 1:
-                dbItems = this.findDAO.findByUID(table, uid, itemIDs[0]);
+                dbItems = this.findDAO.findByUid(table, uid, itemIDs[0]);
                 break;
             default:
-                dbItems = this.findDAO.findByUID(table, uid, Arrays.asList(itemIDs));
+                dbItems = this.findDAO.findByUid(table, uid, Arrays.asList(itemIDs));
                 break;
         }
         return parser(table, dbItems);
     }
 
-    public List<Message> findByUIDs(String table, List<Long> uids, Integer... itemIDs) {
+    public List<Message> findByUids(String table, List<Long> uids, Integer... itemIDs) {
         List<DBCacheItem> dbItems;
         switch (itemIDs.length) {
             case 0:
-                dbItems = this.findDAO.findByUIDs(table, uids);
+                dbItems = this.findDAO.findByUids(table, uids);
                 break;
             case 1:
-                dbItems = this.findDAO.findByUIDs(table, uids, itemIDs[0]);
+                dbItems = this.findDAO.findByUids(table, uids, itemIDs[0]);
                 break;
             default:
-                dbItems = this.findDAO.findByUIDs(table, uids, Arrays.asList(itemIDs));
+                dbItems = this.findDAO.findByUids(table, uids, Arrays.asList(itemIDs));
                 break;
         }
         return parser(table, dbItems);
     }
 
-    public List<Message> findByUIDRange(String table, long startUID, long endUID, Integer... itemIDs) {
+    public List<Message> findByUidRange(String table, long startUID, long endUID, Integer... itemIDs) {
         List<DBCacheItem> dbItems;
         switch (itemIDs.length) {
             case 0:
-                dbItems = this.findDAO.findByUIDRange(table, startUID, endUID);
+                dbItems = this.findDAO.findByUidRange(table, startUID, endUID);
                 break;
             case 1:
-                dbItems = this.findDAO.findByUIDRange(table, startUID, endUID, itemIDs[0]);
+                dbItems = this.findDAO.findByUidRange(table, startUID, endUID, itemIDs[0]);
                 break;
             default:
-                dbItems = this.findDAO.findByUIDRange(table, startUID, endUID, Arrays.asList(itemIDs));
+                dbItems = this.findDAO.findByUidRange(table, startUID, endUID, Arrays.asList(itemIDs));
                 break;
         }
         return parser(table, dbItems);
@@ -100,9 +101,11 @@ public class ItemProtoManager {
     private List<Message> parser(String table, List<DBCacheItem> dbItems) {
         if (dbItems == null || dbItems.isEmpty())
             return ImmutableList.of();
+        Optional<ProtobufTableMapper> mapperOpt = ProtobufTableMapper.mapper(table);
+        mapperOpt.orElseThrow(() -> new NullPointerException(table + "ProtobufTableMapper is null"));
+        ProtobufTableMapper mapper = mapperOpt.get();
         return dbItems.stream()
-                .map(item -> ProtobufTableMapper.mapper(table).get()
-                        .parser(item.getData()))
+                .map(item -> mapper.parser(item.getData()))
                 .collect(Collectors.toList());
     }
 

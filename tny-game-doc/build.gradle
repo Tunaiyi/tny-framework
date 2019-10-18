@@ -11,11 +11,9 @@ apply plugin: "maven"
 dependencies {
 //    groovy localGroovy()
 
-    compile(
 //            gradleApi(),
 //            libs.'groovy-all',
-            project(":tny-game-net"),
-            project(":tny-game-scanning"),
-    )
+    api project(":tny-game-net")
+    api project(":tny-game-scanning")
 
 }

@@ -29,13 +29,13 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     private volatile long id;
 
     /* 通讯管道 */
-    private volatile NetTunnel<UID> tunnel;
+    protected volatile NetTunnel<UID> tunnel;
 
     /* 认证 */
     protected Certificate<UID> certificate;
 
     /* 状态 */
-    private volatile EndpointState state = EndpointState.INIT;
+    private volatile EndpointState state;
 
     /**
      * ID 生成器
@@ -74,7 +74,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     protected AbstractEndpoint(UID unloginUid, EndpointEventHandler<UID, ? extends NetEndpoint<UID>> eventHandler, int cacheSentMessageSize) {
         this.certificate = Certificates.createUnautherized(unloginUid);
-        this.state = EndpointState.OFFLINE;
+        this.state = EndpointState.INIT;
         this.eventsBox = new EndpointEventsBox<>();
         this.eventHandler = as(eventHandler);
         this.id = NetAide.newEndpointId();
@@ -175,6 +175,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     @Override
     public SendContext<UID> send(NetTunnel<UID> tunnel, MessageContext<UID> context) {
         try {
+            tryCreateFuture(context);
             if (this.isClosed()) {
                 context.fail(new EndpointCloseException(format("endpoint {} closed", this)));
                 return context;
@@ -182,8 +183,6 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
             if (tunnel == null)
                 tunnel = currentTunnel();
             MessageHandleFilter<UID> filter = this.getSendFilter();
-            WriteMessagePromise writePromise = tunnel.createWritePromise(context.getSendTimeout());
-            context.setWritePromise(writePromise);
             if (filter != null) {
                 boolean throwable = true;
                 switch (filter.filter(this, context)) {
@@ -243,19 +242,29 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     public void writeMessage(NetTunnel<UID> tunnel, MessageContext<UID> context) {
         MessageFactory<UID> messageFactory = tunnel.getMessageFactory();
         Message<UID> message = messageFactory.create(createMessageId(), context, tunnel.getCertificate());
-        if (context.isHasRespondFuture())
-            this.putFuture(message.getId(), context.getRespondFuture());
-        WriteMessagePromise promise = context.getWritePromise();
-        if (promise == null)
-            promise = tunnel.createWritePromise(context.getSendTimeout());
-        if (context.isHasRespondFuture()) {
-            promise.addWriteListener((f) -> {
-                if (!f.isSuccess())
-                    context.fail(f.cause());
-            });
-        }
+        this.tryCreateFuture(context);
+        RespondFuture<UID> respondFuture = context.getRespondFuture();
+        if (respondFuture != null)
+            this.putFuture(message.getId(), respondFuture);
         this.writeQueue.addMessage(message);
-        tunnel.write(message, promise);
+        tunnel.write(message, context.getWriteMessagePromise());
+    }
+
+    private void tryCreateFuture(MessageContext<UID> context) {
+        if (context.isNeedResponseFuture() || context.isNeedWriteFuture()) {
+            WriteMessagePromise promise = context.getWriteMessagePromise();
+            if (promise == null) {
+                promise = tunnel.createWritePromise(context.getWriteTimeout());
+                context.setWriteMessagePromise(promise);
+            }
+            if (context.isNeedResponseFuture()) {
+                RespondFuture<UID> respondFuture = context.getRespondFuture();
+                if (respondFuture == null)
+                    respondFuture = new RespondFuture<>();
+                context.setRespondFuture(respondFuture);
+                promise.setRespondFuture(respondFuture);
+            }
+        }
     }
 
     private long createMessageId() {

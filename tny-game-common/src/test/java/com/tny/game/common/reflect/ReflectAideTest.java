@@ -51,7 +51,7 @@ public class ReflectAideTest {
 
     @Test
     public void testGetDeepMethodByAnnotation() {
-        List<String> getDatas = new ArrayList<String>();
+        List<String> getDatas = new ArrayList<>();
         for (String name : methodDada) {
             getDatas.add(name);
         }

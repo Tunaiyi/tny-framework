@@ -21,17 +21,17 @@ public class SimpleActionLog extends ActionLog {
 
     protected SimpleActionLog(Action action) {
         super();
-        this.action = action.getID();
-        this.behavior = action.getBehavior().getID();
+        this.action = action.getId();
+        this.behavior = action.getBehavior().getId();
     }
 
     @Override
-    public int getActionID() {
+    public int getActionId() {
         return this.action;
     }
 
     @Override
-    public int getBehaviorID() {
+    public int getBehaviorId() {
         return this.behavior;
     }
 
@@ -50,7 +50,7 @@ public class SimpleActionLog extends ActionLog {
     private SimpleTradeLog findTradeLog(List<SimpleTradeLog> logs, long id) {
         for (int index = 0; index < logs.size(); index++) {
             SimpleTradeLog log = logs.get(index);
-            if (log.getID() == id)
+            if (log.getId() == id)
                 return log;
         }
         return null;
@@ -86,7 +86,7 @@ public class SimpleActionLog extends ActionLog {
 
     @Override
     protected ActionLog logSnapshot(Snapshot snapshot) {
-        List<Snapshot> snaps = this.snapshotMap.computeIfAbsent(snapshot.getID(), k -> new ArrayList<>());
+        List<Snapshot> snaps = this.snapshotMap.computeIfAbsent(snapshot.getId(), k -> new ArrayList<>());
         boolean exist = false;
         for (Snapshot snap : snaps) {
             if (snap.getType() == snapshot.getType()) {

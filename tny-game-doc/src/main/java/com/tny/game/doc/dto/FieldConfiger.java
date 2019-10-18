@@ -59,7 +59,7 @@ public class FieldConfiger {
         return this.fieldName;
     }
 
-    public int getFieldID() {
+    public int getFieldId() {
         return this.fieldID;
     }
 

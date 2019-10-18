@@ -30,7 +30,7 @@ public class FieldDocHolder {
         return holder;
     }
 
-    public int getID() {
+    public int getId() {
         return id;
     }
 

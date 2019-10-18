@@ -80,7 +80,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         int proComp;
         if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
             return proComp;
-        return o1.getID() - o2.getID();
+        return o1.getId() - o2.getId();
         }
     }
 

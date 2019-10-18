@@ -30,15 +30,15 @@ public class UUIDCreator {
     private volatile long lastTimestamp = -1;
     private final StampedLock lock = new StampedLock();
 
-    public static final long parseWorkerID(long id) {
-        return parseWorkerID(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
+    public static final long parseWorkerId(long id) {
+        return parseWorkerId(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
     }
 
-    public static final long parseWorkerID(long id, long workIDBit) {
-        return parseWorkerID(id, workIDBit, WORKER_SEQUENCE_BITS - workIDBit);
+    public static final long parseWorkerId(long id, long workIDBit) {
+        return parseWorkerId(id, workIDBit, WORKER_SEQUENCE_BITS - workIDBit);
     }
 
-    public static final long parseWorkerID(long id, long workIDBit, long sequenceBits) {
+    public static final long parseWorkerId(long id, long workIDBit, long sequenceBits) {
         return id >> sequenceBits & (~(-1L << workIDBit));
     }
 
@@ -69,7 +69,7 @@ public class UUIDCreator {
     }
 
 
-    public long createID() {
+    public long createId() {
         long lockStamp = 0;
         try {
             long timestamp;
@@ -132,7 +132,7 @@ public class UUIDCreator {
 
         RunningChecker.startPrint(UUIDCreator.class);
         for (int i = 0; i < 1000000; i++) {
-            creator.createID();
+            creator.createId();
             // ForkJoinPool.commonPool()
             //         .submit(() -> creator.createID());
         }

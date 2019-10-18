@@ -42,20 +42,20 @@ public class ReceiveRecord implements StuffTradeLog {
     }
 
     public ReceiveRecord(StuffTradeLog log) {
-        this.rid = log.getID() == log.getItemID() ? null : log.getID();
-        this.riid = log.getItemID();
+        this.rid = log.getId() == log.getItemId() ? null : log.getId();
+        this.riid = log.getItemId();
         this.ronum = log.getOldNum();
         this.rnnum = log.getNewNum();
         this.ralter = log.getAlterNum();
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return this.rid == null ? this.riid : this.rid;
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return this.riid;
     }
 

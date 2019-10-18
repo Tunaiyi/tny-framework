@@ -65,7 +65,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     }
 
     private void writePacked(ProtoExOutputStream outputStream, Object array, ProtoExSchema<Object> elementSchema, IOConfiger<?> elementDesc) {
-        outputStream.writeInt(WireFormat.makeRepeatOption(elementSchema.getProtoExID(), elementSchema.isRaw(), true));
+        outputStream.writeInt(WireFormat.makeRepeatOption(elementSchema.getProtoExId(), elementSchema.isRaw(), true));
         int length = Array.getLength(array);
         for (int index = 0; index < length; index++) {
             Object value = Array.get(array, index);
@@ -118,7 +118,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
         if (length < 0)
             throw ProtobufExException.negativeSize(length);
         boolean packed = WireFormat.isRepeatPacked(repeatOption);
-        int repeatChildID = WireFormat.getRepeatChildID(repeatOption);
+        int repeatChildID = WireFormat.getRepeatChildId(repeatOption);
         boolean raw = WireFormat.isRepeatChildRaw(repeatOption);
         Tag elementTag = new Tag(repeatChildID, raw, tag);
 
@@ -132,7 +132,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     private Object doReadPackedElements(ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
         List<Object> valueList = new ArrayList<>();
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
-        ProtoExSchema<Object> schema = schemaContext.getSchema(tag.getProtoExID(), tag.isRaw(), elConf.getDefaultType());
+        ProtoExSchema<Object> schema = schemaContext.getSchema(tag.getProtoExId(), tag.isRaw(), elConf.getDefaultType());
         int startAt = inputStream.position();
         int position = inputStream.position();
         while (position - startAt < length) {
@@ -151,7 +151,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
         int position = inputStream.position();
         while (position - startAt < length) {
             Tag targetTag = inputStream.getTag();
-            ProtoExSchema<Object> schema = schemaContext.getSchema(targetTag.getProtoExID(), targetTag.isRaw(), elConf.getDefaultType());
+            ProtoExSchema<Object> schema = schemaContext.getSchema(targetTag.getProtoExId(), targetTag.isRaw(), elConf.getDefaultType());
             Object value = schema.readMessage(inputStream, elConf);
             if (value != null)
                 valueList.add(value);

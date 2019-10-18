@@ -16,8 +16,6 @@ public interface AppContext {
 
     Attributes attributes();
 
-    String[] getScanPathArray();
-
-    List<String> getScanPathList();
+    List<String> getScanPackages();
 
 }

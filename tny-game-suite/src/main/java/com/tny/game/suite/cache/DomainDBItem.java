@@ -1,13 +1,13 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.Item;
 import com.tny.game.cache.mysql.DBCacheItem;
 
 public class DomainDBItem<R> extends DBCacheItem<R> {
 
     private Long uid;
-    private Integer itemID;
+    private Integer itemId;
     private Integer number;
 
     public DomainDBItem(String key, Object data, long version, long millisecond) {
@@ -21,10 +21,10 @@ public class DomainDBItem<R> extends DBCacheItem<R> {
             Object object = proto.getObject();
             if (object instanceof Item) {
                 Item<?> item = (Item<?>) object;
-                this.uid = item.getPlayerID();
-                this.itemID = item.getItemID();
-            } else if (object instanceof Identifiable) {
-                this.uid = ((Identifiable) object).getPlayerID();
+                this.uid = item.getPlayerId();
+                this.itemId = item.getItemId();
+            } else if (object instanceof Identifier) {
+                this.uid = ((Identifier) object).getPlayerId();
             }
             this.number = proto.getNumber();
             data = proto.getItem();
@@ -42,16 +42,16 @@ public class DomainDBItem<R> extends DBCacheItem<R> {
         return this.number;
     }
 
-    public Integer getItemID() {
-        return this.itemID;
+    public Integer getItemId() {
+        return this.itemId;
     }
 
     protected void setUid(Long uid) {
         this.uid = uid;
     }
 
-    protected void setItemID(Integer itemID) {
-        this.itemID = itemID;
+    protected void setItemId(Integer itemId) {
+        this.itemId = itemId;
     }
 
 }

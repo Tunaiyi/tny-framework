@@ -16,7 +16,7 @@ import java.util.Map;
 public class ServiceNode {
 
     @ProtoExField(1)
-    private int serverID;
+    private int serverId;
 
     @ProtoExField(2)
     private List<String> urlStrings = ImmutableList.of();
@@ -29,14 +29,14 @@ public class ServiceNode {
     public ServiceNode() {
     }
 
-    public ServiceNode(String appType, int serverID, String... urls) {
+    public ServiceNode(String appType, int serverId, String... urls) {
         this.appType = appType;
-        this.serverID = serverID;
+        this.serverId = serverId;
         this.urlStrings = Arrays.asList(urls);
     }
 
-    public int getServerID() {
-        return this.serverID;
+    public int getServerId() {
+        return this.serverId;
     }
 
     public String getAppType() {
@@ -63,7 +63,7 @@ public class ServiceNode {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.serverID;
+        result = prime * result + this.serverId;
         return result;
     }
 
@@ -76,7 +76,7 @@ public class ServiceNode {
         if (this.getClass() != obj.getClass())
             return false;
         ServiceNode other = (ServiceNode) obj;
-        if (this.serverID != other.serverID)
+        if (this.serverId != other.serverId)
             return false;
         return true;
     }

@@ -31,14 +31,14 @@ public class ConcurrentMessageCommandExecutor extends ForkJoinMessageCommandExec
     @Override
     public void prepareStart() {
         super.prepareStart();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
+        scheduledExecutor().scheduleAtFixedRate(() -> {
             while (!scheduledChildExecutors.isEmpty()) {
                 Command command = scheduledChildExecutors.poll();
                 if (command != null)
                     doSubmit(command);
             }
         }, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
-        scheduledExecutorService.scheduleAtFixedRate(() ->
+        scheduledExecutor().scheduleAtFixedRate(() ->
                         LOG_NET.info("[scheduledChildExecutors ] [executorService size : {} | Parallelism : {} | PoolSize : {}]", scheduledChildExecutors.size(),
                                 executorService.getParallelism(), executorService.getPoolSize()),
                 15000, 15000, TimeUnit.MILLISECONDS);

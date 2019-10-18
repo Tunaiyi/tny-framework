@@ -24,11 +24,11 @@ public abstract class BaseSnapshot implements Snapshot {
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return id;
     }
 
-    public void setID(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -41,7 +41,7 @@ public abstract class BaseSnapshot implements Snapshot {
         if (this.getClass() != obj.getClass())
             return false;
         Snapshot other = (Snapshot) obj;
-        if (this.getID() != other.getID())
+        if (this.getId() != other.getId())
             return false;
         if (this.type == null) {
             if (other.getType() != null)

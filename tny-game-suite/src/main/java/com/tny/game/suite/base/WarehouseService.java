@@ -18,6 +18,6 @@ public interface WarehouseService {
 
     void deal(long playerID, TryToDoResult result, AttrEntry<?>... entries);
 
-    // DoneResult<Boolean> checkTradeBound(long playerID, Trade trade);
+    // DoneResult<Boolean> checkTradeBound(long playerId, Trade trade);
 
 }

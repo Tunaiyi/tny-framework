@@ -23,13 +23,13 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     public TempExplorer(ItemModel model, Item<?> item) {
         this.item = item;
         this.model.put(model.getAlias(), model);
-        this.idModel.put(model.getID(), model);
+        this.idModel.put(model.getId(), model);
     }
 
     public TempExplorer(ItemModel... modelMap) {
         for (ItemModel model : modelMap) {
             this.model.put(model.getAlias(), model);
-            this.idModel.put(model.getID(), model);
+            this.idModel.put(model.getId(), model);
         }
     }
 

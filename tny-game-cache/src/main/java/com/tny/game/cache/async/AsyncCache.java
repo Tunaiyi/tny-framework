@@ -1,6 +1,6 @@
 package com.tny.game.cache.async;
 
-import com.tny.game.asyndb.DBObjectPool;
+import com.tny.game.asyndb.ObjectPool;
 import com.tny.game.cache.Cache;
 import com.tny.game.cache.CasItem;
 import com.tny.game.cache.ToCacheClassHolder;
@@ -26,9 +26,9 @@ public class AsyncCache implements Cache {
     /**
      * 对象池
      */
-    private DBObjectPool pool;
+    private ObjectPool pool;
 
-    public AsyncCache(ToCacheClassHolderFactory toCacheClassHolderFactory, DBObjectPool pool) {
+    public AsyncCache(ToCacheClassHolderFactory toCacheClassHolderFactory, ObjectPool pool) {
         super();
         this.toCacheClassHolderFactory = toCacheClassHolderFactory;
         this.pool = pool;

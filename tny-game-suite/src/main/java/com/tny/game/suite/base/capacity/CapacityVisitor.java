@@ -10,7 +10,7 @@ public interface CapacityVisitor {
     /**
      * @return 玩家ID
      */
-    long getPlayerID();
+    long getPlayerId();
 
     /**
      * 查找指定id的提供器

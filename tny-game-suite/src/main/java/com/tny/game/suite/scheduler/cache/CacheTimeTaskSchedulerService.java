@@ -45,7 +45,7 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
         if (dbReceiver == null) {
             receiver = TaskReceiverBuilder.create()
                     .setGroup(receiverType)
-                    .setPlayerID(playerID)
+                    .setPlayerId(playerID)
                     .build();
             this.taskReceiverManager.insert(receiver);
         } else {

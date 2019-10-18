@@ -60,7 +60,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
             return null;
         List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
-            ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemID());
+            ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemId());
             if (awardModel != null) {
                 tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber(), AlterType.valueOf(awardProto.getAlterType()), awardProto.getValid()));
             }
@@ -82,16 +82,16 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
             list.add(TradeItemProto.newBuilder()
-                    .setItemID(item.getItemModel().getID())
+                    .setItemId(item.getItemModel().getId())
                     .setNumber(item.getNumber().longValue())
-                    .setAlterType(item.getAlertType().getID())
+                    .setAlterType(item.getAlertType().getId())
                     .setValid(item.isValid())
                     .build());
         }
-        return TradeProto.newBuilder().setAction(trade.getAction().getID())
+        return TradeProto.newBuilder().setAction(trade.getAction().getId())
                 .addAllItem(list)
-                .setAction(trade.getAction().getID())
-                .setTradeType(trade.getTradeType().getID())
+                .setAction(trade.getAction().getId())
+                .setTradeType(trade.getTradeType().getId())
                 .build();
     }
 

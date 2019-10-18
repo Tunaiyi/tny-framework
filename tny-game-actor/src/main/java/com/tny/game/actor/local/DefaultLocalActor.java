@@ -47,7 +47,7 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     }
 
     @Override
-    public ID getActorID() {
+    public ID getActorId() {
         return actorID;
     }
 

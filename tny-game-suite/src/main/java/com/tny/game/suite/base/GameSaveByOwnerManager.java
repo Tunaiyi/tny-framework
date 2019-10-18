@@ -22,7 +22,7 @@ public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner
 
     @Override
     protected O getSaveObject(S item) {
-        return this.getSaveObject(item.getPlayerID());
+        return this.getSaveObject(item.getPlayerId());
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner
     @Override
     protected S get(long playerID, Object... object) {
         O owner = this.getSaveObject(playerID);
-        return owner.getItemByID(((Number) object[0]).longValue());
+        return owner.getItemById(((Number) object[0]).longValue());
     }
 
     @Override
@@ -45,6 +45,6 @@ public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends Owner
     @Override
     protected S getInstance(long playerID, Object... object) {
         O owner = this.getSaveObject(playerID);
-        return owner.getItemByID((long) object[0]);
+        return owner.getItemById((long) object[0]);
     }
 }

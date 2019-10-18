@@ -74,7 +74,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean insertItem(Any<?>... items) {
         boolean result = true;
         for (Any<?> item : items) {
-            GameManager<Object> manager = this.getItemManager(item.getItemID());
+            GameManager<Object> manager = this.getItemManager(item.getItemId());
             if (manager == null)
                 return true;
             if (!manager.insert(item))
@@ -98,7 +98,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean updateItem(Any<?>... items) {
         boolean result = true;
         for (Any<?> item : items) {
-            GameManager<Object> manager = this.getItemManager(item.getItemID());
+            GameManager<Object> manager = this.getItemManager(item.getItemId());
             if (manager == null)
                 return true;
             if (!manager.update(item))
@@ -122,7 +122,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean saveItem(Any<?>... items) {
         boolean result = true;
         for (Any<?> item : items) {
-            GameManager<Object> manager = this.getItemManager(item.getItemID());
+            GameManager<Object> manager = this.getItemManager(item.getItemId());
             if (manager == null)
                 return true;
             if (!manager.save(item))
@@ -145,7 +145,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean deleteItem(Any<?>... items) {
         boolean result = true;
         for (Any<?> item : items) {
-            GameManager<Object> manager = this.getItemManager(item.getItemID());
+            GameManager<Object> manager = this.getItemManager(item.getItemId());
             if (manager == null)
                 return true;
             if (!manager.delete(item))
@@ -176,7 +176,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean insertOwner(Owner<?, ?>... owners) {
         boolean result = true;
         for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
             if (manager == null)
                 return true;
             if (!manager.insert(owner))
@@ -200,7 +200,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean updateOwner(Owner<?, ?>... owners) {
         boolean result = true;
         for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
             if (manager == null)
                 return true;
             if (!manager.update(owner))
@@ -224,7 +224,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean saveOwner(Owner<?, ?>... owners) {
         boolean result = true;
         for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
             if (manager == null)
                 return true;
             if (!manager.save(owner))
@@ -247,7 +247,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     public boolean deleteOwner(Owner<?, ?>... owners) {
         boolean result = true;
         for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemID());
+            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
             if (manager == null)
                 return true;
             if (!manager.delete(owner))
@@ -267,7 +267,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     private GameManager<Object> getOwnerManager(int itemID) {
-        ItemType itemType = ItemTypes.ofItemID(itemID);
+        ItemType itemType = ItemTypes.ofItemId(itemID);
         GameManager<Object> manager = this.typeOwnerManagerMap.get(itemType);
         if (manager == null)
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的owner manager 为null", itemType));
@@ -275,7 +275,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     private GameManager<Object> getItemManager(int itemID) {
-        ItemType itemType = ItemTypes.ofItemID(itemID);
+        ItemType itemType = ItemTypes.ofItemId(itemID);
         GameManager<Object> manager = this.typeManagerMap.get(itemType);
         if (manager == null)
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的item manager 为null", itemType));
@@ -283,7 +283,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     private ModelManager<Model> getModelManager(int itemID) {
-        ItemType itemType = ItemTypes.ofItemID(itemID);
+        ItemType itemType = ItemTypes.ofItemId(itemID);
         return this.getModelManager(itemType);
     }
 

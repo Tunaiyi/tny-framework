@@ -3,7 +3,8 @@ package com.tny.game.net.command.executor;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.lifecycle.*;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author KGTny
@@ -13,7 +14,7 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     /**
      * 间歇时间
      */
-    public static final int DEFAULT_NEXT_INTERVAL = 31;
+    private static final int DEFAULT_NEXT_INTERVAL = 17;
 
     /* 线程数 */
     private int threads;
@@ -23,7 +24,7 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
 
     protected ForkJoinPool executorService;
 
-    protected ScheduledExecutorService scheduledExecutorService = ThreadPoolExecutors.scheduled(this.getClass().getSimpleName() + "Scheduled", 4, true);
+    private ScheduledExecutorService scheduledExecutorService = ThreadPoolExecutors.scheduled(this.getClass().getSimpleName() + "Scheduled", 4, true);
 
     public ForkJoinMessageCommandExecutor() {
         this(Runtime.getRuntime().availableProcessors(), DEFAULT_NEXT_INTERVAL);
@@ -52,6 +53,10 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     public void prepareStart() {
         this.executorService = ForkJoinPools.pool(this.threads, this.getClass().getSimpleName(), true);
         // ThreadPoolExecutors.pool(this.getClass().getSimpleName(), this.threads, Math.max(this.threads, this.maxThreads), keepsAlive);
+    }
+
+    protected ScheduledExecutorService scheduledExecutor() {
+        return scheduledExecutorService;
     }
 
 }

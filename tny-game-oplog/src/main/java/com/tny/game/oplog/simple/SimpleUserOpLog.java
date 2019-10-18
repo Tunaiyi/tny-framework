@@ -22,13 +22,13 @@ import java.util.Map;
  */
 public class SimpleUserOpLog extends UserOpLog {
 
-    private long userID;
+    private long userId;
 
-    private String openID;
+    private String openId;
 
     private String pf;
 
-    private int serverID;
+    private int serverId;
 
     private String name;
 
@@ -44,26 +44,26 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
 
-    public SimpleUserOpLog(long userID, String pf, String openID, int serverID, String name, DateTime createAt, int level, int vip) {
+    public SimpleUserOpLog(long userId, String pf, String openId, int serverId, String name, DateTime createAt, int level, int vip) {
         super();
-        this.userID = userID;
-        this.openID = openID;
+        this.userId = userId;
+        this.openId = openId;
         this.createAt = createAt;
         this.pf = pf;
-        this.serverID = serverID;
+        this.serverId = serverId;
         this.name = name;
         this.vip = vip;
         this.level = level;
     }
 
     @Override
-    public long getUserID() {
-        return this.userID;
+    public long getUserId() {
+        return this.userId;
     }
 
     @Override
-    public int getServerID() {
-        return this.serverID;
+    public int getServerId() {
+        return this.serverId;
     }
 
     @Override
@@ -87,8 +87,8 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
-    public String getOpenID() {
-        return this.openID;
+    public String getOpenId() {
+        return this.openId;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class SimpleUserOpLog extends UserOpLog {
     protected ActionLog getActionLog(Action action) {
         for (int index = 0; index < this.actionLogs.size(); index++) {
             ActionLog log = this.actionLogs.get(index);
-            if (log.getActionID() == action.getID())
+            if (log.getActionId() == action.getId())
                 return log;
         }
         ActionLog actionLog = new SimpleActionLog(action);

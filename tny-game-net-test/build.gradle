@@ -4,11 +4,9 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            project(":tny-game-net"),
-            "org.jmock:jmock-junit4:${vers.jmock}",
-            "junit:junit:${vers.junit}",
-            libs.'mockito',
-    )
+    api project(":tny-game-net")
+    api libs.mockito
+    api libs.junit
+    api libs.jmock_junit4
 
 }

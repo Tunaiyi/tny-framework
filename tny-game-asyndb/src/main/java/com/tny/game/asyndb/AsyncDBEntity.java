@@ -1,9 +1,10 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.asyndb.annotation.Replace;
+import com.tny.game.asyndb.annotation.*;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -12,7 +13,7 @@ import static com.tny.game.common.utils.StringAide.*;
  *
  * @author KGTny
  */
-public class AsyncDBEntity implements Synchronizable {
+public class AsyncDBEntity implements PersistentObject {
 
     //	private final static Logger LOGGER = LoggerFactory.getLogger(LogName.ASYN_DB);
 
@@ -30,7 +31,7 @@ public class AsyncDBEntity implements Synchronizable {
     /**
      * 持有对象，确保一定条件内不被回收
      */
-    private Object holdObject;
+    private volatile Object holdObject;
 
     /**
      * 实体状态
@@ -95,24 +96,23 @@ public class AsyncDBEntity implements Synchronizable {
     }
 
     @Override
-    public boolean syncFail(AsyncDBState currentState) {
+    public void syncFail(AsyncDBState currentState) {
         Operation operation = currentState.getOperation();
         if (operation == null)
-            return false;
+            return;
         AsyncDBState nowAsyncDBState = this.state;
         if (!operation.isCanFailRedoAt(nowAsyncDBState))
-            return false;
+            return;
         this.lock.lock();
         try {
             nowAsyncDBState = this.state;
             if (!operation.isCanFailRedoAt(nowAsyncDBState))
-                return false;
+                return;
             AsyncDBState redoState = operation.getFailRedoTo(nowAsyncDBState);
             if (redoState == null)
-                return false;
+                return;
             this.state = redoState;
-            this.syncObject = this.getValue();
-            return true;
+            this.syncObject = this.getObject();
         } finally {
             this.lock.unlock();
         }
@@ -122,23 +122,23 @@ public class AsyncDBEntity implements Synchronizable {
      * @param operation 操作
      * @param object    操作的对象
      * @return 返回是否需要提交
-     * @throws AsyncDBReleaseException     对象已经施放时抛出异常
-     * @throws SubmitAtWrongStateException 对象提交状态错误异常
+     * @throws AsyncDBReleaseException 对象已经施放时抛出异常
+     * @throws OperationStateException 对象提交状态错误异常
      */
-    boolean mark(Operation operation, Object object) throws AsyncDBReleaseException, SubmitAtWrongStateException {
+    boolean mark(Operation operation, Object object) throws AsyncDBReleaseException, OperationStateException {
         if (this.release(System.currentTimeMillis()))
             throw new AsyncDBReleaseException(format("[{}] submit exception", this.value));
         AsyncDBState currentState = this.state;
         // 判断操作是否能在当前状态操作
         if (!operation.isCanOperationAt(currentState))
-            throw new SubmitAtWrongStateException(format("[{}] submit exception", this.value), currentState, operation);
+            throw new OperationStateException(format("[{}] submit exception", this.value), currentState, operation);
         this.lock.lock();
         try {
             currentState = this.state;
             if (!operation.isCanOperationAt(currentState))
-                throw new SubmitAtWrongStateException(format("[{}] submit exception", this.value), currentState, operation);
+                throw new OperationStateException(format("[{}] submit exception", this.value), currentState, operation);
             Object currentObject = this.value.get();
-            this.state = operation.getChangeTo(currentState, currentState);
+            this.state = operation.getChangeTo(currentState);
             if ((currentState.isDelete() && object != null) ||
                     (this.isCanReplace() && currentObject != object)) {
                 this.setValue(object);
@@ -172,12 +172,17 @@ public class AsyncDBEntity implements Synchronizable {
      * @return 返回生命值
      */
     Object visit() {
-        Object returnObject = this.value.get();
-        if (returnObject != null) {
-            this.releaseStrategy.update();
-            this.holdObject = returnObject;
+        this.lock.lock();
+        try {
+            Object returnObject = this.value.get();
+            if (returnObject != null) {
+                this.releaseStrategy.update();
+                this.holdObject = returnObject;
+            }
+            return returnObject;
+        } finally {
+            this.lock.unlock();
         }
-        return returnObject;
     }
 
     boolean isCanReplace() {
@@ -190,17 +195,22 @@ public class AsyncDBEntity implements Synchronizable {
      * @return 释放成功返回true，失败返回false
      */
     boolean release(long releaseAt) {
-        AsyncDBState currentState = this.state;
-        Object object = this.holdObject;
-        if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) || currentState == AsyncDBState.DELETED) {
-            this.holdObject = null;
-            this.syncObject = null;
+        this.lock.lock();
+        try {
+            AsyncDBState currentState = this.state;
+            Object object = this.holdObject;
+            if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) || currentState == AsyncDBState.DELETED) {
+                this.holdObject = null;
+                this.syncObject = null;
+            }
+        } finally {
+            this.lock.unlock();
         }
         return this.value.get() == null;
     }
 
     @Override
-    public Object getValue() {
+    public Object getObject() {
         return this.value.get();
     }
 

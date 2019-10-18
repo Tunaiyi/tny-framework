@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.common.utils.DateTimeAide;
 import com.tny.game.common.event.BindVoidEventBus;
 import com.tny.game.common.event.EventBuses;
@@ -9,7 +9,7 @@ import com.tny.game.suite.utils.Configs;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-public class Account implements Identifiable {
+public class Account implements Identifier {
 
     private static BindVoidEventBus<AccountListener, Account> ON_CREATE =
             EventBuses.of(AccountListener.class, AccountListener::onCreate);
@@ -26,7 +26,7 @@ public class Account implements Identifiable {
 
     private int level;
 
-    private Integer createSID;
+    private Integer createSid;
 
     private String account;
 
@@ -38,13 +38,13 @@ public class Account implements Identifiable {
 
     private volatile LocalDate createRoleDate;
 
-    protected volatile DateTime onlineTime;
+    private volatile DateTime onlineTime;
 
-    protected volatile DateTime offlineTime;
+    private volatile DateTime offlineTime;
 
     private String device;
 
-    private String deviceID;
+    private String deviceId;
 
     private String ip;
 
@@ -65,9 +65,9 @@ public class Account implements Identifiable {
         this.pf = ticket.getPf();
         this.zone = ticket.getZone();
         this.entry = ticket.getEntry();
-        this.createSID = ticket.getServer();
+        this.createSid = ticket.getServer();
         this.device = ticket.getDevice();
-        this.deviceID = ticket.getDeviceID();
+        this.deviceId = ticket.getDeviceId();
         this.createAt = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, DateTime.now());
         this.createDate = new LocalDate(this.createAt);
     }
@@ -77,8 +77,8 @@ public class Account implements Identifiable {
      *
      * @return
      */
-    public String getOpenID() {
-        return AccountUtils.account2OpenID(this.account);
+    public String getOpenId() {
+        return AccountUtils.account2OpenId(this.account);
     }
 
     /**
@@ -103,7 +103,7 @@ public class Account implements Identifiable {
     }
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return this.uid;
     }
 
@@ -183,12 +183,12 @@ public class Account implements Identifiable {
         return this.createRoleDate;
     }
 
-    public Integer getCreateSID() {
-        return this.createSID;
+    public Integer getCreateSid() {
+        return this.createSid;
     }
 
-    protected void setCreateSID(Integer createSID) {
-        this.createSID = createSID;
+    protected void setCreateSid(Integer createSid) {
+        this.createSid = createSid;
     }
 
     public int getLevel() {
@@ -199,8 +199,8 @@ public class Account implements Identifiable {
         this.level = level;
     }
 
-    public int getServerID() {
-        return this.createSID;
+    public int getServerId() {
+        return this.createSid;
     }
 
     public Long getCreateRoleAt() {
@@ -250,12 +250,12 @@ public class Account implements Identifiable {
         this.device = device;
     }
 
-    public String getDeviceID() {
-        return this.deviceID;
+    public String getDeviceId() {
+        return this.deviceId;
     }
 
-    protected void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
+    protected void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public boolean isCreateRole() {
@@ -264,7 +264,7 @@ public class Account implements Identifiable {
 
     void updateDevice(GameTicket ticket) {
         this.device = ticket.getDevice();
-        this.deviceID = ticket.getDeviceID();
+        this.deviceId = ticket.getDeviceId();
     }
 
     void onCreate() {

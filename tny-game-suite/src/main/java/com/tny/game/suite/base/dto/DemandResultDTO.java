@@ -66,10 +66,10 @@ public class DemandResultDTO implements Serializable {
     }
 
     protected static void setDTO(DemandResultDTO dto, DemandResult result) {
-        dto.id = result.getID();
-        dto.itemID = result.getItemID();
-        dto.itemType = ItemTypes.ofItemID(result.getItemID()).getID();
-        dto.demandType = result.getDemandType().getID();
+        dto.id = result.getId();
+        dto.itemID = result.getItemId();
+        dto.itemType = ItemTypes.ofItemId(result.getItemId()).getId();
+        dto.demandType = result.getDemandType().getId();
 //        dto.currentValue = result.getCurrentValue(Long.class);
         dto.expectValue = result.getExpectValue(Long.class);
 //        dto.satisfy = result.isSatisfy();
@@ -103,25 +103,25 @@ public class DemandResultDTO implements Serializable {
 
     public static DemandResultDTO tradeItem2DTO(TradeType tradeType, TradeItem<ItemModel> tradeItem) {
         DemandResultDTO dto = new DemandResultDTO();
-        dto.itemID = tradeItem.getItemModel().getID();
-        dto.itemType = tradeItem.getItemModel().getItemType().getID();
+        dto.itemID = tradeItem.getItemModel().getId();
+        dto.itemType = tradeItem.getItemModel().getItemType().getId();
         dto.expectValue = tradeItem.getNumber().longValue();
-        dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getID();
+        dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
         return dto;
     }
 
     public static DemandResultDTO itemModel2DTO(TradeType tradeType, ItemModel itemModel, Number number) {
         DemandResultDTO dto = new DemandResultDTO();
-        dto.itemID = itemModel.getID();
-        dto.itemType = itemModel.getItemType().getID();
+        dto.itemID = itemModel.getId();
+        dto.itemType = itemModel.getItemType().getId();
         dto.expectValue = number.longValue();
-        dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getID();
+        dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
         return dto;
     }
 
     @Override
     public String toString() {
-        return "DemandResultDTO [itemID=" + itemID + ", demandType="
+        return "DemandResultDTO [itemId=" + itemID + ", demandType="
                 + demandType + ", expectValue=" + expectValue + "]";
     }
 

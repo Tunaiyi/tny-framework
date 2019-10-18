@@ -19,13 +19,13 @@ public class DefaultCapacitySupply implements InnerCapacitySupply {
     private Item<?> item;
 
     public DefaultCapacitySupply(Item<?> item, CapacityItemModel model) {
-        this.playerID = item.getPlayerID();
+        this.playerID = item.getPlayerId();
         this.item = item;
         this.model = model;
     }
 
     public DefaultCapacitySupply(Item<? extends CapacityItemModel> item) {
-        this.playerID = item.getPlayerID();
+        this.playerID = item.getPlayerId();
         this.model = item.getModel();
         this.item = item;
     }

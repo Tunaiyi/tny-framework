@@ -46,7 +46,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 执行方法
      */
-    private final GMethod method;
+    private final MethodAccessor method;
     /**
      * 方法名字
      */
@@ -85,7 +85,7 @@ public final class MethodControllerHolder extends ControllerHolder {
      * @param executor 调用的执行对象
      * @param method   方法
      */
-    protected MethodControllerHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory, final ClassControllerHolder classController, final GMethod method, final Controller controller) {
+    protected MethodControllerHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory, final ClassControllerHolder classController, final MethodAccessor method, final Controller controller) {
         super(executor, context, controller,
                 method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
                 method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
@@ -206,7 +206,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public int getID() {
+    public int getId() {
         return this.controller != null ? this.controller.value() : -1;
     }
 
@@ -428,7 +428,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = body;
                     break;
                 case UserID:
-                    value = message.getUserID();
+                    value = message.getUserId();
                     break;
                 case INDEX_PARAM:
                     try {

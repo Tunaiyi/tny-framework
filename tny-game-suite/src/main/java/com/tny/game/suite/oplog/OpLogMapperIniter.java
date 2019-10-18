@@ -46,7 +46,7 @@ public class OpLogMapperIniter implements AppPrepareStart {
                 ));
                 ClassScanner.instance()
                         .addSelector(selector)
-                        .scan(appContext.getScanPathArray());
+                        .scan(appContext.getScanPackages());
                 Collection<Class<?>> classes = selector.getClasses();
                 for (Class<?> cl : classes) {
                     int modifier = cl.getModifiers();

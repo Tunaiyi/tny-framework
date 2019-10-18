@@ -8,6 +8,8 @@ package com.tny.game.net.transport;
  */
 public interface WriteMessagePromise extends WriteMessageFuture {
 
+    void setRespondFuture(RespondFuture<?> respondFuture);
+
     void success();
 
     void failed(Throwable cause);

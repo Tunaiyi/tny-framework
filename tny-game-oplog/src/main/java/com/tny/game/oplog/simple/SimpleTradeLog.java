@@ -18,8 +18,8 @@ public class SimpleTradeLog implements StuffTradeLog {
 
     public SimpleTradeLog(Item<?> item, OpTradeType tradeType, long oldNumber, long alter, long newNumber) {
         super();
-        this.id = item.getID();
-        this.itemID = item.getItemID();
+        this.id = item.getId();
+        this.itemID = item.getItemId();
         this.oldNum = oldNumber;
         this.newNum = newNumber;
         this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
@@ -46,12 +46,12 @@ public class SimpleTradeLog implements StuffTradeLog {
 
 
     @Override
-    public long getID() {
+    public long getId() {
         return this.id;
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return this.itemID;
     }
 

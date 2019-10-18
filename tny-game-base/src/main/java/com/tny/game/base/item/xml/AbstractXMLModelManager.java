@@ -248,12 +248,12 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             } else if (model instanceof XMLModel) {
                 ((XMLModel) model).init();
             }
-            WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getID());
+            WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
             if (wrapperModel == null) {
                 wrapperModel = WrapperProxyFactory.createWrapper(model);
                 M proxyModel = wrapperModel.get$Wrapper();
-                handlerMap.put(model.getID(), wrapperModel);
-                modelMap.put(proxyModel.getID(), proxyModel);
+                handlerMap.put(model.getId(), wrapperModel);
+                modelMap.put(proxyModel.getId(), proxyModel);
                 if (proxyModel.getAlias() != null) {
                     if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
                         repeatAliasList.add(proxyModel.getAlias());

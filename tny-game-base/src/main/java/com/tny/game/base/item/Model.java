@@ -9,7 +9,7 @@ public interface Model extends Taggable {
      *
      * @return
      */
-    int getID();
+    int getId();
 
     /**
      * 获取别名

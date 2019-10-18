@@ -34,7 +34,7 @@
 
     <bean name="synchronizerHolder" class="com.tny.game.asyndb.spring.SpringSynchronizerHolder"/>
 
-    <bean name="objectPool" class="com.tny.game.asyndb.LocalAsyncDBObjectPool">
+    <bean name="objectPool" class="com.tny.game.asyndb.LocalAsyncObjectPool">
         <constructor-arg ref="syncDBExecutor"></constructor-arg>
         <constructor-arg ref="synchronizerHolder"></constructor-arg>
         <constructor-arg value="10000"></constructor-arg>

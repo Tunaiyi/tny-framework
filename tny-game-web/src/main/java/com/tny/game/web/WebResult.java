@@ -2,9 +2,11 @@ package com.tny.game.web;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.ResultCodes;
-import com.tny.game.common.utils.DoneResult;
+import com.tny.game.common.result.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.web.exception.*;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
@@ -19,13 +21,15 @@ public class WebResult<O> {
     @JsonProperty
     private O body;
 
-    //	public static WebResult fail(ResultCode code) {
-    //		WebResult code = new WebResult();
-    //		code.code = code.getCode();
-    //		return code;
-    //	}
+    public static <O> WebResult<O> exception(WebException cause) {
+        WebResult<Object> result = new WebResult<>();
+        result.code = cause.getResultCode().getCode();
+        result.message = cause.getMessage();
+        result.body = cause.getBody();
+        return as(result);
+    }
 
-    public static <O> WebResult<O> fail(ResultCode code) {
+    public static <O> WebResult<O> of(ResultCode code) {
         WebResult<O> result = new WebResult<>();
         result.code = code.getCode();
         result.message = code.getMessage();
@@ -40,7 +44,7 @@ public class WebResult<O> {
         return result;
     }
 
-    public static <O> WebResult<O> as(DoneResult<O> done) {
+    public static <O> WebResult<O> of(DoneResult<O> done) {
         WebResult<O> result = new WebResult<>();
         ResultCode code = done.getCode();
         result.code = code.getCode();
@@ -49,15 +53,7 @@ public class WebResult<O> {
         return result;
     }
 
-    public static <O> WebResult<O> fail(ResultCode code, O body) {
-        WebResult<O> result = new WebResult<>();
-        result.code = code.getCode();
-        result.message = code.getMessage();
-        result.body = body;
-        return result;
-    }
-
-    public static <O> WebResult<O> succ(String message, O body) {
+    public static <O> WebResult<O> success(O body, String message) {
         WebResult<O> result = new WebResult<>();
         result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
@@ -65,21 +61,35 @@ public class WebResult<O> {
         return result;
     }
 
-    public static <O> WebResult<O> succ(O body) {
+    public static <O> WebResult<O> success(O body) {
         WebResult<O> result = new WebResult<>();
         result.code = ResultCode.SUCCESS_CODE;
         result.body = body;
-//		code.message = body;
         return result;
     }
 
-    //	public static WebResult fail(ResultCode code, Object body) {
-    //		WebResult code = new WebResult();
-    //		code.code = code.getCode();
-    //		code.message = code.getMessage();
-    //		code.body = body;
-    //		return code;
-    //	}
+    /**
+     * 设置 message
+     *
+     * @param message 消息模板
+     * @param params  参数
+     * @return return this
+     */
+    public WebResult<O> withMessage(String message, Object... params) {
+        this.message = StringAide.format(message, params);
+        return this;
+    }
+
+    /**
+     * 填充消息, 以 message 为模板
+     *
+     * @param params 消息参数
+     * @return return this
+     */
+    public WebResult<O> withMessageParams(Object... params) {
+        this.message = StringAide.format(message, params);
+        return this;
+    }
 
     public int getCode() {
         return this.code;

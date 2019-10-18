@@ -1,7 +1,7 @@
 package com.tny.game.web.converter.excel;
 
 
-import com.tny.game.common.reflect.GPropertyAccessor;
+import com.tny.game.common.reflect.PropertyAccessor;
 import com.tny.game.web.converter.excel.annotation.ExcelColumn;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,9 +10,9 @@ public class ExcelFieldHolder implements Comparable<ExcelFieldHolder> {
 
 	private ExcelColumn column;
 
-	private GPropertyAccessor accessor;
+	private PropertyAccessor accessor;
 
-	public ExcelFieldHolder(ExcelColumn column, GPropertyAccessor accessor) {
+	public ExcelFieldHolder(ExcelColumn column, PropertyAccessor accessor) {
 		super();
 		this.column = column;
 		this.accessor = accessor;
@@ -28,7 +28,7 @@ public class ExcelFieldHolder implements Comparable<ExcelFieldHolder> {
 
 	public Object get(Object object) {
 		try {
-			return accessor.getPorpertyValue(object);
+			return accessor.getPropertyValue(object);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}

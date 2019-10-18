@@ -22,99 +22,134 @@ def getRepositoryPassword() {
     return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
 }
 
-allprojects {
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        //Spring repo
+        maven { url "http://m2.tnydev.com/repository/maven-public/" }
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url "http://repo.spring.io/release" }
+        maven { url 'http://repo.spring.io/plugins-snapshot' }
+    }
 
-    group "com.tny.game"
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE")
+    }
+}
+
+configure(allprojects) {
+    group 'com.tny.game'
     apply plugin: "idea"
+    apply plugin: 'maven'
 
     ext.verNumber = '4.0.x'
 //    ext.pj_version = verNumber + '-RELEASE'
     ext.pj_version = verNumber + '-SNAPSHOT'
-    version = pj_version
+    ext.version = pj_version
 
-    ext {
-        project_jdk = "1.8"
+    version pj_version
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        //Spring repo
+        maven { url "http://m2.tnydev.com/repository/maven-public/" }
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url "http://repo.spring.io/release" }
+        maven { url 'http://repo.spring.io/plugins-snapshot' }
     }
+
 
 }
 
-subprojects {
+configure(subprojects) {
+    apply plugin: 'java'
+    apply plugin: "idea"
+    apply plugin: 'java-library'
 
-    apply plugin: "java"
-    apply plugin: "maven"
+    print(name)
+    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.endsWith("-starter")
 
-    sourceCompatibility = project_jdk
-    targetCompatibility = project_jdk
+    if (springBoot) {
+        apply plugin: 'io.spring.dependency-management'
+//        apply plugin: 'org.springframework.boot'
+
+        buildscript {
+
+            dependencyManagement {
+                imports {
+                    mavenBom libs.spring_boot_dependencies
+                    mavenBom libs.spring_cloud_dependencies
+                }
+            }
+
+        }
+    }
+
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
 
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
         resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
     }
 
-    [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
 
-    task createJavaProject << {
-        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    buildscript {
+
+        task createJavaProject {
+            doLast {
+                sourceSets*.java.srcDirs*.each { it.mkdirs() }
+                sourceSets*.resources.srcDirs*.each { it.mkdirs() }
 //        sourceSets*.proto.srcDirs*.each { it.mkdirs() }
-        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-    }
-
-    task copyDependencies(type: Copy) {
-        from configurations.runtime
-        into 'build/libs' // 目标位置
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    artifacts {
-        archives sourcesJar
-    }
-
-    configurations {
-        provided
-    }
-
-    sourceSets {
-        main {
-            compileClasspath += configurations.provided
+            }
         }
-        test {
-            compileClasspath += configurations.provided
-            runtimeClasspath += configurations.provided
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
         }
     }
 
-    idea.module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
+
+//    sourceSets {
+//        main {
+//            compileClasspath += configurations.provided
+//        }
+//        test {
+//            compileClasspath += configurations.provided
+//            runtimeClasspath += configurations.provided
+//        }
+//    }
+//
+//    idea.module {
+//        scopes.PROVIDED.plus += [configurations.provided]
+//    }
 
     jar {
         exclude("**.sql", "**.xml", "**.properties")
     }
 
-    repositories {
-        mavenLocal()        //使用本地仓库
-        maven {
-            url "http://maven.tnydev.com/repository/maven-public/"
-        }
-        mavenCentral()
-    }
-
     dependencies {
 
-        testCompile(
-                "org.jmock:jmock-junit4:${vers.jmock}",
-                "junit:junit:${vers.junit}",
-                libs.'mockito',
-                libs.'spring-test',
-                libs.'slf4j-simple',
-                project(":tny-game-tester"),
-        )
+        implementation libs.slf4j_api
 
-        compile libs.'slf4j-api'
+        testImplementation libs.mockito
+        testImplementation libs.jmock_junit4
+        testImplementation libs.spring_test
+        testImplementation libs.slf4j_simple
+        testImplementation project(":tny-game-tester")
 
     }
 
@@ -147,15 +182,14 @@ subprojects {
 
     }
 
-}
+    idea {
+        module {
+            downloadSources = true
+        }
+//            project {
+//                jdkName = project_jdk
+//                languageLevel = project_jdk
+//            }
+    }
 
-idea {
-    module {
-        downloadSources = true
-    }
-    project {
-        jdkName = project_jdk
-        languageLevel = project_jdk
-//        vcs = "Git"
-    }
 }

@@ -25,8 +25,8 @@ public class TimeAwaitAndGet<T> implements Supplier<Done<T>> {
         if (this.timeout < 0)
             this.timeout = System.currentTimeMillis() + duration.toMillis();
         if (System.currentTimeMillis() > this.timeout)
-            return DoneResults.succ(object);
-        return DoneResults.fail();
+            return DoneResults.success(object);
+        return DoneResults.failure();
     }
 
 }

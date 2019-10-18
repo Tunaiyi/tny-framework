@@ -36,7 +36,7 @@ public class AccountService implements AppPrepareStart {
     }
 
     public Account loadOrCreateAccount(GameTicket ticket) throws CommandException {
-        String account = AccountUtils.openID2Account(ticket.getAccountTag(), ticket.getServer(), ticket.getOpenID());
+        String account = AccountUtils.openID2Account(ticket.getAccountTag(), ticket.getServer(), ticket.getOpenId());
         int max = GameInfo.info().getScopeType().isTest() ? Integer.MAX_VALUE : 10;
         int index = 0;
         Account accountObj = null;
@@ -44,10 +44,10 @@ public class AccountService implements AppPrepareStart {
             accountObj = this.getAccount(account, ticket);
             if (accountObj != null)
                 return accountObj;
-            long playerID = this.createUID(ticket.getServer());
+            long playerId = this.createUid(ticket.getServer());
             try {
-                AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenID(), playerID);
-                accountObj = new Account(playerID, account, ticket);
+                AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenId(), playerId);
+                accountObj = new Account(playerId, account, ticket);
                 int result = this.accountManager.updateIfNull(accountObj, ticket);
                 if (result > 0) {
                     accountObj.onCreate();
@@ -63,7 +63,7 @@ public class AccountService implements AppPrepareStart {
         return accountObj;
     }
 
-    private UIDCreator getUIDCreator(int serverID) throws CommandException {
+    private UIDCreator getUidCreator(int serverID) throws CommandException {
         if (!GameInfo.isHasServer(serverID))
             throw new CommandException(SuiteResultCode.AUTH_USER_LOGIN_ERROR_SID);
         UIDCreator creator = this.UIDCreatorMap.get(serverID);
@@ -77,8 +77,8 @@ public class AccountService implements AppPrepareStart {
         return creator;
     }
 
-    private long createUID(int serverID) throws CommandException {
-        return this.getUIDCreator(serverID).createID();
+    private long createUid(int serverId) throws CommandException {
+        return this.getUidCreator(serverId).createId();
     }
 
     public void updateOfflineAt(Account account) {
@@ -94,7 +94,7 @@ public class AccountService implements AppPrepareStart {
         try {
             account.online(ip);
             account.setDevice(ticket.getDevice());
-            account.setDeviceID(ticket.getDeviceID());
+            account.setDeviceId(ticket.getDeviceId());
             if (StringUtils.isNoneBlank(ticket.getPf()) && !Objects.equals(account.getPf(), ticket.getPf()))
                 account.setPf(ticket.getPf());
             this.accountManager.updateOnlineAt(account, ticket);
@@ -132,7 +132,7 @@ public class AccountService implements AppPrepareStart {
 
         private double growAtPCT = 0.5;
 
-        private int serverID;
+        private int serverId;
 
         private Range<Long> uidRange;
 
@@ -142,26 +142,26 @@ public class AccountService implements AppPrepareStart {
 
         private Queue<Long> idQueue = new ConcurrentLinkedQueue<>();
 
-        public UIDCreator(int serverID) {
+        public UIDCreator(int serverId) {
             super();
-            this.serverID = serverID;
-            this.uidRange = IDAide.createUIDRange(serverID);
+            this.serverId = serverId;
+            this.uidRange = IDAide.createUIDRange(serverId);
             this.manager = AccountService.this.accountManager;
-            List<Long> emptyIDs = this.manager.findEmptyUID(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
+            List<Long> emptyIDs = this.manager.findEmptyUid(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
             this.idQueue.addAll(emptyIDs);
             if (this.idQueue.isEmpty())
                 this.doGrow();
         }
 
-        public int getServerID() {
-            return this.serverID;
+        public int getServerId() {
+            return this.serverId;
         }
 
         public boolean isFull() {
             return this.full;
         }
 
-        public Long createID() {
+        public Long createId() {
             Long id = null;
             while (!this.isFull()) {
                 id = this.idQueue.poll();
@@ -174,7 +174,7 @@ public class AccountService implements AppPrepareStart {
         }
 
         private void doGrow() {
-            Long maxUID = this.manager.findMaxUID(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
+            Long maxUID = this.manager.findMaxUid(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
             if (maxUID == null)
                 maxUID = this.uidRange.lowerEndpoint() + 10000 + ThreadLocalRandom.current().nextInt(10000);
             maxUID = Math.min(maxUID, this.uidRange.upperEndpoint());
@@ -221,7 +221,7 @@ public class AccountService implements AppPrepareStart {
     @Override
     public void prepareStart() throws Exception {
         for (GameInfo info : GameInfo.getAllGamesInfo()) {
-            this.getUIDCreator(info.getServerID());
+            this.getUidCreator(info.getZoneId());
         }
     }
 

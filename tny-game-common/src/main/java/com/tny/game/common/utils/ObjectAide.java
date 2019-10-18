@@ -5,9 +5,12 @@ import com.tny.game.common.reflect.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.lang.reflect.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -115,7 +118,7 @@ public class ObjectAide extends ObjectUtils {
             } else if (object instanceof Number) {
                 return as(as(object, Number.class).doubleValue());
             } else if (object instanceof String) {
-                return as(NumberUtils.toDouble(as(object)));
+                return as(NumberUtils.toDouble(as(object, String.class)));
             }
         } else if (clazz == short.class || clazz == Short.class) {
             if (object instanceof Short) {
@@ -144,9 +147,9 @@ public class ObjectAide extends ObjectUtils {
         } else if (Enum.class.isAssignableFrom(clazz)) {
             T value = null;
             if (object instanceof String)
-                value = Enums.uncheckOfName(clazz, as(object));
-            if (value == null && EnumID.class.isAssignableFrom(clazz))
-                value = Enums.uncheckOf(as(clazz), object);
+                value = EnumAide.uncheckOfName(clazz, as(object));
+            if (value == null && EnumIdentifiable.class.isAssignableFrom(clazz))
+                value = EnumAide.uncheckOf(as(clazz), object);
             return value;
         }
         throw new ClassCastException(object + "is not " + clazz + "instance");
@@ -202,9 +205,9 @@ public class ObjectAide extends ObjectUtils {
             if (checkClass == Short.class) {
                 return as(number.shortValue());
             }
-            if (EnumID.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
+            if (EnumIdentifiable.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
                 for (T value : clazz.getEnumConstants()) {
-                    Object id = ((EnumID) value).getID();
+                    Object id = ((EnumIdentifiable) value).getId();
                     if (id instanceof Number) {
                         if (((Number) id).intValue() == ((Number) object).intValue())
                             return value;

@@ -1,10 +1,10 @@
 package com.tny.game.net.transport;
 
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
 
-public enum CertificateStatus implements EnumID<Integer> {
+public enum CertificateStatus implements EnumIdentifiable<Integer> {
 
     /**
      * 无效的
@@ -37,7 +37,7 @@ public enum CertificateStatus implements EnumID<Integer> {
     }
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return id;
     }
 

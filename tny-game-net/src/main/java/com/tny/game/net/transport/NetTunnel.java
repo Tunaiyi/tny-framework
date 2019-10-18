@@ -6,7 +6,7 @@ import com.tny.game.net.message.*;
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID> {
+public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UID>, Sender<UID> {
 
     /**
      * @return 获取绑定中断

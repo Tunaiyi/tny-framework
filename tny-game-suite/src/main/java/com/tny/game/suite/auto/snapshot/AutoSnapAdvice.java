@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.behavior.Action;
 import com.tny.game.common.event.annotation.Listener;
 import com.tny.game.common.reflect.aop.AfterReturningAdvice;
@@ -67,9 +67,9 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
                 Action action = snapMethod.getAction(args);
                 Collection<SnapParamEntry> params = snapMethod.getSnapParams(args);
                 if (action != null) {
-                    OperationLogger.logger().logSnapshotByClass((Identifiable) target, action, snapMethod.getSnapshotTypes());
+                    OperationLogger.logger().logSnapshotByClass((Identifier) target, action, snapMethod.getSnapshotTypes());
                     for (SnapParamEntry param : params)
-                        OperationLogger.logger().logSnapshotByClass((Identifiable) param.getObject(), action, param.getSnapshotTypes());
+                        OperationLogger.logger().logSnapshotByClass((Identifier) param.getObject(), action, param.getSnapshotTypes());
                 }
             }
         } catch (Throwable e) {

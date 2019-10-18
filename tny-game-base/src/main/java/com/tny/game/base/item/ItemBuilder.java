@@ -16,7 +16,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
     /**
      * 玩家ID
      */
-    protected long playerID;
+    protected long playerId;
 
     /**
      * 物品模型
@@ -26,11 +26,11 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
     /**
      * 设置玩家ID <br>
      *
-     * @param playerID 玩家id
+     * @param playerId 玩家id
      * @return 构建器
      */
-    public B setPlayerID(long playerID) {
-        this.playerID = playerID;
+    public B setPlayerId(long playerId) {
+        this.playerId = playerId;
         return (B) this;
     }
 
@@ -53,7 +53,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      */
     public I build() {
         I entity = createItem();
-        entity.setPlayerID(playerID);
+        entity.setPlayerId(playerId);
         entity.setModel(itemModel);
         afterModelItem(entity);
         return entity;

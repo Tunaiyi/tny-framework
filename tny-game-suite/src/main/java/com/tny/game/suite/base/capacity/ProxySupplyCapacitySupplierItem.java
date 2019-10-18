@@ -7,18 +7,18 @@ package com.tny.game.suite.base.capacity;
 public abstract class ProxySupplyCapacitySupplierItem<IM extends CapacityItemModel> extends CapacitySupplierItem<IM> implements ProxySupplyCapacitySupplier {
 
     @Override
-    public long getID() {
-        return this.getID();
+    public long getId() {
+        return this.getId();
     }
 
     @Override
-    public int getItemID() {
-        return this.getItemID();
+    public int getItemId() {
+        return this.getItemId();
     }
 
     @Override
-    public long getPlayerID() {
-        return this.getPlayerID();
+    public long getPlayerId() {
+        return this.getPlayerId();
     }
 
 

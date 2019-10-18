@@ -94,7 +94,7 @@ public class EnumerConfiger {
         return name;
     }
 
-    public String getID() {
+    public String getId() {
         return ID;
     }
 

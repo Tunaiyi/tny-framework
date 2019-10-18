@@ -5,10 +5,8 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            libs.'log4j-api',
-            libs.'log4j-core',
-            project(":tny-game-oplog"),
-    )
+    api libs.log4j_api
+    api libs.log4j_core
+    api project(":tny-game-oplog")
 
 }

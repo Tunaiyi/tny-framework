@@ -20,8 +20,8 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
                 return ObjectAide.as(goal);
         }
         return saveBySuppliers(
-                goal.getID(),
-                goal.getItemID(),
+                goal.getId(),
+                goal.getItemId(),
                 goal.suppliersStream(),
                 visitor,
                 expireAtOf(goal, expireAt));

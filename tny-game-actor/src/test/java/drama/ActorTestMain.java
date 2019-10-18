@@ -2,8 +2,7 @@ package drama;
 
 
 import com.tny.game.actor.Actor;
-import com.tny.game.actor.local.LocalActor;
-import com.tny.game.actor.local.LocalActorContext;
+import com.tny.game.actor.local.*;
 import com.tny.game.actor.stage.Flows;
 import com.tny.game.actor.stage.VoidFlow;
 
@@ -17,16 +16,16 @@ public class ActorTestMain {
     static class TestService {
 
         public void tell(Actor<String, Object> actor) {
-            System.out.println("tell " + actor.getActorID());
+            System.out.println("tell " + actor.getActorId());
         }
 
         public String askName(Actor<String, Object> actor) {
-            System.out.println("askName " + actor.getActorID());
-            return actor.getActorID();
+            System.out.println("askName " + actor.getActorId());
+            return actor.getActorId();
         }
 
         public String askAge(Actor<String, Object> actor, String name) {
-            System.out.println("askAge " + actor.getActorID());
+            System.out.println("askAge " + actor.getActorId());
             return name + " 是 " + 10 + "岁";
         }
 
@@ -36,6 +35,13 @@ public class ActorTestMain {
 
     public static void main(String[] args) throws InterruptedException {
         TestService service = new TestService();
+        ActorProps.of(ActorProps.of().setActorHandler(mail -> {
+            Object message = mail.getMessage();
+            if (message instanceof String) {
+
+            }
+            return null;
+        }));
         LocalActor<String, Object> actor1 = context.actorOf("Actor1");
         LocalActor<String, Object> actor2 = context.actorOf("Actor2");
 

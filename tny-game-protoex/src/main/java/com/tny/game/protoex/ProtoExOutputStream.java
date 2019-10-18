@@ -152,8 +152,8 @@ public class ProtoExOutputStream implements ProtoExStream {
         if (value == null)
             return;
         if (schema.isRaw()
-                && schema.getProtoExID() != WireFormat.PROTO_ID_REPEAT
-                && schema.getProtoExID() != WireFormat.PROTO_ID_MAP)
+                && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
+                && schema.getProtoExId() != WireFormat.PROTO_ID_MAP)
             throw ProtobufExException.rawTypeIsNoLengthLimitation(conf.getDefaultType());
         LinkedByteBuffer currentBuffer = this.byteBuffer;
         ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.byteBuffer.getTail());

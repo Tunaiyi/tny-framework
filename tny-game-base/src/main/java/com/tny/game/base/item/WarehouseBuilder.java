@@ -6,12 +6,12 @@ public abstract class WarehouseBuilder {
     /**
      * 玩家ID
      */
-    protected long playerID;
+    protected long playerId;
 
     protected OwnerExplorer ownerExplorer;
 
-    public WarehouseBuilder setPlayerID(long playerID) {
-        this.playerID = playerID;
+    public WarehouseBuilder setPlayerId(long playerId) {
+        this.playerId = playerId;
         return this;
     }
 
@@ -27,7 +27,7 @@ public abstract class WarehouseBuilder {
      */
     public Warehouse build() {
         AbstractWarehouse entity = this.createWarehouse();
-        entity.setPlayerID(this.playerID);
+        entity.setPlayerId(this.playerId);
         entity.setOwnerExplorer(this.ownerExplorer);
         return entity;
     }

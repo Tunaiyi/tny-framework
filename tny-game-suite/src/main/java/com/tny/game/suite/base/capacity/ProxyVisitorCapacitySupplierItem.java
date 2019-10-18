@@ -20,7 +20,7 @@ public abstract class ProxyVisitorCapacitySupplierItem<IM extends CapacityItemMo
     @Override
     protected void refresh() {
         super.refresh();
-        this.storer.saveSupplier(this.getSupplierType(), this.getID(), this.getItemID(), this.capacitySupply);
+        this.storer.saveSupplier(this.getSupplierType(), this.getId(), this.getItemId(), this.capacitySupply);
     }
 
     @Override
@@ -32,6 +32,6 @@ public abstract class ProxyVisitorCapacitySupplierItem<IM extends CapacityItemMo
     @Override
     protected void effect() {
         super.effect();
-        this.storer.saveSupplier(this.getSupplierType(), this.getID(), this.getItemID(), this.capacitySupply);
+        this.storer.saveSupplier(this.getSupplierType(), this.getId(), this.getItemId(), this.capacitySupply);
     }
 }

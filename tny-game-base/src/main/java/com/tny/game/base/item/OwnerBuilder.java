@@ -17,7 +17,7 @@ public abstract class OwnerBuilder<IM extends ItemModel, S extends Stuff<?>, O e
     /**
      * 玩家ID
      */
-    protected long playerID;
+    protected long playerId;
 
     /**
      * 物品模型列表
@@ -30,8 +30,8 @@ public abstract class OwnerBuilder<IM extends ItemModel, S extends Stuff<?>, O e
      * @param playerID 玩家id
      * @return 返回ownerBuilder对象
      */
-    public B setPlayerID(long playerID) {
-        this.playerID = playerID;
+    public B setPlayerId(long playerId) {
+        this.playerId = playerId;
         return (B) this;
     }
 
@@ -65,9 +65,9 @@ public abstract class OwnerBuilder<IM extends ItemModel, S extends Stuff<?>, O e
      */
     public O build() {
         StuffOwner<IM, ?, S> entity = createItemOwner();
-        entity.setPlayerID(playerID);
+        entity.setPlayerId(playerId);
         for (S item : this.itemSet) {
-            entity.itemMap.put(item.getID(), item);
+            entity.itemMap.put(item.getId(), item);
         }
         return (O) entity;
     }

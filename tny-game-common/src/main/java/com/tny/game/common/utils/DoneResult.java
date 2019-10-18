@@ -2,97 +2,32 @@ package com.tny.game.common.utils;
 
 import com.tny.game.common.result.*;
 
-import java.util.Optional;
-import java.util.function.*;
+import java.util.function.BiConsumer;
 
 /**
- * 做完的结果
+ * <p>
  *
- * @param <M>
- * @author KGTny
+ * @author Kun Yang
  */
-public class DoneResult<M> implements Done<M> {
-
-    protected ResultCode code;
-    protected M returnValue;
-
-    protected DoneResult(M returnValue, ResultCode code) {
-        this.code = code;
-        this.returnValue = returnValue;
-    }
+public interface DoneResult<M> extends Done<M> {
 
     /**
-     * 是否成功 code == ResultCode.SUCCESS
+     * @return 获取结果码
+     */
+    ResultCode getCode();
+
+    /**
+     * 如果失败则调用 consumer
      *
-     * @return
+     * @param consumer 参数
      */
-    @Override
-    public boolean isSuccess() {
-        return Results.isSucc(this.code);
-    }
+    void ifFailure(BiConsumer<ResultCode, ? super M> consumer);
 
     /**
-     * 是否成功 code != ResultCode.SUCCESS
+     * 调用 consumer
      *
-     * @return
+     * @param consumer 接收
      */
-    public boolean isFailed() {
-        return !Results.isSucc(this.code);
-    }
-
-    /**
-     * 是否有结果值呈现
-     *
-     * @return
-     */
-    @Override
-    public boolean isPresent() {
-        return this.returnValue != null;
-    }
-
-    /**
-     * @return 转成Optional
-     */
-    public Optional<M> optional() {
-        return Optional.ofNullable(this.returnValue);
-    }
-
-    public void ifSuccess(Consumer<? super M> consumer) {
-        if (this.isSuccess())
-            consumer.accept(get());
-    }
-
-    public void ifFailed(BiConsumer<ResultCode, ? super M> consumer) {
-        if (!this.isSuccess())
-            consumer.accept(this.code, get());
-    }
-
-    public void ifResult(BiConsumer<ResultCode, ? super M> consumer) {
-        consumer.accept(this.code, get());
-    }
-
-    /**
-     * 获取结果值
-     *
-     * @return
-     */
-    public ResultCode getCode() {
-        return this.code;
-    }
-
-    /**
-     * 获取返回结果
-     *
-     * @return
-     */
-    @Override
-    public M get() {
-        return this.returnValue;
-    }
-
-    @Override
-    public String toString() {
-        return "ResultDone [code=" + this.code + ", returnValue=" + this.returnValue + "]";
-    }
+    void then(BiConsumer<ResultCode, ? super M> consumer);
 
 }

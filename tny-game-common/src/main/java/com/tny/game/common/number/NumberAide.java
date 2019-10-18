@@ -3,7 +3,7 @@ package com.tny.game.common.number;
 import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Created by Kun Yang on 16/2/17.
@@ -54,7 +54,6 @@ public class NumberAide {
         return (N) value;
     }
 
-    @SuppressWarnings("unchecked")
     public static <N extends Number> N as(String source, Class<N> clazz) {
         if (Integer.class == clazz || int.class == clazz)
             return ObjectAide.as(NumberUtils.toInt(source));
@@ -460,5 +459,112 @@ public class NumberAide {
     public static int desCompare(double x, double y) {
         return Double.compare(y, x);
     }
+
+    private static int shift(int length) {
+        int shift = 0;
+        int value = 0;
+        for (int index = 0; index < 8; index++) {
+            int current = (value << 1) | 1;
+            if (current <= length) {
+                shift++;
+                value = current;
+            } else {
+                break;
+            }
+        }
+        return shift;
+    }
+
+    public static void main(String[] args) {
+        for (int index = 0; index < 512; index++)
+            System.out.println(index + " shift : " + shift(index));
+    }
+
+    // public static String numberUnsignedConvert(long val, ScaleCharacterSet set) {
+    //     int mag = Long.SIZE - Long.numberOfLeadingZeros(val);
+    //     int shift = shift(set.length());
+    //     int chars = Math.max(((mag + (shift - 1)) / shift), 1);
+    //     char[] buf = new char[chars];
+    //     formatUnsignedInt(val, shift, buf, 0, chars, set);
+    //     return new String(buf);
+    // }
+    //
+    // public static String numberUnsignedConvert(int val, ScaleCharacterSet set) {
+    //     int mag = Integer.SIZE - Integer.numberOfLeadingZeros(val);
+    //     int shift = shift(set.length());
+    //     int chars = Math.max(((mag + (shift - 1)) / shift), 1);
+    //     char[] buf = new char[chars];
+    //     formatUnsignedInt(val, shift, buf, 0, chars, set);
+    //     return new String(buf);
+    // }
+    //
+    // private static void formatUnsignedInt(long val, int shift, char[] buf, int offset, int len, ScaleCharacterSet set) {
+    //     int charPos = len;
+    //     int radix = 1 << shift;
+    //     int mask = radix - 1;
+    //     do {
+    //         buf[offset + --charPos] = set.getChar((int)(val & mask));
+    //         val >>>= shift;
+    //     } while (val != 0 && charPos > 0);
+    // }
+    //
+    // private static void formatUnsignedInt(int val, int shift, char[] buf, int offset, int len, ScaleCharacterSet set) {
+    //     int charPos = len;
+    //     int radix = 1 << shift;
+    //     int mask = radix - 1;
+    //     do {
+    //         buf[offset + --charPos] = set.getChar(val & mask);
+    //         val >>>= shift;
+    //     } while (val != 0 && charPos > 0);
+    // }
+
+    public static String numberConverter(int number, ScaleCharacterSet set) {
+        int radix = set.length();
+        if (radix < Character.MIN_RADIX)
+            radix = 10;
+        if (radix == 10)
+            return Long.toString(number);
+        char[] buf = new char[33];
+        int charPos = buf.length - 1;
+        int value = number;
+        boolean negative = (value < 0);
+        if (!negative) {
+            value = -value;
+        }
+        while (value <= -radix) {
+            buf[charPos--] = set.getChar((int) (-(value % radix)));
+            value = value / radix;
+        }
+        buf[charPos] = set.getChar((int) (-value));
+        if (negative) {
+            buf[--charPos] = '-';
+        }
+        return new String(buf, charPos, (buf.length - charPos));
+    }
+
+    public static String numberConverter(long number, ScaleCharacterSet set) {
+        int radix = set.length();
+        if (radix < Character.MIN_RADIX)
+            radix = 10;
+        if (radix == 10)
+            return Long.toString(number);
+        char[] buf = new char[65];
+        int charPos = buf.length - 1;
+        long value = number;
+        boolean negative = (value < 0);
+        if (!negative) {
+            value = -value;
+        }
+        while (value <= -radix) {
+            buf[charPos--] = set.getChar((int) (-(value % radix)));
+            value = value / radix;
+        }
+        buf[charPos] = set.getChar((int) (-value));
+        if (negative) {
+            buf[--charPos] = '-';
+        }
+        return new String(buf, charPos, (buf.length - charPos));
+    }
+
 
 }

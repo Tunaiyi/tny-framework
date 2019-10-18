@@ -75,7 +75,7 @@ public class StringAide {
 
         int i = 0;
         int delimIndex;
-        StringBuffer sbuf = new StringBuffer(messagePattern.length() + 50);
+        StringBuffer buffer = new StringBuffer(messagePattern.length() + 50);
 
         int index;
         for (index = 0; index < argArray.length; index++) {
@@ -89,38 +89,38 @@ public class StringAide {
                 } else {
                     // add the tail string which contains no variables and return
                     // the result.
-                    sbuf.append(messagePattern.substring(i, messagePattern.length()));
-                    return sbuf.toString();
+                    buffer.append(messagePattern.substring(i, messagePattern.length()));
+                    return buffer.toString();
                 }
             } else {
                 if (isEscapedDelimeter(messagePattern, delimIndex)) {
                     if (!isDoubleEscaped(messagePattern, delimIndex)) {
                         index--; // DELIM_START was escaped, thus should not be incremented
-                        sbuf.append(messagePattern.substring(i, delimIndex - 1));
-                        sbuf.append(DELIM_START);
+                        buffer.append(messagePattern.substring(i, delimIndex - 1));
+                        buffer.append(DELIM_START);
                         i = delimIndex + 1;
                     } else {
                         // The escape character preceding the delimiter start is
                         // itself escaped: "abc x:\\{}"
                         // we have to consume one backward slash
-                        sbuf.append(messagePattern.substring(i, delimIndex - 1));
-                        deeplyAppendParameter(sbuf, argArray[index], new HashMap<>());
+                        buffer.append(messagePattern.substring(i, delimIndex - 1));
+                        deeplyAppendParameter(buffer, argArray[index], new HashMap<>());
                         i = delimIndex + 2;
                     }
                 } else {
                     // normal case
-                    sbuf.append(messagePattern.substring(i, delimIndex));
-                    deeplyAppendParameter(sbuf, argArray[index], new HashMap<>());
+                    buffer.append(messagePattern.substring(i, delimIndex));
+                    deeplyAppendParameter(buffer, argArray[index], new HashMap<>());
                     i = delimIndex + 2;
                 }
             }
         }
         // append the characters following the last {} pair.
-        sbuf.append(messagePattern.substring(i, messagePattern.length()));
+        buffer.append(messagePattern.substring(i, messagePattern.length()));
         if (index < argArray.length - 1) {
-            return sbuf.toString();
+            return buffer.toString();
         } else {
-            return sbuf.toString();
+            return buffer.toString();
         }
     }
 

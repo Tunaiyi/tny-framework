@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public interface AbilitiesCache<I extends ItemModel> {
 
-    long getPlayerID();
+    long getPlayerId();
 
     I itemModel();
 

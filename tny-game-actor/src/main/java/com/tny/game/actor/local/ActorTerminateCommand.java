@@ -20,7 +20,7 @@ class ActorTerminateCommand extends BaseActorCommand<Void> {
     @Override
     protected Done<Void> doHandle() {
         actorCell.handle(this.message);
-        return DoneResults.succNullable(null);
+        return DoneResults.successNullable(null);
     }
 
 }

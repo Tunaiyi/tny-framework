@@ -1,6 +1,5 @@
 package com.tny.game.common.utils.rsa;
 
-import static com.tny.game.common.utils.StringAide.*;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -25,7 +24,7 @@ import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 public class RSAUtils {
 
@@ -107,7 +106,6 @@ public class RSAUtils {
      *
      * @param key 私钥字符串
      * @return 返回私钥
-     * @throws InvalidKeySpecException
      */
     public static RSAPrivateKey toPrivateKey(String key) throws InvalidKeySpecException {
         byte[] data = Base64.decodeBase64(key);
@@ -119,7 +117,6 @@ public class RSAUtils {
      *
      * @param key 公钥字符串
      * @return 返回公钥
-     * @throws InvalidKeySpecException
      */
     public static RSAPublicKey toPublicKey(String key) throws InvalidKeySpecException {
         byte[] data = Base64.decodeBase64(key);
@@ -132,7 +129,6 @@ public class RSAUtils {
      * @param data 加密的内容
      * @param key  私钥
      * @return 返回解密内容
-     * @throws Exception
      */
     public static byte[] decryptByPrivateKey(byte[] data, String key)
             throws Exception {
@@ -154,7 +150,6 @@ public class RSAUtils {
      * @param data 加密的内容
      * @param key  公钥
      * @return 返回解密内容
-     * @throws Exception
      */
     public static byte[] decryptByPublicKey(byte[] data, String key)
             throws Exception {
@@ -176,7 +171,6 @@ public class RSAUtils {
      * @param data 要加密的内容
      * @param key  私钥
      * @return 返回加密内容
-     * @throws Exception
      */
     public static byte[] encryptByPrivateKey(byte[] data, String key)
             throws Exception {
@@ -187,7 +181,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data       待签名数据
+     * @param data           待签名数据
      * @param privateKeyWord 密钥
      * @return byte[] 数字签名
      */
@@ -198,7 +192,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data       待签名数据
+     * @param data           待签名数据
      * @param privateKeyWord 密钥
      * @return byte[] 数字签名
      */
@@ -268,7 +262,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data       待签名数据
+     * @param data      待签名数据
      * @param publicKey 密钥
      * @return byte[] 数字签名
      */
@@ -293,7 +287,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data       待签名数据
+     * @param data      待签名数据
      * @param publicKey 密钥
      * @return byte[] 数字签名
      */
@@ -307,7 +301,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data      待签名数据
+     * @param data          待签名数据
      * @param publicKeyWord 密钥
      * @return byte[] 数字签名
      */
@@ -318,7 +312,7 @@ public class RSAUtils {
     /**
      * 签名
      *
-     * @param data       待签名数据
+     * @param data          待签名数据
      * @param publicKeyWord 密钥
      * @return byte[] 数字签名
      */
@@ -331,64 +325,45 @@ public class RSAUtils {
         if (size % 64 != 0)
             throw new IllegalArgumentException(format("密码长度 {} 不为64的倍数", size));
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-        keyPairGenerator.initialize(KEY_SIZE);
+        keyPairGenerator.initialize(size);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        return new RSAKeyPair(privateKey, publicKey);
+        return new RSAKeyPair(keyPair);
     }
 
     public static RSAKeyPair getKeyPair() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-        keyPairGenerator.initialize(KEY_SIZE);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        return new RSAKeyPair(privateKey, publicKey);
+        return getKeyPair(KEY_SIZE);
     }
 
     private static byte[] encryptByCipher(byte[] data, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException {
         int maxEncryptBlock = cipher.getOutputSize(data.length) - 11;
-        int inputLen = data.length;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            int offSet = 0;
-            byte[] cache;
-            int i = 0;
-            while (inputLen - offSet > 0) {
-                if (inputLen - offSet > maxEncryptBlock) {
-                    cache = cipher.doFinal(data, offSet, maxEncryptBlock);
-                } else {
-                    cache = cipher.doFinal(data, offSet, inputLen - offSet);
-                }
-                out.write(cache, 0, cache.length);
-                i++;
-                offSet = i * maxEncryptBlock;
-            }
-            byte[] encryptedData = out.toByteArray();
-            return encryptedData;
+            return getBytes(data, cipher, maxEncryptBlock, out);
         }
     }
 
-    private static byte[] decryptByCipher(byte[] data, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException {
-        int maxdecryptBlock = cipher.getOutputSize(data.length);
+    private static byte[] getBytes(byte[] data, Cipher cipher, int maxEncryptBlock, ByteArrayOutputStream out) throws IllegalBlockSizeException, BadPaddingException {
         int inputLen = data.length;
         int offSet = 0;
-        byte[] cache;
         int i = 0;
+        byte[] cache;
+        while (inputLen - offSet > 0) {
+            if (inputLen - offSet > maxEncryptBlock) {
+                cache = cipher.doFinal(data, offSet, maxEncryptBlock);
+            } else {
+                cache = cipher.doFinal(data, offSet, inputLen - offSet);
+            }
+            out.write(cache, 0, cache.length);
+            i++;
+            offSet = i * maxEncryptBlock;
+        }
+        return out.toByteArray();
+    }
+
+    private static byte[] decryptByCipher(byte[] data, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException {
+        int maxDecryptBlock = cipher.getOutputSize(data.length);
         // 对数据分段解密
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            while (inputLen - offSet > 0) {
-                if (inputLen - offSet > maxdecryptBlock) {
-                    cache = cipher.doFinal(data, offSet, maxdecryptBlock);
-                } else {
-                    cache = cipher.doFinal(data, offSet, inputLen - offSet);
-                }
-                out.write(cache, 0, cache.length);
-                i++;
-                offSet = i * maxdecryptBlock;
-            }
-            byte[] decryptedData = out.toByteArray();
-            return decryptedData;
+            return getBytes(data, cipher, maxDecryptBlock, out);
         }
     }
 

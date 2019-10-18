@@ -28,7 +28,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     protected Done<T> doHandle() {
-        return DoneResults.succNullable((T) actorCell.handle(this));
+        return DoneResults.successNullable((T) actorCell.handle(this));
     }
 
     @Override

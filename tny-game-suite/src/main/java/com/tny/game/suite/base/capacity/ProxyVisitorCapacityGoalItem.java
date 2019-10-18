@@ -32,31 +32,31 @@ public abstract class ProxyVisitorCapacityGoalItem<IM extends ItemModel> extends
     @Override
     protected void accept(CapacitySupplier supplier) {
         this.capacityGather.accept(supplier);
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
     @Override
     protected void accept(Collection<? extends CapacitySupplier> suppliers) {
         this.capacityGather.accept(suppliers);
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
     @Override
     protected void reduce(CapacitySupplier supplier) {
         this.capacityGather.reduce(supplier);
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
     @Override
     protected void reduce(Collection<CapacitySupplier> suppliers) {
         this.capacityGather.reduce(suppliers);
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
     @Override
     protected void clear() {
         this.capacityGather.clear();
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
     @Override
@@ -66,7 +66,7 @@ public abstract class ProxyVisitorCapacityGoalItem<IM extends ItemModel> extends
 
     @Override
     protected void effect() {
-        storer.saveGoal(this.getID(), this.getItemID(), capacityGather);
+        storer.saveGoal(this.getId(), this.getItemId(), capacityGather);
     }
 
 }

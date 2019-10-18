@@ -39,7 +39,7 @@ public class DemandParamsObject {
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         ItemExplorer itemExplorer = context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
-            Item<?> item = itemExplorer.getItem(playerID, model.getID());
+            Item<?> item = itemExplorer.getItem(playerID, model.getId());
             attributeMap.put(alias, item);
         }
     }

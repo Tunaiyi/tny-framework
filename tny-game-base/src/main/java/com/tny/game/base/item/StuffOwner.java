@@ -17,7 +17,7 @@ public abstract class StuffOwner<IM extends ItemModel, SM extends ItemModel, S e
      * 玩家id
      */
     //	@CacheID(index = 0)
-    protected long playerID;
+    protected long playerId;
 
     /**
      * 拥有事物类型
@@ -34,18 +34,18 @@ public abstract class StuffOwner<IM extends ItemModel, SM extends ItemModel, S e
     protected Map<Long, S> itemMap = new CopyOnWriteMap<>();
 
     @Override
-    public long getPlayerID() {
-        return playerID;
+    public long getPlayerId() {
+        return playerId;
     }
 
     @Override
-    public S getItemByID(long id) {
+    public S getItemById(long id) {
         return itemMap.get(id);
     }
 
     @Override
-    public S getItemByItemID(int itemID) {
-        return itemMap.get((long) itemID);
+    public S getItemByItemId(int itemId) {
+        return itemMap.get((long) itemId);
     }
 
     @Override
@@ -61,10 +61,10 @@ public abstract class StuffOwner<IM extends ItemModel, SM extends ItemModel, S e
     protected void setItemCollection(Collection<S> collection) {
         itemMap.clear();
         for (S stuff : collection)
-            itemMap.put(stuff.getID(), stuff);
+            itemMap.put(stuff.getId(), stuff);
     }
 
-    protected void setPlayerID(long playerID) {
-        this.playerID = playerID;
+    protected void setPlayerId(long playerId) {
+        this.playerId = playerId;
     }
 }

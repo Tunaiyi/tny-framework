@@ -61,11 +61,11 @@ public class CollectionTrade implements Trade {
 
     private void collectItem(Collection<? extends TradeItem<?>> tradeItemCollection) {
         for (TradeItem<?> tradeItem : tradeItemCollection) {
-            CollectionTradeItem item = this.tradeMap.get(tradeItem.getItemModel().getID());
+            CollectionTradeItem item = this.tradeMap.get(tradeItem.getItemModel().getId());
             if (item != null) {
                 item.collect(tradeItem);
             } else {
-                this.tradeMap.put(tradeItem.getItemModel().getID(), new CollectionTradeItem(tradeItem));
+                this.tradeMap.put(tradeItem.getItemModel().getId(), new CollectionTradeItem(tradeItem));
             }
         }
     }
@@ -88,7 +88,7 @@ public class CollectionTrade implements Trade {
 
     @Override
     public Number getNumber(ItemModel model) {
-        TradeItem<ItemModel> tradeItem = this.tradeMap.get(model.getID());
+        TradeItem<ItemModel> tradeItem = this.tradeMap.get(model.getId());
         if (tradeItem == null)
             return 0;
         return tradeItem.getNumber();

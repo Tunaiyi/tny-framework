@@ -63,10 +63,10 @@ public final class WireFormat {
     private WireFormat() {
     }
 
-    public final static int MAX_PROTO_EX_ID = 1;
-    public final static int MIN_PROTO_EX_ID = 536870911;
-    public final static int MAX_FIELD_NUMBER = 1;
-    public final static int MIN_FIELD_NUMBER = 536870911;
+    public final static int MAX_PROTO_EX_ID = 536870911;
+    public final static int MIN_PROTO_EX_ID = 1;
+    public final static int MAX_FIELD_NUMBER = 536870911;
+    public final static int MIN_FIELD_NUMBER = 1;
 
     public final static int PROTO_ID_CHAR = 1;
     public final static int PROTO_ID_SHORT = 2;
@@ -110,7 +110,7 @@ public final class WireFormat {
     private static final int FIELD_TAG_FORMAT_BITS = 2;
     private static final int FIELD_TAG_FORMAT_MASK = 1 << 1 | 1;
 
-    public static boolean checkProtoExID(int protoExID) {
+    public static boolean checkProtoExId(int protoExID) {
         return WireFormat.MIN_PROTO_EX_ID <= protoExID && protoExID <= WireFormat.MAX_PROTO_EX_ID;
     }
 
@@ -130,7 +130,7 @@ public final class WireFormat {
         return (tag & TYPE_TAG_MARK_MASK) == 0;
     }
 
-    public static int typeTag2ProtoExID(int tag) {
+    public static int typeTag2ProtoExId(int tag) {
         return tag >>> TYPE_TAG_KIND_BITS >>> TYPE_TAG_MARK_BITS;
     }
 
@@ -164,7 +164,7 @@ public final class WireFormat {
         return (option & REPEAT_OPTION_RAW_MASK) == 0;
     }
 
-    public static int getRepeatChildID(int option) {
+    public static int getRepeatChildId(int option) {
         return option >>> (REPEAT_OPTION_RAW_BITS + REPEAT_OPTION_PACKED_BITS);
     }
 

@@ -49,7 +49,7 @@ public abstract class ProtocolTest {
         when(header.getProtocolNumber()).thenReturn(-1000);
         assertFalse(protocol.isOwn(message));
         when(message.getHead()).thenReturn(header);
-        when(header.getProtocolNumber()).thenReturn(protocol.getProtocolNumber());
+        when(message.getProtocolNumber()).thenReturn(protocol.getProtocolNumber());
         assertTrue(protocol.isOwn(message));
     }
 

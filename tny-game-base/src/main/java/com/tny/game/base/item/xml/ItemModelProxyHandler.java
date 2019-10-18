@@ -21,8 +21,8 @@ public class ItemModelProxyHandler implements MethodInterceptor, InvocationHandl
         this.itemModel = itemModel;
     }
 
-    public int getItemID() {
-        return this.itemModel.getID();
+    public int getItemId() {
+        return this.itemModel.getId();
     }
 
     public void setModel(ItemModel itemModel) {

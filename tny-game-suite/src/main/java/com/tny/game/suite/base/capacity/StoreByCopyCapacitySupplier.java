@@ -38,17 +38,17 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return itemID;
     }
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return playerID;
     }
 
@@ -94,7 +94,7 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("itemID", itemID)
+                .add("itemId", itemID)
                 .add("name", ItemModels.name(itemID))
                 .toString();
     }

@@ -11,7 +11,9 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
@@ -24,12 +26,10 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 
-    private static final ExecutorService CONNECT_EXECUTOR_SERVICE = new StandardThreadExecutor(1, 30,
-            20000, new CoreThreadFactory("NettyClientConnect"));
+    private static final ScheduledExecutorService CONNECT_EXECUTOR_SERVICE = Executors
+            .newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect"));
 
     private URL url;
-
-    private NettyTerminalTunnel<UID> tunnel;
 
     private NettyClientGuide guide;
 
@@ -75,23 +75,23 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
                 return;
             if (this.tunnel != null)
                 return;
-            newTunnel = this.tunnel = new NettyTerminalTunnel<>(this, guide.getMessageFactory());
+            this.tunnel = newTunnel = new NettyTerminalTunnel<>(this, guide.getMessageFactory());
         }
-        openTunnel(newTunnel, this.getInitConnectAsyn());
+        openTunnel(newTunnel, this.getInitConnectAsyn(), false);
         buses().openEvent().notify(this);
     }
 
-    private void openTunnel(NettyTerminalTunnel<UID> tunnel, boolean asyn) {
+    private void openTunnel(NettyTerminalTunnel<UID> tunnel, boolean asyn, boolean retry) {
         if (this.isClosed())
             return;
         if (asyn) {
-            CONNECT_EXECUTOR_SERVICE.submit(() -> connectTunnel(tunnel));
+            CONNECT_EXECUTOR_SERVICE.submit(() -> connectTunnel(tunnel, retry));
         } else {
-            connectTunnel(tunnel);
+            connectTunnel(tunnel, false);
         }
     }
 
-    private void connectTunnel(NettyTerminalTunnel<UID> tunnel) {
+    private void connectTunnel(NettyTerminalTunnel<UID> tunnel, boolean retry) {
         if (tunnel.isAvailable())
             return;
         Lock lock = tunnel.getLock();
@@ -102,6 +102,9 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
             LOGGER.info("try connect {}", this);
             if (tunnel.open()) {
                 buses().activateEvent().notify(this, tunnel);
+            } else {
+                if (retry)
+                    this.reconnectTunnel(tunnel);
             }
         } catch (Exception e) {
             LOGGER.error("{} reconnect {} exception", this, tunnel, e);
@@ -110,13 +113,14 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
         }
     }
 
-    private void reconnectTunnel(NettyTerminalTunnel<UID> tunnel) {
+    @Override
+    public void reconnectTunnel(NettyTerminalTunnel<UID> tunnel) {
         if (this.isClosed())
             return;
         Lock lock = tunnel.getLock();
         if (lock.tryLock()) {
+            int times = tunnel.getFailedTimes();
             try {
-                int times = tunnel.getFailedTimes();
                 if (times >= 3) {
                     LOGGER.warn("{} reconnect {} failed times {} >= 3, stop reconnect", this, tunnel, times);
                     tunnel.resetFailedTimes();
@@ -126,10 +130,15 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
                 if (!tunnel.isAvailable() && tunnel.getState() != TunnelState.INIT) {
                     LOGGER.info("{} submit reconnect {} task for the {} time", this, tunnel, times);
                     tunnel.reset();
-                    CONNECT_EXECUTOR_SERVICE.submit(() -> connectTunnel(tunnel));
                 }
             } finally {
                 lock.unlock();
+            }
+            Runnable connector = () -> connectTunnel(tunnel, true);
+            if (times >= 1) {
+                CONNECT_EXECUTOR_SERVICE.schedule(connector, 1000L, TimeUnit.MILLISECONDS);
+            } else {
+                CONNECT_EXECUTOR_SERVICE.submit(connector);
             }
         } else {
             LOGGER.info("{} reconnect try lock failed", this);
@@ -149,6 +158,10 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     @Override
     public void connectSuccess(NettyTerminalTunnel<UID> tunnel) {
         if (this.tunnel == tunnel) {
+            if (this.isClosed()) {
+                tunnel.close();
+                throw new TunnelCloseException("{} tunnel is closed", tunnel);
+            }
             try {
                 if (!postConnect.onConnected(tunnel))
                     throw new TunnelException("{} tunnel post connect failed", tunnel);
@@ -162,13 +175,17 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     @Override
     public void onUnactivated(NetTunnel<UID> tunnel) {
         buses().unactivatedEvent().notify(this, tunnel);
-        if (isOffline())
+        if (isOffline()) {
+            reconnectTunnel((NettyTerminalTunnel<UID>) tunnel);
             return;
+        }
         synchronized (this) {
-            if (isOffline())
+            if (isOffline()) {
+                reconnectTunnel((NettyTerminalTunnel<UID>) tunnel);
                 return;
+            }
             Tunnel<UID> currentTunnel = this.currentTunnel();
-            if (!currentTunnel.isClosed())
+            if (currentTunnel.isClosed())
                 return;
             setOffline();
             reconnectTunnel((NettyTerminalTunnel<UID>) tunnel);

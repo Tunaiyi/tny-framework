@@ -1,6 +1,6 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.behavior.Action;
@@ -153,7 +153,7 @@ public interface OpLogger {
      * @param types  快照器类型
      * @return 返回Logger
      */
-    OpLogger logSnapshotByType(Identifiable item, Action action, SnapperType... types);
+    OpLogger logSnapshotByType(Identifier item, Action action, SnapperType... types);
 
     /**
      * 记录快照
@@ -163,7 +163,7 @@ public interface OpLogger {
      * @param snapperTypes 快照器Class
      * @return 返回Logger
      */
-    OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes);
+    OpLogger logSnapshotByClass(Identifier item, Action action, Class<? extends Snapper>... snapperTypes);
 
     /**
      * 记录快照
@@ -172,7 +172,7 @@ public interface OpLogger {
      * @param action 记录原因(操作Action)
      * @return 返回Logger
      */
-    OpLogger logSnapshot(Identifiable item, Action action);
+    OpLogger logSnapshot(Identifier item, Action action);
 
     /**
      * @return 是否开启记录 返回Logger

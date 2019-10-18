@@ -12,7 +12,7 @@ public interface Actor<ID, M> { // TODO extends Executor
     /**
      * @return 获取Actor ID
      */
-    ID getActorID();
+    ID getActorId();
 
     /**
      * 获取Actor的路径信息对象

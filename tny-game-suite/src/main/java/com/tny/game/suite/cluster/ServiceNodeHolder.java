@@ -38,7 +38,7 @@ public class ServiceNodeHolder {
     }
 
     public synchronized void addNode(ServiceNode node) {
-        ServiceNode oldNode = this.nodeMap.put(node.getServerID(), node);
+        ServiceNode oldNode = this.nodeMap.put(node.getServerId(), node);
         if (oldNode == null)
             ON_ADD.notify(this, node);
         else

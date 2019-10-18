@@ -45,8 +45,8 @@ public class AbstractLog implements Log {
     }
 
     @Override
-    public long getUserID() {
-        return this.userOpLog.getUserID();
+    public long getUserId() {
+        return this.userOpLog.getUserId();
     }
 
     @Override
@@ -65,8 +65,8 @@ public class AbstractLog implements Log {
     }
 
     @Override
-    public int getServerID() {
-        return this.userOpLog.getServerID();
+    public int getServerId() {
+        return this.userOpLog.getServerId();
     }
 
     @Override
@@ -90,8 +90,8 @@ public class AbstractLog implements Log {
     }
 
     @Override
-    public String getOpenID() {
-        return this.userOpLog.getOpenID();
+    public String getOpenId() {
+        return this.userOpLog.getOpenId();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class AbstractLog implements Log {
     }
 
     @Override
-    public String getLogID() {
+    public String getLogId() {
         return logID;
     }
 

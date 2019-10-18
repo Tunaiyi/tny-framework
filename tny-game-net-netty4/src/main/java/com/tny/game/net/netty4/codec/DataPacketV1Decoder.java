@@ -49,6 +49,10 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
         }
 
         int payloadLength = in.readInt();
+        if (payloadLength > config.getMaxPayloadLength())
+            throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}",
+                    payloadLength, config.getMaxPayloadLength());
+
         // 读取请求信息体
         if (in.readableBytes() < payloadLength) {
             in.resetReaderIndex();

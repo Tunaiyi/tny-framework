@@ -2,9 +2,9 @@ package com.tny.game.oplog;
 
 public interface StuffTradeLog {
 
-    long getID();
+    long getId();
 
-    int getItemID();
+    int getItemId();
 
     long getOldNum();
 

@@ -14,7 +14,7 @@ public class DefaultAppContext implements AppContext {
 
     private String scopeType = "online";
 
-    private String[] scanPaths;
+    private List<String> scanPackages;
 
     private Attributes attributes = ContextAttributes.create();
 
@@ -42,13 +42,8 @@ public class DefaultAppContext implements AppContext {
     }
 
     @Override
-    public String[] getScanPathArray() {
-        return this.scanPaths;
-    }
-
-    @Override
-    public List<String> getScanPathList() {
-        return Arrays.asList(this.scanPaths);
+    public List<String> getScanPackages() {
+        return Collections.unmodifiableList(this.scanPackages);
     }
 
     public DefaultAppContext setName(String name) {
@@ -66,8 +61,8 @@ public class DefaultAppContext implements AppContext {
         return this;
     }
 
-    public DefaultAppContext setScanPaths(String[] scanPaths) {
-        this.scanPaths = scanPaths;
+    public DefaultAppContext setScanPackages(String[] scanPackages) {
+        this.scanPackages = Arrays.asList(scanPackages);
         return this;
     }
 }

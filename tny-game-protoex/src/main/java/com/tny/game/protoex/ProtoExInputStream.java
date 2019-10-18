@@ -139,9 +139,9 @@ public class ProtoExInputStream implements ProtoExStream {
     }
 
     public void skipField(Tag tag) {
-        if (tag.isRaw() && !ProtoExType.getRawType(tag.getProtoExID()).isHasLength()) {
-            int protoExID = tag.getProtoExID();
-            ProtoExSchema<?> schema = this.schemaContext.getSchema(protoExID, true);
+        if (tag.isRaw() && !ProtoExType.getRawType(tag.getProtoExId()).isHasLength()) {
+            int protoExId = tag.getProtoExId();
+            ProtoExSchema<?> schema = this.schemaContext.getSchema(protoExId, true);
             schema.readValue(this, tag, null);
         } else {
             final int size = this.doReadRawVarint32();

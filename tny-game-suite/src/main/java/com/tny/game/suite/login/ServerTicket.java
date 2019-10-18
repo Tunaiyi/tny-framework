@@ -68,7 +68,7 @@ public class ServerTicket implements Serializable {
         return serverType;
     }
 
-    public int getServerID() {
+    public int getServerId() {
         return this.serverID;
     }
 

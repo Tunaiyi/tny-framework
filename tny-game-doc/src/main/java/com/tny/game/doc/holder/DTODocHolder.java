@@ -61,7 +61,7 @@ public class DTODocHolder {
         return this.entityClass;
     }
 
-    public int getID() {
+    public int getId() {
         return this.id;
     }
 

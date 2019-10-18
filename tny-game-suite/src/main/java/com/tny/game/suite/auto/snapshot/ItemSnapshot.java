@@ -16,22 +16,22 @@ public abstract class ItemSnapshot extends BaseSnapshot {
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return this.id == null ? this.iid : this.id;
     }
 
-    public int getItemID() {
+    public int getItemId() {
         return this.iid;
     }
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return this.pid;
     }
 
     public void setItem(Item<?> item) {
-        this.setIDs(item.getItemID(), item.getID());
-        this.setPid(item.getPlayerID());
+        this.setIDs(item.getItemId(), item.getId());
+        this.setPid(item.getPlayerId());
     }
 
     public void setIDs(int itemID, long id) {

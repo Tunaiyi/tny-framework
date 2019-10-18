@@ -109,4 +109,7 @@ public class ClassSelector {
             handler.selected(this.getClasses());
     }
 
+    public void clear() {
+        this.classes = Collections.emptyList();
+    }
 }

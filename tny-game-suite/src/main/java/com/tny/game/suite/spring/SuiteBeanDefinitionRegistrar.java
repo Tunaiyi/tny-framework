@@ -5,6 +5,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
@@ -24,12 +25,12 @@ public abstract class SuiteBeanDefinitionRegistrar implements ImportBeanDefiniti
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;
     }
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
         Set<String> names = getNames(environment, root);
         for (String name : names) {
             loadBeanDefinition(name, registry);

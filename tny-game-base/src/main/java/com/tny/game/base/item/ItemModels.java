@@ -12,8 +12,8 @@ public class ItemModels {
     private static Map<Integer, String> modelAlias = new ConcurrentHashMap<>();
 
     public static void register(Model model) {
-        modelDesc.put(model.getID(), model.getDesc());
-        modelAlias.put(model.getID(), model.getAlias());
+        modelDesc.put(model.getId(), model.getDesc());
+        modelAlias.put(model.getId(), model.getAlias());
     }
 
     public static String name(int id) {

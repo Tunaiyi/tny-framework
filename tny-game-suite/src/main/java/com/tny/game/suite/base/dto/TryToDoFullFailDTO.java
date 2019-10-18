@@ -32,7 +32,7 @@ public class TryToDoFullFailDTO implements Serializable {
         if (result.isSatisfy())
             return null;
         TryToDoFullFailDTO dto = new TryToDoFullFailDTO();
-        dto.action = result.getAction().getID();
+        dto.action = result.getAction().getId();
         dto.failDemands = result.getAllFailResults()
                 .stream()
                 .map(DemandResultDTO::demandResult2DTO)

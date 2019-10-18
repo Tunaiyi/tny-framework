@@ -48,7 +48,7 @@ public class OperationConfiger {
     }
 
     public OperationConfiger(FunDocHolder holder, TypeFormatter typeFormatter) {
-        this.opID = holder.getOpID();
+        this.opID = holder.getOpId();
         this.returnType = holder.getFunDoc().returnType().getSimpleName();
         this.returnDes = holder.getFunDoc().returnDes();
         this.methodName = holder.getMethod().getName();
@@ -76,7 +76,7 @@ public class OperationConfiger {
         return returnDes;
     }
 
-    public int getOpID() {
+    public int getOpId() {
         return opID;
     }
 

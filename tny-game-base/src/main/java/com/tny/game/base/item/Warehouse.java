@@ -14,7 +14,7 @@ public interface Warehouse<O extends Owner> {
      *
      * @return
      */
-    long getPlayerID();
+    long getPlayerId();
 
     /**
      * 获取指定itemType的Owner对象
@@ -32,7 +32,7 @@ public interface Warehouse<O extends Owner> {
      * @param clazz    Owner的类型
      * @return 返回owner对象
      */
-    <I extends Item<?>> I getItemByID(ItemType itemType, long id, Class<I> clazz);
+    <I extends Item<?>> I getItemById(ItemType itemType, long id, Class<I> clazz);
 
     /**
      * 获取指定itemType的Owner对象
@@ -41,7 +41,7 @@ public interface Warehouse<O extends Owner> {
      * @param clazz    Owner的类型
      * @return 返回owner对象
      */
-    <I extends Item<?>> List<I> getItemByItemID(ItemType itemType, int itemID, Class<I> clazz);
+    <I extends Item<?>> List<I> getItemByItemId(ItemType itemType, int itemID, Class<I> clazz);
 
 //	/**
 //	 * 扣除Trade的物品，并返回修改的owner和item

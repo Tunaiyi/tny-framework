@@ -40,7 +40,7 @@ public interface ItemsImportKey {
     /**
      * 事物对象在有自己相关的行为和操作中上下问对象, 生命周期, 当前Demand计算checkDemandResult
      */
-    String $PLAYER_ID = "$playerID";
+    String $PLAYER_ID = "$playerId";
 
     /**
      * 事物对象模型在有自己相关的行为和操作中所代表的引用名字

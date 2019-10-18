@@ -1,8 +1,8 @@
 package com.tny.game.base.module;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
-public interface OpenMode<FM extends FeatureModel> extends EnumID<Integer> {
+public interface OpenMode<FM extends FeatureModel> extends EnumIdentifiable<Integer> {
 
     String name();
 

@@ -3,12 +3,12 @@ CREATE TABLE Account (
   `account`        VARCHAR(50),
   `account`      VARCHAR(50),
   `device`         VARCHAR(128),
-  `deviceID`       VARCHAR(128),
+  `deviceId`       VARCHAR(128),
   `pf`             VARCHAR(45),
   `zone`           INT(11),
   `entry`          INT(11),
   `ad`             VARCHAR(45),
-  `createSID`      INT(11),
+  `createSid`      INT(11),
   `createDate`     INT(11),
   `createAt`       BIGINT(20),
   `createRoleDate` INT(11),
@@ -37,7 +37,7 @@ CREATE TABLE CTaskReceiver (
   `version` BIGINT(20)   NOT NULL DEFAULT 0,
   `saveAt`  BIGINT(20)   NOT NULL,
   `UID`     BIGINT(20),
-  `itemID`  INT(20),
+  `itemId`  INT(20),
   `number`  INT(20),
   PRIMARY KEY (`key`)
 );
@@ -51,7 +51,7 @@ CREATE TABLE CGameServer (
   `version` BIGINT(20)   NOT NULL DEFAULT 0,
   `saveAt`  BIGINT(20)   NOT NULL,
   `UID`     BIGINT(20),
-  `itemID`  INT(20),
+  `itemId`  INT(20),
   `number`  INT(20),
   PRIMARY KEY (`key`)
 );

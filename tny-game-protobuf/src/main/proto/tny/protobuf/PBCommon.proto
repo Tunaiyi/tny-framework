@@ -84,7 +84,7 @@ message BooleanEntryProto {
 }
 
 message TradeItemProto {
-    optional int32 itemID = 1;
+    optional int32 itemId = 1;
     optional int64 number = 2;
     optional int32 alterType = 3;
     optional bool valid = 4;
@@ -97,7 +97,7 @@ message TradeProto {
 }
 
 message StuffProto {
-    optional int32 itemID = 1;
+    optional int32 itemId = 1;
     optional int64 number = 2;
 }
 
@@ -109,7 +109,7 @@ message TimeTaskProto {
 }
 
 message TaskReceiverProto {
-    optional int64 playerID = 1;
+    optional int64 playerId = 1;
     optional string group = 2;
     optional uint64 lastHandlerTime = 3;
     optional uint64 actualLastHandlerTime = 4;

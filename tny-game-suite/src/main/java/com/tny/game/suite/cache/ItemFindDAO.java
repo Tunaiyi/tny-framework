@@ -20,50 +20,50 @@ public interface ItemFindDAO extends ShardCacheDAO {
     //=================================================FIND==================================================
     //=======================================================================================================
 
-    @SQL("SELECT MAX(`UID`) as `max`, MIN(`UID`) as `min` FROM " + TABLE)
-    UIDRange getUIDRange(@ShardBy @SQLParam("table") String table);
+    @SQL("SELECT MAX(`uid`) as `max`, MIN(`uid`) as `min` FROM " + TABLE)
+    UidRange getUidRange(@ShardBy @SQLParam("table") String table);
 
     @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE)
     List<DBCacheItem> findAll(@ShardBy @SQLParam("table") String table);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `itemID` = :itemID")
-    List<DBCacheItem> findByItemID(@ShardBy @SQLParam("table") String table, @SQLParam("itemID") int itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `itemId` = :itemId")
+    List<DBCacheItem> findByItemId(@ShardBy @SQLParam("table") String table, @SQLParam("itemId") int itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `itemID` in (:itemID)")
-    List<DBCacheItem> findByItemID(@ShardBy @SQLParam("table") String table, @SQLParam("itemID") List<Integer> itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `itemId` in (:itemId)")
+    List<DBCacheItem> findByItemId(@ShardBy @SQLParam("table") String table, @SQLParam("itemId") List<Integer> itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` = :UID")
-    List<DBCacheItem> findByUID(@ShardBy @SQLParam("table") String table, @SQLParam("UID") long UID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` = :uid")
+    List<DBCacheItem> findByUid(@ShardBy @SQLParam("table") String table, @SQLParam("uid") long uid);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` = :UID and `itemID` = :itemID")
-    List<DBCacheItem> findByUID(@ShardBy @SQLParam("table") String table, @SQLParam("UID") long UID, @SQLParam("itemID") int itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` = :uid and `itemId` = :itemId")
+    List<DBCacheItem> findByUid(@ShardBy @SQLParam("table") String table, @SQLParam("uid") long uid, @SQLParam("itemId") int itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE UID` = :UID and `itemID` in (:itemID)")
-    List<DBCacheItem> findByUID(@ShardBy @SQLParam("table") String table, @SQLParam("UID") long UID, @SQLParam("itemID") List<Integer> itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE uid` = :uid and `itemId` in (:itemId)")
+    List<DBCacheItem> findByUid(@ShardBy @SQLParam("table") String table, @SQLParam("uid") long uid, @SQLParam("itemId") List<Integer> itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` in (:UID)")
-    List<DBCacheItem> findByUIDs(@ShardBy @SQLParam("table") String table, @SQLParam("UID") List<Long> UIDs);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` in (:uid)")
+    List<DBCacheItem> findByUids(@ShardBy @SQLParam("table") String table, @SQLParam("uid") List<Long> uids);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` in (:UID) and `itemID` = (:itemID)")
-    List<DBCacheItem> findByUIDs(@ShardBy @SQLParam("table") String table, @SQLParam("UID") List<Long> UIDs, @SQLParam("itemID") int itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` in (:uid) and `itemId` = (:itemId)")
+    List<DBCacheItem> findByUids(@ShardBy @SQLParam("table") String table, @SQLParam("uid") List<Long> uids, @SQLParam("itemId") int itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` in (:UID) and `itemID` in (:itemID)")
-    List<DBCacheItem> findByUIDs(@ShardBy @SQLParam("table") String table, @SQLParam("UID") List<Long> UIDs, @SQLParam("itemID") List<Integer> itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` in (:uid) and `itemId` in (:itemId)")
+    List<DBCacheItem> findByUids(@ShardBy @SQLParam("table") String table, @SQLParam("uid") List<Long> uids, @SQLParam("itemId") List<Integer> itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` between :sUID and :eUID")
-    List<DBCacheItem> findByUIDRange(@ShardBy @SQLParam("table") String table, @SQLParam("sUID") long startUID, @SQLParam("eUID") long endUID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` between :suid and :euid")
+    List<DBCacheItem> findByUidRange(@ShardBy @SQLParam("table") String table, @SQLParam("suid") long startuid, @SQLParam("euid") long enduid);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` between :sUID and :eUID and `itemID` = :itemID")
-    List<DBCacheItem> findByUIDRange(@ShardBy @SQLParam("table") String table, @SQLParam("sUID") long startUID, @SQLParam("eUID") long endUID, @SQLParam("itemID") int itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` between :suid and :euid and `itemId` = :itemId")
+    List<DBCacheItem> findByUidRange(@ShardBy @SQLParam("table") String table, @SQLParam("suid") long startuid, @SQLParam("euid") long enduid, @SQLParam("itemId") int itemId);
 
-    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `UID` between :sUID and :eUID and `itemID` in (:itemID)")
-    List<DBCacheItem> findByUIDRange(@ShardBy @SQLParam("table") String table, @SQLParam("sUID") long startUID, @SQLParam("eUID") long endUID, @SQLParam("itemID") List<Integer> itemID);
+    @SQL("SELECT " + FIND_FIELD + " FROM " + TABLE + " WHERE `uid` between :suid and :euid and `itemId` in (:itemId)")
+    List<DBCacheItem> findByUidRange(@ShardBy @SQLParam("table") String table, @SQLParam("suid") long startuid, @SQLParam("euid") long enduid, @SQLParam("itemId") List<Integer> itemId);
 
     //==========================================================================================
     //##########################################################################################
     //==========================================================================================
 
-    @SQL("select `itemID`, sum(`number`) from " + TABLE + " group by `itemID` order by null")
+    @SQL("select `itemId`, sum(`number`) from " + TABLE + " group by `itemId` order by null")
     Map<Integer, Long> countItemNumber(@ShardBy @SQLParam("table") String table);
 
 }

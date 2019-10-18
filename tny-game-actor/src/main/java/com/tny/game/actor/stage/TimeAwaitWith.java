@@ -22,6 +22,6 @@ public class TimeAwaitWith<T> {
     public Done<T> get() {
         if (this.timeout < 0)
             this.timeout = System.currentTimeMillis() + duration.toMillis();
-        return System.currentTimeMillis() > this.timeout ? DoneResults.succ(object) : DoneResults.fail();
+        return System.currentTimeMillis() > this.timeout ? DoneResults.success(object) : DoneResults.failure();
     }
 }

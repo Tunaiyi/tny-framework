@@ -53,9 +53,9 @@ public abstract class CacheTestTask {
 
     public void testSetAndGetObject() {
         this.cache.setObject(player);
-        TestPlayer cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         Assert.assertEquals(player, cachePlayer);
-        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         Assert.assertEquals(player, cachePlayer);
     }
 
@@ -63,34 +63,34 @@ public abstract class CacheTestTask {
         TestPlayer player = new TestPlayer(101, "abc");
         this.cache.addObject(player);
 
-        TestPlayer cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         this.compare(player, cachePlayer);
 
         String test = "testUpdate";
         this.resetPlayer(player, test);
         this.resetFullPlayer(cachePlayer, test);
         Assert.assertTrue(this.cache.updateObject(cachePlayer));
-        cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         this.compareFull(player, cachePlayer);
 
         test = "testSet";
         this.resetPlayer(player, test);
         this.resetFullPlayer(cachePlayer, test);
         Assert.assertTrue(this.cache.setObject(cachePlayer));
-        cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        cachePlayer = this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         this.compareFull(player, cachePlayer);
 
         test = "testDelect";
         this.resetPlayer(player, test);
         this.resetFullPlayer(cachePlayer, test);
         Assert.assertTrue(this.cache.deleteObject(cachePlayer));
-        Assert.assertNull(this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID()));
-        Assert.assertNull(this.cache.getObject(TestPlayer.class, player.getPlayerID()));
+        Assert.assertNull(this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId()));
+        Assert.assertNull(this.cache.getObject(TestPlayer.class, player.getPlayerId()));
     }
 
     public void testGetObjectByClass() {
         this.cache.setObject(player);
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
     }
 
@@ -105,7 +105,7 @@ public abstract class CacheTestTask {
 
     public void testSetObjectWithTime() {
         Assert.assertTrue(this.cache.setObject(player, LAST_TIME));
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
         this.sleep();
         this.checkNull(player);
@@ -122,14 +122,14 @@ public abstract class CacheTestTask {
 
     public void testAddObject() {
         Assert.assertTrue(this.cache.addObject(player));
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
         Assert.assertFalse(this.cache.addObject(player));
     }
 
     public void testAddObjectWithTime() {
         Assert.assertTrue(this.cache.addObject(player, LAST_TIME));
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
         Assert.assertFalse(this.cache.addObject(player));
         this.sleep();
@@ -149,11 +149,11 @@ public abstract class CacheTestTask {
         TestPlayer player = new TestPlayer(101, "abc");
         Assert.assertFalse(this.cache.updateObject(player));
         Assert.assertTrue(this.cache.addObject(player));
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
         player.setName("test");
         Assert.assertTrue(this.cache.updateObject(player));
-        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
     }
 
@@ -161,7 +161,7 @@ public abstract class CacheTestTask {
         TestPlayer player = new TestPlayer(101, "abc");
         Assert.assertFalse(this.cache.updateObject(player, LAST_TIME));
         Assert.assertTrue(this.cache.addObject(player));
-        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        TestPlayer cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
         player.setName("test");
         Assert.assertTrue(this.cache.updateObject(player, LAST_TIME));
@@ -189,7 +189,7 @@ public abstract class CacheTestTask {
 
     private void change(Collection<TestPlayer> players) {
         for (TestPlayer player : players) {
-            player.setName("change_" + player.getPlayerID());
+            player.setName("change_" + player.getPlayerId());
         }
     }
 
@@ -227,7 +227,7 @@ public abstract class CacheTestTask {
     public void testCas() {
         TestPlayer player = new TestPlayer(101, "abc");
         this.cache.setObject(player);
-        CasItem<TestPlayer> item = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        CasItem<TestPlayer> item = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         TestPlayer cachePlayer = item.getData();
         this.compare(player, cachePlayer);
 
@@ -235,12 +235,12 @@ public abstract class CacheTestTask {
         this.resetPlayer(cachePlayer, "test");
 
         Assert.assertTrue(this.cache.casObject(item));
-        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
 
-        CasItem<TestPlayer> item1 = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        CasItem<TestPlayer> item1 = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
 
-        CasItem<TestPlayer> item2 = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        CasItem<TestPlayer> item2 = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
 
         this.resetPlayer(player, "test1");
         this.resetPlayer(item1.getData(), "test1");
@@ -249,14 +249,14 @@ public abstract class CacheTestTask {
         this.resetPlayer(item2.getData(), "test2");
         Assert.assertFalse(this.cache.casObject(item2));
 
-        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerID());
+        cachePlayer = this.cache.getObject(TestPlayer.class, player.getPlayerId());
         this.compare(player, cachePlayer);
     }
 
     public void testCasTime() {
         TestPlayer player = new TestPlayer(101, "abc");
         this.cache.setObject(player);
-        CasItem<TestPlayer> item = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID());
+        CasItem<TestPlayer> item = this.cache.getsObject(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId());
         TestPlayer cachePlayer = item.getData();
         this.compare(player, cachePlayer);
 
@@ -293,8 +293,8 @@ public abstract class CacheTestTask {
     }
 
     private void checkNull(TestPlayer player) {
-        Assert.assertNull(this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerID()));
-        Assert.assertNull(this.cache.getObject(TestPlayer.class, player.getPlayerID()));
+        Assert.assertNull(this.cache.getObjectByKey(TestPlayer.class, PLAYER_KEY_HEAD + player.getPlayerId()));
+        Assert.assertNull(this.cache.getObject(TestPlayer.class, player.getPlayerId()));
     }
 
     private void checkNull(Collection<TestPlayer> playerMap) {

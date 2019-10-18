@@ -1,6 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 import com.tny.game.common.result.ResultCode;
 
 /**
@@ -17,14 +17,14 @@ import com.tny.game.common.result.ResultCode;
  *
  * @author KGTny
  */
-public interface DemandType extends EnumID<Integer> {
+public interface DemandType extends EnumIdentifiable<Integer> {
 
     /**
      * 条件类型
      *
      * @return
      */
-    Integer getID();
+    Integer getId();
 
     /**
      * 是否是costDemand

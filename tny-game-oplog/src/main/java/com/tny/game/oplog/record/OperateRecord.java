@@ -32,8 +32,8 @@ public class OperateRecord extends AbstractLog {
         this.actionLog = actionLog;
     }
 
-    public int getActionID() {
-        return this.actionLog.getActionID();
+    public int getActionId() {
+        return this.actionLog.getActionId();
     }
 
     public Object getOperation() {
@@ -54,7 +54,7 @@ public class OperateRecord extends AbstractLog {
 
     @Override
     public String toString() {
-        return "OperateLogDTO [uid=" + this.getUserID() + ", name=" + this.getName() + ", acid=" + this.getActionID() + ", sid=" + this.getServerID() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
+        return "OperateLogDTO [uid=" + this.getUserId() + ", name=" + this.getName() + ", acid=" + this.getActionId() + ", sid=" + this.getServerId() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
                 + ", level=" + this.getLevel()
                 + ", revs=" + this.getReceiveLog() + ", coss=" + this.getConsumeLogs() + ", snaps=" + this.getSnapshots() + "]";
     }

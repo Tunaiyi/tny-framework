@@ -18,7 +18,7 @@ public class TradeStuffDTO {
 
     @ProtoExField(1)
     @VarDoc("物品ID")
-    public int itemID;
+    public int itemId;
 
     @ProtoExField(2)
     @VarDoc("物品数量")
@@ -31,7 +31,7 @@ public class TradeStuffDTO {
 
     public static TradeStuffDTO stuff2DTO(TradeStuff stuff) {
         TradeStuffDTO dto = new TradeStuffDTO();
-        dto.itemID = stuff.getItemID();
+        dto.itemId = stuff.getItemId();
         dto.number = stuff.getNumber();
         dto.alterType = stuff.getAlterType();
         return dto;
@@ -42,16 +42,16 @@ public class TradeStuffDTO {
     }
 
 
-    public int getItemID() {
-        return this.itemID;
+    public int getItemId() {
+        return this.itemId;
     }
 
     public long getNumber() {
         return this.number;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public void setNumber(long number) {
@@ -68,6 +68,6 @@ public class TradeStuffDTO {
 
     @Override
     public String toString() {
-        return "itemID = "+itemID+" number = "+number +" alterType = "+alterType;
+        return "itemId = "+ itemId +" number = "+number +" alterType = "+alterType;
     }
 }

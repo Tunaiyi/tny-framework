@@ -53,13 +53,13 @@ public class GameServerCluster extends SpringBaseCluster {
     protected void register() {
         List<ServerOutline> outlines = this.currentConfiger();
         for (ServerOutline outline : outlines) {
-            String currentOutlinePath = ClusterUtils.getServerOutlinePath(outline.getServerID());
-            String currentLaunchPath = ClusterUtils.getServerLaunchPath(outline.getServerID());
+            String currentOutlinePath = ClusterUtils.getServerOutlinePath(outline.getServerId());
+            String currentLaunchPath = ClusterUtils.getServerLaunchPath(outline.getServerId());
             // 注册outline
             //	if (this.remoteMonitor.getKeeper().exists(this.currentOutlinePath, false) == null)
             this.remoteMonitor.putNodeData(CreateMode.PERSISTENT, outline, currentOutlinePath);
             // 注册launchState
-            ServerLaunch launch = new ServerLaunch(outline.getServerID());
+            ServerLaunch launch = new ServerLaunch(outline.getServerId());
             this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, launch, currentLaunchPath);
         }
     }
@@ -67,7 +67,7 @@ public class GameServerCluster extends SpringBaseCluster {
     @Override
     protected void monitor() throws Exception {
         super.monitor();
-        int serverID = GameInfo.info().getServerID();
+        int serverID = GameInfo.info().getZoneId();
         String currentSettingPath = ClusterUtils.getServerSettingPath(serverID);
         // 注册监听setting
         //	ServerSetting setting = new ServerSetting(outline);
@@ -93,7 +93,7 @@ public class GameServerCluster extends SpringBaseCluster {
             Collection<InetConnector> publicConnectors = new CopyOnWriteArraySet<>(info.getPublicConnectors());
             Collection<InetConnector> privateConnectors = new CopyOnWriteArraySet<>(info.getPrivateConnectors());
             ServerOutline outline = new ServerOutline()
-                    .setServerID(info.getServerID())
+                    .setServerId(info.getZoneId())
                     .setServerScope(info.getScopeType().getName())
                     .setServerType(info.getScopeType().getAppType().getName())
                     .setMain(info.isMainServer())
@@ -106,7 +106,7 @@ public class GameServerCluster extends SpringBaseCluster {
                     .setDbHost(System.getProperty(DB_HOST))
                     .setDbPort(NumberUtils.toInt(System.getProperty(DB_PORT, "0")))
                     .setDb(System.getProperty(DB_NAME))
-                    .setFollowServer(main.getServerID())
+                    .setFollowServer(main.getZoneId())
                     .setPublicConnectors(publicConnectors)
                     .setPrivateConnectors(privateConnectors);
             outlines.add(outline);

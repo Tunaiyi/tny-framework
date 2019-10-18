@@ -4,13 +4,13 @@ import org.joda.time.DateTime;
 
 public interface Log {
 
-    String getLogID();
+    String getLogId();
 
-    long getUserID();
+    long getUserId();
 
     String getName();
 
-    int getServerID();
+    int getServerId();
 
     long getAt();
 
@@ -20,7 +20,7 @@ public interface Log {
 
     int getLevel();
 
-    String getOpenID();
+    String getOpenId();
 
     String getPF();
 

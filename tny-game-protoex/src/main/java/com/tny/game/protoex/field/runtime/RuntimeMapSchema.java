@@ -96,7 +96,7 @@ public class RuntimeMapSchema extends BaseProtoExSchema<Map<?, ?>> {
 
     private Object readEntry(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
-        ProtoExSchema<Object> schema = schemaContext.getSchema(tag.getProtoExID(), tag.isRaw(), conf.getDefaultType());
+        ProtoExSchema<Object> schema = schemaContext.getSchema(tag.getProtoExId(), tag.isRaw(), conf.getDefaultType());
         return schema.readMessage(inputStream, conf);
     }
 

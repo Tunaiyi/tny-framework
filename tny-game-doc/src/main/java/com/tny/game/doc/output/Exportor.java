@@ -1,13 +1,9 @@
 package com.tny.game.doc.output;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.table.ConfigTable;
-import com.tny.game.doc.table.TableAttribute;
-import com.tny.game.doc.table.TableAttributeCreator;
-import com.tny.game.scanner.ClassScanner;
-import com.tny.game.scanner.ClassSelector;
-import com.tny.game.scanner.filter.ClassFilter;
+import com.tny.game.doc.*;
+import com.tny.game.doc.table.*;
+import com.tny.game.scanner.*;
+import com.tny.game.scanner.filter.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +19,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.apache.commons.io.FileUtils.*;
+import static com.tny.game.common.utils.StringAide.*;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
+import static org.apache.commons.io.FileUtils.forceMkdir;
+import static org.apache.commons.io.FileUtils.openOutputStream;
 
 /**
  * 导出器
@@ -147,7 +146,7 @@ public class Exportor {
         }
         ClassSelector selector = ClassSelector.instance()
                 .addFilter(this.filters);
-        ClassScanner.instance(classLoader)
+        ClassScanner.instance(classLoader, true)
                 .addSelector(selector)
                 .scan(basePackage);
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
@@ -194,7 +193,7 @@ public class Exportor {
         }
         ClassSelector selector = ClassSelector.instance()
                 .addFilter(this.filters);
-        ClassScanner.instance(classLoader)
+        ClassScanner.instance(classLoader, true)
                 .addSelector(selector)
                 .scan(basePackage);
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));

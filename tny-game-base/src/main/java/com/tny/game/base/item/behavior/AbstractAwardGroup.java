@@ -159,11 +159,11 @@ public abstract class AbstractAwardGroup implements AwardGroup {
                 if (merge) {
                     if (itemMap == null)
                         itemMap = new HashMap<>();
-                    int itemID = awardModel.getID();
+                    int itemID = awardModel.getId();
                     CollectionTradeItem current = itemMap.get(itemID);
                     if (current == null) {
                         current = new CollectionTradeItem(tradeItem);
-                        itemMap.put(tradeItem.getItemModel().getID(), current);
+                        itemMap.put(tradeItem.getItemModel().getId(), current);
                         itemList.add(current);
                     } else {
                         current.collect(tradeItem);

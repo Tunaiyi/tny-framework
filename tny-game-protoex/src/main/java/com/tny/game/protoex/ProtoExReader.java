@@ -196,7 +196,7 @@ public class ProtoExReader {
      */
 
     public void checkType(ProtoExType type, Tag tag) {
-        if (type.isRaw() != tag.isRaw() || (type.getID() != tag.getProtoExID()))
+        if (type.isRaw() != tag.isRaw() || (type.getId() != tag.getProtoExId()))
             throw ProtobufExException.readTypeError(type, tag);
     }
 

@@ -37,7 +37,7 @@ public class TestPlayer extends AbstractItem<ItemModel> {
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return 0;
     }
 

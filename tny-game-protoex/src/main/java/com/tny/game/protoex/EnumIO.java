@@ -23,9 +23,9 @@ package com.tny.game.protoex;
  */
 public abstract class EnumIO {
 
-    public static int getEnumID(Enum<?> e) {
+    public static int getEnumId(Enum<?> e) {
         if (e instanceof ProtoExEnum) {
-            return ((ProtoExEnum) e).getID();
+            return ((ProtoExEnum) e).getId();
         } else {
             return e.ordinal();
         }
@@ -38,11 +38,11 @@ public abstract class EnumIO {
         if (RuntimeEnv.ENUMS_BY_NAME) {
             output.writeString(e.name());
         } else {
-            output.writeInt(getEnumID(e));
+            output.writeInt(getEnumId(e));
         }
     }
 
-    public static int getEnumRawProtoExID() {
+    public static int getEnumRawProtoExId() {
         if (RuntimeEnv.ENUMS_BY_NAME) {
             return WireFormat.PROTO_ID_STRING;
         } else {
@@ -60,7 +60,7 @@ public abstract class EnumIO {
             boolean protoEnum = ProtoExEnum.class.isAssignableFrom(clazz);
             for (E e : clazz.getEnumConstants()) {
                 if (protoEnum) {
-                    if (((ProtoExEnum) e).getID() == id)
+                    if (((ProtoExEnum) e).getId() == id)
                         return e;
                 } else {
                     if (e.ordinal() == id)

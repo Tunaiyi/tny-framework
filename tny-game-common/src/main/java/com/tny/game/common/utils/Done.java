@@ -1,5 +1,6 @@
 package com.tny.game.common.utils;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -12,25 +13,24 @@ import java.util.function.Supplier;
 public interface Done<M> {
 
     /**
-     * 是否成功 code == ItemResultCode.SUCCESS
-     *
-     * @return
+     * @return 是否成功 code == ItemResultCode.SUCCESS
      */
     boolean isSuccess();
 
     /**
-     * 是否有结果值呈现
-     *
-     * @return
+     * @return 是否有结果值呈现
      */
     default boolean isPresent() {
         return this.get() != null;
     }
 
     /**
-     * 获取返回结果
-     *
-     * @return
+     * @return 返回结果消息
+     */
+    String getMessage();
+
+    /**
+     * @return 获取返回结果
      */
     M get();
 
@@ -59,18 +59,20 @@ public interface Done<M> {
             consumer.accept(object);
     }
 
+    Optional<M> optional();
     default void ifSuccess(Consumer<? super M> consumer) {
         if (this.isSuccess())
             consumer.accept(get());
     }
 
-    default boolean isFailed() {
+    default boolean isFailure() {
         return !this.isSuccess();
     }
 
-    default void ifFailed(Consumer<? super M> consumer) {
+    default void ifFailure(Consumer<? super M> consumer) {
         if (!this.isSuccess())
             consumer.accept(get());
+
     }
 
 }

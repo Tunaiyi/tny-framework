@@ -14,6 +14,8 @@ public interface NettyTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
     Channel connect();
 
+    void reconnectTunnel(NettyTerminalTunnel<UID> tunnel);
+
     void connectSuccess(NettyTerminalTunnel<UID> tunnel);
 
 }

@@ -11,7 +11,7 @@ public enum TestAction implements Action {
     GOLD_UPGRADE;
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return 0;
     }
 

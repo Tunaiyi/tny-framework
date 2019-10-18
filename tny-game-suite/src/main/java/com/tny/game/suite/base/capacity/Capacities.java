@@ -24,7 +24,7 @@ public class Capacities {
             capacities = ObjectAide.ifNull(groupCapacities.putIfAbsent(capacity.getGroup(), capacities), capacities);
         }
         CapacityGroup group = capacity.getGroup();
-        groupMap.put(group.getID(), group);
+        groupMap.put(group.getId(), group);
         capacities.add(capacity);
     }
 
@@ -32,7 +32,7 @@ public class Capacities {
         Set<Capacity> capacities = groupCapacities.get(group);
         if (capacities == null)
             groupCapacities.putIfAbsent(group, new CopyOnWriteArraySet<>());
-        groupMap.put(group.getID(), group);
+        groupMap.put(group.getId(), group);
     }
 
     public static Set<Capacity> getCapacities(CapacityGroup group) {

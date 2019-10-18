@@ -99,8 +99,8 @@ public class CapacityDebugger {
 
 
     private void appendObject(StringBuilder builder, CapacityObject object, CapacityObjectType objectType) {
-        ItemModel model = gameExplorer.getModel(object.getItemID());
-        builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getID(), model.getID(), model.getAlias(), model.getDesc(), object.getID()));
+        ItemModel model = gameExplorer.getModel(object.getItemId());
+        builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(), object.getId()));
     }
 
     private void appendFullObject(StringBuilder builder, String head, boolean recursive, CapacityObject object, CapacityObjectType objectType) {

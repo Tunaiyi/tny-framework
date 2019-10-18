@@ -53,7 +53,7 @@ public class GameClientApp {
                         System.out.println("!!@   [发送] 请求 = " + message);
                         SendContext<Long> context = tunnel.send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
                                 .setTail(message)
-                                .setSendTimeout(30000L)
+                                .willWriteFuture(30000L)
                                 .willResponseFuture(30000L));
                         try {
                             Message<Long> response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
@@ -67,7 +67,7 @@ public class GameClientApp {
             application.waitForConsole("q", (cmd, cmds) -> {
                 SendContext<Long> context = client.send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$SAY), cmd)
                         .willResponseFuture()
-                        .setSendTimeout(300000L));
+                        .willWriteFuture(300000L));
                 try {
                     Message<Long> message = context.getRespondFuture().get();
                     LOGGER.info("Client receive : {}", message.getBody(String.class));

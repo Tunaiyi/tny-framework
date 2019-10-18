@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect.cglib;
 
-import com.tny.game.common.reflect.GClass;
+import com.tny.game.common.reflect.ClassAccessor;
 import com.tny.game.common.reflect.MethodFilter;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,32 +8,32 @@ import java.util.concurrent.ConcurrentMap;
 
 public class CGlibUtils {
 
-    private final static ConcurrentMap<Class<?>, GClass> classMap = new ConcurrentHashMap<Class<?>, GClass>();
+    private final static ConcurrentMap<Class<?>, ClassAccessor> classMap = new ConcurrentHashMap<Class<?>, ClassAccessor>();
 
-    public static GClass getGClass(Class<?> clazz) {
-        GClass gClass = classMap.get(clazz);
+    public static ClassAccessor getGClass(Class<?> clazz) {
+        ClassAccessor gClass = classMap.get(clazz);
         if (gClass != null)
             return gClass;
         synchronized (clazz) {
             gClass = classMap.get(clazz);
             if (gClass != null)
                 return gClass;
-            gClass = new CGlibClass(clazz, null);
-            GClass oldClass = classMap.putIfAbsent(clazz, gClass);
+            gClass = new CGlibClassAccessor(clazz, null);
+            ClassAccessor oldClass = classMap.putIfAbsent(clazz, gClass);
             return oldClass == null ? gClass : oldClass;
         }
     }
 
-    public static GClass getGClass(Class<?> clazz, MethodFilter filter) {
-        GClass gClass = classMap.get(clazz);
+    public static ClassAccessor getGClass(Class<?> clazz, MethodFilter filter) {
+        ClassAccessor gClass = classMap.get(clazz);
         if (gClass != null)
             return gClass;
         synchronized (clazz) {
             gClass = classMap.get(clazz);
             if (gClass != null)
                 return gClass;
-            gClass = new CGlibClass(clazz, filter);
-            GClass oldClass = classMap.putIfAbsent(clazz, gClass);
+            gClass = new CGlibClassAccessor(clazz, filter);
+            ClassAccessor oldClass = classMap.putIfAbsent(clazz, gClass);
             return oldClass == null ? gClass : oldClass;
         }
     }

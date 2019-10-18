@@ -27,27 +27,27 @@ public class IDAide {
         return id > PLAYER_ID_OFFSET;
     }
 
-    public static Range<Long> createUIDRange(int serverID) {
-        return Range.range(serverID * PLAYER_ID_OFFSET, BoundType.CLOSED, serverID * PLAYER_ID_OFFSET + PLAYER_ID_OFFSET - 1, BoundType.CLOSED);
+    public static Range<Long> createUIDRange(int serverId) {
+        return Range.range(serverId * PLAYER_ID_OFFSET, BoundType.CLOSED, serverId * PLAYER_ID_OFFSET + PLAYER_ID_OFFSET - 1, BoundType.CLOSED);
     }
 
-    public static long createUserID(int serverID, long index) {
-        return serverID * PLAYER_ID_OFFSET + index;
+    public static long createUserId(int serverId, long index) {
+        return serverId * PLAYER_ID_OFFSET + index;
     }
 
-    public static int userID2SID(long playerID) {
-        if (playerID <= 0)
-            return GameInfo.getMainServerID();
-        return (int) (playerID / PLAYER_ID_OFFSET);
+    public static int userID2Zone(long playerId) {
+        if (playerId <= 0)
+            return GameInfo.getMainZoneId();
+        return (int) (playerId / PLAYER_ID_OFFSET);
     }
 
-    public static boolean isOwnUser(long userID) {
-        int serverID = IDAide.userID2SID(userID);
-        return GameInfo.getInfo(serverID) != null;
+    public static boolean isOwnUser(long userId) {
+        int zoneId = IDAide.userID2Zone(userId);
+        return GameInfo.getInfo(zoneId) != null;
     }
 
-    public static long getSystemID() {
-        return GameInfo.getMainServerID();
+    public static long getSystemId() {
+        return GameInfo.getMainZoneId();
     }
 
     public static String numeric2String(long i, int scale) {

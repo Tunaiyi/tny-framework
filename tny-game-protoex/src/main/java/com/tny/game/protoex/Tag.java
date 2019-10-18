@@ -51,7 +51,7 @@ public final class Tag {
     }
 
     public Tag(int typeTag, int fieldTag, int length, int childProtoExID) {
-        this.protoExID = WireFormat.typeTag2ProtoExID(typeTag);
+        this.protoExID = WireFormat.typeTag2ProtoExId(typeTag);
         this.raw = WireFormat.isRawType(typeTag);
         this.explicit = WireFormat.isTypeTagExplicit(typeTag);
         this.fieldNumber = WireFormat.fieldTag2FieldNumber(fieldTag);
@@ -63,7 +63,7 @@ public final class Tag {
      *
      * @return
      */
-    public int getProtoExID() {
+    public int getProtoExId() {
         return this.protoExID;
     }
 

@@ -24,10 +24,10 @@ public class FutureAwait<T> implements DoneSupplier<T> {
     @Override
     public Done<T> getDone() {
         if (!future.isDone()) {
-            return DoneResults.fail();
+            return DoneResults.failure();
         } else {
             try {
-                return DoneResults.succ(future.get());
+                return DoneResults.success(future.get());
             } catch (ExecutionException e) {
                 throw new StageException(e.getCause());
             } catch (InterruptedException e) {

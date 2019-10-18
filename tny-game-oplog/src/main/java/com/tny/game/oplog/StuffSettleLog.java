@@ -5,7 +5,7 @@ public abstract class StuffSettleLog {
     /**
      * @return 物品ItemID
      */
-    public abstract int getItemID();
+    public abstract int getItemId();
 
     /**
      * @return 存量

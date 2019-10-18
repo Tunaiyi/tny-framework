@@ -17,15 +17,15 @@ public abstract class ItemSnapper<O, I extends Item<?>, S extends ItemSnapshot> 
         S snapshot = super.toSnapshot(object);
         if (snapshot == null)
             return null;
-        snapshot.setIDs(item.getItemID(), item.getID());
-        snapshot.setPid(item.getPlayerID());
+        snapshot.setIDs(item.getItemId(), item.getId());
+        snapshot.setPid(item.getPlayerId());
         this.setSnapshot(snapshot, object);
         return snapshot;
     }
 
     @Override
-    public long getSnapshotID(O object) {
-        return item(object).getID();
+    public long getSnapshotId(O object) {
+        return item(object).getId();
     }
 
     protected abstract I item(O object);

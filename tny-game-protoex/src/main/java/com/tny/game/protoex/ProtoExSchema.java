@@ -15,7 +15,7 @@ public interface ProtoExSchema<T> {
      *
      * @return
      */
-    int getProtoExID();
+    int getProtoExId();
 
     /**
      * 结构名字

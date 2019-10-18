@@ -38,23 +38,23 @@ public class CapacityGoalDTO {
 
     public static CapacityGoalDTO goal2DTO(CapacityGoal goal) {
         CapacityGoalDTO dto = new CapacityGoalDTO();
-        dto.id = goal.getID();
-        dto.itemID = goal.getItemID();
+        dto.id = goal.getId();
+        dto.itemID = goal.getItemId();
         dto.capacityGroups = goal.getSuppliersCapacityGroups()
                 .stream()
-                .map(CapacityGroup::getID)
+                .map(CapacityGroup::getId)
                 .collect(Collectors.toSet());
         dto.dependSuppliers = goal.suppliers().stream()
                 .filter(CapacitySupplier::isSupplying)
-                .map(CapacitySupplier::getID)
+                .map(CapacitySupplier::getId)
                 .collect(Collectors.toList());
         return dto;
     }
 
     public static CapacityGoalDTO goal2RemoveDTO(CapacityGoal goal) {
         CapacityGoalDTO dto = new CapacityGoalDTO();
-        dto.id = goal.getID();
-        dto.itemID = goal.getItemID();
+        dto.id = goal.getId();
+        dto.itemID = goal.getItemId();
         dto.dependSuppliers = ImmutableList.of();
         dto.capacityGroups = ImmutableSet.of();
         return dto;

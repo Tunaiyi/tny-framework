@@ -105,10 +105,10 @@ public enum Operation {
         return this.OPERATION_CHANGE_MAP.containsKey(currentState);
     }
 
-    public AsyncDBState getChangeTo(AsyncDBState currentState, AsyncDBState defaultState) {
+    public AsyncDBState getChangeTo(AsyncDBState currentState) {
         AsyncDBState newState = this.OPERATION_CHANGE_MAP.get(currentState);
         if (newState == null)
-            return defaultState;
+            return currentState;
         return newState;
     }
 

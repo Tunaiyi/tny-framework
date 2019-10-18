@@ -207,7 +207,9 @@ public class MessageContexts {
 
         private Object tail;
 
-        private long sendTimeout;
+        private Long writeTimeout;
+
+        private Long respondTimeout;
 
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
@@ -306,51 +308,69 @@ public class MessageContexts {
             return this;
         }
 
+
         @Override
-        public RequestContext<UID> setSendTimeout(long sendTimeout) {
-            this.sendTimeout = sendTimeout;
-            return this;
+        public long getWriteTimeout() {
+            return writeTimeout == null ? -1 : writeTimeout;
         }
 
         @Override
-        public long getSendTimeout() {
-            return sendTimeout;
-        }
-
-        @Override
-        protected boolean setWritePromise(WriteMessagePromise writeFuture) {
+        protected void setWriteMessagePromise(WriteMessagePromise writeFuture) {
             if (this.writePromise == null) {
                 this.writePromise = writeFuture;
-                return true;
             }
-            return false;
         }
 
         @Override
-        public boolean cancel(boolean mayInterruptIfRunning) {
-            if (this.writePromise != null && this.writePromise.cancel(true)) {
-                if (this.respondFuture != null)
-                    this.respondFuture.cancel(true);
-                return true;
+        protected void setRespondFuture(RespondFuture<UID> respondFuture) {
+            if (this.mode == MessageMode.REQUEST && this.respondFuture == null) {
+                this.respondFuture = respondFuture;
             }
-            return false;
+        }
+
+        @Override
+        protected WriteMessagePromise getWriteMessagePromise() {
+            return this.writePromise;
+        }
+
+        @Override
+        public void cancel(boolean mayInterruptIfRunning) {
+            if (this.writePromise != null && !this.writePromise.isDone())
+                this.writePromise.cancel(true);
+            if (this.respondFuture != null && !this.respondFuture.isDone())
+                this.respondFuture.cancel(true);
         }
 
         @Override
         public void fail(Throwable throwable) {
-            if (this.writePromise != null)
+            if (this.writePromise != null && !this.writePromise.isDone())
                 this.writePromise.failed(throwable);
-            if (this.respondFuture != null)
+            if (this.respondFuture != null && !this.respondFuture.isDone())
                 this.respondFuture.completeExceptionally(throwable);
         }
 
         @Override
         public RequestContext<UID> willResponseFuture(long timeoutMills) {
             if (this.mode == MessageMode.REQUEST)
-                this.respondFuture = new RespondFuture<>(timeoutMills);
+                this.respondTimeout = timeoutMills;
             return this;
         }
 
+        @Override
+        public RequestContext<UID> willWriteFuture(long timeoutMills) {
+            this.writeTimeout = timeoutMills;
+            return this;
+        }
+
+        @Override
+        public boolean isNeedWriteFuture() {
+            return this.writeTimeout != null && this.writePromise == null;
+        }
+
+        @Override
+        public boolean isNeedResponseFuture() {
+            return this.respondTimeout != null && this.respondFuture == null;
+        }
 
         // @Override
         // public RequestContext<UID> willSendFuture(Consumer<MessageSendFuture<UID>> consumer) {
@@ -408,6 +428,10 @@ public class MessageContexts {
             return this.respondFuture != null;
         }
 
+        @Override
+        public boolean isHasWriteFuture() {
+            return this.writePromise != null;
+        }
 
         @Override
         public RespondFuture<UID> getRespondFuture() {
@@ -415,20 +439,20 @@ public class MessageContexts {
         }
 
         @Override
-        public WriteMessagePromise getWritePromise() {
+        public WriteMessagePromise getWriteFuture() {
             return writePromise;
         }
 
 
-        @Override
-        public Object getBody() {
-            return body;
-        }
-
-        @Override
-        public Object getTail() {
-            return tail;
-        }
+        // @Override
+        // public Object getBody() {
+        //     return body;
+        // }
+        //
+        // @Override
+        // public Object getTail() {
+        //     return tail;
+        // }
 
         // @Override
         // public boolean isHasAttachment() {

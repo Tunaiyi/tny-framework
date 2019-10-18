@@ -1,8 +1,8 @@
 package com.tny.game.base.module;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
-public interface Module extends EnumID<Integer> {
+public interface Module extends EnumIdentifiable<Integer> {
 
     String name();
 

@@ -53,7 +53,7 @@ public class ItemTypes extends ClassImporter {
         return holder.of(key);
     }
 
-    public static <T extends ItemType> T ofItemID(int itemID) {
+    public static <T extends ItemType> T ofItemId(int itemID) {
         int typeID = itemID / ID_TAIL_SIZE * ID_TAIL_SIZE;
         return of(typeID);
     }

@@ -27,7 +27,7 @@ public class SimpleOpLog extends OpLog {
 
     @Override
     protected UserOpLog putUserOpLog(UserOpLog userOpLog) {
-        UserOpLog old = this.getBaseUserOpLog(userOpLog.getUserID());
+        UserOpLog old = this.getBaseUserOpLog(userOpLog.getUserId());
         if (old != null) {
             return old;
         }
@@ -43,7 +43,7 @@ public class SimpleOpLog extends OpLog {
     private UserOpLog getBaseUserOpLog(long userID) {
         for (int index = 0; index < this.userLogs.size(); index++) {
             UserOpLog log = this.userLogs.get(index);
-            if (log.getUserID() == userID)
+            if (log.getUserId() == userID)
                 return log;
         }
         return null;

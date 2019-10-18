@@ -26,7 +26,7 @@ public class ServerOutline {
 
     //service.properties # funs.god.server.id
     @ProtoExField(1)
-    private int serverID;
+    private int serverId;
 
     //service.properties # funs.god.server.public.host
     @ProtoExField(2)
@@ -84,8 +84,8 @@ public class ServerOutline {
     public ServerOutline() {
     }
 
-    public int getServerID() {
-        return this.serverID;
+    public int getServerId() {
+        return this.serverId;
     }
 
     public String getPublicIP() {
@@ -145,8 +145,8 @@ public class ServerOutline {
         }
     }
 
-    ServerOutline setServerID(int serverID) {
-        this.serverID = serverID;
+    ServerOutline setServerId(int serverId) {
+        this.serverId = serverId;
         return this;
     }
 
@@ -273,7 +273,7 @@ public class ServerOutline {
 
     @Override
     public String toString() {
-        return "ServerOutline [serverID=" + this.serverID + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" + this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
+        return "ServerOutline [serverId=" + this.serverId + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" + this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
     }
 
     public boolean isHasDB() {

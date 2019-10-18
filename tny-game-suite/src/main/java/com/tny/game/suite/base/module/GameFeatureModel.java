@@ -42,7 +42,7 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     }
 
     @Override
-    public int getID() {
+    public int getId() {
         return id;
     }
 

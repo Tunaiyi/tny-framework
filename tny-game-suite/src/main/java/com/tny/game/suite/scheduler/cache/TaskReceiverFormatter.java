@@ -26,16 +26,15 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
     @Override
     public Object format2Save(String key, GameTaskReceiver object) {
         try {
-            byte[] bytes = TaskReceiverProto.newBuilder()
-                    .setPlayerID(object.getPlayerID())
+            return TaskReceiverProto.newBuilder()
+                    .setPlayerId(object.getPlayerId())
                     .setGroup(object.getGroup().toString())
                     .setLastHandlerTime(object.getLastHandlerTime())
                     .setActualLastHandlerTime(object.getActualLastHandlerTime())
                     .build()
                     .toByteArray();
-            return bytes;
         } catch (Throwable e) {
-            LOG.error("recevier id format exception", object.getPlayerID(), e);
+            LOG.error("receiver id {} format exception", object.getPlayerId(), e);
             return null;
         }
     }
@@ -50,7 +49,7 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
             throw new RuntimeException(e);
         }
         return TaskReceiverBuilder.create()
-                .setPlayerID(proto.getPlayerID())
+                .setPlayerId(proto.getPlayerId())
                 .setLastHandlerTime(proto.getLastHandlerTime())
                 .setGroup(ReceiverType.valueOf(proto.getGroup()))
                 .setActualLastHandlerTime(proto.hasActualLastHandlerTime() ? proto.getLastHandlerTime() : proto.getActualLastHandlerTime())

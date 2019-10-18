@@ -19,7 +19,7 @@ public class CacheTaskReceiverManager extends GameCacheManager<TaskReceiver> imp
     }
 
     public TaskReceiver getSystemReceiver() {
-        return this.get(IDAide.getSystemID());
+        return this.get(IDAide.getSystemId());
     }
 
     public TaskReceiver getPlayerReceiver(long playerID) {

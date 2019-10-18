@@ -67,7 +67,7 @@ public class TestPlayer implements Serializable {
     //		this.unchange = equip.coppy();
     //	}
 
-    public long getPlayerID() {
+    public long getPlayerId() {
         return this.playerID;
     }
 

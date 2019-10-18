@@ -75,15 +75,15 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
     }
 
     protected boolean isExist(Actor<?, ?> actor) {
-        return actorMap.get(actor.getActorID()) == actor;
+        return actorMap.get(actor.getActorId()) == actor;
     }
 
     protected boolean remove(Actor<?, ?> actor) {
-        return actorMap.remove(actor.getActorID(), actor);
+        return actorMap.remove(actor.getActorId(), actor);
     }
 
     protected DefaultLocalActor<ID, M> add(DefaultLocalActor<ID, M> actor) {
-        DefaultLocalActor<ID, M> old = this.actorMap.putIfAbsent(actor.getActorID(), actor);
+        DefaultLocalActor<ID, M> old = this.actorMap.putIfAbsent(actor.getActorId(), actor);
         return old != null ? old : actor;
     }
 

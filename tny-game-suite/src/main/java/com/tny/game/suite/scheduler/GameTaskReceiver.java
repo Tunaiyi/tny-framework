@@ -1,7 +1,7 @@
 package com.tny.game.suite.scheduler;
 
 import com.tny.game.asyndb.annotation.Persistent;
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.cache.annotation.ToCache;
 import com.tny.game.common.scheduler.TaskReceiver;
 import com.tny.game.suite.SuiteDBHead;
@@ -15,21 +15,21 @@ import static com.tny.game.suite.SuiteProfiles.SCHEDULER_CACHE;
 @ToCache(
         profiles = {SCHEDULER_CACHE, GAME},
         prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,
-        cacheKeys = "playerID")
-public class GameTaskReceiver extends TaskReceiver implements Identifiable {
+        cacheKeys = "playerId")
+public class GameTaskReceiver extends TaskReceiver implements Identifier {
 
-    protected long playerID;
+    protected long playerId;
 
     protected GameTaskReceiver() {
     }
 
     @Override
-    public long getPlayerID() {
-        return this.playerID;
+    public long getPlayerId() {
+        return this.playerId;
     }
 
-    protected void setPlayerID(long playerID) {
-        this.playerID = playerID;
+    protected void setPlayerId(long playerId) {
+        this.playerId = playerId;
     }
 
     protected void setGroup(ReceiverType group) {

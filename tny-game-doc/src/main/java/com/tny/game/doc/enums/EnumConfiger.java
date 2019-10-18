@@ -3,10 +3,8 @@ package com.tny.game.doc.enums;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.EnumDocHolder;
-import com.tny.game.doc.holder.FieldDocHolder;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -14,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 @XStreamAlias("enumeration")
 public class EnumConfiger {
@@ -58,10 +58,10 @@ public class EnumConfiger {
         for (FieldDocHolder fieldDocHolder : holder.getEnumList()) {
             EnumerConfiger configer = this.createEnumerConfiger(fieldDocHolder, typeFormatter);
             this.enumerList.enumerList.add(configer);
-            EnumerConfiger old = fieldMap.put(configer.getID(), configer);
+            EnumerConfiger old = fieldMap.put(configer.getId(), configer);
             if (old != null) {
                 throw new IllegalArgumentException(format("{} 类 {} 与 {} 枚举 ID 都为 {}",
-                        holder.getEntityClass(), configer.getName(), old.getName(), configer.getID()));
+                        holder.getEntityClass(), configer.getName(), old.getName(), configer.getId()));
             }
         }
     }

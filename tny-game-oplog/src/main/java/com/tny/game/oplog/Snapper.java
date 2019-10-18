@@ -10,7 +10,7 @@ public interface Snapper<O, S extends Snapshot> {
         return getSnapperType().getSnapshotType();
     }
 
-    long getSnapshotID(O object);
+    long getSnapshotId(O object);
 
     void update(S snapshot, O object);
 

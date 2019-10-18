@@ -24,7 +24,7 @@ public class ActorRunCommand extends BaseActorCommand<Void> {
     @Override
     protected Done<Void> doHandle() {
         this.runnable.run();
-        return DoneResults.succNullable(null);
+        return DoneResults.successNullable(null);
     }
 
 }

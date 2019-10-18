@@ -193,11 +193,11 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     @Override
     public Done<V> getDone() {
         if (this.isFailed())
-            return DoneResults.fail();
+            return DoneResults.failure();
         else if (this.isSuccess())
-            return DoneResults.succNullable(ObjectAide.as(result));
+            return DoneResults.successNullable(ObjectAide.as(result));
         else
-            return DoneResults.succNullable(null);
+            return DoneResults.successNullable(null);
     }
 
     @Override

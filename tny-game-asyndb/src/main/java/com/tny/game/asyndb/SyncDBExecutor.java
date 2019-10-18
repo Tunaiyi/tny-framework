@@ -7,7 +7,7 @@ package com.tny.game.asyndb;
  */
 public interface SyncDBExecutor {
 
-    public boolean sumit(Synchronizable synchronizable);
+    public boolean sumit(PersistentObject synchronizable);
 
     public boolean shutdown() throws InterruptedException;
 

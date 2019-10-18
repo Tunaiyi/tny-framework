@@ -8,13 +8,8 @@ import com.tny.game.net.message.*;
 public class CommonMessageHeadTest extends MessageHeadTest {
 
     @Override
-    public MessageHead create(long id, int protocol, int code, long time, long toMessage) {
-        return new CommonMessageHead()
-                .setId(id)
-                .setCode(code)
-                .setProtocol(protocol)
-                .setTime(time)
-                .setToMessage(toMessage);
+    public MessageHead create(long id, MessageMode mode, int protocol, int code, long time, long toMessage) {
+        return new CommonMessageHead(id, mode, protocol, code, toMessage, time);
     }
 
 }

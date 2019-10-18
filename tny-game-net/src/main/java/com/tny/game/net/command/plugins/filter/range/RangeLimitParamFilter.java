@@ -22,7 +22,7 @@ public abstract class RangeLimitParamFilter<A extends Annotation, N extends Comp
         if (!this.filterRange(low, param, high)) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    message.getUserID(), head.getId(),
+                    message.getUserId(), head.getId(),
                     index, param, low, high);
             return NetResultCode.ILLEGAL_PARAMETERS;
         }

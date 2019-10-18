@@ -42,20 +42,20 @@ public class ConsumeRecord implements StuffTradeLog {
     }
 
     public ConsumeRecord(StuffTradeLog log) {
-        this.cid = log.getID() == log.getItemID() ? null : log.getID();
-        this.ciid = log.getItemID();
+        this.cid = log.getId() == log.getItemId() ? null : log.getId();
+        this.ciid = log.getItemId();
         this.conum = log.getOldNum();
         this.cnnum = log.getNewNum();
         this.calter = log.getAlterNum();
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return this.cid == null ? this.ciid : this.cid;
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return this.ciid;
     }
 

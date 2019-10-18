@@ -3,7 +3,7 @@ package com.tny.game.net.command.dispatcher;
 import com.google.common.collect.*;
 import com.tny.game.common.collection.CopyOnWriteMap;
 import com.tny.game.common.reflect.*;
-import com.tny.game.common.reflect.javassist.JSsistUtils;
+import com.tny.game.common.reflect.javassist.JavassistAccessors;
 import com.tny.game.expr.ExprHolderFactory;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.message.MessageMode;
@@ -53,16 +53,16 @@ public final class ClassControllerHolder extends ControllerHolder {
             !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
     private void initMethodHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory) {
-        GClass access = JSsistUtils.getGClass(executor.getClass(), FILTER);
-        for (GMethod method : access.getGMethodList()) {
+        ClassAccessor access = JavassistAccessors.getGClass(executor.getClass(), FILTER);
+        for (MethodAccessor method : access.getGMethodList()) {
             Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
             if (controller == null)
                 continue;
             MethodControllerHolder holder = new MethodControllerHolder(executor, context, exprHolderFactory, this, method, controller);
-            if (holder.getID() > 0) {
-                MethodControllerHolder last = this.methodHolderMap.put(holder.getID(), holder);
+            if (holder.getId() > 0) {
+                MethodControllerHolder last = this.methodHolderMap.put(holder.getId(), holder);
                 if (last != null)
-                    throw new IllegalArgumentException(format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getID()));
+                    throw new IllegalArgumentException(format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getId()));
             }
         }
     }
@@ -86,7 +86,7 @@ public final class ClassControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public int getID() {
+    public int getId() {
         return this.controller.value();
     }
 

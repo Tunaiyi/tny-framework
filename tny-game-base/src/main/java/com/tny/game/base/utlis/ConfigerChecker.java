@@ -33,18 +33,18 @@ public class ConfigerChecker {
     }
 
     public static void checkBehaviorBelogFuncSys(Behavior child, Feature parent) {
-        if (!(child.getID() + "").startsWith(parent.getID() + "")) {
+        if (!(child.getId() + "").startsWith(parent.getId() + "")) {
             IllegalArgumentException e = new IllegalArgumentException(format("{} 行为[ID:{}]不属于 {} 系统[ID:{}]",
-                    child, child.getID(), parent, parent.getID()));
+                    child, child.getId(), parent, parent.getId()));
             e.printStackTrace();
             throw e;
         }
     }
 
     public static void checkActionBelogBehavior(Action child, Behavior parent) {
-        if (child.getID() / 1000 != parent.getID()) {
+        if (child.getId() / 1000 != parent.getId()) {
             IllegalArgumentException e = new IllegalArgumentException(format("{} 操作[ID:{}]不属于 {} 行为[ID:{}]",
-                    child, child.getID(), parent, parent.getID()));
+                    child, child.getId(), parent, parent.getId()));
             e.printStackTrace();
             throw e;
         }

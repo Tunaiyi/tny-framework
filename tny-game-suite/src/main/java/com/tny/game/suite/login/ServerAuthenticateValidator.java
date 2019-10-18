@@ -28,11 +28,11 @@ public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integ
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
         AppType serverType = ticket.asServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
-            Certificate<Integer> info = Certificates.createAutherized(ticket.getTime(), ticket.getServerID(), serverType.getName(), Instant.ofEpochMilli(ticket.getTime()));
+            Certificate<Integer> info = Certificates.createAutherized(ticket.getTime(), ticket.getServerId(), serverType.getName(), Instant.ofEpochMilli(ticket.getTime()));
             ServerTicket localTicket = tunnel.attributes().getAttribute(AttributesKeys.LOCAL_SERVER_TICKET);
             ServerTicket signTicket = localTicket != null ? localTicket : ticket;
             tunnel.attributes().setAttribute(AttributesKeys.SERVER_TICKET, ticket);
-            tunnel.attributes().setAttribute(AttributesKeys.SYSTEM_USER_ID, signTicket.getServerID());
+            tunnel.attributes().setAttribute(AttributesKeys.SYSTEM_USER_ID, signTicket.getServerId());
             tunnel.attributes().setAttribute(AttributesKeys.SYSTEM_USER_USER_GROUP, signTicket.getServerType());
             return info;
         }

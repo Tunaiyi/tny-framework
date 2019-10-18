@@ -38,11 +38,11 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
         super();
         this.item = item;
         this.model = model;
-        this.playerID = item.getPlayerID();
+        this.playerID = item.getPlayerId();
     }
 
     @Override
-    public long getPlayerID() {
+    public long getPlayerId() {
         return this.playerID;
     }
 

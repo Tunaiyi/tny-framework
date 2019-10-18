@@ -1,11 +1,10 @@
 package com.tny.game.common.result;
 
-import static com.tny.game.common.utils.StringAide.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 public class ResultCodes {
 

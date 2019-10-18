@@ -1,6 +1,6 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 
 /**
  * <p>
@@ -8,7 +8,7 @@ import com.tny.game.common.enums.EnumID;
  * @author: Kun Yang
  * @date: 2018-10-08 11:49
  */
-public enum TunnelState implements EnumID<Integer> {
+public enum TunnelState implements EnumIdentifiable<Integer> {
 
 
     /**
@@ -40,7 +40,7 @@ public enum TunnelState implements EnumID<Integer> {
     }
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return id;
     }
 

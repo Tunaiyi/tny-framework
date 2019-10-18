@@ -10,7 +10,7 @@ public class TradeStuff {
     /**
      * 物品ID
      */
-    private int itemID;
+    private int itemId;
 
     /**
      * 物品数量
@@ -26,18 +26,18 @@ public class TradeStuff {
 
     }
 
-    public TradeStuff(int itemID, long number) {
-        this(itemID, number, AlterType.UNCHECK.getID());
+    public TradeStuff(int itemId, long number) {
+        this(itemId, number, AlterType.UNCHECK.getId());
     }
 
-    public TradeStuff(int itemID, long number, int alterType) {
-        this.itemID = itemID;
+    public TradeStuff(int itemId, long number, int alterType) {
+        this.itemId = itemId;
         this.number = number;
         this.alterType = alterType;
     }
 
-    public int getItemID() {
-        return itemID;
+    public int getItemId() {
+        return itemId;
     }
 
     public long getNumber() {
@@ -48,8 +48,8 @@ public class TradeStuff {
         return alterType;
     }
 
-    public TradeStuff setItemID(int itemID) {
-        this.itemID = itemID;
+    public TradeStuff setItemId(int itemId) {
+        this.itemId = itemId;
         return this;
     }
 

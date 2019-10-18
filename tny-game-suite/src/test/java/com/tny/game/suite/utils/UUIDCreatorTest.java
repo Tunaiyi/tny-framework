@@ -33,7 +33,7 @@ public class UUIDCreatorTest {
                 e.printStackTrace();
             }
             for (int index = 0; index < createSize; index++) {
-                ids.add(creator.createID());
+                ids.add(creator.createId());
             }
             finishLatch.countDown();
         }
@@ -41,12 +41,12 @@ public class UUIDCreatorTest {
     }
 
     @Test
-    public void createID() throws Exception {
+    public void createId() throws Exception {
         System.out.println(System.currentTimeMillis());
         SortedSet<Long> ids = new TreeSet<>();
         for (int index = 0; index < 10000; index++) {
             long id;
-            if (!ids.add(id = creator.createID()))
+            if (!ids.add(id = creator.createId()))
                 System.out.println("fail : " + id);
             else
                 System.out.println(id);
@@ -54,7 +54,7 @@ public class UUIDCreatorTest {
     }
 
     @Test
-    public void createConcurrentID() throws Exception {
+    public void createConcurrentId() throws Exception {
         ExecutorService service = Executors.newCachedThreadPool();
         Task[] tasks = new Task[threadSize];
         for (int index = 0; index < threadSize; index++) {

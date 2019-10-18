@@ -1,17 +1,17 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.tag.Taggable;
+import com.tny.game.common.tag.*;
 
 import java.util.Set;
 
-public interface Any<M extends Model> extends Identifiable, Taggable {
+public interface Any<M extends Model> extends Identifier, Taggable {
 
     /**
      * 获取对象ID
      *
      * @return
      */
-    long getID();
+    long getId();
 
     /**
      * 获取对象别名
@@ -25,7 +25,7 @@ public interface Any<M extends Model> extends Identifiable, Taggable {
      *
      * @return
      */
-    int getItemID();
+    int getItemId();
 
     /**
      * 获取该事物对象的模型

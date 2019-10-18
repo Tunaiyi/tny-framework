@@ -19,8 +19,8 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 
     private int code;
 
-    protected CommonMessageHead() {
-    }
+    // protected CommonMessageHead() {
+    // }
 
     public CommonMessageHead(long id, MessageMode mode, int protocol, int code, long toMessage, long time) {
         super(mode);

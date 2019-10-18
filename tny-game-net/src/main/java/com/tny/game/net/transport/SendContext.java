@@ -8,7 +8,7 @@ public interface SendContext<UID> {
     /**
      * @return 获取发送超时
      */
-    long getSendTimeout();
+    long getWriteTimeout();
 
     /**
      * @return 获取响应 Future, 如果没有返回 null
@@ -23,6 +23,10 @@ public interface SendContext<UID> {
     /**
      * @return 获取发送 Future, 如果没有返回 null
      */
-    WriteMessagePromise getWritePromise();
+    WriteMessageFuture getWriteFuture();
 
+    /**
+     * @return 是否有发送 Future
+     */
+    boolean isHasWriteFuture();
 }

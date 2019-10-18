@@ -1,6 +1,6 @@
 package com.tny.game.doc;
 
-import com.tny.game.common.enums.EnumID;
+import com.tny.game.common.enums.EnumIdentifiable;
 import com.tny.game.common.utils.StringAide;
 
 import java.lang.reflect.ParameterizedType;
@@ -82,7 +82,7 @@ public enum LangFormatter implements TypeFormatter {
     private static String cshapFormat(Type type, boolean formatEnum) {
         if (type instanceof Class) {
             Class<?> javaType = (Class<?>) type;
-            if (EnumID.class.isAssignableFrom(javaType)) {
+            if (EnumIdentifiable.class.isAssignableFrom(javaType)) {
                 return "int";
             } else if (formatEnum && (javaType.isEnum() || String.class.isAssignableFrom(javaType))) {
                 return "string";

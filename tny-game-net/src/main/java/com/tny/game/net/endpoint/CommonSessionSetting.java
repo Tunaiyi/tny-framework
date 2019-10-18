@@ -7,7 +7,7 @@ package com.tny.game.net.endpoint;
 public class CommonSessionSetting implements SessionSetting {
 
     private String name;
-    private int cacheSentMessageSize;
+    private int cacheSentMessageSize = 0;
     private long offlineCloseDelay = 0;
     private int offlineMaxSize = 0;
     private long clearInterval = 60000;

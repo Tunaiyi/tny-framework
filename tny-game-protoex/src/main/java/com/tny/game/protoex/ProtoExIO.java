@@ -15,7 +15,7 @@ public class ProtoExIO {
     }
 
     public static <T> ProtoExSchema<T> getSchema(ProtoExInputStream inputStream, Class<T> clazz, Tag tag) {
-        return inputStream.getSchemaContext().getSchema(tag.getProtoExID(), tag.isRaw(), clazz);
+        return inputStream.getSchemaContext().getSchema(tag.getProtoExId(), tag.isRaw(), clazz);
     }
 
     public static <T> IOConfiger<T> createNormal(ProtoExType protoExType, T type) {

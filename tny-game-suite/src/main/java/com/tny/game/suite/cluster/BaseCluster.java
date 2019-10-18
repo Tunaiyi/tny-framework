@@ -95,21 +95,21 @@ public abstract class BaseCluster {
                         return;
                     holder.addNode(data);
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerID(), data.getUrlMap());
+                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerId(), data.getUrlMap());
                     break;
                 case CHANGE:
                     if (data == null)
                         return;
                     holder.addNode(data);
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerID(), data.getUrlMap());
+                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerId(), data.getUrlMap());
                     break;
                 case DELETE:
                     if (old == null)
                         return;
-                    holder.removeNode(old.getServerID());
+                    holder.removeNode(old.getServerId());
                     if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerID(), old.getUrlMap());
+                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerId(), old.getUrlMap());
                     break;
             }
         };
@@ -121,7 +121,7 @@ public abstract class BaseCluster {
         ServiceNode node = holder.randNode();
         Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerID());
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerId());
         return url.toString() + path;
     }
 
@@ -131,7 +131,7 @@ public abstract class BaseCluster {
         ServiceNode node = holder.getNode(id);
         Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerID());
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerId());
         return url.toString() + path;
     }
 

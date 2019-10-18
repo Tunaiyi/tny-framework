@@ -83,7 +83,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     protected boolean init = false;
 
     @Override
-    public int getID() {
+    public int getId() {
         return this.id;
     }
 
@@ -114,7 +114,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         ItemExplorer itemExplorer = context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
-            Item<?> item = itemExplorer.getItem(playerID, model.getID());
+            Item<?> item = itemExplorer.getItem(playerID, model.getId());
             attributeMap.put(alias, item);
             return item;
         }
@@ -254,7 +254,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public TryToDoResult tryToDo(Item<?> item, Action action, boolean award, Object... attributes) {
-        return this.doTryToDo(item.getPlayerID(), item, action, award, false, attributes);
+        return this.doTryToDo(item.getPlayerId(), item, action, award, false, attributes);
     }
 
     @Override
@@ -264,7 +264,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public TryToDoResult tryToDoAll(Item<?> item, Action action, boolean award, Object... attributes) {
-        return this.doTryToDo(item.getPlayerID(), item, action, award, true, attributes);
+        return this.doTryToDo(item.getPlayerId(), item, action, award, true, attributes);
     }
 
     @Override
@@ -279,7 +279,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public BehaviorResult getBehaviorResult(Item<?> item, Behavior behavior, Object... attributes) {
-        return this.doCountBehaviorResult(item.getPlayerID(), item, behavior, attributes);
+        return this.doCountBehaviorResult(item.getPlayerId(), item, behavior, attributes);
     }
 
     @Override
@@ -289,12 +289,12 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public Trade createCostTrade(Item<?> item, Action action, Object... attributes) {
-        return this.doCountCostTrade(item.getPlayerID(), item, action, attributes);
+        return this.doCountCostTrade(item.getPlayerId(), item, action, attributes);
     }
 
     @Override
     public Trade createAwardTrade(Item<?> item, Action action, Object... attributes) {
-        return this.doCountTradeAward(item.getPlayerID(), item, action, attributes);
+        return this.doCountTradeAward(item.getPlayerId(), item, action, attributes);
     }
 
     public boolean isHasAbility(Ability ability) {
@@ -327,7 +327,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public ActionTrades createActionTrades(Item<?> item, Action action, Object... attributes) {
-        return this.doCreateActionTrades(item.getPlayerID(), item, action, attributes);
+        return this.doCreateActionTrades(item.getPlayerId(), item, action, attributes);
     }
 
     @Override
@@ -342,7 +342,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public ActionResult getActionResult(Item<?> item, Action action, Object... attributes) {
-        return this.doCountActionResult(item.getPlayerID(), item, action, attributes);
+        return this.doCountActionResult(item.getPlayerId(), item, action, attributes);
     }
 
     @Override
@@ -352,12 +352,12 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public AwardList getAwardList(Item<?> item, Action action, Object... attributes) {
-        return this.doGetAwardList(item.getPlayerID(), item, action, attributes);
+        return this.doGetAwardList(item.getPlayerId(), item, action, attributes);
     }
 
     @Override
     public CostList getCostList(Item<?> item, Action action, Object... attributes) {
-        return this.doGetCostList(item.getPlayerID(), item, action, attributes);
+        return this.doGetCostList(item.getPlayerId(), item, action, attributes);
     }
 
     @Override
@@ -383,7 +383,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
             if (!this.hasAbility(ability)) {
                 valueMap.put(ability, null);
             } else {
-                object = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
+                object = this.doCountAbility(item.getPlayerId(), item, ability, clazz, attributes);
             }
             valueMap.put(ability, object);
         }
@@ -428,7 +428,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
             V object = null;
             if (abilityClass.isInstance(ability)) {
                 if (this.hasAbility(ability))
-                    object = this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
+                    object = this.doCountAbility(item.getPlayerId(), item, ability, clazz, attributes);
                 valueMap.put((A) ability, object);
             }
         }
@@ -452,12 +452,12 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public <O> O getActionOption(Item<?> item, Action action, Option option, Object... attributes) {
-        return this.doCountActionOption(item.getPlayerID(), item, action, option, attributes);
+        return this.doCountActionOption(item.getPlayerId(), item, action, option, attributes);
     }
 
     @Override
     public <O> O getActionOption(Item<?> item, O defaultNum, Action action, Option option, Object... attributes) {
-        O value = this.doCountActionOption(item.getPlayerID(), item, action, option, attributes);
+        O value = this.doCountActionOption(item.getPlayerId(), item, action, option, attributes);
         return this.defaultNumber(value, defaultNum);
     }
 
@@ -474,7 +474,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     @Override
     public <A> A getAbility(Item<?> item, Ability ability, Class<A> clazz, Object... attributes) {
-        return this.doCountAbility(item.getPlayerID(), item, ability, clazz, attributes);
+        return this.doCountAbility(item.getPlayerId(), item, ability, clazz, attributes);
     }
 
     @Override
@@ -485,7 +485,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(item.getPlayerID(), item, ability, (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
+        A value = this.doCountAbility(item.getPlayerId(), item, ability, (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
@@ -501,7 +501,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         if (item == null) {
             ItemExplorer itemExplorer = context.getItemExplorer();
             if (itemExplorer.hasItemManager(this.getItemType()))
-                item = itemExplorer.getItem(playerID, this.getID());
+                item = itemExplorer.getItem(playerID, this.getId());
         }
         attributeMap.put(ACTION_ITEM_NAME, item);
         attributeMap.put(ACTION_ITEM_MODEL_NAME, this);
@@ -582,7 +582,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         if (obj == null)
             return false;
         ItemModel other = (ItemModel) obj;
-        if (this.id != other.getID())
+        if (this.id != other.getId())
             return false;
         return true;
     }

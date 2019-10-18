@@ -69,7 +69,7 @@ public class FunDocHolder {
         return funDoc;
     }
 
-    public int getOpID() {
+    public int getOpId() {
         return opID;
     }
 

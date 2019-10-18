@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Netter<UID>, Receiver<UID>, Sender<UID> {
+public interface Tunnel<UID> extends Netter<UID> {
 
     /**
      * @return 通道 Id

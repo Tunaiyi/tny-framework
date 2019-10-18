@@ -30,13 +30,12 @@
 
 package com.tny.game.protoex;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.protoex.field.IOConfiger;
-import com.tny.game.protoex.field.MapIOConfiger;
-import com.tny.game.protoex.field.RepeatIOConfiger;
+import com.tny.game.protoex.field.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * Thrown when a protocol message being parsed is invalid in some way, e.g. it
@@ -202,7 +201,7 @@ public class ProtobufExException extends RuntimeException {
      */
     public static ProtobufExException readTypeError(ProtoExType type, Tag tag) {
         return new ProtobufExException(format("读取protoExID为{}({}) 非 {}({})",
-                tag.getProtoExID(), tag.isRaw() ? "原生" : "自定义", type, type.isRaw() ? "原生" : "自定义"));
+                tag.getProtoExId(), tag.isRaw() ? "原生" : "自定义", type, type.isRaw() ? "原生" : "自定义"));
     }
 
     /**
@@ -221,8 +220,8 @@ public class ProtobufExException extends RuntimeException {
      * @param type
      * @return
      */
-    public static ProtobufExException noSchema(int protoExID, boolean raw) {
-        return new ProtobufExException(format("没有找到{{}|{}}对应的schema", raw ? "RAW" : "USER", protoExID));
+    public static ProtobufExException noSchema(int protoExId, boolean raw) {
+        return new ProtobufExException(format("没有找到{{}|{}}对应的schema", raw ? "RAW" : "USER", protoExId));
     }
 
     /**
@@ -230,8 +229,8 @@ public class ProtobufExException extends RuntimeException {
      *
      * @return
      */
-    public static ProtobufExException noSchema(int protoExID, boolean raw, Class<?> defaultType) {
-        return new ProtobufExException(format("没有找到 {{}|{}} 和 {} 对应的schema", raw ? "RAW" : "USER", protoExID, defaultType));
+    public static ProtobufExException noSchema(int protoExId, boolean raw, Class<?> defaultType) {
+        return new ProtobufExException(format("没有找到 {{}|{}} 和 {} 对应的schema", raw ? "RAW" : "USER", protoExId, defaultType));
     }
 
     /**
@@ -241,7 +240,7 @@ public class ProtobufExException extends RuntimeException {
      * @param protoExID
      * @return
      */
-    public static ProtobufExException invalidProtoExID(Class<?> typeClass, int protoExID) {
+    public static ProtobufExException invalidProtoExId(Class<?> typeClass, int protoExID) {
         return new ProtobufExException(format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID, WireFormat.MAX_PROTO_EX_ID));
     }
 

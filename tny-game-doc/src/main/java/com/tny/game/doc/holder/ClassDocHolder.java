@@ -83,7 +83,7 @@ public class ClassDocHolder {
         return this.className;
     }
 
-    public int getModuleID() {
+    public int getModuleId() {
         return moduleID;
     }
 

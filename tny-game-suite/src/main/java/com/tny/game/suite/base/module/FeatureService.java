@@ -92,18 +92,18 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                         continue;
                     if (LOGGER.isInfoEnabled()) {
                         RunningChecker.start(model.getFeature());
-                        LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerID(), feature);
+                        LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerId(), feature);
                     }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
                         explorer.open(model);
                     }
                     if (LOGGER.isInfoEnabled()) {
                         long time = RunningChecker.end(model.getFeature()).cost();
-                        LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerID(), feature, time);
+                        LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
                     }
                 }
             } catch (Throwable e) {
-                LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerID(), feature, e);
+                LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerId(), feature, e);
             }
         }
         // if (LOGGER.isInfoEnabled() && alRunningCheck != null) {
@@ -134,7 +134,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                 featureHandler.loadFeature(explorer);
             }
         } catch (Throwable e) {
-            LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerID(), feature, e);
+            LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerId(), feature, e);
         }
     }
 

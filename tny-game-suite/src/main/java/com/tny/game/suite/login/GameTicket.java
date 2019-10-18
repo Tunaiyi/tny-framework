@@ -38,7 +38,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(7)
-    private String openID;
+    private String openId;
 
     @JsonProperty
     @ProtoExField(8)
@@ -58,7 +58,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(12)
-    private long tokenID;
+    private long tokenId;
 
     @JsonProperty
     @ProtoExField(14)
@@ -66,7 +66,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(15)
-    private String deviceID;
+    private String deviceId;
 
     @JsonProperty
     @ProtoExField(16)
@@ -74,7 +74,7 @@ public class GameTicket {
 
     @JsonProperty
     @ProtoExField(17)
-    private String bindID;
+    private String bindId;
 
     @JsonProperty
     @ProtoExField(18)
@@ -88,17 +88,17 @@ public class GameTicket {
         super();
     }
 
-    public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, String openKey,
-                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
-        this(tokenID, server, openID, bindID, guest, false, openKey, lang, pf, accountTag, zone, entry, device, deviceID, time, maker);
+    public GameTicket(long tokenId, int server, String openId, String bindId, boolean guest, String openKey,
+                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceId, long time, TicketMaker<GameTicket> maker) {
+        this(tokenId, server, openId, bindId, guest, false, openKey, lang, pf, accountTag, zone, entry, device, deviceId, time, maker);
     }
 
-    public GameTicket(long tokenID, int server, String openID, String bindID, boolean guest, boolean interior, String openKey,
-                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceID, long time, TicketMaker<GameTicket> maker) {
+    public GameTicket(long tokenId, int server, String openId, String bindId, boolean guest, boolean interior, String openKey,
+                      String lang, String pf, String accountTag, long zone, int entry, String device, String deviceId, long time, TicketMaker<GameTicket> maker) {
         super();
-        this.tokenID = tokenID;
-        this.openID = openID;
-        this.bindID = bindID;
+        this.tokenId = tokenId;
+        this.openId = openId;
+        this.bindId = bindId;
         this.guest = guest;
         this.openKey = openKey;
         this.server = server;
@@ -107,8 +107,8 @@ public class GameTicket {
         this.accountTag = accountTag;
         this.zone = zone;
         this.entry = entry;
-        this.device = StringUtils.isBlank(deviceID) ? "NONE" : device;
-        this.deviceID = StringUtils.isBlank(deviceID) ? openID : deviceID;
+        this.device = StringUtils.isBlank(deviceId) ? "NONE" : device;
+        this.deviceId = StringUtils.isBlank(deviceId) ? openId : deviceId;
         this.interior = interior;
         this.lang = lang;
         if (maker != null)
@@ -139,12 +139,12 @@ public class GameTicket {
         return this.device;
     }
 
-    public String getDeviceID() {
-        return this.deviceID;
+    public String getDeviceId() {
+        return this.deviceId;
     }
 
-    public String getOpenID() {
-        return this.openID;
+    public String getOpenId() {
+        return this.openId;
     }
 
     public String getOpenKey() {
@@ -163,16 +163,16 @@ public class GameTicket {
         return this.secret;
     }
 
-    public long getTokenID() {
-        return this.tokenID;
+    public long getTokenId() {
+        return this.tokenId;
     }
 
     public String getAccountTag() {
         return accountTag;
     }
 
-    public String getBindID() {
-        return bindID == null ? openID : bindID;
+    public String getBindId() {
+        return bindId == null ? openId : bindId;
     }
 
     public String getLang() {
@@ -192,13 +192,13 @@ public class GameTicket {
         return this;
     }
 
-    GameTicket setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
+    GameTicket setDeviceId(String deviceID) {
+        this.deviceId = deviceID;
         return this;
     }
 
-    GameTicket setBindID(String bindID) {
-        this.bindID = bindID;
+    GameTicket setBindId(String bindId) {
+        this.bindId = bindId;
         return this;
     }
 
@@ -237,8 +237,8 @@ public class GameTicket {
         return this;
     }
 
-    GameTicket setOpenID(String openID) {
-        this.openID = openID;
+    GameTicket setOpenId(String openId) {
+        this.openId = openId;
         return this;
     }
 
@@ -262,8 +262,8 @@ public class GameTicket {
         return this;
     }
 
-    GameTicket setTokenID(long tokenID) {
-        this.tokenID = tokenID;
+    GameTicket setTokenId(long tokenId) {
+        this.tokenId = tokenId;
         return this;
     }
 
@@ -284,7 +284,7 @@ public class GameTicket {
 
     @Override
     public String toString() {
-        return "GamesTicket [pf=" + this.pf + ", ad=" + this.ad + ", server=" + this.server + ", zone=" + this.zone + ", entry=" + this.entry + ", device=" + this.device + ", openID=" + this.openID
+        return "GamesTicket [pf=" + this.pf + ", ad=" + this.ad + ", server=" + this.server + ", zone=" + this.zone + ", entry=" + this.entry + ", device=" + this.device + ", openId=" + this.openId
                 + ", openKey=" + this.openKey + ", time="
                 + this.time + ", pwdKey=" + this.pwdKey + ", secret=" + this.secret + "]";
     }

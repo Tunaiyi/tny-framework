@@ -1,5 +1,9 @@
 package com.tny.game.common.result;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import static com.tny.game.common.utils.StringAide.*;
+
 public interface ResultCode {
 
     int SUCCESS_CODE = 100;
@@ -23,12 +27,17 @@ public interface ResultCode {
 
         @Override
         public String getMessage() {
-            return "成功";
+            return "SUCCESS";
         }
 
         @Override
         public ResultCodeType getType() {
             return ResultCodeType.GENERAL;
+        }
+
+        @Override
+        public String message(Object... messageParams) {
+            return this.getMessage();
         }
 
     };
@@ -52,12 +61,17 @@ public interface ResultCode {
 
         @Override
         public String getMessage() {
-            return "失败";
+            return "FAILURE";
         }
 
         @Override
         public ResultCodeType getType() {
             return ResultCodeType.GENERAL;
+        }
+
+        @Override
+        public String message(Object... messageParams) {
+            return this.getMessage();
         }
 
     };
@@ -81,4 +95,9 @@ public interface ResultCode {
         ResultCodes.registerCode(this);
     }
 
+    default String message(Object... messageParams) {
+        if (ArrayUtils.isEmpty(messageParams))
+            return getMessage();
+        return format(getMessage(), messageParams);
+    }
 }

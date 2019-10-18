@@ -120,21 +120,21 @@ public enum ProtoExType {
 
     }
 
-    private final int ID;
+    private final int id;
 
     private final boolean hasLength;
 
-    private ProtoExType(int id, boolean hasLength) {
-        this.ID = (byte) id;
+    ProtoExType(int id, boolean hasLength) {
+        this.id = (byte) id;
         this.hasLength = hasLength;
     }
 
     public boolean isRaw() {
-        return this.ID > 0;
+        return this.id > 0;
     }
 
-    public int getID() {
-        return this.ID;
+    public int getId() {
+        return this.id;
     }
 
     public boolean isHasLength() {
@@ -163,7 +163,7 @@ public enum ProtoExType {
         if (typeID <= 0)
             return null;
         for (ProtoExType type : values()) {
-            if (type.getID() == typeID)
+            if (type.getId() == typeID)
                 return type;
         }
         return null;

@@ -44,8 +44,8 @@ public class NettyTerminalTunnel<UID> extends NettyTunnel<UID, NettyTerminal<UID
                 Channel channel = endpoint.connect();
                 if (channel != null) {
                     this.channel = channel;
-                    channel.attr(NettyAttrKeys.TUNNEL).set(this);
                     this.state = TunnelState.ACTIVATE;
+                    channel.attr(NettyAttrKeys.TUNNEL).set(this);
                     endpoint.connectSuccess(this);
                     this.resetFailedTimes();
                     return true;
@@ -59,6 +59,11 @@ public class NettyTerminalTunnel<UID> extends NettyTunnel<UID, NettyTerminal<UID
         }
         LOGGER.warn("{} is available", this);
         return false;
+    }
+
+    @Override
+    protected void onWriteUnavailable(Message<UID> message, WriteMessagePromise promise) {
+        this.endpoint.reconnectTunnel(this);
     }
 
     int getFailedTimes() {

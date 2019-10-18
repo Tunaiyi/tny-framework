@@ -1,8 +1,13 @@
 package com.tny.game.cache.annotation;
 
-import com.tny.game.cache.CacheTrigger;
+import com.tny.game.cache.*;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 调用Cache中 **Object(...) 方法的对象必须有该注解 Cache会根据该注解构建key，用于存储删除对象
@@ -33,9 +38,9 @@ public @interface ToCache {
     Class<? extends CacheTrigger<?, ?, ?>>[] triggers() default {};
 
     /**
-     * 构成key的方法名称数组 如: key = getID() + "_" + getName();
+     * 构成key的方法名称数组 如: key = getId() + "_" + getName();
      * <p>
-     * cacheKeys = {"ID", "name"}
+     * cacheKeys = {"id", "name"}
      *
      * @return
      */

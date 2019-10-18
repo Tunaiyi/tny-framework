@@ -1,19 +1,27 @@
 package com.tny.game.suite.core;
 
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.base.log.LogName;
-import com.tny.game.common.config.ConfigLoader;
-import com.tny.game.common.formula.DateTimeEx;
-import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.common.utils.DateTimeAide;
+import com.tny.game.base.log.*;
+import com.tny.game.common.config.*;
+import com.tny.game.common.formula.*;
+import com.tny.game.common.runtime.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.utils.NetConfigs;
+import com.tny.game.net.utils.*;
 import com.tny.game.suite.utils.*;
 import org.joda.time.DateTime;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -29,14 +37,16 @@ public class GameInfo {
 
     private static Map<Integer, GameInfo> GAMES_INFO_MAP;
 
-    private int serverID;
+    private int serverId;
+
+    private int zoneId;
 
     private boolean register;
 
     private boolean mainServer = false;
 
     private DateTime openDate;
-    
+
     private List<InetConnector> publicConnectors;
 
     private List<InetConnector> privateConnectors;
@@ -63,11 +73,11 @@ public class GameInfo {
             for (GameInfo info : list) {
                 if (info.isMainServer()) {
                     if (GAMES_INFO != null)
-                        throw new IllegalArgumentException(format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getServerID(), info.getServerID()));
+                        throw new IllegalArgumentException(format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getZoneId(), info.getZoneId()));
                     GAMES_INFO = info;
                 }
-                if (map.put(info.getServerID(), info) != null)
-                    throw new IllegalArgumentException(format("发现有重复 serverID {} 的服务器", info.getServerID()));
+                if (map.put(info.getZoneId(), info) != null)
+                    throw new IllegalArgumentException(format("发现有重复 serverId {} 的服务器", info.getZoneId()));
             }
             if (GAMES_INFO == null)
                 throw new IllegalArgumentException(format("未发现主服务器"));
@@ -84,8 +94,8 @@ public class GameInfo {
         return GAMES_INFO;
     }
 
-    public static GameInfo getInfo(int serverID) {
-        return GAMES_INFO_MAP.get(serverID);
+    public static GameInfo getInfo(int zoneId) {
+        return GAMES_INFO_MAP.get(zoneId);
     }
 
     public static boolean isLocal(String local) {
@@ -96,12 +106,12 @@ public class GameInfo {
         return GameInfo.local;
     }
 
-    public static int getMainServerID() {
-        return info().getServerID();
+    public static int getMainZoneId() {
+        return info().getZoneId();
     }
 
-    public static boolean isHasServer(int serverID) {
-        return GAMES_INFO_MAP.containsKey(serverID);
+    public static boolean isHasServer(int zoneId) {
+        return GAMES_INFO_MAP.containsKey(zoneId);
     }
 
 
@@ -112,8 +122,12 @@ public class GameInfo {
         return GAMES_INFO_MAP.values();
     }
 
-    public int getServerID() {
-        return this.serverID;
+    public int getZoneId() {
+        return this.zoneId;
+    }
+
+    public int getServerId() {
+        return this.serverId;
     }
 
     public AppType getServerType() {

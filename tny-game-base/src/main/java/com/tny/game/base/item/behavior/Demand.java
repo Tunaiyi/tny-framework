@@ -62,7 +62,7 @@ public interface Demand {
 //	 *            计算参数
 //	 * @return 返回条件结果集
 //	 */
-//	public DemandDetail createDemandDetail(long playerID, Map<String, Object> attribute);
+//	public DemandDetail createDemandDetail(long playerId, Map<String, Object> attribute);
 
     DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
 

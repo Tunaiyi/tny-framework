@@ -51,7 +51,7 @@ public interface Message<UID> extends Serializable, MessageSubject {
     /**
      * @return 用户ID 无用户ID返回-1
      */
-    UID getUserID();
+    UID getUserId();
 
     /**
      * @return 是否已经登录

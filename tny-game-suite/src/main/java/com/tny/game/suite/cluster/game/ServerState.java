@@ -20,7 +20,7 @@ public enum ServerState implements ProtoExEnum {
 	}
 
 	@Override
-	public Integer getID() {
+	public Integer getId() {
 		return this.id;
 	}
 

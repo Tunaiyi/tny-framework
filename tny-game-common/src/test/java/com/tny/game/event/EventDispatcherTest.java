@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class EventDispatcherTest {
 
-    Mockery context = new JUnit4Mockery();
+    private Mockery context = new JUnit4Mockery();
 
     public class TaskEvent extends BaseEvent<Integer> {
 

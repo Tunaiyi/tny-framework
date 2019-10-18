@@ -14,7 +14,7 @@ public class LogMessage extends MapMessage {
     public LogMessage(Log log) {
         this.log = log;
         DateTime dateTime = log.getLogAt();
-        this.put("sid", Integer.toString(log.getServerID()));
+        this.put("sid", Integer.toString(log.getServerId()));
         this.put("lyyyy", String.valueOf(dateTime.getYear()));
         this.put("lMM", String.valueOf(dateTime.getMonthOfYear()));
         this.put("ldd", String.valueOf(dateTime.getDayOfMonth()));
@@ -33,8 +33,8 @@ public class LogMessage extends MapMessage {
         return Strings.EMPTY;
     }
 
-    public int getServerID() {
-        return log.getServerID();
+    public int getServerId() {
+        return log.getServerId();
     }
 
     @Override

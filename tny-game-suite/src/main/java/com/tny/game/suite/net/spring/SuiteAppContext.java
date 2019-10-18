@@ -26,8 +26,8 @@ public class SuiteAppContext extends DefaultAppContext {
     }
 
     @Override
-    public DefaultAppContext setScanPaths(String[] scanPaths) {
-        return super.setScanPaths(scanPaths);
+    public DefaultAppContext setScanPackages(String[] scanPackages) {
+        return super.setScanPackages(scanPackages);
     }
 
 }

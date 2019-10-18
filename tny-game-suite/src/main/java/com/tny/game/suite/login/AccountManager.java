@@ -23,29 +23,29 @@ public class AccountManager {
         return this.accountDAO.get(account);
     }
 
-    public Account getAccount(long userID) {
-        return this.accountDAO.get(userID);
+    public Account getAccount(long userId) {
+        return this.accountDAO.get(userId);
     }
 
-    public Collection<Long> findUIDsByDeviceID(int serverID, String deviceID) {
-        return this.accountDAO.findUIDsByDeviceID(serverID, deviceID);
+    public Collection<Long> findUidsByDeviceId(int serverId, String deviceId) {
+        return this.accountDAO.findUidsByDeviceId(serverId, deviceId);
     }
 
-    public Long findUIDByOpenID(int serverID, String openID) {
-        return this.accountDAO.findUIDByOpenID(serverID, openID);
+    public Long findUIDByOpenId(int serverId, String openId) {
+        return this.accountDAO.findUidByOpenId(serverId, openId);
     }
 
     public List<String> findPF() {
-        return this.accountDAO.findAllFP();
+        return this.accountDAO.findAllPf();
     }
 
     public int updateIfNull(Account accountObj, GameTicket ticket) {
         return this.accountDAO.updateIfNull(
                 accountObj.getUid(),
                 accountObj.getAccount(),
-                ticket.getOpenID(),
+                ticket.getOpenId(),
                 ticket.getDevice(),
-                ticket.getDeviceID(),
+                ticket.getDeviceId(),
                 ticket.getPf(),
                 ticket.getZone(),
                 ticket.getEntry(),
@@ -83,7 +83,7 @@ public class AccountManager {
         this.accountDAO.updateOnlineAt(
                 account.getUid(),
                 DateTimeAide.date2Int(dateTime),
-                dateTime.getMillis(), ticket.getPf(), ticket.getDevice(), ticket.getDeviceID());
+                dateTime.getMillis(), ticket.getPf(), ticket.getDevice(), ticket.getDeviceId());
     }
 
     public void updateCreateRole(Account account) {
@@ -98,12 +98,12 @@ public class AccountManager {
         this.accountDAO.updateName(account.getUid(), account.getName());
     }
 
-    public List<Long> findEmptyUID(Long min, Long max) {
-        return this.accountDAO.findEmptyUID(min, max);
+    public List<Long> findEmptyUid(Long min, Long max) {
+        return this.accountDAO.findEmptyUid(min, max);
     }
 
-    public Long findMaxUID(Long min, Long max) {
-        return this.accountDAO.findMaxUID(min, max);
+    public Long findMaxUid(Long min, Long max) {
+        return this.accountDAO.findMaxUid(min, max);
     }
 
     public int[] insert(List<Long> uids) {

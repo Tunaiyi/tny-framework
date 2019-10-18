@@ -57,7 +57,7 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
         ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
         suppliers.forEach(s->{
-            suppliersBuilder.add(s.getID());
+            suppliersBuilder.add(s.getId());
             groupsBuilder.addAll(s.getAllCapacityGroups());
         });
         this.suppliers = suppliersBuilder.build();
@@ -66,18 +66,18 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
     }
 
     @Override
-    public long getID() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return itemID;
     }
 
     @Override
-    public long getPlayerID() {
-        return visitor.getPlayerID();
+    public long getPlayerId() {
+        return visitor.getPlayerId();
     }
 
     @Override
@@ -162,7 +162,7 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("itemID", itemID)
+                .add("itemId", itemID)
                 .add("name", ItemModels.name(itemID))
                 .add("suppliers", suppliers)
                 .toString();

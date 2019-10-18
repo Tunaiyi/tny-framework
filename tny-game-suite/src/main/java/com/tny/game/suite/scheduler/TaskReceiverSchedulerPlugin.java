@@ -28,11 +28,11 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     @Override
     public void doExecute(Tunnel<Long> tunnel, Message<Long> message, CommandContext context) throws Exception {
         if (tunnel.getUserType().equals(Certificates.DEFAULT_USER_TYPE)) {
-            if (IDAide.isSystem(message.getUserID())) {
-                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", message.getUserID(), message.isLogin(), tunnel, message.getProtocol(), new RuntimeException());
+            if (IDAide.isSystem(message.getUserId())) {
+                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", message.getUserId(), message.isLogin(), tunnel, message.getProtocol(), new RuntimeException());
             } else {
                 try {
-                    this.taskSchedulerService.checkPlayerTask(message.getUserID(), ReceiverType.PLAYER);
+                    this.taskSchedulerService.checkPlayerTask(message.getUserId(), ReceiverType.PLAYER);
                 } catch (Exception e) {
                     LOGGER.error("", e);
                 }

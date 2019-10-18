@@ -1,6 +1,7 @@
 package com.tny.game.suite.launcher;
 
 import com.tny.game.common.runtime.*;
+import com.tny.game.loader.lifecycle.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.telnet.*;
 import com.tny.game.suite.transaction.*;
@@ -38,23 +39,11 @@ public class SuitApplication implements InitializingBean {
 
     private Consumer<ApplicationContext> complete;
 
-    private ApplicationLifecycleProcessor processor = new ApplicationLifecycleProcessor();
+    private AppLifecycleProcessor processor = new AppLifecycleProcessor();
 
     private static Logger LOG = LoggerFactory.getLogger(SuitApplication.class);
 
     private Instant startAt;
-
-    // public Application(String... contextFile) throws Exception {
-    //     this.startAt = System.currentTimeMillis();
-    //     this.processor.onStaticInit();
-    //     GenericXmlApplicationContext applicationContext = new GenericXmlApplicationContext();
-    //     String profiles = Configs.SUITE_CONFIG.getString(Configs.SUITE_LAUNCHER_PROFILES);
-    //     applicationContext.getEnvironment().setActiveProfiles(StringUtils.split(profiles, ","));
-    //     LOG.info("服务器启动配置Profiles : {}", profiles);
-    //     applicationContext.load(contextFile);
-    //     init(applicationContext);
-    // }
-
 
     public SuitApplication(ApplicationContext applicationContext, AppContext appContext) {
         LOG.info("开始启动服务加载配置");
@@ -70,7 +59,7 @@ public class SuitApplication implements InitializingBean {
             //per initServer
             runPoint(beforeInitServer);
             Collection<ServerGuide> servers = this.initApplication();
-            ApplicationLifecycleProcessor.loadHandler(applicationContext);
+            AppLifecycleProcessor.loadHandler(applicationContext);
             runPoint(afterInitServer);
             //post initServer
 
@@ -196,6 +185,6 @@ public class SuitApplication implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         this.startAt = Instant.now();
-        this.processor.onStaticInit(appContext);
+        this.processor.onStaticInit(appContext.getScanPackages());
     }
 }

@@ -1,6 +1,6 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.Identifiable;
+import com.tny.game.base.item.Identifier;
 import com.tny.game.base.item.Item;
 import com.tny.game.base.item.ItemModel;
 import com.tny.game.base.item.behavior.Action;
@@ -43,14 +43,14 @@ public abstract class AbstractOpLogger implements OpLogger {
     public OpLogger logReceive(Item<?> item, Action action, long oldNum, long alter, long newNum) {
         if (item == null)
             return this;
-        return logReceive(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
+        return logReceive(item.getPlayerId(), item.getId(), item.getItemId(), action, oldNum, alter, newNum);
     }
 
     @Override
     public OpLogger logReceive(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
-        return logReceive(playerID, id, model.getID(), action, oldNum, alter, newNum);
+        return logReceive(playerID, id, model.getId(), action, oldNum, alter, newNum);
     }
 
     @Override
@@ -71,14 +71,14 @@ public abstract class AbstractOpLogger implements OpLogger {
     public OpLogger settleReceive(Item<?> item, long alter, long newNum) {
         if (item == null)
             return this;
-        return settleReceive(item.getPlayerID(), item.getItemID(), alter, newNum);
+        return settleReceive(item.getPlayerId(), item.getItemId(), alter, newNum);
     }
 
     @Override
     public OpLogger settleReceive(long playerID, ItemModel model, long alter, long newNum) {
         if (model == null)
             return this;
-        return settleReceive(playerID, model.getID(), alter, newNum);
+        return settleReceive(playerID, model.getId(), alter, newNum);
     }
 
     @Override
@@ -98,14 +98,14 @@ public abstract class AbstractOpLogger implements OpLogger {
     public OpLogger logConsume(Item<?> item, Action action, long oldNum, long alter, long newNum) {
         if (item == null)
             return this;
-        return logConsume(item.getPlayerID(), item.getID(), item.getItemID(), action, oldNum, alter, newNum);
+        return logConsume(item.getPlayerId(), item.getId(), item.getItemId(), action, oldNum, alter, newNum);
     }
 
     @Override
     public OpLogger logConsume(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
-        return logConsume(playerID, id, model.getID(), action, oldNum, alter, newNum);
+        return logConsume(playerID, id, model.getId(), action, oldNum, alter, newNum);
     }
 
     @Override
@@ -126,14 +126,14 @@ public abstract class AbstractOpLogger implements OpLogger {
     public OpLogger settleConsume(Item<?> item, long alter, long newNum) {
         if (item == null)
             return this;
-        return settleConsume(item.getPlayerID(), item.getItemID(), alter, newNum);
+        return settleConsume(item.getPlayerId(), item.getItemId(), alter, newNum);
     }
 
     @Override
     public OpLogger settleConsume(long playerID, ItemModel model, long alter, long newNum) {
         if (model == null)
             return this;
-        return settleConsume(playerID, model.getID(), alter, newNum);
+        return settleConsume(playerID, model.getId(), alter, newNum);
     }
 
     @Override
@@ -150,7 +150,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshotByType(Identifiable item, Action action, SnapperType... types) {
+    public OpLogger logSnapshotByType(Identifier item, Action action, SnapperType... types) {
         try {
             action = this.transAction(action);
             if (types.length == 0)
@@ -166,7 +166,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     @Override
     @SafeVarargs
-    public final OpLogger logSnapshotByClass(Identifiable item, Action action, Class<? extends Snapper>... snapperTypes) {
+    public final OpLogger logSnapshotByClass(Identifier item, Action action, Class<? extends Snapper>... snapperTypes) {
         try {
             action = this.transAction(action);
             if (snapperTypes.length == 0)
@@ -181,7 +181,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshot(Identifiable item, Action action) {
+    public OpLogger logSnapshot(Identifier item, Action action) {
         action = this.transAction(action);
         this.doLogSnapshot(action, item);
         return this;
@@ -189,8 +189,8 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     protected boolean logSnapshot(Action action, Snapshot snapshot) {
         action = this.transAction(action);
-        UserOpLog log = this.getUserLogger(snapshot.getPlayerID());
-        Snapshot old = log.getSnapshot(action, snapshot.getID(), snapshot.getType());
+        UserOpLog log = this.getUserLogger(snapshot.getPlayerId());
+        Snapshot old = log.getSnapshot(action, snapshot.getId(), snapshot.getType());
         if (old == null) {
             log.logSnapshot(action, snapshot);
             return true;
@@ -206,11 +206,11 @@ public abstract class AbstractOpLogger implements OpLogger {
         return (S) log.getSnapshot(action, id, type);
     }
 
-    protected abstract void doLogSnapshot(Action action, Identifiable item, SnapperType type);
+    protected abstract void doLogSnapshot(Action action, Identifier item, SnapperType type);
 
-    protected abstract void doLogSnapshot(Action action, Identifiable item, Class<? extends Snapper> type);
+    protected abstract void doLogSnapshot(Action action, Identifier item, Class<? extends Snapper> type);
 
-    protected abstract void doLogSnapshot(Action action, Identifiable item);
+    protected abstract void doLogSnapshot(Action action, Identifier item);
 
     protected OpLog pollLog() {
         OpLog log = this.localOpLog.get();

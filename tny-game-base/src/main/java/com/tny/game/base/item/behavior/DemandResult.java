@@ -59,15 +59,15 @@ public class DemandResult {
     /**
      * @return 条件对应Item的ID
      */
-    public long getID() {
+    public long getId() {
         return id;
     }
 
     /**
      * @return 获取条件涉及的itemID
      */
-    public int getItemID() {
-        return itemModel.getID();
+    public int getItemId() {
+        return itemModel.getId();
     }
 
     /**
@@ -142,7 +142,7 @@ public class DemandResult {
 
     @Override
     public String toString() {
-        return "DemandResult [itemID=" + getItemID() + ", demandType=" + demandType + ", currentValue=" + currentValue
+        return "DemandResult [itemID=" + getItemId() + ", demandType=" + demandType + ", currentValue=" + currentValue
                 + ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
     }
 

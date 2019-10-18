@@ -47,7 +47,7 @@ public class KafkaOpLogLayout extends AbstractStringLayout {
             Log loggable = logMessage.getLog();
             ObjectMapper mapper = OpLogMapper.getMapper();
             try {
-                LogRecord record = new LogRecord(loggable.getLogID(), loggable.getType(), mapper.writeValueAsString(logMessage.getLog()));
+                LogRecord record = new LogRecord(loggable.getLogId(), loggable.getType(), mapper.writeValueAsString(logMessage.getLog()));
                 return mapper.writeValueAsString(record);// + "\r\n";
             } catch (JsonProcessingException e) {
                 LOGGER.error("OpLogLayout toSerializable exception", e);

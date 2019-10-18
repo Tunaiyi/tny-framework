@@ -75,13 +75,13 @@ public class JsonOperateRecord {
     public JsonOperateRecord(long rcid, OperateRecord log, ObjectMapper mapper) {
         this.rcid = rcid;
         this.at = log.getAt();
-        this.uid = log.getUserID();
+        this.uid = log.getUserId();
         this.name = log.getName();
-        this.acid = log.getActionID();
-        this.sid = log.getServerID();
+        this.acid = log.getActionId();
+        this.sid = log.getServerId();
         this.op = log.getOperation();
         this.lv = log.getLevel();
-        this.opid = log.getOpenID();
+        this.opid = log.getOpenId();
         this.pf = log.getPF();
         this.vip = log.getVip();
         this.revs = conver(log.getReceiveLog(), ReceiveRecord::new);
@@ -109,11 +109,11 @@ public class JsonOperateRecord {
 
     }
 
-    public long getRecordID() {
+    public long getRecordId() {
         return rcid;
     }
 
-    public long getUserID() {
+    public long getUserId() {
         return uid;
     }
 
@@ -121,7 +121,7 @@ public class JsonOperateRecord {
         return at;
     }
 
-    public int getServerID() {
+    public int getServerId() {
         return sid;
     }
 
@@ -133,7 +133,7 @@ public class JsonOperateRecord {
         return vip;
     }
 
-    public String getOpenID() {
+    public String getOpenId() {
         return opid;
     }
 
@@ -141,11 +141,11 @@ public class JsonOperateRecord {
         return name;
     }
 
-    public int getActionID() {
+    public int getActionId() {
         return acid;
     }
 
-    public Object getControllerID() {
+    public Object getControllerId() {
         return op;
     }
 

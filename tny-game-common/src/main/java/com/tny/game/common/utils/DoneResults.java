@@ -1,6 +1,6 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
 
 /**
  * 做完的结果
@@ -14,8 +14,8 @@ public class DoneResults {
      *
      * @return
      */
-    public static <M> DoneResult<M> succ() {
-        return new DoneResult<>(null, ResultCode.SUCCESS);
+    public static <M> Done<M> success() {
+        return new DefaultDoneResult<>(ResultCode.SUCCESS, null, null);
     }
 
     /**
@@ -24,9 +24,9 @@ public class DoneResults {
      * @param value
      * @return
      */
-    public static <M, MC extends M> DoneResult<M> succ(MC value) {
+    public static <M, MC extends M> DoneResult<M> success(MC value) {
         Throws.checkNotNull(value, "DoneResult.value is null");
-        return new DoneResult<>(value, ResultCode.SUCCESS);
+        return new DefaultDoneResult<>(ResultCode.SUCCESS, value, null);
     }
 
     /**
@@ -35,23 +35,8 @@ public class DoneResults {
      * @param value
      * @return
      */
-    public static <M, MC extends M> DoneResult<M> succNullable(MC value) {
-        return new DoneResult<>(value, ResultCode.SUCCESS);
-    }
-
-    public static <M, MC extends M> DoneResult<M> fail() {
-        return new DoneResult<>(null, ResultCode.FAILURE);
-    }
-
-    /**
-     * 返回一个结果 可成功或失败, 由code决定
-     *
-     * @param value 结果值
-     * @param code  结果码
-     * @return 返回结果
-     */
-    public static <M, MC extends M> DoneResult<M> done(MC value, ResultCode code) {
-        return new DoneResult<>(value, code);
+    public static <M, MC extends M> DoneResult<M> successNullable(MC value) {
+        return new DefaultDoneResult<>(ResultCode.SUCCESS, value, null);
     }
 
     /**
@@ -61,12 +46,54 @@ public class DoneResults {
      * @param nullCode 失败时结果码
      * @return 返回结果
      */
-    public static <M, MC extends M> DoneResult<M> succIfNotNull(MC value, ResultCode nullCode) {
+    public static <M, MC extends M> DoneResult<M> successIfNotNull(MC value, ResultCode nullCode) {
         if (value != null) {
-            return succ(value);
+            return success(value);
         } else {
-            return fail(nullCode);
+            return failure(nullCode);
         }
+    }
+
+    /**
+     * 返回一个结果 可成功或失败, 由code决定
+     *
+     * @param value 结果值
+     * @param code  结果码
+     * @return 返回结果
+     */
+    public static <M, MC extends M> DoneResult<M> done(ResultCode code, MC value) {
+        return new DefaultDoneResult<>(code, value, null);
+    }
+
+    /**
+     * 返回一个结果 可成功或失败, 由code决定
+     *
+     * @param code 结果码
+     * @return 返回结果
+     */
+    public static DoneMessager<Void, ? extends DoneResult<Void>> with(ResultCode code) {
+        return new DefaultDoneResult<>(code, null);
+    }
+
+    /**
+     * 返回一个结果 可成功或失败, 由code决定
+     *
+     * @param value 结果值
+     * @param code  结果码
+     * @return 返回结果
+     */
+    public static <M, MC extends M> DoneMessager<M, ? extends DoneResult<M>> with(ResultCode code, MC value) {
+        return new DefaultDoneResult<>(code, value, null);
+    }
+
+    /**
+     * 返回结果
+     *
+     * @param <M>
+     * @return
+     */
+    public static <M> DoneResult<M> failure() {
+        return new DefaultDoneResult<>(ResultCode.FAILURE, null, null);
     }
 
     /**
@@ -75,9 +102,9 @@ public class DoneResults {
      * @param code 结果码
      * @return 返回结果
      */
-    public static <M> DoneResult<M> fail(ResultCode code) {
+    public static <M> DoneResult<M> failure(ResultCode code) {
         Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
-        return new DoneResult<>(null, code);
+        return new DefaultDoneResult<>(code, null, null);
     }
 
     /**
@@ -86,9 +113,9 @@ public class DoneResults {
      * @param result 失败结果
      * @return 返回结果
      */
-    public static <M> DoneResult<M> fail(DoneResult result) {
-        Throws.checkArgument(result.isFailed(), "code [{}] is success", result.getCode());
-        return fail(result.getCode());
+    public static <M> DoneResult<M> failure(DoneResult<M> result) {
+        Throws.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        return new DefaultDoneResult<>(result.getCode(), result.get(), result.getMessage());
     }
 
 }

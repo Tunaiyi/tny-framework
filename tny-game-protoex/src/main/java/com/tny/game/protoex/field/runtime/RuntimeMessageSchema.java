@@ -1,8 +1,8 @@
 package com.tny.game.protoex.field.runtime;
 
 import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.reflect.GClass;
-import com.tny.game.common.reflect.javassist.JSsistUtils;
+import com.tny.game.common.reflect.ClassAccessor;
+import com.tny.game.common.reflect.javassist.JavassistAccessors;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.ProtoEx;
 import com.tny.game.protoex.field.FieldDesc;
@@ -23,17 +23,17 @@ import java.util.Map;
 public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(RuntimeMessageSchema.class);
-    private GClass gClass;
+    private ClassAccessor gClass;
     protected FieldDesc<?>[] fields;
     protected FieldDesc<?>[] fieldsByIndex;
     protected Map<Integer, FieldDesc<?>> fieldsByIndexMap;
 
     public RuntimeMessageSchema(Class<T> typeClass) {
         super(0, false, typeClass.getName());
-        this.gClass = JSsistUtils.getGClass(typeClass);
+        this.gClass = JavassistAccessors.getGClass(typeClass);
         ProtoEx proto = typeClass.getAnnotation(ProtoEx.class);
         if (WireFormat.checkFieldNumber(proto.value()))
-            throw ProtobufExException.invalidProtoExID(typeClass, proto.value());
+            throw ProtobufExException.invalidProtoExId(typeClass, proto.value());
         this.protoExID = proto.value();
     }
 
@@ -78,7 +78,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     }
 
     @Override
-    public int getProtoExID() {
+    public int getProtoExId() {
         return this.protoExID;
     }
 
@@ -123,7 +123,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
             fieldIndex = currentTag.getFieldNumber();
             //判断是否显示 读取
             final FieldDesc<Object> field = (FieldDesc<Object>) this.getFieldDesc(fieldIndex);
-            int protoExID = currentTag.getProtoExID();
+            int protoExID = currentTag.getProtoExId();
             if (field == null) {
                 LOGGER.warn("获取 Tag | {} -> [字段ID : {}] 不存在! Tag : {}", this.gClass.getName(), currentTag.getFieldNumber(), currentTag);
                 inputStream.readTag();

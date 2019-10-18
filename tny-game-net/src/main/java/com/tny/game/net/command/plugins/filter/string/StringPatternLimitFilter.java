@@ -40,7 +40,7 @@ public class StringPatternLimitFilter extends AbstractParamFilter<Object, Patter
         if (!this.getPattern(annotation.pattern()).matcher(param).matches()) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    message.getUserID(), head.getId(),
+                    message.getUserId(), head.getId(),
                     index, param, annotation.pattern());
             return NetResultCode.ILLEGAL_PARAMETERS;
         }

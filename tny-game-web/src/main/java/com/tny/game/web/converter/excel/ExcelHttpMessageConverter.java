@@ -1,6 +1,5 @@
 package com.tny.game.web.converter.excel;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.http.HttpInputMessage;
@@ -47,12 +46,7 @@ public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Work
         long contentLength = inputMessage.getHeaders().getContentLength();
         ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int) contentLength : StreamUtils.BUFFER_SIZE);
         StreamUtils.copy(inputMessage.getBody(), bos);
-        try {
-            return WorkbookFactory.create(inputMessage.getBody());
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return WorkbookFactory.create(inputMessage.getBody());
     }
 
 }

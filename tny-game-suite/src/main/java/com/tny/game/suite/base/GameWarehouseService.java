@@ -29,14 +29,14 @@ public class GameWarehouseService implements WarehouseService {
      * 异步发奖励
      * 慎用~不一定发成功
      */
-//    public void asynTrade(long playerID, Trade trade) {
-//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+//    public void asynTrade(long playerId, Trade trade) {
+//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
 //        if (warehouse != null) {
 //            try {
 //                warehouse.pushTrade(trade);
 //                this.gameWarehouseManager.saveWarehouse(warehouse);
 //            } catch (Exception e) {
-//                LOGGER.error("玩家 {} 添加异步Trade {} 异常", playerID, trade, e);
+//                LOGGER.error("玩家 {} 添加异步Trade {} 异常", playerId, trade, e);
 //            }
 //        }
 //    }
@@ -45,8 +45,8 @@ public class GameWarehouseService implements WarehouseService {
      * 异步发奖励
      * 慎用~不一定发成功
      */
-//    public void checkAsynTrade(long playerID) {
-//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+//    public void checkAsynTrade(long playerId) {
+//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
 //        Trade trade = null;
 //        if (warehouse != null) {
 //            if (warehouse.isTradesEmpty())
@@ -54,14 +54,14 @@ public class GameWarehouseService implements WarehouseService {
 //            try {
 //                while ((trade = warehouse.popTrade()) != null) {
 //                    if (trade.getTradeType() == TradeType.AWARD) {
-//                        this.doHandleTrade(playerID, trade, warehouse::receive);
+//                        this.doHandleTrade(playerId, trade, warehouse::receive);
 //                    } else {
-//                        this.doHandleTrade(playerID, trade, warehouse::consume);
+//                        this.doHandleTrade(playerId, trade, warehouse::consume);
 //                    }
 //                }
 //                this.gameWarehouseManager.saveWarehouse(warehouse);
 //            } catch (Exception e) {
-//                LOGGER.error("玩家 {} 异步处理Trade {} 异常", playerID, trade, e);
+//                LOGGER.error("玩家 {} 异步处理Trade {} 异常", playerId, trade, e);
 //            }
 //        }
 //    }
@@ -149,16 +149,16 @@ public class GameWarehouseService implements WarehouseService {
                     CountableStuffOwner owner = warehouse.getOwner(stuffModel.getItemType(), GameCountableStuffOwner.class);
                     if (award) {
                         if (owner.isOverUpperLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneResults.fail(ItemResultCode.FULL_NUMBER);
+                            return DoneResults.failure(ItemResultCode.FULL_NUMBER);
                     } else {
                         if (owner.isOverLowerLimit(stuffModel, AlterType.CHECK, item.getNumber()))
-                            return DoneResults.fail(ItemResultCode.LACK_NUMBER);
+                            return DoneResults.failure(ItemResultCode.LACK_NUMBER);
                     }
                 }
             }
-            return DoneResults.succ(true);
+            return DoneResults.success(true);
         }
-        return DoneResults.fail(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
+        return DoneResults.failure(SuiteResultCode.ITEM_WAREHOUSE_NO_EXIST);
     }
 
     interface TradeWithTradeItem {

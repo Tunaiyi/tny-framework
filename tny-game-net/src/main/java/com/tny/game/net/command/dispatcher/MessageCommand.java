@@ -63,7 +63,7 @@ public abstract class MessageCommand<C extends CommandContext> extends DispatchC
     @Override
     public void execute() {
         MessageHead head = message.getHead();
-        ControllerContext.setCurrent(this.message.getUserID(), head.getProtocolNumber());
+        ControllerContext.setCurrent(this.message.getUserId(), head.getProtocolNumber());
         MessageCommandPromise promise = commandContext.getPromise();
         Throwable cause = null;
         try {

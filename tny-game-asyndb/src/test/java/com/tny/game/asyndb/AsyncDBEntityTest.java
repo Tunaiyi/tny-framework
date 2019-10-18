@@ -100,7 +100,7 @@ public class AsyncDBEntityTest {
 
     @Test
     public void testSumit() {
-        final Class<?> WCLASS = SubmitAtWrongStateException.class;
+        final Class<?> WCLASS = OperationStateException.class;
         // ## NOMAL
         this.doTestSumit(AsyncDBState.NORMAL, Operation.DELETE, true, null);
         this.doTestSumit(AsyncDBState.NORMAL, Operation.INSERT, false, WCLASS);
@@ -164,7 +164,7 @@ public class AsyncDBEntityTest {
     }
 
     @Test
-    public void testRelease() throws AsyncDBReleaseException, SubmitAtWrongStateException {
+    public void testRelease() throws AsyncDBReleaseException, OperationStateException {
         int index = 0;
         int releaseTime = 300;
         AsyncDBEntity entity = null;
@@ -187,7 +187,7 @@ public class AsyncDBEntityTest {
         // DELETE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
-        entity.mark(Operation.DELETE, entity.getValue());
+        entity.mark(Operation.DELETE, entity.getObject());
         Assert.assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
@@ -205,7 +205,7 @@ public class AsyncDBEntityTest {
         // INSERT
         index = 0;
         entity = this.create(AsyncDBState.DELETE);
-        entity.mark(Operation.INSERT, entity.getValue());
+        entity.mark(Operation.INSERT, entity.getObject());
         Assert.assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
@@ -215,7 +215,7 @@ public class AsyncDBEntityTest {
         // SAVE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
-        entity.mark(Operation.SAVE, entity.getValue());
+        entity.mark(Operation.SAVE, entity.getObject());
         Assert.assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
@@ -225,7 +225,7 @@ public class AsyncDBEntityTest {
         // UPDATE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
-        entity.mark(Operation.UPDATE, entity.getValue());
+        entity.mark(Operation.UPDATE, entity.getObject());
         Assert.assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
@@ -248,11 +248,11 @@ public class AsyncDBEntityTest {
         entity = this.create(state);
         Exception exception = null;
         try {
-            Assert.assertEquals(sumint, entity.mark(operation, entity.getValue()));
+            Assert.assertEquals(sumint, entity.mark(operation, entity.getObject()));
         } catch (AsyncDBReleaseException e) {
             System.out.println(operation + " AsynDBReleaseException");
             exception = e;
-        } catch (SubmitAtWrongStateException e) {
+        } catch (OperationStateException e) {
             System.out.println(operation + " SumitAtWrongStateException");
             exception = e;
         }

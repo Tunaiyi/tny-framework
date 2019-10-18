@@ -23,7 +23,7 @@ public class StuffRecord extends StuffSettleLog {
     }
 
     public StuffRecord(StuffSettleLog settleLog) {
-        this.iid = settleLog.getItemID();
+        this.iid = settleLog.getItemId();
         this.num = settleLog.getNumber();
         this.rnum = settleLog.getReceiveNum();
         this.cnum = settleLog.getConsumeNum();
@@ -34,7 +34,7 @@ public class StuffRecord extends StuffSettleLog {
     }
 
     @Override
-    public int getItemID() {
+    public int getItemId() {
         return iid;
     }
 

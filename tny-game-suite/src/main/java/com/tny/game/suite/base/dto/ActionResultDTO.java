@@ -57,7 +57,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO actionResult2DTO(ActionResult actionResult) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = actionResult.getAction().getID();
+        dto.action = actionResult.getAction().getId();
         List<DemandResultDTO> demandResultDTOList = new ArrayList<>();
 
         for (DemandResult demandResult : actionResult.getDemandResultList()) {
@@ -72,7 +72,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO actionFullResult2DTO(ActionResult actionResult) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = actionResult.getAction().getID();
+        dto.action = actionResult.getAction().getId();
         List<DemandResultDTO> demandResultDTOList = new ArrayList<>();
         for (DemandResult demandResult : actionResult.getDemandResultList()) {
             demandResultDTOList.add(DemandResultDTO.demandResult2DTO(demandResult));
@@ -87,7 +87,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO trade2DTO(Trade trade) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = trade.getAction().getID();
+        dto.action = trade.getAction().getId();
         dto.demandResults = new ArrayList<>();
         dto.demandResults.addAll(DemandResultDTO.trade2DTOList(trade));
         return dto;
@@ -95,7 +95,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO tradeInfo2DTO(TradeInfo trade) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = trade.getAction().getID();
+        dto.action = trade.getAction().getId();
         dto.demandResults = new ArrayList<>();
         dto.demandResults.addAll(DemandResultDTO.tradeInfo2DTOList(trade));
         return dto;
@@ -103,7 +103,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO costList2DTO(CostList costList) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = costList.getAction().getID();
+        dto.action = costList.getAction().getId();
         dto.demandResults = new ArrayList<>();
         dto.demandResults.addAll(DemandResultDTO.trade2DTOList(TradeType.COST, costList.getAwardTradeItemList()));
         return dto;
@@ -111,7 +111,7 @@ public class ActionResultDTO  implements Serializable {
 
     public static ActionResultDTO dealedItem2DTO(Action action, List<DealedItem<?>> list) {
         ActionResultDTO dto = new ActionResultDTO();
-        dto.action = action.getID();
+        dto.action = action.getId();
         dto.demandResults = new ArrayList<>();
         List<DemandResultDTO> demandResultDTOList = new ArrayList<>();
         for (DealedItem item : list)

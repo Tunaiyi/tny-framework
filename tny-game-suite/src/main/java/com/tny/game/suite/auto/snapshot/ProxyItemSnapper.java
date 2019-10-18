@@ -10,8 +10,8 @@ public abstract class ProxyItemSnapper<O, I extends Item<?>, S extends ItemSnaps
     }
 
     @Override
-    public long getSnapshotID(O object) {
-        return other(object).getID();
+    public long getSnapshotId(O object) {
+        return other(object).getId();
     }
 
 }

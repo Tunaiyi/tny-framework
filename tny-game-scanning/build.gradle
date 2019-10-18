@@ -4,9 +4,7 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            libs.'commons-lang3',
-            libs.'spring-core',
-    )
+    api libs.commons_lang3
+    api libs.spring_core
 
 }

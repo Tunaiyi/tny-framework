@@ -29,7 +29,7 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
                 if (dbReceiver == null) {
                     this.taskReceiver = (GameTaskReceiver) TaskReceiverBuilder.create()
                             .setGroup(ReceiverType.SYSTEM)
-                            .setPlayerID(0)
+                            .setPlayerId(0)
                             .build();
                     this.schedulerObjectManager.saveTaskReceiver(this.taskReceiver);
                 } else {

@@ -62,17 +62,17 @@ public class CapacitySupplierDTO {
         dto.dependSuppliers = supplier.dependSuppliers().stream()
                 .filter(CapacitySupplier::isSupplying)
                 .peek(s -> capacityGroups.addAll(s.getAllCapacityGroups()))
-                .map(CapacitySupplier::getID)
+                .map(CapacitySupplier::getId)
                 .collect(Collectors.toList());
         dto.capacityGroups = supplier.getAllCapacityGroups().stream()
-                .map(CapacityGroup::getID)
+                .map(CapacityGroup::getId)
                 .collect(Collectors.toSet());
     }
 
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
         CapacitySupplierDTO dto = new CapacitySupplierDTO();
-        dto.id = supplier.getID();
-        dto.itemID = supplier.getItemID();
+        dto.id = supplier.getId();
+        dto.itemID = supplier.getItemId();
         if (supplier instanceof ComboCapacitySupplier)
             initComboSupplier(dto, as(supplier));
         else {
@@ -80,7 +80,7 @@ public class CapacitySupplierDTO {
                     .map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
             dto.capacityGroups = supplier.getAllCapacityGroups().stream()
-                    .map(CapacityGroup::getID)
+                    .map(CapacityGroup::getId)
                     .collect(Collectors.toSet());
         }
         if (supplier instanceof ExpireCapacitySupplier) {
@@ -102,8 +102,8 @@ public class CapacitySupplierDTO {
 
     public static CapacitySupplierDTO supplier2RemoveDTO(CapacitySupplier supplier) {
         CapacitySupplierDTO dto = new CapacitySupplierDTO();
-        dto.id = supplier.getID();
-        dto.itemID = supplier.getItemID();
+        dto.id = supplier.getId();
+        dto.itemID = supplier.getItemId();
         dto.capacities = ImmutableList.of();
         dto.dependSuppliers = ImmutableList.of();
         dto.capacityGroups = ImmutableSet.of();

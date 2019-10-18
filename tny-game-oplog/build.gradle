@@ -4,10 +4,8 @@ apply plugin: "maven"
 
 dependencies {
 
-    compile(
-            libs.'commons-lang3',
-            libs.'spring-context-support',
-            project(":tny-game-base"),
-    )
+    api libs.commons_lang3
+    api libs.spring_context_support
+    api project(":tny-game-base")
 
 }

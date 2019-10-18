@@ -140,7 +140,7 @@ public abstract class ControllerHolder {
 
     public abstract String getName();
 
-    public abstract int getID();
+    public abstract int getId();
 
     public abstract <A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
