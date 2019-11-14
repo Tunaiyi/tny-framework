@@ -1,4 +1,4 @@
-package com.tny.game.common.utils.rsa;
+package com.tny.game.common.utils.digest.rsa;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;

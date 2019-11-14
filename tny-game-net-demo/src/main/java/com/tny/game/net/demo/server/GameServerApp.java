@@ -1,9 +1,7 @@
 package com.tny.game.net.demo.server;
 
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.netty4.codec.*;
 import com.tny.game.suite.launcher.*;
-import com.tny.game.suite.net.spring.*;
 import com.tny.game.suite.spring.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +28,6 @@ public class GameServerApp {
             ApplicationContext context = SpringApplication.run(GameServerApp.class, args);
             SuitApplication application = context.getBean(SuitApplication.class);
             application.start();
-            context.getBeansOfType(DataPacketV1Encoder.class).forEach((k, v) -> System.out.println(k + " : " + v));
-            context.getBeansOfType(DataPacketV1Decoder.class).forEach((k, v) -> System.out.println(k + " : " + v));
-            context.getBeansOfType(ReadTimeoutChannelMaker.class).forEach((k, v) -> System.out.println(k + " : " + v.getIdleTimeout()));
             application.waitForConsole("q");
         } catch (Throwable e) {
             LOGGER.error("{} start exception", GameServerApp.class.getSimpleName(), e);

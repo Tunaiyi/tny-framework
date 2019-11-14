@@ -55,14 +55,13 @@ public interface Done<M> {
 
     default void ifPresent(Consumer<? super M> consumer) {
         M object = get();
-        if (object != null)
-            consumer.accept(object);
+        if (object != null) consumer.accept(object);
     }
 
     Optional<M> optional();
+
     default void ifSuccess(Consumer<? super M> consumer) {
-        if (this.isSuccess())
-            consumer.accept(get());
+        if (this.isSuccess()) consumer.accept(get());
     }
 
     default boolean isFailure() {
@@ -70,8 +69,7 @@ public interface Done<M> {
     }
 
     default void ifFailure(Consumer<? super M> consumer) {
-        if (!this.isSuccess())
-            consumer.accept(get());
+        if (!this.isSuccess()) consumer.accept(get());
 
     }
 

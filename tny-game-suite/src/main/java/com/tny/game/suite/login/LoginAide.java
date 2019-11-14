@@ -1,7 +1,7 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.common.utils.md5.MD5;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.common.utils.digest.md5.*;
+import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Map.Entry;

@@ -3,26 +3,16 @@ package com.tny.game.loader.lifecycle;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.annotaion.*;
 import com.tny.game.common.runtime.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.loader.lifecycle.exception.*;
 import com.tny.game.scanner.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,14 +32,23 @@ public class AppLifecycleProcessor {
 
     public void onStaticInit(Collection<String> paths) {
         Class<?> clazz = null;
-        try {
-            RunningChecker.start(this.getClass());
-            LOGGER.info("开始初始化 Class Scan ...");
-            ClassScanner.instance()
-                    .scan(paths);
-            LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
-        } catch (Throwable e) {
-            throw new RuntimeException(format("获取 {} 类 ProtoExSchema 错误", clazz), e);
+        RunningChecker.start(this.getClass());
+        LOGGER.info("开始初始化 Class Scan ...");
+        ClassScanner.instance()
+                .scan(paths);
+        LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
+        for (StaticIniter initer : LifecycleLoader.getStaticIniters()) {
+            Class<?> c = initer.getIniterClass();
+            int number = 0;
+            long current = System.currentTimeMillis();
+            try {
+                number++;
+                LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] index {}", c, number);
+                ExeAide.runUnchecked(initer::init);
+                LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] index {} | -> 耗时 {} 完成", c, number, System.currentTimeMillis() - current);
+            } catch (Throwable e) {
+                LOGGER.error("服务生命周期 StaticInit # 处理器 [{}] index {} | -> 异常", c, number, e);
+            }
         }
     }
 
@@ -97,7 +96,8 @@ public class AppLifecycleProcessor {
     }
 
 
-    private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, Lifecycle> lifecycleGetter, Collection<? extends T> lifecycles) {
+    private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, Lifecycle> lifecycleGetter,
+                                                                  Collection<? extends T> lifecycles) {
         List<Lifecycle> process = lifecycles.stream()
                 .peek(i -> {
                     Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
@@ -117,12 +117,14 @@ public class AppLifecycleProcessor {
         loadHandler(AppClosed.class, AppClosed::getPostCloser, context);
     }
 
-    private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter, ApplicationContext context) {
+    private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter,
+                                                                 ApplicationContext context) {
         Map<String, ? extends T> initerMap = context.getBeansOfType(processorClass);
         addLifecycle(processorClass, lifecycleGetter, initerMap.values());
     }
 
-    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue) throws Exception {
+    private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue)
+            throws Exception {
         String name = processorClass.getSimpleName();
         LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
         // Map<String, ? extends T> initerMap = this.appContext.getBeansOfType(processorClass);
@@ -168,7 +170,8 @@ public class AppLifecycleProcessor {
                                     throw new LifecycleProcessException(e);
                             }
                         }
-                        LOGGER.info("服务生命周期 {} # 处理器 [{}] index {} | -> 耗时 {} 完成", name, processor.getClass(), index, System.currentTimeMillis() - current);
+                        LOGGER.info("服务生命周期 {} # 处理器 [{}] index {} | -> 耗时 {} 完成", name, processor.getClass(), index,
+                                System.currentTimeMillis() - current);
                         index++;
                     }
                 }

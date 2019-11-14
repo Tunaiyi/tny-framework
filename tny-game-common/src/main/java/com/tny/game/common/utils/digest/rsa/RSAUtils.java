@@ -1,4 +1,4 @@
-package com.tny.game.common.utils.rsa;
+package com.tny.game.common.utils.digest.rsa;
 
 import org.apache.commons.codec.binary.Base64;
 

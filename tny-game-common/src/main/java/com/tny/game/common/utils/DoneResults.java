@@ -2,6 +2,8 @@ package com.tny.game.common.utils;
 
 import com.tny.game.common.result.*;
 
+import java.util.function.Function;
+
 /**
  * 做完的结果
  *
@@ -113,9 +115,33 @@ public class DoneResults {
      * @param result 失败结果
      * @return 返回结果
      */
-    public static <M> DoneResult<M> failure(DoneResult<M> result) {
+    public static <M> DoneResult<M> failure(DoneResult<?> result) {
         Throws.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
-        return new DefaultDoneResult<>(result.getCode(), result.get(), result.getMessage());
+        return new DefaultDoneResult<>(result.getCode(), null, result.getMessage());
     }
 
+    /**
+     * 返回一个DoneResults, 结果码为result的结果码, 返回内容为value的.
+     *
+     * @param result 失败结果
+     * @param value  返回值
+     * @param <M>    返回类型
+     * @return DoneResults
+     */
+    public static <M> DoneResult<M> map(DoneResult<?> result, M value) {
+        return new DefaultDoneResult<>(result.getCode(), value, result.getMessage());
+    }
+
+    /**
+     * 返回一个DoneResults, 其结果码为result的结果码, 返回内容为mapper的返回结果.
+     *
+     * @param result 失败结果
+     * @param mapper 返回值的mapper函数
+     * @param <M>    返回类型
+     * @return DoneResults
+     */
+    public static <M, S> DoneResult<M> map(DoneResult<S> result, Function<S, M> mapper) {
+        Throws.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        return new DefaultDoneResult<>(result.getCode(), mapper.apply(result.get()), result.getMessage());
+    }
 }

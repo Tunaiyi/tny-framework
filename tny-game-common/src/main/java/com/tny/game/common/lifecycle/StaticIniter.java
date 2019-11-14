@@ -11,10 +11,16 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class StaticIniter {
 
+    private Class<?> initerClass;
     private Method method;
 
-    private StaticIniter(Method method) {
+    private StaticIniter(Class<?> initerClass, Method method) {
+        this.initerClass = initerClass;
         this.method = method;
+    }
+
+    public Class<?> getIniterClass() {
+        return initerClass;
     }
 
     public void init() throws Exception {
@@ -34,7 +40,7 @@ public class StaticIniter {
         }
         if (lifecycleMethod == null)
             throw new IllegalArgumentException(format("{} 不存在 {} 方法", clazz, StaticInit.class));
-        return new StaticIniter(lifecycleMethod);
+        return new StaticIniter(clazz, lifecycleMethod);
     }
 
 }

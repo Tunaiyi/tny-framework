@@ -6,10 +6,14 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.web.exception.*;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import static com.tny.game.common.utils.ObjectAide.*;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class WebResult<O> {
 
     @JsonProperty
@@ -44,7 +48,53 @@ public class WebResult<O> {
         return result;
     }
 
-    public static <O> WebResult<O> of(DoneResult<O> done) {
+    public static <O> WebResult<O> codeOf(DoneResult<?> done) {
+        WebResult<O> result = new WebResult<>();
+        ResultCode code = done.getCode();
+        result.code = code.getCode();
+        result.message = code.getMessage();
+        return result;
+    }
+
+    public static <O> WebResult<O> map(DoneResult<?> done, O body) {
+        WebResult<O> result = new WebResult<>();
+        ResultCode code = done.getCode();
+        result.code = code.getCode();
+        result.message = code.getMessage();
+        result.body = body;
+        return result;
+    }
+
+    public static <V, D> WebResult<D> mapOn(DoneResult<V> done, D successBody, D failureBody) {
+        if (done.isFailure()) return WebResult.map(done, failureBody);
+        return WebResult.success(successBody);
+    }
+
+    public static <V, D> WebResult<D> mapOnSuccess(DoneResult<V> done, D body) {
+        if (done.isFailure()) return WebResult.codeOf(done);
+        return WebResult.success(body);
+    }
+
+    public static <V, D> WebResult<D> mapOnSuccess(DoneResult<V> done, Function<V, D> mapper) {
+        if (done.isFailure()) return WebResult.codeOf(done);
+        return WebResult.success(mapper.apply(done.get()));
+    }
+
+    public static <V, D> WebResult<D> mapOnFailure(DoneResult<V> done, D body) {
+        if (done.isFailure()) return WebResult.map(done, body);
+        return WebResult.success();
+    }
+
+    public static <V, D> WebResult<D> mapOnFailure(DoneResult<V> done, Function<V, D> mapper) {
+        if (done.isFailure()) return WebResult.map(done, mapper.apply(done.get()));
+        return WebResult.success();
+    }
+
+    public static <V, D> WebResult<D> mapIf(DoneResult<V> done, Function<DoneResult<V>, D> mapper) {
+        return WebResult.map(done, mapper.apply(done));
+    }
+
+    public static <O> WebResult<O> map(DoneResult<O> done) {
         WebResult<O> result = new WebResult<>();
         ResultCode code = done.getCode();
         result.code = code.getCode();
@@ -64,8 +114,13 @@ public class WebResult<O> {
     public static <O> WebResult<O> success(O body) {
         WebResult<O> result = new WebResult<>();
         result.code = ResultCode.SUCCESS_CODE;
+        result.message = ResultCode.SUCCESS.getMessage();
         result.body = body;
         return result;
+    }
+
+    public static <O> WebResult<O> success() {
+        return success(null);
     }
 
     /**
@@ -99,6 +154,33 @@ public class WebResult<O> {
         return this.body;
     }
 
+    public O orElseBody(O other) {
+        O object = getBody();
+        return object != null ? object : other;
+    }
+
+    public O orElseGetBody(Supplier<? extends O> other) {
+        O object = getBody();
+        return object != null ? object : other.get();
+    }
+
+    public void ifPresent(Consumer<? super O> consumer) {
+        O object = getBody();
+        if (object != null) consumer.accept(object);
+    }
+
+    public Optional<O> optional() {
+        return Optional.ofNullable(this.body);
+    }
+    
+    public void ifSuccess(Consumer<? super O> consumer) {
+        if (this.isSuccess()) consumer.accept(this.body);
+    }
+
+    public void ifFailure(Consumer<? super O> consumer) {
+        if (this.isFailure()) consumer.accept(this.body);
+    }
+
     public String getMessage() {
         return this.message;
     }
@@ -107,7 +189,7 @@ public class WebResult<O> {
         return ResultCodes.isSuccess(this.code);
     }
 
-    public boolean isFailed() {
+    public boolean isFailure() {
         return !ResultCodes.isSuccess(this.code);
     }
 

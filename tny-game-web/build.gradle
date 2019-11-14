@@ -17,7 +17,7 @@ dependencies {
 
     api project(":tny-game-protoex")
     api project(":tny-game-common")
-    api project(":tny-game-base")
+//    api project(":tny-game-base")
 //    compile(libs.'shiro') {
 //        exclude module: 'guava'
 //    }
