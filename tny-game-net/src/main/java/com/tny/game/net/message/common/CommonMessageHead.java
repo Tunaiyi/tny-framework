@@ -1,8 +1,7 @@
 package com.tny.game.net.message.common;
 
 import com.tny.game.net.message.*;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.*;
 
 /**
  * Created by Kun Yang on 2018/8/20.
@@ -92,8 +91,10 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CommonMessageHead)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof CommonMessageHead))
+            return false;
         CommonMessageHead that = (CommonMessageHead) o;
         return new EqualsBuilder()
                 .append(getId(), that.getId())

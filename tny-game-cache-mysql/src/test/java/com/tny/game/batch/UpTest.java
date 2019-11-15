@@ -1,17 +1,13 @@
 package com.tny.game.batch;
 
-import com.tny.game.common.runtime.RunningChecker;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import javax.annotation.Resource;
+import com.tny.game.common.runtime.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})

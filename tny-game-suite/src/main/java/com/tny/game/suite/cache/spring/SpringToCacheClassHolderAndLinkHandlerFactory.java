@@ -2,13 +2,12 @@ package com.tny.game.suite.cache.spring;
 
 import com.tny.game.cache.*;
 import com.tny.game.cache.annotation.*;
-import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.*;
 import com.tny.game.common.lifecycle.*;
-import static com.tny.game.common.utils.StringAide.*;
+import com.tny.game.common.runtime.*;
 import com.tny.game.scanner.*;
-import com.tny.game.scanner.filter.AnnotationClassFilter;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.scanner.filter.*;
+import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -18,8 +17,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 @SuppressWarnings("unchecked")
-public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, AppPrepareStart {
+public class SpringToCacheClassHolderAndLinkHandlerFactory
+        implements CacheTriggerFactory, ToCacheClassHolderFactory, ApplicationContextAware, AppPrepareStart {
 
     private volatile boolean init = false;
 
@@ -145,13 +147,13 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory implements CacheTrigg
     @PostConstruct
     private void loadClass() {
         this.task = ForkJoinPool.commonPool()
-                .submit(() -> {
-                    ClassSelector selector = ClassSelector.instance(AnnotationClassFilter.ofInclude(ToCache.class));
-                    ClassScanner.instance()
-                            .addSelector(selector)
-                            .scan(scannerPath.toArray(new String[scannerPath.size()]));
-                    return selector.getClasses();
-                });
+                                .submit(() -> {
+                                    ClassSelector selector = ClassSelector.instance(AnnotationClassFilter.ofInclude(ToCache.class));
+                                    ClassScanner.instance()
+                                                .addSelector(selector)
+                                                .scan(scannerPath.toArray(new String[scannerPath.size()]));
+                                    return selector.getClasses();
+                                });
     }
 
     @Override

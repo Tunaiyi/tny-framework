@@ -44,7 +44,7 @@
 
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.protoex.field.*;
 
 /**
  * This class is used internally by the Protocol Buffer library and generated

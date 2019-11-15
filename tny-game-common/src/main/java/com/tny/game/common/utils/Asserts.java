@@ -1,6 +1,6 @@
 package com.tny.game.common.utils;
 
-import static com.tny.game.common.utils.StringAide.format;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 断言

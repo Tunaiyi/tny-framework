@@ -18,7 +18,8 @@ public class Throws {
         throw creator.create(format(errorMessageTemplate, errorMessageArgs));
     }
 
-    public static void throwByCause(ExByCauseCreator<? extends RuntimeException> creator, Throwable e, String errorMessageTemplate, Object... errorMessageArgs) {
+    public static void throwByCause(ExByCauseCreator<? extends RuntimeException> creator, Throwable e, String errorMessageTemplate,
+            Object... errorMessageArgs) {
         throw creator.create(format(errorMessageTemplate, errorMessageArgs), e);
     }
 
@@ -88,8 +89,8 @@ public class Throws {
      *                                  {@code errorMessageArgs} is null (don't let this happen)
      */
     public static void checkArgument(boolean expression,
-                                     String errorMessageTemplate,
-                                     Object... errorMessageArgs) {
+            String errorMessageTemplate,
+            Object... errorMessageArgs) {
         if (!expression) {
             throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -140,8 +141,8 @@ public class Throws {
      *                               {@code errorMessageArgs} is null (don't let this happen)
      */
     public static void checkState(boolean expression,
-                                  String errorMessageTemplate,
-                                  Object... errorMessageArgs) {
+            String errorMessageTemplate,
+            Object... errorMessageArgs) {
         if (!expression) {
             throw new IllegalStateException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -192,8 +193,8 @@ public class Throws {
      * @throws NullPointerException if {@code reference} is null
      */
     public static <T> T checkNotNull(T reference,
-                                     String errorMessageTemplate,
-                                     Object... errorMessageArgs) {
+            String errorMessageTemplate,
+            Object... errorMessageArgs) {
         if (reference == null) {
             // If either of these parameters is null, the right thing happens anyway
             throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));

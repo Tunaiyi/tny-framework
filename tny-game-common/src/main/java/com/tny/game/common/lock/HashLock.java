@@ -2,8 +2,7 @@ package com.tny.game.common.lock;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 import java.util.function.Supplier;
 
 import static com.tny.game.common.utils.ObjectAide.*;

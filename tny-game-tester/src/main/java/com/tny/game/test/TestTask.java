@@ -1,6 +1,6 @@
 package com.tny.game.test;
 
-import com.tny.game.common.concurrent.ThrowableRunnable;
+import com.tny.game.common.concurrent.*;
 
 import java.util.*;
 import java.util.concurrent.*;

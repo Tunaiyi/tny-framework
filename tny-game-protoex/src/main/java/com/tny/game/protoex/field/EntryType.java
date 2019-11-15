@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.protoex.Tag;
+import com.tny.game.protoex.*;
 
 /**
  * map键值对类型

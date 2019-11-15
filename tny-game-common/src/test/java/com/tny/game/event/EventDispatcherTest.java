@@ -1,14 +1,9 @@
 package com.tny.game.event;
 
-import com.tny.game.common.event.BaseEvent;
-import com.tny.game.common.event.BindP1EventBus;
-import com.tny.game.common.event.BindVoidEventBus;
-import com.tny.game.common.event.EventBuses;
-import com.tny.game.common.event.VoidEventDelegate;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
+import com.tny.game.common.event.*;
+import org.jmock.*;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
@@ -53,9 +48,9 @@ public class EventDispatcherTest {
         CREATE_EVENT.addListener(listener);
         UPGRADE_EVENT.addListener(listener);
 
-//        listener::handleUpgrade
-//        UPGRADE_EVENT.add(listener::handleUpgrade);
-//        UPGRADE_EVENT.remove(listener::handleUpgrade);
+        //        listener::handleUpgrade
+        //        UPGRADE_EVENT.add(listener::handleUpgrade);
+        //        UPGRADE_EVENT.remove(listener::handleUpgrade);
 
         context.checking(new Expectations() {{
             oneOf(listener).handleCreate(SOURCE);
@@ -113,11 +108,11 @@ public class EventDispatcherTest {
         }});
         CREATE_EVENT.notify(SOURCE);
         context.assertIsSatisfied();
-//        dispatcher.dispatch(new TaskEvent("taskEvent", 2));
-//        dispatcher.addListener(listener);
-//        dispatcher.dispatch(new TaskEvent("taskEvent", 1));
-//        dispatcher.clearListener();
-//        dispatcher.dispatch(new TaskEvent("taskEvent", 2));
+        //        dispatcher.dispatch(new TaskEvent("taskEvent", 2));
+        //        dispatcher.addListener(listener);
+        //        dispatcher.dispatch(new TaskEvent("taskEvent", 1));
+        //        dispatcher.clearListener();
+        //        dispatcher.dispatch(new TaskEvent("taskEvent", 2));
 
     }
 

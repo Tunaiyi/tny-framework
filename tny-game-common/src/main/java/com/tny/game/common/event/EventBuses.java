@@ -11,11 +11,13 @@ public class EventBuses {
     private EventBuses() {
     }
 
-    public static <L, E extends Event<?>> BindComEventBus<L, E> ofEvent(Class<L> clazz, ComEventInvoker<L, E> fn, List<ComEventDelegate<E>> listeners, boolean global) {
+    public static <L, E extends Event<?>> BindComEventBus<L, E> ofEvent(Class<L> clazz, ComEventInvoker<L, E> fn, List<ComEventDelegate<E>> listeners,
+            boolean global) {
         return new BindComEventBus<>(clazz, fn, listeners, global);
     }
 
-    public static <L, E extends Event<?>> BindComEventBus<L, E> ofEvent(Class<L> clazz, ComEventInvoker<L, E> fn, List<ComEventDelegate<E>> listeners) {
+    public static <L, E extends Event<?>> BindComEventBus<L, E> ofEvent(Class<L> clazz, ComEventInvoker<L, E> fn,
+            List<ComEventDelegate<E>> listeners) {
         return new BindComEventBus<>(clazz, fn, listeners, true);
     }
 
@@ -43,7 +45,8 @@ public class EventBuses {
         return new BindVoidEventBus<>(clazz, fn, null, true);
     }
 
-    public static <L, S, A> BindP1EventBus<L, S, A> of(Class<L> clazz, P1EventInvoker<L, S, A> fn, List<P1EventDelegate<S, A>> listeners, boolean global) {
+    public static <L, S, A> BindP1EventBus<L, S, A> of(Class<L> clazz, P1EventInvoker<L, S, A> fn, List<P1EventDelegate<S, A>> listeners,
+            boolean global) {
         return new BindP1EventBus<>(clazz, fn, listeners, global);
     }
 
@@ -59,11 +62,13 @@ public class EventBuses {
         return new BindP1EventBus<>(clazz, fn, null, true);
     }
 
-    public static <L, S, A1, A2> BindP2EventBus<L, S, A1, A2> of(Class<L> clazz, P2EventInvoker<L, S, A1, A2> fn, List<P2EventDelegate<S, A1, A2>> listeners, boolean global) {
+    public static <L, S, A1, A2> BindP2EventBus<L, S, A1, A2> of(Class<L> clazz, P2EventInvoker<L, S, A1, A2> fn,
+            List<P2EventDelegate<S, A1, A2>> listeners, boolean global) {
         return new BindP2EventBus<>(clazz, fn, listeners, global);
     }
 
-    public static <L, S, A1, A2> BindP2EventBus<L, S, A1, A2> of(Class<L> clazz, P2EventInvoker<L, S, A1, A2> fn, List<P2EventDelegate<S, A1, A2>> listeners) {
+    public static <L, S, A1, A2> BindP2EventBus<L, S, A1, A2> of(Class<L> clazz, P2EventInvoker<L, S, A1, A2> fn,
+            List<P2EventDelegate<S, A1, A2>> listeners) {
         return new BindP2EventBus<>(clazz, fn, listeners, true);
     }
 
@@ -75,11 +80,13 @@ public class EventBuses {
         return new BindP2EventBus<>(clazz, fn, null, true);
     }
 
-    public static <L, S, A1, A2, A3> BindP3EventBus<L, S, A1, A2, A3> of(Class<L> clazz, P3EventInvoker<L, S, A1, A2, A3> fn, List<P3EventDelegate<S, A1, A2, A3>> listeners, boolean global) {
+    public static <L, S, A1, A2, A3> BindP3EventBus<L, S, A1, A2, A3> of(Class<L> clazz, P3EventInvoker<L, S, A1, A2, A3> fn,
+            List<P3EventDelegate<S, A1, A2, A3>> listeners, boolean global) {
         return new BindP3EventBus<>(clazz, fn, listeners, global);
     }
 
-    public static <L, S, A1, A2, A3> BindP3EventBus<L, S, A1, A2, A3> of(Class<L> clazz, P3EventInvoker<L, S, A1, A2, A3> fn, List<P3EventDelegate<S, A1, A2, A3>> listeners) {
+    public static <L, S, A1, A2, A3> BindP3EventBus<L, S, A1, A2, A3> of(Class<L> clazz, P3EventInvoker<L, S, A1, A2, A3> fn,
+            List<P3EventDelegate<S, A1, A2, A3>> listeners) {
         return new BindP3EventBus<>(clazz, fn, listeners, true);
     }
 
@@ -91,15 +98,18 @@ public class EventBuses {
         return new BindP3EventBus<>(clazz, fn, null, true);
     }
 
-    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn, List<P4EventDelegate<S, A1, A2, A3, A4>> listeners, boolean global) {
+    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn,
+            List<P4EventDelegate<S, A1, A2, A3, A4>> listeners, boolean global) {
         return new BindP4EventBus<>(clazz, fn, listeners, global);
     }
 
-    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn, List<P4EventDelegate<S, A1, A2, A3, A4>> listeners) {
+    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn,
+            List<P4EventDelegate<S, A1, A2, A3, A4>> listeners) {
         return new BindP4EventBus<>(clazz, fn, listeners, true);
     }
 
-    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn, boolean global) {
+    public static <L, S, A1, A2, A3, A4> BindP4EventBus<L, S, A1, A2, A3, A4> of(Class<L> clazz, P4EventInvoker<L, S, A1, A2, A3, A4> fn,
+            boolean global) {
         return new BindP4EventBus<>(clazz, fn, null, global);
     }
 
@@ -107,19 +117,23 @@ public class EventBuses {
         return new BindP4EventBus<>(clazz, fn, null, true);
     }
 
-    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn, List<P5EventDelegate<S, A1, A2, A3, A4, A5>> listeners, boolean global) {
+    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn,
+            List<P5EventDelegate<S, A1, A2, A3, A4, A5>> listeners, boolean global) {
         return new BindP5EventBus<>(clazz, fn, listeners, global);
     }
 
-    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn, List<P5EventDelegate<S, A1, A2, A3, A4, A5>> listeners) {
+    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn,
+            List<P5EventDelegate<S, A1, A2, A3, A4, A5>> listeners) {
         return new BindP5EventBus<>(clazz, fn, listeners, true);
     }
 
-    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn, boolean global) {
+    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn,
+            boolean global) {
         return new BindP5EventBus<>(clazz, fn, null, global);
     }
 
-    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz, P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn) {
+    public static <L, S, A1, A2, A3, A4, A5> BindP5EventBus<L, S, A1, A2, A3, A4, A5> of(Class<L> clazz,
+            P5EventInvoker<L, S, A1, A2, A3, A4, A5> fn) {
         return new BindP5EventBus<>(clazz, fn, null, true);
     }
 

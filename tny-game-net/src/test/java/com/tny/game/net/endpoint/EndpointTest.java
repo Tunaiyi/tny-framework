@@ -2,16 +2,12 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.transport.*;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 
 import static com.tny.game.test.TestAide.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -45,9 +41,9 @@ public abstract class EndpointTest<E extends NetEndpoint<Long>> extends NetterTe
         E session1 = create().getEndpoint();
         E session2 = create().getEndpoint();
         E session3 = create().getEndpoint();
-        assertTrue( session2.getId() != session1.getId());
-        assertTrue( session3.getId() != session2.getId());
-        assertTrue( session3.getId() != session1.getId());
+        assertTrue(session2.getId() != session1.getId());
+        assertTrue(session3.getId() != session2.getId());
+        assertTrue(session3.getId() != session1.getId());
     }
 
     @Test

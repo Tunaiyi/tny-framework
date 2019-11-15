@@ -1,6 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.ItemType;
+import com.tny.game.base.item.*;
 
 public enum TestItemType implements ItemType {
 

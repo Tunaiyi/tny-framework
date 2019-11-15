@@ -1,15 +1,11 @@
 package com.tny.game.suite.cluster;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.utils.URL;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.google.common.collect.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$URL_WEB_SERVICE_NODE)

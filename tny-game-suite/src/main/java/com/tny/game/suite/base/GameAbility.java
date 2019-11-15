@@ -1,6 +1,6 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.Ability;
+import com.tny.game.base.item.*;
 
 /**
  * Created by Kun Yang on 16/1/28.

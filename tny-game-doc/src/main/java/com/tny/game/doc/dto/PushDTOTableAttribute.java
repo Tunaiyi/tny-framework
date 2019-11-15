@@ -1,14 +1,10 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.table.TableAttribute;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.table.*;
 
-import java.util.Collections;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class PushDTOTableAttribute implements TableAttribute {
 

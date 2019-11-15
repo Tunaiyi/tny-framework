@@ -1,9 +1,9 @@
 package protoex.test;
 
-import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.protoex.ProtoExWriter;
-import com.tny.game.protoex.annotations.TypeEncode;
-import org.junit.Test;
+import com.tny.game.common.runtime.*;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
+import org.junit.*;
 
 import java.util.Arrays;
 

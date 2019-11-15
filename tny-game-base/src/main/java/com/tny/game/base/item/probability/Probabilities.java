@@ -2,13 +2,8 @@ package com.tny.game.base.item.probability;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -26,9 +21,9 @@ public interface Probabilities {
             if (number < size) {
                 number = 0;
                 group.probabilities().stream()
-                        .filter(p -> p.isEffect(attributes))
-                        .limit(group.getNumber(attributes))
-                        .collect(Collectors.toCollection(() -> values));
+                     .filter(p -> p.isEffect(attributes))
+                     .limit(group.getNumber(attributes))
+                     .collect(Collectors.toCollection(() -> values));
             } else {
                 number -= size;
                 values.addAll(group.probabilities());
@@ -172,8 +167,8 @@ public interface Probabilities {
     public static void main(String[] args) {
         List<Integer> values = new ArrayList<>();
         Arrays.asList(1, 2, 3, 4, 5, 6)
-                .stream()
-                .collect(Collectors.toCollection(() -> values));
+              .stream()
+              .collect(Collectors.toCollection(() -> values));
         System.out.println(values);
     }
 

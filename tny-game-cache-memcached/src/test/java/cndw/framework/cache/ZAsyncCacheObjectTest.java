@@ -1,14 +1,14 @@
 package cndw.framework.cache;
 
-import com.tny.game.asyndb.impl.AverageRateSyncDBExecutor;
-import com.tny.game.cache.async.AsyncCache;
-import com.tny.game.cache.testclass.CacheTestTask;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import javax.annotation.Resource;
+import com.tny.game.asyndb.impl.*;
+import com.tny.game.cache.async.*;
+import com.tny.game.cache.testclass.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})

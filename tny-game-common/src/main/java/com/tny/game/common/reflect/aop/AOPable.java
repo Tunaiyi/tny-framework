@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect.aop;
 
-import com.tny.game.common.context.Attributes;
+import com.tny.game.common.context.*;
 
 public interface AOPable<T> {
 

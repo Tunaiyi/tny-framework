@@ -1,22 +1,13 @@
 package com.tny.game.suite.base.dto;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.capacity.CapacityGroup;
-import com.tny.game.suite.base.capacity.CapacitySupplier;
-import com.tny.game.suite.base.capacity.ComboCapacitySupplier;
-import com.tny.game.suite.base.capacity.ExpireCapacitySupplier;
+import com.google.common.collect.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
+import com.tny.game.suite.base.capacity.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -60,13 +51,13 @@ public class CapacitySupplierDTO {
     private static void initComboSupplier(CapacitySupplierDTO dto, ComboCapacitySupplier supplier) {
         Set<CapacityGroup> capacityGroups = new HashSet<>();
         dto.dependSuppliers = supplier.dependSuppliers().stream()
-                .filter(CapacitySupplier::isSupplying)
-                .peek(s -> capacityGroups.addAll(s.getAllCapacityGroups()))
-                .map(CapacitySupplier::getId)
-                .collect(Collectors.toList());
+                                      .filter(CapacitySupplier::isSupplying)
+                                      .peek(s -> capacityGroups.addAll(s.getAllCapacityGroups()))
+                                      .map(CapacitySupplier::getId)
+                                      .collect(Collectors.toList());
         dto.capacityGroups = supplier.getAllCapacityGroups().stream()
-                .map(CapacityGroup::getId)
-                .collect(Collectors.toSet());
+                                     .map(CapacityGroup::getId)
+                                     .collect(Collectors.toSet());
     }
 
     public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
@@ -77,11 +68,11 @@ public class CapacitySupplierDTO {
             initComboSupplier(dto, as(supplier));
         else {
             dto.capacities = supplier.getAllValues().entrySet().stream()
-                    .map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
-                    .collect(Collectors.toList());
+                                     .map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
+                                     .collect(Collectors.toList());
             dto.capacityGroups = supplier.getAllCapacityGroups().stream()
-                    .map(CapacityGroup::getId)
-                    .collect(Collectors.toSet());
+                                         .map(CapacityGroup::getId)
+                                         .collect(Collectors.toSet());
         }
         if (supplier instanceof ExpireCapacitySupplier) {
             ExpireCapacitySupplier timeoutSupplier = (ExpireCapacitySupplier) supplier;
@@ -96,8 +87,8 @@ public class CapacitySupplierDTO {
 
     public static List<CapacitySupplierDTO> suppliers2DTOs(Collection<? extends CapacitySupplier> suppliers) {
         return suppliers.stream()
-                .map(CapacitySupplierDTO::supplier2DTO)
-                .collect(Collectors.toList());
+                        .map(CapacitySupplierDTO::supplier2DTO)
+                        .collect(Collectors.toList());
     }
 
     public static CapacitySupplierDTO supplier2RemoveDTO(CapacitySupplier supplier) {
@@ -112,8 +103,8 @@ public class CapacitySupplierDTO {
 
     public static List<CapacitySupplierDTO> suppliers2RemoveDTO(Collection<? extends CapacitySupplier> suppliers) {
         return suppliers.stream()
-                .map(CapacitySupplierDTO::supplier2RemoveDTO)
-                .collect(Collectors.toList());
+                        .map(CapacitySupplierDTO::supplier2RemoveDTO)
+                        .collect(Collectors.toList());
     }
 
 

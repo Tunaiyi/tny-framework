@@ -11,8 +11,8 @@ import io.netty.channel.Channel;
 public class NettyServerTunnel<UID> extends NettyTunnel<UID, NetEndpoint<UID>> {
 
     public NettyServerTunnel(Channel channel, UID unloginUid,
-                             EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler,
-                             MessageFactory<UID> messageBuilderFactory) {
+            EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler,
+            MessageFactory<UID> messageBuilderFactory) {
         super(channel, TunnelMode.SERVER, null, messageBuilderFactory);
         this.endpoint = new AnonymityEndpoint<>(this, unloginUid, eventHandler);
     }

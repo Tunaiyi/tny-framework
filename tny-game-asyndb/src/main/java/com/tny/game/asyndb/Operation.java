@@ -1,8 +1,6 @@
 package com.tny.game.asyndb;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 持久化操作

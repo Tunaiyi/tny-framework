@@ -1,6 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.probability.ProbabilityGroup;
+import com.tny.game.base.item.probability.*;
 
 import java.util.Map;
 

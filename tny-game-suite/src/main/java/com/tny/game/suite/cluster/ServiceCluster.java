@@ -6,20 +6,11 @@ import com.tny.game.common.lifecycle.*;
 import com.tny.game.suite.cluster.game.*;
 import com.tny.game.suite.utils.*;
 import com.tny.game.zookeeper.*;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.*;
 import org.apache.zookeeper.CreateMode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.suite.utils.Configs.*;
@@ -153,8 +144,8 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
 
     public List<ServerNode> getValidServerNodes() {
         return this.nodeMap.values().stream()
-                .filter(node -> node.isWork() && node.isInOpenDate() && node.getOutline() != null)
-                .collect(Collectors.toList());
+                           .filter(node -> node.isWork() && node.isInOpenDate() && node.getOutline() != null)
+                           .collect(Collectors.toList());
     }
 
     public ServerNode getServerNode(int serverID) {
@@ -322,12 +313,12 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         if (node == null)
             return Optional.empty();
         return node.getPrivateConnector(AppURLPaths.HTTP_INSIDE)
-                .map(c -> {
-                    StringBuilder urlBuilder = new StringBuilder().append("http://").append(c.getHost()).append(":").append(c.getPort());
-                    for (String path : paths)
-                        urlBuilder.append(path.startsWith("/") ? "" : "/").append(path);
-                    return urlBuilder.toString();
-                });
+                   .map(c -> {
+                       StringBuilder urlBuilder = new StringBuilder().append("http://").append(c.getHost()).append(":").append(c.getPort());
+                       for (String path : paths)
+                           urlBuilder.append(path.startsWith("/") ? "" : "/").append(path);
+                       return urlBuilder.toString();
+                   });
     }
 
     public Optional<String> gameUrl(int serverID, AppURLPath path) {

@@ -1,16 +1,12 @@
 package com.tny.game.common.reflect;
 
-import com.tny.game.common.reflect.ReflectAide.MethodType;
-import org.junit.Test;
+import com.tny.game.common.reflect.ReflectAide.*;
+import org.junit.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ReflectAideTest {
 

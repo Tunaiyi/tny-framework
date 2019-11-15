@@ -1,7 +1,6 @@
 package com.tny.game.base.item.probability;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 随机概率事物生产器接口

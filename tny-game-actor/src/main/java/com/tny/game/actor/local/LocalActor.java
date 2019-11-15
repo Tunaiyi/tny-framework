@@ -1,6 +1,6 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.actor.Actor;
+import com.tny.game.actor.*;
 
 import java.util.concurrent.Executor;
 

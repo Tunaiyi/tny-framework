@@ -1,6 +1,6 @@
 package com.tny.game.zookeeper;
 
-import com.tny.game.zookeeper.ZKMonitorClient.MonitorOperation;
+import com.tny.game.zookeeper.ZKMonitorClient.*;
 
 public interface MonitorTask {
 

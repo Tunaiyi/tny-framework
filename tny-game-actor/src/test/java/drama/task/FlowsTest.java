@@ -1,19 +1,14 @@
 package drama.task;
 
-import com.tny.game.actor.DoneSupplier;
-import com.tny.game.actor.stage.Flows;
-import com.tny.game.actor.stage.TypeFlow;
-import com.tny.game.actor.stage.VoidFlow;
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.actor.*;
+import com.tny.game.actor.stage.*;
+import com.tny.game.common.utils.*;
 import org.jmock.Expectations;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
+import java.util.concurrent.*;
+import java.util.function.*;
 
 import static org.junit.Assert.*;
 

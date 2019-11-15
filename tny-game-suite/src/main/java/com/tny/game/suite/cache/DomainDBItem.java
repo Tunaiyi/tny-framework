@@ -1,8 +1,7 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.base.item.Identifier;
-import com.tny.game.base.item.Item;
-import com.tny.game.cache.mysql.DBCacheItem;
+import com.tny.game.base.item.*;
+import com.tny.game.cache.mysql.*;
 
 public class DomainDBItem<R> extends DBCacheItem<R> {
 

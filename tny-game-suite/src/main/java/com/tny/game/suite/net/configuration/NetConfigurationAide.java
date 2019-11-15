@@ -3,19 +3,11 @@ package com.tny.game.suite.net.configuration;
 import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.stream.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -107,15 +99,15 @@ public interface NetConfigurationAide {
         } else {
             MutablePropertySources propertySources = ((ConfigurableEnvironment) environment).getPropertySources();
             return StreamSupport.stream(propertySources.spliterator(), true)
-                    .filter(EnumerablePropertySource.class::isInstance)
-                    .map(ps -> ((EnumerablePropertySource) ps).getPropertyNames())
-                    .flatMap(Arrays::stream)
-                    .filter(propName -> propName.startsWith(keyHead + "."))
-                    .filter(propName -> !Objects.equals(propName, keyHead))
-                    .map(propName -> StringUtils.split(propName, "."))
-                    .filter(propNameWords -> propNameWords.length >= nameIndex)
-                    .map(propNameWords -> propNameWords[nameIndex])
-                    .collect(Collectors.toSet());
+                                .filter(EnumerablePropertySource.class::isInstance)
+                                .map(ps -> ((EnumerablePropertySource) ps).getPropertyNames())
+                                .flatMap(Arrays::stream)
+                                .filter(propName -> propName.startsWith(keyHead + "."))
+                                .filter(propName -> !Objects.equals(propName, keyHead))
+                                .map(propName -> StringUtils.split(propName, "."))
+                                .filter(propNameWords -> propNameWords.length >= nameIndex)
+                                .map(propNameWords -> propNameWords[nameIndex])
+                                .collect(Collectors.toSet());
         }
     }
 

@@ -58,7 +58,9 @@ public class NetLogger {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             Object[] msgArgs = toMessageArgs(message, args);
-            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+            logger.debug(
+                    "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" +
+                    msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
@@ -66,7 +68,9 @@ public class NetLogger {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             Object[] msgArgs = toMessageArgs(message, args);
-            logger.debug("\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" + msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+            logger.debug(
+                    "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" +
+                    msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
@@ -87,7 +91,8 @@ public class NetLogger {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHead head = message.getHead();
-            logger.debug("\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
+            logger.debug(
+                    "\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
                     head.getId(), head.getId(), head.getToMessage(),
@@ -100,7 +105,8 @@ public class NetLogger {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHead head = message.getHead();
-            logger.debug("\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
+            logger.debug(
+                    "\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
                     message.getMode(),
                     tunnel,
                     head.getId(), head.getId(), head.getToMessage(),

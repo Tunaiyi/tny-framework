@@ -1,11 +1,10 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.ItemModel;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import com.tny.game.base.item.*;
+import net.sf.cglib.proxy.*;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 /**
  * 事物模型代理对象

@@ -1,7 +1,6 @@
 package com.tny.game.suite.cluster.event;
 
-import com.tny.game.suite.cluster.ServiceNode;
-import com.tny.game.suite.cluster.ServiceNodeHolder;
+import com.tny.game.suite.cluster.*;
 
 public interface ServiceNodeHolderListener {
 

@@ -1,6 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.*;
 
 import java.util.Map;
 
@@ -26,6 +26,6 @@ public interface TradePlan {
      *
      * @return 返回交易方式
      */
-//	public AlertType getAlertType();
+    //	public AlertType getAlertType();
 
 }

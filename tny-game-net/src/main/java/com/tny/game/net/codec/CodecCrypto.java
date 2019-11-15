@@ -1,6 +1,6 @@
 package com.tny.game.net.codec;
 
-import com.tny.game.common.unit.annotation.UnitInterface;
+import com.tny.game.common.unit.annotation.*;
 
 /**
  * <p>
@@ -11,8 +11,8 @@ import com.tny.game.common.unit.annotation.UnitInterface;
 @UnitInterface
 public interface CodecCrypto {
 
-    byte[] encrypt(DataPackager packager, byte [] bytes);
+    byte[] encrypt(DataPackager packager, byte[] bytes);
 
-    byte[] decrypt(DataPackager packager, byte [] bytes);
+    byte[] decrypt(DataPackager packager, byte[] bytes);
 
 }

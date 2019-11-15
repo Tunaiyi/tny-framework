@@ -35,7 +35,7 @@ public class AppLifecycleProcessor {
         RunningChecker.start(this.getClass());
         LOGGER.info("开始初始化 Class Scan ...");
         ClassScanner.instance()
-                .scan(paths);
+                    .scan(paths);
         LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         for (StaticIniter initer : LifecycleLoader.getStaticIniters()) {
             Class<?> c = initer.getIniterClass();
@@ -97,18 +97,18 @@ public class AppLifecycleProcessor {
 
 
     private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, Lifecycle> lifecycleGetter,
-                                                                  Collection<? extends T> lifecycles) {
+            Collection<? extends T> lifecycles) {
         List<Lifecycle> process = lifecycles.stream()
-                .peek(i -> {
-                    Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
-                    if (i.getClass() != lifecycle.getHandlerClass())
-                        throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
-                    handlerMap.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
-                })
-                .map(lifecycleGetter)
-                .collect(Collectors.toList());
+                                            .peek(i -> {
+                                                Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
+                                                if (i.getClass() != lifecycle.getHandlerClass())
+                                                    throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
+                                                handlerMap.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
+                                            })
+                                            .map(lifecycleGetter)
+                                            .collect(Collectors.toList());
         lifecycleMap.computeIfAbsent(lifecycleClass, k -> new ConcurrentSkipListSet<>())
-                .addAll(process);
+                    .addAll(process);
     }
 
     public static void loadHandler(ApplicationContext context) {
@@ -118,7 +118,7 @@ public class AppLifecycleProcessor {
     }
 
     private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter,
-                                                                 ApplicationContext context) {
+            ApplicationContext context) {
         Map<String, ? extends T> initerMap = context.getBeansOfType(processorClass);
         addLifecycle(processorClass, lifecycleGetter, initerMap.values());
     }
@@ -132,8 +132,8 @@ public class AppLifecycleProcessor {
         int index = 0;
 
         Map<Lifecycle, Set<LifecycleHandler>> cloneMap = handlerMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(Entry::getKey, e -> new HashSet<>(e.getValue())));
+                                                                   .stream()
+                                                                   .collect(Collectors.toMap(Entry::getKey, e -> new HashSet<>(e.getValue())));
 
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (Lifecycle lifecycle : lifecycleList) {

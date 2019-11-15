@@ -1,30 +1,18 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.base.item.DealedItem;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeInfo;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.ActionResult;
-import com.tny.game.base.item.behavior.CostList;
-import com.tny.game.base.item.behavior.DemandResult;
-import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ProtoEx(SuiteProtoIDs.ACTION_RESULT_DTO)
 @DTODoc(value = "操作结果DTO")
-public class ActionResultDTO  implements Serializable {
+public class ActionResultDTO implements Serializable {
 
     /**
      *
@@ -50,8 +38,9 @@ public class ActionResultDTO  implements Serializable {
     public static ActionResultDTO costTradeItemList2DTO(Collection<TradeItem<ItemModel>> tradeItemList) {
         ActionResultDTO dto = new ActionResultDTO();
         dto.demandResults = tradeItemList.stream()
-                .map(tradeItem -> DemandResultDTO.itemModel2DTO(TradeType.COST, tradeItem.getItemModel(), tradeItem.getNumber()))
-                .collect(Collectors.toList());
+                                         .map(tradeItem -> DemandResultDTO
+                                                 .itemModel2DTO(TradeType.COST, tradeItem.getItemModel(), tradeItem.getNumber()))
+                                         .collect(Collectors.toList());
         return dto;
     }
 

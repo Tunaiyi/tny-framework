@@ -1,13 +1,9 @@
 package com.tny.game.common.reflect.cglib;
 
 import com.tny.game.common.reflect.*;
-import net.sf.cglib.reflect.FastClass;
-import net.sf.cglib.reflect.FastMethod;
+import net.sf.cglib.reflect.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -39,7 +35,7 @@ public class CGlibClassAccessor implements ClassAccessor {
             String methodName = method.getName();
             Class<?> returnClazz = method.getReturnType();
             if (!methodName.equals("getClass") && (methodName.startsWith("get") && returnClazz != null)
-                    || (methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class))) {
+                || (methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class))) {
                 String proName = getPropertyName(methodName);
                 CGlibPropertyAccessor accessor = getAccessor(accessorMap, proName, returnClazz);
                 if (accessor != null)

@@ -1,9 +1,8 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.cache.DirectCache;
-import com.tny.game.cache.async.CacheSynchronizer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.tny.game.cache.*;
+import com.tny.game.cache.async.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

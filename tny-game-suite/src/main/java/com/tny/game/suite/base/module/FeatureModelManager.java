@@ -5,15 +5,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.module.*;
 import com.tny.game.common.lifecycle.*;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.utils.version.Version;
-import com.tny.game.suite.base.GameModelManager;
+import com.tny.game.common.utils.version.*;
+import com.tny.game.suite.base.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
 import java.util.*;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.StringAide.*;
 
 public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelManager<FM> implements AppPrepareStart {
 
@@ -74,13 +74,13 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
 
         @Override
         public int compare(FM o1, FM o2) {
-        int levelComp;
-        if ((levelComp = o1.getOpenLevel(mode) - o2.getOpenLevel(mode)) != 0)
-            return levelComp;
-        int proComp;
-        if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
-            return proComp;
-        return o1.getId() - o2.getId();
+            int levelComp;
+            if ((levelComp = o1.getOpenLevel(mode) - o2.getOpenLevel(mode)) != 0)
+                return levelComp;
+            int proComp;
+            if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
+                return proComp;
+            return o1.getId() - o2.getId();
         }
     }
 
@@ -94,7 +94,8 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         for (FM model : this.modelMap.values()) {
             if (current.map(currVer -> model.getOpenVersion().map(v -> v.lessEqualsThan(currVer)).orElse(true)).orElse(true)) {
                 typeMap.put(model.getFeature(), model);
-                model.getOpenPlan().forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
+                model.getOpenPlan()
+                     .forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
             } else {
                 LOGGER.warn("当前版本 {} | 功能 {}({}) | 激活版本 [{}] | 未激活", version, model.getDesc(), model.getAlias(), model.getOpenVersion().orElse(null));
             }

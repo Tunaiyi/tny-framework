@@ -1,11 +1,10 @@
 package com.tny.game.doc.label;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.annotation.ItemLabel;
-import com.tny.game.doc.enums.EnumerConfiger;
-import com.tny.game.doc.holder.FieldDocHolder;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.doc.enums.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
 @XStreamAlias("enumer")

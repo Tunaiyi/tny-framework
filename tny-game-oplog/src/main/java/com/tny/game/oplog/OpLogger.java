@@ -1,9 +1,7 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.Identifier;
-import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
 public interface OpLogger {
 

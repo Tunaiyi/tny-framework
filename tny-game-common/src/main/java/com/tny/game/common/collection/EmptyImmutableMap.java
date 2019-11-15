@@ -2,10 +2,7 @@ package com.tny.game.common.collection;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class EmptyImmutableMap<K, V> implements Map<K, V> {

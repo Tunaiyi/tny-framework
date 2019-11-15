@@ -1,6 +1,6 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.doc.annotation.VarDoc;
+import com.tny.game.doc.annotation.*;
 
 public class VarDocHolder {
 

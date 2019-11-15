@@ -1,12 +1,12 @@
 package com.tny.game.common.reflect.javassist;
 
-import com.tny.game.common.collection.ConcurrentHashSet;
+import com.tny.game.common.collection.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.reflect.ReflectAide;
+import com.tny.game.common.reflect.*;
 import javassist.*;
 
-import java.lang.reflect.*;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.text.MessageFormat;
 import java.util.concurrent.*;
 
@@ -173,7 +173,8 @@ public class InvokerFactory {
                 return CONSTRUCTOR_MAP.get(constructor);
             }
         } catch (Throwable e) {
-            throw new RuntimeException(MessageFormat.format("编译{0}.{1}异常 \n{2}", constructor.getDeclaringClass(), constructor, invokeCode.toString()), e);
+            throw new RuntimeException(MessageFormat.format("编译{0}.{1}异常 \n{2}", constructor.getDeclaringClass(), constructor, invokeCode.toString()),
+                    e);
         }
     }
 

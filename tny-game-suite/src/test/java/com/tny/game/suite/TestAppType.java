@@ -1,6 +1,6 @@
 package com.tny.game.suite;
 
-import com.tny.game.net.base.AppType;
+import com.tny.game.net.base.*;
 
 /**
  * 服务器类型

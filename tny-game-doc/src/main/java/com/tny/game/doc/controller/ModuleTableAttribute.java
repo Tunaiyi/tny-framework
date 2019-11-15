@@ -1,10 +1,9 @@
 package com.tny.game.doc.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.ClassDocHolder;
-import com.tny.game.doc.holder.ExportHolder;
-import com.tny.game.doc.table.TableAttribute;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
+import com.tny.game.doc.table.*;
 
 public class ModuleTableAttribute implements TableAttribute {
 

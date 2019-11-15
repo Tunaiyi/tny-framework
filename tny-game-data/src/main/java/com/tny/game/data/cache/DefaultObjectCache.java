@@ -1,13 +1,10 @@
 package com.tny.game.data.cache;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.*;
 import com.tny.game.common.concurrent.*;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.concurrent.*;
+import java.util.function.*;
 
 /**
  * <p>
@@ -22,7 +19,8 @@ public class DefaultObjectCache<K extends Comparable<K>, O> {//implements Object
     /**
      * 回收异步对象线程
      */
-    private static final ScheduledExecutorService recycleExecutor = Executors.newScheduledThreadPool(1, new CoreThreadFactory("AutoObjectCache-RecycleExecutor", false));
+    private static final ScheduledExecutorService recycleExecutor = Executors
+            .newScheduledThreadPool(1, new CoreThreadFactory("AutoObjectCache-RecycleExecutor", false));
 
     /**
      * 缓存

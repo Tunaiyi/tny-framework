@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.context.Attributes;
+import com.tny.game.common.context.*;
 
 /**
  * Created by Kun Yang on 2017/3/30.

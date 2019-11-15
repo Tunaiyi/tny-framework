@@ -1,6 +1,6 @@
 package com.tny.game.net.base;
 
-import com.tny.game.net.transport.NetTunnel;
+import com.tny.game.net.transport.*;
 
 /**
  * <p>

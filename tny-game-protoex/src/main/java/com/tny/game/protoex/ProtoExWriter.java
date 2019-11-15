@@ -1,12 +1,12 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.protoex.annotations.TypeEncode;
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.common.buff.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
 
 import java.util.*;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * ProtoEx类型写入器
@@ -188,14 +188,14 @@ public class ProtoExWriter {
     }
 
     public <K, V> void writeMap(Map<?, ?> map,
-                                Class<K> keyType, TypeEncode keyTypeEncode,
-                                Class<V> valueType, TypeEncode valueTypeEncode) {
+            Class<K> keyType, TypeEncode keyTypeEncode,
+            Class<V> valueType, TypeEncode valueTypeEncode) {
         this.writeMap(map, keyType, keyTypeEncode, FieldFormat.DEFAULT, valueType, valueTypeEncode, FieldFormat.DEFAULT);
     }
 
     public <K, V> void writeMap(Map<?, ?> map,
-                                Class<K> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                                Class<V> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+            Class<K> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+            Class<V> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, map.getClass());
         schema.writeMessage(this.outputStream, map,
                 ProtoExIO.createMap(

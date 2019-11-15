@@ -1,19 +1,16 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.tny.game.base.item.Identifier;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.event.annotation.Listener;
-import com.tny.game.common.reflect.aop.AfterReturningAdvice;
-import com.tny.game.common.reflect.aop.BeforeAdvice;
-import com.tny.game.common.reflect.aop.ThrowsAdvice;
-import com.tny.game.oplog.OpLogger;
-import com.tny.game.suite.auto.AutoMethodHolder;
-import com.tny.game.suite.auto.snapshot.AutoSnapMethod.SnapParamEntry;
-import com.tny.game.suite.oplog.OperationLogger;
-import com.tny.game.suite.transaction.Transaction;
-import com.tny.game.suite.transaction.listener.TransactionListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.reflect.aop.*;
+import com.tny.game.oplog.*;
+import com.tny.game.suite.auto.*;
+import com.tny.game.suite.auto.snapshot.AutoSnapMethod.*;
+import com.tny.game.suite.oplog.*;
+import com.tny.game.suite.transaction.*;
+import com.tny.game.suite.transaction.listener.*;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

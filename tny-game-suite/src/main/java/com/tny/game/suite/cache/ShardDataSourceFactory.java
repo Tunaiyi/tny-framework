@@ -1,33 +1,29 @@
 package com.tny.game.suite.cache;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.pool.*;
 import com.google.common.collect.Maps;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.config.FileLoader;
+import com.tny.game.common.config.*;
 import net.paoding.rose.jade.context.spring.SpringDataSourceFactory;
-import net.paoding.rose.jade.dataaccess.DataSourceFactory;
-import net.paoding.rose.jade.dataaccess.DataSourceHolder;
+import net.paoding.rose.jade.dataaccess.*;
 import net.paoding.rose.jade.shard.ShardInterpreter;
 import net.paoding.rose.jade.statement.StatementMetaData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class ShardDataSourceFactory implements DataSourceFactory, ApplicationContextAware {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ShardDataSourceFactory.class);
 
-    private String dbUrlTemplate = "jdbc:mysql://{}:{}/{}?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&failOverReadOnly=false&rewriteBatchedStatements=true";
+    private String dbUrlTemplate
+            = "jdbc:mysql://{}:{}/{}?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&failOverReadOnly=false&rewriteBatchedStatements=true";
 
     private Map<Object, ShardDataSourceHolder> holderMap = new ConcurrentHashMap<>();
 

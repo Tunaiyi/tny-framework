@@ -2,24 +2,14 @@ package com.tny.game.suite.base.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
-import com.tny.game.base.item.DealedItem;
-import com.tny.game.base.item.DealedResult;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeInfo;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.AwardDetail;
-import com.tny.game.base.item.behavior.AwardList;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ProtoEx(SuiteProtoIDs.AWARD_LIST_DTO)
 @DTODoc(value = "奖励列表DTO")

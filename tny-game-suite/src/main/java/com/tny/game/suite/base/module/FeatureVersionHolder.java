@@ -5,9 +5,9 @@ import com.tny.game.common.event.*;
 import com.tny.game.common.utils.version.*;
 import com.tny.game.suite.base.module.event.*;
 import com.tny.game.suite.utils.*;
-import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.locks.*;
 import java.util.function.*;
 
@@ -29,7 +29,7 @@ public class FeatureVersionHolder {
 
     FeatureVersionHolder() {
         this.initConfigVersion(Configs.VERSION_CONFIG, Configs.VERSION_FEATURE_VERSION, this::getDefVersion, this::setDefVersion)
-                .initConfigVersion(Configs.DEVELOP_CONFIG, Configs.DEVELOP_FEATURE_VERSION, this::getDevVersion, this::setDevVersion);
+            .initConfigVersion(Configs.DEVELOP_CONFIG, Configs.DEVELOP_FEATURE_VERSION, this::getDevVersion, this::setDevVersion);
     }
 
     public Optional<Version> getFeatureVersion() {
@@ -61,7 +61,8 @@ public class FeatureVersionHolder {
         return doUpdateVersion(StringUtils.isNoneBlank(version) ? Version.of(version) : null, versionGetter, versionSetter, event);
     }
 
-    private FeatureVersionHolder doUpdateVersion(Version newVersion, Supplier<Version> versionGetter, Consumer<Version> versionSetter, boolean event) {
+    private FeatureVersionHolder doUpdateVersion(Version newVersion, Supplier<Version> versionGetter, Consumer<Version> versionSetter,
+            boolean event) {
         this.writeLock.lock();
         try {
             Version oldVersion = versionGetter.get();

@@ -1,8 +1,7 @@
 package com.tny.game.suite.net.configuration;
 
 import com.tny.game.suite.initer.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 
 /**
  * Game Suite 的默认配置

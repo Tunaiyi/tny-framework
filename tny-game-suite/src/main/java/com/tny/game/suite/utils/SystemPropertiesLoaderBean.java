@@ -1,9 +1,8 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.common.config.SystemPropertiesLoader;
+import com.tny.game.common.config.*;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.*;
 
 import java.io.IOException;
 import java.util.List;

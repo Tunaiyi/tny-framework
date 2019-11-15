@@ -1,9 +1,8 @@
 package com.tny.game.common.reflect.javassist;
 
-import com.tny.game.common.reflect.MethodAccessor;
+import com.tny.game.common.reflect.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.text.MessageFormat;
 
 public class JSsistMethodAccessor implements MethodAccessor {

@@ -1,6 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.behavior.Option;
+import com.tny.game.base.item.behavior.*;
 
 public enum TestOption implements Option {
 

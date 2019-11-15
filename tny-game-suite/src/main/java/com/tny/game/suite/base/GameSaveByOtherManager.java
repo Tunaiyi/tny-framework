@@ -1,11 +1,8 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.Manager;
+import com.tny.game.base.item.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 存储当前存储的对象存储在另一个对象上的Manager

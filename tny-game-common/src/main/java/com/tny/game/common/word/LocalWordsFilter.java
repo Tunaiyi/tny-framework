@@ -1,8 +1,8 @@
 package com.tny.game.common.word;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.config.FileLoader;
-import org.apache.commons.io.*;
+import com.tny.game.common.config.*;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.*;

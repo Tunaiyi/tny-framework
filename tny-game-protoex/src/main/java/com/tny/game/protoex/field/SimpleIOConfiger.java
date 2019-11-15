@@ -1,12 +1,9 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.protoex.ProtoExType;
-import com.tny.game.protoex.annotations.ProtoExConf;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.*;
 
 /**
  * 简单编码方式

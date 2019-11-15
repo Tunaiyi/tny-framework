@@ -1,14 +1,9 @@
 package com.tny.game.suite.utils;
 
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Created by Kun Yang on 16/8/14.

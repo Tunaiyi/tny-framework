@@ -1,12 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.Item;
-import com.tny.game.suite.base.capacity.event.CapacityEvents;
+import com.tny.game.base.item.*;
+import com.tny.game.suite.base.capacity.event.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -58,10 +56,10 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
     @Override
     public Map<Capacity, Number> getAllValues() {
         return cache.getAll(Capacity.class).entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> (Capacity) e.getKey(),
-                        Entry::getValue));
+                    .stream()
+                    .collect(Collectors.toMap(
+                            e -> (Capacity) e.getKey(),
+                            Entry::getValue));
     }
 
     @Override

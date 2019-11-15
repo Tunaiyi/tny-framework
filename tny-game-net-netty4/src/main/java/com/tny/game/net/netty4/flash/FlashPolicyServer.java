@@ -1,22 +1,14 @@
 package com.tny.game.net.netty4.flash;
 
-import com.tny.game.net.base.NetLogger;
+import com.tny.game.net.base.*;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.*;
+import io.netty.handler.codec.string.*;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -37,25 +29,25 @@ public class FlashPolicyServer {
         LOG.info("FlashPolicyServer server starting " + host + ":" + port);
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, childGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<Channel>() {
+                 .channel(NioServerSocketChannel.class)
+                 .childHandler(new ChannelInitializer<Channel>() {
 
-                    @Override
-                    protected void initChannel(Channel ch) throws Exception {
-                        ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast("frameDecoder",
-                                new DelimiterBasedFrameDecoder(1024, Delimiters.nulDelimiter()));
-                        pipeline.addLast("decoder", new StringDecoder(Charset.forName("UTF-8")));
-                        pipeline.addLast("encoder", new StringEncoder(Charset.forName("UTF-8")));
-                        pipeline.addLast("handler", new FlashPolicyHandler());
+                     @Override
+                     protected void initChannel(Channel ch) throws Exception {
+                         ChannelPipeline pipeline = ch.pipeline();
+                         pipeline.addLast("frameDecoder",
+                                 new DelimiterBasedFrameDecoder(1024, Delimiters.nulDelimiter()));
+                         pipeline.addLast("decoder", new StringDecoder(Charset.forName("UTF-8")));
+                         pipeline.addLast("encoder", new StringEncoder(Charset.forName("UTF-8")));
+                         pipeline.addLast("handler", new FlashPolicyHandler());
 
-                    }
+                     }
 
-                })
-                .option(ChannelOption.SO_REUSEADDR, false)
-                .childOption(ChannelOption.SO_REUSEADDR, true)
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+                 })
+                 .option(ChannelOption.SO_REUSEADDR, false)
+                 .childOption(ChannelOption.SO_REUSEADDR, true)
+                 .childOption(ChannelOption.TCP_NODELAY, true)
+                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture channelFuture = bootstrap.bind(new InetSocketAddress(host, port)).awaitUninterruptibly();
         if (!channelFuture.isSuccess()) {
             throw new RuntimeException(channelFuture.cause());

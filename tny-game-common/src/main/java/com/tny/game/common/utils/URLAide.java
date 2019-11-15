@@ -1,9 +1,7 @@
 package com.tny.game.common.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Created by Kun Yang on 2017/9/7.

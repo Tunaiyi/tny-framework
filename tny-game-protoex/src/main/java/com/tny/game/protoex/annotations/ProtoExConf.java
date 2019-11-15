@@ -1,6 +1,6 @@
 package com.tny.game.protoex.annotations;
 
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.protoex.field.*;
 
 import java.lang.annotation.*;
 

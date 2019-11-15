@@ -1,11 +1,9 @@
 package com.tny.game.doc.imports;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.net.annotation.Controller;
-import com.tny.game.protoex.annotations.ProtoEx;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.net.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import org.slf4j.*;
 
 @XStreamAlias("dtoImport")
 public class ImportInfo implements Comparable<ImportInfo> {

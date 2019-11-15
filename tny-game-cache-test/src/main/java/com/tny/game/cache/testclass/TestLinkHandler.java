@@ -1,6 +1,6 @@
 package com.tny.game.cache.testclass;
 
-import com.tny.game.cache.CacheFormatter;
+import com.tny.game.cache.*;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 

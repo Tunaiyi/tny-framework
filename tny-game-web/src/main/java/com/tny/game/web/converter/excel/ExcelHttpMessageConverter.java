@@ -1,16 +1,11 @@
 package com.tny.game.web.converter.excel;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.AbstractHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.http.*;
+import org.springframework.http.converter.*;
 import org.springframework.util.StreamUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 
 public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Workbook> {
@@ -42,7 +37,8 @@ public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Work
     }
 
     @Override
-    protected Workbook readInternal(Class<? extends Workbook> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    protected Workbook readInternal(Class<? extends Workbook> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
         long contentLength = inputMessage.getHeaders().getContentLength();
         ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int) contentLength : StreamUtils.BUFFER_SIZE);
         StreamUtils.copy(inputMessage.getBody(), bos);

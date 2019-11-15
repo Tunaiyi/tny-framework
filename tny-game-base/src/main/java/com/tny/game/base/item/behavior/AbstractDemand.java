@@ -2,8 +2,8 @@ package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.xml.AliasCollectUtils;
-import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
+import com.tny.game.base.item.xml.*;
+import com.tny.game.base.item.xml.XMLDemand.*;
 import com.tny.game.expr.*;
 
 import java.util.Map;

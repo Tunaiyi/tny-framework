@@ -1,10 +1,10 @@
 package com.tny.game.net.command.plugins.filter;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.exception.CommandException;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.transport.Tunnel;
+import com.tny.game.common.result.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 import java.lang.annotation.Annotation;
 
@@ -23,7 +23,7 @@ public interface ParamFilter<UID> {
      * @param holder  调用的业务方法持有者
      * @param tunnel  通道
      * @param message 消息
-     * @return 返回CoreResponseCode.SUCCESS(100, "请求处理成功")这继续执行下面的逻辑
+     * @return 返回CoreResponseCode.SUCCESS(100, " 请求处理成功 ")这继续执行下面的逻辑
      * 否则返回响应ResponseCode到客户端,并停止执行接下去的逻辑
      */
     ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message) throws CommandException;

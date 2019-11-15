@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.suite.base.RegisterSelf;
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
+import com.tny.game.suite.base.*;
 
 /**
  * 能力值提供器类型

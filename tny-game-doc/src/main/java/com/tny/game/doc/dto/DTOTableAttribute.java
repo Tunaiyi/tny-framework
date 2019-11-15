@@ -2,10 +2,9 @@ package com.tny.game.doc.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.DTODocHolder;
-import com.tny.game.doc.holder.ExportHolder;
-import com.tny.game.doc.table.TableAttribute;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
+import com.tny.game.doc.table.*;
 
 public class DTOTableAttribute implements TableAttribute {
 
@@ -53,7 +52,7 @@ public class DTOTableAttribute implements TableAttribute {
     @Override
     public String toString() {
         return "DTOTableAttribute{" +
-                "dto=" + dto +
-                '}';
+               "dto=" + dto +
+               '}';
     }
 }

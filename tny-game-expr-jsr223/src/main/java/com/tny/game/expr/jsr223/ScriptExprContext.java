@@ -1,6 +1,6 @@
 package com.tny.game.expr.jsr223;
 
-import com.tny.game.expr.ExprContext;
+import com.tny.game.expr.*;
 
 import javax.script.*;
 import java.util.*;
@@ -29,7 +29,7 @@ public abstract class ScriptExprContext implements ExprContext {
     }
 
     Bindings createBindings() {
-        return engine.createBindings();
+        return this.engine.createBindings();
     }
 
     @Override
@@ -61,35 +61,35 @@ public abstract class ScriptExprContext implements ExprContext {
 
     @Override
     public ExprContext importClasses(Class<?>... classes) {
-        importClasses.addAll(Arrays.asList(classes));
+        this.importClasses.addAll(Arrays.asList(classes));
         this.importCode = null;
         return this;
     }
 
     @Override
     public ExprContext importClasses(Collection<Class<?>> classes) {
-        importClasses.addAll(classes);
+        this.importClasses.addAll(classes);
         this.importCode = null;
         return this;
     }
 
     @Override
     public ExprContext importStaticClasses(Class<?>... classes) {
-        importStaticClasses.addAll(Arrays.asList(classes));
+        this.importStaticClasses.addAll(Arrays.asList(classes));
         this.importCode = null;
         return this;
     }
 
     @Override
     public ExprContext importStaticClasses(Collection<Class<?>> classes) {
-        importStaticClasses.addAll(classes);
+        this.importStaticClasses.addAll(classes);
         this.importCode = null;
         return this;
     }
 
     @Override
     public ExprContext importClassAs(String alias, Class<?> clazz) {
-        importAliasClasses.put(alias, clazz);
+        this.importAliasClasses.put(alias, clazz);
         this.importCode = null;
         return this;
     }
@@ -102,10 +102,10 @@ public abstract class ScriptExprContext implements ExprContext {
     }
 
     public String getImportCode() {
-        if (importCode == null) {
+        if (this.importCode == null) {
             return this.importCode = createImportCode();
         }
-        return importCode;
+        return this.importCode;
     }
 
 

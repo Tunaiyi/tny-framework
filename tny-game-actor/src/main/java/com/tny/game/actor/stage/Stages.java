@@ -1,30 +1,16 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.Completable;
-import com.tny.game.actor.DoneSupplier;
+import com.tny.game.actor.*;
 import com.tny.game.actor.stage.exception.*;
-import com.tny.game.actor.stage.invok.AcceptDone;
-import com.tny.game.actor.stage.invok.ApplyDone;
-import com.tny.game.actor.stage.invok.ApplyStageable;
-import com.tny.game.actor.stage.invok.CatcherRun;
-import com.tny.game.actor.stage.invok.CatcherSupplier;
-import com.tny.game.actor.stage.invok.RunDone;
-import com.tny.game.actor.stage.invok.SupplyDone;
-import com.tny.game.actor.stage.invok.SupplyStageable;
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.actor.stage.invok.*;
+import com.tny.game.common.utils.*;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,37 +99,37 @@ class Stages {
         return waitFor(new FutureAwait<>(future), duration);
     }
 
-//    public static <R, T> TaskStage<T> awaitApply(Function<R, Done<T>> fn) {
-//        return awaitApply(fn, null);
-//    }
-//
-//    public static <R, T> TaskStage<T> awaitApply(Function<R, Done<T>> fn, Duration timeout) {
-//        return new ThenSuccessTaskStage<>(null, new WaitApplyFragment<>(fn, timeout));
-//    }
-//
-//    public static <R, T> TaskStage<T> awaitApply(TaskFunction<R, Done<T>> fn) {
-//        return awaitApply(fn, null);
-//    }
-//
-//    public static <R, T> TaskStage<T> awaitApply(TaskFunction<R, Done<T>> fn, Duration timeout) {
-//        return new ThenSuccessTaskStage<>(null, new TaskWaitApplyFragment<>(fn, timeout));
-//    }
-//
-//    public static <R> VoidTaskStage awaitAccept(Predicate<R> fn) {
-//        return awaitAccept(fn, null);
-//    }
-//
-//    public static <R> VoidTaskStage awaitAccept(Predicate<R> fn, Duration timeout) {
-//        return new AwaysVoidTaskStage(null, new WaitAcceptFragment<>(fn, timeout));
-//    }
-//
-//    public static <R> VoidTaskStage awaitAccept(TaskPredicate<R> fn) {
-//        return awaitAccept(fn, null);
-//    }
-//
-//    public static <R> VoidTaskStage awaitAccept(TaskPredicate<R> fn, Duration timeout) {
-//        return new AwaysVoidTaskStage(null, new TaskWaitAcceptFragment<>(fn, timeout));
-//    }
+    //    public static <R, T> TaskStage<T> awaitApply(Function<R, Done<T>> fn) {
+    //        return awaitApply(fn, null);
+    //    }
+    //
+    //    public static <R, T> TaskStage<T> awaitApply(Function<R, Done<T>> fn, Duration timeout) {
+    //        return new ThenSuccessTaskStage<>(null, new WaitApplyFragment<>(fn, timeout));
+    //    }
+    //
+    //    public static <R, T> TaskStage<T> awaitApply(TaskFunction<R, Done<T>> fn) {
+    //        return awaitApply(fn, null);
+    //    }
+    //
+    //    public static <R, T> TaskStage<T> awaitApply(TaskFunction<R, Done<T>> fn, Duration timeout) {
+    //        return new ThenSuccessTaskStage<>(null, new TaskWaitApplyFragment<>(fn, timeout));
+    //    }
+    //
+    //    public static <R> VoidTaskStage awaitAccept(Predicate<R> fn) {
+    //        return awaitAccept(fn, null);
+    //    }
+    //
+    //    public static <R> VoidTaskStage awaitAccept(Predicate<R> fn, Duration timeout) {
+    //        return new AwaysVoidTaskStage(null, new WaitAcceptFragment<>(fn, timeout));
+    //    }
+    //
+    //    public static <R> VoidTaskStage awaitAccept(TaskPredicate<R> fn) {
+    //        return awaitAccept(fn, null);
+    //    }
+    //
+    //    public static <R> VoidTaskStage awaitAccept(TaskPredicate<R> fn, Duration timeout) {
+    //        return new AwaysVoidTaskStage(null, new TaskWaitAcceptFragment<>(fn, timeout));
+    //    }
     //endregion
 
     static abstract class BaseFragment<F, T, NR> extends Fragment<T, NR> {
@@ -678,10 +664,10 @@ class Stages {
                         return DoneResults.failure();
                 }
                 return DoneResults.success(fns.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Entry::getKey,
-                                e -> e.getValue().get().get()
-                        )));
+                                              .collect(Collectors.toMap(
+                                                      Entry::getKey,
+                                                      e -> e.getValue().get().get()
+                                              )));
             }, timeout);
         }
 

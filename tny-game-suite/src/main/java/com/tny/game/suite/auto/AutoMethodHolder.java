@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto;
 
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;

@@ -68,12 +68,12 @@ public class JedisConfig {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("host", host)
-                .add("port", port)
-                .add("password", password)
-                .add("db", db)
-                .add("timeout", timeout)
-                .add("params", params)
-                .toString();
+                          .add("host", host)
+                          .add("port", port)
+                          .add("password", password)
+                          .add("db", db)
+                          .add("timeout", timeout)
+                          .add("params", params)
+                          .toString();
     }
 }

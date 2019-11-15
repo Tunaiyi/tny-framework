@@ -1,11 +1,10 @@
 package com.tny.game.common.collection;
 
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 /**
  * Created by Kun Yang on 16/8/12.

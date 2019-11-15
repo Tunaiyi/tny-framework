@@ -8,10 +8,10 @@ import com.tny.game.common.collection.*;
 import com.tny.game.common.context.*;
 import org.slf4j.*;
 
-import java.lang.ref.*;
-import java.text.*;
+import java.lang.ref.WeakReference;
+import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O> {
@@ -70,9 +70,9 @@ public abstract class AbstractWarehouse<O extends Owner> implements Warehouse<O>
         if (owner == null)
             return Collections.emptyList();
         return owner.getItemsByItemId(itemId)
-                .stream()
-                .map(item -> (I) item)
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(item -> (I) item)
+                    .collect(Collectors.toList());
     }
 
     protected void consume(Trade result, AttrEntry<?>... entries) {

@@ -17,7 +17,8 @@ public class ThreadPoolExecutors {
 
     private static final Map<String, ScheduledExecutorService> scheduledMap = new ConcurrentHashMap<>();
 
-    public static ExecutorService pool(String name, int threads, int maxThreads, long keepsAliveMills, boolean daemon, RejectedExecutionHandler handler) {
+    public static ExecutorService pool(String name, int threads, int maxThreads, long keepsAliveMills, boolean daemon,
+            RejectedExecutionHandler handler) {
         return poolMap.computeIfAbsent(name, (k) -> new ThreadPoolExecutor(threads, maxThreads, keepsAliveMills, TimeUnit.MILLISECONDS,
                 new LinkedTransferQueue<>(), new CoreThreadFactory(name, daemon), handler));
     }

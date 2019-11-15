@@ -1,9 +1,7 @@
 package com.tny.game.common.protobuf;
 
 
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.Message;
-import com.google.protobuf.UnknownFieldSet;
+import com.google.protobuf.*;
 
 import java.io.IOException;
 
@@ -85,8 +83,8 @@ public class Protobuf2CouchDBFormat extends Protobuf2JsonFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(Readable input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws IOException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws IOException {
         // Read the entire input to a String then parse that.
 
         // If StreamTokenizer were not quite so crippled, or if there were a kind
@@ -103,8 +101,8 @@ public class Protobuf2CouchDBFormat extends Protobuf2JsonFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(CharSequence input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         Tokenizer tokenizer = new Tokenizer(input);
 
         // Based on the state machine @ http://json.org/

@@ -1,10 +1,8 @@
 package com.tny.game.asyndb;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class AsyncDBEntityTest {
 

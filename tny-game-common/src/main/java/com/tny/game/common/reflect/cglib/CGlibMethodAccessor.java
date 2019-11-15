@@ -1,10 +1,9 @@
 package com.tny.game.common.reflect.cglib;
 
-import com.tny.game.common.reflect.MethodAccessor;
+import com.tny.game.common.reflect.*;
 import net.sf.cglib.reflect.FastMethod;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 public class CGlibMethodAccessor implements MethodAccessor {
 

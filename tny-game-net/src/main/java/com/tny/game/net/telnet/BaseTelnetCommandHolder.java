@@ -1,9 +1,6 @@
 package com.tny.game.net.telnet;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BaseTelnetCommandHolder implements TelnetCommandHolder {
 

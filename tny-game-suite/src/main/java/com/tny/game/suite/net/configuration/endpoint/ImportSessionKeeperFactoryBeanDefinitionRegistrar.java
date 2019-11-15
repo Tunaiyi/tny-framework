@@ -3,8 +3,7 @@ package com.tny.game.suite.net.configuration.endpoint;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.suite.spring.*;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -27,9 +26,9 @@ public class ImportSessionKeeperFactoryBeanDefinitionRegistrar extends SuiteBean
         String factoryName = getBeanName(name, SessionKeeperFactory.class);
         registry.registerBeanDefinition(factoryName, BeanDefinitionBuilder.genericBeanDefinition(factoryClass,
                 () -> Binder.get(environment)
-                        .bind(keyHead, factoryClass)
-                        .orElseGet(() -> ExeAide.callUnchecked(factoryClass::newInstance).orElse(null)))
-                .getBeanDefinition());
+                            .bind(keyHead, factoryClass)
+                            .orElseGet(() -> ExeAide.callUnchecked(factoryClass::newInstance).orElse(null)))
+                                                                          .getBeanDefinition());
 
     }
 

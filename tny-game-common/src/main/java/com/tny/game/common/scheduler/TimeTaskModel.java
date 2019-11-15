@@ -1,10 +1,7 @@
 package com.tny.game.common.scheduler;
 
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.triggers.AbstractTrigger;
-import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.*;
+import org.quartz.impl.triggers.*;
 
 import java.text.ParseException;
 import java.util.*;
@@ -52,9 +49,9 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
     protected void setStopTime(long stopTime) throws ParseException {
         Date start = stopTime > 0 ? new Date(stopTime) : new Date();
         this.trigger = (AbstractTrigger<CronTrigger>) TriggerBuilder.newTrigger()
-                .startAt(start)
-                .withSchedule(CronScheduleBuilder.cronSchedule(timeExpression))
-                .build();
+                                                                    .startAt(start)
+                                                                    .withSchedule(CronScheduleBuilder.cronSchedule(timeExpression))
+                                                                    .build();
         CronTriggerImpl cronTrigger = (CronTriggerImpl) trigger;
         cronTrigger.setNextFireTime(start);
         cronTrigger.triggered(null);
@@ -96,7 +93,7 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
     @Override
     public String toString() {
         return "\nTimeTaskModel [timeExpression=" + timeExpression + ", handlerList=" + handlerList +
-                ", trigger=" + fireTime + " - " + this.nextFireTime() + "]\n";
+               ", trigger=" + fireTime + " - " + this.nextFireTime() + "]\n";
     }
 
 }

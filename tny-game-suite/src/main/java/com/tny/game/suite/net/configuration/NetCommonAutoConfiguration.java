@@ -10,11 +10,9 @@ import com.tny.game.net.message.protoex.*;
 import com.tny.game.suite.initer.*;
 import com.tny.game.suite.launcher.*;
 import com.tny.game.suite.net.spring.*;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.bind.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -41,8 +39,8 @@ public class NetCommonAutoConfiguration {
     public AppContext appContext(ApplicationContext applicationContext) {
         Environment environment = applicationContext.getEnvironment();
         return Binder.get(environment)
-                .bind("tny.app", Bindable.ofInstance(new SuiteAppContext()))
-                .get();
+                     .bind("tny.app", Bindable.ofInstance(new SuiteAppContext()))
+                     .get();
     }
 
     @Bean

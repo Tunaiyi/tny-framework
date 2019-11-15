@@ -1,9 +1,7 @@
 package com.tny.game.cglib;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-import org.junit.Test;
+import net.sf.cglib.proxy.*;
+import org.junit.*;
 
 import java.lang.reflect.Method;
 

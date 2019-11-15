@@ -67,7 +67,7 @@ public final class LockedCache {
      * @return 返回对象集合
      */
     public <T extends Serializable> Collection<T> getCollection(Collection<String> keyCollection,
-                                                                Class<T> clazz) {
+            Class<T> clazz) {
         List<T> entityList = new ArrayList<T>(keyCollection.size());
         for (String key : keyCollection) {
             T object = this.get(key, clazz);
@@ -88,7 +88,7 @@ public final class LockedCache {
      * @return 返回对象Map
      */
     public <T extends Serializable> Map<String, T> getMap(Collection<String> keyCollection,
-                                                          Class<T> clazz) {
+            Class<T> clazz) {
         Map<String, T> entityMap = new HashMap<String, T>(keyCollection.size());
         for (String key : keyCollection) {
             T object = this.get(key, clazz);
@@ -105,11 +105,11 @@ public final class LockedCache {
      * 解除加锁对象<br>
      */
     public void release() {
-//		SortedSet<String> keySet = cache.formatSortLockKeyList(this.entityMap.keySet());
-//		List<String> releaseKeyList = new ArrayList<String>(keySet);
-//		Collections.reverse(releaseKeyList);
-//		for (String key : releaseKeyList)
-//			cache.delete(key);
+        //		SortedSet<String> keySet = cache.formatSortLockKeyList(this.entityMap.keySet());
+        //		List<String> releaseKeyList = new ArrayList<String>(keySet);
+        //		Collections.reverse(releaseKeyList);
+        //		for (String key : releaseKeyList)
+        //			cache.delete(key);
     }
 
 }

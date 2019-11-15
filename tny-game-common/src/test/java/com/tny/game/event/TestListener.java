@@ -6,8 +6,12 @@ package com.tny.game.event;
  */
 public interface TestListener {
 
-    default void handleCreate(String string) {};
+    default void handleCreate(String string) {
+    }
+    ;
 
-    default void handleUpgrade(String string, Integer level) {};
+    default void handleUpgrade(String string, Integer level) {
+    }
+    ;
 
 }

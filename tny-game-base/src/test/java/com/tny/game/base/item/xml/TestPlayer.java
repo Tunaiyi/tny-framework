@@ -1,7 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.AbstractItem;
-import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.*;
 
 public class TestPlayer extends AbstractItem<ItemModel> {
 

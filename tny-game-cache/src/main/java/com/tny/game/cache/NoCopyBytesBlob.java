@@ -86,7 +86,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
 
         if (pos < 1 || len - pos < 0) {
             throw new SerialException("Invalid arguments: position cannot be "
-                    + "less than 1 or greater than the length of the SerialBlob");
+                                      + "less than 1 or greater than the length of the SerialBlob");
         }
 
         pos--; // correct pos to array index
@@ -285,7 +285,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
 
         if ((length + offset) > bytes.length) {
             throw new SerialException("Invalid OffSet. Cannot have combined offset " +
-                    "and length that is greater that the Blob buffer");
+                                      "and length that is greater that the Blob buffer");
         }
 
         int i = 0;
@@ -320,8 +320,8 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     @Override
     public java.io.OutputStream setBinaryStream(long pos) throws SQLException {
         throw new SerialException("Unsupported operation. SerialBlob cannot " +
-                "return a writable binary stream, unless instantiated with a Blob object " +
-                "that provides a setBinaryStream() implementation");
+                                  "return a writable binary stream, unless instantiated with a Blob object " +
+                                  "that provides a setBinaryStream() implementation");
     }
 
     /**
@@ -471,7 +471,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     private void isValid() throws SerialException {
         if (buf == null) {
             throw new SerialException("Error: You cannot call a method on a " +
-                    "SerialBlob instance once free() has been called.");
+                                      "SerialBlob instance once free() has been called.");
         }
     }
 

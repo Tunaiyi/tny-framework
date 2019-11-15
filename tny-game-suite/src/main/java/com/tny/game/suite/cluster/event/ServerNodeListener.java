@@ -1,9 +1,7 @@
 package com.tny.game.suite.cluster.event;
 
-import com.tny.game.suite.cluster.ServerNode;
-import com.tny.game.suite.cluster.game.ServerLaunch;
-import com.tny.game.suite.cluster.game.ServerOutline;
-import com.tny.game.suite.cluster.game.ServerSetting;
+import com.tny.game.suite.cluster.*;
+import com.tny.game.suite.cluster.game.*;
 
 public interface ServerNodeListener {
 

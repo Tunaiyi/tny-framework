@@ -3,12 +3,7 @@ package com.tny.game.data.annotation;
 import com.tny.game.data.cache.*;
 import com.tny.game.data.storage.*;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Cache配置注解

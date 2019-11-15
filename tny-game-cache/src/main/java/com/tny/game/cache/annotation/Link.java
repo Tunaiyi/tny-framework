@@ -1,6 +1,6 @@
 package com.tny.game.cache.annotation;
 
-import com.tny.game.asyndb.Operation;
+import com.tny.game.asyndb.*;
 
 import java.lang.annotation.*;
 

@@ -1,13 +1,11 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.common.reflect.Wraper;
-import com.tny.game.protoex.ProtoExType;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.common.reflect.*;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
 
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 跟对象编码方式
@@ -26,7 +24,8 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     }
 
     @SuppressWarnings("unchecked")
-    public static <C extends Collection<?>> RootIOConfiger<C> createRepeatConfiger(Class<C> collectionClass, Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    public static <C extends Collection<?>> RootIOConfiger<C> createRepeatConfiger(Class<C> collectionClass, Class<?> elementType, boolean packed,
+            TypeEncode elTypeEncode, FieldFormat elFormat) {
         return new RootIOConfiger<>(collectionClass, elementType, packed, elTypeEncode, elFormat);
     }
 
@@ -40,8 +39,8 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
 
     @SuppressWarnings({"unchecked"})
     private RootIOConfiger(Class<T> type,
-                           Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                           Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+            Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+            Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         this(ProtoExType.REPEAT, type, false, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
         Class<Object> keyClass = (Class<Object>) keyType;
         Class<Object> valueClass = (Class<Object>) valueType;

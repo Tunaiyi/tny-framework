@@ -1,6 +1,6 @@
 package com.tny.game.common.aop;
 
-import com.tny.game.common.reflect.aop.annotation.AOP;
+import com.tny.game.common.reflect.aop.annotation.*;
 
 
 public class PlayerProxy extends Player {

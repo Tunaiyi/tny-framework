@@ -1,8 +1,7 @@
 package com.tny.game.common.utils.digest.rsa;
 
 import java.security.KeyPair;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.*;
 
 public class RSAKeyPair {
 

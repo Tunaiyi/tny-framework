@@ -1,10 +1,9 @@
 package com.tny.game.suite.base.capacity;
 
 
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.tny.game.suite.base.capacity.ExpireCapacitiable.*;
@@ -16,7 +15,8 @@ import static com.tny.game.suite.base.capacity.ExpireCapacitiable.*;
 public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
     static StoreCapacitySupplier saveBySupply(CapacitySupplierType type, long id, int itemID, long playerID, CapacitySupply supply, long expireAt) {
-        return new StoreByCopyCapacitySupplier(type, id, itemID, playerID, supply.getAllValues(), supply.getAllCapacityGroups(), expireAtOf(supply, expireAt));
+        return new StoreByCopyCapacitySupplier(type, id, itemID, playerID, supply.getAllValues(), supply.getAllCapacityGroups(),
+                expireAtOf(supply, expireAt));
     }
 
     static StoreCapacitySupplier saveBySupplier(CapacitySupplier supplier, long expireAt) {
@@ -34,7 +34,8 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
                 expireAtOf(supplier, expireAt));
     }
 
-    static StoreCapacitySupplier saveByCapacities(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap, Set<CapacityGroup> groups, long expireAt) {
+    static StoreCapacitySupplier saveByCapacities(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap,
+            Set<CapacityGroup> groups, long expireAt) {
         return new StoreByCopyCapacitySupplier(type, id, itemID, playerID, capacityMap, groups, expireAt > 0 ? expireAt : -1);
     }
 
@@ -52,7 +53,8 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
                 expireAtOf(supplier, expireAt));
     }
 
-    static StoreCapacitySupplier saveByDependSuppliers(CapacitySupplierType type, long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+    static StoreCapacitySupplier saveByDependSuppliers(CapacitySupplierType type, long id, int itemID, Stream<? extends CapacitySupplier> suppliers,
+            CapacityVisitor visitor, long expireAt) {
         return new StoreByCopyComboCapacitySupplier(
                 type, id, itemID,
                 suppliers.filter(CapacitySupplier::isSupplying),
@@ -60,7 +62,8 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
                 expireAt > 0 ? expireAt : -1);
     }
 
-    static StoreCapacitySupplier saveByDependSupplierIDs(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
+    static StoreCapacitySupplier saveByDependSupplierIDs(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers,
+            Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
         return new StoreByCopyComboCapacitySupplier(type, id, itemID, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
     }
 

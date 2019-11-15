@@ -7,17 +7,14 @@ import com.tny.game.oplog.*;
 import com.tny.game.oplog.utils.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import javax.annotation.*;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -45,8 +42,8 @@ public class OpLogMapperIniter implements AppPrepareStart {
                         ClassFilterHelper.matchSuper(reader, Snapshot.class)
                 ));
                 ClassScanner.instance()
-                        .addSelector(selector)
-                        .scan(appContext.getScanPackages());
+                            .addSelector(selector)
+                            .scan(appContext.getScanPackages());
                 Collection<Class<?>> classes = selector.getClasses();
                 for (Class<?> cl : classes) {
                     int modifier = cl.getModifiers();

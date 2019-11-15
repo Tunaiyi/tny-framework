@@ -5,14 +5,12 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/24.
@@ -49,9 +47,9 @@ public class TestMessages {
     public List<? extends Message<Long>> getMessages(MessageMode... modes) {
         List<MessageMode> messageModes = Arrays.asList(modes);
         return messages.stream()
-                .map(TestMessagePack::getMessage)
-                .filter(m -> messageModes.contains(m.getMode()))
-                .collect(Collectors.toList());
+                       .map(TestMessagePack::getMessage)
+                       .filter(m -> messageModes.contains(m.getMode()))
+                       .collect(Collectors.toList());
     }
 
     public List<MessageSubject> getSubject() {
@@ -234,12 +232,12 @@ public class TestMessages {
 
     private static TestMessages createMessages(TestMessages messages) {
         return messages.addPush("push 1")
-                .addResponse("request 2", 1)
-                .addResponse("request 3", 1)
-                .addResponse("request 4", 1)
-                .addResponse("request 5", 1)
-                .addResponse("request 6", 1)
-                .addRequest("request 7");
+                       .addResponse("request 2", 1)
+                       .addResponse("request 3", 1)
+                       .addResponse("request 4", 1)
+                       .addResponse("request 5", 1)
+                       .addResponse("request 6", 1)
+                       .addRequest("request 7");
     }
 
 

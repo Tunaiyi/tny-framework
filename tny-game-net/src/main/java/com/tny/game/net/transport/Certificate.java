@@ -95,7 +95,7 @@ public interface Certificate<UID> extends Serializable {
         if (this == other)
             return true;
         return Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getUserType(), other.getUserType());
+               Objects.equals(getUserType(), other.getUserType());
     }
 
     /**
@@ -108,8 +108,8 @@ public interface Certificate<UID> extends Serializable {
         if (this == other)
             return true;
         return getId() == other.getId() &&
-                Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getUserType(), other.getUserType());
+               Objects.equals(getUserId(), other.getUserId()) &&
+               Objects.equals(getUserType(), other.getUserType());
     }
 
 

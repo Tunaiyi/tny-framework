@@ -1,7 +1,7 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.module.Feature;
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.base.module.*;
+import com.tny.game.common.enums.*;
 
 /**
  * 行为的操作类型接口

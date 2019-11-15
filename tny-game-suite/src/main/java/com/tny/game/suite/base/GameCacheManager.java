@@ -1,15 +1,11 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.cache.async.AsyncCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import com.tny.game.cache.async.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 

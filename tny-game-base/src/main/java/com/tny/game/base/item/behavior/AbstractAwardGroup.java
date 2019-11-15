@@ -1,7 +1,7 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.trade.CollectionTradeItem;
+import com.tny.game.base.item.behavior.trade.*;
 import com.tny.game.base.item.probability.*;
 import com.tny.game.expr.*;
 
@@ -24,10 +24,10 @@ public abstract class AbstractAwardGroup implements AwardGroup {
      */
     protected ExprHolder probability;
 
-//    /**
-//     * 优先级 大值优先
-//     */
-//    private int priority = 0;
+    //    /**
+    //     * 优先级 大值优先
+    //     */
+    //    private int priority = 0;
 
     /*
      * 产生奖励总类最大个数 -1为无限 默认值为 -1
@@ -62,8 +62,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     @Override
     public int getProbability(Map<String, Object> attributeMap) {
         return this.probability.createExpr()
-                .putAll(attributeMap)
-                .execute(Integer.class);
+                               .putAll(attributeMap)
+                               .execute(Integer.class);
     }
 
 
@@ -72,18 +72,18 @@ public abstract class AbstractAwardGroup implements AwardGroup {
         return this.awardList;
     }
 
-//    @Override
-//    public int compareTo(Probability o) {
-//        int value = o.getPriority() - this.priority;
-//        if (value == 0)
-//            return this.getProbability() - o.getProbability();
-//        return value;
-//    }
+    //    @Override
+    //    public int compareTo(Probability o) {
+    //        int value = o.getPriority() - this.priority;
+    //        if (value == 0)
+    //            return this.getProbability() - o.getProbability();
+    //        return value;
+    //    }
 
-//    @Override
-//    public int getPriority() {
-//        return this.priority;
-//    }
+    //    @Override
+    //    public int getPriority() {
+    //        return this.priority;
+    //    }
 
     @Override
     public Set<ItemModel> getAwardSet(Map<String, Object> attributeMap) {
@@ -108,8 +108,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     @Override
     public boolean isEffect(Map<String, Object> attributeMap) {
         return this.condition == null ? true : this.condition.createExpr()
-                .putAll(attributeMap)
-                .execute(Boolean.class);
+                                                             .putAll(attributeMap)
+                                                             .execute(Boolean.class);
     }
 
     public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {

@@ -1,9 +1,7 @@
 package com.tny.game.common.utils;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
 import java.text.ParseException;
 
@@ -84,18 +82,18 @@ public class DateTimeAide {
 
     public static long time2DateLong(DateTime now) {
         return ((((100L * now.getYear()) +
-                now.getMonthOfYear()) * 100) +
+                  now.getMonthOfYear()) * 100) +
                 now.getDayOfMonth());
     }
 
     public static long time2MillisLong(DateTime now) {
         return ((((((((((100L * now.getYear()) +
-                now.getMonthOfYear()) * 100) +
-                now.getDayOfMonth()) * 100) +
-                now.getHourOfDay()) * 100) +
-                now.getMinuteOfHour()) * 100) +
+                        now.getMonthOfYear()) * 100) +
+                      now.getDayOfMonth()) * 100) +
+                    now.getHourOfDay()) * 100) +
+                  now.getMinuteOfHour()) * 100) +
                 now.getSecondOfMinute()) * 1000 +
-                now.getMillisOfSecond();
+               now.getMillisOfSecond();
     }
 
     public static DateTime millisLong2Time(long timeInt) {
@@ -111,18 +109,18 @@ public class DateTimeAide {
 
     public static long time2Second(DateTime now) {
         return (((((((((100L * now.getYear()) +
-                now.getMonthOfYear()) * 100) +
-                now.getDayOfMonth()) * 100) +
-                now.getHourOfDay()) * 100) +
-                now.getMinuteOfHour()) * 100) +
-                now.getSecondOfMinute();
+                       now.getMonthOfYear()) * 100) +
+                     now.getDayOfMonth()) * 100) +
+                   now.getHourOfDay()) * 100) +
+                 now.getMinuteOfHour()) * 100) +
+               now.getSecondOfMinute();
     }
 
     public static long time2Minute(DateTime now) {
         return ((((((((100L * now.getYear()) +
-                now.getMonthOfYear()) * 100) +
-                now.getDayOfMonth()) * 100) +
-                now.getHourOfDay()) * 100) +
+                      now.getMonthOfYear()) * 100) +
+                    now.getDayOfMonth()) * 100) +
+                  now.getHourOfDay()) * 100) +
                 now.getMinuteOfHour());
     }
 

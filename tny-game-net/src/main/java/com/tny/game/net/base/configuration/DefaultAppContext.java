@@ -2,7 +2,7 @@ package com.tny.game.net.base.configuration;
 
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.base.AppContext;
+import com.tny.game.net.base.*;
 
 import java.util.*;
 

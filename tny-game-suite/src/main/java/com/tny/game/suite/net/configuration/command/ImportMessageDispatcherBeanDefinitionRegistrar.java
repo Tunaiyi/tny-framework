@@ -4,8 +4,7 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.suite.net.spring.*;
 import com.tny.game.suite.spring.*;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -29,10 +28,10 @@ public class ImportMessageDispatcherBeanDefinitionRegistrar extends SuiteBeanDef
         registry.registerBeanDefinition(keyName,
                 BeanDefinitionBuilder.genericBeanDefinition(dispatcherClass,
                         () -> Binder.get(environment)
-                                .bind(keyHead, dispatcherClass)
-                                .orElseGet(() -> ExeAide.callUnchecked(dispatcherClass::newInstance).orElse(null)))
-                        .addPropertyReference("appContext", "appContext")
-                        .getBeanDefinition());
+                                    .bind(keyHead, dispatcherClass)
+                                    .orElseGet(() -> ExeAide.callUnchecked(dispatcherClass::newInstance).orElse(null)))
+                                     .addPropertyReference("appContext", "appContext")
+                                     .getBeanDefinition());
     }
 
 }

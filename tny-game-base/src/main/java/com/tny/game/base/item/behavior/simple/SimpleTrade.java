@@ -1,19 +1,9 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.ItemType;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeInfo;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.TradeType;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.number.NumberAide.*;
@@ -55,7 +45,8 @@ public class SimpleTrade implements Trade {
         this.action = action;
         this.tradeType = tradeType;
         if (tradeItemList != null && tradeItemList.size() > 0) {
-            this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<ItemModel>) item).collect(Collectors.toList()));
+            this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<ItemModel>) item)
+                                                   .collect(Collectors.toList()));
         }
         this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
     }
@@ -122,7 +113,9 @@ public class SimpleTrade implements Trade {
 
     @Override
     public Collection<TradeItem<ItemModel>> getTradeItemBy(Collection<ItemType> itemType) {
-        List<TradeItem<ItemModel>> tradeItemList = this.getAllTradeItem().stream().filter(tradeItem -> itemType.contains(tradeItem.getItemModel().getItemType())).collect(Collectors.toList());
+        List<TradeItem<ItemModel>> tradeItemList = this.getAllTradeItem().stream()
+                                                       .filter(tradeItem -> itemType.contains(tradeItem.getItemModel().getItemType()))
+                                                       .collect(Collectors.toList());
         return tradeItemList;
     }
 

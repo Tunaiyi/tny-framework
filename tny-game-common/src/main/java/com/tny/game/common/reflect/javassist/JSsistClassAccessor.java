@@ -1,8 +1,7 @@
 package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.reflect.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.lang.NoSuchMethodException;
 import java.lang.reflect.*;
@@ -50,7 +49,7 @@ public class JSsistClassAccessor implements ClassAccessor {
                 continue;
             Class<?> returnClazz = method.getReturnType();
             if (!methodName.equals("getClass") && (methodName.startsWith("get") && returnClazz != null)
-                    || (methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class))) {
+                || (methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class))) {
                 String proName = this.getPropertyName(methodName);
                 JSsistPropertyAccessor accessor = this.getAccessor(accessorMap, proName, returnClazz);
                 if (accessor != null)

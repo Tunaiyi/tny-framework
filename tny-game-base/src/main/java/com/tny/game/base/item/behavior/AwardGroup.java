@@ -1,13 +1,9 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.probability.Probability;
-import com.tny.game.base.item.probability.ProbabilityGroup;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.probability.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 奖励物品组

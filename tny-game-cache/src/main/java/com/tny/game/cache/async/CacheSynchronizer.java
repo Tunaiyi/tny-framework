@@ -1,11 +1,9 @@
 package com.tny.game.cache.async;
 
-import com.tny.game.asyndb.Synchronizer;
-import com.tny.game.cache.DirectCache;
+import com.tny.game.asyndb.*;
+import com.tny.game.cache.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public class CacheSynchronizer<T> implements Synchronizer<T> {
 

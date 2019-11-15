@@ -1,11 +1,9 @@
 package com.tny.game.asyndb;
 
-import com.tny.game.asyndb.log.LogName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.asyndb.log.*;
+import org.slf4j.*;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * 异步持久化实体状态枚举

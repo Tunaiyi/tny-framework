@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.CharBuffer;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 /**
  * Provide ascii text parsing and formatting support for proto2 instances. The implementation
@@ -16,8 +15,8 @@ import java.util.regex.Pattern;
  * (c) 2009-10 Orbitz World Wide. All Rights Reserved.
  *
  * @author aantonov@orbitz.com Alex Antonov
- *         <p>
- *         Based on the original code by:
+ * <p>
+ * Based on the original code by:
  * @author wenboz@google.com Wenbo Zhu
  * @author kenton@google.com Kenton Varda
  */
@@ -40,7 +39,7 @@ public class Protobuf2JavaPropsFormat {
      * Outputs a textual representation of {@code fields} to {@code output}.
      */
     public static void print(final UnknownFieldSet fields,
-                             final Appendable output)
+            final Appendable output)
             throws IOException {
         final JavaPropsGenerator generator = new JavaPropsGenerator(output);
         printUnknownFields(fields, generator);
@@ -58,7 +57,7 @@ public class Protobuf2JavaPropsFormat {
         } catch (IOException e) {
             throw new RuntimeException(
                     "Writing to a StringBuilder threw an IOException (should never " +
-                            "happen).", e);
+                    "happen).", e);
         }
     }
 
@@ -74,12 +73,12 @@ public class Protobuf2JavaPropsFormat {
         } catch (IOException e) {
             throw new RuntimeException(
                     "Writing to a StringBuilder threw an IOException (should never " +
-                            "happen).", e);
+                    "happen).", e);
         }
     }
 
     private static void print(final Message message,
-                              final JavaPropsGenerator generator)
+            final JavaPropsGenerator generator)
             throws IOException {
         for (final Map.Entry<Descriptors.FieldDescriptor, Object> field :
                 message.getAllFields().entrySet()) {
@@ -89,15 +88,15 @@ public class Protobuf2JavaPropsFormat {
     }
 
     public static void printField(final Descriptors.FieldDescriptor field,
-                                  final Object value,
-                                  final Appendable output)
+            final Object value,
+            final Appendable output)
             throws IOException {
         final JavaPropsGenerator generator = new JavaPropsGenerator(output);
         printField(field, value, generator);
     }
 
     public static String printFieldToString(final Descriptors.FieldDescriptor field,
-                                            final Object value) {
+            final Object value) {
         try {
             final StringBuilder text = new StringBuilder();
             printField(field, value, text);
@@ -105,13 +104,13 @@ public class Protobuf2JavaPropsFormat {
         } catch (IOException e) {
             throw new RuntimeException(
                     "Writing to a StringBuilder threw an IOException (should never " +
-                            "happen).", e);
+                    "happen).", e);
         }
     }
 
     private static void printField(final Descriptors.FieldDescriptor field,
-                                   final Object value,
-                                   final JavaPropsGenerator generator)
+            final Object value,
+            final JavaPropsGenerator generator)
             throws IOException {
         if (field.isRepeated()) {
             // Repeated field.  Print each element.
@@ -125,17 +124,17 @@ public class Protobuf2JavaPropsFormat {
     }
 
     private static void printSingleField(final Descriptors.FieldDescriptor field,
-                                         final Object value, final Integer collectionIndex,
-                                         final JavaPropsGenerator generator)
+            final Object value, final Integer collectionIndex,
+            final JavaPropsGenerator generator)
             throws IOException {
         if (field.isExtension()) {
             generator.print("[");
             // We special-case MessageSet elements for compatibility with proto1.
             if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                    && (field.getType() == Descriptors.FieldDescriptor.Type.MESSAGE)
-                    && (field.isOptional())
-                    // object equality
-                    && (field.getExtensionScope() == field.getMessageType())) {
+                && (field.getType() == Descriptors.FieldDescriptor.Type.MESSAGE)
+                && (field.isOptional())
+                // object equality
+                && (field.getExtensionScope() == field.getMessageType())) {
                 generator.print(field.getMessageType().getFullName());
             } else {
                 generator.print(field.getFullName());
@@ -143,7 +142,7 @@ public class Protobuf2JavaPropsFormat {
             generator.print("]");
         } else {
             if (field.getType() != Descriptors.FieldDescriptor.Type.GROUP &&
-                    field.getType() != Descriptors.FieldDescriptor.Type.MESSAGE) {
+                field.getType() != Descriptors.FieldDescriptor.Type.MESSAGE) {
                 // The field is a primitive value, no need to unwind the path.
                 generator.print(createFieldNameCollectionIndex(field.getName(), collectionIndex));
             }
@@ -173,7 +172,7 @@ public class Protobuf2JavaPropsFormat {
     }
 
     private static String createFieldNameCollectionIndex(final String fieldName,
-                                                         final Integer collectionIndex)
+            final Integer collectionIndex)
             throws IOException {
         if (collectionIndex != null) {
             return fieldName + "[" + collectionIndex.toString() + "]";
@@ -183,8 +182,8 @@ public class Protobuf2JavaPropsFormat {
     }
 
     private static void printFieldValue(final Descriptors.FieldDescriptor field,
-                                        final Object value,
-                                        final JavaPropsGenerator generator)
+            final Object value,
+            final JavaPropsGenerator generator)
             throws IOException {
         switch (field.getType()) {
             case INT32:
@@ -234,7 +233,7 @@ public class Protobuf2JavaPropsFormat {
     }
 
     private static void printUnknownFields(final UnknownFieldSet unknownFields,
-                                           final JavaPropsGenerator generator)
+            final JavaPropsGenerator generator)
             throws IOException {
         for (final Map.Entry<Integer, UnknownFieldSet.Field> entry :
                 unknownFields.asMap().entrySet()) {
@@ -297,7 +296,7 @@ public class Protobuf2JavaPropsFormat {
             // Pull off the most-significant bit so that BigInteger doesn't think
             // the number is negative, then set it again using setBit().
             return BigInteger.valueOf(value & 0x7FFFFFFFFFFFFFFFL)
-                    .setBit(63).toString();
+                             .setBit(63).toString();
         }
     }
 
@@ -422,9 +421,9 @@ public class Protobuf2JavaPropsFormat {
                 Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
         private static final Pattern TOKEN = Pattern.compile(
                 "[a-zA-Z_][0-9a-zA-Z_+-]*+|" +                // an identifier
-                        "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
-                        "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
-                        "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
+                "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
+                "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
+                "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
                 Pattern.MULTILINE);
 
         private static final Pattern DOUBLE_INFINITY = Pattern.compile(
@@ -536,7 +535,7 @@ public class Protobuf2JavaPropsFormat {
 
             final char c = currentToken.charAt(0);
             return ('0' <= c && c <= '9') ||
-                    c == '-' || c == '+';
+                   c == '-' || c == '+';
         }
 
         /**
@@ -547,10 +546,10 @@ public class Protobuf2JavaPropsFormat {
             for (int i = 0; i < currentToken.length(); i++) {
                 final char c = currentToken.charAt(i);
                 if (('a' <= c && c <= 'z') ||
-                        ('A' <= c && c <= 'Z') ||
-                        ('0' <= c && c <= '9') ||
-                        (c == '_') //|| (c == '.')
-                        ) {
+                    ('A' <= c && c <= 'Z') ||
+                    ('0' <= c && c <= '9') ||
+                    (c == '_') //|| (c == '.')
+                ) {
                     // OK
                 } else {
                     throw parseException("Expected identifier.");
@@ -714,13 +713,13 @@ public class Protobuf2JavaPropsFormat {
          */
         private void consumeByteString(List<ByteString> list) throws ParseException {
             final char quote = currentToken.length() > 0 ? currentToken.charAt(0)
-                    : '\0';
+                                                         : '\0';
             if (quote != '\"' && quote != '\'') {
                 throw parseException("Expected string.");
             }
 
             if (currentToken.length() < 2 ||
-                    currentToken.charAt(currentToken.length() - 1) != quote) {
+                currentToken.charAt(currentToken.length() - 1) != quote) {
                 throw parseException("String missing ending quote.");
             }
 
@@ -790,7 +789,7 @@ public class Protobuf2JavaPropsFormat {
      * into {@code builder}.
      */
     public static void merge(final Readable input,
-                             final Message.Builder builder)
+            final Message.Builder builder)
             throws IOException {
         merge(input, ExtensionRegistry.getEmptyRegistry(), builder);
     }
@@ -800,7 +799,7 @@ public class Protobuf2JavaPropsFormat {
      * into {@code builder}.
      */
     public static void merge(final CharSequence input,
-                             final Message.Builder builder)
+            final Message.Builder builder)
             throws ParseException {
         merge(input, ExtensionRegistry.getEmptyRegistry(), builder);
     }
@@ -811,8 +810,8 @@ public class Protobuf2JavaPropsFormat {
      * registered in {@code extensionRegistry}.
      */
     public static void merge(final Readable input,
-                             final ExtensionRegistry extensionRegistry,
-                             final Message.Builder builder)
+            final ExtensionRegistry extensionRegistry,
+            final Message.Builder builder)
             throws IOException {
         // Read the entire input to a String then parse that.
 
@@ -850,8 +849,8 @@ public class Protobuf2JavaPropsFormat {
      * registered in {@code extensionRegistry}.
      */
     public static void merge(final CharSequence input,
-                             final ExtensionRegistry extensionRegistry,
-                             final Message.Builder builder)
+            final ExtensionRegistry extensionRegistry,
+            final Message.Builder builder)
             throws ParseException {
         final Tokenizer tokenizer = new Tokenizer(input);
         final Map<String, Message> subMessages = new HashMap<String, Message>();
@@ -866,9 +865,9 @@ public class Protobuf2JavaPropsFormat {
      * {@code builder}.
      */
     private static void mergeField(final Tokenizer tokenizer,
-                                   final ExtensionRegistry extensionRegistry,
-                                   final Map<String, Message> subMessages,
-                                   final Message.Builder builder)
+            final ExtensionRegistry extensionRegistry,
+            final Map<String, Message> subMessages,
+            final Message.Builder builder)
             throws ParseException {
         Descriptors.FieldDescriptor field;
         final Descriptors.Descriptor type = builder.getDescriptorForType();
@@ -891,7 +890,7 @@ public class Protobuf2JavaPropsFormat {
             } else if (extension.descriptor.getContainingType() != type) {
                 throw tokenizer.parseExceptionPreviousToken(
                         "Extension \"" + name + "\" does not extend message type \"" +
-                                type.getFullName() + "\".");
+                        type.getFullName() + "\".");
             }
 
             tokenizer.consume("]");
@@ -916,14 +915,14 @@ public class Protobuf2JavaPropsFormat {
             }
             // Again, special-case group names as described above.
             if (field != null && field.getType() == Descriptors.FieldDescriptor.Type.GROUP &&
-                    !field.getMessageType().getName().equals(name)) {
+                !field.getMessageType().getName().equals(name)) {
                 field = null;
             }
 
             if (field == null) {
                 throw tokenizer.parseExceptionPreviousToken(
                         "Message type \"" + type.getFullName() +
-                                "\" has no field named \"" + name + "\".");
+                        "\" has no field named \"" + name + "\".");
             }
         }
 
@@ -1013,7 +1012,7 @@ public class Protobuf2JavaPropsFormat {
                         if (value == null) {
                             throw tokenizer.parseExceptionPreviousToken(
                                     "Enum type \"" + enumType.getFullName() +
-                                            "\" has no value with number " + number + '.');
+                                    "\" has no value with number " + number + '.');
                         }
                     } else {
                         final String id = tokenizer.consumeIdentifier();
@@ -1021,7 +1020,7 @@ public class Protobuf2JavaPropsFormat {
                         if (value == null) {
                             throw tokenizer.parseExceptionPreviousToken(
                                     "Enum type \"" + enumType.getFullName() +
-                                            "\" has no value named \"" + id + "\".");
+                                    "\" has no value named \"" + id + "\".");
                         }
                     }
 
@@ -1247,8 +1246,8 @@ public class Protobuf2JavaPropsFormat {
      */
     private static boolean isHex(final char c) {
         return ('0' <= c && c <= '9') ||
-                ('a' <= c && c <= 'f') ||
-                ('A' <= c && c <= 'F');
+               ('a' <= c && c <= 'f') ||
+               ('A' <= c && c <= 'F');
     }
 
     /**
@@ -1307,8 +1306,8 @@ public class Protobuf2JavaPropsFormat {
     }
 
     private static long parseInteger(final String text,
-                                     final boolean isSigned,
-                                     final boolean isLong)
+            final boolean isSigned,
+            final boolean isLong)
             throws NumberFormatException {
         int pos = 0;
 

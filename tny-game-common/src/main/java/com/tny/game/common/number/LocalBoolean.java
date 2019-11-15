@@ -1,7 +1,6 @@
 package com.tny.game.common.number;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 /**
  * 本地变量

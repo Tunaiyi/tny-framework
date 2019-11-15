@@ -1,8 +1,8 @@
 package com.tny.game.net.base;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.event.BindEventBus;
-import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.event.*;
+import com.tny.game.common.utils.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -33,7 +33,7 @@ public class BaseEventBuses<L> {
                 field.setAccessible(true);
                 if (BindEventBus.class.isAssignableFrom(field.getType())) {
                     ExeAide.callUnchecked(() -> (BindEventBus) field.get(this))
-                            .ifPresent(eventBus -> events.add(as(eventBus)));
+                           .ifPresent(eventBus -> events.add(as(eventBus)));
                 }
             }
             this.eventBuses = ImmutableList.copyOf(events);

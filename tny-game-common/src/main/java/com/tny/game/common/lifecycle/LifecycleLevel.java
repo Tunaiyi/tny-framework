@@ -6,7 +6,7 @@ package com.tny.game.common.lifecycle;
  *
  * @author KunYang
  */
-public enum LifecycleLevel implements LifecyclePriority{
+public enum LifecycleLevel implements LifecyclePriority {
 
     SYSTEM_LEVEL_1(9001),
 

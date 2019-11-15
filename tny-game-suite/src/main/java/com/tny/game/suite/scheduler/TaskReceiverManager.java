@@ -1,6 +1,6 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.common.scheduler.TaskReceiver;
+import com.tny.game.common.scheduler.*;
 
 public interface TaskReceiverManager {
 

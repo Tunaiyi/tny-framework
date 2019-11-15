@@ -1,12 +1,7 @@
 package com.tny.game.net.annotation;
 
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author KGTny
@@ -19,12 +14,12 @@ import java.lang.annotation.Target;
  * 被Controller标记的方法的业务方法名稱,與Request的Protocol相对应,默認為方法名<br>
  * <p>
  * <pre>
- * 			@Controller(check = true)
+ *            @Controller(check = true)
  * 			public class ControllerTest {
  *
  *              public List<Integer> getPlayersIdList(){ // doSometing }
  *
- * 				@Controller(check = false, name="playerId")
+ *                @Controller(check = false, name="playerId")
  * 				public Integer getPlayerIdList(){
  *                   // doSometing
  *              }

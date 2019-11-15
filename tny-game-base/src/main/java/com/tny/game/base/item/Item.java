@@ -1,17 +1,8 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.ActionResult;
-import com.tny.game.base.item.behavior.AwardList;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.item.behavior.BehaviorResult;
-import com.tny.game.base.item.behavior.CostList;
-import com.tny.game.base.item.behavior.Option;
-import com.tny.game.base.item.behavior.TryToDoResult;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 事物对象接口

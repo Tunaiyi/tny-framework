@@ -1,6 +1,6 @@
 package com.tny.game.common.config;
 
-import com.tny.game.common.collection.MapBuilder;
+import com.tny.game.common.collection.*;
 import org.junit.*;
 
 import java.util.*;
@@ -73,28 +73,28 @@ public class ConfigTest {
 
     private Config config;
     private final Map<Object, Object> map = MapBuilder.newBuilder()
-            .put(HEAD_1 + NUM_KEY, L1_NUM_1)
-            .put(HEAD_1 + STRING_KEY, L1_STR_2)
-            .put(HEAD_1 + BOOLEAN_KEY, L1_BOOLEAN_3)
-            .put(HEAD_1 + EUMN_KEY, L1_EUMN_4)
-            .put(HEAD_2 + NUM_KEY, L2_NUM_1)
-            .put(HEAD_2 + STRING_KEY, L2_STR_2)
-            .put(HEAD_2 + BOOLEAN_KEY, L2_BOOLEAN_3)
-            .put(HEAD_2 + EUMN_KEY, L2_EUMN_4)
-            .put(HEAD_3 + NUM_KEY, L3_NUM_1)
-            .put(HEAD_3 + STRING_KEY, L3_STR_2)
-            .put(HEAD_3 + BOOLEAN_KEY, L3_BOOLEAN_3)
-            .put(HEAD_3 + EUMN_KEY, L3_EUMN_4)
-            .put(HEAD_4 + NUM_KEY, L4_NUM_1)
-            .put(HEAD_4 + STRING_KEY, L4_STR_2)
-            .put(HEAD_4 + BOOLEAN_KEY, L4_BOOLEAN_3)
-            .put(HEAD_4 + EUMN_KEY, L4_EUMN_4)
-            .put(HEAD_5 + NUM_KEY, L5_NUM_1)
-            .put(HEAD_5 + STRING_KEY, L5_STR_2)
-            .put(HEAD_5 + BOOLEAN_KEY, L5_BOOLEAN_3)
-            .put(HEAD_5 + EUMN_KEY, L5_EUMN_4)
-            .put(FIND_TEST_KEY, FIND_TEST_VALUE)
-            .build();
+                                                      .put(HEAD_1 + NUM_KEY, L1_NUM_1)
+                                                      .put(HEAD_1 + STRING_KEY, L1_STR_2)
+                                                      .put(HEAD_1 + BOOLEAN_KEY, L1_BOOLEAN_3)
+                                                      .put(HEAD_1 + EUMN_KEY, L1_EUMN_4)
+                                                      .put(HEAD_2 + NUM_KEY, L2_NUM_1)
+                                                      .put(HEAD_2 + STRING_KEY, L2_STR_2)
+                                                      .put(HEAD_2 + BOOLEAN_KEY, L2_BOOLEAN_3)
+                                                      .put(HEAD_2 + EUMN_KEY, L2_EUMN_4)
+                                                      .put(HEAD_3 + NUM_KEY, L3_NUM_1)
+                                                      .put(HEAD_3 + STRING_KEY, L3_STR_2)
+                                                      .put(HEAD_3 + BOOLEAN_KEY, L3_BOOLEAN_3)
+                                                      .put(HEAD_3 + EUMN_KEY, L3_EUMN_4)
+                                                      .put(HEAD_4 + NUM_KEY, L4_NUM_1)
+                                                      .put(HEAD_4 + STRING_KEY, L4_STR_2)
+                                                      .put(HEAD_4 + BOOLEAN_KEY, L4_BOOLEAN_3)
+                                                      .put(HEAD_4 + EUMN_KEY, L4_EUMN_4)
+                                                      .put(HEAD_5 + NUM_KEY, L5_NUM_1)
+                                                      .put(HEAD_5 + STRING_KEY, L5_STR_2)
+                                                      .put(HEAD_5 + BOOLEAN_KEY, L5_BOOLEAN_3)
+                                                      .put(HEAD_5 + EUMN_KEY, L5_EUMN_4)
+                                                      .put(FIND_TEST_KEY, FIND_TEST_VALUE)
+                                                      .build();
 
     @Before
     public void setUp() throws Exception {

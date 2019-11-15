@@ -1,8 +1,7 @@
 package com.tny.game.common.context;
 
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.*;
 import java.util.function.Supplier;
 
 public abstract class AbstractAttributes implements Attributes {

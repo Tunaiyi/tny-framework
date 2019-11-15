@@ -1,9 +1,6 @@
 package com.tny.game.common.math;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 @Deprecated
 public class WeightCounter<V> {

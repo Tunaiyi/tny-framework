@@ -71,8 +71,8 @@ public class CollectionEx {
             return false;
         }
         return other.contains(one.lowerEndpoint())
-                || other.contains(one.upperEndpoint())
-                || one.contains(other.lowerEndpoint());
+               || other.contains(one.upperEndpoint())
+               || one.contains(other.lowerEndpoint());
     }
 
 

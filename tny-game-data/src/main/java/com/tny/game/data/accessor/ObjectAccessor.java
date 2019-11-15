@@ -1,7 +1,6 @@
 package com.tny.game.data.accessor;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author KGTny

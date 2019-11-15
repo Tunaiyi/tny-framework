@@ -1,16 +1,12 @@
 package drama.task;
 
 
-import com.tny.game.actor.stage.Flows;
-import com.tny.game.actor.stage.invok.CatcherRun;
-import com.tny.game.actor.stage.invok.RunDone;
-import com.tny.game.actor.stage.invok.SupplyDone;
+import com.tny.game.actor.stage.*;
+import com.tny.game.actor.stage.invok.*;
 import org.jmock.Expectations;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static org.junit.Assert.*;
 
@@ -66,7 +62,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .thenRun(fn::run)
+                     .thenRun(fn::run)
                 , true
         );
         context.assertIsSatisfied();
@@ -84,7 +80,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .thenGet(tfn::get)
+                     .thenGet(tfn::get)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -106,7 +102,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .doneRun(tfn)
+                     .doneRun(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -118,7 +114,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(run)
-                        .doneRun(tfn)
+                     .doneRun(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -132,7 +128,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
 
         checkFlow(
                 Flows.of(run)
-                        .doneRun(tfn)
+                     .doneRun(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -145,7 +141,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .doneRun(tfn)
+                     .doneRun(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -169,7 +165,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .doneGet(tfn)
+                     .doneGet(tfn)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -182,7 +178,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(run)
-                        .doneGet(tfn)
+                     .doneGet(tfn)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -195,7 +191,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(run)
-                        .doneRun(rfn)
+                     .doneRun(rfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -208,7 +204,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .doneGet(tfn)
+                     .doneGet(tfn)
                 , false, null
         );
         context.assertIsSatisfied();
@@ -229,7 +225,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -241,7 +237,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(run)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -254,7 +250,7 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(run)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -270,8 +266,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         long time = System.currentTimeMillis();
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_100))
-                        .thenRun(fn::run)
+                     .waitUntil(Flows.time(TIME_100))
+                     .thenRun(fn::run)
                 , true
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
@@ -287,8 +283,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         long time = System.currentTimeMillis();
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_100), TIME_200)
-                        .thenRun(fn::run)
+                     .waitUntil(Flows.time(TIME_100), TIME_200)
+                     .thenRun(fn::run)
                 , true
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
@@ -299,8 +295,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_200), TIME_100)
-                        .thenRun(fn::run)
+                     .waitUntil(Flows.time(TIME_200), TIME_100)
+                     .thenRun(fn::run)
                 , false
         );
         context.assertIsSatisfied();
@@ -319,8 +315,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         long time = System.currentTimeMillis();
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_100))
-                        .thenApply(cfn)
+                     .waitFor(Flows.time(value, TIME_100))
+                     .thenApply(cfn)
                 , true, value
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
@@ -342,8 +338,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         long time = System.currentTimeMillis();
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_100), TIME_200)
-                        .thenApply(ffn)
+                     .waitFor(Flows.time(value, TIME_100), TIME_200)
+                     .thenApply(ffn)
                 , true, value
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
@@ -355,8 +351,8 @@ public class VoidTypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_200), TIME_100)
-                        .thenAccept(cfn::accept)
+                     .waitFor(Flows.time(value, TIME_200), TIME_100)
+                     .thenAccept(cfn::accept)
                 , false
         );
         context.assertIsSatisfied();

@@ -1,14 +1,10 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.suite.cache.GameCacheDAO;
-import javax.annotation.Resource;
+import com.tny.game.suite.cache.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ForkJoinPool;
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -23,7 +19,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
     private int groupSize;
 
     private static final ForkJoinPool forkJoinPool = ForkJoinPool.getCommonPoolParallelism() >= 100 ?
-            ForkJoinPool.commonPool() : new ForkJoinPool(20);
+                                                     ForkJoinPool.commonPool() : new ForkJoinPool(20);
 
     private boolean parallelism;
 
@@ -80,20 +76,20 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
 
     private Collection<O> doGet(Collection<String> keys, boolean parallelism) {
         List<List<String>> keysList = keys.parallelStream()
-                .collect(() -> {
-                            List<List<String>> newList = new ArrayList<>();
-                            newList.add(new ArrayList<>());
-                            return newList;
-                        },
-                        (list, v) -> {
-                            List<String> lastList = list.get(list.size() - 1);
-                            if (lastList.size() >= groupSize) {
-                                lastList = new ArrayList<>();
-                                list.add(lastList);
-                            }
-                            lastList.add(v);
-                        },
-                        List::addAll);
+                                          .collect(() -> {
+                                                      List<List<String>> newList = new ArrayList<>();
+                                                      newList.add(new ArrayList<>());
+                                                      return newList;
+                                                  },
+                                                  (list, v) -> {
+                                                      List<String> lastList = list.get(list.size() - 1);
+                                                      if (lastList.size() >= groupSize) {
+                                                          lastList = new ArrayList<>();
+                                                          list.add(lastList);
+                                                      }
+                                                      lastList.add(v);
+                                                  },
+                                                  List::addAll);
         Stream<List<String>> keySteam = parallelism ? keysList.parallelStream() : keysList.stream();
         return keySteam
                 .map(this::getByKeys)

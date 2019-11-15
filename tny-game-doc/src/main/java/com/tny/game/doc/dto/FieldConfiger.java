@@ -1,13 +1,12 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.doc.LangFormatter;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.FieldDocHolder;
-import com.tny.game.protoex.annotations.ProtoExField;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
+import com.tny.game.protoex.annotations.*;
 import org.apache.commons.lang3.StringUtils;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 @XStreamAlias("field")
 public class FieldConfiger {
@@ -41,7 +40,8 @@ public class FieldConfiger {
         ProtoExField field = holder.getField().getAnnotation(ProtoExField.class);
         if (field != null) {
             if (field.value() <= 0) {
-                throw new IllegalArgumentException(format("{} 类 {} 字段ID = {} <= 0", holder.getField().getDeclaringClass(), this.fieldName, field.value()));
+                throw new IllegalArgumentException(
+                        format("{} 类 {} 字段ID = {} <= 0", holder.getField().getDeclaringClass(), this.fieldName, field.value()));
             }
             this.fieldID = field.value();
         }

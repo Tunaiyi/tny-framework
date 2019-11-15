@@ -1,9 +1,8 @@
 package com.tny.game.cache.mysql.dao;
 
-import com.tny.game.cache.mysql.DBCacheItem;
+import com.tny.game.cache.mysql.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public interface CacheDAO {
 

@@ -1,27 +1,13 @@
 package com.tny.game.asyndb.impl;
 
-import com.tny.game.asyndb.AsyncDBState;
-import com.tny.game.asyndb.SyncDBExecutor;
-import com.tny.game.asyndb.PersistentObject;
-import com.tny.game.asyndb.Synchronizer;
-import com.tny.game.asyndb.TrySyncDone;
-import com.tny.game.asyndb.log.LogName;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.asyndb.*;
+import com.tny.game.asyndb.log.*;
+import com.tny.game.common.concurrent.*;
+import org.slf4j.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -34,6 +20,7 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
     private final static Logger LOGGER = LoggerFactory.getLogger(LogName.SYNC_DB_EXECUTOR);
 
     /**
+     *
      */
     private final int step;
 
@@ -186,7 +173,8 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                     persistentObject.syncFail(this.state);
                 }
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.info("SyncTask 通过 {} 执行 {} 同步size = {} 消耗 : {}", synchronizer.getClass().getName(), this.state, syncSet.size(), System.currentTimeMillis() - time);
+                    LOGGER.info("SyncTask 通过 {} 执行 {} 同步size = {} 消耗 : {}", synchronizer.getClass().getName(), this.state, syncSet.size(),
+                            System.currentTimeMillis() - time);
             }
             this.finish = true;
 
@@ -243,7 +231,8 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                         int size = this.sumitQueue.size();
                         costTime = System.currentTimeMillis() - startAt;
                         if (LOGGER.isInfoEnabled() && syncSize > 0)
-                            LOGGER.info("同步器 [{}-{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", AverageRateBatchSyncDBExecutor.class.getSimpleName(), this.syncID,
+                            LOGGER.info("同步器 [{}-{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", AverageRateBatchSyncDBExecutor.class.getSimpleName(),
+                                    this.syncID,
                                     costTime, syncSize, size);
                         time = System.currentTimeMillis() + AverageRateBatchSyncDBExecutor.this.waitTime;
                     }

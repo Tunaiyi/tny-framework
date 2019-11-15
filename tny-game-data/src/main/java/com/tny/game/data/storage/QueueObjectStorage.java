@@ -3,20 +3,10 @@ package com.tny.game.data.storage;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.lock.locker.*;
 import com.tny.game.data.accessor.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TransferQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 
@@ -43,7 +33,8 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
 
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new CoreThreadFactory("QueueObjectStorageThread", true));
 
-    private static final ScheduledExecutorService CLEAR_DELETED_SERVICE = Executors.newScheduledThreadPool(1, new CoreThreadFactory("StorageClearDeletedThread", true));
+    private static final ScheduledExecutorService CLEAR_DELETED_SERVICE = Executors
+            .newScheduledThreadPool(1, new CoreThreadFactory("StorageClearDeletedThread", true));
 
     /**
      * 存储的类型
@@ -275,7 +266,8 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
                 }
             }
             if (LOGGER.isInfoEnabled() && operateSize > 0)
-                LOGGER.info("同步器 {} [{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", QueueObjectStorage.class.getSimpleName(), this.objectClass, costTime, operateSize, this.taskQueue.size());
+                LOGGER.info("同步器 {} [{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", QueueObjectStorage.class.getSimpleName(), this.objectClass, costTime,
+                        operateSize, this.taskQueue.size());
         }
         LOGGER.info("同步器 {} [{}] 关闭成功! 提交队列对象数: {}", QueueObjectStorage.class.getSimpleName(), this.objectClass, this.taskQueue.size());
     }

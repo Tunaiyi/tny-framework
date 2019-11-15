@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.common.number.NumberAide;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.number.*;
+import com.tny.game.common.utils.*;
 
 import java.util.function.BiFunction;
 
@@ -20,7 +20,8 @@ public interface CapacityUtils {
         return ObjectAide.ifNull(number, defNumber);
     }
 
-    static <C extends Capacitiable> Number countFinalValue(Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter, Capacity... capacities) {
+    static <C extends Capacitiable> Number countFinalValue(Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter,
+            Capacity... capacities) {
         long base = baseValue.longValue();
         if (capacities.length == 0)
             return base;
@@ -55,7 +56,8 @@ public interface CapacityUtils {
         }
         switch (baseCapacity.getValueType()) {
             case BASE:
-                return Math.max((base * Math.max(((10000.0 + pctValue) / 10000.0), 0.0) + alterValue), 0) / ((10000.0 + Math.max(effValue, 0)) / 10000.0);
+                return Math.max((base * Math.max(((10000.0 + pctValue) / 10000.0), 0.0) + alterValue), 0) /
+                       ((10000.0 + Math.max(effValue, 0)) / 10000.0);
             case INC:
             case RED:
                 return Math.max(base + alterValue, 0.0);

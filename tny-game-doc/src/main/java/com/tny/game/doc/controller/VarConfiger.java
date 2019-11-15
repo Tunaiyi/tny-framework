@@ -1,11 +1,8 @@
 package com.tny.game.doc.controller;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.doc.LangFormatter;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.FieldDocHolder;
-import com.tny.game.doc.holder.VarDocHolder;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
 @XStreamAlias("var")

@@ -4,8 +4,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.locks.Lock;

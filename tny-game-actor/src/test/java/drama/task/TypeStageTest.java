@@ -1,18 +1,14 @@
 package drama.task;
 
 
-import com.tny.game.actor.stage.Flows;
-import com.tny.game.actor.stage.invok.AcceptDone;
-import com.tny.game.actor.stage.invok.ApplyDone;
-import com.tny.game.actor.stage.invok.CatcherSupplier;
-import com.tny.game.common.utils.DoneResults;
+import com.tny.game.actor.stage.*;
+import com.tny.game.actor.stage.invok.*;
+import com.tny.game.common.utils.*;
 import org.jmock.Expectations;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static org.junit.Assert.*;
 
@@ -73,7 +69,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .thenApply(tfn)
+                     .thenApply(tfn)
                 , true, other
         );
         context.assertIsSatisfied();
@@ -90,7 +86,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .thenAccept(tfn)
+                     .thenAccept(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -112,7 +108,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .doneApply(tfn)
+                     .doneApply(tfn)
                 , true, other
         );
         context.assertIsSatisfied();
@@ -154,7 +150,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .doneApply(tfn)
+                     .doneApply(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -175,7 +171,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .doneAccept(tfn)
+                     .doneAccept(tfn)
                 , true
         );
         context.assertIsSatisfied();
@@ -216,7 +212,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .doneAccept(tfn)
+                     .doneAccept(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -237,7 +233,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , true, value
         );
         context.assertIsSatisfied();
@@ -251,7 +247,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , true, other
         );
         context.assertIsSatisfied();
@@ -266,7 +262,7 @@ public class TypeStageTest extends FlowTestUnits {
         }});
         checkFlow(
                 Flows.of(fn)
-                        .thenThrow(tfn)
+                     .thenThrow(tfn)
                 , false
         );
         context.assertIsSatisfied();
@@ -287,15 +283,15 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitFor((value) -> {
-                            assertEquals(value, FlowTestUnits.value);
-                            times.getAndIncrement();
-                            if (System.currentTimeMillis() < time + TIME_100.toMillis())
-                                return DoneResults.failure();
-                            else
-                                return DoneResults.success(other);
-                        })
-                        .thenApply(tfn)
+                     .waitFor((value) -> {
+                         assertEquals(value, FlowTestUnits.value);
+                         times.getAndIncrement();
+                         if (System.currentTimeMillis() < time + TIME_100.toMillis())
+                             return DoneResults.failure();
+                         else
+                             return DoneResults.success(other);
+                     })
+                     .thenApply(tfn)
                 , true, other
         );
         assertTrue(times.get() > 0);
@@ -317,15 +313,15 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times1 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitFor((value) -> {
-                            assertEquals(value, FlowTestUnits.value);
-                            times1.getAndIncrement();
-                            if (System.currentTimeMillis() < time1 + TIME_100.toMillis())
-                                return DoneResults.failure();
-                            else
-                                return DoneResults.success(other);
-                        }, TIME_200)
-                        .thenApply(tfn)
+                     .waitFor((value) -> {
+                         assertEquals(value, FlowTestUnits.value);
+                         times1.getAndIncrement();
+                         if (System.currentTimeMillis() < time1 + TIME_100.toMillis())
+                             return DoneResults.failure();
+                         else
+                             return DoneResults.success(other);
+                     }, TIME_200)
+                     .thenApply(tfn)
                 , true, other
         );
         assertTrue(times1.get() > 0);
@@ -340,14 +336,14 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times2 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitFor((value) -> {
-                            times2.getAndIncrement();
-                            if (System.currentTimeMillis() < time2 + TIME_200.toMillis())
-                                return DoneResults.failure();
-                            else
-                                return DoneResults.success(other);
-                        }, TIME_100)
-                        .thenApply(tfn)
+                     .waitFor((value) -> {
+                         times2.getAndIncrement();
+                         if (System.currentTimeMillis() < time2 + TIME_200.toMillis())
+                             return DoneResults.failure();
+                         else
+                             return DoneResults.success(other);
+                     }, TIME_100)
+                     .thenApply(tfn)
                 , false
         );
         assertTrue(times2.get() > 0);
@@ -369,12 +365,12 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitUntil((value) -> {
-                            assertEquals(value, FlowTestUnits.value);
-                            times.getAndIncrement();
-                            return System.currentTimeMillis() >= time + TIME_100.toMillis();
-                        })
-                        .thenRun(tfn)
+                     .waitUntil((value) -> {
+                         assertEquals(value, FlowTestUnits.value);
+                         times.getAndIncrement();
+                         return System.currentTimeMillis() >= time + TIME_100.toMillis();
+                     })
+                     .thenRun(tfn)
                 , true
         );
         assertTrue(times.get() > 0);
@@ -396,12 +392,12 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times1 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitUntil((value) -> {
-                            assertEquals(value, FlowTestUnits.value);
-                            times1.getAndIncrement();
-                            return System.currentTimeMillis() >= time1 + TIME_100.toMillis();
-                        }, TIME_200)
-                        .thenRun(tfn)
+                     .waitUntil((value) -> {
+                         assertEquals(value, FlowTestUnits.value);
+                         times1.getAndIncrement();
+                         return System.currentTimeMillis() >= time1 + TIME_100.toMillis();
+                     }, TIME_200)
+                     .thenRun(tfn)
                 , true
         );
         assertTrue(times1.get() > 0);
@@ -416,11 +412,11 @@ public class TypeStageTest extends FlowTestUnits {
         AtomicInteger times2 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn)
-                        .waitUntil((value) -> {
-                            times2.getAndIncrement();
-                            return System.currentTimeMillis() >= time2 + TIME_200.toMillis();
-                        }, TIME_100)
-                        .thenRun(tfn)
+                     .waitUntil((value) -> {
+                         times2.getAndIncrement();
+                         return System.currentTimeMillis() >= time2 + TIME_200.toMillis();
+                     }, TIME_100)
+                     .thenRun(tfn)
                 , false);
         assertTrue(times2.get() > 0);
         context.assertIsSatisfied();

@@ -1,11 +1,10 @@
 package com.tny.game.suite.cluster.game;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.tny.game.common.utils.DateTimeAide;
-import com.tny.game.protobuf.PBCommon.StringEntryProto;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.common.utils.*;
+import com.tny.game.protobuf.PBCommon.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 import org.joda.time.DateTime;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_LAUNCH)
@@ -47,8 +46,8 @@ public class ServerLaunch {
 
     public static void main(String[] args) throws InvalidProtocolBufferException {
         byte[] data = StringEntryProto.newBuilder()
-                .setIntValue(199)
-                .build().toByteArray();
+                                      .setIntValue(199)
+                                      .build().toByteArray();
         StringEntryProto proto = StringEntryProto.parseFrom(data);
         System.out.println(proto.getKey());
     }

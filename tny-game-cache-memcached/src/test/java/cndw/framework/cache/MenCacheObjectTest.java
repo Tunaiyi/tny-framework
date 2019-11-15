@@ -1,11 +1,10 @@
 package cndw.framework.cache;
 
-import com.tny.game.cache.DirectCache;
-import com.tny.game.cache.memcached.MemcachedClient;
-import com.tny.game.cache.testclass.CacheTestTask;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.tny.game.cache.*;
+import com.tny.game.cache.memcached.*;
+import com.tny.game.cache.testclass.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

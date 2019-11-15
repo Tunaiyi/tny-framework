@@ -1,10 +1,7 @@
 package com.tny.game.suite.core;
 
-import com.tny.game.common.context.AttrKey;
-import com.tny.game.common.context.AttrKeys;
-import com.tny.game.suite.login.Account;
-import com.tny.game.suite.login.GameTicket;
-import com.tny.game.suite.login.ServerTicket;
+import com.tny.game.common.context.*;
+import com.tny.game.suite.login.*;
 
 /**
  * eventsBox key 常量

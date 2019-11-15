@@ -1,6 +1,6 @@
 package com.tny.game.common.worker;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
 
 public interface Callback<M> {
 

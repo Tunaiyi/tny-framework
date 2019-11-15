@@ -1,12 +1,9 @@
 package com.tny.game.oplog.record;
 
-import com.tny.game.oplog.OpLog;
-import com.tny.game.oplog.StuffSettleLog;
-import com.tny.game.oplog.UserOpLog;
+import com.tny.game.oplog.*;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  *

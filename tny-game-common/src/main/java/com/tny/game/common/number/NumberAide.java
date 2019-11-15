@@ -150,7 +150,8 @@ public class NumberAide {
         if (other == null)
             return one.floatValue();
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class))
+        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) ||
+            numClass.isAssignableFrom(Byte.class))
             return as(one.floatValue() / other.floatValue(), Float.class);
         if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
             return as(one.doubleValue() / other.doubleValue(), Float.class);

@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.text.MessageFormat;

@@ -6,13 +6,11 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.protoex.*;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Instant;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * <p>

@@ -2,8 +2,8 @@ package com.tny.game.common.utils.version;
 
 import com.tny.game.common.formula.*;
 import com.tny.game.common.utils.*;
-import org.apache.commons.lang3.*;
-import org.apache.commons.lang3.math.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.*;
 
@@ -106,8 +106,10 @@ public class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Version)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Version))
+            return false;
         Version version = (Version) o;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals(getSubVersions(), version.getSubVersions());

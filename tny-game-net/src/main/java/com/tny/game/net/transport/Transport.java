@@ -15,7 +15,7 @@ public interface Transport<UID> {
      * 写出消息
      *
      * @param message 发送消息
-     * @param promise  发送promise
+     * @param promise 发送promise
      * @throws NetException
      */
     WriteMessageFuture write(Message<UID> message, WriteMessagePromise promise) throws NetException;

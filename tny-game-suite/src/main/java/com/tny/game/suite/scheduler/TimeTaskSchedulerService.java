@@ -1,8 +1,6 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.AppPrepareStart;
+import com.tny.game.common.lifecycle.*;
 
 public interface TimeTaskSchedulerService extends AppPrepareStart {
 

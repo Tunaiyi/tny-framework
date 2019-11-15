@@ -1,7 +1,6 @@
 package com.tny.game.common.collection;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class MapBuilder<K, V> {

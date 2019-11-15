@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 /**
  * Created by Kun Yang on 16/7/29.
  */
-class DefaultTryResult<M> extends BaseDoneResult<M, DefaultTryResult<M>> implements TryResult<M>{
+class DefaultTryResult<M> extends BaseDoneResult<M, DefaultTryResult<M>> implements TryResult<M> {
 
     private TryToDoResult tryResult;
 

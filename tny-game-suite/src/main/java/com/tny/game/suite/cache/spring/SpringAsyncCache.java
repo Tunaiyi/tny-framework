@@ -1,8 +1,8 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.asyndb.ObjectPool;
-import com.tny.game.cache.ToCacheClassHolderFactory;
-import com.tny.game.cache.async.AsyncCache;
+import com.tny.game.asyndb.*;
+import com.tny.game.cache.*;
+import com.tny.game.cache.async.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

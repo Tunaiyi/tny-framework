@@ -1,10 +1,6 @@
 package com.tny.game.common.concurrent;
 
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 public abstract class AbstractFuture<V> implements Future<V> {
@@ -20,10 +16,10 @@ public abstract class AbstractFuture<V> implements Future<V> {
     protected AbstractFuture() {
     }
 
-	/*
+    /*
      * Improve the documentation of when InterruptedException is thrown. Our
-	 * behavior matches the JDK's, but the JDK's documentation is misleading.
-	 */
+     * behavior matches the JDK's, but the JDK's documentation is misleading.
+     */
 
     /**
      * {@inheritDoc}
@@ -42,10 +38,10 @@ public abstract class AbstractFuture<V> implements Future<V> {
         return sync.get(unit.toNanos(timeout));
     }
 
-	/*
+    /*
      * Improve the documentation of when InterruptedException is thrown. Our
-	 * behavior matches the JDK's, but the JDK's documentation is misleading.
-	 */
+     * behavior matches the JDK's, but the JDK's documentation is misleading.
+     */
 
     /**
      * {@inheritDoc}
@@ -305,7 +301,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
          * @param finalState the state to transition to.
          */
         private boolean complete(V v, Throwable t,
-                                 int finalState) {
+                int finalState) {
             boolean doCompletion = compareAndSetState(RUNNING, COMPLETING);
             if (doCompletion) {
                 // If this thread successfully transitioned to COMPLETING, set the value
@@ -313,7 +309,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
                 this.value = v;
                 // Don't actually construct a CancellationException until necessary.
                 this.exception = ((finalState & (CANCELLED | INTERRUPTED)) != 0)
-                        ? new CancellationException("Future.cancel() was called.") : t;
+                                 ? new CancellationException("Future.cancel() was called.") : t;
                 releaseShared(finalState);
             } else if (getState() == COMPLETING) {
                 // If some other thread is currently completing the future, block until

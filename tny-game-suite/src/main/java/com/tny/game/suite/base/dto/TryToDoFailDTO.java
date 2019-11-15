@@ -1,12 +1,10 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.base.exception.TryToDoException;
-import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.exception.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 import java.io.Serializable;
 

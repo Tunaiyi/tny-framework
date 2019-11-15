@@ -1,8 +1,6 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.tny.game.oplog.Snapper;
-import com.tny.game.oplog.SnapperType;
-import com.tny.game.oplog.Snapshot;
+import com.tny.game.oplog.*;
 
 public abstract class ProxySnapper<O, I, S extends Snapshot> extends BaseSnapper<O, S> {
 

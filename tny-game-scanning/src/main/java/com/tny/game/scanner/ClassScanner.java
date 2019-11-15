@@ -2,39 +2,21 @@ package com.tny.game.scanner;
 
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.exception.*;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.*;
 import org.slf4j.Logger;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.io.*;
+import org.springframework.core.io.support.*;
+import org.springframework.core.type.classreading.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.jar.*;
 import java.util.stream.Stream;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.slf4j.LoggerFactory.*;
 
 public class ClassScanner {
 
@@ -180,7 +162,7 @@ public class ClassScanner {
             return;
         // 循环所有文件
         Stream.of(dirFiles)
-                .forEach(file -> loadMetadataReader(packageName, file, recursive));
+              .forEach(file -> loadMetadataReader(packageName, file, recursive));
     }
 
     private void loadMetadataReader(String packageName, File file, boolean recursive) {

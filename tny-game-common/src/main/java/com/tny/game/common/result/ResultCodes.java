@@ -1,8 +1,7 @@
 package com.tny.game.common.result;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 

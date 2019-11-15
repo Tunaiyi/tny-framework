@@ -29,17 +29,12 @@ package com.tny.game.common.protobuf;
 */
 
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Message;
-import com.google.protobuf.UnknownFieldSet;
+import com.google.protobuf.*;
+import com.google.protobuf.Descriptors.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Provide ascii html formatting support for proto2 instances.
@@ -142,17 +137,17 @@ public final class Protobuf2HtmlFormat {
     }
 
     private static void printSingleField(FieldDescriptor field,
-                                         Object value,
-                                         HtmlGenerator generator) throws IOException {
+            Object value,
+            HtmlGenerator generator) throws IOException {
         if (field.isExtension()) {
             generator.print("[<span style=\"");
             generator.print(FIELD_NAME_STYLE);
             generator.print("\">");
             // We special-case MessageSet elements for compatibility with proto1.
             if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                    && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
-                    // object equality
-                    && (field.getExtensionScope() == field.getMessageType())) {
+                && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
+                // object equality
+                && (field.getExtensionScope() == field.getMessageType())) {
                 generator.print(field.getMessageType().getFullName());
             } else {
                 generator.print(field.getFullName());
@@ -505,7 +500,7 @@ public final class Protobuf2HtmlFormat {
 
                             default:
                                 throw new InvalidEscapeSequence("Invalid escape sequence: '\\" + c
-                                        + "'");
+                                                                + "'");
                         }
                     }
                 } else {
@@ -561,7 +556,7 @@ public final class Protobuf2HtmlFormat {
      */
     private static boolean isHex(char c) {
         return (('0' <= c) && (c <= '9')) || (('a' <= c) && (c <= 'f'))
-                || (('A' <= c) && (c <= 'F'));
+               || (('A' <= c) && (c <= 'F'));
     }
 
     /**
@@ -653,12 +648,12 @@ public final class Protobuf2HtmlFormat {
                 if (isSigned) {
                     if ((result > Integer.MAX_VALUE) || (result < Integer.MIN_VALUE)) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if ((result >= (1L << 32)) || (result < 0)) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }
@@ -673,24 +668,24 @@ public final class Protobuf2HtmlFormat {
                 if (isSigned) {
                     if (bigValue.bitLength() > 31) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 32) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             } else {
                 if (isSigned) {
                     if (bigValue.bitLength() > 63) {
                         throw new NumberFormatException("Number out of range for 64-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 64) {
                         throw new NumberFormatException("Number out of range for 64-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }

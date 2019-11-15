@@ -3,8 +3,7 @@ package com.tny.game.common.lifecycle;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.utils.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -103,7 +102,7 @@ public abstract class Lifecycle<L extends Lifecycle, P extends LifecycleHandler>
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "{" +
-                "processorClass=" + processorClass +
-                '}';
+               "processorClass=" + processorClass +
+               '}';
     }
 }

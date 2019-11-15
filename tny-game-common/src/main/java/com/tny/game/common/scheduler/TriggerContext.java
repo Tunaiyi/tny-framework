@@ -1,7 +1,6 @@
 package com.tny.game.common.scheduler;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/6/13.
@@ -16,28 +15,28 @@ public class TriggerContext {
 
     public int countHandler(Class<? extends TimeTaskHandler> handleClass) {
         return events.stream()
-                .mapToInt(e -> {
-                    int times = 0;
-                    for (TimeTaskHandler h : e.getHandlerList()) {
-                        if (handleClass.isInstance(h))
-                            times++;
-                    }
-                    return times;
-                })
-                .sum();
+                     .mapToInt(e -> {
+                         int times = 0;
+                         for (TimeTaskHandler h : e.getHandlerList()) {
+                             if (handleClass.isInstance(h))
+                                 times++;
+                         }
+                         return times;
+                     })
+                     .sum();
     }
 
     public int countHandler(TimeTaskHandler handler) {
         return events.stream()
-                .mapToInt(e -> {
-                    int times = 0;
-                    for (TimeTaskHandler h : e.getHandlerList()) {
-                        if (h.equals(handler))
-                            times++;
-                    }
-                    return times;
-                })
-                .sum();
+                     .mapToInt(e -> {
+                         int times = 0;
+                         for (TimeTaskHandler h : e.getHandlerList()) {
+                             if (h.equals(handler))
+                                 times++;
+                         }
+                         return times;
+                     })
+                     .sum();
     }
 
 }

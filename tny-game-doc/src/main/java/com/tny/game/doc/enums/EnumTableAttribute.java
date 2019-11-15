@@ -1,9 +1,9 @@
 package com.tny.game.doc.enums;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.ExportHolder;
-import com.tny.game.doc.table.TableAttribute;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
+import com.tny.game.doc.table.*;
 
 import static com.tny.game.doc.holder.EnumDocHolder.*;
 

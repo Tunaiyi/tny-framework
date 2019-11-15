@@ -2,23 +2,18 @@ package com.tny.game.oplog.log4j2.layout;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tny.game.oplog.Log;
-import com.tny.game.oplog.log4j2.LogMessage;
-import com.tny.game.oplog.utils.OpLogMapper;
-import com.tny.game.oplog.simple.LogRecord;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.log4j2.*;
+import com.tny.game.oplog.simple.*;
+import com.tny.game.oplog.utils.*;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Plugin(name = "KafkaOpLogLayout", category = "Core", elementType = "layout", printObject = true)
 public class KafkaOpLogLayout extends AbstractStringLayout {

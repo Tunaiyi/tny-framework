@@ -1,7 +1,6 @@
 package com.tny.game.asyndb;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 public abstract class NoneSynchronizer<O> implements Synchronizer<O> {
 

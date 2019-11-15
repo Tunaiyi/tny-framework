@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.Module;
+import com.tny.game.base.module.*;
 
 public class DefaultModuleHandler extends GameModuleHandler<Module, Object> {
 

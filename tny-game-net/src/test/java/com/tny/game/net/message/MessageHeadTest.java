@@ -2,13 +2,11 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/20.

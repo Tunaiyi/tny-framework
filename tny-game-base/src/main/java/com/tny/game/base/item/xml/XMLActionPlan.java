@@ -1,6 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.behavior.AbstractActionPlan;
+import com.tny.game.base.item.behavior.*;
 
 /**
  * xml映射操作方案

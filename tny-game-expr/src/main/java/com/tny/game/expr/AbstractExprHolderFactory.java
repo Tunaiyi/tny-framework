@@ -1,11 +1,8 @@
 package com.tny.game.expr;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.*;
+import java.util.concurrent.locks.*;
 
 /**
  * Created by Kun Yang on 2018/6/4.

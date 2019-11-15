@@ -1,18 +1,11 @@
 package com.tny.game.doc.controller;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -59,12 +52,14 @@ public class ModuleConfiger {
             if (configer != null) {
                 if (configer.getClassName().equals(holder.getClassName()))
                     return configer;
-                throw new IllegalArgumentException(format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleId()));
+                throw new IllegalArgumentException(
+                        format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleId()));
             } else {
                 configer = new ModuleConfiger(holder, typeFormatter);
                 old = configerMap.putIfAbsent(configer.getModuleId(), configer);
                 if (old != null) {
-                    throw new IllegalArgumentException(format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleId()));
+                    throw new IllegalArgumentException(
+                            format("{} 类 与 {} 类 ModuleID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getModuleId()));
                 } else {
                     return configer;
                 }

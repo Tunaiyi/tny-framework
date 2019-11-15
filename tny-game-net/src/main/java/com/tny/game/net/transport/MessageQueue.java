@@ -1,11 +1,10 @@
 package com.tny.game.net.transport;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.net.message.*;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -38,8 +37,8 @@ public class MessageQueue<UID> {
         long stamp = lock.readLock();
         try {
             return this.sentMessageQueue.stream()
-                    .filter(filter)
-                    .collect(Collectors.toList());
+                                        .filter(filter)
+                                        .collect(Collectors.toList());
         } finally {
             lock.unlockRead(stamp);
         }

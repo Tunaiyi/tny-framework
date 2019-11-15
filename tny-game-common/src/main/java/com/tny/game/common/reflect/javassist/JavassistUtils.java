@@ -1,13 +1,9 @@
 package com.tny.game.common.reflect.javassist;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JavassistUtils {
 

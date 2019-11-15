@@ -1,11 +1,8 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.DemandParam;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DemandParamEntryBuilder {
 

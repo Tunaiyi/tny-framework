@@ -1,12 +1,12 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.*;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.common.utils.*;
+import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.plugins.CommandPlugin;
-import com.tny.game.net.command.auth.AuthenticateValidator;
-import com.tny.game.net.message.MessageMode;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.plugins.*;
+import com.tny.game.net.message.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -56,7 +56,9 @@ public abstract class ControllerHolder {
      */
     protected final List<String> scopes;
 
-    protected ControllerHolder(final Object executor, final MessageDispatcherContext context, final Controller controller, final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth, final MessageFilter filter, final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
+    protected ControllerHolder(final Object executor, final MessageDispatcherContext context, final Controller controller,
+            final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth, final MessageFilter filter,
+            final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
@@ -76,9 +78,11 @@ public abstract class ControllerHolder {
         else
             this.scopes = null;
         if (beforePlugins != null)
-            this.beforePlugins = this.initPlugins(context, Arrays.asList(beforePlugins), exprHolderFactory, BeforePlugin::value, ControllerPluginHolder::new);
+            this.beforePlugins = this
+                    .initPlugins(context, Arrays.asList(beforePlugins), exprHolderFactory, BeforePlugin::value, ControllerPluginHolder::new);
         if (afterPlugins != null)
-            this.afterPlugins = this.initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, ControllerPluginHolder::new);
+            this.afterPlugins = this
+                    .initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, ControllerPluginHolder::new);
 
         if (filter != null)
             this.messageModes = ImmutableSet.copyOf(filter.modes());
@@ -87,11 +91,11 @@ public abstract class ControllerHolder {
 
     @SuppressWarnings("unchecked")
     private <A extends Annotation> ImmutableList<ControllerPluginHolder> initPlugins(MessageDispatcherContext context,
-                                                                                     final Collection<A> pluginAnnotations,
-                                                                                     ExprHolderFactory exprHolderFactory,
-                                                                                     Function<A, Class<? extends CommandPlugin>> pluginClassGetter,
-                                                                                     ControllerPluginHolderConstructor<A> holderFatory,
-                                                                                     ControllerPluginHolder... defaultHolders) {
+            final Collection<A> pluginAnnotations,
+            ExprHolderFactory exprHolderFactory,
+            Function<A, Class<? extends CommandPlugin>> pluginClassGetter,
+            ControllerPluginHolderConstructor<A> holderFatory,
+            ControllerPluginHolder... defaultHolders) {
         List<ControllerPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
         for (A pluginAnnotation : pluginAnnotations) {
             Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);

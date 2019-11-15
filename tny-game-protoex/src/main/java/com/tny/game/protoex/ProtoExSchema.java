@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.field.IOConfiger;
+import com.tny.game.protoex.field.*;
 
 /**
  * ProtoEx类型描述结构

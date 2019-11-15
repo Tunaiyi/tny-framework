@@ -1,6 +1,6 @@
 package com.tny.game.base.module;
 
-import java.util.*;
+import java.util.Set;
 
 public interface FeatureExplorer {
 

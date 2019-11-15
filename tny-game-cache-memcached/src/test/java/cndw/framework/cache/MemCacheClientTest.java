@@ -1,16 +1,14 @@
 package cndw.framework.cache;
 
-import com.tny.game.cache.memcached.MemcachedClient;
-import com.tny.game.cache.testclass.ClientTestTask;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import javax.annotation.Resource;
+import com.tny.game.cache.memcached.*;
+import com.tny.game.cache.testclass.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})

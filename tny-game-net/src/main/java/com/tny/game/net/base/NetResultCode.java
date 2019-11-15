@@ -6,8 +6,8 @@ public enum NetResultCode implements ResultCode {
 
     EMPTY(0, "无处理", ResultCodeType.GENERAL),
 
-//	/** 请求处理成功 100*/
-//	SUCCESS(ResultCode.SUCCESS_CODE, "请求处理成功", ResultCodeType.GENERAL),
+    //	/** 请求处理成功 100*/
+    //	SUCCESS(ResultCode.SUCCESS_CODE, "请求处理成功", ResultCodeType.GENERAL),
 
     /**
      * 服务端接受请求解码格式错误

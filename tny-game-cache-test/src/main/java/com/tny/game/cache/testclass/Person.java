@@ -69,23 +69,31 @@ public class Person implements IPerson, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         Person other = (Person) obj;
-        if (age != other.age) return false;
-        if (id != other.id) return false;
+        if (age != other.age)
+            return false;
+        if (id != other.id)
+            return false;
         if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) return false;
-        if (sex != other.sex) return false;
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (sex != other.sex)
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
         return "PersonDao [id=" + id + ", name=" + name + ", age=" + age
-                + ", sex=" + sex + "]";
+               + ", sex=" + sex + "]";
     }
 
 }

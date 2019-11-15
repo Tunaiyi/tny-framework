@@ -1,12 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableSet;
+import com.tny.game.common.collection.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.common.collection.CopyOnWriteMap;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -46,7 +44,6 @@ public class Capacities {
     public static CapacityGroup getGroup(int id) {
         return Throws.checkNotNull(groupMap.get(id), "CapacityGroup [{}] is not exist", id);
     }
-
 
 
 }

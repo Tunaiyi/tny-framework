@@ -1,7 +1,6 @@
 package com.tny.game.common.collection;
 
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.util.concurrent.atomic.*;
 
 /**
  * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>

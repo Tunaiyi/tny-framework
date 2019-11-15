@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.behavior.DemandType;
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.result.*;
 
 public enum TestDemandType implements DemandType {
 

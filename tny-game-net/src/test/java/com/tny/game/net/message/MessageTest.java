@@ -2,10 +2,9 @@ package com.tny.game.net.message;
 
 
 import com.tny.game.net.transport.*;
-import org.junit.Test;
+import org.junit.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2017/3/26.

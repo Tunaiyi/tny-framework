@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.field.IOConfiger;
+import com.tny.game.protoex.field.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -239,14 +239,15 @@ public class ProtoExInputStream implements ProtoExStream {
     }
 
     private int doReadRawLittleEndian32() {
-        return ((this.buffer.get() & 0xff)) | ((this.buffer.get() & 0xff) << 8) | ((this.buffer.get() & 0xff) << 16) | ((this.buffer.get() & 0xff) << 24);
+        return ((this.buffer.get() & 0xff)) | ((this.buffer.get() & 0xff) << 8) | ((this.buffer.get() & 0xff) << 16) |
+               ((this.buffer.get() & 0xff) << 24);
     }
 
     private long doReadRawLittleEndian64() {
         return (((long) this.buffer.get() & 0xff)) | (((long) this.buffer.get() & 0xff) << 8)
-                | (((long) this.buffer.get() & 0xff) << 16) | (((long) this.buffer.get() & 0xff) << 24)
-                | (((long) this.buffer.get() & 0xff) << 32) | (((long) this.buffer.get() & 0xff) << 40)
-                | (((long) this.buffer.get() & 0xff) << 48) | (((long) this.buffer.get() & 0xff) << 56);
+               | (((long) this.buffer.get() & 0xff) << 16) | (((long) this.buffer.get() & 0xff) << 24)
+               | (((long) this.buffer.get() & 0xff) << 32) | (((long) this.buffer.get() & 0xff) << 40)
+               | (((long) this.buffer.get() & 0xff) << 48) | (((long) this.buffer.get() & 0xff) << 56);
     }
 
     private byte[] doReadBytes() {

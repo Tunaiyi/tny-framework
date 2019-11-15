@@ -10,18 +10,19 @@ import com.tny.game.scanner.filter.*;
  */
 public final class EnumLoader {
 
-    private EnumLoader(){}
+    private EnumLoader() {
+    }
 
     @SuppressWarnings("unchecked")
     @ClassSelectorProvider
     public static ClassSelector selector() {
         return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(AutoClassScanConfigure.getClasses(EnumLoader.class)))
-                .setHandler((classes) -> classes.stream()
-                        .filter(Class::isEnum)
-                        .map(c -> (Class<Enum>) c)
-                        .forEach(EnumAide::getEnumList)
-                );
+                            .addFilter(SubOfClassFilter.ofInclude(AutoClassScanConfigure.getClasses(EnumLoader.class)))
+                            .setHandler((classes) -> classes.stream()
+                                                            .filter(Class::isEnum)
+                                                            .map(c -> (Class<Enum>) c)
+                                                            .forEach(EnumAide::getEnumList)
+                            );
     }
 
 }

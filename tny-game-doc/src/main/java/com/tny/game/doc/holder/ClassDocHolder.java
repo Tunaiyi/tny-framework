@@ -1,16 +1,12 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.doc.annotation.ClassDoc;
-import com.tny.game.net.annotation.Controller;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.net.annotation.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class ClassDocHolder {
 

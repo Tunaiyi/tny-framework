@@ -3,8 +3,7 @@ package com.tny.game.asyndb;
 import com.tny.game.asyndb.annotation.*;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -140,7 +139,7 @@ public class AsyncDBEntity implements PersistentObject {
             Object currentObject = this.value.get();
             this.state = operation.getChangeTo(currentState);
             if ((currentState.isDelete() && object != null) ||
-                    (this.isCanReplace() && currentObject != object)) {
+                (this.isCanReplace() && currentObject != object)) {
                 this.setValue(object);
                 this.visit();
             }
@@ -199,7 +198,8 @@ public class AsyncDBEntity implements PersistentObject {
         try {
             AsyncDBState currentState = this.state;
             Object object = this.holdObject;
-            if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) || currentState == AsyncDBState.DELETED) {
+            if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) ||
+                currentState == AsyncDBState.DELETED) {
                 this.holdObject = null;
                 this.syncObject = null;
             }
@@ -255,7 +255,8 @@ public class AsyncDBEntity implements PersistentObject {
         if (this.value != null) {
             object = this.value.get();
         }
-        return "AsynDBEntity [state=" + this.state + "\t] [" + (object != null ? object.getClass().getSimpleName() : this.value) + "] [value=" + object + "]";
+        return "AsynDBEntity [state=" + this.state + "\t] [" + (object != null ? object.getClass().getSimpleName() : this.value) + "] [value=" +
+               object + "]";
     }
 
 }

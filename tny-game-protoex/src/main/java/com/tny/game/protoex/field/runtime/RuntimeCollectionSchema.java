@@ -48,7 +48,8 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
         }
     }
 
-    private void writePacked(ProtoExOutputStream outputStream, Collection<?> collection, ProtoExSchema<Object> elementSchema, IOConfiger<?> elementDesc) {
+    private void writePacked(ProtoExOutputStream outputStream, Collection<?> collection, ProtoExSchema<Object> elementSchema,
+            IOConfiger<?> elementDesc) {
         outputStream.writeInt(WireFormat.makeRepeatOption(elementSchema.getProtoExId(), elementSchema.isRaw(), true));
         for (Object value : collection) {
             if (value == null)
@@ -114,7 +115,8 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
         }
     }
 
-    private <T, C extends Collection<T>> C doReadPackedElements(C valueList, ProtoExInputStream inputStream, int length, Tag tag, IOConfiger<?> elConf) {
+    private <T, C extends Collection<T>> C doReadPackedElements(C valueList, ProtoExInputStream inputStream, int length, Tag tag,
+            IOConfiger<?> elConf) {
         ProtoExSchemaContext schemaContext = inputStream.getSchemaContext();
         ProtoExSchema<T> schema = schemaContext.getSchema(tag.getProtoExId(), tag.isRaw(), elConf.getDefaultType());
         int startAt = inputStream.position();

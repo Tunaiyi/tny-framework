@@ -1,8 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/6/26.

@@ -1,24 +1,13 @@
 package com.tny.game.cache.mysql;
 
-import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheItem;
-import com.tny.game.cache.CacheItemHelper;
-import com.tny.game.cache.CasItem;
-import com.tny.game.cache.RawCacheItemFactory;
-import com.tny.game.cache.mysql.dao.CacheDAO;
-import com.tny.game.cache.simple.SimpleCasItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
+import com.tny.game.cache.*;
+import com.tny.game.cache.mysql.dao.*;
+import com.tny.game.cache.simple.*;
+import org.slf4j.*;
+import org.springframework.dao.*;
 import org.springframework.jdbc.BadSqlGrammarException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // @SuppressWarnings("restriction")
 public class DBCacheClient implements CacheClient {

@@ -7,7 +7,7 @@ package com.tny.game.common.unit;
  * @date: 2018-10-25 15:03
  */
 
-import com.tny.game.common.unit.annotation.Unit;
+import com.tny.game.common.unit.annotation.*;
 
 @Unit
 public class TestNormalWithoutSetUnitInterfaces implements TestNormalInterlace {

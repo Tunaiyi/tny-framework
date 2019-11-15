@@ -1,9 +1,9 @@
 package com.tny.game.cache.testclass;
 
-import com.tny.game.asyndb.Operation;
-import com.tny.game.asyndb.annotation.Persistent;
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.cache.async.CacheSynchronizer;
+import com.tny.game.asyndb.*;
+import com.tny.game.asyndb.annotation.*;
+import com.tny.game.cache.annotation.*;
+import com.tny.game.cache.async.*;
 
 import java.io.Serializable;
 

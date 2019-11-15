@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.Feature;
+import com.tny.game.base.module.*;
 
 /**
  * Created by Kun Yang on 16/1/29.

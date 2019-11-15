@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 
-import com.tny.game.base.item.ItemType;
+import com.tny.game.base.item.*;
 
 @SuppressWarnings("unchecked")
 public class TestItemModelImpl extends XMLItemModel implements TestItemModel {

@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.Identifier;
-import com.tny.game.suite.login.IDAide;
+import com.tny.game.base.item.*;
+import com.tny.game.suite.login.*;
 
 /**
  * Created by Kun Yang on 16/1/28.

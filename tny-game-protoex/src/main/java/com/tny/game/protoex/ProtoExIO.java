@@ -1,12 +1,9 @@
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.annotations.TypeEncode;
-import com.tny.game.protoex.field.FieldFormat;
-import com.tny.game.protoex.field.IOConfiger;
-import com.tny.game.protoex.field.RootIOConfiger;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class ProtoExIO {
 
@@ -34,7 +31,8 @@ public class ProtoExIO {
         return RootIOConfiger.createNormalConfiger(protoExType, type, packed, typeEncode, format);
     }
 
-    public static <C extends Collection<?>> RootIOConfiger<C> createRepeat(Class<C> collectionClass, Class<?> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    public static <C extends Collection<?>> RootIOConfiger<C> createRepeat(Class<C> collectionClass, Class<?> elementType, boolean packed,
+            TypeEncode elTypeEncode, FieldFormat elFormat) {
         return RootIOConfiger.createRepeatConfiger(collectionClass, elementType, packed, elTypeEncode, elFormat);
     }
 

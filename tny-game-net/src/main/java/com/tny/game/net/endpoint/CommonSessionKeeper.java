@@ -4,8 +4,7 @@ import com.tny.game.common.lock.locker.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -18,7 +17,8 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     private static ObjectLocker<Object> locker = new ObjectLocker<>();
 
-    public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory, SessionSetting setting) {
+    public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+            SessionSetting setting) {
         super(userType, factory, setting);
     }
 
@@ -27,7 +27,8 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         if (!certificate.isAutherized())
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} is unauthentic", certificate));
         if (!this.getUserType().equals(certificate.getUserType()))
-            throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} userType is {}, not {}", certificate, certificate.getUserType(), this.getUserType()));
+            throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL,
+                    format("cert {} userType is {}, not {}", certificate, certificate.getUserType(), this.getUserType()));
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);
         try {

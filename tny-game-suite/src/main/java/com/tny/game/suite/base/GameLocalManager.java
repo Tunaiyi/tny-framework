@@ -1,7 +1,6 @@
 package com.tny.game.suite.base;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * 没有任何数据库存储的manager

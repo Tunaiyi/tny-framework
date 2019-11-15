@@ -1,11 +1,10 @@
 package com.tny.game.protoex.field.runtime;
 
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
+
 import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.protoex.ProtoExInputStream;
-import com.tny.game.protoex.ProtoExOutputStream;
-import com.tny.game.protoex.Tag;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.field.IOConfiger;
 
 /**
  * Enum类型描述结构

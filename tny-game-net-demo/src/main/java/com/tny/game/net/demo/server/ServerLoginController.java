@@ -36,7 +36,8 @@ public class ServerLoginController {
 
     @Controller(CtrlerIDs.LOGIN$SAY)
     public String say(Endpoint<Long> endpoint, @MsgParam String message) {
-        endpoint.send(MessageContexts.push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
+        endpoint.send(MessageContexts
+                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
         return "respond to message : " + message;
     }
 }

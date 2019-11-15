@@ -1,7 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class AliasCollectUtils {
 

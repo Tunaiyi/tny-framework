@@ -7,7 +7,8 @@ import java.util.List;
  */
 public class BindP4EventBus<L, S, A1, A2, A3, A4> extends BindEventBus<L, P4EventInvoker<L, S, A1, A2, A3, A4>, P4EventDelegate<S, A1, A2, A3, A4>> {
 
-    public BindP4EventBus(Class<L> bindWith, P4EventInvoker<L, S, A1, A2, A3, A4> invoker, List<P4EventDelegate<S, A1, A2, A3, A4>> listeners, boolean global) {
+    public BindP4EventBus(Class<L> bindWith, P4EventInvoker<L, S, A1, A2, A3, A4> invoker, List<P4EventDelegate<S, A1, A2, A3, A4>> listeners,
+            boolean global) {
         super(bindWith, invoker, listeners, global);
     }
 

@@ -1,13 +1,9 @@
 package com.tny.game.scheduler;
 
-import com.tny.game.common.scheduler.TimeTrigger;
-import com.tny.game.common.scheduler.TimeTriggerBuilder;
-import com.tny.game.common.scheduler.cycle.DurationTimeCycle;
-import com.tny.game.common.scheduler.cycle.TimeCycle;
+import com.tny.game.common.scheduler.*;
+import com.tny.game.common.scheduler.cycle.*;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * TimeTrigger 测试
@@ -27,40 +23,40 @@ public class TimeTriggerTest {
     private DurationTimeCycle CYCLE_2000 = DurationTimeCycle.of(2000);
 
     private TimeTrigger<TimeCycle> startNoEndTrigger = TimeTriggerBuilder.newBuilder()
-            .setTimeCycle(CYCLE_1000)
-            .setStartTime(atTime)
-            .buildStart();
+                                                                         .setTimeCycle(CYCLE_1000)
+                                                                         .setStartTime(atTime)
+                                                                         .buildStart();
 
     private TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
-            .setTimeCycle(CYCLE_1000)
-            .setStartTime(atTime)
-            .buildStop();
+                                                                        .setTimeCycle(CYCLE_1000)
+                                                                        .setStartTime(atTime)
+                                                                        .buildStop();
 
     private TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
-            .setTimeCycle(CYCLE_1000)
-            .setStartTime(atTime)
-            .setEndTime(endTime)
-            .buildStart();
+                                                                       .setTimeCycle(CYCLE_1000)
+                                                                       .setStartTime(atTime)
+                                                                       .setEndTime(endTime)
+                                                                       .buildStart();
 
     @Before
     public void setUp() throws Exception {
 
 
         TimeTrigger<TimeCycle> startNoEndTrigger = TimeTriggerBuilder.newBuilder()
-                .setTimeCycle(CYCLE_1000)
-                .setStartTime(atTime)
-                .buildStart();
+                                                                     .setTimeCycle(CYCLE_1000)
+                                                                     .setStartTime(atTime)
+                                                                     .buildStart();
 
         TimeTrigger<TimeCycle> stopNoEndTrigger = TimeTriggerBuilder.newBuilder()
-                .setTimeCycle(CYCLE_1000)
-                .setStartTime(atTime)
-                .buildStop();
+                                                                    .setTimeCycle(CYCLE_1000)
+                                                                    .setStartTime(atTime)
+                                                                    .buildStop();
 
         TimeTrigger<TimeCycle> startEndTrigger = TimeTriggerBuilder.newBuilder()
-                .setTimeCycle(CYCLE_1000)
-                .setStartTime(atTime)
-                .setEndTime(endTime)
-                .buildStart();
+                                                                   .setTimeCycle(CYCLE_1000)
+                                                                   .setStartTime(atTime)
+                                                                   .setEndTime(endTime)
+                                                                   .buildStart();
 
     }
 
@@ -108,7 +104,7 @@ public class TimeTriggerTest {
         Assert.assertFalse(startEndTrigger.trigger());
         Assert.assertTrue(startEndTrigger.trigger(endTime.getMillis() + 100));
         DateTime exp = atTime.plus(CYCLE_1000.getDuration())
-                .plus(CYCLE_1000.getDuration());
+                             .plus(CYCLE_1000.getDuration());
         Assert.assertEquals(exp, startEndTrigger.getNextTime());
 
         Assert.assertTrue(startEndTrigger.trigger(endTime.getMillis() + 100));
@@ -134,7 +130,7 @@ public class TimeTriggerTest {
 
         Assert.assertTrue(startEndTrigger.triggerForce(now));
         DateTime exp = atTime.plus(CYCLE_1000.getDuration())
-                .plus(CYCLE_1000.getDuration());
+                             .plus(CYCLE_1000.getDuration());
         Assert.assertEquals(exp, startEndTrigger.getNextTime());
 
         Assert.assertTrue(startEndTrigger.triggerForce(now));

@@ -24,5 +24,5 @@ public class MvelTemplateHolderFactory extends MvelExprHolderFactory {
     protected ExprHolder createExprHolder(String expr) throws ExprException {
         return new MvelTemplate(expr, context, lazy);
     }
-    
+
 }

@@ -1,12 +1,9 @@
 package com.tny.game.oplog.simple;
 
-import com.tny.game.oplog.OpLog;
-import com.tny.game.oplog.UserOpLog;
+import com.tny.game.oplog.*;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SimpleOpLog extends OpLog {
 

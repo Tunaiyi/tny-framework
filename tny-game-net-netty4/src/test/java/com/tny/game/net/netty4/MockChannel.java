@@ -19,12 +19,12 @@ public class MockChannel extends EmbeddedChannel {
 
     @Override
     public SocketAddress localAddress() {
-        return isActive()? localAddress : null;
+        return isActive() ? localAddress : null;
     }
 
     @Override
     public SocketAddress remoteAddress() {
-        return isActive()? remoteAddress : null;
+        return isActive() ? remoteAddress : null;
     }
 
 }

@@ -1,17 +1,11 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -69,7 +63,8 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
                 configer = new DTOConfiger(holder, typeFormatter);
                 old = configerMap.putIfAbsent(configer.getId(), configer);
                 if (old != null) {
-                    throw new IllegalArgumentException(format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
+                    throw new IllegalArgumentException(
+                            format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
                 } else {
                     return configer;
                 }
@@ -147,8 +142,8 @@ public class DTOConfiger implements Comparable<DTOConfiger> {
     @Override
     public String toString() {
         return "DTOConfiger{" +
-                "className='" + className + '\'' +
-                ", des='" + des + '\'' +
-                '}';
+               "className='" + className + '\'' +
+               ", des='" + des + '\'' +
+               '}';
     }
 }

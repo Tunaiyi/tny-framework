@@ -1,8 +1,7 @@
 package com.tny.game.oplog.record;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.oplog.StuffTradeLog;
+import com.fasterxml.jackson.annotation.*;
+import com.tny.game.oplog.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)

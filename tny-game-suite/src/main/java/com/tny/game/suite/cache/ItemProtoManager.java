@@ -3,15 +3,12 @@ package com.tny.game.suite.cache;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.tny.game.cache.mysql.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -105,8 +102,8 @@ public class ItemProtoManager {
         mapperOpt.orElseThrow(() -> new NullPointerException(table + "ProtobufTableMapper is null"));
         ProtobufTableMapper mapper = mapperOpt.get();
         return dbItems.stream()
-                .map(item -> mapper.parser(item.getData()))
-                .collect(Collectors.toList());
+                      .map(item -> mapper.parser(item.getData()))
+                      .collect(Collectors.toList());
     }
 
 }

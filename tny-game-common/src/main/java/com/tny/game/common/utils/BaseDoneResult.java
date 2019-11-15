@@ -4,8 +4,7 @@ import com.tny.game.common.result.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 

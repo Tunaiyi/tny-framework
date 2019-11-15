@@ -8,8 +8,7 @@ import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 /**
  * 检测器持有者
@@ -30,11 +29,13 @@ public class ControllerPluginHolder {
 
     private Object attributes;
 
-    public ControllerPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, BeforePlugin annotation, ExprHolderFactory exprHolderFactory) {
+    public ControllerPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, BeforePlugin annotation,
+            ExprHolderFactory exprHolderFactory) {
         this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
-    public ControllerPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, AfterPlugin annotation, ExprHolderFactory exprHolderFactory) {
+    public ControllerPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, AfterPlugin annotation,
+            ExprHolderFactory exprHolderFactory) {
         this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
@@ -47,8 +48,8 @@ public class ControllerPluginHolder {
             this.attributes = null;
         else if (StringUtils.startsWith(attributes, EXPR_PREFIX))
             this.attributes = exprHolderFactory.create(attributes.substring(1))
-                    .createExpr()
-                    .execute(plugin.getAttributesClass());
+                                               .createExpr()
+                                               .execute(plugin.getAttributesClass());
         else
             this.attributes = attributes;
     }
@@ -56,7 +57,8 @@ public class ControllerPluginHolder {
     @SuppressWarnings("unchecked")
     public void invokePlugin(Tunnel tunnel, Message message, CommandContext context) throws Exception {
         if (DISPATCHER_LOG.isDebugEnabled())
-            DISPATCHER_LOG.debug("调用 {}.{} | 触发 [{}]插件 - {}", this.controller.getControllerClass(), this.controller.getName(), this.trigger, plugin.getClass());
+            DISPATCHER_LOG.debug("调用 {}.{} | 触发 [{}]插件 - {}", this.controller.getControllerClass(), this.controller.getName(), this.trigger,
+                    plugin.getClass());
         plugin.execute(tunnel, message, context, attributes);
     }
 

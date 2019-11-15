@@ -1,10 +1,8 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
+import com.tny.game.base.item.*;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 奖励列表,记录奖励的所有物品

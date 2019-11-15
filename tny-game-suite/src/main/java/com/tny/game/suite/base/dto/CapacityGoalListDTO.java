@@ -1,17 +1,12 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.suite.base.capacity.CapacityGoal;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
+import com.tny.game.suite.base.capacity.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 @ProtoEx(SuiteProtoIDs.CAPACITY_GOAL_LIST_DTO)
 @DTODoc(value = "游戏能力目标列表DTO")

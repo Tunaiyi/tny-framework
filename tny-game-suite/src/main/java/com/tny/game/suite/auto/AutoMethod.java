@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AutoMethod<I extends Annotation, R extends Annotation, P extends Annotation> {
 

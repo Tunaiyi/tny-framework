@@ -1,11 +1,11 @@
 package com.tny.game.base.item.behavior;
 
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.simple.SimpleTradeItem;
+import com.tny.game.base.item.behavior.simple.*;
 
 import java.util.Map;
 
-import static com.tny.game.base.item.ItemsImportKey.$PARAMS;
+import static com.tny.game.base.item.ItemsImportKey.*;
 
 
 /**

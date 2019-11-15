@@ -1,8 +1,7 @@
 package com.tny.game.oplog.record;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.oplog.StuffSettleLog;
+import com.fasterxml.jackson.annotation.*;
+import com.tny.game.oplog.*;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class StuffRecord extends StuffSettleLog {

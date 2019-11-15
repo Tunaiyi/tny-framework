@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect;
 
-import com.tny.game.common.event.annotation.Listener;
+import com.tny.game.common.event.annotation.*;
 
 @Listener
 public class Counter {

@@ -3,8 +3,7 @@ package com.tny.game.common.tag;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 可标记的

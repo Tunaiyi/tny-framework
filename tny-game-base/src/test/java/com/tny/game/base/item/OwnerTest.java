@@ -1,7 +1,6 @@
 package com.tny.game.base.item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class OwnerTest {

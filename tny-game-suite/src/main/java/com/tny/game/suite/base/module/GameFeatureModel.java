@@ -1,10 +1,10 @@
 package com.tny.game.suite.base.module;
 
 import com.google.common.collect.*;
-import com.tny.game.base.item.xml.XMLModel;
+import com.tny.game.base.item.xml.*;
 import com.tny.game.base.module.*;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.common.utils.version.Version;
+import com.tny.game.common.utils.*;
+import com.tny.game.common.utils.version.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -102,11 +102,11 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     @Override
     public String toString() {
         return "GameFeatureModel{" +
-                "feature=" + feature +
-                ", id=" + id +
-                ", desc='" + desc + '\'' +
-                ", effect=" + effect +
-                '}';
+               "feature=" + feature +
+               ", id=" + id +
+               ", desc='" + desc + '\'' +
+               ", effect=" + effect +
+               '}';
     }
 
 }

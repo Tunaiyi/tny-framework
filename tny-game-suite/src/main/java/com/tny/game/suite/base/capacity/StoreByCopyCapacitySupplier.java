@@ -3,11 +3,9 @@ package com.tny.game.suite.base.capacity;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.base.item.ItemModels;
+import com.tny.game.base.item.*;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 游戏能力值提供器
@@ -27,7 +25,8 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     private Set<CapacityGroup> groups;
 
-    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap, Set<CapacityGroup> groups, long expireAt) {
+    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap,
+            Set<CapacityGroup> groups, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
@@ -93,10 +92,10 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("itemId", itemID)
-                .add("name", ItemModels.name(itemID))
-                .toString();
+                          .add("id", id)
+                          .add("itemId", itemID)
+                          .add("name", ItemModels.name(itemID))
+                          .toString();
     }
 
 }

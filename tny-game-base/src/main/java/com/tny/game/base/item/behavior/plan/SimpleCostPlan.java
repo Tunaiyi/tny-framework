@@ -25,12 +25,14 @@ public class SimpleCostPlan extends AbstractCostPlan {
 
     private List<TradeItem<ItemModel>> createTradeItem(long playerID, Map<String, Object> attributeMap) {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
-        List<DemandResult> demandResultList = this.countAllDemandResults(playerID, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> demandResultList = this
+                .countAllDemandResults(playerID, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
         for (DemandResult demandResult : demandResultList) {
             if (!(demandResult instanceof CostDemandResult))
                 continue;
             CostDemandResult result = (CostDemandResult) demandResult;
-            itemList.add(new SimpleTradeItem<>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), result.getAlterType(), demandResult.getParamMap()));
+            itemList.add(new SimpleTradeItem<>(result.getItemModel(), result.getExpectValue(Number.class).intValue(), result.getAlterType(),
+                    demandResult.getParamMap()));
         }
         return itemList;
     }
@@ -50,10 +52,10 @@ public class SimpleCostPlan extends AbstractCostPlan {
         return this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
     }
 
-//	@Override
-//	public AlertType getAlertType() {
-//		return alertType;
-//	}
+    //	@Override
+    //	public AlertType getAlertType() {
+    //		return alertType;
+    //	}
 
     @Override
     public void init(ItemModel itemModel, ItemModelContext context) {

@@ -1,15 +1,15 @@
 package cndw.framework.cache;
 
-import com.tny.game.cache.DirectCache;
-import com.tny.game.cache.redis.RedisCacheClient;
-import com.tny.game.cache.testclass.CacheTestTask;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import javax.annotation.Resource;
+import com.tny.game.cache.*;
+import com.tny.game.cache.redis.*;
+import com.tny.game.cache.testclass.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})
@@ -113,12 +113,12 @@ public class RedisCacheObjectTest {
 
     @Test
     public void testCas() {
-//		this.task.testCas();
+        //		this.task.testCas();
     }
 
     @Test
     public void testCasTime() {
-//		this.task.testCasTime();
+        //		this.task.testCasTime();
     }
 
 }

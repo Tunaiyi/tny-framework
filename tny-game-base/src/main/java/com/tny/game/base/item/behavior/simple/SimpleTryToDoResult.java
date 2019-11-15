@@ -1,13 +1,10 @@
 package com.tny.game.base.item.behavior.simple;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.DemandResult;
-import com.tny.game.base.item.behavior.TryToDoResult;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class SimpleTryToDoResult implements TryToDoResult {
 

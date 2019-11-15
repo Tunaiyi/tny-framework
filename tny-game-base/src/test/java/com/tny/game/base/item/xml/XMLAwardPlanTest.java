@@ -3,9 +3,9 @@ package com.tny.game.base.item.xml;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.plan.*;
-import com.tny.game.base.item.probability.RandomCreator;
-import com.tny.game.expr.ExprHolderFactory;
-import com.tny.game.expr.groovy.GroovyExprHolderFactory;
+import com.tny.game.base.item.probability.*;
+import com.tny.game.expr.*;
+import com.tny.game.expr.groovy.*;
 
 import java.util.*;
 
@@ -49,10 +49,10 @@ public class XMLAwardPlanTest {
             return 0;
         }
 
-//        @Override
-//        public int compareTo(Probability o) {
-//            return 0;
-//        }
+        //        @Override
+        //        public int compareTo(Probability o) {
+        //            return 0;
+        //        }
 
         @Override
         public String getItemAlias(Map<String, Object> attributeMap) {
@@ -100,19 +100,19 @@ public class XMLAwardPlanTest {
 
     AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);
 
-//    @Test
-//    public void testCreateTradeResult() {
-//        this.NUMBER = 1;
-//        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-//        this.NUMBER = 30;
-//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-//        this.NUMBER = 100;
-//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-//        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
-//        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
-//    }
+    //    @Test
+    //    public void testCreateTradeResult() {
+    //        this.NUMBER = 1;
+    //        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+    //        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+    //        this.NUMBER = 30;
+    //        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+    //        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+    //        this.NUMBER = 100;
+    //        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+    //        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
+    //        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
+    //    }
 
     public static void main(String[] args) {
         System.out.println(Integer.MAX_VALUE);

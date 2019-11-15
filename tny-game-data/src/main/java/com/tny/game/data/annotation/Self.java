@@ -5,7 +5,7 @@ package com.tny.game.data.annotation;
  */
 public final class Self {
 
-    private Self(){
+    private Self() {
     }
 
 }

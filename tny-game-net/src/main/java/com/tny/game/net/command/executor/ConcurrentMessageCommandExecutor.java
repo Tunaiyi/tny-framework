@@ -3,12 +3,10 @@ package com.tny.game.net.command.executor;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.transport.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ConcurrentMessageCommandExecutor extends ForkJoinMessageCommandExecutor {
 
@@ -39,7 +37,8 @@ public class ConcurrentMessageCommandExecutor extends ForkJoinMessageCommandExec
             }
         }, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
         scheduledExecutor().scheduleAtFixedRate(() ->
-                        LOG_NET.info("[scheduledChildExecutors ] [executorService size : {} | Parallelism : {} | PoolSize : {}]", scheduledChildExecutors.size(),
+                        LOG_NET.info("[scheduledChildExecutors ] [executorService size : {} | Parallelism : {} | PoolSize : {}]",
+                                scheduledChildExecutors.size(),
                                 executorService.getParallelism(), executorService.getPoolSize()),
                 15000, 15000, TimeUnit.MILLISECONDS);
     }

@@ -1,7 +1,6 @@
 package com.tny.game.base.item;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 事物模型管理器

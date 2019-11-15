@@ -2,12 +2,12 @@ package com.tny.game.base.item.behavior.plan;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.xml.AliasCollectUtils;
-import com.tny.game.base.log.LogName;
-import com.tny.game.expr.ExprHolder;
+import com.tny.game.base.item.xml.*;
+import com.tny.game.base.log.*;
+import com.tny.game.expr.*;
 import org.slf4j.*;
 
-import java.util.*;
+import java.util.Map;
 
 public class SimpleAward extends AbstractAward {
 
@@ -41,15 +41,15 @@ public class SimpleAward extends AbstractAward {
     @Override
     public String getItemAlias(Map<String, Object> attributeMap) {
         return this.itemAliasFx != null ? this.itemAliasFx.createExpr().putAll(attributeMap).execute(String.class)
-                : this.itemAlias;
+                                        : this.itemAlias;
     }
 
     @Override
     public Number countNumber(ItemModel model, Map<String, Object> attributes) {
         return this.fx.createExpr()
-                .putAll(attributes)
-                .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
-                .execute(Number.class);
+                      .putAll(attributes)
+                      .put(AbstractItemModel.ACTION_AWARD_MODEL_NAME, model)
+                      .execute(Number.class);
     }
 
     @Override
@@ -72,17 +72,17 @@ public class SimpleAward extends AbstractAward {
     @Override
     public int getProbability(Map<String, Object> attributeMap) {
         return this.probability.createExpr()
-                .putAll(attributeMap)
-                .execute(Integer.class);
+                               .putAll(attributeMap)
+                               .execute(Integer.class);
     }
 
-//    @Override
-//    public int compareTo(Probability o) {
-//        return this.getProbability() - o.getProbability();
-//    }
+    //    @Override
+    //    public int compareTo(Probability o) {
+    //        return this.getProbability() - o.getProbability();
+    //    }
 
-//    @Override
-//    public int getPriority() {
-//        return 0;
-//    }
+    //    @Override
+    //    public int getPriority() {
+    //        return 0;
+    //    }
 }

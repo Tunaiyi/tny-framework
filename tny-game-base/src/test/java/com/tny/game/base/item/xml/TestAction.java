@@ -1,8 +1,7 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.Behavior;
-import com.tny.game.base.module.Feature;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.module.*;
 
 public enum TestAction implements Action {
 

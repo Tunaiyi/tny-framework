@@ -1,16 +1,9 @@
 package com.tny.game.cache.testclass;
 
-import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheItem;
-import com.tny.game.cache.CasItem;
-import com.tny.game.cache.simple.SimpleCacheItem;
-import com.tny.game.cache.simple.SimpleCasItem;
+import com.tny.game.cache.*;
+import com.tny.game.cache.simple.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 

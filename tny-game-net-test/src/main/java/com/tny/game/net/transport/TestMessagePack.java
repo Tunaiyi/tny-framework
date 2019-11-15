@@ -2,7 +2,6 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 /**
  * <p>

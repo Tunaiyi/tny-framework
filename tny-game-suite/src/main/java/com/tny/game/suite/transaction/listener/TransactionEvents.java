@@ -1,9 +1,7 @@
 package com.tny.game.suite.transaction.listener;
 
-import com.tny.game.common.event.BindP1EventBus;
-import com.tny.game.common.event.BindVoidEventBus;
-import com.tny.game.common.event.EventBuses;
-import com.tny.game.suite.transaction.Transaction;
+import com.tny.game.common.event.*;
+import com.tny.game.suite.transaction.*;
 
 public interface TransactionEvents {
 

@@ -1,11 +1,9 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.protoex.field.FieldDescFactory;
+import com.tny.game.common.buff.*;
+import com.tny.game.protoex.field.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 运行时字段描述工厂

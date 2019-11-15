@@ -1,14 +1,14 @@
 package com.tny.game.suite.cache;
 
-import com.google.protobuf.*;
+import com.google.protobuf.Message;
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.TradeType;
+import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
-import com.tny.game.base.item.behavior.trade.CollectionTrade;
-import com.tny.game.cache.CacheFormatter;
+import com.tny.game.base.item.behavior.trade.*;
+import com.tny.game.cache.*;
 import com.tny.game.protobuf.PBCommon.*;
 import com.tny.game.suite.base.*;
-import com.tny.game.suite.utils.SuiteLog;
+import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
 import javax.annotation.Resource;
@@ -62,7 +62,8 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemId());
             if (awardModel != null) {
-                tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber(), AlterType.valueOf(awardProto.getAlterType()), awardProto.getValid()));
+                tradeItemList.add(new SimpleTradeItem<>(awardModel, awardProto.getNumber(), AlterType.valueOf(awardProto.getAlterType()),
+                        awardProto.getValid()));
             }
         }
         return creator.create(Actions.of(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
@@ -82,17 +83,17 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
             list.add(TradeItemProto.newBuilder()
-                    .setItemId(item.getItemModel().getId())
-                    .setNumber(item.getNumber().longValue())
-                    .setAlterType(item.getAlertType().getId())
-                    .setValid(item.isValid())
-                    .build());
+                                   .setItemId(item.getItemModel().getId())
+                                   .setNumber(item.getNumber().longValue())
+                                   .setAlterType(item.getAlertType().getId())
+                                   .setValid(item.isValid())
+                                   .build());
         }
         return TradeProto.newBuilder().setAction(trade.getAction().getId())
-                .addAllItem(list)
-                .setAction(trade.getAction().getId())
-                .setTradeType(trade.getTradeType().getId())
-                .build();
+                         .addAllItem(list)
+                         .setAction(trade.getAction().getId())
+                         .setTradeType(trade.getTradeType().getId())
+                         .build();
     }
 
     protected Collection<Trade> protos2Trades(Collection<TradeProto> tradeProtos) {

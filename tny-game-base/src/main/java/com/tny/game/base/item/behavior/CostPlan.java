@@ -1,7 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 消耗方案

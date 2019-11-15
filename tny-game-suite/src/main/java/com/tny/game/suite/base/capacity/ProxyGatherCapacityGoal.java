@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 内部能力值作用对象

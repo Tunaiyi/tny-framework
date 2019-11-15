@@ -1,10 +1,10 @@
 package com.tny.game.suite.scheduler.cache;
 
-import com.tny.game.asyndb.annotation.Persistent;
-import com.tny.game.cache.annotation.ToCache;
+import com.tny.game.asyndb.annotation.*;
+import com.tny.game.cache.annotation.*;
 import com.tny.game.common.scheduler.*;
-import com.tny.game.suite.SuiteDBHead;
-import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
+import com.tny.game.suite.*;
+import com.tny.game.suite.cache.spring.*;
 
 import java.util.Collection;
 

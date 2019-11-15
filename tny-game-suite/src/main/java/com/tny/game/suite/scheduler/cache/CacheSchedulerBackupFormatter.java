@@ -1,9 +1,9 @@
 package com.tny.game.suite.scheduler.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.tny.game.cache.CacheFormatter;
-import com.tny.game.common.number.IntLocalNum;
-import com.tny.game.common.scheduler.TimeTask;
+import com.tny.game.cache.*;
+import com.tny.game.common.number.*;
+import com.tny.game.common.scheduler.*;
 import com.tny.game.protobuf.PBCommon.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
@@ -32,19 +32,21 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
         IntLocalNum index = new IntLocalNum(0);
         Map<String, Integer> handlers = new HashMap<>();
         List<TimeTaskProto> taskList = taskCollection.stream().map(task -> TimeTaskProto.newBuilder()
-                .setExecutTime(task.getExecuteTime())
-                .addAllHandlers(task.getHandlerList().stream()
-                        .map(handler -> handlers.computeIfAbsent(handler, (h) -> index.add(1)))
-                        .collect(Collectors.toList()))
-                .build()).collect(Collectors.toList());
+                                                                                        .setExecutTime(task.getExecuteTime())
+                                                                                        .addAllHandlers(task.getHandlerList().stream()
+                                                                                                            .map(handler -> handlers
+                                                                                                                    .computeIfAbsent(handler,
+                                                                                                                            (h) -> index.add(1)))
+                                                                                                            .collect(Collectors.toList()))
+                                                                                        .build()).collect(Collectors.toList());
         byte[] data = SchedulerBackupProto.newBuilder()
-                .setStopTime(backup.getStopTime())
-                .addAllTimeTaskQueue(taskList)
-                .putAllHandlers(handlers.entrySet().stream().collect(Collectors.toMap(
-                        Entry::getValue,
-                        Entry::getKey
-                )))
-                .build().toByteArray();
+                                          .setStopTime(backup.getStopTime())
+                                          .addAllTimeTaskQueue(taskList)
+                                          .putAllHandlers(handlers.entrySet().stream().collect(Collectors.toMap(
+                                                  Entry::getValue,
+                                                  Entry::getKey
+                                          )))
+                                          .build().toByteArray();
         // TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Save", data.length);
         return data;
     }
@@ -63,8 +65,8 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
         CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup();
         cacheSchedulerBackup.setStopTime(proto.getStopTime());
         List<TimeTask> taskList = proto.getTimeTaskQueueList().stream()
-                .map(taskProto -> proto2TimeTask(taskProto, handles))
-                .collect(Collectors.toList());
+                                       .map(taskProto -> proto2TimeTask(taskProto, handles))
+                                       .collect(Collectors.toList());
         cacheSchedulerBackup.setTimeTaskList(taskList);
         return cacheSchedulerBackup;
     }

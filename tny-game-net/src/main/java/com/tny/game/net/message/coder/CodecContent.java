@@ -3,9 +3,9 @@ package com.tny.game.net.message.coder;
 public class CodecContent {
 
     public static final String SECURITY_FILE = "<cross-domain-policy>"
-            + "<site-control permitted-cross-domain-policies=\"all\"/>"
-            + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
-            + "</cross-domain-policy>" + "\0";
+                                               + "<site-control permitted-cross-domain-policies=\"all\"/>"
+                                               + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
+                                               + "</cross-domain-policy>" + "\0";
 
     public static final String POLICY_FILE = "<policy-file-request/>\0";
 

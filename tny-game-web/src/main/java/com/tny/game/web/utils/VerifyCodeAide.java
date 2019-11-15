@@ -67,8 +67,9 @@ public class VerifyCodeAide {
      * @param lineColor      干扰线颜色,若为null则表示采用随机颜色
      * @return 图片缓存对象
      */
-    public static BufferedImage generateImageCode(int type, int length, String excludeString, int width, int height, int interLine, boolean randomLocation, Color backColor, Color foreColor,
-                                                  Color lineColor) {
+    public static BufferedImage generateImageCode(int type, int length, String excludeString, int width, int height, int interLine,
+            boolean randomLocation, Color backColor, Color foreColor,
+            Color lineColor) {
         String textCode = generateTextCode(type, length, excludeString);
         return generateImageCode(textCode, width, height, interLine, interLine, randomLocation, backColor, foreColor, lineColor);
     }
@@ -169,7 +170,8 @@ public class VerifyCodeAide {
      * @param lineColor      干扰线颜色,若为null则表示采用随机颜色
      * @return 图片缓存对象
      */
-    public static BufferedImage generateImageCode(String textCode, int width, int height, int backLine, int foreLine, boolean randomLocation, Color backColor, Color foreColor, Color lineColor) {
+    public static BufferedImage generateImageCode(String textCode, int width, int height, int backLine, int foreLine, boolean randomLocation,
+            Color backColor, Color foreColor, Color lineColor) {
         //创建内存图像
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         //获取图形上下文

@@ -1,9 +1,8 @@
 package com.tny.game.base.item.listener;
 
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.Warehouse;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.context.Attributes;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.context.*;
 
 public interface TradeListener {
 

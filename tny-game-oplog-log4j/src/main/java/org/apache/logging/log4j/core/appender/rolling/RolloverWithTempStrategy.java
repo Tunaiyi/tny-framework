@@ -2,27 +2,15 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.*;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
@@ -117,8 +105,8 @@ public class RolloverWithTempStrategy extends AbstractRolloverStrategy {
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      */
     protected RolloverWithTempStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-                                       final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
-                                       final boolean stopCustomActionsOnError) {
+            final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
+            final boolean stopCustomActionsOnError) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -209,7 +197,7 @@ public class RolloverWithTempStrategy extends AbstractRolloverStrategy {
         }
 
         return eligibleFiles.size() > 0 ?
-                (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
+               (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
     }
 
     /**

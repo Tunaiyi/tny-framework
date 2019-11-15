@@ -1,7 +1,7 @@
 package drama.test;
 
 import com.google.common.collect.Lists;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -26,8 +26,8 @@ public class TestClass {
         @Override
         public String toString() {
             return "Person{" +
-                    "id=" + id +
-                    '}';
+                   "id=" + id +
+                   '}';
         }
     }
 
@@ -43,8 +43,8 @@ public class TestClass {
                 new Person(7)
         );
         List<Person> newPersons = persons.stream()
-                .filter(Person::isDouble)
-                .collect(Collectors.toList());
+                                         .filter(Person::isDouble)
+                                         .collect(Collectors.toList());
         System.out.println(persons);
         System.out.println(newPersons);
     }

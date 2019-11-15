@@ -5,8 +5,7 @@ import com.tny.game.common.unit.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.lifecycle.LifecycleLevel.*;
@@ -97,7 +96,8 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         });
         UnitLoader.getLoader(TerminalSetting.class).getAllUnits().forEach(unit -> {
             this.terminalSettingMap.put(unit.getName(), as(unit));
-            this.terminalFactoryMap.computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
+            this.terminalFactoryMap
+                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
         });
     }
 

@@ -1,7 +1,6 @@
 package com.tny.game.oplog.log4j2;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.*;
 
 import java.util.Properties;
 

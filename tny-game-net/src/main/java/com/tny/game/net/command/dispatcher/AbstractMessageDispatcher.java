@@ -15,13 +15,9 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -88,7 +84,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
         if (controller != null)
             return new ControllerMessageCommand(this, controller, tunnel, message);
         if (message.getMode() == MessageMode.REQUEST)
-            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL, format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
+            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL,
+                    format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
         return null;
     }
 
@@ -167,7 +164,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      */
     protected void addControllerPlugin(Collection<CommandPlugin> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
+                                     .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
 
     /**

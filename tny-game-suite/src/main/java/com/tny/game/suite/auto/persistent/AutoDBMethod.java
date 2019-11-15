@@ -1,9 +1,7 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.tny.game.suite.auto.AutoMethod;
-import com.tny.game.suite.auto.persistent.annotation.AutoDB;
-import com.tny.game.suite.auto.persistent.annotation.AutoDBParam;
-import com.tny.game.suite.auto.persistent.annotation.AutoDBReturn;
+import com.tny.game.suite.auto.*;
+import com.tny.game.suite.auto.persistent.annotation.*;
 
 import java.lang.reflect.Method;
 

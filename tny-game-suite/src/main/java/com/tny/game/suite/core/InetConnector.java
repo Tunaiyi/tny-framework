@@ -1,11 +1,8 @@
 package com.tny.game.suite.core;
 
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
+import org.apache.commons.lang3.builder.*;
 
 /**
  * Created by Kun Yang on 2017/2/28.
@@ -63,8 +60,10 @@ public class InetConnector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InetConnector)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof InetConnector))
+            return false;
         InetConnector that = (InetConnector) o;
         return new EqualsBuilder()
                 .append(getHost(), that.getHost())

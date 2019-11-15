@@ -1,16 +1,12 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.common.reflect.ReflectAide;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.reflect.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import org.slf4j.*;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DTODocHolder {
 

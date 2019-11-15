@@ -1,14 +1,9 @@
 package com.tny.game.cache.testclass;
 
-import com.tny.game.cache.Cache;
-import com.tny.game.cache.CacheUtils;
-import com.tny.game.cache.CasItem;
-import org.junit.Assert;
+import com.tny.game.cache.*;
+import org.junit.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CacheTestTask {
 

@@ -99,7 +99,8 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
     }
 
     @Override
-    public <U, V> CompletionStage<V> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn, Executor executor) {
+    public <U, V> CompletionStage<V> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn,
+            Executor executor) {
         return new StageableFuture<>(future().thenCombineAsync(other, fn, executor));
     }
 
@@ -114,7 +115,8 @@ public class StageableFuture<T> implements Future<T>, CompletionStage<T> {
     }
 
     @Override
-    public <U> CompletionStage<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action, Executor executor) {
+    public <U> CompletionStage<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action,
+            Executor executor) {
         return new StageableFuture<>(future().thenAcceptBothAsync(other, action, executor));
     }
 

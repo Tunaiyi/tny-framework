@@ -1,17 +1,12 @@
 package com.tny.game.cache.spring;
 
 import com.tny.game.cache.*;
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.cache.annotation.Trigger;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.cache.annotation.*;
+import com.tny.game.common.collection.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("rawtypes")
 public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToCacheClassHolderFactory,

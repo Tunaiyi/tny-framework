@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.simple.*;
-import com.tny.game.expr.ExprHolder;
+import com.tny.game.expr.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -115,7 +115,8 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
 
     @Override
     public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap) {
-        List<DemandResult> behaviorDemandResults = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> behaviorDemandResults = this
+                .countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : this.actionPlanMap.entrySet()) {
             for (Action action : entry.getValue().getActions())

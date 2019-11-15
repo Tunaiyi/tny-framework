@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.suite.utils.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

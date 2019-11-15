@@ -1,11 +1,9 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,10 +32,10 @@ public class TryToDoFullFailDTO implements Serializable {
         TryToDoFullFailDTO dto = new TryToDoFullFailDTO();
         dto.action = result.getAction().getId();
         dto.failDemands = result.getAllFailResults()
-                .stream()
-                .map(DemandResultDTO::demandResult2DTO)
-                .collect(Collectors.toList());
+                                .stream()
+                                .map(DemandResultDTO::demandResult2DTO)
+                                .collect(Collectors.toList());
         return dto;
     }
-    
+
 }

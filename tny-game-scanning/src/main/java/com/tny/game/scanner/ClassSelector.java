@@ -1,18 +1,10 @@
 package com.tny.game.scanner;
 
-import com.tny.game.scanner.filter.ClassFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.scanner.filter.*;
+import org.slf4j.*;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -100,9 +92,9 @@ public class ClassSelector {
 
     void selected() {
         this.classes = mapClass.values().stream()
-                .flatMap(Collection::stream)
-                .distinct()
-                .collect(Collectors.toList());
+                               .flatMap(Collection::stream)
+                               .distinct()
+                               .collect(Collectors.toList());
         this.mapClass.clear();
         this.mapClass = null;
         if (handler != null)

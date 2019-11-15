@@ -1,7 +1,6 @@
 package cywl.proto.test;
 
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.protoex.annotations.*;
 
 @ProtoEx(101)
 public class Goods {

@@ -1,16 +1,12 @@
 package com.tny.game.doc;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.doc.annotation.DocTag;
-import com.tny.game.scanner.filter.ClassExcludeFilter;
-import com.tny.game.scanner.filter.ClassFilterHelper;
-import com.tny.game.scanner.filter.ClassIncludeFilter;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.scanner.filter.*;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2016/10/13.

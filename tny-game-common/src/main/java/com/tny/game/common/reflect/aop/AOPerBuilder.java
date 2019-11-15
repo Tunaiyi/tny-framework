@@ -1,22 +1,17 @@
 package com.tny.game.common.reflect.aop;
 
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.common.reflect.ReflectAide;
-import com.tny.game.common.reflect.aop.annotation.AOP;
-import com.tny.game.common.reflect.aop.annotation.Privileges;
-import com.tny.game.common.reflect.javassist.InvokerFactory;
+import com.tny.game.common.context.*;
+import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.aop.annotation.*;
+import com.tny.game.common.reflect.javassist.*;
 import javassist.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 
 /**
  * AOP构建对象构建器
@@ -110,7 +105,8 @@ public class AOPerBuilder<T> {
                 implementAOPer(pool, targetClass, proxyClass);
                 CtField staticMethods = CtField.make("protected static java.lang.reflect.Method [] _aoper$METHODS = null;", proxyClass);
                 proxyClass.addField(staticMethods);
-                CtField staticLogger = CtField.make("protected static final org.slf4j.Logger _aoper$LOGGER = org.slf4j.LoggerFactory.getLogger(\"AOP\");", proxyClass);
+                CtField staticLogger = CtField
+                        .make("protected static final org.slf4j.Logger _aoper$LOGGER = org.slf4j.LoggerFactory.getLogger(\"AOP\");", proxyClass);
                 proxyClass.addField(staticLogger);
 
                 AOP globalAOP = targetClass.getAnnotation(AOP.class);
@@ -120,7 +116,8 @@ public class AOPerBuilder<T> {
                 Set<CtMethod> methodSet = new HashSet<CtMethod>();
                 for (Method method : allMethodList) {
                     int modifiers = method.getModifiers();
-                    if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isFinal(modifiers) && !Modifier.isStatic(modifiers)) {
+                    if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isFinal(modifiers) &&
+                        !Modifier.isStatic(modifiers)) {
                         if (isAop(globalAOP, method, aopAnnotationSet)) {
                             proxyMethod(pool, proxyClass, method, methodIndex, methodSet);
                             aopMethodList.add(method);
@@ -146,7 +143,8 @@ public class AOPerBuilder<T> {
         return null;
     }
 
-    protected static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, Set<CtMethod> methodSet) throws NotFoundException, CannotCompileException {
+    protected static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, Set<CtMethod> methodSet)
+            throws NotFoundException, CannotCompileException {
         Class<?> returnClazz = method.getReturnType();
         int paramSize = method.getParameterTypes().length;
         CtMethod cm = createCtMethod(pool, cc, method);
@@ -156,8 +154,8 @@ public class AOPerBuilder<T> {
         bodyCode.append("{");
         StringBuilder invorkeCode = new StringBuilder();
         invorkeCode.append("super.")
-                .append(method.getName())
-                .append("(");
+                   .append(method.getName())
+                   .append("(");
         for (int paramIndex = 1; paramIndex < paramSize + 1; paramIndex++) {
             invorkeCode.append("$").append(paramIndex);
             if (paramIndex != paramSize)
@@ -203,30 +201,34 @@ public class AOPerBuilder<T> {
         CtField attributes = CtField.make("private volatile " + Attributes.class.getCanonicalName() + " _aoper$attributes;", cc);
         cc.addField(attributes);
 
-        CtMethod setBeforeAdvice = CtMethod.make("public void set$Avice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._aoper$beforeAdvice = advice;}", cc);
+        CtMethod setBeforeAdvice = CtMethod
+                .make("public void set$Avice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._aoper$beforeAdvice = advice;}", cc);
         cc.addMethod(setBeforeAdvice);
-        CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Avice(" + AfterReturningAdvice.class.getCanonicalName() + " advice) {this._aoper$afterReturningAdvice = advice;}", cc);
+        CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Avice(" + AfterReturningAdvice.class.getCanonicalName() +
+                                                         " advice) {this._aoper$afterReturningAdvice = advice;}", cc);
         cc.addMethod(setAfterReturningAdvice);
-        CtMethod setThrowsAdvice = CtMethod.make("public void set$Avice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._aoper$throwsAdvice = advice;}", cc);
+        CtMethod setThrowsAdvice = CtMethod
+                .make("public void set$Avice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._aoper$throwsAdvice = advice;}", cc);
         cc.addMethod(setThrowsAdvice);
         CtMethod getWraper = CtMethod.make("public " + Object.class.getCanonicalName() + " get$Wraper() {return this;}", cc);
         cc.addMethod(getWraper);
 
         CtMethod getAttributes = CtMethod.make("public " + Attributes.class.getCanonicalName() + " get$Attributes() {"
-                + " if (this._aoper$attributes != null)"
-                + "		return this._aoper$attributes;"
-                + "	synchronized (this) { "
-                + "		if (this._aoper$attributes != null) "
-                + "			return this._aoper$attributes;"
-                + "		this._aoper$attributes = " + ContextAttributes.class.getCanonicalName() + ".create();"
-                + " }"
-                + " return this._aoper$attributes;"
-                + "}", cc);
+                                               + " if (this._aoper$attributes != null)"
+                                               + "		return this._aoper$attributes;"
+                                               + "	synchronized (this) { "
+                                               + "		if (this._aoper$attributes != null) "
+                                               + "			return this._aoper$attributes;"
+                                               + "		this._aoper$attributes = " + ContextAttributes.class.getCanonicalName() + ".create();"
+                                               + " }"
+                                               + " return this._aoper$attributes;"
+                                               + "}", cc);
 
         cc.addMethod(getAttributes);
     }
 
-    private static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, int methodIndex, Set<CtMethod> methodSet) throws NotFoundException, CannotCompileException {
+    private static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, int methodIndex, Set<CtMethod> methodSet)
+            throws NotFoundException, CannotCompileException {
         Class<?> returnClazz = method.getReturnType();
         int paramSize = method.getParameterTypes().length;
         CtMethod cm = createCtMethod(pool, cc, method);
@@ -248,8 +250,8 @@ public class AOPerBuilder<T> {
 
         StringBuilder invorkeCode = new StringBuilder();
         invorkeCode.append("super.")
-                .append(method.getName())
-                .append("(");
+                   .append(method.getName())
+                   .append("(");
         for (int paramIndex = 1; paramIndex < paramSize + 1; paramIndex++) {
             invorkeCode.append("$").append(paramIndex);
             if (paramIndex != paramSize)

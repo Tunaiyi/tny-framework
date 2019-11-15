@@ -1,7 +1,7 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetResultCode;
+import com.tny.game.common.result.*;
+import com.tny.game.net.base.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 

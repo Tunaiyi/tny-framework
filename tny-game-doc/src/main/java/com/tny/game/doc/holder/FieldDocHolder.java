@@ -1,7 +1,7 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
 
 import java.lang.reflect.Field;
 

@@ -1,6 +1,6 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.AlterType;
+import com.tny.game.base.item.*;
 
 /**
  * Created by Kun Yang on 2017/4/11.

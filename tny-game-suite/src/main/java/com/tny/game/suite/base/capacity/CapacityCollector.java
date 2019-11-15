@@ -1,10 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.common.number.NumberAide;
+import com.tny.game.common.number.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 2017/7/17.

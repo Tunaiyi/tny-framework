@@ -1,8 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.*;
-import com.tny.game.doc.annotation.ClassDoc;
-import com.tny.game.suite.base.GameAbility;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.suite.base.*;
 
 /**
  * 能力值提供器的游戏能力值

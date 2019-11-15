@@ -1,6 +1,6 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.net.base.NetResultCode;
+import com.tny.game.net.base.*;
 
 public class PacketTimeoutException extends CommandException {
 

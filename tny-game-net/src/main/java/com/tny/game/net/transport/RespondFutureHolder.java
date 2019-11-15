@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.google.common.collect.*;
-import com.tny.game.common.concurrent.CoreThreadFactory;
+import com.tny.game.common.concurrent.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -31,7 +31,7 @@ public class RespondFutureHolder {
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
-                .scheduleAtFixedRate(RespondFutureHolder::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
+                 .scheduleAtFixedRate(RespondFutureHolder::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
     }
 
     public static RespondFutureHolder getHolder(Object object) {

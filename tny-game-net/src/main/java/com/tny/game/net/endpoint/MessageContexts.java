@@ -53,7 +53,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> push(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
-                .setBody(body);
+               .setBody(body);
         return context;
     }
 
@@ -68,7 +68,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> push(Protocol protocol, ResultCode code, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, code)
-                .setBody(body);
+               .setBody(body);
         return context;
     }
 
@@ -94,7 +94,7 @@ public class MessageContexts {
     public static <UID> RequestContext<UID> request(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-                .setBody(body);
+               .setBody(body);
         return context;
     }
 
@@ -109,7 +109,7 @@ public class MessageContexts {
     public static <UID> RequestContext<UID> requestParams(Protocol protocol, Object... requestParams) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-                .setBody(Arrays.asList(requestParams));
+               .setBody(Arrays.asList(requestParams));
         return context;
     }
 
@@ -149,7 +149,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> respond(Protocol protocol, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
-                .setBody(body);
+               .setBody(body);
         return context;
     }
 
@@ -165,7 +165,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, code, toMessage)
-                .setBody(body);
+               .setBody(body);
         return context;
     }
 
@@ -467,16 +467,16 @@ public class MessageContexts {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("protocol", protocol)
-                    .add("mode", mode)
-                    .add("toMessage", toMessage)
-                    .add("code", code)
-                    .add("body", body)
-                    .add("tail", tail)
-                    // .add("sendFuture", sendFuture != null)
-                    .add("respondFuture", respondFuture != null)
-                    .add("writeFuture", writePromise != null)
-                    .toString();
+                              .add("protocol", protocol)
+                              .add("mode", mode)
+                              .add("toMessage", toMessage)
+                              .add("code", code)
+                              .add("body", body)
+                              .add("tail", tail)
+                              // .add("sendFuture", sendFuture != null)
+                              .add("respondFuture", respondFuture != null)
+                              .add("writeFuture", writePromise != null)
+                              .toString();
         }
 
     }

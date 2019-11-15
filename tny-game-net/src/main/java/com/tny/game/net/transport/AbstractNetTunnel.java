@@ -2,12 +2,10 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Objects;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
 
@@ -191,8 +189,10 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AbstractNetTunnel)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AbstractNetTunnel))
+            return false;
         AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>) o;
         return id == that.id;
     }

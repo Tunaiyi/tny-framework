@@ -1,7 +1,7 @@
 package com.tny.game.suite.net.configuration;
 
 import com.tny.game.common.word.*;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.suite.utils.*;
 import org.springframework.context.annotation.*;
 
 /**

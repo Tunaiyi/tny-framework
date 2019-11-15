@@ -1,9 +1,9 @@
 package com.tny.game.net.codec.cryptoloy;
 
-import com.tny.game.common.unit.annotation.Unit;
-import com.tny.game.common.utils.BytesAide;
+import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.DataPacketV1Config;
+import com.tny.game.net.codec.v1.*;
 
 /**
  * <p>
@@ -26,8 +26,8 @@ public class XOrCodecCrypto implements CodecCrypto {
 
     public byte[] xor(DataPackager packager, byte[] bytes) {
         DataPacketV1Config config = packager.getConfig();
-        byte [] security = config.getSecurityKeyBytes(packager.getPacketNumber());
-        byte [] code = BytesAide.int2Bytes(packager.getPacketCode());
+        byte[] security = config.getSecurityKeyBytes(packager.getPacketNumber());
+        byte[] code = BytesAide.int2Bytes(packager.getPacketCode());
         return BytesAide.xor(bytes, security, code);
     }
 

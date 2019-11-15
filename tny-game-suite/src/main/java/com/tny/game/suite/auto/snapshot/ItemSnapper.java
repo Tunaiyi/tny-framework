@@ -1,7 +1,7 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.tny.game.base.item.Item;
-import com.tny.game.oplog.SnapperType;
+import com.tny.game.base.item.*;
+import com.tny.game.oplog.*;
 
 public abstract class ItemSnapper<O, I extends Item<?>, S extends ItemSnapshot> extends BaseSnapper<O, S> {
 

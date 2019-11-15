@@ -10,8 +10,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import javax.xml.bind.ValidationException;
 import java.lang.reflect.InvocationTargetException;
@@ -178,8 +177,8 @@ public abstract class MessageCommand<C extends CommandContext> extends DispatchC
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("message", message)
-                .toString();
+                          .add("message", message)
+                          .toString();
     }
 
 }

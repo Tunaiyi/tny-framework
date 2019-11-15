@@ -1,7 +1,7 @@
 package com.tny.game.net.message.common;
 
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.Certificate;
+import com.tny.game.net.transport.*;
 
 public class CommonMessage<UID> extends AbstractNetMessage<UID> {
 

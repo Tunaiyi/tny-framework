@@ -1,7 +1,6 @@
 package com.tny.game.oplog.simple;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class LogRecord {

@@ -4,10 +4,7 @@ import com.tny.game.common.utils.*;
 import com.tny.game.data.accessor.*;
 import com.tny.game.data.exception.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -126,8 +123,8 @@ public enum StorageOperation {
      * @param operateChangeState 操作时候当前状态->操作状态转换关系
      */
     <T> StorageOperation(StorageState defaultStatus, StorageState[][] operateChangeState, StorageState[][] failedRedoState,
-                         BiFunction<ObjectAccessor<?, T>, T, Boolean> singleOperate,
-                         BiFunction<ObjectAccessor<?, T>, Collection<T>, Collection<T>> multiOperate) {
+            BiFunction<ObjectAccessor<?, T>, T, Boolean> singleOperate,
+            BiFunction<ObjectAccessor<?, T>, Collection<T>, Collection<T>> multiOperate) {
         this.defaultStatus = defaultStatus;
         Map<StorageState, StorageState> OPERATION_CHANGE_MAP = new HashMap<>();
         for (StorageState[] states : operateChangeState) {

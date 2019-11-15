@@ -2,9 +2,7 @@ package com.tny.game.suite.base.capacity;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 能力值提供七代理接口

@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.protoex.field.*;
 
 /**
  * ProtoEx类型头
@@ -105,7 +105,8 @@ public final class Tag {
 
     @Override
     public String toString() {
-        return "Tag [protoExID=" + this.protoExID + ", raw=" + this.raw + ", explicit=" + this.explicit + ", fieldNumber=" + this.fieldNumber + ", fieldFormat=" + this.fieldFormat + "]";
+        return "Tag [protoExID=" + this.protoExID + ", raw=" + this.raw + ", explicit=" + this.explicit + ", fieldNumber=" + this.fieldNumber +
+               ", fieldFormat=" + this.fieldFormat + "]";
     }
 
     //	public int getLength() {

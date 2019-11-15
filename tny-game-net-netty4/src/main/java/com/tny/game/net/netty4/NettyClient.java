@@ -8,12 +8,9 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 
 import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
@@ -36,7 +33,7 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     private PostConnect<UID> postConnect;
 
     public NettyClient(NettyClientGuide guide, URL url, UID unloginUid, PostConnect<UID> postConnect,
-                       EndpointEventHandler<UID, NetEndpoint<UID>> endpointEventHandler, int cacheSentMessageSize) {
+            EndpointEventHandler<UID, NetEndpoint<UID>> endpointEventHandler, int cacheSentMessageSize) {
         super(unloginUid, endpointEventHandler, cacheSentMessageSize);
         this.url = url;
         this.guide = guide;
@@ -195,8 +192,8 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("url", url)
-                .toString();
+                          .add("url", url)
+                          .toString();
     }
 
 }

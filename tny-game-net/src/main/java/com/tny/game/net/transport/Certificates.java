@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -94,15 +94,15 @@ public final class Certificates {
             if (this == other)
                 return true;
             return Objects.equals(getUserId(), other.getUserId()) &&
-                    Objects.equals(getUserType(), other.getUserType());
+                   Objects.equals(getUserType(), other.getUserType());
         }
 
         public boolean isSameCertificate(CommonCertificate<UID> other) {
             if (this == other)
                 return true;
             return getId() == other.getId() &&
-                    Objects.equals(getUserId(), other.getUserId()) &&
-                    Objects.equals(getUserType(), other.getUserType());
+                   Objects.equals(getUserId(), other.getUserId()) &&
+                   Objects.equals(getUserType(), other.getUserType());
         }
 
         @Override
@@ -132,12 +132,14 @@ public final class Certificates {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof CommonCertificate)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof CommonCertificate))
+                return false;
             CommonCertificate<?> that = (CommonCertificate<?>) o;
             return getId() == that.getId() &&
-                    isAutherized() == that.isAutherized() &&
-                    Objects.equals(getUserId(), that.getUserId());
+                   isAutherized() == that.isAutherized() &&
+                   Objects.equals(getUserId(), that.getUserId());
         }
 
         @Override
@@ -148,10 +150,10 @@ public final class Certificates {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("userId", userId)
-                    .add("userType", userType)
-                    .add("id", id)
-                    .toString();
+                              .add("userId", userId)
+                              .add("userType", userType)
+                              .add("id", id)
+                              .toString();
         }
 
     }

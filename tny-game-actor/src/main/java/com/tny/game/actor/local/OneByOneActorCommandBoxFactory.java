@@ -1,6 +1,6 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.common.worker.CommandBox;
+import com.tny.game.common.worker.*;
 
 import java.util.Queue;
 

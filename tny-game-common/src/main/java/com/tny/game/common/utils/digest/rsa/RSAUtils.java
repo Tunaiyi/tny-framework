@@ -2,27 +2,12 @@ package com.tny.game.common.utils.digest.rsa;
 
 import org.apache.commons.codec.binary.Base64;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import javax.crypto.*;
+import java.io.*;
 import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPrivateKeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.*;
+import java.security.interfaces.*;
+import java.security.spec.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -334,14 +319,16 @@ public class RSAUtils {
         return getKeyPair(KEY_SIZE);
     }
 
-    private static byte[] encryptByCipher(byte[] data, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException {
+    private static byte[] encryptByCipher(byte[] data, Cipher cipher)
+            throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException {
         int maxEncryptBlock = cipher.getOutputSize(data.length) - 11;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             return getBytes(data, cipher, maxEncryptBlock, out);
         }
     }
 
-    private static byte[] getBytes(byte[] data, Cipher cipher, int maxEncryptBlock, ByteArrayOutputStream out) throws IllegalBlockSizeException, BadPaddingException {
+    private static byte[] getBytes(byte[] data, Cipher cipher, int maxEncryptBlock, ByteArrayOutputStream out)
+            throws IllegalBlockSizeException, BadPaddingException {
         int inputLen = data.length;
         int offSet = 0;
         int i = 0;

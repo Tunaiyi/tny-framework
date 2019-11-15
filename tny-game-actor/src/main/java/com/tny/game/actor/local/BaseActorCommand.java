@@ -1,9 +1,8 @@
 package com.tny.game.actor.local;
 
-import com.tny.game.actor.Answer;
-import com.tny.game.actor.exception.ActorCommandCancelledException;
-import com.tny.game.actor.exception.ActorCommandExecuteException;
-import com.tny.game.common.utils.Done;
+import com.tny.game.actor.*;
+import com.tny.game.actor.exception.*;
+import com.tny.game.common.utils.*;
 
 /**
  * Actor命令

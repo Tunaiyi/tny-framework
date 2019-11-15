@@ -1,8 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 /**
  * Deliver对象,负责处理消息.

@@ -10,16 +10,13 @@ import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -47,9 +44,9 @@ public class ProtobufTableMapperIniter implements InitializingBean, AppPostStart
     @Override
     public void afterPropertiesSet() throws Exception {
         task = ForkJoinPool.commonPool()
-                .submit(() -> ClassScanner.instance()
-                        .addSelector(selector)
-                        .scan(appContext.getScanPackages()));
+                           .submit(() -> ClassScanner.instance()
+                                                     .addSelector(selector)
+                                                     .scan(appContext.getScanPackages()));
     }
 
     @Override
@@ -58,9 +55,9 @@ public class ProtobufTableMapperIniter implements InitializingBean, AppPostStart
         Collection<String> profiles = Configs.getProfiles();
         Map<Class<?>, ProtoCacheFormatter> formatterMap =
                 context.getBeansOfType(ProtoCacheFormatter.class)
-                        .values()
-                        .stream()
-                        .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
+                       .values()
+                       .stream()
+                       .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
         for (Class<?> clazz : selector.getClasses()) {
             ToCache cache = clazz.getAnnotation(ToCache.class);
             String[] cacheProfiles = cache.profiles();

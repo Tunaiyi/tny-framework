@@ -3,13 +3,8 @@ package protoex.test;
 import com.google.common.base.MoreObjects;
 import com.tny.game.protoex.annotations.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
+import java.util.concurrent.atomic.*;
 
 @ProtoEx(1000)
 public class TestObject {
@@ -94,13 +89,13 @@ public class TestObject {
     public AtomicBoolean testAtomicBoolean;
 
     @ProtoExField(23)
-    public int [] ints;
+    public int[] ints;
 
     @ProtoExField(24)
-    public Integer [] integers;
+    public Integer[] integers;
 
     @ProtoExField(25)
-    public TestKey [] keys;
+    public TestKey[] keys;
 
     @Override
     public int hashCode() {
@@ -208,13 +203,13 @@ public class TestObject {
         } else if (!testValueImpMap.equals(other.testValueImpMap))
             return false;
 
-        if(this.testAtomicInteger.get() != other.testAtomicInteger.get())
+        if (this.testAtomicInteger.get() != other.testAtomicInteger.get())
             return false;
 
-        if(this.testAtomicLong.get() != other.testAtomicLong.get())
+        if (this.testAtomicLong.get() != other.testAtomicLong.get())
             return false;
 
-        if(this.testAtomicBoolean.get() != other.testAtomicBoolean.get())
+        if (this.testAtomicBoolean.get() != other.testAtomicBoolean.get())
             return false;
         if (!Arrays.equals(this.ints, other.ints))
             return false;
@@ -228,30 +223,30 @@ public class TestObject {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("testLong", testLong)
-                .add("testShot", testShot)
-                .add("testInt", testInt)
-                .add("testByte", testByte)
-                .add("testFloat", testFloat)
-                .add("testDouble", testDouble)
-                .add("testString", testString)
-                .add("testBytes", Arrays.toString(testBytes))
-                .add("testChar", testChar)
-                .add("testBoolean", testBoolean)
-                .add("testIntValues", testIntValues)
-                .add("testKeyExpValues", testKeyExpValues)
-                .add("testKeyImpValues", testKeyImpValues)
-                .add("testValueExpMap", testValueExpMap)
-                .add("testValueImpMap", testValueImpMap)
-                .add("testKeyExpMap", testKeyExpMap)
-                .add("testKeyImpMap", testKeyImpMap)
-                .add("testAllExpMap", testAllExpMap)
-                .add("testAllImpMap", testAllImpMap)
-                .add("testAtomicInteger", testAtomicInteger)
-                .add("testAtomicLong", testAtomicLong)
-                .add("testAtomicBoolean", testAtomicBoolean)
-                .add("ints", ints)
-                .add("integers", integers)
-                .toString();
+                          .add("testLong", testLong)
+                          .add("testShot", testShot)
+                          .add("testInt", testInt)
+                          .add("testByte", testByte)
+                          .add("testFloat", testFloat)
+                          .add("testDouble", testDouble)
+                          .add("testString", testString)
+                          .add("testBytes", Arrays.toString(testBytes))
+                          .add("testChar", testChar)
+                          .add("testBoolean", testBoolean)
+                          .add("testIntValues", testIntValues)
+                          .add("testKeyExpValues", testKeyExpValues)
+                          .add("testKeyImpValues", testKeyImpValues)
+                          .add("testValueExpMap", testValueExpMap)
+                          .add("testValueImpMap", testValueImpMap)
+                          .add("testKeyExpMap", testKeyExpMap)
+                          .add("testKeyImpMap", testKeyImpMap)
+                          .add("testAllExpMap", testAllExpMap)
+                          .add("testAllImpMap", testAllImpMap)
+                          .add("testAtomicInteger", testAtomicInteger)
+                          .add("testAtomicLong", testAtomicLong)
+                          .add("testAtomicBoolean", testAtomicBoolean)
+                          .add("ints", ints)
+                          .add("integers", integers)
+                          .toString();
     }
 }

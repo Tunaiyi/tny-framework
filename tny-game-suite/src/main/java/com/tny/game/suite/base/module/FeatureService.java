@@ -1,10 +1,10 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.common.lifecycle.AppPrepareStart;
-import com.tny.game.common.utils.version.Version;
-import com.tny.game.suite.utils.SuiteLog;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.runtime.*;
+import com.tny.game.common.utils.version.*;
+import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -83,7 +83,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
             if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context))
                 continue;
             if (!model.isCanOpen(explorer, openMode)
-                    && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false))
+                && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false))
                 continue;
             Feature feature = handler.getFeature();
             try {

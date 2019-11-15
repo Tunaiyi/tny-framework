@@ -1,8 +1,8 @@
 package com.tny.game.suite.auto.snapshot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.base.item.Item;
-import com.tny.game.oplog.SnapshotType;
+import com.tny.game.base.item.*;
+import com.tny.game.oplog.*;
 
 public abstract class ItemSnapshot extends BaseSnapshot {
 

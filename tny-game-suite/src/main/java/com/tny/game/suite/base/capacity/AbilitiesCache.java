@@ -1,10 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.Ability;
-import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 能力值缓存

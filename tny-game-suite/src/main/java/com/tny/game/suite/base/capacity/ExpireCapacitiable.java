@@ -9,14 +9,14 @@ public interface ExpireCapacitiable extends Capacitiable {
 
     static long expireAtOf(Capacitiable capacitiable, long expireAt) {
         return expireAt != 0 ? expireAt :
-                capacitiable instanceof ExpireCapacitiable ? ((ExpireCapacitiable) capacitiable).getExpireAt() : -1;
+               capacitiable instanceof ExpireCapacitiable ? ((ExpireCapacitiable) capacitiable).getExpireAt() : -1;
     }
 
     long getExpireAt();
 
     boolean isExpire();
 
-    default long getRemainTime(){
+    default long getRemainTime() {
         return getRemainTime(System.currentTimeMillis());
     }
 

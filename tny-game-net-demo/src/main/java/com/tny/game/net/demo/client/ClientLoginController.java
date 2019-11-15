@@ -6,8 +6,7 @@ import com.tny.game.net.demo.common.*;
 import com.tny.game.net.demo.common.dto.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.suite.net.spring.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import static com.tny.game.net.message.MessageMode.*;
 

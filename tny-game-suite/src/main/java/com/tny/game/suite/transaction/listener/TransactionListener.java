@@ -1,7 +1,7 @@
 package com.tny.game.suite.transaction.listener;
 
 
-import com.tny.game.suite.transaction.Transaction;
+import com.tny.game.suite.transaction.*;
 
 public interface TransactionListener {
 

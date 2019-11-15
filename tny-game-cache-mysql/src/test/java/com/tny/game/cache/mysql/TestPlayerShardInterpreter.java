@@ -1,7 +1,7 @@
 package com.tny.game.cache.mysql;
 
-import com.tny.game.cache.shard.CacheShardInterpreter;
-import com.tny.game.cache.testclass.TestPlayer;
+import com.tny.game.cache.shard.*;
+import com.tny.game.cache.testclass.*;
 import org.springframework.core.annotation.Order;
 
 @Order(-29)

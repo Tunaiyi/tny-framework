@@ -1,13 +1,10 @@
 package com.tny.game.suite.scheduler.cache;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.tny.game.cache.CacheFormatter;
-import com.tny.game.protobuf.PBCommon.TaskReceiverProto;
-import com.tny.game.suite.scheduler.GameTaskReceiver;
-import com.tny.game.suite.scheduler.ReceiverType;
-import com.tny.game.suite.scheduler.TaskReceiverBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.cache.*;
+import com.tny.game.protobuf.PBCommon.*;
+import com.tny.game.suite.scheduler.*;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +24,12 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
     public Object format2Save(String key, GameTaskReceiver object) {
         try {
             return TaskReceiverProto.newBuilder()
-                    .setPlayerId(object.getPlayerId())
-                    .setGroup(object.getGroup().toString())
-                    .setLastHandlerTime(object.getLastHandlerTime())
-                    .setActualLastHandlerTime(object.getActualLastHandlerTime())
-                    .build()
-                    .toByteArray();
+                                    .setPlayerId(object.getPlayerId())
+                                    .setGroup(object.getGroup().toString())
+                                    .setLastHandlerTime(object.getLastHandlerTime())
+                                    .setActualLastHandlerTime(object.getActualLastHandlerTime())
+                                    .build()
+                                    .toByteArray();
         } catch (Throwable e) {
             LOG.error("receiver id {} format exception", object.getPlayerId(), e);
             return null;
@@ -49,11 +46,12 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
             throw new RuntimeException(e);
         }
         return TaskReceiverBuilder.create()
-                .setPlayerId(proto.getPlayerId())
-                .setLastHandlerTime(proto.getLastHandlerTime())
-                .setGroup(ReceiverType.valueOf(proto.getGroup()))
-                .setActualLastHandlerTime(proto.hasActualLastHandlerTime() ? proto.getLastHandlerTime() : proto.getActualLastHandlerTime())
-                .build();
+                                  .setPlayerId(proto.getPlayerId())
+                                  .setLastHandlerTime(proto.getLastHandlerTime())
+                                  .setGroup(ReceiverType.valueOf(proto.getGroup()))
+                                  .setActualLastHandlerTime(
+                                          proto.hasActualLastHandlerTime() ? proto.getLastHandlerTime() : proto.getActualLastHandlerTime())
+                                  .build();
     }
 
 }

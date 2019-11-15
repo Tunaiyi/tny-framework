@@ -4,9 +4,7 @@ import net.paoding.rose.jade.annotation.SQLParam;
 import net.paoding.rose.jade.dao.CrudDAO;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class CrudDAOManager<T, VO, ID extends Serializable> {

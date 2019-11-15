@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.tag.Taggable;
+import com.tny.game.common.tag.*;
 
 public interface Model extends Taggable {
 

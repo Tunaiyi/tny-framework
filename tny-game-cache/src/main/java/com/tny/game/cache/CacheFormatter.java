@@ -1,12 +1,10 @@
 package com.tny.game.cache;
 
-import static com.tny.game.common.utils.StringAide.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 @SuppressWarnings("unchecked")
 public abstract class CacheFormatter<O, D> implements CacheTrigger<O, D, Object> {

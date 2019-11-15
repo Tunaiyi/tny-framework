@@ -1,8 +1,7 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.base.utlis.ConfigerChecker;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.result.ResultCodeType;
+import com.tny.game.base.utlis.*;
+import com.tny.game.common.result.*;
 
 public enum SuiteResultCode implements ResultCode {
 
@@ -22,7 +21,7 @@ public enum SuiteResultCode implements ResultCode {
     NAME_LENGTH_ILLEGAL(2021, "名字长度错误"),
     NAME_FILTER_WORD(2022, "名字带有屏蔽字"),
 
-    
+
     TEXT_LENGTH_ILLEGAL(2024, "文本长度错误"),
     TEXT_FILTER_WORD(2025, "文本带有屏蔽字"),
 

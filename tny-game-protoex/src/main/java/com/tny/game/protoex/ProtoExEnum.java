@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 
 /**
  * protoEx枚举接口

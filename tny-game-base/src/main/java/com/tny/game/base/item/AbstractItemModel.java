@@ -4,17 +4,17 @@ import com.google.common.collect.*;
 import com.tny.game.base.exception.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
-import com.tny.game.base.item.xml.AliasCollectUtils;
-import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
-import com.tny.game.common.collection.EmptyImmutableMap;
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.base.item.xml.*;
+import com.tny.game.base.item.xml.XMLDemand.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static com.tny.game.common.utils.ObjectAide.as;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * 抽象事物模型
@@ -38,10 +38,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
      */
     protected String desc;
 
-//    /**
-//     * 名字
-//     */
-//    protected String itemName;
+    //    /**
+    //     * 名字
+    //     */
+    //    protected String itemName;
 
     /**
      * 行为 － 行为方案map
@@ -92,10 +92,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return this.alias;
     }
 
-//    @Override
-//    public String getItemName() {
-//        return this.itemName;
-//    }
+    //    @Override
+    //    public String getItemName() {
+    //        return this.itemName;
+    //    }
 
     @Override
     public String getDesc() {
@@ -130,12 +130,12 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         if (collector.isFailed())
             return new SimpleTryToDoResult(action, collector.getFailedDemands());
         return new SimpleTryToDoResult(action, award ?
-                behaviorPlan.countAward(playerID, action, attributeMap) :
-                new SimpleTrade(action, TradeType.AWARD),
+                                               behaviorPlan.countAward(playerID, action, attributeMap) :
+                                               new SimpleTrade(action, TradeType.AWARD),
                 new SimpleTrade(action, TradeType.COST, collector.getCostDemands().stream()
-                        .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
-                        .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
-                        .collect(Collectors.toList())));
+                                                                 .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
+                                                                 .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
+                                                                 .collect(Collectors.toList())));
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerID, Item<?> item, Behavior behavior, Object... attributes) {
@@ -485,14 +485,16 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(item.getPlayerId(), item, ability, (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
+        A value = this.doCountAbility(item.getPlayerId(), item, ability,
+                (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes) {
-        A value = this.doCountAbility(playerID, null, ability, (Class<A>) (defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
+        A value = this
+                .doCountAbility(playerID, null, ability, (Class<A>) (defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 

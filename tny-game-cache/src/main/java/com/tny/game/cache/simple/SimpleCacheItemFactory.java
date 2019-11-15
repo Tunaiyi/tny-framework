@@ -1,7 +1,6 @@
 package com.tny.game.cache.simple;
 
-import com.tny.game.cache.RawCacheItem;
-import com.tny.game.cache.RawCacheItemFactory;
+import com.tny.game.cache.*;
 
 public class SimpleCacheItemFactory<T> implements RawCacheItemFactory<T, RawCacheItem<T, ?>> {
 

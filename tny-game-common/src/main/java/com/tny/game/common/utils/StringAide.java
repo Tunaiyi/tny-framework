@@ -175,7 +175,7 @@ public class StringAide {
         } catch (Throwable t) {
             System.err
                     .println("SLF4J: Failed toString() invocation on an object of type ["
-                            + o.getClass().getName() + "]");
+                             + o.getClass().getName() + "]");
             t.printStackTrace();
             sbuf.append("[FAILED toString()]");
         }

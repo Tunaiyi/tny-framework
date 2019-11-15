@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.utils.ExeAide;
+import com.tny.game.common.utils.*;
 import com.tny.game.protoex.field.runtime.*;
 
 import java.util.*;
@@ -150,7 +150,8 @@ public class ProtoExReader {
     }
 
     @SuppressWarnings("unchecked")
-    public <T, C extends Collection<T>> C readCollection(Class<C> collectionClass, Class<T> elementType) throws IllegalAccessException, InstantiationException {
+    public <T, C extends Collection<T>> C readCollection(Class<C> collectionClass, Class<T> elementType)
+            throws IllegalAccessException, InstantiationException {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
         Supplier<C> supplier = ExeAide.callUnchecked(collectionClass::newInstance)::get;

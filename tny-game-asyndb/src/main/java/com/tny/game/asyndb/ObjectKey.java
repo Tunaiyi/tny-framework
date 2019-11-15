@@ -18,8 +18,10 @@ public class ObjectKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ObjectKey)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ObjectKey))
+            return false;
         ObjectKey objectKey = (ObjectKey) o;
         return Arrays.equals(keyWords, objectKey.keyWords);
     }

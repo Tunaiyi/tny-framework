@@ -1,10 +1,9 @@
 package com.tny.game.asyndb.impl;
 
 import com.tny.game.asyndb.*;
-import com.tny.game.asyndb.log.LogName;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.asyndb.log.*;
+import com.tny.game.common.concurrent.*;
+import org.slf4j.*;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -148,7 +147,8 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
 
                         @Override
                         public void run() {
-                            while (!AverageRateSyncDBExecutor.this.stop || !synchronizableQueue.isEmpty() || !AverageRateSyncDBExecutor.this.sumitQueue.isEmpty()) {
+                            while (!AverageRateSyncDBExecutor.this.stop || !synchronizableQueue.isEmpty() ||
+                                   !AverageRateSyncDBExecutor.this.sumitQueue.isEmpty()) {
                                 PersistentObject synchronizable;
                                 try {
                                     synchronizable = synchronizableQueue.poll(1000, TimeUnit.MILLISECONDS);
@@ -190,7 +190,8 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
                             syncingSize += queue.size();
                         LOGGER.debug(
                                 "#SyncDBExecutor#同步器启动时间{} # 已提交同步队列数量: {} # 提交线程队列的任务数量 : {} # 已同步的任务数量 : {} # 单位时间执行数量 : {} # 停止时间 {}",
-                                new Object[]{AverageRateSyncDBExecutor.this.startTime, AverageRateSyncDBExecutor.this.sumitQueue.size(), syncingSize, thisTime, thisTime - this.preTime, AverageRateSyncDBExecutor.this.stopTime});
+                                new Object[]{AverageRateSyncDBExecutor.this.startTime, AverageRateSyncDBExecutor.this.sumitQueue.size(), syncingSize,
+                                        thisTime, thisTime - this.preTime, AverageRateSyncDBExecutor.this.stopTime});
                         this.preTime = thisTime;
                         if (!AverageRateSyncDBExecutor.this.monitor.isShutdown())
                             AverageRateSyncDBExecutor.this.monitor.schedule(this, 30, TimeUnit.SECONDS);

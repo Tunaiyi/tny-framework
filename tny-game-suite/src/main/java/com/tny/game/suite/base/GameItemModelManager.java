@@ -1,13 +1,13 @@
 package com.tny.game.suite.base;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.utils.*;
 
 import java.io.*;
-import java.util.*;
-import java.util.stream.*;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class GameItemModelManager<IM extends ItemModel> extends GameModelManager<IM> implements ItemTypeManageable {
 
@@ -23,9 +23,9 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
     }
 
     protected GameItemModelManager(Class<? extends IM> modelClass,
-                                   Class<? extends Enum<? extends DemandType>> demandTypeClass,
-                                   Class<? extends Enum<? extends Ability>> abilityClass,
-                                   Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+            Class<? extends Enum<? extends DemandType>> demandTypeClass,
+            Class<? extends Enum<? extends Ability>> abilityClass,
+            Class<? extends Enum<? extends Option>> optionClass, String... paths) {
         this(modelClass, paths);
         this.addEnumClass(abilityClass);
         this.addEnumClass(demandTypeClass);
@@ -33,8 +33,8 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
     }
 
     protected GameItemModelManager(Class<? extends IM> modelClass,
-                                   Class<? extends Enum<? extends Ability>> abilityClass,
-                                   Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+            Class<? extends Enum<? extends Ability>> abilityClass,
+            Class<? extends Enum<? extends Option>> optionClass, String... paths) {
         this(modelClass, paths);
         this.addEnumClass(abilityClass);
         this.addEnumClass(optionClass);
@@ -51,11 +51,12 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
     }
 
     @Override
-    protected void loadAndInitModel(String path, InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
+    protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
+            throws IOException, InstantiationException, IllegalAccessException {
         super.loadAndInitModel(path, inputStream, reload);
         this.itemTypes = ImmutableSet.copyOf(this.modelMap.values().stream()
-                .map(m -> Throws.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
-                .collect(Collectors.toSet()));
+                                                          .map(m -> Throws.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
+                                                          .collect(Collectors.toSet()));
     }
 
     @Override

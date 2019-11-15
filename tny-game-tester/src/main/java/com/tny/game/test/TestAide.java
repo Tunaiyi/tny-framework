@@ -1,7 +1,7 @@
 package com.tny.game.test;
 
 import com.tny.game.common.concurrent.*;
-import com.tny.game.common.utils.StringAide;
+import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
@@ -91,7 +91,8 @@ public final class TestAide {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Throwable> void assertRunWithException(String name, ThrowableRunnable run, Class<T> expectedExceptionClass, Predicate<T> predicate) {
+    public static <T extends Throwable> void assertRunWithException(String name, ThrowableRunnable run, Class<T> expectedExceptionClass,
+            Predicate<T> predicate) {
         try {
             run.run();
             failPass(name);
@@ -142,7 +143,7 @@ public final class TestAide {
         try {
             return run.call();
         } catch (Throwable e) {
-            LOGGER.error("" ,e);
+            LOGGER.error("", e);
             failWith(name, e);
         }
         return null;

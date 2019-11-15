@@ -48,7 +48,8 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
             if (!keeperOpt.isPresent())
                 return true;
             EndpointKeeper<Long, Session<Long>> keeper = keeperOpt.get();
-            return !(!super.release(entity, releaseAt) || this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
+            return !(!super.release(entity, releaseAt) ||
+                     this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
         }
 
     }

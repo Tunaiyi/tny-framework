@@ -1,10 +1,10 @@
 package com.tny.game.net.netty4.codec;
 
 
-import com.tny.game.common.unit.UnitLoader;
-import com.tny.game.net.codec.cryptoloy.XOrCodecCrypto;
-import com.tny.game.net.codec.v1.DataPacketV1Config;
-import com.tny.game.net.codec.verifier.CRC64CodecVerifier;
+import com.tny.game.common.unit.*;
+import com.tny.game.net.codec.cryptoloy.*;
+import com.tny.game.net.codec.v1.*;
+import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
@@ -17,11 +17,11 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.*;
 
-import java.util.*;
+import java.util.Collection;
 
 import static com.tny.game.test.MockAide.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <p>

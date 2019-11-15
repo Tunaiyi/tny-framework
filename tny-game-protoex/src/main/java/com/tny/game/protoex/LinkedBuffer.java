@@ -14,9 +14,7 @@
 
 package com.tny.game.protoex;
 
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * A buffer that wraps a byte array and has a reference to the next buffer for
@@ -41,8 +39,8 @@ public final class LinkedBuffer {
      * Allocates a new buffer with the specified size.
      */
     public static LinkedBuffer allocate(int size) {
-//		if (size < MIN_BUFFER_SIZE)
-//			throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+        //		if (size < MIN_BUFFER_SIZE)
+        //			throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
 
         return new LinkedBuffer(size);
     }

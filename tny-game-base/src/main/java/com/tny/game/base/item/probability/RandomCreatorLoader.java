@@ -13,13 +13,14 @@ import java.util.Collection;
  */
 public final class RandomCreatorLoader {
 
-    private RandomCreatorLoader(){}
+    private RandomCreatorLoader() {
+    }
 
     @ClassSelectorProvider
     public static ClassSelector selector() {
         return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
-                .setHandler(RandomCreatorLoader::handle);
+                            .addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
+                            .setHandler(RandomCreatorLoader::handle);
     }
 
     private static void handle(Collection<Class<?>> classes) {

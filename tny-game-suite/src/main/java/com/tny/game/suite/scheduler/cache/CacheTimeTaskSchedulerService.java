@@ -1,14 +1,10 @@
 package com.tny.game.suite.scheduler.cache;
 
-import com.tny.game.common.scheduler.TaskReceiver;
-import com.tny.game.common.scheduler.TimeTaskScheduler;
-import com.tny.game.suite.scheduler.ReceiverType;
-import com.tny.game.suite.scheduler.TaskReceiverBuilder;
-import com.tny.game.suite.scheduler.TaskReceiverManager;
-import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
-import com.tny.game.suite.transaction.TransactionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.scheduler.*;
+import com.tny.game.suite.scheduler.*;
+import com.tny.game.suite.transaction.*;
+import org.slf4j.*;
+
 import javax.annotation.Resource;
 
 public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
@@ -44,9 +40,9 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
         final TaskReceiver receiver;
         if (dbReceiver == null) {
             receiver = TaskReceiverBuilder.create()
-                    .setGroup(receiverType)
-                    .setPlayerId(playerID)
-                    .build();
+                                          .setGroup(receiverType)
+                                          .setPlayerId(playerID)
+                                          .build();
             this.taskReceiverManager.insert(receiver);
         } else {
             receiver = dbReceiver;

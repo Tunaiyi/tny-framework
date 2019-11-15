@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.command.CommandResult;
+import com.tny.game.common.result.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.transport.*;
 
 /**

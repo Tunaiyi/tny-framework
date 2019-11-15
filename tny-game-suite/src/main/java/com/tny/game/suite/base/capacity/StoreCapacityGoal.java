@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 
-import com.tny.game.common.utils.ObjectAide;
+import com.tny.game.common.utils.*;
 
 import java.util.stream.Stream;
 
@@ -31,12 +31,13 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
         return new StoreByCopyCapacityGoal(
                 id, itemID,
                 gather.suppliersStream()
-                        .filter(CapacitySupplier::isSupplying),
+                      .filter(CapacitySupplier::isSupplying),
                 visitor,
                 expireAtOf(gather, expireAt));
     }
 
-    static StoreCapacityGoal saveBySuppliers(long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+    static StoreCapacityGoal saveBySuppliers(long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor,
+            long expireAt) {
         return new StoreByCopyCapacityGoal(
                 id, itemID,
                 suppliers.filter(CapacitySupplier::isSupplying),
@@ -44,7 +45,8 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
                 expireAt > 0 ? expireAt : -1);
     }
 
-    static StoreCapacityGoal saveBySupplierIDs(long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
+    static StoreCapacityGoal saveBySupplierIDs(long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor,
+            long expireAt) {
         return new StoreByCopyCapacityGoal(id, itemID, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
     }
 

@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.DemandParam;
+import com.tny.game.base.item.behavior.*;
 
 import java.util.Map;
 

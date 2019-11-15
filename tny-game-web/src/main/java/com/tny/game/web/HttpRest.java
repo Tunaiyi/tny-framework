@@ -1,23 +1,14 @@
 package com.tny.game.web;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.web.converter.HttpClientConfiguration;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
+import com.tny.game.web.converter.*;
+import org.springframework.http.*;
+import org.springframework.http.client.*;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.net.*;
+import java.util.*;
 
 public class HttpRest {
 
@@ -112,7 +103,8 @@ public class HttpRest {
         return value.getBody();
     }
 
-    public <E, B> ResponseEntity<B> getEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
+    public <E, B> ResponseEntity<B> getEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars,
+            Class<B> bodyClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(accept));
         headers.setContentType(contentType);
@@ -218,7 +210,8 @@ public class HttpRest {
         return value.getBody();
     }
 
-    public <E, B> ResponseEntity<B> postEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
+    public <E, B> ResponseEntity<B> postEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars,
+            Class<B> bodyClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(accept));
         headers.setContentType(contentType);
@@ -324,7 +317,8 @@ public class HttpRest {
         return value.getBody();
     }
 
-    public <E, B> ResponseEntity<B> putEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
+    public <E, B> ResponseEntity<B> putEntity(String url, MediaType accept, MediaType contentType, E entity, Map<String, String> urlVars,
+            Class<B> bodyClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(accept));
         headers.setContentType(contentType);
@@ -418,7 +412,8 @@ public class HttpRest {
         return value.getBody();
     }
 
-    public <E, B> ResponseEntity<B> exchangeEntity(String url, HttpMethod method, HttpHeaders headers, E entity, Map<String, String> urlVars, Class<B> bodyClass) {
+    public <E, B> ResponseEntity<B> exchangeEntity(String url, HttpMethod method, HttpHeaders headers, E entity, Map<String, String> urlVars,
+            Class<B> bodyClass) {
         return this.restTemplate.exchange(url, method, new HttpEntity<>(entity, headers), bodyClass, urlVars);
     }
 
@@ -460,7 +455,9 @@ public class HttpRest {
             System.out.println(request.getURI());
             return execution.execute(request, body);
         }));
-        System.out.println(client.get("http://192.168.1.113:13600/api/data/{table}/{playerId}", ImmutableMap.of("table", "CPlayer", "playerId", "1000014548"), String.class));
+        System.out.println(
+                client.get("http://192.168.1.113:13600/api/data/{table}/{playerId}", ImmutableMap.of("table", "CPlayer", "playerId", "1000014548"),
+                        String.class));
         System.out.println(client.post("http://192.168.1.153:13600/api/script", "System.out.println(\"OK\")", ImmutableMap.of(), String.class));
     }
 }

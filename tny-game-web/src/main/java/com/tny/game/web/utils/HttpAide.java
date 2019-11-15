@@ -1,15 +1,12 @@
 package com.tny.game.web.utils;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.http.*;
+import org.springframework.web.context.request.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class HttpAide {
 

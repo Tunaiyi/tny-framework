@@ -2,9 +2,7 @@ package com.tny.game.common.number;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.ObjectAide.*;

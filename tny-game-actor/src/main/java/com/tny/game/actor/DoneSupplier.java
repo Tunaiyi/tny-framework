@@ -1,6 +1,6 @@
 package com.tny.game.actor;
 
-import com.tny.game.common.utils.Done;
+import com.tny.game.common.utils.*;
 
 @FunctionalInterface
 public interface DoneSupplier<T> extends Completable {

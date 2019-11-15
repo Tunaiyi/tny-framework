@@ -1,8 +1,6 @@
 package com.tny.game.batch;
 
-import net.paoding.rose.jade.annotation.DAO;
-import net.paoding.rose.jade.annotation.SQL;
-import net.paoding.rose.jade.annotation.SQLParam;
+import net.paoding.rose.jade.annotation.*;
 
 import java.util.Collection;
 

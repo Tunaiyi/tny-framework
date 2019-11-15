@@ -2,7 +2,7 @@ package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.xml.AbstractXMLModelManager;
+import com.tny.game.base.item.xml.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
 
@@ -71,9 +71,9 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
     }
 
     protected GameModelManager(Class<? extends M> modelClass,
-                               Class<? extends Enum<? extends DemandType>> demandTypeClass,
-                               Class<? extends Enum<? extends Ability>> abilityClass,
-                               Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+            Class<? extends Enum<? extends DemandType>> demandTypeClass,
+            Class<? extends Enum<? extends Ability>> abilityClass,
+            Class<? extends Enum<? extends Option>> optionClass, String... paths) {
         this(modelClass, paths);
         this.addEnumClass(abilityClass);
         this.addEnumClass(demandTypeClass);
@@ -81,8 +81,8 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
     }
 
     protected GameModelManager(Class<? extends M> modelClass,
-                               Class<? extends Enum<? extends Ability>> abilityClass,
-                               Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+            Class<? extends Enum<? extends Ability>> abilityClass,
+            Class<? extends Enum<? extends Option>> optionClass, String... paths) {
         this(modelClass, paths);
         this.addEnumClass(abilityClass);
         this.addEnumClass(optionClass);

@@ -1,9 +1,9 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.Ability;
-import com.tny.game.common.enums.EnumeratorHolder;
-import com.tny.game.common.utils.ClassImporter;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.base.item.*;
+import com.tny.game.common.enums.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.suite.utils.*;
 
 import java.util.Collection;
 

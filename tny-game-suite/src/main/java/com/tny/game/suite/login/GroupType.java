@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.base.item.Identifier;
+import com.tny.game.base.item.*;
 
 public interface GroupType {
 

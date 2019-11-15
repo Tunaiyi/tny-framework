@@ -8,7 +8,7 @@ public class MD5 {
         return DigestUtils.md5Hex(content);
     }
 
-    public static String md5(byte [] content) {
+    public static String md5(byte[] content) {
         return DigestUtils.md5Hex(content);
     }
 

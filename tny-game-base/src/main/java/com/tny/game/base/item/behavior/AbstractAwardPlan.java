@@ -7,7 +7,7 @@ import com.tny.game.base.item.*;
  *
  * @author KGTny
  */
-public abstract class AbstractAwardPlan  extends DemandParamsObject implements AwardPlan {
+public abstract class AbstractAwardPlan extends DemandParamsObject implements AwardPlan {
 
     public abstract void init(ItemModel itemModel, ItemModelContext context);
 

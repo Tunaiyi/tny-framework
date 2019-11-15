@@ -1,6 +1,6 @@
 package com.tny.game.common.worker;
 
-import com.tny.game.common.worker.command.Command;
+import com.tny.game.common.worker.command.*;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -1,11 +1,12 @@
 package com.tny.game.protoex.field;
 
-import static com.tny.game.common.utils.StringAide.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 
 import java.lang.reflect.*;
 import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * @param <T>
@@ -37,7 +38,8 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
         this(protoExType, type, name, index, false, typeEncode, format);
     }
 
-    protected BaseIOConfiger(ProtoExType protoExType, Class<T> type, String name, int index, boolean packed, TypeEncode typeEncode, FieldFormat format) {
+    protected BaseIOConfiger(ProtoExType protoExType, Class<T> type, String name, int index, boolean packed, TypeEncode typeEncode,
+            FieldFormat format) {
         this.init(protoExType, type, name, index, typeEncode, format);
         this.packed = packed;
     }
@@ -75,7 +77,7 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
 
     protected static boolean checkExplicit(Class<?> type, boolean explicit) {
         if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type) &&
-                ((Modifier.isAbstract(type.getModifiers())) && !explicit)) {
+            ((Modifier.isAbstract(type.getModifiers())) && !explicit)) {
             return false;
         }
         return true;
@@ -113,9 +115,10 @@ public abstract class BaseIOConfiger<T> implements IOConfiger<T> {
 
     @Override
     public String toString() {
-        return "IOConfiger [name=" + this.name + ", index=" + this.index + ", type=" + this.type + ", typeEncode=" + this.typeEncode + ", protoExType=" + this.protoExType + ", packed="
-                + this.packed + ", format=" + this.format
-                + "]";
+        return "IOConfiger [name=" + this.name + ", index=" + this.index + ", type=" + this.type + ", typeEncode=" + this.typeEncode +
+               ", protoExType=" + this.protoExType + ", packed="
+               + this.packed + ", format=" + this.format
+               + "]";
     }
 
 }

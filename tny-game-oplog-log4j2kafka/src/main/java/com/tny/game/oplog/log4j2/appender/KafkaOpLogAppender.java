@@ -1,20 +1,11 @@
 package com.tny.game.oplog.log4j2.appender;
 
-import com.tny.game.oplog.Log;
-import com.tny.game.oplog.log4j2.KafkaOplogManager;
-import com.tny.game.oplog.log4j2.LogMessage;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.log4j2.*;
+import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.appender.*;
+import org.apache.logging.log4j.core.config.*;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.util.StringEncoder;
@@ -46,7 +37,8 @@ public class KafkaOpLogAppender extends AbstractAppender {
 
     private final KafkaOplogManager manager;
 
-    private KafkaOpLogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter, final boolean ignoreExceptions, final KafkaOplogManager manager) {
+    private KafkaOpLogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter, final boolean ignoreExceptions,
+            final KafkaOplogManager manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
     }

@@ -1,10 +1,8 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.tny.game.oplog.Snapshot;
-import com.tny.game.oplog.SnapshotType;
+import com.tny.game.oplog.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "@T")
 public abstract class BaseSnapshot implements Snapshot {

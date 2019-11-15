@@ -1,7 +1,7 @@
 package com.tny.game.doc.output;
 
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.doc.table.ConfigTable;
+import com.tny.game.doc.table.*;
 
 /**
  * xml 格式化

@@ -1,11 +1,10 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.base.item.*;
+import com.tny.game.common.result.*;
+import com.tny.game.common.utils.*;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 条件结果
@@ -43,7 +42,8 @@ public class DemandResult {
      */
     private boolean satisfy;
 
-    public DemandResult(long id, ItemModel itemModel, DemandType demandType, Object currentValue, Object expectValue, boolean satisfy, Map<DemandParam, Object> paramMap) {
+    public DemandResult(long id, ItemModel itemModel, DemandType demandType, Object currentValue, Object expectValue, boolean satisfy,
+            Map<DemandParam, Object> paramMap) {
         this.id = id;
         this.itemModel = itemModel;
         this.demandType = demandType;
@@ -143,7 +143,7 @@ public class DemandResult {
     @Override
     public String toString() {
         return "DemandResult [itemID=" + getItemId() + ", demandType=" + demandType + ", currentValue=" + currentValue
-                + ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
+               + ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
     }
 
 }

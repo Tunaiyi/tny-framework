@@ -1,6 +1,6 @@
 package com.tny.game.cache.simple;
 
-import com.tny.game.cache.RawCacheItem;
+import com.tny.game.cache.*;
 
 public class SimpleCacheItem<T, R> extends RawCacheItem<R, T> {
 

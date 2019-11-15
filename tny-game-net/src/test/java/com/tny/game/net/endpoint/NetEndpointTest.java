@@ -4,15 +4,13 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.test.*;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 import static com.tny.game.net.transport.TestMessages.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.

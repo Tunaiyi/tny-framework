@@ -1,8 +1,6 @@
-import com.tny.game.zookeeper.ZKClient;
+import com.tny.game.zookeeper.*;
 import org.apache.zookeeper.AsyncCallback.DataCallback;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;

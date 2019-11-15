@@ -2,20 +2,11 @@ package com.tny.game.scanner;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.*;
 
 /**
  * <p>

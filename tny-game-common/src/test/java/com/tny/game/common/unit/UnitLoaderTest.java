@@ -1,6 +1,6 @@
 package com.tny.game.common.unit;
 
-import com.tny.game.test.TestAide;
+import com.tny.game.test.*;
 import org.junit.*;
 
 import static org.junit.Assert.*;

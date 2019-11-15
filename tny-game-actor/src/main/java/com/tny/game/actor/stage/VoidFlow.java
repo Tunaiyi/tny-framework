@@ -1,15 +1,11 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.actor.Completable;
-import com.tny.game.actor.DoneSupplier;
-import com.tny.game.actor.stage.invok.CatcherRun;
-import com.tny.game.actor.stage.invok.RunDone;
-import com.tny.game.actor.stage.invok.SupplyDone;
+import com.tny.game.actor.*;
+import com.tny.game.actor.stage.invok.*;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * 流程

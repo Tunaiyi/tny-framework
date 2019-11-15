@@ -1,6 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.Ability;
+import com.tny.game.base.item.*;
 
 public enum TestAbility implements Ability {
 

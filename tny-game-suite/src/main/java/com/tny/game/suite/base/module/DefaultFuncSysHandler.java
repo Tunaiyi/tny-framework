@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureExplorer;
+import com.tny.game.base.module.*;
 
 public class DefaultFuncSysHandler extends GameFeatureHandler<Feature> {
 

@@ -33,7 +33,7 @@ public class NettyTerminalTunnelTest extends NettyTunnelTest<NettyTerminal<Long>
     }
 
     private NettyTerminalTunnel<Long> newTunnel(MockNettyClient client, boolean open) {
-        NettyTerminalTunnel<Long> tunnel =  new NettyTerminalTunnel<>(client, new CommonMessageFactory<>());
+        NettyTerminalTunnel<Long> tunnel = new NettyTerminalTunnel<>(client, new CommonMessageFactory<>());
         if (open)
             tunnel.open();
         return tunnel;

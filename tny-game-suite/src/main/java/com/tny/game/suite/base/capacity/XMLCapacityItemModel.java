@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.ItemModelContext;
-import com.tny.game.base.item.xml.XMLItemModel;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.xml.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,8 +20,8 @@ public abstract class XMLCapacityItemModel extends XMLItemModel implements Capac
         super.init(context);
         capacities = Collections.unmodifiableSet(this.getAbilityTypes(Capacity.class));
         capacityGroups = Collections.unmodifiableSet(this.capacities.stream()
-                .map(Capacity::getGroup)
-                .collect(Collectors.toSet()));
+                                                                    .map(Capacity::getGroup)
+                                                                    .collect(Collectors.toSet()));
 
     }
 

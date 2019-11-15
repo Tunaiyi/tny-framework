@@ -7,7 +7,7 @@ ext.vers = [
         spring      : "5.1.7.RELEASE",
         slf4j       : "1.7.25",
         log4j       : "2.8.2",
-        jackson     : "2.8.6",
+        jackson     : "2.9.9",
         jade        : "1.6.x-SNAPSHOT",
         tny         : "3.1.x-SNAPSHOT",
         poi         : "4.1.0",

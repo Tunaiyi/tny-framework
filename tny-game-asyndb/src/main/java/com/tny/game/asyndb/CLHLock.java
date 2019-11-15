@@ -35,36 +35,36 @@ public class CLHLock {
 
     static int value = 0;
 
-//	public static void main(String[] args) {
-//		final CLHLock lock = new CLHLock();
-//
-//		int size = 30;
-//		final CountDownLatch latch = new CountDownLatch(size);
-//		for (int i = 0; i < size; i++) {
-//			final int num = i;
-//			new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					latch.countDown();
-//					try {
-//						latch.await();
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//					System.out.println("Thread " + num + " 开始 ");
-//					lock.lock();
-//					try {
-//						for (int j = 0; j < 20; j++) {
-//							value++;
-//						}
-//						System.out.println("Thread " + num + " 结束!! " + value);
-//					} finally {
-//						lock.unlock();
-//					}
-//				}
-//
-//			}).start();
-//		}
-//	}
+    //	public static void main(String[] args) {
+    //		final CLHLock lock = new CLHLock();
+    //
+    //		int size = 30;
+    //		final CountDownLatch latch = new CountDownLatch(size);
+    //		for (int i = 0; i < size; i++) {
+    //			final int num = i;
+    //			new Thread(new Runnable() {
+    //
+    //				@Override
+    //				public void run() {
+    //					latch.countDown();
+    //					try {
+    //						latch.await();
+    //					} catch (InterruptedException e) {
+    //						e.printStackTrace();
+    //					}
+    //					System.out.println("Thread " + num + " 开始 ");
+    //					lock.lock();
+    //					try {
+    //						for (int j = 0; j < 20; j++) {
+    //							value++;
+    //						}
+    //						System.out.println("Thread " + num + " 结束!! " + value);
+    //					} finally {
+    //						lock.unlock();
+    //					}
+    //				}
+    //
+    //			}).start();
+    //		}
+    //	}
 }

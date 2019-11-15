@@ -40,8 +40,10 @@ public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> implements L
         @Override
         @SuppressWarnings("unchecked")
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null) return false;
+            if (this == o)
+                return true;
+            if (o == null)
+                return false;
             if (!(o instanceof BindHandler))
                 return false;
             BindHandler<?> that = (BindHandler<?>) o;

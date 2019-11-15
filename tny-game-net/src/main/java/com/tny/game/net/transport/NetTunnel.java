@@ -51,8 +51,8 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
     boolean bind(NetEndpoint<UID> endpoint);
 
     /**
-     * @return 创建写出 Future
      * @param timeout
+     * @return 创建写出 Future
      */
     WriteMessagePromise createWritePromise(long timeout);
 

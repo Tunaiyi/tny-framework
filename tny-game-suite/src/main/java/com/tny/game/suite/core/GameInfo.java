@@ -10,18 +10,10 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.utils.*;
 import com.tny.game.suite.utils.*;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.*;
+import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -168,14 +160,14 @@ public class GameInfo {
 
     public Optional<InetConnector> getPublicConnector(String connectorID) {
         return this.getPublicConnectors().stream()
-                .filter(c -> c.getId().equals(connectorID))
-                .findFirst();
+                   .filter(c -> c.getId().equals(connectorID))
+                   .findFirst();
     }
 
     public Optional<InetConnector> getPrivateConnector(String connectorID) {
         return this.getPrivateConnectors().stream()
-                .filter(c -> c.getId().equals(connectorID))
-                .findFirst();
+                   .filter(c -> c.getId().equals(connectorID))
+                   .findFirst();
     }
 
     public DateTime getStartAt() {

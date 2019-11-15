@@ -1,17 +1,16 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.tny.game.base.item.Manager;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.base.item.*;
+import com.tny.game.common.collection.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.annotation.Listener;
+import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.aop.*;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.net.command.dispatcher.ControllerContext;
-import com.tny.game.suite.auto.AutoMethodHolder;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.suite.auto.*;
 import com.tny.game.suite.auto.persistent.annotation.*;
-import com.tny.game.suite.base.GameExplorer;
+import com.tny.game.suite.base.*;
 import com.tny.game.suite.transaction.*;
-import com.tny.game.suite.transaction.listener.TransactionListener;
+import com.tny.game.suite.transaction.listener.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -21,6 +20,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.suite.SuiteProfiles.*;
 
 @Listener

@@ -12,5 +12,5 @@ import com.tny.game.net.command.dispatcher.*;
 public interface NetAttrKeys {
 
     AttrKey<MessageCommandBox> USER_COMMAND_BOX = AttrKeys.key(NetAttrKeys.class.getName() + "USER_COMMAND_BOX");
-    
+
 }

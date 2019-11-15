@@ -3,8 +3,7 @@ package com.tny.game.doc.table;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @XStreamAlias("table")
 public class ConfigTable {

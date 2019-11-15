@@ -1,8 +1,7 @@
 package com.tny.game.common.context;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class AttrKeys {
@@ -46,12 +45,12 @@ public class AttrKeys {
 
     public static Map<String, Object> attributes2Map(Attributes attributes) {
         return attributes.getAttributeMap()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey().name(),
-                        e -> e.getValue()
-                ));
+                         .entrySet()
+                         .stream()
+                         .collect(Collectors.toMap(
+                                 e -> e.getKey().name(),
+                                 e -> e.getValue()
+                         ));
     }
 
 }

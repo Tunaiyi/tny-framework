@@ -1,7 +1,7 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.common.enums.EnumIdentifiable;
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.enums.*;
+import com.tny.game.common.result.*;
 
 /**
  * 条件类型接口

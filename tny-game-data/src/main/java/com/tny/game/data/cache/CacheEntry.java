@@ -3,8 +3,7 @@ package com.tny.game.data.cache;
 import com.tny.game.common.utils.*;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 /**
  * <p>

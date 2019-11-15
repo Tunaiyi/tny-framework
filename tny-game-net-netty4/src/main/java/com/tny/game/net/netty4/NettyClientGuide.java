@@ -6,20 +6,14 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -75,20 +69,20 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
             this.bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler();
             this.bootstrap.group(workerGroup)
-                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<Channel>() {
+                          .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                          .option(ChannelOption.SO_REUSEADDR, true)
+                          .option(ChannelOption.TCP_NODELAY, true)
+                          .option(ChannelOption.SO_KEEPALIVE, true)
+                          .handler(new ChannelInitializer<Channel>() {
 
-                        @Override
-                        protected void initChannel(Channel ch) throws Exception {
-                            if (channelMaker != null)
-                                channelMaker.initChannel(ch);
-                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
-                        }
+                              @Override
+                              protected void initChannel(Channel ch) throws Exception {
+                                  if (channelMaker != null)
+                                      channelMaker.initChannel(ch);
+                                  ch.pipeline().addLast("nettyMessageHandler", messageHandler);
+                              }
 
-                    });
+                          });
             return this.bootstrap;
         }
 
@@ -110,10 +104,12 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
             }
             if (channelFuture.cause() != null) {
                 channelFuture.cancel(true);
-                throw new NetException(format("Connect url: {} failed. result: {} success: {}, connected: {}", url, result, success, connected), channelFuture.cause());
+                throw new NetException(format("Connect url: {} failed. result: {} success: {}, connected: {}", url, result, success, connected),
+                        channelFuture.cause());
             } else {
                 channelFuture.cancel(true);
-                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}, connected: {}", url, result, success, connected), channelFuture.cause());
+                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}, connected: {}", url, result, success, connected),
+                        channelFuture.cause());
             }
         } catch (NetException e) {
             throw e;

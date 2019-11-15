@@ -1,7 +1,7 @@
 package com.tny.game.net.command.plugins.filter.range;
 
 
-import com.tny.game.net.command.plugins.filter.range.annotation.ByteRange;
+import com.tny.game.net.command.plugins.filter.range.annotation.*;
 
 public class ByteRangeLimitParamFilter extends RangeLimitParamFilter<ByteRange, Byte> {
 

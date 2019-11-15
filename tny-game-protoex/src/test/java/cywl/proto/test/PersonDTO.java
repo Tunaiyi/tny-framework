@@ -1,15 +1,10 @@
 package cywl.proto.test;
 
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExConf;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.protoex.field.FieldFormat;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ProtoEx(100)
 public class PersonDTO {
@@ -165,9 +160,11 @@ public class PersonDTO {
 
     @Override
     public String toString() {
-        return "Person [name=" + this.name + ", age=" + this.age + ", friend=" + ArrayUtils.toString(this.friendIDList) + ", equip=" + this.equip + ", goodsList=" + ArrayUtils.toString(this.goodsList) + ", noteList="
-                + ArrayUtils.toString(this.noteList) + ", floatTest=" + this.floatTest + ", doubleTest=" + this.doubleTest + ", trueTest=" + this.trueTest + ", falseTest=" + this.falseTest + ", paramBytes="
-                + Arrays.toString(this.paramBytes) + "]";
+        return "Person [name=" + this.name + ", age=" + this.age + ", friend=" + ArrayUtils.toString(this.friendIDList) + ", equip=" + this.equip +
+               ", goodsList=" + ArrayUtils.toString(this.goodsList) + ", noteList="
+               + ArrayUtils.toString(this.noteList) + ", floatTest=" + this.floatTest + ", doubleTest=" + this.doubleTest + ", trueTest=" +
+               this.trueTest + ", falseTest=" + this.falseTest + ", paramBytes="
+               + Arrays.toString(this.paramBytes) + "]";
     }
 
     //	", friend=" + ArrayUtils.toString(friendIDList) + ", equip=" + equip + ", goodsList=" + ArrayUtils.toString(goodsList) +

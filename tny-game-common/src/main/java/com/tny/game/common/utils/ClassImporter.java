@@ -1,6 +1,6 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.config.Config;
+import com.tny.game.common.config.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**

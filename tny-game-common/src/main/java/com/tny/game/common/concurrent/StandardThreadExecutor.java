@@ -59,12 +59,12 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
     }
 
     public StandardThreadExecutor(int coreThreads, int maxThreads, long keepAliveTime, TimeUnit unit,
-                                  int queueCapacity, ThreadFactory threadFactory) {
+            int queueCapacity, ThreadFactory threadFactory) {
         this(coreThreads, maxThreads, keepAliveTime, unit, queueCapacity, threadFactory, new AbortPolicy());
     }
 
     public StandardThreadExecutor(int coreThreads, int maxThreads, long keepAliveTime, TimeUnit unit,
-                                  int queueCapacity, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+            int queueCapacity, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
         super(coreThreads, maxThreads, keepAliveTime, unit, new ExecutorQueue(), threadFactory, handler);
         ((ExecutorQueue) getQueue()).setStandardThreadExecutor(this);
 

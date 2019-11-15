@@ -2,12 +2,7 @@ package com.tny.game.cache.annotation;
 
 import com.tny.game.cache.*;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 调用Cache中 **Object(...) 方法的对象必须有该注解 Cache会根据该注解构建key，用于存储删除对象

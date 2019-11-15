@@ -1,29 +1,18 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.Module;
-import com.tny.game.base.module.ModuleHandler;
-import com.tny.game.common.runtime.RunningChecker;
-import com.tny.game.common.config.Config;
-import com.tny.game.common.lifecycle.LifecycleLevel;
-import com.tny.game.common.lifecycle.PrepareStarter;
-import com.tny.game.common.lifecycle.AppPrepareStart;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.suite.utils.Configs;
-import com.tny.game.suite.utils.SuiteLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.base.module.*;
+import com.tny.game.common.config.*;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.runtime.*;
+import com.tny.game.suite.utils.*;
+import org.slf4j.*;
 import org.springframework.beans.BeansException;
+import org.springframework.context.*;
+
 import javax.annotation.Resource;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.suite.utils.Configs.*;
 
 public abstract class ModuleService<DTO> implements AppPrepareStart, ApplicationContextAware {

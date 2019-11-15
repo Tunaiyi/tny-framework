@@ -2,10 +2,7 @@ package com.tny.game.scanner.filter;
 
 import org.springframework.core.type.classreading.MetadataReader;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class SubOfClassFilter implements ClassFilter {
 

@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import org.slf4j.*;
-import org.springframework.stereotype.*;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 

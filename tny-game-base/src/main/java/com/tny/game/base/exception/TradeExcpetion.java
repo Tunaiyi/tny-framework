@@ -1,6 +1,6 @@
 package com.tny.game.base.exception;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
 
 /**
  * 交易异常

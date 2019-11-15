@@ -1,10 +1,9 @@
 package com.tny.game.suite.scheduler.cache;
 
-import com.tny.game.common.scheduler.TaskReceiver;
-import com.tny.game.suite.base.GameCacheManager;
-import com.tny.game.suite.login.IDAide;
-import com.tny.game.suite.scheduler.GameTaskReceiver;
-import com.tny.game.suite.scheduler.TaskReceiverManager;
+import com.tny.game.common.scheduler.*;
+import com.tny.game.suite.base.*;
+import com.tny.game.suite.login.*;
+import com.tny.game.suite.scheduler.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

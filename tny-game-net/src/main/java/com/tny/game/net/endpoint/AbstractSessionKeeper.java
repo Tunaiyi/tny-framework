@@ -3,16 +3,10 @@ package com.tny.game.net.endpoint;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.listener.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -27,12 +21,14 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 
     protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
 
-    public AbstractSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory, SessionSetting setting) {
+    public AbstractSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+            SessionSetting setting) {
         super(userType);
         this.setting = setting;
         this.factory = as(factory);
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
-        sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession, setting.getClearInterval(), setting.getClearInterval(), TimeUnit.MILLISECONDS);
+        sessionScanExecutor
+                .scheduleAtFixedRate(this::clearInvalidedSession, setting.getClearInterval(), setting.getClearInterval(), TimeUnit.MILLISECONDS);
         EndpointEventBuses buses = EndpointEventBuses.buses();
         buses.onlineEvent().add(this::onOnline);
         buses.offlineEvent().add(this::onOffline);

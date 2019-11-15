@@ -1,7 +1,6 @@
 package com.tny.game.base.exception;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.DemandResult;
+import com.tny.game.base.item.behavior.*;
 
 
 public class TryToDoException extends GameException {

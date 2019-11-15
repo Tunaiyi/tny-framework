@@ -1,11 +1,8 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.buff.ByteBufferNode;
-import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.protoex.field.FieldFormat;
-import com.tny.game.protoex.field.IOConfiger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.buff.*;
+import com.tny.game.protoex.field.*;
+import org.slf4j.*;
 
 import java.nio.charset.Charset;
 
@@ -152,8 +149,8 @@ public class ProtoExOutputStream implements ProtoExStream {
         if (value == null)
             return;
         if (schema.isRaw()
-                && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
-                && schema.getProtoExId() != WireFormat.PROTO_ID_MAP)
+            && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
+            && schema.getProtoExId() != WireFormat.PROTO_ID_MAP)
             throw ProtobufExException.rawTypeIsNoLengthLimitation(conf.getDefaultType());
         LinkedByteBuffer currentBuffer = this.byteBuffer;
         ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.byteBuffer.getTail());
@@ -244,20 +241,20 @@ public class ProtoExOutputStream implements ProtoExStream {
 
     private void doWriteLittleEndian64(long value) {
         this.byteBuffer.write((byte) (value & 0xFF))
-                .write((byte) (value >> 8 & 0xFF))
-                .write((byte) (value >> 16 & 0xFF))
-                .write((byte) (value >> 24 & 0xFF))
-                .write((byte) (value >> 32 & 0xFF))
-                .write((byte) (value >> 40 & 0xFF))
-                .write((byte) (value >> 48 & 0xFF))
-                .write((byte) (value >> 56 & 0xFF));
+                       .write((byte) (value >> 8 & 0xFF))
+                       .write((byte) (value >> 16 & 0xFF))
+                       .write((byte) (value >> 24 & 0xFF))
+                       .write((byte) (value >> 32 & 0xFF))
+                       .write((byte) (value >> 40 & 0xFF))
+                       .write((byte) (value >> 48 & 0xFF))
+                       .write((byte) (value >> 56 & 0xFF));
     }
 
     private void doWriteLittleEndian32(int value) {
         this.byteBuffer.write((byte) (value & 0xFF))
-                .write((byte) (value >> 8 & 0xFF))
-                .write((byte) (value >> 16 & 0xFF))
-                .write((byte) (value >> 24 & 0xFF));
+                       .write((byte) (value >> 8 & 0xFF))
+                       .write((byte) (value >> 16 & 0xFF))
+                       .write((byte) (value >> 24 & 0xFF));
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.exception.*;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.context.AttrEntry;
+import com.tny.game.common.context.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.suite.utils.SuiteResultCode;
+import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.function.BiConsumer;
 
 import static com.tny.game.base.item.behavior.TradeType.*;
-import static com.tny.game.suite.SuiteProfiles.GAME;
+import static com.tny.game.suite.SuiteProfiles.*;
 
 @Component
 @Profile(GAME)
@@ -29,43 +29,42 @@ public class GameWarehouseService implements WarehouseService {
      * 异步发奖励
      * 慎用~不一定发成功
      */
-//    public void asynTrade(long playerId, Trade trade) {
-//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
-//        if (warehouse != null) {
-//            try {
-//                warehouse.pushTrade(trade);
-//                this.gameWarehouseManager.saveWarehouse(warehouse);
-//            } catch (Exception e) {
-//                LOGGER.error("玩家 {} 添加异步Trade {} 异常", playerId, trade, e);
-//            }
-//        }
-//    }
+    //    public void asynTrade(long playerId, Trade trade) {
+    //        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
+    //        if (warehouse != null) {
+    //            try {
+    //                warehouse.pushTrade(trade);
+    //                this.gameWarehouseManager.saveWarehouse(warehouse);
+    //            } catch (Exception e) {
+    //                LOGGER.error("玩家 {} 添加异步Trade {} 异常", playerId, trade, e);
+    //            }
+    //        }
+    //    }
 
     /**
      * 异步发奖励
      * 慎用~不一定发成功
      */
-//    public void checkAsynTrade(long playerId) {
-//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
-//        Trade trade = null;
-//        if (warehouse != null) {
-//            if (warehouse.isTradesEmpty())
-//                return;
-//            try {
-//                while ((trade = warehouse.popTrade()) != null) {
-//                    if (trade.getTradeType() == TradeType.AWARD) {
-//                        this.doHandleTrade(playerId, trade, warehouse::receive);
-//                    } else {
-//                        this.doHandleTrade(playerId, trade, warehouse::consume);
-//                    }
-//                }
-//                this.gameWarehouseManager.saveWarehouse(warehouse);
-//            } catch (Exception e) {
-//                LOGGER.error("玩家 {} 异步处理Trade {} 异常", playerId, trade, e);
-//            }
-//        }
-//    }
-
+    //    public void checkAsynTrade(long playerId) {
+    //        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
+    //        Trade trade = null;
+    //        if (warehouse != null) {
+    //            if (warehouse.isTradesEmpty())
+    //                return;
+    //            try {
+    //                while ((trade = warehouse.popTrade()) != null) {
+    //                    if (trade.getTradeType() == TradeType.AWARD) {
+    //                        this.doHandleTrade(playerId, trade, warehouse::receive);
+    //                    } else {
+    //                        this.doHandleTrade(playerId, trade, warehouse::consume);
+    //                    }
+    //                }
+    //                this.gameWarehouseManager.saveWarehouse(warehouse);
+    //            } catch (Exception e) {
+    //                LOGGER.error("玩家 {} 异步处理Trade {} 异常", playerId, trade, e);
+    //            }
+    //        }
+    //    }
     @Override
     public void consume(long playerID, Trade trade, AttrEntry<?>... entries) {
         GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
@@ -118,7 +117,8 @@ public class GameWarehouseService implements WarehouseService {
         }
     }
 
-    private void doHandleTrade(long playerID, TradeItem<?> tradeItem, Action action, TradeType tradeType, TradeWithTradeItem fn, AttrEntry<?>... entries) {
+    private void doHandleTrade(long playerID, TradeItem<?> tradeItem, Action action, TradeType tradeType, TradeWithTradeItem fn,
+            AttrEntry<?>... entries) {
         try {
             fn.trade(tradeItem, action, entries);
         } catch (Exception e) {

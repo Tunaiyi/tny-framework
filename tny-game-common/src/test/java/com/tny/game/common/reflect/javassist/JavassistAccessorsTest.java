@@ -1,11 +1,11 @@
 package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.reflect.*;
-import org.junit.Test;
+import org.junit.*;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**

@@ -1,7 +1,7 @@
 package com.tny.game.net.codec;
 
-import com.tny.game.net.message.Message;
-import com.tny.game.net.message.coder.Codec;
+import com.tny.game.net.message.*;
+import com.tny.game.net.message.coder.*;
 
 /**
  * Created by Kun Yang on 2018/8/13.

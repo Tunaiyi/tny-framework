@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.common.enums.EnumeratorHolder;
+import com.tny.game.common.enums.*;
 
 import java.util.Collection;
 

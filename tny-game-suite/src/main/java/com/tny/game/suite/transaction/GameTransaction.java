@@ -1,9 +1,8 @@
 package com.tny.game.suite.transaction;
 
 
-import com.tny.game.common.context.Attributes;
-import com.tny.game.common.context.ContextAttributes;
-import com.tny.game.suite.transaction.listener.TransactionEvents;
+import com.tny.game.common.context.*;
+import com.tny.game.suite.transaction.listener.*;
 
 public class GameTransaction implements Transaction {
 

@@ -32,11 +32,13 @@ public class TestMsgOject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TestMsgOject)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof TestMsgOject))
+            return false;
         TestMsgOject testBody = (TestMsgOject) o;
         return getId() == testBody.getId() &&
-                Objects.equals(getName(), testBody.getName());
+               Objects.equals(getName(), testBody.getName());
     }
 
     @Override
@@ -47,8 +49,8 @@ public class TestMsgOject {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("name", name)
-                .toString();
+                          .add("id", id)
+                          .add("name", name)
+                          .toString();
     }
 }

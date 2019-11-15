@@ -6,16 +6,10 @@ import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
+import java.util.concurrent.atomic.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -46,76 +40,76 @@ public class ProtoExTest {
             Arrays.asList(this.createTestObject(), this.createTestObject())};
     private Map<?, ?>[] mapMixValues = new Map[]{
             MapBuilder.newBuilder()
-                    .put(TestKey.key("testObject1"), this.createTestObject())
-                    .put(TestKey.key("testObject2"), this.createTestObject())
-                    .put("testObject", this.createTestObject())
-                    .put("subObject", this.createTestSub())
-                    .put(1000, this.createTestSub())
-                    .put(1001, this.createTestSub())
-                    .put(true, 100.1f)
-                    .put(false, 100.2f)
-                    .put(100.123, 10000L)
-                    .put(100.321, 20000L)
+                      .put(TestKey.key("testObject1"), this.createTestObject())
+                      .put(TestKey.key("testObject2"), this.createTestObject())
+                      .put("testObject", this.createTestObject())
+                      .put("subObject", this.createTestSub())
+                      .put(1000, this.createTestSub())
+                      .put(1001, this.createTestSub())
+                      .put(true, 100.1f)
+                      .put(false, 100.2f)
+                      .put(100.123, 10000L)
+                      .put(100.321, 20000L)
                     .build(),
             MapBuilder.newBuilder()
-                    .put(TestKey.key("testObject1"), this.createTestObject())
-                    .put(TestKey.key("testObject2"), this.createTestObject())
-                    .put("testObject", this.createTestObject())
-                    .put("subObject", this.createTestSub())
-                    .put(1000, this.createTestSub())
-                    .put(1001, this.createTestSub())
-                    .put(true, 100.1f)
-                    .put(false, 100.2f)
-                    .put(100.123, 10000L)
-                    .put(100.321, 20000L)
+                      .put(TestKey.key("testObject1"), this.createTestObject())
+                      .put(TestKey.key("testObject2"), this.createTestObject())
+                      .put("testObject", this.createTestObject())
+                      .put("subObject", this.createTestSub())
+                      .put(1000, this.createTestSub())
+                      .put(1001, this.createTestSub())
+                      .put(true, 100.1f)
+                      .put(false, 100.2f)
+                      .put(100.123, 10000L)
+                      .put(100.321, 20000L)
                     .build(),
     };
     private Map<?, ?>[] map_KeyExp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyExp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestObject("value3"))
-                    .put(this.createTestSub("key4"), this.createTestObject("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestObject("value3"))
+                      .put(this.createTestSub("key4"), this.createTestObject("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueExp_Values = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueExp_Result = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestObject("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                    .put(this.createTestObject("key4"), this.createTestSub("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestObject("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                      .put(this.createTestObject("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
-                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                    .put(this.createTestObject("key2"), this.createTestObject("value2"))
-                    .put(this.createTestObject("key3"), this.createTestObject("value3"))
-                    .put(this.createTestObject("key4"), this.createTestObject("value4"))
+                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                      .put(this.createTestObject("key2"), this.createTestObject("value2"))
+                      .put(this.createTestObject("key3"), this.createTestObject("value3"))
+                      .put(this.createTestObject("key4"), this.createTestObject("value4"))
                     .build(),
     };
 
@@ -158,10 +152,14 @@ public class ProtoExTest {
         this.write(writer, this.repeatValues, TestObject.class, true, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
         this.write(writer, this.repeatValues, TestObject.class, false, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
         this.write(writer, this.repeatValues, TestObject.class, true, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, this.map_KeyExp_ValueImp_Values, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, this.map_KeyImp_ValueExp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, this.map_KeyImp_ValueImp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyExp_ValueImp_Values, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyImp_ValueExp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyImp_ValueImp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length);
@@ -189,10 +187,14 @@ public class ProtoExTest {
         this.read(reader, this.repeatResult, TestObject.class, true, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
         this.read(reader, this.repeatResult, TestObject.class, false, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
         this.read(reader, this.repeatResult, TestObject.class, true, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, this.map_KeyExp_ValueImp_Result, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, this.map_KeyImp_ValueExp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, this.map_KeyImp_ValueImp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyExp_ValueImp_Result, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyImp_ValueExp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyImp_ValueImp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
     }
 
@@ -761,7 +763,8 @@ public class ProtoExTest {
 
     }
 
-    private <T> void write(ProtoExWriter writer, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    private <T> void write(ProtoExWriter writer, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode,
+            FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
             String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
@@ -770,7 +773,8 @@ public class ProtoExTest {
         }
     }
 
-    private <T> void read(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    private <T> void read(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode,
+            FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readCollection(elementType);
@@ -779,7 +783,8 @@ public class ProtoExTest {
         }
     }
 
-    private <T> void readMessage(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+    private <T> void readMessage(ProtoExReader reader, Collection<?>[] values, Class<T> elementType, boolean packed, TypeEncode elTypeEncode,
+            FieldFormat elFormat) {
         int time = 1;
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readMessage();
@@ -792,12 +797,12 @@ public class ProtoExTest {
     public void testString_IntMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                        .put("testObject", 1000)
-                        .put("subObject", 1001)
+                          .put("testObject", 1000)
+                          .put("subObject", 1001)
                         .build(),
                 MapBuilder.newBuilder()
-                        .put("testObject", 2000)
-                        .put("subObject", 2001)
+                          .put("testObject", 2000)
+                          .put("subObject", 2001)
                         .build()
         };
 
@@ -823,12 +828,12 @@ public class ProtoExTest {
     public void testInt_StringMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                        .put(1000, "testObject")
-                        .put(1001, "subObject")
+                          .put(1000, "testObject")
+                          .put(1001, "subObject")
                         .build(),
                 MapBuilder.newBuilder()
-                        .put(2000, "testObject")
-                        .put(2001, "subObject")
+                          .put(2000, "testObject")
+                          .put(2001, "subObject")
                         .build()
         };
 
@@ -854,21 +859,25 @@ public class ProtoExTest {
     public void testObject_ObjectMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                        .put(TestKey.key("testObject1"), this.createTestObject())
-                        .put(TestKey.key("testObject2"), this.createTestObject())
+                          .put(TestKey.key("testObject1"), this.createTestObject())
+                          .put(TestKey.key("testObject2"), this.createTestObject())
                         .build(),
                 MapBuilder.newBuilder()
-                        .put(TestKey.key("testObject1"), this.createTestObject())
-                        .put(TestKey.key("testObject2"), this.createTestObject())
+                          .put(TestKey.key("testObject1"), this.createTestObject())
+                          .put(TestKey.key("testObject2"), this.createTestObject())
                         .build(),
         };
 
         ProtoExWriter writer = this.createWrite();
 
-        this.write(writer, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.write(writer, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.write(writer, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT,
+                FieldFormat.DEFAULT);
+        this.write(writer, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.write(writer, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT,
+                FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
@@ -876,10 +885,14 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-        this.read(reader, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.read(reader, values, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT,
+                FieldFormat.DEFAULT);
+        this.read(reader, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
+        this.read(reader, values, TestKey.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT,
+                FieldFormat.DEFAULT);
 
     }
 
@@ -888,7 +901,8 @@ public class ProtoExTest {
 
         ProtoExWriter writer = this.createWrite();
 
-        this.write(writer, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
@@ -896,7 +910,8 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.mapMixValues, TestKey.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT,
+                FieldFormat.DEFAULT);
 
     }
 
@@ -905,7 +920,8 @@ public class ProtoExTest {
 
         ProtoExWriter writer = this.createWrite();
 
-        this.write(writer, this.map_KeyExp_ValueImp_Values, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyExp_ValueImp_Values, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
@@ -913,7 +929,8 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, this.map_KeyExp_ValueImp_Result, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyExp_ValueImp_Result, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
     }
 
@@ -922,7 +939,8 @@ public class ProtoExTest {
 
         ProtoExWriter writer = this.createWrite();
 
-        this.write(writer, this.map_KeyImp_ValueExp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyImp_ValueExp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
@@ -930,7 +948,8 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, this.map_KeyImp_ValueExp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyImp_ValueExp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 
     }
 
@@ -939,7 +958,8 @@ public class ProtoExTest {
 
         ProtoExWriter writer = this.createWrite();
 
-        this.write(writer, this.map_KeyImp_ValueImp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.write(writer, this.map_KeyImp_ValueImp_Values, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
@@ -947,13 +967,14 @@ public class ProtoExTest {
 
         ProtoExReader reader = this.createReader(data);
 
-        this.read(reader, this.map_KeyImp_ValueImp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
+        this.read(reader, this.map_KeyImp_ValueImp_Result, TestObject.class, TypeEncode.IMPLICIT, FieldFormat.DEFAULT, TestObject.class,
+                TypeEncode.IMPLICIT, FieldFormat.DEFAULT);
 
     }
 
     private <T> void write(ProtoExWriter writer, Map<?, ?>[] values,
-                           Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                           Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+            Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+            Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         int time = 1;
         for (Map<?, ?> value : values) {
             String method = format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
@@ -964,8 +985,8 @@ public class ProtoExTest {
     }
 
     private <T> void read(ProtoExReader reader, Map<?, ?>[] values,
-                          Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
-                          Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
+            Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
+            Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         int time = 1;
         for (Map<?, ?> value : values) {
             Map<?, ?> readValue = reader.readMap(keyType, valueType);

@@ -1,22 +1,16 @@
 package com.tny.game.cache;
 
-import com.tny.game.cache.simple.SimpleCacheItemFactory;
-import com.tny.game.cache.simple.SimpleCasItem;
+import com.tny.game.cache.simple.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
  * @author KGTny
- *         <p>
- *         缓存抽象实体
- *         <p>
- *         提供缓存锁的实现<br>
+ * <p>
+ * 缓存抽象实体
+ * <p>
+ * 提供缓存锁的实现<br>
  */
 public class DirectCache implements Cache {
 

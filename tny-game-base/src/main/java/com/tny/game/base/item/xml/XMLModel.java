@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.base.item.Model;
+import com.tny.game.base.item.*;
 
 import java.util.Set;
 

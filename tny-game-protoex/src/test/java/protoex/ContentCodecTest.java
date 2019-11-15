@@ -1,25 +1,19 @@
 package protoex;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.protoex.ProtoExReader;
-import com.tny.game.protoex.ProtoExWriter;
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.annotations.*;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 import org.springframework.util.NumberUtils;
 
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.lang.reflect.*;
+import java.math.*;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class ContentCodecTest {
 

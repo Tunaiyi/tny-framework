@@ -1,7 +1,7 @@
 package com.tny.game;
 
-import com.tny.game.cache.async.AsyncCache;
-import com.tny.game.cache.testclass.TestPlayer;
+import com.tny.game.cache.async.*;
+import com.tny.game.cache.testclass.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -1,18 +1,10 @@
 package com.tny.game.common.collection;
 
-import com.tny.game.common.utils.Throws;
+import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class CollectionAide {
@@ -45,7 +37,8 @@ public class CollectionAide {
         EMPTY_ARRAY_MAP.put(boolean.class, BOOLEAN_EMPTY_ARRAY);
     }
 
-    public final static Object[] EMPTY_ARRAYS = new Object[]{CHAR_EMPTY_ARRAY, BYTE_EMPTY_ARRAY, INT_EMPTY_ARRAY, SHORT_EMPTY_ARRAY, LONG_EMPTY_ARRAY, FLOAT_EMPTY_ARRAY, DOUBLE_EMPTY_ARRAY, BOOLEAN_EMPTY_ARRAY};
+    public final static Object[] EMPTY_ARRAYS = new Object[]{CHAR_EMPTY_ARRAY, BYTE_EMPTY_ARRAY, INT_EMPTY_ARRAY, SHORT_EMPTY_ARRAY, LONG_EMPTY_ARRAY,
+            FLOAT_EMPTY_ARRAY, DOUBLE_EMPTY_ARRAY, BOOLEAN_EMPTY_ARRAY};
 
     public static Object toArray(Collection<?> collection, Class<?> clazz) {
         Object message = Array.newInstance(clazz, collection.size());

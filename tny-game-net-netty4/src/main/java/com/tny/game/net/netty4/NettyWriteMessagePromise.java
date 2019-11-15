@@ -3,14 +3,10 @@ package com.tny.game.net.netty4;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelPromise;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.netty.channel.*;
+import org.slf4j.*;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>

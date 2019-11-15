@@ -1,18 +1,16 @@
 package com.tny.game.protoex.field.runtime;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.common.reflect.ClassAccessor;
-import com.tny.game.common.reflect.javassist.JavassistAccessors;
+import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.javassist.*;
 import com.tny.game.protoex.*;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.field.FieldDesc;
-import com.tny.game.protoex.field.IOConfiger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.field.*;
+import org.slf4j.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 自定累类类型描述结构
@@ -135,7 +133,8 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
                 ProtoExSchema<Object> schema = context.getSchema(protoExID, currentTag.isRaw(), field.getDefaultType());
                 Object value = schema.readMessage(inputStream, field);
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("读取到 Message | {} -> [字段 : {} - ({})] : {} ==> {}", this.gClass.getName(), field.getName(), field.getIndex(), currentTag, value);
+                    LOGGER.debug("读取到 Message | {} -> [字段 : {} - ({})] : {} ==> {}", this.gClass.getName(), field.getName(), field.getIndex(),
+                            currentTag, value);
                 if (value != null)
                     field.setValue(message, value);
             }

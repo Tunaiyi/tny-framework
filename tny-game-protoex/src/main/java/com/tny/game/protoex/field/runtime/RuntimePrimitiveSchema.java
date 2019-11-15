@@ -1,17 +1,10 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.protoex.BaseProtoExSchema;
-import com.tny.game.protoex.ProtoExInputStream;
-import com.tny.game.protoex.ProtoExOutputStream;
-import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.Tag;
-import com.tny.game.protoex.WireFormat;
-import com.tny.game.protoex.field.IOConfiger;
+import com.tny.game.common.buff.*;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.field.*;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.*;
 
 /**
  * 原生类型描述框架
@@ -87,7 +80,8 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
 
     };
 
-    public final static ProtoExSchema<AtomicInteger> ATOMIC_INT_SCHEMA = new RuntimePrimitiveSchema<AtomicInteger>(WireFormat.PROTO_ID_INT, AtomicInteger.class) {
+    public final static ProtoExSchema<AtomicInteger> ATOMIC_INT_SCHEMA = new RuntimePrimitiveSchema<AtomicInteger>(WireFormat.PROTO_ID_INT,
+            AtomicInteger.class) {
 
         @Override
         public void writeValue(ProtoExOutputStream outputStream, AtomicInteger value, IOConfiger<?> conf) {
@@ -115,7 +109,8 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
 
     };
 
-    public final static ProtoExSchema<AtomicLong> ATOMIC_LONG_SCHEMA = new RuntimePrimitiveSchema<AtomicLong>(WireFormat.PROTO_ID_LONG, AtomicLong.class) {
+    public final static ProtoExSchema<AtomicLong> ATOMIC_LONG_SCHEMA = new RuntimePrimitiveSchema<AtomicLong>(WireFormat.PROTO_ID_LONG,
+            AtomicLong.class) {
 
         @Override
         public void writeValue(ProtoExOutputStream outputStream, AtomicLong value, IOConfiger<?> conf) {
@@ -170,7 +165,8 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
 
     };
 
-    public final static ProtoExSchema<AtomicBoolean> ATOMIC_BOOLEAN_SCHEMA = new RuntimePrimitiveSchema<AtomicBoolean>(WireFormat.PROTO_ID_BOOLEAN, AtomicBoolean.class) {
+    public final static ProtoExSchema<AtomicBoolean> ATOMIC_BOOLEAN_SCHEMA = new RuntimePrimitiveSchema<AtomicBoolean>(WireFormat.PROTO_ID_BOOLEAN,
+            AtomicBoolean.class) {
 
         @Override
         public void writeValue(ProtoExOutputStream outputStream, AtomicBoolean value, IOConfiger<?> conf) {
@@ -212,7 +208,8 @@ public abstract class RuntimePrimitiveSchema<T> extends BaseProtoExSchema<T> {
 
     };
 
-    public final static ProtoExSchema<LinkedByteBuffer> LINKED_BUFFER_SCHEMA = new RuntimePrimitiveSchema<LinkedByteBuffer>(WireFormat.PROTO_ID_BYTES, LinkedByteBuffer.class) {
+    public final static ProtoExSchema<LinkedByteBuffer> LINKED_BUFFER_SCHEMA = new RuntimePrimitiveSchema<LinkedByteBuffer>(WireFormat.PROTO_ID_BYTES,
+            LinkedByteBuffer.class) {
 
         @Override
         public void writeValue(ProtoExOutputStream outputStream, LinkedByteBuffer value, IOConfiger<?> conf) {

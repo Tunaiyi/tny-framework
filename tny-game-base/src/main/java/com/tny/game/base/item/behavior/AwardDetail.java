@@ -1,11 +1,8 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
+import com.tny.game.base.item.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class AwardDetail {
 

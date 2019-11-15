@@ -1,7 +1,7 @@
 package com.tny.game.base.item.xml;
 
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.base.item.ItemModelContext;
+import com.tny.game.base.item.*;
 
 public class TestItemModelManager extends AbstractXMLModelManager<TestItemModel> {
 

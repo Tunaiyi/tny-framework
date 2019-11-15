@@ -106,13 +106,15 @@ public abstract class ActorURL {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
         if (o == null)
             return false;
         if (!(o instanceof ActorURL))
             return false;
         ActorURL actorPath = (ActorURL) o;
-        if (!getName().equals(actorPath.getName())) return false;
+        if (!getName().equals(actorPath.getName()))
+            return false;
         return getParent().equals(actorPath.getParent());
 
     }

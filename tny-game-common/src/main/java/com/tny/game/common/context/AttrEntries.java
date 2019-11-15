@@ -1,9 +1,6 @@
 package com.tny.game.common.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class AttrEntries {
 

@@ -1,6 +1,6 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 
 /**
  * 需求参数

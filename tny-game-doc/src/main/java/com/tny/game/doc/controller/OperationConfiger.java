@@ -1,16 +1,11 @@
 package com.tny.game.doc.controller;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.FunDocHolder;
-import com.tny.game.doc.holder.VarDocHolder;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @XStreamAlias("operation")
 public class OperationConfiger {

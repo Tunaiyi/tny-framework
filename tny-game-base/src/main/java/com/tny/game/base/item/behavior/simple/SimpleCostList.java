@@ -1,14 +1,9 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.CostList;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 奖励列表

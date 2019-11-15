@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.suite.base.GameExplorer;
+import com.tny.game.base.item.*;
+import com.tny.game.suite.base.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -100,7 +100,8 @@ public class CapacityDebugger {
 
     private void appendObject(StringBuilder builder, CapacityObject object, CapacityObjectType objectType) {
         ItemModel model = gameExplorer.getModel(object.getItemId());
-        builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(), object.getId()));
+        builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(),
+                object.getId()));
     }
 
     private void appendFullObject(StringBuilder builder, String head, boolean recursive, CapacityObject object, CapacityObjectType objectType) {
@@ -112,8 +113,8 @@ public class CapacityDebugger {
                 builder.append(head).append(INDENT).append("能力值参数 : ");
                 builder.append("\n");
                 capacities.forEach((k, v) -> builder.append(head)
-                        .append(INDENT).append(INDENT)
-                        .append(format("{} : {}\n", k, v)));
+                                                    .append(INDENT).append(INDENT)
+                                                    .append(format("{} : {}\n", k, v)));
             } else {
                 builder.append("[空]\n");
             }

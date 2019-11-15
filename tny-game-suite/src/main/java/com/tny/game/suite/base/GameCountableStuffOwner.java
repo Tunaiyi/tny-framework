@@ -1,8 +1,6 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.CountableStuff;
-import com.tny.game.base.item.CountableStuffOwner;
-import com.tny.game.base.item.ItemModel;
+import com.tny.game.base.item.*;
 
 /**
  * Created by Kun Yang on 16/1/28.

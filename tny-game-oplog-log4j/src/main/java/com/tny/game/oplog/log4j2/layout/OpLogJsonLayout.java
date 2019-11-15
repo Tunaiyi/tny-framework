@@ -2,23 +2,18 @@ package com.tny.game.oplog.log4j2.layout;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tny.game.oplog.Log;
-import com.tny.game.oplog.log4j2.LogMessage;
-import com.tny.game.oplog.record.OperateRecord;
-import com.tny.game.oplog.record.UserStuffRecord;
-import com.tny.game.oplog.utils.OpLogMapper;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.log4j2.*;
+import com.tny.game.oplog.record.*;
+import com.tny.game.oplog.utils.*;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.message.Message;
 import org.slf4j.Logger;
 
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.tny.game.common.utils.ObjectAide.*;

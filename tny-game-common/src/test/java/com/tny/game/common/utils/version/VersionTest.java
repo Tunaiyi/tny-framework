@@ -1,9 +1,9 @@
 package com.tny.game.common.utils.version;
 
-import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
 
-import java.util.*;
+import java.util.Arrays;
 
 import static com.tny.game.common.utils.version.Version.*;
 import static org.junit.Assert.*;

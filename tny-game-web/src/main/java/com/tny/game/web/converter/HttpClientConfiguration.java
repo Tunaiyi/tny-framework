@@ -1,51 +1,31 @@
 package com.tny.game.web.converter;
 
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import org.apache.http.HeaderElement;
-import org.apache.http.HeaderElementIterator;
-import org.apache.http.HttpHost;
+import com.tny.game.common.concurrent.*;
+import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.*;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.cookie.CookieOrigin;
-import org.apache.http.cookie.CookieSpec;
-import org.apache.http.cookie.CookieSpecProvider;
-import org.apache.http.cookie.MalformedCookieException;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.conn.socket.*;
+import org.apache.http.conn.ssl.*;
+import org.apache.http.cookie.*;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.DefaultCookieSpec;
 import org.apache.http.message.BasicHeaderElementIterator;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.apache.http.protocol.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Configuration
 @Profile({"web.client"})
@@ -129,11 +109,11 @@ public class HttpClientConfiguration {
         CookieStore cookieStore = new BasicCookieStore();
 
         RequestConfig requestConfig = RequestConfig.custom()
-                .setCookieSpec("easy")
-                .setConnectionRequestTimeout(30 * 1000)
-                .setSocketTimeout(30 * 1000)
-                .setConnectTimeout(30 * 1000)
-                .build();
+                                                   .setCookieSpec("easy")
+                                                   .setConnectionRequestTimeout(30 * 1000)
+                                                   .setSocketTimeout(30 * 1000)
+                                                   .setConnectTimeout(30 * 1000)
+                                                   .build();
         HttpClientBuilder builder = HttpClients.custom();
         String host = System.getProperty(HTTP_PROXY_HOST);
         String port = System.getProperty(HTTP_PROXY_PORT);

@@ -1,12 +1,9 @@
 package com.tny.game.suite.login;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
-import com.tny.game.net.base.AppType;
-import com.tny.game.net.base.AppTypes;
+import com.fasterxml.jackson.annotation.*;
+import com.tny.game.net.base.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.io.Serializable;
@@ -95,13 +92,17 @@ public class ServerTicket implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         ServerTicket serveTicket = (ServerTicket) o;
 
-        if (serverID != serveTicket.serverID) return false;
-        if (time != serveTicket.time) return false;
+        if (serverID != serveTicket.serverID)
+            return false;
+        if (time != serveTicket.time)
+            return false;
         return secret.equals(serveTicket.secret);
 
     }
@@ -117,9 +118,9 @@ public class ServerTicket implements Serializable {
     @Override
     public String toString() {
         return "APITicket{" +
-                "serverID=" + serverID +
-                ", time=" + time +
-                ", secret='" + secret + '\'' +
-                '}';
+               "serverID=" + serverID +
+               ", time=" + time +
+               ", secret='" + secret + '\'' +
+               '}';
     }
 }

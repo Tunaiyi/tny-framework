@@ -1,6 +1,6 @@
 package com.tny.game.net.command.plugins.filter.range;
 
-import com.tny.game.net.command.plugins.filter.range.annotation.ShortRange;
+import com.tny.game.net.command.plugins.filter.range.annotation.*;
 
 public class ShortRangeLimitParamFilter extends RangeLimitParamFilter<ShortRange, Short> {
 

@@ -1,16 +1,17 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.buff.LinkedByteBuffer;
-import com.tny.game.common.collection.CopyOnWriteMap;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.protoex.ProtoExSchema;
+import com.tny.game.common.buff.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
-import com.tny.game.protoex.field.FieldDesc;
+import com.tny.game.protoex.field.*;
 
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * 运行时类型描述结构
@@ -58,7 +59,8 @@ public class RuntimeProtoExSchema {
     private static void putTypeSchema(Type type, ProtoExSchema<?> schema) {
         ProtoExSchema<?> last = schemaMap.putIfAbsent(type, schema);
         if (last != null)
-            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+            throw new IllegalArgumentException(
+                    format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
     }
 
     private static void putRawSchema(Type type, ProtoExSchema<?> schema, boolean defSchema) {
@@ -68,7 +70,8 @@ public class RuntimeProtoExSchema {
         if (defSchema) {
             ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExId(), schema);
             if (last != null)
-                throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+                throw new IllegalArgumentException(
+                        format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
         }
     }
 
@@ -76,7 +79,8 @@ public class RuntimeProtoExSchema {
         putTypeSchema(type, schema);
         ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExId(), schema);
         if (last != null)
-            throw new IllegalArgumentException(format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+            throw new IllegalArgumentException(
+                    format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
     }
 
     private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
@@ -175,7 +179,8 @@ public class RuntimeProtoExSchema {
             final ProtoExField tag = f.getAnnotation(ProtoExField.class);
             final int fieldMapping;
             if (tag == null) {
-                throw new RuntimeException("When using annotation-based mapping, " + "all fields must be annotated with @" + ProtoExField.class.getSimpleName());
+                throw new RuntimeException(
+                        "When using annotation-based mapping, " + "all fields must be annotated with @" + ProtoExField.class.getSimpleName());
             } else {
                 fieldMapping = tag.value();
 

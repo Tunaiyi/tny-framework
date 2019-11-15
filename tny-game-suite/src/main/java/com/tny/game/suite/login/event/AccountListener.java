@@ -1,6 +1,6 @@
 package com.tny.game.suite.login.event;
 
-import com.tny.game.suite.login.Account;
+import com.tny.game.suite.login.*;
 
 public interface AccountListener {
 

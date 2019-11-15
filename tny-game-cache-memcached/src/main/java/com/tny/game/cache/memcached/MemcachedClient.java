@@ -1,24 +1,16 @@
 package com.tny.game.cache.memcached;
 
 import com.schooner.MemCached.MemcachedItem;
-import com.tny.game.cache.CacheClient;
-import com.tny.game.cache.CacheItemHelper;
-import com.tny.game.cache.CacheItem;
-import com.tny.game.cache.CasItem;
-import com.tny.game.cache.simple.SimpleCacheItem;
-import com.tny.game.cache.simple.SimpleCasItem;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.whalin.MemCached.MemCachedClient;
-import com.whalin.MemCached.SockIOPool;
+import com.tny.game.cache.*;
+import com.tny.game.cache.simple.*;
+import com.tny.game.common.concurrent.*;
+import com.whalin.MemCached.*;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author KGTny

@@ -1,6 +1,6 @@
 package com.tny.game.base.module;
 
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 
 import java.util.*;
 

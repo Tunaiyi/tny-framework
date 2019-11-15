@@ -1,10 +1,7 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.AwardDetail;
-import com.tny.game.base.item.behavior.AwardList;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
 import java.util.*;
 

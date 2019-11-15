@@ -1,6 +1,6 @@
 package com.tny.game.cache.annotation;
 
-import com.tny.game.cache.CacheTrigger;
+import com.tny.game.cache.*;
 
 import java.lang.annotation.*;
 

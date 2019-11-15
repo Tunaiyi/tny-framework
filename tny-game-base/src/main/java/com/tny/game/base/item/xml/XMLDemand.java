@@ -1,9 +1,9 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.exception.ItemResultCode;
+import com.tny.game.base.exception.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.expr.ExprHolderFactory;
+import com.tny.game.common.result.*;
+import com.tny.game.expr.*;
 
 /**
  * xml映射条件对象
@@ -56,7 +56,8 @@ public class XMLDemand extends AbstractDemand {
     public XMLDemand() {
     }
 
-    protected XMLDemand(String itemAlias, String name, DemandType demandType, String current, String expect, String fx, ExprHolderFactory exprHolderFactory) {
+    protected XMLDemand(String itemAlias, String name, DemandType demandType, String current, String expect, String fx,
+            ExprHolderFactory exprHolderFactory) {
         this.itemAlias = itemAlias;
         this.name = name;
         this.demandType = demandType;

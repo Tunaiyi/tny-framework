@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster.game;
 
 import com.tny.game.protoex.annotations.*;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.suite.*;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_SETTING)
 public class ServerSetting {
@@ -29,9 +29,9 @@ public class ServerSetting {
 
     public ServerSetting(ServerOutline outline) {
         this.setName("s" + outline.getServerId() + " 服")
-                .setServerId(outline.getServerId())
-                .setClientVersion("")
-                .setServerState(ServerState.OFFLINE);
+            .setServerId(outline.getServerId())
+            .setClientVersion("")
+            .setServerState(ServerState.OFFLINE);
     }
 
     public String getName() {
@@ -104,10 +104,10 @@ public class ServerSetting {
     @Override
     public String toString() {
         return "ServerSetting{" + "serverId=" + serverId +
-                ", serverState=" + serverState +
-                ", featureVersion='" + featureVersion + '\'' +
-                ", clientVersion='" + clientVersion + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+               ", serverState=" + serverState +
+               ", featureVersion='" + featureVersion + '\'' +
+               ", clientVersion='" + clientVersion + '\'' +
+               ", name='" + name + '\'' +
+               '}';
     }
 }

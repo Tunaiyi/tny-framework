@@ -1,13 +1,11 @@
 package com.tny.game.suite.scheduler.spring;
 
-import com.tny.game.suite.login.IDAide;
-import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
-import com.tny.game.suite.scheduler.cache.CacheTimeTaskSchedulerService;
-import com.tny.game.suite.scheduler.database.DBTimeTaskSchedulerService;
-import com.tny.game.suite.utils.Configs;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import com.tny.game.suite.login.*;
+import com.tny.game.suite.scheduler.*;
+import com.tny.game.suite.scheduler.cache.*;
+import com.tny.game.suite.scheduler.database.*;
+import com.tny.game.suite.utils.*;
+import org.springframework.context.annotation.*;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 

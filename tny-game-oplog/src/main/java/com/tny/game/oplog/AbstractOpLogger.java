@@ -1,11 +1,8 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.Identifier;
-import com.tny.game.base.item.Item;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.behavior.Action;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import org.slf4j.*;
 
 public abstract class AbstractOpLogger implements OpLogger {
 

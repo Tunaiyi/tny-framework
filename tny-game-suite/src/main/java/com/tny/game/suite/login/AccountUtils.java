@@ -39,8 +39,8 @@ public class AccountUtils {
         else {
             StringBuilder builder = new StringBuilder();
             Stream.of(accWords)
-                    .skip(2) // 跳过 PF & SERVER_ID
-                    .forEach(builder::append);
+                  .skip(2) // 跳过 PF & SERVER_ID
+                  .forEach(builder::append);
             return builder.toString();
         }
     }

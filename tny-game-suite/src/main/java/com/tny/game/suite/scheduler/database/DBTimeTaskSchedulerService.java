@@ -1,13 +1,9 @@
 package com.tny.game.suite.scheduler.database;
 
-import com.tny.game.common.scheduler.TaskReceiver;
-import com.tny.game.common.scheduler.TimeTaskScheduler;
-import com.tny.game.suite.scheduler.GameTaskReceiver;
-import com.tny.game.suite.scheduler.ReceiverType;
-import com.tny.game.suite.scheduler.TaskReceiverBuilder;
-import com.tny.game.suite.scheduler.TimeTaskSchedulerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.common.scheduler.*;
+import com.tny.game.suite.scheduler.*;
+import org.slf4j.*;
+
 import javax.annotation.Resource;
 
 public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
@@ -28,9 +24,9 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
                 TaskReceiver dbReceiver = this.schedulerObjectManager.getTaskReceiver();
                 if (dbReceiver == null) {
                     this.taskReceiver = (GameTaskReceiver) TaskReceiverBuilder.create()
-                            .setGroup(ReceiverType.SYSTEM)
-                            .setPlayerId(0)
-                            .build();
+                                                                              .setGroup(ReceiverType.SYSTEM)
+                                                                              .setPlayerId(0)
+                                                                              .build();
                     this.schedulerObjectManager.saveTaskReceiver(this.taskReceiver);
                 } else {
                     this.taskReceiver = (GameTaskReceiver) dbReceiver;

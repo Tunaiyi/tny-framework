@@ -1,10 +1,8 @@
 package com.tny.game.oplog.log4j2.layout;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.oplog.StuffSettleLog;
-import com.tny.game.oplog.record.StuffRecord;
-import com.tny.game.oplog.record.UserStuffRecord;
+import com.fasterxml.jackson.annotation.*;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.record.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,9 +39,9 @@ public class JsonUserStuffRecord {
         this.name = log.getName();
         this.sid = log.getServerId();
         this.stuffs = log.getStuffLogs()
-                .stream()
-                .map(JsonUserStuffRecord::log2Record)
-                .collect(Collectors.toList());
+                         .stream()
+                         .map(JsonUserStuffRecord::log2Record)
+                         .collect(Collectors.toList());
     }
 
     private static StuffRecord log2Record(StuffSettleLog log) {

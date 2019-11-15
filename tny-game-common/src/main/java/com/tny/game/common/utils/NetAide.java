@@ -1,7 +1,6 @@
 package com.tny.game.common.utils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.regex.Pattern;
 
 /**
@@ -25,8 +24,8 @@ public interface NetAide {
 
     static boolean isLocalHost(String host) {
         return host != null
-                && (LOCAL_IP_PATTERN.matcher(host).matches()
-                || host.equalsIgnoreCase("localhost"));
+               && (LOCAL_IP_PATTERN.matcher(host).matches()
+                   || host.equalsIgnoreCase("localhost"));
     }
 
 }

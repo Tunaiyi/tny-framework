@@ -9,16 +9,13 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.suite.launcher.*;
 import com.tny.game.suite.spring.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
+import org.slf4j.*;
+import org.springframework.boot.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -51,10 +48,11 @@ public class GameClientApp {
                         tunnel.setAccessId(4000);
                         String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
                         System.out.println("!!@   [发送] 请求 = " + message);
-                        SendContext<Long> context = tunnel.send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-                                .setTail(message)
-                                .willWriteFuture(30000L)
-                                .willResponseFuture(30000L));
+                        SendContext<Long> context = tunnel
+                                .send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
+                                        .setTail(message)
+                                        .willWriteFuture(30000L)
+                                        .willResponseFuture(30000L));
                         try {
                             Message<Long> response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
                             System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));

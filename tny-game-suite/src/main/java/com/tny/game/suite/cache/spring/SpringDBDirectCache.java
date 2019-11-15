@@ -1,12 +1,8 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.cache.DirectCache;
-import com.tny.game.cache.RawCacheItemFactory;
-import com.tny.game.cache.ToCacheClassHolderFactory;
-import com.tny.game.cache.mysql.DBCacheClient;
-import com.tny.game.cache.mysql.DBCacheItem;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.tny.game.cache.*;
+import com.tny.game.cache.mysql.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +17,8 @@ public class SpringDBDirectCache extends DirectCache {
 
     @Autowired
     SpringDBDirectCache(DBCacheClient client,
-                        @Qualifier("dbItemFactory") RawCacheItemFactory<?, ? extends DBCacheItem<?>> cacheItemFactory,
-                        ToCacheClassHolderFactory toCCHolderFactory) {
+            @Qualifier("dbItemFactory") RawCacheItemFactory<?, ? extends DBCacheItem<?>> cacheItemFactory,
+            ToCacheClassHolderFactory toCCHolderFactory) {
         super(client, cacheItemFactory, toCCHolderFactory);
     }
 

@@ -1,11 +1,8 @@
 package com.tny.game.base.item.behavior;
 
-import com.tny.game.base.item.ActionTrades;
-import com.tny.game.base.item.Trade;
+import com.tny.game.base.item.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 行为模型接口

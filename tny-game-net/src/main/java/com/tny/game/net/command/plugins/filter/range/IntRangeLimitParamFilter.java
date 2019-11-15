@@ -1,6 +1,6 @@
 package com.tny.game.net.command.plugins.filter.range;
 
-import com.tny.game.net.command.plugins.filter.range.annotation.IntRange;
+import com.tny.game.net.command.plugins.filter.range.annotation.*;
 
 public class IntRangeLimitParamFilter extends RangeLimitParamFilter<IntRange, Integer> {
 

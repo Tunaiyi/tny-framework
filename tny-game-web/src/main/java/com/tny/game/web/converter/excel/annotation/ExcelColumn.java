@@ -1,24 +1,19 @@
 package com.tny.game.web.converter.excel.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 public @interface ExcelColumn {
 
-	int index();
+    int index();
 
-	String columnText();
+    String columnText();
 
-	String name() default "";
+    String name() default "";
 
-	int width() default 20;
+    int width() default 20;
 
 }

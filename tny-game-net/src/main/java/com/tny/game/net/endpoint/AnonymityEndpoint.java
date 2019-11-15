@@ -10,7 +10,7 @@ public class AnonymityEndpoint<UID> extends AbstractEndpoint<UID> {
     private NetTunnel<UID> tunnel;
 
     public AnonymityEndpoint(NetTunnel<UID> tunnel, UID unloginUid,
-                             EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler) {
+            EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler) {
         super(unloginUid, eventHandler, 0);
         this.tunnel = tunnel;
     }

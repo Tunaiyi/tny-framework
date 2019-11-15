@@ -1,17 +1,10 @@
 package com.tny.game.cache.async;
 
-import com.tny.game.asyndb.ObjectPool;
-import com.tny.game.cache.Cache;
-import com.tny.game.cache.CasItem;
-import com.tny.game.cache.ToCacheClassHolder;
-import com.tny.game.cache.ToCacheClassHolderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.asyndb.*;
+import com.tny.game.cache.*;
+import org.slf4j.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class AsyncCache implements Cache {

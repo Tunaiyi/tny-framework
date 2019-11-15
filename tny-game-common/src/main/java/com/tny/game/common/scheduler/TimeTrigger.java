@@ -1,6 +1,6 @@
 package com.tny.game.common.scheduler;
 
-import com.tny.game.common.scheduler.cycle.TimeCycle;
+import com.tny.game.common.scheduler.cycle.*;
 import org.joda.time.DateTime;
 
 public interface TimeTrigger<C extends TimeCycle> extends TimeMeter<C> {

@@ -1,10 +1,7 @@
 package com.tny.game.cache.testclass;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class PlayerTest implements Serializable {
 

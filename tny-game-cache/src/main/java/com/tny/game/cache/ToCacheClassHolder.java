@@ -5,12 +5,8 @@ import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.*;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -73,12 +69,13 @@ public class ToCacheClassHolder extends TriggerHolder {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " - " + propertyName + " is not exist");
             }
             if (!accessor.isReadable()) {
-                throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " - " + accessor.getName() + " is unreadable");
+                throw new IllegalArgumentException(
+                        "[" + this.cacheClass + "]Index " + cacheID.index() + " - " + accessor.getName() + " is unreadable");
             }
             PropertyAccessor old = idMethodMap.put(cacheID.index(), accessor);
             if (old != null) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " exist " + old.getName()
-                        + ",  so can't put " + accessor.getName());
+                                                   + ",  so can't put " + accessor.getName());
             }
         }
         if (idMethodMap.isEmpty())

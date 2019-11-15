@@ -1,16 +1,12 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.message.*;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
+import java.util.*;
+import java.util.function.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -60,7 +56,7 @@ public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
 
 
     private void assertMessageMode(T tunnel, BiConsumer<T, MessageMode[]> setModes,
-                                   BiPredicate<T, MessageMode> testMode, MessageMode... modes) {
+            BiPredicate<T, MessageMode> testMode, MessageMode... modes) {
         setModes.accept(tunnel, modes);
         List<MessageMode> expected = Arrays.asList(modes);
         for (MessageMode mode : modes) {

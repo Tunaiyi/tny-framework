@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 
 
 public enum CertificateStatus implements EnumIdentifiable<Integer> {

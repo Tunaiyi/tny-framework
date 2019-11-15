@@ -1,21 +1,18 @@
 package com.tny.game.suite.auto.snapshot;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.config.Config;
-import com.tny.game.oplog.Snapper;
-import com.tny.game.oplog.annotation.Snap;
-import com.tny.game.suite.auto.AutoMethod;
-import com.tny.game.suite.auto.annotation.None;
-import com.tny.game.suite.utils.Configs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.config.*;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.annotation.*;
+import com.tny.game.suite.auto.*;
+import com.tny.game.suite.auto.annotation.*;
+import com.tny.game.suite.utils.*;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 /**

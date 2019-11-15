@@ -1,22 +1,12 @@
 package com.tny.game.protoex.field.runtime;
 
-import com.tny.game.common.utils.Throws;
-import com.tny.game.protoex.BaseProtoExSchema;
-import com.tny.game.protoex.ProtoExInputStream;
-import com.tny.game.protoex.ProtoExOutputStream;
-import com.tny.game.protoex.ProtoExSchema;
-import com.tny.game.protoex.ProtoExSchemaContext;
-import com.tny.game.protoex.ProtobufExException;
-import com.tny.game.protoex.Tag;
-import com.tny.game.protoex.WireFormat;
-import com.tny.game.protoex.field.IOConfiger;
-import com.tny.game.protoex.field.RepeatIOConfiger;
+import com.tny.game.common.utils.*;
+import com.tny.game.protoex.*;
+import com.tny.game.protoex.field.*;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 重复(Collection)类型描述结构

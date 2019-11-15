@@ -1,17 +1,8 @@
 package com.tny.game.common.reflect;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class ReflectAide {
 
@@ -149,7 +140,7 @@ public class ReflectAide {
             if (superClass != null && superClass != Object.class)
                 return getDeepMethod(superClass, name, paramType);
             throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
-                    + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
+                                            + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
         }
     }
 
@@ -178,17 +169,18 @@ public class ReflectAide {
                     return getPropertyMethod(superClass, methodType, name, paramType);
                 } catch (Exception e) {
                     throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                            + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
+                                                    + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception",
+                            e);
                 }
             } else
                 throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                        + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception");
+                                                + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception");
         }
         return method;
     }
 
     public static List<Method> getPropertyMethod(Class<?> clazz, MethodType methodType, String[] names,
-                                                 Class<?>[][] paramTypes) {
+            Class<?>[][] paramTypes) {
         List<Method> methodList = new ArrayList<>();
         for (int index = 0; index < names.length; index++) {
             String name = names[index];
@@ -222,8 +214,8 @@ public class ReflectAide {
         Class<?> returnClazz = method.getReturnType();
         String methodName = method.getName();
         return (methodName.startsWith("get") && returnClazz != null)
-                || (methodName.startsWith("is")
-                && (returnClazz == boolean.class || returnClazz == Boolean.class));
+               || (methodName.startsWith("is")
+                   && (returnClazz == boolean.class || returnClazz == Boolean.class));
     }
 
     private static boolean checkSetter(Method method) {

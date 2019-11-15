@@ -2,8 +2,8 @@ package com.tny.game.suite.cluster;
 
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.suite.utils.Configs;
+import com.tny.game.common.utils.*;
+import com.tny.game.suite.utils.*;
 
 /**
  * Created by Kun Yang on 16/8/11.
@@ -57,9 +57,9 @@ public class AppURLPaths {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("name", name)
-                    .add("path", path)
-                    .toString();
+                              .add("name", name)
+                              .add("path", path)
+                              .toString();
         }
     }
 }

@@ -1,15 +1,8 @@
 package com.tny.game.oplog.record;
 
-import com.tny.game.oplog.ActionLog;
-import com.tny.game.oplog.OpLog;
-import com.tny.game.oplog.Snapshot;
-import com.tny.game.oplog.SnapshotType;
-import com.tny.game.oplog.StuffTradeLog;
-import com.tny.game.oplog.UserOpLog;
+import com.tny.game.oplog.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -54,9 +47,10 @@ public class OperateRecord extends AbstractLog {
 
     @Override
     public String toString() {
-        return "OperateLogDTO [uid=" + this.getUserId() + ", name=" + this.getName() + ", acid=" + this.getActionId() + ", sid=" + this.getServerId() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
-                + ", level=" + this.getLevel()
-                + ", revs=" + this.getReceiveLog() + ", coss=" + this.getConsumeLogs() + ", snaps=" + this.getSnapshots() + "]";
+        return "OperateLogDTO [uid=" + this.getUserId() + ", name=" + this.getName() + ", acid=" + this.getActionId() + ", sid=" +
+               this.getServerId() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
+               + ", level=" + this.getLevel()
+               + ", revs=" + this.getReceiveLog() + ", coss=" + this.getConsumeLogs() + ", snaps=" + this.getSnapshots() + "]";
     }
 
     public List<Snapshot> getSnapshotsByType(SnapshotType type) {

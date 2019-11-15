@@ -1,6 +1,6 @@
 package com.tny.game.oplog.log4j2;
 
-import com.tny.game.oplog.Log;
+import com.tny.game.oplog.*;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.joda.time.DateTime;

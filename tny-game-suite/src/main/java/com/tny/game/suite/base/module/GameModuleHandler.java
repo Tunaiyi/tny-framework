@@ -1,8 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.FeatureExplorer;
-import com.tny.game.base.module.Module;
-import com.tny.game.base.module.ModuleHandler;
+import com.tny.game.base.module.*;
 
 public abstract class GameModuleHandler<M extends Module, DTO> implements ModuleHandler {
 

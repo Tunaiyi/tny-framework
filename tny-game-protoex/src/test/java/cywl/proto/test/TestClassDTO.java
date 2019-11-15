@@ -1,6 +1,6 @@
 package cywl.proto.test;
 
-import com.tny.game.common.reflect.javassist.JavassistAccessors;
+import com.tny.game.common.reflect.javassist.*;
 
 public class TestClassDTO {
 

@@ -1,13 +1,8 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.base.item.behavior.ActionResult;
-import com.tny.game.base.item.behavior.AwardList;
-import com.tny.game.base.item.behavior.DemandResult;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 操作行为结果

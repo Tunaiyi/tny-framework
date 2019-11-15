@@ -3,22 +3,12 @@ package com.tny.game.asyndb;
 import com.tny.game.asyndb.annotation.*;
 import com.tny.game.asyndb.log.*;
 import com.tny.game.common.concurrent.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -48,7 +38,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
     /**
      * 回收异步对象线程
      */
-    private final ScheduledExecutorService recycleExecutor = Executors.newScheduledThreadPool(1, new CoreThreadFactory("AsynBDObjectPool-RecycleExecutor", false));
+    private final ScheduledExecutorService recycleExecutor = Executors
+            .newScheduledThreadPool(1, new CoreThreadFactory("AsynBDObjectPool-RecycleExecutor", false));
 
     /**
      * 释放策略
@@ -69,7 +60,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
         this(syncDBExecutor, new DefaultReleaseStrategyFactory(900 * 1000), synchronizerHolder, recycleTime);
     }
 
-    public LocalAsyncObjectPool(SyncDBExecutor syncDBExecutor, ReleaseStrategyFactory releaseStrategyFactory, SynchronizerHolder synchronizerHolder, final long recycleTime) {
+    public LocalAsyncObjectPool(SyncDBExecutor syncDBExecutor, ReleaseStrategyFactory releaseStrategyFactory, SynchronizerHolder synchronizerHolder,
+            final long recycleTime) {
         this.releaseStrategyFactory = releaseStrategyFactory;
         this.syncDBExecutor = syncDBExecutor;
         this.synchronizerHolder = synchronizerHolder;
@@ -210,10 +202,12 @@ public class LocalAsyncObjectPool implements ObjectPool {
                 try {
                     asyncDBEntity.mark(Operation.INSERT, object);
                 } catch (AsyncDBReleaseException | OperationStateException e) {
-                    LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", AsyncDBState.DELETED, object, AsyncDBState.INSERT), e);
+                    LOGGER.error(
+                            MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", AsyncDBState.DELETED, object, AsyncDBState.INSERT),
+                            e);
                 }
                 return this.entityMap.putIfAbsent(key, asyncDBEntity) == null
-                        && this.syncDBExecutor.sumit(asyncDBEntity);
+                       && this.syncDBExecutor.sumit(asyncDBEntity);
             } else {
                 if (asyncDBEntity.isDelete()) {
                     try {
@@ -225,7 +219,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
                         return this.insert(key, object);
                     } catch (OperationStateException e) {
                         // 对象状态无法进行该操作
-                        LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", e.getState(), object, e.getOperation()), e);
+                        LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", e.getState(), object, e.getOperation()),
+                                e);
                     }
                 }
             }
@@ -298,7 +293,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
     }
 
     private AsyncDBEntity getAndCreateAsynDBEntity(String key, Object object, AsyncDBState asyncDBState, AsynDBClassHolder holder) {
-        return this.getAndCreateAsynDBEntity(key, new AsyncDBEntity(object, this.getSynchronizer(holder), asyncDBState, this.releaseStrategyFactory.createStrategy(object, holder.persistent.lifeTime())));
+        return this.getAndCreateAsynDBEntity(key, new AsyncDBEntity(object, this.getSynchronizer(holder), asyncDBState,
+                this.releaseStrategyFactory.createStrategy(object, holder.persistent.lifeTime())));
     }
 
     private AsyncDBEntity getAndCreateAsynDBEntity(String key, AsyncDBEntity asyncDBEntity) {

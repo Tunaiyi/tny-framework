@@ -1,13 +1,13 @@
 package com.tny.game.suite.cluster;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.utils.*;
 import com.tny.game.zookeeper.*;
 import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
 
 public abstract class BaseCluster {
 
@@ -121,7 +121,8 @@ public abstract class BaseCluster {
         ServiceNode node = holder.randNode();
         Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerId());
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+                node.getServerId());
         return url.toString() + path;
     }
 
@@ -131,7 +132,8 @@ public abstract class BaseCluster {
         ServiceNode node = holder.getNode(id);
         Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(), node.getServerId());
+        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+                node.getServerId());
         return url.toString() + path;
     }
 

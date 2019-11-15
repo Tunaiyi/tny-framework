@@ -1,7 +1,6 @@
 package com.tny.game.net.transport;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Instant;
 

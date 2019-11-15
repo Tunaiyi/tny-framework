@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.Action;
+import com.tny.game.base.item.behavior.*;
 
 import java.util.List;
 

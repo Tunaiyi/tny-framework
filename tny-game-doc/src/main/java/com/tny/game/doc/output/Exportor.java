@@ -7,22 +7,11 @@ import com.tny.game.scanner.filter.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
-import static org.apache.commons.io.FileUtils.deleteDirectory;
-import static org.apache.commons.io.FileUtils.forceMkdir;
-import static org.apache.commons.io.FileUtils.openOutputStream;
+import static org.apache.commons.io.FileUtils.*;
 
 /**
  * 导出器
@@ -30,7 +19,7 @@ import static org.apache.commons.io.FileUtils.openOutputStream;
  */
 public class Exportor {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger("Exporter");
+    //    private static final Logger LOGGER = LoggerFactory.getLogger("Exporter");
 
     private File baseDir;
 
@@ -145,10 +134,10 @@ public class Exportor {
             }
         }
         ClassSelector selector = ClassSelector.instance()
-                .addFilter(this.filters);
+                                              .addFilter(this.filters);
         ClassScanner.instance(classLoader, true)
-                .addSelector(selector)
-                .scan(basePackage);
+                    .addSelector(selector)
+                    .scan(basePackage);
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
         tempSet.addAll(selector.getClasses());
         if (tempSet.isEmpty()) {
@@ -176,7 +165,7 @@ public class Exportor {
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
-//                LOGGER.error("{} 类导出异常", clazz, e);
+                //                LOGGER.error("{} 类导出异常", clazz, e);
                 throw e;
             }
         }
@@ -192,10 +181,10 @@ public class Exportor {
             }
         }
         ClassSelector selector = ClassSelector.instance()
-                .addFilter(this.filters);
+                                              .addFilter(this.filters);
         ClassScanner.instance(classLoader, true)
-                .addSelector(selector)
-                .scan(basePackage);
+                    .addSelector(selector)
+                    .scan(basePackage);
         Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
         tempSet.addAll(selector.getClasses());
         Exporter exporter = type.create();
@@ -212,7 +201,7 @@ public class Exportor {
             if (headMessage != null)
                 IOUtils.write(headMessage, writer);
             IOUtils.write(exporter.output(table), writer);
-//            xstream.toXML(table, writer);
+            //            xstream.toXML(table, writer);
         }
         System.out.println(format("{} 包中,一共导出 {} 个类到 {} 文件", basePackage, selector.getClasses().size(), outputFile.getAbsoluteFile()));
     }

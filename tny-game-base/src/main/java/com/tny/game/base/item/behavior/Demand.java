@@ -55,14 +55,14 @@ public interface Demand {
      */
     Object countCurrentValue(long playerID, Map<String, Object> attribute);
 
-//	/**
-//	 * 获取条件结果集
-//	 *
-//	 * @param attribute
-//	 *            计算参数
-//	 * @return 返回条件结果集
-//	 */
-//	public DemandDetail createDemandDetail(long playerId, Map<String, Object> attribute);
+    //	/**
+    //	 * 获取条件结果集
+    //	 *
+    //	 * @param attribute
+    //	 *            计算参数
+    //	 * @return 返回条件结果集
+    //	 */
+    //	public DemandDetail createDemandDetail(long playerId, Map<String, Object> attribute);
 
     DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
 

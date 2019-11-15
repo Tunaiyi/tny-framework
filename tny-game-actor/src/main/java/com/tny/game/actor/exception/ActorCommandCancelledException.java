@@ -1,6 +1,6 @@
 package com.tny.game.actor.exception;
 
-import com.tny.game.actor.local.ActorCommand;
+import com.tny.game.actor.local.*;
 
 /**
  * actor线程中断异常

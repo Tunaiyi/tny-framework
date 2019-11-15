@@ -1,20 +1,18 @@
 package funs.god.games.base.sql;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.suite.sql.SQLScript;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.suite.sql.*;
+import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class DBIniter implements BeanFactoryPostProcessor {
 

@@ -2,20 +2,12 @@ package com.tny.game.suite.base.capacity;
 
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.tny.game.base.item.ItemModels;
-import com.tny.game.common.number.NumberAide;
+import com.google.common.collect.*;
+import com.tny.game.base.item.*;
+import com.tny.game.common.number.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * 游戏能力值提供器
@@ -35,7 +27,8 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 
     private Set<CapacityGroup> groups;
 
-    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
+    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups,
+            CapacityVisitor visitor, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
@@ -49,14 +42,15 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         this.visitor = visitor;
     }
 
-    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+    StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemID, Stream<? extends CapacitySupplier> suppliers,
+            CapacityVisitor visitor, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
         this.type = type;
         ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
         ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
-        suppliers.forEach(s->{
+        suppliers.forEach(s -> {
             suppliersBuilder.add(s.getId());
             groupsBuilder.addAll(s.getAllCapacityGroups());
         });
@@ -91,10 +85,10 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         if (suppliers.isEmpty())
             return ImmutableList.of();
         return suppliers.stream()
-                .map(visitor::findSupplier)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+                        .map(visitor::findSupplier)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
     }
 
     @Override
@@ -102,9 +96,9 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         if (suppliers.isEmpty())
             return Stream.empty();
         return suppliers.stream()
-                .map(visitor::findSupplier)
-                .filter(Optional::isPresent)
-                .map(Optional::get);
+                        .map(visitor::findSupplier)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get);
     }
 
     @Override
@@ -112,10 +106,10 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         if (!this.isSupplying() || suppliers.isEmpty())
             return false;
         return suppliers.stream()
-                .map(visitor::findSupplier)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .anyMatch(s -> s.isHasValue(capacity));
+                        .map(visitor::findSupplier)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .anyMatch(s -> s.isHasValue(capacity));
     }
 
     @Override
@@ -123,13 +117,13 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
         if (!this.isSupplying() || suppliers.isEmpty())
             return defaultValue;
         return suppliers.stream()
-                .map(visitor::findSupplier)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(s -> s.getValue(capacity))
-                .filter(Objects::nonNull)
-                .reduce(NumberAide::add)
-                .orElse(defaultValue);
+                        .map(visitor::findSupplier)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .map(s -> s.getValue(capacity))
+                        .filter(Objects::nonNull)
+                        .reduce(NumberAide::add)
+                        .orElse(defaultValue);
     }
 
     @Override
@@ -151,21 +145,21 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
             return ImmutableMap.of();
         Map<Capacity, Number> numberMap = new HashMap<>();
         suppliers.stream()
-                .map(visitor::findSupplier)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(s -> s.getAllValues().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add)));
+                 .map(visitor::findSupplier)
+                 .filter(Optional::isPresent)
+                 .map(Optional::get)
+                 .forEach(s -> s.getAllValues().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add)));
         return numberMap;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("itemId", itemID)
-                .add("name", ItemModels.name(itemID))
-                .add("suppliers", suppliers)
-                .toString();
+                          .add("id", id)
+                          .add("itemId", itemID)
+                          .add("name", ItemModels.name(itemID))
+                          .add("suppliers", suppliers)
+                          .toString();
     }
 
 }

@@ -1,10 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -21,21 +19,21 @@ public interface ProxyVisitorComboCapacitySupplier extends ComboCapacitySupplier
     @Override
     default Collection<? extends CapacitySupplier> dependSuppliers() {
         return visitor().findComboSupplier(this.getId())
-                .map(ComboCapacitySupplier::dependSuppliers)
-                .orElse(ImmutableList.of());
+                        .map(ComboCapacitySupplier::dependSuppliers)
+                        .orElse(ImmutableList.of());
     }
 
     @Override
     default Stream<? extends CapacitySupplier> dependSuppliersStream() {
         return visitor().findComboSupplier(this.getId())
-                .map(ComboCapacitySupplier::dependSuppliersStream)
-                .orElse(Stream.empty());
+                        .map(ComboCapacitySupplier::dependSuppliersStream)
+                        .orElse(Stream.empty());
     }
 
     @Override
     default Set<CapacityGroup> getAllCapacityGroups() {
         return visitor().findSupplier(this.getId())
-                .map(CapacitySupply::getAllCapacityGroups)
-                .orElse(ImmutableSet.of());
+                        .map(CapacitySupply::getAllCapacityGroups)
+                        .orElse(ImmutableSet.of());
     }
 }

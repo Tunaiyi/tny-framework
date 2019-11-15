@@ -2,10 +2,9 @@ package com.tny.game.suite.base.capacity;
 
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.base.item.ItemModels;
+import com.tny.game.base.item.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 游戏能力值提供器
@@ -73,10 +72,10 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapacitiable implement
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", supplier.getId())
-                .add("itemId", supplier.getItemId())
-                .add("name", ItemModels.name(supplier.getItemId()))
-                .toString();
+                          .add("id", supplier.getId())
+                          .add("itemId", supplier.getItemId())
+                          .add("name", ItemModels.name(supplier.getItemId()))
+                          .toString();
     }
 
 }

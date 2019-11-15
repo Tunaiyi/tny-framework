@@ -32,8 +32,7 @@ package com.tny.game.protoex;
 
 import com.tny.game.protoex.field.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -241,7 +240,8 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidProtoExId(Class<?> typeClass, int protoExID) {
-        return new ProtobufExException(format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID, WireFormat.MAX_PROTO_EX_ID));
+        return new ProtobufExException(format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID,
+                WireFormat.MAX_PROTO_EX_ID));
     }
 
     /**
@@ -253,7 +253,8 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidFieldNumber(Class<?> typeClass, String name, int fieldNumber) {
-        return new ProtobufExException(format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER, WireFormat.MAX_FIELD_NUMBER));
+        return new ProtobufExException(format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER,
+                WireFormat.MAX_FIELD_NUMBER));
     }
     //	缩短了的；被删节的；切去顶端的
     //	public static ProtobufExException truncatedMessage() {

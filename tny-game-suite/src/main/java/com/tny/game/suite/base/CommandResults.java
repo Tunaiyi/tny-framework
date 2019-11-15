@@ -1,15 +1,12 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.exception.ItemResultCode;
-import com.tny.game.base.exception.TryToDoException;
-import com.tny.game.base.item.behavior.DemandResult;
-import com.tny.game.base.item.behavior.DemandType;
-import com.tny.game.base.item.behavior.TryToDoResult;
-import com.tny.game.base.utlis.TryResult;
-import com.tny.game.common.utils.Throws;
-import com.tny.game.suite.base.dto.TryToDoFailDTO;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.command.CommandResult;
+import com.tny.game.base.exception.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.utlis.*;
+import com.tny.game.common.result.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.command.*;
+import com.tny.game.suite.base.dto.*;
 
 public class CommandResults extends com.tny.game.net.base.CommandResults {
 

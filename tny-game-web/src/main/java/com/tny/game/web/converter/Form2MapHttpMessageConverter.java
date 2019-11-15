@@ -1,20 +1,12 @@
 package com.tny.game.web.converter;
 
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.*;
+import org.springframework.http.converter.*;
+import org.springframework.util.*;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 16/8/23.
@@ -64,7 +56,8 @@ public class Form2MapHttpMessageConverter implements HttpMessageConverter<Map<St
     }
 
     @Override
-    public Map<String, ?> read(Class<? extends Map<String, ?>> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    public Map<String, ?> read(Class<? extends Map<String, ?>> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
         MultiValueMap<String, String> multiValueMap = converter.read(null, inputMessage);
         if (MultiValueMap.class.isAssignableFrom(clazz))
             return multiValueMap;
@@ -75,7 +68,8 @@ public class Form2MapHttpMessageConverter implements HttpMessageConverter<Map<St
 
     @Override
     @SuppressWarnings("unchecked")
-    public void write(Map<String, ?> map, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    public void write(Map<String, ?> map, MediaType contentType, HttpOutputMessage outputMessage)
+            throws IOException, HttpMessageNotWritableException {
         if (map instanceof MultiValueMap) {
             converter.write((MultiValueMap<String, ?>) map, contentType, outputMessage);
         } else {

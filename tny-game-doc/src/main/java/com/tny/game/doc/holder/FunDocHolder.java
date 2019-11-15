@@ -1,17 +1,12 @@
 package com.tny.game.doc.holder;
 
-import com.tny.game.doc.annotation.FunDoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.net.annotation.Controller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.net.annotation.*;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class FunDocHolder {
 

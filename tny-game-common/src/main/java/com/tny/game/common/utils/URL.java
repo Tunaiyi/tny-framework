@@ -1,20 +1,10 @@
 package com.tny.game.common.utils;
 
-import com.tny.game.common.collection.CollectionAide;
+import com.tny.game.common.collection.*;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -112,7 +102,7 @@ public final class URL implements Serializable {
 
     public URL(String protocol, String username, String password, String host, int port, String path, Map<String, String> parameters) {
         if ((username == null || username.length() == 0)
-                && password != null && password.length() > 0) {
+            && password != null && password.length() > 0) {
             throw new IllegalArgumentException("Invalid url, password without username!");
         }
         this.protocol = protocol;
@@ -170,14 +160,16 @@ public final class URL implements Serializable {
         }
         i = url.indexOf("://");
         if (i >= 0) {
-            if (i == 0) throw new IllegalStateException("url missing protocol: \"" + url + "\"");
+            if (i == 0)
+                throw new IllegalStateException("url missing protocol: \"" + url + "\"");
             protocol = url.substring(0, i);
             url = url.substring(i + 3);
         } else {
             // case: file:/path/to/file.txt
             i = url.indexOf(":/");
             if (i >= 0) {
-                if (i == 0) throw new IllegalStateException("url missing protocol: \"" + url + "\"");
+                if (i == 0)
+                    throw new IllegalStateException("url missing protocol: \"" + url + "\"");
                 protocol = url.substring(0, i);
                 url = url.substring(i + 1);
             }
@@ -203,7 +195,8 @@ public final class URL implements Serializable {
             port = Integer.parseInt(url.substring(i + 1));
             url = url.substring(0, i);
         }
-        if (url.length() > 0) host = url;
+        if (url.length() > 0)
+            host = url;
         return new URL(protocol, username, password, host, port, path, parameters);
     }
 
@@ -255,11 +248,11 @@ public final class URL implements Serializable {
 
     public String getAuthority() {
         if ((username == null || username.length() == 0)
-                && (password == null || password.length() == 0)) {
+            && (password == null || password.length() == 0)) {
             return null;
         }
         return (username == null ? "" : username)
-                + ":" + (password == null ? "" : password);
+               + ":" + (password == null ? "" : password);
     }
 
     public String getHost() {
@@ -347,7 +340,7 @@ public final class URL implements Serializable {
 
     private String appendDefaultPort(String address, int defaultPort) {
         if (address != null && address.length() > 0
-                && defaultPort > 0) {
+            && defaultPort > 0) {
             int i = address.indexOf(':');
             if (i < 0) {
                 return address + ":" + defaultPort;
@@ -635,7 +628,7 @@ public final class URL implements Serializable {
             boolean first = true;
             for (Map.Entry<String, String> entry : new TreeMap<>(getParameters()).entrySet()) {
                 if (entry.getKey() != null && entry.getKey().length() > 0
-                        && (includes == null || includes.contains(entry.getKey()))) {
+                    && (includes == null || includes.contains(entry.getKey()))) {
                     if (first) {
                         if (concat) {
                             buf.append("?");

@@ -1,7 +1,7 @@
 package com.tny.game.expr.jsr223;
 
 import com.tny.game.common.formula.*;
-import com.tny.game.common.number.NumberAide;
+import com.tny.game.common.number.*;
 import com.tny.game.expr.*;
 
 import javax.script.*;
@@ -43,11 +43,11 @@ public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory 
 
     @Override
     protected ExprHolder createExprHolder(String expr) throws ExprException {
-        return new ScriptExpr(engine, expr, this.context);
+        return new ScriptExpr(this.engine, expr, this.context);
     }
 
     @Override
     public ExprContext getContext() {
-        return context;
+        return this.context;
     }
 }

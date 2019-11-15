@@ -1,6 +1,6 @@
 package com.tny.game.cache.simple;
 
-import com.tny.game.cache.CasItem;
+import com.tny.game.cache.*;
 
 public class SimpleCasItem<T> implements CasItem<T> {
 

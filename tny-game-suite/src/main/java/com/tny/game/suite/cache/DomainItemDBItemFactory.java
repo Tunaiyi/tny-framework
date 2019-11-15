@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.cache.RawCacheItemFactory;
+import com.tny.game.cache.*;
 
 public class DomainItemDBItemFactory<T> implements RawCacheItemFactory<T, DomainDBItem<T>> {
 

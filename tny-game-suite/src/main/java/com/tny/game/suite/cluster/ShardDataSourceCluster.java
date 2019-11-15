@@ -1,6 +1,6 @@
 package com.tny.game.suite.cluster;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.suite.cache.*;
 import com.tny.game.suite.cluster.game.*;
 
@@ -23,7 +23,8 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
     }
 
 
-    protected ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, boolean monitorAllServices, Collection<String> monitorWebTypes) {
+    protected ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, boolean monitorAllServices,
+            Collection<String> monitorWebTypes) {
         super(serverType, true, monitorAllServices, monitorWebTypes);
         this.dataSourceFactory = dataSourceFactory;
     }

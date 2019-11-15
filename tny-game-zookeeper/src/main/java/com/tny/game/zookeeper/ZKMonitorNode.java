@@ -22,7 +22,8 @@ public class ZKMonitorNode<D> {
     private NodeDataFormatter formatter;
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<ZKMonitorNode, SyncStat> stateUpdater = AtomicReferenceFieldUpdater.newUpdater(ZKMonitorNode.class, SyncStat.class, "syncStat");
+    private static final AtomicReferenceFieldUpdater<ZKMonitorNode, SyncStat> stateUpdater = AtomicReferenceFieldUpdater
+            .newUpdater(ZKMonitorNode.class, SyncStat.class, "syncStat");
 
     public ZKMonitorNode(CreateMode createMode, D data, String path, NodeDataFormatter formatter) {
         super();

@@ -1,17 +1,12 @@
 package com.tny.game.suite.base;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.collection.CopyOnWriteMap;
+import com.tny.game.common.collection.*;
 import net.paoding.rose.jade.annotation.SQLParam;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.*;
 
 public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends CrudDAOManager<T, VO, ID> {
 
@@ -34,8 +29,8 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     protected abstract ID getId(T object);
 
     private Collection<T> collection2DB(Collection<? extends T> entities,
-                                        Function<Collection<? extends T>, Collection<T>> dbOp,
-                                        Consumer<T> cached) {
+            Function<Collection<? extends T>, Collection<T>> dbOp,
+            Consumer<T> cached) {
         Collection<T> failed = dbOp.apply(entities);
         entities.forEach(o -> {
             if (failed.contains(o))

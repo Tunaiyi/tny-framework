@@ -30,19 +30,14 @@ package com.tny.game.common.protobuf;
  */
 
 import com.google.protobuf.*;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.CharBuffer;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
+import java.text.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 /**
  * Provide ascii text parsing and formatting support for proto2 instances. The implementation
@@ -52,8 +47,8 @@ import java.util.regex.Pattern;
  *
  * @author eliran.bivas@gmail.com Eliran Bivas
  * @author aantonov@orbitz.com Alex Antonov
- *         <p>
- *         Based on the original code by:
+ * <p>
+ * Based on the original code by:
  * @author wenboz@google.com Wenbo Zhu
  * @author kenton@google.com Kenton Varda
  */
@@ -157,15 +152,15 @@ public class Protobuf2JsonFormat {
     }
 
     private static void printSingleField(FieldDescriptor field,
-                                         Object value,
-                                         JsonGenerator generator) throws IOException {
+            Object value,
+            JsonGenerator generator) throws IOException {
         if (field.isExtension()) {
             generator.print("\"");
             // We special-case MessageSet elements for compatibility with proto1.
             if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                    && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
-                    // object equality
-                    && (field.getExtensionScope() == field.getMessageType())) {
+                && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
+                // object equality
+                && (field.getExtensionScope() == field.getMessageType())) {
                 generator.print(field.getMessageType().getFullName());
             } else {
                 generator.print(field.getFullName());
@@ -455,9 +450,9 @@ public class Protobuf2JsonFormat {
                 Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
         private static final Pattern TOKEN = Pattern.compile(
                 "[a-zA-Z_][0-9a-zA-Z_+-]*+|" +                // an identifier
-                        "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
-                        "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
-                        "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
+                "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
+                "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
+                "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
                 Pattern.MULTILINE);
 
         private static final Pattern DOUBLE_INFINITY = Pattern.compile(
@@ -593,7 +588,7 @@ public class Protobuf2JsonFormat {
             for (int i = 0; i < this.currentToken.length(); i++) {
                 char c = this.currentToken.charAt(i);
                 if ((('a' <= c) && (c <= 'z')) || (('A' <= c) && (c <= 'Z'))
-                        || (('0' <= c) && (c <= '9')) || (c == '_') || (c == '.') || (c == '"')) {
+                    || (('0' <= c) && (c <= '9')) || (c == '_') || (c == '.') || (c == '"')) {
                     // OK
                 } else {
                     throw this.parseException("Expected identifier. -" + c);
@@ -737,7 +732,7 @@ public class Protobuf2JsonFormat {
             }
 
             if ((this.currentToken.length() < 2)
-                    || (this.currentToken.charAt(this.currentToken.length() - 1) != quote)) {
+                || (this.currentToken.charAt(this.currentToken.length() - 1) != quote)) {
                 throw this.parseException("String missing ending quote.");
             }
 
@@ -761,7 +756,7 @@ public class Protobuf2JsonFormat {
             }
 
             if ((this.currentToken.length() < 2)
-                    || (this.currentToken.charAt(this.currentToken.length() - 1) != quote)) {
+                || (this.currentToken.charAt(this.currentToken.length() - 1) != quote)) {
                 throw this.parseException("String missing ending quote.");
             }
 
@@ -791,7 +786,7 @@ public class Protobuf2JsonFormat {
         public ParseException parseExceptionPreviousToken(String description) {
             // Note: People generally prefer one-based line and column numbers.
             return new ParseException((this.previousLine + 1) + ":" + (this.previousColumn + 1) + ": "
-                    + description);
+                                      + description);
         }
 
         /**
@@ -840,8 +835,8 @@ public class Protobuf2JsonFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(Readable input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws IOException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws IOException {
         // Read the entire input to a String then parse that.
 
         // If StreamTokenizer were not quite so crippled, or if there were a kind
@@ -876,8 +871,8 @@ public class Protobuf2JsonFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(CharSequence input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         Tokenizer tokenizer = new Tokenizer(input);
 
         // Based on the state machine @ http://json.org/
@@ -888,7 +883,8 @@ public class Protobuf2JsonFormat {
         }
         // Test to make sure the tokenizer has reached the end of the stream.
         if (!tokenizer.atEnd()) {
-            throw tokenizer.parseException("Expecting the end of the stream, but there seems to be more data!  Check the input for a valid JSON format.");
+            throw tokenizer
+                    .parseException("Expecting the end of the stream, but there seems to be more data!  Check the input for a valid JSON format.");
         }
     }
 
@@ -901,8 +897,8 @@ public class Protobuf2JsonFormat {
      * detected after the field ends, the next field will be parsed automatically
      */
     protected static void mergeField(Tokenizer tokenizer,
-                                     ExtensionRegistry extensionRegistry,
-                                     Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         FieldDescriptor field;
         Descriptor type = builder.getDescriptorForType();
         ExtensionRegistry.ExtensionInfo extension = null;
@@ -926,7 +922,7 @@ public class Protobuf2JsonFormat {
         }
         // Again, special-case group names as described above.
         if ((field != null) && (field.getType() == FieldDescriptor.Type.GROUP)
-                && !field.getMessageType().getName().equals(name)) {
+            && !field.getMessageType().getName().equals(name)) {
             field = null;
         }
 
@@ -942,8 +938,8 @@ public class Protobuf2JsonFormat {
         if (extension != null) {
             if (extension.descriptor.getContainingType() != type) {
                 throw tokenizer.parseExceptionPreviousToken("Extension \"" + name
-                        + "\" does not extend message type \""
-                        + type.getFullName() + "\".");
+                                                            + "\" does not extend message type \""
+                                                            + type.getFullName() + "\".");
             }
             field = extension.descriptor;
         }
@@ -977,8 +973,8 @@ public class Protobuf2JsonFormat {
     }
 
     private static void handleMissingField(Tokenizer tokenizer,
-                                           ExtensionRegistry extensionRegistry,
-                                           Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         tokenizer.tryConsume(":");
         if ("{".equals(tokenizer.currentToken())) {
             // Message structure
@@ -1010,11 +1006,11 @@ public class Protobuf2JsonFormat {
     }
 
     private static void handleValue(Tokenizer tokenizer,
-                                    ExtensionRegistry extensionRegistry,
-                                    Message.Builder builder,
-                                    FieldDescriptor field,
-                                    ExtensionRegistry.ExtensionInfo extension,
-                                    boolean unknown) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder,
+            FieldDescriptor field,
+            ExtensionRegistry.ExtensionInfo extension,
+            boolean unknown) throws ParseException {
 
         Object value = null;
         if (field.getJavaType() == FieldDescriptor.JavaType.MESSAGE) {
@@ -1088,18 +1084,18 @@ public class Protobuf2JsonFormat {
                     value = enumType.findValueByNumber(number);
                     if (value == null) {
                         throw tokenizer.parseExceptionPreviousToken("Enum type \""
-                                + enumType.getFullName()
-                                + "\" has no value with number "
-                                + number + ".");
+                                                                    + enumType.getFullName()
+                                                                    + "\" has no value with number "
+                                                                    + number + ".");
                     }
                 } else {
                     String id = tokenizer.consumeIdentifier();
                     value = enumType.findValueByName(id);
                     if (value == null) {
                         throw tokenizer.parseExceptionPreviousToken("Enum type \""
-                                + enumType.getFullName()
-                                + "\" has no value named \""
-                                + id + "\".");
+                                                                    + enumType.getFullName()
+                                                                    + "\" has no value named \""
+                                                                    + id + "\".");
                     }
                 }
 
@@ -1114,11 +1110,11 @@ public class Protobuf2JsonFormat {
     }
 
     private static Object handleObject(Tokenizer tokenizer,
-                                       ExtensionRegistry extensionRegistry,
-                                       Message.Builder builder,
-                                       FieldDescriptor field,
-                                       ExtensionRegistry.ExtensionInfo extension,
-                                       boolean unknown) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder,
+            FieldDescriptor field,
+            ExtensionRegistry.ExtensionInfo extension,
+            boolean unknown) throws ParseException {
 
         Message.Builder subBuilder;
         if (extension == null) {
@@ -1303,16 +1299,16 @@ public class Protobuf2JsonFormat {
                             case 'u':
                                 // UTF8 escape
                                 code = (16 * 3 * digitValue(input.charAt(i + 1))) +
-                                        (16 * 2 * digitValue(input.charAt(i + 2))) +
-                                        (16 * digitValue(input.charAt(i + 3))) +
-                                        digitValue(input.charAt(i + 4));
+                                       (16 * 2 * digitValue(input.charAt(i + 2))) +
+                                       (16 * digitValue(input.charAt(i + 3))) +
+                                       digitValue(input.charAt(i + 4));
                                 i = i + 4;
                                 result[pos++] = (byte) code;
                                 break;
 
                             default:
                                 throw new InvalidEscapeSequence("Invalid escape sequence: '\\" + c
-                                        + "'");
+                                                                + "'");
                         }
                     }
                 } else {
@@ -1383,7 +1379,8 @@ public class Protobuf2JsonFormat {
                         appendEscapedUnicode(builder, c);
                         c = iter.next();
                         if (c == CharacterIterator.DONE)
-                            throw new IllegalArgumentException("invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
+                            throw new IllegalArgumentException(
+                                    "invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
                         appendEscapedUnicode(builder, c);
                     } else {
                         // Anything else can be printed as-is
@@ -1482,7 +1479,7 @@ public class Protobuf2JsonFormat {
      */
     private static boolean isHex(char c) {
         return (('0' <= c) && (c <= '9')) || (('a' <= c) && (c <= 'f'))
-                || (('A' <= c) && (c <= 'F'));
+               || (('A' <= c) && (c <= 'F'));
     }
 
     /**
@@ -1568,12 +1565,12 @@ public class Protobuf2JsonFormat {
                 if (isSigned) {
                     if ((result > Integer.MAX_VALUE) || (result < Integer.MIN_VALUE)) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if ((result >= (1L << 32)) || (result < 0)) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }
@@ -1588,24 +1585,24 @@ public class Protobuf2JsonFormat {
                 if (isSigned) {
                     if (bigValue.bitLength() > 31) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 32) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             } else {
                 if (isSigned) {
                     if (bigValue.bitLength() > 63) {
                         throw new NumberFormatException("Number out of range for 64-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 64) {
                         throw new NumberFormatException("Number out of range for 64-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }

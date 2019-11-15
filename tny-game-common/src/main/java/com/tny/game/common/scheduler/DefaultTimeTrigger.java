@@ -1,7 +1,7 @@
 package com.tny.game.common.scheduler;
 
-import com.tny.game.common.utils.Throws;
-import com.tny.game.common.scheduler.cycle.TimeCycle;
+import com.tny.game.common.scheduler.cycle.*;
+import com.tny.game.common.utils.*;
 import org.joda.time.DateTime;
 
 class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
@@ -14,7 +14,8 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     private long speedMills = 0;
     private DateTime suspendTime = null;
 
-    protected DefaultTimeTrigger(DateTime startTime, DateTime previousTime, DateTime endTime, DateTime suspendTime, C timeCycle, long speedMills, boolean start) {
+    protected DefaultTimeTrigger(DateTime startTime, DateTime previousTime, DateTime endTime, DateTime suspendTime, C timeCycle, long speedMills,
+            boolean start) {
         this.startTime = startTime;
         this.timeCycle = timeCycle;
         this.previousTime = previousTime;
@@ -191,7 +192,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     @Override
     public boolean suspend(DateTime time) {
         if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
-                .isAfter(this.getNextTime()))
+                                .isAfter(this.getNextTime()))
             return false;
         this.suspendTime = time;
         return true;

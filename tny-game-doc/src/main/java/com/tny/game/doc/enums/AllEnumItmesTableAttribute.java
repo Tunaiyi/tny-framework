@@ -1,15 +1,12 @@
 package com.tny.game.doc.enums;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.holder.EnumDocHolder;
-import com.tny.game.doc.table.TableAttribute;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.holder.*;
+import com.tny.game.doc.table.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class AllEnumItmesTableAttribute implements TableAttribute {

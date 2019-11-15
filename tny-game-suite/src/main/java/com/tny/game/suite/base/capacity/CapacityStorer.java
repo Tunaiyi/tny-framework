@@ -1,11 +1,10 @@
 package com.tny.game.suite.base.capacity;
 
 
-import com.tny.game.base.item.Item;
+import com.tny.game.base.item.*;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 /**
  * Created by Kun Yang on 2017/7/17.
@@ -332,8 +331,8 @@ public interface CapacityStorer extends CapacityVisitor {
      */
     default void deleteSuppliers(Collection<? extends CapacitySupplier> suppliers) {
         deleteSuppliersById(suppliers.stream()
-                .map(CapacitySupplier::getId)
-                .collect(Collectors.toList()));
+                                     .map(CapacitySupplier::getId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -567,8 +566,8 @@ public interface CapacityStorer extends CapacityVisitor {
      */
     default void deleteGoals(Collection<? extends CapacityGoal> goals) {
         deleteGoalsById(goals.stream()
-                .map(CapacityGoal::getId)
-                .collect(Collectors.toList()));
+                             .map(CapacityGoal::getId)
+                             .collect(Collectors.toList()));
     }
 
     /**

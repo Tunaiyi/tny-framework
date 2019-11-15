@@ -29,6 +29,7 @@ public interface ActorFactory<ID, ACT extends Actor<ID, ?>> {
 
     /**
      * 停止所有Actor
+     *
      * @return
      */
     void stopAll();

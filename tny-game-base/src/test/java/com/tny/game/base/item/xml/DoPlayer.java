@@ -1,8 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 
 public class DoPlayer implements Do {
 

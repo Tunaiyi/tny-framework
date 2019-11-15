@@ -1,21 +1,13 @@
 package com.tny.game.oplog.log4j2.layout;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tny.game.oplog.Snapshot;
-import com.tny.game.oplog.StuffTradeLog;
-import com.tny.game.oplog.record.ConsumeRecord;
-import com.tny.game.oplog.record.OperateRecord;
-import com.tny.game.oplog.record.ReceiveRecord;
+import com.tny.game.oplog.*;
+import com.tny.game.oplog.record.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -88,24 +80,24 @@ public class JsonOperateRecord {
         this.coss = conver(log.getConsumeLogs(), ConsumeRecord::new);
         Collection<Snapshot> snapshots = log.getSnapshots();
         this.snaps = CollectionUtils.isEmpty(snapshots) ? null : snapshots.stream()
-                .map(snap -> {
-                    try {
-                        return mapper.writeValueAsString(snap);
-                    } catch (Throwable e) {
-                        LOGGER.error("", e);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                                                                          .map(snap -> {
+                                                                              try {
+                                                                                  return mapper.writeValueAsString(snap);
+                                                                              } catch (Throwable e) {
+                                                                                  LOGGER.error("", e);
+                                                                              }
+                                                                              return null;
+                                                                          })
+                                                                          .filter(Objects::nonNull)
+                                                                          .collect(Collectors.toList());
     }
 
     private <T extends StuffTradeLog> List<T> conver(Collection<StuffTradeLog> logs, Function<StuffTradeLog, T> builder) {
         if (logs == null)
             return null;
         return logs.stream()
-                .map(builder)
-                .collect(Collectors.toList());
+                   .map(builder)
+                   .collect(Collectors.toList());
 
     }
 
@@ -166,9 +158,10 @@ public class JsonOperateRecord {
     }
 
     public String toString() {
-        return "OperateLogDTO [uid=" + this.uid + ", name=" + this.name + ", acid=" + this.acid + ", sid=" + this.sid + ", at=" + this.at + ", op=" + this.op
-                + ", lv=" + this.lv
-                + ", revs=" + this.revs + ", coss=" + this.coss + ", snaps=" + this.snaps + "]";
+        return "OperateLogDTO [uid=" + this.uid + ", name=" + this.name + ", acid=" + this.acid + ", sid=" + this.sid + ", at=" + this.at + ", op=" +
+               this.op
+               + ", lv=" + this.lv
+               + ", revs=" + this.revs + ", coss=" + this.coss + ", snaps=" + this.snaps + "]";
     }
 
 

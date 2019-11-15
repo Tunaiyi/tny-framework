@@ -1,7 +1,6 @@
 package com.tny.game.asyndb;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 异步持久化对象池

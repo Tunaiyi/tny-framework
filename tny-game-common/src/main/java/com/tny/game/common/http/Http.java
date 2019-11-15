@@ -1,19 +1,15 @@
 package com.tny.game.common.http;
 
 import org.apache.http.*;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 import java.util.Map.Entry;
@@ -49,8 +45,8 @@ public class Http {
         // 将每个路由基础的连接增加到20
         cm.setDefaultMaxPerRoute(100);
         httpClient = HttpClients.custom()
-                .setConnectionManager(cm)
-                .build();
+                                .setConnectionManager(cm)
+                                .build();
     }
 
     public static Http get(String url) {
@@ -175,17 +171,17 @@ public class Http {
     public static void main(String[] args) {
         /*
          * System.out.println(Http.get("http://192.168.14.112/redalert")
-		 * .setParams("ip", "192.168.21.179")
-		 * .setParams("uid", "3100")
-		 * .setParams("dir", "develop")
-		 * .getURI());
-		 * System.out
-		 * .println(Http
-		 * .get("http://192.168.14.112/redalert/?ip=192.168.21.179&uid=&ports=3100&dir=develop")
-		 * .setParams("ip", "192.168.21.179")
-		 * .setParams("uid", "3100").setParams("dir", "develop")
-		 * .requestString());
-		 */
+         * .setParams("ip", "192.168.21.179")
+         * .setParams("uid", "3100")
+         * .setParams("dir", "develop")
+         * .getURI());
+         * System.out
+         * .println(Http
+         * .get("http://192.168.14.112/redalert/?ip=192.168.21.179&uid=&ports=3100&dir=develop")
+         * .setParams("ip", "192.168.21.179")
+         * .setParams("uid", "3100").setParams("dir", "develop")
+         * .requestString());
+         */
 
         System.out
                 .println(Http

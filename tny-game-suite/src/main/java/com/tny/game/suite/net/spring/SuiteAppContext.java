@@ -1,6 +1,6 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.base.configuration.DefaultAppContext;
+import com.tny.game.net.base.configuration.*;
 
 /**
  * <p>

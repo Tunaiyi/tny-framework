@@ -1,19 +1,13 @@
 package com.tny.game.doc.enums;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.tny.game.doc.LangFormatter;
-import com.tny.game.doc.TypeFormatter;
-import com.tny.game.doc.annotation.IDDoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.doc.holder.FieldDocHolder;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
 @XStreamAlias("enumer")
 public class EnumerConfiger {
@@ -49,7 +43,8 @@ public class EnumerConfiger {
                     } else if (enumField.getAnnotation(VarDoc.class) != null) {
                         enumField.setAccessible(true);
                         VarDoc varDoc = enumField.getAnnotation(VarDoc.class);
-                        this.attributes.put(enumField.getName(), new FieldConfiger(enumField.getGenericType(), enumField.get(object), varDoc.value(), typeFormatter));
+                        this.attributes.put(enumField.getName(),
+                                new FieldConfiger(enumField.getGenericType(), enumField.get(object), varDoc.value(), typeFormatter));
                     }
                 }
             }

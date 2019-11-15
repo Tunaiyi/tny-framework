@@ -1,13 +1,13 @@
 package com.tny.game.suite.net.filter;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
-import com.tny.game.net.transport.Tunnel;
-import com.tny.game.net.message.Message;
-import com.tny.game.suite.net.filter.annotation.NameFilter;
-import com.tny.game.suite.utils.SuiteResultCode;
+import com.tny.game.common.result.*;
+import com.tny.game.common.word.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.plugins.filter.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
+import com.tny.game.suite.net.filter.annotation.*;
+import com.tny.game.suite.utils.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,8 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, NameFilter annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, NameFilter annotation,
+            String param) {
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
@@ -41,26 +42,26 @@ public class NameLimit<UID> extends AbstractParamFilter<UID, NameFilter, String>
         return ResultCode.SUCCESS;
     }
 
-//     public static void main(String[] args) {
-//         String[] values = {
-//                 "dafds",
-//                 "jdklsfjlkf}dsa",
-//                 "jdklsfjlkf{dsa",
-//                 "jdklsfjlkf(dsa",
-//                 "jdklsfjlkf)dsa",
-//                 "jdklsfjlkf[dsa",
-//                 "jdklsfjlkf]dsa",
-//                 "jdklsfjlkf*dsa",
-//                 "jdklsfjlkf?dsa",
-//                 "jdklsfjlkf\"dsa",
-//                 "jdklsfjlkf+dsa",
-//                 "jdklsfjlkf'dsa",
-//                 "jdklsfjlkf$dsa",
-//                 "jdklsfjlk^dsa",
-//                 "jdklsfjlkf\\dsa",
-//         };
-//         for (String v : values)
-//             System.out.println(v + " : " + fullPattern.matcher(v).find());
-//     }
-// }
+    //     public static void main(String[] args) {
+    //         String[] values = {
+    //                 "dafds",
+    //                 "jdklsfjlkf}dsa",
+    //                 "jdklsfjlkf{dsa",
+    //                 "jdklsfjlkf(dsa",
+    //                 "jdklsfjlkf)dsa",
+    //                 "jdklsfjlkf[dsa",
+    //                 "jdklsfjlkf]dsa",
+    //                 "jdklsfjlkf*dsa",
+    //                 "jdklsfjlkf?dsa",
+    //                 "jdklsfjlkf\"dsa",
+    //                 "jdklsfjlkf+dsa",
+    //                 "jdklsfjlkf'dsa",
+    //                 "jdklsfjlkf$dsa",
+    //                 "jdklsfjlk^dsa",
+    //                 "jdklsfjlkf\\dsa",
+    //         };
+    //         for (String v : values)
+    //             System.out.println(v + " : " + fullPattern.matcher(v).find());
+    //     }
+    // }
 }

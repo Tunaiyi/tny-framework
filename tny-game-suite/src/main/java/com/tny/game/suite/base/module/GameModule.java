@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.Module;
-import com.tny.game.suite.base.RegisterSelf;
+import com.tny.game.base.module.*;
+import com.tny.game.suite.base.*;
 
 /**
  * Created by Kun Yang on 16/1/29.

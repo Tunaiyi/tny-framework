@@ -1,7 +1,6 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.protoex.ProtoExInputStream;
-import com.tny.game.protoex.ProtoExOutputStream;
+import com.tny.game.protoex.*;
 
 /**
  * 整形数字(short int long)类型编码方式

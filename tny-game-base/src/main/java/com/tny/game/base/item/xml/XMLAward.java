@@ -1,6 +1,6 @@
 package com.tny.game.base.item.xml;
 
-import com.tny.game.base.item.behavior.plan.SimpleAward;
+import com.tny.game.base.item.behavior.plan.*;
 
 /**
  * xml映射奖励

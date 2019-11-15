@@ -4,12 +4,12 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.result.*;
-import com.tny.game.expr.ExprHolderFactory;
-import com.tny.game.expr.groovy.GroovyExprHolderFactory;
-import org.junit.*;
+import com.tny.game.expr.*;
+import com.tny.game.expr.groovy.*;
 import org.junit.Test;
+import org.junit.*;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class XMLDemandTest {
     /**
@@ -71,7 +71,9 @@ public class XMLDemandTest {
         protected void init(ItemModelContext context) {
             super.init(context);
         }
-    };
+    }
+
+    ;
 
     private TestDemandItemModel model = new TestDemandItemModel();
 

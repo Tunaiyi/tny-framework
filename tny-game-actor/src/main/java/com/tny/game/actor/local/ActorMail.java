@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.actor.Actor;
+import com.tny.game.actor.*;
 
 /**
  * Created by Kun Yang on 16/4/26.

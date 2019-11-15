@@ -1,15 +1,14 @@
 package com.tny.game.suite.scheduler;
 
-import com.tny.game.asyndb.annotation.Persistent;
-import com.tny.game.base.item.Identifier;
-import com.tny.game.cache.annotation.ToCache;
-import com.tny.game.common.scheduler.TaskReceiver;
-import com.tny.game.suite.SuiteDBHead;
-import com.tny.game.suite.cache.spring.DBCacheSynchronizer;
-import com.tny.game.suite.scheduler.cache.TaskReceiverFormatter;
+import com.tny.game.asyndb.annotation.*;
+import com.tny.game.base.item.*;
+import com.tny.game.cache.annotation.*;
+import com.tny.game.common.scheduler.*;
+import com.tny.game.suite.*;
+import com.tny.game.suite.cache.spring.*;
+import com.tny.game.suite.scheduler.cache.*;
 
-import static com.tny.game.suite.SuiteProfiles.GAME;
-import static com.tny.game.suite.SuiteProfiles.SCHEDULER_CACHE;
+import static com.tny.game.suite.SuiteProfiles.*;
 
 @Persistent(synchronizerClass = DBCacheSynchronizer.class)
 @ToCache(

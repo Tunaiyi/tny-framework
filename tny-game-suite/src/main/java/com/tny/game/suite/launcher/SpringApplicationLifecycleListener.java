@@ -4,14 +4,11 @@ import com.tny.game.common.utils.*;
 import com.tny.game.loader.lifecycle.*;
 import com.tny.game.net.base.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.*;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.*;
 import javax.servlet.annotation.WebListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,7 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Kun Yang on 16/5/31.
  */
 @WebListener
-public class SpringApplicationLifecycleListener implements ApplicationListener<ContextRefreshedEvent>, ServletContextListener, ApplicationContextAware {
+public class SpringApplicationLifecycleListener
+        implements ApplicationListener<ContextRefreshedEvent>, ServletContextListener, ApplicationContextAware {
 
     private static AppLifecycleProcessor processor = new AppLifecycleProcessor();
 

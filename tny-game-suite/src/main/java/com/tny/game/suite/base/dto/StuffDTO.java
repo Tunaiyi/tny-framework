@@ -1,20 +1,14 @@
 package com.tny.game.suite.base.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tny.game.base.item.DealedItem;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 @ProtoEx(SuiteProtoIDs.STUFF_DTO)
 @DTODoc("物品DTO")

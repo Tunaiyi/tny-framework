@@ -1,11 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 能力值提供七代理接口
@@ -18,8 +15,8 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
     @Override
     default boolean isHasValue(Capacity capacity) {
         return isSupplying() && visitor().findSupplier(this.getId())
-                .map(s -> s.isHasValue(capacity))
-                .orElse(false);
+                                         .map(s -> s.isHasValue(capacity))
+                                         .orElse(false);
     }
 
     @Override
@@ -32,8 +29,8 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
         if (!isSupplying())
             return null;
         return visitor().findSupplier(this.getId())
-                .map(s -> s.getValue(capacity))
-                .orElse(defaultNum);
+                        .map(s -> s.getValue(capacity))
+                        .orElse(defaultNum);
     }
 
     @Override
@@ -41,20 +38,20 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
         if (!isSupplying())
             return ImmutableMap.of();
         return visitor().findSupplier(this.getId())
-                .map(CapacitySupplier::getAllValues)
-                .orElse(ImmutableMap.of());
+                        .map(CapacitySupplier::getAllValues)
+                        .orElse(ImmutableMap.of());
     }
 
     @Override
     default void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
         visitor().findSupplier(this.getId())
-                .ifPresent(s -> s.collectValues(collector, capacities));
+                 .ifPresent(s -> s.collectValues(collector, capacities));
     }
 
     @Override
     default Set<CapacityGroup> getAllCapacityGroups() {
         return visitor().findSupplier(this.getId())
-                .map(CapacitySupply::getAllCapacityGroups)
-                .orElse(ImmutableSet.of());
+                        .map(CapacitySupply::getAllCapacityGroups)
+                        .orElse(ImmutableSet.of());
     }
 }

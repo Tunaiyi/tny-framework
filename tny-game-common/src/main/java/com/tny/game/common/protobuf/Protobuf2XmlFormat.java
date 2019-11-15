@@ -30,17 +30,13 @@ package com.tny.game.common.protobuf;
 
 
 import com.google.protobuf.*;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.CharBuffer;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Provide ascii text parsing and formatting support for proto2 instances. The implementation
@@ -50,8 +46,8 @@ import java.util.regex.Pattern;
  *
  * @author eliran.bivas@gmail.com Eliran Bivas
  * @author aantonov@orbitz.com Alex Antonov
- *         <p>
- *         Based on the original code by:
+ * <p>
+ * Based on the original code by:
  * @author wenboz@google.com Wenbo Zhu
  * @author kenton@google.com Kenton Varda
  */
@@ -138,9 +134,9 @@ public final class Protobuf2XmlFormat {
             // We special-case MessageSet elements for compatibility with
             // proto1.
             if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                    && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
-                    // object equality
-                    && (field.getExtensionScope() == field.getMessageType())) {
+                && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
+                // object equality
+                && (field.getExtensionScope() == field.getMessageType())) {
                 generator.print(field.getMessageType().getFullName());
             } else {
                 generator.print(field.getFullName());
@@ -248,8 +244,8 @@ public final class Protobuf2XmlFormat {
     }
 
     private static void printUnknownField(CharSequence fieldKey,
-                                          CharSequence fieldValue,
-                                          XmlGenerator generator) throws IOException {
+            CharSequence fieldValue,
+            XmlGenerator generator) throws IOException {
         generator.print("<unknown-field index=\"");
         generator.print(fieldKey);
         generator.print("\">");
@@ -364,11 +360,11 @@ public final class Protobuf2XmlFormat {
                 Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
         private static final Pattern TOKEN = Pattern.compile(
                 "extension|" + "[a-zA-Z_\\s;@][0-9a-zA-Z_\\s;@+-]*+|" +        // an identifier with special handling for 'extension'
-                        "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
-                        "</|" +                                       // an '</' closing element marker
-                        "[\\\\0-9]++|" +                              // a \000 byte sequence for bytes handling
-                        "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
-                        "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
+                "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
+                "</|" +                                       // an '</' closing element marker
+                "[\\\\0-9]++|" +                              // a \000 byte sequence for bytes handling
+                "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
+                "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
                 Pattern.MULTILINE);
 
         private static Pattern DOUBLE_INFINITY = Pattern.compile("-?inf(inity)?",
@@ -484,7 +480,7 @@ public final class Protobuf2XmlFormat {
             for (int i = 0; i < currentToken.length(); i++) {
                 char c = currentToken.charAt(i);
                 if ((('a' <= c) && (c <= 'z')) || (('A' <= c) && (c <= 'Z'))
-                        || (('0' <= c) && (c <= '9')) || (c == '_') || (c == '.') || (c == '"')) {
+                    || (('0' <= c) && (c <= '9')) || (c == '_') || (c == '.') || (c == '"')) {
                     // OK
                 } else {
                     throw parseException("Expected identifier. -" + c);
@@ -671,7 +667,7 @@ public final class Protobuf2XmlFormat {
         public ParseException parseExceptionPreviousToken(String description) {
             // Note: People generally prefer one-based line and column numbers.
             return new ParseException((previousLine + 1) + ":" + (previousColumn + 1) + ": "
-                    + description);
+                                      + description);
         }
 
         /**
@@ -723,8 +719,8 @@ public final class Protobuf2XmlFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(Readable input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws ParseException, IOException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException, IOException {
         // Read the entire input to a String then parse that.
 
         // If StreamTokenizer were not quite so crippled, or if there were a kind
@@ -759,8 +755,8 @@ public final class Protobuf2XmlFormat {
      * Extensions will be recognized if they are registered in {@code extensionRegistry}.
      */
     public static void merge(CharSequence input,
-                             ExtensionRegistry extensionRegistry,
-                             Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         Tokenizer tokenizer = new Tokenizer(input);
 
         // Need to first consume the outer object name element
@@ -798,8 +794,8 @@ public final class Protobuf2XmlFormat {
      * detected after the field ends, the next field will be parsed automatically
      */
     private static void mergeField(Tokenizer tokenizer,
-                                   ExtensionRegistry extensionRegistry,
-                                   Message.Builder builder) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws ParseException {
         FieldDescriptor field;
         Descriptors.Descriptor type = builder.getDescriptorForType();
         ExtensionRegistry.ExtensionInfo extension = null;
@@ -818,12 +814,12 @@ public final class Protobuf2XmlFormat {
 
             if (extension == null) {
                 throw tokenizer.parseExceptionPreviousToken("Extension \""
-                        + name
-                        + "\" not found in the ExtensionRegistry.");
+                                                            + name
+                                                            + "\" not found in the ExtensionRegistry.");
             } else if (extension.descriptor.getContainingType() != type) {
                 throw tokenizer.parseExceptionPreviousToken("Extension \"" + name
-                        + "\" does not extend message type \""
-                        + type.getFullName() + "\".");
+                                                            + "\" does not extend message type \""
+                                                            + type.getFullName() + "\".");
             }
 
             field = extension.descriptor;
@@ -846,14 +842,14 @@ public final class Protobuf2XmlFormat {
             }
             // Again, special-case group names as described above.
             if ((field != null) && (field.getType() == FieldDescriptor.Type.GROUP)
-                    && !field.getMessageType().getName().equals(name)) {
+                && !field.getMessageType().getName().equals(name)) {
                 field = null;
             }
 
             if (field == null) {
                 throw tokenizer.parseExceptionPreviousToken("Message type \"" + type.getFullName()
-                        + "\" has no field named \"" + name
-                        + "\".");
+                                                            + "\" has no field named \"" + name
+                                                            + "\".");
             }
         }
 
@@ -872,10 +868,10 @@ public final class Protobuf2XmlFormat {
     }
 
     private static Object handleValue(Tokenizer tokenizer,
-                                      ExtensionRegistry extensionRegistry,
-                                      Message.Builder builder,
-                                      FieldDescriptor field,
-                                      ExtensionRegistry.ExtensionInfo extension) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder,
+            FieldDescriptor field,
+            ExtensionRegistry.ExtensionInfo extension) throws ParseException {
 
         Object value = null;
         if (field.getJavaType() == FieldDescriptor.JavaType.MESSAGE) {
@@ -940,18 +936,18 @@ public final class Protobuf2XmlFormat {
                     value = enumType.findValueByNumber(number);
                     if (value == null) {
                         throw tokenizer.parseExceptionPreviousToken("Enum type \""
-                                + enumType.getFullName()
-                                + "\" has no value with number "
-                                + number + ".");
+                                                                    + enumType.getFullName()
+                                                                    + "\" has no value with number "
+                                                                    + number + ".");
                     }
                 } else {
                     String id = tokenizer.consumeIdentifier();
                     value = enumType.findValueByName(id);
                     if (value == null) {
                         throw tokenizer.parseExceptionPreviousToken("Enum type \""
-                                + enumType.getFullName()
-                                + "\" has no value named \""
-                                + id + "\".");
+                                                                    + enumType.getFullName()
+                                                                    + "\" has no value named \""
+                                                                    + id + "\".");
                     }
                 }
 
@@ -966,10 +962,10 @@ public final class Protobuf2XmlFormat {
     }
 
     private static Object handleObject(Tokenizer tokenizer,
-                                       ExtensionRegistry extensionRegistry,
-                                       Message.Builder builder,
-                                       FieldDescriptor field,
-                                       ExtensionRegistry.ExtensionInfo extension) throws ParseException {
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder,
+            FieldDescriptor field,
+            ExtensionRegistry.ExtensionInfo extension) throws ParseException {
 
         Object value;
         Message.Builder subBuilder;
@@ -1134,7 +1130,7 @@ public final class Protobuf2XmlFormat {
 
                             default:
                                 throw new InvalidEscapeSequence("Invalid escape sequence: '\\" + c
-                                        + "'");
+                                                                + "'");
                         }
                     }
                 } else {
@@ -1190,7 +1186,7 @@ public final class Protobuf2XmlFormat {
      */
     private static boolean isHex(char c) {
         return (('0' <= c) && (c <= '9')) || (('a' <= c) && (c <= 'f'))
-                || (('A' <= c) && (c <= 'F'));
+               || (('A' <= c) && (c <= 'F'));
     }
 
     /**
@@ -1283,12 +1279,12 @@ public final class Protobuf2XmlFormat {
                 if (isSigned) {
                     if ((result > Integer.MAX_VALUE) || (result < Integer.MIN_VALUE)) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if ((result >= (1L << 32)) || (result < 0)) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }
@@ -1303,24 +1299,24 @@ public final class Protobuf2XmlFormat {
                 if (isSigned) {
                     if (bigValue.bitLength() > 31) {
                         throw new NumberFormatException("Number out of range for 32-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 32) {
                         throw new NumberFormatException("Number out of range for 32-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             } else {
                 if (isSigned) {
                     if (bigValue.bitLength() > 63) {
                         throw new NumberFormatException("Number out of range for 64-bit signed integer: "
-                                + text);
+                                                        + text);
                     }
                 } else {
                     if (bigValue.bitLength() > 64) {
                         throw new NumberFormatException("Number out of range for 64-bit unsigned integer: "
-                                + text);
+                                                        + text);
                     }
                 }
             }

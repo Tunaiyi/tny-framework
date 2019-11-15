@@ -6,12 +6,10 @@ import com.tny.game.oplog.utils.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.filter.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Collection;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.*;
 
 public class OpLogSnapshotLoader {
 

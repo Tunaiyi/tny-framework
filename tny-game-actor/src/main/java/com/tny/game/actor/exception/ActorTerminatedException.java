@@ -1,6 +1,6 @@
 package com.tny.game.actor.exception;
 
-import com.tny.game.actor.Actor;
+import com.tny.game.actor.*;
 
 /**
  * Actor初始化异常

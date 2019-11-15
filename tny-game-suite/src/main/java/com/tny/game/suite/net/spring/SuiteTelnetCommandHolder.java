@@ -1,16 +1,10 @@
 package com.tny.game.suite.net.spring;
 
-import com.tny.game.net.telnet.BaseTelnetCommandHolder;
-import com.tny.game.net.telnet.CommandType;
-import com.tny.game.net.telnet.TelnetCommand;
-import com.tny.game.net.telnet.TelnetCommandHolder;
+import com.tny.game.net.telnet.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SuiteTelnetCommandHolder extends BaseTelnetCommandHolder implements TelnetCommandHolder, ApplicationContextAware {
 

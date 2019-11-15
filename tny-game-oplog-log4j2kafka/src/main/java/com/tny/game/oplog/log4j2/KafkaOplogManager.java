@@ -1,20 +1,15 @@
 package com.tny.game.oplog.log4j2;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.*;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 public class KafkaOplogManager extends AbstractManager {
 

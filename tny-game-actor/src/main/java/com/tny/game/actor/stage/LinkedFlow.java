@@ -1,22 +1,12 @@
 package com.tny.game.actor.stage;
 
-import com.tny.game.actor.stage.exception.FlowBreakOffException;
-import com.tny.game.actor.stage.exception.FlowCancelException;
-import com.tny.game.common.utils.ExeAide;
-import com.tny.game.common.utils.ObjectAide;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.utils.Done;
-import com.tny.game.common.utils.DoneResults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tny.game.actor.stage.exception.*;
+import com.tny.game.common.concurrent.*;
+import com.tny.game.common.utils.*;
+import org.slf4j.*;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.concurrent.*;
+import java.util.function.*;
 
 /**
  * Created by Kun Yang on 2017/5/31.
@@ -25,7 +15,8 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(Flow.class);
 
-    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
+    private static ScheduledExecutorService service = Executors
+            .newSingleThreadScheduledExecutor(new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
 
     private static final byte IDLE = 0;
     private static final byte EXECUTE = 1;

@@ -3,8 +3,7 @@ package com.tny.game.suite.net.configuration.endpoint;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.suite.spring.*;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -27,10 +26,10 @@ public class ImportSessionSettingBeanDefinitionRegistrar extends SuiteBeanDefini
         String settingName = getBeanName(name, SessionSetting.class);
         registry.registerBeanDefinition(settingName, BeanDefinitionBuilder.genericBeanDefinition(settingClass,
                 () -> Binder.get(environment)
-                        .bind(keyHead, settingClass)
-                        .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null)))
-                .addPropertyValue("name", name)
-                .getBeanDefinition());
+                            .bind(keyHead, settingClass)
+                            .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null)))
+                                                                          .addPropertyValue("name", name)
+                                                                          .getBeanDefinition());
     }
 
 }

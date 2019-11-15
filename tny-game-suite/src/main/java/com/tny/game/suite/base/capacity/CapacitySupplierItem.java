@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.suite.base.GameItem;
+import com.tny.game.suite.base.*;
 
 /**
  * Item能力值提供器

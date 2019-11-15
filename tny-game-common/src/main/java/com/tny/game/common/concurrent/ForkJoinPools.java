@@ -1,11 +1,9 @@
 package com.tny.game.common.concurrent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 
 /**
  * Created by Kun Yang on 2017/11/3.

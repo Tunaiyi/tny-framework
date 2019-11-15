@@ -10,8 +10,7 @@ import com.tny.game.suite.core.*;
 import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import javax.annotation.Resource;
 import java.time.Instant;
@@ -64,7 +63,8 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
                     long ticketID = System.currentTimeMillis();
                     if (StringUtils.isNumeric(openKey))
                         ticketID = NumberUtils.toLong(openKey);
-                    ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, "zh-CN", pf, pf, zoneID, entryID, null, null, time, null);
+                    ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, "zh-CN", pf, pf, zoneID, entryID, null, null, time,
+                            null);
                 } else {
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);

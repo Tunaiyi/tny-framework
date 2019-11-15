@@ -1,7 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.base.module.Feature;
-import com.tny.game.base.module.FeatureHandler;
+import com.tny.game.base.module.*;
 
 public abstract class GameFeatureHandler<F extends Feature> implements FeatureHandler {
 

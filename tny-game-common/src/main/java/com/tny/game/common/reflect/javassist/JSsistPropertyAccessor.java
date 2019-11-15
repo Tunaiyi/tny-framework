@@ -1,10 +1,8 @@
 package com.tny.game.common.reflect.javassist;
 
-import com.tny.game.common.reflect.MethodAccessor;
-import com.tny.game.common.reflect.PropertyAccessor;
+import com.tny.game.common.reflect.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 
 public class JSsistPropertyAccessor implements PropertyAccessor {
 

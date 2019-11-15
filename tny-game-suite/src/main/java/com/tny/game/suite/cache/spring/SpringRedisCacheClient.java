@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.cache.redis.RedisCacheClient;
+import com.tny.game.cache.redis.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.tny.game.oplog.annotation;
 
-import com.tny.game.oplog.Snapper;
+import com.tny.game.oplog.*;
 
 import java.lang.annotation.*;
 

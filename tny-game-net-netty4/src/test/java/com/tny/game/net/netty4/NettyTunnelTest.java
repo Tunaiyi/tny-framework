@@ -6,7 +6,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.Test;
+import org.junit.*;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;
@@ -22,7 +22,8 @@ import static org.junit.Assert.fail;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends NettyTunnel<Long, E>, ME extends MockNetEndpoint> extends NetTunnelTest<T, ME> {
+public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends NettyTunnel<Long, E>, ME extends MockNetEndpoint>
+        extends NetTunnelTest<T, ME> {
 
     protected EmbeddedChannel mockChannel() {
         return new MockChannel(new InetSocketAddress(8080), new InetSocketAddress(8081));

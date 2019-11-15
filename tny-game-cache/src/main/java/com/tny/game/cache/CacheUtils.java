@@ -30,16 +30,15 @@ public class CacheUtils {
         String separator = getSeparator();
         for (Object value : keyValues) {
             builder.append(separator)
-                    .append(value);
+                   .append(value);
         }
         return builder.toString();
     }
 
 
-    public static String [] key2Params(String key) {
+    public static String[] key2Params(String key) {
         return StringUtils.split(key, getSeparator());
     }
-
 
 
 }

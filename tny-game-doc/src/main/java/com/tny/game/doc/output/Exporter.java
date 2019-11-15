@@ -1,6 +1,6 @@
 package com.tny.game.doc.output;
 
-import com.tny.game.doc.table.ConfigTable;
+import com.tny.game.doc.table.*;
 
 /**
  * Created by Kun Yang on 2017/4/8.

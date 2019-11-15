@@ -1,11 +1,8 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.common.number.NumberAide;
+import com.tny.game.common.number.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**

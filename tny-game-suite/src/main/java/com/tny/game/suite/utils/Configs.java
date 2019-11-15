@@ -6,13 +6,9 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.joda.time.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Kun Yang on 16/1/27.
@@ -211,12 +207,12 @@ public interface Configs {
     String PATH_HEAD = "tny.server.url.path";
     //endregion
 
-//    static Function<String, String> keyAs(String nextChild) {
-//        if (nextChild.endsWith(".")) {
-//            String head = PREFIX + nextChild;
-//            return (child) -> head + child;
-//        } else {
-//            return key(nextChild + ".")
-//        }
-//    }
+    //    static Function<String, String> keyAs(String nextChild) {
+    //        if (nextChild.endsWith(".")) {
+    //            String head = PREFIX + nextChild;
+    //            return (child) -> head + child;
+    //        } else {
+    //            return key(nextChild + ".")
+    //        }
+    //    }
 }

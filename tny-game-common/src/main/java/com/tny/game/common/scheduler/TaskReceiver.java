@@ -1,6 +1,6 @@
 package com.tny.game.common.scheduler;
 
-import com.tny.game.common.utils.Logs;
+import com.tny.game.common.utils.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -68,7 +68,8 @@ public abstract class TaskReceiver {
             TimeTaskEvent event = events.peek();
             try {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " + event.getTimeTask().getHandlerList());
+                    LOG.debug(this.toString() + "  在 " + new Date(event.getTimeTask().getExecuteTime()) + "  执行 " +
+                              event.getTimeTask().getHandlerList());
                 }
                 long executeTime = event.getTimeTask().getExecuteTime();
                 for (TimeTaskHandler handler : event.getHandlerList()) {

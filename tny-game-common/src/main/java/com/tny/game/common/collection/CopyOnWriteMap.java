@@ -17,14 +17,8 @@ package com.tny.game.common.collection;
  * the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.*;
 
 /***
  * A thread-safe version of {@link Map} in which all operations that change the
@@ -169,13 +163,13 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
     public boolean replace(K key, V oldValue, V newValue) {
         Object curValue = get(key);
         if (!Objects.equals(curValue, oldValue) ||
-                (curValue == null && !containsKey(key))) {
+            (curValue == null && !containsKey(key))) {
             return false;
         }
         synchronized (this) {
             curValue = get(key);
             if (!Objects.equals(curValue, oldValue) ||
-                    (curValue == null && !containsKey(key))) {
+                (curValue == null && !containsKey(key))) {
                 return false;
             }
             put(key, newValue);
@@ -255,7 +249,7 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
         synchronized (this) {
             V oldValue = get(key);
             V newValue = (oldValue == null) ? value :
-                    remappingFunction.apply(oldValue, value);
+                         remappingFunction.apply(oldValue, value);
             if (newValue == null) {
                 remove(key);
             } else {

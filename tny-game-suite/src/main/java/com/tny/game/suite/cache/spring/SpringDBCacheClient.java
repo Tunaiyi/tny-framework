@@ -1,11 +1,9 @@
 package com.tny.game.suite.cache.spring;
 
-import com.tny.game.cache.RawCacheItemFactory;
-import com.tny.game.cache.mysql.DBCacheClient;
-import com.tny.game.cache.mysql.DBCacheItem;
-import com.tny.game.cache.mysql.dao.CacheDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.tny.game.cache.*;
+import com.tny.game.cache.mysql.*;
+import com.tny.game.cache.mysql.dao.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +18,7 @@ public class SpringDBCacheClient extends DBCacheClient {
 
     @Autowired
     public SpringDBCacheClient(CacheDAO dao,
-                               @Qualifier("dbItemFactory") RawCacheItemFactory<?, ? extends DBCacheItem<?>> cacheItemFactory) {
+            @Qualifier("dbItemFactory") RawCacheItemFactory<?, ? extends DBCacheItem<?>> cacheItemFactory) {
         super(dao, cacheItemFactory);
     }
 

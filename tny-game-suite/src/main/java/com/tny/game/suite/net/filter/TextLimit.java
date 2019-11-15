@@ -1,23 +1,20 @@
 package com.tny.game.suite.net.filter;
 
-import com.tny.game.common.lifecycle.AppPrepareStart;
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.common.word.WordsFilter;
-import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
-import com.tny.game.net.message.Message;
-import com.tny.game.net.transport.Tunnel;
-import com.tny.game.suite.net.filter.annotation.TextFilter;
-import com.tny.game.suite.utils.SuiteResultCode;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.common.result.*;
+import com.tny.game.common.word.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.plugins.filter.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
+import com.tny.game.suite.net.filter.annotation.*;
+import com.tny.game.suite.utils.*;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,7 +35,8 @@ public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String>
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, TextFilter annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, TextFilter annotation,
+            String param) {
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
@@ -62,8 +60,8 @@ public class TextLimit<UID> extends AbstractParamFilter<UID, TextFilter, String>
     public void prepareStart() throws Exception {
         Map<String, WordsFilter> filtersMap = this.applicationContext.getBeansOfType(WordsFilter.class);
         wordsFilters = filtersMap.values().stream()
-                .sorted(Comparator.comparing(WordsFilter::order))
-                .collect(Collectors.toList());
+                                 .sorted(Comparator.comparing(WordsFilter::order))
+                                 .collect(Collectors.toList());
     }
 
 }

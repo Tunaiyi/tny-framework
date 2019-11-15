@@ -16,32 +16,21 @@
 
 package com.tny.game.web.converter;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.ResolvableType;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonInputMessage;
-import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.http.*;
+import org.springframework.http.converter.*;
+import org.springframework.http.converter.json.*;
 import org.springframework.util.TypeUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -145,8 +134,8 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                 Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
                 if (deserializationView != null) {
                     return this.objectMapper.readerWithView(deserializationView)
-                            .withType(javaType)
-                            .readValue(inputMessage.getBody());
+                                            .withType(javaType)
+                                            .readValue(inputMessage.getBody());
                 }
             }
             return this.getObjectMapper().readValue(inputMessage.getBody(), javaType);

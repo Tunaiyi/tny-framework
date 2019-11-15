@@ -1,10 +1,10 @@
 package com.tny.game.base.item.xml;
 
 import com.tny.game.base.item.*;
-import com.tny.game.expr.ExprHolderFactory;
-import com.tny.game.expr.groovy.GroovyExprHolderFactory;
-import org.junit.*;
+import com.tny.game.expr.*;
+import com.tny.game.expr.groovy.*;
 import org.junit.Test;
+import org.junit.*;
 
 public class AbstractXMLItemModelManagerTest {
 

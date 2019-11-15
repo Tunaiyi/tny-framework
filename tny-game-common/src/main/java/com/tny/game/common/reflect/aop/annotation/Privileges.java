@@ -1,7 +1,6 @@
 package com.tny.game.common.reflect.aop.annotation;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 public enum Privileges {
 

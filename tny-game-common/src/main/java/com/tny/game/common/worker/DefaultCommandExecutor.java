@@ -1,8 +1,8 @@
 package com.tny.game.common.worker;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.tny.game.common.concurrent.CoreThreadFactory;
-import com.tny.game.common.utils.Logs;
+import com.tny.game.common.concurrent.*;
+import com.tny.game.common.utils.*;
 import org.slf4j.*;
 
 import java.util.Queue;
@@ -93,12 +93,12 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
     public String toString() {
         long sleepTime = this.sleepTime;
         return this.getName() +
-                " #任务数量: " +
-                size() +
-                " #附加任务箱数量: " +
-                this.commandBoxList.size() +
-                " #最近休眠时间: " +
-                sleepTime;
+               " #任务数量: " +
+               size() +
+               " #附加任务箱数量: " +
+               this.commandBoxList.size() +
+               " #最近休眠时间: " +
+               sleepTime;
     }
 
     @Override

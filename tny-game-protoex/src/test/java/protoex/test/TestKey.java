@@ -1,7 +1,6 @@
 package protoex.test;
 
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
+import com.tny.game.protoex.annotations.*;
 
 @ProtoEx(1010)
 public class TestKey {

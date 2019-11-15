@@ -1,11 +1,11 @@
 package com.tny.game.doc;
 
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.doc.annotation.VarDoc;
+import com.tny.game.doc.annotation.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.function.BiConsumer;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class DocUtils {
 

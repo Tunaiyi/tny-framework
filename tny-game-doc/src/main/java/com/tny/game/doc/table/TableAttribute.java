@@ -1,6 +1,6 @@
 package com.tny.game.doc.table;
 
-import com.tny.game.doc.TypeFormatter;
+import com.tny.game.doc.*;
 
 public interface TableAttribute {
 

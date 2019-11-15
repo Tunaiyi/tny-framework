@@ -1,6 +1,6 @@
 package com.tny.game.net.command.plugins.filter.range;
 
-import com.tny.game.net.command.plugins.filter.range.annotation.FloatRange;
+import com.tny.game.net.command.plugins.filter.range.annotation.*;
 
 public class FloatRangeLimitParamFilter extends RangeLimitParamFilter<FloatRange, Float> {
 

@@ -1,7 +1,7 @@
 package com.tny.game.net.base.listener;
 
 
-import com.tny.game.net.base.ServerGuide;
+import com.tny.game.net.base.*;
 
 @FunctionalInterface
 public interface ServerClosedListener {

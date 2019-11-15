@@ -1,14 +1,14 @@
 package com.tny.game.cache.mysql;
 
-import com.tny.game.cache.DirectCache;
-import com.tny.game.cache.mysql.dao.CacheDAO;
-import com.tny.game.cache.testclass.CacheTestTask;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import javax.annotation.Resource;
+import com.tny.game.cache.*;
+import com.tny.game.cache.mysql.dao.*;
+import com.tny.game.cache.testclass.*;
+import org.junit.*;
+import org.junit.runner.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})

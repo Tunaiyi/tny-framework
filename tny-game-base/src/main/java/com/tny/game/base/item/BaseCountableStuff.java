@@ -1,7 +1,7 @@
 package com.tny.game.base.item;
 
-import com.tny.game.base.item.behavior.Action;
-import com.tny.game.common.context.Attributes;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.common.context.*;
 
 public abstract class BaseCountableStuff<SM extends CountableStuffModel, N extends Number> extends AbstractItem<SM> implements CountableStuff<SM, N> {
 

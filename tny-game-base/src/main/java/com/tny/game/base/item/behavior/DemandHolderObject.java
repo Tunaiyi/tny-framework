@@ -19,7 +19,7 @@ public abstract class DemandHolderObject extends DemandParamsObject {
 
 
     protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll,
-                                                DemandResultCollector collector, String paramsKey, Map<String, Object> attributeMap) {
+            DemandResultCollector collector, String paramsKey, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), attributeMap);
         this.countAndSetDemandParams(paramsKey, attributeMap);
         if (collector == null)
@@ -40,7 +40,7 @@ public abstract class DemandHolderObject extends DemandParamsObject {
     }
 
     protected List<DemandResult> countAllDemandResults(long playerID, List<AbstractDemand> demandList,
-                                                       String paramsKey, Map<String, Object> attributeMap) {
+            String paramsKey, Map<String, Object> attributeMap) {
         setAttrMap(playerID, this.getAttributesAliasSet(), attributeMap);
         this.countAndSetDemandParams(paramsKey, attributeMap);
         List<DemandResult> demandResults = new ArrayList<>();

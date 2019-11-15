@@ -3,8 +3,8 @@ package com.tny.game.suite.base;
 import com.tny.game.base.item.*;
 import com.tny.game.common.collection.*;
 import com.tny.game.suite.utils.*;
-import org.springframework.context.annotation.*;
-import org.springframework.stereotype.*;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -17,7 +17,8 @@ public class DefaultItemModelManager extends GameItemModelManager<DefaultItemMod
     private Map<ItemType, DefaultItemModel> typeMap = new CopyOnWriteMap<>();
 
     protected DefaultItemModelManager() {
-        super(DefaultItemModel.class, Configs.SERVICE_CONFIG.getStr(Configs.SUITE_BASE_DEFAULT_ITEM_MODEL_PATH, Configs.DEFAULT_ITEM_MODEL_CONFIG_PATH));
+        super(DefaultItemModel.class,
+                Configs.SERVICE_CONFIG.getStr(Configs.SUITE_BASE_DEFAULT_ITEM_MODEL_PATH, Configs.DEFAULT_ITEM_MODEL_CONFIG_PATH));
     }
 
     public DefaultItemModel getModel(ItemType itemType) {

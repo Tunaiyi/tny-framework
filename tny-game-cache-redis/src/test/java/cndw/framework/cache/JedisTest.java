@@ -1,7 +1,6 @@
 package cndw.framework.cache;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.util.Pool;
 

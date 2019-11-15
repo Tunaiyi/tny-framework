@@ -1,6 +1,6 @@
 package com.tny.game.net.exception;
 
-import com.tny.game.common.result.ResultCode;
+import com.tny.game.common.result.*;
 
 public class CommandTimeoutException extends CommandException {
 

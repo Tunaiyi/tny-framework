@@ -1,8 +1,6 @@
 package com.tny.game.net.telnet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class TelnetArgument {
 

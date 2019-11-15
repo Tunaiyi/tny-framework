@@ -1,11 +1,9 @@
 package com.tny.game.doc.output;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.tny.game.doc.table.ConfigTable;
+import com.fasterxml.jackson.databind.*;
+import com.tny.game.doc.table.*;
 
 
 /**
@@ -18,8 +16,8 @@ class JSONExporter implements Exporter {
     JSONExporter() {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-                .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
+                    .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
+                    .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     }
 
     @Override

@@ -1,15 +1,9 @@
 package com.tny.game.base.item.behavior.simple;
 
-import com.tny.game.base.item.AlterType;
-import com.tny.game.base.item.DemandParamEntry;
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.DemandParam;
-import com.tny.game.base.item.behavior.DemandResult;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SimpleTradeItem<I extends ItemModel> implements TradeItem<I> {
 

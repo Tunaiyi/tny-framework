@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.enums.EnumIdentifiable;
+import com.tny.game.common.enums.*;
 
 /**
  * 能力值类型接口

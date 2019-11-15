@@ -1,11 +1,9 @@
 package com.tny.game.protoex;
 
-import com.tny.game.protoex.annotations.TypeEncode;
+import com.tny.game.protoex.annotations.*;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class PETKey {
     public static final boolean VAR_LENGTH = true;

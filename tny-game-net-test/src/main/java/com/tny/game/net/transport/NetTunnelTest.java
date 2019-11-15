@@ -1,10 +1,10 @@
 package com.tny.game.net.transport;
 
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -25,7 +25,7 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
         return createEndpoint(createLoginCert());
     }
 
-    protected  E createEndpoint(Certificate<Long> certificate) {
+    protected E createEndpoint(Certificate<Long> certificate) {
         return create(certificate, false).getEndpoint();
     }
 

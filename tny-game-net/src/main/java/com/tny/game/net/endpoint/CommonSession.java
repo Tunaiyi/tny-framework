@@ -2,8 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.google.common.base.MoreObjects;
 import com.tny.game.net.transport.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 /**
  * 抽象Session
@@ -45,10 +44,10 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("userGroup", this.getUserType())
-                .add("userId", this.getUserId())
-                .add("tunnel", this.currentTunnel())
-                .toString();
+                          .add("userGroup", this.getUserType())
+                          .add("userId", this.getUserId())
+                          .add("tunnel", this.currentTunnel())
+                          .toString();
     }
 
 }

@@ -1,23 +1,15 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.base.item.ItemModel;
-import com.tny.game.base.item.Trade;
-import com.tny.game.base.item.TradeInfo;
-import com.tny.game.base.item.TradeItem;
-import com.tny.game.base.item.behavior.DemandResult;
-import com.tny.game.base.item.behavior.TradeType;
-import com.tny.game.base.item.xml.XMLDemand.TradeDemandType;
-import com.tny.game.suite.base.ItemTypes;
-import com.tny.game.doc.annotation.DTODoc;
-import com.tny.game.doc.annotation.VarDoc;
-import com.tny.game.protoex.annotations.ProtoEx;
-import com.tny.game.protoex.annotations.ProtoExField;
-import com.tny.game.suite.SuiteProtoIDs;
+import com.tny.game.base.item.*;
+import com.tny.game.base.item.behavior.*;
+import com.tny.game.base.item.xml.XMLDemand.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+import com.tny.game.suite.*;
+import com.tny.game.suite.base.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ProtoEx(SuiteProtoIDs.DEMAND_RESULT_DTO)
 @DTODoc(value = "判断结果DTO")
@@ -48,13 +40,13 @@ public class DemandResultDTO implements Serializable {
     @ProtoExField(6)
     protected long id;
 
-//    @VarDoc("期望值")
-//    @ProtoExField(7)
-//    protected Long currentValue;
-//
-//    @VarDoc("期望值")
-//    @ProtoExField(8)
-//    protected boolean satisfy;
+    //    @VarDoc("期望值")
+    //    @ProtoExField(7)
+    //    protected Long currentValue;
+    //
+    //    @VarDoc("期望值")
+    //    @ProtoExField(8)
+    //    protected boolean satisfy;
 
     public DemandResultDTO() {
     }
@@ -70,9 +62,9 @@ public class DemandResultDTO implements Serializable {
         dto.itemID = result.getItemId();
         dto.itemType = ItemTypes.ofItemId(result.getItemId()).getId();
         dto.demandType = result.getDemandType().getId();
-//        dto.currentValue = result.getCurrentValue(Long.class);
+        //        dto.currentValue = result.getCurrentValue(Long.class);
         dto.expectValue = result.getExpectValue(Long.class);
-//        dto.satisfy = result.isSatisfy();
+        //        dto.satisfy = result.isSatisfy();
     }
 
     public static List<DemandResultDTO> tradeInfo2DTOList(TradeInfo trade) {
@@ -122,7 +114,7 @@ public class DemandResultDTO implements Serializable {
     @Override
     public String toString() {
         return "DemandResultDTO [itemId=" + itemID + ", demandType="
-                + demandType + ", expectValue=" + expectValue + "]";
+               + demandType + ", expectValue=" + expectValue + "]";
     }
 
 }

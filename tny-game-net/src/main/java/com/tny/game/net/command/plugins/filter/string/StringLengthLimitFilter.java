@@ -1,12 +1,12 @@
 package com.tny.game.net.command.plugins.filter.string;
 
-import com.tny.game.common.result.ResultCode;
-import com.tny.game.net.base.NetResultCode;
-import com.tny.game.net.command.dispatcher.MethodControllerHolder;
-import com.tny.game.net.command.plugins.filter.AbstractParamFilter;
-import com.tny.game.net.command.plugins.filter.string.annotation.StrLength;
+import com.tny.game.common.result.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.plugins.filter.*;
+import com.tny.game.net.command.plugins.filter.string.annotation.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.Tunnel;
+import com.tny.game.net.transport.*;
 
 public class StringLengthLimitFilter extends AbstractParamFilter<Object, StrLength, String> {
 
@@ -21,7 +21,8 @@ public class StringLengthLimitFilter extends AbstractParamFilter<Object, StrLeng
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, StrLength annotation, String param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, StrLength annotation,
+            String param) {
         if (param == null)
             return NetResultCode.ILLEGAL_PARAMETERS;
         int length = param.length();

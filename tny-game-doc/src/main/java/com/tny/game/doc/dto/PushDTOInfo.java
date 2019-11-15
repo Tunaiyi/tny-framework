@@ -1,10 +1,10 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import static com.tny.game.common.utils.StringAide.*;
-import com.tny.game.doc.holder.DTODocHolder;
+import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 @XStreamAlias("dtoImport")
 public class PushDTOInfo implements Comparable<PushDTOInfo> {

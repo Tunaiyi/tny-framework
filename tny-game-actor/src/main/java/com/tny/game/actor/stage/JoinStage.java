@@ -1,7 +1,7 @@
 package com.tny.game.actor.stage;
 
 
-import com.tny.game.actor.stage.Stages.JoinFragment;
+import com.tny.game.actor.stage.Stages.*;
 
 /**
  * Created by Kun Yang on 16/1/22.
