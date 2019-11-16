@@ -4,7 +4,7 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.*;
 
-public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements Identifier {
+public class GameWarehouse extends AbstractWarehouse<GameItemStorage> implements Owned {
 
     //	protected Queue<Trade> trades;
     //
@@ -44,7 +44,7 @@ public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements I
     //	}
 
     public GameWarehouse() {
-        super(GameItemOwner.class);
+        super(GameItemStorage.class);
     }
 
     @Override
@@ -69,14 +69,14 @@ public class GameWarehouse extends AbstractWarehouse<GameItemOwner> implements I
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void doReceive(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        owner.receive(tradeItem, action, attributes);
+    protected void doReceive(GameItemStorage storage, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        storage.receive(tradeItem, action, attributes);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void doConsume(GameItemOwner owner, TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        owner.consume(tradeItem, action, attributes);
+    protected void doConsume(GameItemStorage storage, TradeItem<?> tradeItem, Action action, Attributes attributes) {
+        storage.consume(tradeItem, action, attributes);
     }
 
 

@@ -20,11 +20,11 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Component
 @Profile({ITEM, GAME})
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer, ApplicationContextAware, AppPrepareStart {
+public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplorer, ApplicationContextAware, AppPrepareStart {
 
     private Map<Class<?>, GameManager<Object>> managerMap = ImmutableMap.of();
 
-    private Map<ItemType, GameManager<Object>> typeOwnerManagerMap = ImmutableMap.of();
+    private Map<ItemType, GameManager<Object>> typeStorageManagerMap = ImmutableMap.of();
 
     private Map<ItemType, GameManager<Object>> typeManagerMap = ImmutableMap.of();
 
@@ -165,112 +165,112 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
     }
 
     @Override
-    public <O extends Owner<?, ?>> O getOwner(long playerID, int itemID, Object... object) {
-        GameManager<Object> manager = this.getOwnerManager(itemID);
+    public <O extends Storage<?, ?>> O getStorage(long playerID, int itemID, Object... object) {
+        GameManager<Object> manager = this.getStorageManager(itemID);
         if (manager == null)
             return null;
         return (O) manager.get(playerID, object);
     }
 
     @Override
-    public boolean insertOwner(Owner<?, ?>... owners) {
+    public boolean insertStorage(Storage<?, ?>... storageArray) {
         boolean result = true;
-        for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
+        for (Storage<?, ?> storage : storageArray) {
+            GameManager<Object> manager = this.getStorageManager(storage.getItemId());
             if (manager == null)
                 return true;
-            if (!manager.insert(owner))
+            if (!manager.insert(storage))
                 result = false;
         }
         return result;
     }
 
     @Override
-    public <O extends Owner<?, ?>> Collection<O> insertOwner(
-            Collection<O> ownerCollection) {
+    public <O extends Storage<?, ?>> Collection<O> insertStorage(
+            Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
-        for (O owner : ownerCollection) {
-            if (!this.insertOwner(owner))
-                fail.add(owner);
+        for (O storage : storageCollection) {
+            if (!this.insertStorage(storage))
+                fail.add(storage);
         }
         return fail;
     }
 
     @Override
-    public boolean updateOwner(Owner<?, ?>... owners) {
+    public boolean updateStorage(Storage<?, ?>... storageArray) {
         boolean result = true;
-        for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
+        for (Storage<?, ?> storage : storageArray) {
+            GameManager<Object> manager = this.getStorageManager(storage.getItemId());
             if (manager == null)
                 return true;
-            if (!manager.update(owner))
+            if (!manager.update(storage))
                 result = false;
         }
         return result;
     }
 
     @Override
-    public <O extends Owner<?, ?>> Collection<O> updateOwner(
-            Collection<O> ownerCollection) {
+    public <O extends Storage<?, ?>> Collection<O> updateStorage(
+            Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
-        for (O owner : ownerCollection) {
-            if (!this.updateOwner(owner))
-                fail.add(owner);
+        for (O storage : storageCollection) {
+            if (!this.updateStorage(storage))
+                fail.add(storage);
         }
         return fail;
     }
 
     @Override
-    public boolean saveOwner(Owner<?, ?>... owners) {
+    public boolean saveStorage(Storage<?, ?>... storageArray) {
         boolean result = true;
-        for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
+        for (Storage<?, ?> storage : storageArray) {
+            GameManager<Object> manager = this.getStorageManager(storage.getItemId());
             if (manager == null)
                 return true;
-            if (!manager.save(owner))
+            if (!manager.save(storage))
                 result = false;
         }
         return result;
     }
 
     @Override
-    public <O extends Owner<?, ?>> Collection<O> saveOwner(Collection<O> ownerCollection) {
+    public <O extends Storage<?, ?>> Collection<O> saveStorage(Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
-        for (O owner : ownerCollection) {
-            if (!this.saveOwner(owner))
-                fail.add(owner);
+        for (O storage : storageCollection) {
+            if (!this.saveStorage(storage))
+                fail.add(storage);
         }
         return fail;
     }
 
     @Override
-    public boolean deleteOwner(Owner<?, ?>... owners) {
+    public boolean deleteStorage(Storage<?, ?>... storageArray) {
         boolean result = true;
-        for (Owner<?, ?> owner : owners) {
-            GameManager<Object> manager = this.getOwnerManager(owner.getItemId());
+        for (Storage<?, ?> storage : storageArray) {
+            GameManager<Object> manager = this.getStorageManager(storage.getItemId());
             if (manager == null)
                 return true;
-            if (!manager.delete(owner))
+            if (!manager.delete(storage))
                 result = false;
         }
         return result;
     }
 
     @Override
-    public <O extends Owner<?, ?>> Collection<O> deleteOwner(Collection<O> ownerCollection) {
+    public <O extends Storage<?, ?>> Collection<O> deleteStorage(Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
-        for (O owner : ownerCollection) {
-            if (!this.deleteOwner(owner))
-                fail.add(owner);
+        for (O storage : storageCollection) {
+            if (!this.deleteStorage(storage))
+                fail.add(storage);
         }
         return fail;
     }
 
-    private GameManager<Object> getOwnerManager(int itemID) {
+    private GameManager<Object> getStorageManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemId(itemID);
-        GameManager<Object> manager = this.typeOwnerManagerMap.get(itemType);
+        GameManager<Object> manager = this.typeStorageManagerMap.get(itemType);
         if (manager == null)
-            throw new NullPointerException(MessageFormat.format("获取 {0} 事物的owner manager 为null", itemType));
+            throw new NullPointerException(MessageFormat.format("获取 {0} 事物的storage manager 为null", itemType));
         return manager;
     }
 
@@ -319,12 +319,12 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
         Map<String, GameManager> map = this.applicationContext.getBeansOfType(GameManager.class);
         Map<Class<?>, GameManager<Object>> managerMap = new HashMap<>();
         Map<ItemType, GameManager<Object>> typeManagerMap = new HashMap<>();
-        Map<ItemType, GameManager<Object>> typeOwnerManagerMap = new HashMap<>();
+        Map<ItemType, GameManager<Object>> typeStorageManagerMap = new HashMap<>();
         Map<ItemType, ModelManager<Model>> modelManagerMap = new HashMap<>();
         for (GameManager<Object> manager : map.values()) {
             putManager(typeManagerMap, manager);
             putManager(managerMap, manager.getClass(), manager);
-            putOwnManager(typeOwnerManagerMap, manager);
+            putOwnManager(typeStorageManagerMap, manager);
         }
         Map<String, ModelManager> modelMap = this.applicationContext.getBeansOfType(ModelManager.class);
         for (ModelManager<Model> manager : modelMap.values()) {
@@ -332,7 +332,7 @@ public class GameExplorer implements ItemExplorer, OwnerExplorer, ModelExplorer,
         }
         this.managerMap = ImmutableMap.copyOf(managerMap);
         this.typeManagerMap = ImmutableMap.copyOf(typeManagerMap);
-        this.typeOwnerManagerMap = ImmutableMap.copyOf(typeOwnerManagerMap);
+        this.typeStorageManagerMap = ImmutableMap.copyOf(typeStorageManagerMap);
         this.typeModelManagerMap = ImmutableMap.copyOf(modelManagerMap);
     }
 

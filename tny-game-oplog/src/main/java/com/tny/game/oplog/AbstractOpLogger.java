@@ -147,7 +147,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshotByType(Identifier item, Action action, SnapperType... types) {
+    public OpLogger logSnapshotByType(Owned item, Action action, SnapperType... types) {
         try {
             action = this.transAction(action);
             if (types.length == 0)
@@ -163,7 +163,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     @Override
     @SafeVarargs
-    public final OpLogger logSnapshotByClass(Identifier item, Action action, Class<? extends Snapper>... snapperTypes) {
+    public final OpLogger logSnapshotByClass(Owned item, Action action, Class<? extends Snapper>... snapperTypes) {
         try {
             action = this.transAction(action);
             if (snapperTypes.length == 0)
@@ -178,7 +178,7 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logSnapshot(Identifier item, Action action) {
+    public OpLogger logSnapshot(Owned item, Action action) {
         action = this.transAction(action);
         this.doLogSnapshot(action, item);
         return this;
@@ -203,11 +203,11 @@ public abstract class AbstractOpLogger implements OpLogger {
         return (S) log.getSnapshot(action, id, type);
     }
 
-    protected abstract void doLogSnapshot(Action action, Identifier item, SnapperType type);
+    protected abstract void doLogSnapshot(Action action, Owned item, SnapperType type);
 
-    protected abstract void doLogSnapshot(Action action, Identifier item, Class<? extends Snapper> type);
+    protected abstract void doLogSnapshot(Action action, Owned item, Class<? extends Snapper> type);
 
-    protected abstract void doLogSnapshot(Action action, Identifier item);
+    protected abstract void doLogSnapshot(Action action, Owned item);
 
     protected OpLog pollLog() {
         OpLog log = this.localOpLog.get();

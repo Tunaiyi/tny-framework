@@ -24,4 +24,9 @@ public class IntRangeLimitParamFilter extends RangeLimitParamFilter<IntRange, In
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(IntRange annotation) {
+        return annotation.illegalCode();
+    }
+
 }

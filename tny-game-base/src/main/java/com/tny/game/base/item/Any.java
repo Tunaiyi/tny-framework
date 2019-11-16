@@ -4,7 +4,7 @@ import com.tny.game.common.tag.*;
 
 import java.util.Set;
 
-public interface Any<M extends Model> extends Identifier, Taggable {
+public interface Any<M extends Model> extends Owned, Taggable {
 
     /**
      * 获取对象ID

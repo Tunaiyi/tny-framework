@@ -7,8 +7,8 @@ import com.tny.game.net.demo.common.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.suite.launcher.*;
-import com.tny.game.suite.spring.annotation.*;
+import com.tny.game.starter.net.netty4.appliaction.*;
+import com.tny.game.starter.net.netty4.configuration.annotation.*;
 import org.slf4j.*;
 import org.springframework.boot.*;
 import org.springframework.context.ApplicationContext;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date: 2018-10-30 16:49
  */
 @SpringBootConfiguration
-@EnableNetAutoConfiguration
+@EnableNetApplication
 @ComponentScan(
         value = {"com.tny.game.net.demo.client", "com.tny.game.net.demo.common"},
         includeFilters = @Filter(Controller.class))
@@ -38,7 +38,7 @@ public class GameClientApp {
     public static void main(String[] args) {
         try {
             ApplicationContext applicationContext = SpringApplication.run(GameClientApp.class, args);
-            SuitApplication application = applicationContext.getBean(SuitApplication.class);
+            NetApplication application = applicationContext.getBean(NetApplication.class);
             application.start();
             ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
             long userId = 1000;

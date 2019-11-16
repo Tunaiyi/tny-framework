@@ -9,12 +9,12 @@ public class DefaultModuleHandler extends GameModuleHandler<Module, Object> {
     }
 
     @Override
-    public boolean openModule(FeatureExplorer owner) {
+    public boolean openModule(FeatureExplorer explorer) {
         return true;
     }
 
     @Override
-    public void loadModule(FeatureExplorer owner) {
+    public void loadModule(FeatureExplorer explorer) {
 
     }
 

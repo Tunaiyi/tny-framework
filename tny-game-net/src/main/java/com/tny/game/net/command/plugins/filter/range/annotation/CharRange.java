@@ -11,4 +11,10 @@ public @interface CharRange {
 
     char high() default Character.MAX_VALUE;
 
+    /**
+     * 默认错误 code
+     *
+     * @return 207
+     */
+    int illegalCode() default 0;
 }

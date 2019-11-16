@@ -19,8 +19,8 @@ public final class PostStarter extends Lifecycle<PostStarter, AppPostStart> {
         return lifecycle;
     }
 
-    private PostStarter(Class<? extends AppPostStart> initerClass, LifecyclePriority lifeCycleLevel) {
-        super(initerClass, lifeCycleLevel);
+    private PostStarter(Class<? extends AppPostStart> InitiatorClass, LifecyclePriority lifeCycleLevel) {
+        super(InitiatorClass, lifeCycleLevel);
     }
 
     @Override

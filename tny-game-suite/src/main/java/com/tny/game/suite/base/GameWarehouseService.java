@@ -146,12 +146,12 @@ public class GameWarehouseService implements WarehouseService {
                     continue;
                 CountableStuffModel stuffModel = item.getItemModel();
                 if (stuffModel.isNumberLimit()) {
-                    CountableStuffOwner owner = warehouse.getOwner(stuffModel.getItemType(), GameCountableStuffOwner.class);
+                    CountableStuffStorage storage = warehouse.getStorage(stuffModel.getItemType(), GameCountableStuffStorage.class);
                     if (award) {
-                        if (owner.isOverUpperLimit(stuffModel, AlterType.CHECK, item.getNumber()))
+                        if (storage.isOverUpperLimit(stuffModel, AlterType.CHECK, item.getNumber()))
                             return DoneResults.failure(ItemResultCode.FULL_NUMBER);
                     } else {
-                        if (owner.isOverLowerLimit(stuffModel, AlterType.CHECK, item.getNumber()))
+                        if (storage.isOverLowerLimit(stuffModel, AlterType.CHECK, item.getNumber()))
                             return DoneResults.failure(ItemResultCode.LACK_NUMBER);
                     }
                 }

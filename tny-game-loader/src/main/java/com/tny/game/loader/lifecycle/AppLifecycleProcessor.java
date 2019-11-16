@@ -37,14 +37,14 @@ public class AppLifecycleProcessor {
         ClassScanner.instance()
                     .scan(paths);
         LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
-        for (StaticIniter initer : LifecycleLoader.getStaticIniters()) {
-            Class<?> c = initer.getIniterClass();
+        for (StaticInitiator Initiator : LifecycleLoader.getStaticInitiators()) {
+            Class<?> c = Initiator.getInitiatorClass();
             int number = 0;
             long current = System.currentTimeMillis();
             try {
                 number++;
                 LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] index {}", c, number);
-                ExeAide.runUnchecked(initer::init);
+                ExeAide.runUnchecked(Initiator::init);
                 LOGGER.info("服务生命周期 StaticInit # 处理器 [{}] index {} | -> 耗时 {} 完成", c, number, System.currentTimeMillis() - current);
             } catch (Throwable e) {
                 LOGGER.error("服务生命周期 StaticInit # 处理器 [{}] index {} | -> 异常", c, number, e);
@@ -119,15 +119,15 @@ public class AppLifecycleProcessor {
 
     private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter,
             ApplicationContext context) {
-        Map<String, ? extends T> initerMap = context.getBeansOfType(processorClass);
-        addLifecycle(processorClass, lifecycleGetter, initerMap.values());
+        Map<String, ? extends T> InitiatorMap = context.getBeansOfType(processorClass);
+        addLifecycle(processorClass, lifecycleGetter, InitiatorMap.values());
     }
 
     private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue)
             throws Exception {
         String name = processorClass.getSimpleName();
         LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
-        // Map<String, ? extends T> initerMap = this.appContext.getBeansOfType(processorClass);
+        // Map<String, ? extends T> InitiatorMap = this.appContext.getBeansOfType(processorClass);
         Set<Lifecycle> lifecycleList = lifecycleMap.getOrDefault(processorClass, Collections.emptySet());
         int index = 0;
 

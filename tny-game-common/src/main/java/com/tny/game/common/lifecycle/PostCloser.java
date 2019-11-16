@@ -19,8 +19,8 @@ public final class PostCloser extends Lifecycle<PostCloser, AppClosed> {
         return lifecycle;
     }
 
-    private PostCloser(Class<? extends AppClosed> initerClass, LifecyclePriority lifeCycleLevel) {
-        super(initerClass, lifeCycleLevel);
+    private PostCloser(Class<? extends AppClosed> InitiatorClass, LifecyclePriority lifeCycleLevel) {
+        super(InitiatorClass, lifeCycleLevel);
     }
 
     @Override

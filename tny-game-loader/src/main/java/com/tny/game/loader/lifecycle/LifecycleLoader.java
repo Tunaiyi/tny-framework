@@ -18,22 +18,24 @@ public final class LifecycleLoader {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LifecycleLoader.class);
 
-    private static volatile List<StaticIniter> initers = Collections.emptyList();
+    private static volatile List<StaticInitiator> Initiators = Collections.emptyList();
 
     private static ClassSelector selector = ClassSelector.instance()
                                                          .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
                                                          .setHandler(classes ->
-                                                                 initers = ImmutableList.copyOf(classes.stream()
-                                                                                                       .sorted((one, other) -> {
-                                                                                                           AsLifecycle oneLifecycle = one
-                                                                                                                   .getAnnotation(AsLifecycle.class);
-                                                                                                           AsLifecycle otherLifecycle = other
-                                                                                                                   .getAnnotation(AsLifecycle.class);
-                                                                                                           return otherLifecycle.order() -
-                                                                                                                  oneLifecycle.order();
-                                                                                                       })
-                                                                                                       .map(StaticIniter::instance)
-                                                                                                       .collect(Collectors.toList())));
+                                                                 Initiators = ImmutableList.copyOf(classes.stream()
+                                                                                                          .sorted((one, other) -> {
+                                                                                                              AsLifecycle oneLifecycle = one
+                                                                                                                      .getAnnotation(
+                                                                                                                              AsLifecycle.class);
+                                                                                                              AsLifecycle otherLifecycle = other
+                                                                                                                      .getAnnotation(
+                                                                                                                              AsLifecycle.class);
+                                                                                                              return otherLifecycle.order() -
+                                                                                                                     oneLifecycle.order();
+                                                                                                          })
+                                                                                                          .map(StaticInitiator::instance)
+                                                                                                          .collect(Collectors.toList())));
 
     @ClassSelectorProvider
     private static ClassSelector selector() {
@@ -43,8 +45,8 @@ public final class LifecycleLoader {
     private LifecycleLoader() {
     }
 
-    public static List<StaticIniter> getStaticIniters() {
-        return initers;
+    public static List<StaticInitiator> getStaticInitiators() {
+        return Initiators;
     }
 
 }

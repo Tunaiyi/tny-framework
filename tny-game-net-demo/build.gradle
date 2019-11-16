@@ -17,7 +17,8 @@ dependencies {
     implementation libs.log4j_slf4j_impl
     implementation libs.disruptor
     implementation libs.spring_boot_starter_log4j2
-    implementation project(":tny-game-suite")
+    implementation project(":tny-game-starter-net-netty4")
     implementation project(":tny-game-loader")
+    implementation project(":tny-game-doc")
 
 }

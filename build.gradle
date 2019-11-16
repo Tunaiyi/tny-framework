@@ -73,8 +73,7 @@ configure(subprojects) {
     apply plugin: "idea"
     apply plugin: 'java-library'
 
-    print(name)
-    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.endsWith("-starter")
+    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
     if (springBoot) {
         apply plugin: 'io.spring.dependency-management'
@@ -123,6 +122,9 @@ configure(subprojects) {
     }
 
 
+    configurations {
+        compile.exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
+    }
 //    sourceSets {
 //        main {
 //            compileClasspath += configurations.provided

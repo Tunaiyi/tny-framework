@@ -24,4 +24,8 @@ public class FloatRangeLimitParamFilter extends RangeLimitParamFilter<FloatRange
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(FloatRange annotation) {
+        return annotation.illegalCode();
+    }
 }

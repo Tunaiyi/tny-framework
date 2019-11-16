@@ -24,4 +24,8 @@ public class DoubleRangeLimitParamFilter extends RangeLimitParamFilter<DoubleRan
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(DoubleRange annotation) {
+        return annotation.illegalCode();
+    }
 }

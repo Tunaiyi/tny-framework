@@ -8,27 +8,27 @@ public abstract class WarehouseBuilder {
      */
     protected long playerId;
 
-    protected OwnerExplorer ownerExplorer;
+    protected StorageExplorer storageExplorer;
 
     public WarehouseBuilder setPlayerId(long playerId) {
         this.playerId = playerId;
         return this;
     }
 
-    public WarehouseBuilder setOwnerExplorer(OwnerExplorer ownerExplorer) {
-        this.ownerExplorer = ownerExplorer;
+    public WarehouseBuilder setStorageExplorer(StorageExplorer storageExplorer) {
+        this.storageExplorer = storageExplorer;
         return this;
     }
 
     /**
-     * 构建owner对象
+     * 构建storage对象
      *
-     * @return owner对象
+     * @return Storage对象
      */
     public Warehouse build() {
         AbstractWarehouse entity = this.createWarehouse();
         entity.setPlayerId(this.playerId);
-        entity.setOwnerExplorer(this.ownerExplorer);
+        entity.setStorageExplorer(this.storageExplorer);
         return entity;
     }
 

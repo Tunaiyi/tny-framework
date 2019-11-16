@@ -151,7 +151,7 @@ public interface OpLogger {
      * @param types  快照器类型
      * @return 返回Logger
      */
-    OpLogger logSnapshotByType(Identifier item, Action action, SnapperType... types);
+    OpLogger logSnapshotByType(Owned item, Action action, SnapperType... types);
 
     /**
      * 记录快照
@@ -161,7 +161,7 @@ public interface OpLogger {
      * @param snapperTypes 快照器Class
      * @return 返回Logger
      */
-    OpLogger logSnapshotByClass(Identifier item, Action action, Class<? extends Snapper>... snapperTypes);
+    OpLogger logSnapshotByClass(Owned item, Action action, Class<? extends Snapper>... snapperTypes);
 
     /**
      * 记录快照
@@ -170,7 +170,7 @@ public interface OpLogger {
      * @param action 记录原因(操作Action)
      * @return 返回Logger
      */
-    OpLogger logSnapshot(Identifier item, Action action);
+    OpLogger logSnapshot(Owned item, Action action);
 
     /**
      * @return 是否开启记录 返回Logger

@@ -27,10 +27,10 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
         Long playerID = null;
         if (object instanceof Item) {
             playerID = ((Item<?>) object).getPlayerId();
-        } else if (object instanceof Identifier) {
-            playerID = ((Identifier) object).getPlayerId();
+        } else if (object instanceof Owned) {
+            playerID = ((Owned) object).getPlayerId();
         }
-        return new LoginTimeStrategy(playerID, addLife == Long.MIN_VALUE ? defaultLifeTime : addLife);
+        return new LoginTimeStrategy(playerID, addLife == Long.MIN_VALUE ? this.defaultLifeTime : addLife);
     }
 
     private class LoginTimeStrategy extends TimeoutReleaseStrategy {
@@ -44,7 +44,8 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
         @Override
         public boolean release(AsyncDBEntity entity, long releaseAt) {
-            Optional<SessionKeeper<Long>> keeperOpt = endpointKeeperManager.getSessionKeeper(userType);
+            Optional<SessionKeeper<Long>> keeperOpt = OnlineReleaseStrategyFactory.this.endpointKeeperManager.getSessionKeeper(
+                    OnlineReleaseStrategyFactory.this.userType);
             if (!keeperOpt.isPresent())
                 return true;
             EndpointKeeper<Long, Session<Long>> keeper = keeperOpt.get();

@@ -52,16 +52,16 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     }
 
     private boolean doIsOpen(long explorerID, Feature feature) {
-        GameFeatureExplorer featureOwner = this.featureExplorerManager.getExplorer(explorerID);
-        return featureOwner.isFeatureOpened(feature);
+        GameFeatureExplorer explorer = this.featureExplorerManager.getExplorer(explorerID);
+        return explorer.isFeatureOpened(feature);
     }
 
     private FeatureModel getModel(Feature feature) {
-        return featureModelManager.getAndCheckModelBy(feature);
+        return this.featureModelManager.getAndCheckModelBy(feature);
     }
 
     public boolean isEffect(Feature feature) {
-        return featureModelManager.getModelBy(feature) != null;
+        return this.featureModelManager.getModelBy(feature) != null;
     }
 
     // private boolean isActiveFeature(Version current, FeatureModel model) {
@@ -73,13 +73,13 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     // }
 
     public Optional<Version> getFeatureVersion() {
-        return featureModelManager.getVersionHolder().getFeatureVersion();
+        return this.featureModelManager.getVersionHolder().getFeatureVersion();
     }
 
     @SuppressWarnings("unchecked")
     private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
         for (FeatureModel model : this.featureModelManager.getModels(openMode)) {
-            FeatureHandler handler = handlerMap.get(model.getFeature());
+            FeatureHandler handler = this.handlerMap.get(model.getFeature());
             if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context))
                 continue;
             if (!model.isCanOpen(explorer, openMode)
@@ -90,20 +90,20 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                 synchronized (explorer) {
                     if (explorer.isFeatureOpened(feature))
                         continue;
-                    if (LOGGER.isInfoEnabled()) {
+                    if (this.LOGGER.isInfoEnabled()) {
                         RunningChecker.start(model.getFeature());
-                        LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerId(), feature);
+                        this.LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerId(), feature);
                     }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
                         explorer.open(model);
                     }
-                    if (LOGGER.isInfoEnabled()) {
+                    if (this.LOGGER.isInfoEnabled()) {
                         long time = RunningChecker.end(model.getFeature()).cost();
-                        LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
+                        this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
                     }
                 }
             } catch (Throwable e) {
-                LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerId(), feature, e);
+                this.LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerId(), feature, e);
             }
         }
         // if (LOGGER.isInfoEnabled() && alRunningCheck != null) {
@@ -119,7 +119,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                 for (Module module : feature.dependModules()) {
                     if (!moduleSet.add(module))
                         continue;
-                    moduleService.doLoadModule(explorer, module);
+                    this.moduleService.doLoadModule(explorer, module);
                 }
                 if (feature.isValid())
                     doLoadFeature(explorer, feature);
@@ -130,11 +130,11 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     private void doLoadFeature(final FeatureExplorer explorer, final Feature feature) {
         try {
             if (feature.isValid()) {
-                FeatureHandler featureHandler = handlerMap.get(feature);
+                FeatureHandler featureHandler = this.handlerMap.get(feature);
                 featureHandler.loadFeature(explorer);
             }
         } catch (Throwable e) {
-            LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerId(), feature, e);
+            this.LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerId(), feature, e);
         }
     }
 

@@ -31,12 +31,5 @@ public interface ModuleHandler {
      */
     void removeModule(FeatureExplorer explorer);
 
-    //	/**
-    //	 * 获取模块信息数据
-    //	 *
-    //	 * @param playerInfo
-    //	 * @return
-    //	 */
-    //	public abstract D getModeleData(ModuleOwner moduleOwner);
 
 }

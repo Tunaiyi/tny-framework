@@ -4,7 +4,7 @@ import com.tny.game.base.module.*;
 
 public abstract class GameFeatureHandler<F extends Feature> implements FeatureHandler {
 
-    protected F feature;
+    private F feature;
 
     public GameFeatureHandler(F feature) {
         super();
@@ -13,7 +13,7 @@ public abstract class GameFeatureHandler<F extends Feature> implements FeatureHa
 
     @Override
     public F getFeature() {
-        return feature;
+        return this.feature;
     }
 
     @Override
@@ -21,20 +21,5 @@ public abstract class GameFeatureHandler<F extends Feature> implements FeatureHa
         return "FeatureHandler [feature=" + this.feature + "]";
     }
 
-    // /**
-    // * 更新游戏DTO
-    // *
-    // * @param playerInfo
-    // * @return
-    // */
-    // public abstract BaseDTO updateGameDTO(ModuleOwner playerInfo, GameDTO dto);
-    //
-    // /**
-    // * 获取模块信息DTO
-    // *
-    // * @param playerInfo
-    // * @return
-    // */
-    // public abstract <DTO extends BaseDTO> DTO getModuleDTO(ModuleOwner playerInfo);
 
 }

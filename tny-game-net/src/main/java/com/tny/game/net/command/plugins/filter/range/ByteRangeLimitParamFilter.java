@@ -16,6 +16,11 @@ public class ByteRangeLimitParamFilter extends RangeLimitParamFilter<ByteRange, 
     }
 
     @Override
+    protected int illegalCode(ByteRange annotation) {
+        return annotation.illegalCode();
+    }
+
+    @Override
     protected Byte getHigh(ByteRange rangeAnn) {
         return rangeAnn.high();
     }

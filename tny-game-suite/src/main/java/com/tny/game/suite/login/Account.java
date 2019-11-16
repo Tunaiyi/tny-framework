@@ -7,7 +7,7 @@ import com.tny.game.suite.login.event.*;
 import com.tny.game.suite.utils.*;
 import org.joda.time.*;
 
-public class Account implements Identifier {
+public class Account implements Owned {
 
     private static BindVoidEventBus<AccountListener, Account> ON_CREATE =
             EventBuses.of(AccountListener.class, AccountListener::onCreate);
@@ -132,15 +132,15 @@ public class Account implements Identifier {
     }
 
     public Long getOfflineAt() {
-        if (offlineTime == null)
+        if (this.offlineTime == null)
             return null;
-        return offlineTime.getMillis();
+        return this.offlineTime.getMillis();
     }
 
     public Long getOnlineAt() {
-        if (onlineTime == null)
+        if (this.onlineTime == null)
             return null;
-        return onlineTime.getMillis();
+        return this.onlineTime.getMillis();
     }
 
     public void setOfflineAt(Long offlineTime) {
@@ -217,7 +217,7 @@ public class Account implements Identifier {
     }
 
     public String getAccountTag() {
-        return AccountUtils.account2Tag(account);
+        return AccountUtils.account2Tag(this.account);
     }
 
     protected void setPf(String pf) {
@@ -311,11 +311,11 @@ public class Account implements Identifier {
     }
 
     public DateTime getOfflineTime() {
-        return offlineTime;
+        return this.offlineTime;
     }
 
     public DateTime getOnlineTime() {
-        return onlineTime;
+        return this.onlineTime;
     }
 
     @Override

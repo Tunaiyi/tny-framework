@@ -11,4 +11,10 @@ public @interface LongRange {
 
     long high() default Long.MAX_VALUE;
 
+    /**
+     * 默认错误 code
+     *
+     * @return 207
+     */
+    int illegalCode() default 0;
 }

@@ -6,11 +6,11 @@ import com.tny.game.common.context.*;
 import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.starter.common.transaction.*;
+import com.tny.game.starter.common.transaction.listener.*;
 import com.tny.game.suite.auto.*;
 import com.tny.game.suite.auto.persistent.annotation.*;
 import com.tny.game.suite.base.*;
-import com.tny.game.suite.transaction.*;
-import com.tny.game.suite.transaction.listener.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     private AutoMethodHolder<AutoDBMethod> methodHolder = new AutoMethodHolder<>(AutoDBMethod::new);
 
-    private Map<Class<?>, Manager<Object>> classManagerMap = new CopyOnWriteMap<Class<?>, Manager<Object>>();
+    private Map<Class<?>, Manager<Object>> classManagerMap = new CopyOnWriteMap<>();
 
     private static AutoPersistentAdvice ADVICE = null;
 
@@ -60,7 +60,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     }
 
     private void addSaveList(Method method, Object target, Object returnValue, Object[] args) {
-        AutoDBMethod holder = methodHolder.getInstance(method);
+        AutoDBMethod holder = this.methodHolder.getInstance(method);
         if (holder.isAutoHandle()) {
             Transaction transaction = TransactionManager.currentTransaction();
             if (transaction != null) {

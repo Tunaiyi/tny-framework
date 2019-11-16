@@ -21,14 +21,14 @@ public class ItemConfiguration {
     private GameExplorer explorer;
 
     @Autowired(required = false)
-    private ExprHolderFactoryIniter exprHolderFactoryIniter;
+    private ExprHolderFactoryInitiator exprHolderFactoryInitiator;
 
     @Bean
     public GameItemModelContext itemModelContext() {
         ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory();
-        if (exprHolderFactoryIniter != null)
-            exprHolderFactoryIniter.init(exprHolderFactory);
-        return new GameItemModelContext(explorer, exprHolderFactory);
+        if (this.exprHolderFactoryInitiator != null)
+            this.exprHolderFactoryInitiator.init(exprHolderFactory);
+        return new GameItemModelContext(this.explorer, exprHolderFactory);
     }
 
 

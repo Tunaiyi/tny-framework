@@ -15,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
         profiles = {SCHEDULER_CACHE, GAME},
         prefix = SuiteDBHead.CACHE_KEY_TASK_RECEIVER, triggers = TaskReceiverFormatter.class,
         cacheKeys = "playerId")
-public class GameTaskReceiver extends TaskReceiver implements Identifier {
+public class GameTaskReceiver extends TaskReceiver implements Owned {
 
     protected long playerId;
 

@@ -30,7 +30,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
         super(0, false, typeClass.getName());
         this.gClass = JavassistAccessors.getGClass(typeClass);
         ProtoEx proto = typeClass.getAnnotation(ProtoEx.class);
-        if (WireFormat.checkFieldNumber(proto.value()))
+        if (!WireFormat.checkFieldNumber(proto.value()))
             throw ProtobufExException.invalidProtoExId(typeClass, proto.value());
         this.protoExID = proto.value();
     }
@@ -44,7 +44,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
             this.fieldsByIndexMap = null;
         } else {
             this.fieldsByIndex = null;
-            this.fieldsByIndexMap = new HashMap<Integer, FieldDesc<?>>();
+            this.fieldsByIndexMap = new HashMap<>();
         }
         for (FieldDesc<?> field : fields) {
             if (this.fieldsByIndexMap != null) {

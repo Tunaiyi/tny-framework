@@ -24,4 +24,10 @@ public class ShortRangeLimitParamFilter extends RangeLimitParamFilter<ShortRange
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(ShortRange annotation) {
+        return annotation.illegalCode();
+    }
+
+
 }

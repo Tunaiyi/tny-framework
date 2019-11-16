@@ -26,5 +26,6 @@ dependencies {
     api project(":tny-game-protobuf")
     api project(":tny-game-cache-redis")
     api project(":tny-game-oplog-log4j")
+    api project(":tny-game-starter-net-netty4")
 
 }

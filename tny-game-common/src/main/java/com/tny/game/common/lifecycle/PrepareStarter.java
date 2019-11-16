@@ -19,8 +19,8 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareSt
         return lifecycle;
     }
 
-    private PrepareStarter(Class<? extends AppPrepareStart> initerClass, LifecyclePriority lifeCycleLevel) {
-        super(initerClass, lifeCycleLevel);
+    private PrepareStarter(Class<? extends AppPrepareStart> InitiatorClass, LifecyclePriority lifeCycleLevel) {
+        super(InitiatorClass, lifeCycleLevel);
     }
 
     @Override

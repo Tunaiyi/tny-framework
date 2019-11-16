@@ -27,7 +27,7 @@ public interface ItemType extends EnumIdentifiable<Integer> {
 
     // Class<?> getItemManagerClass();
 
-    // Class<?> getOwnerManagerClass();
+    // Class<?> getStorageManagerClass();
 
     // Class<?> getItemModelManagerClass();
 }

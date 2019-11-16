@@ -24,4 +24,10 @@ public class LongRangeLimitParamFilter extends RangeLimitParamFilter<LongRange, 
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(LongRange annotation) {
+        return annotation.illegalCode();
+    }
+
+
 }

@@ -7,7 +7,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.range.*;
-import com.tny.game.net.command.plugins.filter.string.*;
+import com.tny.game.net.command.plugins.filter.text.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -30,18 +30,18 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
         filters.add(IntRangeLimitParamFilter.getInstance());
         filters.add(LongRangeLimitParamFilter.getInstance());
         filters.add(ShortRangeLimitParamFilter.getInstance());
-        filters.add(StringLengthLimitFilter.getInstance());
-        filters.add(StringPatternLimitFilter.getInstance());
+        filters.add(TextLengthLimitFilter.getInstance());
+        filters.add(TextPatternLimitFilter.getInstance());
         this.addParamFilters(filters);
     }
 
     protected void addParamFilters(Collection<ParamFilter> filters) {
         Map<Class<?>, ParamFilter> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
-        filterMap.putAll(maps);
+        this.filterMap.putAll(maps);
     }
 
     protected void addParamFilter(ParamFilter<?> filter) {
-        filterMap.put(filter.getClass(), filter);
+        this.filterMap.put(filter.getClass(), filter);
     }
 
     @Override

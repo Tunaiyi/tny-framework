@@ -5,11 +5,11 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.oplog.*;
+import com.tny.game.starter.common.transaction.*;
+import com.tny.game.starter.common.transaction.listener.*;
 import com.tny.game.suite.auto.*;
 import com.tny.game.suite.auto.snapshot.AutoSnapMethod.*;
 import com.tny.game.suite.oplog.*;
-import com.tny.game.suite.transaction.*;
-import com.tny.game.suite.transaction.listener.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -59,14 +59,14 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
 
     private void snapshot(Method method, Object[] args, Object target) {
         try {
-            AutoSnapMethod snapMethod = methodHolder.getInstance(method, methodFactory::create);
+            AutoSnapMethod snapMethod = this.methodHolder.getInstance(method, this.methodFactory::create);
             if (snapMethod.isCanSnapShot()) {
                 Action action = snapMethod.getAction(args);
                 Collection<SnapParamEntry> params = snapMethod.getSnapParams(args);
                 if (action != null) {
-                    OperationLogger.logger().logSnapshotByClass((Identifier) target, action, snapMethod.getSnapshotTypes());
+                    OperationLogger.logger().logSnapshotByClass((Owned) target, action, snapMethod.getSnapshotTypes());
                     for (SnapParamEntry param : params)
-                        OperationLogger.logger().logSnapshotByClass((Identifier) param.getObject(), action, param.getSnapshotTypes());
+                        OperationLogger.logger().logSnapshotByClass((Owned) param.getObject(), action, param.getSnapshotTypes());
                 }
             }
         } catch (Throwable e) {

@@ -11,4 +11,10 @@ public @interface DoubleRange {
 
     double high();
 
+    /**
+     * 默认错误 code
+     *
+     * @return 207
+     */
+    int illegalCode() default 0;
 }

@@ -11,4 +11,10 @@ public @interface IntRange {
 
     int high() default Integer.MAX_VALUE;
 
+    /**
+     * 默认错误 code
+     *
+     * @return 207
+     */
+    int illegalCode() default 0;
 }

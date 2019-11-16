@@ -1,8 +1,8 @@
 package com.tny.game.suite.scheduler.cache;
 
 import com.tny.game.common.scheduler.*;
+import com.tny.game.starter.common.transaction.*;
 import com.tny.game.suite.scheduler.*;
-import com.tny.game.suite.transaction.*;
 import org.slf4j.*;
 
 import javax.annotation.Resource;
@@ -26,7 +26,7 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
     private void checkSystemTask() {
         TransactionManager.open();
         try {
-            this.checkPlayerTask(serverID, ReceiverType.SYSTEM);
+            this.checkPlayerTask(this.serverID, ReceiverType.SYSTEM);
             TransactionManager.close();
         } catch (Throwable e) {
             TransactionManager.rollback(e);

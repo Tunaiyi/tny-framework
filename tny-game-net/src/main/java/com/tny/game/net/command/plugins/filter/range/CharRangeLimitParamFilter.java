@@ -24,4 +24,9 @@ public class CharRangeLimitParamFilter extends RangeLimitParamFilter<CharRange, 
         return rangeAnn.low();
     }
 
+    @Override
+    protected int illegalCode(CharRange annotation) {
+        return annotation.illegalCode();
+    }
+
 }
