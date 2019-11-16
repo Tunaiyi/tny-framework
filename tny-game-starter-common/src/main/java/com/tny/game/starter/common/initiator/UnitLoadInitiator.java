@@ -1,4 +1,4 @@
-package com.tny.game.starter.common.Initiator;
+package com.tny.game.starter.common.initiator;
 
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
