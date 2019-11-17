@@ -13,7 +13,7 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     /**
      * 间歇时间
      */
-    private static final int DEFAULT_NEXT_INTERVAL = 17;
+    private static final int DEFAULT_NEXT_INTERVAL = 5;
 
     /* 线程数 */
     private int threads;
@@ -55,7 +55,7 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     }
 
     protected ScheduledExecutorService scheduledExecutor() {
-        return scheduledExecutorService;
+        return this.scheduledExecutorService;
     }
 
 }

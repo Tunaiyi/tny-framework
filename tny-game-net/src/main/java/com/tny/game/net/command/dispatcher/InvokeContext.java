@@ -15,10 +15,10 @@ public class InvokeContext extends CommandContext {
     }
 
     public MethodControllerHolder getController() {
-        return controller;
+        return this.controller;
     }
 
-
+    @Override
     public String getName() {
         MethodControllerHolder controller = this.controller;
         // if (controller == null) {
@@ -26,7 +26,6 @@ public class InvokeContext extends CommandContext {
         //     return this.name = String.valueOf(head.getId());
         // } else {
         return this.name = controller.getControllerClass() + "." + controller.getName();
-        // }
     }
 
 }
