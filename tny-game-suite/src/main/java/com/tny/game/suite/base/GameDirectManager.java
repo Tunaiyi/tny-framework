@@ -26,14 +26,14 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
     }
 
     @Override
-    protected O get(long playerID, Object... objects) {
-        return onLoad(this.get(playerID, this.entityClass, objects));
+    protected O get(long playerId, Object... objects) {
+        return onLoad(this.get(playerId, this.entityClass, objects));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<O> gets(long playerID, Collection<?> ids) {
-        List<String> keys = ids.stream().map(id -> this.cache.getKey(this.entityClass, playerID, id)).collect(Collectors.toList());
+    protected Collection<O> gets(long playerId, Collection<?> ids) {
+        List<String> keys = ids.stream().map(id -> this.cache.getKey(this.entityClass, playerId, id)).collect(Collectors.toList());
         return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys));
     }
 
@@ -56,12 +56,12 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
         return onLoad(this.cache.getObject(this.entityClass, objects));
     }
 
-    private <OO> OO get(long playerID, Class<OO> clazzClass, Object... objects) {
+    private <OO> OO get(long playerId, Class<OO> clazzClass, Object... objects) {
         if (objects.length == 0) {
-            return this.cache.getObject(clazzClass, playerID);
+            return this.cache.getObject(clazzClass, playerId);
         } else {
             Object[] param = new Object[objects.length + 1];
-            param[0] = playerID;
+            param[0] = playerId;
             System.arraycopy(objects, 0, param, 1, objects.length);
             return this.cache.getObject(clazzClass, param);
         }

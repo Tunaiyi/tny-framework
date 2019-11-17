@@ -31,38 +31,38 @@ public interface ActionPlan {
      *
      * @return
      */
-    List<DemandResult> countDemandResult(long playerID, Map<String, Object> map);
+    List<DemandResult> countDemandResult(long playerId, Map<String, Object> map);
 
     /**
      * 尝试做该操作,一遇到失败的条件则马上返回
      *
-     * @param playerID
+     * @param playerId
      * @param attributes 计算参数
      * @return 返回未达到条件的结果集, 若尝试成功则返回null
      * @throws TryToDoException
      */
-    DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
+    DemandResultCollector tryToDo(long playerId, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
 
     /**
      * 获取操作结果
      *
      * @return
      */
-    ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributes);
+    ActionResult getActionResult(long playerId, Action action, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    AwardList getAwardList(long playerID, Action action, Map<String, Object> attributes);
+    AwardList getAwardList(long playerId, Action action, Map<String, Object> attributes);
 
     /**
      * 获取奖励物品列表
      *
      * @return
      */
-    CostList getCostList(long playerID, Action action, Map<String, Object> attributes);
+    CostList getCostList(long playerId, Action action, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
@@ -70,7 +70,7 @@ public interface ActionPlan {
      * @param attributes
      * @return
      */
-    Trade createAward(long playerID, Action action, Map<String, Object> attributes);
+    Trade createAward(long playerId, Action action, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励/消耗结果
@@ -78,7 +78,7 @@ public interface ActionPlan {
      * @param attributes
      * @return
      */
-    Trade createCost(long playerID, Action action, Map<String, Object> attributes);
+    Trade createCost(long playerId, Action action, Map<String, Object> attributes);
 
     /**
      * 获取该操作的奖励&扣除结果
@@ -87,7 +87,7 @@ public interface ActionPlan {
      * @param attributeMap 附加参数
      * @return 返回奖励列表
      */
-    ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap);
+    ActionTrades countTrades(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算选项
@@ -96,7 +96,7 @@ public interface ActionPlan {
      * @param attributes
      * @return
      */
-    <O> O countOption(long playerID, Option option, Map<String, Object> attributes);
+    <O> O countOption(long playerId, Option option, Map<String, Object> attributes);
 
     /**
      * 是否存在选项

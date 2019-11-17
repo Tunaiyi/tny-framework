@@ -15,16 +15,16 @@ public interface CostPlan extends TradePlan {
      * @param attributeMap
      * @return
      */
-    List<DemandResult> countDemandResultList(long playerID, Map<String, Object> attributeMap);
+    List<DemandResult> countDemandResultList(long playerId, Map<String, Object> attributeMap);
 
     /**
      * 尝试做某事
      *
-     * @param playerID
+     * @param playerId
      * @param attributes
      * @return
      */
-    DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
+    DemandResultCollector tryToDo(long playerId, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributes);
 
     /**
      * 获取消耗列表
@@ -32,5 +32,5 @@ public interface CostPlan extends TradePlan {
      * @param attributeMap 计算参数
      * @return 返回奖励列表
      */
-    CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap);
+    CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap);
 }

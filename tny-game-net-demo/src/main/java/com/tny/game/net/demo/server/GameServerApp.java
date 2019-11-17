@@ -15,7 +15,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 @SpringBootConfiguration
 @EnableNetApplication
 @ComponentScan(
-        value = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common"},
+        value = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common", "com.tny.game.starter"},
         includeFilters = @Filter(Controller.class))
 public class GameServerApp {
 

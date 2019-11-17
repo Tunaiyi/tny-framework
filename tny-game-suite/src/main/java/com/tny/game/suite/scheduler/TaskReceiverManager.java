@@ -6,7 +6,7 @@ public interface TaskReceiverManager {
 
     TaskReceiver getSystemReceiver();
 
-    TaskReceiver getPlayerReceiver(long playerID);
+    TaskReceiver getPlayerReceiver(long playerId);
 
     boolean insert(TaskReceiver receiver);
 

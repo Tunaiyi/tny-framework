@@ -6,17 +6,17 @@ import com.tny.game.common.context.*;
 
 public interface WarehouseService {
 
-    void consume(long playerID, Trade result, AttrEntry<?>... entries);
+    void consume(long playerId, Trade result, AttrEntry<?>... entries);
 
-    void consume(long playerID, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries);
+    void consume(long playerId, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries);
 
-    void receive(long playerID, Trade result, AttrEntry<?>... entries);
+    void receive(long playerId, Trade result, AttrEntry<?>... entries);
 
-    void receive(long playerID, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries);
+    void receive(long playerId, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries);
 
-    void deal(long playerID, Trade trade, AttrEntry<?>... entries);
+    void deal(long playerId, Trade trade, AttrEntry<?>... entries);
 
-    void deal(long playerID, TryToDoResult result, AttrEntry<?>... entries);
+    void deal(long playerId, TryToDoResult result, AttrEntry<?>... entries);
 
     // DoneResult<Boolean> checkTradeBound(long playerId, Trade trade);
 

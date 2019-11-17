@@ -11,7 +11,7 @@ public interface ItemExplorer {
 
     boolean hasItemManager(ItemType itemType);
 
-    <I extends Any<?>> I getItem(long playerID, int id, Object... object);
+    <I extends Any<?>> I getItem(long playerId, int id, Object... object);
 
     boolean insertItem(Any<?>... items);
 

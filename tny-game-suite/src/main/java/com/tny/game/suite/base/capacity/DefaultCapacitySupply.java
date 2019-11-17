@@ -11,64 +11,64 @@ import java.util.*;
  */
 public class DefaultCapacitySupply implements InnerCapacitySupply {
 
-    private long playerID;
+    private long playerId;
 
     private CapacityItemModel model;
 
     private Item<?> item;
 
     public DefaultCapacitySupply(Item<?> item, CapacityItemModel model) {
-        this.playerID = item.getPlayerId();
+        this.playerId = item.getPlayerId();
         this.item = item;
         this.model = model;
     }
 
     public DefaultCapacitySupply(Item<? extends CapacityItemModel> item) {
-        this.playerID = item.getPlayerId();
+        this.playerId = item.getPlayerId();
         this.model = item.getModel();
         this.item = item;
     }
 
-    public DefaultCapacitySupply(long playerID, CapacityItemModel model) {
-        this.playerID = playerID;
+    public DefaultCapacitySupply(long playerId, CapacityItemModel model) {
+        this.playerId = playerId;
         this.model = model;
     }
 
     @Override
     public Number getValue(Capacity capacity, Number defaultNum) {
-        if (item != null) {
-            return model.getAbility(item, defaultNum, capacity);
+        if (this.item != null) {
+            return this.model.getAbility(this.item, defaultNum, capacity);
         } else {
-            return model.getAbility(playerID, defaultNum, capacity);
+            return this.model.getAbility(this.playerId, defaultNum, capacity);
         }
     }
 
     @Override
     public Set<CapacityGroup> getAllCapacityGroups() {
-        return model.getCapacityGroups();
+        return this.model.getCapacityGroups();
     }
 
     @Override
     public Number getValue(Capacity capacity) {
-        if (item != null) {
-            return model.getAbility(item, capacity, Number.class);
+        if (this.item != null) {
+            return this.model.getAbility(this.item, capacity, Number.class);
         } else {
-            return model.getAbility(playerID, capacity, Number.class);
+            return this.model.getAbility(this.playerId, capacity, Number.class);
         }
     }
 
     @Override
     public Map<Capacity, Number> getAllValues() {
-        if (item != null) {
-            return model.getAbilitiesByType(item, Capacity.class, Number.class);
+        if (this.item != null) {
+            return this.model.getAbilitiesByType(this.item, Capacity.class, Number.class);
         } else {
-            return model.getAbilitiesByType(playerID, Capacity.class, Number.class);
+            return this.model.getAbilitiesByType(this.playerId, Capacity.class, Number.class);
         }
     }
 
     @Override
     public boolean isHasValue(Capacity capacity) {
-        return model.hasAbility(capacity);
+        return this.model.hasAbility(capacity);
     }
 
     @Override

@@ -43,22 +43,22 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
         return true;
     }
 
-    protected boolean isOpened(long playerID, Module moduleType) {
-        return this.doIsOpen(playerID, moduleType);
+    protected boolean isOpened(long playerId, Module moduleType) {
+        return this.doIsOpen(playerId, moduleType);
     }
 
     public void loadModule(FeatureExplorer explorer, Collection<Module> modules) {
         this.doLoadModule(explorer, modules);
     }
 
-    private boolean doIsOpen(long playerID, Module moduleType) {
-        FeatureExplorer explorer = this.featureExplorerManager.getExplorer(playerID);
+    private boolean doIsOpen(long playerId, Module moduleType) {
+        FeatureExplorer explorer = this.featureExplorerManager.getExplorer(playerId);
         return moduleType.isValid() && explorer.isModuleOpened(moduleType);
     }
 
     private List<Module> doOpenModule(GameFeatureExplorer explorer, Collection<Module> moduleTypes) {
         List<Module> succList = new ArrayList<>();
-        boolean consuming = DEVELOP.getBoolean(DEVELOP_MODULE_TIME_CONSUMING, false);
+        boolean consuming = this.DEVELOP.getBoolean(DEVELOP_MODULE_TIME_CONSUMING, false);
         for (Module module : moduleTypes) {
             if (!module.isValid() || explorer.isModuleOpened(module))
                 continue;

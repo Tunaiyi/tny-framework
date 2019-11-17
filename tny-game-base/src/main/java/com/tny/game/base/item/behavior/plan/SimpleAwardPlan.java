@@ -75,7 +75,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
     }
 
     @Override
-    public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap) {
+    public Trade createTrade(long playerId, Action action, Map<String, Object> attributeMap) {
         countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
         List<AwardGroup> groupList = this.randomer.random(this, attributeMap);
         if (groupList == null || groupList.isEmpty())
@@ -86,21 +86,21 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
             // if (drawNumber <= 0)
             //     break;
             // drawNumber--;
-            List<TradeItem<ItemModel>> award = group.countAwardResult(playerID, action, this.merge, attributeMap);
+            List<TradeItem<ItemModel>> award = group.countAwardResult(playerId, action, this.merge, attributeMap);
             if (award != null) {
                 tradeItems.addAll(award);
             }
         }
         SimpleTrade trade = new SimpleTrade(action, TradeType.AWARD, tradeItems);
-        if (merge)
+        if (this.merge)
             return trade.merge();
         return trade;
     }
 
     @Override
-    public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
+    public AwardList getAwardList(long playerId, Action action, Map<String, Object> attributeMap) {
         countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
-        this.setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        this.setAttrMap(playerId, this.attrAliasSet, attributeMap);
         List<AwardDetail> resultList = new ArrayList<>();
         for (AwardGroup group : this.awardGroupSet) {
             AwardDetail detail = new AwardDetail(group.countAwardNumber(this.merge, attributeMap));
@@ -135,12 +135,12 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
     @Override
     public List<AwardGroup> probabilities() {
-        return awardGroupSet;
+        return this.awardGroupSet;
     }
 
     @Override
     public int getRange(Map<String, Object> attributeMap) {
-        return range;
+        return this.range;
     }
 
 }

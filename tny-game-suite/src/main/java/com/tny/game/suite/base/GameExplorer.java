@@ -59,7 +59,7 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     }
 
     @Override
-    public <I extends Any<?>> I getItem(long playerID, int itemID, Object... object) {
+    public <I extends Any<?>> I getItem(long playerId, int itemID, Object... object) {
         GameManager<Object> manager = this.getItemManager(itemID);
         if (manager == null)
             return null;
@@ -67,7 +67,7 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         params[0] = itemID;
         if (object.length > 0)
             System.arraycopy(object, 0, params, 1, object.length);
-        return (I) manager.get(playerID, params);
+        return (I) manager.get(playerId, params);
     }
 
     @Override
@@ -165,11 +165,11 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     }
 
     @Override
-    public <O extends Storage<?, ?>> O getStorage(long playerID, int itemID, Object... object) {
+    public <O extends Storage<?, ?>> O getStorage(long playerId, int itemID, Object... object) {
         GameManager<Object> manager = this.getStorageManager(itemID);
         if (manager == null)
             return null;
-        return (O) manager.get(playerID, object);
+        return (O) manager.get(playerId, object);
     }
 
     @Override

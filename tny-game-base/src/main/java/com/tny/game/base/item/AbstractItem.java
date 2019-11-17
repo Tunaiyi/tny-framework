@@ -11,7 +11,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
     /**
      * 事物所属玩家id
      */
-    protected long playerID;
+    protected long playerId;
 
     /**
      * 事物模型
@@ -20,17 +20,17 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 
     @Override
     public long getPlayerId() {
-        return this.playerID;
+        return this.playerId;
     }
 
     @Override
     public int getItemId() {
-        return model.getId();
+        return this.model.getId();
     }
 
     @Override
     public String getAlias() {
-        return model.getAlias();
+        return this.model.getAlias();
     }
 
     @Override
@@ -43,9 +43,8 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
         return this.model;
     }
 
-
-    protected void setPlayerId(long playerID) {
-        this.playerID = playerID;
+    protected void setPlayerId(long playerId) {
+        this.playerId = playerId;
     }
 
     protected void setModel(IM model) {
@@ -61,7 +60,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.model == null) ? 0 : this.getModel().hashCode());
-        result = prime * result + (int) (this.playerID ^ (this.playerID >>> 32));
+        result = prime * result + (int) (this.playerId ^ (this.playerId >>> 32));
         result = prime * result + (int) this.getId();
         return result;
     }
@@ -85,7 +84,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
                 return false;
         } else if (!this.getModel().equals(other.model))
             return false;
-        if (this.playerID != other.playerID)
+        if (this.playerId != other.playerId)
             return false;
         if (this.getId() != other.getId())
             return false;
@@ -98,7 +97,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
      */
     @Override
     public String toString() {
-        return "AbstractItem [playerId=" + this.playerID + ", model=" + this.model + "]";
+        return "AbstractItem [playerId=" + this.playerId + ", model=" + this.model + "]";
     }
 
 }

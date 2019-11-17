@@ -35,14 +35,14 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
         if (tunnelMode == TunnelMode.SERVER) {
-            SessionSetting setting = sessionSettingMap.get(userType);
+            SessionSetting setting = this.sessionSettingMap.get(userType);
             if (setting == null)
-                setting = sessionSettingMap.get(DEFAULT_KEY);
+                setting = this.sessionSettingMap.get(DEFAULT_KEY);
             return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
         } else {
-            TerminalSetting setting = terminalSettingMap.get(userType);
+            TerminalSetting setting = this.terminalSettingMap.get(userType);
             if (setting == null)
-                setting = terminalSettingMap.get(DEFAULT_KEY);
+                setting = this.terminalSettingMap.get(DEFAULT_KEY);
             return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
         }
     }
@@ -55,12 +55,12 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     @Override
     public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode) {
-        return as(endpointKeeperMap.computeIfAbsent(userType, (k) -> create(k, tunnelMode)));
+        return as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> create(k, tunnelMode)));
     }
 
     @Override
     public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType) {
-        return Optional.ofNullable(as(endpointKeeperMap.get(userType)));
+        return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
 
     private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
-        EndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
         if (keeper == null)
             return Optional.empty();
         if (keeperClass.isInstance(keeper))

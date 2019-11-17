@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface StorageExplorer {
 
-    <O extends Storage<?, ?>> O getStorage(long playerID, int itemID, Object... object);
+    <O extends Storage<?, ?>> O getStorage(long playerId, int itemID, Object... object);
 
     boolean insertStorage(Storage<?, ?>... storageArray);
 

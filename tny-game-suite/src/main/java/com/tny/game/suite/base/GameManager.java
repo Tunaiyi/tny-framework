@@ -16,20 +16,20 @@ public abstract class GameManager<O> extends GettableManager<O> {
     /**
      * 获取玩家的对象
      *
-     * @param playerID 玩家id
+     * @param playerId 玩家id
      * @param object   附加参数
      * @return 返回对象
      */
     @Override
-    protected abstract O get(long playerID, Object... object);
+    protected abstract O get(long playerId, Object... object);
 
     /**
      * 获取玩家的对象列表
      *
-     * @param playerID 玩家id
+     * @param playerId 玩家id
      * @param itemIDs  id列表
      * @return 返回对象集合
      */
     @Override
-    protected abstract Collection<O> gets(long playerID, Collection<?> itemIDs);
+    protected abstract Collection<O> gets(long playerId, Collection<?> itemIDs);
 }

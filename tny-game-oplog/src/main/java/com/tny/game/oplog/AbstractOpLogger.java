@@ -28,11 +28,11 @@ public abstract class AbstractOpLogger implements OpLogger {
         return log;
     }
 
-    public UserOpLog getUserLogger(long playerID) {
+    public UserOpLog getUserLogger(long playerId) {
         OpLog log = this.getOpLog();
         if (log == null)
             return null;
-        UserOpLog userOpLog = this.createUserOpLog(playerID);
+        UserOpLog userOpLog = this.createUserOpLog(playerId);
         return log.putUserOpLog(userOpLog);
     }
 
@@ -44,22 +44,22 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logReceive(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
+    public OpLogger logReceive(long playerId, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
-        return logReceive(playerID, id, model.getId(), action, oldNum, alter, newNum);
+        return logReceive(playerId, id, model.getId(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logReceive(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
+    public OpLogger logReceive(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         try {
             action = this.transAction(action);
-            UserOpLog log = this.getUserLogger(playerID);
+            UserOpLog log = this.getUserLogger(playerId);
             if (log == null)
                 return this;
             log.logReceive(id, itemID, action, oldNum, alter, newNum);
         } catch (Exception e) {
-            LOGGER.error("{} | {} | logReceive exception", playerID, action, e);
+            LOGGER.error("{} | {} | logReceive exception", playerId, action, e);
         }
         return this;
     }
@@ -72,21 +72,21 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger settleReceive(long playerID, ItemModel model, long alter, long newNum) {
+    public OpLogger settleReceive(long playerId, ItemModel model, long alter, long newNum) {
         if (model == null)
             return this;
-        return settleReceive(playerID, model.getId(), alter, newNum);
+        return settleReceive(playerId, model.getId(), alter, newNum);
     }
 
     @Override
-    public OpLogger settleReceive(long playerID, int itemID, long alter, long newNum) {
+    public OpLogger settleReceive(long playerId, int itemID, long alter, long newNum) {
         try {
-            UserOpLog log = this.getUserLogger(playerID);
+            UserOpLog log = this.getUserLogger(playerId);
             if (log == null)
                 return this;
             log.settleReceive(itemID, alter, newNum);
         } catch (Exception e) {
-            LOGGER.error("{} | {} | settleReceive exception", playerID, e);
+            LOGGER.error("{} | {} | settleReceive exception", playerId, e);
         }
         return this;
     }
@@ -99,22 +99,22 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger logConsume(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
+    public OpLogger logConsume(long playerId, long id, ItemModel model, Action action, long oldNum, long alter, long newNum) {
         if (model == null)
             return this;
-        return logConsume(playerID, id, model.getId(), action, oldNum, alter, newNum);
+        return logConsume(playerId, id, model.getId(), action, oldNum, alter, newNum);
     }
 
     @Override
-    public OpLogger logConsume(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
+    public OpLogger logConsume(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
         try {
             action = this.transAction(action);
-            UserOpLog log = this.getUserLogger(playerID);
+            UserOpLog log = this.getUserLogger(playerId);
             if (log == null)
                 return this;
             log.logConsume(id, itemID, action, oldNum, alter, newNum);
         } catch (Exception e) {
-            LOGGER.error("{} | {} | logConsume exception", playerID, action, e);
+            LOGGER.error("{} | {} | logConsume exception", playerId, action, e);
         }
         return this;
     }
@@ -127,21 +127,21 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @Override
-    public OpLogger settleConsume(long playerID, ItemModel model, long alter, long newNum) {
+    public OpLogger settleConsume(long playerId, ItemModel model, long alter, long newNum) {
         if (model == null)
             return this;
-        return settleConsume(playerID, model.getId(), alter, newNum);
+        return settleConsume(playerId, model.getId(), alter, newNum);
     }
 
     @Override
-    public OpLogger settleConsume(long playerID, int itemID, long alter, long newNum) {
+    public OpLogger settleConsume(long playerId, int itemID, long alter, long newNum) {
         try {
-            UserOpLog log = this.getUserLogger(playerID);
+            UserOpLog log = this.getUserLogger(playerId);
             if (log == null)
                 return this;
             log.settleConsume(itemID, alter, newNum);
         } catch (Exception e) {
-            LOGGER.error("{} | {} | settleReceive exception", playerID, e);
+            LOGGER.error("{} | {} | settleReceive exception", playerId, e);
         }
         return this;
     }
@@ -196,8 +196,8 @@ public abstract class AbstractOpLogger implements OpLogger {
     }
 
     @SuppressWarnings("unchecked")
-    protected <S extends Snapshot> S getSnapshot(long playerID, long id, Action action, SnapshotType type) {
-        UserOpLog log = this.getUserLogger(playerID);
+    protected <S extends Snapshot> S getSnapshot(long playerId, long id, Action action, SnapshotType type) {
+        UserOpLog log = this.getUserLogger(playerId);
         if (log == null)
             return null;
         return (S) log.getSnapshot(action, id, type);
@@ -229,7 +229,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 
     protected abstract void doSubmit(OpLog log);
 
-    protected abstract UserOpLog createUserOpLog(long playerID);
+    protected abstract UserOpLog createUserOpLog(long playerId);
 
     protected abstract OpLog createLog();
 

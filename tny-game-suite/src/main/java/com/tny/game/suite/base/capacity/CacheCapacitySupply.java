@@ -19,8 +19,8 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
         this(new DefaultAbilitiesCache<>(item));
     }
 
-    public CacheCapacitySupply(long playerID, CapacityItemModel model) {
-        this(new DefaultAbilitiesCache<>(playerID, model));
+    public CacheCapacitySupply(long playerId, CapacityItemModel model) {
+        this(new DefaultAbilitiesCache<>(playerId, model));
     }
 
     public CacheCapacitySupply(Item<?> item, CapacityItemModel model) {
@@ -33,18 +33,18 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
 
     @Override
     public Number getValue(Capacity capacity) {
-        return cache.get(capacity);
+        return this.cache.get(capacity);
     }
 
     @Override
     public Number getValue(Capacity capacity, Number defaultNum) {
-        return cache.get(capacity, defaultNum);
+        return this.cache.get(capacity, defaultNum);
     }
 
     @Override
     public void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
         for (Capacity capacity : capacities) {
-            collector.collect(capacity, cache.get(capacity));
+            collector.collect(capacity, this.cache.get(capacity));
         }
     }
 
@@ -55,33 +55,33 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
 
     @Override
     public Map<Capacity, Number> getAllValues() {
-        return cache.getAll(Capacity.class).entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
+        return this.cache.getAll(Capacity.class).entrySet()
+                         .stream()
+                         .collect(Collectors.toMap(
                             e -> (Capacity) e.getKey(),
                             Entry::getValue));
     }
 
     @Override
     public boolean isHasValue(Capacity capacity) {
-        return cache.hasAbility(capacity);
+        return this.cache.hasAbility(capacity);
     }
 
     @Override
     public void refresh(CapacitySupplier supplier) {
-        cache.refresh();
+        this.cache.refresh();
         CapacityEvents.ON_CHANGE.notify(this, supplier);
     }
 
     @Override
     public void invalid(CapacitySupplier supplier) {
-        cache.refresh();
+        this.cache.refresh();
         CapacityEvents.ON_INVALID.notify(this, supplier);
     }
 
     @Override
     public void effect(CapacitySupplier supplier) {
-        cache.refresh();
+        this.cache.refresh();
         CapacityEvents.ON_EFFECT.notify(this, supplier);
     }
 

@@ -16,7 +16,7 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
 
     protected I model;
 
-    protected long playerID;
+    protected long playerId;
 
     public DefaultAbilitiesCache(Item<? extends I> item) {
         super();
@@ -24,9 +24,9 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
         this.model = item.getModel();
     }
 
-    public DefaultAbilitiesCache(long playerID, I model) {
+    public DefaultAbilitiesCache(long playerId, I model) {
         super();
-        this.playerID = playerID;
+        this.playerId = playerId;
         this.item = null;
         this.model = model;
     }
@@ -35,17 +35,17 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
         super();
         this.item = item;
         this.model = model;
-        this.playerID = item.getPlayerId();
+        this.playerId = item.getPlayerId();
     }
 
     @Override
     public long getPlayerId() {
-        return this.playerID;
+        return this.playerId;
     }
 
     @Override
     public I itemModel() {
-        return model;
+        return this.model;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
 
     @Override
     public boolean hasAbility(Ability ability) {
-        Number number = abilityMap.get(ability);
+        Number number = this.abilityMap.get(ability);
         if (number != null)
             return true;
         return this.model.hasAbility(ability);
@@ -72,7 +72,7 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
         if (this.item != null) {
             return this.model.getAbilitiesByType(this.item, abilityClass, Number.class, attributes);
         } else {
-            return this.model.getAbilitiesByType(this.playerID, abilityClass, Number.class, attributes);
+            return this.model.getAbilitiesByType(this.playerId, abilityClass, Number.class, attributes);
         }
     }
 
@@ -95,7 +95,7 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
             if (this.item != null) {
                 number = model.getAbility(this.item, ability, Number.class, attributes);
             } else {
-                number = model.getAbility(this.playerID, ability, Number.class, attributes);
+                number = model.getAbility(this.playerId, ability, Number.class, attributes);
             }
         }
         if (number != null) {

@@ -19,14 +19,14 @@ public class SimpleCostPlan extends AbstractCostPlan {
     protected List<AbstractDemand> costList;
 
     @Override
-    public Trade createTrade(long playerID, Action action, Map<String, Object> attributeMap) {
-        return new SimpleTrade(action, TradeType.COST, this.createTradeItem(playerID, attributeMap));
+    public Trade createTrade(long playerId, Action action, Map<String, Object> attributeMap) {
+        return new SimpleTrade(action, TradeType.COST, this.createTradeItem(playerId, attributeMap));
     }
 
-    private List<TradeItem<ItemModel>> createTradeItem(long playerID, Map<String, Object> attributeMap) {
+    private List<TradeItem<ItemModel>> createTradeItem(long playerId, Map<String, Object> attributeMap) {
         List<TradeItem<ItemModel>> itemList = new ArrayList<>();
         List<DemandResult> demandResultList = this
-                .countAllDemandResults(playerID, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
+                .countAllDemandResults(playerId, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
         for (DemandResult demandResult : demandResultList) {
             if (!(demandResult instanceof CostDemandResult))
                 continue;
@@ -38,18 +38,18 @@ public class SimpleCostPlan extends AbstractCostPlan {
     }
 
     @Override
-    public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
-        return new SimpleCostList(action, this.createTradeItem(playerID, attributeMap));
+    public CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap) {
+        return new SimpleCostList(action, this.createTradeItem(playerId, attributeMap));
     }
 
     @Override
-    public List<DemandResult> countDemandResultList(long playerID, Map<String, Object> attributeMap) {
-        return this.countAllDemandResults(playerID, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
+    public List<DemandResult> countDemandResultList(long playerId, Map<String, Object> attributeMap) {
+        return this.countAllDemandResults(playerId, this.costList, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
     }
 
     @Override
-    public DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
-        return this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
+    public DemandResultCollector tryToDo(long playerId, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
+        return this.checkResult(playerId, this.demandList, tryAll, collector, ItemsImportKey.$COST_PLAN_DEMAND_PARAMS, attributeMap);
     }
 
     //	@Override

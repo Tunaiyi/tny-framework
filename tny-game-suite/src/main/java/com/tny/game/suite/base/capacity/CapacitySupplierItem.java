@@ -17,7 +17,7 @@ public abstract class CapacitySupplierItem<IM extends CapacityItemModel> extends
     }
 
     public CapacitySupply supply() {
-        return capacitySupply;
+        return this.capacitySupply;
     }
 
     @Override

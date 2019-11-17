@@ -27,16 +27,16 @@ public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends Sto
     }
 
     @SuppressWarnings("unchecked")
-    protected O getSaveObject(long playerID) {
-        Warehouse holder = this.gameWarehouseManager.getWarehouse(playerID);
+    protected O getSaveObject(long playerId) {
+        Warehouse holder = this.gameWarehouseManager.getWarehouse(playerId);
         if (holder == null)
             return null;
         return (O) holder.getStorage(this.ownItemType, Storage.class);
     }
 
     @Override
-    protected S get(long playerID, Object... object) {
-        O storage = this.getSaveObject(playerID);
+    protected S get(long playerId, Object... object) {
+        O storage = this.getSaveObject(playerId);
         return storage.getItemById(((Number) object[0]).longValue());
     }
 
@@ -44,8 +44,8 @@ public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends Sto
     protected abstract Manager<O> getManager(S item);
 
     @Override
-    protected S getInstance(long playerID, Object... object) {
-        O storage = this.getSaveObject(playerID);
+    protected S getInstance(long playerId, Object... object) {
+        O storage = this.getSaveObject(playerId);
         return storage.getItemById((long) object[0]);
     }
 }

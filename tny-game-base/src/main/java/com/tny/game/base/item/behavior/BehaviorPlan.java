@@ -40,7 +40,7 @@ public interface BehaviorPlan {
      */
     ActionPlan getActionPlan(Action action);
 
-    DemandResultCollector tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap);
+    DemandResultCollector tryToDo(long playerId, Action action, boolean tryAll, Map<String, Object> attributeMap);
 
     /**
      * 计算对该事物进行某操作对象操作的消费
@@ -49,7 +49,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    Trade countCost(long playerID, Action action, Map<String, Object> attributeMap);
+    Trade countCost(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
@@ -58,7 +58,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得
      */
-    Trade countAward(long playerID, Action action, Map<String, Object> attributeMap);
+    Trade countAward(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励&扣除
@@ -67,7 +67,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数
      * @return 返回奖励列表
      */
-    ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap);
+    ActionTrades countTrades(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 获取制定操作类型的奖励列表
@@ -76,7 +76,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数
      * @return 返回奖励列表
      */
-    AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap);
+    AwardList getAwardList(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 获取制定操作类型的奖励列表
@@ -85,7 +85,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数
      * @return 返回奖励列表
      */
-    CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap);
+    CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap);
 
     /**
      * 计算行为结果
@@ -93,7 +93,7 @@ public interface BehaviorPlan {
      * @param attributeMap 附加参数
      * @return 返回行为结果
      */
-    BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap);
+    BehaviorResult countBehaviorResult(long playerId, Map<String, Object> attributeMap);
 
     /**
      * 获取行为中的条件结果集
@@ -101,12 +101,12 @@ public interface BehaviorPlan {
      * @param map 附加参数
      * @return 返回条件结果集列表
      */
-    List<DemandResult> countAllDemandResults(long playerID, Map<String, Object> map);
+    List<DemandResult> countAllDemandResults(long playerId, Map<String, Object> map);
 
-    <O> O countOption(long playerID, Action action, Option option, Map<String, Object> attributes);
+    <O> O countOption(long playerId, Action action, Option option, Map<String, Object> attributes);
 
     boolean isHasOption(Action action, Option option);
 
-    ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap);
+    ActionResult getActionResult(long playerId, Action action, Map<String, Object> attributeMap);
 
 }

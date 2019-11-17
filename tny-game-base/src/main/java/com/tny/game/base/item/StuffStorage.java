@@ -46,7 +46,6 @@ public abstract class StuffStorage<IM extends ItemModel, SM extends ItemModel, S
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ItemType getItemType() {
         return this.model.getItemType();
     }
@@ -64,4 +63,5 @@ public abstract class StuffStorage<IM extends ItemModel, SM extends ItemModel, S
     protected void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
+
 }

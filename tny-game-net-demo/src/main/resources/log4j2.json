@@ -49,52 +49,36 @@
         "PatternLayout": {
           "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
         }
-      },
-      "RollingRandomAccessFile": [
-        {
-          "name": "toConsole",
-          "immediateFlush": false,
-          "fileName": "${console_file}",
-          "filePattern": "${console_file_zip}",
-          "PatternLayout": {
-            "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
-          },
-          "filters": {
-            "ThresholdFilter": [
-              {
-                "level": "DEBUG",
-                "onMatch": "ACCEPT",
-                "onMismatch": "NEUTRAL"
-              },
-              {
-                "level": "INFO",
-                "onMatch": "ACCEPT",
-                "onMismatch": "NEUTRAL"
-              }
-            ]
-          },
-          "SizeBasedTriggeringPolicy": {
-            "size": "50MB"
-          },
-          "DefaultRolloverStrategy": {
-            "fileIndex": "min",
-            "max": 1
-          }
-        }
-      ],
-      "asyncRoot": {
-        "includeLocation": "true",
-        "level": "DEBUG",
-        "additivity": "false",
-        "AppenderRef": [
-          {
-            "ref": "${bundle:log:log.debug.appender}"
-          },
-          {
-            "ref": "${bundle:log:log.warn.appender}"
-          }
-        ]
       }
+    },
+    "loggers": {
+      "asyncLogger": [
+        {
+          "name": "com",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        }
+      ]
+    },
+    "asyncRoot": {
+      "includeLocation": "true",
+      "level": "DEBUG",
+      "additivity": "false",
+      "AppenderRef": [
+        {
+          "ref": "${bundle:log:log.debug.appender}"
+        },
+        {
+          "ref": "${bundle:log:log.warn.appender}"
+        }
+      ]
     }
   }
+}
 }

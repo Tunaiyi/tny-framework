@@ -40,7 +40,7 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
     }
 
     @Override
-    public void checkPlayerTask(long playerID, ReceiverType receiverType) {
+    public void checkPlayerTask(long playerId, ReceiverType receiverType) {
         checkSystemTask();
     }
 

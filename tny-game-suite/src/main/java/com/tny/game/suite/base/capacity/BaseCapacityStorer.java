@@ -36,10 +36,10 @@ public class BaseCapacityStorer implements CapacityStorer {
     /**
      * 玩家ID
      */
-    private long playerID;
+    private long playerId;
 
-    protected BaseCapacityStorer(long playerID) {
-        this.playerID = playerID;
+    protected BaseCapacityStorer(long playerId) {
+        this.playerId = playerId;
     }
 
     private Map<String, CopyOnWriteMap<Long, StoreCapacitySupplier>> typeSuppliersMap
@@ -50,7 +50,7 @@ public class BaseCapacityStorer implements CapacityStorer {
 
     @Override
     public long getPlayerId() {
-        return playerID;
+        return this.playerId;
     }
 
     @Override
@@ -311,19 +311,19 @@ public class BaseCapacityStorer implements CapacityStorer {
     }
 
     private CopyOnWriteMap<Long, StoreCapacitySupplier> suppliersMap(String key) {
-        return typeSuppliersMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
+        return this.typeSuppliersMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
     }
 
     private CopyOnWriteMap<Long, StoreCapacityGoal> goalsMap(String key) {
-        return typeGoalsMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
+        return this.typeGoalsMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
     }
 
     private CopyOnWriteMap<Long, StoreCapacitySupplier> suppliersMap(long id) {
-        return typeSuppliersMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
+        return this.typeSuppliersMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
     }
 
     private CopyOnWriteMap<Long, StoreCapacityGoal> goalsMap(long id) {
-        return typeGoalsMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
+        return this.typeGoalsMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
     }
 
     private CapacitySupplier getSupplier(long id) {
@@ -344,31 +344,31 @@ public class BaseCapacityStorer implements CapacityStorer {
         return goal;
     }
 
-    protected BaseCapacityStorer setPlayerId(long playerID) {
-        this.playerID = playerID;
+    protected BaseCapacityStorer setPlayerId(long playerId) {
+        this.playerId = playerId;
         return this;
     }
 
     @Override
     public Stream<CapacitySupplier> getAllSuppliersSteam() {
-        return typeSuppliersMap.values().stream()
-                               .flatMap(suppliers -> suppliers.values().stream());
+        return this.typeSuppliersMap.values().stream()
+                                    .flatMap(suppliers -> suppliers.values().stream());
     }
 
     @Override
     public Stream<CapacityGoal> getAllGoalsSteam() {
-        return typeGoalsMap.values().stream()
-                           .flatMap(goals -> goals.values().stream());
+        return this.typeGoalsMap.values().stream()
+                                .flatMap(goals -> goals.values().stream());
     }
 
     public Stream<StoreCapacitySupplier> getStoreSuppliersSteam() {
-        return typeSuppliersMap.values().stream()
-                               .flatMap(suppliers -> suppliers.values().stream());
+        return this.typeSuppliersMap.values().stream()
+                                    .flatMap(suppliers -> suppliers.values().stream());
     }
 
     public Stream<StoreCapacityGoal> getStoreGoalsSteam() {
-        return typeGoalsMap.values().stream()
-                           .flatMap(goals -> goals.values().stream());
+        return this.typeGoalsMap.values().stream()
+                                .flatMap(goals -> goals.values().stream());
     }
 
     protected BaseCapacityStorer addStoreSuppliers(Stream<StoreCapacitySupplier> suppliers) {

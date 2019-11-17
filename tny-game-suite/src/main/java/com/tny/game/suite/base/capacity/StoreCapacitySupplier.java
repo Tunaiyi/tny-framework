@@ -14,8 +14,8 @@ import static com.tny.game.suite.base.capacity.ExpireCapacitiable.*;
  */
 public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
-    static StoreCapacitySupplier saveBySupply(CapacitySupplierType type, long id, int itemID, long playerID, CapacitySupply supply, long expireAt) {
-        return new StoreByCopyCapacitySupplier(type, id, itemID, playerID, supply.getAllValues(), supply.getAllCapacityGroups(),
+    static StoreCapacitySupplier saveBySupply(CapacitySupplierType type, long id, int itemID, long playerId, CapacitySupply supply, long expireAt) {
+        return new StoreByCopyCapacitySupplier(type, id, itemID, playerId, supply.getAllValues(), supply.getAllCapacityGroups(),
                 expireAtOf(supply, expireAt));
     }
 
@@ -34,9 +34,9 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
                 expireAtOf(supplier, expireAt));
     }
 
-    static StoreCapacitySupplier saveByCapacities(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap,
+    static StoreCapacitySupplier saveByCapacities(CapacitySupplierType type, long id, int itemID, long playerId, Map<Capacity, Number> capacityMap,
             Set<CapacityGroup> groups, long expireAt) {
-        return new StoreByCopyCapacitySupplier(type, id, itemID, playerID, capacityMap, groups, expireAt > 0 ? expireAt : -1);
+        return new StoreByCopyCapacitySupplier(type, id, itemID, playerId, capacityMap, groups, expireAt > 0 ? expireAt : -1);
     }
 
     static StoreCapacitySupplier saveBySupplier(ComboCapacitySupplier supplier, CapacityVisitor visitor, long expireAt) {

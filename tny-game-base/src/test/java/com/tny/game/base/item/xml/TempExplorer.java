@@ -31,7 +31,7 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return (IM) model.get(itemAlias);
+        return (IM) this.model.get(itemAlias);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     }
 
     @Override
-    public <I extends Any<?>> I getItem(long playerID, int id, Object... object) {
-        return (I) item;
+    public <I extends Any<?>> I getItem(long playerId, int id, Object... object) {
+        return (I) this.item;
     }
 
     @Override

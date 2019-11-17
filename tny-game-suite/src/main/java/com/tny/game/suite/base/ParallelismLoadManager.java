@@ -46,29 +46,29 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
         this.groupSize = groupSize <= 0 ? 75 : groupSize;
     }
 
-    protected Collection<O> getObjects(long playerID) {
-        List<String> keys = cacheDAO.getKeys(playerID, this.tableHead);
+    protected Collection<O> getObjects(long playerId) {
+        List<String> keys = this.cacheDAO.getKeys(playerId, this.tableHead);
         if (keys.isEmpty())
             return Collections.emptyList();
         return gets(keys, false);
     }
 
     protected Collection<O> getAllObjects() {
-        List<String> keys = cacheDAO.getAllKeys(this.tableHead);
+        List<String> keys = this.cacheDAO.getAllKeys(this.tableHead);
         if (keys.isEmpty())
             return Collections.emptyList();
         return gets(keys, false);
     }
 
-    protected Collection<O> getObjects(long playerID, boolean parallelism) {
-        List<String> keys = cacheDAO.getKeys(playerID, this.tableHead);
+    protected Collection<O> getObjects(long playerId, boolean parallelism) {
+        List<String> keys = this.cacheDAO.getKeys(playerId, this.tableHead);
         if (keys.isEmpty())
             return Collections.emptyList();
         return gets(keys, parallelism);
     }
 
     protected Collection<O> getAllObjects(boolean parallelism) {
-        List<String> keys = cacheDAO.getAllKeys(this.tableHead);
+        List<String> keys = this.cacheDAO.getAllKeys(this.tableHead);
         if (keys.isEmpty())
             return Collections.emptyList();
         return gets(keys, parallelism);
@@ -83,7 +83,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
                                                   },
                                                   (list, v) -> {
                                                       List<String> lastList = list.get(list.size() - 1);
-                                                      if (lastList.size() >= groupSize) {
+                                                      if (lastList.size() >= this.groupSize) {
                                                           lastList = new ArrayList<>();
                                                           list.add(lastList);
                                                       }

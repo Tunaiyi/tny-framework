@@ -86,7 +86,7 @@ public class XMLDemandTest {
 
     private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
-    private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
+    private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
     XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
 
@@ -97,8 +97,8 @@ public class XMLDemandTest {
 
     {
         this.model.init(this.context);
-        this.demand.init(this.model, context);
-        this.stuffDemand.init(this.model, context);
+        this.demand.init(this.model, this.context);
+        this.stuffDemand.init(this.model, this.context);
     }
 
     @Test

@@ -3,7 +3,7 @@ tny:
     name: GameClientApp
     app-type: game
     scope-type: online
-    scan-packages: com.tny.game.net.demo,com.tny.game.net
+    scan-packages: com.tny.game.net.demo,com.tny.game.net,com.tny.game.starter
   net:
     client:
       game-client:

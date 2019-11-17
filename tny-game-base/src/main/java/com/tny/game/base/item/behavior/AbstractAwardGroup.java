@@ -91,13 +91,13 @@ public abstract class AbstractAwardGroup implements AwardGroup {
     }
 
     @Override
-    public List<TradeItem<ItemModel>> countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap) {
+    public List<TradeItem<ItemModel>> countAwardResult(long playerId, Action action, boolean merge, Map<String, Object> attributeMap) {
         return this.countAwardNumber(merge, attributeMap);
     }
 
     private Map<String, ItemModel> getAwardAliasModelMap(Map<String, Object> attributeMap) {
         Map<String, ItemModel> map = new HashMap<>();
-        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+        ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         for (Award award : this.awardList) {
             ItemModel model = itemModelExplorer.getModelByAlias(award.getItemAlias(attributeMap));
             map.put(model.getAlias(), model);
@@ -143,7 +143,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
         // 抽中数, 一般number==drawNumber, 如果抽奖类型 number个抽drawNumber个. 并且要显示未抽中的物品,则drawNumber<=number
         int drawNumber = getDrawNumber(number, attributeMap);
         Map<Integer, CollectionTradeItem> itemMap = null;
-        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+        ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         for (Award award : awardList) {
             if (number <= 0)
                 break;

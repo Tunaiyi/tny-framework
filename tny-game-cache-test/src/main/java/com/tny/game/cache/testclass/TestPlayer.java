@@ -8,7 +8,7 @@ import com.tny.game.cache.async.*;
 import java.io.Serializable;
 
 @ToCache(prefix = "player", triggers = TestLinkHandler.class,
-        cacheKeys = {"playerID"})
+        cacheKeys = {"playerId"})
 @Persistent(synchronizerClass = CacheSynchronizer.class)
 public class TestPlayer implements Serializable {
 
@@ -19,7 +19,7 @@ public class TestPlayer implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    private long playerID;
+    private long playerId;
 
     private String name;
 
@@ -41,14 +41,14 @@ public class TestPlayer implements Serializable {
     ;
 
     public TestPlayer(long playerId) {
-        this.playerID = playerId;
+        this.playerId = playerId;
         this.name = playerId + "";
         //		this.equipList = new ArrayList<Equip>();
         //		this.unchangeList = new ArrayList<Equip>();
     }
 
     public TestPlayer(long playerId, String name) {
-        this.playerID = playerId;
+        this.playerId = playerId;
         this.name = name;
         //		this.equip = equip;
         //		this.equipList = new ArrayList<Equip>(equips);
@@ -58,7 +58,7 @@ public class TestPlayer implements Serializable {
     }
 
     //	public TestPlayer(long playerId, List<Equip> equips, Equip equip) {
-    //		this.playerID = playerId;
+    //		this.playerId = playerId;
     //		this.name = playerId + "";
     //		this.equipList = equips;
     //		this.equip = equip;
@@ -68,7 +68,7 @@ public class TestPlayer implements Serializable {
     //	}
 
     public long getPlayerId() {
-        return this.playerID;
+        return this.playerId;
     }
 
     //	public void clear() {
@@ -127,7 +127,7 @@ public class TestPlayer implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + (int) (this.playerID ^ (this.playerID >>> 32));
+        result = prime * result + (int) (this.playerId ^ (this.playerId >>> 32));
         return result;
     }
 
@@ -145,7 +145,7 @@ public class TestPlayer implements Serializable {
                 return false;
         } else if (!this.name.equals(other.name))
             return false;
-        if (this.playerID != other.playerID)
+        if (this.playerId != other.playerId)
             return false;
         return true;
     }

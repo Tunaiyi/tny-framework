@@ -8,19 +8,18 @@ public abstract class ProxySupplyCapacitySupplierItem<IM extends CapacityItemMod
         implements ProxySupplyCapacitySupplier {
 
     @Override
-    public long getId() {
-        return this.getId();
-    }
-
-    @Override
     public int getItemId() {
-        return this.getItemId();
+        return super.getItemId();
     }
 
     @Override
     public long getPlayerId() {
-        return this.getPlayerId();
+        return super.getPlayerId();
     }
 
+    @Override
+    public long getOwnerId() {
+        return super.getOwnerId();
+    }
 
 }

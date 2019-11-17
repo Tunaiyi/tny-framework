@@ -18,11 +18,11 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
     }
 
     @Override
-    protected O get(long playerID, Object... objects) {
-        return getInstance(playerID, objects);
+    protected O get(long playerId, Object... objects) {
+        return getInstance(playerId, objects);
     }
 
-    protected abstract O getInstance(long playerID, Object... object);
+    protected abstract O getInstance(long playerId, Object... object);
 
     /**
      * 获取对应对象
@@ -52,7 +52,7 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
 
     @Override
     public Collection<O> save(Collection<O> itemCollection) {
-        List<O> list = new ArrayList<O>();
+        List<O> list = new ArrayList<>();
         for (O item : itemCollection) {
             if (!this.save(item))
                 list.add(item);
@@ -72,7 +72,7 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
 
     @Override
     public Collection<O> update(Collection<O> itemCollection) {
-        List<O> list = new ArrayList<O>();
+        List<O> list = new ArrayList<>();
         for (O item : itemCollection) {
             if (!this.update(item))
                 list.add(item);

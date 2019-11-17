@@ -48,15 +48,15 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
         this.saveItemClasses = otherSaveClasses.toArray(this.saveItemClasses);
     }
 
-    public O getStorage(long playerID) {
-        if (playerID == 0L)
+    public O getStorage(long playerId) {
+        if (playerId == 0L)
             return null;
-        return this.get(playerID);
+        return this.get(playerId);
     }
 
     @Override
-    protected O get(long playerID, Object... object) {
-        return super.get(playerID, this.itemType.getId());
+    protected O get(long playerId, Object... object) {
+        return super.get(playerId, this.itemType.getId());
     }
 
     @Override

@@ -17,7 +17,7 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     private int itemID;
 
-    private long playerID;
+    private long playerId;
 
     private CapacitySupplierType type;
 
@@ -25,12 +25,12 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     private Set<CapacityGroup> groups;
 
-    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerID, Map<Capacity, Number> capacityMap,
+    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerId, Map<Capacity, Number> capacityMap,
             Set<CapacityGroup> groups, long expireAt) {
         super(expireAt);
         this.id = id;
         this.itemID = itemID;
-        this.playerID = playerID;
+        this.playerId = playerId;
         this.type = type;
         this.capacityMap = ImmutableMap.copyOf(capacityMap);
         this.groups = Collections.unmodifiableSet(groups);
@@ -38,22 +38,22 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public int getItemId() {
-        return itemID;
+        return this.itemID;
     }
 
     @Override
     public long getPlayerId() {
-        return playerID;
+        return this.playerId;
     }
 
     @Override
     public CapacitySupplierType getSupplierType() {
-        return type;
+        return this.type;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
 
     @Override
     public Set<CapacityGroup> getAllCapacityGroups() {
-        return groups;
+        return this.groups;
     }
 
     @Override
@@ -86,15 +86,15 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implement
     public Map<Capacity, Number> getAllValues() {
         if (!this.isSupplying())
             return ImmutableMap.of();
-        return capacityMap;
+        return this.capacityMap;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("id", id)
-                          .add("itemId", itemID)
-                          .add("name", ItemModels.name(itemID))
+                          .add("id", this.id)
+                          .add("itemId", this.itemID)
+                          .add("name", ItemModels.name(this.itemID))
                           .toString();
     }
 

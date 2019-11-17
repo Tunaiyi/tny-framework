@@ -18,14 +18,14 @@ public abstract class DemandHolderObject extends DemandParamsObject {
     protected Set<String> attrAliasSet;
 
 
-    protected DemandResultCollector checkResult(long playerID, List<AbstractDemand> demandList, boolean tryAll,
+    protected DemandResultCollector checkResult(long playerId, List<AbstractDemand> demandList, boolean tryAll,
             DemandResultCollector collector, String paramsKey, Map<String, Object> attributeMap) {
-        setAttrMap(playerID, this.getAttributesAliasSet(), attributeMap);
+        setAttrMap(playerId, this.getAttributesAliasSet(), attributeMap);
         this.countAndSetDemandParams(paramsKey, attributeMap);
         if (collector == null)
             collector = new DemandResultCollector();
         for (Demand demand : demandList) {
-            DemandResult result = demand.checkDemandResult(playerID, attributeMap);
+            DemandResult result = demand.checkDemandResult(playerId, attributeMap);
             if (result != null) {
                 collector.addDemandResult(result);
                 if (!tryAll && collector.isFailed())
@@ -39,13 +39,13 @@ public abstract class DemandHolderObject extends DemandParamsObject {
         return this.attrAliasSet;
     }
 
-    protected List<DemandResult> countAllDemandResults(long playerID, List<AbstractDemand> demandList,
+    protected List<DemandResult> countAllDemandResults(long playerId, List<AbstractDemand> demandList,
             String paramsKey, Map<String, Object> attributeMap) {
-        setAttrMap(playerID, this.getAttributesAliasSet(), attributeMap);
+        setAttrMap(playerId, this.getAttributesAliasSet(), attributeMap);
         this.countAndSetDemandParams(paramsKey, attributeMap);
         List<DemandResult> demandResults = new ArrayList<>();
         for (Demand demand : demandList) {
-            DemandResult result = demand.checkDemandResult(playerID, attributeMap);
+            DemandResult result = demand.checkDemandResult(playerId, attributeMap);
             if (result != null)
                 demandResults.add(result);
         }

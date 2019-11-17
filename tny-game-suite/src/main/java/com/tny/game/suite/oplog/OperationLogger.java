@@ -147,8 +147,8 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
     }
 
     @Override
-    protected UserOpLog createUserOpLog(long playerID) {
-        return this.userOpLogFactory.create(playerID);
+    protected UserOpLog createUserOpLog(long playerId) {
+        return this.userOpLogFactory.create(playerId);
     }
 
     @Override

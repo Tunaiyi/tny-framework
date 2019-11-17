@@ -56,7 +56,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     protected AlterType alertType;
 
     public AlterType getAlertType() {
-        return alertType;
+        return this.alertType;
     }
 
     @Override
@@ -75,33 +75,33 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     }
 
     @Override
-    public Object countExpectValue(long playerID, Map<String, Object> attributeMap) {
+    public Object countExpectValue(long playerId, Map<String, Object> attributeMap) {
         String alias = this.getItemAlias(attributeMap);
         if (alias == null)
             return null;
-        this.setAttrMap(playerID, alias, attributeMap);
+        this.setAttrMap(playerId, alias, attributeMap);
         this.countAndSetDemandParams($PARAMS, attributeMap);
         return this.expect.createExpr().putAll(attributeMap).execute(Object.class);
     }
 
     @Override
-    public Object countCurrentValue(long playerID, Map<String, Object> attributeMap) {
+    public Object countCurrentValue(long playerId, Map<String, Object> attributeMap) {
         String alias = this.getItemAlias(attributeMap);
         if (alias == null)
             return null;
-        ItemModel demandModel = this.setAttrMap(playerID, alias, attributeMap);
+        ItemModel demandModel = this.setAttrMap(playerId, alias, attributeMap);
         this.countAndSetDemandParams($PARAMS, attributeMap);
         return demandModel.currentFormula().putAll(attributeMap).execute(Object.class);
     }
 
     @Override
-    public DemandResult checkDemandResult(long playerID, Map<String, Object> attributeMap) {
+    public DemandResult checkDemandResult(long playerId, Map<String, Object> attributeMap) {
         String alias = this.getItemAlias(attributeMap);
         if (alias == null)
             return null;
         long id = 0;
         ItemModel demandModel = this.getItemModel(alias);
-        this.setAttrMap(playerID, alias, attributeMap);
+        this.setAttrMap(playerId, alias, attributeMap);
         Map<DemandParam, Object> paramMap = this.countAndSetDemandParams($PARAMS, attributeMap);
         Expr currentFormula = getCurrentFormula(demandModel);
         Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
@@ -134,8 +134,8 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     }
 
     @Override
-    public boolean isSatisfy(long playerID, Map<String, Object> attributeMap) {
-        return this.checkDemandResult(playerID, attributeMap).isSatisfy();
+    public boolean isSatisfy(long playerId, Map<String, Object> attributeMap) {
+        return this.checkDemandResult(playerId, attributeMap).isSatisfy();
     }
 
     protected boolean checkSatisfy(Object current, Object expect, ItemModel demandModel, Map<String, Object> attribute) {
@@ -144,20 +144,20 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
     }
 
     private ItemModel getItemModel(String alias) {
-        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+        ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
         return model;
     }
 
-    private ItemModel setAttrMap(long playerID, String alias, Map<String, Object> attributeMap) {
+    private ItemModel setAttrMap(long playerId, String alias, Map<String, Object> attributeMap) {
         ItemModel model = this.getItemModel(alias);
         Item<?> item;
         attributeMap.put(DEMAND_MODEL, model);
-        ItemExplorer itemExplorer = context.getItemExplorer();
+        ItemExplorer itemExplorer = this.context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
-            item = itemExplorer.getItem(playerID, model.getId());
+            item = itemExplorer.getItem(playerId, model.getId());
             if (this.name != null)
                 attributeMap.put(this.name, item);
             attributeMap.put(alias, item);

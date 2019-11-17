@@ -44,89 +44,89 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
 
     @Override
     public Set<Action> getActions() {
-        return actions;
+        return this.actions;
     }
 
     private Action checkAction(Action action) {
-        if (actions.contains(action))
+        if (this.actions.contains(action))
             return action;
         Throws.checkNotNull(null, "{] action is null", action);
         return null;
     }
 
     @Override
-    public DemandResultCollector tryToDo(long playerID, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
-        this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
+    public DemandResultCollector tryToDo(long playerId, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
+        this.checkResult(playerId, this.demandList, tryAll, collector, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         if (!tryAll && collector.isFailed())
             return collector;
         if (this.costPlan != null) {
-            this.costPlan.tryToDo(playerID, tryAll, collector, attributeMap);
+            this.costPlan.tryToDo(playerId, tryAll, collector, attributeMap);
         }
         return collector;
     }
 
     @Override
-    public List<DemandResult> countDemandResult(long playerID, Map<String, Object> map) {
-        return this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, map);
+    public List<DemandResult> countDemandResult(long playerId, Map<String, Object> map) {
+        return this.countAllDemandResults(playerId, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, map);
     }
 
     @Override
-    public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
-        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
-        List<DemandResult> costResultList = this.costPlan == null ? new ArrayList<>() : this.costPlan.countDemandResultList(playerID, attributeMap);
-        return new SimpleActionResult(checkAction(action), resultList, costResultList, this.doAwardList(playerID, action, attributeMap));
+    public ActionResult getActionResult(long playerId, Action action, Map<String, Object> attributeMap) {
+        List<DemandResult> resultList = this.countAllDemandResults(playerId, this.demandList, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> costResultList = this.costPlan == null ? new ArrayList<>() : this.costPlan.countDemandResultList(playerId, attributeMap);
+        return new SimpleActionResult(checkAction(action), resultList, costResultList, this.doAwardList(playerId, action, attributeMap));
     }
 
     @Override
-    public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
+    public AwardList getAwardList(long playerId, Action action, Map<String, Object> attributeMap) {
         action = checkAction(action);
         if (this.awardPlan == null)
             return new SimpleAwardList(action);
-        return this.doAwardList(playerID, action, attributeMap);
+        return this.doAwardList(playerId, action, attributeMap);
     }
 
     @Override
-    public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
+    public CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap) {
         action = checkAction(action);
         if (this.costPlan == null)
             return new SimpleCostList(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
-        return this.costPlan.getCostList(playerID, action, attributeMap);
+        return this.costPlan.getCostList(playerId, action, attributeMap);
     }
 
     @Override
-    public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributes) {
+    public ActionTrades countTrades(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
         Trade award = null;
         Trade cost = null;
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         if (this.awardPlan != null)
-            award = this.awardPlan.createTrade(playerID, action, attributes);
+            award = this.awardPlan.createTrade(playerId, action, attributes);
         if (this.costPlan != null)
-            cost = this.costPlan.createTrade(playerID, action, attributes);
+            cost = this.costPlan.createTrade(playerId, action, attributes);
         return new ActionTrades(action, award, cost);
     }
 
     @Override
-    public Trade createAward(long playerID, Action action, Map<String, Object> attributes) {
+    public Trade createAward(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
         if (this.awardPlan == null)
             return new SimpleTrade(action, TradeType.AWARD);
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
-        return this.awardPlan.createTrade(playerID, action, attributes);
+        return this.awardPlan.createTrade(playerId, action, attributes);
     }
 
     @Override
-    public Trade createCost(long playerID, Action action, Map<String, Object> attributes) {
+    public Trade createCost(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
         if (this.costPlan == null)
             return new SimpleTrade(action, TradeType.COST);
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
-        return this.costPlan.createTrade(playerID, action, attributes);
+        return this.costPlan.createTrade(playerId, action, attributes);
     }
 
     @Override
@@ -134,17 +134,17 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         return this.optionMap.containsKey(option);
     }
 
-    private AwardList doAwardList(long playerID, Action action, Map<String, Object> attributes) {
+    private AwardList doAwardList(long playerId, Action action, Map<String, Object> attributes) {
         if (this.awardPlan == null)
             return new SimpleAwardList(action);
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
-        return this.awardPlan.getAwardList(playerID, action, attributes);
+        return this.awardPlan.getAwardList(playerId, action, attributes);
     }
 
     @Override
-    public <O> O countOption(long playerID, Option option, Map<String, Object> attributes) {
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+    public <O> O countOption(long playerId, Option option, Map<String, Object> attributes) {
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         ExprHolder formula = this.optionMap.get(option);
         if (formula == null)
@@ -156,12 +156,12 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     @Override
     public void init(ItemModel itemModel, ItemModelContext context) {
         super.init(itemModel, context);
-        if (optionMap == null)
-            optionMap = ImmutableMap.of();
-        if (action != null) {
-            actions = ImmutableSet.of(action);
-        } else if (actions != null) {
-            actions = ImmutableSet.copyOf(actions);
+        if (this.optionMap == null)
+            this.optionMap = ImmutableMap.of();
+        if (this.action != null) {
+            this.actions = ImmutableSet.of(this.action);
+        } else if (this.actions != null) {
+            this.actions = ImmutableSet.copyOf(this.actions);
         }
         if (this.awardPlan != null)
             this.awardPlan.init(itemModel, context);

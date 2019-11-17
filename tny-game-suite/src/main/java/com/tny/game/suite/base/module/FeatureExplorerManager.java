@@ -5,6 +5,6 @@ package com.tny.game.suite.base.module;
  */
 public interface FeatureExplorerManager {
 
-    GameFeatureExplorer getExplorer(long playerID);
+    GameFeatureExplorer getExplorer(long playerId);
 
 }

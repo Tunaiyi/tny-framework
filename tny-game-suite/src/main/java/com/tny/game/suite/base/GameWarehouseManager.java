@@ -5,7 +5,7 @@ package com.tny.game.suite.base;
  */
 public interface GameWarehouseManager {
 
-    GameWarehouse getWarehouse(long playerID);
+    GameWarehouse getWarehouse(long playerId);
 
     void saveWarehouse(GameWarehouse warehouse);
 

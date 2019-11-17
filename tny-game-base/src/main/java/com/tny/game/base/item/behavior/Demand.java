@@ -37,7 +37,7 @@ public interface Demand {
      * @param attribute 条件计算参数
      * @return 成功返回true 失败返回false
      */
-    boolean isSatisfy(long playerID, Map<String, Object> attribute);
+    boolean isSatisfy(long playerId, Map<String, Object> attribute);
 
     /**
      * 计算条件期望值
@@ -45,7 +45,7 @@ public interface Demand {
      * @param attribute 条件值期望值计算参数
      * @return 返回条件期望值
      */
-    Object countExpectValue(long playerID, Map<String, Object> attribute);
+    Object countExpectValue(long playerId, Map<String, Object> attribute);
 
     /**
      * 计算当前值
@@ -53,7 +53,7 @@ public interface Demand {
      * @param attribute 当前值计算参数
      * @return 返回当前值
      */
-    Object countCurrentValue(long playerID, Map<String, Object> attribute);
+    Object countCurrentValue(long playerId, Map<String, Object> attribute);
 
     //	/**
     //	 * 获取条件结果集
@@ -64,6 +64,6 @@ public interface Demand {
     //	 */
     //	public DemandDetail createDemandDetail(long playerId, Map<String, Object> attribute);
 
-    DemandResult checkDemandResult(long playerID, Map<String, Object> attribute);
+    DemandResult checkDemandResult(long playerId, Map<String, Object> attribute);
 
 }

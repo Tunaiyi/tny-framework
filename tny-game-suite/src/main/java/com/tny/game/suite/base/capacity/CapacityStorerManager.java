@@ -11,8 +11,8 @@ public abstract class CapacityStorerManager<SC extends CapacityStorer> extends G
         super(storerClass);
     }
 
-    public SC getStorer(long playerID) {
-        return this.get(playerID);
+    public SC getStorer(long playerId) {
+        return this.get(playerId);
     }
 
 }

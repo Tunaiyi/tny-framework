@@ -35,13 +35,13 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
     }
 
     @Override
-    public void checkPlayerTask(long playerID, ReceiverType receiverType) {
-        TaskReceiver dbReceiver = this.taskReceiverManager.getPlayerReceiver(playerID);
+    public void checkPlayerTask(long playerId, ReceiverType receiverType) {
+        TaskReceiver dbReceiver = this.taskReceiverManager.getPlayerReceiver(playerId);
         final TaskReceiver receiver;
         if (dbReceiver == null) {
             receiver = TaskReceiverBuilder.create()
                                           .setGroup(receiverType)
-                                          .setPlayerId(playerID)
+                                          .setPlayerId(playerId)
                                           .build();
             this.taskReceiverManager.insert(receiver);
         } else {

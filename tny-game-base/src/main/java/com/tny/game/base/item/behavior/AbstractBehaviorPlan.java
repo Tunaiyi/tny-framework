@@ -47,91 +47,91 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     }
 
     @Override
-    public List<DemandResult> countAllDemandResults(long playerID, Map<String, Object> attributes) {
-        return this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributes);
+    public List<DemandResult> countAllDemandResults(long playerId, Map<String, Object> attributes) {
+        return this.countAllDemandResults(playerId, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributes);
     }
 
     @Override
-    public DemandResultCollector tryToDo(long playerID, Action action, boolean tryAll, Map<String, Object> attributeMap) {
+    public DemandResultCollector tryToDo(long playerId, Action action, boolean tryAll, Map<String, Object> attributeMap) {
         DemandResultCollector collector = new DemandResultCollector();
         ActionPlan actionPlan = this.getActionPlan0(action);
-        this.checkResult(playerID, this.demandList, tryAll, collector, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
+        this.checkResult(playerId, this.demandList, tryAll, collector, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         if (!tryAll && collector.isFailed()) {
             return collector;
         }
-        actionPlan.tryToDo(playerID, tryAll, collector, attributeMap);
+        actionPlan.tryToDo(playerId, tryAll, collector, attributeMap);
         return collector;
     }
 
     @Override
-    public Trade countCost(long playerID, Action action, Map<String, Object> attributeMap) {
+    public Trade countCost(long playerId, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        return actionPlan.createCost(playerID, action, attributeMap);
+        return actionPlan.createCost(playerId, action, attributeMap);
     }
 
     @Override
-    public Trade countAward(long playerID, Action action, Map<String, Object> attributeMap) {
+    public Trade countAward(long playerId, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        return actionPlan.createAward(playerID, action, attributeMap);
+        return actionPlan.createAward(playerId, action, attributeMap);
     }
 
     @Override
-    public ActionTrades countTrades(long playerID, Action action, Map<String, Object> attributeMap) {
+    public ActionTrades countTrades(long playerId, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        return actionPlan.countTrades(playerID, action, attributeMap);
+        return actionPlan.countTrades(playerId, action, attributeMap);
     }
 
     @Override
-    public ActionResult getActionResult(long playerID, Action action, Map<String, Object> attributeMap) {
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+    public ActionResult getActionResult(long playerId, Action action, Map<String, Object> attributeMap) {
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        List<DemandResult> resultList = this.countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
+        List<DemandResult> resultList = this.countAllDemandResults(playerId, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         ActionPlan actionPlan = this.getActionPlan0(action);
-        ActionResult actionResult = actionPlan.getActionResult(playerID, action, attributeMap);
+        ActionResult actionResult = actionPlan.getActionResult(playerId, action, attributeMap);
         return new SimpleActionResult(action, resultList, actionResult);
     }
 
     @Override
-    public AwardList getAwardList(long playerID, Action action, Map<String, Object> attributeMap) {
+    public AwardList getAwardList(long playerId, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        return actionPlan.getAwardList(playerID, action, attributeMap);
+        return actionPlan.getAwardList(playerId, action, attributeMap);
     }
 
     @Override
-    public CostList getCostList(long playerID, Action action, Map<String, Object> attributeMap) {
+    public CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap) {
         ActionPlan actionPlan = this.getActionPlan0(action);
-        setAttrMap(playerID, this.attrAliasSet, attributeMap);
+        setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
-        return actionPlan.getCostList(playerID, action, attributeMap);
+        return actionPlan.getCostList(playerId, action, attributeMap);
     }
 
     @Override
-    public BehaviorResult countBehaviorResult(long playerID, Map<String, Object> attributeMap) {
+    public BehaviorResult countBehaviorResult(long playerId, Map<String, Object> attributeMap) {
         List<DemandResult> behaviorDemandResults = this
-                .countAllDemandResults(playerID, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
+                .countAllDemandResults(playerId, this.demandList, ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributeMap);
         Map<Action, ActionResult> actionResultMap = new HashMap<>();
         for (Entry<Action, ActionPlan> entry : this.actionPlanMap.entrySet()) {
             for (Action action : entry.getValue().getActions())
-                actionResultMap.put(entry.getKey(), entry.getValue().getActionResult(playerID, action, attributeMap));
+                actionResultMap.put(entry.getKey(), entry.getValue().getActionResult(playerId, action, attributeMap));
         }
         return new SimpleBehaviorResult(behaviorDemandResults, actionResultMap);
     }
 
     @Override
-    public <O> O countOption(long playerID, Action action, Option option, Map<String, Object> attributes) {
-        setAttrMap(playerID, this.attrAliasSet, attributes);
+    public <O> O countOption(long playerId, Action action, Option option, Map<String, Object> attributes) {
+        setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$BEHAVIOR_DEMAND_PARAMS, attributes);
         ActionPlan actionPlan = this.getActionPlan0(action);
         if (actionPlan.isHasOption(option)) {
-            return actionPlan.countOption(playerID, option, attributes);
+            return actionPlan.countOption(playerId, option, attributes);
         }
         ExprHolder formula = this.optionMap.get(option);
         if (formula == null)
@@ -155,9 +155,9 @@ public abstract class AbstractBehaviorPlan extends DemandHolderObject implements
     @Override
     public void init(ItemModel itemModel, ItemModelContext context) {
         super.init(itemModel, context);
-        if (optionMap == null)
-            optionMap = ImmutableMap.of();
-        optionMap = ImmutableMap.copyOf(optionMap);
+        if (this.optionMap == null)
+            this.optionMap = ImmutableMap.of();
+        this.optionMap = ImmutableMap.copyOf(this.optionMap);
         doInit(itemModel, context);
     }
 

@@ -14,6 +14,16 @@ public interface Any<M extends Model> extends Owned, Taggable {
     long getId();
 
     /**
+     * @return 玩家ID
+     */
+    long getPlayerId();
+
+    @Override
+    default long getOwnerId() {
+        return this.getPlayerId();
+    }
+
+    /**
      * 获取对象别名
      *
      * @return

@@ -21,7 +21,7 @@ public interface OpLogger {
     OpLogger logReceive(Item<?> item, Action action, long oldNum, long alter, long newNum);
 
     /**
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param id       Item 的ID
      * @param model    记录Item模型
      * @param action   记录原因(操作Action)
@@ -30,10 +30,10 @@ public interface OpLogger {
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger logReceive(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
+    OpLogger logReceive(long playerId, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
 
     /**
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param id       Item 的ID
      * @param itemID   记录ItemItemID 记录Item对象
      * @param action   记录原因(操作Action)
@@ -42,7 +42,7 @@ public interface OpLogger {
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger logReceive(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum);
+    OpLogger logReceive(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum);
 
     /**
      * @param item   记录Item对象
@@ -55,7 +55,7 @@ public interface OpLogger {
     OpLogger logConsume(Item<?> item, Action action, long oldNum, long alter, long newNum);
 
     /**
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param id       Item 的ID
      * @param model    记录Item模型
      * @param action   记录原因(操作Action)
@@ -64,10 +64,10 @@ public interface OpLogger {
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger logConsume(long playerID, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
+    OpLogger logConsume(long playerId, long id, ItemModel model, Action action, long oldNum, long alter, long newNum);
 
     /**
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param id       Item 的ID
      * @param itemID   记录ItemItemID 记录Item对象
      * @param action   记录原因(操作Action)
@@ -76,7 +76,7 @@ public interface OpLogger {
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger logConsume(long playerID, long id, int itemID, Action action, long oldNum, long alter, long newNum);
+    OpLogger logConsume(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum);
 
     /**
      * Item获得结算
@@ -91,24 +91,24 @@ public interface OpLogger {
     /**
      * Item获得结算
      *
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param model    记录Item模型
      * @param alter    改变数量
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger settleReceive(long playerID, ItemModel model, long alter, long newNum);
+    OpLogger settleReceive(long playerId, ItemModel model, long alter, long newNum);
 
     /**
      * Item获得结算
      *
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param itemID   记录ItemItemID 记录Item对象
      * @param alter    改变数量
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger settleReceive(long playerID, int itemID, long alter, long newNum);
+    OpLogger settleReceive(long playerId, int itemID, long alter, long newNum);
 
 
     /**
@@ -124,24 +124,24 @@ public interface OpLogger {
     /**
      * Item消耗结算
      *
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param model    记录Item模型
      * @param alter    改变数量
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger settleConsume(long playerID, ItemModel model, long alter, long newNum);
+    OpLogger settleConsume(long playerId, ItemModel model, long alter, long newNum);
 
     /**
      * Item消耗结算
      *
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @param itemID   记录ItemItemID 记录Item对象
      * @param alter    改变数量
      * @param newNum   当前值
      * @return 返回Logger
      */
-    OpLogger settleConsume(long playerID, int itemID, long alter, long newNum);
+    OpLogger settleConsume(long playerId, int itemID, long alter, long newNum);
 
     /**
      * 记录快照

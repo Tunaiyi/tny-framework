@@ -25,11 +25,6 @@ import org.springframework.core.env.Environment;
 public class NetAutoConfiguration {
 
     @Bean
-    public com.tny.game.starter.common.Initiator.UnitLoadInitiator unitLoadInitiator() {
-        return new com.tny.game.starter.common.Initiator.UnitLoadInitiator();
-    }
-
-    @Bean
     public EndpointService endpointService() {
         return new EndpointService();
     }

@@ -16,7 +16,7 @@ public class StuffAlertException extends GameRuningException {
 
     private Number alertNumber;
 
-    public StuffAlertException(ResultCode code, long playerID, ItemModel model, Number number, Number alert, Object... messages) {
+    public StuffAlertException(ResultCode code, long playerId, ItemModel model, Number number, Number alert, Object... messages) {
         super(code, messages);
         this.number = number;
         this.stuffId = model.getId();

@@ -19,7 +19,7 @@ public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
 
     @VarDoc("玩家ID")
     @ProtoExField(101)
-    private int playerID;
+    private int playerId;
 
     @VarDoc("玩家名字")
     @ProtoExField(102)

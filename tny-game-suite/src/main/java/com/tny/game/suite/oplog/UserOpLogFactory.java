@@ -7,6 +7,6 @@ import com.tny.game.oplog.*;
  */
 public interface UserOpLogFactory {
 
-    UserOpLog create(long playerID);
+    UserOpLog create(long playerId);
 
 }

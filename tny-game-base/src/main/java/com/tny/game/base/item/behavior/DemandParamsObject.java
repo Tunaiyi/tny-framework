@@ -27,19 +27,19 @@ public class DemandParamsObject {
      */
     protected ItemModelContext context;
 
-    public void setAttrMap(long playerID, Collection<String> aliasList, Map<String, Object> attributeMap) {
+    public void setAttrMap(long playerId, Collection<String> aliasList, Map<String, Object> attributeMap) {
         for (String alias : aliasList)
-            setAttrMap(playerID, alias, attributeMap);
+            setAttrMap(playerId, alias, attributeMap);
     }
 
-    private void setAttrMap(long playerID, String alias, Map<String, Object> attributeMap) {
-        ModelExplorer itemModelExplorer = context.getItemModelExplorer();
+    private void setAttrMap(long playerId, String alias, Map<String, Object> attributeMap) {
+        ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         ItemModel model = itemModelExplorer.getModelByAlias(alias);
         if (model == null)
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
-        ItemExplorer itemExplorer = context.getItemExplorer();
+        ItemExplorer itemExplorer = this.context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
-            Item<?> item = itemExplorer.getItem(playerID, model.getId());
+            Item<?> item = itemExplorer.getItem(playerId, model.getId());
             attributeMap.put(alias, item);
         }
     }
@@ -63,10 +63,10 @@ public class DemandParamsObject {
 
     protected void init(ItemModelContext context) {
         this.context = context;
-        if (paramMap == null)
-            paramMap = ImmutableMap.of();
+        if (this.paramMap == null)
+            this.paramMap = ImmutableMap.of();
         else
-            paramMap = ImmutableMap.copyOf(paramMap);
+            this.paramMap = ImmutableMap.copyOf(this.paramMap);
     }
 
 }

@@ -11,7 +11,7 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     @SuppressWarnings("unchecked")
     protected WrapItem(I item) {
         this.item = item;
-        this.playerID = item.getPlayerId();
+        this.playerId = item.getPlayerId();
         this.model = item.getModel();
     }
 
@@ -28,6 +28,16 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     @Override
     public int getItemId() {
         return this.item.getItemId();
+    }
+
+    @Override
+    public long getPlayerId() {
+        return this.item.getPlayerId();
+    }
+
+    @Override
+    public OwnerType getOwnerType() {
+        return this.item.getOwnerType();
     }
 
     @Override

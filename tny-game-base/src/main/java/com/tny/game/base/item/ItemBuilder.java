@@ -53,8 +53,8 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      */
     public I build() {
         I entity = createItem();
-        entity.setPlayerId(playerId);
-        entity.setModel(itemModel);
+        entity.setPlayerId(this.playerId);
+        entity.setModel(this.itemModel);
         afterModelItem(entity);
         return entity;
     }

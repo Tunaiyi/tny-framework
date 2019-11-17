@@ -43,21 +43,21 @@ public class CapacityDebugger {
         return debugger;
     }
 
-    public void debugSupplier(long playerID, long... supplierIDs) {
-        debugSupplier(playerID, true, supplierIDs);
+    public void debugSupplier(long playerId, long... supplierIDs) {
+        debugSupplier(playerId, true, supplierIDs);
     }
 
-    public void debugSupplier(long playerID, boolean recursive, long... supplierIDs) {
-        debugSupplier(playerID, recursive, LongStream.of(supplierIDs).boxed().collect(Collectors.toList()));
+    public void debugSupplier(long playerId, boolean recursive, long... supplierIDs) {
+        debugSupplier(playerId, recursive, LongStream.of(supplierIDs).boxed().collect(Collectors.toList()));
     }
 
-    public void debugSupplier(long playerID, Collection<Long> supplierIDs) {
-        debugSupplier(playerID, true, supplierIDs);
+    public void debugSupplier(long playerId, Collection<Long> supplierIDs) {
+        debugSupplier(playerId, true, supplierIDs);
     }
 
-    public void debugSupplier(long playerID, boolean recursive, Collection<Long> supplierIDs) {
+    public void debugSupplier(long playerId, boolean recursive, Collection<Long> supplierIDs) {
         StringBuilder builder = new StringBuilder();
-        CapacityStorer storer = capacityStorerManager.getStorer(playerID);
+        CapacityStorer storer = this.capacityStorerManager.getStorer(playerId);
         for (long id : supplierIDs) {
             Optional<CapacitySupplier> supplierOpt = storer.findSupplier(id);
             if (!supplierOpt.isPresent()) {
@@ -70,21 +70,21 @@ public class CapacityDebugger {
         LOGGER.debug("\n{}", builder);
     }
 
-    public void debugGoal(long playerID, long... goalIDs) {
-        debugGoal(playerID, true, goalIDs);
+    public void debugGoal(long playerId, long... goalIDs) {
+        debugGoal(playerId, true, goalIDs);
     }
 
-    public void debugGoal(long playerID, boolean recursive, long... goalIDs) {
-        debugGoal(playerID, recursive, LongStream.of(goalIDs).boxed().collect(Collectors.toList()));
+    public void debugGoal(long playerId, boolean recursive, long... goalIDs) {
+        debugGoal(playerId, recursive, LongStream.of(goalIDs).boxed().collect(Collectors.toList()));
     }
 
-    public void debugGoal(long playerID, Collection<Long> goalIDs) {
-        debugGoal(playerID, true, goalIDs);
+    public void debugGoal(long playerId, Collection<Long> goalIDs) {
+        debugGoal(playerId, true, goalIDs);
     }
 
-    public void debugGoal(long playerID, boolean recursive, Collection<Long> goalIDs) {
+    public void debugGoal(long playerId, boolean recursive, Collection<Long> goalIDs) {
         StringBuilder builder = new StringBuilder();
-        CapacityStorer storer = capacityStorerManager.getStorer(playerID);
+        CapacityStorer storer = this.capacityStorerManager.getStorer(playerId);
         for (long id : goalIDs) {
             Optional<CapacityGoal> supplierOpt = storer.findGoal(id);
             if (!supplierOpt.isPresent()) {
@@ -99,7 +99,7 @@ public class CapacityDebugger {
 
 
     private void appendObject(StringBuilder builder, CapacityObject object, CapacityObjectType objectType) {
-        ItemModel model = gameExplorer.getModel(object.getItemId());
+        ItemModel model = this.gameExplorer.getModel(object.getItemId());
         builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(),
                 object.getId()));
     }

@@ -30,11 +30,11 @@ public interface AwardGroup extends Probability, ProbabilityGroup<Award> {
     /**
      * 创建奖励结果集
      *
-     * @param playerID     玩家id
+     * @param playerId     玩家id
      * @param action       奖励的操作类型
      * @param attributeMap 附加参数
      * @return 返回结果集
      */
-    List<TradeItem<ItemModel>> countAwardResult(long playerID, Action action, boolean merge, Map<String, Object> attributeMap);
+    List<TradeItem<ItemModel>> countAwardResult(long playerId, Action action, boolean merge, Map<String, Object> attributeMap);
 
 }

@@ -66,79 +66,79 @@ public class GameWarehouseService implements WarehouseService {
     //        }
     //    }
     @Override
-    public void consume(long playerID, Trade trade, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void consume(long playerId, Trade trade, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null)
-            this.doHandleTrade(playerID, trade, warehouse::consume, entries);
+            this.doHandleTrade(playerId, trade, warehouse::consume, entries);
     }
 
     @Override
-    public void consume(long playerID, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void consume(long playerId, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null)
-            doHandleTrade(playerID, tradeItem, action, COST, warehouse::consume, entries);
+            doHandleTrade(playerId, tradeItem, action, COST, warehouse::consume, entries);
     }
 
     @Override
-    public void receive(long playerID, Trade trade, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void receive(long playerId, Trade trade, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null)
-            this.doHandleTrade(playerID, trade, warehouse::receive, entries);
+            this.doHandleTrade(playerId, trade, warehouse::receive, entries);
     }
 
     @Override
-    public void receive(long playerID, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void receive(long playerId, TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null)
-            doHandleTrade(playerID, tradeItem, action, AWARD, warehouse::receive, entries);
+            doHandleTrade(playerId, tradeItem, action, AWARD, warehouse::receive, entries);
     }
 
     @Override
-    public void deal(long playerID, Trade trade, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void deal(long playerId, Trade trade, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null) {
             switch (trade.getTradeType()) {
                 case AWARD:
-                    this.doHandleTrade(playerID, trade, warehouse::receive, entries);
+                    this.doHandleTrade(playerId, trade, warehouse::receive, entries);
                     break;
                 case COST:
-                    this.doHandleTrade(playerID, trade, warehouse::consume, entries);
+                    this.doHandleTrade(playerId, trade, warehouse::consume, entries);
                     break;
             }
         }
     }
 
     @Override
-    public void deal(long playerID, TryToDoResult result, AttrEntry<?>... entries) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public void deal(long playerId, TryToDoResult result, AttrEntry<?>... entries) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null) {
-            this.doHandleTrade(playerID, result.getCostTrade(), warehouse::consume, entries);
-            this.doHandleTrade(playerID, result.getAwardTrade(), warehouse::receive, entries);
+            this.doHandleTrade(playerId, result.getCostTrade(), warehouse::consume, entries);
+            this.doHandleTrade(playerId, result.getAwardTrade(), warehouse::receive, entries);
         }
     }
 
-    private void doHandleTrade(long playerID, TradeItem<?> tradeItem, Action action, TradeType tradeType, TradeWithTradeItem fn,
+    private void doHandleTrade(long playerId, TradeItem<?> tradeItem, Action action, TradeType tradeType, TradeWithTradeItem fn,
             AttrEntry<?>... entries) {
         try {
             fn.trade(tradeItem, action, entries);
         } catch (Exception e) {
-            LOGGER.error("玩家 {} {} {}物品 {} 异常", playerID, action, tradeType, tradeItem, e);
+            LOGGER.error("玩家 {} {} {}物品 {} 异常", playerId, action, tradeType, tradeItem, e);
         }
     }
 
 
-    private void doHandleTrade(long playerID, Trade trade, BiConsumer<Trade, AttrEntry<?>[]> fn, AttrEntry<?>... entries) {
+    private void doHandleTrade(long playerId, Trade trade, BiConsumer<Trade, AttrEntry<?>[]> fn, AttrEntry<?>... entries) {
         try {
             fn.accept(trade, entries);
         } catch (Exception e) {
-            LOGGER.error("玩家 {} {} {}物品 {} 异常", playerID, trade.getAction(), trade.getTradeType(), trade, e);
+            LOGGER.error("玩家 {} {} {}物品 {} 异常", playerId, trade.getAction(), trade.getTradeType(), trade, e);
         }
     }
 
 
     @SuppressWarnings("unchecked")
-    public DoneResult<Boolean> checkTradeBound(long playerID, Trade trade) {
-        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerID);
+    public DoneResult<Boolean> checkTradeBound(long playerId, Trade trade) {
+        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
         if (warehouse != null) {
             boolean award = trade.getTradeType() == AWARD;
             for (TradeItem<ItemModel> item : trade.getAllTradeItem()) {

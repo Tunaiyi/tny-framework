@@ -635,44 +635,44 @@ public class EndpointService {
     }
 
     /**
-     * 下线默认组中指定playerID的session
+     * 下线默认组中指定playerId的session
      *
-     * @param playerID 指定玩家ID
+     * @param playerId 指定玩家ID
      */
-    public void offline(long playerID) {
-        this.offline(DEFAULT_USER_TYPE, playerID);
+    public void offline(long playerId) {
+        this.offline(DEFAULT_USER_TYPE, playerId);
     }
 
     /**
-     * 下线默认组中指定playerID的session
+     * 下线默认组中指定playerId的session
      *
-     * @param playerID 指定玩家ID
+     * @param playerId 指定玩家ID
      */
-    public void offline(String userType, Object playerID) {
+    public void offline(String userType, Object playerId) {
         Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(userType);
-        keeperOpt.ifPresent(k -> k.offline(playerID));
+        keeperOpt.ifPresent(k -> k.offline(playerId));
     }
 
     /**
      * 指定用户 playerId 是否在线
      *
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @return 返回 true 表示在线, 否则表示是下线
      */
-    public boolean isOnline(long playerID) {
-        return this.isOnline(DEFAULT_USER_TYPE, playerID);
+    public boolean isOnline(long playerId) {
+        return this.isOnline(DEFAULT_USER_TYPE, playerId);
     }
 
     /**
      * 指定用户 playerId 是否在线
      *
      * @param userType 玩家ID
-     * @param playerID 玩家ID
+     * @param playerId 玩家ID
      * @return true 表示在线, 否则表示是下线
      */
-    public boolean isOnline(String userType, long playerID) {
+    public boolean isOnline(String userType, long playerId) {
         Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(userType);
-        return keeperOpt.map(k -> k.isOnline(playerID)).orElse(false);
+        return keeperOpt.map(k -> k.isOnline(playerId)).orElse(false);
     }
 
 }

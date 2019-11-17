@@ -27,8 +27,8 @@ public interface Capacity extends GameAbility {
         return this.countFinalCapacity(item.getAbility(getDefault(), ability), gather);
     }
 
-    default Number countFinalCapacity(long playerID, ItemModel model, Ability ability, CapacityGather gather) {
-        return this.countFinalCapacity(model.getAbility(playerID, getDefault(), ability), gather);
+    default Number countFinalCapacity(long playerId, ItemModel model, Ability ability, CapacityGather gather) {
+        return this.countFinalCapacity(model.getAbility(playerId, getDefault(), ability), gather);
     }
 
     Number countFinalCapacity(CapacitySupplier supplier);

@@ -55,7 +55,7 @@ public abstract class NettyBootstrap implements AppPrepareStart {
     }
 
     protected <UID> EndpointEventHandler<UID, NetEndpoint<UID>> getEventHandler() {
-        return as(eventHandler);
+        return as(this.eventHandler);
     }
 
     public static EventLoopGroup createLoopGroup(boolean epoll, int threads, String name) {
@@ -71,14 +71,14 @@ public abstract class NettyBootstrap implements AppPrepareStart {
     }
 
     protected <T> MessageFactory<T> getMessageFactory() {
-        return as(messageFactory);
+        return as(this.messageFactory);
     }
 
     @Override
     public void prepareStart() {
-        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(unitSetting.getChannelMaker());
-        this.messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(unitSetting.getMessageFactory()));
-        this.eventHandler = as(UnitLoader.getLoader(EndpointEventHandler.class).getUnitAnCheck(unitSetting.getEventHandler()));
+        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(this.unitSetting.getChannelMaker());
+        this.messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.unitSetting.getMessageFactory()));
+        this.eventHandler = as(UnitLoader.getLoader(EndpointEventHandler.class).getUnitAnCheck(this.unitSetting.getEventHandler()));
     }
 
 }

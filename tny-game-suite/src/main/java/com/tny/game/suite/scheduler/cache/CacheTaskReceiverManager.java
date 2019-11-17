@@ -17,12 +17,14 @@ public class CacheTaskReceiverManager extends GameCacheManager<TaskReceiver> imp
         super(GameTaskReceiver.class);
     }
 
+    @Override
     public TaskReceiver getSystemReceiver() {
         return this.get(IDAide.getSystemId());
     }
 
-    public TaskReceiver getPlayerReceiver(long playerID) {
-        return this.get(playerID);
+    @Override
+    public TaskReceiver getPlayerReceiver(long playerId) {
+        return this.get(playerId);
     }
 
 }

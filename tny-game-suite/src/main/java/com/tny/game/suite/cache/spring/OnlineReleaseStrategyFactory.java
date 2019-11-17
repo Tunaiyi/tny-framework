@@ -24,22 +24,22 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
     @Override
     public ReleaseStrategy createStrategy(Object object, long addLife) {
-        Long playerID = null;
+        Long playerId = null;
         if (object instanceof Item) {
-            playerID = ((Item<?>) object).getPlayerId();
+            playerId = ((Item<?>) object).getPlayerId();
         } else if (object instanceof Owned) {
-            playerID = ((Owned) object).getPlayerId();
+            playerId = ((Owned) object).getPlayerId();
         }
-        return new LoginTimeStrategy(playerID, addLife == Long.MIN_VALUE ? this.defaultLifeTime : addLife);
+        return new LoginTimeStrategy(playerId, addLife == Long.MIN_VALUE ? this.defaultLifeTime : addLife);
     }
 
     private class LoginTimeStrategy extends TimeoutReleaseStrategy {
 
-        private Long playerID = null;
+        private Long playerId = null;
 
-        private LoginTimeStrategy(Long playerID, long addLife) {
+        private LoginTimeStrategy(Long playerId, long addLife) {
             super(addLife);
-            this.playerID = playerID;
+            this.playerId = playerId;
         }
 
         @Override
@@ -50,7 +50,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
                 return true;
             EndpointKeeper<Long, Session<Long>> keeper = keeperOpt.get();
             return !(!super.release(entity, releaseAt) ||
-                     this.playerID != null && (IDAide.isSystem(this.playerID) || keeper.isOnline(this.playerID)));
+                     this.playerId != null && (IDAide.isSystem(this.playerId) || keeper.isOnline(this.playerId)));
         }
 
     }

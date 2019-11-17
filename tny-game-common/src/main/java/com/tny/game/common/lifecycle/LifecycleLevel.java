@@ -28,6 +28,8 @@ public enum LifecycleLevel implements LifecyclePriority {
 
     SYSTEM_LEVEL_10(9010),
 
+    SYSTEM_LEVEL_MAX(Integer.MAX_VALUE),
+
     CUSTOM_LEVEL_1(1001),
 
     CUSTOM_LEVEL_2(1002),
@@ -77,6 +79,6 @@ public enum LifecycleLevel implements LifecyclePriority {
 
     @Override
     public int getPriority() {
-        return priority;
+        return this.priority;
     }
 }

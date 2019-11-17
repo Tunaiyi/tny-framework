@@ -4,7 +4,7 @@ import com.tny.game.common.lifecycle.*;
 
 public interface TimeTaskSchedulerService extends AppPrepareStart {
 
-    void checkPlayerTask(long playerID, ReceiverType receiverType);
+    void checkPlayerTask(long playerId, ReceiverType receiverType);
 
     @Override
     default PrepareStarter getPrepareStarter() {

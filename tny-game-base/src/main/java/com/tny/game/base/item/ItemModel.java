@@ -41,23 +41,23 @@ public interface ItemModel extends Model {
     /**
      * 尝试让某事物做某事,失败立即返回
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    TryToDoResult tryToDo(long playerID, Action action, Object... attributes);
+    TryToDoResult tryToDo(long playerId, Action action, Object... attributes);
 
     /**
      * 尝试让某事物做某事,失败立即返回
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     操作
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    TryToDoResult tryToDo(long playerID, Action action, boolean award, Object... attributes);
+    TryToDoResult tryToDo(long playerId, Action action, boolean award, Object... attributes);
 
     /**
      * 尝试让某事物做某事,尝试所有条件后返回
@@ -83,23 +83,23 @@ public interface ItemModel extends Model {
     /**
      * 尝试让某事物做某事,尝试所有条件后返回
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     操作
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    TryToDoResult tryToDoAll(long playerID, Action action, Object... attributes);
+    TryToDoResult tryToDoAll(long playerId, Action action, Object... attributes);
 
     /**
      * 尝试让某事物做某事,尝试所有条件后返回
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     操作
      * @param award      是否创建奖励
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作结果
      */
-    TryToDoResult tryToDoAll(long playerID, Action action, boolean award, Object... attributes);
+    TryToDoResult tryToDoAll(long playerId, Action action, boolean award, Object... attributes);
 
     //######################
 
@@ -116,12 +116,12 @@ public interface ItemModel extends Model {
     /**
      * 获取奖励&扣除列表
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的才注意
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 奖励列表
      */
-    ActionTrades createActionTrades(long playerID, Action action, Object... attributes);
+    ActionTrades createActionTrades(long playerId, Action action, Object... attributes);
 
     /**
      * 获取操作结果
@@ -136,12 +136,12 @@ public interface ItemModel extends Model {
     /**
      * 获取错做结果
      *
-     * @param playerID
+     * @param playerId
      * @param action
      * @param attributes
      * @return
      */
-    ActionResult getActionResult(long playerID, Action action, Object... attributes);
+    ActionResult getActionResult(long playerId, Action action, Object... attributes);
 
     /**
      * 获取事物对象某操作的条件结果集
@@ -156,12 +156,12 @@ public interface ItemModel extends Model {
     /**
      * 获取事物对象某操作的条件结果集
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param behavior   要执行的行为
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回该操作的条件结果
      */
-    BehaviorResult getBehaviorResult(long playerID, Behavior behavior, Object... attributes);
+    BehaviorResult getBehaviorResult(long playerId, Behavior behavior, Object... attributes);
 
     /**
      * 获取奖励列表
@@ -176,12 +176,12 @@ public interface ItemModel extends Model {
     /**
      * 获取奖励列表
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的才注意
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 奖励列表
      */
-    AwardList getAwardList(long playerID, Action action, Object... attributes);
+    AwardList getAwardList(long playerId, Action action, Object... attributes);
 
     /**
      * 获取奖励列表
@@ -196,12 +196,12 @@ public interface ItemModel extends Model {
     /**
      * 获取奖励列表
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的才注意
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 消耗列表
      */
-    CostList getCostList(long playerID, Action action, Object... attributes);
+    CostList getCostList(long playerId, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的消费
@@ -226,45 +226,45 @@ public interface ItemModel extends Model {
     /**
      * 计算对该事物进行某操作对象操作的消费
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的才注意
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得消耗交易对象
      */
-    Trade createCostTrade(long playerID, Action action, Object... attributes);
+    Trade createCostTrade(long playerId, Action action, Object... attributes);
 
     /**
      * 计算对该事物进行某操作对象操作的奖励
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的才注意
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回获得奖励交易对象
      */
-    Trade createAwardTrade(long playerID, Action action, Object... attributes);
+    Trade createAwardTrade(long playerId, Action action, Object... attributes);
 
     /**
      * 计算某事物某操作的选项值
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param action     要执行的操作
      * @param option     选项类型
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作选项值
      */
-    <O> O getActionOption(long playerID, Action action, Option option, Object... attributes);
+    <O> O getActionOption(long playerId, Action action, Option option, Object... attributes);
 
     /**
      * 计算某事物某操作的选项值
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param defaultNum 默认值
      * @param action     要执行的操作
      * @param option     选项类型
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回操作选项值
      */
-    <O> O getActionOption(long playerID, O defaultNum, Action action, Option option, Object... attributes);
+    <O> O getActionOption(long playerId, O defaultNum, Action action, Option option, Object... attributes);
 
     /**
      * 计算某事物某操作的选项
@@ -291,23 +291,23 @@ public interface ItemModel extends Model {
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param playerID   玩家ID
+     * @param playerId   玩家ID
      * @param ability    能力值类型
      * @param attributes 附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    <A> A getAbility(long playerID, Ability ability, Class<A> clazz, Object... attributes);
+    <A> A getAbility(long playerId, Ability ability, Class<A> clazz, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
      *
-     * @param playerID      玩家ID
+     * @param playerId      玩家ID
      * @param defaultObject 默认值
      * @param ability       能力值类型
      * @param attributes    附加参数 ["key1", object1, "key2", object2]
      * @return 返回能力值
      */
-    <A> A getAbility(long playerID, A defaultObject, Ability ability, Object... attributes);
+    <A> A getAbility(long playerId, A defaultObject, Ability ability, Object... attributes);
 
     /**
      * 计算某事物指定能力类型的能力值
@@ -356,12 +356,12 @@ public interface ItemModel extends Model {
     /**
      * 获取指定ability列表的的能力值
      *
-     * @param playerID          玩家ID
+     * @param playerId          玩家ID
      * @param abilityCollection 能力值类型列表
      * @param attributes        附加参数 ["key1", object1, "key2", object2]
      * @return 返回指定ability列表的的能力值
      */
-    <A> Map<Ability, A> getAbilities(long playerID, Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes);
+    <A> Map<Ability, A> getAbilities(long playerId, Collection<Ability> abilityCollection, Class<A> clazz, Object... attributes);
 
     /**
      * 获取指定类型的能力值
@@ -376,12 +376,12 @@ public interface ItemModel extends Model {
     /**
      * 获取指定类型的能力值
      *
-     * @param playerID     玩家ID
+     * @param playerId     玩家ID
      * @param abilityClass 能力值类型Class
      * @param attributes   附加参数 ["key1", object1, "key2", object2]
      * @return 返回指定ability class的的能力值
      */
-    <A extends Ability, V> Map<A, V> getAbilitiesByType(long playerID, Class<A> abilityClass, Class<V> clazz, Object... attributes);
+    <A extends Ability, V> Map<A, V> getAbilitiesByType(long playerId, Class<A> abilityClass, Class<V> clazz, Object... attributes);
 
     /**
      * 是否存在Ability
