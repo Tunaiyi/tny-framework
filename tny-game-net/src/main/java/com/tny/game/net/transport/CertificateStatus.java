@@ -25,6 +25,8 @@ public enum CertificateStatus implements EnumIdentifiable<Integer> {
      * 续约认证
      */
     RENEW(3, true),
+
+    //
     ;
 
     private Integer id;
@@ -38,10 +40,10 @@ public enum CertificateStatus implements EnumIdentifiable<Integer> {
 
     @Override
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public boolean isAutherized() {
-        return autherized;
+        return this.autherized;
     }
 }
