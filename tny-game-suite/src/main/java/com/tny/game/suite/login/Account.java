@@ -102,8 +102,12 @@ public class Account implements Owned {
         this.ip = ip;
     }
 
-    @Override
     public long getPlayerId() {
+        return this.uid;
+    }
+
+    @Override
+    public long getOwnerId() {
         return this.uid;
     }
 

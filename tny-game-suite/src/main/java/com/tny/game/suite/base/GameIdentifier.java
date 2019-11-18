@@ -9,7 +9,7 @@ import com.tny.game.suite.login.*;
 public interface GameIdentifier extends Owned {
 
     default int getZoneId() {
-        return IDAide.userID2Zone(getPlayerId());
+        return IDAide.userID2Zone(getOwnerId());
     }
 
 }

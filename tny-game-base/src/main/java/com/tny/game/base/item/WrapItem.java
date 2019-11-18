@@ -41,11 +41,6 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     }
 
     @Override
-    public long getPlayerId() {
-        return this.item.getPlayerId();
-    }
-
-    @Override
     public IM getModel() {
         return this.item.getModel();
     }

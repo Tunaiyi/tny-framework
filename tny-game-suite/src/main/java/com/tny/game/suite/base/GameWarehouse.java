@@ -4,7 +4,7 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.*;
 
-public class GameWarehouse extends AbstractWarehouse<GameItemStorage> implements Owned {
+public class GameWarehouse extends AbstractWarehouse<GameItemStorage> {
 
     //	protected Queue<Trade> trades;
     //
@@ -78,6 +78,5 @@ public class GameWarehouse extends AbstractWarehouse<GameItemStorage> implements
     protected void doConsume(GameItemStorage storage, TradeItem<?> tradeItem, Action action, Attributes attributes) {
         storage.consume(tradeItem, action, attributes);
     }
-
 
 }

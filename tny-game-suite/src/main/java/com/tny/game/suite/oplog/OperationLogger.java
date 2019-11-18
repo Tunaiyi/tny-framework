@@ -93,7 +93,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     private void doSnapshot(Action action, Owned item, Snapper<Owned, Snapshot> snapper) {
         long id = snapper.getSnapshotId(item);
-        Snapshot snapshot = this.getSnapshot(item.getPlayerId(), id, action, snapper.getSnapshotType());
+        Snapshot snapshot = this.getSnapshot(item.getOwnerId(), id, action, snapper.getSnapshotType());
         if (snapshot != null) {
             this.updateSnapshot(snapper, item, snapshot);
         } else {

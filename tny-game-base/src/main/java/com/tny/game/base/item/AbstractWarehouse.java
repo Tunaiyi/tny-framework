@@ -14,11 +14,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<O> {
+public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<O>, Owned {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(LogName.WAREHOUSE);
 
     protected long playerId;
+
+    protected OwnerType ownerType;
 
     protected StorageExplorer storageExplorer;
 
@@ -33,6 +35,16 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
     @Override
     public long getPlayerId() {
         return this.playerId;
+    }
+
+    @Override
+    public long getOwnerId() {
+        return this.playerId;
+    }
+
+    @Override
+    public OwnerType getOwnerType() {
+        return this.ownerType;
     }
 
     @Override
@@ -110,6 +122,10 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
 
     protected void setStorageExplorer(StorageExplorer storageExplorer) {
         this.storageExplorer = storageExplorer;
+    }
+
+    protected void setOwnerType(OwnerType ownerType) {
+        this.ownerType = ownerType;
     }
 
     private void consume0(TradeItem<?> tradeItem, Action action, Attributes attributes) {

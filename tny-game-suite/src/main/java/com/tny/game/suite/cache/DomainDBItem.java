@@ -23,7 +23,7 @@ public class DomainDBItem<R> extends DBCacheItem<R> {
                 this.uid = item.getPlayerId();
                 this.itemId = item.getItemId();
             } else if (object instanceof Owned) {
-                this.uid = ((Owned) object).getPlayerId();
+                this.uid = ((Owned) object).getOwnerId();
             }
             this.number = proto.getNumber();
             data = proto.getItem();
