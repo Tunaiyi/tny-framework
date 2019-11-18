@@ -36,11 +36,6 @@ public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM
     }
 
     @Override
-    public OwnerType getOwnerType() {
-        return this.item.getOwnerType();
-    }
-
-    @Override
     public IM getModel() {
         return this.item.getModel();
     }

@@ -40,8 +40,6 @@ public class Account implements Owned {
 
     private volatile DateTime offlineTime;
 
-    private volatile OwnerType ownerType;
-
     private String device;
 
     private String deviceId;
@@ -109,11 +107,6 @@ public class Account implements Owned {
     @Override
     public long getOwnerId() {
         return this.uid;
-    }
-
-    @Override
-    public OwnerType getOwnerType() {
-        return this.ownerType;
     }
 
     public long getUid() {

@@ -8,7 +8,6 @@ public abstract class WarehouseBuilder {
      */
     private long playerId;
 
-    private OwnerType ownerType;
 
     private StorageExplorer storageExplorer;
 
@@ -30,14 +29,8 @@ public abstract class WarehouseBuilder {
     public Warehouse build() {
         AbstractWarehouse entity = this.createWarehouse();
         entity.setPlayerId(this.playerId);
-        entity.setOwnerType(this.ownerType);
         entity.setStorageExplorer(this.storageExplorer);
         return entity;
-    }
-
-    public WarehouseBuilder setOwnerType(OwnerType ownerType) {
-        this.ownerType = ownerType;
-        return this;
     }
 
     /**

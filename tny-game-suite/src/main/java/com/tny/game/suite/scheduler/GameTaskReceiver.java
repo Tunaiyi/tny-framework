@@ -19,24 +19,12 @@ public class GameTaskReceiver extends TaskReceiver implements Owned {
 
     protected long playerId;
 
-    protected OwnerType ownerType;
-
     protected GameTaskReceiver() {
-    }
-
-    public GameTaskReceiver(long playerId, OwnerType ownerType) {
-        this.playerId = playerId;
-        this.ownerType = ownerType;
     }
 
     @Override
     public long getOwnerId() {
         return this.playerId;
-    }
-
-    @Override
-    public OwnerType getOwnerType() {
-        return this.ownerType;
     }
 
     public long getPlayerId() {
@@ -49,10 +37,6 @@ public class GameTaskReceiver extends TaskReceiver implements Owned {
 
     protected void setGroup(ReceiverType group) {
         this.group = group;
-    }
-
-    protected void setOwnerType(OwnerType ownerType) {
-        this.ownerType = ownerType;
     }
 
     public void setActualLastHandlerTime(long actualLastHandlerTime) {
