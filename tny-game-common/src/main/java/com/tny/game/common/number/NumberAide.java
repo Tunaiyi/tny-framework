@@ -8,7 +8,59 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * Created by Kun Yang on 16/2/17.
  */
+@SuppressWarnings("unused")
 public class NumberAide {
+
+    private static final int[] intSizeTable = new int[String.valueOf(Integer.MAX_VALUE).length()];
+    private static final long[] longSizeTable = new long[String.valueOf(Long.MAX_VALUE).length()];
+
+    // public static final long[] intSizeTable;
+
+    static {
+        int intLimit = 1;
+        for (int index = 0; index < intSizeTable.length - 1; index++) {
+            intLimit *= 10;
+            intSizeTable[index] = intLimit - 1;
+        }
+        intSizeTable[intSizeTable.length - 1] = Integer.MAX_VALUE;
+
+        long longLimit = 1;
+        for (int index = 0; index < longSizeTable.length - 1; index++) {
+            longLimit *= 10;
+            longSizeTable[index] = longLimit - 1;
+        }
+        longSizeTable[longSizeTable.length - 1] = Long.MAX_VALUE;
+    }
+
+    private static int getDigitsLength(int value) {
+        value = value > 0 ? value : -value;
+        for (int index = 0; index < intSizeTable.length; index++) {
+            if (value <= intSizeTable[index])
+                return index + 1;
+        }
+        throw new IllegalArgumentException();
+    }
+
+    @SuppressWarnings("all")
+    public static long getDigitsLength(long value) {
+        value = value > 0 ? value : -value;
+        for (int index = 0; index < longSizeTable.length; index++) {
+            if (value <= longSizeTable[index])
+                return index + 1;
+        }
+        throw new IllegalArgumentException();
+    }
+
+
+    public static void main(String[] args) {
+        for (int i : intSizeTable) {
+            System.out.println(i + " >> " + getDigitsLength(i));
+        }
+        for (long i : longSizeTable) {
+            System.out.println(i + " >> " + getDigitsLength(i));
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     public static <N extends Number> N as(Number source, N target) {
@@ -153,8 +205,8 @@ public class NumberAide {
         if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) ||
             numClass.isAssignableFrom(Byte.class))
             return as(one.floatValue() / other.floatValue(), Float.class);
-        if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
-            return as(one.doubleValue() / other.doubleValue(), Float.class);
+        // if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
+        //     return as(one.doubleValue() / other.doubleValue(), Float.class);
         return as(one.doubleValue() / other.doubleValue(), Float.class);
     }
 
@@ -476,10 +528,6 @@ public class NumberAide {
         return shift;
     }
 
-    public static void main(String[] args) {
-        for (int index = 0; index < 512; index++)
-            System.out.println(index + " shift : " + shift(index));
-    }
 
     // public static String numberUnsignedConvert(long val, ScaleCharacterSet set) {
     //     int mag = Long.SIZE - Long.numberOfLeadingZeros(val);
@@ -533,10 +581,10 @@ public class NumberAide {
             value = -value;
         }
         while (value <= -radix) {
-            buf[charPos--] = set.getChar((int) (-(value % radix)));
+            buf[charPos--] = set.getChar(-(value % radix));
             value = value / radix;
         }
-        buf[charPos] = set.getChar((int) (-value));
+        buf[charPos] = set.getChar(-value);
         if (negative) {
             buf[--charPos] = '-';
         }

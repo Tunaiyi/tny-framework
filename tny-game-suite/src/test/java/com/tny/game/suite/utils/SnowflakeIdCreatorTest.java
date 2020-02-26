@@ -1,5 +1,6 @@
 package com.tny.game.suite.utils;
 
+import com.tny.game.common.utils.*;
 import org.junit.*;
 
 import java.util.*;
@@ -8,11 +9,11 @@ import java.util.concurrent.*;
 /**
  * Created by Kun Yang on 16/8/14.
  */
-public class UUIDCreatorTest {
+public class SnowflakeIdCreatorTest {
 
     private static final int createSize = 1000000;
     private static final int threadSize = 8;
-    private static final UUIDCreator creator = new UUIDCreator(1);
+    private static final SnowflakeIdCreator creator = new SnowflakeIdCreator(1);
     private static final CountDownLatch startLatch = new CountDownLatch(threadSize);
     private static final CountDownLatch finishLatch = new CountDownLatch(threadSize);
 
@@ -28,7 +29,7 @@ public class UUIDCreatorTest {
                 e.printStackTrace();
             }
             for (int index = 0; index < createSize; index++) {
-                ids.add(creator.createId());
+                this.ids.add(creator.createId());
             }
             finishLatch.countDown();
         }

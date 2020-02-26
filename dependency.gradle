@@ -4,16 +4,15 @@ ext.vers = [
         junit       : "4.12",
         mockito     : "1.10.19",
 
-        spring      : "5.1.7.RELEASE",
-        slf4j       : "1.7.25",
-        log4j       : "2.8.2",
-        jackson     : "2.9.9",
+        spring      : "5.2.2.RELEASE",
+        slf4j       : '1.7.30',
+        log4j       : '2.13.0',
+        jackson     : "2.10.2",
         jade        : "1.6.x-SNAPSHOT",
-        tny         : "3.1.x-SNAPSHOT",
         poi         : "4.1.0",
 
-        spring_boot : "2.1.5.RELEASE",
-        spring_cloud: "Greenwich.SR1",
+        spring_boot : "2.2.2.RELEASE",
+        spring_cloud: "Hoxton.SR1",
 
 ]
 
@@ -32,9 +31,9 @@ ext.libs = [
 
         netty                              : "io.netty:netty-all:4.1.36.Final",
         cglib_nodep                        : "cglib:cglib-nodep:3.2.12",
-        javassist                          : "org.javassist:javassist:3.23.1-GA",
-        mvel                               : "org.mvel:mvel2:2.4.0.Final",
-        groovy_all                         : "org.codehaus.groovy:groovy-all:2.5.7",
+        javassist                          : 'org.javassist:javassist:3.26.0-GA',
+        mvel                               : "org.mvel:mvel2:2.4.5.Final",
+        groovy_all                         : "org.codehaus.groovy:groovy-all:2.5.8",
         luaj                               : "org.luaj:luaj-jse:3.0.1",
 
         jackson_core                       : "com.fasterxml.jackson.core:jackson-core:${vers.jackson}",
@@ -43,7 +42,7 @@ ext.libs = [
         jackson_dataformat_yaml            : "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${vers.jackson}",
         jackson_dataformat_xml             : "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${vers.jackson}",
 
-        httpclient                         : "org.apache.httpcomponents:httpclient:4.5.9",
+        httpclient                         : "org.apache.httpcomponents:httpclient:4.5.11",
 
         commons_lang3                      : "org.apache.commons:commons-lang3:3.9",
         commons_codec                      : "commons-codec:commons-codec:1.12",
@@ -58,12 +57,12 @@ ext.libs = [
 
         zookeeper                          : "org.apache.zookeeper:zookeeper:3.5.5",
 
-        quartz_scheduler                   : "org.quartz-scheduler:quartz:2.3.1",
+        quartz_scheduler                   : "org.quartz-scheduler:quartz:2.3.2",
 
-        xstream                            : "com.thoughtworks.xstream:xstream:1.4.9",
+        xstream                            : "com.thoughtworks.xstream:xstream:1.4.11.1",
 
-        guava                              : "com.google.guava:guava:27.1-jre",
-        joda_time                          : "joda-time:joda-time:2.9.9",
+        guava                              : "com.google.guava:guava:28.2-jre",
+        joda_time                          : "joda-time:joda-time:2.10.5",
 
         spring_test                        : "org.springframework:spring-test:${vers.spring}",
         spring_core                        : "org.springframework:spring-core:${vers.spring}",

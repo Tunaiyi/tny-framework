@@ -1,39 +1,52 @@
 package com.tny.game.common.reflect;
 
-public class Wraper {
+public class Wrapper {
 
-    public static Class<?> getPrimitive(Class<?> wraperClass) {
-        if (wraperClass.equals(Integer.class)) {
-            return Integer.TYPE;
-        }
-        if (wraperClass.equals(Short.class)) {
-            return Short.TYPE;
-        }
-        if (wraperClass.equals(Long.class)) {
-            return Long.TYPE;
-        }
-        if (wraperClass.equals(Float.class)) {
-            return Float.TYPE;
-        }
-        if (wraperClass.equals(Double.class)) {
-            return Double.TYPE;
-        }
-        if (wraperClass.equals(Byte.class)) {
-            return Byte.TYPE;
-        }
-        if (wraperClass.equals(Character.class)) {
-            return Character.TYPE;
-        }
-        if (wraperClass.equals(Boolean.class)) {
-            return Boolean.TYPE;
-        }
-        if (wraperClass.equals(Void.class)) {
-            return Void.TYPE;
-        }
-        return wraperClass;
+    public static Class<?> getPrimitive(Class<?> wrapperClass) {
+        return doPrimitive(wrapperClass);
     }
 
-    public static Class<?> getWraper(Class<?> toClass) {
+    public static Class<?> getWrapper(Class<?> primitiveClass) {
+        return doWrapper(primitiveClass);
+    }
+
+    public static boolean isWrapper(Class<?> toClass) {
+        return checkWrapper(toClass);
+    }
+
+    private static Class<?> doPrimitive(Class<?> wrapperClass) {
+        if (wrapperClass.equals(Integer.class)) {
+            return Integer.TYPE;
+        }
+        if (wrapperClass.equals(Short.class)) {
+            return Short.TYPE;
+        }
+        if (wrapperClass.equals(Long.class)) {
+            return Long.TYPE;
+        }
+        if (wrapperClass.equals(Float.class)) {
+            return Float.TYPE;
+        }
+        if (wrapperClass.equals(Double.class)) {
+            return Double.TYPE;
+        }
+        if (wrapperClass.equals(Byte.class)) {
+            return Byte.TYPE;
+        }
+        if (wrapperClass.equals(Character.class)) {
+            return Character.TYPE;
+        }
+        if (wrapperClass.equals(Boolean.class)) {
+            return Boolean.TYPE;
+        }
+        if (wrapperClass.equals(Void.class)) {
+            return Void.TYPE;
+        }
+        return wrapperClass;
+    }
+
+
+    private static Class<?> doWrapper(Class<?> toClass) {
         if (toClass.equals(Integer.TYPE)) {
             return Integer.class;
         }
@@ -64,7 +77,7 @@ public class Wraper {
         return toClass;
     }
 
-    public static boolean isWraper(Class<?> toClass) {
+    private static boolean checkWrapper(Class<?> toClass) {
         if (toClass.equals(Integer.class)) {
             return true;
         }

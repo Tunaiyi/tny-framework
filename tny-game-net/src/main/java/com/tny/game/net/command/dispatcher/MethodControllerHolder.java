@@ -152,7 +152,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     public List<ParamDesc> getParameterDescs() {
-        return parameterDescs;
+        return this.parameterDescs;
     }
 
     public int getParametersSize() {
@@ -168,7 +168,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public Class<?> getControllerClass() {
-        return executor.getClass();
+        return this.executor.getClass();
     }
 
     // private static ExprHolder formula(String formula) {
@@ -182,7 +182,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
         if (index >= this.parameterDescs.size())
             throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
-                    format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, parameterDescs.size()));
+                    format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.parameterDescs.size()));
         ParamDesc desc = this.parameterDescs.get(index);
         if (desc == null)
             throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
@@ -218,27 +218,27 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public boolean isUserGroup(String group) {
-        return this.userGroups != null ? super.isUserGroup(group) : classController.isUserGroup(group);
+        return this.userGroups != null ? super.isUserGroup(group) : this.classController.isUserGroup(group);
     }
 
     @Override
     public boolean isActiveByAppType(String appType) {
-        return this.appTypes != null ? super.isActiveByAppType(appType) : classController.isActiveByAppType(appType);
+        return this.appTypes != null ? super.isActiveByAppType(appType) : this.classController.isActiveByAppType(appType);
     }
 
     @Override
     public boolean isActiveByScope(String scope) {
-        return this.scopes != null ? super.isActiveByAppType(scope) : classController.isActiveByScope(scope);
+        return this.scopes != null ? super.isActiveByAppType(scope) : this.classController.isActiveByScope(scope);
     }
 
     @Override
     public boolean isAuth() {
-        return this.auth != null ? super.isAuth() : classController.isAuth();
+        return this.auth != null ? super.isAuth() : this.classController.isAuth();
     }
 
     @Override
     public Class<? extends AuthenticateValidator> getAuthValidator() {
-        return this.auth != null ? super.getAuthValidator() : classController.getAuthValidator();
+        return this.auth != null ? super.getAuthValidator() : this.classController.getAuthValidator();
     }
 
     @Override
@@ -440,12 +440,12 @@ public final class MethodControllerHolder extends ControllerHolder {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", holder, body.getClass()));
+                            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", this.holder, body.getClass()));
                         }
                     } catch (CommandException e) {
                         throw e;
                     } catch (Throwable e) {
-                        throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", holder), e);
+                        throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", this.holder), e);
                     }
                     break;
                 case KEY_PARAM:
@@ -477,7 +477,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         }
 
         private List<Annotation> getParamAnnotations() {
-            return paramAnnotations;
+            return this.paramAnnotations;
         }
 
     }

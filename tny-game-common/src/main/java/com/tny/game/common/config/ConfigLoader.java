@@ -25,9 +25,8 @@ public class ConfigLoader {
     }
 
     public static File loadFile(String path) {
-        final String configPath = path;
         LOG.info("#ConfigLoader#打开 {} ", path);
-        final URL url = Thread.currentThread().getContextClassLoader().getResource(configPath);
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(path);
         if (url == null) {
             LOG.warn("#ConfigLoader#打开 {} 失败", path);
             return null;
@@ -41,9 +40,8 @@ public class ConfigLoader {
     }
 
     public static InputStream loadInputStream(String path, FileAlterationListener listener) throws IOException {
-        final String configPath = path;
         LOG.info("#ConfigLoader#打开 {} ", path);
-        final URL url = Thread.currentThread().getContextClassLoader().getResource(configPath);
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(path);
         if (url == null) {
             LOG.warn("#ConfigLoader#打开 {} 失败", path);
             throw new FileNotFoundException(MessageFormat.format("{0} 文件不存在", path));
@@ -56,8 +54,7 @@ public class ConfigLoader {
             if (listener != null) {
                 File file = new File(url.getFile());
                 String filePath = file.toString().replace("\\", "/");
-                if (inputStream != null)
-                    MONITOR.addFileListener(filePath, listener);
+                MONITOR.addFileListener(filePath, listener);
             }
         } catch (IOException e) {
             return null;

@@ -1,8 +1,7 @@
-package com.tny.game.suite.utils;
+package com.tny.game.common.utils;
 
-import com.tny.game.common.runtime.*;
-import com.tny.game.common.utils.*;
 import org.joda.time.DateTime;
+import org.slf4j.*;
 
 import java.util.concurrent.locks.StampedLock;
 
@@ -11,7 +10,9 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * Created by Kun Yang on 16/8/13.
  */
-public class UUIDCreator {
+public class SnowflakeIdCreator {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(SnowflakeIdCreator.class);
 
     private final static long BASE_TIME = new DateTime(2016, 1, 1, 0, 0, 0, 0).getMillis();
 
@@ -26,39 +27,39 @@ public class UUIDCreator {
     private long workerIdShift;
     private long timestampShift;
     private long workerID = 0;
-    private volatile long sequence = 0;
+    private long sequence = 0;
     private volatile long lastTimestamp = -1;
     private final StampedLock lock = new StampedLock();
 
-    public static final long parseWorkerId(long id) {
+    public static long parseWorkerId(long id) {
         return parseWorkerId(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
     }
 
-    public static final long parseWorkerId(long id, long workIDBit) {
+    public static long parseWorkerId(long id, long workIDBit) {
         return parseWorkerId(id, workIDBit, WORKER_SEQUENCE_BITS - workIDBit);
     }
 
-    public static final long parseWorkerId(long id, long workIDBit, long sequenceBits) {
+    public static long parseWorkerId(long id, long workIDBit, long sequenceBits) {
         return id >> sequenceBits & (~(-1L << workIDBit));
     }
 
-    public static final long parseTime(long id) {
+    public static long parseTime(long id) {
         return BASE_TIME + (id >> WORKER_SEQUENCE_BITS);
     }
 
-    public static final long parseTime(long id, long workIDBit, long sequenceBits) {
+    public static long parseTime(long id, long workIDBit, long sequenceBits) {
         return BASE_TIME + (id >> workIDBit + sequenceBits);
     }
 
-    public UUIDCreator(long workerID) {
+    public SnowflakeIdCreator(long workerID) {
         this(workerID, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
     }
 
-    public UUIDCreator(long workerID, long workerIDBits) {
+    public SnowflakeIdCreator(long workerID, long workerIDBits) {
         this(workerID, workerIDBits, WORKER_SEQUENCE_BITS - workerIDBits);
     }
 
-    public UUIDCreator(long workerID, long workerIDBits, long sequenceBits) {
+    public SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits) {
         Throws.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
         long maxWorkerID = ~(-1L << workerIDBits);
         Throws.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
@@ -74,42 +75,53 @@ public class UUIDCreator {
         try {
             long timestamp;
             long seq = 0;
-            lockStamp = lock.readLock();
+            lockStamp = this.lock.readLock();
             while (true) {
                 long lastTime = this.lastTimestamp;
                 timestamp = timeGenerate();
-                if (timestamp < lastTime)
-                    throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp));
+                long delay = timestamp - lastTime;
+                if (delay < 0) {
+                    if (delay < -200) {
+                        try {
+                            Thread.sleep(Math.abs(delay));
+                        } catch (InterruptedException e) {
+                            throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp, e));
+                        }
+                    } else {
+                        throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp));
+                    }
+                }
                 if (lastTime == timestamp) {
-                    long writeStamp = lock.tryConvertToWriteLock(lockStamp);
+                    long writeStamp = this.lock.tryConvertToWriteLock(lockStamp);
                     if (writeStamp != 0L) {
                         lockStamp = writeStamp;
-                        seq = this.sequence = (sequence + 1) & sequenceMask;
+                        long currentSequence = ++this.sequence;
+                        seq = currentSequence & this.sequenceMask;
                         if (seq == 0)
                             timestamp = tilNextMillis(lastTime);
                         this.lastTimestamp = timestamp;
                         break;
                     } else {
-                        lock.unlockRead(lockStamp);
-                        lockStamp = lock.writeLock();
+                        this.lock.unlockRead(lockStamp);
+                        lockStamp = this.lock.writeLock();
                     }
                 } else {
-                    long writeStamp = lock.tryConvertToWriteLock(lockStamp);
+                    long writeStamp = this.lock.tryConvertToWriteLock(lockStamp);
                     if (writeStamp != 0L) {
                         lockStamp = writeStamp;
-                        sequence = 0L;
+                        this.sequence = 0L;
                         this.lastTimestamp = timestamp;
                         break;
                     } else {
-                        lock.unlockRead(lockStamp);
-                        lockStamp = lock.writeLock();
+                        this.lock.unlockRead(lockStamp);
+                        lockStamp = this.lock.writeLock();
                     }
                 }
             }
-            return ((timestamp - BASE_TIME) << (int) timestampShift) | (workerID << (int) workerIdShift) | seq;
+            return ((timestamp - BASE_TIME) << (int) this.timestampShift) | (this.workerID << (int) this.workerIdShift) | seq;
         } finally {
             if (lockStamp != 0)
-                lock.unlock(lockStamp);
+                this.lock.unlock(lockStamp);
         }
     }
 
@@ -125,19 +137,18 @@ public class UUIDCreator {
         return System.currentTimeMillis();
     }
 
-
     public static void main(String[] args) {
-        System.out.println(Math.pow(2, 13));
-        UUIDCreator creator = new UUIDCreator(0, 1);
-
-        RunningChecker.startPrint(UUIDCreator.class);
-        for (int i = 0; i < 1000000; i++) {
-            creator.createId();
-            // ForkJoinPool.commonPool()
-            //         .submit(() -> creator.createID());
-        }
-        long cost = RunningChecker.end(UUIDCreator.class).cost();
-        System.out.println(cost);
+        // System.out.println(Math.pow(2, 13));
+        // SnowflakeIdCreator creator = new SnowflakeIdCreator(0, 1);
+        //
+        // RunningChecker.startPrint(SnowflakeIdCreator.class);
+        // for (int i = 0; i < 1000000; i++) {
+        //     creator.createId();
+        //     // ForkJoinPool.commonPool()
+        //     //         .submit(() -> creator.createID());
+        // }
+        // long cost = RunningChecker.end(SnowflakeIdCreator.class).cost();
+        // System.out.println(cost);
         // System.out.println(creator.createID());
         // System.out.println(System.currentTimeMillis());
         // System.out.println(Long.MAX_VALUE);

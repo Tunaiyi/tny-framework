@@ -51,7 +51,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     @SuppressWarnings({"unchecked",})
     private RootIOConfiger(Class<T> clazz, Class<?> elementType, boolean packed, TypeEncode typeEncode, FieldFormat format) {
         this(ProtoExType.REPEAT, clazz, packed, TypeEncode.DEFAULT, format);
-        boolean primitive = Wraper.getPrimitive(elementType).isPrimitive();
+        boolean primitive = Wrapper.getPrimitive(elementType).isPrimitive();
         this.elementConfiger = new SimpleIOConfiger<>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
         this.packed = packed;
         if (primitive) {

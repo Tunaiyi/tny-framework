@@ -1,6 +1,6 @@
 package com.tny.game.common.utils;
 
-import java.nio.charset.Charset;
+import java.nio.charset.*;
 
 /**
  * 哈希工具
@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
  */
 public class HashAide {
 
-    public static final Charset CHARSET = Charset.forName("UTF-8");
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
 
     // 数值哈希部分

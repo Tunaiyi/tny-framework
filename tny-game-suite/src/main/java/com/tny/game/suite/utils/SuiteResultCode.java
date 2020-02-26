@@ -1,7 +1,7 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.base.utlis.*;
 import com.tny.game.common.result.*;
+import com.tny.game.common.utils.*;
 
 public enum SuiteResultCode implements ResultCode {
 
@@ -40,7 +40,7 @@ public enum SuiteResultCode implements ResultCode {
         this.code = code;
         this.message = message;
         this.type = type;
-        ConfigerChecker.check(this.getClass(), code, "{}-[{}-ID:{}]发生重复", this.getClass(), this, code);
+        ConfigChecker.check(this.getClass(), code, "{}-[{}-ID:{}]发生重复", this.getClass(), this, code);
         this.registerSelf();
     }
 

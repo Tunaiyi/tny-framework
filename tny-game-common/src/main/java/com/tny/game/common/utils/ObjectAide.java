@@ -173,7 +173,7 @@ public class ObjectAide extends ObjectUtils {
     public static <T> T converTo(Object object, Class<T> clazz) {
         if (object == null)
             return null;
-        final Class<?> checkClass = !clazz.isPrimitive() ? clazz : Wraper.getWraper(clazz);
+        final Class<?> checkClass = !clazz.isPrimitive() ? clazz : Wrapper.getWrapper(clazz);
         if (checkClass.isInstance(object)) {
             return as(object);
         }

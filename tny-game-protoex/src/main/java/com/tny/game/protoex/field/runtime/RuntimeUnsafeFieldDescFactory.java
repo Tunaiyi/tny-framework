@@ -4,6 +4,7 @@ import com.tny.game.common.buff.*;
 import com.tny.game.common.reflect.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
+import com.tny.game.protoex.exception.*;
 import com.tny.game.protoex.field.*;
 
 import java.lang.reflect.*;
@@ -25,8 +26,8 @@ public class RuntimeUnsafeFieldDescFactory {
             f.setAccessible(true);
             return (sun.misc.Unsafe) f.get(null);
         } catch (Exception e) {
+            throw new UnsafeInitException(e);
         }
-        return sun.misc.Unsafe.getUnsafe();
     }
 
     private RuntimeUnsafeFieldDescFactory() {
@@ -98,7 +99,7 @@ public class RuntimeUnsafeFieldDescFactory {
 
         protected UnsafePrimitiveFieldDesc(ProtoExType protoExType, Field field) {
             super(protoExType, field);
-            if (!Wraper.getPrimitive(field.getType()).isPrimitive())
+            if (!Wrapper.getPrimitive(field.getType()).isPrimitive())
                 throw ProtobufExException.fieldNotPrimitive(field);
             this.primitive = field.getType().isPrimitive();
             this.schema = RuntimeProtoExSchema.getProtoSchema(this.type);
