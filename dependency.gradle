@@ -4,16 +4,18 @@ ext.vers = [
         junit       : "4.12",
         mockito     : "1.10.19",
 
-        spring      : "5.2.2.RELEASE",
+        spring      : "5.2.4.RELEASE",
         slf4j       : '1.7.30',
         log4j       : '2.13.0',
-        jackson     : "2.10.2",
+        jackson     : "2.10.3",
         jade        : "1.6.x-SNAPSHOT",
         poi         : "4.1.0",
 
-        spring_boot : "2.2.2.RELEASE",
-        spring_cloud: "Hoxton.SR1",
+        spring_boot : "2.2.5.RELEASE",
+        spring_cloud: "Hoxton.SR3",
 
+//        spring_boot : "2.2.2.RELEASE",
+//        spring_cloud: "Hoxton.SR1",
 ]
 
 ext.libs = [
@@ -50,7 +52,7 @@ ext.libs = [
         commons_beanutils                  : "commons-beanutils:commons-beanutils:1.9.3",
         commons_daemon                     : "commons-daemon:commons-daemon:1.1.0",
         commons_collections4               : "org.apache.commons:commons-collections4:4.3",
-        commons_pool2                      : "org.apache.commons:commons-pool2:2.6.0",
+        commons_pool2                      : "org.apache.commons:commons-pool2:2.8.0",
         commons_jexl                       : "org.apache.commons:commons-jexl:2.1.1",
         commons_pool                       : "commons-pool:commons-pool:1.6",
         commons_dbcp2                      : "org.apache.commons:commons-dbcp2:2.6.0",
@@ -133,7 +135,7 @@ ext.libs = [
 
         projectlombok                      : "org.projectlombok:lombok:1.18.8",
         druid                              : "com.alibaba:druid:1.0.16",
-        protobuf_java3                     : "com.google.protobuf:protobuf-java:3.8.0",
+        protobuf_java3                     : "com.google.protobuf:protobuf-java:3.11.4",
 
         kafka_clients                      : "org.apache.kafka:kafka-clients:0.9.0.1",
         kafka                              : "org.apache.kafka:kafka_2.11:0.9.0.1",

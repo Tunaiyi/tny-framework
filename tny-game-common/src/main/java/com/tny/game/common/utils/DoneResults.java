@@ -16,7 +16,7 @@ public class DoneResults {
      *
      * @return
      */
-    public static <M> Done<M> success() {
+    public static <M> DoneResult<M> success() {
         return new DefaultDoneResult<>(ResultCode.SUCCESS, null, null);
     }
 

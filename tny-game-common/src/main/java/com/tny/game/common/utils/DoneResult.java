@@ -2,7 +2,7 @@ package com.tny.game.common.utils;
 
 import com.tny.game.common.result.*;
 
-import java.util.function.BiConsumer;
+import java.util.function.*;
 
 /**
  * <p>
@@ -29,5 +29,31 @@ public interface DoneResult<M> extends Done<M> {
      * @param consumer 接收
      */
     void then(BiConsumer<ResultCode, ? super M> consumer);
+
+    default <T> DoneResult<T> mapOnSuccess(Function<M, T> mapper) {
+        if (this.isSuccess()) {
+            return DoneResults.success(mapper.apply(this.get()));
+        } else {
+            return DoneResults.failure(this);
+        }
+    }
+
+    default <T> DoneResult<T> mapOnFailed(Supplier<T> mapper) {
+        if (this.isFailure()) {
+            return DoneResults.map(this, mapper.get());
+        } else {
+            return DoneResults.success();
+        }
+    }
+
+    default <T> DoneResult<T> mapIfPresent(BiFunction<M, ResultCode, T> mapper) {
+        M value = this.get();
+        if (value != null) {
+            T returnValue = mapper.apply(value, this.getCode());
+            return DoneResults.map(this, returnValue);
+        } else {
+            return DoneResults.map(this, (T) null);
+        }
+    }
 
 }

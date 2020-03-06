@@ -12,6 +12,12 @@ public class MapBuilder<K, V> {
         this.map = map;
     }
 
+    public static <K, V> MapBuilder<K, V> newBuilder(K key, V value) {
+        Map<K, V> map = new HashMap<>();
+        return new MapBuilder<>(map)
+                .put(key, value);
+    }
+
     public static <K, V> MapBuilder<K, V> newBuilder() {
         return new MapBuilder<>(new HashMap<>());
     }

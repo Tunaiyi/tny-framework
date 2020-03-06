@@ -7,7 +7,6 @@ dependencies {
     testImplementation libs.protobuf_java3
     testImplementation libs.jackson_databind
 
-    api libs.commons_lang3
     api project(":tny-game-common")
     api project(":tny-game-scanning")
 

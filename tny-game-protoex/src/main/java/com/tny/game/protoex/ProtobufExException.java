@@ -102,7 +102,6 @@ public class ProtobufExException extends RuntimeException {
      * 不支持数组
      *
      * @param type
-     * @param field
      * @return
      */
     public static ProtobufExException unsupportArray(Class<?> type) {
