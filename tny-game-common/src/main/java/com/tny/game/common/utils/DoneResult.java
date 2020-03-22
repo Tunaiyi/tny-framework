@@ -38,9 +38,17 @@ public interface DoneResult<M> extends Done<M> {
         }
     }
 
-    default <T> DoneResult<T> mapOnFailed(Supplier<T> mapper) {
+    default <T> DoneResult<T> mapOnFailed(BiFunction<ResultCode, String, T> mapper) {
         if (this.isFailure()) {
-            return DoneResults.map(this, mapper.get());
+            return DoneResults.map(this, mapper.apply(this.getCode(), this.getMessage()));
+        } else {
+            return DoneResults.success();
+        }
+    }
+
+    default <T> DoneResult<T> mapOnFailed(Function<DoneResult<M>, T> mapper) {
+        if (this.isFailure()) {
+            return DoneResults.map(this, mapper.apply(this));
         } else {
             return DoneResults.success();
         }

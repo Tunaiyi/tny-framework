@@ -12,6 +12,44 @@ public class BytesAide {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BytesAide.class);
 
+    public static long bytes2Long(byte[] data, int startAt) {
+        return (((long) data[startAt] & 0xff))
+               | (((long) data[startAt + 1] & 0xff) << 8)
+               | (((long) data[startAt + 2] & 0xff) << 16)
+               | (((long) data[startAt + 3] & 0xff) << 24)
+               | (((long) data[startAt + 4] & 0xff) << 32)
+               | (((long) data[startAt + 5] & 0xff) << 40)
+               | (((long) data[startAt + 6] & 0xff) << 48)
+               | (((long) data[startAt + 7] & 0xff) << 56);
+    }
+
+    public static byte[] long2Bytes(long value, byte[] target, int startAt) {
+        target[startAt] = ((byte) (value & 0xFF));
+        target[startAt + 1] = ((byte) (value >> 8 & 0xFF));
+        target[startAt + 2] = ((byte) (value >> 16 & 0xFF));
+        target[startAt + 3] = ((byte) (value >> 24 & 0xFF));
+        target[startAt + 4] = ((byte) (value >> 32 & 0xFF));
+        target[startAt + 5] = ((byte) (value >> 40 & 0xFF));
+        target[startAt + 6] = ((byte) (value >> 48 & 0xFF));
+        target[startAt + 7] = ((byte) (value >> 56 & 0xFF));
+        return target;
+    }
+
+    public static int bytes2Int(byte[] data, int startAt) {
+        return (((int) data[startAt] & 0xff))
+               | (((int) data[startAt + 1] & 0xff) << 8)
+               | (((int) data[startAt + 2] & 0xff) << 16)
+               | (((int) data[startAt + 3] & 0xff) << 24);
+    }
+
+    public static byte[] int2Bytes(int value, byte[] target, int startAt) {
+        target[startAt] = ((byte) (value & 0xFF));
+        target[startAt + 1] = ((byte) (value >> 8 & 0xFF));
+        target[startAt + 2] = ((byte) (value >> 16 & 0xFF));
+        target[startAt + 3] = ((byte) (value >> 24 & 0xFF));
+        return target;
+    }
+
     public static long bytes2Long(byte[] data) {
         return (((long) data[0] & 0xff))
                | (((long) data[1] & 0xff) << 8)
@@ -44,7 +82,7 @@ public class BytesAide {
     }
 
     public static byte[] int2Bytes(int value) {
-        byte[] data = new byte[8];
+        byte[] data = new byte[4];
         data[0] = ((byte) (value & 0xFF));
         data[1] = ((byte) (value >> 8 & 0xFF));
         data[2] = ((byte) (value >> 16 & 0xFF));
