@@ -3,7 +3,8 @@ package com.tny.game.common.cipher.blowfish;
 import com.tny.game.common.cipher.*;
 
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
+
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * <p>
@@ -18,15 +19,15 @@ public class BlowfishCipher extends BaseCipher {
     private static final String KEY_TYPE = "Blowfish";
 
     public BlowfishCipher(String secretKey) throws Exception {
-        super(Base64.getUrlDecoder().decode(secretKey), null, DEFAULT_TRANSFORM);
+        super(secretKey.getBytes(UTF_8), null, DEFAULT_TRANSFORM);
     }
 
     public BlowfishCipher(String secretKey, String transform) throws Exception {
-        super(Base64.getUrlDecoder().decode(secretKey), null, transform);
+        super(secretKey.getBytes(UTF_8), null, transform);
     }
 
     public BlowfishCipher(String secretKey, String ivParameter, String transform) throws Exception {
-        super(Base64.getUrlDecoder().decode(secretKey), ivParameter, transform);
+        super(secretKey.getBytes(UTF_8), ivParameter, transform);
     }
 
     public BlowfishCipher(byte[] secretKey) throws Exception {
