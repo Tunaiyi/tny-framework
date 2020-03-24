@@ -4,24 +4,12 @@ apply plugin: "maven"
 
 dependencies {
 
-    api libs.jackson_core
-    api libs.jackson_databind
-    api libs.jackson_annotations
-
-    api libs.protobuf_java3
-    
     api libs.commons_lang3
     api libs.commons_io
     api libs.commons_codec
     api libs.commons_collections4
-
-    api libs.joda_time
-    api libs.cglib_nodep
-    api libs.quartz_scheduler
-    api libs.xstream
-    api libs.javassist
     api libs.guava
-
-    api libs.httpclient
+    api libs.cglib_nodep
+    api libs.javassist
 
 }

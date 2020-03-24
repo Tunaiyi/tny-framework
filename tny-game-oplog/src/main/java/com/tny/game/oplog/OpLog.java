@@ -1,7 +1,6 @@
 package com.tny.game.oplog;
 
-import org.joda.time.DateTime;
-
+import java.time.Instant;
 import java.util.List;
 
 public abstract class OpLog {
@@ -26,7 +25,7 @@ public abstract class OpLog {
      *
      * @return
      */
-    public abstract DateTime getCreateAt();
+    public abstract Instant getCreateAt();
 
     /**
      * 创建线程名字

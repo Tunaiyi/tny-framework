@@ -93,23 +93,23 @@ public class ModuleConfiger {
     }
 
     public String getDes() {
-        return des;
+        return this.des;
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public int getModuleId() {
-        return moduleID;
+        return this.moduleID;
     }
 
     public String getPackageName() {
-        return packageName;
+        return this.packageName;
     }
 
     public List<OperationConfiger> getOperationList() {
-        return operationList.operationList;
+        return this.operationList.operationList;
     }
 
 }

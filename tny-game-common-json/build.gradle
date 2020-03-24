@@ -1,0 +1,12 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api project(":tny-game-common")
+    api libs.jackson_core
+    api libs.jackson_databind
+    api libs.jackson_annotations
+
+}

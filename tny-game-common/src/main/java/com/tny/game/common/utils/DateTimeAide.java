@@ -1,9 +1,9 @@
 package com.tny.game.common.utils;
 
-import org.joda.time.*;
-import org.joda.time.format.*;
 
 import java.text.ParseException;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 public class DateTimeAide {
 
@@ -13,51 +13,51 @@ public class DateTimeAide {
     /**
      * HH:mm
      */
-    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormat.forPattern("HH:mm");
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     /**
      * yyyy-MM-dd
      */
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * yyyy-MM-dd HH:mm:ss
      */
-    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * yyyy-MM-dd HH:mm
      */
-    public static final DateTimeFormatter DATE_TIME_MIN_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter DATE_TIME_MIN_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * yyyyMMddHHmmss
      */
-    public static final DateTimeFormatter DATE_TIME_2_NUM_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmmss");
+    public static final DateTimeFormatter DATE_TIME_2_NUM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     /**
      * MM/dd/yyyy
      */
-    public static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
+    public static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    public static DateTime date(String date) throws ParseException {
-        return DATE_FORMAT.parseDateTime(date);
+    public static ZonedDateTime date(String date) throws ParseException {
+        return ZonedDateTime.parse(date, DATE_FORMAT);
     }
 
-    public static DateTime date(String date, DateTimeFormatter formatter) throws ParseException {
-        return DATE_FORMAT.parseDateTime(date);
+    public static ZonedDateTime date(String date, DateTimeFormatter formatter) throws ParseException {
+        return ZonedDateTime.parse(date, DATE_FORMAT);
     }
 
-    public static DateTime dateTime(String date) throws ParseException {
-        return DATE_TIME_FORMAT.parseDateTime(date);
+    public static ZonedDateTime dateTime(String date) throws ParseException {
+        return ZonedDateTime.parse(date, DATE_TIME_FORMAT);
     }
 
-    public static DateTime dateTime(String date, DateTimeFormatter formatter) throws ParseException {
-        return formatter.parseDateTime(date);
+    public static ZonedDateTime dateTime(String date, DateTimeFormatter formatter) throws ParseException {
+        return ZonedDateTime.parse(date, formatter);
     }
 
-    public static DateTime now() {
-        return DateTime.now();
+    public static ZonedDateTime now() {
+        return ZonedDateTime.now();
     }
 
     public static LocalDate today() {
@@ -69,34 +69,38 @@ public class DateTimeAide {
     }
 
     public static LocalDate int2Date(int dateInt) {
-        return new LocalDate(dateInt / 10000, (dateInt / 100) % 100, dateInt % 100);
+        return LocalDate.of(dateInt / 10000, (dateInt / 100) % 100, dateInt % 100);
     }
 
     public static int date2Int(LocalDate now) {
-        return (((now.getYear() * 100) + now.getMonthOfYear()) * 100) + now.getDayOfMonth();
+        return (((now.getYear() * 100) + now.getMonthValue()) * 100) + now.getDayOfMonth();
     }
 
-    public static int date2Int(DateTime now) {
-        return (((now.getYear() * 100) + now.getMonthOfYear()) * 100) + now.getDayOfMonth();
+    public static int date2Int(Instant now) {
+        return date2Int(LocalDate.from(now));
     }
 
-    public static long time2DateLong(DateTime now) {
+    public static int date2Int(LocalDateTime now) {
+        return (((now.getYear() * 100) + now.getMonthValue()) * 100) + now.getDayOfMonth();
+    }
+
+    public static long time2DateLong(LocalDateTime now) {
         return ((((100L * now.getYear()) +
-                  now.getMonthOfYear()) * 100) +
+                  now.getMonthValue()) * 100) +
                 now.getDayOfMonth());
     }
 
-    public static long time2MillisLong(DateTime now) {
+    public static long time2MillisLong(LocalDateTime now) {
         return ((((((((((100L * now.getYear()) +
-                        now.getMonthOfYear()) * 100) +
+                        now.getMonthValue()) * 100) +
                       now.getDayOfMonth()) * 100) +
-                    now.getHourOfDay()) * 100) +
-                  now.getMinuteOfHour()) * 100) +
-                now.getSecondOfMinute()) * 1000 +
-               now.getMillisOfSecond();
+                    now.getHour()) * 100) +
+                  now.getMinute()) * 100) +
+                now.getSecond()) * 1000 +
+               now.getNano() / 1000;
     }
 
-    public static DateTime millisLong2Time(long timeInt) {
+    public static LocalDateTime millisLong2Time(long timeInt) {
         int millis = (int) (timeInt % 1000);
         int seconds = (int) ((timeInt = timeInt / 1000) % 100);
         int minute = (int) ((timeInt = timeInt / 100) % 100);
@@ -104,34 +108,34 @@ public class DateTimeAide {
         int day = (int) ((timeInt = timeInt / 100) % 100);
         int month = (int) ((timeInt = timeInt / 100) % 100);
         int year = (int) (timeInt / 100);
-        return new DateTime(year, month, day, hour, minute, seconds, millis);
+        return LocalDateTime.of(year, month, day, hour, minute, seconds, millis);
     }
 
-    public static long time2Second(DateTime now) {
+    public static long time2Second(LocalDateTime now) {
         return (((((((((100L * now.getYear()) +
-                       now.getMonthOfYear()) * 100) +
+                       now.getMonthValue()) * 100) +
                      now.getDayOfMonth()) * 100) +
-                   now.getHourOfDay()) * 100) +
-                 now.getMinuteOfHour()) * 100) +
-               now.getSecondOfMinute();
+                   now.getHour()) * 100) +
+                 now.getMinute()) * 100) +
+               now.getSecond();
     }
 
-    public static long time2Minute(DateTime now) {
+    public static long time2Minute(LocalDateTime now) {
         return ((((((((100L * now.getYear()) +
-                      now.getMonthOfYear()) * 100) +
+                      now.getMonthValue()) * 100) +
                     now.getDayOfMonth()) * 100) +
-                  now.getHourOfDay()) * 100) +
-                now.getMinuteOfHour());
+                  now.getHour()) * 100) +
+                now.getMinute());
     }
 
-    public static DateTime second2Time(long timeInt) {
+    public static LocalDateTime second2Time(long timeInt) {
         int seconds = (int) (timeInt % 100);
         int minute = (int) ((timeInt = timeInt / 100) % 100);
         int hour = (int) ((timeInt = timeInt / 100) % 100);
         int day = (int) ((timeInt = timeInt / 100) % 100);
         int month = (int) ((timeInt = timeInt / 100) % 100);
         int year = (int) (timeInt / 100);
-        return new DateTime(year, month, day, hour, minute, seconds);
+        return LocalDateTime.of(year, month, day, hour, minute, seconds);
     }
 
     private static class DateRange {
@@ -141,9 +145,10 @@ public class DateTimeAide {
 
         public DateRange() {
             this.date = LocalDate.now();
-            DateTime dateTime = new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(), 0, 0, 0, 0);
-            this.start = dateTime.getMillis();
-            this.end = dateTime.plusDays(1).getMillis();
+            ZonedDateTime dateTime = ZonedDateTime
+                    .of(this.date.getYear(), this.date.getMonthValue(), this.date.getDayOfMonth(), 0, 0, 0, 0, ZoneId.systemDefault());
+            this.start = dateTime.toInstant().toEpochMilli();
+            this.end = dateTime.plusDays(1).toInstant().toEpochMilli();
         }
 
         public boolean isSameDate() {

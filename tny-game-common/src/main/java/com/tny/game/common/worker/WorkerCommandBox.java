@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox> implements CommandBox<C> {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Logs.WORKER);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER);
 
     protected volatile CommandWorker worker;
 
@@ -30,11 +30,11 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
     }
 
     public long getProcessUseTime() {
-        return runUseTime;
+        return this.runUseTime;
     }
 
     public int getProcessSize() {
-        return runSize;
+        return this.runSize;
     }
 
     @Override
@@ -46,15 +46,15 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox>
     }
 
     protected Collection<CB> boxes() {
-        Queue<CB> boxes = commandBoxList;
+        Queue<CB> boxes = this.commandBoxList;
         if (boxes != null)
             return boxes;
         return ImmutableList.of();
     }
 
     protected Queue<CB> createAndGetBox() {
-        if (commandBoxList != null)
-            return commandBoxList;
+        if (this.commandBoxList != null)
+            return this.commandBoxList;
         synchronized (this) {
             this.commandBoxList = new ConcurrentLinkedQueue<>();
         }

@@ -24,7 +24,7 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
      */
     private final boolean daemon;
 
-    private Thread.UncaughtExceptionHandler handler;
+    private UncaughtExceptionHandler handler;
 
     public CoreThreadFactory(String namePrefix) {
         this(namePrefix, null, false);
@@ -61,7 +61,7 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
 
     @Override
     public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-        return new CoreForkJoinWorkerThread(pool, threadName(), daemon, handler);
+        return new CoreForkJoinWorkerThread(pool, threadName(), this.daemon, this.handler);
     }
 
 

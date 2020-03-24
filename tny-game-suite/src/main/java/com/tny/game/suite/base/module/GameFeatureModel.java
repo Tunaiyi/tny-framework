@@ -4,7 +4,7 @@ import com.google.common.collect.*;
 import com.tny.game.base.item.xml.*;
 import com.tny.game.base.module.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.common.utils.version.*;
+import com.tny.game.common.version.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,32 +33,32 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
 
     @Override
     protected void doInit() {
-        if (openPlans == null)
-            openPlans = ImmutableSet.of();
+        if (this.openPlans == null)
+            this.openPlans = ImmutableSet.of();
         else
-            openPlans = ImmutableSet.copyOf(this.openPlans);
-        openPlanMap = ImmutableMap.copyOf(
+            this.openPlans = ImmutableSet.copyOf(this.openPlans);
+        this.openPlanMap = ImmutableMap.copyOf(
                 this.openPlans.stream().collect(Collectors.toMap(OpenPlan::getMode, ObjectAide::self)));
     }
 
     @Override
     public int getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String getAlias() {
-        return alias;
+        return this.alias;
     }
 
     @Override
     public String getDesc() {
-        return desc;
+        return this.desc;
     }
 
     @Override
     public Optional<Feature> getParent() {
-        return feature.getParent();
+        return this.feature.getParent();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
 
     @Override
     public Optional<Version> getOpenVersion() {
-        return Optional.ofNullable(openVersion);
+        return Optional.ofNullable(this.openVersion);
     }
 
     @Override
@@ -102,10 +102,10 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     @Override
     public String toString() {
         return "GameFeatureModel{" +
-               "feature=" + feature +
-               ", id=" + id +
-               ", desc='" + desc + '\'' +
-               ", effect=" + effect +
+               "feature=" + this.feature +
+               ", id=" + this.id +
+               ", desc='" + this.desc + '\'' +
+               ", effect=" + this.effect +
                '}';
     }
 

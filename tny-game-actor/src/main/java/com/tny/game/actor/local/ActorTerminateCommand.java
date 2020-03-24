@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 /**
  * Actor 终止命令
@@ -18,7 +18,7 @@ class ActorTerminateCommand extends BaseActorCommand<Void> {
 
     @Override
     protected Done<Void> doHandle() {
-        actorCell.handle(this.message);
+        this.actorCell.handle(this.message);
         return DoneResults.successNullable(null);
     }
 

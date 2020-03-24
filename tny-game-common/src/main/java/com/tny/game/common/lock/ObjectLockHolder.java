@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 @SuppressWarnings({"rawtypes"})
 class ObjectLockHolder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOCK);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOCK);
 
     private static final long GC_TIME = 600; // s
     private static final long SHOW_TIME = 30; // s

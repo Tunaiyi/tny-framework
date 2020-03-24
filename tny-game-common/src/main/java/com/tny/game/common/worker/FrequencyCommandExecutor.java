@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 
 public class FrequencyCommandExecutor implements CommandExecutor {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Logs.WORKER);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER);
 
     /**
      * 名字
@@ -55,7 +55,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
         @Override
         public boolean isOnCurrentThread() {
-            return currentThread == Thread.currentThread();
+            return FrequencyCommandExecutor.this.currentThread == Thread.currentThread();
         }
 
         @Override
@@ -84,11 +84,12 @@ public class FrequencyCommandExecutor implements CommandExecutor {
         this.name = name;
     }
 
+    @Override
     public void stop() {
-        if (!working)
+        if (!this.working)
             return;
-        working = false;
-        stopTime = System.currentTimeMillis();
+        this.working = false;
+        this.stopTime = System.currentTimeMillis();
     }
 
 
@@ -96,44 +97,44 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     public void start() {
         this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name, true));
         this.executor.execute(() -> {
-            nextRunningTime = System.currentTimeMillis();
-            currentThread = Thread.currentThread();
+            this.nextRunningTime = System.currentTimeMillis();
+            this.currentThread = Thread.currentThread();
             while (true) {
                 try {
-                    if (executor.isShutdown())
+                    if (this.executor.isShutdown())
                         break;
                     long currentTime = System.currentTimeMillis();
                     int currentRunSize = 0;
                     int currentContinueTime = 0;
-                    while (currentTime >= nextRunningTime) {
-                        for (CommandBox box : commandBoxList) {
+                    while (currentTime >= this.nextRunningTime) {
+                        for (CommandBox box : this.commandBoxList) {
                             this.worker.execute(box);
                             // box.getProcessUseTime();
                             // currentRunSize += box.getProcessSize();
                         }
-                        nextRunningTime += 100L;
+                        this.nextRunningTime += 100L;
                         currentContinueTime++;
                         currentTime = System.currentTimeMillis();
                     }
-                    if (commandBoxList.isEmpty() && !working)
+                    if (this.commandBoxList.isEmpty() && !this.working)
                         return;
 
-                    continueTime = currentContinueTime;
-                    runSize = currentRunSize;
-                    totalRunSize += runSize;
-                    if (totalRunSize < 0)
-                        totalRunSize = 0;
+                    this.continueTime = currentContinueTime;
+                    this.runSize = currentRunSize;
+                    this.totalRunSize += this.runSize;
+                    if (this.totalRunSize < 0)
+                        this.totalRunSize = 0;
 
                     long stopTime1 = System.currentTimeMillis();
-                    runningTime = stopTime1 - currentTime;
+                    this.runningTime = stopTime1 - currentTime;
 
-                    sleepTime = nextRunningTime - stopTime1;
-                    sleepTime = sleepTime < 0 ? 0 : sleepTime;
+                    this.sleepTime = this.nextRunningTime - stopTime1;
+                    this.sleepTime = this.sleepTime < 0 ? 0 : this.sleepTime;
 
-                    totalRunningTime += runningTime;
-                    totalSleepTime += sleepTime;
-                    if (sleepTime > 0) {
-                        Thread.sleep(sleepTime);
+                    this.totalRunningTime += this.runningTime;
+                    this.totalSleepTime += this.sleepTime;
+                    if (this.sleepTime > 0) {
+                        Thread.sleep(this.sleepTime);
                     }
                 } catch (InterruptedException e) {
                     LOGGER.warn("InterruptedException by FrequencyWorker " + Thread.currentThread().getName(), e);
@@ -147,7 +148,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     @Override
     public void shutdown() {
         stop();
-        executor.shutdown();
+        this.executor.shutdown();
     }
 
     @Override
@@ -164,9 +165,9 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                 .append(" #附加任务箱数量: ")
                 .append(this.commandBoxList.size())
                 .append(" #总运行数量")
-                .append(totalRunSize)
+                .append(this.totalRunSize)
                 .append(" #最近运行数量")
-                .append(runSize)
+                .append(this.runSize)
                 .append(" #最近连续次数: ")
                 .append(continueTime)
                 .append(" #最近休眠时间: ")
@@ -187,7 +188,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     @Override
     public int size() {
         int size = 0;
-        for (CommandBox commandBox : commandBoxList)
+        for (CommandBox commandBox : this.commandBoxList)
             size += commandBox.size();
         return size;
     }
@@ -223,7 +224,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
 }

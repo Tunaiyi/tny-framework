@@ -19,13 +19,13 @@ public class EmptyImmutableSet<V> implements Set<V> {
     }
 
     private Set<V> getWriter() {
-        if (set instanceof ImmutableSet)
-            this.set = creator != null ? creator.get() : new HashSet<>();
+        if (this.set instanceof ImmutableSet)
+            this.set = this.creator != null ? this.creator.get() : new HashSet<>();
         return this.set;
     }
 
     private Set<V> getReader() {
-        if (set == null)
+        if (this.set == null)
             this.set = ImmutableSet.of();
         return this.set;
     }

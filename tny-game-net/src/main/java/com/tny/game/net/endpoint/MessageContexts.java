@@ -230,8 +230,8 @@ public class MessageContexts {
         }
 
         private DefaultMessageContext<UID> init(MessageMode mode, Protocol protocol, ResultCode code, Long toMessage) {
-            Throws.checkNotNull(protocol, "protocol is null");
-            Throws.checkNotNull(code, "code is null");
+            ThrowAide.checkNotNull(protocol, "protocol is null");
+            ThrowAide.checkNotNull(code, "code is null");
             this.protocol = protocol.getProtocolNumber();
             this.code = code;
             this.toMessage = toMessage;
@@ -241,17 +241,17 @@ public class MessageContexts {
 
         @Override
         public int getProtocolNumber() {
-            return protocol;
+            return this.protocol;
         }
 
         @Override
         public int getCode() {
-            return code.getCode();
+            return this.code.getCode();
         }
 
         @Override
         public ResultCode getResultCode() {
-            return code;
+            return this.code;
         }
 
         @Override
@@ -261,7 +261,7 @@ public class MessageContexts {
 
         @Override
         public long getToMessage() {
-            return toMessage;
+            return this.toMessage;
         }
 
         @Override
@@ -311,7 +311,7 @@ public class MessageContexts {
 
         @Override
         public long getWriteTimeout() {
-            return writeTimeout == null ? -1 : writeTimeout;
+            return this.writeTimeout == null ? -1 : this.writeTimeout;
         }
 
         @Override
@@ -435,12 +435,12 @@ public class MessageContexts {
 
         @Override
         public RespondFuture<UID> getRespondFuture() {
-            return respondFuture;
+            return this.respondFuture;
         }
 
         @Override
         public WriteMessagePromise getWriteFuture() {
-            return writePromise;
+            return this.writePromise;
         }
 
 
@@ -467,15 +467,15 @@ public class MessageContexts {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("protocol", protocol)
-                              .add("mode", mode)
-                              .add("toMessage", toMessage)
-                              .add("code", code)
-                              .add("body", body)
-                              .add("tail", tail)
+                              .add("protocol", this.protocol)
+                              .add("mode", this.mode)
+                              .add("toMessage", this.toMessage)
+                              .add("code", this.code)
+                              .add("body", this.body)
+                              .add("tail", this.tail)
                               // .add("sendFuture", sendFuture != null)
-                              .add("respondFuture", respondFuture != null)
-                              .add("writeFuture", writePromise != null)
+                              .add("respondFuture", this.respondFuture != null)
+                              .add("writeFuture", this.writePromise != null)
                               .toString();
         }
 

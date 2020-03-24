@@ -2,7 +2,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.invok.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;

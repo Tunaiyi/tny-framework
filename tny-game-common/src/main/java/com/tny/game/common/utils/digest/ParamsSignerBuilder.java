@@ -1,4 +1,4 @@
-// package com.tny.game.common.utils.digest;
+package com.tny.game.common.utils.digest;// package com.tny.game.common.utils.digest;
 //
 // import org.slf4j.Logger;
 // import org.tny.film.core.sdk.SDKParam;

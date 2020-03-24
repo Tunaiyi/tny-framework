@@ -6,8 +6,8 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.*;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -166,7 +166,7 @@ public interface Configs {
         String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
-                return DateTimeAide.DATE_TIME_MIN_FORMAT.parseLocalDate(crateAt);
+                return LocalDate.from(DateTimeAide.DATE_TIME_MIN_FORMAT.parse(crateAt));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -174,24 +174,23 @@ public interface Configs {
         return defaultValue.length <= 0 ? LocalDate.now() : defaultValue[0];
     }
 
-    static DateTime devDateTime(String key, DateTime... defaultValue) {
+    static Instant devDateTime(String key, Instant... defaultValue) {
         String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
-                return DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
+                return Instant.from(DateTimeAide.DATE_TIME_MIN_FORMAT.parse(crateAt));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return defaultValue.length <= 0 ? DateTime.now() : defaultValue[0];
+        return defaultValue.length <= 0 ? Instant.now() : defaultValue[0];
     }
 
     static long devDateTime(String key, long defaultValue) {
         String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
             try {
-                DateTime dateTime = DateTimeAide.DATE_TIME_MIN_FORMAT.parseDateTime(crateAt);
-                return dateTime.getMillis();
+                return Instant.from(DateTimeAide.DATE_TIME_MIN_FORMAT.parse(crateAt)).toEpochMilli();
             } catch (Exception e) {
                 e.printStackTrace();
             }

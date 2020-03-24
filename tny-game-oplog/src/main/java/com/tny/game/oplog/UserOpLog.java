@@ -2,8 +2,8 @@ package com.tny.game.oplog;
 
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.*;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.Collection;
 
 public abstract class UserOpLog {
@@ -46,7 +46,7 @@ public abstract class UserOpLog {
     /**
      * @return 创建角色时间
      */
-    public abstract DateTime getCreateAt();
+    public abstract Instant getCreateAt();
 
     /**
      * @return 日志操作日志Map

@@ -22,7 +22,7 @@ public class GlobalListenerHolder {
     /**
      * 日志
      */
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.EVENT);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.EVENT);
 
     private Map<Class<?>, List<?>> listenerMap = new CopyOnWriteMap<>();
 
@@ -44,7 +44,7 @@ public class GlobalListenerHolder {
 
     @SuppressWarnings("unchecked")
     public <L> List<L> getListeners(Class<?> clazz) {
-        List<?> listeners = listenerMap.get(clazz);
+        List<?> listeners = this.listenerMap.get(clazz);
         if (listeners == null)
             return Collections.emptyList();
         return (List<L>) listeners;
@@ -62,10 +62,10 @@ public class GlobalListenerHolder {
 
     @SuppressWarnings("unchecked")
     private <T> List<Object> getOrCreate(Class<T> clazz) {
-        List<?> listeners = listenerMap.get(clazz);
+        List<?> listeners = this.listenerMap.get(clazz);
         if (listeners == null) {
             listeners = new CopyOnWriteArrayList<>();
-            listenerMap.put(clazz, listeners);
+            this.listenerMap.put(clazz, listeners);
         }
         return (List<Object>) listeners;
     }

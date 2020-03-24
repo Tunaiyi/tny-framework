@@ -34,11 +34,11 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
     private AtomicBoolean close = new AtomicBoolean(false);
 
-    private ClientCloseListener<?> closeListener = (client) -> clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
+    private ClientCloseListener<?> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
 
     public NettyClientGuide(NettyClientBootstrapSetting clientSetting) {
         super(clientSetting);
-        buses().closeEvent().addListener(closeListener);
+        buses().closeEvent().addListener(this.closeListener);
     }
 
     private String clientKey(URL url) {
@@ -49,7 +49,7 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
     public <UID> Client<UID> connect(URL url, UID unloginUid, PostConnect<UID> connect) {
         NettyClient<UID> client = new NettyClient<>(this, url, unloginUid, connect,
                 this.getEventHandler(), 0);
-        NettyClient<UID> old = as(clients.putIfAbsent(clientKey(url), client));
+        NettyClient<UID> old = as(this.clients.putIfAbsent(clientKey(url), client));
         if (old != null) {
             return old;
         } else {
@@ -77,8 +77,8 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
                               @Override
                               protected void initChannel(Channel ch) throws Exception {
-                                  if (channelMaker != null)
-                                      channelMaker.initChannel(ch);
+                                  if (NettyClientGuide.this.channelMaker != null)
+                                      NettyClientGuide.this.channelMaker.initChannel(ch);
                                   ch.pipeline().addLast("nettyMessageHandler", messageHandler);
                               }
 
@@ -89,7 +89,7 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
     }
 
     Channel connect(URL url, long connectTimeout) throws NetException {
-        Throws.checkNotNull(url, "url is null");
+        ThrowAide.checkNotNull(url, "url is null");
         ChannelFuture channelFuture = null;
         try {
             channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
@@ -131,7 +131,7 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
         if (this.close.compareAndSet(false, true)) {
             this.clients.values().forEach(NettyClient::close);
             workerGroup.shutdownGracefully();
-            buses().closeEvent().removeListener(closeListener);
+            buses().closeEvent().removeListener(this.closeListener);
             return true;
         }
         return false;

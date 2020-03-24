@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
 
     public SystemPropertiesLoader(List<String> fileList) throws IOException {
         for (String file : fileList)
@@ -55,11 +55,11 @@ public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
         @Override
         public void onFileChange(File file) {
             try {
-                LOG.info("SystemProperties#读取配置系统属性配置{}文件......", path);
-                roadProperties(path, false);
-                LOG.info("SystemProperties#读取配置系统属性配置{}文件完成", path);
+                LOG.info("SystemProperties#读取配置系统属性配置{}文件......", this.path);
+                roadProperties(this.path, false);
+                LOG.info("SystemProperties#读取配置系统属性配置{}文件完成", this.path);
             } catch (IOException e) {
-                LOG.error("SystemProperties#读取配置系统属性配置{}文件异常", path, e);
+                LOG.error("SystemProperties#读取配置系统属性配置{}文件异常", this.path, e);
             }
         }
     }

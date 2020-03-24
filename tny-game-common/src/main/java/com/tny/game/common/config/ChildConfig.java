@@ -22,8 +22,8 @@ class ChildConfig implements Config {
     private String subKeyHead;
 
     ChildConfig(String parentKey, String delimiter, Config parent) {
-        Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
-        Throws.checkNotNull(parent, "parent 不可为null");
+        ThrowAide.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        ThrowAide.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
@@ -31,8 +31,8 @@ class ChildConfig implements Config {
     }
 
     private ChildConfig(String parentKey, String subKeyHead, String delimiter, Config parent) {
-        Throws.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
-        Throws.checkNotNull(parent, "parent 不可为null");
+        ThrowAide.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        ThrowAide.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
@@ -47,44 +47,44 @@ class ChildConfig implements Config {
 
     @Override
     public Config child(String key, String delimiter) {
-        Throws.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
+        ThrowAide.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
         String subKey = key.replace(this.subKeyHead, "");
         return new ChildConfig(key, subKey, delimiter, this);
     }
 
     @Override
     public Optional<Config> getParent() {
-        return Optional.of(parent);
+        return Optional.of(this.parent);
     }
 
     @Override
     public String parentKey() {
-        return parentKey;
+        return this.parentKey;
     }
 
     @Override
     public String parentHeadKey() {
-        return subKeyHead;
+        return this.subKeyHead;
     }
 
     @Override
     public String getString(String key) {
-        return parent.getString(key(key));
+        return this.parent.getString(key(key));
     }
 
     @Override
     public String getStr(String key, String defValue) {
-        return parent.getStr(key(key), defValue);
+        return this.parent.getStr(key(key), defValue);
     }
 
     @Override
     public int getInt(String key) {
-        return parent.getInt(key(key));
+        return this.parent.getInt(key(key));
     }
 
     @Override
     public int getInt(String key, int defValue) {
-        return parent.getInt(key(key), defValue);
+        return this.parent.getInt(key(key), defValue);
     }
 
     @Override
@@ -94,7 +94,7 @@ class ChildConfig implements Config {
 
     @Override
     public long getLong(String key, long defValue) {
-        return parent.getLong(key(key), defValue);
+        return this.parent.getLong(key(key), defValue);
     }
 
     @Override
@@ -104,7 +104,7 @@ class ChildConfig implements Config {
 
     @Override
     public double getDouble(String key, double defValue) {
-        return parent.getDouble(key(key), defValue);
+        return this.parent.getDouble(key(key), defValue);
     }
 
     @Override
@@ -114,7 +114,7 @@ class ChildConfig implements Config {
 
     @Override
     public float getFloat(String key, float defValue) {
-        return parent.getFloat(key(key), defValue);
+        return this.parent.getFloat(key(key), defValue);
     }
 
     @Override
@@ -124,7 +124,7 @@ class ChildConfig implements Config {
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
-        return parent.getBoolean(key(key), defValue);
+        return this.parent.getBoolean(key(key), defValue);
     }
 
     @Override
@@ -134,7 +134,7 @@ class ChildConfig implements Config {
 
     @Override
     public byte getByte(String key, byte defValue) {
-        return parent.getByte(key(key), defValue);
+        return this.parent.getByte(key(key), defValue);
     }
 
     @Override
@@ -144,12 +144,12 @@ class ChildConfig implements Config {
 
     @Override
     public <O> O getObject(String key, O defValue) {
-        return parent.getObject(key(key), defValue);
+        return this.parent.getObject(key(key), defValue);
     }
 
     @Override
     public <E extends Enum<E>> E getEnum(String key, E defValue) {
-        return parent.getEnum(key(key), defValue);
+        return this.parent.getEnum(key(key), defValue);
     }
 
     @Override
@@ -158,23 +158,23 @@ class ChildConfig implements Config {
     }
 
     @Override
-    public Set<Map.Entry<String, Object>> entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         return this.parent.entrySet().stream()
-                          .filter((e) -> e.getKey().startsWith(subKeyHead))
+                          .filter((e) -> e.getKey().startsWith(this.subKeyHead))
                           .collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> keySet() {
         return this.parent.keySet().stream()
-                          .filter((e) -> e.startsWith(subKeyHead))
+                          .filter((e) -> e.startsWith(this.subKeyHead))
                           .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Object> values() {
         return this.parent.entrySet().stream()
-                          .filter(e -> e.getKey().startsWith(subKeyHead))
+                          .filter(e -> e.getKey().startsWith(this.subKeyHead))
                           .map(Entry::getValue)
                           .collect(Collectors.toList());
     }

@@ -1,0 +1,12 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+
+    api project(":tny-game-common")
+    api libs.quartz_scheduler
+    api libs.xstream
+
+}

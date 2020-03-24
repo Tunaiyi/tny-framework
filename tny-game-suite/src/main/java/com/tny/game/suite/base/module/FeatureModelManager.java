@@ -5,7 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.base.module.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.utils.version.*;
+import com.tny.game.common.version.*;
 import com.tny.game.suite.base.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
@@ -75,7 +75,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         @Override
         public int compare(FM o1, FM o2) {
             int levelComp;
-            if ((levelComp = o1.getOpenLevel(mode) - o2.getOpenLevel(mode)) != 0)
+            if ((levelComp = o1.getOpenLevel(this.mode) - o2.getOpenLevel(this.mode)) != 0)
                 return levelComp;
             int proComp;
             if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
@@ -86,9 +86,9 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
 
     @Override
     protected void parseAllComplete() {
-        Version version = versionHolder.getFeatureVersion().orElse(null);
+        Version version = this.versionHolder.getFeatureVersion().orElse(null);
         LOGGER.info("当前版本 {} ", version);
-        Optional<Version> current = versionHolder.getFeatureVersion();
+        Optional<Version> current = this.versionHolder.getFeatureVersion();
         Map<Feature, FM> typeMap = new HashMap<>();
         Map<OpenMode, SortedSet<FM>> modelSetMap = new HashMap<>();
         for (FM model : this.modelMap.values()) {
@@ -121,7 +121,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
     }
 
     protected FeatureVersionHolder getVersionHolder() {
-        return versionHolder;
+        return this.versionHolder;
     }
 
     public Collection<FM> getModels() {
@@ -129,7 +129,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
     }
 
     public Set<Feature> getFeatures() {
-        return features;
+        return this.features;
     }
 
     public FM getModelBy(Feature feature) {

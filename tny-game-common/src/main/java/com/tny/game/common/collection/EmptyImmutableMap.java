@@ -19,13 +19,13 @@ public class EmptyImmutableMap<K, V> implements Map<K, V> {
     }
 
     private Map<K, V> getWriter() {
-        if (map instanceof ImmutableMap)
-            this.map = creator != null ? creator.get() : new HashMap<>();
+        if (this.map instanceof ImmutableMap)
+            this.map = this.creator != null ? this.creator.get() : new HashMap<>();
         return this.map;
     }
 
     private Map<K, V> getReader() {
-        if (map == null)
+        if (this.map == null)
             this.map = ImmutableMap.of();
         return this.map;
     }

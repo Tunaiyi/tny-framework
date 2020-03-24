@@ -60,7 +60,7 @@ public abstract class BaseCluster {
             if (ips == null)
                 throw new NullPointerException("RemoteMonitor IP is null");
             this.remoteMonitor = new ZKMonitor(ips, ClusterUtils.PROTO_FORMATTER);
-            if (monitorAllServices) {
+            if (this.monitorAllServices) {
                 ClusterUtils.getAllWebNodesPaths().forEach((k, v) -> {
                     Matcher matcher = ClusterUtils.WS_NOTES_PATH_REGEX.matcher(k);
                     if (matcher.find()) {
@@ -94,22 +94,22 @@ public abstract class BaseCluster {
                     if (data == null)
                         return;
                     holder.addNode(data);
-                    if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerId(), data.getUrlMap());
+                    if (this.LOGGER.isDebugEnabled())
+                        this.LOGGER.debug("path : {} | {} 服务器 {} 上线! {} ", path, name, data.getServerId(), data.getUrlMap());
                     break;
                 case CHANGE:
                     if (data == null)
                         return;
                     holder.addNode(data);
-                    if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerId(), data.getUrlMap());
+                    if (this.LOGGER.isDebugEnabled())
+                        this.LOGGER.debug("path : {} | {} 服务器 {} 更新! {} ", path, name, data.getServerId(), data.getUrlMap());
                     break;
                 case DELETE:
                     if (old == null)
                         return;
                     holder.removeNode(old.getServerId());
-                    if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerId(), old.getUrlMap());
+                    if (this.LOGGER.isDebugEnabled())
+                        this.LOGGER.debug("path : {} | {} 服务器下线!", path, name, old.getServerId(), old.getUrlMap());
                     break;
             }
         };
@@ -117,22 +117,22 @@ public abstract class BaseCluster {
 
     public String urlByRand(String urlProtocol, String type, String path) {
         ServiceNodeHolder holder = this.webHolderMap.get(type);
-        Throws.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
+        ThrowAide.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
         ServiceNode node = holder.randNode();
-        Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
+        ThrowAide.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+        ThrowAide.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
                 node.getServerId());
         return url.toString() + path;
     }
 
     public String url(String urlProtocol, String type, int id, String path) {
         ServiceNodeHolder holder = this.webHolderMap.get(type);
-        Throws.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
+        ThrowAide.checkArgument(holder != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到与 {} 对应的ServiceNodeHolder", urlProtocol, path, type);
         ServiceNode node = holder.getNode(id);
-        Throws.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
+        ThrowAide.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
         URL url = node.getURL(urlProtocol);
-        Throws.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+        ThrowAide.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
                 node.getServerId());
         return url.toString() + path;
     }

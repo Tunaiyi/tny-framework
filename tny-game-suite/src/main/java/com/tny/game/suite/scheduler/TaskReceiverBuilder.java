@@ -60,12 +60,12 @@ public class TaskReceiverBuilder {
 
     public TaskReceiver build() {
         GameTaskReceiver receiver = new GameTaskReceiver();
-        receiver.setPlayerId(playerId);
-        receiver.setActualLastHandlerTime(actualLastHandlerTime == -1 ? System.currentTimeMillis() : actualLastHandlerTime);
-        receiver.setLastHandlerTime(lastHandlerTime == -1 ? System.currentTimeMillis() : lastHandlerTime);
-        if (group == null)
+        receiver.setPlayerId(this.playerId);
+        receiver.setActualLastHandlerTime(this.actualLastHandlerTime == -1 ? System.currentTimeMillis() : this.actualLastHandlerTime);
+        receiver.setLastHandlerTime(this.lastHandlerTime == -1 ? System.currentTimeMillis() : this.lastHandlerTime);
+        if (this.group == null)
             throw new NullPointerException("group is null");
-        receiver.setGroup(group);
+        receiver.setGroup(this.group);
         return receiver;
     }
 }

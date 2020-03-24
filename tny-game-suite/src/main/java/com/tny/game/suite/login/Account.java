@@ -5,7 +5,8 @@ import com.tny.game.common.event.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.login.event.*;
 import com.tny.game.suite.utils.*;
-import org.joda.time.*;
+
+import java.time.*;
 
 public class Account implements Owned {
 
@@ -28,17 +29,17 @@ public class Account implements Owned {
 
     private String account;
 
-    private DateTime createAt;
+    private Instant createAt;
 
     private LocalDate createDate;
 
-    private volatile DateTime createRoleAt;
+    private volatile Instant createRoleAt;
 
     private volatile LocalDate createRoleDate;
 
-    private volatile DateTime onlineTime;
+    private volatile Instant onlineTime;
 
-    private volatile DateTime offlineTime;
+    private volatile Instant offlineTime;
 
     private String device;
 
@@ -66,8 +67,8 @@ public class Account implements Owned {
         this.createSid = ticket.getServer();
         this.device = ticket.getDevice();
         this.deviceId = ticket.getDeviceId();
-        this.createAt = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, DateTime.now());
-        this.createDate = new LocalDate(this.createAt);
+        this.createAt = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, Instant.now());
+        this.createDate = LocalDate.from(this.createAt);
     }
 
     /**
@@ -126,35 +127,35 @@ public class Account implements Owned {
     }
 
     public long getCreateAt() {
-        return this.createAt.getMillis();
+        return this.createAt.toEpochMilli();
     }
 
     protected void setCreateAt(Long createAt) {
         if (createAt != null) {
-            this.setCreate(new DateTime(createAt));
+            this.setCreate(Instant.ofEpochMilli(createAt));
         }
     }
 
     public Long getOfflineAt() {
         if (this.offlineTime == null)
             return null;
-        return this.offlineTime.getMillis();
+        return this.offlineTime.toEpochMilli();
     }
 
     public Long getOnlineAt() {
         if (this.onlineTime == null)
             return null;
-        return this.onlineTime.getMillis();
+        return this.onlineTime.toEpochMilli();
     }
 
     public void setOfflineAt(Long offlineTime) {
         if (offlineTime != null)
-            this.offlineTime = new DateTime(offlineTime);
+            this.offlineTime = Instant.ofEpochMilli(offlineTime);
     }
 
     public void setOnlineAt(Long onlineTime) {
         if (onlineTime != null)
-            this.onlineTime = new DateTime(onlineTime);
+            this.onlineTime = Instant.ofEpochMilli(onlineTime);
     }
 
     public Integer getCreateDate() {
@@ -169,11 +170,11 @@ public class Account implements Owned {
         return DateTimeAide.date2Int(this.createRoleAt);
     }
 
-    public DateTime getCreateDateTime() {
+    public Instant getCreateDateTime() {
         return this.createAt;
     }
 
-    public DateTime getCreateRoleDateTime() {
+    public Instant getCreateRoleDateTime() {
         return this.createRoleAt;
     }
 
@@ -206,13 +207,13 @@ public class Account implements Owned {
     }
 
     public Long getCreateRoleAt() {
-        DateTime dateTime = this.createRoleAt;
-        return dateTime == null ? null : dateTime.getMillis();
+        Instant dateTime = this.createRoleAt;
+        return dateTime == null ? null : dateTime.toEpochMilli();
     }
 
     protected void setCreateRoleAt(Long createRoleAt) {
         if (createRoleAt != null) {
-            this.setCreateRole(new DateTime(createRoleAt));
+            this.setCreateRole(Instant.ofEpochMilli(createRoleAt));
         }
     }
 
@@ -273,18 +274,18 @@ public class Account implements Owned {
         ON_CREATE.notify(this);
     }
 
-    protected void setCreate(DateTime dateTime) {
+    protected void setCreate(Instant dateTime) {
         this.createAt = dateTime;
-        this.createDate = new LocalDate(this.createAt);
+        this.createDate = LocalDate.from(this.createAt);
     }
 
-    protected void setCreateRole(DateTime dateTime) {
+    protected void setCreateRole(Instant dateTime) {
         this.level = 1;
         this.createRoleAt = dateTime;
-        this.createRoleDate = new LocalDate(this.createRoleAt);
+        this.createRoleDate = LocalDate.from(this.createRoleAt);
     }
 
-    void createRole(DateTime dateTime) {
+    void createRole(Instant dateTime) {
         this.setCreateRole(dateTime);
         ON_CREATE_ROLE.notify(this);
     }
@@ -293,7 +294,7 @@ public class Account implements Owned {
         if (isOnline())
             return false;
         this.ip = ip;
-        this.onlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_ONLINE_AT, DateTime.now());
+        this.onlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_ONLINE_AT, Instant.now());
         ON_ONLINE.notify(this);
         return true;
     }
@@ -301,7 +302,7 @@ public class Account implements Owned {
     boolean offline() {
         if (!isOnline())
             return false;
-        this.offlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, DateTime.now());
+        this.offlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, Instant.now());
         ON_OFFLINE.notify(this);
         return true;
     }
@@ -314,11 +315,11 @@ public class Account implements Owned {
         return this.offlineTime.isBefore(this.onlineTime);
     }
 
-    public DateTime getOfflineTime() {
+    public Instant getOfflineTime() {
         return this.offlineTime;
     }
 
-    public DateTime getOnlineTime() {
+    public Instant getOnlineTime() {
         return this.onlineTime;
     }
 

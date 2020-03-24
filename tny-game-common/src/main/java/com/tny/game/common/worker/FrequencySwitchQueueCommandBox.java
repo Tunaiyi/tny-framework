@@ -10,7 +10,7 @@ import java.util.concurrent.locks.*;
 
 public class FrequencySwitchQueueCommandBox<C extends Command, CB extends CommandBox> extends AbstractWorkerCommandBox<C, CB> {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Logs.WORKER);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER);
 
     protected Queue<C> fromQueue;
 
@@ -32,7 +32,7 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
     @Override
     protected Queue<C> acceptQueue() {
         while (true) {
-            if (lock.tryLock()) {
+            if (this.lock.tryLock()) {
                 Queue<C> accQueue = this.queue;
                 this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
                 this.queue = accQueue;
@@ -45,9 +45,9 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
 
     @Override
     public void clear() {
-        queue.clear();
-        toQueue.clear();
-        fromQueue.clear();
+        this.queue.clear();
+        this.toQueue.clear();
+        this.fromQueue.clear();
     }
 
     @Override
@@ -57,24 +57,24 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
 
     @Override
     public boolean isEmpty() {
-        return toQueue.isEmpty() && fromQueue.isEmpty();
+        return this.toQueue.isEmpty() && this.fromQueue.isEmpty();
     }
 
     @Override
     public int size() {
-        return toQueue.size() + fromQueue.size();
+        return this.toQueue.size() + this.fromQueue.size();
     }
 
     @Override
     protected void doProcess() {
         Queue<C> currentRunQueue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
-        runSize = 0;
+        this.runSize = 0;
         C cmd = currentRunQueue.poll();
         while (cmd != null) {
             if (cmd.isWork()) {
                 executeCommand(cmd);
-                runSize++;
+                this.runSize++;
                 if (!cmd.isDone()) {
                     this.queue.add(cmd);
                 }
@@ -88,7 +88,7 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
             // runSize += commandBox.getProcessSize();
         }
         long finishTime = System.currentTimeMillis();
-        runUseTime = finishTime - startTime;
+        this.runUseTime = finishTime - startTime;
     }
 
     @Override

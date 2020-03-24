@@ -3,16 +3,16 @@ package com.tny.game.suite.core;
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.base.log.*;
 import com.tny.game.common.config.*;
-import com.tny.game.common.formula.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.utils.*;
 import com.tny.game.suite.utils.*;
-import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import java.io.*;
+import java.time.*;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -21,7 +21,7 @@ public class GameInfo {
 
     private static GameInfo GAMES_INFO;
 
-    private final static DateTime startAt = DateTime.now();
+    private final static Instant startAt = Instant.now();
 
     private static ScopeType scopeType;
 
@@ -37,7 +37,7 @@ public class GameInfo {
 
     private boolean mainServer = false;
 
-    private DateTime openDate;
+    private Instant openDate;
 
     private List<InetConnector> publicConnectors;
 
@@ -138,24 +138,24 @@ public class GameInfo {
         return GameInfo.scopeType == scopeType;
     }
 
-    public DateTime getOpenDate() {
+    public Instant getOpenDate() {
         return this.openDate;
     }
 
     public int getOpenedDays() {
-        return DateTimeEx.days(this.getOpenDate().toLocalDate(), DateTimeEx.today());
+        return Period.between(LocalDate.from(this.getOpenDate()), DateTimeAide.today()).getDays();
     }
 
     public List<InetConnector> getPublicConnectors() {
-        if (publicConnectors == null)
+        if (this.publicConnectors == null)
             return new ArrayList<>();
-        return new ArrayList<>(publicConnectors);
+        return new ArrayList<>(this.publicConnectors);
     }
 
     public List<InetConnector> getPrivateConnectors() {
-        if (privateConnectors == null)
+        if (this.privateConnectors == null)
             return new ArrayList<>();
-        return new ArrayList<>(privateConnectors);
+        return new ArrayList<>(this.privateConnectors);
     }
 
     public Optional<InetConnector> getPublicConnector(String connectorID) {
@@ -170,7 +170,7 @@ public class GameInfo {
                    .findFirst();
     }
 
-    public DateTime getStartAt() {
+    public Instant getStartAt() {
         return GameInfo.startAt;
     }
 
@@ -190,24 +190,27 @@ public class GameInfo {
         return this.register;
     }
 
-    public DateTime openDate() {
+    public Instant openDate() {
         return this.openDate;
     }
 
-    public DateTime openDateMillis(int millisOfDay) {
-        return this.openDate.withMillisOfDay(millisOfDay);
+    public Instant openDateMillis(int millisOfDay) {
+        return this.openDate.with(ChronoField.MILLI_OF_DAY, millisOfDay);
     }
 
-    public DateTime openDate(int hour) {
+    public Instant openDate(int hour) {
         return openDate(hour, 0);
     }
 
-    public DateTime openDate(int hour, int minutes) {
+    public Instant openDate(int hour, int minutes) {
         return openDate(hour, minutes, 0);
     }
 
-    public DateTime openDate(int hour, int minutes, int seconds) {
-        return this.openDate.withTime(hour, minutes, seconds, 0);
+    public Instant openDate(int hour, int minutes, int seconds) {
+        return this.openDate.with(ChronoField.HOUR_OF_DAY, hour)
+                            .with(ChronoField.MINUTE_OF_HOUR, minutes)
+                            .with(ChronoField.SECOND_OF_MINUTE, seconds)
+                            .with(ChronoField.NANO_OF_SECOND, 0);
     }
 
 }

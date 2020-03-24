@@ -31,34 +31,34 @@ public class AppURLPaths {
             this.appType = serverType;
             String key = Configs.PATH_HEAD + serverType + "." + name;
             this.path = Configs.PROTOCOLS_CONFIG.getStr(key, defaultPath);
-            Throws.checkNotNull(this.path, "{} path is null", key);
+            ThrowAide.checkNotNull(this.path, "{} path is null", key);
         }
 
         @Override
         public String getName() {
-            return name;
+            return this.name;
         }
 
         @Override
         public String getAppType() {
-            return appType;
+            return this.appType;
         }
 
         @Override
         public String getPath() {
-            return path;
+            return this.path;
         }
 
         @Override
         public String getProtocol() {
-            return protocol;
+            return this.protocol;
         }
 
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("name", name)
-                              .add("path", path)
+                              .add("name", this.name)
+                              .add("path", this.path)
                               .toString();
         }
     }

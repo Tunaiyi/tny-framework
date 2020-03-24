@@ -46,7 +46,7 @@ configure(allprojects) {
     apply plugin: "idea"
     apply plugin: 'maven'
 
-    ext.verNumber = '4.0.x'
+    ext.verNumber = '4.1.x'
 //    ext.pj_version = verNumber + '-RELEASE'
     ext.pj_version = verNumber + '-SNAPSHOT'
     ext.version = pj_version

@@ -7,10 +7,10 @@ import com.tny.game.net.exception.*;
 import com.tny.game.suite.core.*;
 import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import javax.annotation.Resource;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -103,7 +103,7 @@ public class AccountService implements AppPrepareStart {
         }
     }
 
-    public void updateCreateRole(Account account, String name, DateTime dateTime) {
+    public void updateCreateRole(Account account, String name, Instant dateTime) {
         try {
             account.setName(name);
             account.createRole(dateTime);

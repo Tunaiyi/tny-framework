@@ -3,7 +3,7 @@ package drama.task;
 
 import com.tny.game.actor.stage.*;
 import com.tny.game.actor.stage.invok.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 import org.jmock.Expectations;
 import org.junit.*;
 
@@ -59,9 +59,9 @@ public class TypeStageTest extends FlowTestUnits {
 
     @Test
     public void testThenApply() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Function<String, String> tfn = context.mock(Function.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Function<String, String> tfn = this.context.mock(Function.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).apply(value);
@@ -72,14 +72,14 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenApply(tfn)
                 , true, other
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
     public void testThenAccept() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Consumer<String> tfn = context.mock(Consumer.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Consumer<String> tfn = this.context.mock(Consumer.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).accept(value);
@@ -89,18 +89,18 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenAccept(tfn)
                 , true
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
     @Test
     public void testDoneApply() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final ApplyDone<String, String> tfn = context.mock(ApplyDone.class);
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final ApplyDone<String, String> tfn = this.context.mock(ApplyDone.class);
 
 
         //正常处理
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).handle(true, value, null);
@@ -111,11 +111,11 @@ public class TypeStageTest extends FlowTestUnits {
                      .doneApply(tfn)
                 , true, other
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
         //异常回复
 
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).handle(false, null, exception);
@@ -125,11 +125,11 @@ public class TypeStageTest extends FlowTestUnits {
                 Flows.of(fn).doneApply(tfn)
                 , true, value
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
 
         //异常继续抛出
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).handle(false, null, exception);
@@ -139,10 +139,10 @@ public class TypeStageTest extends FlowTestUnits {
                 Flows.of(fn).doneApply(tfn)
                 , false
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
         //正常 处理抛出
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).handle(true, value, null);
@@ -153,18 +153,18 @@ public class TypeStageTest extends FlowTestUnits {
                      .doneApply(tfn)
                 , false
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
 
     @Test
     public void testDoneAccept() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final AcceptDone<String> tfn = context.mock(AcceptDone.class);
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final AcceptDone<String> tfn = this.context.mock(AcceptDone.class);
 
 
         //正常处理
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).handle(true, value, null);
@@ -174,11 +174,11 @@ public class TypeStageTest extends FlowTestUnits {
                      .doneAccept(tfn)
                 , true
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
         //异常回复
 
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).handle(false, null, exception);
@@ -187,11 +187,11 @@ public class TypeStageTest extends FlowTestUnits {
                 Flows.of(fn).doneAccept(tfn)
                 , true
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
 
         //异常继续抛出
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).handle(false, null, exception);
@@ -201,10 +201,10 @@ public class TypeStageTest extends FlowTestUnits {
                 Flows.of(fn).doneAccept(tfn)
                 , false
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
         //正常 处理抛出
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).handle(true, value, null);
@@ -215,18 +215,18 @@ public class TypeStageTest extends FlowTestUnits {
                      .doneAccept(tfn)
                 , false
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
 
     @Test
     public void testThenThrow() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final CatcherSupplier<String> tfn = context.mock(CatcherSupplier.class);
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final CatcherSupplier<String> tfn = this.context.mock(CatcherSupplier.class);
 
 
         //正常处理
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             never(tfn).catchThrow(null);
@@ -236,10 +236,10 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenThrow(tfn)
                 , true, value
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
         //异常回复
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).catchThrow(exception);
@@ -250,11 +250,11 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenThrow(tfn)
                 , true, other
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
 
         //异常继续抛出
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(throwException(exception));
             oneOf(tfn).catchThrow(exception);
@@ -265,15 +265,15 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenThrow(tfn)
                 , false
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
 
     @Test
     public void testAwaitApply() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Function<String, String> tfn = context.mock(Function.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Function<String, String> tfn = this.context.mock(Function.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             allowing(tfn).apply(other);
@@ -296,14 +296,14 @@ public class TypeStageTest extends FlowTestUnits {
         );
         assertTrue(times.get() > 0);
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
     public void testAwaitApply1() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Function<String, String> tfn = context.mock(Function.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Function<String, String> tfn = this.context.mock(Function.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             allowing(tfn).apply(other);
@@ -326,9 +326,9 @@ public class TypeStageTest extends FlowTestUnits {
         );
         assertTrue(times1.get() > 0);
         assertTrue(System.currentTimeMillis() >= time1 + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
         }});
@@ -347,16 +347,16 @@ public class TypeStageTest extends FlowTestUnits {
                 , false
         );
         assertTrue(times2.get() > 0);
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
 
     @Test
     public void testAwaitAccept() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Runnable tfn = context.mock(Runnable.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Runnable tfn = this.context.mock(Runnable.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).run();
@@ -375,15 +375,15 @@ public class TypeStageTest extends FlowTestUnits {
         );
         assertTrue(times.get() > 0);
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
     @Test
     public void testAwaitAccept1() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
-        final Runnable tfn = context.mock(Runnable.class);
-        context.checking(new Expectations() {{
+        final Supplier<String> fn = this.context.mock(Supplier.class);
+        final Runnable tfn = this.context.mock(Runnable.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
             oneOf(tfn).run();
@@ -402,9 +402,9 @@ public class TypeStageTest extends FlowTestUnits {
         );
         assertTrue(times1.get() > 0);
         assertTrue(System.currentTimeMillis() >= time1 + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
         }});
@@ -419,7 +419,7 @@ public class TypeStageTest extends FlowTestUnits {
                      .thenRun(tfn)
                 , false);
         assertTrue(times2.get() > 0);
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
 }

@@ -3,7 +3,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.exception.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 import java.util.concurrent.*;
 
@@ -21,11 +21,11 @@ public class FutureAwait<T> implements DoneSupplier<T> {
 
     @Override
     public Done<T> getDone() {
-        if (!future.isDone()) {
+        if (!this.future.isDone()) {
             return DoneResults.failure();
         } else {
             try {
-                return DoneResults.success(future.get());
+                return DoneResults.success(this.future.get());
             } catch (ExecutionException e) {
                 throw new StageException(e.getCause());
             } catch (InterruptedException e) {

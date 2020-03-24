@@ -3,7 +3,7 @@ package com.tny.game.suite.base.module;
 import com.tny.game.base.module.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.common.utils.version.*;
+import com.tny.game.common.version.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;

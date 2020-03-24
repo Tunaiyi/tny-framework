@@ -30,7 +30,7 @@ public class DBSchedulerStore implements SchedulerStore {
             int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID, 0);
             CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
                     getKey(serverID), timeTaskScheduler);
-            schedulerObjectManager.saveSchedulerBackup(cacheSchedulerBackup);
+            this.schedulerObjectManager.saveSchedulerBackup(cacheSchedulerBackup);
         } catch (Throwable e) {
             LOGGER.error("", e);
         }
@@ -38,7 +38,7 @@ public class DBSchedulerStore implements SchedulerStore {
 
     @Override
     public SchedulerBackup load() {
-        return schedulerObjectManager.getSchedulerBackup();
+        return this.schedulerObjectManager.getSchedulerBackup();
     }
 
 }

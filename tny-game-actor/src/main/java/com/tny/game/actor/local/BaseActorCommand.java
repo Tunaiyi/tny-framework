@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.*;
 import com.tny.game.actor.exception.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 /**
  * Actor命令
@@ -32,17 +32,17 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
 
     @Override
     public T getResult() {
-        return result;
+        return this.result;
     }
 
     @Override
     public Answer<T> getAnswer() {
-        return answer;
+        return this.answer;
     }
 
     @Override
     public boolean isDone() {
-        return done;
+        return this.done;
     }
 
     @Override
@@ -59,7 +59,7 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
         synchronized (this) {
             if (isDone())
                 return;
-            if (cancelled) {
+            if (this.cancelled) {
                 this.fail(new ActorCommandCancelledException(this), true);
             } else {
                 Done<T> result = null;
@@ -84,13 +84,13 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
      * @return 返回是否成功
      */
     protected void success(T result) {
-        if (!done) {
+        if (!this.done) {
             this.done = true;
             this.result = result;
             this.cause = null;
             this.postSuccess(result);
             if (this.answer != null)
-                answer.success(result);
+                this.answer.success(result);
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
      * @return 设置成功
      */
     protected void fail(Throwable cause, boolean cancelled) throws Throwable {
-        if (!done) {
+        if (!this.done) {
             this.done = true;
             this.result = null;
             this.cause = new ActorCommandExecuteException(this, cause);
@@ -109,17 +109,17 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
                 this.postCancel();
             this.postFail(this.cause);
             if (this.answer != null)
-                answer.fail(cause);
+                this.answer.fail(cause);
             throw this.cause;
         }
     }
 
     @Override
     protected boolean cancel() {
-        if (done)
+        if (this.done)
             return false;
         synchronized (this) {
-            if (done)
+            if (this.done)
                 return false;
             this.cancelled = true;
             return true;

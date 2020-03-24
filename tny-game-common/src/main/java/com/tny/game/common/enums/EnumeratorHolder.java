@@ -54,28 +54,28 @@ public class EnumeratorHolder<O> {
     }
 
     protected EnumeratorHolder<O> putAndCheck(Object key, O o) {
-        if (enumeratorMap.containsKey(key)) {
-            O old = enumeratorMap.get(key);
+        if (this.enumeratorMap.containsKey(key)) {
+            O old = this.enumeratorMap.get(key);
             if (old != null)
                 throw new IllegalStateException(format(
                         "注册 {} [key:{}, object:{}] 发现已存在对象 {}", o.getClass(), key, o, old));
         }
-        enumeratorMap.put(key, o);
-        enumerators.add(o);
-        classes.add((Class<? extends O>) o.getClass());
+        this.enumeratorMap.put(key, o);
+        this.enumerators.add(o);
+        this.classes.add((Class<? extends O>) o.getClass());
         return this;
     }
 
 
     public <T extends O> T ofAndCheck(Object key, String message, Object... args) {
-        T value = (T) enumeratorMap.get(key);
+        T value = (T) this.enumeratorMap.get(key);
         if (value == null)
             throw new NullPointerException(format(message, args));
         return value;
     }
 
     public <T extends O> T of(Object key) {
-        return (T) enumeratorMap.get(key);
+        return (T) this.enumeratorMap.get(key);
     }
 
     public Set<O> values() {

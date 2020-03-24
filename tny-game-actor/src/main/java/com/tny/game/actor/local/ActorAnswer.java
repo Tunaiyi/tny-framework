@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.*;
 import com.tny.game.common.concurrent.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 import org.slf4j.*;
 
 import java.util.List;

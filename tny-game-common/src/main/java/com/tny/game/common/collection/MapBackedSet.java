@@ -20,31 +20,31 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
 
     @Override
     public int size() {
-        return map.size();
+        return this.map.size();
     }
 
     @Override
     public boolean contains(Object o) {
-        return map.containsKey(o);
+        return this.map.containsKey(o);
     }
 
     @Override
     public Iterator<E> iterator() {
-        return map.keySet().iterator();
+        return this.map.keySet().iterator();
     }
 
     @Override
     public boolean add(E o) {
-        return map.put(o, Boolean.TRUE) == null;
+        return this.map.put(o, Boolean.TRUE) == null;
     }
 
     @Override
     public boolean remove(Object o) {
-        return map.remove(o) != null;
+        return this.map.remove(o) != null;
     }
 
     @Override
     public void clear() {
-        map.clear();
+        this.map.clear();
     }
 }

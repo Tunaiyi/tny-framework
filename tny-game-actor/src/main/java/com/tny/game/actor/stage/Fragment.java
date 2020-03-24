@@ -26,7 +26,7 @@ public abstract class Fragment<V, R> {
     }
 
     protected Fragment() {
-        done = false;
+        this.done = false;
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class Fragment<V, R> {
      */
     @SuppressWarnings("unchecked")
     protected void finish(Object result) {
-        Throws.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
+        ThrowAide.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
         this.done = true;
         this.result = (R) result;
     }
@@ -71,7 +71,7 @@ public abstract class Fragment<V, R> {
      * @param cause
      */
     protected void fail(Throwable cause) {
-        Throws.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
+        ThrowAide.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
         this.done = true;
         this.cause = cause;
     }
@@ -107,7 +107,7 @@ public abstract class Fragment<V, R> {
      * @return 获取失败原因, 未完成或成功返回null
      */
     public Throwable getCause() {
-        return cause;
+        return this.cause;
     }
 
     /**

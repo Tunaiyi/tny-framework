@@ -22,8 +22,8 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     }
 
     protected GameFeatureExplorer(Set<Feature> openedFeatures, Set<Module> openedModules) {
-        Throws.checkNotNull(openedFeatures);
-        Throws.checkNotNull(openedModules);
+        ThrowAide.checkNotNull(openedFeatures);
+        ThrowAide.checkNotNull(openedModules);
         this.openedModules = new AtomicReference<>(ImmutableSet.copyOf(openedModules));
         this.openedFeatures = new AtomicReference<>(ImmutableSet.copyOf(openedFeatures));
     }
@@ -44,7 +44,7 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     }
 
     protected boolean open(FeatureModel model) {
-        if (open(openedFeatures, model.getFeature())) {
+        if (open(this.openedFeatures, model.getFeature())) {
             this.doOpen(model);
             return true;
         }
@@ -52,7 +52,7 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     }
 
     protected boolean open(Module module) {
-        return open(openedModules, module);
+        return open(this.openedModules, module);
     }
 
     protected void doOpen(FeatureModel model) {
@@ -60,21 +60,21 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
 
     @Override
     public boolean isModuleOpened(Module moduleType) {
-        return openedModules.get().contains(moduleType);
+        return this.openedModules.get().contains(moduleType);
     }
 
     @Override
     public Set<Module> getOpenedModules() {
-        return openedModules.get();
+        return this.openedModules.get();
     }
 
     @Override
     public boolean isFeatureOpened(Feature feature) {
-        return openedFeatures.get().contains(feature);
+        return this.openedFeatures.get().contains(feature);
     }
 
     @Override
     public Set<Feature> getOpenedFeatures() {
-        return openedFeatures.get();
+        return this.openedFeatures.get();
     }
 }

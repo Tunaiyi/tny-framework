@@ -8,7 +8,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
     /**
      * Synchronization control for AbstractFutures.
      */
-    private final Sync<V> sync = new Sync<V>();
+    private final Sync<V> sync = new Sync<>();
 
     /**
      * Constructor for use by subclasses.
@@ -35,7 +35,7 @@ public abstract class AbstractFuture<V> implements Future<V> {
     @Override
     public V get(long timeout, TimeUnit unit) throws InterruptedException,
             TimeoutException, ExecutionException {
-        return sync.get(unit.toNanos(timeout));
+        return this.sync.get(unit.toNanos(timeout));
     }
 
     /*
@@ -56,22 +56,22 @@ public abstract class AbstractFuture<V> implements Future<V> {
      */
     @Override
     public V get() throws InterruptedException, ExecutionException {
-        return sync.get();
+        return this.sync.get();
     }
 
     @Override
     public boolean isDone() {
-        return sync.isDone();
+        return this.sync.isDone();
     }
 
     @Override
     public boolean isCancelled() {
-        return sync.isCancelled();
+        return this.sync.isCancelled();
     }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        if (!sync.cancel(mayInterruptIfRunning)) {
+        if (!this.sync.cancel(mayInterruptIfRunning)) {
             return false;
         }
         if (mayInterruptIfRunning) {
@@ -99,26 +99,26 @@ public abstract class AbstractFuture<V> implements Future<V> {
      * @since 14.0
      */
     protected final boolean wasInterrupted() {
-        return sync.wasInterrupted();
+        return this.sync.wasInterrupted();
     }
 
     /**
      * Subclasses should invoke this method to set the result of the computation
      * to {@code value}.  This will set the state of the future to
-     * {@link AbstractFuture.Sync#COMPLETED} and invoke the listeners if the
+     * {@link Sync#COMPLETED} and invoke the listeners if the
      * state was successfully changed.
      *
      * @param value the value that was the result of the task.
      * @return true if the state was successfully changed.
      */
     protected boolean set(V value) {
-        return sync.set(value);
+        return this.sync.set(value);
     }
 
     /**
      * Subclasses should invoke this method to set the result of the computation
      * to an error, {@code throwable}.  This will set the state of the future to
-     * {@link AbstractFuture.Sync#COMPLETED} and invoke the listeners if the
+     * {@link Sync#COMPLETED} and invoke the listeners if the
      * state was successfully changed.
      *
      * @param throwable the exception that the task failed with.
@@ -127,15 +127,15 @@ public abstract class AbstractFuture<V> implements Future<V> {
     protected boolean setFailure(Throwable throwable) {
         if (throwable == null)
             throw new NullPointerException();
-        return sync.setException(throwable);
+        return this.sync.setException(throwable);
     }
 
     protected V getRawValue() {
-        return sync.value;
+        return this.sync.value;
     }
 
     protected Throwable getRawCause() {
-        return sync.exception;
+        return this.sync.exception;
     }
 
     /**
@@ -229,16 +229,16 @@ public abstract class AbstractFuture<V> implements Future<V> {
             int state = getState();
             switch (state) {
                 case COMPLETED:
-                    if (exception != null) {
-                        throw new ExecutionException(exception);
+                    if (this.exception != null) {
+                        throw new ExecutionException(this.exception);
                     } else {
-                        return value;
+                        return this.value;
                     }
 
                 case CANCELLED:
                 case INTERRUPTED:
                     throw cancellationExceptionWithCause(
-                            "Task was cancelled.", exception);
+                            "Task was cancelled.", this.exception);
 
                 default:
                     throw new IllegalStateException(

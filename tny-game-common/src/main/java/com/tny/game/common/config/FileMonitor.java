@@ -24,7 +24,7 @@ public class FileMonitor {
     /**
      * 日志对象
      */
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.FILE_MONITOR);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.FILE_MONITOR);
 
     /**
      * 观察者
@@ -32,7 +32,7 @@ public class FileMonitor {
      * @uml.property name="observerMap"
      * @uml.associationEnd qualifier="path:java.lang.String org.apache.commons.io.monitor.FileAlterationObserver"
      */
-    private final ConcurrentMap<String, FileAlterationObserver> observerMap = new ConcurrentHashMap<String, FileAlterationObserver>();
+    private final ConcurrentMap<String, FileAlterationObserver> observerMap = new ConcurrentHashMap<>();
 
     /**
      * @uml.property name="monitor"
@@ -45,10 +45,10 @@ public class FileMonitor {
     }
 
     public FileMonitor(long interval) {
-        monitor = new FileAlterationMonitor(interval);
+        this.monitor = new FileAlterationMonitor(interval);
         try {
-            monitor.setThreadFactory(new CoreThreadFactory("FileMonitorTread", true));
-            monitor.start();
+            this.monitor.setThreadFactory(new CoreThreadFactory("FileMonitorTread", true));
+            this.monitor.start();
         } catch (Exception e) {
             LOG.error("#启动文件监听器#启动异常 ", e);
         }
@@ -90,20 +90,20 @@ public class FileMonitor {
 
     public void stop() {
         try {
-            monitor.stop();
+            this.monitor.stop();
         } catch (Exception e) {
             LOG.error("#关闭文件监听器#关闭异常 ", e);
         }
     }
 
     private FileAlterationObserver getObserver(String path) {
-        FileAlterationObserver observer = observerMap.get(path);
+        FileAlterationObserver observer = this.observerMap.get(path);
         if (observer == null) {
             int lastIndex = path.lastIndexOf("/");
             observer = new FileAlterationObserver(path.substring(0, lastIndex), new ConfigFileFilter(path), IOCase.INSENSITIVE);
-            FileAlterationObserver oldObserver = observerMap.putIfAbsent(path, observer);
+            FileAlterationObserver oldObserver = this.observerMap.putIfAbsent(path, observer);
             if (oldObserver == null) {
-                monitor.addObserver(observer);
+                this.monitor.addObserver(observer);
                 return observer;
             }
             return oldObserver;
@@ -122,7 +122,7 @@ public class FileMonitor {
 
         @Override
         public boolean accept(File pathname) {
-            return pathname.getPath().replace("\\", "/").endsWith(file);
+            return pathname.getPath().replace("\\", "/").endsWith(this.file);
         }
 
     }

@@ -1,8 +1,8 @@
 package com.tny.game.expr.groovy
 
-import com.tny.game.common.formula.MathEx
+import com.tny.game.common.math.MathAide
 
-rand = MathEx.&rand;
+rand = MathAide.&rand;
 
 def nowMethod(int value) {
     rand(value)

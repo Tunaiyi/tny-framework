@@ -17,7 +17,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     private String name;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Logs.WORKER + "-" + DefaultCommandExecutor.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER + "-" + DefaultCommandExecutor.class.getName());
 
     private Queue<CommandBox> commandBoxList = new ConcurrentLinkedQueue<>();
 
@@ -49,20 +49,20 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
     public void start() {
         this.hearbeatExecutor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.getName() + "-SubmitThread", true));
         this.hearbeatExecutor.execute(() -> {
-            nextRunningTime = System.currentTimeMillis();
+            this.nextRunningTime = System.currentTimeMillis();
             while (true) {
                 try {
-                    if (hearbeatExecutor.isShutdown())
+                    if (this.hearbeatExecutor.isShutdown())
                         break;
-                    commandBoxList.forEach(box -> {
+                    this.commandBoxList.forEach(box -> {
                         if (!box.isEmpty())
                             box.submit();
                     });
-                    nextRunningTime += 84L;
+                    this.nextRunningTime += 84L;
 
                     long finishAt = System.currentTimeMillis();
 
-                    long sleepTime = nextRunningTime - finishAt;
+                    long sleepTime = this.nextRunningTime - finishAt;
                     sleepTime = sleepTime < 0 ? 0 : sleepTime;
 
                     if (sleepTime > 0) {
@@ -80,13 +80,13 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public void shutdown() {
         stop();
-        hearbeatExecutor.shutdown();
+        this.hearbeatExecutor.shutdown();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
     @Override
     public int size() {
         int size = 0;
-        for (CommandBox commandBox : commandBoxList)
+        for (CommandBox commandBox : this.commandBoxList)
             size += commandBox.size();
         return size;
     }
@@ -139,14 +139,14 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     @Override
     public boolean isWorking() {
-        return working;
+        return this.working;
     }
 
     @Override
     public void stop() {
-        if (!working)
+        if (!this.working)
             return;
-        working = false;
+        this.working = false;
     }
 
     static class BindCommandWorker implements CommandWorker {
@@ -161,17 +161,17 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
         @Override
         public boolean isOnCurrentThread() {
-            return currentThread == Thread.currentThread();
+            return this.currentThread == Thread.currentThread();
         }
 
         @Override
         public boolean isWorking() {
-            return executor.isWorking();
+            return this.executor.isWorking();
         }
 
         @Override
         public boolean execute(CommandBox commandBox) {
-            executor.executor.submit(() -> doProcess(commandBox));
+            this.executor.executor.submit(() -> doProcess(commandBox));
             return true;
         }
 

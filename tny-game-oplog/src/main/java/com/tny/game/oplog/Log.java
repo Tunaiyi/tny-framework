@@ -1,6 +1,7 @@
 package com.tny.game.oplog;
 
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 public interface Log {
 
@@ -26,6 +27,6 @@ public interface Log {
 
     String getType();
 
-    DateTime getLogAt();
+    Instant getLogAt();
 
 }

@@ -5,7 +5,6 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.event.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.NetAide;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -81,11 +80,11 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     }
 
     private RespondFutureHolder futureHolder() {
-        if (respondFutureHolder != null)
-            return respondFutureHolder;
+        if (this.respondFutureHolder != null)
+            return this.respondFutureHolder;
         synchronized (this) {
-            if (respondFutureHolder != null)
-                return respondFutureHolder;
+            if (this.respondFutureHolder != null)
+                return this.respondFutureHolder;
             return this.respondFutureHolder = RespondFutureHolder.getHolder(this);
         }
     }
@@ -108,12 +107,12 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public RespondFutureHolder getRespondFutureHolder() {
-        return respondFutureHolder;
+        return this.respondFutureHolder;
     }
 
     @Override
     public long getId() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -151,7 +150,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                     break;
             }
         }
-        eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
+        this.eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
         this.eventHandler.onInput(this.eventsBox, this);
         return true;
     }
@@ -167,7 +166,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
             return;
         if (tunnel == null)
             tunnel = currentTunnel();
-        eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
+        this.eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
         this.eventHandler.onOutput(this.eventsBox, this);
     }
 
@@ -198,7 +197,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                         break;
                 }
             }
-            eventsBox.addOutputEvent(new EndpointSendEvent<>(tunnel, context));
+            this.eventsBox.addOutputEvent(new EndpointSendEvent<>(tunnel, context));
             this.eventHandler.onOutput(this.eventsBox, this);
             return context;
         } catch (Exception e) {
@@ -234,7 +233,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public EndpointEventsBox<UID> getEventsBox() {
-        return eventsBox;
+        return this.eventsBox;
     }
 
     @Override
@@ -253,7 +252,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         if (context.isNeedResponseFuture() || context.isNeedWriteFuture()) {
             WriteMessagePromise promise = context.getWriteMessagePromise();
             if (promise == null) {
-                promise = tunnel.createWritePromise(context.getWriteTimeout());
+                promise = this.tunnel.createWritePromise(context.getWriteTimeout());
                 context.setWriteMessagePromise(promise);
             }
             if (context.isNeedResponseFuture()) {
@@ -267,7 +266,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     }
 
     private long createMessageId() {
-        return idCreator.incrementAndGet();
+        return this.idCreator.incrementAndGet();
     }
 
     @Override
@@ -282,17 +281,17 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public EndpointState getState() {
-        return state;
+        return this.state;
     }
 
     @Override
     public EndpointEventHandler<UID, NetEndpoint<UID>> getEventHandler() {
-        return eventHandler;
+        return this.eventHandler;
     }
 
     @Override
     public long getOfflineTime() {
-        return offlineTime;
+        return this.offlineTime;
     }
 
     protected void setOnline() {
@@ -357,10 +356,10 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public void close() {
-        if (state == EndpointState.CLOSE)
+        if (this.state == EndpointState.CLOSE)
             return;
         synchronized (this) {
-            if (state == EndpointState.CLOSE)
+            if (this.state == EndpointState.CLOSE)
                 return;
             this.offline();
             this.setClose();
@@ -381,7 +380,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
-        Throws.checkNotNull(tunnel, "newSession is null");
+        ThrowAide.checkNotNull(tunnel, "newSession is null");
         checkOnlineCertificate(certificate);
         synchronized (this) {
             checkOnlineCertificate(certificate);

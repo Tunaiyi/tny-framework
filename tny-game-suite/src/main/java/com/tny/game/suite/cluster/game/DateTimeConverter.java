@@ -1,8 +1,9 @@
 package com.tny.game.suite.cluster.game;
 
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
+
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
 public class DateTimeConverter extends AbstractSingleValueConverter {
 
@@ -15,11 +16,11 @@ public class DateTimeConverter extends AbstractSingleValueConverter {
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public boolean canConvert(Class clazz) {
-        return clazz.isAssignableFrom(DateTime.class);
+        return clazz.isAssignableFrom(Instant.class);
     }
 
     @Override
     public Object fromString(String value) {
-        return this.format.parseDateTime(value);
+        return Instant.from(this.format.parse(value));
     }
 }

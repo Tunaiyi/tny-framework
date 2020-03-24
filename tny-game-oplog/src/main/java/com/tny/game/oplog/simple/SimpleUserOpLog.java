@@ -4,8 +4,8 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.*;
 import com.tny.game.oplog.*;
 import com.tny.game.oplog.record.*;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -29,7 +29,7 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private int vip;
 
-    private DateTime createAt;
+    private Instant createAt;
 
     private Attributes attributes;
 
@@ -37,7 +37,7 @@ public class SimpleUserOpLog extends UserOpLog {
 
     private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
 
-    public SimpleUserOpLog(long userId, String pf, String openId, int serverId, String name, DateTime createAt, int level, int vip) {
+    public SimpleUserOpLog(long userId, String pf, String openId, int serverId, String name, Instant createAt, int level, int vip) {
         super();
         this.userId = userId;
         this.openId = openId;
@@ -76,7 +76,7 @@ public class SimpleUserOpLog extends UserOpLog {
 
     @Override
     public String getPF() {
-        return pf;
+        return this.pf;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class SimpleUserOpLog extends UserOpLog {
     }
 
     @Override
-    public DateTime getCreateAt() {
-        return createAt;
+    public Instant getCreateAt() {
+        return this.createAt;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class SimpleUserOpLog extends UserOpLog {
 
     @Override
     public Collection<StuffSettleLog> getStuffSettleLogs() {
-        return stuffLogs.values();
+        return this.stuffLogs.values();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SimpleUserOpLog extends UserOpLog {
 
     @Override
     protected StuffSettleLog getStuffSettleLog(int itemID) {
-        return stuffLogs.computeIfAbsent(itemID, StuffRecord::new);
+        return this.stuffLogs.computeIfAbsent(itemID, StuffRecord::new);
     }
 
 }

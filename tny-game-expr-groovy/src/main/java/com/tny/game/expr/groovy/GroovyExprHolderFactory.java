@@ -1,11 +1,11 @@
 package com.tny.game.expr.groovy;
 
-import com.tny.game.common.formula.*;
+import com.tny.game.common.math.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.jsr223.*;
-import org.joda.time.DateTime;
 
 import javax.script.ScriptException;
+import java.time.Instant;
 
 /**
  * Created by Kun Yang on 2018/5/24.
@@ -41,9 +41,9 @@ public class GroovyExprHolderFactory extends ScriptExprHolderFactory {
     public static void main(String[] args) throws ScriptException {
         GroovyExprHolderFactory factory = new GroovyExprHolderFactory();
         factory.getContext()
-               .importClasses(DateTime.class)
+               .importClasses(Instant.class)
                // .importStaticClasses(MathEx.class)
-               .importClasses(MathEx.class)
+               .importClasses(MathAide.class)
                .importClassAs("S", String.class);
         // ExprHolder holder = factory.create("a + 100 + new S('__222__') + DateTime.now() + '---' + rand(200)");
         // System.out.println(holder.createExpr().put("a", 2000).execute(Integer.class));

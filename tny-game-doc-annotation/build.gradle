@@ -1,0 +1,13 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+//sourceSets {
+//    main {
+//        groovy.srcDirs += ["src/main/groovy"]
+//    }
+//}
+
+dependencies {
+
+}

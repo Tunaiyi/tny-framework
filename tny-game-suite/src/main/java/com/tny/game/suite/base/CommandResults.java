@@ -20,7 +20,7 @@ public class CommandResults extends com.tny.game.net.base.CommandResults {
     }
 
     public static CommandResult fail(TryResult<?> done) {
-        Throws.checkArgument(done.isFailure(), "TryDone is success");
+        ThrowAide.checkArgument(done.isFailure(), "TryDone is success");
         if (done.isFailedToTry())
             return fail(done.getResult());
         else

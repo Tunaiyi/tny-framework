@@ -14,7 +14,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * <p>
  * <p>
  * A <tt>FutureTask</tt> can be used to wrap a {@link Callable} or
- * {@link java.lang.Runnable} object. Because <tt>FutureTask</tt> implements
+ * {@link Runnable} object. Because <tt>FutureTask</tt> implements
  * <tt>Runnable</tt>, a <tt>FutureTask</tt> can be submitted to an
  * {@link Executor} for execution.
  * <p>
@@ -41,22 +41,22 @@ public class AbstractFuture<V> implements Future<V> {
      * @throws NullPointerException if callable is null
      */
     public AbstractFuture() {
-        sync = new Sync();
+        this.sync = new Sync();
     }
 
     @Override
     public boolean isCancelled() {
-        return sync.innerIsCancelled();
+        return this.sync.innerIsCancelled();
     }
 
     @Override
     public boolean isDone() {
-        return sync.innerIsDone();
+        return this.sync.innerIsDone();
     }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        return sync.innerCancel(mayInterruptIfRunning);
+        return this.sync.innerCancel(mayInterruptIfRunning);
     }
 
     /**
@@ -64,7 +64,7 @@ public class AbstractFuture<V> implements Future<V> {
      */
     @Override
     public V get() throws InterruptedException, ExecutionException {
-        return sync.innerGet();
+        return this.sync.innerGet();
     }
 
     /**
@@ -73,7 +73,7 @@ public class AbstractFuture<V> implements Future<V> {
     @Override
     public V get(long timeout, TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
-        return sync.innerGet(unit.toNanos(timeout));
+        return this.sync.innerGet(unit.toNanos(timeout));
     }
 
     /**
@@ -95,7 +95,7 @@ public class AbstractFuture<V> implements Future<V> {
      * @param v the value
      */
     protected void set(V v) {
-        sync.innerSet(v);
+        this.sync.innerSet(v);
     }
 
     /**
@@ -107,7 +107,7 @@ public class AbstractFuture<V> implements Future<V> {
      * @param t the cause of failure
      */
     protected void setException(Throwable t) {
-        sync.innerSetException(t);
+        this.sync.innerSetException(t);
     }
 
     /**
@@ -116,7 +116,7 @@ public class AbstractFuture<V> implements Future<V> {
      * @return
      */
     protected boolean reset() {
-        return sync.reset();
+        return this.sync.reset();
     }
 
     /**
@@ -176,7 +176,7 @@ public class AbstractFuture<V> implements Future<V> {
          */
         @Override
         protected boolean tryReleaseShared(int ignore) {
-            runner = null;
+            this.runner = null;
             return true;
         }
 
@@ -185,16 +185,16 @@ public class AbstractFuture<V> implements Future<V> {
         }
 
         boolean innerIsDone() {
-            return ranOrCancelled(getState()) && runner == null;
+            return ranOrCancelled(getState()) && this.runner == null;
         }
 
         V innerGet() throws InterruptedException, ExecutionException {
             acquireSharedInterruptibly(0);
             if (getState() == CANCELLED)
                 throw new CancellationException();
-            if (exception != null)
-                throw new ExecutionException(exception);
-            return result;
+            if (this.exception != null)
+                throw new ExecutionException(this.exception);
+            return this.result;
         }
 
         V innerGet(long nanosTimeout) throws InterruptedException, ExecutionException, TimeoutException {
@@ -202,9 +202,9 @@ public class AbstractFuture<V> implements Future<V> {
                 throw new TimeoutException();
             if (getState() == CANCELLED)
                 throw new CancellationException();
-            if (exception != null)
-                throw new ExecutionException(exception);
-            return result;
+            if (this.exception != null)
+                throw new ExecutionException(this.exception);
+            return this.result;
         }
 
         void innerSet(V v) {
@@ -220,7 +220,7 @@ public class AbstractFuture<V> implements Future<V> {
                     return;
                 }
                 if (compareAndSetState(s, RAN)) {
-                    result = v;
+                    this.result = v;
                     releaseShared(0);
                     done();
                     return;
@@ -241,8 +241,8 @@ public class AbstractFuture<V> implements Future<V> {
                     return;
                 }
                 if (compareAndSetState(s, RAN)) {
-                    exception = t;
-                    result = null;
+                    this.exception = t;
+                    this.result = null;
                     releaseShared(0);
                     done();
                     return;
@@ -259,7 +259,7 @@ public class AbstractFuture<V> implements Future<V> {
                     break;
             }
             if (mayInterruptIfRunning) {
-                Thread r = runner;
+                Thread r = this.runner;
                 if (r != null)
                     r.interrupt();
             }

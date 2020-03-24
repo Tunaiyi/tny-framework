@@ -24,14 +24,14 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     private volatile List<WriteMessageListener> listeners;
 
     private List<WriteMessageListener> listeners() {
-        if (listeners != null)
-            return listeners;
+        if (this.listeners != null)
+            return this.listeners;
         synchronized (this) {
-            if (listeners != null)
-                return listeners;
+            if (this.listeners != null)
+                return this.listeners;
             this.listeners = new LinkedList<>();
         }
-        return listeners;
+        return this.listeners;
     }
 
     public NettyWriteMessagePromise(long timeout) {
@@ -50,7 +50,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     @Override
     public long getWriteTimeout() {
-        return timeout;
+        return this.timeout;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     }
 
     public boolean channelPromise(ChannelPromise promise) {
-        Throws.checkNotNull(promise, "channelPromise is null");
+        ThrowAide.checkNotNull(promise, "channelPromise is null");
         if (this.isDone() || this.channelPromise != null)
             return false;
         synchronized (this) {

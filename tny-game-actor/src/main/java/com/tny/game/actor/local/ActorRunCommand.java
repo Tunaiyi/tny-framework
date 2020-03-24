@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 /**
  * Actor Runnable 命令

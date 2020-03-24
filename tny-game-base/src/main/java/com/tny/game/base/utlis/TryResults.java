@@ -23,7 +23,7 @@ public class TryResults {
      * @return 返回 TryResult
      */
     public static <M, MC extends M> TryResult<M> success(MC value) {
-        Throws.checkNotNull(value, "TryDone.value is null");
+        ThrowAide.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(ResultCode.SUCCESS, value);
     }
 
@@ -59,7 +59,7 @@ public class TryResults {
      * @return 返回结果
      */
     public static <M> TryResult<M> failure(ResultCode code) {
-        Throws.checkArgument(code.isFailure(), "code [{}] is success", code);
+        ThrowAide.checkArgument(code.isFailure(), "code [{}] is success", code);
         return new DefaultTryResult<>(code, null);
     }
 
@@ -81,7 +81,7 @@ public class TryResults {
      * @return 返回结果
      */
     public static <M, MC extends M> TryResult<M> failure(TryToDoResult result, MC value) {
-        Throws.checkArgument(result.isUnsatisfied(), "TryToDoResult [{}] is satisfied", result);
+        ThrowAide.checkArgument(result.isUnsatisfied(), "TryToDoResult [{}] is satisfied", result);
         return new DefaultTryResult<>(result, value);
     }
 
@@ -92,7 +92,7 @@ public class TryResults {
      * @return 返
      */
     public static <M> TryResult<M> failure(TryResult<?> result) {
-        Throws.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return map(result, null);
     }
 
@@ -118,7 +118,7 @@ public class TryResults {
      * @return TryResult
      */
     public static <M, MC extends M> TryResult<M> done(TryToDoResult result, MC value) {
-        Throws.checkNotNull(value, "TryDone.value is null");
+        ThrowAide.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(result, value);
     }
 
@@ -138,7 +138,7 @@ public class TryResults {
      * @param code  结果码
      * @return 返回结果
      */
-    public static <M, MC extends M> DoneMessager<M, ? extends TryResult<M>> with(ResultCode code, MC value) {
+    public static <M, MC extends M> DoneMessage<M, ? extends TryResult<M>> with(ResultCode code, MC value) {
         return new DefaultTryResult<>(code, value);
     }
 
@@ -148,8 +148,8 @@ public class TryResults {
      * @param value 结果内容
      * @return TryResult
      */
-    public static <M, MC extends M> DoneMessager<M, ? extends TryResult<M>> with(TryToDoResult result, MC value) {
-        Throws.checkNotNull(value, "TryDone.value is null");
+    public static <M, MC extends M> DoneMessage<M, ? extends TryResult<M>> with(TryToDoResult result, MC value) {
+        ThrowAide.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(result, value);
     }
 
@@ -158,7 +158,7 @@ public class TryResults {
      *
      * @return TryResult
      */
-    public static DoneMessager<Void, ? extends TryResult<Void>> with(TryToDoResult result) {
+    public static DoneMessage<Void, ? extends TryResult<Void>> with(TryToDoResult result) {
         return new DefaultTryResult<>(result, null);
     }
 

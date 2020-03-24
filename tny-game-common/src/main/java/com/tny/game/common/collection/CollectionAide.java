@@ -66,7 +66,7 @@ public class CollectionAide {
     public static Map<String, Object> attributes2Map(Map<String, Object> src, Object... objects) {
         if (objects.length == 0) {
             if (src == null)
-                return java.util.Collections.emptyMap();
+                return Collections.emptyMap();
             return src;
         }
         Object key = null;
@@ -85,7 +85,7 @@ public class CollectionAide {
 
     public static Map<Object, Object> arrays2Map(Map<Object, Object> src, Object... objects) {
         if (objects.length == 0)
-            return java.util.Collections.emptyMap();
+            return Collections.emptyMap();
         Object key = null;
         if (src == null)
             src = new HashMap<>();
@@ -216,7 +216,7 @@ public class CollectionAide {
     public static Map<String, String> toStringMap(String... pairs) {
         Map<String, String> map = new HashMap<>();
         if (pairs.length > 0) {
-            Throws.checkArgument(pairs.length % 2 == 0, "pairs 数量非偶数");
+            ThrowAide.checkArgument(pairs.length % 2 == 0, "pairs 数量非偶数");
             for (int index = 0; index < pairs.length; index = index + 2) {
                 map.put(pairs[index], pairs[index + 1]);
             }

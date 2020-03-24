@@ -1,8 +1,9 @@
 package com.tny.game.expr.mvel;
 
 import com.tny.game.common.collection.*;
-import com.tny.game.common.formula.*;
+import com.tny.game.common.math.*;
 import com.tny.game.common.number.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import org.mvel2.ParserContext;
 
@@ -18,11 +19,12 @@ public class MvelExprContext implements ExprContext {
     private final static Set<Method> methodSet = new HashSet<>();
 
     static {
-        Collections.addAll(methodSet, CollectionEx.class.getMethods());
+        Collections.addAll(methodSet, CollectionAide.class.getMethods());
+        Collections.addAll(methodSet, ArrayAide.class.getMethods());
         Collections.addAll(methodSet, Math.class.getMethods());
-        Collections.addAll(methodSet, MathEx.class.getMethods());
+        Collections.addAll(methodSet, MathAide.class.getMethods());
         Collections.addAll(methodSet, NumberAide.class.getDeclaredMethods());
-        Collections.addAll(methodSet, DateTimeEx.class.getMethods());
+        Collections.addAll(methodSet, DateTimeAide.class.getMethods());
     }
 
     public static ParserContext createParserContext() {
@@ -49,11 +51,11 @@ public class MvelExprContext implements ExprContext {
     private Map<String, Object> attributes = new CopyOnWriteMap<>();
 
     public ParserContext getParserContext() {
-        return parserContext;
+        return this.parserContext;
     }
 
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return Collections.unmodifiableMap(this.attributes);
     }
 
     @Override
@@ -79,8 +81,8 @@ public class MvelExprContext implements ExprContext {
             for (Method method : c.getMethods()) {
                 int modifiers = method.getModifiers();
                 if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)) {
-                    if (!parserContext.hasImport(method.getName()))
-                        parserContext.addImport(method.getName(), method);
+                    if (!this.parserContext.hasImport(method.getName()))
+                        this.parserContext.addImport(method.getName(), method);
                 }
             }
         }
@@ -89,13 +91,13 @@ public class MvelExprContext implements ExprContext {
 
     @Override
     public ExprContext importClassAs(String alias, Class<?> clazz) {
-        parserContext.addImport(alias, clazz);
+        this.parserContext.addImport(alias, clazz);
         return this;
     }
 
     @Override
     public ExprContext importClassesAs(Map<String, Class<?>> aliasClassMap) {
-        aliasClassMap.forEach((a, c) -> parserContext.addImport(a, c));
+        aliasClassMap.forEach((a, c) -> this.parserContext.addImport(a, c));
         return this;
     }
 

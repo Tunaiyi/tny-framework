@@ -2,7 +2,8 @@ package com.tny.game.oplog.record;
 
 import com.tny.game.common.utils.*;
 import com.tny.game.oplog.*;
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 /**
  *
@@ -38,7 +39,7 @@ public class AbstractLog implements Log {
         this.logID = logID;
         this.log = log;
         this.userOpLog = userOpLog;
-        DateTime dateTime = log.getCreateAt();
+        Instant dateTime = log.getCreateAt();
         this.date = DateTimeAide.date2Int(dateTime);
     }
 
@@ -54,7 +55,7 @@ public class AbstractLog implements Log {
 
     @Override
     public long getAt() {
-        return this.getLogAt().getMillis();
+        return this.getLogAt().toEpochMilli();
     }
 
     @Override
@@ -69,12 +70,12 @@ public class AbstractLog implements Log {
 
     @Override
     public String getPF() {
-        return userOpLog.getPF();
+        return this.userOpLog.getPF();
     }
 
     @Override
     public String getType() {
-        return type;
+        return this.type;
     }
 
     @Override
@@ -93,13 +94,13 @@ public class AbstractLog implements Log {
     }
 
     @Override
-    public DateTime getLogAt() {
+    public Instant getLogAt() {
         return this.log.getCreateAt();
     }
 
     @Override
     public String getLogId() {
-        return logID;
+        return this.logID;
     }
 
 }

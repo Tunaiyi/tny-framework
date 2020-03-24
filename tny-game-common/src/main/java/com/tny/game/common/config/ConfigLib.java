@@ -11,9 +11,9 @@ import java.util.concurrent.*;
 
 public class ConfigLib {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
+    protected static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
 
-    private static ConcurrentMap<String, PropertiesConfig> configMap = new ConcurrentHashMap<String, PropertiesConfig>();
+    private static ConcurrentMap<String, PropertiesConfig> configMap = new ConcurrentHashMap<>();
 
     private static Properties createProperties(String path, FileAlterationListener listener) {
         Properties properties = new Properties();

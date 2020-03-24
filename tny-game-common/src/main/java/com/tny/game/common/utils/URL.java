@@ -223,44 +223,44 @@ public final class URL implements Serializable {
     }
 
     public String getProtocol() {
-        return protocol;
+        return this.protocol;
     }
 
     public URL setProtocol(String protocol) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(protocol, this.username, this.password, this.host, this.port, this.path, getParameters());
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     public URL setUsername(String username) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, username, this.password, this.host, this.port, this.path, getParameters());
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public URL setPassword(String password) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, this.username, password, this.host, this.port, this.path, getParameters());
     }
 
     public String getAuthority() {
-        if ((username == null || username.length() == 0)
-            && (password == null || password.length() == 0)) {
+        if ((this.username == null || this.username.length() == 0)
+            && (this.password == null || this.password.length() == 0)) {
             return null;
         }
-        return (username == null ? "" : username)
-               + ":" + (password == null ? "" : password);
+        return (this.username == null ? "" : this.username)
+               + ":" + (this.password == null ? "" : this.password);
     }
 
     public String getHost() {
-        return host;
+        return this.host;
     }
 
     public URL setHost(String host) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, this.username, this.password, host, this.port, this.path, getParameters());
     }
 
     /**
@@ -275,26 +275,26 @@ public final class URL implements Serializable {
      * @return ip
      */
     public String getIp() {
-        if (ip == null) {
-            ip = NetAide.getIpByHost(host);
+        if (this.ip == null) {
+            this.ip = IpAide.getIpByHost(this.host);
         }
-        return ip;
+        return this.ip;
     }
 
     public int getPort() {
-        return port;
+        return this.port;
     }
 
     public URL setPort(int port) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, this.username, this.password, this.host, port, this.path, getParameters());
     }
 
     public int getPort(int defaultPort) {
-        return port <= 0 ? defaultPort : port;
+        return this.port <= 0 ? defaultPort : this.port;
     }
 
     public String getAddress() {
-        return port <= 0 ? host : host + ":" + port;
+        return this.port <= 0 ? this.host : this.host + ":" + this.port;
     }
 
     public URL setAddress(String address) {
@@ -307,7 +307,7 @@ public final class URL implements Serializable {
         } else {
             host = address;
         }
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, this.username, this.password, host, port, this.path, getParameters());
     }
 
     public String getBackupAddress() {
@@ -352,22 +352,22 @@ public final class URL implements Serializable {
     }
 
     public String getPath() {
-        return path;
+        return this.path;
     }
 
     public URL setPath(String path) {
-        return new URL(protocol, username, password, host, port, path, getParameters());
+        return new URL(this.protocol, this.username, this.password, this.host, this.port, path, getParameters());
     }
 
     public String getAbsolutePath() {
-        if (path != null && !path.startsWith("/")) {
-            return "/" + path;
+        if (this.path != null && !this.path.startsWith("/")) {
+            return "/" + this.path;
         }
-        return path;
+        return this.path;
     }
 
     public Map<String, String> getParameters() {
-        return parameters;
+        return this.parameters;
     }
 
     public String getParameterAndDecoded(String key) {
@@ -379,9 +379,9 @@ public final class URL implements Serializable {
     }
 
     public String getParameter(String key) {
-        String value = parameters.get(key);
+        String value = this.parameters.get(key);
         if (value == null || value.length() == 0) {
-            value = parameters.get(DEFAULT_KEY_PREFIX + key);
+            value = this.parameters.get(DEFAULT_KEY_PREFIX + key);
         }
         return value;
     }
@@ -403,17 +403,17 @@ public final class URL implements Serializable {
     }
 
     private Map<String, Number> getNumbers() {
-        if (numbers == null) { // 允许并发重复创建
-            numbers = new ConcurrentHashMap<>();
+        if (this.numbers == null) { // 允许并发重复创建
+            this.numbers = new ConcurrentHashMap<>();
         }
-        return numbers;
+        return this.numbers;
     }
 
     private Map<String, URL> getUrls() {
-        if (urls == null) { // 允许并发重复创建
-            urls = new ConcurrentHashMap<>();
+        if (this.urls == null) { // 允许并发重复创建
+            this.urls = new ConcurrentHashMap<>();
         }
-        return urls;
+        return this.urls;
     }
 
     public URL getUrlParameter(String key) {
@@ -536,51 +536,52 @@ public final class URL implements Serializable {
     }
 
     public boolean isLocalHost() {
-        return NetAide.isLocalHost(host) || getParameter(LOCALHOST_KEY, false);
+        return IpAide.isLocalHost(this.host) || getParameter(LOCALHOST_KEY, false);
     }
 
     public boolean isAnyHost() {
-        return ANYHOST_VALUE.equals(host) || getParameter(ANYHOST_KEY, false);
+        return ANYHOST_VALUE.equals(this.host) || getParameter(ANYHOST_KEY, false);
     }
 
     public String getRawParameter(String key) {
         if ("protocol".equals(key))
-            return protocol;
+            return this.protocol;
         if ("username".equals(key))
-            return username;
+            return this.username;
         if ("password".equals(key))
-            return password;
+            return this.password;
         if ("host".equals(key))
-            return host;
+            return this.host;
         if ("port".equals(key))
-            return String.valueOf(port);
+            return String.valueOf(this.port);
         if ("path".equals(key))
-            return path;
+            return this.path;
         return getParameter(key);
     }
 
     public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<>(parameters);
-        if (protocol != null)
-            map.put("protocol", protocol);
-        if (username != null)
-            map.put("username", username);
-        if (password != null)
-            map.put("password", password);
-        if (host != null)
-            map.put("host", host);
-        if (port > 0)
-            map.put("port", String.valueOf(port));
-        if (path != null)
-            map.put("path", path);
+        Map<String, String> map = new HashMap<>(this.parameters);
+        if (this.protocol != null)
+            map.put("protocol", this.protocol);
+        if (this.username != null)
+            map.put("username", this.username);
+        if (this.password != null)
+            map.put("password", this.password);
+        if (this.host != null)
+            map.put("host", this.host);
+        if (this.port > 0)
+            map.put("port", String.valueOf(this.port));
+        if (this.path != null)
+            map.put("path", this.path);
         return map;
     }
 
+    @Override
     public String toString() {
-        if (string != null) {
-            return string;
+        if (this.string != null) {
+            return this.string;
         }
-        return string = buildString(false, true); // no show username and password
+        return this.string = buildString(false, true); // no show username and password
     }
 
     public String toString(String... parameters) {
@@ -588,10 +589,10 @@ public final class URL implements Serializable {
     }
 
     public String toIdentityString() {
-        if (identity != null) {
-            return identity;
+        if (this.identity != null) {
+            return this.identity;
         }
-        return identity = buildString(true, false); // only return identity message, see the method "equals" and "hashCode"
+        return this.identity = buildString(true, false); // only return identity message, see the method "equals" and "hashCode"
     }
 
     public String toIdentityString(String... parameters) {
@@ -599,10 +600,10 @@ public final class URL implements Serializable {
     }
 
     public String toFullString() {
-        if (full != null) {
-            return full;
+        if (this.full != null) {
+            return this.full;
         }
-        return full = buildString(true, true);
+        return this.full = buildString(true, true);
     }
 
     public String toFullString(String... parameters) {
@@ -610,10 +611,10 @@ public final class URL implements Serializable {
     }
 
     public String toParameterString() {
-        if (parameter != null) {
-            return parameter;
+        if (this.parameter != null) {
+            return this.parameter;
         }
-        return parameter = toParameterString(new String[0]);
+        return this.parameter = toParameterString(new String[0]);
     }
 
     public String toParameterString(String... parameters) {
@@ -651,15 +652,15 @@ public final class URL implements Serializable {
 
     private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, String... parameters) {
         StringBuilder buf = new StringBuilder();
-        if (protocol != null && protocol.length() > 0) {
-            buf.append(protocol);
+        if (this.protocol != null && this.protocol.length() > 0) {
+            buf.append(this.protocol);
             buf.append("://");
         }
-        if (appendUser && username != null && username.length() > 0) {
-            buf.append(username);
-            if (password != null && password.length() > 0) {
+        if (appendUser && this.username != null && this.username.length() > 0) {
+            buf.append(this.username);
+            if (this.password != null && this.password.length() > 0) {
                 buf.append(":");
-                buf.append(password);
+                buf.append(this.password);
             }
             buf.append("@");
         }
@@ -671,9 +672,9 @@ public final class URL implements Serializable {
         }
         if (host != null && host.length() > 0) {
             buf.append(host);
-            if (port > 0) {
+            if (this.port > 0) {
                 buf.append(":");
-                buf.append(port);
+                buf.append(this.port);
             }
         }
         String path = getPath();
@@ -696,7 +697,7 @@ public final class URL implements Serializable {
     }
 
     public InetSocketAddress toInetSocketAddress() {
-        return new InetSocketAddress(host, port);
+        return new InetSocketAddress(this.host, this.port);
     }
 
     /**
@@ -739,13 +740,13 @@ public final class URL implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((host == null) ? 0 : host.hashCode());
-        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((path == null) ? 0 : path.hashCode());
-        result = prime * result + port;
-        result = prime * result + ((protocol == null) ? 0 : protocol.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        result = prime * result + ((this.host == null) ? 0 : this.host.hashCode());
+        result = prime * result + ((this.parameters == null) ? 0 : this.parameters.hashCode());
+        result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
+        result = prime * result + ((this.path == null) ? 0 : this.path.hashCode());
+        result = prime * result + this.port;
+        result = prime * result + ((this.protocol == null) ? 0 : this.protocol.hashCode());
+        result = prime * result + ((this.username == null) ? 0 : this.username.hashCode());
         return result;
     }
 
@@ -758,37 +759,37 @@ public final class URL implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         URL other = (URL) obj;
-        if (host == null) {
+        if (this.host == null) {
             if (other.host != null)
                 return false;
-        } else if (!host.equals(other.host))
+        } else if (!this.host.equals(other.host))
             return false;
-        if (parameters == null) {
+        if (this.parameters == null) {
             if (other.parameters != null)
                 return false;
-        } else if (!parameters.equals(other.parameters))
+        } else if (!this.parameters.equals(other.parameters))
             return false;
-        if (password == null) {
+        if (this.password == null) {
             if (other.password != null)
                 return false;
-        } else if (!password.equals(other.password))
+        } else if (!this.password.equals(other.password))
             return false;
-        if (path == null) {
+        if (this.path == null) {
             if (other.path != null)
                 return false;
-        } else if (!path.equals(other.path))
+        } else if (!this.path.equals(other.path))
             return false;
-        if (port != other.port)
+        if (this.port != other.port)
             return false;
-        if (protocol == null) {
+        if (this.protocol == null) {
             if (other.protocol != null)
                 return false;
-        } else if (!protocol.equals(other.protocol))
+        } else if (!this.protocol.equals(other.protocol))
             return false;
-        if (username == null) {
+        if (this.username == null) {
             if (other.username != null)
                 return false;
-        } else if (!username.equals(other.username))
+        } else if (!this.username.equals(other.username))
             return false;
         return true;
     }

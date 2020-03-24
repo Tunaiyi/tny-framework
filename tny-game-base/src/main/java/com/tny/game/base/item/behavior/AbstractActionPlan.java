@@ -50,7 +50,7 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     private Action checkAction(Action action) {
         if (this.actions.contains(action))
             return action;
-        Throws.checkNotNull(null, "{] action is null", action);
+        ThrowAide.checkNotNull(null, "{] action is null", action);
         return null;
     }
 

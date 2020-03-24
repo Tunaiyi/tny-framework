@@ -1,8 +1,8 @@
 package com.tny.game.oplog.record;
 
 import com.tny.game.oplog.*;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -23,11 +23,11 @@ public class UserStuffRecord extends AbstractLog {
     }
 
     public Collection<StuffSettleLog> getStuffLogs() {
-        return userOpLog.getStuffSettleLogs();
+        return this.userOpLog.getStuffSettleLogs();
     }
 
-    public DateTime getCreateAt() {
-        return userOpLog.getCreateAt();
+    public Instant getCreateAt() {
+        return this.userOpLog.getCreateAt();
     }
 
 }

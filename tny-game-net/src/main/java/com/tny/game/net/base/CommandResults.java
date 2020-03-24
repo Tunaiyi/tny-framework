@@ -1,7 +1,6 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.result.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.net.command.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -139,9 +138,9 @@ public class CommandResults {
 
         @Override
         public String getDescriptions() {
-            if (StringUtils.isNoneBlank(descriptions))
-                return descriptions;
-            return resultCode.getMessage();
+            if (StringUtils.isNoneBlank(this.descriptions))
+                return this.descriptions;
+            return this.resultCode.getMessage();
         }
 
         @Override

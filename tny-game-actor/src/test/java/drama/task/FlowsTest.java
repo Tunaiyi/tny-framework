@@ -2,7 +2,7 @@ package drama.task;
 
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 import org.jmock.Expectations;
 import org.junit.*;
 
@@ -21,23 +21,23 @@ public class FlowsTest extends FlowTestUnits {
 
     @Test
     public void testRun() throws Exception {
-        final Runnable fn = context.mock(Runnable.class);
-        context.checking(new Expectations() {{
+        final Runnable fn = this.context.mock(Runnable.class);
+        this.context.checking(new Expectations() {{
             oneOf(fn).run();
         }});
         checkFlow(
                 Flows.of(fn::run)
                 , true
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
 
     @Test
     public void testSupply() throws Exception {
-        final Supplier<String> fn = context.mock(Supplier.class);
+        final Supplier<String> fn = this.context.mock(Supplier.class);
 
-        context.checking(new Expectations() {{
+        this.context.checking(new Expectations() {{
             oneOf(fn).get();
             will(returnValue(value));
         }});
@@ -45,13 +45,13 @@ public class FlowsTest extends FlowTestUnits {
                 Flows.of(fn::get)
                 , true, value
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
     public void testAwaitRun() throws Exception {
-        final BooleanSupplier fn = context.mock(BooleanSupplier.class);
-        context.checking(new Expectations() {{
+        final BooleanSupplier fn = this.context.mock(BooleanSupplier.class);
+        this.context.checking(new Expectations() {{
             exactly(3).of(fn).getAsBoolean();
             will(onConsecutiveCalls(
                     returnValue(false),
@@ -63,7 +63,7 @@ public class FlowsTest extends FlowTestUnits {
                 Flows.waitUntil(fn::getAsBoolean)
                 , true
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
@@ -73,13 +73,13 @@ public class FlowsTest extends FlowTestUnits {
                 , false
         );
         assertNotNull(flow.getCause());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
     public void testAwaitSupply() throws Exception {
-        final Supplier<Done<String>> fn = context.mock(Supplier.class);
-        context.checking(new Expectations() {{
+        final Supplier<Done<String>> fn = this.context.mock(Supplier.class);
+        this.context.checking(new Expectations() {{
             exactly(3).of(fn).get();
             will(onConsecutiveCalls(
                     returnValue(DoneResults.failure()),
@@ -91,7 +91,7 @@ public class FlowsTest extends FlowTestUnits {
                 Flows.waitFor(fn::get)
                 , true, value
         );
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
@@ -103,14 +103,14 @@ public class FlowsTest extends FlowTestUnits {
                 , false, null
         );
         assertNotNull(flow.getCause());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
     }
 
     @Test
     public void yieldForFuture() throws Exception {
         final CompletableFuture<String> future = new CompletableFuture<>();
         long time = System.currentTimeMillis();
-        scheduled.schedule(() -> future.complete(value), TIME_100.toMillis(), TimeUnit.MILLISECONDS);
+        this.scheduled.schedule(() -> future.complete(value), TIME_100.toMillis(), TimeUnit.MILLISECONDS);
 
         checkFlow(
                 Flows.waitFor(future)
@@ -118,7 +118,7 @@ public class FlowsTest extends FlowTestUnits {
         );
 
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
@@ -126,7 +126,7 @@ public class FlowsTest extends FlowTestUnits {
     public void yieldForFuture1() throws Exception {
         final CompletableFuture<String> future = new CompletableFuture<>();
         long time = System.currentTimeMillis();
-        scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
+        this.scheduled.schedule(() -> future.complete(value), TIME_100.toMillis() + 1000, TimeUnit.MILLISECONDS);
 
         TypeFlow<String> flow = checkFlow(
                 Flows.waitFor(future, TIME_100)
@@ -135,7 +135,7 @@ public class FlowsTest extends FlowTestUnits {
 
         assertNotNull(flow.getCause());
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
@@ -147,7 +147,7 @@ public class FlowsTest extends FlowTestUnits {
                 , true
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 
@@ -159,7 +159,7 @@ public class FlowsTest extends FlowTestUnits {
                 , true, value
         );
         assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
-        context.assertIsSatisfied();
+        this.context.assertIsSatisfied();
 
     }
 }

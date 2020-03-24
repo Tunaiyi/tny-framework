@@ -4,7 +4,7 @@ package com.tny.game.actor.stage;
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.actor.stage.invok.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 import java.time.Duration;
 import java.util.*;
@@ -179,15 +179,15 @@ class Stages {
         }
 
         Stage<R> getStage() {
-            return stage;
+            return this.stage;
         }
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
             if (this.isDone())
                 return;
-            stage = this.invoke(returnVal, e);
-            if (stage != null) {
+            this.stage = this.invoke(returnVal, e);
+            if (this.stage != null) {
                 finish(null);
             } else {
                 fail(new NullPointerException("go on stage is null"));
@@ -216,7 +216,7 @@ class Stages {
 
         @Override
         protected Stage<T> invoke(Void returnVal, Throwable e) {
-            return fn.get();
+            return this.fn.get();
         }
 
     }
@@ -229,7 +229,7 @@ class Stages {
 
         @Override
         protected Stage<R> invoke(T returnVal, Throwable e) {
-            return fn.apply(returnVal);
+            return this.fn.apply(returnVal);
         }
 
     }
@@ -243,7 +243,7 @@ class Stages {
 
         @Override
         protected Stage<R> invoke(Void returnVal, Throwable e) {
-            return fn.stageable().stage();
+            return this.fn.stageable().stage();
         }
 
     }
@@ -256,7 +256,7 @@ class Stages {
 
         @Override
         protected Stage<R> invoke(T returnVal, Throwable e) {
-            return fn.stageable(returnVal).stage();
+            return this.fn.stageable(returnVal).stage();
         }
 
     }
@@ -269,7 +269,7 @@ class Stages {
 
         @Override
         protected Stage<T> invoke(Void returnVal, Throwable e) {
-            return waitFor(fn.get());
+            return waitFor(this.fn.get());
         }
 
     }
@@ -282,7 +282,7 @@ class Stages {
 
         @Override
         protected Stage<Void> invoke(Void returnVal, Throwable e) {
-            return waitUntil(fn.get());
+            return waitUntil(this.fn.get());
         }
 
     }
@@ -295,7 +295,7 @@ class Stages {
 
         @Override
         protected Stage<Void> invoke(R returnVal, Throwable e) {
-            return waitUntil(fn.apply(returnVal));
+            return waitUntil(this.fn.apply(returnVal));
         }
 
 
@@ -309,7 +309,7 @@ class Stages {
 
         @Override
         protected Stage<T> invoke(R returnVal, Throwable e) {
-            return waitFor(fn.apply(returnVal));
+            return waitFor(this.fn.apply(returnVal));
         }
 
     }
@@ -325,7 +325,7 @@ class Stages {
 
         @Override
         protected Void invoke(Void returnVal, Throwable e) {
-            fn.run();
+            this.fn.run();
             return null;
         }
     }
@@ -340,7 +340,7 @@ class Stages {
 
         @Override
         protected T invoke(Void returnVal, Throwable e) {
-            return fn.get();
+            return this.fn.get();
         }
     }
     //endregion
@@ -354,7 +354,7 @@ class Stages {
 
         @Override
         protected R invoke(T returnVal, Throwable e) {
-            return fn.apply(returnVal);
+            return this.fn.apply(returnVal);
         }
     }
     //endregion
@@ -369,7 +369,7 @@ class Stages {
 
         @Override
         protected Void invoke(T returnVal, Throwable e) {
-            fn.accept(returnVal);
+            this.fn.accept(returnVal);
             return null;
         }
     }
@@ -420,7 +420,7 @@ class Stages {
 
         @Override
         protected Void invoke(Void returnVal, Throwable e) {
-            fn.run(isSuccess(e), e);
+            this.fn.run(isSuccess(e), e);
             return null;
         }
 
@@ -434,7 +434,7 @@ class Stages {
 
         @Override
         protected NR invoke(Void returnVal, Throwable e) {
-            return fn.handle(isSuccess(e), e);
+            return this.fn.handle(isSuccess(e), e);
         }
 
     }
@@ -447,7 +447,7 @@ class Stages {
 
         @Override
         protected NR invoke(NV returnVal, Throwable e) {
-            return fn.handle(isSuccess(e), returnVal, e);
+            return this.fn.handle(isSuccess(e), returnVal, e);
         }
 
     }
@@ -460,7 +460,7 @@ class Stages {
 
         @Override
         protected Void invoke(NV returnVal, Throwable e) {
-            fn.handle(isSuccess(e), returnVal, e);
+            this.fn.handle(isSuccess(e), returnVal, e);
             return null;
         }
 
@@ -512,7 +512,7 @@ class Stages {
 
         @Override
         protected Void invoke(Void returnVal, Throwable e) {
-            fn.catchThrow(e);
+            this.fn.catchThrow(e);
             return null;
         }
 
@@ -526,7 +526,7 @@ class Stages {
 
         @Override
         protected T invoke(Void returnVal, Throwable e) {
-            return fn.catchThrow(e);
+            return this.fn.catchThrow(e);
         }
     }
 
@@ -570,13 +570,13 @@ class Stages {
         protected void doExecute(T returnVal, Throwable e) {
             if (isFailed(e) || this.isDone())
                 return;
-            if (duration != null && timeout == -1)
-                this.timeout = System.currentTimeMillis() + duration.toMillis();
+            if (this.duration != null && this.timeout == -1)
+                this.timeout = System.currentTimeMillis() + this.duration.toMillis();
             invoke(returnVal, null);
         }
 
         void checkTimeout() {
-            if (timeout > 0 && System.currentTimeMillis() > timeout)
+            if (this.timeout > 0 && System.currentTimeMillis() > this.timeout)
                 throw new StageTimeoutException("等待任务超时");
         }
 
@@ -613,7 +613,7 @@ class Stages {
 
         @Override
         protected Boolean invoke(Void returnVal, Throwable e) {
-            return checkBoolean(fn.isCompleted());
+            return checkBoolean(this.fn.isCompleted());
         }
 
     }
@@ -626,7 +626,7 @@ class Stages {
 
         @Override
         protected R invoke(Void returnVal, Throwable e) {
-            return checkDone(fn.getDone());
+            return checkDone(this.fn.getDone());
         }
 
     }
@@ -649,7 +649,7 @@ class Stages {
 
         @Override
         protected List<R> invoke(Void returnVal, Throwable e) {
-            return checkDone(fn.get());
+            return checkDone(this.fn.get());
         }
 
     }
@@ -673,7 +673,7 @@ class Stages {
 
         @Override
         protected Map<K, R> invoke(Void returnVal, Throwable e) {
-            return checkDone(fn.get());
+            return checkDone(this.fn.get());
         }
 
     }
@@ -686,7 +686,7 @@ class Stages {
 
         @Override
         protected R invoke(T returnVal, Throwable e) {
-            return checkDone(fn.apply(returnVal));
+            return checkDone(this.fn.apply(returnVal));
         }
 
     }
@@ -699,7 +699,7 @@ class Stages {
 
         @Override
         protected Boolean invoke(T returnVal, Throwable e) {
-            return checkBoolean(fn.test(returnVal));
+            return checkBoolean(this.fn.test(returnVal));
         }
 
     }

@@ -8,9 +8,9 @@ import com.tny.game.suite.core.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.*;
-import org.joda.time.*;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -40,7 +40,7 @@ public class ServerOutline {
     @ProtoExField(6)
     private String openDate;
 
-    private volatile DateTime openDateTime;
+    private volatile Instant openDateTime;
 
     private volatile LocalDate openLocalDate;
 
@@ -110,23 +110,23 @@ public class ServerOutline {
     }
 
     public String getServerScope() {
-        return serverScope;
+        return this.serverScope;
     }
 
     public List<InetConnector> getPublicConnectors() {
-        if (publicConnectors == null)
+        if (this.publicConnectors == null)
             return ImmutableList.of();
-        return publicConnectors;
+        return this.publicConnectors;
     }
 
     public List<InetConnector> getPrivateConnectors() {
-        if (privateConnectors == null)
+        if (this.privateConnectors == null)
             return ImmutableList.of();
-        return privateConnectors;
+        return this.privateConnectors;
     }
 
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     public void checkConnectors() {
@@ -220,14 +220,14 @@ public class ServerOutline {
     public LocalDate getOpenLocalDate() {
         if (this.openLocalDate != null)
             return this.openLocalDate;
-        this.openLocalDate = new LocalDate(this.getOpenDateTime());
+        this.openLocalDate = LocalDate.from(this.getOpenDateTime());
         return this.openLocalDate;
     }
 
-    public DateTime getOpenDateTime() {
+    public Instant getOpenDateTime() {
         if (this.openDateTime != null)
             return this.openDateTime;
-        this.openDateTime = DateTime.parse(this.openDate, DateTimeAide.DATE_TIME_MIN_FORMAT);
+        this.openDateTime = Instant.from(DateTimeAide.DATE_TIME_MIN_FORMAT.parse(this.openDate));
         return this.openDateTime;
     }
 
@@ -243,8 +243,8 @@ public class ServerOutline {
         return this.db;
     }
 
-    public ServerOutline setOpenDate(DateTime openDate) {
-        this.openDate = openDate.toString(DateTimeAide.DATE_TIME_MIN_FORMAT);
+    public ServerOutline setOpenDate(Instant openDate) {
+        this.openDate = DateTimeAide.DATE_TIME_MIN_FORMAT.format(openDate);
         return this;
     }
 

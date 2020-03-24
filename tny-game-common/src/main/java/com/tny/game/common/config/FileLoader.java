@@ -9,11 +9,11 @@ import java.util.*;
 
 public abstract class FileLoader implements Reloadable, NoticeReload {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
 
     private final String MODEL_PATH;
 
-    private Set<Reloadable> loadAfterList = new HashSet<Reloadable>();
+    private Set<Reloadable> loadAfterList = new HashSet<>();
 
     private boolean load = false;
     private boolean deleted = false;
@@ -23,7 +23,7 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
     }
 
     protected String getPath() {
-        return MODEL_PATH;
+        return this.MODEL_PATH;
     }
 
     public void load() throws Exception {

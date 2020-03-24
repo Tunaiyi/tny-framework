@@ -41,7 +41,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      * @return 构建器
      */
     public B setModel(IM model) {
-        Throws.checkNotNull(model);
+        ThrowAide.checkNotNull(model);
         this.itemModel = model;
         return (B) this;
     }

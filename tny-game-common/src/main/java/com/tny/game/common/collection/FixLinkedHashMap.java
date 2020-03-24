@@ -22,7 +22,7 @@ public class FixLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     }
 
     public static void main(String[] args) {
-        FixLinkedHashMap<Integer, String> map = new FixLinkedHashMap<Integer, String>(5);
+        FixLinkedHashMap<Integer, String> map = new FixLinkedHashMap<>(5);
         for (int index = 0; index < 10; index++) {
             map.put(index, "第" + index + "个");
             System.out.println(map);

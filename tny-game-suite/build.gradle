@@ -13,6 +13,7 @@ dependencies {
     api libs.spring_boot_autoconfigure
     api libs.spring_boot_configuration_processor
 
+    api project(":tny-game-common-scheduler")
     api project(":tny-game-expr-mvel")
     api project(":tny-game-base")
     api project(":tny-game-net-netty4")

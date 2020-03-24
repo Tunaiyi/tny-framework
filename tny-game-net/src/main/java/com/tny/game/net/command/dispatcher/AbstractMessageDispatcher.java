@@ -74,7 +74,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
 
     @Override
     public AppContext getAppContext() {
-        return appContext;
+        return this.appContext;
     }
 
     @Override
@@ -108,23 +108,23 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     public AuthenticateValidator getValidator(Object protocol, Class<? extends AuthenticateValidator> validatorClass) {
         AuthenticateValidator<Object> validator = null;
         if (validatorClass != null) {
-            validator = as(authValidators.get(validatorClass));
-            Throws.checkNotNull(validator, "{} 认证器不存在", validatorClass);
+            validator = as(this.authValidators.get(validatorClass));
+            ThrowAide.checkNotNull(validator, "{} 认证器不存在", validatorClass);
         }
         if (validator == null) {
-            validator = as(authValidators.getOrDefault(protocol, defaultValidator));
+            validator = as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
         }
         return validator;
     }
 
     @Override
     public List<DispatchCommandListener> getDispatchListeners() {
-        return Collections.unmodifiableList(dispatchListeners);
+        return Collections.unmodifiableList(this.dispatchListeners);
     }
 
     @Override
     public EndpointKeeperManager getEndpointKeeperManager() {
-        return endpointKeeperManager;
+        return this.endpointKeeperManager;
     }
 
     protected AbstractMessageDispatcher setEndpointKeeperManager(EndpointKeeperManager endpointKeeperManager) {
@@ -186,7 +186,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                Throws.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, defaultValidator.getClass());
+                ThrowAide.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, this.defaultValidator.getClass());
                 this.defaultValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {
@@ -222,7 +222,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      */
     protected void addController(Object object) {
         Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
-        final ClassControllerHolder holder = new ClassControllerHolder(object, this, exprHolderFactory);
+        final ClassControllerHolder holder = new ClassControllerHolder(object, this, this.exprHolderFactory);
         for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
             MethodControllerHolder controller = entry.getValue();
             Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
@@ -237,7 +237,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     private <K, V> void putObject(Map<K, V> map, K key, V value) {
         V oldValue = map.put(key, value);
         if (oldValue != null)
-            Throws.throwException(IllegalArgumentException::new,
+            ThrowAide.throwException(IllegalArgumentException::new,
                     "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
     }
 

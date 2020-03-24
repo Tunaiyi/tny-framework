@@ -15,38 +15,38 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public void set(N number) {
-        Throws.checkNotNull(number, "number is null");
+        ThrowAide.checkNotNull(number, "number is null");
         this.number = number;
     }
 
     public N add(int num) {
         int value = this.number.intValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(long num) {
         long value = this.number.longValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(float num) {
         float value = this.number.floatValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(double num) {
         double value = this.number.doubleValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(short num) {
         int value = this.number.shortValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(byte num) {
         int value = this.number.byteValue() + num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N add(LocalNum<?> num) {
@@ -59,32 +59,32 @@ public class LocalNum<N extends Number> extends Number {
 
     public N sub(int num) {
         int value = this.number.intValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(long num) {
         long value = this.number.longValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(float num) {
         float value = this.number.floatValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(double num) {
         double value = this.number.doubleValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(short num) {
         int value = this.number.shortValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(byte num) {
         int value = this.number.byteValue() - num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N sub(LocalNum<?> num) {
@@ -93,32 +93,32 @@ public class LocalNum<N extends Number> extends Number {
 
     public N multiply(int num) {
         int value = this.number.intValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(long num) {
         long value = this.number.longValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(float num) {
         float value = this.number.floatValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(double num) {
         double value = this.number.doubleValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(short num) {
         int value = this.number.shortValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(byte num) {
         int value = this.number.byteValue() * num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N multiply(LocalNum<?> num) {
@@ -127,27 +127,27 @@ public class LocalNum<N extends Number> extends Number {
 
     public N divide(int num) {
         int value = this.number.intValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N divide(long num) {
         long value = this.number.longValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N divide(float num) {
         float value = this.number.floatValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N divide(double num) {
         double value = this.number.doubleValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N divide(short num) {
         int value = this.number.shortValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N divide(LocalNum<?> num) {
@@ -156,37 +156,37 @@ public class LocalNum<N extends Number> extends Number {
 
     public N divide(byte num) {
         int value = this.number.byteValue() / num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(int num) {
         int value = this.number.intValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(long num) {
         long value = this.number.longValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(float num) {
         float value = this.number.floatValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(double num) {
         double value = this.number.doubleValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(short num) {
         int value = this.number.shortValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(byte num) {
         int value = this.number.byteValue() % num;
-        return number = NumberAide.as(value, this.number);
+        return this.number = NumberAide.as(value, this.number);
     }
 
     public N mod(LocalNum<?> num) {
@@ -194,27 +194,27 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N getNumber() {
-        return number;
+        return this.number;
     }
 
     @Override
     public int intValue() {
-        return number.intValue();
+        return this.number.intValue();
     }
 
     @Override
     public long longValue() {
-        return number.longValue();
+        return this.number.longValue();
     }
 
     @Override
     public float floatValue() {
-        return number.floatValue();
+        return this.number.floatValue();
     }
 
     @Override
     public double doubleValue() {
-        return number.doubleValue();
+        return this.number.doubleValue();
     }
 
 }

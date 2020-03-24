@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractWorkerCommandBox<C extends Command, CB extends CommandBox> extends WorkerCommandBox<C, CB> {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Logs.WORKER);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER);
 
     protected volatile Queue<C> queue;
 
@@ -19,7 +19,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
     protected abstract Queue<C> acceptQueue();
 
     protected Queue<C> getQueue() {
-        return queue;
+        return this.queue;
     }
 
     @Override
@@ -88,12 +88,12 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     public void clear() {
-        queue.clear();
+        this.queue.clear();
     }
 
     @Override
     public boolean isEmpty() {
-        if (!queue.isEmpty())
+        if (!this.queue.isEmpty())
             return false;
         for (CommandBox box : boxes()) {
             if (!box.isEmpty())
@@ -104,7 +104,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     public int size() {
-        return queue.size();
+        return this.queue.size();
     }
 
     @Override

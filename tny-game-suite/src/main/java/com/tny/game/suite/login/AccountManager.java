@@ -2,11 +2,11 @@ package com.tny.game.suite.login;
 
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.login.dao.*;
-import org.joda.time.DateTime;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.Instant;
 import java.util.*;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -69,28 +69,28 @@ public class AccountManager {
     // }
 
     public void updateOfflineAt(Account accountObj) {
-        DateTime dateTime = accountObj.getOfflineTime();
+        Instant dateTime = accountObj.getOfflineTime();
         if (dateTime == null)
-            dateTime = DateTime.now();
-        this.accountDAO.updateOfflineAt(accountObj.getUid(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
+            dateTime = Instant.now();
+        this.accountDAO.updateOfflineAt(accountObj.getUid(), DateTimeAide.date2Int(dateTime), dateTime.toEpochMilli());
     }
 
     public void updateOnlineAt(Account account, GameTicket ticket) {
-        DateTime dateTime = account.getOnlineTime();
+        Instant dateTime = account.getOnlineTime();
         if (dateTime == null)
-            dateTime = DateTime.now();
+            dateTime = Instant.now();
         this.accountDAO.updateOnlineAt(
                 account.getUid(),
                 DateTimeAide.date2Int(dateTime),
-                dateTime.getMillis(), ticket.getPf(), ticket.getDevice(), ticket.getDeviceId());
+                dateTime.toEpochMilli(), ticket.getPf(), ticket.getDevice(), ticket.getDeviceId());
     }
 
     public void updateCreateRole(Account account) {
-        DateTime dateTime = account.getCreateDateTime();
+        Instant dateTime = account.getCreateDateTime();
         if (dateTime == null)
             return;
         this.accountDAO.updateCreateRole(
-                account.getUid(), account.getName(), DateTimeAide.date2Int(dateTime), dateTime.getMillis());
+                account.getUid(), account.getName(), DateTimeAide.date2Int(dateTime), dateTime.toEpochMilli());
     }
 
     public void updateName(Account account) {

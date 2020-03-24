@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ class ActorCallUntilCommand<T> extends BaseActorCommand<T> {
     @Override
     @SuppressWarnings("unchecked")
     protected Done<T> doHandle() throws Exception {
-        return this.function.apply(actorCell.getActor());
+        return this.function.apply(this.actorCell.getActor());
     }
 
 }

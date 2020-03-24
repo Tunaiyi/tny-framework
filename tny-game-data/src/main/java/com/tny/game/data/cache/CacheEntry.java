@@ -42,8 +42,8 @@ public class CacheEntry<K extends Comparable<K>, O> {
 
 
     CacheEntry(K id, O object, boolean replaceable, ReleaseStrategy<K, O> releaseStrategy) {
-        this.setValue(Throws.checkNotNull(id, "{} id is null", object),
-                Throws.checkNotNull(object, "{} value is null", id));
+        this.setValue(ThrowAide.checkNotNull(id, "{} id is null", object),
+                ThrowAide.checkNotNull(object, "{} value is null", id));
         this.releaseStrategy = releaseStrategy;
         this.replaceable = replaceable;
         this.visit();
@@ -55,11 +55,11 @@ public class CacheEntry<K extends Comparable<K>, O> {
     }
 
     public K getKey() {
-        return id;
+        return this.id;
     }
 
     public boolean isReplaceable() {
-        return replaceable;
+        return this.replaceable;
     }
 
     public O getObject() {
@@ -83,8 +83,8 @@ public class CacheEntry<K extends Comparable<K>, O> {
      * @return 返回是否替换成功
      */
     boolean replace(K id, O object) {
-        Throws.checkArgument(this.id.equals(id), "current id {} not equals id {}", this.id, id);
-        lock.lock();
+        ThrowAide.checkArgument(this.id.equals(id), "current id {} not equals id {}", this.id, id);
+        this.lock.lock();
         try {
             if (!this.tryVisit())
                 return false;
@@ -95,7 +95,7 @@ public class CacheEntry<K extends Comparable<K>, O> {
             }
             return true;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
 
     }
@@ -106,7 +106,7 @@ public class CacheEntry<K extends Comparable<K>, O> {
      * @return 返回对象
      */
     O visit() {
-        lock.lock();
+        this.lock.lock();
         try {
             O returnObject = this.object.get();
             if (returnObject != null) {
@@ -115,7 +115,7 @@ public class CacheEntry<K extends Comparable<K>, O> {
             }
             return returnObject;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -125,7 +125,7 @@ public class CacheEntry<K extends Comparable<K>, O> {
      * @return 释放成功返回true，失败返回false
      */
     boolean release(long releaseAt) {
-        lock.lock();
+        this.lock.lock();
         try {
             Object object = this.holdObject;
             if ((object != null && this.releaseStrategy.release(this, releaseAt))) {
@@ -133,7 +133,7 @@ public class CacheEntry<K extends Comparable<K>, O> {
             }
             return this.object.get() == null;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 
@@ -144,12 +144,12 @@ public class CacheEntry<K extends Comparable<K>, O> {
      * @return 释放成功返回true，失败返回false
      */
     void forceRelease() {
-        lock.lock();
+        this.lock.lock();
         try {
             this.object.clear();
             this.holdObject = null;
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 

@@ -11,7 +11,7 @@ public class ImmutableEntry<K, V> implements Entry<K, V>, Serializable {
     private final V value;
 
     public static <K, V> ImmutableEntry<K, V> entry(K key, V value) {
-        return new ImmutableEntry<K, V>(key, value);
+        return new ImmutableEntry<>(key, value);
     }
 
     private ImmutableEntry(K key, V value) {
@@ -21,12 +21,12 @@ public class ImmutableEntry<K, V> implements Entry<K, V>, Serializable {
 
     @Override
     public final K getKey() {
-        return key;
+        return this.key;
     }
 
     @Override
     public final V getValue() {
-        return value;
+        return this.value;
     }
 
     @Override

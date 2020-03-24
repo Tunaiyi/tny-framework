@@ -49,20 +49,20 @@ public class IterableAide {
 
         @Override
         public boolean hasNext() {
-            return origIterator.hasNext();
+            return this.origIterator.hasNext();
         }
 
         @Override
         public N next() {
-            O value = origIterator.next();
+            O value = this.origIterator.next();
             if (value != null)
-                return fn.apply(value);
+                return this.fn.apply(value);
             return null;
         }
 
         @Override
         public void remove() {
-            origIterator.remove();
+            this.origIterator.remove();
         }
 
     }
@@ -81,7 +81,7 @@ public class IterableAide {
 
         @Override
         public Iterator<N> iterator() {
-            return new ConvertIterator<O, N>(origIterable, fn);
+            return new ConvertIterator<>(this.origIterable, this.fn);
         }
 
     }

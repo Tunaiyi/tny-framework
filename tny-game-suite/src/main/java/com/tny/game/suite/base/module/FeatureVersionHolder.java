@@ -2,7 +2,7 @@ package com.tny.game.suite.base.module;
 
 import com.tny.game.common.config.*;
 import com.tny.game.common.event.*;
-import com.tny.game.common.utils.version.*;
+import com.tny.game.common.version.*;
 import com.tny.game.suite.base.module.event.*;
 import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
@@ -86,7 +86,7 @@ public class FeatureVersionHolder {
     }
 
     private Version getVersion() {
-        return version;
+        return this.version;
     }
 
     private FeatureVersionHolder setVersion(Version version) {
@@ -95,7 +95,7 @@ public class FeatureVersionHolder {
     }
 
     private Version getDevVersion() {
-        return devVersion;
+        return this.devVersion;
     }
 
     private FeatureVersionHolder setDevVersion(Version devVersion) {
@@ -104,7 +104,7 @@ public class FeatureVersionHolder {
     }
 
     private Version getDefVersion() {
-        return defVersion;
+        return this.defVersion;
     }
 
     private FeatureVersionHolder setDefVersion(Version defVersion) {

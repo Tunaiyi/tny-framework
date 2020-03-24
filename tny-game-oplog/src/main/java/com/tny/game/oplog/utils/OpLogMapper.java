@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.protobuf.Message;
-import com.tny.game.common.protobuf.*;
 import com.tny.game.oplog.*;
+import com.tny.game.protobuf.format.*;
 import org.slf4j.*;
 
 import java.io.IOException;

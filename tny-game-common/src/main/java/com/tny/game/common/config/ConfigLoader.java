@@ -10,7 +10,7 @@ import java.text.MessageFormat;
 
 public class ConfigLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Logs.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
 
     private static FileMonitor MONITOR = null;
 
@@ -90,7 +90,7 @@ public class ConfigLoader {
     // }
 
     public static void main(String[] args) {
-        LOG.debug("add{}bs{}ss{}s", Logs.msg("a", "d", "D"));
+        LOG.debug("add{}bs{}ss{}s", LogAide.msg("a", "d", "D"));
     }
 
 }

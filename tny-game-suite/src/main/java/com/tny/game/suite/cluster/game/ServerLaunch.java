@@ -5,7 +5,8 @@ import com.tny.game.common.utils.*;
 import com.tny.game.protobuf.PBCommon.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.*;
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 @ProtoEx(SuiteProtoIDs.CLUSTER_$SERVER_LAUNCH)
 public class ServerLaunch {
@@ -22,9 +23,9 @@ public class ServerLaunch {
 
     public ServerLaunch(int serverID) {
         this.serverID = serverID;
-        DateTime current = DateTime.now();
-        this.launchDate = current.toString(DateTimeAide.DISPLAY_DATE_FORMAT);
-        this.launchTime = current.toString(DateTimeAide.TIME_FORMAT);
+        Instant current = Instant.now();
+        this.launchDate = DateTimeAide.DISPLAY_DATE_FORMAT.format(current);
+        this.launchTime = DateTimeAide.TIME_FORMAT.format(current);
     }
 
     public int getServerId() {

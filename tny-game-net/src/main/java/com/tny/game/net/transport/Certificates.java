@@ -15,32 +15,32 @@ public final class Certificates {
     public static final String UNLOGIN_USER_TYPE = "#UNLOGIN";
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return createAutherized(id, userID, DEFAULT_USER_TYPE, Instant.now());
     }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, String userType) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return createAutherized(id, userID, userType, Instant.now());
     }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, Instant authenticateAt) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return createAutherized(id, userID, DEFAULT_USER_TYPE, authenticateAt);
     }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, String userType, Instant authenticateAt) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return new CommonCertificate<>(id, userID, userType, AUTHERIZED, authenticateAt);
     }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, Instant authenticateAt, boolean renew) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return createAutherized(id, userID, DEFAULT_USER_TYPE, authenticateAt, renew);
     }
 
     public static <UID> CommonCertificate<UID> createAutherized(long id, UID userID, String userType, Instant authenticateAt, boolean renew) {
-        Throws.checkArgument(id > 0, "loginId must > 0");
+        ThrowAide.checkArgument(id > 0, "loginId must > 0");
         return new CommonCertificate<>(id, userID, userType, renew ? RENEW : AUTHERIZED, authenticateAt);
     }
 
@@ -82,7 +82,7 @@ public final class Certificates {
 
         @Override
         public long getId() {
-            return id;
+            return this.id;
         }
 
         @Override
@@ -122,12 +122,12 @@ public final class Certificates {
 
         @Override
         public Instant getCreateAt() {
-            return createAt;
+            return this.createAt;
         }
 
         @Override
         public CertificateStatus getStatus() {
-            return status;
+            return this.status;
         }
 
         @Override
@@ -150,9 +150,9 @@ public final class Certificates {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("userId", userId)
-                              .add("userType", userType)
-                              .add("id", id)
+                              .add("userId", this.userId)
+                              .add("userType", this.userType)
+                              .add("id", this.id)
                               .toString();
         }
 

@@ -19,13 +19,13 @@ public class EmptyImmutableList<V> implements List<V> {
     }
 
     private List<V> getWriter() {
-        if (list instanceof ImmutableList)
-            this.list = creator != null ? creator.get() : new ArrayList<>();
+        if (this.list instanceof ImmutableList)
+            this.list = this.creator != null ? this.creator.get() : new ArrayList<>();
         return this.list;
     }
 
     private List<V> getReader() {
-        if (list == null)
+        if (this.list == null)
             this.list = ImmutableList.of();
         return this.list;
     }

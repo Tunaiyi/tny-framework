@@ -1,4 +1,4 @@
-// package com.tny.game.common.utils.digest;
+package com.tny.game.common.utils.digest;// package com.tny.game.common.utils.digest;
 //
 // import org.apache.commons.lang3.StringUtils;
 // import org.slf4j.Logger;

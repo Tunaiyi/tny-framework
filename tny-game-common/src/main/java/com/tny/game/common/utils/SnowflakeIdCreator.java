@@ -1,8 +1,8 @@
 package com.tny.game.common.utils;
 
-import org.joda.time.DateTime;
 import org.slf4j.*;
 
+import java.time.*;
 import java.util.concurrent.locks.StampedLock;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -14,7 +14,8 @@ public class SnowflakeIdCreator {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SnowflakeIdCreator.class);
 
-    private final static long BASE_TIME = new DateTime(2016, 1, 1, 0, 0, 0, 0).getMillis();
+    private final static long BASE_TIME = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
+                                                       .toInstant().toEpochMilli();
 
     private final static long DEFAULT_WORKER_ID_BITS = 12;
     private final static long DEFAULT_SEQUENCE_BITS = 10;
@@ -60,9 +61,9 @@ public class SnowflakeIdCreator {
     }
 
     public SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits) {
-        Throws.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
+        ThrowAide.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
         long maxWorkerID = ~(-1L << workerIDBits);
-        Throws.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
+        ThrowAide.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
         this.sequenceMask = ~(-1L << sequenceBits);
         this.workerIdShift = sequenceBits;
         this.timestampShift = sequenceBits + workerIDBits;

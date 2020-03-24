@@ -1,11 +1,12 @@
 package com.tny.game.common.utils.version;
 
+import com.tny.game.common.version.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
 
 import java.util.Arrays;
 
-import static com.tny.game.common.utils.version.Version.*;
+import static com.tny.game.common.version.Version.*;
 import static org.junit.Assert.*;
 
 /**

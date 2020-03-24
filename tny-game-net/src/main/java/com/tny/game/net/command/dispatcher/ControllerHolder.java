@@ -62,7 +62,7 @@ public abstract class ControllerHolder {
         if (executor == null)
             throw new IllegalArgumentException("executor is null");
         this.controllerClass = executor.getClass();
-        Throws.checkNotNull(controller, "{} controller is null", this.controllerClass);
+        ThrowAide.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.controller = controller;
         this.auth = auth;
         if (this.auth != null && this.auth.enable())
@@ -100,7 +100,7 @@ public abstract class ControllerHolder {
         for (A pluginAnnotation : pluginAnnotations) {
             Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
             final CommandPlugin plugin = context.getPlugin(pluginClass);
-            Throws.checkNotNull(plugin, "{} plugin is null", pluginClass);
+            ThrowAide.checkNotNull(plugin, "{} plugin is null", pluginClass);
             plugins.add(holderFatory.create(this, plugin, pluginAnnotation, exprHolderFactory));
         }
         return ImmutableList.copyOf(plugins);
@@ -123,7 +123,7 @@ public abstract class ControllerHolder {
     }
 
     public Class<?> getControllerClass() {
-        return controllerClass;
+        return this.controllerClass;
     }
 
     public boolean isUserGroup(String group) {
@@ -170,7 +170,7 @@ public abstract class ControllerHolder {
     public abstract List<Annotation> getParamAnnotationsByIndex(int index);
 
     public Set<MessageMode> getMessageModes() {
-        return messageModes;
+        return this.messageModes;
     }
 
     public abstract boolean isParamsAnnotationExist(Class<? extends Annotation> clazz);

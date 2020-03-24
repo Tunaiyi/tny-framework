@@ -14,6 +14,12 @@ dependencies {
 //            gradleApi(),
 //            libs.'groovy-all',
     api project(":tny-game-net")
+    api libs.xstream
+    api project(":tny-game-doc-annotation")
+    api project(":tny-game-common")
     api project(":tny-game-scanning")
+    api libs.jackson_core
+    api libs.jackson_databind
+    api libs.jackson_annotations
 
 }

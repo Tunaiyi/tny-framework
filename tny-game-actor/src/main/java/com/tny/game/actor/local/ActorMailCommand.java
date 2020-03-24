@@ -2,7 +2,7 @@ package com.tny.game.actor.local;
 
 
 import com.tny.game.actor.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 
 /**
  * Actor Message 命令
@@ -27,7 +27,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     protected Done<T> doHandle() {
-        return DoneResults.successNullable((T) actorCell.handle(this));
+        return DoneResults.successNullable((T) this.actorCell.handle(this));
     }
 
     @Override

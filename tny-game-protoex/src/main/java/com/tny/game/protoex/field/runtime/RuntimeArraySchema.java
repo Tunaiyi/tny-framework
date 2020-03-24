@@ -29,7 +29,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     @Override
     public void writeMessage(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
         if (array != null)
-            Throws.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+            ThrowAide.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
         if (array == null || Array.getLength(array) == 0)
             return;
         this.writeTag(outputStream, conf);
@@ -39,7 +39,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     @Override
     public void writeValue(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
         if (array != null)
-            Throws.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+            ThrowAide.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
         if (array == null || Array.getLength(array) == 0)
             return;
         if (!(conf instanceof RepeatIOConfiger))

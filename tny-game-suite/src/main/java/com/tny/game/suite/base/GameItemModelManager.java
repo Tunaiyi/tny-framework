@@ -55,12 +55,12 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
             throws IOException, InstantiationException, IllegalAccessException {
         super.loadAndInitModel(path, inputStream, reload);
         this.itemTypes = ImmutableSet.copyOf(this.modelMap.values().stream()
-                                                          .map(m -> Throws.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
+                                                          .map(m -> ThrowAide.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
                                                           .collect(Collectors.toSet()));
     }
 
     @Override
     public Set<ItemType> manageTypes() {
-        return itemTypes;
+        return this.itemTypes;
     }
 }

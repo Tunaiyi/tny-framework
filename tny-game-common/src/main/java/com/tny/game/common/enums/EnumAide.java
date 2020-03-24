@@ -20,17 +20,17 @@ public class EnumAide extends EnumUtils {
     private static final Map<Class<?>, Map<String, Object>> enumMap = new CopyOnWriteMap<>();
 
     public static <I, E extends EnumIdentifiable<I>> E of(Class<E> enumClass, I id) {
-        return Throws.checkNotNull(uncheckOf(enumClass, id),
+        return ThrowAide.checkNotNull(uncheckOf(enumClass, id),
                 "ID 为 {} 的 {} 枚举实例不存在", id, enumClass);
     }
 
     public static <E> E ofName(Class<E> enumClass, String name) {
-        return Throws.checkNotNull(uncheckOfName(enumClass, name),
+        return ThrowAide.checkNotNull(uncheckOfName(enumClass, name),
                 "ID 为 {} 的 {} 枚举实例不存在", name, enumClass);
     }
 
     public static <E extends Enum<E>, S> E of(Class<E> enumClass, Function<E, S> getter, S value) {
-        return Throws.checkNotNull(uncheckOf(enumClass, getter, value),
+        return ThrowAide.checkNotNull(uncheckOf(enumClass, getter, value),
                 "{} 为 {} 的 {} 枚举实例不存在", getter, value, enumClass);
     }
 

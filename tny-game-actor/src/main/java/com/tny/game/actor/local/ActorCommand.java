@@ -1,7 +1,7 @@
 package com.tny.game.actor.local;
 
 import com.tny.game.actor.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.result.*;
 import com.tny.game.common.worker.command.*;
 
 /**
@@ -35,7 +35,7 @@ public abstract class ActorCommand<T> implements Command {
     public void execute() {
         if (isDone())
             return;
-        actorCell.execute(this);
+        this.actorCell.execute(this);
     }
 
     @Override

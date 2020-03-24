@@ -1,11 +1,11 @@
 package com.tny.game.expr.luaj;
 
-import com.tny.game.common.formula.*;
+import com.tny.game.common.math.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.jsr223.*;
-import org.joda.time.DateTime;
 
 import javax.script.ScriptException;
+import java.time.Instant;
 
 /**
  * Created by Kun Yang on 2018/5/24.
@@ -41,14 +41,14 @@ public class LuajExprHolderFactory extends ScriptExprHolderFactory {
     public static void main(String[] args) throws ScriptException {
         LuajExprHolderFactory factory = new LuajExprHolderFactory();
         factory.getContext()
-               .importClasses(DateTime.class)
-               .importClasses(MathEx.class);
+               .importClasses(Instant.class)
+               .importClasses(MathAide.class);
         // .importStaticClasses(MathEx.class)
         // .importClassAs("S", String.class);
         ExprHolder holder = factory
                 .create("return today:getMillis()..(a + 100)..' '..tostring(DateTime:now())..'---'..MathEx:rand(200)..' or '..MathEx:rand(1, 200);");
         System.out.println(holder.createExpr()
-                                 .put("today", new DateTime())
+                                 .put("today", Instant.now())
                                  .put("a", 2000).execute(Object.class));
 
         String fibonacci = "local index; \n" +

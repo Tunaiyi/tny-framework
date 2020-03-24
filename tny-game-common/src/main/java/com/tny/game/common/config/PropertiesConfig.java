@@ -1,7 +1,6 @@
 package com.tny.game.common.config;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.tny.game.common.utils.json.*;
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -11,8 +10,8 @@ import java.util.regex.Pattern;
 
 class PropertiesConfig implements Config {
 
-    private static final TypeReference<Set<String>> IMPORT_PATH_TOKEN = new TypeReference<Set<String>>() {
-    };
+    // private static final TypeReference<Set<String>> IMPORT_PATH_TOKEN = new TypeReference<Set<String>>() {
+    // };
 
     private List<ConfigFormatter> formatterList = new CopyOnWriteArrayList<>();
 
@@ -32,8 +31,18 @@ class PropertiesConfig implements Config {
         Map<String, Object> configMap = new ConcurrentHashMap<>();
         Set<String> imports = new HashSet<>();
         for (Entry<?, ?> entry : properties.entrySet()) {
-            if (entry.getKey().equals(IMPORT_KEY))
-                imports = JSONAide.toObject(entry.getValue().toString(), IMPORT_PATH_TOKEN);
+            if (entry.getKey().equals(IMPORT_KEY)) {
+                String value = entry.getValue().toString();
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    if (value.length() == 2) {
+                        value = "";
+                    } else {
+                        value = value.substring(1, value.length() - 1);
+                    }
+                }
+                if (StringUtils.isNotBlank(value))
+                    imports = ImmutableSet.copyOf(StringUtils.split(value, ","));
+            }
             Object value = entry.getValue().toString();
             String key = entry.getKey().toString();
             for (ConfigFormatter formatter : this.formatterList)

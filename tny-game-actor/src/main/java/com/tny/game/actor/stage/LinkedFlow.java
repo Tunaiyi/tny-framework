@@ -2,6 +2,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.common.concurrent.*;
+import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import org.slf4j.*;
 
@@ -61,28 +62,28 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public boolean isDone() {
-        return (state & DONE) == DONE;
+        return (this.state & DONE) == DONE;
     }
 
     @Override
     public boolean isFailed() {
-        return state == FAILED;
+        return this.state == FAILED;
     }
 
     @Override
     public boolean isSuccess() {
-        return state == SUCCESS;
+        return this.state == SUCCESS;
     }
 
     @Override
     public Throwable getCause() {
         if (this.isFailed())
-            return cause;
+            return this.cause;
         return null;
     }
 
@@ -95,7 +96,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     @Override
     public <T> Stage<T> find(Object name) {
-        InnerStage<?> stage = head;
+        InnerStage<?> stage = this.head;
         while (stage != null && (stage.getName() == null || !stage.getName().equals(name))) {
             stage = stage.getNext();
         }
@@ -117,21 +118,21 @@ public class LinkedFlow<V> implements InnerFlow<V> {
         if (this.onSuccess != null)
             ExeAide.runQuietly(() -> this.onSuccess.accept(result));
         if (this.onFinish != null)
-            ExeAide.runQuietly(() -> this.onFinish.accept(result, cause));
+            ExeAide.runQuietly(() -> this.onFinish.accept(result, this.cause));
     }
 
 
     @Override
     public void run() {
         while (!this.isDone()) {
-            if (state == IDLE)
-                state = EXECUTE;
-            if (current.isDone()) {
+            if (this.state == IDLE)
+                this.state = EXECUTE;
+            if (this.current.isDone()) {
                 if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Flow运行在", this.executor);
-                this.previous = current.getFragment();
+                this.previous = this.current.getFragment();
                 Executor executor = this.current.getSwitchExecutor();
-                this.current = current.getNext();
+                this.current = this.current.getNext();
                 if (this.current == null) { // 最后的stage Flow结束
                     if (this.previous.isFailed()) { // 失败
                         fail(this.previous.getCause());
@@ -186,7 +187,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
         if (this.isFailed())
             return DoneResults.failure();
         else if (this.isSuccess())
-            return DoneResults.successNullable(ObjectAide.as(result));
+            return DoneResults.successNullable(ObjectAide.as(this.result));
         else
             return DoneResults.successNullable(null);
     }
@@ -244,7 +245,7 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     }
 
     private InnerFlow<V> doStart(Executor executor, Consumer<V> onSuccess, Consumer<Throwable> onError, BiConsumer<V, Throwable> onFinish) {
-        if (!start) {
+        if (!this.start) {
             this.start = true;
             this.onSuccess = onSuccess;
             this.onError = onError;

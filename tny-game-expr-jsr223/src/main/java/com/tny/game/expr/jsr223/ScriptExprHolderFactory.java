@@ -1,7 +1,9 @@
 package com.tny.game.expr.jsr223;
 
-import com.tny.game.common.formula.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.math.*;
 import com.tny.game.common.number.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 
 import javax.script.*;
@@ -28,11 +30,13 @@ public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory 
         this.engine = factory.getEngineByName(lan);
         this.context = contextCreator.apply(this.engine);
         this.context.importStaticClasses(
-                CollectionEx.class,
+                CollectionAide.class,
+                ArrayAide.class,
+                RangeAide.class,
                 Math.class,
-                MathEx.class,
+                MathAide.class,
                 NumberAide.class,
-                DateTimeEx.class);
+                DateTimeAide.class);
     }
 
     @Override

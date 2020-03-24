@@ -22,7 +22,7 @@ public class EnumDocHolder {
 
     public static <E extends Enum<E>> EnumDocHolder create(Class<E> clazz) {
         ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
-        Throws.checkNotNull(classDoc, "{} is not classDoc", clazz);
+        ThrowAide.checkNotNull(classDoc, "{} is not classDoc", clazz);
         EnumDocHolder holder = new EnumDocHolder();
         holder.classDoc = classDoc;
         holder.entityClass = clazz;
@@ -49,19 +49,19 @@ public class EnumDocHolder {
     }
 
     public ClassDoc getClassDoc() {
-        return classDoc;
+        return this.classDoc;
     }
 
     public Class<?> getEntityClass() {
-        return entityClass;
+        return this.entityClass;
     }
 
 
     public List<FieldDocHolder> getEnumList() {
-        return enumList;
+        return this.enumList;
     }
 
     public String getClassName() {
-        return className;
+        return this.className;
     }
 }

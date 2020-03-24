@@ -3,7 +3,8 @@ package com.tny.game.oplog.log4j2;
 import com.tny.game.oplog.*;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.joda.time.DateTime;
+
+import java.time.LocalDateTime;
 
 public class LogMessage extends MapMessage {
 
@@ -13,15 +14,15 @@ public class LogMessage extends MapMessage {
 
     public LogMessage(Log log) {
         this.log = log;
-        DateTime dateTime = log.getLogAt();
+        LocalDateTime dateTime = LocalDateTime.from(log.getLogAt());
         this.put("sid", Integer.toString(log.getServerId()));
         this.put("lyyyy", String.valueOf(dateTime.getYear()));
-        this.put("lMM", String.valueOf(dateTime.getMonthOfYear()));
+        this.put("lMM", String.valueOf(dateTime.getMonthValue()));
         this.put("ldd", String.valueOf(dateTime.getDayOfMonth()));
-        this.put("lHH", String.valueOf(dateTime.getHourOfDay()));
-        this.put("lmm", String.valueOf(dateTime.getMinuteOfHour()));
-        this.put("lss", String.valueOf(dateTime.getSecondOfDay()));
-        this.put("lSSS", String.valueOf(dateTime.getMillisOfSecond()));
+        this.put("lHH", String.valueOf(dateTime.getHour()));
+        this.put("lmm", String.valueOf(dateTime.getMinute()));
+        this.put("lss", String.valueOf(dateTime.getSecond()));
+        this.put("lSSS", String.valueOf(dateTime.getNano() / 1000));
     }
 
     public Log getLog() {
@@ -34,7 +35,7 @@ public class LogMessage extends MapMessage {
     }
 
     public int getServerId() {
-        return log.getServerId();
+        return this.log.getServerId();
     }
 
     @Override

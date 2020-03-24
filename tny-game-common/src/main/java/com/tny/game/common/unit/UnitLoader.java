@@ -53,13 +53,13 @@ public class UnitLoader<T> {
                 loader.put(name, unit);
             }
         }
-        Throws.checkArgument(!registerInterfaces.isEmpty(), "register {} unit, but unit is not instance of UnitInterface", unit);
+        ThrowAide.checkArgument(!registerInterfaces.isEmpty(), "register {} unit, but unit is not instance of UnitInterface", unit);
     }
 
     public static Set<String> register(Object unit) {
         Class<?> unitClass = unit.getClass();
         Unit unitAnnotation = unitClass.getAnnotation(Unit.class);
-        Throws.checkNotNull(unitAnnotation, "register {} unit, but unit is without {} Annotation", unit, Unit.class);
+        ThrowAide.checkNotNull(unitAnnotation, "register {} unit, but unit is without {} Annotation", unit, Unit.class);
         Set<String> names = new HashSet<>();
         if (StringUtils.isNoneBlank(unitAnnotation.value()))
             names.add(unitAnnotation.value());
@@ -76,37 +76,38 @@ public class UnitLoader<T> {
     }
 
     private void put(String name, T unit) {
-        Throws.checkInstanceOf(unit, unitInterface, "UnitLoader [{}] loading unit, Unit {} is not instance of {}",
-                unitInterface, unit, unitInterface);
+        ThrowAide.checkInstanceOf(unit, this.unitInterface, "UnitLoader [{}] loading unit, Unit {} is not instance of {}",
+                this.unitInterface, unit, this.unitInterface);
         T old = this.unitMap.putIfAbsent(name, unit);
-        Throws.checkArgument(old == null, "UnitLoader [{}] loading unit, Unit {} and Unit {} have the same name {}", unitInterface, unit, old, name);
+        ThrowAide.checkArgument(old == null, "UnitLoader [{}] loading unit, Unit {} and Unit {} have the same name {}", this.unitInterface, unit, old,
+                name);
         this.unitSet.add(unit);
     }
 
     public T getOneUnitAnCheck() {
         T unit = getOne().orElse(null);
-        Throws.checkNotNull(unit, "UnitLoader [{}] is not exist unit", unitInterface, 0);
+        ThrowAide.checkNotNull(unit, "UnitLoader [{}] is not exist unit", this.unitInterface, 0);
         return unit;
     }
 
     public Optional<T> getOne() {
-        return unitSet.stream().findFirst();
+        return this.unitSet.stream().findFirst();
     }
 
     public Collection<T> getAllUnits() {
-        return Collections.unmodifiableCollection(unitSet);
+        return Collections.unmodifiableCollection(this.unitSet);
     }
 
     public <O extends T> O getUnit(String name, O defaultUnit) {
-        return as(unitMap.getOrDefault(name, defaultUnit));
+        return as(this.unitMap.getOrDefault(name, defaultUnit));
     }
 
     public Optional<T> getUnit(String name) {
-        return Optional.ofNullable(unitMap.get(name));
+        return Optional.ofNullable(this.unitMap.get(name));
     }
 
     public <O extends T> O getUnitAnCheck(String name) {
-        return as(Throws.checkNotNull(unitMap.get(name), "UnitLoader [{}] is not exist unit {}", unitInterface, name));
+        return as(ThrowAide.checkNotNull(this.unitMap.get(name), "UnitLoader [{}] is not exist unit {}", this.unitInterface, name));
     }
 
     public static <T> UnitLoader<T> getLoader(Class<T> unitInterface) {

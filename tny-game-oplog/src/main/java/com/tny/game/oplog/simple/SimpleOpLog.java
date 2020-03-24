@@ -1,15 +1,15 @@
 package com.tny.game.oplog.simple;
 
 import com.tny.game.oplog.*;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.*;
 
 public class SimpleOpLog extends OpLog {
 
     private Object protocol;
 
-    private DateTime createAt;
+    private Instant createAt;
 
     private String threadName;
 
@@ -18,7 +18,7 @@ public class SimpleOpLog extends OpLog {
     public SimpleOpLog(Object protocol) {
         super();
         this.protocol = protocol;
-        this.createAt = DateTime.now();
+        this.createAt = Instant.now();
         this.threadName = Thread.currentThread().getName();
     }
 
@@ -48,11 +48,11 @@ public class SimpleOpLog extends OpLog {
 
     @Override
     public Object getProtocol() {
-        return protocol;
+        return this.protocol;
     }
 
     @Override
-    public DateTime getCreateAt() {
+    public Instant getCreateAt() {
         return this.createAt;
     }
 

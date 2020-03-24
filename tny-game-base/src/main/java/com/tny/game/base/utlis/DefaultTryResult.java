@@ -2,7 +2,6 @@ package com.tny.game.base.utlis;
 
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.result.*;
-import com.tny.game.common.utils.*;
 
 import java.util.function.Consumer;
 
@@ -41,7 +40,7 @@ class DefaultTryResult<M> extends BaseDoneResult<M, DefaultTryResult<M>> impleme
 
     @Override
     public TryToDoResult getResult() {
-        return tryResult;
+        return this.tryResult;
     }
 
 }
