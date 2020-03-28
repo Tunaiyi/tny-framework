@@ -28,7 +28,7 @@ buildscript {
         mavenCentral()
         jcenter()
         //Spring repo
-        maven { url "http://m2.tnydev.com/repository/maven-public/" }
+        maven { url "https://m2.tnydev.com/repository/maven-public/" }
         maven { url "http://repo.spring.io/snapshot" }
         maven { url "http://repo.spring.io/milestone" }
         maven { url "http://repo.spring.io/release" }
@@ -59,7 +59,7 @@ configure(allprojects) {
         mavenCentral()
         jcenter()
         //Spring repo
-        maven { url "http://m2.tnydev.com/repository/maven-public/" }
+        maven { url "https://m2.tnydev.com/repository/maven-public/" }
         maven { url "http://repo.spring.io/snapshot" }
         maven { url "http://repo.spring.io/milestone" }
         maven { url "http://repo.spring.io/release" }
