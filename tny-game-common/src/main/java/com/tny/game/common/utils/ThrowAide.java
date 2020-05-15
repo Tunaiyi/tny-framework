@@ -1,5 +1,8 @@
 package com.tny.game.common.utils;
 
+import javax.annotation.*;
+import java.util.function.*;
+
 import static com.tny.game.common.utils.StringAide.*;
 
 public class ThrowAide {
@@ -57,6 +60,43 @@ public class ThrowAide {
     public static <T extends Throwable> void check(boolean expression, T cause) throws T {
         if (!expression)
             throw cause;
+    }
+
+    /**
+     * Ensures the truth of an expression involving one or more parameters to the calling method.
+     *
+     * @param expression a boolean expression
+     * @param cause      the exception if the check fails
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    public static <V, T extends Throwable> void check(V value, Predicate<V> expression, T cause) throws T {
+        if (!expression.test(value))
+            throw cause;
+    }
+
+    /**
+     * Ensures the truth of an expression involving one or more parameters to the calling method.
+     *
+     * @param expression a boolean expression
+     * @param cause      the exception if the check fails
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    public static <V, T extends Throwable> void check(V value, Predicate<V> expression, Function<V, T> cause) throws T {
+        if (!expression.test(value))
+            throw cause.apply(value);
+    }
+
+    /**
+     * Ensures the truth of an expression involving one or more parameters to the calling method.
+     *
+     * @param expression a boolean expression
+     * @param cause      the exception if the check fails
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    public static <V, T extends Throwable> void check(V value, Predicate<V> expression, BiFunction<V, String, T> cause,
+            String message, Object... messageArgs) throws T {
+        if (!expression.test(value))
+            throw cause.apply(value, format(message, messageArgs));
     }
 
     /**
@@ -155,7 +195,7 @@ public class ThrowAide {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> T checkNotNull(T reference) {
+    public static <T> T checkNotNull(@Nullable T reference) {
         if (reference == null) {
             throw new NullPointerException();
         }
@@ -171,7 +211,7 @@ public class ThrowAide {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> T checkNotNull(T reference, Object errorMessage) {
+    public static <T> T checkNotNull(@Nullable T reference, @Nonnull String errorMessage) {
         if (reference == null) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
@@ -192,9 +232,7 @@ public class ThrowAide {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> T checkNotNull(T reference,
-            String errorMessageTemplate,
-            Object... errorMessageArgs) {
+    public static <T> T checkNotNull(@Nullable T reference, @Nonnull String errorMessageTemplate, Object... errorMessageArgs) {
         if (reference == null) {
             // If either of these parameters is null, the right thing happens anyway
             throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));

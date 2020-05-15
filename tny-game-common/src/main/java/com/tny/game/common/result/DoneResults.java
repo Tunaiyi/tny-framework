@@ -4,6 +4,8 @@ import com.tny.game.common.utils.*;
 
 import java.util.function.Function;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 /**
  * 做完的结果
  *
@@ -67,26 +69,39 @@ public class DoneResults {
         return new DefaultDoneResult<>(code, value, null);
     }
 
-    /**
-     * 返回一个结果 可成功或失败, 由code决定
-     *
-     * @param code 结果码
-     * @return 返回结果
-     */
-    public static DoneMessage<Void, ? extends DoneResult<Void>> with(ResultCode code) {
-        return new DefaultDoneResult<>(code, null);
-    }
 
     /**
      * 返回一个结果 可成功或失败, 由code决定
      *
-     * @param value 结果值
-     * @param code  结果码
+     * @param value   结果值
+     * @param code    结果码
+     * @param message 消息
      * @return 返回结果
      */
-    public static <M, MC extends M> DoneMessage<M, ? extends DoneResult<M>> with(ResultCode code, MC value) {
-        return new DefaultDoneResult<>(code, value, null);
+    public static <M, MC extends M> DoneResult<M> done(ResultCode code, MC value, String message, Object... messageParams) {
+        return new DefaultDoneResult<>(code, value, format(message, messageParams));
     }
+
+    // /**
+    //  * 返回一个结果 可成功或失败, 由code决定
+    //  *
+    //  * @param code 结果码
+    //  * @return 返回结果
+    //  */
+    // public static DoneMessage<Void, ? extends DoneResult<Void>> with(ResultCode code) {
+    //     return new DefaultDoneResult<>(code, null);
+    // }
+    //
+    // /**
+    //  * 返回一个结果 可成功或失败, 由code决定
+    //  *
+    //  * @param value 结果值
+    //  * @param code  结果码
+    //  * @return 返回结果
+    //  */
+    // public static <M, MC extends M> DoneMessage<M, ? extends DoneResult<M>> with(ResultCode code, MC value) {
+    //     return new DefaultDoneResult<>(code, value, null);
+    // }
 
     /**
      * 返回结果
@@ -110,6 +125,17 @@ public class DoneResults {
     }
 
     /**
+     * 返回一个以code为结果码的失败结果, 并设置 message
+     *
+     * @param code 结果码
+     * @return 返回结果
+     */
+    public static <M> DoneResult<M> failure(ResultCode code, String message, Object... messageParams) {
+        ThrowAide.checkArgument(code.isFailure(), "code [{}] is success", code.getCode());
+        return new DefaultDoneResult<>(code, null, format(message, messageParams));
+    }
+
+    /**
      * 返回一个结果码为result的结果码的失败结果
      *
      * @param result 失败结果
@@ -118,6 +144,17 @@ public class DoneResults {
     public static <M> DoneResult<M> failure(DoneResult<?> result) {
         ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return new DefaultDoneResult<>(result.getCode(), null, result.getMessage());
+    }
+
+    /**
+     * 返回一个结果码为result的结果码的失败结果
+     *
+     * @param result 失败结果
+     * @return 返回结果
+     */
+    public static <M> DoneResult<M> failure(DoneResult<?> result, String message, Object... messageParams) {
+        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        return new DefaultDoneResult<>(result.getCode(), null, format(message, messageParams));
     }
 
     /**

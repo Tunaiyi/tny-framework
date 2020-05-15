@@ -1,6 +1,7 @@
 package com.tny.game.common.collection;
 
 import com.tny.game.common.utils.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.lang.reflect.Array;
@@ -212,6 +213,9 @@ public class CollectionAide {
         return setA.containsAll(setB);
     }
 
+    public static <T, C extends Collection<T>> C ifEmpty(C collection, C defObject) {
+        return CollectionUtils.isEmpty(collection) ? defObject : collection;
+    }
 
     public static Map<String, String> toStringMap(String... pairs) {
         Map<String, String> map = new HashMap<>();
