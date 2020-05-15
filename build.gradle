@@ -25,20 +25,40 @@ def getRepositoryPassword() {
 buildscript {
     repositories {
         mavenLocal()
-        mavenCentral()
-        jcenter()
-        //Spring repo
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/spring-plugin" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
-        maven { url "http://repo.spring.io/snapshot" }
-        maven { url "http://repo.spring.io/milestone" }
-        maven { url "http://repo.spring.io/release" }
-        maven { url 'http://repo.spring.io/plugins-snapshot' }
     }
 
     dependencies {
 //        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE")
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.5.RELEASE"
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.5.RELEASE")
+        classpath("org.ajoberstar.grgit:grgit-gradle:4.0.2")
     }
+}
+
+import org.ajoberstar.grgit.Grgit
+
+ext.RELEASE_VERSION_SUFFIX = ".release";
+ext.RELEASE_PACK_SUFFIX = "-RELEASE";
+ext.SNAPSHOT_PACK_SUFFIX = "-SNAPSHOT";
+
+def gitBranchName() {
+    Grgit gitter = Grgit.open(currentDir: project.getRootDir())
+    return gitter.branch.current().getName()
+}
+
+def parseVersion(String version) {
+    if (isReleaseVersion(version))
+        return version.substring(0, version.length() - RELEASE_VERSION_SUFFIX.length());
+    return version
+}
+
+def isReleaseVersion(String version) {
+    return version.endsWith(RELEASE_VERSION_SUFFIX)
 }
 
 configure(allprojects) {
@@ -46,9 +66,20 @@ configure(allprojects) {
     apply plugin: "idea"
     apply plugin: 'maven'
 
-    ext.verNumber = '4.1.x'
+//    ext.verNumber = '4.1.x'
 //    ext.pj_version = verNumber + '-RELEASE'
-    ext.pj_version = verNumber + '-SNAPSHOT'
+//    ext.pj_version = verNumber + '-SNAPSHOT'
+
+    ext.branchName = gitBranchName()
+    ext.branchVersion = parseVersion(branchName)
+    ext.versionNumber = branchVersion
+//
+    if (isReleaseVersion(branchName)) {
+        ext.pj_version = branchVersion + RELEASE_PACK_SUFFIX
+    } else {
+        ext.pj_version = branchVersion + SNAPSHOT_PACK_SUFFIX
+    }
+
     ext.version = pj_version
 
     version pj_version
@@ -56,14 +87,12 @@ configure(allprojects) {
 
     repositories {
         mavenLocal()
-        mavenCentral()
-        jcenter()
-        //Spring repo
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/spring-plugin" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
-        maven { url "http://repo.spring.io/snapshot" }
-        maven { url "http://repo.spring.io/milestone" }
-        maven { url "http://repo.spring.io/release" }
-        maven { url 'http://repo.spring.io/plugins-snapshot' }
     }
 
 
