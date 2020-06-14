@@ -7,6 +7,8 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * @author KGTny
  * @ClassName: ListenerHandlerHolder
@@ -24,14 +26,14 @@ public class GlobalListenerHolder {
      */
     private static final Logger LOG = LoggerFactory.getLogger(LogAide.EVENT);
 
-    private Map<Class<?>, List<?>> listenerMap = new CopyOnWriteMap<>();
+    private static final GlobalListenerHolder holder = new GlobalListenerHolder();
 
-    private static GlobalListenerHolder holder = new GlobalListenerHolder();
+    private final Map<Class<?>, List<?>> listenerMap = new CopyOnWriteMap<>();
 
     private GlobalListenerHolder() {
     }
 
-    public static final GlobalListenerHolder getInstance() {
+    public static GlobalListenerHolder getInstance() {
         return holder;
     }
 
@@ -39,6 +41,14 @@ public class GlobalListenerHolder {
         for (Class<?> clazz : getAllClasses(listener.getClass())) {
             List<Object> listeners = getOrCreate(clazz);
             listeners.add(listener);
+        }
+    }
+
+    public void removeListener(Object listener) {
+        for (Class<?> clazz : getAllClasses(listener.getClass())) {
+            List<Object> listeners = as(this.listenerMap.get(clazz));
+            if (listeners != null)
+                listeners.add(listener);
         }
     }
 
@@ -51,8 +61,7 @@ public class GlobalListenerHolder {
     }
 
     private Set<Class<?>> getAllClasses(Class<?> clazz) {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.addAll(Arrays.asList(clazz.getInterfaces()));
+        Set<Class<?>> classes = new HashSet<>(Arrays.asList(clazz.getInterfaces()));
         Class<?> superClass = clazz.getSuperclass();
         if (superClass == Object.class)
             return classes;

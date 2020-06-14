@@ -182,8 +182,8 @@ public class InvokerFactory {
         StringBuilder cast = new StringBuilder();
         if (fromClass.isPrimitive() && !toClass.isPrimitive()) {
             Class<?> wraperClass = toClass;
-            if (!isWraper(toClass)) {
-                wraperClass = getWraper(fromClass);
+            if (!isWrapper(toClass)) {
+                wraperClass = getWrapper(fromClass);
             }
             cast.append("(");
             cast.append(toClass.getCanonicalName());
@@ -199,8 +199,8 @@ public class InvokerFactory {
             cast.append(toClass.getCanonicalName());
             cast.append(")");
             Class<?> wraperClass = fromClass;
-            if (!isWraper(fromClass)) {
-                wraperClass = getWraper(toClass);
+            if (!isWrapper(fromClass)) {
+                wraperClass = getWrapper(toClass);
                 cast.append("((");
                 if (Number.class.isAssignableFrom(wraperClass)) {
                     cast.append(Number.class.getCanonicalName());
@@ -225,15 +225,15 @@ public class InvokerFactory {
         return cast.toString();
     }
 
-    private static Class<?> getPrimitive(Class<?> wraperClass) {
-        return Wrapper.getPrimitive(wraperClass);
+    private static Class<?> getPrimitive(Class<?> wrapperClass) {
+        return Wrapper.getPrimitive(wrapperClass);
     }
 
-    private static Class<?> getWraper(Class<?> toClass) {
-        return getWraper(toClass);
+    private static Class<?> getWrapper(Class<?> toClass) {
+        return Wrapper.getWrapper(toClass);
     }
 
-    private static boolean isWraper(Class<?> toClass) {
+    private static boolean isWrapper(Class<?> toClass) {
         return Wrapper.isWrapper(toClass);
     }
 

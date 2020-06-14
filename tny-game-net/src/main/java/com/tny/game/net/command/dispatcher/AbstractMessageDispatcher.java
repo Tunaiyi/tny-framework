@@ -181,7 +181,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      *
      * @param provider 身份校验器
      */
-    protected void addAuthProvider(AuthenticateValidator provider) {
+    protected void addAuthProvider(AuthenticateValidator<?> provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {

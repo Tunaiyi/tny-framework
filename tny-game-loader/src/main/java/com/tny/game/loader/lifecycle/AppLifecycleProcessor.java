@@ -101,7 +101,7 @@ public class AppLifecycleProcessor {
         List<Lifecycle> process = lifecycles.stream()
                                             .peek(i -> {
                                                 Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
-                                                if (i.getClass() != lifecycle.getHandlerClass())
+                                                if (!lifecycle.getHandlerClass().isAssignableFrom(i.getClass()))
                                                     throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
                                                 handlerMap.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
                                             })

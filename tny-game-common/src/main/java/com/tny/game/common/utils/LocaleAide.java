@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * <p>
@@ -108,6 +109,47 @@ public class LocaleAide {
         }
         localeStrings.add(temp);
         return localeStrings;
+    }
+
+    public static List<String> allMarks(Locale locale) {
+        String language = locale.getLanguage();
+        String script = locale.getScript();
+        String country = locale.getCountry();
+        List<String> locales = new ArrayList<>();
+        if (isNotBlank(language) && isNotBlank(script) && isNotBlank(country))
+            locales.add(mark(language, script, country));
+        if (isNotBlank(language) && isNotBlank(script))
+            locales.add(mark(language, script, null));
+        if (isNotBlank(language) && isNotBlank(country))
+            locales.add(mark(language, null, country));
+        if (isNotBlank(language))
+            locales.add(mark(language, null, null));
+        if (isNotBlank(script) && isNotBlank(country))
+            locales.add(mark(null, script, country));
+        if (isNotBlank(script))
+            locales.add(mark(null, script, null));
+        if (isNotBlank(country))
+            locales.add(mark(null, null, country));
+        return locales;
+    }
+
+    public static String mark(String language, String script, String country) {
+        if (isNotBlank(language) && isNotBlank(script) && isNotBlank(country)) {
+            return language + SCRIPTS_SEPARATE + script + REGION_SEPARATE + country;
+        } else if (isNotBlank(language) && isNotBlank(script)) {
+            return language + SCRIPTS_SEPARATE + script;
+        } else if (isNotBlank(language) && isNotBlank(country)) {
+            return language + REGION_SEPARATE + country;
+        } else if (isNotBlank(language)) {
+            return language;
+        } else if (isNotBlank(script) && isNotBlank(country)) {
+            return script + REGION_SEPARATE + country;
+        } else if (isNotBlank(script)) {
+            return script;
+        } else if (isNotBlank(country)) {
+            return country;
+        }
+        throw new IllegalArgumentException("error locale {}");
     }
 
     public static void main(String[] args) {

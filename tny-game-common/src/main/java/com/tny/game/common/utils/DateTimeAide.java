@@ -13,32 +13,38 @@ public class DateTimeAide {
     /**
      * HH:mm
      */
-    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
 
     /**
      * yyyy-MM-dd
      */
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
 
     /**
      * yyyy-MM-dd HH:mm:ss
      */
-    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
     /**
      * yyyy-MM-dd HH:mm
      */
-    public static final DateTimeFormatter DATE_TIME_MIN_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter DATE_TIME_MIN_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault());
 
     /**
      * yyyyMMddHHmmss
      */
-    public static final DateTimeFormatter DATE_TIME_2_NUM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    public static final DateTimeFormatter DATE_TIME_2_NUM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").withZone(ZoneId.systemDefault());
+
+    /**
+     * yyyyMMddHHmmss
+     */
+    public static final DateTimeFormatter DATE_T_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+                                                                                .withZone(ZoneId.systemDefault());
 
     /**
      * MM/dd/yyyy
      */
-    public static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    public static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy").withZone(ZoneId.systemDefault());
 
     public static ZonedDateTime date(String date) throws ParseException {
         return ZonedDateTime.parse(date, DATE_FORMAT);

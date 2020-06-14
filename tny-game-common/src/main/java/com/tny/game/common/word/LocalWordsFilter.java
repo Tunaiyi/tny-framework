@@ -113,13 +113,13 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
             this.insertNode(n, cs, index);
     }
 
-    private class Node implements Comparable<Node> {
-        private char c;
+    private static class Node implements Comparable<Node> {
+        private final char c;
         private int flag;
-        private Map<Character, Node> nodes = new HashMap<>();
+        private final Map<Character, Node> nodes = new HashMap<>();
 
         private Node findNode(char c) {
-            return nodes.get(c);
+            return this.nodes.get(c);
         }
 
         public Node(char c) {
