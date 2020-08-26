@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.result.*;
-import com.tny.game.common.utils.*;
 import org.junit.*;
 
 import java.util.*;
@@ -27,10 +27,10 @@ public abstract class MessageHeadTest extends ProtocolTest {
     private static ReferenceType<Map<String, String>> MAP_HEAD_TYPE = new ReferenceType<Map<String, String>>() {
     };
 
-    private MessageHead REQUEST_HEAD = create(id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
-    private MessageHead SUCCESS_RESPONSE_HEAD = create(id, MessageMode.RESPONSE, protocol, ResultCode.SUCCESS_CODE, now, toMessage);
-    private MessageHead FAIL_RESPONSE_HEAD = create(id, MessageMode.RESPONSE, protocol, ResultCode.FAILURE_CODE, now, toMessage);
-    private MessageHead PUSH_HEAD = create(id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
+    private MessageHead REQUEST_HEAD = create(this.id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
+    private MessageHead SUCCESS_RESPONSE_HEAD = create(this.id, MessageMode.RESPONSE, protocol, ResultCode.SUCCESS_CODE, now, this.toMessage);
+    private MessageHead FAIL_RESPONSE_HEAD = create(this.id, MessageMode.RESPONSE, protocol, ResultCode.FAILURE_CODE, now, this.toMessage);
+    private MessageHead PUSH_HEAD = create(this.id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
 
     public MessageHeadTest() {
         super(protocol);
@@ -38,49 +38,49 @@ public abstract class MessageHeadTest extends ProtocolTest {
 
     @Override
     protected Protocol protocol() {
-        return create(id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
+        return create(this.id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
     }
 
     public abstract MessageHead create(long id, MessageMode mode, int protocol, int code, long time, long toMessage);
 
     @Test
     public void getId() {
-        assertEquals(REQUEST_HEAD.getId(), id);
-        assertEquals(SUCCESS_RESPONSE_HEAD.getId(), id);
-        assertEquals(FAIL_RESPONSE_HEAD.getId(), id);
-        assertEquals(PUSH_HEAD.getId(), id);
+        assertEquals(this.REQUEST_HEAD.getId(), this.id);
+        assertEquals(this.SUCCESS_RESPONSE_HEAD.getId(), this.id);
+        assertEquals(this.FAIL_RESPONSE_HEAD.getId(), this.id);
+        assertEquals(this.PUSH_HEAD.getId(), this.id);
     }
 
     @Test
     public void getCode() {
-        assertEquals(REQUEST_HEAD.getCode(), ResultCode.SUCCESS_CODE);
-        assertEquals(SUCCESS_RESPONSE_HEAD.getCode(), ResultCode.SUCCESS_CODE);
-        assertEquals(FAIL_RESPONSE_HEAD.getCode(), ResultCode.FAILURE_CODE);
-        assertEquals(PUSH_HEAD.getCode(), ResultCode.SUCCESS_CODE);
+        assertEquals(this.REQUEST_HEAD.getCode(), ResultCode.SUCCESS_CODE);
+        assertEquals(this.SUCCESS_RESPONSE_HEAD.getCode(), ResultCode.SUCCESS_CODE);
+        assertEquals(this.FAIL_RESPONSE_HEAD.getCode(), ResultCode.FAILURE_CODE);
+        assertEquals(this.PUSH_HEAD.getCode(), ResultCode.SUCCESS_CODE);
     }
 
     @Test
     public void getTime() {
-        assertEquals(REQUEST_HEAD.getTime(), now);
-        assertEquals(SUCCESS_RESPONSE_HEAD.getTime(), now);
-        assertEquals(FAIL_RESPONSE_HEAD.getTime(), now);
-        assertEquals(PUSH_HEAD.getTime(), now);
+        assertEquals(this.REQUEST_HEAD.getTime(), now);
+        assertEquals(this.SUCCESS_RESPONSE_HEAD.getTime(), now);
+        assertEquals(this.FAIL_RESPONSE_HEAD.getTime(), now);
+        assertEquals(this.PUSH_HEAD.getTime(), now);
     }
 
     @Test
     public void getToMessage() {
-        assertEquals(REQUEST_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
-        assertEquals(SUCCESS_RESPONSE_HEAD.getToMessage(), toMessage);
-        assertEquals(FAIL_RESPONSE_HEAD.getToMessage(), toMessage);
-        assertEquals(PUSH_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
+        assertEquals(this.REQUEST_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
+        assertEquals(this.SUCCESS_RESPONSE_HEAD.getToMessage(), this.toMessage);
+        assertEquals(this.FAIL_RESPONSE_HEAD.getToMessage(), this.toMessage);
+        assertEquals(this.PUSH_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
     }
 
     @Test
     public void getMode() {
-        assertEquals(REQUEST_HEAD.getMode(), MessageMode.REQUEST);
-        assertEquals(SUCCESS_RESPONSE_HEAD.getMode(), MessageMode.RESPONSE);
-        assertEquals(FAIL_RESPONSE_HEAD.getMode(), MessageMode.RESPONSE);
-        assertEquals(PUSH_HEAD.getMode(), MessageMode.PUSH);
+        assertEquals(this.REQUEST_HEAD.getMode(), MessageMode.REQUEST);
+        assertEquals(this.SUCCESS_RESPONSE_HEAD.getMode(), MessageMode.RESPONSE);
+        assertEquals(this.FAIL_RESPONSE_HEAD.getMode(), MessageMode.RESPONSE);
+        assertEquals(this.PUSH_HEAD.getMode(), MessageMode.PUSH);
     }
 
     // @Test

@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.utils.digest.md5.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
@@ -32,7 +32,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
     private volatile boolean online = true;
 
     public boolean isOnline() {
-        return online;
+        return this.online;
     }
 
     protected GameTicket getTicket(String openID, String openKey, String ticketWord) throws ValidatorFailException {

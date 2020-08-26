@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.reflect.*;
 
 /**
  * Created by Kun Yang on 2017/2/16.

@@ -39,3 +39,5 @@ include 'tny-game-net-test'
 
 include 'tny-game-starter-common'
 include 'tny-game-starter-net-netty4'
+
+include 'tny-game-test-lua'

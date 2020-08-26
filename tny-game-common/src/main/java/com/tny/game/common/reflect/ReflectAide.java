@@ -1,5 +1,7 @@
 package com.tny.game.common.reflect;
 
+import com.tny.game.common.reflect.exception.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -14,16 +16,16 @@ public class ReflectAide {
         /**
          *
          */
-        Getter("get", "is"),
+        GETTER("get", "is"),
 
         /**
          *
          */
-        Setter("set");
+        SETTER("set");
 
         public final String[] values;
 
-        private MethodType(String... values) {
+        MethodType(String... values) {
             this.values = values;
         }
 
@@ -56,8 +58,7 @@ public class ReflectAide {
 
     public static Field getDeepField(Class<?> clazz, String name) {
         try {
-            Field field = clazz.getDeclaredField(name);
-            return field;
+            return clazz.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && superClass != Object.class) {
@@ -145,38 +146,30 @@ public class ReflectAide {
     }
 
     public static Method getPropertyMethod(Class<?> clazz, MethodType methodType, String name, Class<?>... paramType) {
-        Method method = null;
+        Method method;
         for (String value : methodType.values) {
-            if (method == null) {
-                try {
-                    method = clazz.getDeclaredMethod(parseMethodName(value, name), paramType);
-                    if (method != null) {
-                        method.setAccessible(true);
-                        Class<?> returnClazz = method.getReturnType();
-                        if (value.equals("is") && returnClazz != boolean.class && returnClazz == Boolean.class)
-                            method = null;
-                        else
-                            return method;
-                    }
-                } catch (Exception e) {
+            try {
+                method = clazz.getDeclaredMethod(parseMethodName(value, name), paramType);
+                method.setAccessible(true);
+                Class<?> returnClazz = method.getReturnType();
+                if (value.equals("is") && (returnClazz == boolean.class || returnClazz == Boolean.class)) {
+                    return method;
                 }
+            } catch (Exception e) {
+                throw new ReflectException(e);
             }
         }
-        if (method == null) {
-            Class<?> superClass = clazz.getSuperclass();
-            if (superClass != null && superClass != Object.class) {
-                try {
-                    return getPropertyMethod(superClass, methodType, name, paramType);
-                } catch (Exception e) {
-                    throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                                                    + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception",
-                            e);
-                }
-            } else
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null && superClass != Object.class) {
+            try {
+                return getPropertyMethod(superClass, methodType, name, paramType);
+            } catch (Exception e) {
                 throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                                                + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception");
-        }
-        return method;
+                                                + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
+            }
+        } else
+            throw new NoSuchMethodException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
+                                            + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception");
     }
 
     public static List<Method> getPropertyMethod(Class<?> clazz, MethodType methodType, String[] names,
@@ -188,8 +181,7 @@ public class ReflectAide {
             if (paramTypes != null && index < paramTypes.length)
                 params = paramTypes[index];
             Method method = getPropertyMethod(clazz, methodType, name, params);
-            if (method != null)
-                methodList.add(method);
+            methodList.add(method);
         }
         return methodList;
     }
@@ -213,35 +205,20 @@ public class ReflectAide {
     private static boolean checkGetter(Method method) {
         Class<?> returnClazz = method.getReturnType();
         String methodName = method.getName();
-        return (methodName.startsWith("get") && returnClazz != null)
-               || (methodName.startsWith("is")
-                   && (returnClazz == boolean.class || returnClazz == Boolean.class));
+        return methodName.startsWith("get") || methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class);
     }
 
     private static boolean checkSetter(Method method) {
         String methodName = method.getName();
         if (methodName.startsWith("set")) {
             Class<?>[] paramClasses = method.getParameterTypes();
-            return paramClasses != null && paramClasses.length == 1;
+            return paramClasses.length == 1;
         }
         return false;
     }
 
     private static boolean checkProperty(Method method) {
-        if (Modifier.isStatic(method.getModifiers()) || method.getDeclaringClass() == Object.class)
-            return false;
-        return true;
-    }
-
-    private static class FClass {
-
-        private ArrayList<Set<Integer>> integers;
-
-    }
-
-    public static void main(String[] args) throws NoSuchFieldException {
-        Field field = FClass.class.getDeclaredField("integers");
-        System.out.println(getFieldGenericTypes(field));
+        return !Modifier.isStatic(method.getModifiers()) && method.getDeclaringClass() != Object.class;
     }
 
     public static List<Type> getFieldGenericTypes(Field field) {
@@ -272,7 +249,7 @@ public class ReflectAide {
     /**
      * @param clazz        泛型
      * @param genericClass 泛型接口
-     * @return
+     * @return 返回泛型列表
      */
     public static List<Class<?>> getComponentType(Class<?> clazz, Class<?> genericClass) {
         List<Class<?>> classes = new ArrayList<>();

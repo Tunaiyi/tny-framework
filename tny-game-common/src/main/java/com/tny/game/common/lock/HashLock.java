@@ -49,8 +49,8 @@ public class HashLock<L extends Lock> {
     }
 
     public L getLock(Object lockObject) {
-        int hash = Math.abs(lockObject.hashCode() % size);
-        return lockMap.computeIfAbsent(hash, (k) -> creator.get());
+        int hash = Math.abs(lockObject.hashCode() % this.size);
+        return this.lockMap.computeIfAbsent(hash, (k) -> this.creator.get());
     }
 
 }

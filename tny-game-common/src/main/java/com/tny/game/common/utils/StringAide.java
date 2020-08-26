@@ -117,11 +117,7 @@ public class StringAide {
         }
         // append the characters following the last {} pair.
         buffer.append(messagePattern.substring(i, messagePattern.length()));
-        if (index < argArray.length - 1) {
-            return buffer.toString();
-        } else {
-            return buffer.toString();
-        }
+        return buffer.toString();
     }
 
     static boolean isEscapedDelimeter(String messagePattern, int delimeterStartIndex) {

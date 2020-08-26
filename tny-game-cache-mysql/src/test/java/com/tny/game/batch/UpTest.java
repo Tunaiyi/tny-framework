@@ -16,8 +16,8 @@ public class UpTest {
     @Resource
     private UpObjectDAO dao;
 
-    private static List<UpObject> objects = new ArrayList<UpObject>();
-    private static List<Integer> ids = new ArrayList<Integer>();
+    private static List<UpObject> objects = new ArrayList<>();
+    private static List<Integer> ids = new ArrayList<>();
 
     private static final int size = 10;
 
