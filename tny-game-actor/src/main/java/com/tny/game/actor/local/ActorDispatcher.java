@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.actor.*;
 
 /**
@@ -14,7 +13,7 @@ public interface ActorDispatcher {
      * @param message 发送消息
      * @param sender  发送者
      */
-    default void tell(Object message, Actor sender) {
+    default void tell(Object message, Actor<?, ?> sender) {
         sendMessage(message, sender, false);
     }
 
@@ -25,7 +24,7 @@ public interface ActorDispatcher {
      * @param sender  发送者
      * @return 返回一个等待结果的Answer
      */
-    default <V> Answer<V> ask(Object message, Actor sender) {
+    default <V> Answer<V> ask(Object message, Actor<?, ?> sender) {
         return sendMessage(message, sender, true);
     }
 
@@ -37,8 +36,8 @@ public interface ActorDispatcher {
      * @param needAnswer 是否需要获取答案
      * @return 如果需要答案返回答案, 若不需要返回null
      */
-    <V> Answer<V> sendMessage(Object message, Actor sender, boolean needAnswer);
+    <V> Answer<V> sendMessage(Object message, Actor<?, ?> sender, boolean needAnswer);
 
-    <ACT extends Actor> ACT getActor();
+    <ACT extends Actor<?, ?>> ACT getActor();
 
 }

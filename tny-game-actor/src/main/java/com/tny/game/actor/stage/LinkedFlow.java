@@ -2,6 +2,7 @@ package com.tny.game.actor.stage;
 
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.common.concurrent.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import org.slf4j.*;
@@ -14,9 +15,9 @@ import java.util.function.*;
  */
 public class LinkedFlow<V> implements InnerFlow<V> {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(Flow.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Flow.class);
 
-    private static ScheduledExecutorService service = Executors
+    private static final ScheduledExecutorService service = Executors
             .newSingleThreadScheduledExecutor(new CoreThreadFactory("FlowSubmitScheduledExecutor", true));
 
     private static final byte IDLE = 0;
@@ -25,13 +26,13 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     private static final byte SUCCESS = 1 << 3 | DONE;
     private static final byte FAILED = DONE;
 
-    private String name;
+    private final String name;
 
-    private InnerStage head;
+    private InnerStage<?> head;
 
-    private InnerStage tail;
+    private InnerStage<?> tail;
 
-    private InnerStage current;
+    private InnerStage<?> current;
 
     private Fragment<?, ?> previous;
 
@@ -82,8 +83,9 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     @Override
     public Throwable getCause() {
-        if (this.isFailed())
+        if (this.isFailed()) {
             return this.cause;
+        }
         return null;
     }
 
@@ -106,30 +108,35 @@ public class LinkedFlow<V> implements InnerFlow<V> {
     private void fail(Throwable cause) {
         this.state = FAILED;
         this.cause = cause;
-        if (this.onError != null)
+        if (this.onError != null) {
             ExeAide.runQuietly(() -> this.onError.accept(cause));
-        if (this.onFinish != null)
+        }
+        if (this.onFinish != null) {
             ExeAide.runQuietly(() -> this.onFinish.accept(null, cause));
+        }
     }
 
     private void success(V result) {
         this.state = SUCCESS;
         this.result = result;
-        if (this.onSuccess != null)
+        if (this.onSuccess != null) {
             ExeAide.runQuietly(() -> this.onSuccess.accept(result));
-        if (this.onFinish != null)
+        }
+        if (this.onFinish != null) {
             ExeAide.runQuietly(() -> this.onFinish.accept(result, this.cause));
+        }
     }
-
 
     @Override
     public void run() {
         while (!this.isDone()) {
-            if (this.state == IDLE)
+            if (this.state == IDLE) {
                 this.state = EXECUTE;
+            }
             if (this.current.isDone()) {
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("Flow运行在", this.executor);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Flow运行在{}", this.executor);
+                }
                 this.previous = this.current.getFragment();
                 Executor executor = this.current.getSwitchExecutor();
                 this.current = this.current.getNext();
@@ -155,8 +162,9 @@ public class LinkedFlow<V> implements InnerFlow<V> {
                 }
                 if (!this.current.isCanRun(this.previous)) { // 无法继续运行
                     Throwable cause = null;
-                    if (this.previous != null)
+                    if (this.previous != null) {
                         cause = this.previous.getCause();
+                    }
                     if (cause == null) {
                         cause = new FlowBreakOffException();
                     }
@@ -184,12 +192,13 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     @Override
     public Done<V> getDone() {
-        if (this.isFailed())
+        if (this.isFailed()) {
             return DoneResults.failure();
-        else if (this.isSuccess())
+        } else if (this.isSuccess()) {
             return DoneResults.successNullable(ObjectAide.as(this.result));
-        else
+        } else {
             return DoneResults.successNullable(null);
+        }
     }
 
     @Override
@@ -214,10 +223,11 @@ public class LinkedFlow<V> implements InnerFlow<V> {
 
     @Override
     public InnerFlow<V> switchTo(Executor executor) {
-        if (this.tail == null)
+        if (this.tail == null) {
             this.executor = executor;
-        else
+        } else {
             this.tail.setSwitchExecutor(executor);
+        }
         return this;
     }
 
@@ -250,12 +260,15 @@ public class LinkedFlow<V> implements InnerFlow<V> {
             this.onSuccess = onSuccess;
             this.onError = onError;
             this.onFinish = onFinish;
-            if (executor != null)
+            if (executor != null) {
                 this.executor = executor;
-            if (this.executor == null)
+            }
+            if (this.executor == null) {
                 this.executor = ForkJoinPool.commonPool();
+            }
             this.executor.execute(this);
         }
         return this;
     }
+
 }

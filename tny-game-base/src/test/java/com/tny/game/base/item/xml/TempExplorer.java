@@ -26,12 +26,12 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     @Override
     public <IM extends Model> IM getModel(int itemID) {
-        return (IM) this.idModel.get(itemID);
+        return (IM)this.idModel.get(itemID);
     }
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return (IM) this.model.get(itemAlias);
+        return (IM)this.model.get(itemAlias);
     }
 
     @Override
@@ -45,47 +45,48 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
     }
 
     @Override
-    public <I extends Any<?>> I getItem(long playerId, int id, Object... object) {
-        return (I) this.item;
+    public <I extends Entity<?>> I getItem(long playerId, int id, Object... object) {
+        return (I)this.item;
     }
 
     @Override
-    public boolean insertItem(Any<?>[] items) {
+    public boolean insertItem(Entity<?>[] items) {
         return false;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> insertItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> insertItem(Collection<I> itemCollection) {
         return null;
     }
 
     @Override
-    public boolean updateItem(Any<?>[] items) {
+    public boolean updateItem(Entity<?>[] items) {
         return false;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> updateItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> updateItem(Collection<I> itemCollection) {
         return null;
     }
 
     @Override
-    public boolean saveItem(Any<?>[] items) {
+    public boolean saveItem(Entity<?>[] items) {
         return false;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> saveItem(Collection<I> itemCollection) {
         return null;
     }
 
     @Override
-    public boolean deleteItem(Any<?>[] items) {
+    public boolean deleteItem(Entity<?>[] items) {
         return false;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
         return null;
     }
+
 }

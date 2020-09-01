@@ -1,6 +1,6 @@
 package com.tny.game.net.command.plugins.filter;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
@@ -19,10 +19,10 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
 
-    private Map<Class<?>, ParamFilter> filterMap = new CopyOnWriteMap<>();
+    private final Map<Class<?>, ParamFilter<?>> filterMap = new CopyOnWriteMap<>();
 
     public ParamFilterPlugin() {
-        Collection<ParamFilter> filters = new ArrayList<>();
+        Collection<ParamFilter<?>> filters = new ArrayList<>();
         filters.add(ByteRangeLimitParamFilter.getInstance());
         filters.add(CharRangeLimitParamFilter.getInstance());
         filters.add(DoubleRangeLimitParamFilter.getInstance());
@@ -35,8 +35,8 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
         this.addParamFilters(filters);
     }
 
-    protected void addParamFilters(Collection<ParamFilter> filters) {
-        Map<Class<?>, ParamFilter> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
+    protected void addParamFilters(Collection<ParamFilter<?>> filters) {
+        Map<Class<?>, ParamFilter<?>> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
         this.filterMap.putAll(maps);
     }
 
@@ -45,7 +45,7 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
     }
 
     @Override
-    public void doExecute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) throws Exception {
+    public void doExecute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) {
         MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {
@@ -63,4 +63,5 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
             }
         }
     }
+
 }

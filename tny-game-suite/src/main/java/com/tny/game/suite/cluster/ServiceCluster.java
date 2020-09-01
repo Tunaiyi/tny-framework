@@ -35,22 +35,22 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
                 if (data == null)
                     return;
                 node = setLaunch(data.getServerId(), data, true);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, node.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, node.getServerId(), node);
                 break;
             case CHANGE:
                 if (data == null)
                     return;
                 node = this.setLaunch(data.getServerId(), data, false);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, data.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, data.getServerId(), node);
                 break;
             case DELETE:
                 if (old == null)
                     return;
                 node = this.removeLaunch(old.getServerId());
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerId(), node);
                 break;
         }
     };
@@ -62,22 +62,22 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
                 if (data == null)
                     return;
                 node = this.setOutline(data);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Outline 创建! {} ", path, data.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Outline 创建! {} ", path, data.getServerId(), node);
                 break;
             case CHANGE:
                 if (data == null)
                     return;
                 node = this.setOutline(data);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Outline 改变! {} ", path, data.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Outline 改变! {} ", path, data.getServerId(), node);
                 break;
             case DELETE:
                 if (old == null)
                     return;
                 node = removeOutline(old.getServerId());
-                if (node != null && LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Outline 删除!", path, old.getServerId());
+                if (node != null && this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Outline 删除!", path, old.getServerId());
                 break;
         }
     };
@@ -89,22 +89,22 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
                 if (data == null)
                     return;
                 node = this.setSetting(data.getServerId(), data, true);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Setting 创建! {} ", path, data.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Setting 创建! {} ", path, data.getServerId(), node);
                 break;
             case CHANGE:
                 if (data == null)
                     return;
                 node = this.setSetting(data.getServerId(), data, false);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Setting 改变! {} ", path, data.getServerId(), node);
+                if (this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Setting 改变! {} ", path, data.getServerId(), node);
                 break;
             case DELETE:
                 if (old == null)
                     return;
                 node = removeSetting(old.getServerId());
-                if (node != null && LOGGER.isDebugEnabled())
-                    LOGGER.debug("path : {} | 服务器 {} Setting 删除!", path, old.getServerId());
+                if (node != null && this.LOGGER.isDebugEnabled())
+                    this.LOGGER.debug("path : {} | 服务器 {} Setting 删除!", path, old.getServerId());
                 break;
         }
     };
@@ -172,7 +172,7 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServiceNode node = new ServiceNode(this.serverType, this.serviceId, urls);
         String nodePath = ClusterUtils.getWebNodePath(this.serverType, this.serviceId);
         this.remoteMonitor.putNodeData(CreateMode.EPHEMERAL, node, nodePath);
-        LOGGER.info("注册 {} web service urls [\n{}\n] 到 {}", this.serverType, StringUtils.join(urls, "\n"), nodePath);
+        this.LOGGER.info("注册 {} web service urls [\n{}\n] 到 {}", this.serverType, StringUtils.join(urls, "\n"), nodePath);
     }
 
     protected String[] clusterUrls() {

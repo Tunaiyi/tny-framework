@@ -10,7 +10,7 @@ import java.util.*;
  * @param <M>
  * @author KGTny
  */
-public interface Item<M extends ItemModel> extends Any<M> {
+public interface Item<M extends ItemModel> extends Entity<M> {
 
     /**
      * 获取该事物对象所属类型
@@ -183,6 +183,5 @@ public interface Item<M extends ItemModel> extends Any<M> {
     default Behavior getBehaviorByAction(Action action) {
         return this.getModel().getBehaviorByAction(action);
     }
-
 
 }

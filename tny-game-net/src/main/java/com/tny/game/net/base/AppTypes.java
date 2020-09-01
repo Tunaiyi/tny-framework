@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
+import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.net.utils.*;
 
 import java.util.Collection;

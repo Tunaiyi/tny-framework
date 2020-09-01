@@ -3,7 +3,7 @@ tny:
     name: GameServerApp
     app-type: game
     scope-type: game
-    scan-packages: com.tny.game.net.demo,com.tny.game.net.common,com.tny.game.starter
+    scan-packages: com.tny.game.net.demo,com.tny.game.net.com.tny.game.common,com.tny.game.starter
   net:
     server:
       game-server:

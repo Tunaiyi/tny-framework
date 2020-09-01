@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import net.paoding.rose.jade.annotation.SQLParam;
 
 import java.io.Serializable;
@@ -22,7 +22,7 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
 
     public void load() {
         Collection<T> objects = super.findAll();
-        objects.forEach(o -> taskMap.putIfAbsent(getId(o), o));
+        objects.forEach(o -> this.taskMap.putIfAbsent(getId(o), o));
         this.findAll();
     }
 
@@ -33,8 +33,9 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
             Consumer<T> cached) {
         Collection<T> failed = dbOp.apply(entities);
         entities.forEach(o -> {
-            if (failed.contains(o))
+            if (failed.contains(o)) {
                 return;
+            }
             cached.accept(o);
         });
         return failed;
@@ -126,16 +127,19 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
     @Override
     public T find(ID id) {
         T object = this.taskMap.get(id);
-        if (object != null)
+        if (object != null) {
             return object;
+        }
         VO vo = this.dao().find(id);
-        if (vo == null)
+        if (vo == null) {
             return null;
+        }
         object = vo2Object(vo);
         if (object != null) {
             T old = this.taskMap.putIfAbsent(getId(object), object);
-            if (old != null)
+            if (old != null) {
                 object = old;
+            }
         }
         return object;
     }
@@ -146,12 +150,14 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
 
     @Override
     public Collection<T> findAll() {
-        if (!this.taskMap.isEmpty())
+        if (!this.taskMap.isEmpty()) {
             return new ArrayList<>(this.taskMap.values());
+        }
         Collection<VO> vos = this.dao().findAll();
         Collection<T> objects = vos2Objects(vos);
-        if (objects != null)
+        if (objects != null) {
             return putIfAbsent(objects);
+        }
         return ImmutableList.of();
     }
 
@@ -161,15 +167,17 @@ public abstract class MapCrudDAOManager<T, VO, ID extends Serializable> extends 
         List<ID> noExist = new ArrayList<>();
         for (ID id : ids) {
             T object = this.taskMap.get(id);
-            if (object != null)
+            if (object != null) {
                 os.add(object);
-            else
+            } else {
                 noExist.add(id);
+            }
         }
         Collection<VO> vos = this.dao().findAll(noExist);
         Collection<T> objects = vos2Objects(vos);
-        if (objects != null)
+        if (objects != null) {
             os.addAll(putIfAbsent(objects));
+        }
         return os;
     }
 

@@ -7,7 +7,7 @@ dependencies {
     api libs.spring_boot_autoconfigure
     api libs.spring_boot_configuration_processor
 
-    api project(":tny-game-common")
+    api project(":tny-game-common-base")
     api project(":tny-game-loader")
 
 }

@@ -5,7 +5,7 @@ apply plugin: "maven"
 dependencies {
 
     api project(":tny-game-expr-jsr223")
-    api project(":tny-game-common")
+    api project(":tny-game-common-lang")
     api libs.groovy_all
 
 }

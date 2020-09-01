@@ -1,6 +1,5 @@
 package com.tny.game.net.command.dispatcher;
 
-
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
 import com.tny.game.common.unit.annotation.*;
@@ -33,7 +32,6 @@ public class DefaultMessageDispatcher extends AbstractMessageDispatcher implemen
         this.addListener(UnitLoader.getLoader(DispatchCommandListener.class).getAllUnits());
         this.setEndpointKeeperManager(UnitLoader.getLoader(EndpointKeeperManager.class).getOneUnitAnCheck());
     }
-
 
     @Override
     public DefaultMessageDispatcher setAppContext(AppContext appContext) {

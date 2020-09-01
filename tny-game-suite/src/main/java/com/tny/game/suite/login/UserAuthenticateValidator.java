@@ -1,7 +1,7 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.common.reflect.*;
-import com.tny.game.common.utils.digest.md5.*;
+import com.tny.game.common.digest.md5.*;
+import com.tny.game.common.type.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -26,7 +26,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
     @Resource
     private GameTicketMaker ticketMaker;
 
-    private static ReferenceType<List<String>> BODY_CLASS = new ReferenceType<List<String>>() {
+    private static final ReferenceType<List<String>> BODY_CLASS = new ReferenceType<List<String>>() {
     };
 
     private volatile boolean online = true;
@@ -39,15 +39,18 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         GameTicket ticket;
         try {
             if (this.isAuth()) {
-                if (ticketWord == null)
+                if (ticketWord == null) {
                     throw new ValidatorFailException(SuiteResultCode.AUTH_NO_TICKET, openID);
+                }
                 ticket = GameTicketHelper.decryptTicket(ticketWord);
-                if (!this.isOnline() && !ticket.isInterior())
+                if (!this.isOnline() && !ticket.isInterior()) {
                     throw new CommandException(SuiteResultCode.AUTH_SERVER_IS_OFFLINE, openID);
+                }
                 // 维护时候只有pf为inside才可以进入
                 String checkKey = this.ticketMaker.make(ticket);
-                if (!checkKey.equals(ticket.getSecret()))
+                if (!checkKey.equals(ticket.getSecret())) {
                     throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, openID);
+                }
             } else {
                 if (ticketWord == null || ticketWord.equals("{}") || ticketWord.isEmpty()) {
                     int serverID = Configs.DEVELOP_CONFIG.getInt(Configs.DEVELOP_AUTH_SERVER_ID, GameInfo.getMainZoneId());
@@ -61,21 +64,24 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
                     }
                     long time = Configs.devDateTime(Configs.DEVELOP_AUTH_CREATE_AT, System.currentTimeMillis());
                     long ticketID = System.currentTimeMillis();
-                    if (StringUtils.isNumeric(openKey))
+                    if (StringUtils.isNumeric(openKey)) {
                         ticketID = NumberUtils.toLong(openKey);
+                    }
                     ticket = new GameTicket(ticketID, serverID, openID, openID, false, openKey, "zh-CN", pf, pf, zoneID, entryID, null, null, time,
                             null);
                 } else {
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
-                    if (!checkKey.equals(ticket.getSecret()))
+                    if (!checkKey.equals(ticket.getSecret())) {
                         throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, openID);
+                    }
                 }
             }
         } catch (Throwable e) {
             LOGGER.error("ticket word to object JSONException", e);
-            if (e instanceof ValidatorFailException)
-                throw (ValidatorFailException) e;
+            if (e instanceof ValidatorFailException) {
+                throw (ValidatorFailException)e;
+            }
             throw new ValidatorFailException(SuiteResultCode.AUTH_ERROR, openID, e);
         }
         return ticket;
@@ -87,12 +93,14 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         String openKey = params.get(1);
         String ticketWord = params.get(3);
         GameTicket ticket = this.getTicket(openID, openKey, ticketWord);
-        if (ticket == null)
+        if (ticket == null) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_NO_TICKET, openID);
+        }
         LOGGER.info("create openID : " + openID + "  openKey : " + openKey);
         Account accountObj = this.accountService.loadOrCreateAccount(ticket);
-        if (accountObj == null)
+        if (accountObj == null) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_NO_ACCOUNT, openID + (relogin ? "重登" : "登录"));
+        }
         // accountObj.online(tunnel.getHostName());
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_ID_KEY, ticket.getOpenId());
         tunnel.attributes().setAttribute(AttributesKeys.OPEN_KEY_KEY, ticket.getOpenKey());
@@ -120,4 +128,5 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         System.out.println("fol.server.access.lj_sdk.login_key=" + MD5.md5("fol.server.access.lj_sdk.login_key67a2c91fd6ad9f034d75fe27aded85db"));
         System.out.println("fol.server.admin.remember_me_key=" + MD5.md5("fol.server.admin.remember_me_key67a2c91fd6ad9f034d75fe27aded85db"));
     }
+
 }

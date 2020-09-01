@@ -1,6 +1,6 @@
 package com.tny.game.starter.net.netty4.configuration.endpoint;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.starter.common.initiator.*;
@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
@@ -32,20 +32,21 @@ public class ImportEndpointEventHandlerBeanDefinitionRegistrar extends BaseBeanD
         Class<EndpointEventHandlerSetting> settingClass = as(ExeAide.callUnchecked(() -> Class.forName(settingClassName)).orElse(null));
 
         EndpointEventHandlerSetting setting = Binder.get(this.environment)
-                                                    .bind(keyHead, settingClass)
-                                                    .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null));
+                .bind(keyHead, settingClass)
+                .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null));
 
         String handlerClassName = this.environment.getProperty(key(keyHead, CLASS_NODE), setting.getHandlerClass());
         String handlerName = getBeanName(name, EndpointEventHandler.class);
         Class<EndpointEventHandler> handlerClass = as(ExeAide.callUnchecked(() -> Class.forName(handlerClassName)).orElse(null));
 
         registry.registerBeanDefinition(handlerName, BeanDefinitionBuilder.genericBeanDefinition(handlerClass)
-                                                                          .addConstructorArgValue(setting)
-                                                                          .getBeanDefinition());
+                .addConstructorArgValue(setting)
+                .getBeanDefinition());
     }
 
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
 }

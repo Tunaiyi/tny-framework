@@ -1,7 +1,7 @@
 package com.tny.game.data.storage;
 
 import com.tny.game.common.concurrent.*;
-import com.tny.game.common.lock.locker.*;
+import com.tny.game.common.concurrent.lock.locker.*;
 import com.tny.game.data.accessor.*;
 import org.slf4j.*;
 
@@ -90,28 +90,28 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
     private void recodeSuccess(StorageOperation operation) {
         switch (operation) {
             case INSERT:
-                insertCounter.incrementAndGet();
+                this.insertCounter.incrementAndGet();
                 break;
             case UPDATE:
-                updateCounter.incrementAndGet();
+                this.updateCounter.incrementAndGet();
                 break;
             case SAVE:
-                saveCounter.incrementAndGet();
+                this.saveCounter.incrementAndGet();
                 break;
             case DELETE:
-                deleteCounter.incrementAndGet();
+                this.deleteCounter.incrementAndGet();
                 break;
         }
     }
 
     @Override
     public synchronized void start() {
-        if (state == State.INIT) {
+        if (this.state == State.INIT) {
             this.state = State.START;
             EXECUTOR_SERVICE.submit(this::storge);
-            clearTaskFuture = CLEAR_DELETED_SERVICE.scheduleWithFixedDelay(this::clearDeletedEntries,
+            this.clearTaskFuture = CLEAR_DELETED_SERVICE.scheduleWithFixedDelay(this::clearDeletedEntries,
                     ThreadLocalRandom.current().nextInt(5000),
-                    Math.max(setting.getDeletedRemoveDelay(), 3000), TimeUnit.MILLISECONDS);
+                    Math.max(this.setting.getDeletedRemoveDelay(), 3000), TimeUnit.MILLISECONDS);
         }
     }
 
@@ -122,8 +122,9 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
             if (this.thread != null) {
                 this.thread.interrupt();
             }
-            if (this.clearTaskFuture != null)
+            if (this.clearTaskFuture != null) {
                 this.clearTaskFuture.cancel(true);
+            }
         }
     }
 
@@ -135,16 +136,17 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
     public O get(K key) {
         Lock lock = locker.lock(key);
         try {
-            StorageEntry<K, O> entry = entriesMap.get(key);
+            StorageEntry<K, O> entry = this.entriesMap.get(key);
             if (entry != null) {
-                if (entry.isDelete())
+                if (entry.isDelete()) {
                     return null;
+                }
                 return entry.getValue();
             }
         } finally {
             locker.unlock(key, lock);
         }
-        return accessor.get(key);
+        return this.accessor.get(key);
     }
 
     @Override
@@ -173,40 +175,42 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
 
     @Override
     public long getInsertNumber() {
-        return insertCounter.longValue();
+        return this.insertCounter.longValue();
     }
 
     @Override
     public long getUpdateNumber() {
-        return updateCounter.longValue();
+        return this.updateCounter.longValue();
     }
 
     @Override
     public long getSaveNumber() {
-        return saveCounter.longValue();
+        return this.saveCounter.longValue();
     }
 
     @Override
     public long getDeleteNumber() {
-        return deleteCounter.longValue();
+        return this.deleteCounter.longValue();
     }
 
     @Override
     public long getFailedNumber() {
-        return failedCounter.longValue();
+        return this.failedCounter.longValue();
     }
 
     private void clearDeletedEntries() {
         long now = System.currentTimeMillis();
-        for (Entry<K, StorageEntry<K, O>> entry : entriesMap.entrySet()) {
+        for (Entry<K, StorageEntry<K, O>> entry : this.entriesMap.entrySet()) {
             StorageEntry<K, O> storage = entry.getValue();
-            if (storage.getState() != StorageState.DELETE || !storage.isNeedClear(now))
+            if (storage.getState() != StorageState.DELETE || !storage.isNeedClear(now)) {
                 continue;
+            }
             Lock lock = locker.lock(entry.getKey());
             try {
-                if (storage.getState() != StorageState.DELETE || !storage.isNeedClear(now))
+                if (storage.getState() != StorageState.DELETE || !storage.isNeedClear(now)) {
                     continue;
-                entriesMap.remove(entry.getKey(), entry.getValue());
+                }
+                this.entriesMap.remove(entry.getKey(), entry.getValue());
             } catch (Throwable e) {
                 LOGGER.error("", e);
             } finally {
@@ -218,25 +222,25 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
     private void operate(K key, O object, StorageOperation operation) {
         Lock lock = locker.lock(key);
         try {
-            StorageEntry<K, O> entry = entriesMap.get(key);
+            StorageEntry<K, O> entry = this.entriesMap.get(key);
             if (entry != null) {
                 entry.updateState(object, operation);
                 return;
             }
             entry = new StorageEntry<>(key, object, operation);
-            entriesMap.put(key, entry);
+            this.entriesMap.put(key, entry);
             this.taskQueue.add(entry);
         } finally {
             locker.unlock(key, lock);
         }
     }
 
-
     private void storge() {
-        thread = Thread.currentThread();
-        if (this.isStop())
-            thread.interrupt();
-        while (!thread.isInterrupted() || !this.taskQueue.isEmpty()) {
+        this.thread = Thread.currentThread();
+        if (this.isStop()) {
+            this.thread.interrupt();
+        }
+        while (!this.thread.isInterrupted() || !this.taskQueue.isEmpty()) {
             int operateSize = 0;
             long startAt = 0;
             long costTime;
@@ -249,29 +253,30 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
                 LOGGER.error("sync is interrupted", e);
             }
             // 连续获取, 最多获取 Step 个记录进行同步
-            while (!this.taskQueue.isEmpty() && operateSize < setting.getStep()) {
+            while (!this.taskQueue.isEmpty() && operateSize < this.setting.getStep()) {
                 StorageEntry<K, O> entry = this.taskQueue.poll();
-                if (entry == null)
+                if (entry == null) {
                     continue;
+                }
                 handleStorageEntry(entry);
                 operateSize++;
             }
             costTime = System.currentTimeMillis() - startAt;
             // 如果同步够 Step 个记录进行一次休眠, 如果少于 step 个则有 take 进行阻塞等待.
-            if (!this.isStop() && operateSize == setting.getStep()) {
+            if (!this.isStop() && operateSize == this.setting.getStep()) {
                 try {
-                    Thread.sleep(setting.getWaitTime());
+                    Thread.sleep(this.setting.getWaitTime());
                 } catch (InterruptedException e) {
                     LOGGER.error("sync is interrupted", e);
                 }
             }
-            if (LOGGER.isInfoEnabled() && operateSize > 0)
+            if (LOGGER.isInfoEnabled() && operateSize > 0) {
                 LOGGER.info("同步器 {} [{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", QueueObjectStorage.class.getSimpleName(), this.objectClass, costTime,
                         operateSize, this.taskQueue.size());
+            }
         }
         LOGGER.info("同步器 {} [{}] 关闭成功! 提交队列对象数: {}", QueueObjectStorage.class.getSimpleName(), this.objectClass, this.taskQueue.size());
     }
-
 
     private void handleStorageEntry(StorageEntry<K, O> entry) {
         StorageOperation operation = null;
@@ -282,23 +287,24 @@ public class QueueObjectStorage<K extends Comparable<K>, O> implements ObjectSto
             try {
                 StorageState state = entry.getState();
                 operation = state.getOperation();
-                if (!operation.isNeedOperate())
+                if (!operation.isNeedOperate()) {
                     return;
+                }
                 value = entry.getValue();
-                operation.operate(accessor, value);
+                operation.operate(this.accessor, value);
                 // 记录成功失败
                 recodeSuccess(operation);
                 if (operation == StorageOperation.DELETE) {
-                    entry.deleted(setting.getDeletedRemoveDelay());
+                    entry.deleted(this.setting.getDeletedRemoveDelay());
                 } else {
                     this.entriesMap.remove(entry.getKey(), entry);
                 }
                 return;
             } catch (Throwable e) {
                 LOGGER.error("operate [{}] {} exception", operation, value, e);
-                failedCounter.incrementAndGet();
+                this.failedCounter.incrementAndGet();
                 // 失败重试
-                if (tryTime < setting.getTryTime()) {
+                if (tryTime < this.setting.getTryTime()) {
                     this.taskQueue.add(entry);
                     tryTime++;
                 } else {

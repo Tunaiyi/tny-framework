@@ -31,13 +31,13 @@ import java.util.concurrent.*;
 @Profile({"web.client"})
 public class HttpClientConfiguration {
 
-    private static final String HTTP_PROXY_HOST = "tny.common.http_client.proxy.host";
-    private static final String HTTP_PROXY_PORT = "tny.common.http_client.proxy.port";
+    private static final String HTTP_PROXY_HOST = "tny.com.tny.game.common.http_client.proxy.host";
+    private static final String HTTP_PROXY_PORT = "tny.com.tny.game.common.http_client.proxy.port";
 
-    private ScheduledExecutorService idleConnectionMonitor = Executors.newSingleThreadScheduledExecutor(
+    private final ScheduledExecutorService idleConnectionMonitor = Executors.newSingleThreadScheduledExecutor(
             new CoreThreadFactory("IdleConnectionMonitor", true));
 
-    private ConnectionKeepAliveStrategy keepAliveStrategy = (response, context) -> {
+    private final ConnectionKeepAliveStrategy keepAliveStrategy = (response, context) -> {
         HeaderElementIterator it = new BasicHeaderElementIterator(
                 response.headerIterator(HTTP.CONN_KEEP_ALIVE));
         while (it.hasNext()) {
@@ -57,36 +57,42 @@ public class HttpClientConfiguration {
     private SSLContext newSSLContext() throws Exception {
         SSLContext sslContext = SSLContext.getInstance("SSL");
         // set up a TrustManager that trusts everything
-        sslContext.init(null, new TrustManager[]{new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
+        sslContext.init(null, new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
 
-            @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    }
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
 
-        }}, new SecureRandom());
+                }
+        }, new SecureRandom());
         return sslContext;
     }
 
     private static class EasyCookieSpec extends DefaultCookieSpec {
+
         @Override
         public void validate(Cookie arg0, CookieOrigin arg1) throws MalformedCookieException {
             //allow all cookies
         }
+
     }
 
     private static class EasySpecProvider implements CookieSpecProvider {
+
         @Override
         public CookieSpec create(HttpContext context) {
             return new EasyCookieSpec();
         }
+
     }
 
     @Bean
@@ -109,11 +115,11 @@ public class HttpClientConfiguration {
         CookieStore cookieStore = new BasicCookieStore();
 
         RequestConfig requestConfig = RequestConfig.custom()
-                                                   .setCookieSpec("easy")
-                                                   .setConnectionRequestTimeout(30 * 1000)
-                                                   .setSocketTimeout(30 * 1000)
-                                                   .setConnectTimeout(30 * 1000)
-                                                   .build();
+                .setCookieSpec("easy")
+                .setConnectionRequestTimeout(30 * 1000)
+                .setSocketTimeout(30 * 1000)
+                .setConnectTimeout(30 * 1000)
+                .build();
         HttpClientBuilder builder = HttpClients.custom();
         String host = System.getProperty(HTTP_PROXY_HOST);
         String port = System.getProperty(HTTP_PROXY_PORT);
@@ -154,10 +160,10 @@ public class HttpClientConfiguration {
         };
     }
 
-
     @Bean(name = "restTemplate", autowire = Autowire.NO)
     public RestTemplate restTemplate(@Autowired HttpComponentsClientHttpRequestFactory factory) throws Exception {
         RestTemplate restTemplate = new RestTemplate(factory);
         return restTemplate;
     }
+
 }

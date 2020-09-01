@@ -1,6 +1,6 @@
 package com.tny.game.data;
 
-import com.tny.game.common.lock.locker.*;
+import com.tny.game.common.concurrent.lock.locker.*;
 import com.tny.game.data.cache.*;
 import com.tny.game.data.storage.*;
 
@@ -19,19 +19,19 @@ public class EntityCacheManager<K extends Comparable<K>, O> implements EntityMan
 
     @Override
     public O load(K id, EntityCreator<K, O> creator) {
-        Lock lock = locker.lock(id);
+        Lock lock = this.locker.lock(id);
         O object;
         try {
-            object = cache.get(id);
+            object = this.cache.get(id);
             if (object != null)
                 return object;
-            object = storage.get(id);
+            object = this.storage.get(id);
             if (object == null)
                 object = creator.create(id);
-            storage.insert(id, object);
-            cache.put(id, object);
+            this.storage.insert(id, object);
+            this.cache.put(id, object);
         } finally {
-            locker.unlock(id, lock);
+            this.locker.unlock(id, lock);
         }
         return object;
     }
@@ -39,66 +39,66 @@ public class EntityCacheManager<K extends Comparable<K>, O> implements EntityMan
     private K idOf(O object) {
         // if (object instanceof CacheObject)
         //     return as(as(object, CacheObject.class).getCacheId());
-        return cache.idOf(object);
+        return this.cache.idOf(object);
     }
 
     @Override
     public boolean insert(O object) {
         K id = idOf(object);
-        Lock lock = locker.lock(id);
+        Lock lock = this.locker.lock(id);
         try {
-            O old = cache.get(id);
+            O old = this.cache.get(id);
             if (old != null)
                 return false;
-            if (!storage.insert(id, object))
+            if (!this.storage.insert(id, object))
                 return false;
-            cache.put(id, object);
+            this.cache.put(id, object);
         } finally {
-            locker.unlock(id, lock);
+            this.locker.unlock(id, lock);
         }
         return true;
     }
 
     @Override
     public O get(K id) {
-        Lock lock = locker.lock(id);
+        Lock lock = this.locker.lock(id);
         O object;
         try {
-            object = cache.get(id);
+            object = this.cache.get(id);
             if (object != null)
                 return object;
-            object = storage.get(id);
+            object = this.storage.get(id);
             if (object == null)
                 return null;
-            cache.put(id, object);
+            this.cache.put(id, object);
         } finally {
-            locker.unlock(id, lock);
+            this.locker.unlock(id, lock);
         }
         return object;
     }
 
     @Override
     public boolean update(O object) {
-        return storage.update(idOf(object), object);
+        return this.storage.update(idOf(object), object);
     }
 
     @Override
     public boolean save(O object) {
-        return storage.save(idOf(object), object);
+        return this.storage.save(idOf(object), object);
     }
 
     @Override
     public O delete(K id) {
-        Lock lock = locker.lock(id);
+        Lock lock = this.locker.lock(id);
         O object;
         try {
-            object = cache.remove(id);
+            object = this.cache.remove(id);
             if (object == null)
                 return null;
-            cache.remove(id);
-            storage.delete(id, object);
+            this.cache.remove(id);
+            this.storage.delete(id, object);
         } finally {
-            locker.unlock(id, lock);
+            this.locker.unlock(id, lock);
         }
         return object;
     }

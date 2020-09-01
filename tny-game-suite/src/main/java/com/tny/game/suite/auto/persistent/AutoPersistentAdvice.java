@@ -1,7 +1,7 @@
 package com.tny.game.suite.auto.persistent;
 
 import com.tny.game.base.item.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
 import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.aop.*;
@@ -73,13 +73,15 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
                     AutoDBReturn autoSave = holder.getAutoReturn();
                     this.handleSaveList(returnValue, opDBMap, autoSave.op(), autoSave.imm());
                 }
-                if (args == null || !holder.isHandleParams())
+                if (args == null || !holder.isHandleParams()) {
                     return;
+                }
                 for (int index = 0; index < args.length; index++) {
                     Object arg = args[index];
                     AutoDBParam autoSave = holder.getAutoSaveParam(index);
-                    if (autoSave != null && arg != null)
+                    if (autoSave != null && arg != null) {
                         this.handleSaveList(arg, opDBMap, autoSave.op(), autoSave.imm());
+                    }
                 }
             }
         }
@@ -101,7 +103,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     private void handleSaveList(Object object, Map<Object, String> saveMap, String operation, boolean immediately) {
         immediately = this.checkImmediately(operation, immediately);
         if (object instanceof Collection) {
-            for (Object o : (Collection<?>) object) {
+            for (Object o : (Collection<?>)object) {
                 if (immediately) {
                     saveMap.remove(o);
                     this.toDB(o, operation);
@@ -139,29 +141,34 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
 
     private void toDB(Transaction transaction) {
         Map<Object, String> opDBMap = transaction.attributes().removeAttribute(OP_DB_MAP);
-        if (opDBMap == null)
+        if (opDBMap == null) {
             return;
+        }
         for (Entry<Object, String> object : opDBMap.entrySet()) {
             this.toDB(object.getKey(), object.getValue());
         }
-        if (!opDBMap.isEmpty())
+        if (!opDBMap.isEmpty()) {
             opDBMap.clear();
+        }
     }
 
     @SuppressWarnings("unchecked")
     private void toDB(Object object, String operation) {
-        if (object == null)
+        if (object == null) {
             return;
+        }
         Class<?> clazz = object.getClass();
         try {
             Manager<Object> manager = this.classManagerMap.get(clazz);
             if (manager == null) {
                 AutoDBBy saveBy = clazz.getAnnotation(AutoDBBy.class);
-                if (saveBy == null)
+                if (saveBy == null) {
                     throw new NullPointerException(format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
-                manager = (Manager<Object>) this.explorer.getManager(saveBy.manager());
-                if (manager == null)
+                }
+                manager = (Manager<Object>)this.explorer.getManager(saveBy.manager());
+                if (manager == null) {
                     throw new NullPointerException(format("{} 类找不到 {} manager", clazz, saveBy.manager()));
+                }
                 this.classManagerMap.put(clazz, manager);
             }
             switch (operation) {
@@ -208,4 +215,5 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
             LOGGER.error("{} 协议[{}] handleRollback 异常", source, cmd.getProtocol(), e);
         }
     }
+
 }

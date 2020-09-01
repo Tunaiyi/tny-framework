@@ -5,7 +5,7 @@ apply plugin: "maven"
 dependencies {
 
 
-    api project(":tny-game-common")
+    api project(":tny-game-common-base")
     api libs.quartz_scheduler
     api libs.xstream
 

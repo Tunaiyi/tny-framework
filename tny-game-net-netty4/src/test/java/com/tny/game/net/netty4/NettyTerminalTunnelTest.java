@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
@@ -29,7 +30,7 @@ public class NettyTerminalTunnelTest extends NettyTunnelTest<NettyTerminal<Long>
 
     @Override
     protected MockNettyClient createEndpoint(Certificate<Long> certificate) {
-        return new MockNettyClient(url, certificate);
+        return new MockNettyClient(this.url, certificate);
     }
 
     private NettyTerminalTunnel<Long> newTunnel(MockNettyClient client, boolean open) {

@@ -108,8 +108,9 @@ public final class MethodControllerHolder extends ControllerHolder {
             Set<Class<?>> annotationClassSet = new HashSet<>();
             for (Annotation[] paramAnnotations : parameterAnnotations) {
                 for (Annotation paramAnnotation : paramAnnotations) {
-                    if (paramAnnotation != null)
+                    if (paramAnnotation != null) {
                         annotationClassSet.add(paramAnnotation.annotationType());
+                    }
                 }
             }
             for (Class<?> clazz : annotationClassSet) {
@@ -146,8 +147,9 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public Set<MessageMode> getMessageModes() {
-        if (this.messageModes != null)
+        if (this.messageModes != null) {
             return this.messageModes;
+        }
         return this.classController.getMessageModes();
     }
 
@@ -160,8 +162,9 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     private PluginContext putPlugin(PluginContext context, ControllerPluginHolder plugin) {
-        if (context == null)
+        if (context == null) {
             context = new PluginContext(plugin);
+        }
         context.setNext(new PluginContext(plugin));
         return context;
     }
@@ -180,12 +183,14 @@ public final class MethodControllerHolder extends ControllerHolder {
     // }
 
     public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
-        if (index >= this.parameterDescs.size())
+        if (index >= this.parameterDescs.size()) {
             throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.parameterDescs.size()));
+        }
         ParamDesc desc = this.parameterDescs.get(index);
-        if (desc == null)
+        if (desc == null) {
             throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+        }
         return desc.getValue(tunnel, message, body);
     }
 
@@ -237,7 +242,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public Class<? extends AuthenticateValidator> getAuthValidator() {
+    public Class<? extends AuthenticateValidator<?>> getAuthValidator() {
         return this.auth != null ? super.getAuthValidator() : this.classController.getAuthValidator();
     }
 
@@ -257,16 +262,16 @@ public final class MethodControllerHolder extends ControllerHolder {
     @SuppressWarnings("unchecked")
     public <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz) {
         List<Annotation> annotations = this.paramAnnotationsMap.get(clazz);
-        if (annotations == null)
+        if (annotations == null) {
             return new ArrayList<>();
-        return (List<A>) annotations;
+        }
+        return (List<A>)annotations;
     }
 
     @Override
     public boolean isParamsAnnotationExist(Class<? extends Annotation> clazz) {
         return this.paramAnnotationsMap.containsKey(clazz);
     }
-
 
     @Override
     public List<Annotation> getParamAnnotationsByIndex(int index) {
@@ -281,7 +286,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     @Override
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
-        return (A) this.methodAnnotationMap.get(annotationClass);
+        return (A)this.methodAnnotationMap.get(annotationClass);
     }
 
     public Set<Class<?>> getParamAnnotationClass() {
@@ -299,14 +304,16 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, CommandContext context) {
-        if (this.beforeContext == null)
+        if (this.beforeContext == null) {
             return;
+        }
         this.beforeContext.execute(tunnel, message, context);
     }
 
     protected void afterInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
-        if (this.afterContext == null)
+        if (this.afterContext == null) {
             return;
+        }
         this.afterContext.execute(tunnel, message, context);
     }
 
@@ -359,9 +366,9 @@ public final class MethodControllerHolder extends ControllerHolder {
                 for (Annotation anno : this.paramAnnotations) {
                     if (anno.annotationType() == MsgBody.class) {
                         this.paramType = ParamType.BODY;
-                        this.require = ((MsgBody) anno).require();
+                        this.require = ((MsgBody)anno).require();
                     } else if (anno.annotationType() == MsgParam.class) {
-                        this.msgParam = (MsgParam) anno;
+                        this.msgParam = (MsgParam)anno;
                         this.require = this.msgParam.require();
                         if (StringUtils.isNoneBlank(this.msgParam.value())) {
                             this.name = this.msgParam.value();
@@ -394,8 +401,9 @@ public final class MethodControllerHolder extends ControllerHolder {
 
         private Object getValue(NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
             boolean require = this.require;
-            if (body == null)
+            if (body == null) {
                 body = message.getBody(Object.class);
+            }
             MessageHead head = message.getHead();
             Object value = null;
             switch (this.paramType) {
@@ -408,14 +416,16 @@ public final class MethodControllerHolder extends ControllerHolder {
                 }
                 case SESSION: {
                     value = tunnel.getEndpoint();
-                    if (value instanceof Session)
+                    if (value instanceof Session) {
                         break;
+                    }
                     throw new NullPointerException(format("{} session is null", tunnel));
                 }
                 case CLIENT: {
                     value = tunnel.getEndpoint();
-                    if (value instanceof Client)
+                    if (value instanceof Client) {
                         break;
+                    }
                     throw new NullPointerException(format("{} session is null", tunnel));
                 }
                 case TUNNEL:
@@ -430,17 +440,19 @@ public final class MethodControllerHolder extends ControllerHolder {
                 case INDEX_PARAM:
                     try {
                         if (body == null) {
-                            if (require)
+                            if (require) {
                                 throw new NullPointerException(format("{} 收到消息体为 null"));
-                            else
+                            } else {
                                 break;
+                            }
                         }
                         if (body instanceof List) {
-                            value = ((List) body).get(this.index);
+                            value = ((List)body).get(this.index);
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 收到消息体为 {}, 不可通过index获取", this.holder, body.getClass()));
+                            throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
+                                    format("{} 收到消息体为 {}, 不可通过index获取", this.holder, body.getClass()));
                         }
                     } catch (CommandException e) {
                         throw e;
@@ -450,17 +462,18 @@ public final class MethodControllerHolder extends ControllerHolder {
                     break;
                 case KEY_PARAM:
                     if (body == null) {
-                        if (require)
+                        if (require) {
                             throw new NullPointerException(format("{} 收到消息体为 null"));
-                        else
+                        } else {
                             break;
+                        }
                     }
                     if (body instanceof Map) {
-                        value = ((Map) body).get(this.name);
+                        value = ((Map)body).get(this.name);
                     } else {
                         value = this.formula.createExpr()
-                                            .put("_body", body)
-                                            .execute(this.paramClass);
+                                .put("_body", body)
+                                .execute(this.paramClass);
                     }
                     break;
                 case CODE:

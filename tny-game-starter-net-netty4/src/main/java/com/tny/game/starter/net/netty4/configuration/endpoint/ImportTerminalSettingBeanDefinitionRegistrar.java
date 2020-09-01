@@ -1,13 +1,13 @@
 package com.tny.game.starter.net.netty4.configuration.endpoint;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.starter.common.initiator.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
@@ -27,10 +27,10 @@ public class ImportTerminalSettingBeanDefinitionRegistrar extends BaseBeanDefini
         String settingName = getBeanName(name, TerminalSetting.class);
         registry.registerBeanDefinition(settingName, BeanDefinitionBuilder.genericBeanDefinition(settingClass,
                 () -> Binder.get(this.environment)
-                            .bind(keyHead, settingClass)
-                            .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null)))
-                                                                          .addPropertyValue("name", name)
-                                                                          .getBeanDefinition());
+                        .bind(keyHead, settingClass)
+                        .orElseGet(() -> ExeAide.callUnchecked(settingClass::newInstance).orElse(null)))
+                .addPropertyValue("name", name)
+                .getBeanDefinition());
     }
 
 }

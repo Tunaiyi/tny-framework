@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 
 import java.util.*;
 
@@ -62,8 +62,9 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
     @Override
     public boolean hasAbility(Ability ability) {
         Number number = this.abilityMap.get(ability);
-        if (number != null)
+        if (number != null) {
             return true;
+        }
         return this.model.hasAbility(ability);
     }
 
@@ -88,8 +89,9 @@ public class DefaultAbilitiesCache<I extends ItemModel> implements AbilitiesCach
 
     protected synchronized Number count(Map<Ability, Number> abilityMap, Ability ability, Object... attributes) {
         Number number = abilityMap.get(ability);
-        if (number != null)
+        if (number != null) {
             return number;
+        }
         ItemModel model = this.model;
         if (model.hasAbility(ability)) {
             if (this.item != null) {

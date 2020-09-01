@@ -7,7 +7,7 @@ dependencies {
 
     api libs.kafka_clients
 //            libs.'kafka_2.11',
-    api project(":tny-game-common")
+    api project(":tny-game-common-lang")
     api project(":tny-game-oplog")
     api project(":tny-game-oplog-log4j")
 

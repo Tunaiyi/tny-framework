@@ -11,22 +11,22 @@ public interface ItemExplorer {
 
     boolean hasItemManager(ItemType itemType);
 
-    <I extends Any<?>> I getItem(long playerId, int id, Object... object);
+    <I extends Entity<?>> I getItem(long playerId, int id, Object... object);
 
-    boolean insertItem(Any<?>... items);
+    boolean insertItem(Entity<?>... items);
 
-    <I extends Any<?>> Collection<I> insertItem(Collection<I> itemCollection);
+    <I extends Entity<?>> Collection<I> insertItem(Collection<I> itemCollection);
 
-    boolean updateItem(Any<?>... items);
+    boolean updateItem(Entity<?>... items);
 
-    <I extends Any<?>> Collection<I> updateItem(Collection<I> itemCollection);
+    <I extends Entity<?>> Collection<I> updateItem(Collection<I> itemCollection);
 
-    boolean saveItem(Any<?>... items);
+    boolean saveItem(Entity<?>... items);
 
-    <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection);
+    <I extends Entity<?>> Collection<I> saveItem(Collection<I> itemCollection);
 
-    boolean deleteItem(Any<?>... items);
+    boolean deleteItem(Entity<?>... items);
 
-    <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection);
+    <I extends Entity<?>> Collection<I> deleteItem(Collection<I> itemCollection);
 
 }

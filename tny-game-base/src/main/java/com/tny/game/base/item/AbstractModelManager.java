@@ -2,7 +2,7 @@ package com.tny.game.base.item;
 
 import com.tny.game.base.exception.*;
 import com.tny.game.base.log.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -30,32 +30,36 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
     @Override
     public M getModel(int id) {
         M model = this.modelMap.get(id);
-        if (model == null)
+        if (model == null) {
             LOGGER.warn("", new GameRuningException(id, ItemResultCode.MODEL_NO_EXIST, id));
+        }
         return model;
     }
 
     @Override
     public M getModelByAlias(String itemAlias) {
         M model = this.modelAliasMap.get(itemAlias);
-        if (model == null)
+        if (model == null) {
             LOGGER.warn("", new GameRuningException(itemAlias, ItemResultCode.MODEL_NO_EXIST, itemAlias));
+        }
         return model;
     }
 
     @Override
     public M getAndCheckModel(int id) {
         M model = this.getModel(id);
-        if (model == null)
+        if (model == null) {
             throw new GameRuningException(id, ItemResultCode.MODEL_NO_EXIST, id);
+        }
         return model;
     }
 
     @Override
     public M getAndCheckModelByAlias(String itemAlias) {
         M model = this.getModelByAlias(itemAlias);
-        if (model == null)
+        if (model == null) {
             throw new GameRuningException(itemAlias, ItemResultCode.MODEL_NO_EXIST, itemAlias);
+        }
         return model;
     }
 
@@ -69,7 +73,7 @@ public abstract class AbstractModelManager<M extends Model> implements ModelMana
 
     @Override
     public Map<Integer, M> getAllModelMap() {
-        return Collections.unmodifiableMap(modelMap);
+        return Collections.unmodifiableMap(this.modelMap);
     }
 
     @Override

@@ -137,36 +137,42 @@ public class Account implements Owned {
     }
 
     public Long getOfflineAt() {
-        if (this.offlineTime == null)
+        if (this.offlineTime == null) {
             return null;
+        }
         return this.offlineTime.toEpochMilli();
     }
 
     public Long getOnlineAt() {
-        if (this.onlineTime == null)
+        if (this.onlineTime == null) {
             return null;
+        }
         return this.onlineTime.toEpochMilli();
     }
 
     public void setOfflineAt(Long offlineTime) {
-        if (offlineTime != null)
+        if (offlineTime != null) {
             this.offlineTime = Instant.ofEpochMilli(offlineTime);
+        }
     }
 
     public void setOnlineAt(Long onlineTime) {
-        if (onlineTime != null)
+        if (onlineTime != null) {
             this.onlineTime = Instant.ofEpochMilli(onlineTime);
+        }
     }
 
     public Integer getCreateDate() {
-        if (this.createAt == null)
+        if (this.createAt == null) {
             return null;
+        }
         return DateTimeAide.date2Int(this.createAt);
     }
 
     public Integer getCreateRoleDate() {
-        if (this.createRoleAt == null)
+        if (this.createRoleAt == null) {
             return null;
+        }
         return DateTimeAide.date2Int(this.createRoleAt);
     }
 
@@ -291,8 +297,9 @@ public class Account implements Owned {
     }
 
     boolean online(String ip) {
-        if (isOnline())
+        if (isOnline()) {
             return false;
+        }
         this.ip = ip;
         this.onlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_ONLINE_AT, Instant.now());
         ON_ONLINE.notify(this);
@@ -300,18 +307,21 @@ public class Account implements Owned {
     }
 
     boolean offline() {
-        if (!isOnline())
+        if (!isOnline()) {
             return false;
+        }
         this.offlineTime = Configs.devDateTime(Configs.DEVELOP_AUTH_OFFLINE_AT, Instant.now());
         ON_OFFLINE.notify(this);
         return true;
     }
 
     public boolean isOnline() {
-        if (this.onlineTime == null)
+        if (this.onlineTime == null) {
             return false;
-        if (this.offlineTime == null)
+        }
+        if (this.offlineTime == null) {
             return true;
+        }
         return this.offlineTime.isBefore(this.onlineTime);
     }
 

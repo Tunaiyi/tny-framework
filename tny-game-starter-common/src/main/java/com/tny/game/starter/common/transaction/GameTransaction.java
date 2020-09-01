@@ -1,16 +1,15 @@
 package com.tny.game.starter.common.transaction;
 
-
 import com.tny.game.common.context.*;
 import com.tny.game.starter.common.transaction.listener.*;
 
 public class GameTransaction implements Transaction {
 
-    private Attributes attributes = ContextAttributes.create();
+    private final Attributes attributes = ContextAttributes.create();
 
     private boolean working;
 
-    private Thread thread;
+    private final Thread thread;
 
     public GameTransaction() {
         this.thread = Thread.currentThread();
@@ -57,9 +56,9 @@ public class GameTransaction implements Transaction {
         return this.attributes;
     }
 
-
     @Override
     public String toString() {
         return "GameTransaction{thread=" + this.thread + '}';
     }
+
 }

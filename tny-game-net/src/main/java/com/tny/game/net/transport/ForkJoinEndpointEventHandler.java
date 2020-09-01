@@ -79,7 +79,7 @@ public class ForkJoinEndpointEventHandler<UID, E extends NetEndpoint<UID>> imple
         if (handling.get())
             return;
         if (handling.compareAndSet(false, true)) {
-            forkJoinPool.submit(() -> consumer.handler(box, endpoint, handling));
+            this.forkJoinPool.submit(() -> consumer.handler(box, endpoint, handling));
         }
     }
 
@@ -115,7 +115,7 @@ public class ForkJoinEndpointEventHandler<UID, E extends NetEndpoint<UID>> imple
         Optional<NetTunnel<UID>> tunnelOpt = event.getTunnel();
         if (tunnelOpt.isPresent()) {
             NetTunnel<UID> tunnel = tunnelOpt.get();
-            messageHandler.handle(tunnel, event.getMessage(), event.getRespondFuture());
+            this.messageHandler.handle(tunnel, event.getMessage(), event.getRespondFuture());
         }
     }
 
@@ -203,8 +203,8 @@ public class ForkJoinEndpointEventHandler<UID, E extends NetEndpoint<UID>> imple
     @Override
     public void prepareStart() {
         this.forkJoinPool = ForkJoinPools.pool(this.setting.getThreads(), this.getClass().getSimpleName(), true);
-        MessageDispatcher messageDispatcher = UnitLoader.getLoader(MessageDispatcher.class).getUnitAnCheck(setting.getMessageDispatcher());
-        MessageCommandExecutor commandExecutor = UnitLoader.getLoader(MessageCommandExecutor.class).getUnitAnCheck(setting.getCommandExecutor());
+        MessageDispatcher messageDispatcher = UnitLoader.getLoader(MessageDispatcher.class).getUnitAnCheck(this.setting.getMessageDispatcher());
+        MessageCommandExecutor commandExecutor = UnitLoader.getLoader(MessageCommandExecutor.class).getUnitAnCheck(this.setting.getCommandExecutor());
         this.messageHandler = new DefaultMessageHandler<>(messageDispatcher, commandExecutor);
     }
 }

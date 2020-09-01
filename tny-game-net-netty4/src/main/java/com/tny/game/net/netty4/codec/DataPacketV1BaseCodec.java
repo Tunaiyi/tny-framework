@@ -34,15 +34,15 @@ public abstract class DataPacketV1BaseCodec implements AppPrepareStart {
 
     @Override
     public void prepareStart() {
-        Codec<Object> bodyCoder = as(UnitLoader.getLoader(Codec.class).getUnitAnCheck(config.getBodyCodec()));
-        Codec<Object> tailCoder = as(UnitLoader.getLoader(Codec.class).getUnit(config.getTailCodec(), null));
+        Codec<Object> bodyCoder = as(UnitLoader.getLoader(Codec.class).getUnitAnCheck(this.config.getBodyCodec()));
+        Codec<Object> tailCoder = as(UnitLoader.getLoader(Codec.class).getUnit(this.config.getTailCodec(), null));
         DecodeStrategy decodeStrategy;
-        if (StringUtils.isBlank(config.getBodyDecodeStrategy()))
+        if (StringUtils.isBlank(this.config.getBodyDecodeStrategy()))
             decodeStrategy = DecodeStrategy.DECODE_ALL_STRATEGY;
         else
-            decodeStrategy = as(UnitLoader.getLoader(DecodeStrategy.class).getUnitAnCheck(config.getBodyDecodeStrategy()));
+            decodeStrategy = as(UnitLoader.getLoader(DecodeStrategy.class).getUnitAnCheck(this.config.getBodyDecodeStrategy()));
         this.messageCodec = new DefaultMessageCodec<>(bodyCoder, tailCoder, decodeStrategy);
-        this.verifier = UnitLoader.getLoader(CodecVerifier.class).getUnitAnCheck(config.getVerifier());
-        this.crypto = UnitLoader.getLoader(CodecCrypto.class).getUnitAnCheck(config.getCrypto());
+        this.verifier = UnitLoader.getLoader(CodecVerifier.class).getUnitAnCheck(this.config.getVerifier());
+        this.crypto = UnitLoader.getLoader(CodecCrypto.class).getUnitAnCheck(this.config.getCrypto());
     }
 }

@@ -11,6 +11,7 @@ import com.tny.game.base.item.behavior.plan.*;
 import com.tny.game.base.log.*;
 import com.tny.game.base.module.*;
 import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.config.*;
 import com.tny.game.common.reflect.proxy.*;
 import com.tny.game.common.runtime.*;
@@ -98,8 +99,9 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         this.enumClassSet.add(actionClass);
         this.enumClassSet.add(abilityClass);
         this.enumClassSet.add(demandTypeClass);
-        if (optionClass != null)
+        if (optionClass != null) {
             this.enumClassSet.add(optionClass);
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -150,16 +152,18 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.registerConverter(new CollectionConverter(mapper) {
             @Override
             public boolean canConvert(Class type) {
-                if (!super.canConvert(type))
+                if (!super.canConvert(type)) {
                     return type.equals(EmptyImmutableSet.class) || type.equals(EmptyImmutableList.class);
+                }
                 return true;
             }
         });
         xStream.registerConverter(new MapConverter(mapper) {
             @Override
             public boolean canConvert(Class type) {
-                if (!super.canConvert(type))
+                if (!super.canConvert(type)) {
                     return type.equals(EmptyImmutableMap.class);
+                }
                 return true;
             }
         });
@@ -208,7 +212,6 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         xStream.alias("entry", Entry.class);
         xStream.alias("tag", String.class);
 
-
         this.initXStream(xStream);
 
         Map<Class<?>, List<Class<? extends Enum>>> map = this.createEnumClassMap();
@@ -245,9 +248,9 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         ItemModelContext context = context();
         for (M model : list) {
             if (model instanceof XMLItemModel) {
-                ((XMLItemModel) model).init(context);
+                ((XMLItemModel)model).init(context);
             } else if (model instanceof XMLModel) {
-                ((XMLModel) model).init();
+                ((XMLModel)model).init();
             }
             WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
             if (wrapperModel == null) {
@@ -266,17 +269,21 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             models.add(wrapperModel.get$Wrapper());
             ItemModels.register(wrapperModel.get$Wrapper());
         }
-        if (!handlerMap.isEmpty())
+        if (!handlerMap.isEmpty()) {
             this.handlerMap.putAll(handlerMap);
-        if (!modelMap.isEmpty())
+        }
+        if (!modelMap.isEmpty()) {
             this.modelMap.putAll(modelMap);
-        if (!modelAliasMap.isEmpty())
+        }
+        if (!modelAliasMap.isEmpty()) {
             this.modelAliasMap.putAll(modelAliasMap);
+        }
         this.parseComplete(models);
         synchronized (this) {
             this.parseAllComplete();
-            if (reload)
+            if (reload) {
                 this.reloadAllComplete();
+            }
         }
         LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
                 RunningChecker.end(this.getClass()).cost());
@@ -284,7 +291,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
     @SuppressWarnings({"unchecked"})
     private List<M> parseModel(XStream xStream, InputStream input) {
-        return (List<M>) xStream.fromXML(input);
+        return (List<M>)xStream.fromXML(input);
     }
 
     protected void initXStream(XStream xStream) {

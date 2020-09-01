@@ -1,6 +1,6 @@
 package com.tny.game.protoex;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.protoex.field.runtime.*;
 
 import java.util.*;
@@ -24,7 +24,7 @@ public class ProtoExReader {
     }
 
     public boolean isCanRead() {
-        return inputStream.remaining() > 0;
+        return this.inputStream.remaining() > 0;
     }
 
     /*
@@ -137,7 +137,7 @@ public class ProtoExReader {
     public <T> Collection<T> readCollection(Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        return (Collection<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
+        return (Collection<T>)RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
                 ProtoExIO.createRepeat(ArrayList.class, elementType, true));
     }
 
@@ -145,7 +145,7 @@ public class ProtoExReader {
     public <T, C extends Collection<T>> C readCollection(C collection, Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        return (C) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(() -> collection, this.inputStream,
+        return (C)RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(() -> collection, this.inputStream,
                 ProtoExIO.createRepeat(collection.getClass(), elementType, true));
     }
 
@@ -181,14 +181,15 @@ public class ProtoExReader {
     public <K, V> Map<K, V> readMap(Class<K> keyType, Class<V> valueType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.MAP, tag);
-        return (Map<K, V>) RuntimeMapSchema.MAP_SCHEMA.readMessage(this.inputStream,
+        return (Map<K, V>)RuntimeMapSchema.MAP_SCHEMA.readMessage(this.inputStream,
                 ProtoExIO.createMap(keyType, valueType));
     }
 
     public <K, V, M extends Map<K, V>> M readMap(M map, Class<K> keyType, Class<V> valueType) {
         Map<K, V> valueMap = this.readMap(keyType, valueType);
-        if (valueMap != null)
+        if (valueMap != null) {
             map.putAll(valueMap);
+        }
         return map;
     }
 
@@ -197,11 +198,13 @@ public class ProtoExReader {
      */
 
     public void checkType(ProtoExType type, Tag tag) {
-        if (type.isRaw() != tag.isRaw() || (type.getId() != tag.getProtoExId()))
+        if (type.isRaw() != tag.isRaw() || (type.getId() != tag.getProtoExId())) {
             throw ProtobufExException.readTypeError(type, tag);
+        }
     }
 
     public ProtoExInputStream getInputStream() {
-        return inputStream;
+        return this.inputStream;
     }
+
 }

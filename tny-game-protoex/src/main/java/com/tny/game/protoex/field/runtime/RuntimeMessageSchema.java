@@ -20,24 +20,26 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(RuntimeMessageSchema.class);
-    private ClassAccessor gClass;
-    protected FieldDesc<?>[] fields;
-    protected FieldDesc<?>[] fieldsByIndex;
-    protected Map<Integer, FieldDesc<?>> fieldsByIndexMap;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeMessageSchema.class);
+    private final ClassAccessor accessor;
+    private FieldDesc<?>[] fields;
+    private FieldDesc<?>[] fieldsByIndex;
+    private Map<Integer, FieldDesc<?>> fieldsByIndexMap;
 
     public RuntimeMessageSchema(Class<T> typeClass) {
         super(0, false, typeClass.getName());
-        this.gClass = JavassistAccessors.getGClass(typeClass);
+        this.accessor = JavassistAccessors.getGClass(typeClass);
         ProtoEx proto = typeClass.getAnnotation(ProtoEx.class);
-        if (!WireFormat.checkFieldNumber(proto.value()))
+        if (!WireFormat.checkFieldNumber(proto.value())) {
             throw ProtobufExException.invalidProtoExId(typeClass, proto.value());
+        }
         this.protoExID = proto.value();
     }
 
     protected void init(Class<T> typeClass, FieldDesc<?>[] fields, int lastFieldNumber) {
-        if (fields.length == 0)
+        if (fields.length == 0) {
             throw new IllegalStateException("At least one field is required.");
+        }
         this.fields = fields;
         if (lastFieldNumber <= 20) {
             this.fieldsByIndex = new FieldDesc<?>[lastFieldNumber + 1];
@@ -82,10 +84,12 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 
     @Override
     public void writeMessage(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf) {
-        if (value == null)
+        if (value == null) {
             return;
-        if (LOGGER.isDebugEnabled())
-            LOGGER.debug("写入 Tag | {} -> IOConfiger : {}", this.gClass.getName(), conf);
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("写入 Tag | {} -> IOConfiger : {}", this.accessor.getName(), conf);
+        }
         this.writeTag(outputStream, conf);
         outputStream.writeLengthLimitation(value, conf, this);
     }
@@ -94,7 +98,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     @SuppressWarnings("unchecked")
     public void writeValue(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf) {
         for (FieldDesc<?> field : this.fields) {
-            FieldDesc<Object> childDesc = (FieldDesc<Object>) field;
+            FieldDesc<Object> childDesc = (FieldDesc<Object>)field;
             Object fieldValue = childDesc.getValue(value);
             if (fieldValue != null) {
                 ProtoExSchemaContext context = outputStream.getSchemaContext();
@@ -109,7 +113,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     public T readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
         T message = null;
         try {
-            message = (T) this.gClass.newInstance();
+            message = (T)this.accessor.newInstance();
         } catch (InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -120,25 +124,30 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
             Tag currentTag = inputStream.getTag();
             fieldIndex = currentTag.getFieldNumber();
             //判断是否显示 读取
-            final FieldDesc<Object> field = (FieldDesc<Object>) this.getFieldDesc(fieldIndex);
+            final FieldDesc<Object> field = (FieldDesc<Object>)this.getFieldDesc(fieldIndex);
             int protoExID = currentTag.getProtoExId();
             if (field == null) {
-                LOGGER.warn("获取 Tag | {} -> [字段ID : {}] 不存在! Tag : {}", this.gClass.getName(), currentTag.getFieldNumber(), currentTag);
+                LOGGER.warn("获取 Tag | {} -> [字段ID : {}] 不存在! Tag : {}", this.accessor.getName(), currentTag.getFieldNumber(), currentTag);
                 inputStream.readTag();
                 inputStream.skipField(currentTag);
             } else {
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("开始读取 Message | {} -> [字段 : {} - ({})] : {} ", this.gClass.getName(), field.getName(), field.getIndex(), currentTag);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("开始读取 Message | {} -> [字段 : {} - ({})] : {} ", this.accessor.getName(), field.getName(), field.getIndex(),
+                            currentTag);
+                }
                 ProtoExSchemaContext context = inputStream.getSchemaContext();
                 ProtoExSchema<Object> schema = context.getSchema(protoExID, currentTag.isRaw(), field.getDefaultType());
                 Object value = schema.readMessage(inputStream, field);
-                if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("读取到 Message | {} -> [字段 : {} - ({})] : {} ==> {}", this.gClass.getName(), field.getName(), field.getIndex(),
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("读取到 Message | {} -> [字段 : {} - ({})] : {} ==> {}", this.accessor.getName(), field.getName(), field.getIndex(),
                             currentTag, value);
-                if (value != null)
+                }
+                if (value != null) {
                     field.setValue(message, value);
+                }
             }
         }
         return message;
     }
+
 }

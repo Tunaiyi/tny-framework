@@ -1,7 +1,7 @@
 package com.tny.game.net.codec.cryptoloy;
 
+import com.tny.game.common.binary.*;
 import com.tny.game.common.unit.annotation.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 

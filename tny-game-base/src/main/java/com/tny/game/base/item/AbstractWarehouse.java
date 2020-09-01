@@ -4,7 +4,7 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
 import com.tny.game.base.item.listener.*;
 import com.tny.game.base.log.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
 import org.slf4j.*;
 
@@ -45,18 +45,20 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
         WeakReference<? extends O> reference = this.storageMap.get(itemType);
         O storage = reference != null ? reference.get() : null;
         if (storage != null) {
-            if (clazz.isInstance(storage))
-                return (SO) storage;
-            else
+            if (clazz.isInstance(storage)) {
+                return (SO)storage;
+            } else {
                 throw new ClassCastException(MessageFormat.format("storage的对象类型为{0},而非{1}", storage.getClass(), clazz));
+            }
         }
         storage = this.storageExplorer.getStorage(this.playerId, itemType.getId());
-        if (storage == null)
+        if (storage == null) {
             throw new NullPointerException(MessageFormat.format("{0} 玩家 {1} {2} storage的对象为 null", this.playerId, clazz, itemType));
+        }
         reference = new WeakReference<>(storage);
         this.storageMap.put(itemType, reference);
         if (clazz.isInstance(storage)) {
-            return (SO) storage;
+            return (SO)storage;
         } else {
             throw new ClassCastException(MessageFormat.format("storage的对象类型为{0},而非{1}", storage.getClass(), clazz));
         }
@@ -65,20 +67,22 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
     @Override
     public <I extends Item<?>> I getItemById(ItemType itemType, long id, Class<I> clazz) {
         Storage<?, Stuff<?>> storage = this.getStorage(itemType, this.storageClass);
-        if (storage == null)
+        if (storage == null) {
             return null;
-        return (I) storage.getItemById(id);
+        }
+        return (I)storage.getItemById(id);
     }
 
     @Override
     public <I extends Item<?>> List<I> getItemByItemId(ItemType itemType, int itemId, Class<I> clazz) {
         Storage<?, Stuff<?>> storage = this.getStorage(itemType, this.storageClass);
-        if (storage == null)
+        if (storage == null) {
             return Collections.emptyList();
+        }
         return storage.getItemsByItemId(itemId)
-                      .stream()
-                      .map(item -> (I) item)
-                      .collect(Collectors.toList());
+                .stream()
+                .map(item -> (I)item)
+                .collect(Collectors.toList());
     }
 
     protected void consume(Trade result, AttrEntry<?>... entries) {
@@ -118,8 +122,9 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
     }
 
     private void consume0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        if (!tradeItem.isValid())
+        if (!tradeItem.isValid()) {
             return;
+        }
         ItemModel model = tradeItem.getItemModel();
         try {
             O storage = this.getStorage(model.getItemType(), this.storageClass);
@@ -136,8 +141,9 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
     }
 
     private void receive0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
-        if (!tradeItem.isValid())
+        if (!tradeItem.isValid()) {
             return;
+        }
         ItemModel model = tradeItem.getItemModel();
         try {
             O storage = this.getStorage(model.getItemType(), this.storageClass);
@@ -156,4 +162,5 @@ public abstract class AbstractWarehouse<O extends Storage> implements Warehouse<
     protected abstract void doReceive(O storage, TradeItem<?> tradeItem, Action action, Attributes attributes);
 
     protected abstract void doConsume(O storage, TradeItem<?> tradeItem, Action action, Attributes attributes);
+
 }

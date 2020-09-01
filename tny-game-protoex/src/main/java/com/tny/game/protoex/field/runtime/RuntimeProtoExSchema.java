@@ -1,7 +1,7 @@
 package com.tny.game.protoex.field.runtime;
 
 import com.tny.game.common.buff.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
@@ -55,12 +55,12 @@ public class RuntimeProtoExSchema {
         putRawSchema(Map.class, RuntimeMapSchema.MAP_SCHEMA, true);
     }
 
-
     private static void putTypeSchema(Type type, ProtoExSchema<?> schema) {
         ProtoExSchema<?> last = schemaMap.putIfAbsent(type, schema);
-        if (last != null)
+        if (last != null) {
             throw new IllegalArgumentException(
                     format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+        }
     }
 
     private static void putRawSchema(Type type, ProtoExSchema<?> schema, boolean defSchema) {
@@ -69,18 +69,20 @@ public class RuntimeProtoExSchema {
         map.put(type, schema);
         if (defSchema) {
             ProtoExSchema<?> last = map.putIfAbsent(schema.getProtoExId(), schema);
-            if (last != null)
+            if (last != null) {
                 throw new IllegalArgumentException(
                         format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+            }
         }
     }
 
     private static void putCustomSchema(Type type, ProtoExSchema<?> schema) {
         putTypeSchema(type, schema);
         ProtoExSchema<?> last = customSchemaMap.putIfAbsent(schema.getProtoExId(), schema);
-        if (last != null)
+        if (last != null) {
             throw new IllegalArgumentException(
                     format("{} 类 {} 与 {} protoExID 都为 {} 发生冲突 ", type, last.getName(), schema.getName(), schema.getProtoExId()));
+        }
     }
 
     private static <T> boolean putInto(Type type, ProtoExSchema<T> schema) {
@@ -97,11 +99,12 @@ public class RuntimeProtoExSchema {
     public static <T> ProtoExSchema<T> getProtoSchema(int id, boolean raw) {
         if (raw) {
             Map<Object, ProtoExSchema<?>> schemaMap = rawSchemaMap.get(id);
-            if (schemaMap == null)
+            if (schemaMap == null) {
                 return null;
-            return (ProtoExSchema<T>) schemaMap.get(id);
+            }
+            return (ProtoExSchema<T>)schemaMap.get(id);
         } else {
-            return (ProtoExSchema<T>) customSchemaMap.get(id);
+            return (ProtoExSchema<T>)customSchemaMap.get(id);
         }
     }
 
@@ -109,43 +112,47 @@ public class RuntimeProtoExSchema {
         ProtoExSchema<T> schema;
         if (type != null && type != Object.class) {
             schema = getProtoSchema(type);
-            if (schema != null && (id == 0 || (schema.isRaw() == raw && schema.getProtoExId() == id)))
+            if (schema != null && (id == 0 || (schema.isRaw() == raw && schema.getProtoExId() == id))) {
                 return schema;
+            }
         }
         if (raw) {
             Map<Object, ProtoExSchema<?>> schemaMap = rawSchemaMap.get(id);
-            if (schemaMap == null)
+            if (schemaMap == null) {
                 return null;
-            if (type != null) {
-                schema = (ProtoExSchema<T>) schemaMap.get(type);
-                if (schema != null)
-                    return schema;
             }
-            schema = (ProtoExSchema<T>) schemaMap.get(id);
+            if (type != null) {
+                schema = (ProtoExSchema<T>)schemaMap.get(type);
+                if (schema != null) {
+                    return schema;
+                }
+            }
+            schema = (ProtoExSchema<T>)schemaMap.get(id);
             // if (schema != null)
             return schema;
         } else {
-            return (ProtoExSchema<T>) customSchemaMap.get(id);
+            return (ProtoExSchema<T>)customSchemaMap.get(id);
         }
     }
 
     public static <T> ProtoExSchema<T> getProtoSchema(Type type) {
-        ProtoExSchema<T> schema = (ProtoExSchema<T>) schemaMap.get(type);
+        ProtoExSchema<T> schema = (ProtoExSchema<T>)schemaMap.get(type);
         if (schema == null) {
             if (type instanceof Class) {
-                Class<T> clazz = (Class<T>) type;
+                Class<T> clazz = (Class<T>)type;
                 if (clazz.isArray()) {
-                    schema = (ProtoExSchema<T>) RuntimeArraySchema.ARRAY_SCHEMA;
+                    schema = (ProtoExSchema<T>)RuntimeArraySchema.ARRAY_SCHEMA;
                     // throw ProtobufExException.unsupportArray(clazz);
                 } else if (clazz.isEnum()) {
-                    schema = newEnumSchema((Class<Enum<?>>) clazz);
+                    schema = newEnumSchema((Class<Enum<?>>)clazz);
                 } else if (Collection.class.isAssignableFrom(clazz)) {
-                    return (ProtoExSchema<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA;
+                    return (ProtoExSchema<T>)RuntimeCollectionSchema.COLLECTION_SCHEMA;
                 } else if (Map.class.isAssignableFrom(clazz)) {
-                    return (ProtoExSchema<T>) RuntimeMapSchema.MAP_SCHEMA;
+                    return (ProtoExSchema<T>)RuntimeMapSchema.MAP_SCHEMA;
                 } else {
-                    if (clazz.getAnnotation(ProtoEx.class) == null)
+                    if (clazz.getAnnotation(ProtoEx.class) == null) {
                         return null;
+                    }
                     RuntimeMessageSchema<T> newSchema = new RuntimeMessageSchema<>(clazz);
                     if (putInto(type, newSchema)) {
                         return initMessageSchema(newSchema, clazz);
@@ -154,8 +161,9 @@ public class RuntimeProtoExSchema {
                     }
                 }
             }
-            if (schema == null)
+            if (schema == null) {
                 return null;
+            }
             putInto(type, schema);
         }
         return schema;
@@ -165,8 +173,9 @@ public class RuntimeProtoExSchema {
         if (typeClass.isInterface() || Modifier.isAbstract(typeClass.getModifiers())) {
             throw new RuntimeException("The root object can neither be an abstract " + "class nor interface: \"" + typeClass.getName());
         }
-        if (typeClass.getAnnotation(ProtoEx.class) == null)
+        if (typeClass.getAnnotation(ProtoEx.class) == null) {
             throw new RuntimeException(format("{} @{} is null", typeClass, ProtoEx.class));
+        }
 
         final Map<String, Field> fieldMap = findInstanceFields(typeClass);
         int maxFieldMapping = 0;
@@ -237,13 +246,15 @@ public class RuntimeProtoExSchema {
     }
 
     private static void fill(Map<String, Field> fieldMap, Class<?> typeClass) {
-        if (Object.class != typeClass.getSuperclass())
+        if (Object.class != typeClass.getSuperclass()) {
             fill(fieldMap, typeClass.getSuperclass());
+        }
 
         for (Field f : typeClass.getDeclaredFields()) {
             int mod = f.getModifiers();
-            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod) && f.getAnnotation(ProtoExField.class) != null)
+            if (!Modifier.isStatic(mod) && !Modifier.isTransient(mod) && f.getAnnotation(ProtoExField.class) != null) {
                 fieldMap.put(f.getName(), f);
+            }
         }
     }
 

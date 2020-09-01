@@ -1,13 +1,13 @@
 package com.tny.game.starter.net.netty4.configuration.executor;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.command.executor.*;
 import com.tny.game.starter.common.initiator.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
@@ -28,9 +28,9 @@ public class ImportMessageCommandExecutorBeanDefinitionRegistrar<E extends Messa
         registry.registerBeanDefinition(keyName,
                 BeanDefinitionBuilder.genericBeanDefinition(executorClass,
                         () -> Binder.get(this.environment)
-                                    .bind(keyHead, executorClass)
-                                    .orElseGet(() -> ExeAide.callUnchecked(executorClass::newInstance).orElse(null)))
-                                     .getBeanDefinition());
+                                .bind(keyHead, executorClass)
+                                .orElseGet(() -> ExeAide.callUnchecked(executorClass::newInstance).orElse(null)))
+                        .getBeanDefinition());
     }
 
     protected boolean isDefaultClass() {

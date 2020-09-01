@@ -1,8 +1,8 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
+import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.suite.utils.*;
 import org.apache.commons.lang3.StringUtils;
 

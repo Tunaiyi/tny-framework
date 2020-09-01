@@ -1,6 +1,5 @@
 dependencies {
 
-    api project(":tny-game-common")
+    api project(":tny-game-common-base")
     api libs.guava
-
 }

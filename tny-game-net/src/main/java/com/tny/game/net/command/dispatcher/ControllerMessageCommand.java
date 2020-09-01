@@ -16,7 +16,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ControllerMessageCommand extends MessageCommand<InvokeContext> {
 
-    private MethodControllerHolder controller;
+    private final MethodControllerHolder controller;
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
@@ -26,17 +26,16 @@ public class ControllerMessageCommand extends MessageCommand<InvokeContext> {
         this.controller = methodHolder;
     }
 
-
     /**
      * 执行 invoke
      */
     @Override
     protected void invoke() throws Exception {
-        MethodControllerHolder controller = commandContext.getController();
+        MethodControllerHolder controller = this.commandContext.getController();
         if (this.controller == null) {
-            MessageHead head = message.getHead();
+            MessageHead head = this.message.getHead();
             DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", head.getId());
-            commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+            this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
             return;
         }
         //检测认证
@@ -45,35 +44,35 @@ public class ControllerMessageCommand extends MessageCommand<InvokeContext> {
         String appType = this.getAppType();
         if (!controller.isActiveByAppType(appType)) {
             DISPATCHER_LOG.warn("Controller [{}] App类型 {} 无法此协议", this.getName(), appType);
-            commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+            this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
             return;
         }
         String scopeType = this.getScopeType();
         if (!controller.isActiveByScope(scopeType)) {
             DISPATCHER_LOG.error("Controller [{}] Scope类型 {} 无法此协议", this.getName(), appType);
-            commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+            this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测已登陆认证", this.getName());
-        if (controller.isAuth() && !tunnel.isLogin()) {
+        if (controller.isAuth() && !this.tunnel.isLogin()) {
             DISPATCHER_LOG.error("Controller [{}] 用户未登陆", this.getName());
-            commandContext.doneAndIntercept(NetResultCode.UNLOGIN);
+            this.commandContext.doneAndIntercept(NetResultCode.UNLOGIN);
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
-        if (!controller.isUserGroup(tunnel.getUserType())) {
-            DISPATCHER_LOG.error("Controller [{}] 用户为[{}]用户组, 无法调用此协议", this.getName(), tunnel.getUserType());
-            commandContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
+        if (!controller.isUserGroup(this.tunnel.getUserType())) {
+            DISPATCHER_LOG.error("Controller [{}] 用户为[{}]用户组, 无法调用此协议", this.getName(), this.tunnel.getUserType());
+            this.commandContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
             return;
         }
 
         DISPATCHER_LOG.debug("Controller [{}] 执行BeforePlugins", getName());
-        controller.beforeInvoke(this.tunnel, this.message, commandContext);
-        if (commandContext.isIntercept()) {
+        controller.beforeInvoke(this.tunnel, this.message, this.commandContext);
+        if (this.commandContext.isIntercept()) {
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
-        controller.invoke(this.tunnel, this.message, commandContext);
+        controller.invoke(this.tunnel, this.message, this.commandContext);
     }
 
     /**
@@ -81,9 +80,10 @@ public class ControllerMessageCommand extends MessageCommand<InvokeContext> {
      */
     private void checkAuthenticate() throws CommandException, ValidationException {
         if (!this.tunnel.isLogin()) {
-            AuthenticateValidator<Object> validator = as(context.getValidator(message.getProtocol(), controller.getAuthValidator()));
-            if (validator == null)
+            AuthenticateValidator<Object> validator = as(this.context.getValidator(this.message.getProtocol(), this.controller.getAuthValidator()));
+            if (validator == null) {
                 return;
+            }
             DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
             authenticate(validator);
         }
@@ -96,7 +96,7 @@ public class ControllerMessageCommand extends MessageCommand<InvokeContext> {
     protected void invokeDone(Throwable cause) {
         if (this.controller != null) {
             DISPATCHER_LOG.debug("Controller [{}] 执行AftertPlugins", getName());
-            controller.afterInvoke(this.tunnel, this.message, commandContext);
+            this.controller.afterInvoke(this.tunnel, this.message, this.commandContext);
         }
         DISPATCHER_LOG.debug("Controller [{}] 处理Message完成!", getName());
         this.fireDone(cause);

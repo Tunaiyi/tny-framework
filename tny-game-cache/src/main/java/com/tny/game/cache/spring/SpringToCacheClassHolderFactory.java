@@ -2,9 +2,10 @@ package com.tny.game.cache.spring;
 
 import com.tny.game.cache.*;
 import com.tny.game.cache.annotation.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
+import org.springframework.lang.Nullable;
 
 import java.util.*;
 
@@ -14,16 +15,16 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
 
     private volatile boolean init = false;
 
-    private final Map<Class<?>, CacheTrigger> triggerMap = new CopyOnWriteMap<Class<?>, CacheTrigger>();
+    private final Map<Class<?>, CacheTrigger> triggerMap = new CopyOnWriteMap<>();
 
-    private final Map<Class<?>, TriggerHolder> triggerHolderMap = new CopyOnWriteMap<Class<?>, TriggerHolder>();
+    private final Map<Class<?>, TriggerHolder> triggerHolderMap = new CopyOnWriteMap<>();
 
-    private final Map<Class<?>, ToCacheClassHolder> holderMap = new CopyOnWriteMap<Class<?>, ToCacheClassHolder>();
+    private final Map<Class<?>, ToCacheClassHolder> holderMap = new CopyOnWriteMap<>();
 
     private ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@Nullable ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
@@ -31,8 +32,9 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
         ToCache toCache = objectClass.getAnnotation(ToCache.class);
         if (toCache == null) {
             Trigger trigger = objectClass.getAnnotation(Trigger.class);
-            if (trigger == null)
+            if (trigger == null) {
                 return;
+            }
             List<CacheTrigger<?, ?, ?>> cacheTriggers = this.getCacheTrigger0(trigger.triggers());
             TriggerHolder triggerHolder = new TriggerHolder(cacheTriggers);
             this.triggerHolderMap.put(objectClass, triggerHolder);
@@ -42,8 +44,9 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
             this.triggerHolderMap.put(objectClass, toCacheClassHolder);
         }
         Class<?> superClass = objectClass.getSuperclass();
-        if (superClass != null && superClass != Object.class)
+        if (superClass != null && superClass != Object.class) {
             this.register(superClass);
+        }
         for (Class<?> interfaceClass : objectClass.getInterfaces())
             this.register(interfaceClass);
     }
@@ -57,8 +60,9 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
         holder = this.holderMap.get(clazz);
         if (holder == null) {
             Class<?> superClazz = clazz.getSuperclass();
-            if (superClazz == Object.class)
+            if (superClazz == Object.class) {
                 throw new NullPointerException("[" + clazz + "] toCachedClassHolder is null");
+            }
             try {
                 return this.getCacheClassHolder(superClazz);
             } catch (Exception e) {
@@ -69,16 +73,17 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
     }
 
     private List<CacheTrigger<?, ?, ?>> getCacheTrigger0(Class<? extends CacheTrigger<?, ?, ?>>[] triggerClass) {
-        if (triggerClass == null || triggerClass.length == 0)
+        if (triggerClass == null || triggerClass.length == 0) {
             return Collections.emptyList();
-        ArrayList<CacheTrigger<?, ?, ?>> triggerList = new ArrayList<CacheTrigger<?, ?, ?>>();
+        }
+        ArrayList<CacheTrigger<?, ?, ?>> triggerList = new ArrayList<>();
         for (Class<? extends CacheTrigger<?, ?, ?>> clazz : triggerClass) {
             CacheTrigger<?, ?, ?> trigger = this.getCacheTrigger0(clazz);
-            if (trigger != null)
-                triggerList.add(trigger);
+            triggerList.add(trigger);
         }
-        if (triggerList.isEmpty())
+        if (triggerList.isEmpty()) {
             return Collections.emptyList();
+        }
         return triggerList;
     }
 
@@ -87,25 +92,20 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
         CacheTrigger<?, ?, ?> trigger = this.triggerMap.get(triggerClass);
         if (trigger == null) {
             trigger = this.applicationContext.getBean(triggerClass);
-            if (trigger == null) {
-                return null;
-            } else {
-                this.triggerMap.put(trigger.getClass(), trigger);
-            }
+            this.triggerMap.put(trigger.getClass(), trigger);
         }
         return trigger;
     }
-
 
     private TriggerHolder getTriggerHolder0(Class<?> clazz) {
         this.init();
         TriggerHolder holder = this.triggerHolderMap.get(clazz);
         if (holder == null) {
             Object object = this.applicationContext.getBean(clazz);
-            if (object == null || !(object instanceof TriggerHolder)) {
+            if (!(object instanceof TriggerHolder)) {
                 throw new NullPointerException("[" + clazz + "] formatterHolder is null");
             } else {
-                holder = (TriggerHolder) object;
+                holder = (TriggerHolder)object;
                 this.triggerHolderMap.put(holder.getClass(), holder);
             }
         }
@@ -113,11 +113,13 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
     }
 
     private void init() {
-        if (this.init)
+        if (this.init) {
             return;
+        }
         synchronized (this) {
-            if (this.init)
+            if (this.init) {
                 return;
+            }
             this.init = true;
             Map<String, CacheTrigger> triggerMap = this.applicationContext.getBeansOfType(CacheTrigger.class);
             for (CacheTrigger handler : triggerMap.values()) {
@@ -135,9 +137,9 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
         return this.getTriggerHolder0(clazz);
     }
 
-
     @Override
     public CacheTrigger<?, ?, ?> getCacheTrigger(Class<? extends CacheTrigger<?, ?, ?>> triggerClass) {
         return this.getCacheTrigger0(triggerClass);
     }
+
 }

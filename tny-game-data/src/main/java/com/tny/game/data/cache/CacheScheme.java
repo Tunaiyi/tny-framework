@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class CacheScheme {
 
-    private Class<?> objectClass;
+    private final Class<?> objectClass;
 
-    private CacheId cacheId;
+    private final CacheId cacheId;
 
-    private CacheObject cache;
+    private final CacheObject cache;
 
     private List<PropertyAccessor> idPropertyAccessors;
 
@@ -31,15 +31,15 @@ public class CacheScheme {
     }
 
     public Class<?> getObjectClass() {
-        return objectClass;
+        return this.objectClass;
     }
 
     public long maxCacheSize() {
-        return cache.maxCacheSize();
+        return this.cache.maxCacheSize();
     }
 
     public int concurrencyLevel() {
-        return cache.concurrencyLevel();
+        return this.cache.concurrencyLevel();
     }
 
 }

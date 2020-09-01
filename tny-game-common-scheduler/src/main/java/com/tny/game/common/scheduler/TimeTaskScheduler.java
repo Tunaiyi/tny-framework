@@ -35,7 +35,7 @@ public class TimeTaskScheduler {
      */
     private static final String TIME_CONFIG_PATH = "TimeTaskModel.xml";
 
-    private String path;
+    private final String path;
 
     /**
      * 执行线程池
@@ -49,7 +49,6 @@ public class TimeTaskScheduler {
      * 任务队列
      *
      * @uml.property name="timeTaskQueue"
-     * @uml.associationEnd multiplicity="(1 1)"
      */
     private TimeTaskQueue timeTaskQueue = new TimeTaskQueue();
 
@@ -57,15 +56,13 @@ public class TimeTaskScheduler {
      * 时间任务监听器
      *
      * @uml.property name="listenerList"
-     * @uml.associationEnd multiplicity="(0 -1)"
      */
-    private List<TimeTaskListener> listenerList = new CopyOnWriteArrayList<>();
+    private final List<TimeTaskListener> listenerList = new CopyOnWriteArrayList<>();
 
     /**
      * 时间任务模型持有器
      *
      * @uml.property name="taskModelSet"
-     * @uml.associationEnd multiplicity="(0 -1)"
      */
     private NavigableSet<TimeTaskModel> taskModelSet = new ConcurrentSkipListSet<>();
 
@@ -73,17 +70,15 @@ public class TimeTaskScheduler {
      * 时间任务处理器管理器
      *
      * @uml.property name="handlerHodler"
-     * @uml.associationEnd multiplicity="(1 1)"
      */
-    private TimeTaskHandlerHolder handlerHodler;
+    private final TimeTaskHandlerHolder handlerHodler;
 
     /**
      * 任务队列存储器
      *
      * @uml.property name="store"
-     * @uml.associationEnd multiplicity="(1 1)"
      */
-    private SchedulerStore store;
+    private final SchedulerStore store;
 
     /**
      * 停止时间
@@ -92,21 +87,20 @@ public class TimeTaskScheduler {
      */
     private long stopTime = 0;
 
-    private AtomicBoolean state = new AtomicBoolean(false);
+    private final AtomicBoolean state = new AtomicBoolean(false);
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private Lock readLock = this.lock.readLock();
+    private final Lock readLock = this.lock.readLock();
 
-    private Lock writeLock = this.lock.readLock();
+    private final Lock writeLock = this.lock.readLock();
 
     /**
      * 配置修改监听器
      *
      * @uml.property name="listener"
-     * @uml.associationEnd multiplicity="(1 1)"
      */
-    private FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+    private final FileAlterationListener listener = new FileAlterationListenerAdaptor() {
 
         @Override
         public void onFileChange(final File file) {
@@ -132,8 +126,9 @@ public class TimeTaskScheduler {
      * @throws Exception
      */
     public TimeTaskScheduler(String path, TimeTaskHandlerHolder handlerHodler, SchedulerStore store) throws Exception {
-        if (handlerHodler == null)
+        if (handlerHodler == null) {
             throw new NullPointerException("handlerHolder is null");
+        }
         this.handlerHodler = handlerHodler;
         this.store = store;
         this.path = path;
@@ -210,15 +205,17 @@ public class TimeTaskScheduler {
     }
 
     private void save() {
-        if (this.store == null)
+        if (this.store == null) {
             return;
+        }
         this.stopTime = System.currentTimeMillis();
         this.store.save(this);
     }
 
     private void load() {
-        if (this.store == null)
+        if (this.store == null) {
             return;
+        }
         SchedulerBackup backup = this.store.load();
         if (backup != null) {
             long now = System.currentTimeMillis();
@@ -230,7 +227,7 @@ public class TimeTaskScheduler {
                 if (LOG.isInfoEnabled()) {
                     LOG.info("=读取存储 TimeTask=");
                     this.timeTaskQueue.getTimeTaskList()
-                                      .forEach(t -> LOG.info("{}", t));
+                            .forEach(t -> LOG.info("{}", t));
                 }
             }
         }
@@ -242,8 +239,9 @@ public class TimeTaskScheduler {
     private void reloadSchedule() {
         this.writeLock.lock();
         try {
-            if (!this.state.compareAndSet(true, false))
+            if (!this.state.compareAndSet(true, false)) {
                 return;
+            }
             if (this.executorService != null && !this.executorService.isShutdown()) {
                 this.executorService.shutdownNow();
                 this.stopTime = System.currentTimeMillis();
@@ -272,11 +270,12 @@ public class TimeTaskScheduler {
             xstream.alias("TimeTaskModels", ArrayList.class);
             xstream.alias("TimeTaskModel", TimeTaskModel.class);
             xstream.alias("handler", String.class);
-            List<TimeTaskModel> list = (List<TimeTaskModel>) xstream.fromXML(inputStream);
+            List<TimeTaskModel> list = (List<TimeTaskModel>)xstream.fromXML(inputStream);
             for (TimeTaskModel model : list) {
                 for (String handlerName : model.getHandlerList()) {
-                    if (this.handlerHodler.getHandler(handlerName) == null)
+                    if (this.handlerHodler.getHandler(handlerName) == null) {
                         LOG.warn("定时任务模型 {} 处理器不存在", handlerName);
+                    }
                 }
                 model.setStopTime(this.stopTime);
             }
@@ -285,12 +284,13 @@ public class TimeTaskScheduler {
         } catch (Exception e) {
             LOG.error("init schedule exception", e);
         } finally {
-            if (inputStream != null)
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
                     LOG.error("close schedule inputStream exception", e);
                 }
+            }
         }
         // start();
     }
@@ -311,8 +311,9 @@ public class TimeTaskScheduler {
                 inputStream = ConfigLoader.loadInputStream(this.path, this.listener);
                 this.initSchedule(inputStream);
             } catch (Exception e) {
-                if (this.executorService != null && !this.executorService.isShutdown())
+                if (this.executorService != null && !this.executorService.isShutdown()) {
                     this.executorService.shutdownNow();
+                }
                 LOG.error("创建任务调度器失败!", e);
                 throw e;
             } finally {
@@ -331,21 +332,24 @@ public class TimeTaskScheduler {
 
     private void executeCreateTimeTaskRunnable() {
         CreateTimeTaskRunnable taskRunnable = this.createCreateTimeTaskRunnable();
-        if (taskRunnable != null)
+        if (taskRunnable != null) {
             this.execute(taskRunnable);
+        }
     }
 
     private CreateTimeTaskRunnable createCreateTimeTaskRunnable() {
-        if (this.taskModelSet.isEmpty())
+        if (this.taskModelSet.isEmpty()) {
             return null;
+        }
         TimeTask timeTask = null;
         TimeTaskModel taskModel;
         do {
             taskModel = this.taskModelSet.pollFirst();
-            if (timeTask == null)
+            if (timeTask == null) {
                 timeTask = new TimeTask(taskModel);
-            else
+            } else {
                 timeTask.addTaskHandler(taskModel);
+            }
             taskModel.trigger();
             this.taskModelSet.add(taskModel);
             taskModel = this.taskModelSet.first();
@@ -355,8 +359,9 @@ public class TimeTaskScheduler {
 
     private void execute(CreateTimeTaskRunnable runnable) {
         long time = runnable.getRemainTime();
-        if (LOG.isDebugEnabled())
+        if (LOG.isDebugEnabled()) {
             LOG.debug("时间任务将在 " + time + " 毫秒后执行.");
+        }
         this.executorService.schedule(runnable, time, TimeUnit.MILLISECONDS);
     }
 
@@ -390,9 +395,8 @@ public class TimeTaskScheduler {
 
         /**
          * @uml.property name="timeTask"
-         * @uml.associationEnd
          */
-        private TimeTask timeTask;
+        private final TimeTask timeTask;
 
         private CreateTimeTaskRunnable(TimeTask timeTask) {
             this.timeTask = timeTask;
@@ -405,8 +409,9 @@ public class TimeTaskScheduler {
                     TimeTaskScheduler.this.writeLock.lock();
                     try {
                         TimeTaskScheduler.this.timeTaskQueue.put(this.timeTask);
-                        if (LOG.isInfoEnabled())
+                        if (LOG.isInfoEnabled()) {
                             LOG.info(" =插入新 timetask =\n{}", this.timeTask);
+                        }
                     } finally {
                         TimeTaskScheduler.this.writeLock.unlock();
                     }
@@ -422,6 +427,7 @@ public class TimeTaskScheduler {
             long time = this.timeTask.getExecuteTime() - System.currentTimeMillis();
             return time < 0 ? 0 : time;
         }
+
     }
 
     ;

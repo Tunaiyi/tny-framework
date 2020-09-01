@@ -44,7 +44,7 @@ public class SpringBaseCluster extends BaseCluster implements AppPrepareStart, A
 
     @Override
     public void prepareStart() throws Exception {
-        initHandlers = ImmutableList.copyOf(applicationContext.getBeansOfType(ZKMonitorInitHandler.class).values());
+        this.initHandlers = ImmutableList.copyOf(this.applicationContext.getBeansOfType(ZKMonitorInitHandler.class).values());
         this.monitor();
     }
 
@@ -55,7 +55,7 @@ public class SpringBaseCluster extends BaseCluster implements AppPrepareStart, A
 
     @Override
     protected List<ZKMonitorInitHandler> initHandlers() {
-        return initHandlers;
+        return this.initHandlers;
     }
 
     @Override

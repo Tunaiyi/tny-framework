@@ -1,7 +1,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.*;
 import com.tny.game.expr.*;
@@ -37,41 +37,44 @@ public final class ClassControllerHolder extends ControllerHolder {
                 executor.getClass().getAnnotation(MessageFilter.class),
                 executor.getClass().getAnnotation(AppProfile.class),
                 executor.getClass().getAnnotation(ScopeProfile.class), exprHolderFactory);
-        if (this.controller == null)
+        if (this.controller == null) {
             throw new IllegalArgumentException(this.controllerClass + " is not Controller Object");
-        for (Annotation annotation : controllerClass.getAnnotations())
+        }
+        for (Annotation annotation : this.controllerClass.getAnnotations())
             this.annotationMap.put(annotation.getClass(), annotation);
         Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
         this.annotationMap = ImmutableMap.copyOf(annotationMap);
         this.initMethodHolder(executor, context, exprHolderFactory);
         this.methodHolderMap = ImmutableMap.copyOf(this.methodHolderMap);
-        if (messageModes == null)
+        if (this.messageModes == null) {
             this.messageModes = ImmutableSet.copyOf(MessageMode.values());
+        }
     }
 
     private static final MethodFilter FILTER = method -> OBJECT_METHOD_LIST.indexOf(method) > -1 ||
-                                                         !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
+            !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
     private void initMethodHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory) {
         ClassAccessor access = JavassistAccessors.getGClass(executor.getClass(), FILTER);
         for (MethodAccessor method : access.getGMethodList()) {
             Controller controller = method.getJavaMethod().getAnnotation(Controller.class);
-            if (controller == null)
+            if (controller == null) {
                 continue;
+            }
             MethodControllerHolder holder = new MethodControllerHolder(executor, context, exprHolderFactory, this, method, controller);
             if (holder.getId() > 0) {
                 MethodControllerHolder last = this.methodHolderMap.put(holder.getId(), holder);
-                if (last != null)
+                if (last != null) {
                     throw new IllegalArgumentException(
                             format("{} controller 中的 {} 与 {} 的 ID:{} 发生冲突", this.getName(), last.getName(), holder.getName(), holder.getId()));
+                }
             }
         }
     }
 
     public Map<Integer, MethodControllerHolder> getMethodHolderMap() {
-        return Collections.unmodifiableMap(methodHolderMap);
+        return Collections.unmodifiableMap(this.methodHolderMap);
     }
-
 
     // protected boolean filterMethod(Method method) {
     //     if (OBJECT_METHOD_LIST.indexOf(method) > -1)
@@ -94,14 +97,13 @@ public final class ClassControllerHolder extends ControllerHolder {
     @Override
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-        return (A) this.annotationMap.get(annotationClass);
+        return (A)this.annotationMap.get(annotationClass);
     }
 
     @Override
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
         return null;
     }
-
 
     @Override
     public <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz) {
@@ -133,15 +135,17 @@ public final class ClassControllerHolder extends ControllerHolder {
 
     @Override
     protected List<ControllerPluginHolder> getControllerBeforePlugins() {
-        if (this.beforePlugins == null)
+        if (this.beforePlugins == null) {
             return ImmutableList.of();
+        }
         return Collections.unmodifiableList(this.beforePlugins);
     }
 
     @Override
     protected List<ControllerPluginHolder> getControllerAfterPlugins() {
-        if (this.afterPlugins == null)
+        if (this.afterPlugins == null) {
             return ImmutableList.of();
+        }
         return Collections.unmodifiableList(this.afterPlugins);
     }
 

@@ -1,7 +1,7 @@
 package com.tny.game.protoex.field.runtime;
 
 import com.tny.game.common.buff.*;
-import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.exception.*;
@@ -24,7 +24,7 @@ public class RuntimeUnsafeFieldDescFactory {
         try {
             Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
             f.setAccessible(true);
-            return (sun.misc.Unsafe) f.get(null);
+            return (sun.misc.Unsafe)f.get(null);
         } catch (Exception e) {
             throw new UnsafeInitException(e);
         }
@@ -56,7 +56,7 @@ public class RuntimeUnsafeFieldDescFactory {
         @Override
         @SuppressWarnings("unchecked")
         public T getValue(Object message) {
-            return (T) UNSAFE.getObject(message, this.offset);
+            return (T)UNSAFE.getObject(message, this.offset);
         }
 
         //		private ProtoExSchema<T> getSchema(T value) {
@@ -99,8 +99,9 @@ public class RuntimeUnsafeFieldDescFactory {
 
         protected UnsafePrimitiveFieldDesc(ProtoExType protoExType, Field field) {
             super(protoExType, field);
-            if (!Wrapper.getPrimitive(field.getType()).isPrimitive())
+            if (!Wrapper.getPrimitive(field.getType()).isPrimitive()) {
                 throw ProtobufExException.fieldNotPrimitive(field);
+            }
             this.primitive = field.getType().isPrimitive();
             this.schema = RuntimeProtoExSchema.getProtoSchema(this.type);
         }
@@ -108,19 +109,21 @@ public class RuntimeUnsafeFieldDescFactory {
         @SuppressWarnings("unchecked")
         @Override
         public T getValue(Object message) {
-            if (this.primitive)
+            if (this.primitive) {
                 return this.getPrimitive(message);
-            else
-                return (T) UNSAFE.getObject(message, this.offset);
+            } else {
+                return (T)UNSAFE.getObject(message, this.offset);
+            }
         }
 
         @Override
         public void setValue(Object message, T value) {
             if (value != null) {
-                if (this.primitive)
+                if (this.primitive) {
                     this.setPrimitive(message, value);
-                else
+                } else {
                     UNSAFE.putObject(message, this.offset, value);
+                }
             }
         }
 
@@ -325,8 +328,9 @@ public class RuntimeUnsafeFieldDescFactory {
         @Override
         @SuppressWarnings("unchecked")
         public void setValue(Object message, Object value) {
-            if (value == null)
+            if (value == null) {
                 return;
+            }
             super.setValue(message, value);
         }
 
@@ -344,7 +348,7 @@ public class RuntimeUnsafeFieldDescFactory {
         @SuppressWarnings("unchecked")
         protected UnsafeRepeatFieldDesc(Field field) {
             super(ProtoExType.REPEAT, field);
-            Class<Object> elementType = (Class<Object>) getComponentType(field);
+            Class<Object> elementType = (Class<Object>)getComponentType(field);
             ProtoExElement protoExElement = field.getAnnotation(ProtoExElement.class);
             if (protoExElement == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExElement.class));
@@ -368,8 +372,9 @@ public class RuntimeUnsafeFieldDescFactory {
         @Override
         @SuppressWarnings("unchecked")
         public void setValue(Object message, Object value) {
-            if (value == null)
+            if (value == null) {
                 return;
+            }
             super.setValue(message, value);
             // Collection<Object> collection = (Collection<Object>) this.getValue(message);
             // if (collection == null) {
@@ -398,9 +403,9 @@ public class RuntimeUnsafeFieldDescFactory {
         @SuppressWarnings("unchecked")
         protected UnsafeMapFieldDesc(Field field) {
             super(ProtoExType.MAP, field);
-            Type[] paramType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-            Class<Object> keyClass = (Class<Object>) paramType[0];
-            Class<Object> valueClass = (Class<Object>) paramType[1];
+            Type[] paramType = ((ParameterizedType)field.getGenericType()).getActualTypeArguments();
+            Class<Object> keyClass = (Class<Object>)paramType[0];
+            Class<Object> valueClass = (Class<Object>)paramType[1];
             ProtoExEntry protoExEntry = field.getAnnotation(ProtoExEntry.class);
             if (protoExEntry == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExEntry.class));
@@ -425,15 +430,16 @@ public class RuntimeUnsafeFieldDescFactory {
         @Override
         @SuppressWarnings("unchecked")
         public void setValue(Object message, Object value) {
-            if (value == null)
+            if (value == null) {
                 return;
-            Map<Object, Object> map = (Map<Object, Object>) this.getValue(message);
+            }
+            Map<Object, Object> map = (Map<Object, Object>)this.getValue(message);
             if (map == null) {
                 map = CollectionCreator.createMap(this.type);
                 super.setValue(message, map);
             }
             if (value instanceof Map) {
-                map.putAll((Map<?, ?>) value);
+                map.putAll((Map<?, ?>)value);
             }
         }
 
@@ -448,7 +454,7 @@ public class RuntimeUnsafeFieldDescFactory {
         if (typeClass.isArray()) {
             return field.getType().getComponentType();
         } else if (Collection.class.isAssignableFrom(typeClass)) {
-            return (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+            return (Class<?>)((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0];
         }
         return typeClass;
     }
@@ -461,7 +467,7 @@ public class RuntimeUnsafeFieldDescFactory {
 
     public static void main(String[] args) {
         Test test = new Test();
-        test.data = (Integer[]) Array.newInstance(Integer.class, 3);
+        test.data = (Integer[])Array.newInstance(Integer.class, 3);
         for (int i = 0; i < test.data.length; i++) {
             test.data[i] = i + 1;
         }

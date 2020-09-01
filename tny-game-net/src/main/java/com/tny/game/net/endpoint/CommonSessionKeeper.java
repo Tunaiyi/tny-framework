@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.common.lock.locker.*;
+import com.tny.game.common.concurrent.lock.locker.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
@@ -24,11 +24,13 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     @Override
     public Optional<Session<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
-        if (!certificate.isAutherized())
+        if (!certificate.isAutherized()) {
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} is unauthentic", certificate));
-        if (!this.getUserType().equals(certificate.getUserType()))
+        }
+        if (!this.getUserType().equals(certificate.getUserType())) {
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL,
                     format("cert {} userType is {}, not {}", certificate, certificate.getUserType(), this.getUserType()));
+        }
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);
         try {
@@ -53,11 +55,12 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
             }
         }
         NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
-        NetSession<UID> session = factory.create(setting, endpoint.getEventHandler());
+        NetSession<UID> session = this.factory.create(this.setting, endpoint.getEventHandler());
         if (oldSession != null) {
             this.endpointMap.remove(oldSession.getUserId(), oldSession);
-            if (!oldSession.isClosed())
+            if (!oldSession.isClosed()) {
                 oldSession.close();
+            }
             onRemoveSession.notify(this, oldSession);
         }
         session.online(certificate, newTunnel);

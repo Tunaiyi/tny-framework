@@ -1,7 +1,7 @@
 package com.tny.game.suite.cluster;
 
 import com.google.common.collect.*;
-import com.tny.game.common.utils.*;
+import com.tny.game.common.url.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.*;
 
@@ -36,7 +36,7 @@ public class ServiceNode {
     }
 
     public String getAppType() {
-        return appType;
+        return this.appType;
     }
 
     public URL getURL(String protocol) {

@@ -35,8 +35,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     private static GameExplorer EXPLORER;
 
     public GameExplorer() {
-        if (EXPLORER == null)
+        if (EXPLORER == null) {
             EXPLORER = this;
+        }
     }
 
     public static GameExplorer getInstance() {
@@ -45,12 +46,12 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
 
     @Override
     public <IM extends Model> IM getModel(int itemID) {
-        return (IM) this.getModelManager(itemID).getModel(itemID);
+        return (IM)this.getModelManager(itemID).getModel(itemID);
     }
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return (IM) this.getModelManager(itemAlias).getModelByAlias(itemAlias);
+        return (IM)this.getModelManager(itemAlias).getModelByAlias(itemAlias);
     }
 
     @Override
@@ -59,107 +60,121 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     }
 
     @Override
-    public <I extends Any<?>> I getItem(long playerId, int itemID, Object... object) {
+    public <I extends Entity<?>> I getItem(long playerId, int itemID, Object... object) {
         GameManager<Object> manager = this.getItemManager(itemID);
-        if (manager == null)
+        if (manager == null) {
             return null;
+        }
         Object[] params = new Object[object.length + 1];
         params[0] = itemID;
-        if (object.length > 0)
+        if (object.length > 0) {
             System.arraycopy(object, 0, params, 1, object.length);
-        return (I) manager.get(playerId, params);
+        }
+        return (I)manager.get(playerId, params);
     }
 
     @Override
-    public boolean insertItem(Any<?>... items) {
+    public boolean insertItem(Entity<?>... items) {
         boolean result = true;
-        for (Any<?> item : items) {
+        for (Entity<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.insert(item))
+            }
+            if (!manager.insert(item)) {
                 result = false;
+            }
         }
         return result;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> insertItem(
+    public <I extends Entity<?>> Collection<I> insertItem(
             Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
-            if (!this.insertItem(item))
+            if (!this.insertItem(item)) {
                 fail.add(item);
+            }
         }
         return fail;
     }
 
     @Override
-    public boolean updateItem(Any<?>... items) {
+    public boolean updateItem(Entity<?>... items) {
         boolean result = true;
-        for (Any<?> item : items) {
+        for (Entity<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.update(item))
+            }
+            if (!manager.update(item)) {
                 result = false;
+            }
         }
         return result;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> updateItem(
+    public <I extends Entity<?>> Collection<I> updateItem(
             Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
-            if (!this.updateItem(item))
+            if (!this.updateItem(item)) {
                 fail.add(item);
+            }
         }
         return fail;
     }
 
     @Override
-    public boolean saveItem(Any<?>... items) {
+    public boolean saveItem(Entity<?>... items) {
         boolean result = true;
-        for (Any<?> item : items) {
+        for (Entity<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.save(item))
+            }
+            if (!manager.save(item)) {
                 result = false;
+            }
         }
         return result;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> saveItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> saveItem(Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
-            if (!this.saveItem(item))
+            if (!this.saveItem(item)) {
                 fail.add(item);
+            }
         }
         return fail;
     }
 
     @Override
-    public boolean deleteItem(Any<?>... items) {
+    public boolean deleteItem(Entity<?>... items) {
         boolean result = true;
-        for (Any<?> item : items) {
+        for (Entity<?> item : items) {
             GameManager<Object> manager = this.getItemManager(item.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.delete(item))
+            }
+            if (!manager.delete(item)) {
                 result = false;
+            }
         }
         return result;
     }
 
     @Override
-    public <I extends Any<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
+    public <I extends Entity<?>> Collection<I> deleteItem(Collection<I> itemCollection) {
         Collection<I> fail = new LinkedList<>();
         for (I item : itemCollection) {
-            if (!this.deleteItem(item))
+            if (!this.deleteItem(item)) {
                 fail.add(item);
+            }
         }
         return fail;
     }
@@ -167,9 +182,10 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     @Override
     public <O extends Storage<?, ?>> O getStorage(long playerId, int itemID, Object... object) {
         GameManager<Object> manager = this.getStorageManager(itemID);
-        if (manager == null)
+        if (manager == null) {
             return null;
-        return (O) manager.get(playerId, object);
+        }
+        return (O)manager.get(playerId, object);
     }
 
     @Override
@@ -177,10 +193,12 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         boolean result = true;
         for (Storage<?, ?> storage : storageArray) {
             GameManager<Object> manager = this.getStorageManager(storage.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.insert(storage))
+            }
+            if (!manager.insert(storage)) {
                 result = false;
+            }
         }
         return result;
     }
@@ -190,8 +208,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
             Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O storage : storageCollection) {
-            if (!this.insertStorage(storage))
+            if (!this.insertStorage(storage)) {
                 fail.add(storage);
+            }
         }
         return fail;
     }
@@ -201,10 +220,12 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         boolean result = true;
         for (Storage<?, ?> storage : storageArray) {
             GameManager<Object> manager = this.getStorageManager(storage.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.update(storage))
+            }
+            if (!manager.update(storage)) {
                 result = false;
+            }
         }
         return result;
     }
@@ -214,8 +235,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
             Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O storage : storageCollection) {
-            if (!this.updateStorage(storage))
+            if (!this.updateStorage(storage)) {
                 fail.add(storage);
+            }
         }
         return fail;
     }
@@ -225,10 +247,12 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         boolean result = true;
         for (Storage<?, ?> storage : storageArray) {
             GameManager<Object> manager = this.getStorageManager(storage.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.save(storage))
+            }
+            if (!manager.save(storage)) {
                 result = false;
+            }
         }
         return result;
     }
@@ -237,8 +261,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     public <O extends Storage<?, ?>> Collection<O> saveStorage(Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O storage : storageCollection) {
-            if (!this.saveStorage(storage))
+            if (!this.saveStorage(storage)) {
                 fail.add(storage);
+            }
         }
         return fail;
     }
@@ -248,10 +273,12 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         boolean result = true;
         for (Storage<?, ?> storage : storageArray) {
             GameManager<Object> manager = this.getStorageManager(storage.getItemId());
-            if (manager == null)
+            if (manager == null) {
                 return true;
-            if (!manager.delete(storage))
+            }
+            if (!manager.delete(storage)) {
                 result = false;
+            }
         }
         return result;
     }
@@ -260,8 +287,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     public <O extends Storage<?, ?>> Collection<O> deleteStorage(Collection<O> storageCollection) {
         Collection<O> fail = new LinkedList<>();
         for (O storage : storageCollection) {
-            if (!this.deleteStorage(storage))
+            if (!this.deleteStorage(storage)) {
                 fail.add(storage);
+            }
         }
         return fail;
     }
@@ -269,16 +297,18 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     private GameManager<Object> getStorageManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemId(itemID);
         GameManager<Object> manager = this.typeStorageManagerMap.get(itemType);
-        if (manager == null)
+        if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的storage manager 为null", itemType));
+        }
         return manager;
     }
 
     private GameManager<Object> getItemManager(int itemID) {
         ItemType itemType = ItemTypes.ofItemId(itemID);
         GameManager<Object> manager = this.typeManagerMap.get(itemType);
-        if (manager == null)
+        if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的item manager 为null", itemType));
+        }
         return manager;
     }
 
@@ -290,19 +320,20 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
     @Override
     public <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType) {
         ModelManager<Model> manager = this.typeModelManagerMap.get(itemType);
-        if (manager == null)
+        if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的model manager 为null", itemType));
-        return (M) manager;
+        }
+        return (M)manager;
     }
 
     private ModelManager<Model> getModelManager(String alias) {
         ItemType itemType = ItemTypes.ofAlias(alias);
         ModelManager<Model> manager = this.typeModelManagerMap.get(itemType);
-        if (manager == null)
+        if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的model manager 为null", itemType));
+        }
         return manager;
     }
-
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext)
@@ -341,8 +372,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         ManageItemType manageItemType = mClass.getAnnotation(ManageItemType.class);
         if (manageItemType != null) {
             for (int id : manageItemType.value()) {
-                if (id / ID_TAIL_SIZE == 0)
+                if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
+                }
                 putManager(managerMap, ItemTypes.of(id), manager);
             }
         }
@@ -366,8 +398,9 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         ManageItemType manageItemType = manager.getClass().getAnnotation(ManageItemType.class);
         if (manageItemType != null) {
             for (int id : manageItemType.value()) {
-                if (id / ID_TAIL_SIZE == 0)
+                if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
+                }
                 managerItemTypes.add(ItemTypes.of(id));
             }
         }
@@ -383,25 +416,24 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
         OwnItemType ownItemType = mClass.getAnnotation(OwnItemType.class);
         if (ownItemType != null) {
             for (int id : ownItemType.value()) {
-                if (id / ID_TAIL_SIZE == 0)
+                if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
+                }
                 putManager(managerMap, ItemTypes.of(id), manager);
             }
         }
     }
 
-
     private <K, M> void putManager(Map<K, M> managerMap, K itemType, M manager) {
         M oldManager = managerMap.putIfAbsent(itemType, manager);
-        if (oldManager != null && oldManager != manager)
+        if (oldManager != null && oldManager != manager) {
             throw new IllegalArgumentException(format("{} 与 {} 管理着相同的ItemType {}", manager.getClass(), oldManager.getClass(), itemType));
+        }
     }
-
 
     @Override
     public PrepareStarter getPrepareStarter() {
         return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_6);
     }
-
 
 }

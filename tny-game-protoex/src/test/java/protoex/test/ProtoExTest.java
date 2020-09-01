@@ -1,7 +1,7 @@
 package protoex.test;
 
+import com.tny.game.common.binary.*;
 import com.tny.game.common.collection.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
@@ -15,7 +15,7 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class ProtoExTest {
 
-    private char[] charValue = {0, (char) 1, (char) -1, Character.MAX_VALUE, Character.MIN_VALUE};
+    private char[] charValue = {0, (char)1, (char)-1, Character.MAX_VALUE, Character.MIN_VALUE};
     private byte[] byteValue = {0, 1, -1, Byte.MAX_VALUE, Byte.MIN_VALUE};
     private short[] shortValue = {0, 1, -1, Short.MAX_VALUE, Short.MIN_VALUE};
     private int[] intValue = {0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE};
@@ -29,87 +29,90 @@ public class ProtoExTest {
     private Collection<?>[] repeatMixValues = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestSub(), 1000, 2000L, false, "abc", 100.1f, 200.123),
             Arrays.asList(this.createTestSub(), this.createTestSub(), 1000, 2000L, false, "abc", 100.1f, 200.123),
-            Arrays.asList(this.createTestObject(), this.createTestObject(), 1000, 2000L, false, "abc", 100.1f, 200.123)};
+            Arrays.asList(this.createTestObject(), this.createTestObject(), 1000, 2000L, false, "abc", 100.1f, 200.123)
+    };
     private Collection<?>[] repeatValues = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestSub()),
             Arrays.asList(this.createTestSub(), this.createTestSub()),
-            Arrays.asList(this.createTestObject(), this.createTestObject())};
+            Arrays.asList(this.createTestObject(), this.createTestObject())
+    };
     private Collection<?>[] repeatResult = new Collection[]{
             Arrays.asList(this.createTestObject(), this.createTestObject()),
             Arrays.asList(this.createTestObject(), this.createTestObject()),
-            Arrays.asList(this.createTestObject(), this.createTestObject())};
+            Arrays.asList(this.createTestObject(), this.createTestObject())
+    };
     private Map<?, ?>[] mapMixValues = new Map[]{
             MapBuilder.newBuilder()
-                      .put(TestKey.key("testObject1"), this.createTestObject())
-                      .put(TestKey.key("testObject2"), this.createTestObject())
-                      .put("testObject", this.createTestObject())
-                      .put("subObject", this.createTestSub())
-                      .put(1000, this.createTestSub())
-                      .put(1001, this.createTestSub())
-                      .put(true, 100.1f)
-                      .put(false, 100.2f)
-                      .put(100.123, 10000L)
-                      .put(100.321, 20000L)
+                    .put(TestKey.key("testObject1"), this.createTestObject())
+                    .put(TestKey.key("testObject2"), this.createTestObject())
+                    .put("testObject", this.createTestObject())
+                    .put("subObject", this.createTestSub())
+                    .put(1000, this.createTestSub())
+                    .put(1001, this.createTestSub())
+                    .put(true, 100.1f)
+                    .put(false, 100.2f)
+                    .put(100.123, 10000L)
+                    .put(100.321, 20000L)
                     .build(),
             MapBuilder.newBuilder()
-                      .put(TestKey.key("testObject1"), this.createTestObject())
-                      .put(TestKey.key("testObject2"), this.createTestObject())
-                      .put("testObject", this.createTestObject())
-                      .put("subObject", this.createTestSub())
-                      .put(1000, this.createTestSub())
-                      .put(1001, this.createTestSub())
-                      .put(true, 100.1f)
-                      .put(false, 100.2f)
-                      .put(100.123, 10000L)
-                      .put(100.321, 20000L)
+                    .put(TestKey.key("testObject1"), this.createTestObject())
+                    .put(TestKey.key("testObject2"), this.createTestObject())
+                    .put("testObject", this.createTestObject())
+                    .put("subObject", this.createTestSub())
+                    .put(1000, this.createTestSub())
+                    .put(1001, this.createTestSub())
+                    .put(true, 100.1f)
+                    .put(false, 100.2f)
+                    .put(100.123, 10000L)
+                    .put(100.321, 20000L)
                     .build(),
     };
     private Map<?, ?>[] map_KeyExp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyExp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestObject("value3"))
-                      .put(this.createTestSub("key4"), this.createTestObject("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestObject("value3"))
+                    .put(this.createTestSub("key4"), this.createTestObject("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueExp_Values = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueExp_Result = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestObject("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                      .put(this.createTestObject("key4"), this.createTestSub("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestObject("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                    .put(this.createTestObject("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueImp_Values = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestSub("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestSub("value3"))
-                      .put(this.createTestSub("key4"), this.createTestSub("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestSub("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestSub("value3"))
+                    .put(this.createTestSub("key4"), this.createTestSub("value4"))
                     .build(),
     };
     private Map<?, ?>[] map_KeyImp_ValueImp_Result = new Map[]{
             MapBuilder.newBuilder()
-                      .put(this.createTestObject("key1"), this.createTestObject("value1"))
-                      .put(this.createTestObject("key2"), this.createTestObject("value2"))
-                      .put(this.createTestObject("key3"), this.createTestObject("value3"))
-                      .put(this.createTestObject("key4"), this.createTestObject("value4"))
+                    .put(this.createTestObject("key1"), this.createTestObject("value1"))
+                    .put(this.createTestObject("key2"), this.createTestObject("value2"))
+                    .put(this.createTestObject("key3"), this.createTestObject("value3"))
+                    .put(this.createTestObject("key4"), this.createTestObject("value4"))
                     .build(),
     };
 
@@ -486,7 +489,6 @@ public class ProtoExTest {
         this.read(reader, this.bytesValue);
     }
 
-
     @Test
     public void writeMessageWithCollection() {
         ProtoExWriter writer = this.createWrite();
@@ -653,7 +655,8 @@ public class ProtoExTest {
     public void testStringCollection() {
         Collection<String>[] values = new Collection[]{
                 Arrays.asList("abcdefghijklmnopqlstuvwxyz", "ABCDEFGHIJKLMNOPQLSTUVWXYZ"),
-                Arrays.asList("ABCDEFGHIJKLMNOPQLSTUVWXYZ", "abcdefghijklmnopqlstuvwxyz")};
+                Arrays.asList("ABCDEFGHIJKLMNOPQLSTUVWXYZ", "abcdefghijklmnopqlstuvwxyz")
+        };
 
         ProtoExWriter writer = this.createWrite();
 
@@ -676,7 +679,8 @@ public class ProtoExTest {
     public void testObjectCollection() {
         Collection<Object>[] values = new Collection[]{
                 Arrays.asList(this.createTestObject(), this.createTestObject()),
-                Arrays.asList(this.createTestObject(), this.createTestObject())};
+                Arrays.asList(this.createTestObject(), this.createTestObject())
+        };
 
         ProtoExWriter writer = this.createWrite();
 
@@ -797,12 +801,12 @@ public class ProtoExTest {
     public void testString_IntMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                          .put("testObject", 1000)
-                          .put("subObject", 1001)
+                        .put("testObject", 1000)
+                        .put("subObject", 1001)
                         .build(),
                 MapBuilder.newBuilder()
-                          .put("testObject", 2000)
-                          .put("subObject", 2001)
+                        .put("testObject", 2000)
+                        .put("subObject", 2001)
                         .build()
         };
 
@@ -828,12 +832,12 @@ public class ProtoExTest {
     public void testInt_StringMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                          .put(1000, "testObject")
-                          .put(1001, "subObject")
+                        .put(1000, "testObject")
+                        .put(1001, "subObject")
                         .build(),
                 MapBuilder.newBuilder()
-                          .put(2000, "testObject")
-                          .put(2001, "subObject")
+                        .put(2000, "testObject")
+                        .put(2001, "subObject")
                         .build()
         };
 
@@ -859,12 +863,12 @@ public class ProtoExTest {
     public void testObject_ObjectMap() {
         Map<?, ?>[] values = new Map[]{
                 MapBuilder.newBuilder()
-                          .put(TestKey.key("testObject1"), this.createTestObject())
-                          .put(TestKey.key("testObject2"), this.createTestObject())
+                        .put(TestKey.key("testObject1"), this.createTestObject())
+                        .put(TestKey.key("testObject2"), this.createTestObject())
                         .build(),
                 MapBuilder.newBuilder()
-                          .put(TestKey.key("testObject1"), this.createTestObject())
-                          .put(TestKey.key("testObject2"), this.createTestObject())
+                        .put(TestKey.key("testObject1"), this.createTestObject())
+                        .put(TestKey.key("testObject2"), this.createTestObject())
                         .build(),
         };
 
@@ -996,4 +1000,5 @@ public class ProtoExTest {
             Assert.assertEquals(this.msg(value, method, time++), value, readValue);
         }
     }
+
 }

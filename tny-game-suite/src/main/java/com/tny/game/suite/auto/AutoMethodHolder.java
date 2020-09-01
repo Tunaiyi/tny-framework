@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public class AutoMethodHolder<M extends AutoMethod> {
+public class AutoMethodHolder<M extends AutoMethod<?, ?, ?>> {
 
     private final Map<Method, M> METHOD_MAP = new CopyOnWriteMap<>();
 
@@ -23,19 +23,21 @@ public class AutoMethodHolder<M extends AutoMethod> {
     }
 
     public M getInstance(Method method) {
-        return getInstance(method, creator);
+        return getInstance(method, this.creator);
     }
 
     public M getInstance(Method method, Function<Method, M> creator) {
-        M autoMethod = METHOD_MAP.get(method);
-        if (autoMethod != null)
+        M autoMethod = this.METHOD_MAP.get(method);
+        if (autoMethod != null) {
             return autoMethod;
+        }
         synchronized (method) {
-            autoMethod = METHOD_MAP.get(method);
-            if (autoMethod != null)
+            autoMethod = this.METHOD_MAP.get(method);
+            if (autoMethod != null) {
                 return autoMethod;
+            }
             autoMethod = creator.apply(method);
-            METHOD_MAP.put(method, autoMethod);
+            this.METHOD_MAP.put(method, autoMethod);
             return autoMethod;
         }
     }

@@ -1,6 +1,7 @@
 package com.tny.game.expr.mvel;
 
 import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.math.*;
 import com.tny.game.common.number.*;
 import com.tny.game.common.utils.*;
@@ -35,15 +36,19 @@ public class MvelExprContext implements ExprContext {
 
     protected static void init(ParserContext parserContext) {
         for (final Method method : methodSet) {
-            if (!parserContext.hasImport(method.getName()))
+            if (!parserContext.hasImport(method.getName())) {
                 parserContext.addImport(method.getName(), method);
+            }
         }
-        if (!parserContext.hasImport(ArrayList.class.getSimpleName()))
+        if (!parserContext.hasImport(ArrayList.class.getSimpleName())) {
             parserContext.addImport(ArrayList.class);
-        if (!parserContext.hasImport(HashSet.class.getSimpleName()))
+        }
+        if (!parserContext.hasImport(HashSet.class.getSimpleName())) {
             parserContext.addImport(HashSet.class);
-        if (!parserContext.hasImport(HashMap.class.getSimpleName()))
+        }
+        if (!parserContext.hasImport(HashMap.class.getSimpleName())) {
             parserContext.addImport(HashMap.class);
+        }
     }
 
     private ParserContext parserContext = createParserContext();
@@ -81,8 +86,9 @@ public class MvelExprContext implements ExprContext {
             for (Method method : c.getMethods()) {
                 int modifiers = method.getModifiers();
                 if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)) {
-                    if (!this.parserContext.hasImport(method.getName()))
+                    if (!this.parserContext.hasImport(method.getName())) {
                         this.parserContext.addImport(method.getName(), method);
+                    }
                 }
             }
         }

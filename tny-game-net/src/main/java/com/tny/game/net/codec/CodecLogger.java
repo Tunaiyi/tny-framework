@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
 
-import static com.tny.game.common.utils.BytesAide.*;
+import static com.tny.game.common.binary.BytesAide.*;
 
 public class CodecLogger {
 

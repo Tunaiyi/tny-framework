@@ -25,8 +25,9 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
     @Override
     protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, TextLength annotation,
             String param) {
-        if (param == null)
+        if (param == null) {
             return code(NetResultCode.ILLEGAL_PARAMETERS, annotation.illegalCode());
+        }
         int length = param.length();
         if (length < annotation.low() || annotation.high() < length) {
             MessageHead head = message.getHead();
@@ -37,4 +38,5 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
         }
         return ResultCode.SUCCESS;
     }
+
 }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.actor.exception.*;
 import com.tny.game.common.worker.*;
 
@@ -24,18 +23,20 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
 
     @Override
     protected Queue<ActorCommand<?>> acceptQueue() {
-        return queue;
+        return this.queue;
     }
 
     protected void terminate() {
-        if (this.terminated)
+        if (this.terminated) {
             return;
+        }
         this.terminated = true;
         Queue<ActorCommand<?>> queue = this.acceptQueue();
         while (!queue.isEmpty()) {
             ActorCommand<?> cmd = queue.poll();
-            if (!cmd.isWork())
+            if (!cmd.isWork()) {
                 continue;
+            }
             cmd.cancel();
             this.executeCommand(cmd);
         }
@@ -52,12 +53,13 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
     }
 
     private ActorCell getActorCell() {
-        return actorCell;
+        return this.actorCell;
     }
 
     private void checkTerminated() {
-        if (this.isTerminated())
+        if (this.isTerminated()) {
             throw new ActorTerminatedException(this.actorCell.getActor());
+        }
     }
 
     public int getStepSize() {

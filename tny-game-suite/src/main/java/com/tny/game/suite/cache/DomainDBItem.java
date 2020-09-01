@@ -16,14 +16,14 @@ public class DomainDBItem<R> extends DBCacheItem<R> {
     @Override
     protected void format(Object data) {
         if (data instanceof ProtoItem) {
-            ProtoItem proto = (ProtoItem) data;
+            ProtoItem proto = (ProtoItem)data;
             Object object = proto.getObject();
             if (object instanceof Item) {
-                Item<?> item = (Item<?>) object;
+                Item<?> item = (Item<?>)object;
                 this.uid = item.getPlayerId();
                 this.itemId = item.getItemId();
             } else if (object instanceof Owned) {
-                this.uid = ((Owned) object).getOwnerId();
+                this.uid = ((Owned)object).getOwnerId();
             }
             this.number = proto.getNumber();
             data = proto.getItem();

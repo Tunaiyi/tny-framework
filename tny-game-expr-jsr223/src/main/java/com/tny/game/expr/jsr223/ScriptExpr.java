@@ -25,13 +25,12 @@ public class ScriptExpr extends AbstractExpr {
 
     private String expressionStr;
 
-
     protected ScriptExpr(ScriptEngine engine, String expression, ScriptExprContext context) throws ExprException {
         super(expression);
         if (this.number == null) {
             this.expressionStr = expression;
             try {
-                this.script = ((Compilable) engine).compile(expression);
+                this.script = ((Compilable)engine).compile(expression);
             } catch (ScriptException e) {
                 throw new ExprException("编译 expression 异常", e);
             }
@@ -49,22 +48,24 @@ public class ScriptExpr extends AbstractExpr {
 
     @Override
     protected Map<String, Object> attribute() {
-        if (bindings == null) {
-            bindings = context.createBindings();
+        if (this.bindings == null) {
+            this.bindings = this.context.createBindings();
         }
-        return bindings;
+        return this.bindings;
     }
 
     @Override
     protected Object execute() throws Exception {
-        if (MapUtils.isNotEmpty(bindings))
-            return script.eval(bindings);
-        else
-            return script.eval();
+        if (MapUtils.isNotEmpty(this.bindings)) {
+            return this.script.eval(this.bindings);
+        } else {
+            return this.script.eval();
+        }
     }
 
     @Override
     public Expr createExpr() {
         return new ScriptExpr(this);
     }
+
 }

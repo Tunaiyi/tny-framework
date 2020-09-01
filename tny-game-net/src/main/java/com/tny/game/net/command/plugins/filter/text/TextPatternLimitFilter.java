@@ -1,6 +1,6 @@
 package com.tny.game.net.command.plugins.filter.text;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.dispatcher.*;
@@ -30,8 +30,9 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
 
     private Pattern getPattern(String string) {
         Pattern pattern = this.patternMap.get(string);
-        if (pattern != null)
+        if (pattern != null) {
             return pattern;
+        }
         pattern = Pattern.compile(string);
         Pattern oldPattern = this.patternMap.putIfAbsent(string, pattern);
         return oldPattern == null ? pattern : oldPattern;
@@ -49,4 +50,5 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
         }
         return ResultCode.SUCCESS;
     }
+
 }

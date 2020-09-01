@@ -29,6 +29,7 @@ public @interface BeforePlugin {
      *
      * @return
      */
+    @SuppressWarnings("rawtypes")
     Class<? extends CommandPlugin> value();
 
     /**

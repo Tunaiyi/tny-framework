@@ -3,30 +3,32 @@ package com.tny.game.actor.local;
 import com.tny.game.actor.*;
 import org.slf4j.*;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * Actor单元,负责管理与当前Actor相关的对象
  * Created by Kun Yang on 16/4/25.
  */
 class ActorCell implements ActorDispatcher {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ActorCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActorCell.class);
 
-    private ActorURL actorPath;
+    private final ActorURL actorPath;
 
-    private Actor<?, ?> actor;
+    private final Actor<?, ?> actor;
 
-    private ActorHandler<?> handler = (mail) -> null;
+    private ActorHandler<?> handler;
 
-    private ActorCommandBox commandBox;
+    private final ActorCommandBox commandBox;
 
-    private ActorLifeCycle lifeCycle;
+    private final ActorLifeCycle lifeCycle;
 
-    private int stepSize;
+    private final int stepSize;
 
     ActorCell(Object id, ActorURL path, ActorProps props) {
         this.actorPath = path;
         this.handler = props.getActorHandler();
-        this.handler = this.handler != null ? handler : (mail) -> null;
+        this.handler = this.handler != null ? this.handler : (mail) -> null;
         this.lifeCycle = props.getLifeCycle();
         this.actor = new DefaultLocalActor<>(id, this);
         this.commandBox = props.getCommandBoxFactory().create(this);
@@ -35,8 +37,8 @@ class ActorCell implements ActorDispatcher {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <ACT extends Actor> ACT getActor() {
-        return (ACT) actor;
+    public <ACT extends Actor<?, ?>> ACT getActor() {
+        return (ACT)this.actor;
     }
 
     void terminate() {
@@ -44,7 +46,7 @@ class ActorCell implements ActorDispatcher {
     }
 
     boolean detach() {
-        return commandBox.detach();
+        return this.commandBox.detach();
     }
 
     /**
@@ -53,13 +55,12 @@ class ActorCell implements ActorDispatcher {
      * @param mail 消息
      * @return 返回处理结果
      */
-    @SuppressWarnings("unchecked")
     public Object handle(ActorMessage mail) {
         if (mail == ActorTerminateMessage.message()) {
             this.doTerminate();
             return null;
-        } else if (handler != null) {
-            return handler.handler((ActorMail) mail);
+        } else if (this.handler != null) {
+            return this.handler.handler(as(mail));
         }
         return null;
     }
@@ -70,8 +71,9 @@ class ActorCell implements ActorDispatcher {
      * @param command 执行
      */
     public void execute(ActorCommand<?> command) {
-        if (command.isDone())
+        if (command.isDone()) {
             return;
+        }
         try {
             this.lifeCycle.preHandle(command);
             command.handle();
@@ -93,23 +95,25 @@ class ActorCell implements ActorDispatcher {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <V> Answer<V> sendMessage(Object message, Actor sender, boolean needAnswer) {
-        Answer answer = new ActorAnswer<>();
+    public <V> Answer<V> sendMessage(Object message, Actor<?, ?> sender, boolean needAnswer) {
         if (!needAnswer) {
-            if (message instanceof ActorCommand)
-                this.commandBox.accept((ActorCommand<?>) message);
-            else
+            if (message instanceof ActorCommand) {
+                this.commandBox.accept((ActorCommand<?>)message);
+            } else {
                 this.commandBox.accept(new ActorMailCommand<>(this, message, sender));
+            }
             return null;
         } else {
             ActorCommand<V> command = null;
             if (message instanceof ActorCommand) {
-                command = (ActorCommand<V>) message;
-                if (command.getAnswer() == null)
+                command = (ActorCommand<V>)message;
+                if (command.getAnswer() == null) {
                     command.setAnswer(new ActorAnswer<>());
+                }
                 this.commandBox.accept(command);
-            } else
+            } else {
                 this.commandBox.accept(new ActorMailCommand<>(this, message, sender, new ActorAnswer<>()));
+            }
             return command != null ? command.getAnswer() : null;
         }
 
@@ -124,7 +128,7 @@ class ActorCell implements ActorDispatcher {
     }
 
     public ActorURL getActorPath() {
-        return actorPath;
+        return this.actorPath;
     }
 
     boolean isTakenOver() {
@@ -132,10 +136,11 @@ class ActorCell implements ActorDispatcher {
     }
 
     ActorCommandBox getCommandBox() {
-        return commandBox;
+        return this.commandBox;
     }
 
     public int getStepSize() {
-        return stepSize;
+        return this.stepSize;
     }
+
 }

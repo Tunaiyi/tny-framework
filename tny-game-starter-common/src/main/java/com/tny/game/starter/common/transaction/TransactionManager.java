@@ -1,16 +1,11 @@
 package com.tny.game.starter.common.transaction;
 
-
 public class TransactionManager {
 
-    private static final ThreadLocal<GameTransaction> transThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<GameTransaction> transThreadLocal = ThreadLocal.withInitial(GameTransaction::new);
 
     public static void open() {
         GameTransaction transaction = transThreadLocal.get();
-        if (transaction == null) {
-            transaction = new GameTransaction();
-            transThreadLocal.set(transaction);
-        }
         if (!transaction.isOpen()) {
             transaction.open();
         }
@@ -28,8 +23,9 @@ public class TransactionManager {
     public static void rollback(Throwable cause) {
         try {
             GameTransaction transaction = transThreadLocal.get();
-            if (transaction != null && transaction.isOpen())
+            if (transaction != null && transaction.isOpen()) {
                 transaction.rollback(cause);
+            }
         } finally {
             transThreadLocal.remove();
         }
@@ -38,8 +34,9 @@ public class TransactionManager {
     public static void close() {
         try {
             GameTransaction transaction = transThreadLocal.get();
-            if (transaction != null && transaction.isOpen())
+            if (transaction != null && transaction.isOpen()) {
                 transaction.close();
+            }
         } finally {
             transThreadLocal.remove();
         }

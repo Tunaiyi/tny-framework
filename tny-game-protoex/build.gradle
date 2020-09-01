@@ -4,10 +4,14 @@ apply plugin: "maven"
 
 dependencies {
 
-    testImplementation libs.protobuf_java3
-    testImplementation libs.jackson_databind
-
-    api project(":tny-game-common")
+    api project(":tny-game-common-lang")
+    api project(":tny-game-common-reflect")
     api project(":tny-game-scanning")
+
+    testImplementation libs.protobuf_java3
+    testImplementation libs.guava
+    testImplementation libs.jackson_databind
+    testImplementation project(":tny-game-common-base")
+
 
 }

@@ -5,7 +5,7 @@ import com.tny.game.net.netty4.*;
 
 import java.util.function.Function;
 
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 
 /**
  * <p>
@@ -54,9 +54,9 @@ public interface NetEnvironmentAide {
         //
         ;
 
-        private String head;
+        private final String head;
 
-        private Function<String, NetBootstrapSetting> settingCreator;
+        private final Function<String, NetBootstrapSetting> settingCreator;
 
         NetType(String head, Function<String, NetBootstrapSetting> settingCreator) {
             this.head = head;
@@ -80,4 +80,5 @@ public interface NetEnvironmentAide {
         }
         return builder.toString();
     }
+
 }

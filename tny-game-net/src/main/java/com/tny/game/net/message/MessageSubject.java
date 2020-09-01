@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
 
 /**
  * Created by Kun Yang on 2017/2/16.
@@ -53,6 +53,5 @@ public interface MessageSubject extends Protocol {
      * @return 获取消息体
      */
     <T> T getTail(ReferenceType<T> clazz);
-
 
 }

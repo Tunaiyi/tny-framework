@@ -29,6 +29,7 @@ public @interface AfterPlugin {
      *
      * @return
      */
+    @SuppressWarnings("rawtypes")
     Class<? extends CommandPlugin> value();
 
     /**
@@ -37,4 +38,5 @@ public @interface AfterPlugin {
      * @return 获取插件参数
      */
     String attribute() default "@null";
+
 }

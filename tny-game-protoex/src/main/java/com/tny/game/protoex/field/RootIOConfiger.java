@@ -1,6 +1,6 @@
 package com.tny.game.protoex.field;
 
-import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 
@@ -33,7 +33,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     public static IOConfiger<Map<?, ?>> createMapConfiger(
             Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
             Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
-        Class<Map<?, ?>> type = (Class<Map<?, ?>>) Collections.emptyMap().getClass();
+        Class<Map<?, ?>> type = (Class<Map<?, ?>>)Collections.emptyMap().getClass();
         return new RootIOConfiger<>(type, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
     }
 
@@ -42,8 +42,8 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
             Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
             Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         this(ProtoExType.REPEAT, type, false, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
-        Class<Object> keyClass = (Class<Object>) keyType;
-        Class<Object> valueClass = (Class<Object>) valueType;
+        Class<Object> keyClass = (Class<Object>)keyType;
+        Class<Object> valueClass = (Class<Object>)valueType;
         this.keyConfiger = new SimpleIOConfiger<>(EntryType.KEY, keyClass, keyTypeEncode, keyFormat);
         this.valueConfiger = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, valueTypeEncode, valueFormat);
     }
@@ -52,7 +52,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
     private RootIOConfiger(Class<T> clazz, Class<?> elementType, boolean packed, TypeEncode typeEncode, FieldFormat format) {
         this(ProtoExType.REPEAT, clazz, packed, TypeEncode.DEFAULT, format);
         boolean primitive = Wrapper.getPrimitive(elementType).isPrimitive();
-        this.elementConfiger = new SimpleIOConfiger<>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
+        this.elementConfiger = new SimpleIOConfiger<>((Class<Object>)elementType, this.getIndex(), typeEncode, format);
         this.packed = packed;
         if (primitive) {
             this.packed = true;
@@ -63,7 +63,7 @@ public class RootIOConfiger<T> extends BaseIOConfiger<T> implements MapIOConfige
 
     @SuppressWarnings("unchecked")
     private RootIOConfiger(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
-        this(protoExType, (Class<T>) type.getClass(), packed, typeEncode, format);
+        this(protoExType, (Class<T>)type.getClass(), packed, typeEncode, format);
     }
 
     private RootIOConfiger(ProtoExType protoExType, Class<T> type, boolean packed, TypeEncode typeEncode, FieldFormat format) {

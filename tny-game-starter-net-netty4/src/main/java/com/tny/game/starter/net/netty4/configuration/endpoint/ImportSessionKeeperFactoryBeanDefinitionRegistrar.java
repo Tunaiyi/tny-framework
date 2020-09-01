@@ -1,13 +1,13 @@
 package com.tny.game.starter.net.netty4.configuration.endpoint;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.starter.common.initiator.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
@@ -28,7 +28,7 @@ public class ImportSessionKeeperFactoryBeanDefinitionRegistrar extends BaseBeanD
         registry.registerBeanDefinition(factoryName, BeanDefinitionBuilder
                 .genericBeanDefinition(factoryClass,
                         () -> Binder.get(this.environment).bind(keyHead, factoryClass)
-                                    .orElseGet(() -> ExeAide.callUnchecked(factoryClass::newInstance).orElse(null)))
+                                .orElseGet(() -> ExeAide.callUnchecked(factoryClass::newInstance).orElse(null)))
                 .getBeanDefinition());
 
     }

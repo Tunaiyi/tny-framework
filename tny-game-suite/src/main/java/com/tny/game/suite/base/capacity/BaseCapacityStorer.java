@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.base.capacity.event.*;
@@ -61,13 +61,14 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public Optional<ComboCapacitySupplier> findComboSupplier(long id) {
         CapacitySupplier supplier = getSupplier(id);
-        if (supplier == null)
+        if (supplier == null) {
             return Optional.empty();
-        if (supplier instanceof ComboCapacitySupplier)
+        }
+        if (supplier instanceof ComboCapacitySupplier) {
             return Optional.of(ObjectAide.as(supplier));
+        }
         return Optional.empty();
     }
-
 
     @Override
     public Optional<CapacityGoal> findGoal(long id) {
@@ -105,10 +106,10 @@ public class BaseCapacityStorer implements CapacityStorer {
             suppliersMap(k).putAll(m);
             linked.addAll(m.values());
         });
-        if (!linked.isEmpty())
+        if (!linked.isEmpty()) {
             ON_LINK_SUPPLIER.notify(this, linked);
+        }
     }
-
 
     @Override
     public void saveSupplier(CapacitySupplier supplier, long timeoutAt) {
@@ -139,8 +140,9 @@ public class BaseCapacityStorer implements CapacityStorer {
             suppliersMap(k).putAll(m);
             saved.addAll(m.values());
         });
-        if (!saved.isEmpty())
+        if (!saved.isEmpty()) {
             ON_SAVE_SUPPLIER.notify(this, saved);
+        }
     }
 
     @Override
@@ -163,33 +165,35 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public void expireAtSuppliers(Collection<Long> ids, long expireAt) {
         List<ExpireCapacitySupplier> expired = ids.stream()
-                                                  .map(id -> suppliersMap(id).get(id))
-                                                  .filter(Objects::nonNull)
-                                                  .peek(e -> e.expireAt(expireAt))
-                                                  .collect(Collectors.toList());
-        if (!expired.isEmpty())
+                .map(id -> suppliersMap(id).get(id))
+                .filter(Objects::nonNull)
+                .peek(e -> e.expireAt(expireAt))
+                .collect(Collectors.toList());
+        if (!expired.isEmpty()) {
             ON_EXPIRE_SUPPLIER.notify(this, expired);
+        }
     }
 
     @Override
     public void deleteSupplierById(long id) {
         StoreCapacitySupplier supplier = suppliersMap(id).remove(id);
-        if (supplier != null)
+        if (supplier != null) {
             ON_DELETE_SUPPLIER.notify(this, singleton(supplier));
+        }
     }
 
     @Override
     public void deleteSuppliersById(Collection<Long> supplierIDs) {
         Map<String, List<Long>> map = supplierIDs.stream()
-                                                 .collect(Collectors.groupingBy(this::key));
+                .collect(Collectors.groupingBy(this::key));
         List<ExpireCapacitySupplier> deleted = map.entrySet().stream()
-                                                  .map(e -> suppliersMap(e.getKey()).removeAll(e.getValue()))
-                                                  .flatMap(Collection::stream)
-                                                  .collect(Collectors.toList());
-        if (!deleted.isEmpty())
+                .map(e -> suppliersMap(e.getKey()).removeAll(e.getValue()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        if (!deleted.isEmpty()) {
             ON_DELETE_SUPPLIER.notify(this, deleted);
+        }
     }
-
 
     @Override
     public void saveGoal(CapacityGoal goal, long timeoutAt) {
@@ -228,8 +232,9 @@ public class BaseCapacityStorer implements CapacityStorer {
             goalsMap(k).putAll(m);
             saved.addAll(m.values());
         });
-        if (!saved.isEmpty())
+        if (!saved.isEmpty()) {
             ON_SAVE_GOAL.notify(this, saved);
+        }
     }
 
     @Override
@@ -244,31 +249,34 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public void expireAtGoals(Collection<Long> ids, long expireAt) {
         List<ExpireCapacityGoal> expired = ids.stream()
-                                              .map(id -> goalsMap(id).get(id))
-                                              .filter(Objects::nonNull)
-                                              .peek(e -> e.expireAt(expireAt))
-                                              .collect(Collectors.toList());
-        if (!expired.isEmpty())
+                .map(id -> goalsMap(id).get(id))
+                .filter(Objects::nonNull)
+                .peek(e -> e.expireAt(expireAt))
+                .collect(Collectors.toList());
+        if (!expired.isEmpty()) {
             ON_EXPIRE_GOAL.notify(this, expired);
+        }
     }
 
     @Override
     public void deleteGoalById(long id) {
         StoreCapacityGoal goal = goalsMap(id).remove(id);
-        if (goal != null)
+        if (goal != null) {
             ON_DELETE_GOAL.notify(this, singleton(goal));
+        }
     }
 
     @Override
     public void deleteGoalsById(Collection<Long> goalIDs) {
         Map<String, List<Long>> map = goalIDs.stream()
-                                             .collect(Collectors.groupingBy(this::key));
+                .collect(Collectors.groupingBy(this::key));
         List<ExpireCapacityGoal> deleted = map.entrySet().stream()
-                                              .map(e -> goalsMap(e.getKey()).removeAll(e.getValue()))
-                                              .flatMap(Collection::stream)
-                                              .collect(Collectors.toList());
-        if (!deleted.isEmpty())
+                .map(e -> goalsMap(e.getKey()).removeAll(e.getValue()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        if (!deleted.isEmpty()) {
             ON_EXPIRE_GOAL.notify(this, deleted);
+        }
     }
 
     private StoreCapacitySupplier supplier2Link(CapacitySupplier supplier, long expireAt) {
@@ -276,8 +284,9 @@ public class BaseCapacityStorer implements CapacityStorer {
     }
 
     private StoreCapacityGoal goal2Save(CapacityGoal goal, long expireAt) {
-        if (goal instanceof StoreByCopyCapacityGoal)
+        if (goal instanceof StoreByCopyCapacityGoal) {
             return ObjectAide.as(goal);
+        }
         return StoreCapacityGoal.saveByGoal(goal, this, expireAt);
     }
 
@@ -328,19 +337,23 @@ public class BaseCapacityStorer implements CapacityStorer {
 
     private CapacitySupplier getSupplier(long id) {
         StoreCapacitySupplier supplier = suppliersMap(id).get(id);
-        if (supplier == null)
+        if (supplier == null) {
             return null;
-        if (supplier.isExpire())
+        }
+        if (supplier.isExpire()) {
             return null;
+        }
         return supplier;
     }
 
     private CapacityGoal getGoal(long id) {
         StoreCapacityGoal goal = goalsMap(id).get(id);
-        if (goal == null)
+        if (goal == null) {
             return null;
-        if (goal.isExpire())
+        }
+        if (goal.isExpire()) {
             return null;
+        }
         return goal;
     }
 
@@ -352,23 +365,23 @@ public class BaseCapacityStorer implements CapacityStorer {
     @Override
     public Stream<CapacitySupplier> getAllSuppliersSteam() {
         return this.typeSuppliersMap.values().stream()
-                                    .flatMap(suppliers -> suppliers.values().stream());
+                .flatMap(suppliers -> suppliers.values().stream());
     }
 
     @Override
     public Stream<CapacityGoal> getAllGoalsSteam() {
         return this.typeGoalsMap.values().stream()
-                                .flatMap(goals -> goals.values().stream());
+                .flatMap(goals -> goals.values().stream());
     }
 
     public Stream<StoreCapacitySupplier> getStoreSuppliersSteam() {
         return this.typeSuppliersMap.values().stream()
-                                    .flatMap(suppliers -> suppliers.values().stream());
+                .flatMap(suppliers -> suppliers.values().stream());
     }
 
     public Stream<StoreCapacityGoal> getStoreGoalsSteam() {
         return this.typeGoalsMap.values().stream()
-                                .flatMap(goals -> goals.values().stream());
+                .flatMap(goals -> goals.values().stream());
     }
 
     protected BaseCapacityStorer addStoreSuppliers(Stream<StoreCapacitySupplier> suppliers) {
@@ -392,4 +405,5 @@ public class BaseCapacityStorer implements CapacityStorer {
         map.forEach((k, m) -> goalsMap(k).putAll(m));
         return this;
     }
+
 }

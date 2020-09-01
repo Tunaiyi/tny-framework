@@ -1,9 +1,9 @@
 package com.tny.game.loader.lifecycle;
 
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.annotaion.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.loader.lifecycle.exception.*;
 import com.tny.game.scanner.*;
 import org.slf4j.*;
@@ -24,18 +24,17 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class AppLifecycleProcessor {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AppLifecycleProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppLifecycleProcessor.class);
 
-    private static Map<Class<?>, Set<Lifecycle>> lifecycleMap = new HashMap<>();
+    private static final Map<Class<?>, Set<Lifecycle<?, ?>>> LIFECYCLE_MAP = new HashMap<>();
 
-    private static Map<Lifecycle, List<LifecycleHandler>> handlerMap = new HashMap<>();
+    private static final Map<Lifecycle<?, ?>, List<LifecycleHandler>> HANDLER_MAP = new HashMap<>();
 
     public void onStaticInit(Collection<String> paths) {
-        Class<?> clazz = null;
         RunningChecker.start(this.getClass());
         LOGGER.info("开始初始化 Class Scan ...");
         ClassScanner.instance()
-                    .scan(paths);
+                .scan(paths);
         LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
         for (StaticInitiator Initiator : LifecycleLoader.getStaticInitiators()) {
             Class<?> c = Initiator.getInitiatorClass();
@@ -95,20 +94,20 @@ public class AppLifecycleProcessor {
         addLifecycle(AppClosed.class, AppClosed::getPostCloser, appCloseds);
     }
 
-
-    private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, Lifecycle> lifecycleGetter,
+    private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter,
             Collection<? extends T> lifecycles) {
-        List<Lifecycle> process = lifecycles.stream()
-                                            .peek(i -> {
-                                                Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
-                                                if (!lifecycle.getHandlerClass().isAssignableFrom(i.getClass()))
-                                                    throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
-                                                handlerMap.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
-                                            })
-                                            .map(lifecycleGetter)
-                                            .collect(Collectors.toList());
-        lifecycleMap.computeIfAbsent(lifecycleClass, k -> new ConcurrentSkipListSet<>())
-                    .addAll(process);
+        List<Lifecycle<?, ?>> process = lifecycles.stream()
+                .peek(i -> {
+                    Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
+                    if (!lifecycle.getHandlerClass().isAssignableFrom(i.getClass())) {
+                        throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
+                    }
+                    HANDLER_MAP.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
+                })
+                .map(lifecycleGetter)
+                .collect(Collectors.toList());
+        LIFECYCLE_MAP.computeIfAbsent(lifecycleClass, k -> new ConcurrentSkipListSet<>())
+                .addAll(process);
     }
 
     public static void loadHandler(ApplicationContext context) {
@@ -117,7 +116,7 @@ public class AppLifecycleProcessor {
         loadHandler(AppClosed.class, AppClosed::getPostCloser, context);
     }
 
-    private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, Lifecycle> lifecycleGetter,
+    private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter,
             ApplicationContext context) {
         Map<String, ? extends T> InitiatorMap = context.getBeansOfType(processorClass);
         addLifecycle(processorClass, lifecycleGetter, InitiatorMap.values());
@@ -128,17 +127,17 @@ public class AppLifecycleProcessor {
         String name = processorClass.getSimpleName();
         LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
         // Map<String, ? extends T> InitiatorMap = this.appContext.getBeansOfType(processorClass);
-        Set<Lifecycle> lifecycleList = lifecycleMap.getOrDefault(processorClass, Collections.emptySet());
+        Set<Lifecycle<?, ?>> lifecycleList = LIFECYCLE_MAP.getOrDefault(processorClass, Collections.emptySet());
         int index = 0;
 
-        Map<Lifecycle, Set<LifecycleHandler>> cloneMap = handlerMap.entrySet()
-                                                                   .stream()
-                                                                   .collect(Collectors.toMap(Entry::getKey, e -> new HashSet<>(e.getValue())));
+        Map<Lifecycle<?, ?>, Set<LifecycleHandler>> cloneMap = HANDLER_MAP.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Entry::getKey, e -> new HashSet<>(e.getValue())));
 
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
-        for (Lifecycle lifecycle : lifecycleList) {
+        for (Lifecycle<?, ?> lifecycle : lifecycleList) {
             long current = System.currentTimeMillis();
-            Lifecycle currentLifecycle = lifecycle.head();
+            Lifecycle<?, ?> currentLifecycle = lifecycle.head();
             while (currentLifecycle != null) {
                 Set<T> processors = as(cloneMap.remove(currentLifecycle));
                 if (processors != null) {
@@ -164,10 +163,11 @@ public class AppLifecycleProcessor {
                             try {
                                 runner.process(processor);
                             } catch (Throwable e) {
-                                if (errorContinue)
+                                if (errorContinue) {
                                     LOGGER.error("服务生命周期 {} # 处理器 [{}] index {} | -> 异常", name, processor.getClass(), currentIndex, e);
-                                else
+                                } else {
                                     throw new LifecycleProcessException(e);
+                                }
                             }
                         }
                         LOGGER.info("服务生命周期 {} # 处理器 [{}] index {} | -> 耗时 {} 完成", name, processor.getClass(), index,

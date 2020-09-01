@@ -1,6 +1,6 @@
 package com.tny.game.base.item;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 
 import java.util.*;
 
@@ -42,7 +42,7 @@ public abstract class StuffStorage<IM extends ItemModel, SM extends ItemModel, S
 
     @Override
     public S getItemByItemId(int itemId) {
-        return this.itemMap.get((long) itemId);
+        return this.itemMap.get((long)itemId);
     }
 
     @Override

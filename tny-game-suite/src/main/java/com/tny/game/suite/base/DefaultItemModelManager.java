@@ -1,7 +1,7 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.suite.utils.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class DefaultItemModelManager extends GameItemModelManager<DefaultItemMod
     }
 
     public DefaultItemModel getModel(ItemType itemType) {
-        return typeMap.get(itemType);
+        return this.typeMap.get(itemType);
     }
 
     @Override

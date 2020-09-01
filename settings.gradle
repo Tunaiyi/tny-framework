@@ -1,5 +1,9 @@
 rootProject.name = 'tny-framework'
-include 'tny-game-common'
+
+include 'tny-game-common-lang'
+include 'tny-game-common-base'
+include 'tny-game-common-reflect'
+include 'tny-game-common-collection'
 include 'tny-game-common-json'
 include 'tny-game-common-scheduler'
 include 'tny-game-tester'
@@ -40,4 +44,4 @@ include 'tny-game-net-test'
 include 'tny-game-starter-common'
 include 'tny-game-starter-net-netty4'
 
-include 'tny-game-test-lua'
+//include 'tny-game-test-lua'

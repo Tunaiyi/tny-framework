@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
 
 /**
  * <p>

@@ -1,7 +1,7 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.context.*;
-import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
 
@@ -31,22 +31,22 @@ public abstract class AbstractNetMessage<UID> extends AttributesHolder implement
 
     @Override
     public UID getUserId() {
-        return certificate.getUserId();
+        return this.certificate.getUserId();
     }
 
     @Override
     public String getUserType() {
-        return certificate.getUserType();
+        return this.certificate.getUserType();
     }
 
     @Override
     public boolean isLogin() {
-        return certificate.isAutherized();
+        return this.certificate.isAutherized();
     }
 
     @Override
     public MessageHead getHead() {
-        return head;
+        return this.head;
     }
 
     @Override

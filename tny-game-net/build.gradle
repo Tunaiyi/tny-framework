@@ -3,7 +3,7 @@ group "com.tny.game"
 apply plugin: "maven"
 
 dependencies {
-
+    api project(":tny-game-base")
     api project(":tny-game-expr-groovy")
     api project(":tny-game-protoex")
 

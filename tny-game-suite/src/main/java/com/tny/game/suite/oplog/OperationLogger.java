@@ -2,7 +2,7 @@ package com.tny.game.suite.oplog;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.oplog.*;
@@ -32,10 +32,10 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     private static final Logger stuffLogger = LogManager.getLogger("stuffLogger");
 
-    private static IDCreator creator = new IDCreator(16);
+    private static final IDCreator ID_CREATOR = new IDCreator(16);
 
-    private Map<Object, Snapper<Owned, Snapshot>> snapperMap = new CopyOnWriteMap<>();
-    private Map<Class<?>, Snapper<Owned, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
+    private final Map<Object, Snapper<Owned, Snapshot>> snapperMap = new CopyOnWriteMap<>();
+    private final Map<Class<?>, Snapper<Owned, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
 
     private static OpLogger instance;
 
@@ -47,13 +47,14 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     private ApplicationContext applicationContext;
 
-    public static final OpLogger logger() {
+    public static OpLogger logger() {
         return instance;
     }
 
     public OperationLogger() {
-        if (OperationLogger.instance == null)
+        if (OperationLogger.instance == null) {
             OperationLogger.instance = this;
+        }
     }
 
     public OperationLogger(OpLogFactory opLogFactory, UserOpLogFactory userOpLogFactory) {
@@ -80,14 +81,16 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         Snapper<Owned, Snapshot> snapper = this.targetClassSnapperMap.get(clazz);
         if (snapper == null) {
             SnapBy snapBy = clazz.getAnnotation(SnapBy.class);
-            if (snapBy == null)
+            if (snapBy == null) {
                 return;
+            }
             Class<?> snapperClass = snapBy.value();
             snapper = this.getSnapper(snapperClass);
             this.targetClassSnapperMap.put(clazz, snapper);
         }
-        if (snapper != null)
+        if (snapper != null) {
             this.doSnapshot(action, item, snapper);
+        }
 
     }
 
@@ -98,15 +101,17 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
             this.updateSnapshot(snapper, item, snapshot);
         } else {
             snapshot = this.createSnapshot(snapper, item);
-            if (snapshot != null)
+            if (snapshot != null) {
                 this.logSnapshot(action, snapshot);
+            }
         }
     }
 
     protected void updateSnapshot(Snapper<Owned, Snapshot> snapper, Owned item, Snapshot snapshot) {
         try {
-            if (snapper != null)
+            if (snapper != null) {
                 snapper.update(snapshot, item);
+            }
         } catch (Exception e) {
             LOGGER.error("", e);
         }
@@ -121,13 +126,12 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
         return null;
     }
 
-
     @Override
     protected void doSubmit(OpLog log) {
         for (UserOpLog userOpLog : log.getUserLogs()) {
             if (!userOpLog.getStuffSettleLogs().isEmpty()) {
                 try {
-                    UserStuffRecord dto = new UserStuffRecord(creator.getHexId(), log, userOpLog);
+                    UserStuffRecord dto = new UserStuffRecord(ID_CREATOR.getHexId(), log, userOpLog);
                     LogMessage message = new LogMessage(dto);
                     stuffLogger.info(message);
                 } catch (Exception e) {
@@ -136,7 +140,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
             }
             for (ActionLog actionLog : userOpLog.getActionLogs()) {
                 try {
-                    OperateRecord dto = new OperateRecord(creator.getHexId(), log, userOpLog, actionLog);
+                    OperateRecord dto = new OperateRecord(ID_CREATOR.getHexId(), log, userOpLog, actionLog);
                     LogMessage message = new LogMessage(dto);
                     oplogLogger.info(message);
                 } catch (Exception e) {

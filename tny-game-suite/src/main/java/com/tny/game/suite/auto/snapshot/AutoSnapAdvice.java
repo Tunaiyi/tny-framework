@@ -30,7 +30,7 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoSnapAdvice.class);
 
-    private AutoMethodHolder<AutoSnapMethod> methodHolder = new AutoMethodHolder<>();
+    private final AutoMethodHolder<AutoSnapMethod<?>> methodHolder = new AutoMethodHolder<>();
 
     private static AutoSnapAdvice ADVICE = null;
 
@@ -43,7 +43,7 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
     }
 
     @Override
-    public void doBefore(Method method, Object[] args, Object target) throws Throwable {
+    public void doBefore(Method method, Object[] args, Object target) {
         this.snapshot(method, args, target);
     }
 
@@ -59,14 +59,14 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
 
     private void snapshot(Method method, Object[] args, Object target) {
         try {
-            AutoSnapMethod snapMethod = this.methodHolder.getInstance(method, this.methodFactory::create);
+            AutoSnapMethod<?> snapMethod = this.methodHolder.getInstance(method, this.methodFactory::create);
             if (snapMethod.isCanSnapShot()) {
                 Action action = snapMethod.getAction(args);
                 Collection<SnapParamEntry> params = snapMethod.getSnapParams(args);
                 if (action != null) {
-                    OperationLogger.logger().logSnapshotByClass((Owned) target, action, snapMethod.getSnapshotTypes());
+                    OperationLogger.logger().logSnapshotByClass((Owned)target, action, snapMethod.getSnapshotTypes());
                     for (SnapParamEntry param : params)
-                        OperationLogger.logger().logSnapshotByClass((Owned) param.getObject(), action, param.getSnapshotTypes());
+                        OperationLogger.logger().logSnapshotByClass((Owned)param.getObject(), action, param.getSnapshotTypes());
                 }
             }
         } catch (Throwable e) {
@@ -83,16 +83,18 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
     @Listener
     public void handleClose(Transaction source) {
         OpLogger logger = OperationLogger.logger();
-        if (logger.isLogged())
+        if (logger.isLogged()) {
             logger.submit();
+        }
     }
 
     @Override
     @Listener
     public void handleRollback(Transaction source, Throwable cause) {
         OpLogger logger = OperationLogger.logger();
-        if (logger.isLogged())
+        if (logger.isLogged()) {
             logger.submit();
+        }
     }
 
 }

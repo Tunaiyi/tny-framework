@@ -8,9 +8,9 @@ import org.slf4j.*;
  */
 public abstract class MvelExprHolderFactory extends AbstractExprHolderFactory {
 
-    private static final String LAZY_KEY = "tny.common.formula.mvel.lazy";
-    // private static final String CACHED_KEY = "tny.common.formula.mvel.cached";
-    private static final String EXPR_INFO_KEY = "tny.common.formula.mvel.info";
+    private static final String LAZY_KEY = "tny.com.tny.game.common.formula.mvel.lazy";
+    // private static final String CACHED_KEY = "tny.com.tny.game.common.formula.mvel.cached";
+    private static final String EXPR_INFO_KEY = "tny.com.tny.game.common.formula.mvel.info";
 
     private static final boolean LAZY = System.getProperty(LAZY_KEY, "false").equals("true");
     public static final boolean EXPR_INFO = System.getProperty(EXPR_INFO_KEY, "true").equals("true");
@@ -35,7 +35,7 @@ public abstract class MvelExprHolderFactory extends AbstractExprHolderFactory {
 
     @Override
     public ExprContext getContext() {
-        return context;
+        return this.context;
     }
 
 }

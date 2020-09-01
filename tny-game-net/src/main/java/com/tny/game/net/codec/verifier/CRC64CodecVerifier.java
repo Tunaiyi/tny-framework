@@ -1,13 +1,13 @@
 package com.tny.game.net.codec.verifier;
 
+import com.tny.game.common.binary.*;
 import com.tny.game.common.unit.annotation.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.net.codec.*;
 import org.slf4j.*;
 
 import java.util.Arrays;
 
-import static com.tny.game.common.utils.BytesAide.*;
+import static com.tny.game.common.binary.BytesAide.*;
 
 /**
  * <p>

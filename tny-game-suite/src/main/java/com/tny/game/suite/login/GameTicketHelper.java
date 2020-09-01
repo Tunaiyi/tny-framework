@@ -1,6 +1,6 @@
 package com.tny.game.suite.login;
 
-import com.tny.game.common.utils.digest.rsa.*;
+import com.tny.game.common.digest.rsa.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.utils.*;

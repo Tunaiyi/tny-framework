@@ -110,7 +110,6 @@ public interface OpLogger {
      */
     OpLogger settleReceive(long playerId, int itemID, long alter, long newNum);
 
-
     /**
      * Item消耗结算
      *
@@ -161,6 +160,7 @@ public interface OpLogger {
      * @param snapperTypes 快照器Class
      * @return 返回Logger
      */
+    @SuppressWarnings("rawtypes")
     OpLogger logSnapshotByClass(Owned item, Action action, Class<? extends Snapper>... snapperTypes);
 
     /**

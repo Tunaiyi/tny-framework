@@ -1,6 +1,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.expr.*;
@@ -37,7 +38,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     /**
      * 所有协议身法验证器
      */
-    private AuthenticateValidator defaultValidator;
+    private AuthenticateValidator<?> defaultValidator;
 
     /**
      * 所有协议身法验证器
@@ -47,7 +48,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     /**
      * 插件管理器
      */
-    private Map<Class<?>, CommandPlugin> pluginMap = new CopyOnWriteMap<>();
+    private final Map<Class<?>, CommandPlugin<?, ?>> pluginMap = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -62,9 +63,9 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     /**
      * Controller Map
      */
-    private Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
+    private final Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
 
-    private ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+    private final ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
     private AppContext appContext;
 
@@ -81,11 +82,13 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
     public Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
-        if (controller != null)
+        if (controller != null) {
             return new ControllerMessageCommand(this, controller, tunnel, message);
-        if (message.getMode() == MessageMode.REQUEST)
+        }
+        if (message.getMode() == MessageMode.REQUEST) {
             throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL,
                     format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
+        }
         return null;
     }
 
@@ -94,18 +97,19 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
         // 获取方法持有器
         MethodControllerHolder controller = null;
         final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(protocol);
-        if (controllerMap != null)
+        if (controllerMap != null) {
             controller = controllerMap.get(mode);
+        }
         return controller;
     }
 
     @Override
-    public CommandPlugin getPlugin(Class<? extends CommandPlugin> pluginClass) {
+    public CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass) {
         return this.pluginMap.get(pluginClass);
     }
 
     @Override
-    public AuthenticateValidator getValidator(Object protocol, Class<? extends AuthenticateValidator> validatorClass) {
+    public AuthenticateValidator<?> getValidator(Object protocol, Class<? extends AuthenticateValidator<?>> validatorClass) {
         AuthenticateValidator<Object> validator = null;
         if (validatorClass != null) {
             validator = as(this.authValidators.get(validatorClass));
@@ -162,9 +166,9 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      *
      * @param plugins 插件列表
      */
-    protected void addControllerPlugin(Collection<CommandPlugin> plugins) {
+    protected void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                                     .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
+                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
 
     /**
@@ -172,7 +176,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      *
      * @param plugin 插件
      */
-    protected void addControllerPlugin(CommandPlugin plugin) {
+    protected void addControllerPlugin(CommandPlugin<?, ?> plugin) {
         this.pluginMap.put(plugin.getClass(), plugin);
     }
 
@@ -202,7 +206,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      *
      * @param providers 身份校验器列表
      */
-    protected void addAuthProvider(Collection<AuthenticateValidator> providers) {
+    protected void addAuthProvider(Collection<? extends AuthenticateValidator<?>> providers) {
         providers.forEach(this::addAuthProvider);
     }
 
@@ -228,17 +232,19 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
             Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
             for (MessageMode mode : controller.getMessageModes()) {
                 MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
-                if (old != null)
+                if (old != null) {
                     throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
+                }
             }
         }
     }
 
     private <K, V> void putObject(Map<K, V> map, K key, V value) {
         V oldValue = map.put(key, value);
-        if (oldValue != null)
+        if (oldValue != null) {
             ThrowAide.throwException(IllegalArgumentException::new,
                     "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
+        }
     }
 
 }

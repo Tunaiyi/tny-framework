@@ -1,6 +1,6 @@
 package com.tny.game.web.converter;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.runtime.*;
@@ -18,7 +18,7 @@ public class ProtoExHttpMessageConverter extends AbstractHttpMessageConverter<Ob
 
     public final static MediaType PROTOBUF_EX_MEDIA_TYPE = MediaType.valueOf("application/x-protobuf-ex");
 
-    public Map<Class<?>, Boolean> noProtoMap = new CopyOnWriteMap<Class<?>, Boolean>();
+    public Map<Class<?>, Boolean> noProtoMap = new CopyOnWriteMap<>();
 
     public ProtoExHttpMessageConverter() {
         super(PROTOBUF_EX_MEDIA_TYPE);
@@ -72,7 +72,7 @@ public class ProtoExHttpMessageConverter extends AbstractHttpMessageConverter<Ob
     protected void writeInternal(Object value, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         byte[] data = null;
         if (value instanceof byte[]) {
-            data = (byte[]) value;
+            data = (byte[])value;
         } else {
             ProtoExWriter writer = new ProtoExWriter(128);
             writer.writeMessage(value, TypeEncode.EXPLICIT);

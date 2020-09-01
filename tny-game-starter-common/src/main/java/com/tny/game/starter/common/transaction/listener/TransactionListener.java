@@ -1,6 +1,5 @@
 package com.tny.game.starter.common.transaction.listener;
 
-
 import com.tny.game.starter.common.transaction.*;
 
 public interface TransactionListener {

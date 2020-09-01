@@ -22,6 +22,7 @@ dependencies {
     api project(":tny-game-cache")
 
     api(libs.'jade') {
-        exclude group: 'com.tny.game', module: 'tny-game-common'
+        exclude group: 'com.tny.game', module: 'tny-game-common-lang'
+        exclude group: 'com.tny.game', module: 'tny-game-common-base'
     }
 }

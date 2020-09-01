@@ -12,6 +12,8 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 public abstract class ControllerHolder {
 
     /**
@@ -59,49 +61,55 @@ public abstract class ControllerHolder {
     protected ControllerHolder(final Object executor, final MessageDispatcherContext context, final Controller controller,
             final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth, final MessageFilter filter,
             final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
-        if (executor == null)
+        if (executor == null) {
             throw new IllegalArgumentException("executor is null");
+        }
         this.controllerClass = executor.getClass();
         ThrowAide.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.controller = controller;
         this.auth = auth;
-        if (this.auth != null && this.auth.enable())
+        if (this.auth != null && this.auth.enable()) {
             this.userGroups = ImmutableList.copyOf(this.auth.value());
-        else
+        } else {
             this.userGroups = null;
-        if (appProfile != null)
+        }
+        if (appProfile != null) {
             this.appTypes = ImmutableList.copyOf(appProfile.value());
-        else
+        } else {
             this.appTypes = null;
-        if (scopeProfile != null)
+        }
+        if (scopeProfile != null) {
             this.scopes = ImmutableList.copyOf(scopeProfile.value());
-        else
+        } else {
             this.scopes = null;
-        if (beforePlugins != null)
+        }
+        if (beforePlugins != null) {
             this.beforePlugins = this
                     .initPlugins(context, Arrays.asList(beforePlugins), exprHolderFactory, BeforePlugin::value, ControllerPluginHolder::new);
-        if (afterPlugins != null)
+        }
+        if (afterPlugins != null) {
             this.afterPlugins = this
                     .initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, ControllerPluginHolder::new);
+        }
 
-        if (filter != null)
+        if (filter != null) {
             this.messageModes = ImmutableSet.copyOf(filter.modes());
+        }
     }
 
-
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes"})
     private <A extends Annotation> ImmutableList<ControllerPluginHolder> initPlugins(MessageDispatcherContext context,
-            final Collection<A> pluginAnnotations,
+            final Collection<? extends A> pluginAnnotations,
             ExprHolderFactory exprHolderFactory,
             Function<A, Class<? extends CommandPlugin>> pluginClassGetter,
-            ControllerPluginHolderConstructor<A> holderFatory,
+            ControllerPluginHolderConstructor<A> holderFactory,
             ControllerPluginHolder... defaultHolders) {
         List<ControllerPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
         for (A pluginAnnotation : pluginAnnotations) {
             Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
-            final CommandPlugin plugin = context.getPlugin(pluginClass);
+            final CommandPlugin<?, ?> plugin = context.getPlugin(as(pluginClass));
             ThrowAide.checkNotNull(plugin, "{} plugin is null", pluginClass);
-            plugins.add(holderFatory.create(this, plugin, pluginAnnotation, exprHolderFactory));
+            plugins.add(holderFactory.create(this, plugin, pluginAnnotation, exprHolderFactory));
         }
         return ImmutableList.copyOf(plugins);
     }
@@ -116,9 +124,10 @@ public abstract class ControllerHolder {
         return this.auth != null && this.auth.enable();
     }
 
-    public Class<? extends AuthenticateValidator> getAuthValidator() {
-        if (this.auth != null && this.auth.enable() && this.auth.validator() != AuthenticateValidator.class)
-            return this.auth.validator();
+    public Class<? extends AuthenticateValidator<?>> getAuthValidator() {
+        if (this.auth != null && this.auth.enable() && this.auth.validator() != AuthenticateValidator.class) {
+            return as(this.auth.validator());
+        }
         return null;
     }
 
@@ -149,6 +158,7 @@ public abstract class ControllerHolder {
     public abstract <A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
     public abstract <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass);
+
     /**
      * 获取某方上参数指定注解类型的注解列表
      *
@@ -158,7 +168,6 @@ public abstract class ControllerHolder {
      * 获取 @B : [null, null, null, @B]
      */
     public abstract <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz);
-
 
     /**
      * 获取某个参数上的注解列表

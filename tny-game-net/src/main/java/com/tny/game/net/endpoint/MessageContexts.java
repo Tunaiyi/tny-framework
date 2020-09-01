@@ -1,8 +1,8 @@
 package com.tny.game.net.endpoint;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.common.reflect.*;
 import com.tny.game.common.result.*;
+import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -54,7 +54,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> push(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
-               .setBody(body);
+                .setBody(body);
         return context;
     }
 
@@ -69,7 +69,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> push(Protocol protocol, ResultCode code, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, code)
-               .setBody(body);
+                .setBody(body);
         return context;
     }
 
@@ -95,7 +95,7 @@ public class MessageContexts {
     public static <UID> RequestContext<UID> request(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-               .setBody(body);
+                .setBody(body);
         return context;
     }
 
@@ -104,13 +104,13 @@ public class MessageContexts {
      *
      * @param protocol      协议号
      * @param requestParams 请求参数, Body 转为 List
-     * @param <UID>
+     * @param <UID>         ID
      * @return 创建的消息上下文
      */
     public static <UID> RequestContext<UID> requestParams(Protocol protocol, Object... requestParams) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-               .setBody(Arrays.asList(requestParams));
+                .setBody(Arrays.asList(requestParams));
         return context;
     }
 
@@ -150,7 +150,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> respond(Protocol protocol, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
-               .setBody(body);
+                .setBody(body);
         return context;
     }
 
@@ -166,7 +166,7 @@ public class MessageContexts {
     public static <UID> MessageContext<UID> respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, code, toMessage)
-               .setBody(body);
+                .setBody(body);
         return context;
     }
 
@@ -221,7 +221,6 @@ public class MessageContexts {
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
         private volatile WriteMessagePromise writePromise;
-
 
         private DefaultMessageContext() {
         }
@@ -297,8 +296,9 @@ public class MessageContexts {
 
         @Override
         public RequestContext<UID> setBody(Object body) {
-            if (this.body != null)
+            if (this.body != null) {
                 throw new IllegalArgumentException("body is exist");
+            }
             this.body = body;
             return this;
         }
@@ -308,7 +308,6 @@ public class MessageContexts {
             this.tail = tail;
             return this;
         }
-
 
         @Override
         public long getWriteTimeout() {
@@ -336,24 +335,29 @@ public class MessageContexts {
 
         @Override
         public void cancel(boolean mayInterruptIfRunning) {
-            if (this.writePromise != null && !this.writePromise.isDone())
+            if (this.writePromise != null && !this.writePromise.isDone()) {
                 this.writePromise.cancel(true);
-            if (this.respondFuture != null && !this.respondFuture.isDone())
+            }
+            if (this.respondFuture != null && !this.respondFuture.isDone()) {
                 this.respondFuture.cancel(true);
+            }
         }
 
         @Override
         public void fail(Throwable throwable) {
-            if (this.writePromise != null && !this.writePromise.isDone())
+            if (this.writePromise != null && !this.writePromise.isDone()) {
                 this.writePromise.failed(throwable);
-            if (this.respondFuture != null && !this.respondFuture.isDone())
+            }
+            if (this.respondFuture != null && !this.respondFuture.isDone()) {
                 this.respondFuture.completeExceptionally(throwable);
+            }
         }
 
         @Override
         public RequestContext<UID> willResponseFuture(long timeoutMills) {
-            if (this.mode == MessageMode.REQUEST)
+            if (this.mode == MessageMode.REQUEST) {
                 this.respondTimeout = timeoutMills;
+            }
             return this;
         }
 
@@ -444,7 +448,6 @@ public class MessageContexts {
             return this.writePromise;
         }
 
-
         // @Override
         // public Object getBody() {
         //     return body;
@@ -468,17 +471,18 @@ public class MessageContexts {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("protocol", this.protocol)
-                              .add("mode", this.mode)
-                              .add("toMessage", this.toMessage)
-                              .add("code", this.code)
-                              .add("body", this.body)
-                              .add("tail", this.tail)
-                              // .add("sendFuture", sendFuture != null)
-                              .add("respondFuture", this.respondFuture != null)
-                              .add("writeFuture", this.writePromise != null)
-                              .toString();
+                    .add("protocol", this.protocol)
+                    .add("mode", this.mode)
+                    .add("toMessage", this.toMessage)
+                    .add("code", this.code)
+                    .add("body", this.body)
+                    .add("tail", this.tail)
+                    // .add("sendFuture", sendFuture != null)
+                    .add("respondFuture", this.respondFuture != null)
+                    .add("writeFuture", this.writePromise != null)
+                    .toString();
         }
 
     }
+
 }

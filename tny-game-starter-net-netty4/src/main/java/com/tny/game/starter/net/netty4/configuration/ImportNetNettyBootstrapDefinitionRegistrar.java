@@ -1,6 +1,6 @@
 package com.tny.game.starter.net.netty4.configuration;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.configuration.*;
 import com.tny.game.net.netty4.*;
@@ -18,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.starter.common.initiator.EnvironmentAide.*;
+import static com.tny.game.starter.common.environment.EnvironmentAide.*;
 import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
@@ -42,14 +42,13 @@ public class ImportNetNettyBootstrapDefinitionRegistrar implements ImportBeanDef
         if (!registry.containsBeanDefinition(APP_CONTEXT_BEAN_NAME)) {
             registry.registerBeanDefinition(APP_CONTEXT_BEAN_NAME,
                     BeanDefinitionBuilder.genericBeanDefinition(DefaultAppContext.class, () -> Binder.get(this.environment)
-                                                                                                     .bind(APP_KEY, DefaultAppContext.class)
-                                                                                                     .get())
-                                         .getBeanDefinition());
+                            .bind(APP_KEY, DefaultAppContext.class)
+                            .get())
+                            .getBeanDefinition());
         }
         this.registerNetBeanDefinitions(NetType.SERVER, registry);
         this.registerNetBeanDefinitions(NetType.CLIENT, registry);
     }
-
 
     public void registerNetBeanDefinitions(NetType netType, BeanDefinitionRegistry registry) {
         Set<String> netNames = getNetNames(netType);
@@ -66,9 +65,9 @@ public class ImportNetNettyBootstrapDefinitionRegistrar implements ImportBeanDef
             registry.registerBeanDefinition(settingName,
                     BeanDefinitionBuilder.genericBeanDefinition(settingClass,
                             () -> Binder.get(this.environment)
-                                        .bind(appHead, Bindable.ofInstance(setting))
-                                        .orElse(setting))
-                                         .getBeanDefinition());
+                                    .bind(appHead, Bindable.ofInstance(setting))
+                                    .orElse(setting))
+                            .getBeanDefinition());
 
             // ================================ v1 Packet ================================
             // Encoder 编码
@@ -77,57 +76,57 @@ public class ImportNetNettyBootstrapDefinitionRegistrar implements ImportBeanDef
             registry.registerBeanDefinition(encoderConfigName,
                     BeanDefinitionBuilder.genericBeanDefinition(SuitDataPacketV1Config.class,
                             () -> Binder.get(this.environment)
-                                        .bind(encoderHead, SuitDataPacketV1Config.class)
-                                        .orElseGet(SuitDataPacketV1Config::new))
-                                         .getBeanDefinition());
+                                    .bind(encoderHead, SuitDataPacketV1Config.class)
+                                    .orElseGet(SuitDataPacketV1Config::new))
+                            .getBeanDefinition());
             String encoderName = netName + DataPacketEncoder.class.getSimpleName();
             registry.registerBeanDefinition(encoderName,
                     BeanDefinitionBuilder.genericBeanDefinition(DataPacketV1Encoder.class)
-                                         .addConstructorArgReference(encoderConfigName)
-                                         .getBeanDefinition());
+                            .addConstructorArgReference(encoderConfigName)
+                            .getBeanDefinition());
             // Decoder 解码
             String decoderConfigName = netName + "Decoder" + SuitDataPacketV1Config.class.getSimpleName();
             registry.registerBeanDefinition(decoderConfigName,
                     BeanDefinitionBuilder.genericBeanDefinition(SuitDataPacketV1Config.class,
                             () -> Binder.get(this.environment)
-                                        .bind(decoderHead, SuitDataPacketV1Config.class)
-                                        .orElseGet(SuitDataPacketV1Config::new))
-                                         .getBeanDefinition());
+                                    .bind(decoderHead, SuitDataPacketV1Config.class)
+                                    .orElseGet(SuitDataPacketV1Config::new))
+                            .getBeanDefinition());
             String decoderName = netName + DataPacketDecoder.class.getSimpleName();
             registry.registerBeanDefinition(decoderName,
                     BeanDefinitionBuilder.genericBeanDefinition(DataPacketV1Decoder.class)
-                                         .addConstructorArgReference(decoderConfigName)
-                                         .getBeanDefinition());
+                            .addConstructorArgReference(decoderConfigName)
+                            .getBeanDefinition());
             // ===========================================================================
             // ChannelMaker 解码
             String channelMakerHead = key(appHead, NET_CHANNEL_NODE);
             String channelMakerClassName = this.environment.getProperty(key(channelMakerHead, CLASS_NODE), ReadTimeoutChannelMaker.class.getName());
             Class<Object> channelMakerClass = as(ExeAide.callUnchecked(() -> Class.forName(channelMakerClassName))
-                                                        .orElse(null));
+                    .orElse(null));
             String channelMaker = netName + ChannelMaker.class.getSimpleName();
             registry.registerBeanDefinition(channelMaker,
                     BeanDefinitionBuilder.genericBeanDefinition(channelMakerClass,
                             () -> Binder.get(this.environment)
-                                        .bind(channelMakerHead, channelMakerClass)
-                                        .orElseGet(() -> ExeAide.callUnchecked(channelMakerClass::newInstance)))
-                                         .addPropertyReference("encoder", encoderName)
-                                         .addPropertyReference("decoder", decoderName)
-                                         .getBeanDefinition());
+                                    .bind(channelMakerHead, channelMakerClass)
+                                    .orElseGet(() -> ExeAide.callUnchecked(channelMakerClass::newInstance)))
+                            .addPropertyReference("encoder", encoderName)
+                            .addPropertyReference("decoder", decoderName)
+                            .getBeanDefinition());
 
             switch (netType) {
                 case SERVER:
                     // String serverName = netName + ServerGuide.class.getSimpleName();
                     registry.registerBeanDefinition(appHead,
                             BeanDefinitionBuilder.genericBeanDefinition(NettyServerGuide.class)
-                                                 .addConstructorArgReference(settingName)
-                                                 .getBeanDefinition());
+                                    .addConstructorArgReference(settingName)
+                                    .getBeanDefinition());
                     break;
                 case CLIENT:
                     // String clientName = netName + ClientGuide.class.getSimpleName();
                     registry.registerBeanDefinition(appHead,
                             BeanDefinitionBuilder.genericBeanDefinition(NettyClientGuide.class)
-                                                 .addConstructorArgReference(settingName)
-                                                 .getBeanDefinition());
+                                    .addConstructorArgReference(settingName)
+                                    .getBeanDefinition());
                     break;
             }
         }
@@ -138,4 +137,5 @@ public class ImportNetNettyBootstrapDefinitionRegistrar implements ImportBeanDef
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
 }

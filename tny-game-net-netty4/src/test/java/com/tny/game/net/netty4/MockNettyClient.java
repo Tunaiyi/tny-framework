@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.common.utils.*;
+import com.tny.game.common.url.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 
@@ -45,7 +45,7 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
 
     @Override
     public URL getUrl() {
-        return url;
+        return this.url;
     }
 
 }
