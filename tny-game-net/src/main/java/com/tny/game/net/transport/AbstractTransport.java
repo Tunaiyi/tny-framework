@@ -1,7 +1,7 @@
 // package com.tny.game.net.transport;
 //
-// import com.tny.game.com.tny.game.common.context.*;
-// import com.tny.game.com.tny.game.common.event.BindVoidEventBus;
+// import com.tny.game.common.context.*;
+// import com.tny.game.common.event.BindVoidEventBus;
 // import com.tny.game.net.base.NetResultCode;
 // import com.tny.game.net.exception.*;
 // import com.tny.game.net.message.*;
@@ -11,7 +11,7 @@
 // import java.util.Objects;
 // import java.util.function.Consumer;
 //
-// import static com.tny.game.com.tny.game.common.utils.StringAide.*;
+// import static com.tny.game.common.utils.StringAide.*;
 //
 // /**
 //  * 抽象通道

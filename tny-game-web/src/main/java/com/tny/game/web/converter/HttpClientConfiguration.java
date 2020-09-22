@@ -31,8 +31,8 @@ import java.util.concurrent.*;
 @Profile({"web.client"})
 public class HttpClientConfiguration {
 
-    private static final String HTTP_PROXY_HOST = "tny.com.tny.game.common.http_client.proxy.host";
-    private static final String HTTP_PROXY_PORT = "tny.com.tny.game.common.http_client.proxy.port";
+    private static final String HTTP_PROXY_HOST = "tny.common.http_client.proxy.host";
+    private static final String HTTP_PROXY_PORT = "tny.common.http_client.proxy.port";
 
     private final ScheduledExecutorService idleConnectionMonitor = Executors.newSingleThreadScheduledExecutor(
             new CoreThreadFactory("IdleConnectionMonitor", true));

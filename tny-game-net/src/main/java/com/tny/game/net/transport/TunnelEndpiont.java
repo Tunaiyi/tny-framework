@@ -1,6 +1,6 @@
 // package com.tny.game.net.transport;
 //
-// import com.tny.game.com.tny.game.common.context.Attributes;
+// import com.tny.game.common.context.Attributes;
 // import com.tny.game.net.base.NetLogger;
 // import com.tny.game.net.exception.NetException;
 // import com.tny.game.net.message.*;
@@ -9,7 +9,7 @@
 // import java.net.InetSocketAddress;
 // import java.rmi.server.UID;
 //
-// import static com.tny.game.com.tny.game.common.utils.ObjectAide.*;
+// import static com.tny.game.common.utils.ObjectAide.*;
 //
 // /**
 //  * <p>

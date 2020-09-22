@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory {
 
-    // private static final String CACHED_KEY = "tny.com.tny.game.common.expr.groovy.cached";
+    // private static final String CACHED_KEY = "tny.common.expr.groovy.cached";
 
     private ScriptEngine engine;
 

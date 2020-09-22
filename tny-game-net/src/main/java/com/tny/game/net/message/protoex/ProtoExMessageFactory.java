@@ -1,8 +1,8 @@
 // package com.tny.game.net.message.protoex;
 //
-// import com.tny.game.com.tny.game.common.unit.annotation.Unit;
+// import com.tny.game.common.unit.annotation.Unit;
 // import com.tny.game.net.message.*;
-// import com.tny.game.net.message.com.tny.game.common.CommonMessage;
+// import com.tny.game.net.message.common.CommonMessage;
 // import com.tny.game.net.transport.*;
 //
 // @Unit

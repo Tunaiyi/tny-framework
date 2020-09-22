@@ -14,7 +14,7 @@
         <appender-ref ref="stdout"/>
     </logger>
 
-    <logger name="cndw.framework.com.tny.game.common.timetask" additivity="false">
+    <logger name="cndw.framework.common.timetask" additivity="false">
         <level value="debug"/>
         <appender-ref ref="stdout"/>
     </logger>
