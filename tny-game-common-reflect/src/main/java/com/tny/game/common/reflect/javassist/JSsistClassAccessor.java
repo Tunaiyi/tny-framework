@@ -3,14 +3,13 @@ package com.tny.game.common.reflect.javassist;
 import com.tny.game.common.reflect.*;
 import org.slf4j.*;
 
-import java.lang.NoSuchMethodException;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 
 public class JSsistClassAccessor implements ClassAccessor {
 
-    private static Logger logger = LoggerFactory.getLogger("reflect");
+    private static final Logger logger = LoggerFactory.getLogger("reflect");
 
     private final Class<?> javaClass;
 

@@ -35,7 +35,7 @@ ext.libs = [
         cglib_nodep                        : "cglib:cglib-nodep:3.2.12",
         javassist                          : 'org.javassist:javassist:3.26.0-GA',
         mvel                               : "org.mvel:mvel2:2.4.5.Final",
-        groovy_all                         : "org.codehaus.groovy:groovy-all:2.5.8",
+        groovy_all                         : "org.codehaus.groovy:groovy-all:2.5.13",
         luaj                               : "org.luaj:luaj-jse:3.0.1",
 
         jackson_core                       : "com.fasterxml.jackson.core:jackson-core:${vers.jackson}",
@@ -55,7 +55,7 @@ ext.libs = [
         commons_pool2                      : 'org.apache.commons:commons-pool2:2.8.1',
         commons_jexl                       : "org.apache.commons:commons-jexl:2.1.1",
         commons_pool                       : "commons-pool:commons-pool:1.6",
-        commons_dbcp2                      : "org.apache.commons:commons-dbcp2:2.6.0",
+        commons_dbcp2                      : "org.apache.commons:commons-dbcp2:2.7.0",
 
         zookeeper                          : "org.apache.zookeeper:zookeeper:3.5.5",
 
