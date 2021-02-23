@@ -1,6 +1,5 @@
 package com.tny.game.common.utils;
 
-
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -8,7 +7,6 @@ import java.util.function.Supplier;
  * Created by Kun Yang on 16/3/9.
  */
 public class StringAide {
-
 
     private static final char DELIM_START = '{';
     private static final char ESCAPE_CHAR = '\\';
@@ -124,8 +122,9 @@ public class StringAide {
      * @return value is blank 返回 value, 否则返回elseValue
      */
     public static String ifBlankElse(String value, String elseValue) {
-        if (isBlank(value))
+        if (isBlank(value)) {
             return value;
+        }
         return elseValue;
     }
 
@@ -137,8 +136,9 @@ public class StringAide {
      * @return value is blank 返回 value, 否则返回elseValue.get()
      */
     public static String ifBlankElse(String value, Supplier<String> elseValue) {
-        if (isBlank(value))
+        if (isBlank(value)) {
             return value;
+        }
         return elseValue.get();
     }
 
@@ -150,11 +150,11 @@ public class StringAide {
      * @return value is not blank 返回 value, 否则返回elseValue
      */
     public static String ifNotBlankElse(String value, String elseValue) {
-        if (isNoneBlank(value))
+        if (isNoneBlank(value)) {
             return value;
+        }
         return elseValue;
     }
-
 
     /**
      * 如果 value is not blank 返回 value, 否则返回elseValue.get()
@@ -164,8 +164,9 @@ public class StringAide {
      * @return value is not blank 返回 value, 否则返回elseValue.get()
      */
     public static String ifNotBlankElse(String value, Supplier<String> elseValue) {
-        if (isNoneBlank(value))
+        if (isNoneBlank(value)) {
             return value;
+        }
         return elseValue.get();
     }
 
@@ -221,6 +222,72 @@ public class StringAide {
         return buffer.toString();
     }
 
+    /**
+     * Match a String against the given pattern, supporting the following simple
+     * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
+     * arbitrary number of pattern parts), as well as direct equality.
+     *
+     * @param pattern the pattern to match against
+     * @param str     the String to match
+     * @return whether the String matches the given pattern
+     */
+    public static boolean isMatch(String pattern, String str) {
+        if (pattern == null || str == null) {
+            return false;
+        }
+
+        int firstIndex = pattern.indexOf('*');
+        if (firstIndex == -1) {
+            return pattern.equals(str);
+        }
+
+        if (firstIndex == 0) {
+            if (pattern.length() == 1) {
+                return true;
+            }
+            int nextIndex = pattern.indexOf('*', 1);
+            if (nextIndex == -1) {
+                return str.endsWith(pattern.substring(1));
+            }
+            String part = pattern.substring(1, nextIndex);
+            if (part.isEmpty()) {
+                return isMatch(pattern.substring(nextIndex), str);
+            }
+            int partIndex = str.indexOf(part);
+            while (partIndex != -1) {
+                if (isMatch(pattern.substring(nextIndex), str.substring(partIndex + part.length()))) {
+                    return true;
+                }
+                partIndex = str.indexOf(part, partIndex + 1);
+            }
+            return false;
+        }
+
+        return (str.length() >= firstIndex &&
+                        pattern.substring(0, firstIndex).equals(str.substring(0, firstIndex)) &&
+                        isMatch(pattern.substring(firstIndex), str.substring(firstIndex)));
+    }
+
+    /**
+     * Match a String against the given patterns, supporting the following simple
+     * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
+     * arbitrary number of pattern parts), as well as direct equality.
+     *
+     * @param patterns the patterns to match against
+     * @param str      the String to match
+     * @return whether the String matches any of the given patterns
+     */
+    public static boolean isMatch(String[] patterns, String str) {
+        if (patterns != null) {
+            for (String pattern : patterns) {
+                if (isMatch(pattern, str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     static boolean isEscapedDelimeter(String messagePattern, int delimeterStartIndex) {
         if (delimeterStartIndex == 0) {
             return false;
@@ -244,23 +311,23 @@ public class StringAide {
             // check for primitive array types because they
             // unfortunately cannot be cast to Object[]
             if (o instanceof boolean[]) {
-                booleanArrayAppend(buff, (boolean[]) o);
+                booleanArrayAppend(buff, (boolean[])o);
             } else if (o instanceof byte[]) {
-                byteArrayAppend(buff, (byte[]) o);
+                byteArrayAppend(buff, (byte[])o);
             } else if (o instanceof char[]) {
-                charArrayAppend(buff, (char[]) o);
+                charArrayAppend(buff, (char[])o);
             } else if (o instanceof short[]) {
-                shortArrayAppend(buff, (short[]) o);
+                shortArrayAppend(buff, (short[])o);
             } else if (o instanceof int[]) {
-                intArrayAppend(buff, (int[]) o);
+                intArrayAppend(buff, (int[])o);
             } else if (o instanceof long[]) {
-                longArrayAppend(buff, (long[]) o);
+                longArrayAppend(buff, (long[])o);
             } else if (o instanceof float[]) {
-                floatArrayAppend(buff, (float[]) o);
+                floatArrayAppend(buff, (float[])o);
             } else if (o instanceof double[]) {
-                doubleArrayAppend(buff, (double[]) o);
+                doubleArrayAppend(buff, (double[])o);
             } else {
-                objectArrayAppend(buff, (Object[]) o, seenMap);
+                objectArrayAppend(buff, (Object[])o, seenMap);
             }
         }
     }
@@ -272,7 +339,7 @@ public class StringAide {
         } catch (Throwable t) {
             System.err
                     .println("SLF4J: Failed toString() invocation on an object of type ["
-                             + o.getClass().getName() + "]");
+                            + o.getClass().getName() + "]");
             t.printStackTrace();
             sbuf.append("[FAILED toString()]");
         }
@@ -286,8 +353,9 @@ public class StringAide {
             final int len = a.length;
             for (int i = 0; i < len; i++) {
                 deeplyAppendParameter(sbuf, a[i], seenMap);
-                if (i != len - 1)
+                if (i != len - 1) {
                     sbuf.append(", ");
+                }
             }
             // allow repeats in siblings
             seenMap.remove(a);
@@ -302,8 +370,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -313,8 +382,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -324,8 +394,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -335,8 +406,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -346,8 +418,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -357,8 +430,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -368,8 +442,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
@@ -379,8 +454,9 @@ public class StringAide {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
             sbuf.append(a[i]);
-            if (i != len - 1)
+            if (i != len - 1) {
                 sbuf.append(", ");
+            }
         }
         sbuf.append(']');
     }
