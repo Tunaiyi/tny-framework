@@ -23,7 +23,7 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, TextLength annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message message, int index, TextLength annotation,
             String param) {
         if (param == null) {
             return code(NetResultCode.ILLEGAL_PARAMETERS, annotation.illegalCode());
@@ -32,7 +32,7 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
         if (length < annotation.low() || annotation.high() < length) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串长度超过 {} - {} 范围",
-                    message.getUserId(), head.getId(),
+                    tunnel.getUserId(), head.getId(),
                     index, param, annotation.low(), annotation.high());
             return code(NetResultCode.ILLEGAL_PARAMETERS, annotation.illegalCode());
         }

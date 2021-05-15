@@ -31,11 +31,11 @@ public class AppLifecycleProcessor {
     private static final Map<Lifecycle<?, ?>, List<LifecycleHandler>> HANDLER_MAP = new HashMap<>();
 
     public void onStaticInit(Collection<String> paths) {
-        RunningChecker.start(this.getClass());
+        RunChecker.trace(this.getClass());
         LOGGER.info("开始初始化 Class Scan ...");
         ClassScanner.instance()
                 .scan(paths);
-        LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunningChecker.end(this.getClass()).cost());
+        LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costTime());
         for (StaticInitiator Initiator : LifecycleLoader.getStaticInitiators()) {
             Class<?> c = Initiator.getInitiatorClass();
             int number = 0;

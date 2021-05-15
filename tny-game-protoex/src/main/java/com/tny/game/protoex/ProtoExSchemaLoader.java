@@ -20,7 +20,6 @@ public final class ProtoExSchemaLoader {
             .instance(AnnotationClassFilter.ofInclude(ProtoEx.class))
             .setHandler(ProtoExSchemaLoader::loadClasses);
 
-
     @ClassSelectorProvider
     protected static ClassSelector selector() {
         return selector;
@@ -33,7 +32,7 @@ public final class ProtoExSchemaLoader {
         LOGGER.info("启动初始化ProtoSchema任务!");
         // forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
         Class<?> clazz;
-        RunningChecker.start(ProtoExSchemaLoader.class);
+        RunChecker.trace(ProtoExSchemaLoader.class);
         LOGGER.info("开始初始化 ProtoSchema .......");
         Map<Integer, Class<?>> classMap = new HashMap<>();
         for (Class<?> cl : classes) {
@@ -47,9 +46,8 @@ public final class ProtoExSchemaLoader {
                 throw new IllegalArgumentException(format("{} protoID 与 {} protoID 都为 {}", clazz, old, schema.getProtoExId()));
             }
         }
-        LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunningChecker.end(ProtoExSchemaLoader.class).cost());
+        LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunChecker.end(ProtoExSchemaLoader.class).costTime());
         selector.clear();
     }
-
 
 }

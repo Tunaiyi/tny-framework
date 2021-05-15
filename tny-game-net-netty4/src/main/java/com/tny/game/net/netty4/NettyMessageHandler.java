@@ -13,6 +13,7 @@ import java.nio.channels.ClosedChannelException;
 import java.util.Date;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.net.base.NetLogger.*;
 
 /**
  * 游戏请求处理器. 负责获取请求并将请求传给分发器
@@ -64,10 +65,13 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         }
         if (object instanceof NetMessage) {
             try {
-                NetMessage<Object> message = as(object);
+                NetMessage message = as(object);
+                traceDone(NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR, message);
+                trace(NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR, message);
                 NetTunnel<Object> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
-                if (tunnel != null)
+                if (tunnel != null) {
                     tunnel.receive(message);
+                }
             } catch (Throwable ex) {
                 LOG.error("#GameServerHandler#接受请求异常", ex);
             }
@@ -84,12 +88,14 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         Channel channel = ctx.channel();
         NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
-            if (LOG.isInfoEnabled())
+            if (LOG.isInfoEnabled()) {
                 LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
-            if (tunnel.getMode() == TunnelMode.SERVER)
+            }
+            if (tunnel.getMode() == TunnelMode.SERVER) {
                 tunnel.close();
-            else
+            } else {
                 tunnel.disconnect();
+            }
         }
         super.channelInactive(ctx);
     }
@@ -97,7 +103,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent) evt;
+            IdleStateEvent event = (IdleStateEvent)evt;
             Channel channel = ctx.channel();
             Tunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
             if (tunnel != null) {

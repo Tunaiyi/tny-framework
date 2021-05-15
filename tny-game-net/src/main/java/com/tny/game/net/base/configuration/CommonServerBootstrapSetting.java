@@ -1,6 +1,5 @@
 package com.tny.game.net.base.configuration;
 
-
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.base.*;
 import org.apache.commons.lang3.StringUtils;
@@ -16,13 +15,13 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
     public CommonServerBootstrapSetting() {
     }
 
-    public CommonServerBootstrapSetting(AppContext appContext) {
+    public CommonServerBootstrapSetting(NetAppContext appContext) {
         super(appContext);
     }
 
     @Override
     public Collection<InetSocketAddress> getBindAddresses() {
-        return bindAddresses;
+        return this.bindAddresses;
     }
 
     public CommonServerBootstrapSetting setBindAddresses(Collection<InetSocketAddress> bindAddresses) {

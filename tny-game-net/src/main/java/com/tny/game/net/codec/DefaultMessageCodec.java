@@ -2,6 +2,7 @@ package com.tny.game.net.codec;
 
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.common.utils.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.coder.*;
 import com.tny.game.net.message.common.*;
@@ -9,67 +10,70 @@ import com.tny.game.protoex.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.MessageType.*;
-import static com.tny.game.net.message.coder.CodecContent.*;
+import static com.tny.game.net.message.coder.CodecConstants.*;
 
 @Unit
 public class DefaultMessageCodec<UID> implements MessageCodec<UID> {
 
     private final Codec<?> bodyCoder;
-    private final Codec<?> tailCoder;
+    //    private final Codec<?> tailCoder;
     private final DecodeStrategy bodyDecodeStrategy;
 
     public DefaultMessageCodec(Codec<?> bodyCoder, Codec<?> tailCoder, DecodeStrategy bodyDecodeStrategy) {
         this.bodyCoder = bodyCoder;
-        this.tailCoder = tailCoder;
+        //        this.tailCoder = tailCoder;
         this.bodyDecodeStrategy = ObjectAide.ifNull(bodyDecodeStrategy, DecodeStrategy.DECODE_ALL_STRATEGY);
     }
 
     @Override
-    public Message<UID> decode(byte[] bytes, MessageFactory<UID> messageFactory) throws Exception {
+    public Message decode(byte[] bytes, MessageFactory<UID> messageFactory) throws Exception {
         ProtoExInputStream stream = new ProtoExInputStream(bytes);
         long id = stream.readLong();
         byte option = stream.getBuffer().get();
-        MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & HEAD_OPTION_MODE_MASK));
+        MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & MESSAGE_HEAD_OPTION_MODE_MASK));
         int protocol = stream.readInt();
         int code = stream.readInt();
         long toMessage = stream.readLong();
         long time = stream.readLong();
         Object body = null;
-        Object tail = null;
+        //        Object tail = null;
         byte[] bodyBytes = null;
 
-        if (CodecContent.isOption(option, HEAD_OPTION_EXIST_BODY)) {
+        if (CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY)) {
             bodyBytes = stream.readBytes();
         }
-        if (CodecContent.isOption(option, HEAD_OPTION_EXIST_TAIL)) {
-            byte[] tailBytes = stream.readBytes();
-            tail = this.tailCoder.decode(tailBytes);
-        }
-        CommonMessageHead head = new CommonMessageHead(id, mode, protocol, code, toMessage, time);
+
+        int line = (byte)(option & MESSAGE_HEAD_OPTION_LINE_MASK);
+        CommonMessageHead head = new CommonMessageHead(id, mode, line, protocol, code, toMessage, time);
         if (bodyBytes != null) {
-            if (this.bodyDecodeStrategy.isNeedDecode(head, tail)) {
+            if (this.bodyDecodeStrategy.isNeedDecode(head)) {
                 body = this.bodyCoder.decode(bodyBytes);
             } else {
                 body = new BodyBytes(bodyBytes);
             }
         }
-        return messageFactory.create(head, body, tail);
+        return messageFactory.create(head, body);
     }
 
     @Override
-    public byte[] encode(Message<UID> message) throws Exception {
+    public byte[] encode(Message message) throws Exception {
         if (message.getMode().getType() != MESSAGE) {
             return new byte[0];
         }
         ProtoExOutputStream stream = new ProtoExOutputStream(256, 128);
         stream.writeLong(message.getId());
-        MessageMode mode = message.getMode();
-        byte option = mode.getOption();
-        option = (byte)(option | (message.existBody() ? CodecContent.HEAD_OPTION_EXIST_BODY : (byte)0));
-        option = (byte)(option | (message.existTail() ? CodecContent.HEAD_OPTION_EXIST_TAIL : (byte)0));
-        stream.getByteBuffer().write(option);
         MessageHead head = message.getHead();
-        stream.writeInt(message.getProtocolNumber());
+        MessageMode mode = head.getMode();
+        byte option = mode.getOption();
+        option = (byte)(option | (message.existBody() ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_BODY : (byte)0));
+        int line = head.getLine();
+        if (line < MESSAGE_HEAD_OPTION_LINE_MIN_VALUE || line > MESSAGE_HEAD_OPTION_LINE_MAX_VALUE) {
+            throw CodecException.causeEncode("line is {}. line must {} <= line <= {}", line,
+                    MESSAGE_HEAD_OPTION_LINE_MIN_VALUE, MESSAGE_HEAD_OPTION_LINE_MAX_VALUE);
+        }
+        option = (byte)(option | line << MESSAGE_HEAD_OPTION_LINE_SHIFT);
+        stream.getByteBuffer().write(option);
+        stream.writeInt(head.getProtocolId());
         stream.writeInt(head.getCode());
         stream.writeLong(head.getToMessage());
         stream.writeLong(head.getTime());
@@ -77,10 +81,10 @@ public class DefaultMessageCodec<UID> implements MessageCodec<UID> {
             Object body = message.getBody(Object.class);
             writeObject(stream, body, this.bodyCoder);
         }
-        if (message.existTail()) {
-            Object tail = message.getTail(Object.class);
-            writeObject(stream, tail, this.tailCoder);
-        }
+        //        if (message.existTail()) {
+        //            Object tail = message.getTail(Object.class);
+        //            writeObject(stream, tail, this.tailCoder);
+        //        }
         return stream.toByteArray();
     }
 

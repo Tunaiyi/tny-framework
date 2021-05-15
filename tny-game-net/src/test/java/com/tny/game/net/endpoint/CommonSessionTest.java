@@ -2,14 +2,13 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.net.transport.*;
 
-
 /**
  * Created by Kun Yang on 2018/8/12.
  */
 public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
     @Override
-    protected CommonSession<Long> newEndpoint(int cacheSize, MockEndpointEventHandler<CommonSession<Long>> handler) {
+    protected CommonSession<Long> newEndpoint(int cacheSize, MockEndpointEventsBoxHandler<CommonSession<Long>> handler) {
         return new CommonSession<>(handler, cacheSize);
     }
 

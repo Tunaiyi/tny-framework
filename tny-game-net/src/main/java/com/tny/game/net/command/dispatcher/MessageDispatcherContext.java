@@ -5,10 +5,8 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.command.plugins.*;
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * <p>
@@ -22,15 +20,7 @@ public interface MessageDispatcherContext {
     /**
      * @return 获取应用配置
      */
-    AppContext getAppContext();
-
-    /**
-     * 获取 ControllerHolder
-     *
-     * @param object 协议 ID
-     * @return 返回 ControllerHolder
-     */
-    MethodControllerHolder getController(Object object, MessageMode mode);
+    NetAppContext getAppContext();
 
     /**
      * 获取插件
@@ -48,14 +38,14 @@ public interface MessageDispatcherContext {
      */
     AuthenticateValidator<?> getValidator(Object protocol, Class<? extends AuthenticateValidator<?>> validatorClass);
 
-    /**
-     * @return 获取所有监听器
-     */
-    List<DispatchCommandListener> getDispatchListeners();
+    Collection<MessageCommandListener> getCommandListener();
 
-    /**
-     * @return 获取 endpoint
-     */
-    EndpointKeeperManager getEndpointKeeperManager();
+    void addCommandListener(MessageCommandListener listener);
+
+    void addCommandListener(Collection<MessageCommandListener> listeners);
+
+    void removeCommandListener(MessageCommandListener listener);
+
+    void clearCommandListeners();
 
 }

@@ -27,11 +27,11 @@ public enum SessionPushOption {
     private boolean throwable;
 
     public boolean isPush() {
-        return push;
+        return this.push;
     }
 
     public boolean isThrowable() {
-        return throwable;
+        return this.throwable;
     }
 
     /**
@@ -44,7 +44,7 @@ public enum SessionPushOption {
          *
          * @param message 消息
          */
-        boolean receive(Message<UID> message);
+        boolean receive(Message message);
 
     }
 }

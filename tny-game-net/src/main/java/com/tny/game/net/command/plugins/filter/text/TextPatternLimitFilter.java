@@ -39,12 +39,12 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, PatternMatch annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message message, int index, PatternMatch annotation,
             String param) {
         if (!this.getPattern(annotation.value()).matcher(param).matches()) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    message.getUserId(), head.getId(),
+                    tunnel.getUserId(), head.getId(),
                     index, param, annotation.value());
             return code(NetResultCode.ILLEGAL_PARAMETERS, annotation.illegalCode());
         }

@@ -15,6 +15,6 @@ public interface Receiver<UID> {
      *
      * @param message 消息
      */
-    boolean receive(Message<UID> message);
+    boolean receive(Message message);
 
 }

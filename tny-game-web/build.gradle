@@ -4,7 +4,7 @@ apply plugin: "maven"
 
 dependencies {
 
-    compileOnly libs.'javaee'
+    compileOnlyApi libs.'javaee'
 
     api libs.aspectjrt
     api libs.spring_webmvc

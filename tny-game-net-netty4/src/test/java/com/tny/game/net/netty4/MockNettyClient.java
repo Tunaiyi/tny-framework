@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 
@@ -24,7 +25,7 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
     }
 
     @Override
-    public boolean getInitConnectAsyn() {
+    public boolean isAsyncConnect() {
         return false;
     }
 
@@ -34,18 +35,38 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
     }
 
     @Override
-    public void reconnectTunnel(NettyTerminalTunnel<Long> tunnel) {
+    public int getConnectRetryTimes() {
+        return 0;
+    }
+
+    @Override
+    public long getConnectRetryInterval() {
+        return 0;
+    }
+
+    @Override
+    public void reconnect() {
 
     }
 
     @Override
-    public void connectSuccess(NettyTerminalTunnel<Long> tunnel) {
+    public void connectSuccess(NettyClientTunnel<Long> tunnel) {
 
     }
 
     @Override
     public URL getUrl() {
         return this.url;
+    }
+
+    @Override
+    public void resend(NetTunnel<Long> tunnel, long fromId, FilterBound bound) {
+
+    }
+
+    @Override
+    public void resend(NetTunnel<Long> tunnel, long fromId, long toId, FilterBound bound) {
+
     }
 
 }

@@ -1,14 +1,14 @@
 package com.tny.game.common.event;
 
 import org.jmock.*;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.junit5.JUnit5Mockery;
 import org.junit.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EventDispatcherTest {
 
-    private Mockery context = new JUnit4Mockery();
+    private Mockery context = new JUnit5Mockery();
 
     public class TaskEvent extends BaseEvent<Integer> {
 
@@ -21,7 +21,6 @@ public class EventDispatcherTest {
     private java.lang.String SOURCE = "Tom";
 
     private int level = 100;
-
 
     BindVoidEventBus<TestListener, String> CREATE_EVENT
             = EventBuses.of(TestListener.class, TestListener::handleCreate);

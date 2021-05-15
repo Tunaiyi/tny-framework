@@ -63,6 +63,28 @@
               "ref": "${bundle:log:log.debug.appender}"
             }
           ]
+        },
+        {
+          "name": "com.tny.game.common.runtime",
+          "includeLocation": "true",
+          "level": "DEBUG",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        },
+        {
+          "name": "coreLogger",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
         }
       ]
     },

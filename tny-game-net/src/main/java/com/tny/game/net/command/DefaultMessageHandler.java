@@ -1,5 +1,6 @@
 package com.tny.game.net.command;
 
+import com.tny.game.common.runtime.*;
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
@@ -11,6 +12,7 @@ import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.net.base.NetLogger.*;
 
 /**
  * Created by Kun Yang on 2017/3/18.
@@ -33,32 +35,40 @@ public class DefaultMessageHandler<UID> implements MessageHandler<UID> {
     }
 
     @Override
-    public void handle(NetTunnel<UID> tunnel, Message<UID> message, RespondFuture<UID> future) {
-        MessageMode mode = message.getMode();
-        if (tunnel == null)
-            return;
-        switch (mode) {
-            case PUSH:
-            case REQUEST:
-            case RESPONSE:
-                try {
-                    Command command = messageDispatcher.dispatch(tunnel, message);
-                    if (command != null)
-                        commandExecutor.submit(tunnel, command);
-                    if (future != null)
-                        commandExecutor.submit(tunnel, new RespondFutureCommand<>(message, future));
-                } catch (Throwable e) {
-                    handleException(tunnel, message, e);
-                }
+    public void handle(NetTunnel<UID> tunnel, Message message, RespondFuture<UID> future) {
+        try (ProcessTracer ignored = MESSAGE_DISPATCH_WATCHER.trace()) {
+            MessageMode mode = message.getMode();
+            if (tunnel == null) {
                 return;
-            case PING:
-                tunnel.pong();
-                return;
-            default:
+            }
+            switch (mode) {
+                case PUSH:
+                case REQUEST:
+                case RESPONSE:
+                    try {
+                        Command command = this.messageDispatcher.dispatch(tunnel, message);
+                        trace(MSG_DISPATCH_TO_EXECUTE_ATTR, message);
+                        if (command != null) {
+                            this.commandExecutor.submit(tunnel, command);
+                        }
+                        if (future != null) {
+                            this.commandExecutor.submit(tunnel, new RespondFutureCommand<>(message, future));
+                        }
+                    } catch (Throwable e) {
+                        handleException(tunnel, message, e);
+                    }
+                    return;
+                case PING:
+                    tunnel.pong();
+                    return;
+                default:
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private void handleException(NetTunnel<UID> tunnel, Message<UID> message, Throwable e) {
+    private void handleException(NetTunnel<UID> tunnel, Message message, Throwable e) {
         if (message.getMode() == MessageMode.REQUEST) {
             if (e instanceof CommandException) {
                 CommandException ce = as(e);

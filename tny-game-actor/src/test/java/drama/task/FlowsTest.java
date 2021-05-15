@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.function.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**

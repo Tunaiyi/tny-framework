@@ -29,9 +29,8 @@ public abstract class AbstractNetter<UID> extends AttributesHolder implements Ne
 
     @Override
     public boolean isLogin() {
-        return this.getCertificate().isAutherized();
+        return this.getCertificate().isAuthenticated();
     }
-
 
     // protected <T> void cancelFuture(CompletableFuture<T> future) {
     //     if (future != null)

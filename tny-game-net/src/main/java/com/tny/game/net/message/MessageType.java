@@ -10,11 +10,11 @@ import com.tny.game.net.message.coder.*;
  */
 public enum MessageType {
 
-    MESSAGE(CodecContent.DATA_PACK_OPTION_MESSAGE),
+    MESSAGE(CodecConstants.DATA_PACK_OPTION_MESSAGE),
 
-    PING(CodecContent.DATA_PACK_OPTION_PING),
+    PING(CodecConstants.DATA_PACK_OPTION_PING),
 
-    PONE(CodecContent.DATA_PACK_OPTION_PONG),
+    PONE(CodecConstants.DATA_PACK_OPTION_PONG),
 
     ;
 
@@ -25,7 +25,7 @@ public enum MessageType {
     }
 
     public byte getOption() {
-        return option;
+        return this.option;
     }
 
 }

@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -96,12 +96,12 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
         assertFalse(tunnel.isAvailable());
         assertTrue(tunnel.open());
         assertTrue(tunnel.isAvailable());
-        assertTrue(tunnel.isAlive());
+        assertTrue(tunnel.isActive());
 
         // 重复开启
         assertTrue(tunnel.open());
         assertTrue(tunnel.isAvailable());
-        assertTrue(tunnel.isAlive());
+        assertTrue(tunnel.isActive());
 
         // 关闭再打开
         tunnel = createBindTunnel();
@@ -109,7 +109,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
         assertFalse(tunnel.open());
         assertTrue(tunnel.isClosed());
         assertFalse(tunnel.isAvailable());
-        assertFalse(tunnel.isAlive());
+        assertFalse(tunnel.isActive());
 
         // 断开再打开
         tunnel = createTunnel(createLoginCert(), true);
@@ -118,12 +118,12 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
             assertFalse(tunnel.open());
             assertFalse(tunnel.isClosed());
             assertFalse(tunnel.isAvailable());
-            assertFalse(tunnel.isAlive());
+            assertFalse(tunnel.isActive());
         } else {
             assertTrue(tunnel.open());
             assertFalse(tunnel.isClosed());
             assertTrue(tunnel.isAvailable());
-            assertTrue(tunnel.isAlive());
+            assertTrue(tunnel.isActive());
         }
     }
 
@@ -134,15 +134,15 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
         // 正常开启
         tunnel = createBindTunnel();
         assertTrue(tunnel.isAvailable());
-        assertTrue(tunnel.isAlive());
+        assertTrue(tunnel.isActive());
         tunnel.disconnect();
         assertFalse(tunnel.isAvailable());
-        assertFalse(tunnel.isAlive());
+        assertFalse(tunnel.isActive());
 
         // 重复开启
         tunnel.disconnect();
         assertFalse(tunnel.isAvailable());
-        assertFalse(tunnel.isAlive());
+        assertFalse(tunnel.isActive());
 
     }
 
@@ -377,10 +377,9 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
         EmbeddedChannel channel = embeddedChannel(tunnel);
         assertEquals(times, channel.outboundMessages().size());
         for (Object value : channel.outboundMessages()) {
-            assertTrue(value instanceof DetectMessage);
-            assertEquals(mode, Objects.requireNonNull(as(value, DetectMessage.class)).getMode());
+            assertTrue(value instanceof TickMessage);
+            assertEquals(mode, Objects.requireNonNull(as(value, TickMessage.class)).getMode());
         }
     }
-
 
 }

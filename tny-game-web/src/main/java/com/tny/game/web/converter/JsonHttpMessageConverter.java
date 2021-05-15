@@ -59,34 +59,31 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
     }
 
     public JsonHttpMessageConverter(ObjectMapper objectMapper, List<MediaType> types) {
-        super();
+        super(objectMapper);
         List<MediaType> typesList = new ArrayList<>();
         typesList.add(new MediaType("application", "json", DEFAULT_CHARSET));
         typesList.add(new MediaType("application", "*+json", DEFAULT_CHARSET));
         typesList.addAll(types);
         this.setSupportedMediaTypes(typesList);
-        if (objectMapper != null)
-            this.setObjectMapper(objectMapper);
     }
-
 
     @Override
     public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
         JavaType javaType = getJavaType(type, contextClass);
-        if (!logger.isWarnEnabled()) {
-            return (this.objectMapper.canDeserialize(javaType) && canRead(mediaType));
+        if (!this.logger.isWarnEnabled()) {
+            return (this.getObjectMapper().canDeserialize(javaType) && canRead(mediaType));
         }
         AtomicReference<Throwable> causeRef = new AtomicReference<>();
-        if (this.objectMapper.canDeserialize(javaType, causeRef) && canRead(mediaType)) {
+        if (this.getObjectMapper().canDeserialize(javaType, causeRef) && canRead(mediaType)) {
             return true;
         }
         Throwable cause = causeRef.get();
         if (cause != null) {
             String msg = "Failed to evaluate deserialization for type " + javaType;
-            if (logger.isDebugEnabled()) {
-                logger.warn(msg, cause);
+            if (this.logger.isDebugEnabled()) {
+                this.logger.warn(msg, cause);
             } else {
-                logger.warn(msg + ": " + cause);
+                this.logger.warn(msg + ": " + cause);
             }
         }
         return false;
@@ -94,20 +91,20 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        if (!logger.isWarnEnabled()) {
-            return (this.objectMapper.canSerialize(clazz) && canWrite(mediaType));
+        if (!this.logger.isWarnEnabled()) {
+            return (this.getObjectMapper().canSerialize(clazz) && canWrite(mediaType));
         }
         AtomicReference<Throwable> causeRef = new AtomicReference<>();
-        if (this.objectMapper.canSerialize(clazz, causeRef) && canWrite(mediaType)) {
+        if (this.getObjectMapper().canSerialize(clazz, causeRef) && canWrite(mediaType)) {
             return true;
         }
         Throwable cause = causeRef.get();
         if (cause != null) {
             String msg = "Failed to evaluate serialization for type [" + clazz + "]";
-            if (logger.isDebugEnabled()) {
-                logger.warn(msg, cause);
+            if (this.logger.isDebugEnabled()) {
+                this.logger.warn(msg, cause);
             } else {
-                logger.warn(msg + ": " + cause);
+                this.logger.warn(msg + ": " + cause);
             }
         }
         return false;
@@ -124,18 +121,19 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
         try {
             if (javaType.getRawClass() == String.class) {
                 List<String> lines = IOUtils.readLines(inputMessage.getBody());
-                if (lines.size() == 1)
+                if (lines.size() == 1) {
                     return lines.get(0);
+                }
                 StringBuilder builder = new StringBuilder();
                 for (String line : lines)
                     builder.append(line);
                 return builder.toString();
             } else if (inputMessage instanceof MappingJacksonInputMessage) {
-                Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
+                Class<?> deserializationView = ((MappingJacksonInputMessage)inputMessage).getDeserializationView();
                 if (deserializationView != null) {
-                    return this.objectMapper.readerWithView(deserializationView)
-                                            .withType(javaType)
-                                            .readValue(inputMessage.getBody());
+                    return this.getObjectMapper().readerWithView(deserializationView)
+                            .withType(javaType)
+                            .readValue(inputMessage.getBody());
                 }
             }
             return this.getObjectMapper().readValue(inputMessage.getBody(), javaType);
@@ -150,7 +148,7 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
             IOUtils.write(object.toString(), outputMessage.getBody());
         } else {
             JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders().getContentType());
-            JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(), encoding);
+            JsonGenerator generator = this.getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding);
             try {
                 writePrefix(generator, object);
 
@@ -159,7 +157,7 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                 Object value = object;
                 JavaType javaType = null;
                 if (object instanceof MappingJacksonValue) {
-                    MappingJacksonValue container = (MappingJacksonValue) object;
+                    MappingJacksonValue container = (MappingJacksonValue)object;
                     value = container.getValue();
                     serializationView = container.getSerializationView();
                     filters = container.getFilters();
@@ -169,11 +167,11 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                 }
                 ObjectWriter objectWriter;
                 if (serializationView != null) {
-                    objectWriter = this.objectMapper.writerWithView(serializationView);
+                    objectWriter = this.getObjectMapper().writerWithView(serializationView);
                 } else if (filters != null) {
-                    objectWriter = this.objectMapper.writer(filters);
+                    objectWriter = this.getObjectMapper().writer(filters);
                 } else {
-                    objectWriter = this.objectMapper.writer();
+                    objectWriter = this.getObjectMapper().writer();
                 }
                 if (javaType != null && javaType.isContainerType()) {
                     objectWriter = objectWriter.forType(javaType);
@@ -206,13 +204,12 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
         //		}
     }
 
-
     @Override
     protected JavaType getJavaType(Type type, Class<?> contextClass) {
-        TypeFactory typeFactory = this.objectMapper.getTypeFactory();
+        TypeFactory typeFactory = this.getObjectMapper().getTypeFactory();
         if (type instanceof TypeVariable && contextClass != null) {
             ResolvableType resolvedType = resolveVariable(
-                    (TypeVariable<?>) type, ResolvableType.forClass(contextClass));
+                    (TypeVariable<?>)type, ResolvableType.forClass(contextClass));
             if (resolvedType != ResolvableType.NONE) {
                 return typeFactory.constructType(resolvedType.resolve());
             }

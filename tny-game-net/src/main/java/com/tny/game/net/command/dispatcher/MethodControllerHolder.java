@@ -88,9 +88,10 @@ public final class MethodControllerHolder extends ControllerHolder {
                 method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
         try {
             this.classController = classController;
-            this.name = executor.getClass().getSimpleName() + "." + method.getName();
             this.method = method;
             this.executor = executor;
+            StringBuilder nameBuilder = new StringBuilder();
+            nameBuilder.append(executor.getClass().getSimpleName()).append("#").append(method.getName());
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
             List<ParamDesc> parameterDescs = new ArrayList<>();
             Annotation[][] parameterAnnotations = method.getJavaMethod().getParameterAnnotations();
@@ -101,8 +102,16 @@ public final class MethodControllerHolder extends ControllerHolder {
                     List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
                     ParamDesc paramDesc = new ParamDesc(this, paramClass, annotations, counter, exprHolderFactory);
                     parameterDescs.add(paramDesc);
+                    if (index > 0) {
+                        nameBuilder.append(", ");
+                    } else {
+                        nameBuilder.append("(");
+                    }
+                    nameBuilder.append(paramClass.getSimpleName());
                 }
             }
+            nameBuilder.append(")");
+            this.name = nameBuilder.toString();
             this.initMethodAnnotation(method.getJavaMethod().getAnnotations());
             Map<Class<?>, List<Annotation>> annotationsMap = new HashMap<>();
             Set<Class<?>> annotationClassSet = new HashSet<>();
@@ -182,7 +191,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     //     return ObjectAide.defaultIfNull(cache.putIfAbsent(formula, holder), holder);
     // }
 
-    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
+    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
         if (index >= this.parameterDescs.size()) {
             throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.parameterDescs.size()));
@@ -293,24 +302,24 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.paramAnnotationsMap.keySet();
     }
 
-    protected void invoke(NetTunnel<?> tunnel, Message<?> message, CommandContext context) throws Exception {
+    protected Object invoke(NetTunnel<?> tunnel, Message message, MessageCommandContext context) throws Exception {
         // 获取调用方法的参数类型
         Object[] param = new Object[this.getParametersSize()];
         Object body = message.getBody(Object.class);
         for (int index = 0; index < param.length; index++) {
             param[index] = this.getParameterValue(index, tunnel, message, body);
         }
-        context.setResult(this.invoke(param));
+        return this.invoke(param);
     }
 
-    protected void beforeInvoke(Tunnel<?> tunnel, Message<?> message, CommandContext context) {
+    protected void beforeInvoke(Tunnel<?> tunnel, Message message, MessageCommandContext context) {
         if (this.beforeContext == null) {
             return;
         }
         this.beforeContext.execute(tunnel, message, context);
     }
 
-    protected void afterInvoke(Tunnel<?> tunnel, Message<?> message, InvokeContext context) {
+    protected void afterInvoke(Tunnel<?> tunnel, Message message, ControllerMessageCommandContext context) {
         if (this.afterContext == null) {
             return;
         }
@@ -399,7 +408,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             }
         }
 
-        private Object getValue(NetTunnel<?> tunnel, Message<?> message, Object body) throws CommandException {
+        private Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
             boolean require = this.require;
             if (body == null) {
                 body = message.getBody(Object.class);
@@ -435,7 +444,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     value = body;
                     break;
                 case UserID:
-                    value = message.getUserId();
+                    value = tunnel.getUserId();
                     break;
                 case INDEX_PARAM:
                     try {
@@ -484,7 +493,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                     break;
             }
             if (value != null && !this.paramClass.isInstance(value)) {
-                value = ObjectAide.as(value, this.paramClass);
+                value = ObjectAide.convertTo(value, this.paramClass);
             }
             return value;
         }

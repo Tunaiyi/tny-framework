@@ -42,24 +42,27 @@ public class ControllerPluginHolder {
     private ControllerPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
         this.plugin = plugin;
         this.controller = controller;
-        if (exprHolderFactory == null)
+        if (exprHolderFactory == null) {
             exprHolderFactory = new GroovyExprHolderFactory();
-        if (attributes.equals(NULL_EXPR))
+        }
+        if (attributes.equals(NULL_EXPR)) {
             this.attributes = null;
-        else if (StringUtils.startsWith(attributes, EXPR_PREFIX))
+        } else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
             this.attributes = exprHolderFactory.create(attributes.substring(1))
-                                               .createExpr()
-                                               .execute(plugin.getAttributesClass());
-        else
+                    .createExpr()
+                    .execute(plugin.getAttributesClass());
+        } else {
             this.attributes = attributes;
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public void invokePlugin(Tunnel tunnel, Message message, CommandContext context) throws Exception {
-        if (DISPATCHER_LOG.isDebugEnabled())
+    public void invokePlugin(Tunnel tunnel, Message message, MessageCommandContext context) throws Exception {
+        if (DISPATCHER_LOG.isDebugEnabled()) {
             DISPATCHER_LOG.debug("调用 {}.{} | 触发 [{}]插件 - {}", this.controller.getControllerClass(), this.controller.getName(), this.trigger,
-                    plugin.getClass());
-        plugin.execute(tunnel, message, context, attributes);
+                    this.plugin.getClass());
+        }
+        this.plugin.execute(tunnel, message, context, this.attributes);
     }
 
 }

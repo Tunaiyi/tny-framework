@@ -3,7 +3,7 @@ package com.tny.game.net;
 import com.tny.game.common.context.*;
 import org.junit.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AttributesTest {
 

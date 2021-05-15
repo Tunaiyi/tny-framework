@@ -45,7 +45,7 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
     }
 
     @Override
-    public void doExecute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) {
+    public void doExecute(Tunnel<UID> tunnel, Message message, ControllerMessageCommandContext context) {
         MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {

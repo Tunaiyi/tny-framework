@@ -8,7 +8,7 @@ import org.junit.*;
 
 import java.util.function.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 16/1/25.

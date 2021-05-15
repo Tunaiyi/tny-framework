@@ -4,10 +4,9 @@ apply plugin: "maven"
 
 dependencies {
 
-    testImplementation project(":tny-game-cache-test")
-
-    api "junit:junit:${vers.junit}"
-    api "org.jmock:jmock-junit4:${vers.jmock}"
+//    testImplementation project(":tny-game-cache-test")
     api project(":tny-game-cache")
+    api libs.jmock_junit5
+    api libs.junit_jupiter_api
 
 }

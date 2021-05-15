@@ -1,0 +1,82 @@
+apply plugin: "maven-publish"
+
+apply from: "$rootDir/gradle/dependency.gradle"
+
+ext.RELEASE_REPOSITORY_URL = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : ""
+ext.SNAPSHOT_REPOSITORY_URL = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : ""
+ext.NEXUS_USERNAME = hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ""
+ext.NEXUS_PASSWORD = hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
+
+publishing {
+
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                afterEvaluate {
+                    name = project.description
+                    description = project.description
+                }
+                organization {
+                    name = "Indra Soft"
+                }
+                licenses {
+                    license {
+                        name = "Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0"
+                        distribution = "repo"
+                    }
+                }
+//                scm {
+//                    url = "https://github.com/spring-projects/spring-framework"
+//                    connection = "scm:git:git://github.com/spring-projects/spring-framework"
+//                    developerConnection = "scm:git:git://github.com/spring-projects/spring-framework"
+//                }
+                developers {
+                    developer {
+                        id = "yangkun"
+                        name = "Yang Kun"
+                        email = "yangkun311@163.com"
+                    }
+                }
+//                issueManagement {
+//                    system = "GitHub"
+//                    url = "https://github.com/spring-projects/spring-framework/issues"
+//                }
+            }
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionResult()
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
+
+    }
+
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+    }
+}
+
+//configureDeploymentRepository(project)
+//
+//void configureDeploymentRepository(Project project) {
+//    project.plugins.withType(MavenPublishPlugin.class).all {
+//        PublishingExtension publishing = project.getExtensions().getByType(PublishingExtension.class);
+//        if (project.hasProperty("deploymentRepository")) {
+//            publishing.repositories.maven {
+//                it.url = project.property("deploymentRepository")
+//                it.name = "deployment"
+//            }
+//        }
+//    }
+//}

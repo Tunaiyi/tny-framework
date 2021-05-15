@@ -1,6 +1,5 @@
 package com.tny.game.net.endpoint;
 
-
 import com.tny.game.net.transport.*;
 
 /**
@@ -8,12 +7,11 @@ import com.tny.game.net.transport.*;
  */
 public class CommonSessionFactory<UID> implements SessionFactory<UID, CommonSession<UID>, SessionSetting> {
 
-
     public CommonSessionFactory() {
     }
 
     @Override
-    public CommonSession<UID> create(SessionSetting setting, EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler) {
+    public CommonSession<UID> create(SessionSetting setting, EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler) {
         return new CommonSession<>(eventHandler, setting.getCacheSentMessageSize());
     }
 

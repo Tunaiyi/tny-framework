@@ -12,18 +12,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class EndpointEventsBox<UID> {
 
     /* 接收队列 */
-    private Queue<EndPointInputEvent<UID>> inputEventQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<EndpointInputEvent<UID>> inputEventQueue = new ConcurrentLinkedQueue<>();
 
     /* 发送队列 */
-    private Queue<EndPointOutputEvent<UID>> outputEventQueue = new ConcurrentLinkedQueue<>();
-
+    private final Queue<EndpointOutputEvent<UID>> outputEventQueue = new ConcurrentLinkedQueue<>();
 
     public boolean hasInputEvent() {
-        return !inputEventQueue.isEmpty();
+        return !this.inputEventQueue.isEmpty();
     }
 
     public boolean hasOutputEvent() {
-        return !outputEventQueue.isEmpty();
+        return !this.outputEventQueue.isEmpty();
     }
 
     public void accept(EndpointEventsBox<UID> eventBox) {
@@ -31,23 +30,25 @@ public class EndpointEventsBox<UID> {
         this.inputEventQueue.addAll(eventBox.inputEventQueue);
     }
 
-    public void addOutputEvent(EndPointOutputEvent<UID> event) {
+    public void addOutputEvent(EndpointOutputEvent<UID> event) {
         this.outputEventQueue.add(event);
     }
 
-    public void addInputEvent(EndPointInputEvent<UID> event) {
+    public void addInputEvent(EndpointInputEvent<UID> event) {
         this.inputEventQueue.add(event);
     }
 
-    public EndPointInputEvent<UID> pollInputEvent() {
-        if (this.inputEventQueue == null || this.inputEventQueue.isEmpty())
+    public EndpointInputEvent<UID> pollInputEvent() {
+        if (this.inputEventQueue.isEmpty()) {
             return null;
+        }
         return this.inputEventQueue.poll();
     }
 
-    public EndPointOutputEvent<UID> pollOutputEvent() {
-        if (this.outputEventQueue == null || this.outputEventQueue.isEmpty())
+    public EndpointOutputEvent<UID> pollOutputEvent() {
+        if (this.outputEventQueue.isEmpty()) {
             return null;
+        }
         return this.outputEventQueue.poll();
     }
 

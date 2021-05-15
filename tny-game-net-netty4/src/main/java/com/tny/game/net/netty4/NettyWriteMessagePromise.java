@@ -24,11 +24,13 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     private volatile List<WriteMessageListener> listeners;
 
     private List<WriteMessageListener> listeners() {
-        if (this.listeners != null)
+        if (this.listeners != null) {
             return this.listeners;
+        }
         synchronized (this) {
-            if (this.listeners != null)
+            if (this.listeners != null) {
                 return this.listeners;
+            }
             this.listeners = new LinkedList<>();
         }
         return this.listeners;
@@ -57,8 +59,9 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     public void addWriteListener(WriteMessageListener listener) {
         synchronized (this) {
             this.listeners().add(listener);
-            if (this.isDone())
+            if (this.isDone()) {
                 fireListeners();
+            }
         }
     }
 
@@ -69,11 +72,13 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     public boolean channelPromise(ChannelPromise promise) {
         ThrowAide.checkNotNull(promise, "channelPromise is null");
-        if (this.isDone() || this.channelPromise != null)
+        if (this.isDone() || this.channelPromise != null) {
             return false;
+        }
         synchronized (this) {
-            if (this.isDone() || this.channelPromise != null)
+            if (this.isDone() || this.channelPromise != null) {
                 return false;
+            }
             this.channelPromise = promise;
             this.channelPromise.addListener(this);
             return true;
@@ -82,14 +87,17 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     @Override
     public void success() {
-        if (this.isDone())
+        if (this.isDone()) {
             return;
+        }
         synchronized (this) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return;
+            }
             if (this.channelPromise != null) {
-                if (!this.channelPromise.isDone())
+                if (!this.channelPromise.isDone()) {
                     this.channelPromise.setSuccess();
+                }
             } else {
                 this.set(null);
                 this.fireListeners();
@@ -99,14 +107,17 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     @Override
     public void failed(Throwable cause) {
-        if (this.isDone())
+        if (this.isDone()) {
             return;
+        }
         synchronized (this) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return;
+            }
             if (this.channelPromise != null) {
-                if (!this.channelPromise.isDone())
+                if (!this.channelPromise.isDone()) {
                     this.channelPromise.setFailure(cause);
+                }
             } else {
                 this.setFailure(cause);
                 this.fireListeners();
@@ -116,11 +127,13 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        if (this.isDone())
+        if (this.isDone()) {
             return false;
+        }
         synchronized (this) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return false;
+            }
             if (this.channelPromise != null) {
                 return this.channelPromise.cancel(mayInterruptIfRunning);
             } else {
@@ -134,10 +147,12 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     }
 
     private void fireListeners() {
-        if (!this.isDone())
+        if (!this.isDone()) {
             return;
-        if (!this.isSuccess() && this.respondFuture != null)
+        }
+        if (!this.isSuccess() && this.respondFuture != null) {
             this.respondFuture.completeExceptionally(this.getRawCause());
+        }
         List<WriteMessageListener> listeners = this.listeners;
         if (listeners != null) {
             for (WriteMessageListener listener : listeners) {

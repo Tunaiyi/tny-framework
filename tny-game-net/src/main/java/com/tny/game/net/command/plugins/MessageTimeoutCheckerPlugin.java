@@ -18,16 +18,16 @@ public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
-
     @Override
     public Class<Long> getAttributesClass() {
         return Long.class;
     }
 
     @Override
-    public void execute(Tunnel<UID> tunnel, Message<UID> message, CommandContext context, Long attribute) throws Exception {
-        if (attribute <= 0)
+    public void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, Long attribute) throws Exception {
+        if (attribute <= 0) {
             return;
+        }
         // 是否需要做超时判断
         MessageHead head = message.getHead();
         if (System.currentTimeMillis() + attribute > head.getTime()) {
@@ -35,4 +35,5 @@ public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long
             context.doneAndIntercept(NetResultCode.REQUEST_TIMEOUT);
         }
     }
+
 }

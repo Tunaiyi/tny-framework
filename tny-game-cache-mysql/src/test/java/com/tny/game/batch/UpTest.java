@@ -51,9 +51,9 @@ public class UpTest {
 
     @Test
     public void get() {
-        RunningChecker.start("update");
+        RunChecker.trace("update");
         this.dao.get(ids);
-        RunningChecker.endPrint("update");
+        RunChecker.end("update");
         //		for (UpObject object : objects) {
         //			System.out.println(JSONUtils.toJson(object));
         //		}
@@ -73,4 +73,5 @@ public class UpTest {
         this.dao.update(objects);
         //		RunningChecker.endPrint("update");
     }
+
 }

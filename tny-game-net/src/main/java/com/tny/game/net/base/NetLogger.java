@@ -1,13 +1,159 @@
 package com.tny.game.net.base;
 
+import com.tny.game.common.context.*;
+import com.tny.game.common.runtime.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class NetLogger {
+
+    public static final ProcessWatcher NET_TRACE_ALL_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_all_receive_send", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher NET_TRACE_INPUT_ALL = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-all", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-read_to_tunnel", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-tunnel_to_execute", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher NET_TRACE_INPUT_EXECUTE_COMMAND_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-execute_command", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher NET_TRACE_OUTPUT_WRITTEN_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_output-all", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_DISPATCH_TO_EXECUTE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".dispatch_to_execute", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".encode", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".decode", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_DISPATCH_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".dispatch", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_RUNNABLE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".message_exe_runnable", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_GET_CONTROLLER_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-get_controller", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_CHECK_AUTHENTICATE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-check_authenticate", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_CHECK_INVOKABLE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-check_invokable", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_BEFORE_PLUGINS_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-before_plugins", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_INVOKING_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-invoking", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_AFTER_PLUGINS_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_invoke-after_plugins", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MESSAGE_EXE_HANDLE_RESULT_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".command_exe_handle_result", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MSG_TICK_1_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".tick1", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MSG_TICK_2_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".tick2", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final ProcessWatcher MSG_TICK_3_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".tick3", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
+    public static final AttrKey<ProcessTracer> NET_TRACE_ALL_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "NET_TRACE_ALL_ATTR_KEY");
+    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY");
+    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_ALL_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "NET_TRACE_INPUT_ALL_ATTR_KEY");
+    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY");
+    public static final AttrKey<ProcessTracer> MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY");
+
+    private static class WatcherAttribute {
+
+        private final AttrKey<ProcessTracer> key;
+        private final ProcessWatcher watcher;
+
+        private WatcherAttribute(ProcessWatcher watcher, AttrKey<ProcessTracer> key) {
+            this.key = key;
+            this.watcher = watcher;
+        }
+
+    }
+
+    public static final WatcherAttribute NET_TRACE_ALL_ATTR = new WatcherAttribute(
+            NET_TRACE_ALL_WATCHER, NET_TRACE_ALL_ATTR_KEY);
+    public static final WatcherAttribute NET_TRACE_INPUT_ALL_ATTR = new WatcherAttribute(
+            NET_TRACE_INPUT_ALL, NET_TRACE_INPUT_ALL_ATTR_KEY);
+    public static final WatcherAttribute NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR = new WatcherAttribute(
+            NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER, NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY);
+    public static final WatcherAttribute NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR = new WatcherAttribute(
+            NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER, NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY);
+
+    public static final WatcherAttribute MSG_DISPATCH_TO_EXECUTE_ATTR = new WatcherAttribute(
+            MESSAGE_DISPATCH_TO_EXECUTE_WATCHER, MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY);
+
+    public static void trace(WatcherAttribute attribute, Message message) {
+        ProcessTracer tracer = attribute.watcher.trace();
+        message.attributes().setAttribute(attribute.key, tracer);
+    }
+
+    public static void traceDone(WatcherAttribute attribute, Message message) {
+        if (message == null) {
+            return;
+        }
+        Attributes attributes = message.attributes();
+        if (!attributes.isEmpty()) {
+            ProcessTracer tracer = attributes.getAttribute(attribute.key);
+            if (tracer != null) {
+                tracer.done();
+            }
+        }
+
+    }
 
     private static final Logger RECEIVE_RQS_LOGGER = LoggerFactory.getLogger(NetLogger.RECEIVE_RQS);
     private static final Logger RECEIVE_RSP_LOGGER = LoggerFactory.getLogger(NetLogger.RECEIVE_RSP);
@@ -31,10 +177,10 @@ public class NetLogger {
     public static final String SESSION = "session";
     public static final String EXECUTOR = "executor";
 
-
     private static Logger getLoggerByMessage(Message message, Logger pushLogger, Logger rqsLogger, Logger rspLogger) {
-        if (message == null)
+        if (message == null) {
             return null;
+        }
         switch (message.getMode()) {
             case PUSH:
                 return pushLogger;
@@ -60,7 +206,7 @@ public class NetLogger {
             Object[] msgArgs = toMessageArgs(message, args);
             logger.debug(
                     "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" +
-                    msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+                            msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
@@ -70,7 +216,7 @@ public class NetLogger {
             Object[] msgArgs = toMessageArgs(message, args);
             logger.debug(
                     "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" +
-                    msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+                            msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
         }
     }
 
@@ -82,12 +228,13 @@ public class NetLogger {
         msgArgs[2] = head.getId();
         msgArgs[3] = head.getToMessage();
         msgArgs[4] = message.getBody(Object.class);
-        if (args.length > 0)
+        if (args.length > 0) {
             msgArgs = ArrayUtils.addAll(msgArgs, args);
+        }
         return msgArgs;
     }
 
-    public static void logSend(Tunnel<?> tunnel, Message<?> message) {
+    public static void logSend(Tunnel<?> tunnel, Message message) {
         Logger logger = getSendLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHead head = message.getHead();
@@ -101,7 +248,7 @@ public class NetLogger {
 
     }
 
-    public static void logReceive(Tunnel<?> tunnel, Message<?> message) {
+    public static void logReceive(Tunnel<?> tunnel, Message message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
             MessageHead head = message.getHead();

@@ -23,14 +23,14 @@ public interface ReleasableLock {
     /**
      * 释放
      *
-     * @param key 调用钥匙
+     * @param key 调用钥匙, 防止外部调用
      */
     void release(LockerKey key);
 
     /**
      * 销毁
      *
-     * @param key 调用钥匙
+     * @param key 调用钥匙, 防止外部调用
      * @return 是否销毁成功
      */
     boolean destroy(LockerKey key);

@@ -7,7 +7,7 @@ import org.junit.*;
 import java.util.List;
 
 import static com.tny.game.test.TestAide.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -19,7 +19,6 @@ public abstract class EndpointTest<E extends NetEndpoint<Long>> extends NetterTe
     protected EndpointTestInstance<E> create() {
         return create(createLoginCert());
     }
-
 
     // @Override
     // public S unloginCommunicator() {
@@ -64,8 +63,9 @@ public abstract class EndpointTest<E extends NetEndpoint<Long>> extends NetterTe
         assertTrue(attributesList.size() > 2);
         for (Attributes checkOne : attributesList) {
             assertNotNull(checkOne);
-            if (expected == null)
+            if (expected == null) {
                 expected = checkOne;
+            }
             assertSame(expected, checkOne);
         }
     }
@@ -80,7 +80,7 @@ public abstract class EndpointTest<E extends NetEndpoint<Long>> extends NetterTe
     public void getCertificate() {
         E loginSession = create().getEndpoint();
         assertNotNull(loginSession.getCertificate());
-        assertTrue(loginSession.getCertificate().isAutherized());
+        assertTrue(loginSession.getCertificate().isAuthenticated());
     }
 
     @Test

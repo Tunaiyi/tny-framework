@@ -1,37 +1,24 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.*;
 
-import static com.tny.game.common.lifecycle.LifecycleLevel.*;
-import static com.tny.game.common.utils.ObjectAide.*;
-
 /**
  * Created by Kun Yang on 2017/3/24.
  */
-public abstract class NettyBootstrap implements AppPrepareStart {
+public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends NetBootstrap<S> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
-    private NettyBootstrapSetting unitSetting;
-
     protected ChannelMaker<Channel> channelMaker;
 
-    protected MessageFactory<Object> messageFactory;
-
-    protected EndpointEventHandler<?, NetEndpoint<?>> eventHandler;
-
-    public NettyBootstrap(NettyBootstrapSetting unitSetting) {
-        this.unitSetting = unitSetting;
+    public NettyBootstrap(S unitSetting) {
+        super(unitSetting);
     }
 
     protected static boolean isEpoll() {
@@ -54,31 +41,17 @@ public abstract class NettyBootstrap implements AppPrepareStart {
         return false;
     }
 
-    protected <UID> EndpointEventHandler<UID, NetEndpoint<UID>> getEventHandler() {
-        return as(this.eventHandler);
-    }
-
     public static EventLoopGroup createLoopGroup(boolean epoll, int threads, String name) {
-        if (epoll)
-            return new EpollEventLoopGroup(threads, new DefaultThreadFactory(name, true));
-        else
-            return new NioEventLoopGroup(threads, new DefaultThreadFactory(name, true));
+        if (epoll) {
+            return new EpollEventLoopGroup(threads, new DefaultThreadFactory(name, true, 8));
+        } else {
+            return new NioEventLoopGroup(threads, new DefaultThreadFactory(name, true, 8));
+        }
     }
 
     @Override
-    public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
-    }
-
-    protected <T> MessageFactory<T> getMessageFactory() {
-        return as(this.messageFactory);
-    }
-
-    @Override
-    public void prepareStart() {
-        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(this.unitSetting.getChannelMaker());
-        this.messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.unitSetting.getMessageFactory()));
-        this.eventHandler = as(UnitLoader.getLoader(EndpointEventHandler.class).getUnitAnCheck(this.unitSetting.getEventHandler()));
+    public void postPrepared(S setting) {
+        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(setting.getChannelMaker());
     }
 
 }

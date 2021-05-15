@@ -18,16 +18,18 @@ public class PluginContext {
     }
 
     @SuppressWarnings("unchecked")
-    public void execute(Tunnel<?> tunnel, Message<?> message, CommandContext context) {
-        if (this.plugin == null || context.isIntercept())
+    public void execute(Tunnel<?> tunnel, Message message, MessageCommandContext context) {
+        if (this.plugin == null || context.isIntercept()) {
             return;
+        }
         try {
             this.plugin.invokePlugin(tunnel, message, context);
         } catch (Throwable e) {
             LOGGER.error("invoke plugin {} exception", this.plugin.getClass(), e);
         }
-        if (this.nextContext == null || context.isIntercept())
+        if (this.nextContext == null || context.isIntercept()) {
             return;
+        }
         this.nextContext.execute(tunnel, message, context);
     }
 

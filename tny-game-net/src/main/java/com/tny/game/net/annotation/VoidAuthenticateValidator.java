@@ -16,7 +16,7 @@ import javax.xml.bind.ValidationException;
 public class VoidAuthenticateValidator<T> implements AuthenticateValidator<T> {
 
     @Override
-    public Certificate<T> validate(Tunnel<T> tunnel, Message<T> message) throws CommandException, ValidationException {
+    public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {
         throw new UnsupportedOperationException();
     }
 

@@ -15,7 +15,6 @@ public class TunnelAides {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TunnelAides.class);
 
-
     /**
      * 发送响应消息, 如果 code 为 Error, 则发送完后断开连接
      *
@@ -24,7 +23,7 @@ public class TunnelAides {
      * @param code    消息码
      * @param body    消息体
      */
-    public static <UID> void responseMessage(NetTunnel<UID> tunnel, Message<UID> request, ResultCode code, Object body) {
+    public static <UID> void responseMessage(NetTunnel<UID> tunnel, Message request, ResultCode code, Object body) {
         MessageContext<UID> context = MessageContexts
                 .respond(request, code, body, request.getId());
         responseMessage(tunnel, request, context);
@@ -37,16 +36,16 @@ public class TunnelAides {
      * @param request 响应请求
      * @param context 消息信息上下文
      */
-    public static <UID> void responseMessage(NetTunnel<UID> tunnel, Message<UID> request, MessageContext<UID> context) {
+    public static <UID> SendContext<UID> responseMessage(NetTunnel<UID> tunnel, Message request, MessageContext<UID> context) {
         ResultCode code = context.getResultCode();
-        // TODO 是否要处理Tail?
-        // if (request.existTail())
-        //     context.setTail(request.getTail(Object.class));
+        if (code.getType() == ResultCodeType.ERROR) {
+            context.willWriteFuture();
+        }
         SendContext<UID> sendContext = tunnel.send(context);
         if (code.getType() == ResultCodeType.ERROR) {
             sendContext.getWriteFuture().addWriteListener(future -> tunnel.close());
         }
+        return sendContext;
     }
-
 
 }

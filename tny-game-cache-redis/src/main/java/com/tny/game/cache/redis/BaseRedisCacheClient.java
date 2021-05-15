@@ -4,6 +4,7 @@ import com.tny.game.cache.*;
 import com.tny.game.cache.simple.*;
 import org.slf4j.*;
 import redis.clients.jedis.*;
+import redis.clients.jedis.params.SetParams;
 
 import java.io.*;
 import java.sql.Blob;
@@ -24,12 +25,8 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseRedisCacheClient.class);
 
-    protected static final String NX = "NX";
-    protected static final byte[] NX_BYTES = NX.getBytes();
-    protected static final String XX = "XX";
-    protected static final byte[] XX_BYTES = XX.getBytes();
-    protected static final String PX = "PX";
-    protected static final byte[] PX_BYTES = PX.getBytes();
+    protected static final SetParams NX_PARAMS = SetParams.setParams().nx();
+    protected static final SetParams XX_PARAMS = SetParams.setParams().xx();
 
     private String name;
 
@@ -51,8 +48,9 @@ public abstract class BaseRedisCacheClient implements CacheClient {
     }
 
     public BaseRedisCacheClient(String name, JedisPool client) throws IOException {
-        if (name == null)
+        if (name == null) {
             this.name = "default";
+        }
         this.name = name;
         this.pool = client;
     }
@@ -76,16 +74,18 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     @Override
     public Collection<Object> getMultis(Collection<String> keyCollection) {
-        if (keyCollection == null || keyCollection.isEmpty())
+        if (keyCollection == null || keyCollection.isEmpty()) {
             return Collections.emptyList();
+        }
         List<byte[]> objects;
         try (Jedis jedis = this.pool.getResource()) {
             objects = jedisMGet(jedis, CacheItemHelper.strings2Bytes(keyCollection));
         }
         List<Object> result = null;
         for (byte[] object : objects) {
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             result = CacheItemHelper.getAndCreate(result);
             result.add(bytes2Object(object));
         }
@@ -94,8 +94,9 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     @Override
     public Map<String, Object> getMultiMap(Collection<String> keyCollection) {
-        if (keyCollection == null || keyCollection.isEmpty())
+        if (keyCollection == null || keyCollection.isEmpty()) {
             return Collections.emptyMap();
+        }
         Map<String, Response<byte[]>> responseMap = new HashMap<>();
         try (Jedis jedis = this.pool.getResource()) {
             Pipeline pipeline = jedis.pipelined();
@@ -109,8 +110,9 @@ public abstract class BaseRedisCacheClient implements CacheClient {
         for (Entry<String, Response<byte[]>> entry : responseMap.entrySet()) {
             Response<byte[]> response = entry.getValue();
             byte[] object = response.get();
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             result = CacheItemHelper.getAndCreate(result);
             result.put(entry.getKey(), bytes2Object(object));
         }
@@ -130,7 +132,7 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     private Response<?> doAdd(Pipeline pipeline, CacheItem<?> item) {
         if (item.getExpire() > 0) {
-            return jedisSetNXPX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()), (int) item.getExpire());
+            return jedisSetNXPX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()), (int)item.getExpire());
         } else {
             return jedisSetNX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()));
         }
@@ -296,14 +298,13 @@ public abstract class BaseRedisCacheClient implements CacheClient {
         List<C> fails = null;
         for (Entry<C, ? extends Response<?>> entry : responseMap.entrySet()) {
             Object rs = entry.getValue().get();
-            if (rs == null || (rs instanceof Long && (Long) rs <= 0)) {
+            if (rs == null || (rs instanceof Long && (Long)rs <= 0)) {
                 fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(entry.getKey());
             }
         }
         return CacheItemHelper.checkEmpty(fails);
     }
-
 
     protected abstract void jedisFlushDB(Jedis jedis);
 
@@ -341,18 +342,17 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     protected abstract Response<?> jedisSetPX(Pipeline pipeline, byte[] key, byte[] value, long time);
 
-
     private static byte[] object2Bytes(Object object) {
         try {
             if (object instanceof byte[]) {
-                byte[] bytes = (byte[]) object;
+                byte[] bytes = (byte[])object;
                 byte[] data = new byte[bytes.length + 1];
                 data[0] = 0;
                 System.arraycopy(bytes, 0, data, 1, bytes.length);
                 return data;
             } else if (object instanceof Blob) {
-                Blob blob = (Blob) object;
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
+                Blob blob = (Blob)object;
+                byte[] bytes = blob.getBytes(1, (int)blob.length());
                 byte[] data = new byte[bytes.length + 1];
                 data[0] = 0;
                 System.arraycopy(bytes, 0, data, 1, bytes.length);
@@ -374,8 +374,9 @@ public abstract class BaseRedisCacheClient implements CacheClient {
     }
 
     private static Object bytes2Object(byte[] data) {
-        if (data == null)
+        if (data == null) {
             return null;
+        }
         try {
             byte flag = data[0];
             if (flag == 0) {

@@ -1,14 +1,13 @@
 package com.tny.game.net.message.common;
 
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
-public class CommonMessage<UID> extends AbstractNetMessage<UID> {
+public class CommonMessage<UID> extends AbstractNetMessage {
 
     private static final long serialVersionUID = 1L;
 
-    public CommonMessage(Certificate<UID> certificate, NetMessageHead head, Object body, Object tail) {
-        super(certificate, head, body, tail);
+    public CommonMessage(NetMessageHead head, Object body) {
+        super(head, body);
     }
 
 }

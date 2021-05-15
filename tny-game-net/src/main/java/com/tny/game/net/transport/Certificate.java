@@ -14,8 +14,8 @@ public interface Certificate<UID> extends Serializable {
     /**
      * @return 是否已认证
      */
-    default boolean isAutherized() {
-        return getStatus().isAutherized();
+    default boolean isAuthenticated() {
+        return getStatus().isAuthenticated();
     }
 
     /**
@@ -50,10 +50,10 @@ public interface Certificate<UID> extends Serializable {
      * @return 比 other 新返回 true, 否则返回 false
      */
     default boolean isNewerThan(Certificate<UID> other) {
-        if (this.isAutherized() && !other.isAutherized()) {
+        if (this.isAuthenticated() && !other.isAuthenticated()) {
             return true;
         }
-        if (!this.isAutherized() && other.isAutherized()) {
+        if (!this.isAuthenticated() && other.isAuthenticated()) {
             return true;
         }
         Optional<Instant> thisInstant = this.getAuthenticateAt();
@@ -71,10 +71,10 @@ public interface Certificate<UID> extends Serializable {
      * @return 比 other 旧返回 true, 否则返回 false
      */
     default boolean isOlderThan(Certificate<UID> other) {
-        if (!this.isAutherized() && other.isAutherized()) {
+        if (!this.isAuthenticated() && other.isAuthenticated()) {
             return true;
         }
-        if (this.isAutherized() && !other.isAutherized()) {
+        if (this.isAuthenticated() && !other.isAuthenticated()) {
             return true;
         }
         Optional<Instant> thisInstant = this.getAuthenticateAt();
@@ -92,10 +92,11 @@ public interface Certificate<UID> extends Serializable {
      * @return true 同用户, false 不同用户
      */
     default boolean isSameUser(Certificate<UID> other) {
-        if (this == other)
+        if (this == other) {
             return true;
+        }
         return Objects.equals(getUserId(), other.getUserId()) &&
-               Objects.equals(getUserType(), other.getUserType());
+                Objects.equals(getUserType(), other.getUserType());
     }
 
     /**
@@ -105,12 +106,12 @@ public interface Certificate<UID> extends Serializable {
      * @return true 同用户, false 不同用户
      */
     default boolean isSameCertificate(Certificate<UID> other) {
-        if (this == other)
+        if (this == other) {
             return true;
+        }
         return getId() == other.getId() &&
-               Objects.equals(getUserId(), other.getUserId()) &&
-               Objects.equals(getUserType(), other.getUserType());
+                Objects.equals(getUserId(), other.getUserId()) &&
+                Objects.equals(getUserType(), other.getUserType());
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.net.endpoint.event;
 
-
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
@@ -18,5 +17,7 @@ public interface EndpointOutputEventHandler<UID, E extends NetEndpoint<UID>> {
      * @param endpoint 处理指定endpoint
      */
     void onOutput(EndpointEventsBox<UID> box, E endpoint);
+
+    void onOutputEvent(E endpoint, EndpointOutputEvent<UID> event);
 
 }

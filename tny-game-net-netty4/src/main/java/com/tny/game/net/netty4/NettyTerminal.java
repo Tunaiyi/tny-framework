@@ -10,12 +10,16 @@ public interface NettyTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
     long getConnectTimeout();
 
-    boolean getInitConnectAsyn();
+    int getConnectRetryTimes();
+
+    long getConnectRetryInterval();
+
+    boolean isAsyncConnect();
 
     Channel connect();
 
-    void reconnectTunnel(NettyTerminalTunnel<UID> tunnel);
+    void reconnect();
 
-    void connectSuccess(NettyTerminalTunnel<UID> tunnel);
+    void connectSuccess(NettyClientTunnel<UID> tunnel);
 
 }

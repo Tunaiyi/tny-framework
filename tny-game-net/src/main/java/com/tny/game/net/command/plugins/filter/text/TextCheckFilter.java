@@ -27,22 +27,22 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, TextCheck annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message, int index, TextCheck annotation,
             String param) {
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    message.getUserId(), message.getProtocol(),
+                    tunnel.getUserId(), message.getProtocol(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return code(this.lengthIllegalCode, annotation.lengthIllegalCode(), annotation.illegalCode());
         }
         for (WordsFilter filter : this.wordsFilters) {
-            if (filter.hasBadWords(param))
+            if (filter.hasBadWords(param)) {
                 return code(this.contentIllegalCode, annotation.contentIllegalCode(), annotation.illegalCode());
+            }
         }
         return ResultCode.SUCCESS;
     }
-
 
     public TextCheckFilter<UID> setWordsFilters(List<WordsFilter> wordsFilters) {
         this.wordsFilters = ImmutableList.copyOf(wordsFilters);
@@ -58,4 +58,5 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
         this.contentIllegalCode = contentIllegalCode;
         return this;
     }
+
 }

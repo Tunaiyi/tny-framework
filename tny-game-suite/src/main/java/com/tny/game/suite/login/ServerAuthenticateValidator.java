@@ -17,17 +17,20 @@ public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integ
     private ServerTicketMaker maker;
 
     @Override
-    public Certificate<Integer> validate(Tunnel<Integer> tunnel, Message<Integer> message) throws CommandException {
+    public Certificate<Integer> validate(Tunnel<Integer> tunnel, Message message, CertificateFactory<Integer> factory)
+            throws CommandException {
         ResultCode code = ResultCodes.of(message.getCode());
-        if (code.isFailure())
+        if (code.isFailure()) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT, new CommandException(code));
+        }
         ServerTicket ticket = message.getBody(ServerTicket.class);
-        if (System.currentTimeMillis() - ticket.getTime() > 60000)
+        if (System.currentTimeMillis() - ticket.getTime() > 60000) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
+        }
         AppType serverType = ticket.asServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {
             Certificate<Integer> info = Certificates
-                    .createAutherized(ticket.getTime(), ticket.getServerId(), serverType.getName(), Instant.ofEpochMilli(ticket.getTime()));
+                    .createAuthenticated(ticket.getTime(), ticket.getServerId(), serverType.getName(), Instant.ofEpochMilli(ticket.getTime()));
             ServerTicket localTicket = tunnel.attributes().getAttribute(AttributesKeys.LOCAL_SERVER_TICKET);
             ServerTicket signTicket = localTicket != null ? localTicket : ticket;
             tunnel.attributes().setAttribute(AttributesKeys.SERVER_TICKET, ticket);
@@ -35,6 +38,7 @@ public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integ
             tunnel.attributes().setAttribute(AttributesKeys.SYSTEM_USER_USER_GROUP, signTicket.getServerType());
             return info;
         }
-        return Certificates.createUnautherized(-1);
+        return Certificates.createUnauthenticated(-1);
     }
+
 }

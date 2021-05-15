@@ -10,41 +10,39 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static com.tny.game.net.transport.TestMessages.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.
  */
 public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends EndpointTest<E> {
 
-
     private static final int CACHE_MESSAGE_SIZE = 10;
 
-    private static final Predicate<Message<Long>> all = (m) -> true;
-    private static final Predicate<Message<Long>> gte1 = (m) -> m.getId() >= 1L;
-    private static final Predicate<Message<Long>> lte3 = (m) -> m.getId() <= 3L;
-    private static final Predicate<Message<Long>> gte2lte3 = (m) -> 2 <= m.getId() && m.getId() <= 3L;
+    private static final Predicate<Message> all = (m) -> true;
+    private static final Predicate<Message> gte1 = (m) -> m.getId() >= 1L;
+    private static final Predicate<Message> lte3 = (m) -> m.getId() <= 3L;
+    private static final Predicate<Message> gte2lte3 = (m) -> 2 <= m.getId() && m.getId() <= 3L;
 
     protected NetEndpointTest() {
     }
 
     @Override
     protected EndpointTestInstance<E> create(Certificate<Long> certificate) {
-        MockEndpointEventHandler<E> handler = new MockEndpointEventHandler<>();
+        MockEndpointEventsBoxHandler<E> handler = new MockEndpointEventsBoxHandler<>();
         E endpoint = newEndpoint(CACHE_MESSAGE_SIZE, handler);
         MockNetTunnel tunnel = mockTunnel(endpoint);
-        if (certificate.isAutherized()) {
+        if (certificate.isAuthenticated()) {
             TestAide.assertRunComplete("acceptTunnel", () -> endpoint.online(certificate, tunnel));
         }
         return new EndpointTestInstance<>(endpoint, tunnel, handler);
     }
 
-
     private MockNetTunnel mockTunnel(E endpoint) {
         return new MockNetTunnel(endpoint, TunnelMode.SERVER);
     }
 
-    protected abstract E newEndpoint(int cachedSize, MockEndpointEventHandler<E> handler);
+    protected abstract E newEndpoint(int cachedSize, MockEndpointEventsBoxHandler<E> handler);
 
     @Override
     public E createNetter(Certificate<Long> certificate) {
@@ -82,38 +80,37 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 
         assertFalse(loginEndpoint.isOffline());
         loginEndpoint.onUnactivated(loginTunnel);
-        assertEquals(EndpointState.ONLINE, loginEndpoint.getState());
+        assertEquals(EndpointStatus.ONLINE, loginEndpoint.getStatus());
 
         // 当前 tunnel 下线
         loginTunnel.close();
-        assertEquals(EndpointState.OFFLINE, loginEndpoint.getState());
+        assertEquals(EndpointStatus.OFFLINE, loginEndpoint.getStatus());
 
         // 当前 tunnel 下线
         loginEndpoint.onUnactivated(loginTunnel);
-        assertEquals(EndpointState.OFFLINE, loginEndpoint.getState());
+        assertEquals(EndpointStatus.OFFLINE, loginEndpoint.getStatus());
 
         // 关闭后下线
         object = create(certificate);
         loginEndpoint = object.getEndpoint();
         loginEndpoint.close();
         // loginEndpoint.onUnactivated(loginTunnel);
-        assertEquals(EndpointState.CLOSE, loginEndpoint.getState());
+        assertEquals(EndpointStatus.CLOSE, loginEndpoint.getStatus());
     }
-
 
     @Test
     public void getSendMessages() {
         EndpointTestInstance<E> object;
-        List<Message<Long>> sentMessages;
+        List<Message> sentMessages;
         TestMessages messages;
 
         object = create();
         NetEndpoint<Long> e0 = object.getEndpoint();
         NetTunnel<Long> t0 = object.getTunnel();
         messages = createMessages(e0);
-        messages.messagesForEach(m -> assertEquals(0, e0.getSendMessages(sm -> sm.getId() == m.getId()).size()));
+        messages.messagesForEach(m -> assertEquals(0, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
         messages.contextsForEach(c -> e0.writeMessage(t0, c));
-        messages.messagesForEach(m -> assertEquals(1, e0.getSendMessages(sm -> sm.getId() == m.getId()).size()));
+        messages.messagesForEach(m -> assertEquals(1, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
 
         object = create();
         NetEndpoint<Long> e1 = object.getEndpoint();
@@ -121,18 +118,17 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         messages = createMessages(e1);
         // List<>messages.getMessages();
 
-        sentMessages = e1.getSendMessages(all);
+        sentMessages = e1.getSentMessages(all);
         assertTrue(sentMessages.isEmpty());
         messages.contextsForEach(c -> e1.writeMessage(t1, c));
-        sentMessages = e1.getSendMessages(gte1);
+        sentMessages = e1.getSentMessages(gte1);
         assertEquals(messages.getMessageSize(), sentMessages.size());
-        sentMessages = e1.getSendMessages(all);
+        sentMessages = e1.getSentMessages(all);
         assertEquals(messages.getMessageSize(), sentMessages.size());
-        sentMessages = e1.getSendMessages(lte3);
+        sentMessages = e1.getSentMessages(lte3);
         assertEquals(3, sentMessages.size());
-        sentMessages = e1.getSendMessages(gte2lte3);
+        sentMessages = e1.getSentMessages(gte2lte3);
         assertEquals(2, sentMessages.size());
-
 
         object = create();
         NetEndpoint<Long> e2 = object.getEndpoint();
@@ -142,18 +138,18 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         for (int index = 1; index <= messageSize; index++) {
             messages.addPush("push " + index);
         }
-        sentMessages = e2.getSendMessages(all);
+        sentMessages = e2.getSentMessages(all);
         assertTrue(sentMessages.isEmpty());
 
         messages.contextsForEach(c -> e2.writeMessage(t2, c));
 
-        sentMessages = e2.getSendMessages(lte3);
+        sentMessages = e2.getSentMessages(lte3);
         assertTrue(sentMessages.isEmpty());
 
-        sentMessages = e2.getSendMessages(all);
+        sentMessages = e2.getSentMessages(all);
         assertEquals(CACHE_MESSAGE_SIZE, sentMessages.size());
 
-        sentMessages = e2.getSendMessages(m -> 4 <= m.getId() && m.getId() <= 13);
+        sentMessages = e2.getSentMessages(m -> 4 <= m.getId() && m.getId() <= 13);
         assertEquals(CACHE_MESSAGE_SIZE, sentMessages.size());
     }
 
@@ -192,7 +188,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         TestMessages messages;
         NetEndpoint<Long> endpoint;
         EndpointTestInstance<E> object;
-        MockEndpointEventHandler<E> handler;
+        MockEndpointEventsBoxHandler<E> handler;
 
         // 接收 receive message
         object = create();
@@ -247,7 +243,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         TestMessages messages;
         NetEndpoint<Long> endpoint;
         EndpointTestInstance<E> object;
-        MockEndpointEventHandler<E> handler;
+        MockEndpointEventsBoxHandler<E> handler;
 
         // 发送 send message
         object = create();
@@ -310,7 +306,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     public void resend() {
         NetEndpoint<Long> endpoint;
         EndpointTestInstance<E> object;
-        MockEndpointEventHandler<E> handler;
+        MockEndpointEventsBoxHandler<E> handler;
 
         // 发送 resend message
         object = create();

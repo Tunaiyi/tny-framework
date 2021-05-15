@@ -58,13 +58,13 @@ public class ClientTest {
         ProtoExWriter writer = new ProtoExWriter();
 
         writer.writeMessage(object, TypeEncode.EXPLICIT);
-        RunningChecker.startPrint("writer test");
+        RunChecker.traceWithPrint("writer test");
         writer = new ProtoExWriter(1024, 32);
         for (int i = 0; i < 1000; i++) {
             writer.writeMessage(object, TypeEncode.EXPLICIT);
             writer.clear();
         }
-        RunningChecker.endPrint("writer test");
+        RunChecker.end("writer test");
         writer.writeMessage(object, TypeEncode.EXPLICIT);
         //		byte[] data = writer.toByteArray();
         //		System.out.println(Arrays.toString(data));

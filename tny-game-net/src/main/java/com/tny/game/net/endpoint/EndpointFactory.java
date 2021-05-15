@@ -9,6 +9,6 @@ import com.tny.game.net.transport.*;
 @UnitInterface
 public interface EndpointFactory<UID, E extends Endpoint<UID>, S extends EndpointSetting> {
 
-    E create(S setting, EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler);
+    E create(S setting, EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler);
 
 }

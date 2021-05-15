@@ -1,12 +1,14 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.common.*;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * <p>
@@ -15,7 +17,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     private long accessId;
     private TunnelMode mode;
-    private TunnelState state;
+    private TunnelStatus state;
     private NetEndpoint<Long> endpoint;
     private InetSocketAddress address = new InetSocketAddress(7100);
     private int pingTimes = 0;
@@ -23,12 +25,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     private int writeTimes = 0;
     private boolean bindSuccess = true;
     private boolean writeSuccess = true;
-    private MessageFactory<Long> factory = new CommonMessageFactory<>();
+    private NetBootstrapContext<Long> context;
 
     public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
         this.endpoint = endpoint;
-        this.state = TunnelState.ACTIVATE;
+        this.state = TunnelStatus.ACTIVATED;
         this.mode = mode;
+        this.context = new NetBootstrapContext<>(endpoint.getEventHandler());
     }
 
     @Override
@@ -38,42 +41,42 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     @Override
     public long getAccessId() {
-        return accessId;
+        return this.accessId;
     }
 
     @Override
     public TunnelMode getMode() {
-        return mode;
+        return this.mode;
     }
 
     @Override
     public boolean isAvailable() {
-        return this.state == TunnelState.ACTIVATE;
+        return this.state == TunnelStatus.ACTIVATED;
     }
 
     @Override
-    public boolean isAlive() {
-        return this.state == TunnelState.ACTIVATE;
+    public boolean isActive() {
+        return this.state == TunnelStatus.ACTIVATED;
     }
 
     @Override
-    public TunnelState getState() {
-        return state;
+    public TunnelStatus getStatus() {
+        return this.state;
     }
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return address;
+        return this.address;
     }
 
     @Override
     public InetSocketAddress getLocalAddress() {
-        return address;
+        return this.address;
     }
 
     @Override
     public NetEndpoint<Long> getEndpoint() {
-        return endpoint;
+        return this.endpoint;
     }
 
     @Override
@@ -93,19 +96,19 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     @Override
     public boolean open() {
-        this.state = TunnelState.ACTIVATE;
+        this.state = TunnelStatus.ACTIVATED;
         return true;
     }
 
     @Override
     public void disconnect() {
-        this.state = TunnelState.UNACTIVATED;
+        this.state = TunnelStatus.UNACTIVATED;
         this.endpoint.onUnactivated(this);
     }
 
     @Override
     public boolean bind(NetEndpoint<Long> endpoint) {
-        if (bindSuccess) {
+        if (this.bindSuccess) {
             this.endpoint = endpoint;
             return true;
         }
@@ -118,15 +121,16 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public MessageFactory<Long> getMessageFactory() {
-        return factory;
+    public NetBootstrapContext<Long> getNetBootstrapContext() {
+        return this.context;
     }
 
     @Override
-    public WriteMessageFuture write(Message<Long> message, WriteMessagePromise promise) throws NetException {
-        if (promise == null)
+    public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
+        if (promise == null) {
             promise = createWritePromise(-1);
-        if (writeSuccess) {
+        }
+        if (this.writeSuccess) {
             this.writeTimes++;
             promise.success();
         } else {
@@ -136,44 +140,54 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
+    public WriteMessageFuture write(MessageCreator<Long> creator, MessageContext<Long> context) throws NetException {
+        return null;
+    }
+
+    @Override
+    public void writeBatch(Supplier<Collection<Message>> messageSupplier) {
+        
+    }
+
+    @Override
     public Long getUserId() {
-        return endpoint.getUserId();
+        return this.endpoint.getUserId();
     }
 
     @Override
     public String getUserType() {
-        return endpoint.getUserType();
+        return this.endpoint.getUserType();
     }
 
     @Override
     public Certificate<Long> getCertificate() {
-        return endpoint.getCertificate();
+        return this.endpoint.getCertificate();
     }
 
     @Override
     public boolean isLogin() {
-        return endpoint.isLogin();
+        return this.endpoint.isLogin();
     }
 
     @Override
     public boolean isClosed() {
-        return state == TunnelState.CLOSE;
+        return this.state == TunnelStatus.CLOSE;
     }
 
     @Override
     public void close() {
         this.disconnect();
-        this.state = TunnelState.CLOSE;
+        this.state = TunnelStatus.CLOSE;
     }
 
     @Override
-    public boolean receive(Message<Long> message) {
-        return endpoint.receive(this, message);
+    public boolean receive(Message message) {
+        return this.endpoint.receive(this, message);
     }
 
     @Override
     public SendContext<Long> send(MessageContext<Long> messageContext) {
-        return endpoint.send(this, messageContext);
+        return this.endpoint.send(this, messageContext);
     }
 
     public MockNetTunnel setBindSuccess(boolean bindSuccess) {
@@ -187,14 +201,15 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     public int getWriteTimes() {
-        return writeTimes;
+        return this.writeTimes;
     }
 
     public int getPingTimes() {
-        return pingTimes;
+        return this.pingTimes;
     }
 
     public int getPongTimes() {
-        return pongTimes;
+        return this.pongTimes;
     }
+
 }

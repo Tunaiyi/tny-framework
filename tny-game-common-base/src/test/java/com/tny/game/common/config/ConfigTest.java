@@ -1,12 +1,12 @@
 package com.tny.game.common.config;
 
-import com.tny.game.common.collection.*;
+import com.tny.game.common.collection.map.*;
 import org.junit.*;
 
 import java.util.*;
 import java.util.Map.Entry;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/7/20.

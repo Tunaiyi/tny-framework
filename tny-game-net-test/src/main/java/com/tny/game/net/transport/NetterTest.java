@@ -1,8 +1,10 @@
 package com.tny.game.net.transport;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.
@@ -15,15 +17,15 @@ public abstract class NetterTest<C extends Netter<Long>> {
     protected static Long certificateId = System.currentTimeMillis();
 
     protected Certificate<Long> createUnLoginCert() {
-        return Certificates.createUnautherized(unloginUid);
+        return Certificates.createUnauthenticated(unloginUid);
     }
 
     protected Certificate<Long> createLoginCert() {
-        return Certificates.createAutherized(certificateId, uid, Instant.now());
+        return Certificates.createAuthenticated(certificateId, uid, Instant.now());
     }
 
     protected Certificate<Long> createLoginCert(long certificateId, Long uid) {
-        return Certificates.createAutherized(certificateId, uid, Instant.now());
+        return Certificates.createAuthenticated(certificateId, uid, Instant.now());
     }
 
     protected NetterTest() {
@@ -34,22 +36,23 @@ public abstract class NetterTest<C extends Netter<Long>> {
     @Test
     public void getUserId() {
         C loginCommunicator = createNetter(createLoginCert());
-        Assert.assertEquals(uid, loginCommunicator.getUserId());
+        assertEquals(uid, loginCommunicator.getUserId());
     }
 
     @Test
     public void getUserType() {
         C loginCommunicator = createNetter(createLoginCert());
-        Assert.assertEquals(userGroup, loginCommunicator.getUserType());
+        assertEquals(userGroup, loginCommunicator.getUserType());
     }
 
     @Test
     public void isClosed() {
         C loginCommunicator = createNetter(createLoginCert());
-        Assert.assertFalse(loginCommunicator.isClosed());
+        assertFalse(loginCommunicator.isClosed());
         loginCommunicator.close();
-        Assert.assertTrue(loginCommunicator.isClosed());
+        assertTrue(loginCommunicator.isClosed());
         loginCommunicator.close();
-        Assert.assertTrue(loginCommunicator.isClosed());
+        assertTrue(loginCommunicator.isClosed());
     }
+
 }

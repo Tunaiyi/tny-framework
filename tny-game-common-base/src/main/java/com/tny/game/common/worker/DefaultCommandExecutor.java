@@ -25,12 +25,22 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     private ExecutorService hearbeatExecutor;
 
+    private long hearbeatInterval;
+
     private long nextRunningTime;
 
-    private volatile long sleepTime;
+    private volatile long lastSleepTime;
 
     public DefaultCommandExecutor(String name) {
-        this(name, new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
+        this(name, 12);
+    }
+
+    public DefaultCommandExecutor(String name, ExecutorService executor) {
+        this(name, 12, executor);
+    }
+
+    public DefaultCommandExecutor(String name, int frequency) {
+        this(name, frequency, new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
                 Runtime.getRuntime().availableProcessors() * 2,
                 30, TimeUnit.SECONDS,
                 new LinkedTransferQueue<>(),
@@ -39,9 +49,10 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
                         .build()));
     }
 
-    public DefaultCommandExecutor(String name, ExecutorService executor) {
+    public DefaultCommandExecutor(String name, int frequency, ExecutorService executor) {
         this.name = name;
         this.executor = executor;
+        this.hearbeatInterval = Math.max(1000 / frequency, 5);
         this.start();
     }
 
@@ -52,13 +63,15 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
             this.nextRunningTime = System.currentTimeMillis();
             while (true) {
                 try {
-                    if (this.hearbeatExecutor.isShutdown())
+                    if (this.hearbeatExecutor.isShutdown()) {
                         break;
+                    }
                     this.commandBoxList.forEach(box -> {
-                        if (!box.isEmpty())
+                        if (!box.isEmpty()) {
                             box.submit();
+                        }
                     });
-                    this.nextRunningTime += 84L;
+                    this.nextRunningTime += this.hearbeatInterval;
 
                     long finishAt = System.currentTimeMillis();
 
@@ -68,7 +81,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
                     if (sleepTime > 0) {
                         Thread.sleep(sleepTime);
                     }
-                    this.sleepTime = sleepTime;
+                    this.lastSleepTime = sleepTime;
                 } catch (InterruptedException e) {
                     LOGGER.warn("InterruptedException by ActorCommandExecutor " + Thread.currentThread().getName(), e);
                 } catch (Exception e) {
@@ -91,14 +104,14 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     @Override
     public String toString() {
-        long sleepTime = this.sleepTime;
+        long sleepTime = this.lastSleepTime;
         return this.getName() +
-               " #任务数量: " +
-               size() +
-               " #附加任务箱数量: " +
-               this.commandBoxList.size() +
-               " #最近休眠时间: " +
-               sleepTime;
+                " #任务数量: " +
+                size() +
+                " #附加任务箱数量: " +
+                this.commandBoxList.size() +
+                " #最近休眠时间: " +
+                sleepTime;
     }
 
     @Override
@@ -144,8 +157,9 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
     @Override
     public void stop() {
-        if (!this.working)
+        if (!this.working) {
             return;
+        }
         this.working = false;
     }
 
@@ -153,7 +167,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
 
         private volatile Thread currentThread;
 
-        private DefaultCommandExecutor executor;
+        private final DefaultCommandExecutor executor;
 
         private BindCommandWorker(DefaultCommandExecutor executor) {
             this.executor = executor;
@@ -185,4 +199,5 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
         }
 
     }
+
 }

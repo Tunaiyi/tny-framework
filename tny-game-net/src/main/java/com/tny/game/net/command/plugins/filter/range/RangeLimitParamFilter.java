@@ -18,13 +18,13 @@ public abstract class RangeLimitParamFilter<A extends Annotation, N extends Comp
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message<Object> message, int index, A annotation, N param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message message, int index, A annotation, N param) {
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         if (!this.filterRange(low, param, high)) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    message.getUserId(), head.getId(),
+                    tunnel.getUserId(), head.getId(),
                     index, param, low, high);
             return code(NetResultCode.ILLEGAL_PARAMETERS, illegalCode(annotation));
         }

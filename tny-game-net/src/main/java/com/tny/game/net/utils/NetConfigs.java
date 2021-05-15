@@ -21,7 +21,6 @@ public interface NetConfigs {
     String BASE_APP_TYPE_CLASS = "tny.net.base.app_type_class";
     String BASE_SCOPE_TYPE_CLASS = "tny.net.base.scope_type_class";
 
-
     /* SessionKeeper 清除失效Session时间间隙*/
     String SESSION_KEEPER_CLEAR_INTERVAL = "tny.net.session.keeper.clear_interval";
     /* SessionKeeper 默认清除失效Session时间间隙 (1分钟)*/
@@ -58,19 +57,20 @@ public interface NetConfigs {
     /* MessageDispatchCommandExecutor 运行时间*/
     String DISPATCHER_EXECUTOR_THREADS = "tny.net.dispatcher.executor.threads";
 
-
     String CONNECT_TIMEOUT_URL_PARAM = "connect_timeout";
     long CONNECT_TIMEOUT_DEFAULT_VALUE = 5000L;
 
+    String CONNECT_ASYNC_URL_PARAM = "connect_async";
+    boolean CONNECT_ASYNC_DEFAULT_VALUE = false;
 
-    String CONNECTION_SIZE_URL_PARAM = "connection_size";
-    int CONNECTION_SIZE_DEFAULT_VALUE = 1;
-    String INIT_CONNECT_ASYN_URL_PARAM = "init_connect_asyn";
-    boolean INIT_CONNECT_ASYN_DEFAULT_VALUE = false;
+    String RETRY_TIMES_URL_PARAM = "retry";
+    int RETRY_TIMES_DEFAULT_VALUE = 3;
+
+    String RETRY_INTERVAL_URL_PARAM = "retry_interval";
+    long RETRY_INTERVAL_DEFAULT_VALUE = 3000L;
 
     String SEND_TIMEOUT_URL_PARAM = "send_timeout";
     String LOGIN_TIMEOUT_URL_PARAM = "login_timeout";
     String RESEND_TIMES_URL_PARAM = "resend_times";
-
 
 }

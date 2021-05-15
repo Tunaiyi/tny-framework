@@ -37,8 +37,9 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
     public boolean openModule(GameFeatureExplorer explorer, Collection<Module> modules) {
         this.doOpenModule(explorer, modules);
         for (Module module : modules) {
-            if (module.isValid() && !explorer.isModuleOpened(module))
+            if (module.isValid() && !explorer.isModuleOpened(module)) {
                 return false;
+            }
         }
         return true;
     }
@@ -60,24 +61,29 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
         List<Module> succList = new ArrayList<>();
         boolean consuming = this.DEVELOP.getBoolean(DEVELOP_MODULE_TIME_CONSUMING, false);
         for (Module module : moduleTypes) {
-            if (!module.isValid() || explorer.isModuleOpened(module))
+            if (!module.isValid() || explorer.isModuleOpened(module)) {
                 continue;
+            }
             try {
                 synchronized (explorer) {
                     if (!explorer.isModuleOpened(module)) {
-                        if (LOGGER.isDebugEnabled())
+                        if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("{} 玩家开启 {} 模块", explorer.getPlayerId(), module);
+                        }
                         ModuleHandler handler = this.handlerMap.get(module);
-                        if (handler == null)
+                        if (handler == null) {
                             throw new NullPointerException(format("{} module handler is null", module));
-                        if (consuming)
-                            RunningChecker.startPrint(module);
+                        }
+                        if (consuming) {
+                            RunChecker.traceWithPrint(module);
+                        }
                         if (handler.openModule(explorer)) {
                             explorer.open(module);
                             succList.add(module);
                         }
-                        if (consuming)
-                            RunningChecker.endPrint(module);
+                        if (consuming) {
+                            RunChecker.end(module);
+                        }
                     }
                 }
             } catch (Throwable e) {
@@ -119,8 +125,9 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
     }
 
     public DTO updateDTO(DTO dto, FeatureExplorer featureExplorer, Module moduleType) {
-        if (!moduleType.isValid())
+        if (!moduleType.isValid()) {
             return dto;
+        }
         GameModuleHandler module = this.handlerMap.get(moduleType);
         doUpdateDTO(module, featureExplorer, dto);
         return dto;
@@ -128,8 +135,9 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
 
     public DTO updateDTO(FeatureExplorer featureExplorer, DTO dto) {
         for (Module moduleType : featureExplorer.getOpenedModules()) {
-            if (!moduleType.isValid())
+            if (!moduleType.isValid()) {
                 continue;
+            }
             GameModuleHandler module = this.handlerMap.get(moduleType);
             doUpdateDTO(module, featureExplorer, dto);
         }
@@ -139,8 +147,9 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
     @SuppressWarnings("unchecked")
     private void doUpdateDTO(GameModuleHandler handler, FeatureExplorer featureExplorer, DTO dto) {
         try {
-            if (LOGGER.isDebugEnabled())
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("读取 {} 玩家 {} 模块获取重新登录信息", featureExplorer.getPlayerId(), handler.getModule());
+            }
             handler.updateDTO(featureExplorer, dto);
         } catch (Throwable e) {
             LOGGER.error("玩家[{}] 读取 {} 模块获取重新登录信息失败", featureExplorer.getPlayerId(), handler.getModule(), e);
@@ -164,8 +173,9 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
             this.handlerMap.put(module.getModule(), module);
         }
         for (Module module : Modules.values()) { //TODO AA 临时注释掉的
-            if (!this.handlerMap.containsKey(module))
+            if (!this.handlerMap.containsKey(module)) {
                 this.handlerMap.put(module, new DefaultModuleHandler(module));
+            }
         }
     }
 

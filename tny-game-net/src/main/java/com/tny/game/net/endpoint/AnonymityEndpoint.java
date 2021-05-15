@@ -9,15 +9,13 @@ public class AnonymityEndpoint<UID> extends AbstractEndpoint<UID> {
 
     private NetTunnel<UID> tunnel;
 
-    public AnonymityEndpoint(NetTunnel<UID> tunnel, UID unloginUid,
-            EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler) {
-        super(unloginUid, eventHandler, 0);
-        this.tunnel = tunnel;
+    public AnonymityEndpoint(Certificate<UID> certificate, EndpointEventsBoxHandler<UID, ? extends NetEndpoint<UID>> eventHandler) {
+        super(certificate, eventHandler, 0);
     }
 
     @Override
     protected NetTunnel<UID> currentTunnel() {
-        return tunnel;
+        return this.tunnel;
     }
 
     @Override
@@ -33,6 +31,11 @@ public class AnonymityEndpoint<UID> extends AbstractEndpoint<UID> {
     @Override
     public Certificate<UID> getCertificate() {
         return this.certificate;
+    }
+
+    public AnonymityEndpoint<UID> setTunnel(NetTunnel<UID> tunnel) {
+        this.tunnel = tunnel;
+        return this;
     }
 
 }

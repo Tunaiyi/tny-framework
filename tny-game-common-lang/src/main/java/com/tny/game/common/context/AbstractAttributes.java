@@ -14,11 +14,13 @@ public abstract class AbstractAttributes implements Attributes {
     private volatile ReadWriteLock lock = null;
 
     private ReadWriteLock getLock() {
-        if (this.lock != null)
+        if (this.lock != null) {
             return this.lock;
+        }
         synchronized (this) {
-            if (this.lock != null)
+            if (this.lock != null) {
                 return this.lock;
+            }
             this.lock = new ReentrantReadWriteLock();
         }
         return this.lock;
@@ -45,16 +47,18 @@ public abstract class AbstractAttributes implements Attributes {
     }
 
     protected AbstractAttributes(boolean init) {
-        if (init)
-            this.attributeMap = new HashMap<>();
+        if (init) {
+            this.attributeMap = new LinkedHashMap<>();
+        }
     }
 
     protected Map<AttrKey<?>, Object> getMap() {
         if (this.attributeMap != null) {
             return this.attributeMap;
         } else {
-            if (this.attributeMap != null)
+            if (this.attributeMap != null) {
                 return this.attributeMap;
+            }
             this.attributeMap = new HashMap<>();
         }
         return this.attributeMap;
@@ -65,7 +69,7 @@ public abstract class AbstractAttributes implements Attributes {
     public <T> T getAttribute(AttrKey<? extends T> key) {
         this.readLock();
         try {
-            return (T) this.getMap().get(key);
+            return (T)this.getMap().get(key);
         } finally {
             this.readUnlock();
         }
@@ -86,14 +90,14 @@ public abstract class AbstractAttributes implements Attributes {
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, T value) {
         Map<AttrKey<?>, Object> map = this.getMap();
-        return (T) map.computeIfAbsent(key, k -> value);
+        return (T)map.computeIfAbsent(key, k -> value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> value) {
         Map<AttrKey<?>, Object> map = this.getMap();
-        return (T) map.computeIfAbsent(key, k -> value.get());
+        return (T)map.computeIfAbsent(key, k -> value.get());
     }
 
     @Override
@@ -101,7 +105,7 @@ public abstract class AbstractAttributes implements Attributes {
     public <T> T removeAttribute(AttrKey<? extends T> key) {
         this.writeLock();
         try {
-            return (T) this.getMap().remove(key);
+            return (T)this.getMap().remove(key);
         } finally {
             this.writeUnlock();
         }
@@ -122,13 +126,15 @@ public abstract class AbstractAttributes implements Attributes {
     public <T> T setAttributeIfNoKey(AttrKey<? extends T> key, T value) {
         Map<AttrKey<?>, Object> attributeMap = this.getMap();
         Object current = attributeMap.get(key);
-        if (current != null)
-            return (T) current;
+        if (current != null) {
+            return (T)current;
+        }
         this.writeLock();
         try {
             current = attributeMap.get(key);
-            if (current != null)
-                return (T) current;
+            if (current != null) {
+                return (T)current;
+            }
             attributeMap.put(key, value);
             return value;
         } finally {
@@ -138,8 +144,9 @@ public abstract class AbstractAttributes implements Attributes {
 
     @Override
     public void setAttribute(Map<AttrKey<?>, ?> map) {
-        if (map == null || map.isEmpty())
+        if (map == null || map.isEmpty()) {
             return;
+        }
         this.writeLock();
         try {
             this.getMap().putAll(map);
@@ -155,8 +162,9 @@ public abstract class AbstractAttributes implements Attributes {
 
     @Override
     public void setAttribute(AttrEntry<?> entry) {
-        if (entry == null)
+        if (entry == null) {
             return;
+        }
         this.writeLock();
         try {
             this.getMap().put(entry.getKey(), entry.getValue());
@@ -167,12 +175,14 @@ public abstract class AbstractAttributes implements Attributes {
 
     @Override
     public void setAttribute(Collection<AttrEntry<?>> entries) {
-        if (entries == null || entries.isEmpty())
+        if (entries == null || entries.isEmpty()) {
             return;
+        }
         this.writeLock();
         try {
-            for (AttrEntry<?> entry : entries)
+            for (AttrEntry<?> entry : entries) {
                 this.getMap().put(entry.getKey(), entry.getValue());
+            }
         } finally {
             this.writeUnlock();
         }
@@ -180,19 +190,22 @@ public abstract class AbstractAttributes implements Attributes {
 
     @Override
     public void setAttribute(AttrEntry<?>... entries) {
-        if (entries.length == 0)
+        if (entries.length == 0) {
             return;
+        }
         this.setAttribute(Arrays.asList(entries));
     }
 
     @Override
     public void removeAttribute(Collection<AttrKey<?>> keys) {
-        if (keys == null || keys.isEmpty())
+        if (keys == null || keys.isEmpty()) {
             return;
+        }
         this.writeLock();
         try {
-            for (Object key : keys)
+            for (Object key : keys) {
                 this.getMap().remove(key);
+            }
         } finally {
             this.writeUnlock();
         }
@@ -203,8 +216,9 @@ public abstract class AbstractAttributes implements Attributes {
         this.readLock();
         try {
             Map<AttrKey<?>, Object> temp = this.attributeMap;
-            if (temp == null)
+            if (temp == null) {
                 return Collections.emptyMap();
+            }
             return Collections.unmodifiableMap(temp);
         } finally {
             this.readUnlock();

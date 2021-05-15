@@ -5,7 +5,7 @@ import com.tny.game.cache.simple.*;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ClientTestTask {
 

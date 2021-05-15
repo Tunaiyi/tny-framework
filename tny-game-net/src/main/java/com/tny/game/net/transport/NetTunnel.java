@@ -1,5 +1,6 @@
 package com.tny.game.net.transport;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 
@@ -41,7 +42,6 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
      */
     void disconnect();
 
-
     /**
      * 终端 Endpoint
      *
@@ -59,7 +59,21 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
     /**
      * @return message factory
      */
-    MessageFactory<UID> getMessageFactory();
+    default MessageFactory<UID> getMessageFactory() {
+        return this.getNetBootstrapContext().getMessageFactory();
+    }
+
+    /**
+     * @return 凭证 factory
+     */
+    default CertificateFactory<UID> getCertificateFactory() {
+        return this.getNetBootstrapContext().getCertificateFactory();
+    }
+
+    /**
+     * @return 获取启动器上下文
+     */
+    NetBootstrapContext<UID> getNetBootstrapContext();
 
 }
 

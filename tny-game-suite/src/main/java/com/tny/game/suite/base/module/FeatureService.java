@@ -80,25 +80,28 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
         for (FeatureModel model : this.featureModelManager.getModels(openMode)) {
             FeatureHandler handler = this.handlerMap.get(model.getFeature());
-            if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context))
+            if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context)) {
                 continue;
+            }
             if (!model.isCanOpen(explorer, openMode)
-                && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false))
+                    && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)) {
                 continue;
+            }
             Feature feature = handler.getFeature();
             try {
                 synchronized (explorer) {
-                    if (explorer.isFeatureOpened(feature))
+                    if (explorer.isFeatureOpened(feature)) {
                         continue;
+                    }
                     if (this.LOGGER.isInfoEnabled()) {
-                        RunningChecker.start(model.getFeature());
+                        RunChecker.trace(model.getFeature());
                         this.LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerId(), feature);
                     }
                     if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
                         explorer.open(model);
                     }
                     if (this.LOGGER.isInfoEnabled()) {
-                        long time = RunningChecker.end(model.getFeature()).cost();
+                        long time = RunChecker.end(model.getFeature()).costTime();
                         this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
                     }
                 }
@@ -117,12 +120,14 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
         for (Feature feature : explorer.getOpenedFeatures()) {
             if (explorer.isFeatureOpened(feature)) {
                 for (Module module : feature.dependModules()) {
-                    if (!moduleSet.add(module))
+                    if (!moduleSet.add(module)) {
                         continue;
+                    }
                     this.moduleService.doLoadModule(explorer, module);
                 }
-                if (feature.isValid())
+                if (feature.isValid()) {
                     doLoadFeature(explorer, feature);
+                }
             }
         }
     }
@@ -160,7 +165,6 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
-
 
     @Override
     public void prepareStart() throws Exception {

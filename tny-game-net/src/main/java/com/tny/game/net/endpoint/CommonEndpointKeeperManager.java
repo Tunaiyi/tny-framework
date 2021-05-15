@@ -2,6 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
+import com.tny.game.common.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
 
@@ -16,19 +17,20 @@ import static com.tny.game.common.utils.StringAide.*;
  * 默认 SessionKeeper 工厂
  * <p>
  */
+@Unit
 public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPrepareStart {
 
     private static final String DEFAULT_KEY = "default";
 
-    private Map<String, EndpointKeeper> endpointKeeperMap = new ConcurrentHashMap<>();
+    private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-    private Map<String, SessionSetting> sessionSettingMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionSetting> sessionSettingMap = new ConcurrentHashMap<>();
 
-    private Map<String, TerminalSetting> terminalSettingMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalSetting> terminalSettingMap = new ConcurrentHashMap<>();
 
-    private Map<String, SessionKeeperFactory<?, SessionSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionKeeperFactory<?, SessionSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
-    private Map<String, TerminalKeeperFactory<?, TerminalSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalKeeperFactory<?, TerminalSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
     public CommonEndpointKeeperManager() {
     }
@@ -36,13 +38,15 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
     private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
         if (tunnelMode == TunnelMode.SERVER) {
             SessionSetting setting = this.sessionSettingMap.get(userType);
-            if (setting == null)
+            if (setting == null) {
                 setting = this.sessionSettingMap.get(DEFAULT_KEY);
+            }
             return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
         } else {
             TerminalSetting setting = this.terminalSettingMap.get(userType);
-            if (setting == null)
+            if (setting == null) {
                 setting = this.terminalSettingMap.get(DEFAULT_KEY);
+            }
             return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
         }
     }
@@ -73,13 +77,14 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         return this.getKeeper(userType, TerminalKeeper.class);
     }
 
-
     private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
         EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
-        if (keeper == null)
+        if (keeper == null) {
             return Optional.empty();
-        if (keeperClass.isInstance(keeper))
+        }
+        if (keeperClass.isInstance(keeper)) {
             return Optional.of(as(keeper));
+        }
         throw new ClassCastException(format("{} not instance of {}", keeper, keeperClass));
     }
 

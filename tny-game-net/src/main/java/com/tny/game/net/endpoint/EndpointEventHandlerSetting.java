@@ -8,7 +8,7 @@ public interface EndpointEventHandlerSetting {
     /**
      * @return 处理器类
      */
-    String getHandlerClass();
+    String getEventHandlerClass();
 
     /**
      * @return 线程数
@@ -24,5 +24,15 @@ public interface EndpointEventHandlerSetting {
      * @return 命令执行器
      */
     String getCommandExecutor();
+
+    //    /**
+    //     * @return 凭证工厂
+    //     */
+    //    String getCertificateFactory();
+
+    /**
+     * @return 获取 endpoint keeper manager
+     */
+    String getEndpointKeeperManager();
 
 }

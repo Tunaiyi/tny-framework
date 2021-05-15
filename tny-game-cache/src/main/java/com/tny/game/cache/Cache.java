@@ -34,7 +34,7 @@ public interface Cache {
     /**
      * 删除指定的对象集合 对象必须带有(@ToCache注解) 并且会删除带有@Link注解肿 delete = true关联项对应的对象
      *
-     * @param keys 指定的对象集合
+     * @param objectCollection 指定的对象集合
      * @return 返回删除失败的列表
      */
     public <T> List<T> deleteObject(Collection<T> objectCollection);
@@ -44,8 +44,8 @@ public interface Cache {
      * Class必须带有(@ToCache注解),此方法回更具ToCache的配置和keyValue的值构建key
      * 并且查找出带有@Link注解的字段的关联项，赋值给关联项 最后返回该对象
      *
-     * @param clazz    获取指定Class必须带有(@ToCache注解)
-     * @param keyValue 获取对象相关的值
+     * @param clazz     获取指定Class必须带有(@ToCache注解)
+     * @param keyValues 获取对象相关的值
      * @return 返回获取的对象，没有则返回false 类型不对则throws ClassCastException
      */
     public <T> T getObject(Class<T> clazz, Object... keyValues);
@@ -57,7 +57,7 @@ public interface Cache {
      * <p>
      * 获取指定key集合的对象<br>
      *
-     * @param keys  指定key Map
+     * @param key   指定key
      * @param clazz 集合类型
      * @return 返回获取的指定key集合对象 Map
      */

@@ -5,7 +5,7 @@ import org.junit.*;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * <p>

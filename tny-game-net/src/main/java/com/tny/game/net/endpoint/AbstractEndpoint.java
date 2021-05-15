@@ -33,33 +33,22 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     protected Certificate<UID> certificate;
 
     /* 状态 */
-    private volatile EndpointState state;
+    private volatile EndpointStatus state;
 
-    /**
-     * ID 生成器
-     */
-    private AtomicLong idCreator = new AtomicLong(0);
+    /* ID 生成器 */
+    private final AtomicLong idCreator = new AtomicLong(0);
 
-    /**
-     * 消息盒子
-     */
-    private EndpointEventsBox<UID> eventsBox;
+    /* 消息盒子 */
+    private final EndpointEventsBox<UID> eventsBox;
 
-    /**
-     * 响应 future 管理器
-     */
+    /* 输入事件 */
+    private final EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler;
+
+    /* 写出的消息缓存 */
+    private final MessageQueue<UID> sentMessageQueue;
+
+    /* 响应 future 管理器 */
     private volatile RespondFutureHolder respondFutureHolder;
-
-    /**
-     * 输入事件
-     */
-    private EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler;
-
-
-    /**
-     * 写出的消息缓存
-     */
-    private MessageQueue<UID> writeQueue;
 
     /* 离线时间 */
     protected volatile long offlineTime;
@@ -70,36 +59,42 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
-    protected AbstractEndpoint(UID unloginUid, EndpointEventHandler<UID, ? extends NetEndpoint<UID>> eventHandler, int cacheSentMessageSize) {
-        this.certificate = Certificates.createUnautherized(unloginUid);
-        this.state = EndpointState.INIT;
+    protected AbstractEndpoint(Certificate<UID> certificate, EndpointEventsBoxHandler<UID, ? extends NetEndpoint<UID>> eventHandler,
+            int cacheSentMessageSize) {
+        this.certificate = certificate;
+        this.state = EndpointStatus.INIT;
         this.eventsBox = new EndpointEventsBox<>();
         this.eventHandler = as(eventHandler);
         this.id = NetAide.newEndpointId();
-        this.writeQueue = new MessageQueue<>(cacheSentMessageSize);
+        this.sentMessageQueue = new MessageQueue<>(cacheSentMessageSize);
     }
 
     private RespondFutureHolder futureHolder() {
-        if (this.respondFutureHolder != null)
+        if (this.respondFutureHolder != null) {
             return this.respondFutureHolder;
+        }
         synchronized (this) {
-            if (this.respondFutureHolder != null)
+            if (this.respondFutureHolder != null) {
                 return this.respondFutureHolder;
+            }
             return this.respondFutureHolder = RespondFutureHolder.getHolder(this);
         }
     }
 
     private void putFuture(long messageId, RespondFuture<UID> respondFuture) {
-        if (respondFuture == null)
+        if (respondFuture == null) {
             return;
+        }
         futureHolder().putFuture(messageId, respondFuture);
     }
 
-    private <M> RespondFuture<M> pollFuture(Message<UID> message) {
+    private <M> RespondFuture<M> pollFuture(Message message) {
         RespondFutureHolder respondFutureHolder = this.respondFutureHolder;
-        if (respondFutureHolder == null)
+        if (respondFutureHolder == null) {
             return null;
+        }
         if (message.getMode() == MessageMode.RESPONSE) {
+            // todo IO 线程处理
             return respondFutureHolder.pollFuture(message.getToMessage());
         }
         return null;
@@ -117,23 +112,26 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public void setSendFilter(MessageHandleFilter<UID> filter) {
-        if (filter == null)
+        if (filter == null) {
             filter = MessageHandleFilter.allHandleFilter();
+        }
         this.sendFilter = filter;
     }
 
     @Override
     public void setReceiveFilter(MessageHandleFilter<UID> filter) {
-        if (filter == null)
+        if (filter == null) {
             filter = MessageHandleFilter.allHandleFilter();
+        }
         this.receiveFilter = filter;
     }
 
     @Override
-    public boolean receive(NetTunnel<UID> tunnel, Message<UID> message) {
+    public boolean receive(NetTunnel<UID> tunnel, Message message) {
         RespondFuture<UID> future = pollFuture(message);
-        if (this.isClosed())
+        if (this.isClosed()) {
             return false;
+        }
         MessageHandleFilter<UID> filter = this.getReceiveFilter();
         if (filter != null) {
             boolean throwable = true;
@@ -141,10 +139,12 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                 case IGNORE:
                     throwable = false;
                 case THROW:
-                    String causeMessage = format("{} cannot receive {} from {} after being filtered by {}", this, message, tunnel, filter.getClass());
-                    LOGGER.warn(causeMessage);
-                    if (throwable)
+                    if (throwable) {
+                        String causeMessage = format("{} cannot receive {} from {} after being filtered by {}",
+                                this, message, tunnel, filter.getClass());
+                        LOGGER.warn(causeMessage);
                         throw new EndpointException(causeMessage);
+                    }
                     return false;
                 default:
                     break;
@@ -152,22 +152,8 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         }
         this.eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
         this.eventHandler.onInput(this.eventsBox, this);
+        //        this.eventHandler.onInputEvent(this, new EndpointReceiveEvent<>(tunnel, message, future));
         return true;
-    }
-
-    @Override
-    public boolean receive(Message<UID> message) {
-        return receive(null, message);
-    }
-
-    @Override
-    public void resend(NetTunnel<UID> tunnel, Predicate<Message<UID>> filter) {
-        if (this.isClosed())
-            return;
-        if (tunnel == null)
-            tunnel = currentTunnel();
-        this.eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
-        this.eventHandler.onOutput(this.eventsBox, this);
     }
 
     @Override
@@ -178,8 +164,9 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                 context.fail(new EndpointCloseException(format("endpoint {} closed", this)));
                 return context;
             }
-            if (tunnel == null)
+            if (tunnel == null) {
                 tunnel = currentTunnel();
+            }
             MessageHandleFilter<UID> filter = this.getSendFilter();
             if (filter != null) {
                 boolean throwable = true;
@@ -190,21 +177,64 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                         context.cancel(true);
                         String causeMessage = format("{} cannot send {} to {} after being filtered by {}", this, context, tunnel, filter.getClass());
                         LOGGER.warn(causeMessage);
-                        if (throwable)
+                        if (throwable) {
                             throw new EndpointException(causeMessage);
+                        }
                         return context;
                     case HANDLE:
                         break;
                 }
             }
-            this.eventsBox.addOutputEvent(new EndpointSendEvent<>(tunnel, context));
-            this.eventHandler.onOutput(this.eventsBox, this);
+            //            this.eventsBox.addOutputEvent(new EndpointSendEvent<>(tunnel, context));
+            //            this.eventHandler.onOutput(this.eventsBox, this);
+            tunnel.write(this, context);
+            //            this.eventHandler.onOutputEvent(this, new EndpointSendEvent<>(tunnel, context));
             return context;
         } catch (Exception e) {
             LOGGER.error("", e);
             context.fail(e);
             throw new NetException(e);
         }
+    }
+
+    @Override
+    public boolean receive(Message message) {
+        return receive(null, message);
+    }
+
+    @Override
+    public void resend(NetTunnel<UID> tunnel, Predicate<Message> filter) {
+        if (this.isClosed()) {
+            return;
+        }
+        if (tunnel == null) {
+            tunnel = currentTunnel();
+        }
+        //        this.eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
+        //        this.eventHandler.onOutput(this.eventsBox, this);
+        tunnel.writeBatch(() -> this.getSentMessages(filter));
+    }
+
+    @Override
+    public void resend(NetTunnel<UID> tunnel, long fromId, FilterBound bound) {
+        if (this.isClosed()) {
+            return;
+        }
+        if (tunnel == null) {
+            tunnel = currentTunnel();
+        }
+        tunnel.writeBatch(() -> this.getSentMessages(fromId, bound));
+    }
+
+    @Override
+    public void resend(NetTunnel<UID> tunnel, long fromId, long toId, FilterBound bound) {
+        if (this.isClosed()) {
+            return;
+        }
+        if (tunnel == null) {
+            tunnel = currentTunnel();
+        }
+        tunnel.writeBatch(() -> this.getSentMessages(fromId, toId, bound));
     }
 
     @Override
@@ -238,27 +268,43 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public void writeMessage(NetTunnel<UID> tunnel, MessageContext<UID> context) {
-        MessageFactory<UID> messageFactory = tunnel.getMessageFactory();
-        Message<UID> message = messageFactory.create(createMessageId(), context, tunnel.getCertificate());
+        MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
+        Message message = messageFactory.create(createMessageId(), context);
         this.tryCreateFuture(context);
         RespondFuture<UID> respondFuture = context.getRespondFuture();
-        if (respondFuture != null)
+        if (respondFuture != null) {
             this.putFuture(message.getId(), respondFuture);
-        this.writeQueue.addMessage(message);
-        tunnel.write(message, context.getWriteMessagePromise());
+        }
+        this.sentMessageQueue.addMessage(message);
+        this.tunnel.write(message, as(context.getWriteMessageFuture()));
+    }
+
+    @Override
+    public Message createMessage(MessageContext<UID> context) {
+        MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
+        Message message = messageFactory.create(createMessageId(), context);
+        this.tryCreateFuture(context);
+        RespondFuture<UID> respondFuture = context.getRespondFuture();
+        if (respondFuture != null) {
+            this.putFuture(message.getId(), respondFuture);
+        }
+        this.sentMessageQueue.addMessage(message);
+        return message;
+        //        this.tunnel.write(message, context.getWriteMessagePromise());
     }
 
     private void tryCreateFuture(MessageContext<UID> context) {
         if (context.isNeedResponseFuture() || context.isNeedWriteFuture()) {
-            WriteMessagePromise promise = context.getWriteMessagePromise();
+            WriteMessagePromise promise = as(context.getWriteMessageFuture());
             if (promise == null) {
                 promise = this.tunnel.createWritePromise(context.getWriteTimeout());
                 context.setWriteMessagePromise(promise);
             }
             if (context.isNeedResponseFuture()) {
                 RespondFuture<UID> respondFuture = context.getRespondFuture();
-                if (respondFuture == null)
+                if (respondFuture == null) {
                     respondFuture = new RespondFuture<>();
+                }
                 context.setRespondFuture(respondFuture);
                 promise.setRespondFuture(respondFuture);
             }
@@ -270,22 +316,22 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     }
 
     @Override
-    public List<Message<UID>> getSendMessages(Predicate<Message<UID>> filter) {
-        return this.writeQueue.getMessages(filter);
+    public List<Message> getSentMessages(Predicate<Message> filter) {
+        return this.sentMessageQueue.getMessages(filter);
     }
 
     @Override
-    public List<Message<UID>> getAllSendMessages() {
-        return this.writeQueue.getAllMessages();
+    public List<Message> getAllSendMessages() {
+        return this.sentMessageQueue.getAllMessages();
     }
 
     @Override
-    public EndpointState getState() {
+    public EndpointStatus getStatus() {
         return this.state;
     }
 
     @Override
-    public EndpointEventHandler<UID, NetEndpoint<UID>> getEventHandler() {
+    public EndpointEventsBoxHandler<UID, NetEndpoint<UID>> getEventHandler() {
         return this.eventHandler;
     }
 
@@ -296,43 +342,45 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     protected void setOnline() {
         this.offlineTime = 0;
-        this.state = EndpointState.ONLINE;
+        this.state = EndpointStatus.ONLINE;
         buses().onlineEvent().notify(this);
     }
 
     protected void setOffline() {
         this.offlineTime = System.currentTimeMillis();
-        this.state = EndpointState.OFFLINE;
+        this.state = EndpointStatus.OFFLINE;
         buses().offlineEvent().notify(this);
     }
 
     protected void setClose() {
-        this.state = EndpointState.CLOSE;
+        this.state = EndpointStatus.CLOSE;
         this.destroyFutureHolder();
         buses().closeEvent().notify(this);
     }
 
     @Override
     public boolean isOnline() {
-        return this.state == EndpointState.ONLINE;
+        return this.state == EndpointStatus.ONLINE;
     }
 
     @Override
     public boolean isOffline() {
-        return this.state == EndpointState.OFFLINE;
+        return this.state == EndpointStatus.OFFLINE;
     }
 
     @Override
     public boolean isClosed() {
-        return this.state == EndpointState.CLOSE;
+        return this.state == EndpointStatus.CLOSE;
     }
 
     private void offlineIf(NetTunnel<UID> tunnel) {
         synchronized (this) {
-            if (tunnel != currentTunnel())
+            if (tunnel != currentTunnel()) {
                 return;
-            if (!tunnel.isClosed())
+            }
+            if (!tunnel.isClosed()) {
                 tunnel.close();
+            }
             setOffline();
         }
     }
@@ -341,8 +389,9 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     public void offline() {
         synchronized (this) {
             NetTunnel<UID> tunnel = currentTunnel();
-            if (!tunnel.isClosed())
+            if (!tunnel.isClosed()) {
                 tunnel.close();
+            }
             setOffline();
         }
     }
@@ -350,17 +399,20 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     @Override
     public void heartbeat() {
         NetTunnel<UID> tunnel = currentTunnel();
-        if (tunnel.isAlive())
+        if (tunnel.isActive()) {
             tunnel.ping();
+        }
     }
 
     @Override
     public void close() {
-        if (this.state == EndpointState.CLOSE)
+        if (this.state == EndpointStatus.CLOSE) {
             return;
+        }
         synchronized (this) {
-            if (this.state == EndpointState.CLOSE)
+            if (this.state == EndpointStatus.CLOSE) {
                 return;
+            }
             this.offline();
             this.setClose();
         }
@@ -368,14 +420,16 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     private void checkOnlineCertificate(Certificate<UID> certificate) {
         Certificate<UID> currentCert = this.certificate;
-        if (!certificate.isAutherized()) {
+        if (!certificate.isAuthenticated()) {
             throw new ValidatorFailException(NetResultCode.UNLOGIN);
         }
-        if (currentCert != null && currentCert.isAutherized() && !currentCert.isSameCertificate(certificate)) { // 是否是同一个授权
+        if (currentCert != null && currentCert.isAuthenticated() && !currentCert.isSameCertificate(certificate)) { // 是否是同一个授权
             throw new ValidatorFailException(format("Certificate new [{}] 与 old [{}] 不同", certificate, this.certificate));
         }
         if (this.isClosed()) // 判断 session 状态是否可以重登
+        {
             throw new ValidatorFailException(NetResultCode.SESSION_LOSS);
+        }
     }
 
     @Override
@@ -389,6 +443,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         }
     }
 
+    // 接受 Tunnel
     private void acceptTunnel(NetTunnel<UID> newTunnel) throws ValidatorFailException {
         if (newTunnel.bind(this)) {
             NetTunnel<UID> oldTunnel = this.tunnel;

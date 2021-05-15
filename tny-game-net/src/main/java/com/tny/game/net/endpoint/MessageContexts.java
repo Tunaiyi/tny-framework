@@ -190,7 +190,7 @@ public class MessageContexts {
      * @param respondMessage 响应的请求消息
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(ResultCode code, Message<?> respondMessage) {
+    public static <UID> MessageContext<UID> respond(ResultCode code, Message respondMessage) {
         return respond(code, respondMessage.getHead());
     }
 
@@ -199,6 +199,8 @@ public class MessageContexts {
         private ResultCode code = ResultCode.SUCCESS;
 
         private int protocol;
+
+        private int line;
 
         private long toMessage;
 
@@ -232,7 +234,8 @@ public class MessageContexts {
         private DefaultMessageContext<UID> init(MessageMode mode, Protocol protocol, ResultCode code, Long toMessage) {
             ThrowAide.checkNotNull(protocol, "protocol is null");
             ThrowAide.checkNotNull(code, "code is null");
-            this.protocol = protocol.getProtocolNumber();
+            this.protocol = protocol.getProtocolId();
+            this.line = protocol.getLine();
             this.code = code;
             this.toMessage = toMessage;
             this.mode = mode;
@@ -240,8 +243,13 @@ public class MessageContexts {
         }
 
         @Override
-        public int getProtocolNumber() {
+        public int getProtocolId() {
             return this.protocol;
+        }
+
+        @Override
+        public int getLine() {
+            return this.line;
         }
 
         @Override
@@ -271,27 +279,12 @@ public class MessageContexts {
 
         @Override
         public <T> T getBody(Class<T> clazz) {
-            return ObjectAide.as(this.body, clazz);
+            return ObjectAide.convertTo(this.body, clazz);
         }
 
         @Override
         public <T> T getBody(ReferenceType<T> clazz) {
-            return ObjectAide.converTo(this.body, clazz);
-        }
-
-        @Override
-        public boolean existTail() {
-            return this.tail != null;
-        }
-
-        @Override
-        public <T> T getTail(Class<T> clazz) {
-            return ObjectAide.as(this.tail, clazz);
-        }
-
-        @Override
-        public <T> T getTail(ReferenceType<T> clazz) {
-            return ObjectAide.converTo(this.tail, clazz);
+            return ObjectAide.convertTo(this.body, clazz);
         }
 
         @Override
@@ -329,7 +322,7 @@ public class MessageContexts {
         }
 
         @Override
-        protected WriteMessagePromise getWriteMessagePromise() {
+        public WriteMessageFuture getWriteMessageFuture() {
             return this.writePromise;
         }
 
@@ -377,57 +370,6 @@ public class MessageContexts {
             return this.respondTimeout != null && this.respondFuture == null;
         }
 
-        // @Override
-        // public RequestContext<UID> willSendFuture(Consumer<MessageSendFuture<UID>> consumer) {
-        //     consumer.accept(this.loadOrCreateSendFuture());
-        //     return this;
-        // }
-        //
-        // @Override
-        // public RequestContext<UID> willSendFuture() {
-        //     this.loadOrCreateSendFuture();
-        //     return this;
-        // }
-        //
-        // @Override
-        // public MessageContext<UID> willWriteCallback(WriteMessageListener<UID> callback) {
-        //     this.loadOrCreateSendFuture().whenComplete(
-        //             (msg, cause) -> callback.onWrite(cause == null, cause, msg, this));
-        //     return this;
-        // }
-        //
-        // @Override
-        // public RequestContext<UID> willResponseFuture(Consumer<RespondFuture<UID>> consumer, long lifeTime) {
-        //     consumer.accept(this.loadOrCreateRespondFuture(lifeTime));
-        //     return this;
-        // }
-        //
-        // @Override
-        // public RequestContext<UID> willResponseFuture(long lifeTime) {
-        //     this.loadOrCreateRespondFuture(lifeTime);
-        //     return this;
-        // }
-        //
-        // private RespondFuture<UID> loadOrCreateRespondFuture(long lifeTime) {
-        //     if (this.respondFuture != null)
-        //         return this.respondFuture;
-        //     synchronized (this) {
-        //         if (this.respondFuture == null)
-        //             this.respondFuture = new RespondFuture<>(lifeTime);
-        //     }
-        //     return this.respondFuture;
-        // }
-        //
-        // private MessageSendFuture<UID> loadOrCreateSendFuture() {
-        //     if (this.sendFuture != null)
-        //         return this.sendFuture;
-        //     synchronized (this) {
-        //         if (this.sendFuture == null)
-        //             this.sendFuture = new MessageSendFuture<>();
-        //     }
-        //     return this.sendFuture;
-        // }
-
         @Override
         public boolean isHasRespondFuture() {
             return this.respondFuture != null;
@@ -447,26 +389,6 @@ public class MessageContexts {
         public WriteMessagePromise getWriteFuture() {
             return this.writePromise;
         }
-
-        // @Override
-        // public Object getBody() {
-        //     return body;
-        // }
-        //
-        // @Override
-        // public Object getTail() {
-        //     return tail;
-        // }
-
-        // @Override
-        // public boolean isHasAttachment() {
-        //     return this.attachment != null;
-        // }
-        //
-        // @Override
-        // public boolean isHasFuture() {
-        //     return this.sendFuture != null || this.respondFuture != null;
-        // }
 
         @Override
         public String toString() {

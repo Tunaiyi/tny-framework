@@ -15,11 +15,13 @@ public class AttributesHolder {
     private volatile transient Attributes attributes;
 
     public Attributes attributes() {
-        if (this.attributes != null)
+        if (this.attributes != null) {
             return this.attributes;
+        }
         synchronized (this) {
-            if (this.attributes != null)
+            if (this.attributes != null) {
                 return this.attributes;
+            }
             return this.attributes = ContextAttributes.create();
         }
     }

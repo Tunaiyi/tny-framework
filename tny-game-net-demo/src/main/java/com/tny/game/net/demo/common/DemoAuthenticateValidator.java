@@ -20,15 +20,16 @@ import static com.tny.game.common.utils.ObjectAide.*;
 public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 
     @Override
-    public Certificate<Long> validate(Tunnel<Long> tunnel, Message<Long> message) throws CommandException, ValidationException {
+    public Certificate<Long> validate(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory)
+            throws CommandException, ValidationException {
         Object value = message.getBody(Object.class);
         if (value instanceof List) {
             List paramList = as(value);
-            return Certificates.createAutherized(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
+            return factory.authenticate(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
         }
         if (value instanceof LoginDTO) {
             LoginDTO dto = as(value);
-            return Certificates.createAutherized(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
+            return factory.authenticate(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
         }
         throw new ValidationException("登录失败");
     }

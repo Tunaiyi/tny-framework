@@ -17,4 +17,5 @@ public interface Feature extends EnumIdentifiable<Integer> {
     boolean isHasHandler();
 
     Optional<Feature> getParent();
+
 }

@@ -1,0 +1,93 @@
+apply plugin: "org.ajoberstar.grgit"
+
+ext {
+
+    RELEASE_VERSION_SUFFIX = ".release"
+    RELEASE_PACK_SUFFIX = "-RELEASE"
+    SNAPSHOT_PACK_SUFFIX = "-SNAPSHOT"
+
+    grgiter = grgit.open(currentDir: project.getRootDir())
+
+    /**
+     * 获取Git 版本号
+     */
+    gitCommitId = {
+        return grgiter.head().id;
+    }
+
+    gitCommitDateTime = {
+        return grgiter.head().dateTime;
+    }
+
+    gitHeadCommit = {
+        return grgiter.head().dateTime;
+    }
+
+    gitBranchName = {
+        return grgiter.branch.current().getName()
+    }
+
+    gitBranchType = {
+        def name = gitBranchName();
+        if (name.toLowerCase().endsWith(".release"))
+            return "release";
+        if (name.toLowerCase().endsWith(".x"))
+            return "dev";
+        return "test";
+    }
+
+    isConfigChange = { dir ->
+        def status = grgiter.status();
+        def changeConfig = []
+        for (String change : status.unstaged.getAllChanges()) {
+            if (change.startsWith(dir))
+                changeConfig.add(change)
+        }
+        return !changeConfig.isEmpty();
+    }
+
+    /**
+     * 获取Git Tag
+     */
+    gitTag = {
+        def tag = grgiter.describe {
+            tags = true
+            match = ["*.release"]
+        }
+        if (tag == null) {
+            return null
+        }
+        def tags = grgiter.tag.list()
+                .findAll { it.name == tag }
+        if (tags.isEmpty()) {
+            return null
+        }
+        return tags[0]
+    }
+
+    isReleaseVersion = { versionNumber ->
+        return versionNumber.endsWith(RELEASE_VERSION_SUFFIX)
+    }
+
+    parseBranchVersion = { version ->
+        if (isReleaseVersion(version)) {
+            return version.substring(0, version.length() - RELEASE_VERSION_SUFFIX.length())
+        }
+        return version
+    }
+
+    parseProjectVersion = { version ->
+        if (isReleaseVersion(version)) {
+            return version.substring(0, version.length() - RELEASE_VERSION_SUFFIX.length()) + RELEASE_PACK_SUFFIX
+        }
+        return version + SNAPSHOT_PACK_SUFFIX
+    }
+
+    branchName = gitBranchName()
+    branchVersion = parseBranchVersion(branchName)
+    projectVersion = parseProjectVersion(branchName)
+    commitId = gitCommitId()
+    commitTime = gitCommitDateTime().format("yyyyMMdd_HHmm")
+    buildTime = new Date().format("yyyyMMdd_HHmm", TimeZone.getDefault())
+
+}

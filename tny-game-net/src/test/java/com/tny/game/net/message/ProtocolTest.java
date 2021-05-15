@@ -5,7 +5,7 @@ import org.junit.runner.*;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 public abstract class ProtocolTest {
 
     @Mock
-    public Message<Long> message;
+    public Message message;
 
     @Mock
     public MessageHead header;
@@ -36,27 +36,27 @@ public abstract class ProtocolTest {
     @Test
     public void getProtocol() {
         Protocol protocol = protocol();
-        assertEquals(protocolId, protocol.getProtocolNumber());
+        assertEquals(this.protocolId, protocol.getProtocolId());
     }
 
     @Test
     public void isOwn() {
         Protocol protocol = protocol();
-        when(message.getHead()).thenReturn(header);
-        when(header.getProtocolNumber()).thenReturn(-1000);
-        assertFalse(protocol.isOwn(message));
-        when(message.getHead()).thenReturn(header);
-        when(message.getProtocolNumber()).thenReturn(protocol.getProtocolNumber());
-        assertTrue(protocol.isOwn(message));
+        when(this.message.getHead()).thenReturn(this.header);
+        when(this.header.getProtocolId()).thenReturn(-1000);
+        assertFalse(protocol.isOwn(this.message));
+        when(this.message.getHead()).thenReturn(this.header);
+        when(this.message.getProtocolId()).thenReturn(protocol.getProtocolId());
+        assertTrue(protocol.isOwn(this.message));
     }
 
     @Test
     public void isOwn1() {
         Protocol protocol = protocol();
-        when(header.getProtocolNumber()).thenReturn(-1000);
-        assertFalse(protocol.isOwn(header));
-        when(header.getProtocolNumber()).thenReturn(protocol.getProtocolNumber());
-        assertTrue(protocol.isOwn(header));
+        when(this.header.getProtocolId()).thenReturn(-1000);
+        assertFalse(protocol.isOwn(this.header));
+        when(this.header.getProtocolId()).thenReturn(protocol.getProtocolId());
+        assertTrue(protocol.isOwn(this.header));
     }
 
 }

@@ -11,7 +11,7 @@ public interface CodecConfig {
     /**
      * @return 消息编解码器
      */
-    Codec<Message<?>> getMessageCodec();
+    Codec<Message> getMessageCodec();
 
     /**
      * @return 数据包校验器

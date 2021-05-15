@@ -40,8 +40,9 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
             cmd.cancel();
             this.executeCommand(cmd);
         }
-        for (ActorCommandBox box : boxes())
+        for (ActorCommandBox box : boxes()) {
             box.getActorCell().terminate();
+        }
     }
 
     boolean isTerminated() {

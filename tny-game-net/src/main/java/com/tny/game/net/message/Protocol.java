@@ -7,7 +7,12 @@ public interface Protocol {
     /**
      * @return 协议号
      */
-    int getProtocolNumber();
+    int getProtocolId();
+
+    /**
+     * @return 获取信道号
+     */
+    int getLine();
 
     /**
      * 指定消息是否是属于此协议
@@ -16,7 +21,7 @@ public interface Protocol {
      * @return
      */
     default boolean isOwn(MessageHead head) {
-        return this.getProtocolNumber() == head.getProtocolNumber();
+        return this.getProtocolId() == head.getProtocolId();
     }
 
     /**
@@ -25,8 +30,8 @@ public interface Protocol {
      * @param subject 消息
      * @return
      */
-    default boolean isOwn(MessageSubject subject) {
-        return this.getProtocolNumber() == subject.getProtocolNumber();
+    default boolean isOwn(MessageContent subject) {
+        return this.getProtocolId() == subject.getProtocolId();
     }
 
 }

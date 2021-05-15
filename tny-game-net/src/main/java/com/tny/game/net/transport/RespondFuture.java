@@ -4,7 +4,7 @@ import com.tny.game.net.message.*;
 
 import java.util.concurrent.CompletableFuture;
 
-public class RespondFuture<UID> extends CompletableFuture<Message<UID>> {
+public class RespondFuture<UID> extends CompletableFuture<Message> {
 
     public static final long DEFAULT_FUTURE_TIMEOUT = 10000L;
 
@@ -15,8 +15,9 @@ public class RespondFuture<UID> extends CompletableFuture<Message<UID>> {
     }
 
     public RespondFuture(long timeout) {
-        if (timeout <= 0)
+        if (timeout <= 0) {
             timeout = DEFAULT_FUTURE_TIMEOUT;
+        }
         this.timeout = System.currentTimeMillis() + timeout;
     }
 
@@ -26,7 +27,7 @@ public class RespondFuture<UID> extends CompletableFuture<Message<UID>> {
     }
 
     public boolean isTimeout() {
-        return System.currentTimeMillis() >= timeout;
+        return System.currentTimeMillis() >= this.timeout;
     }
 
 }

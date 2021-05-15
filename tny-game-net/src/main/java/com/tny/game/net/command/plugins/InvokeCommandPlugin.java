@@ -21,14 +21,14 @@ public interface InvokeCommandPlugin<UID, O> extends CommandPlugin<UID, O> {
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> tunnel, Message<UID> message, CommandContext context, O attribute) throws Exception {
-        if (context instanceof InvokeContext)
-            this.execute(tunnel, message, (InvokeContext) context, attribute);
-        else
+    default void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, O attribute) throws Exception {
+        if (context instanceof ControllerMessageCommandContext) {
+            this.execute(tunnel, message, (ControllerMessageCommandContext)context, attribute);
+        } else {
             throw new CommandException(NetResultCode.DISPATCH_EXCEPTION,
-                    StringAide.format("{} {} is not class{}", context.getClass(), context.getName(), InvokeContext.class));
+                    StringAide.format("{} {} is not class{}", context.getClass(), context.getName(), ControllerMessageCommandContext.class));
+        }
     }
-
 
     /**
      * 请求过滤
@@ -38,7 +38,6 @@ public interface InvokeCommandPlugin<UID, O> extends CommandPlugin<UID, O> {
      * @param context 上下文
      * @throws Exception 异常
      */
-    void execute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context, O attribute) throws Exception;
-
+    void execute(Tunnel<UID> tunnel, Message message, ControllerMessageCommandContext context, O attribute) throws Exception;
 
 }

@@ -34,8 +34,9 @@ public class NumberAide {
     private static int getDigitsLength(int value) {
         value = value > 0 ? value : -value;
         for (int index = 0; index < intSizeTable.length; index++) {
-            if (value <= intSizeTable[index])
+            if (value <= intSizeTable[index]) {
                 return index + 1;
+            }
         }
         throw new IllegalArgumentException();
     }
@@ -44,12 +45,12 @@ public class NumberAide {
     public static long getDigitsLength(long value) {
         value = value > 0 ? value : -value;
         for (int index = 0; index < longSizeTable.length; index++) {
-            if (value <= longSizeTable[index])
+            if (value <= longSizeTable[index]) {
                 return index + 1;
+            }
         }
         throw new IllegalArgumentException();
     }
-
 
     public static void main(String[] args) {
         for (int i : intSizeTable) {
@@ -60,264 +61,332 @@ public class NumberAide {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     public static <N extends Number> N as(Number source, N target) {
         Number value;
-        if (target instanceof Integer)
+        if (target instanceof Integer) {
             value = source.intValue();
-        else if (target instanceof Long)
+        } else if (target instanceof Long) {
             value = source.longValue();
-        else if (target instanceof Float)
+        } else if (target instanceof Float) {
             value = source.floatValue();
-        else if (target instanceof Double)
+        } else if (target instanceof Double) {
             value = source.doubleValue();
-        else if (target instanceof Short)
+        } else if (target instanceof Short) {
             value = source.shortValue();
-
-        else if (target instanceof Byte)
+        } else if (target instanceof Byte) {
             value = source.byteValue();
-        else
+        } else {
             value = source.intValue();
-        return (N) value;
+        }
+        return (N)value;
     }
 
     @SuppressWarnings("unchecked")
-    public static <N extends Number> N as(Object source, Class<N> clazz) {
-        Number value;
-        if (!(source instanceof Number))
-            throw new ClassCastException(format("{} {} 不属于 {}", source, source.getClass(), Number.class));
-        value = (Number) source;
-        if (Integer.class == clazz || int.class == clazz)
-            value = value.intValue();
-        else if (Long.class == clazz || long.class == clazz)
-            value = value.longValue();
-        else if (Float.class == clazz || float.class == clazz)
-            value = value.floatValue();
-        else if (Double.class == clazz || double.class == clazz)
-            value = value.doubleValue();
-        else if (Short.class == clazz || short.class == clazz)
-            value = value.shortValue();
-        else if (Byte.class == clazz || byte.class == clazz)
-            value = value.byteValue();
-        else
-            value = value.intValue();
-        return (N) value;
+    public static <N extends Number> N as(Number source, Class<N> clazz) {
+        //        Number value;
+        //        if (!(source instanceof Number)) {
+        //            throw new ClassCastException(format("{} {} 不属于 {}", source, source.getClass(), Number.class));
+        //        }
+        //        value = (Number)source;
+        if (Integer.class == clazz || int.class == clazz) {
+            source = source.intValue();
+        } else if (Long.class == clazz || long.class == clazz) {
+            source = source.longValue();
+        } else if (Float.class == clazz || float.class == clazz) {
+            source = source.floatValue();
+        } else if (Double.class == clazz || double.class == clazz) {
+            source = source.doubleValue();
+        } else if (Short.class == clazz || short.class == clazz) {
+            source = source.shortValue();
+        } else if (Byte.class == clazz || byte.class == clazz) {
+            source = source.byteValue();
+        } else {
+            source = source.intValue();
+        }
+        return (N)source;
     }
 
-    public static <N extends Number> N as(String source, Class<N> clazz) {
-        if (Integer.class == clazz || int.class == clazz)
+    public static <N extends Number> N parse(String source, Class<N> clazz) {
+        if (Integer.class == clazz || int.class == clazz) {
             return ObjectAide.as(Integer.parseInt(source));
-        else if (Long.class == clazz || long.class == clazz)
+        } else if (Long.class == clazz || long.class == clazz) {
             return ObjectAide.as(Long.parseLong(source));
-        else if (Float.class == clazz || float.class == clazz)
+        } else if (Float.class == clazz || float.class == clazz) {
             return ObjectAide.as(Float.parseFloat(source));
-        else if (Double.class == clazz || double.class == clazz)
+        } else if (Double.class == clazz || double.class == clazz) {
             return ObjectAide.as(Double.parseDouble(source));
-        else if (Short.class == clazz || short.class == clazz)
+        } else if (Short.class == clazz || short.class == clazz) {
             return ObjectAide.as(Short.parseShort(source));
-        else if (Byte.class == clazz || byte.class == clazz)
+        } else if (Byte.class == clazz || byte.class == clazz) {
             return ObjectAide.as(Byte.parseByte(source));
+        }
         throw new IllegalArgumentException(
                 format("{} is not number", source));
     }
 
-
     public static <N extends Number> N add(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other;
-        if (other == null)
+        }
+        if (other == null) {
             return one;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return as(one.intValue() + other.intValue(), one);
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return as(one.longValue() + other.longValue(), one);
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return as(one.floatValue() + other.floatValue(), one);
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return as(one.doubleValue() + other.doubleValue(), one);
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return as(one.shortValue() + other.shortValue(), one);
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return as(one.byteValue() + other.byteValue(), one);
+        }
         return as(one.doubleValue() + other.doubleValue(), one);
     }
 
     public static <N extends Number> N sub(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other;
-        if (other == null)
+        }
+        if (other == null) {
             return one;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return as(one.intValue() - other.intValue(), one);
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return as(one.longValue() - other.longValue(), one);
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return as(one.floatValue() - other.floatValue(), one);
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return as(one.doubleValue() - other.doubleValue(), one);
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return as(one.shortValue() - other.shortValue(), one);
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return as(one.byteValue() - other.byteValue(), one);
+        }
         return as(one.doubleValue() - other.doubleValue(), one);
     }
 
     public static <N extends Number> N multiply(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other;
-        if (other == null)
+        }
+        if (other == null) {
             return one;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return as(one.intValue() * other.intValue(), one);
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return as(one.longValue() * other.longValue(), one);
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return as(one.floatValue() * other.floatValue(), one);
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return as(one.doubleValue() * other.doubleValue(), one);
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return as(one.shortValue() * other.shortValue(), one);
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return as(one.byteValue() * other.byteValue(), one);
+        }
         return as(one.doubleValue() * other.doubleValue(), one);
     }
 
     public static <N extends Number> double divideAsDouble(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other.floatValue();
-        if (other == null)
+        }
+        if (other == null) {
             return one.floatValue();
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         return as(one.doubleValue() / other.doubleValue(), Double.class);
     }
 
     public static <N extends Number> float divideAsFloat(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other.floatValue();
-        if (other == null)
+        }
+        if (other == null) {
             return one.floatValue();
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) ||
-            numClass.isAssignableFrom(Byte.class))
+                numClass.isAssignableFrom(Byte.class)) {
             return as(one.floatValue() / other.floatValue(), Float.class);
+        }
         // if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
         //     return as(one.doubleValue() / other.doubleValue(), Float.class);
         return as(one.doubleValue() / other.doubleValue(), Float.class);
     }
 
     public static <N extends Number> N divide(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other;
-        if (other == null)
+        }
+        if (other == null) {
             return one;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return as(one.intValue() / other.intValue(), one);
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return as(one.longValue() / other.longValue(), one);
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return as(one.floatValue() / other.floatValue(), one);
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return as(one.doubleValue() / other.doubleValue(), one);
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return as(one.shortValue() / other.shortValue(), one);
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return as(one.byteValue() / other.byteValue(), one);
+        }
         return as(one.doubleValue() / other.doubleValue(), one);
     }
 
     public static <N extends Number> N mod(N one, N other) {
-        if (one == null)
+        if (one == null) {
             return other;
-        if (other == null)
+        }
+        if (other == null) {
             return one;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return as(one.intValue() % other.intValue(), one);
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return as(one.longValue() % other.longValue(), one);
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return as(one.floatValue() % other.floatValue(), one);
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return as(one.doubleValue() % other.doubleValue(), one);
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return as(one.shortValue() % other.shortValue(), one);
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return as(one.byteValue() % other.byteValue(), one);
+        }
         return as(one.doubleValue() % other.doubleValue(), one);
     }
 
     public static boolean less(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() < other.intValue();
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return one.longValue() < other.longValue();
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return one.floatValue() < other.floatValue();
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return one.doubleValue() < other.doubleValue();
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return one.shortValue() < other.shortValue();
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return one.byteValue() < other.byteValue();
+        }
         return one.doubleValue() < other.doubleValue();
     }
 
-
     public static boolean lessEqual(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() <= other.intValue();
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return one.longValue() <= other.longValue();
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return one.floatValue() <= other.floatValue();
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return one.doubleValue() <= other.doubleValue();
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return one.shortValue() <= other.shortValue();
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return one.byteValue() <= other.byteValue();
+        }
         return one.doubleValue() <= other.doubleValue();
     }
 
-
     public static boolean greater(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() > other.intValue();
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return one.longValue() > other.longValue();
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return one.floatValue() > other.floatValue();
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return one.doubleValue() > other.doubleValue();
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return one.shortValue() > other.shortValue();
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return one.byteValue() > other.byteValue();
+        }
         return one.doubleValue() > other.doubleValue();
     }
 
     public static boolean greaterEqual(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() >= other.intValue();
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return one.longValue() >= other.longValue();
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return one.floatValue() >= other.floatValue();
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return one.doubleValue() >= other.doubleValue();
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return one.shortValue() >= other.shortValue();
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return one.byteValue() >= other.byteValue();
+        }
         return one.doubleValue() >= other.doubleValue();
     }
 
@@ -331,25 +400,32 @@ public class NumberAide {
 
     public static boolean equal(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class))
+        if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() == other.intValue();
-        if (numClass.isAssignableFrom(Long.class))
+        }
+        if (numClass.isAssignableFrom(Long.class)) {
             return one.longValue() == other.longValue();
-        if (numClass.isAssignableFrom(Float.class))
+        }
+        if (numClass.isAssignableFrom(Float.class)) {
             return one.floatValue() == other.floatValue();
-        if (numClass.isAssignableFrom(Double.class))
+        }
+        if (numClass.isAssignableFrom(Double.class)) {
             return one.doubleValue() == other.doubleValue();
-        if (numClass.isAssignableFrom(Short.class))
+        }
+        if (numClass.isAssignableFrom(Short.class)) {
             return one.shortValue() == other.shortValue();
-        if (numClass.isAssignableFrom(Byte.class))
+        }
+        if (numClass.isAssignableFrom(Byte.class)) {
             return one.byteValue() == other.byteValue();
+        }
         return one.doubleValue() == other.doubleValue();
     }
 
     public static int compare(Number one, Number other) {
         Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class))
+        if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class)) {
             return one.intValue() - other.intValue();
+        }
         if (numClass.isAssignableFrom(Long.class)) {
             long value = one.longValue() - other.longValue();
             return value == 0 ? 0 : value > 0 ? 1 : -1;
@@ -371,8 +447,9 @@ public class NumberAide {
     private static Class<?> findClass(Class<?>... classes) {
         for (Class<?> clazz : NUM_CLASSES) {
             for (Class<?> findClass : classes) {
-                if (clazz.isAssignableFrom(findClass))
+                if (clazz.isAssignableFrom(findClass)) {
                     return findClass;
+                }
             }
         }
         return NUM_CLASSES[0];
@@ -389,7 +466,6 @@ public class NumberAide {
         return Byte.compare(x, y);
     }
 
-
     /**
      * 降序比较
      *
@@ -400,7 +476,6 @@ public class NumberAide {
     public static int desCompare(byte x, byte y) {
         return Byte.compare(y, x);
     }
-
 
     /**
      * 升序比较
@@ -527,7 +602,6 @@ public class NumberAide {
         return shift;
     }
 
-
     // public static String numberUnsignedConvert(long val, ScaleCharacterSet set) {
     //     int mag = Long.SIZE - Long.numberOfLeadingZeros(val);
     //     int shift = shift(set.length());
@@ -568,10 +642,12 @@ public class NumberAide {
 
     public static String numberConverter(int number, ScaleCharacterSet set) {
         int radix = set.length();
-        if (radix < Character.MIN_RADIX)
+        if (radix < Character.MIN_RADIX) {
             radix = 10;
-        if (radix == 10)
+        }
+        if (radix == 10) {
             return Long.toString(number);
+        }
         char[] buf = new char[33];
         int charPos = buf.length - 1;
         int value = number;
@@ -592,10 +668,12 @@ public class NumberAide {
 
     public static String numberConverter(long number, ScaleCharacterSet set) {
         int radix = set.length();
-        if (radix < Character.MIN_RADIX)
+        if (radix < Character.MIN_RADIX) {
             radix = 10;
-        if (radix == 10)
+        }
+        if (radix == 10) {
             return Long.toString(number);
+        }
         char[] buf = new char[65];
         int charPos = buf.length - 1;
         long value = number;
@@ -604,15 +682,14 @@ public class NumberAide {
             value = -value;
         }
         while (value <= -radix) {
-            buf[charPos--] = set.getChar((int) (-(value % radix)));
+            buf[charPos--] = set.getChar((int)(-(value % radix)));
             value = value / radix;
         }
-        buf[charPos] = set.getChar((int) (-value));
+        buf[charPos] = set.getChar((int)(-value));
         if (negative) {
             buf[--charPos] = '-';
         }
         return new String(buf, charPos, (buf.length - charPos));
     }
-
 
 }

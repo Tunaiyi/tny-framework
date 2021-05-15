@@ -2,7 +2,7 @@ package com.tny.game.base.item.xml;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.collection.map.*;
 import com.tny.game.common.result.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
@@ -12,6 +12,7 @@ import org.junit.*;
 import java.util.HashMap;
 
 public class XMLDemandTest {
+
     /**
      * 消耗物品在公式中的名字
      */
@@ -71,6 +72,7 @@ public class XMLDemandTest {
         protected void init(ItemModelContext context) {
             super.init(context);
         }
+
     }
 
     ;

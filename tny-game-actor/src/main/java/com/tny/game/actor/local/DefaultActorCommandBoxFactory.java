@@ -29,24 +29,27 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
             int stepSize = this.getStepSize();
             while (!queue.isEmpty()) {
                 ActorCommand<?> cmd = queue.peek();
-                if (cmd == delimiter)
+                if (cmd == delimiter) {
                     break;
+                }
                 queue.poll();
-                if (!cmd.isWork())
+                if (!cmd.isWork()) {
                     continue;
+                }
                 this.executeCommand(cmd);
                 runSize++;
                 if (!cmd.isDone()) {
-                    if (delimiter == null)
+                    if (delimiter == null) {
                         delimiter = cmd;
+                    }
                     queue.add(cmd);
                 }
-                if (runSize >= stepSize)
+                if (runSize >= stepSize) {
                     break;
+                }
             }
             for (CommandBox commandBox : boxes()) {
                 commandBox.process();
-                // this.worker.execute(commandBox);
             }
         }
 

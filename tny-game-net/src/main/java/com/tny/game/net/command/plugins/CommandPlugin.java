@@ -21,6 +21,6 @@ public interface CommandPlugin<UID, O> {
      * @param context 上下文
      * @throws Exception 异常
      */
-    void execute(Tunnel<UID> tunnel, Message<UID> message, CommandContext context, O attribute) throws Exception;
+    void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, O attribute) throws Exception;
 
 }

@@ -10,6 +10,8 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 
     private long id;
 
+    private int line;
+
     private int protocol = -1;
 
     private long time;
@@ -21,19 +23,20 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     // protected CommonMessageHead() {
     // }
 
-    public CommonMessageHead(long id, MessageMode mode, int protocol, int code, long toMessage, long time) {
+    public CommonMessageHead(long id, MessageMode mode, int line, int protocol, int code, long toMessage, long time) {
         super(mode);
         this.id = id;
+        this.line = line;
         this.protocol = protocol;
         this.time = time;
         this.toMessage = toMessage;
         this.code = code;
     }
 
-    public CommonMessageHead(long id, MessageSubject subject) {
+    public CommonMessageHead(long id, MessageContent subject) {
         super(subject.getMode());
         this.id = id;
-        this.protocol = subject.getProtocolNumber();
+        this.protocol = subject.getProtocolId();
         this.code = subject.getCode();
         this.toMessage = subject.getToMessage();
         this.time = System.currentTimeMillis();
@@ -60,8 +63,13 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
-    public int getProtocolNumber() {
+    public int getProtocolId() {
         return this.protocol;
+    }
+
+    @Override
+    public int getLine() {
+        return this.line;
     }
 
     CommonMessageHead setId(long id) {
@@ -91,14 +99,16 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof CommonMessageHead))
+        }
+        if (!(o instanceof CommonMessageHead)) {
             return false;
-        CommonMessageHead that = (CommonMessageHead) o;
+        }
+        CommonMessageHead that = (CommonMessageHead)o;
         return new EqualsBuilder()
                 .append(getId(), that.getId())
-                .append(protocol, that.protocol)
+                .append(this.protocol, that.protocol)
                 .append(getTime(), that.getTime())
                 .append(getToMessage(), that.getToMessage())
                 .append(getCode(), that.getCode())
@@ -109,10 +119,11 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(getId())
-                .append(protocol)
+                .append(this.protocol)
                 .append(getTime())
                 .append(getToMessage())
                 .append(getCode())
                 .toHashCode();
     }
+
 }

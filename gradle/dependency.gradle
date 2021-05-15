@@ -1,0 +1,305 @@
+ext.vers = [
+
+        jmock                               : "2.12.0",
+        junit                               : "5.7.0",
+        junit_platform                      : "1.7.0",
+        junirocketmqt5                      : "5.4.2",
+        mockito                             : "3.9.0",
+        netty                               : "4.1.63.Final",
+
+        spring                              : "5.3.5",
+        slf4j                               : "1.7.30",
+        log4j2                              : "2.14.1",
+
+        jackson                             : "2.12.3",
+        swagger_v3                          : "2.1.4",
+        springfox                           : "2.9.2",
+        springdoc                           : "1.4.6",
+        open_feign                          : "10.10.1",
+        okhttp3                             : "4.9.1",
+
+        spring_batch                        : "4.3.2",
+        spring_cloud                        : "2020.0.2",
+        spring_retry                        : "1.3.1",
+        spring_security                     : "5.4.6",
+        spring_boot                         : "2.4.4",
+        spring_security_oauth2_autoconfigure: "2.4.4",
+        spring_boot_admin                   : "2.3.1",
+
+        alibaba_cloud                       : "2021.1",
+
+        httpclient                          : "4.5.12",
+        redisson                            : "3.13.6",
+
+        tny_framework                       : "4.2.x-SNAPSHOT",
+
+        poi                                 : "4.1.2",
+        jade                                : "1.6.x-SNAPSHOT",
+        jjwt                                : "0.10.7",
+
+        kafka_clients                       : "org.apache.kafka:kafka-clients:0.9.0.1",
+
+        rocketmq                            : "4.6.0",
+        rocketmq_boot                       : "2.1.1",
+        netty_tcnative_boringssl_static     : "2.0.38.Final",
+]
+
+ext.libs = [
+
+        slf4j_api                                : "org.slf4j:slf4j-api:${vers.slf4j}",
+        slf4j_simple                             : "org.slf4j:slf4j-simple:${vers.slf4j}",
+        log4j_over_slf4j                         : "org.slf4j:log4j-over-slf4j:${vers.slf4j}",
+        jcl_over_slf4j                           : "org.slf4j:jcl-over-slf4j:${vers.slf4j}",
+
+        log4j_api                                : "org.apache.logging.log4j:log4j-api:${vers.log4j2}",
+        log4j_core                               : "org.apache.logging.log4j:log4j-core:${vers.log4j2}",
+        log4j_slf4j_impl                         : "org.apache.logging.log4j:log4j-slf4j-impl:${vers.log4j2}",
+        log4j_web                                : "org.apache.logging.log4j:log4j-web",
+
+
+        javassist                                : "org.javassist:javassist:3.27.0-GA",
+        asm                                      : "org.ow2.asm:asm:5.0.4",
+
+
+        disruptor                                : "com.lmax:disruptor:3.4.2",
+
+        cglib_nodep                              : "cglib:cglib-nodep:3.2.0",
+
+        json_smart                               : "net.minidev:json-smart:2.3",
+        lang_tag                                 : "com.nimbusds:lang-tag:1.4.4",
+        jackson_bom                              : "com.fasterxml.jackson:jackson-bom:${vers.jackson}",
+        jackson_core                             : "com.fasterxml.jackson.core:jackson-core",
+        jackson_databind                         : "com.fasterxml.jackson.core:jackson-databind",
+        jackson_annotations                      : "com.fasterxml.jackson.core:jackson-annotations",
+        jackson_dataformat_yaml                  : "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml",
+        jackson_dataformat_xml                   : "com.fasterxml.jackson.dataformat:jackson-dataformat-xml",
+        jackson_datatype_guava                   : "com.fasterxml.jackson.datatype:jackson-datatype-guava",
+        jackson_datatype_java8                   : "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+
+
+        fastjson                                 : "com.alibaba:fastjson:1.2.73",
+        validation_api                           : "javax.validation:validation-api:2.0.1.Final",
+
+        netty                                    : "io.netty:netty-all:${vers.netty}",
+        netty_all                                : "io.netty:netty-all:${vers.netty}",
+        netty_tcnative_boringssl_static          : "io.netty:netty-tcnative-boringssl-static:${vers.netty_tcnative_boringssl_static}",
+
+        orika                                    : "ma.glasnost.orika:orika-core:1.5.4",
+        oshi_core                                : "com.github.oshi:oshi-core:5.2.2",
+
+
+        commons_codec                            : "commons-codec:commons-codec:1.14",
+        commons_io                               : "commons-io:commons-io:2.8.0",
+        commons_beanutils                        : "commons-beanutils:commons-beanutils:1.9.4",
+        commons_daemon                           : "commons-daemon:commons-daemon:1.2.3",
+        commons_lang                             : "commons-lang:commons-lang:2.6",
+        commons_collections                      : "commons-collections:commons-collections:3.2.2",
+        commons_configuration                    : "commons-configuration:commons-configuration:1.10",
+        commons_pool                             : "commons-pool:commons-pool:1.6",
+        commons_lang3                            : "org.apache.commons:commons-lang3:3.11",
+        commons_collections4                     : "org.apache.commons:commons-collections4:4.4",
+        commons_pool2                            : "org.apache.commons:commons-pool2:2.9.0",
+        commons_crypto                           : "org.apache.commons:commons-crypto:1.1.0",
+        commons_dbcp2                            : "org.apache.commons:commons-dbcp2:2.8.0",
+        httpclient                               : "org.apache.httpcomponents:httpclient",
+        okio                                     : "com.squareup.okio:okio:2.10.0",
+        okhttp                                   : "com.squareup.okhttp:okhttp:2.7.5",
+        okhttp3                                  : "com.squareup.okhttp3:okhttp:$vers.okhttp3",
+        okhttp3_logging_interceptor              : "com.squareup.okhttp3:logging-interceptor:$vers.okhttp3",
+        druid                                    : "com.alibaba:druid:1.1.16",
+
+
+
+        zookeeper                                : "org.apache.zookeeper:zookeeper:3.4.14",
+
+
+        quartz_scheduler                         : "org.quartz-scheduler:quartz:2.3.2",
+
+
+        groovy_all                               : "org.codehaus.groovy:groovy-all:3.0.8",
+        luaj                                     : "org.luaj:luaj-jse:3.0.1",
+        mvel                                     : "org.mvel:mvel2:2.4.12.Final",
+        xstream                                  : "com.thoughtworks.xstream:xstream:1.4.11.1",
+
+        guava                                    : "com.google.guava:guava:30.0-jre",
+        google_api_client                        : "com.google.api-client:google-api-client:1.31.1",
+        google_api_oauth2                        : "com.google.auth:google-auth-library-oauth2-http:0.22.0",
+
+        protobuf_java3                           : "com.google.protobuf:protobuf-java:3.15.8",
+
+        joda_time                                : "joda-time:joda-time:2.10.2",
+
+        junit_jupiter_api                        : "org.junit.jupiter:junit-jupiter-api:$vers.junit",
+        junit_jupiter_engine                     : "org.junit.jupiter:junit-jupiter-engine:$vers.junit",
+        junit_vintage_engine                     : "org.junit.vintage:junit-vintage-engine:$vers.junit",
+        junit_platform_launcher                  : "org.junit.platform:junit-platform-launcher:$vers.junit_platform",
+        junit_platform_commons                   : "org.junit.platform:junit-platform-commons:$vers.junit_platform",
+
+        byte_buddy                               : "net.bytebuddy:byte-buddy:1.10.14",
+        byte_buddy_agent                         : "net.bytebuddy:byte-buddy-agent:1.10.14",
+
+        spring_messaging                         : "org.springframework:spring-messaging",
+
+        spring_retry                             : "org.springframework.retry:spring-retry:$vers.spring_retry",
+        spring_batch_core                        : "org.springframework.batch:spring-batch-core:$vers.spring_batch",
+
+        spring_test                              : "org.springframework:spring-test:${vers.spring}",
+        spring_core                              : "org.springframework:spring-core:${vers.spring}",
+        spring_beans                             : "org.springframework:spring-beans:${vers.spring}",
+        spring_context                           : "org.springframework:spring-context:${vers.spring}",
+        spring_context_support                   : "org.springframework:spring-context-support:${vers.spring}",
+        spring_tx                                : "org.springframework:spring-tx:${vers.spring}",
+        spring_jdbc                              : "org.springframework:spring-jdbc:${vers.spring}",
+        spring_web                               : "org.springframework:spring-web:${vers.spring}",
+        spring_webmvc                            : "org.springframework:spring-webmvc:${vers.spring}",
+        spring_aspects                           : "org.springframework:spring-aspects:${vers.spring}",
+        spring_orm                               : "org.springframework:spring-orm:${vers.spring}",
+
+        spring_boot_gradle_plugin                : "org.springframework.boot:spring-boot-gradle-plugin:$vers.spring_boot",
+        spring_boot_dependencies                 : "org.springframework.boot:spring-boot-dependencies:$vers.spring_boot",
+
+        spring_security_oauth2_boot_autoconfigure: "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$vers.spring_security_oauth2_autoconfigure",
+        spring_boot                              : "org.springframework.boot:spring-boot",
+        spring_boot_autoconfigure                : "org.springframework.boot:spring-boot-autoconfigure:$vers.spring_boot",
+        spring_boot_configuration_processor      : "org.springframework.boot:spring-boot-configuration-processor",
+        spring_boot_starter                      : "org.springframework.boot:spring-boot-starter",
+        spring_boot_starter_test                 : "org.springframework.boot:spring-boot-starter-test",
+        spring_boot_starter_web                  : "org.springframework.boot:spring-boot-starter-web",
+        spring_boot_starter_undertow             : "org.springframework.boot:spring-boot-starter-undertow",
+        spring_boot_starter_thymeleaf            : "org.springframework.boot:spring-boot-starter-thymeleaf",
+        spring_boot_starter_webflux              : "org.springframework.boot:spring-boot-starter-webflux",
+        spring_boot_starter_tomcat               : "org.springframework.boot:spring-boot-starter-tomcat",
+        spring_boot_starter_actuator             : "org.springframework.boot:spring-boot-starter-actuator",
+        spring_boot_starter_aop                  : "org.springframework.boot:spring-boot-starter-aop",
+        spring_boot_starter_log4j2               : "org.springframework.boot:spring-boot-starter-log4j2",
+        spring_boot_devtools                     : "org.springframework.boot:spring-boot-devtools",
+        spring_boot_mongodb                      : "org.springframework.boot:spring-boot-starter-data-mongodb",
+        spring_boot_redis                        : "org.springframework.boot:spring-boot-starter-data-redis",
+        spring_boot_starter_security             : "org.springframework.boot:spring-boot-starter-security",
+        spring_boot_starter_validation           : "org.springframework.boot:spring-boot-starter-validation",
+        spring_boot_starter_amqp                 : "org.springframework.boot:spring-boot-starter-amqp",
+        spring_boot_starter_cache                : "org.springframework.boot:spring-boot-starter-cache",
+//        spring_boot_starter_oauth2_resource_server: "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+//        spring_boot_starter_oauth2_client         : "org.springframework.boot:spring-boot-starter-oauth2-client",
+//        spring_security_jwt                       : "org.springframework.security:spring-security-jwt:$vers.spring_security_jwt",
+//        spring_security_oauth2                    : "org.springframework.security.oauth:spring-security-oauth2:$vers.spring_security_oauth2",
+        spring_boot_session_data_redis           : "org.springframework.session:spring-session-data-redis",
+
+
+        spring_security_bom                      : "org.springframework.security:spring-security-bom:$vers.spring_security",
+        spring_security_jose                     : "org.springframework.security:spring-security-oauth2-jose",
+        spring_security_oauth2                   : "org.springframework.security:spring-security-oauth2",
+        spring_security_core                     : "org.springframework.security:spring-security-core",
+        spring_security_oauth2_client            : "org.springframework.security:spring-security-oauth2-client",
+        spring_security_oauth2_resource_server   : "org.springframework.security:spring-security-oauth2-resource-server",
+
+
+        spring_cloud_dependencies                : "org.springframework.cloud:spring-cloud-dependencies:$vers.spring_cloud",
+        spring_cloud_commons                     : "org.springframework.cloud:spring-cloud-commons",
+        spring_cloud_config_server               : "org.springframework.cloud:spring-cloud-config-server",
+        spring_cloud_starter_security            : "org.springframework.cloud:spring-cloud-starter-security",
+        spring_cloud_starter_config              : "org.springframework.cloud:spring-cloud-starter-config",
+        spring_cloud_starter_sleuth              : "org.springframework.cloud:spring-cloud-starter-sleuth",
+        spring_cloud_starter_loadbalancer        : "org.springframework.cloud:spring-cloud-starter-loadbalancer",
+        spring_cloud_starter_bootstrap           : "org.springframework.cloud:spring-cloud-starter-bootstrap",
+        spring_cloud_starter_openfeign           : "org.springframework.cloud:spring-cloud-starter-openfeign",
+        spring_cloud_starter_oauth2              : "org.springframework.cloud:spring-cloud-starter-oauth2",
+        spring_cloud_starter_gateway             : "org.springframework.cloud:spring-cloud-starter-gateway",
+        spring_cloud_starter_eureka_server       : "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server",
+        spring_cloud_starter_eureka_client       : "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+        spring_cloud_starter_hystrix             : "org.springframework.cloud:spring-cloud-starter-netflix-hystrix",
+        spring_cloud_starter_zookeeper_discovery : "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery",
+        spring_boot_admin_dependencies           : "de.codecentric:spring-boot-admin-dependencies:$vers.spring_boot_admin",
+        spring_boot_admin_starter_server         : "de.codecentric:spring-boot-admin-starter-server",
+
+        alibaba_nacos_client                     : "com.alibaba.nacos:nacos-client:2.0.0",
+        alibaba_cloud_dependencies               : "com.alibaba.cloud:spring-cloud-alibaba-dependencies:$vers.alibaba_cloud",
+        alibaba_cloud_stream_binder_rocketmq     : "com.alibaba.cloud:spring-cloud-stream-binder-rocketmq",
+
+        alibaba_cloud_starter_bus_rocketmq       : "com.alibaba.cloud:spring-cloud-starter-bus-rocketmq",
+        alibaba_cloud_starter_stream_rocketmq    : "com.alibaba.cloud:spring-cloud-starter-stream-rocketmq",
+        alibaba_cloud_starter_nacos_config       : "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config",
+        alibaba_cloud_starter_nacos_discovery    : "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery",
+
+        smalldoc_spring_boot_starter             : "com.github.liuhuagui:smalldoc-spring-boot-starter:2.3.1",
+
+        open_feign_jackson                       : "io.github.openfeign:feign-jackson:$vers.open_feign",
+
+        tny_common_base                          : "com.tny.game:tny-game-common-base:$vers.tny_framework",
+        tny_common_lang                          : "com.tny.game:tny-game-common-lang:$vers.tny_framework",
+        tny_doc                                  : "com.tny.game:tny-game-doc:$vers.tny_framework",
+        tny_doc_annotation                       : "com.tny.game:tny-game-doc-annotation:$vers.tny_framework",
+        tny_web                                  : "com.tny.game:tny-game-web:$vers.tny_framework",
+        tny_loader                               : "com.tny.game:tny-game-loader:$vers.tny_framework",
+        tny_suite                                : "com.tny.game:tny-game-suite:$vers.tny_framework",
+        tny_protoex                              : "com.tny.game:tny-game-protoex:$vers.tny_framework",
+
+        protobuf_java                            : "com.google.protobuf:protobuf-java:3.8.0",
+        jprotobuf                                : "com.baidu:jprotobuf:2.4.8",
+        jprotobuf_precompile_plugin_gradle       : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.0",
+
+        swagger_models                           : "io.swagger.core.v3:swagger-models:$vers.swagger_v3",
+        swagger_annotations                      : "io.swagger.core.v3:swagger-annotations:$vers.swagger_v3",
+        springdoc_openapi_core                   : "org.springdoc:springdoc-openapi-core:$vers.springdoc",
+        springdoc_openapi_ui                     : "org.springdoc:springdoc-openapi-ui:$vers.springdoc",
+        springdoc_openapi_webmvc_core            : "org.springdoc:springdoc-openapi-webmvc-core:$vers.springdoc",
+        springdoc_openapi_data_rest              : "org.springdoc:springdoc-openapi-data-rest:$vers.springdoc",
+        springdoc_openapi_security               : "org.springdoc:springdoc-openapi-security:$vers.springdoc",
+        springdoc_openapi_webflux_ui             : "org.springdoc:springdoc-openapi-webflux-ui:$vers.springdoc",
+
+        aspectjrt                                : "org.aspectj:aspectjrt:1.9.5",
+
+        jjwt_api                                 : "io.jsonwebtoken:jjwt-api:$vers.jjwt",
+        jjwt_impl                                : "io.jsonwebtoken:jjwt-impl:$vers.jjwt",
+        jjwt_jackson                             : "io.jsonwebtoken:jjwt-jackson:$vers.jjwt",
+        java_jwt                                 : "com.auth0:java-jwt:3.10.0",
+        nimbus_jose_jwt                          : "com.nimbusds:nimbus-jose-jwt:8.19",
+        nimbus_oauth2_oidc_sdk                   : "com.nimbusds:oauth2-oidc-sdk:8.21",
+
+
+        kaptcha                                  : "com.github.penggle:kaptcha:2.3.2",
+        mail                                     : "com.sun.mail:javax.mail:1.6.2",
+        mail_api                                 : "javax.mail:javax.mail-api:1.6.2",
+        libphonenumber                           : "com.googlecode.libphonenumber:libphonenumber:8.12.3",
+        carrier                                  : "com.googlecode.libphonenumber:carrier:1.129",
+        aliyun_java_sdk_core                     : "com.aliyun:aliyun-java-sdk-core:4.5.0",
+        javaee                                   : "javax:javaee-api:8.0.1",
+
+        caffeine                                 : "com.github.ben-manes.caffeine:caffeine:2.8.8",
+
+        jedis                                    : "redis.clients:jedis:3.6.0",
+        redisson                                 : "org.redisson:redisson:${vers.redisson}",
+        redisson_spring_data                     : "org.redisson:redisson-spring-data-23:${vers.redisson}",
+        redisson_spring_boot_starter             : "org.redisson:redisson-spring-boot-starter:${vers.redisson}",
+
+        memcached_java_client                    : "com.whalin:Memcached-Java-Client:3.0.2",
+        mysql_connector                          : "mysql:mysql-connector-java:8.0.24",
+
+        jade                                     : "com.tny.paoding:paoding-rose-jade:${vers.jade}",
+
+        rocketmq_acl                             : "org.apache.rocketmq:rocketmq-acl:$vers.rocketmq",
+        rocketmq_client                          : "org.apache.rocketmq:rocketmq-client:$vers.rocketmq",
+        rocketmq_common                          : "org.apache.rocketmq:rocketmq-common:$vers.rocketmq",
+        rocketmq_logging                         : "org.apache.rocketmq:rocketmq-logging:$vers.rocketmq",
+        rocketmq_spring_boot                     : "org.apache.rocketmq:rocketmq-spring-boot:$vers.rocketmq_boot",
+        rocketmq_spring_boot_starter             : "org.apache.rocketmq:rocketmq-spring-boot-starter:$vers.rocketmq_boot",
+        micrometer_core                          : "io.micrometer:micrometer-core:1.5.5",
+        reactor_extra                            : "io.projectreactor.addons:reactor-extra:3.3.3.RELEASE",
+        reactor_core                             : "io.projectreactor:reactor-core:3.3.5.RELEASE",
+
+        kafka_clients                            : "org.apache.kafka:kafka-clients:0.9.0.1",
+        kafka                                    : "org.apache.kafka:kafka_2.11:0.9.0.1",
+
+        tencentcloud_sdk_java                    : "com.tencentcloudapi:tencentcloud-sdk-java:4.0.11",
+        tencentcloud_cos_sdk                     : "com.qcloud:cos_api:5.6.39",
+
+        jmock_junit5                             : "org.jmock:jmock-junit5:${vers.jmock}",
+        mockito                                  : "org.mockito:mockito-core:${vers.mockito}",
+
+        google_finbugs                           : "com.google.code.findbugs:jsr305:3.0.2",
+
+        poi                                      : "org.apache.poi:poi:${vers.poi}",
+        poi_ooxml                                : "org.apache.poi:poi-ooxml:${vers.poi}",
+        poi_ooxml_schemas                        : "org.apache.poi:poi-ooxml-schemas:${vers.poi}",
+
+]

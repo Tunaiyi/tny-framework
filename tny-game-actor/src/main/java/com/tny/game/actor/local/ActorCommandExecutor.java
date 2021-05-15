@@ -15,7 +15,7 @@ public class ActorCommandExecutor extends DefaultCommandExecutor implements Acto
     }
 
     public ActorCommandExecutor(String name, ExecutorService executor) {
-        super(name, executor);
+        super(name, 30, executor);
     }
 
     @Override

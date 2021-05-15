@@ -13,7 +13,7 @@ public class NettyClientBootstrapSetting extends CommonClientBootstrapSetting im
         this.setName(name);
     }
 
-    public NettyClientBootstrapSetting(AppContext appContext) {
+    public NettyClientBootstrapSetting(NetAppContext appContext) {
         super(appContext);
     }
 
@@ -21,7 +21,6 @@ public class NettyClientBootstrapSetting extends CommonClientBootstrapSetting im
     public String getChannelMaker() {
         return this.channelMaker;
     }
-
 
     @Override
     public NettyClientBootstrapSetting setName(String name) {

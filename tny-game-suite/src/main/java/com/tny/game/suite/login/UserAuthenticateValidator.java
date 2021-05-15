@@ -16,6 +16,8 @@ import javax.annotation.Resource;
 import java.time.Instant;
 import java.util.List;
 
+import static com.tny.game.net.transport.Certificates.*;
+
 public abstract class UserAuthenticateValidator extends GameAuthenticateValidator<Long> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticateValidator.class);
@@ -87,7 +89,8 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         return ticket;
     }
 
-    protected Certificate<Long> checkUserLogin(Tunnel<Long> tunnel, Message<Long> message, boolean relogin) throws CommandException {
+    protected Certificate<Long> checkUserLogin(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory, boolean relogin)
+            throws CommandException {
         List<String> params = message.getBody(BODY_CLASS);
         String openID = params.get(0);
         String openKey = params.get(1);
@@ -107,7 +110,11 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         tunnel.attributes().setAttribute(AttributesKeys.ACCOUNT_KEY, accountObj);
         tunnel.attributes().setAttribute(AttributesKeys.TICKET_KEY, ticket);
         LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.getRemoteAddress(), ticket.getOpenId(), accountObj.getUid());
-        return Certificates.createAutherized(ticket.getTokenId(), accountObj.getUid(), Instant.ofEpochMilli(ticket.getTime()), relogin);
+        if (relogin) {
+            return factory.authenticate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
+        } else {
+            return factory.reauthenticate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
+        }
     }
 
     public void setOnline(boolean online) {

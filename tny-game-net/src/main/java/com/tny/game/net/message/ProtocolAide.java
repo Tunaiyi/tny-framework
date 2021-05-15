@@ -6,39 +6,49 @@ public class ProtocolAide {
 
     protected static class DefaultProtocol implements Protocol {
 
-        private int protocol;
+        private int id;
 
-        private DefaultProtocol(int protocol) {
-            this.protocol = protocol;
+        private int line = 1;
+
+        private DefaultProtocol(int id) {
+            this.id = id;
         }
 
         @Override
-        public int getProtocolNumber() {
-            return this.protocol;
+        public int getProtocolId() {
+            return this.id;
         }
 
-        public void setProtocol(int protocol) {
-            this.protocol = protocol;
+        @Override
+        public int getLine() {
+            return this.line;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + protocol;
+            result = prime * result + this.id;
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
-            Protocol other = (Protocol) obj;
-            return protocol == other.getProtocolNumber();
+            }
+            Protocol other = (Protocol)obj;
+            return this.id == other.getProtocolId();
         }
 
     }

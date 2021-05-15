@@ -11,24 +11,24 @@ public class EndpointTestInstance<E extends NetEndpoint<Long>> {
 
     private MockNetTunnel tunnel;
 
-    private MockEndpointEventHandler<E> handler;
+    private MockEndpointEventsBoxHandler<E> handler;
 
-    public EndpointTestInstance(E endpoint, MockNetTunnel tunnel, MockEndpointEventHandler<E> handler) {
+    public EndpointTestInstance(E endpoint, MockNetTunnel tunnel, MockEndpointEventsBoxHandler<E> handler) {
         this.endpoint = endpoint;
         this.tunnel = tunnel;
         this.handler = handler;
     }
 
     public E getEndpoint() {
-        return endpoint;
+        return this.endpoint;
     }
 
     public MockNetTunnel getTunnel() {
-        return tunnel;
+        return this.tunnel;
     }
 
-    public MockEndpointEventHandler<E> getHandler() {
-        return handler;
+    public MockEndpointEventsBoxHandler<E> getHandler() {
+        return this.handler;
     }
 
 }

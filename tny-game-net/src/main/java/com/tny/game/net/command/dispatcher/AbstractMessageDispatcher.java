@@ -1,26 +1,21 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.collection.*;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
-import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
-import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
+import org.slf4j.*;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
@@ -33,32 +28,9 @@ import static com.tny.game.common.utils.StringAide.*;
  * <p>
  * 实现对controllerMap的初始化,派发消息流程<br>
  */
-public abstract class AbstractMessageDispatcher implements MessageDispatcher, MessageDispatcherContext {
+public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
-    /**
-     * 所有协议身法验证器
-     */
-    private AuthenticateValidator<?> defaultValidator;
-
-    /**
-     * 所有协议身法验证器
-     */
-    private EndpointKeeperManager endpointKeeperManager;
-
-    /**
-     * 插件管理器
-     */
-    private final Map<Class<?>, CommandPlugin<?, ?>> pluginMap = new CopyOnWriteMap<>();
-
-    /**
-     * 派发错误监听器
-     */
-    private final List<DispatchCommandListener> dispatchListeners = new CopyOnWriteArrayList<>();
-
-    /**
-     * 认证器列表
-     */
-    private final Map<Object, AuthenticateValidator<?>> authValidators = new CopyOnWriteMap<>();
+    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageDispatcher.class);
 
     /**
      * Controller Map
@@ -67,33 +39,32 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
 
     private final ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
-    private AppContext appContext;
+    protected final DefaultMessageDispatcherContext context;
 
-    public AbstractMessageDispatcher(AppContext appContext) {
-        this.appContext = appContext;
+    private final EndpointKeeperManager endpointKeeperManager;
+
+    protected AbstractMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
+        this.context = new DefaultMessageDispatcherContext(appContext);
+        this.endpointKeeperManager = endpointKeeperManager;
     }
 
     @Override
-    public AppContext getAppContext() {
-        return this.appContext;
-    }
-
-    @Override
-    public Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException {
+    public Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
         if (controller != null) {
-            return new ControllerMessageCommand(this, controller, tunnel, message);
+            return new ControllerMessageCommand(tunnel, controller, message, this.context, this.endpointKeeperManager);
         }
+        LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocol());
         if (message.getMode() == MessageMode.REQUEST) {
-            throw new CommandException(NetResultCode.NO_SUCH_PROTOCOL,
-                    format("{} controller [{}] not exist", message.getMode(), message.getProtocol()));
+            return new RunnableCommand(() -> {
+                tunnel.send(MessageContexts.respond(NetResultCode.NO_SUCH_PROTOCOL, message));
+            });
         }
         return null;
     }
 
-    @Override
-    public MethodControllerHolder getController(Object protocol, MessageMode mode) {
+    private MethodControllerHolder getController(Object protocol, MessageMode mode) {
         // 获取方法持有器
         MethodControllerHolder controller = null;
         final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(protocol);
@@ -101,113 +72,6 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
             controller = controllerMap.get(mode);
         }
         return controller;
-    }
-
-    @Override
-    public CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass) {
-        return this.pluginMap.get(pluginClass);
-    }
-
-    @Override
-    public AuthenticateValidator<?> getValidator(Object protocol, Class<? extends AuthenticateValidator<?>> validatorClass) {
-        AuthenticateValidator<Object> validator = null;
-        if (validatorClass != null) {
-            validator = as(this.authValidators.get(validatorClass));
-            ThrowAide.checkNotNull(validator, "{} 认证器不存在", validatorClass);
-        }
-        if (validator == null) {
-            validator = as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
-        }
-        return validator;
-    }
-
-    @Override
-    public List<DispatchCommandListener> getDispatchListeners() {
-        return Collections.unmodifiableList(this.dispatchListeners);
-    }
-
-    @Override
-    public EndpointKeeperManager getEndpointKeeperManager() {
-        return this.endpointKeeperManager;
-    }
-
-    protected AbstractMessageDispatcher setEndpointKeeperManager(EndpointKeeperManager endpointKeeperManager) {
-        this.endpointKeeperManager = endpointKeeperManager;
-        return this;
-    }
-
-    @Override
-    public void addListener(final DispatchCommandListener listener) {
-        this.dispatchListeners.add(listener);
-    }
-
-    @Override
-    public void addListener(final Collection<DispatchCommandListener> listeners) {
-        listeners.forEach(this::addListener);
-    }
-
-    @Override
-    public void removeListener(final DispatchCommandListener listener) {
-        this.dispatchListeners.remove(listener);
-    }
-
-    @Override
-    public void clearListener() {
-        this.dispatchListeners.clear();
-    }
-
-    protected AbstractMessageDispatcher setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-        return this;
-    }
-
-    /**
-     * 添加插件列表
-     *
-     * @param plugins 插件列表
-     */
-    protected void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins) {
-        this.pluginMap.putAll(plugins.stream()
-                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
-    }
-
-    /**
-     * 添加插件
-     *
-     * @param plugin 插件
-     */
-    protected void addControllerPlugin(CommandPlugin<?, ?> plugin) {
-        this.pluginMap.put(plugin.getClass(), plugin);
-    }
-
-    /**
-     * 添加身份校验器
-     *
-     * @param provider 身份校验器
-     */
-    protected void addAuthProvider(AuthenticateValidator<?> provider) {
-        Class<?> providerClass = provider.getClass();
-        AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
-        if (protocol != null) {
-            if (protocol.all()) {
-                ThrowAide.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, this.defaultValidator.getClass());
-                this.defaultValidator = provider;
-            } else {
-                for (int value : protocol.protocol()) {
-                    putObject(this.authValidators, value, provider);
-                }
-            }
-        }
-        putObject(this.authValidators, provider.getClass(), provider);
-    }
-
-    /**
-     * 添加身份校验器列表
-     *
-     * @param providers 身份校验器列表
-     */
-    protected void addAuthProvider(Collection<? extends AuthenticateValidator<?>> providers) {
-        providers.forEach(this::addAuthProvider);
     }
 
     /**
@@ -226,7 +90,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
      */
     protected void addController(Object object) {
         Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
-        final ClassControllerHolder holder = new ClassControllerHolder(object, this, this.exprHolderFactory);
+        final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
         for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
             MethodControllerHolder controller = entry.getValue();
             Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
@@ -239,12 +103,24 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher, Me
         }
     }
 
-    private <K, V> void putObject(Map<K, V> map, K key, V value) {
-        V oldValue = map.put(key, value);
-        if (oldValue != null) {
-            ThrowAide.throwException(IllegalArgumentException::new,
-                    "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
-        }
+    @Override
+    public void addCommandListener(MessageCommandListener listener) {
+        this.context.addCommandListener(listener);
+    }
+
+    @Override
+    public void addCommandListener(Collection<MessageCommandListener> listeners) {
+        this.context.addCommandListener(listeners);
+    }
+
+    @Override
+    public void removeCommandListener(MessageCommandListener listener) {
+        this.context.removeCommandListener(listener);
+    }
+
+    @Override
+    public void clearCommandListeners() {
+        this.context.clearCommandListeners();
     }
 
 }

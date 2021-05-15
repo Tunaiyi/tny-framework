@@ -13,7 +13,7 @@ public class NettyServerBootstrapSetting extends CommonServerBootstrapSetting im
         this.setName(name);
     }
 
-    public NettyServerBootstrapSetting(AppContext appContext) {
+    public NettyServerBootstrapSetting(NetAppContext appContext) {
         super(appContext);
     }
 

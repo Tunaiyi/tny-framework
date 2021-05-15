@@ -2,6 +2,7 @@ package com.tny.game.cache.redis;
 
 import com.tny.game.cache.*;
 import redis.clients.jedis.*;
+import redis.clients.jedis.params.SetParams;
 
 import java.io.IOException;
 import java.util.List;
@@ -68,42 +69,42 @@ public class RedisCacheClient extends BaseRedisCacheClient {
 
     @Override
     protected boolean jedisSetNX(Jedis jedis, byte[] key, byte[] value) {
-        return jedis.set(key, value, NX_BYTES) != null;
+        return jedis.set(key, value, SetParams.setParams().nx()) != null;
     }
 
     @Override
     protected boolean jedisSetNXPX(Jedis jedis, byte[] key, byte[] value, long time) {
-        return jedis.set(key, value, NX_BYTES, PX_BYTES, time) != null;
+        return jedis.set(key, value, SetParams.setParams().nx().px(time)) != null;
     }
 
     @Override
     protected Response<?> jedisSetNX(Pipeline pipeline, byte[] key, byte[] value) {
-        return pipeline.set(key, value, NX_BYTES);
+        return pipeline.set(key, value, NX_PARAMS);
     }
 
     @Override
     protected Response<?> jedisSetNXPX(Pipeline pipeline, byte[] key, byte[] value, long time) {
-        return pipeline.set(key, value, NX_BYTES, PX_BYTES, (int) (time / 1000));
+        return pipeline.set(key, value, SetParams.setParams().nx().px(time));
     }
 
     @Override
     protected boolean jedisSetXX(Jedis jedis, byte[] key, byte[] value) {
-        return jedis.set(key, value, XX_BYTES) != null;
+        return jedis.set(key, value, XX_PARAMS) != null;
     }
 
     @Override
     protected boolean jedisSetXXPX(Jedis jedis, byte[] key, byte[] value, long time) {
-        return jedis.set(key, value, NX_BYTES, PX_BYTES, time) != null;
+        return jedis.set(key, value, SetParams.setParams().nx().px(time)) != null;
     }
 
     @Override
     protected Response<?> jedisSetXX(Pipeline pipeline, byte[] key, byte[] value) {
-        return pipeline.set(key, value, XX_BYTES);
+        return pipeline.set(key, value, XX_PARAMS);
     }
 
     @Override
     protected Response<?> jedisSetXXPX(Pipeline pipeline, byte[] key, byte[] value, long time) {
-        return pipeline.set(key, value, NX_BYTES, XX_BYTES, (int) (time / 1000));
+        return pipeline.set(key, value, SetParams.setParams().nx().px(time));
     }
 
     @Override
@@ -125,4 +126,5 @@ public class RedisCacheClient extends BaseRedisCacheClient {
     protected Response<?> jedisSetPX(Pipeline pipeline, byte[] key, byte[] value, long time) {
         return pipeline.psetex(key, time, value);
     }
+
 }

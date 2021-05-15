@@ -1,6 +1,7 @@
 package com.tny.game.common.utils;
 
 import com.tny.game.common.enums.*;
+import com.tny.game.common.number.*;
 import com.tny.game.common.type.*;
 
 import java.lang.reflect.*;
@@ -39,32 +40,37 @@ public class ObjectAide {
     }
 
     public static <V, R> R test(V value, Predicate<V> condition, R trueValue, R falseValue) {
-        if (condition.test(value))
+        if (condition.test(value)) {
             return trueValue;
+        }
         return falseValue;
     }
 
     public static <V> V test(V value, Predicate<V> condition, V falseValue) {
-        if (condition.test(value))
+        if (condition.test(value)) {
             return value;
+        }
         return falseValue;
     }
 
     public static <V, R> R testAndApply(V value, Predicate<V> condition, Function<V, R> trueValue, Function<V, R> falseValue) {
-        if (condition.test(value))
+        if (condition.test(value)) {
             return trueValue.apply(value);
+        }
         return falseValue.apply(value);
     }
 
     public static <V, R> R ifEquals(V one, V other, R trueValue, R falseValue) {
-        if (Objects.equals(one, other))
+        if (Objects.equals(one, other)) {
             return trueValue;
+        }
         return falseValue;
     }
 
     public static <V, R> R ifEqualsAndGet(V one, V other, Supplier<R> trueValue, Supplier<R> falseValue) {
-        if (Objects.equals(one, other))
+        if (Objects.equals(one, other)) {
             return trueValue.get();
+        }
         return falseValue.get();
     }
 
@@ -74,78 +80,16 @@ public class ObjectAide {
 
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object) {
-        return (T) object;
+        return (T)object;
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object, Class<T> clazz) {
-        if (object == null)
+        if (object == null) {
             return null;
-        if (clazz.isInstance(object))
-            return (T) object;
-        else if (clazz == int.class || clazz == Integer.class) {
-            if (object instanceof Integer) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).intValue());
-            } else if (object instanceof String) {
-                return as(Integer.parseInt(as(object)));
-            }
-        } else if (clazz == long.class || clazz == Long.class) {
-            if (object instanceof Long) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).longValue());
-            } else if (object instanceof String) {
-                return as(Long.parseLong(as(object)));
-            }
-        } else if (clazz == float.class || clazz == Float.class) {
-            if (object instanceof Float) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).floatValue());
-            } else if (object instanceof String) {
-                return as(Float.parseFloat(as(object)));
-            }
-        } else if (clazz == double.class || clazz == Double.class) {
-            if (object instanceof Double) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).doubleValue());
-            } else if (object instanceof String) {
-                return as(Double.parseDouble(as(object, String.class)));
-            }
-        } else if (clazz == short.class || clazz == Short.class) {
-            if (object instanceof Short) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).shortValue());
-            } else if (object instanceof String) {
-                return as(Short.parseShort(as(object)));
-            }
-        } else if (clazz == byte.class || clazz == Byte.class) {
-            if (object instanceof Byte) {
-                return as(object);
-            } else if (object instanceof Number) {
-                return as(as(object, Number.class).byteValue());
-            } else if (object instanceof String) {
-                return as(Byte.parseByte(as(object)));
-            }
-        } else if (clazz == boolean.class || clazz == Boolean.class) {
-            if (object instanceof Boolean)
-                return as(object);
-            else if (object instanceof Number) {
-                return as(as(object, Number.class).longValue() > 0);
-            } else if (object instanceof String) {
-                return as(Boolean.valueOf(object.toString().toLowerCase()));
-            }
-        } else if (Enum.class.isAssignableFrom(clazz)) {
-            T value = null;
-            if (object instanceof String)
-                value = EnumAide.uncheckOfName(clazz, as(object));
-            if (value == null && EnumIdentifiable.class.isAssignableFrom(clazz))
-                value = EnumAide.uncheckOf(as(clazz), object);
-            return value;
+        }
+        if (clazz.isInstance(object)) {
+            return (T)object;
         }
         throw new ClassCastException(object + "is not " + clazz + "instance");
     }
@@ -153,68 +97,64 @@ public class ObjectAide {
     @SuppressWarnings("unchecked")
     private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
         Type[] types = referenceType.getClass().getGenericInterfaces();
-        Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
+        Type subType = ((ParameterizedType)types[0]).getActualTypeArguments()[0];
         Class<T> clazz = null;
         if (subType instanceof Class) {
-            clazz = (Class<T>) subType;
+            clazz = (Class<T>)subType;
         } else if (subType instanceof ParameterizedType) {
-            clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
+            clazz = (Class<T>)((ParameterizedType)subType).getRawType();
         }
         return clazz;
     }
 
-    public static <T> T converTo(Object object, ReferenceType<T> referenceType) {
-        return converTo(object, getClassType(referenceType));
+    private static <E extends Enum<?>> E enumConvert(Object source, Class<E> clazz) {
+        E value = null;
+        if (source instanceof String) {
+            value = EnumAide.uncheckOfName(clazz, as(source));
+        }
+        if (value == null && EnumIdentifiable.class.isAssignableFrom(clazz)) {
+            value = as(EnumAide.uncheckOf(as(clazz), source));
+        }
+        return value;
     }
 
+    public static <T> T convertTo(Object object, ReferenceType<T> referenceType) {
+        return convertTo(object, getClassType(referenceType));
+    }
 
-    public static <T> T converTo(Object object, Class<T> clazz) {
-        if (object == null)
+    public static <T> T convertTo(Object source, Class<T> clazz) {
+        if (source == null) {
             return null;
-        final Class<?> checkClass = !clazz.isPrimitive() ? clazz : Wrapper.getWrapper(clazz);
-        if (checkClass.isInstance(object)) {
-            return as(object);
         }
-        if (Enum.class.isAssignableFrom(checkClass) && object instanceof String) {
-            Class<? extends Enum> enumClass = as(checkClass);
-            @SuppressWarnings("unchecked")
-            Object enumObject = Enum.valueOf(enumClass, object.toString());
-            return as(enumObject);
+        if (clazz.isInstance(source)) {
+            return as(source);
         }
-        if (checkClass == Long.class) {
-            Number number = Double.parseDouble(object.toString());
-            object = number.longValue();
-            return as(object);
+        final Class<?> targetClass = !clazz.isPrimitive() ? clazz : Wrapper.getWrapper(clazz);
+        if (targetClass.isInstance(source)) {
+            return as(source);
         }
-        if (object instanceof Number) {
-            Number number = (Number) object;
-            if (checkClass == Integer.class) {
-                return as(number.intValue());
+        if (Enum.class.isAssignableFrom(targetClass)) {
+            @SuppressWarnings("rawtypes")
+            Class<? extends Enum> enumClass = as(targetClass);
+            return as(enumConvert(source, enumClass));
+        }
+        if (Number.class.isAssignableFrom(targetClass)) {
+            Class<? extends Number> numberClass = as(targetClass);
+            if (source instanceof String) {
+                return as(NumberAide.parse(as(source), numberClass));
             }
-            if (checkClass == Byte.class) {
-                return as(number.byteValue());
-            }
-            if (checkClass == Float.class) {
-                return as(number.floatValue());
-            }
-            if (checkClass == Short.class) {
-                return as(number.shortValue());
-            }
-            if (EnumIdentifiable.class.isAssignableFrom(clazz) && Enum.class.isAssignableFrom(clazz)) {
-                for (T value : clazz.getEnumConstants()) {
-                    Object id = ((EnumIdentifiable) value).getId();
-                    if (id instanceof Number) {
-                        if (((Number) id).intValue() == ((Number) object).intValue())
-                            return value;
-                    } else {
-                        throw new IllegalArgumentException(format("can not find Enum {} where id is {}", clazz, object));
-                    }
-                }
+            if (source instanceof Number) {
+                Number number = as(source);
+                return as(NumberAide.as(number, numberClass));
             }
         }
-        if (!clazz.isAssignableFrom(object.getClass()))
-            throw new ClassCastException(format("{} can not conver to {}", object.getClass(), clazz));
-        return as(object);
+        if (targetClass == String.class) {
+            return as(source.toString());
+        }
+        if (!clazz.isAssignableFrom(source.getClass())) {
+            throw new ClassCastException(format("{} can not conver to {}", source.getClass(), clazz));
+        }
+        return as(source);
     }
 
 }

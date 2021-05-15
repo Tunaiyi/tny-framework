@@ -20,10 +20,9 @@ public interface VoidInvokeCommandPlugin<UID> extends InvokeCommandPlugin<UID, V
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context, Void attribute) throws Exception {
+    default void execute(Tunnel<UID> tunnel, Message message, ControllerMessageCommandContext context, Void attribute) throws Exception {
         this.doExecute(tunnel, message, context);
     }
-
 
     /**
      * 请求过滤
@@ -33,7 +32,6 @@ public interface VoidInvokeCommandPlugin<UID> extends InvokeCommandPlugin<UID, V
      * @param context 上下文
      * @throws Exception 异常
      */
-    void doExecute(Tunnel<UID> tunnel, Message<UID> message, InvokeContext context) throws Exception;
-
+    void doExecute(Tunnel<UID> tunnel, Message message, ControllerMessageCommandContext context) throws Exception;
 
 }

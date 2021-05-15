@@ -1,6 +1,5 @@
 package com.tny.game.net.base.configuration;
 
-
 import com.tny.game.net.base.*;
 
 public class CommonClientBootstrapSetting extends CommonNetBootstrapSetting implements ClientBootstrapSetting {
@@ -8,7 +7,7 @@ public class CommonClientBootstrapSetting extends CommonNetBootstrapSetting impl
     public CommonClientBootstrapSetting() {
     }
 
-    public CommonClientBootstrapSetting(AppContext appContext) {
+    public CommonClientBootstrapSetting(NetAppContext appContext) {
         super(appContext);
     }
 

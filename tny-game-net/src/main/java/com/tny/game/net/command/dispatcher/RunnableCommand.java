@@ -7,7 +7,7 @@ import com.tny.game.common.worker.command.*;
  */
 public class RunnableCommand extends BaseCommand {
 
-    private Runnable runnable;
+    private final Runnable runnable;
 
     public RunnableCommand(Runnable runnable) {
         super("RunnableDispatcherCommand");
@@ -21,7 +21,8 @@ public class RunnableCommand extends BaseCommand {
 
     @Override
     public String getName() {
-        return runnable.getClass().getCanonicalName();
+        return this.runnable.getClass().getCanonicalName();
     }
+
 }
 

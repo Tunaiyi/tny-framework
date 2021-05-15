@@ -12,12 +12,13 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
 
-    private static AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
+    private static final AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
 
     @Override
-    public void doExecute(Tunnel<Object> tunnel, Message<Object> message, CommandContext context) {
-        if (!tunnel.isLogin())
+    public void doExecute(Tunnel<Object> tunnel, Message message, MessageCommandContext context) {
+        if (!tunnel.isLogin()) {
             return;
+        }
         Endpoint<Object> endpoint = tunnel.getEndpoint();
         Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
         MessageHead head = message.getHead();
@@ -28,4 +29,5 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
             context.doneAndIntercept(NetResultCode.MESSAGE_HANDLED);
         }
     }
+
 }

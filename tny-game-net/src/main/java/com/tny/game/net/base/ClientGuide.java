@@ -8,7 +8,6 @@ import com.tny.game.net.endpoint.*;
  */
 public interface ClientGuide {
 
-
     /**
      * @return 是否关闭
      */
@@ -25,25 +24,7 @@ public interface ClientGuide {
      * @param <UID>
      * @return
      */
-    <UID> Client<UID> connect(URL url, UID unloginUid, PostConnect<UID> postConnect);
-
-    /**
-     * @param url   url
-     * @param <UID> * @return
-     */
-    default <UID> Client<UID> connect(URL url, UID unloginUid) {
-        return connect(url, unloginUid, null);
-    }
-
-    /**
-     * @param url         url
-     * @param postConnect 连接后处理
-     * @param <UID>
-     * @return
-     */
-    default <UID> Client<UID> connect(URL url, PostConnect<UID> postConnect) {
-        return connect(url, null, postConnect);
-    }
+    <UID> Client<UID> connect(URL url, PostConnect<UID> postConnect);
 
     /**
      * @param url   url

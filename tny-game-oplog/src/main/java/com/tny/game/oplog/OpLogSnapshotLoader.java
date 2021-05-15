@@ -32,13 +32,13 @@ public class OpLogSnapshotLoader {
         LOGGER.info("启动初始化ProtoSchema任务!");
         forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
             // try {
-            RunningChecker.start(OpLogSnapshotLoader.class);
+            RunChecker.trace(OpLogSnapshotLoader.class);
             LOGGER.info("开始初始化 OpLogSnapshot .......");
             for (Class<?> cl : classes) {
                 if (Snapshot.class.isAssignableFrom(cl)) {
                     Snapshot snapshot;
                     try {
-                        snapshot = (Snapshot) cl.newInstance();
+                        snapshot = (Snapshot)cl.newInstance();
                         OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapshot.getType().toString()));
                     } catch (Throwable e) {
                         LOGGER.error("", e);
@@ -46,15 +46,15 @@ public class OpLogSnapshotLoader {
                 }
             }
             OpLogSnapshotLoader.selector = null;
-            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunningChecker.end(OpLogSnapshotLoader.class).cost());
+            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunChecker.end(OpLogSnapshotLoader.class).costTime());
         });
     }
 
-
     public static void waitLoad() {
         ForkJoinTask<?> forkJoinTask = OpLogSnapshotLoader.forkJoinTask;
-        if (forkJoinTask == null)
+        if (forkJoinTask == null) {
             return;
+        }
         try {
             forkJoinTask.join();
         } finally {

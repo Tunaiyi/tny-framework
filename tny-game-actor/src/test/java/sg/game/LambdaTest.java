@@ -45,77 +45,75 @@ public class LambdaTest {
     public void runTest() {
         int time = 1000000;
         Consumer<Integer> consumer = null;
-        RunningChecker.doStart("call at first");
+        RunChecker.trace("call at first");
         consumer = TestConsumer.consumer::test;
         test(TestConsumer.consumer::test);
-        RunningChecker.endPrint("call at first");
+        RunChecker.end("call at first");
 
-        RunningChecker.doStart("call testLD");
+        RunChecker.trace("call testLD");
         for (int i = 0; i < time; i++) {
             testLD();
         }
-        RunningChecker.endPrint("call testLD");
+        RunChecker.end("call testLD");
 
-        RunningChecker.doStart("call testOJ");
+        RunChecker.trace("call testOJ");
         for (int i = 0; i < time; i++) {
             testOJ();
         }
-        RunningChecker.endPrint("call testOJ");
+        RunChecker.end("call testOJ");
 
-        RunningChecker.doStart("call ref Object.method");
+        RunChecker.trace("call ref Object.method");
         for (int i = 0; i < time; i++) {
             test(TestConsumer.consumer::test);
         }
-        RunningChecker.endPrint("call ref Object.method");
+        RunChecker.end("call ref Object.method");
 
-        RunningChecker.doStart("call ref this.method");
+        RunChecker.trace("call ref this.method");
         for (int i = 0; i < time; i++) {
             test(this::test);
         }
-        RunningChecker.endPrint("call ref this.method");
+        RunChecker.end("call ref this.method");
 
-        RunningChecker.doStart("call ref Class.StaticMethod");
+        RunChecker.trace("call ref Class.StaticMethod");
         for (int i = 0; i < time; i++) {
             test(TestConsumer::testStatic);
         }
-        RunningChecker.endPrint("call ref Class.StaticMethod");
+        RunChecker.end("call ref Class.StaticMethod");
 
         consumer = TestConsumer.consumer::test;
-        RunningChecker.doStart("call copy ref Object.method");
+        RunChecker.trace("call copy ref Object.method");
         for (int i = 0; i < time; i++) {
             test(consumer);
         }
-        RunningChecker.endPrint("call copy ref Object.method");
+        RunChecker.end("call copy ref Object.method");
 
-
-        RunningChecker.doStart("call lambda");
+        RunChecker.trace("call lambda");
         for (int i = 0; i < time; i++) {
             test((s) -> TestConsumer.consumer.test(s));
         }
-        RunningChecker.endPrint("call lambda");
+        RunChecker.end("call lambda");
 
         final int value = 1;
-        RunningChecker.doStart("call lambda with local");
+        RunChecker.trace("call lambda with local");
         for (int i = 0; i < time; i++) {
             test((s) -> s = value + 1);
         }
-        RunningChecker.endPrint("call lambda with local");
+        RunChecker.end("call lambda with local");
 
-        RunningChecker.doStart("call lambda with this");
+        RunChecker.trace("call lambda with this");
         for (int i = 0; i < time; i++) {
             test((s) -> s = this.fieldValue + 1);
         }
-        RunningChecker.endPrint("call lambda with this");
+        RunChecker.end("call lambda with this");
 
         consumer = (s) -> TestConsumer.consumer.test(s);
-        RunningChecker.doStart("call copy lambda");
+        RunChecker.trace("call copy lambda");
         for (int i = 0; i < time; i++) {
             test(consumer);
         }
-        RunningChecker.endPrint("call copy lambda");
+        RunChecker.end("call copy lambda");
 
-
-        RunningChecker.doStart("call inner class");
+        RunChecker.trace("call inner class");
         for (int i = 0; i < time; i++) {
             test(new Consumer<Integer>() {
 
@@ -125,8 +123,7 @@ public class LambdaTest {
                 }
             });
         }
-        RunningChecker.endPrint("call inner class");
-
+        RunChecker.end("call inner class");
 
         Consumer<Integer> cons = new Consumer<Integer>() {
 
@@ -135,14 +132,13 @@ public class LambdaTest {
                 integer = integer + 1;
             }
         };
-        RunningChecker.doStart("call copy inner class");
+        RunChecker.trace("call copy inner class");
         for (int i = 0; i < time; i++) {
             test(cons);
         }
-        RunningChecker.endPrint("call copy inner class");
+        RunChecker.end("call copy inner class");
 
-
-        RunningChecker.doStart("call inner class with local");
+        RunChecker.trace("call inner class with local");
         for (int i = 0; i < time; i++) {
             test(new Consumer<Integer>() {
 
@@ -152,19 +148,19 @@ public class LambdaTest {
                 }
             });
         }
-        RunningChecker.endPrint("call inner class with local");
+        RunChecker.end("call inner class with local");
 
-        RunningChecker.doStart("call inner class with this");
+        RunChecker.trace("call inner class with this");
         for (int i = 0; i < time; i++) {
             test(new Consumer<Integer>() {
 
                 @Override
                 public void accept(Integer integer) {
-                    integer = fieldValue + 1;
+                    integer = LambdaTest.this.fieldValue + 1;
                 }
             });
         }
-        RunningChecker.endPrint("call inner class with this");
+        RunChecker.end("call inner class with this");
 
     }
 

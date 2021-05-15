@@ -66,7 +66,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
     public StandardThreadExecutor(int coreThreads, int maxThreads, long keepAliveTime, TimeUnit unit,
             int queueCapacity, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
         super(coreThreads, maxThreads, keepAliveTime, unit, new ExecutorQueue(), threadFactory, handler);
-        ((ExecutorQueue) getQueue()).setStandardThreadExecutor(this);
+        ((ExecutorQueue)getQueue()).setStandardThreadExecutor(this);
 
         submittedTasksCount = new AtomicInteger(0);
 
@@ -89,7 +89,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
             super.execute(command);
         } catch (RejectedExecutionException rx) {
             // there could have been contention around the queue
-            if (!((ExecutorQueue) getQueue()).force(command)) {
+            if (!((ExecutorQueue)getQueue()).force(command)) {
                 submittedTasksCount.decrementAndGet();
 
                 getRejectedExecutionHandler().rejectedExecution(command, this);
@@ -109,6 +109,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
     protected void afterExecute(Runnable r, Throwable t) {
         submittedTasksCount.decrementAndGet();
     }
+
 }
 
 /**
@@ -121,8 +122,10 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
  * @author maijunsheng
  */
 class ExecutorQueue extends LinkedTransferQueue<Runnable> {
+
     private static final long serialVersionUID = -265236426751004839L;
-    StandardThreadExecutor threadPoolExecutor;
+    
+    private StandardThreadExecutor threadPoolExecutor;
 
     public ExecutorQueue() {
         super();
@@ -163,4 +166,5 @@ class ExecutorQueue extends LinkedTransferQueue<Runnable> {
         // if we reached here, we need to add it to the queue
         return super.offer(o);
     }
+
 }

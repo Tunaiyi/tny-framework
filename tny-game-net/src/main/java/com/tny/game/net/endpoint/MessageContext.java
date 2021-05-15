@@ -7,7 +7,7 @@ import com.tny.game.net.transport.*;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContext<UID> implements SendContext<UID>, MessageSubject {
+public abstract class MessageContext<UID> implements SendContext<UID>, MessageContent {
 
     /**
      * @return 获取结果码
@@ -44,11 +44,11 @@ public abstract class MessageContext<UID> implements SendContext<UID>, MessageSu
      */
     public abstract void fail(Throwable throwable);
 
+    public abstract WriteMessageFuture getWriteMessageFuture();
+
     protected abstract void setWriteMessagePromise(WriteMessagePromise writePromise);
 
     protected abstract void setRespondFuture(RespondFuture<UID> respondFuture);
-
-    protected abstract WriteMessagePromise getWriteMessagePromise();
 
     protected abstract boolean isNeedWriteFuture();
 

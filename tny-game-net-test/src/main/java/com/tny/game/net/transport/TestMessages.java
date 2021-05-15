@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/24.
@@ -32,28 +32,28 @@ public class TestMessages {
 
     public TestMessages(NetTunnel<Long> tunnel) {
         this.certificate = tunnel.getCertificate();
-        idCreator = new AtomicInteger(0);
+        this.idCreator = new AtomicInteger(0);
     }
 
     public TestMessages(NetEndpoint<Long> endpoint) {
         this.certificate = endpoint.getCertificate();
-        idCreator = new AtomicInteger(0);
+        this.idCreator = new AtomicInteger(0);
     }
 
-    public List<? extends Message<Long>> getMessages() {
-        return messages.stream().map(TestMessagePack::getMessage).collect(Collectors.toList());
+    public List<? extends Message> getMessages() {
+        return this.messages.stream().map(TestMessagePack::getMessage).collect(Collectors.toList());
     }
 
-    public List<? extends Message<Long>> getMessages(MessageMode... modes) {
+    public List<? extends Message> getMessages(MessageMode... modes) {
         List<MessageMode> messageModes = Arrays.asList(modes);
-        return messages.stream()
-                       .map(TestMessagePack::getMessage)
-                       .filter(m -> messageModes.contains(m.getMode()))
-                       .collect(Collectors.toList());
+        return this.messages.stream()
+                .map(TestMessagePack::getMessage)
+                .filter(m -> messageModes.contains(m.getMode()))
+                .collect(Collectors.toList());
     }
 
-    public List<MessageSubject> getSubject() {
-        return messages.stream().map(TestMessagePack::getContext).collect(Collectors.toList());
+    public List<MessageContent> getSubject() {
+        return this.messages.stream().map(TestMessagePack::getContext).collect(Collectors.toList());
     }
 
     public TestMessages addPush(Object body) {
@@ -61,89 +61,88 @@ public class TestMessages {
     }
 
     public TestMessages addPush(ResultCode code, Object body) {
-        return addMessageContext(MessageContexts.push(ProtocolAide.protocol(protocol), code, body));
+        return addMessageContext(MessageContexts.push(ProtocolAide.protocol(this.protocol), code, body));
     }
 
     public TestMessages addRequest(Object body) {
-        return addMessageContext(MessageContexts.request(ProtocolAide.protocol(protocol), body));
+        return addMessageContext(MessageContexts.request(ProtocolAide.protocol(this.protocol), body));
     }
 
     public TestMessages addResponse(Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(protocol), body, toMessage));
+        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(this.protocol), body, toMessage));
     }
 
     public TestMessages addResponse(ResultCode code, Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(protocol), code, body, toMessage));
+        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(this.protocol), code, body, toMessage));
     }
 
     public TestMessages addPing() {
-        return addDetectMessage(DetectMessage.ping());
+        return addDetectMessage(TickMessage.ping());
     }
 
     public TestMessages addPong() {
-        return addDetectMessage(DetectMessage.pong());
+        return addDetectMessage(TickMessage.pong());
     }
 
     private TestMessages addMessagePack(TestMessagePack pack) {
         this.messages.add(pack);
         switch (pack.getMode()) {
             case PUSH:
-                messageSize++;
-                pushSize++;
+                this.messageSize++;
+                this.pushSize++;
                 break;
             case REQUEST:
-                messageSize++;
-                requestSize++;
+                this.messageSize++;
+                this.requestSize++;
                 break;
             case RESPONSE:
-                messageSize++;
-                responseSize++;
+                this.messageSize++;
+                this.responseSize++;
                 break;
             case PING:
-                pingSize++;
+                this.pingSize++;
                 break;
             case PONG:
-                pongSize++;
+                this.pongSize++;
                 break;
         }
         return this;
     }
 
-    public TestMessages addDetectMessage(NetMessage<Long> message) {
+    public TestMessages addDetectMessage(NetMessage message) {
         return this.addMessagePack(new TestMessagePack(null, message));
     }
-
 
     public TestMessages addMessageContext(MessageContext<Long> context) {
         return this.addMessagePack(new TestMessagePack(context, createMessage(context)));
     }
 
-    private NetMessage<Long> createMessage(MessageContext<Long> context) {
-        return messageBuilderFactory.create(idCreator.incrementAndGet(), context, certificate);
+    private NetMessage createMessage(MessageContext<Long> context) {
+        return this.messageBuilderFactory.create(this.idCreator.incrementAndGet(), context);
     }
 
     public int getPingSize() {
-        return pingSize;
+        return this.pingSize;
     }
 
     public int getPongSize() {
-        return pongSize;
+        return this.pongSize;
     }
 
     public int getMessageSize() {
-        return messageSize;
+        return this.messageSize;
     }
 
     public int getPushSize() {
-        return pushSize;
+        return this.pushSize;
     }
 
     public int getRequestSize() {
-        return requestSize;
+        return this.requestSize;
     }
 
     public int getResponseSize() {
-        return responseSize;
+        return this.responseSize;
     }
 
     public void receive(Receiver<Long> receiver) {
@@ -157,9 +156,10 @@ public class TestMessages {
 
     public void send(Sender<Long> sender, Consumer<SendContext<Long>> check) {
         assertFalse(this.messages.isEmpty());
-        if (check == null)
+        if (check == null) {
             check = f -> {
             };
+        }
         Consumer<SendContext<Long>> consumer = check;
         this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
     }
@@ -170,9 +170,10 @@ public class TestMessages {
 
     public void write(Transport<Long> transport, Consumer<WriteMessageFuture> check) {
         assertFalse(this.messages.isEmpty());
-        if (check == null)
+        if (check == null) {
             check = f -> {
             };
+        }
         final Consumer<WriteMessageFuture> consumer = check;
         this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
     }
@@ -210,7 +211,7 @@ public class TestMessages {
         this.messages.forEach(action);
     }
 
-    public void messagesForEach(Consumer<NetMessage<Long>> action) {
+    public void messagesForEach(Consumer<NetMessage> action) {
         this.messages.stream().map(TestMessagePack::getMessage).forEach(action);
     }
 
@@ -232,13 +233,12 @@ public class TestMessages {
 
     private static TestMessages createMessages(TestMessages messages) {
         return messages.addPush("push 1")
-                       .addResponse("request 2", 1)
-                       .addResponse("request 3", 1)
-                       .addResponse("request 4", 1)
-                       .addResponse("request 5", 1)
-                       .addResponse("request 6", 1)
-                       .addRequest("request 7");
+                .addResponse("request 2", 1)
+                .addResponse("request 3", 1)
+                .addResponse("request 4", 1)
+                .addResponse("request 5", 1)
+                .addResponse("request 6", 1)
+                .addRequest("request 7");
     }
-
 
 }

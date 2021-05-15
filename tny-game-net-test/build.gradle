@@ -1,4 +1,5 @@
 group "com.tny.game"
+group "com.tny.game"
 
 apply plugin: "maven"
 
@@ -6,7 +7,6 @@ dependencies {
 
     api project(":tny-game-net")
     api libs.mockito
-    api libs.junit
-    api libs.jmock_junit4
 
+    api libs.junit_jupiter_api
 }

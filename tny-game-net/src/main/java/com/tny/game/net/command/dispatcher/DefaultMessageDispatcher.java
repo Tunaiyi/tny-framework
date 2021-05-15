@@ -12,12 +12,8 @@ import com.tny.game.net.endpoint.*;
 @Unit
 public class DefaultMessageDispatcher extends AbstractMessageDispatcher implements AppPrepareStart {
 
-    public DefaultMessageDispatcher() {
-        super(null);
-    }
-
-    public DefaultMessageDispatcher(AppContext context) {
-        super(context);
+    public DefaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
+        super(appContext, endpointKeeperManager);
     }
 
     @Override
@@ -27,16 +23,9 @@ public class DefaultMessageDispatcher extends AbstractMessageDispatcher implemen
 
     @Override
     public void prepareStart() {
-        this.addAuthProvider(UnitLoader.getLoader(AuthenticateValidator.class).getAllUnits());
-        this.addControllerPlugin(UnitLoader.getLoader(CommandPlugin.class).getAllUnits());
-        this.addListener(UnitLoader.getLoader(DispatchCommandListener.class).getAllUnits());
-        this.setEndpointKeeperManager(UnitLoader.getLoader(EndpointKeeperManager.class).getOneUnitAnCheck());
-    }
-
-    @Override
-    public DefaultMessageDispatcher setAppContext(AppContext appContext) {
-        super.setAppContext(appContext);
-        return this;
+        this.context.addAuthProvider(UnitLoader.getLoader(AuthenticateValidator.class).getAllUnits());
+        this.context.addControllerPlugin(UnitLoader.getLoader(CommandPlugin.class).getAllUnits());
+        this.context.addCommandListener(UnitLoader.getLoader(MessageCommandListener.class).getAllUnits());
     }
 
 }

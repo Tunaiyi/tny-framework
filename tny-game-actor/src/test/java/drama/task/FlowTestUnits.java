@@ -1,21 +1,20 @@
 package drama.task;
 
-
 import com.tny.game.actor.stage.*;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.junit5.JUnit5Mockery;
 
 import java.time.Duration;
 import java.util.concurrent.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 16/1/25.
  */
 public class FlowTestUnits {
 
-    Mockery context = new JUnit4Mockery();
+    Mockery context = new JUnit5Mockery();
 
     ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
 
@@ -38,7 +37,7 @@ public class FlowTestUnits {
             flow.getCause().printStackTrace();
             assertEquals(exception, flow.getCause());
         }
-        assertEquals("TaskStage 结果 : ", success, result);
+        assertEquals(success, result, "TaskStage 结果 : ");
         return flow;
     }
 
@@ -51,11 +50,12 @@ public class FlowTestUnits {
             System.out.println("TaskStage异常");
             flow.getCause().printStackTrace();
         }
-        assertEquals("TaskStage 结果 : ", success, result);
-        if (object == null)
+        assertEquals(success, result, "TaskStage 结果 : ");
+        if (object == null) {
             assertNull(flow.getDone().get());
-        else
-            assertEquals("TaskStage 结果 : ", object, flow.getDone().get());
+        } else {
+            assertEquals(object, flow.getDone().get(), "TaskStage 结果 : ");
+        }
         return flow;
     }
 

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class MessageQueue<UID> {
 
     /* 发送缓存 */
-    private CircularFifoQueue<Message<UID>> sentMessageQueue = null;
+    private CircularFifoQueue<Message> sentMessageQueue = null;
 
     /* 锁 */
     private StampedLock sentMessageLock;
@@ -26,28 +26,29 @@ public class MessageQueue<UID> {
     public MessageQueue(int cacheSentMessageSize) {
         if (cacheSentMessageSize > 0) {
             this.sentMessageQueue = new CircularFifoQueue<>(cacheSentMessageSize);
-            sentMessageLock = new StampedLock();
+            this.sentMessageLock = new StampedLock();
         }
     }
 
-    public List<Message<UID>> getMessages(Predicate<Message<UID>> filter) {
-        if (this.sentMessageQueue == null)
+    public List<Message> getMessages(Predicate<Message> filter) {
+        if (this.sentMessageQueue == null) {
             return ImmutableList.of();
+        }
         StampedLock lock = this.sentMessageLock;
         long stamp = lock.readLock();
         try {
             return this.sentMessageQueue.stream()
-                                        .filter(filter)
-                                        .collect(Collectors.toList());
+                    .filter(filter)
+                    .collect(Collectors.toList());
         } finally {
             lock.unlockRead(stamp);
         }
     }
 
-
-    public List<Message<UID>> getAllMessages() {
-        if (this.sentMessageQueue == null)
+    public List<Message> getAllMessages() {
+        if (this.sentMessageQueue == null) {
             return ImmutableList.of();
+        }
         StampedLock lock = this.sentMessageLock;
         long stamp = lock.readLock();
         try {
@@ -57,7 +58,7 @@ public class MessageQueue<UID> {
         }
     }
 
-    public void addMessage(Message<UID> message) {
+    public void addMessage(Message message) {
         if (this.sentMessageQueue != null) {
             StampedLock lock = this.sentMessageLock;
             long stamp = lock.writeLock();

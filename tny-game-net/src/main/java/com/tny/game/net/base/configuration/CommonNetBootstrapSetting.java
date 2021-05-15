@@ -1,45 +1,51 @@
 package com.tny.game.net.base.configuration;
 
-
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
-    private AppContext appContext;
+    private NetAppContext appContext;
 
     private String name;
 
     private String messageFactory = "default" + MessageFactory.class.getSimpleName();
 
-    private String eventHandler = "default" + EndpointEventHandler.class.getSimpleName();
+    private String endpointEventHandler = "default" + EndpointEventsBoxHandler.class.getSimpleName();
+
+    private String certificateFactory = "default" + CertificateFactory.class.getSimpleName();
 
     protected CommonNetBootstrapSetting() {
     }
 
-    protected CommonNetBootstrapSetting(AppContext appContext) {
+    protected CommonNetBootstrapSetting(NetAppContext appContext) {
         this.appContext = appContext;
     }
 
     @Override
-    public AppContext getAppContext() {
-        return appContext;
+    public NetAppContext getAppContext() {
+        return this.appContext;
     }
 
     @Override
     public String getMessageFactory() {
-        return messageFactory;
+        return this.messageFactory;
     }
 
     @Override
-    public String getEventHandler() {
-        return eventHandler;
+    public String getCertificateFactory() {
+        return this.certificateFactory;
+    }
+
+    @Override
+    public String getEndpointEventHandler() {
+        return this.endpointEventHandler;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public CommonNetBootstrapSetting setName(String name) {
@@ -47,7 +53,7 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setAppContext(AppContext appContext) {
+    public CommonNetBootstrapSetting setAppContext(NetAppContext appContext) {
         this.appContext = appContext;
         return this;
     }
@@ -57,8 +63,14 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setEventHandler(String eventHandler) {
-        this.eventHandler = eventHandler;
+    public CommonNetBootstrapSetting setEndpointEventHandler(String endpointEventHandler) {
+        this.endpointEventHandler = endpointEventHandler;
         return this;
     }
+
+    public CommonNetBootstrapSetting setCertificateFactory(String certificateFactory) {
+        this.certificateFactory = certificateFactory;
+        return this;
+    }
+
 }

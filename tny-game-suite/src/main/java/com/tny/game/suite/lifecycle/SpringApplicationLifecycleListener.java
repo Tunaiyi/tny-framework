@@ -24,7 +24,7 @@ public class SpringApplicationLifecycleListener
     private ApplicationContext context;
 
     @Resource
-    private AppContext appContext;
+    private NetAppContext appContext;
 
     private final AtomicBoolean contextInit = new AtomicBoolean(false);
 

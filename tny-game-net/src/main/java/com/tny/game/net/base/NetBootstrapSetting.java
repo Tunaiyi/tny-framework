@@ -4,16 +4,12 @@ public interface NetBootstrapSetting {
 
     String getName();
 
-    AppContext getAppContext();
+    NetAppContext getAppContext();
 
     String getMessageFactory();
 
-    // String getMessageHandler();
+    String getEndpointEventHandler();
 
-    String getEventHandler();
-
-    // MessageDispatcher getMessageDispatcher();
-
-    // DispatchCommandExecutor getCommandExecutor();
+    String getCertificateFactory();
 
 }

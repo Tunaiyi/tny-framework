@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -34,8 +34,9 @@ public final class TestAide {
             failPass(name);
         } catch (Throwable e) {
             for (Class<?> expectedExceptionClass : expectedExceptionClasses) {
-                if (!expectedExceptionClass.isInstance(e))
+                if (!expectedExceptionClass.isInstance(e)) {
                     continue;
+                }
                 assertTrue(true);
                 return;
             }
@@ -51,7 +52,6 @@ public final class TestAide {
     public static void assertRunWithException(String name, ThrowableRunnable run, Class<? extends Throwable>... expectedExceptionClasses) {
         assertRunWithException(name, run, Arrays.asList(expectedExceptionClasses));
     }
-
 
     public static void assertRunWithException(String name, ThrowableRunnable run, Class<? extends Throwable> expectedExceptionClass) {
         try {
@@ -79,10 +79,11 @@ public final class TestAide {
             run.run();
             failPass(name);
         } catch (Throwable e) {
-            if (predicate.test(e))
+            if (predicate.test(e)) {
                 assertTrue(true);
-            else
+            } else {
                 failWith(name, e);
+            }
         }
     }
 
@@ -98,7 +99,7 @@ public final class TestAide {
             failPass(name);
         } catch (Throwable e) {
             if (expectedExceptionClass.isInstance(e)) {
-                if (predicate.test((T) e)) {
+                if (predicate.test((T)e)) {
                     assertTrue(true);
                     return;
                 }
@@ -150,10 +151,11 @@ public final class TestAide {
     }
 
     private static void failPass(String name) {
-        if (StringUtils.isBlank(name))
+        if (StringUtils.isBlank(name)) {
             fail(StringAide.format("assert fail without exception"));
-        else
+        } else {
             fail(StringAide.format("[{}] assert fail without exception", name));
+        }
     }
 
     private static void failWith(String name, Throwable e) {

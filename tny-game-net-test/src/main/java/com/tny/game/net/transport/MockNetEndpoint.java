@@ -19,16 +19,16 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     private List<MessageContext<Long>> sendQueue = new ArrayList<>();
 
-    private List<Message<Long>> receiveQueue = new ArrayList<>();
+    private List<Message> receiveQueue = new ArrayList<>();
 
-    private EndpointState state;
+    private EndpointStatus state;
 
     public MockNetEndpoint(Certificate<Long> certificate) {
         this.certificate = certificate;
-        if (this.certificate.isAutherized()) {
-            this.state = EndpointState.ONLINE;
+        if (this.certificate.isAuthenticated()) {
+            this.state = EndpointStatus.ONLINE;
         } else {
-            this.state = EndpointState.OFFLINE;
+            this.state = EndpointStatus.OFFLINE;
         }
     }
 
@@ -47,25 +47,46 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
         return null;
     }
 
+    //    @Override
+    //    public void createMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
+    //        this.writeQueue.add(context);
+    //    }
+
     @Override
-    public void writeMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
-        writeQueue.add(context);
+    public Message createMessage(MessageContext<Long> context) {
+        this.writeQueue.add(context);
+        return null;
     }
 
     @Override
-    public boolean receive(NetTunnel<Long> tunnel, Message<Long> message) {
-        receiveQueue.add(message);
+    public void writeMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
+        this.writeQueue.add(context);
+    }
+
+    @Override
+    public boolean receive(NetTunnel<Long> tunnel, Message message) {
+        this.receiveQueue.add(message);
         return true;
     }
 
     @Override
     public SendContext<Long> send(NetTunnel<Long> tunnel, MessageContext<Long> messageContext) {
-        sendQueue.add(messageContext);
+        this.sendQueue.add(messageContext);
         return messageContext;
     }
 
     @Override
-    public void resend(NetTunnel<Long> tunnel, Predicate<Message<Long>> filter) {
+    public void resend(NetTunnel<Long> tunnel, Predicate<Message> filter) {
+
+    }
+
+    @Override
+    public void resend(NetTunnel<Long> tunnel, long fromId, FilterBound bound) {
+        
+    }
+
+    @Override
+    public void resend(NetTunnel<Long> tunnel, long fromId, long toId, FilterBound bound) {
 
     }
 
@@ -80,7 +101,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public EndpointEventHandler<Long, NetEndpoint<Long>> getEventHandler() {
+    public EndpointEventsBoxHandler<Long, NetEndpoint<Long>> getEventHandler() {
         return null;
     }
 
@@ -115,18 +136,18 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public List<Message<Long>> getSendMessages(Predicate<Message<Long>> filter) {
+    public List<Message> getSentMessages(Predicate<Message> filter) {
         return null;
     }
 
     @Override
-    public List<Message<Long>> getAllSendMessages() {
+    public List<Message> getAllSendMessages() {
         return null;
     }
 
     @Override
-    public EndpointState getState() {
-        return state;
+    public EndpointStatus getStatus() {
+        return this.state;
     }
 
     @Override
@@ -136,51 +157,51 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     @Override
     public void offline() {
-        this.state = EndpointState.OFFLINE;
+        this.state = EndpointStatus.OFFLINE;
     }
 
     @Override
     public boolean isOnline() {
-        return state == EndpointState.ONLINE;
+        return this.state == EndpointStatus.ONLINE;
     }
 
     @Override
     public boolean isOffline() {
-        return state == EndpointState.OFFLINE;
+        return this.state == EndpointStatus.OFFLINE;
     }
 
     @Override
     public Long getUserId() {
-        return certificate.getUserId();
+        return this.certificate.getUserId();
     }
 
     @Override
     public String getUserType() {
-        return certificate.getUserType();
+        return this.certificate.getUserType();
     }
 
     @Override
     public Certificate<Long> getCertificate() {
-        return certificate;
+        return this.certificate;
     }
 
     @Override
     public boolean isLogin() {
-        return certificate.isAutherized();
+        return this.certificate.isAuthenticated();
     }
 
     @Override
     public boolean isClosed() {
-        return state == EndpointState.CLOSE;
+        return this.state == EndpointStatus.CLOSE;
     }
 
     @Override
     public void close() {
-        this.state = EndpointState.CLOSE;
+        this.state = EndpointStatus.CLOSE;
     }
 
     @Override
-    public boolean receive(Message<Long> message) {
+    public boolean receive(Message message) {
         return false;
     }
 
@@ -190,14 +211,15 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     public List<MessageContext<Long>> getWriteQueue() {
-        return writeQueue;
+        return this.writeQueue;
     }
 
     public List<MessageContext<Long>> getSendQueue() {
-        return sendQueue;
+        return this.sendQueue;
     }
 
-    public List<Message<Long>> getReceiveQueue() {
-        return receiveQueue;
+    public List<Message> getReceiveQueue() {
+        return this.receiveQueue;
     }
+
 }

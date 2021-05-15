@@ -8,7 +8,7 @@
 // @Unit
 // public class ProtoExMessageFactory<UID> implements MessageFactory<UID> {
 //
-//     private final Certificate<UID> UNLOGIN_CERTIFICATE = Certificates.createUnautherized();
+//     private final Certificate<UID> UNLOGIN_CERTIFICATE = Certificates.createUnauthenticated();
 //
 //     @Override
 //     public NetMessage<UID> create(long id, MessageContext<UID> context, Certificate<UID> certificate) {

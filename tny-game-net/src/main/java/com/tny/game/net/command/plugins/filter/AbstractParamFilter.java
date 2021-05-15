@@ -30,13 +30,13 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message) throws CommandException {
+    public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws CommandException {
         List<A> annotations = holder.getParamsAnnotationsByType(this.annClass);
         int index = 0;
         Object body = message.getBody(Object.class);
         for (A an : annotations) {
             if (an != null) {
-                P param = (P) holder.getParameterValue(index, as(tunnel), message, body);
+                P param = (P)holder.getParameterValue(index, as(tunnel), message, body);
                 ResultCode result = this.doFilter(holder, tunnel, message, index, an, param);
                 if (result != NetResultCode.SUCCESS) {
                     return result;
@@ -47,6 +47,6 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
         return NetResultCode.SUCCESS;
     }
 
-    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message<UID> message, int index, A annotation, P param);
+    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message, int index, A annotation, P param);
 
 }

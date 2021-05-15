@@ -2,6 +2,7 @@ package com.tny.game.common.lifecycle;
 
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.utils.*;
+import org.apache.commons.lang3.builder.*;
 
 import java.util.*;
 
@@ -106,6 +107,26 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
             return this.processorClass.getName().compareTo(o.processorClass.getName());
         }
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Lifecycle)) {
+            return false;
+        }
+
+        Lifecycle<?, ?> lifecycle = (Lifecycle<?, ?>)o;
+
+        return new EqualsBuilder().append(this.processorClass, lifecycle.processorClass).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(this.processorClass).toHashCode();
     }
 
     @Override

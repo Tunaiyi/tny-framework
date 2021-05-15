@@ -10,7 +10,7 @@ import org.junit.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 有返回值的Stage测试类

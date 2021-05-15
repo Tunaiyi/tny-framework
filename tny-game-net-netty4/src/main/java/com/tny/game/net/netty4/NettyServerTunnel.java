@@ -1,7 +1,7 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 
@@ -10,33 +10,26 @@ import io.netty.channel.Channel;
  */
 public class NettyServerTunnel<UID> extends NettyTunnel<UID, NetEndpoint<UID>> {
 
-    public NettyServerTunnel(Channel channel, UID unloginUid,
-            EndpointEventHandler<UID, NetEndpoint<UID>> eventHandler,
-            MessageFactory<UID> messageBuilderFactory) {
-        super(channel, TunnelMode.SERVER, null, messageBuilderFactory);
-        this.endpoint = new AnonymityEndpoint<>(this, unloginUid, eventHandler);
+    public NettyServerTunnel(Channel channel, NetBootstrapContext<UID> bootstrapContext) {
+        super(channel, TunnelMode.SERVER, bootstrapContext);
     }
 
     @Override
-    public boolean bind(NetEndpoint<UID> endpoint) {
-        if (endpoint == null || !endpoint.isLogin())
-            return false;
-        if (this.endpoint == endpoint)
+    protected boolean replayEndpoint(NetEndpoint<UID> endpoint) {
+        Certificate<UID> certificate = this.getCertificate();
+        if (!certificate.isAuthenticated()) {
+            EndpointEventsBox<UID> oldEventBox = this.endpoint.getEventsBox();
+            this.endpoint = endpoint;
+            this.endpoint.takeOver(oldEventBox);
             return true;
-        synchronized (this) {
-            if (this.endpoint == endpoint)
-                return true;
-            Certificate<UID> certificate = this.getCertificate();
-            if (!certificate.isAutherized()) {
-                EndpointEventsBox<UID> oldEventBox = this.endpoint.getEventsBox();
-                this.endpoint = endpoint;
-                this.endpoint.takeOver(oldEventBox);
-                return true;
-            }
         }
         return false;
     }
 
+    @Override
+    protected void onDisconnect() {
+        this.close();
+    }
 
     @Override
     protected boolean onOpen() {

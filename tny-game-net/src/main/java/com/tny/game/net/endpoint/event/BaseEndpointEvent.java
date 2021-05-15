@@ -8,19 +8,21 @@ import java.util.Optional;
 /**
  * Created by Kun Yang on 2017/3/18.
  */
-public abstract class BaseEndpointEvent<UID> implements EndPointEvent<UID> {
+public abstract class BaseEndpointEvent<UID> implements EndpointEvent<UID> {
 
     protected Reference<NetTunnel<UID>> tunnel;
 
     protected BaseEndpointEvent(NetTunnel<UID> tunnel) {
-        if (tunnel != null)
+        if (tunnel != null) {
             this.tunnel = new WeakReference<>(tunnel);
+        }
     }
 
     @Override
     public Optional<NetTunnel<UID>> getTunnel() {
-        if (this.tunnel == null)
+        if (this.tunnel == null) {
             return Optional.empty();
+        }
         return Optional.ofNullable(this.tunnel.get());
     }
 

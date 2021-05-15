@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class UserLoginAuthenticateValidator extends UserAuthenticateValidator {
 
     @Override
-    public Certificate<Long> validate(Tunnel<Long> tunnel, Message<Long> message) throws CommandException {
-        return checkUserLogin(tunnel, message, false);
+    public Certificate<Long> validate(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory) throws CommandException {
+        return checkUserLogin(tunnel, message, factory, false);
     }
 
 }

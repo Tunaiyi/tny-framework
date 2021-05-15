@@ -27,7 +27,7 @@ public interface MessageDispatcher {
      * @param message 消息
      * @return
      */
-    Command dispatch(NetTunnel<?> tunnel, Message<?> message) throws CommandException;
+    Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException;
 
     /**
      * 添加请求派发错误监听器
@@ -37,7 +37,7 @@ public interface MessageDispatcher {
      *
      * @param listener 添加的请求派发错误监听器
      */
-    void addListener(DispatchCommandListener listener);
+    void addCommandListener(MessageCommandListener listener);
 
     /**
      * 添加请求派发错误监听器列表
@@ -47,7 +47,8 @@ public interface MessageDispatcher {
      *
      * @param listeners 添加的请求派发错误监听器列表
      */
-    void addListener(Collection<DispatchCommandListener> listeners);
+    void addCommandListener(Collection<MessageCommandListener> listeners);
+
     /**
      * 移除请求派发错误监听器
      * <p>
@@ -56,7 +57,7 @@ public interface MessageDispatcher {
      *
      * @param listener 移除的请求派发错误监听器
      */
-    void removeListener(DispatchCommandListener listener);
+    void removeCommandListener(MessageCommandListener listener);
 
     /**
      * 清除请求派发错误监听器
@@ -64,6 +65,6 @@ public interface MessageDispatcher {
      * <p>
      * 清除所有请求派发错误监听器<br>
      */
-    void clearListener();
+    void clearCommandListeners();
 
 }

@@ -6,7 +6,7 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.simple.*;
 import com.tny.game.base.item.xml.*;
 import com.tny.game.base.item.xml.XMLDemand.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 
@@ -110,8 +110,9 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     protected Item<?> setAttrMap(long playerId, String alias, Map<String, Object> attributeMap) {
         ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         ItemModel model = itemModelExplorer.getModelByAlias(alias);
-        if (model == null)
+        if (model == null) {
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
+        }
         ItemExplorer itemExplorer = this.context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
             Item<?> item = itemExplorer.getItem(playerId, model.getId());
@@ -127,15 +128,16 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         this.setAttrMap(playerId, attributeMap, item, attributes);
         this.setAttrMap(playerId, this.attrAliasSet, attributeMap);
         DemandResultCollector collector = behaviorPlan.tryToDo(playerId, action, tryAll, attributeMap);
-        if (collector.isFailed())
+        if (collector.isFailed()) {
             return new SimpleTryToDoResult(action, collector.getFailedDemands());
+        }
         return new SimpleTryToDoResult(action, award ?
                                                behaviorPlan.countAward(playerId, action, attributeMap) :
                                                new SimpleTrade(action, TradeType.AWARD),
                 new SimpleTrade(action, TradeType.COST, collector.getCostDemands().stream()
-                                                                 .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
-                                                                 .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
-                                                                 .collect(Collectors.toList())));
+                        .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
+                        .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
+                        .collect(Collectors.toList())));
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerId, Item<?> item, Behavior behavior, Object... attributes) {
@@ -409,8 +411,9 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     public <A extends Ability> Set<A> getAbilityTypes(Class<A> typeClass) {
         Set<A> types = new HashSet<>();
         for (Ability ability : this.abilityMap.keySet()) {
-            if (typeClass.isInstance(ability))
+            if (typeClass.isInstance(ability)) {
                 types.add(ObjectAide.as(ability, typeClass));
+            }
         }
         return types;
     }
@@ -427,9 +430,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         for (Ability ability : this.abilityMap.keySet()) {
             V object = null;
             if (abilityClass.isInstance(ability)) {
-                if (this.hasAbility(ability))
+                if (this.hasAbility(ability)) {
                     object = this.doCountAbility(item.getPlayerId(), item, ability, clazz, attributes);
-                valueMap.put((A) ability, object);
+                }
+                valueMap.put((A)ability, object);
             }
         }
         return valueMap;
@@ -442,9 +446,10 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         for (Ability ability : this.abilityMap.keySet()) {
             V object = null;
             if (abilityClass.isInstance(ability)) {
-                if (this.hasAbility(ability))
+                if (this.hasAbility(ability)) {
                     object = this.doCountAbility(playerId, null, ability, clazz, attributes);
-                valueMap.put((A) ability, object);
+                }
+                valueMap.put((A)ability, object);
             }
         }
         return valueMap;
@@ -486,7 +491,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
         A value = this.doCountAbility(item.getPlayerId(), item, ability,
-                (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
+                (Class<A>)(defaultObject == null ? Object.class : (Class<A>)defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
@@ -494,7 +499,7 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
     @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerId, A defaultObject, Ability ability, Object... attributes) {
         A value = this
-                .doCountAbility(playerId, null, ability, (Class<A>) (defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
+                .doCountAbility(playerId, null, ability, (Class<A>)(defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
@@ -502,8 +507,9 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         String key = null;
         if (item == null) {
             ItemExplorer itemExplorer = this.context.getItemExplorer();
-            if (itemExplorer.hasItemManager(this.getItemType()))
+            if (itemExplorer.hasItemManager(this.getItemType())) {
                 item = itemExplorer.getItem(playerId, this.getId());
+            }
         }
         attributeMap.put(ACTION_ITEM_NAME, item);
         attributeMap.put(ACTION_ITEM_MODEL_NAME, this);
@@ -521,30 +527,34 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
     protected BehaviorPlan getBehaviorPlanByBehavior(Behavior behavior) {
         BehaviorPlan plan = this.behaviorPlanMap.get(behavior);
-        if (plan == null)
+        if (plan == null) {
             throw new GameRuningException(behavior, ItemResultCode.BEHAVIOR_NO_EXIST);
+        }
         return plan;
     }
 
     protected BehaviorPlan getBehaviorPlanByAction(Action action) {
         BehaviorPlan plan = this.actionBehaviorPlanMap.get(action);
-        if (plan == null)
+        if (plan == null) {
             throw new GameRuningException(action, ItemResultCode.BEHAVIOR_NO_EXIST);
+        }
         return plan;
     }
 
     protected ActionPlan getActionPlan(Action action) {
         BehaviorPlan plan = this.actionBehaviorPlanMap.get(action);
-        if (plan == null)
+        if (plan == null) {
             throw new GameRuningException(action, ItemResultCode.BEHAVIOR_NO_EXIST);
+        }
         return plan.getActionPlan(action);
     }
 
     @Override
     public Behavior getBehaviorByAction(Action action) {
         BehaviorPlan plan = this.actionBehaviorPlanMap.get(action);
-        if (plan == null)
+        if (plan == null) {
             return null;
+        }
         return plan.getBehavior();
     }
 
@@ -554,8 +564,9 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         Set<Ability> abilitySet = new HashSet<>();
         for (Ability ability : this.abilityMap.keySet()) {
             for (Class<? extends Ability> clazz : abilityClasses) {
-                if (clazz.isInstance(ability))
+                if (clazz.isInstance(ability)) {
                     abilitySet.add(ability);
+                }
             }
         }
         return abilitySet;
@@ -579,13 +590,16 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        ItemModel other = (ItemModel) obj;
-        if (this.id != other.getId())
+        }
+        ItemModel other = (ItemModel)obj;
+        if (this.id != other.getId()) {
             return false;
+        }
         return true;
     }
 
@@ -619,17 +633,19 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         return DEMAND_FORMULA;
     }
 
-
     protected void init(ItemModelContext context) {
         this.context = context;
-        if (this.attrAliasSet == null)
+        if (this.attrAliasSet == null) {
             this.attrAliasSet = ImmutableSet.of();
+        }
 
-        if (this.abilityMap == null)
+        if (this.abilityMap == null) {
             this.abilityMap = ImmutableMap.of();
+        }
 
-        if (this.tags == null)
+        if (this.tags == null) {
             this.tags = ImmutableSet.of();
+        }
 
         this.attrAliasSet = ImmutableSet.copyOf(this.attrAliasSet);
         this.abilityMap = ImmutableMap.copyOf(this.abilityMap);
@@ -640,11 +656,13 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
         ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
         this.currentFormulaHolder = as(exprHolderFactory.create(this.getCurrentFormula()));
         this.demandFormulaHolder = as(exprHolderFactory.create(this.getDemandFormula()));
-        if (this.actionBehaviorPlanMap == null)
+        if (this.actionBehaviorPlanMap == null) {
             this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
+        }
 
-        if (this.behaviorPlanMap == null)
+        if (this.behaviorPlanMap == null) {
             this.behaviorPlanMap = new EmptyImmutableMap<>();
+        }
         doInit(context);
         this.behaviorPlanMap = ImmutableMap.copyOf(this.behaviorPlanMap);
         this.actionBehaviorPlanMap = ImmutableMap.copyOf(this.actionBehaviorPlanMap);

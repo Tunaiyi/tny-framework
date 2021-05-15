@@ -6,6 +6,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.transport.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -21,7 +22,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
-public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
+public class NettyClientGuide extends NettyBootstrap<NettyClientBootstrapSetting> implements ClientGuide {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.CLIENT);
 
@@ -31,11 +32,11 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
     private Bootstrap bootstrap = null;
 
-    private Map<String, NettyClient<?>> clients = new ConcurrentHashMap<>();
+    private final Map<String, NettyClient<?>> clients = new ConcurrentHashMap<>();
 
-    private AtomicBoolean close = new AtomicBoolean(false);
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private ClientCloseListener<?> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
+    private final ClientCloseListener<?> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
 
     public NettyClientGuide(NettyClientBootstrapSetting clientSetting) {
         super(clientSetting);
@@ -47,43 +48,46 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
     }
 
     @Override
-    public <UID> Client<UID> connect(URL url, UID unloginUid, PostConnect<UID> connect) {
-        NettyClient<UID> client = new NettyClient<>(this, url, unloginUid, connect,
-                this.getEventHandler(), 0);
+    public <UID> Client<UID> connect(URL url, PostConnect<UID> connect) {
+        NetBootstrapContext<UID> context = this.getContext();
+        EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler = context.getEndpointEndpointEventHandler();
+        Certificate<UID> certificate = context.getCertificateFactory().unauthenticate();
+        NettyClient<UID> client = new NettyClient<>(this, url, certificate, connect, eventHandler, 0);
         NettyClient<UID> old = as(this.clients.putIfAbsent(clientKey(url), client));
         if (old != null) {
             return old;
         } else {
             client.open();
-            // ClientKeeper<UID> keeper = this.endpointKeeperManager.loadOrCreate(client.getUserType(), TunnelMode.CLIENT);
-            // keeper.register(client);
             return client;
         }
     }
 
     private Bootstrap getBootstrap() {
-        if (this.bootstrap != null)
+        if (this.bootstrap != null) {
             return this.bootstrap;
+        }
         synchronized (this) {
-            if (this.bootstrap != null)
+            if (this.bootstrap != null) {
                 return this.bootstrap;
+            }
             this.bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler();
             this.bootstrap.group(workerGroup)
-                          .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                          .option(ChannelOption.SO_REUSEADDR, true)
-                          .option(ChannelOption.TCP_NODELAY, true)
-                          .option(ChannelOption.SO_KEEPALIVE, true)
-                          .handler(new ChannelInitializer<Channel>() {
+                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(new ChannelInitializer<Channel>() {
 
-                              @Override
-                              protected void initChannel(Channel ch) throws Exception {
-                                  if (NettyClientGuide.this.channelMaker != null)
-                                      NettyClientGuide.this.channelMaker.initChannel(ch);
-                                  ch.pipeline().addLast("nettyMessageHandler", messageHandler);
-                              }
+                        @Override
+                        protected void initChannel(Channel ch) throws Exception {
+                            if (NettyClientGuide.this.channelMaker != null) {
+                                NettyClientGuide.this.channelMaker.initChannel(ch);
+                            }
+                            ch.pipeline().addLast("nettyMessageHandler", messageHandler);
+                        }
 
-                          });
+                    });
             return this.bootstrap;
         }
 
@@ -124,12 +128,12 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
 
     @Override
     public boolean isClosed() {
-        return this.close.get();
+        return this.closed.get();
     }
 
     @Override
     public boolean close() {
-        if (this.close.compareAndSet(false, true)) {
+        if (this.closed.compareAndSet(false, true)) {
             this.clients.values().forEach(NettyClient::close);
             workerGroup.shutdownGracefully();
             buses().closeEvent().removeListener(this.closeListener);
@@ -137,6 +141,5 @@ public class NettyClientGuide extends NettyBootstrap implements ClientGuide {
         }
         return false;
     }
-
 
 }

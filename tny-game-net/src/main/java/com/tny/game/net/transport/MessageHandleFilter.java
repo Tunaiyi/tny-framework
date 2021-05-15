@@ -38,6 +38,6 @@ public interface MessageHandleFilter<UID> {
      *
      * @return true 处理 false 不可处理
      */
-    MessageHandleStrategy filter(Endpoint<UID> endpoint, MessageSubject message);
+    MessageHandleStrategy filter(Endpoint<UID> endpoint, MessageContent message);
 
 }

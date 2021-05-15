@@ -22,6 +22,6 @@ public interface AuthenticateValidator<UID> {
      * @return 带有验证结果的Session对象
      * @throws CommandException
      */
-    Certificate<UID> validate(Tunnel<UID> tunnel, Message<UID> message) throws CommandException, ValidationException;
+    Certificate<UID> validate(Tunnel<UID> tunnel, Message message, CertificateFactory<UID> factory) throws CommandException, ValidationException;
 
 }

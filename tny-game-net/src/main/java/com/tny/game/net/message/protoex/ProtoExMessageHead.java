@@ -35,7 +35,7 @@
 //     public ProtoExMessageHead(long id, MessageContext<?> context) {
 //         super(context.getMode());
 //         this.id = id;
-//         this.protocol = context.getProtocolNumber();
+//         this.protocol = context.getProtocolId();
 //         this.code = context.getCode();
 //         this.toMessage = context.getToMessage();
 //         this.time = System.currentTimeMillis();

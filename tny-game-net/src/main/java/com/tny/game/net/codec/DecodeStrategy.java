@@ -13,8 +13,8 @@ import com.tny.game.net.message.*;
 @FunctionalInterface
 public interface DecodeStrategy {
 
-    DecodeStrategy DECODE_ALL_STRATEGY = (head, tail) -> true;
+    DecodeStrategy DECODE_ALL_STRATEGY = (head) -> true;
 
-    boolean isNeedDecode(MessageHead head, Object tail);
+    boolean isNeedDecode(MessageHead head);
 
 }

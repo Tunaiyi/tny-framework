@@ -10,7 +10,7 @@ import java.util.function.Predicate;
  * 终端, 代表通选两端
  * <p>
  */
-public interface Endpoint<UID> extends Netter<UID>, Receiver<UID>, Sender<UID> {
+public interface Endpoint<UID> extends Netter<UID>, Sender<UID> {
 
     /*
      * @return 终端ID
@@ -55,42 +55,37 @@ public interface Endpoint<UID> extends Netter<UID>, Receiver<UID>, Sender<UID> {
      *
      * @param tunnel 发送的通道
      * @param filter 消息筛选器
-     * @return 返回发送上下文
      */
-    void resend(NetTunnel<UID> tunnel, Predicate<Message<UID>> filter);
+    void resend(NetTunnel<UID> tunnel, Predicate<Message> filter);
 
     /**
-     * 处理收到消息
+     * 重发从fromId开始的已发送消息
      *
-     * @param tunnel  通道
-     * @param message 消息
+     * @param tunnel 发送的通道
+     * @param fromId 开始 id
+     * @param bound  是否包含 toId
      */
-    boolean receive(NetTunnel<UID> tunnel, Message<UID> message);
+    void resend(NetTunnel<UID> tunnel, long fromId, FilterBound bound);
 
     /**
-     * 异步发送消息
+     * 重发从fromId到toId的已发送消息
      *
-     * @param tunnel         发送的通道
-     * @param messageContext 发送消息上下文
-     * @return 返回发送上下文
+     * @param tunnel 发送的通道
+     * @param fromId 开始 id
+     * @param toId   结束 id
+     * @param bound  是否包含 fromId & toId
      */
-    SendContext<UID> send(NetTunnel<UID> tunnel, MessageContext<UID> messageContext);
-
-    /**
-     * @return 获取筛选的发送的消息
-     */
-    List<Message<UID>> getSendMessages(Predicate<Message<UID>> filter);
+    void resend(NetTunnel<UID> tunnel, long fromId, long toId, FilterBound bound);
 
     /**
      * @return 获取所有发送的消息
      */
-    List<Message<UID>> getAllSendMessages();
+    List<Message> getAllSendMessages();
 
     /**
      * @return 获取 session 状态
      */
-    EndpointState getState();
-
+    EndpointStatus getStatus();
 
     /**
      * @return 获取下线时间

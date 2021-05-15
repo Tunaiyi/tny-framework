@@ -18,4 +18,6 @@ public interface EndpointInputEventHandler<UID, E extends NetEndpoint<UID>> {
      */
     void onInput(EndpointEventsBox<UID> box, E session);
 
+    void onInputEvent(E endpoint, EndpointInputEvent<UID> event);
+
 }

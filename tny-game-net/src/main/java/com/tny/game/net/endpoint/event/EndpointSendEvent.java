@@ -1,15 +1,14 @@
 package com.tny.game.net.endpoint.event;
 
-
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 /**
  * Created by Kun Yang on 2017/2/17.
  */
-public class EndpointSendEvent<UID> extends BaseEndpointEvent<UID> implements EndPointOutputEvent<UID> {
+public class EndpointSendEvent<UID> extends BaseEndpointEvent<UID> implements EndpointOutputEvent<UID> {
 
-    private MessageContext<UID> context;
+    private final MessageContext<UID> context;
 
     public EndpointSendEvent(NetTunnel<UID> tunnel, MessageContext<UID> context) {
         super(tunnel);
@@ -17,7 +16,7 @@ public class EndpointSendEvent<UID> extends BaseEndpointEvent<UID> implements En
     }
 
     public MessageContext<UID> getContext() {
-        return context;
+        return this.context;
     }
 
     @Override
@@ -26,7 +25,7 @@ public class EndpointSendEvent<UID> extends BaseEndpointEvent<UID> implements En
     }
 
     public void fail(Throwable cause) {
-        context.fail(cause);
+        this.context.fail(cause);
     }
 
 }

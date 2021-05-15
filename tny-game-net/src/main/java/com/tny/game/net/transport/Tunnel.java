@@ -33,12 +33,12 @@ public interface Tunnel<UID> extends Netter<UID> {
     /**
      * @return 是否已经开启
      */
-    boolean isAlive();
+    boolean isActive();
 
     /**
      * @return 获取 Tunnel 状态
      */
-    TunnelState getState();
+    TunnelStatus getStatus();
 
     /**
      * @return 返回远程地址

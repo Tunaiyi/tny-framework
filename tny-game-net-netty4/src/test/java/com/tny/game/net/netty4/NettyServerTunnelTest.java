@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
@@ -11,10 +12,11 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetEndpoint<Long>, Ne
 
     @Override
     protected TunnelTestInstance<NettyServerTunnel<Long>, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
-        MockEndpointEventHandler<NetEndpoint<Long>> handler = new MockEndpointEventHandler<>();
-        NettyServerTunnel<Long> tunnel = this.newTunnel(handler, open);
+        MockEndpointEventsBoxHandler<NetEndpoint<Long>> handler = new MockEndpointEventsBoxHandler<>();
         MockNetEndpoint endpoint = createEndpoint(certificate);
-        if (certificate.isAutherized()) {
+        NettyServerTunnel<Long> tunnel = this.newTunnel(handler, open);
+        tunnel.setEndpoint(endpoint);
+        if (certificate.isAuthenticated()) {
             tunnel.bind(endpoint);
         }
         return new TunnelTestInstance<>(tunnel, endpoint);
@@ -25,10 +27,12 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetEndpoint<Long>, Ne
         return new MockNetEndpoint(certificate);
     }
 
-    private NettyServerTunnel<Long> newTunnel(MockEndpointEventHandler<NetEndpoint<Long>> handler, boolean open) {
-        NettyServerTunnel<Long> tunnel = new NettyServerTunnel<>(mockChannel(), unloginUid, handler, new CommonMessageFactory<>());
-        if (open)
+    private NettyServerTunnel<Long> newTunnel(MockEndpointEventsBoxHandler<NetEndpoint<Long>> handler, boolean open) {
+        NettyServerTunnel<Long> tunnel = new NettyServerTunnel<>(mockChannel(),
+                new NetBootstrapContext<>(handler, new CommonMessageFactory<>(), null));
+        if (open) {
             tunnel.open();
+        }
         return tunnel;
     }
 

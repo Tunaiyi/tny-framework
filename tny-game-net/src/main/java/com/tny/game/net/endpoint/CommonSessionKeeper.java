@@ -15,7 +15,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    private static ObjectLocker<Object> locker = new ObjectLocker<>();
+    private static final ObjectLocker<Object> locker = new ObjectLocker<>();
 
     public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
             SessionSetting setting) {
@@ -24,7 +24,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     @Override
     public Optional<Session<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
-        if (!certificate.isAutherized()) {
+        if (!certificate.isAuthenticated()) {
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL, format("cert {} is unauthentic", certificate));
         }
         if (!this.getUserType().equals(certificate.getUserType())) {
@@ -34,10 +34,10 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);
         try {
-            if (certificate.getStatus() == CertificateStatus.AUTHERIZED) { // 登录创建 Session
-                return Optional.ofNullable(doNewSession(certificate, tunnel));
+            if (certificate.getStatus() == CertificateStatus.AUTHENTICATED) { // 登录创建 Session
+                return Optional.of(doNewSession(certificate, tunnel));
             } else {  // 原有 Session 接受新 Tunnel
-                return Optional.ofNullable(doAcceptTunnel(certificate, tunnel));
+                return Optional.of(doAcceptTunnel(certificate, tunnel));
             }
         } finally {
             locker.unlock(uid, lock);

@@ -5,6 +5,7 @@ import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -15,9 +16,7 @@ import org.slf4j.*;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-
-public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
+public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting> implements ServerGuide {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
 
@@ -29,11 +28,9 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
 
     private volatile ServerBootstrap bootstrap;
 
-    private volatile ServerBootstrapSetting serverUnitSetting;
+    private final Collection<InetSocketAddress> bindAddresses;
 
-    private Collection<InetSocketAddress> bindAddresses;
-
-    private Map<String, Channel> channels = new CopyOnWriteMap<>();
+    private final Map<String, Channel> channels = new CopyOnWriteMap<>();
 
     /**
      * 服务器关闭监听器
@@ -41,10 +38,9 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
     private BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
-    public NettyServerGuide(NettyServerBootstrapSetting unitSetting) {
-        super(unitSetting);
-        this.serverUnitSetting = as(unitSetting);
-        this.bindAddresses = ImmutableSet.copyOf(this.serverUnitSetting.getBindAddresses());
+    public NettyServerGuide(NettyServerBootstrapSetting setting) {
+        super(setting);
+        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddresses());
     }
 
     @Override
@@ -59,21 +55,21 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
 
     @Override
     public boolean close() {
-        LOG.info("#NettyServer [ {} ] | 正在关闭服务器......", this.serverUnitSetting.getName());
+        LOG.info("#NettyServer [ {} ] | 正在关闭服务器......", this.setting.getName());
         this.channels.forEach((address, channel) -> {
             try {
-                NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭中......", this.serverUnitSetting.getName(), channel);
+                NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭中......", this.setting.getName(), channel);
                 channel.disconnect();
-                NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭完成", this.serverUnitSetting.getName(), channel);
+                NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭完成", this.setting.getName(), channel);
             } catch (Throwable e) {
-                NettyServerGuide.LOG.error("#NettyServer [ {} ] | Channel {} 关闭异常!!!", this.serverUnitSetting.getName(), channel, e);
-                LOG.error("NettyServer [ {} ] | {} close exception", this.serverUnitSetting.getName(), address, e);
+                NettyServerGuide.LOG.error("#NettyServer [ {} ] | Channel {} 关闭异常!!!", this.setting.getName(), channel, e);
+                LOG.error("NettyServer [ {} ] | {} close exception", this.setting.getName(), address, e);
             }
         });
         parentGroup.shutdownGracefully();
         childGroup.shutdownGracefully();
         NettyServerGuide.this.fireServerClosed();
-        NettyServerGuide.LOG.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.serverUnitSetting.getName());
+        NettyServerGuide.LOG.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
         return true;
     }
 
@@ -108,13 +104,13 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
                 this.channels.remove(addressString, channel);
             }
         }
-        LOG.info("#NettyServer [ {} ] | 正在打开监听{}端口", this.serverUnitSetting.getName(), address);
+        LOG.info("#NettyServer [ {} ] | 正在打开监听{}端口", this.setting.getName(), address);
         ChannelFuture channelFuture = this.bootstrap().bind(address);
         if (channelFuture.awaitUninterruptibly(30000L)) {
             this.channels.put(addressString, channelFuture.channel());
-            LOG.info("#NettyServer [ {} ] | {}端口已监听", this.serverUnitSetting.getName(), address);
+            LOG.info("#NettyServer [ {} ] | {}端口已监听", this.setting.getName(), address);
         } else {
-            LOG.info("#NettyServer [ {} ] | {}端口监听失败", this.serverUnitSetting.getName(), address);
+            LOG.info("#NettyServer [ {} ] | {}端口监听失败", this.setting.getName(), address);
         }
     }
 
@@ -137,13 +133,17 @@ public class NettyServerGuide extends NettyBootstrap implements ServerGuide {
 
                 @Override
                 protected void initChannel(Channel ch) throws Exception {
+                    ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
                     if (NettyServerGuide.this.channelMaker != null) {
                         NettyServerGuide.this.channelMaker.initChannel(ch);
                     }
                     ch.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
-                    Certificate<Object> defaultCertificate = Certificates.createUnautherized();
-                    NettyTunnel<Object, ?> tunnel = new NettyServerTunnel<>(ch, defaultCertificate,
-                            getEventHandler(), NettyServerGuide.this.messageFactory);
+                    NetBootstrapContext<Object> context = NettyServerGuide.this.getContext();
+                    NettyTunnel<Object, NetEndpoint<Object>> tunnel = new NettyServerTunnel<>(ch, context);
+                    Certificate<Object> certificate = context.getCertificateFactory().unauthenticate();
+                    EndpointEventsBoxHandler<Object, NetEndpoint<Object>> eventHandler = context.getEndpointEndpointEventHandler();
+                    AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(certificate, eventHandler);
+                    tunnel.bind(endpoint);
                     ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
                     tunnel.open();
                 }

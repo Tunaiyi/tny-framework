@@ -1,8 +1,6 @@
 package com.tny.game.net.transport;
 
-
 import com.tny.game.common.enums.*;
-
 
 public enum CertificateStatus implements EnumIdentifiable<Integer> {
 
@@ -14,12 +12,12 @@ public enum CertificateStatus implements EnumIdentifiable<Integer> {
     /**
      * 未认证
      */
-    UNAUTHERIZED(1, false),
+    UNAUTHENTICATED(1, false),
 
     /**
      * 已认证
      */
-    AUTHERIZED(2, true),
+    AUTHENTICATED(2, true),
 
     /**
      * 续约认证
@@ -31,11 +29,11 @@ public enum CertificateStatus implements EnumIdentifiable<Integer> {
 
     private Integer id;
 
-    private boolean autherized;
+    private boolean authenticated;
 
-    CertificateStatus(Integer id, boolean autherized) {
+    CertificateStatus(Integer id, boolean authenticated) {
         this.id = id;
-        this.autherized = autherized;
+        this.authenticated = authenticated;
     }
 
     @Override
@@ -43,7 +41,7 @@ public enum CertificateStatus implements EnumIdentifiable<Integer> {
         return this.id;
     }
 
-    public boolean isAutherized() {
-        return this.autherized;
+    public boolean isAuthenticated() {
+        return this.authenticated;
     }
 }

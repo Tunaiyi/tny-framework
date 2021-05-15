@@ -13,17 +13,18 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     /**
      * 间歇时间
      */
-    private static final int DEFAULT_NEXT_INTERVAL = 5;
+    private static final int DEFAULT_NEXT_INTERVAL = 8;
 
     /* 线程数 */
-    private int threads;
+    private final int threads;
 
     /* ChildExecutor command 未完成, 延迟时间*/
     protected int nextInterval;
 
-    protected ForkJoinPool executorService;
+    protected ExecutorService executorService;
 
-    private ScheduledExecutorService scheduledExecutorService = ThreadPoolExecutors.scheduled(this.getClass().getSimpleName() + "Scheduled", 4, true);
+    private final ScheduledExecutorService scheduledExecutorService = ThreadPoolExecutors
+            .scheduled(this.getClass().getSimpleName() + "Scheduled", 4, true);
 
     public ForkJoinMessageCommandExecutor() {
         this(Runtime.getRuntime().availableProcessors(), DEFAULT_NEXT_INTERVAL);
@@ -51,7 +52,6 @@ public abstract class ForkJoinMessageCommandExecutor implements MessageCommandEx
     @Override
     public void prepareStart() {
         this.executorService = ForkJoinPools.pool(this.threads, this.getClass().getSimpleName(), true);
-        // ThreadPoolExecutors.pool(this.getClass().getSimpleName(), this.threads, Math.max(this.threads, this.maxThreads), keepsAlive);
     }
 
     protected ScheduledExecutorService scheduledExecutor() {

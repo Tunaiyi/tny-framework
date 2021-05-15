@@ -15,9 +15,7 @@ public class ControllerContext<UID> {
     //	private static final String SYSTEM_THREAD_CONTROLLER = "SysThreadController";
     //	private static final String SYSTEM_THREAD_HANDLER = "SysThreadHandler";
 
-    private static ThreadLocal<ControllerContext> local = new ThreadLocal<ControllerContext>();
-
-    private UID userID;
+    private static ThreadLocal<ControllerContext> local = new ThreadLocal<>();
 
     private int protocol;
 
@@ -26,8 +24,7 @@ public class ControllerContext<UID> {
     private ControllerContext() {
     }
 
-    private ControllerContext(UID userID, int protocol, Thread thread) {
-        this.userID = userID;
+    private ControllerContext(int protocol, Thread thread) {
         this.protocol = protocol;
         this.thread = thread;
     }
@@ -42,29 +39,18 @@ public class ControllerContext<UID> {
         if (info == null) {
             info = new ControllerContext();
             info.protocol = 0;
-            info.userID = -1;
             local.set(info);
         }
         return info;
     }
 
-    static <ID> void setCurrent(ID userID, int protocol) {
+    static <ID> void setCurrent(int protocol) {
         ControllerContext info = local.get();
         if (info == null) {
             info = new ControllerContext();
             local.set(info);
         }
-        info.userID = userID;
         info.protocol = protocol;
-    }
-
-    /**
-     * 获取当前线程请求对象 <br>
-     *
-     * @return 当前线程请求对象
-     */
-    public UID getUserId() {
-        return this.userID;
     }
 
     public Thread getThread() {
@@ -85,4 +71,5 @@ public class ControllerContext<UID> {
     public String toString() {
         return "ControllerInfo [getProtocol()=" + this.getProtocol() + "]";
     }
+
 }

@@ -26,7 +26,7 @@ public class OpLogMapperInitiator implements AppPrepareStart {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogMapperInitiator.class);
 
     @Resource
-    private AppContext appContext;
+    private NetAppContext appContext;
 
     private Exception exception;
 
@@ -42,14 +42,15 @@ public class OpLogMapperInitiator implements AppPrepareStart {
                         ClassFilterHelper.matchSuper(reader, Snapshot.class)
                 ));
                 ClassScanner.instance()
-                            .addSelector(selector)
-                            .scan(this.appContext.getScanPackages());
+                        .addSelector(selector)
+                        .scan(this.appContext.getScanPackages());
                 Collection<Class<?>> classes = selector.getClasses();
                 for (Class<?> cl : classes) {
                     int modifier = cl.getModifiers();
-                    if (Modifier.isAbstract(modifier))
+                    if (Modifier.isAbstract(modifier)) {
                         continue;
-                    Snapshot snapShot = (Snapshot) cl.newInstance();
+                    }
+                    Snapshot snapShot = (Snapshot)cl.newInstance();
                     OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapShot.getType().toString()));
                 }
             } catch (Throwable e) {
@@ -68,8 +69,9 @@ public class OpLogMapperInitiator implements AppPrepareStart {
     @Override
     public void prepareStart() throws Exception {
         this.task.get();
-        if (this.exception != null)
+        if (this.exception != null) {
             throw this.exception;
+        }
     }
 
 }

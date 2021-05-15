@@ -11,20 +11,21 @@ public class RespondFutureCommand<UID> implements Command {
 
     private RespondFuture<UID> future;
 
-    private Message<UID> message;
+    private Message message;
 
-    public RespondFutureCommand(Message<UID> message, RespondFuture<UID> future) {
+    public RespondFutureCommand(Message message, RespondFuture<UID> future) {
         this.message = message;
         this.future = future;
     }
 
     @Override
     public void execute() {
-        future.complete(message);
+        this.future.complete(this.message);
     }
 
     @Override
     public boolean isDone() {
-        return future.isDone();
+        return this.future.isDone();
     }
+
 }

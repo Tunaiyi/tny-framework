@@ -1,173 +1,107 @@
-apply from: "dependency.gradle"
-
-def getPomPackaging() {
-    return hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
+plugins {
+    id 'org.ajoberstar.grgit' version '4.1.0' apply false
+    id 'org.springframework.boot' version '2.4.4' apply false
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
+    id 'com.baidu.jprotobuf' version "1.0.9" apply false
 }
 
-def getReleaseRepositoryUrl() {
-    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-}
+apply from: "${rootDir}/gradle/dependency.gradle"
+apply from: "${rootDir}/gradle/git.gradle"
 
-def getSnapshotRepositoryUrl() {
-    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-            : "https://oss.sonatype.org/content/repositories/snapshots/"
-}
-
-def getRepositoryUsername() {
-    return hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ""
-}
-
-def getRepositoryPassword() {
-    return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
-}
-
-buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://maven.aliyun.com/repository/jcenter" }
-        maven { url "https://maven.aliyun.com/repository/central" }
-        maven { url "https://maven.aliyun.com/repository/spring-plugin" }
-        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
-        maven { url "https://maven.aliyun.com/repository/public" }
-        maven { url "https://m2.tnydev.com/repository/maven-public/" }
-    }
-
-    dependencies {
-//        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE")
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.4.RELEASE")
-        classpath("org.ajoberstar.grgit:grgit-gradle:4.0.2")
-    }
-}
-
-import org.ajoberstar.grgit.Grgit
-
-ext.RELEASE_VERSION_SUFFIX = ".release";
-ext.RELEASE_PACK_SUFFIX = "-RELEASE";
-ext.SNAPSHOT_PACK_SUFFIX = "-SNAPSHOT";
-
-def gitBranchName() {
-    Grgit gitter = Grgit.open(currentDir: project.getRootDir())
-    return gitter.branch.current().getName()
-}
-
-def parseVersion(String version) {
-    if (isReleaseVersion(version))
-        return version.substring(0, version.length() - RELEASE_VERSION_SUFFIX.length());
-    return version
-}
-
-def isReleaseVersion(String version) {
-    return version.endsWith(RELEASE_VERSION_SUFFIX)
+ext {
+    moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
+//    moduleProjects = moduleProjects - project(":tny-game-bom")
 }
 
 configure(allprojects) {
-    group 'com.tny.game'
     apply plugin: "idea"
     apply plugin: 'maven'
+    apply plugin: "io.spring.dependency-management"
 
-//    ext.verNumber = '4.1.x'
-//    ext.pj_version = verNumber + '-RELEASE'
-//    ext.pj_version = verNumber + '-SNAPSHOT'
+    group 'com.tny.game'
+    version "${projectVersion}"
 
-    ext.branchName = gitBranchName()
-    ext.branchVersion = parseVersion(branchName)
-    ext.versionNumber = branchVersion
-//
-    if (isReleaseVersion(branchName)) {
-        ext.pj_version = branchVersion + RELEASE_PACK_SUFFIX
-    } else {
-        ext.pj_version = branchVersion + SNAPSHOT_PACK_SUFFIX
+    dependencyManagement {
+
+        imports {
+            mavenBom(libs.jackson_bom)
+            mavenBom(libs.spring_cloud_dependencies)
+            mavenBom(libs.spring_boot_dependencies)
+            mavenBom(libs.alibaba_cloud_dependencies)
+        }
+
+        dependencies {
+            dependency libs.commons_codec
+            dependency libs.commons_beanutils
+            dependency libs.commons_collections
+            dependency libs.commons_collections4
+            dependency libs.commons_configuration
+            dependency libs.commons_lang
+            dependency libs.commons_lang3
+            dependency libs.commons_pool2
+            dependency libs.rocketmq_spring_boot_starter
+            dependency libs.nimbus_oauth2_oidc_sdk
+            dependency libs.javassist
+            dependency libs.guava
+            dependency libs.okio
+            dependency libs.okhttp
+            dependency libs.okhttp3
+            dependency libs.asm
+        }
+
+        generatedPomCustomization {
+            enabled = false
+        }
     }
-
-    ext.version = pj_version
-
-    version pj_version
-
 
     repositories {
         mavenLocal()
-        maven { url "https://maven.aliyun.com/repository/jcenter" }
-        maven { url "https://maven.aliyun.com/repository/central" }
-        maven { url "https://maven.aliyun.com/repository/spring-plugin" }
-        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
         maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/spring" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
     }
 
 
 }
 
-configure(subprojects) {
+configure(moduleProjects) {
     apply plugin: 'java'
     apply plugin: "idea"
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply from: "$rootDir/gradle/publications.gradle"
+    apply from: "${rootDir}/gradle/tny-module.gradle"
 
     ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
     if (springBoot) {
-        apply plugin: 'io.spring.dependency-management'
-//        apply plugin: 'org.springframework.boot'
-
-        buildscript {
-
-            dependencyManagement {
-                imports {
-                    mavenBom libs.spring_boot_dependencies
-                    mavenBom libs.spring_cloud_dependencies
-                }
-            }
-
-        }
+        apply plugin: 'org.springframework.boot'
     }
 
     sourceCompatibility = "${javaVersion}"
     targetCompatibility = "${javaVersion}"
 
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    configurations {
+        all {
+            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+        }
+        compile.exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
     }
+
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
 
-    buildscript {
 
-        task createJavaProject {
-            doLast {
-                sourceSets*.java.srcDirs*.each { it.mkdirs() }
-                sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-//        sourceSets*.proto.srcDirs*.each { it.mkdirs() }
-            }
-        }
-
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-
-        artifacts {
-            archives sourcesJar
+    task createJavaProject {
+        doLast {
+            sourceSets*.java.srcDirs*.each { it.mkdirs() }
+            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
         }
     }
-
-
-    configurations {
-        compile.exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
-    }
-//    sourceSets {
-//        main {
-//            compileClasspath += configurations.provided
-//        }
-//        test {
-//            compileClasspath += configurations.provided
-//            runtimeClasspath += configurations.provided
-//        }
-//    }
-//
-//    idea.module {
-//        scopes.PROVIDED.plus += [configurations.provided]
-//    }
 
     jar {
         exclude("**.sql", "**.xml", "**.properties")
@@ -178,50 +112,54 @@ configure(subprojects) {
         implementation libs.slf4j_api
 
         testImplementation libs.mockito
-        testImplementation libs.jmock_junit4
+        testImplementation libs.junit_jupiter_api
+        testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple
         testImplementation project(":tny-game-tester")
 
-    }
-
-
-    uploadArchives {
-
-        repositories {
-
-            mavenDeployer {
-
-                pom.groupId = project.group
-                pom.artifactId = project.name
-                pom.version = project.version
-
-                pom.project {
-                    name = project.name
-                    packaging = hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
-                    description = hasProperty("POM_DESCRIPTION") ? POM_DESCRIPTION : "";
-                    url = hasProperty("POM_URL") ? POM_URL : "";
-                }
-
-                repository(url: getReleaseRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
-                snapshotRepository(url: getSnapshotRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
-            }
-        }
+        testRuntimeOnly libs.junit_jupiter_engine
+        testRuntimeOnly libs.junit_vintage_engine
+        testRuntimeOnly libs.junit_platform_launcher
+        testRuntimeOnly libs.junit_platform_commons
 
     }
+
+//    uploadArchives {
+//
+//        repositories {
+//
+//            mavenDeployer {
+//
+//                pom.groupId = project.group
+//                pom.artifactId = project.name
+//                pom.version = project.version
+//
+//                pom.project {
+//                    name = project.name
+//                    packaging = hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
+//                    description = hasProperty("POM_DESCRIPTION") ? POM_DESCRIPTION : "";
+//                    url = hasProperty("POM_URL") ? POM_URL : "";
+//                }
+//
+//                repository(url: getReleaseRepositoryUrl()) {
+//                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+//                }
+//                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+//                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+//                }
+//            }
+//        }
+//
+//    }
+
 
     idea {
         module {
+            downloadJavadoc = true
             downloadSources = true
         }
-//            project {
-//                jdkName = project_jdk
-//                languageLevel = project_jdk
-//            }
     }
+
 
 }

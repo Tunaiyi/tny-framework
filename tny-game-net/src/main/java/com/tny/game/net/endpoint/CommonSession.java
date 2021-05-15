@@ -13,30 +13,33 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
-    public CommonSession(EndpointEventHandler<UID, ? extends NetEndpoint<UID>> eventHandler, int cacheSentMessageSize) {
+    public CommonSession(EndpointEventsBoxHandler<UID, ? extends NetEndpoint<UID>> eventHandler, int cacheSentMessageSize) {
         super(null, eventHandler, cacheSentMessageSize);
     }
 
     @Override
     public Certificate<UID> getCertificate() {
-        return certificate;
+        return this.certificate;
     }
 
     @Override
     public long getOfflineTime() {
-        return offlineTime;
+        return this.offlineTime;
     }
 
     @Override
     public void onUnactivated(NetTunnel<UID> tunnel) {
-        if (isOffline())
+        if (isOffline()) {
             return;
+        }
         synchronized (this) {
-            if (isOffline())
+            if (isOffline()) {
                 return;
+            }
             Tunnel<UID> currentTunnel = this.currentTunnel();
-            if (currentTunnel.isAvailable())
+            if (currentTunnel.isAvailable()) {
                 return;
+            }
             setOffline();
         }
     }
@@ -44,10 +47,10 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("userGroup", this.getUserType())
-                          .add("userId", this.getUserId())
-                          .add("tunnel", this.currentTunnel())
-                          .toString();
+                .add("userGroup", this.getUserType())
+                .add("userId", this.getUserId())
+                .add("tunnel", this.currentTunnel())
+                .toString();
     }
 
 }

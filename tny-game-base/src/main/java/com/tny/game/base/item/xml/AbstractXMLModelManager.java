@@ -10,7 +10,7 @@ import com.tny.game.base.item.behavior.*;
 import com.tny.game.base.item.behavior.plan.*;
 import com.tny.game.base.log.*;
 import com.tny.game.base.module.*;
-import com.tny.game.common.collection.*;
+import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.config.*;
 import com.tny.game.common.reflect.proxy.*;
@@ -168,7 +168,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             }
         });
 
-        RunningChecker.start(this.getClass());
+        RunChecker.trace(this.getClass());
 
         xStream.autodetectAnnotations(true);
         String2Formula exprHolderConverter = new String2Formula(this.context().getExprHolderFactory());
@@ -286,7 +286,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
             }
         }
         LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
-                RunningChecker.end(this.getClass()).cost());
+                RunChecker.end(this.getClass()).costTime());
     }
 
     @SuppressWarnings({"unchecked"})

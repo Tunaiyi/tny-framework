@@ -20,10 +20,9 @@ public interface VoidCommandPlugin<UID> extends CommandPlugin<UID, Void> {
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> tunnel, Message<UID> message, CommandContext context, Void attribute) throws Exception {
+    default void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, Void attribute) throws Exception {
         this.doExecute(tunnel, message, context);
     }
-
 
     /**
      * 请求过滤
@@ -33,7 +32,6 @@ public interface VoidCommandPlugin<UID> extends CommandPlugin<UID, Void> {
      * @param context 上下文
      * @throws Exception 异常
      */
-    void doExecute(Tunnel<UID> tunnel, Message<UID> message, CommandContext context) throws Exception;
-
+    void doExecute(Tunnel<UID> tunnel, Message message, MessageCommandContext context) throws Exception;
 
 }

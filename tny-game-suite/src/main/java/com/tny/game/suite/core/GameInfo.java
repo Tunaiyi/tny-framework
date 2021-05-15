@@ -51,7 +51,7 @@ public class GameInfo {
         GameInfo.scopeType = ScopeTypes.of(scopeStr.toUpperCase());
         LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
         XStream xStream = new XStream();
-        RunningChecker.start(GameInfo.class);
+        RunChecker.trace(GameInfo.class);
         xStream.autodetectAnnotations(true);
         xStream.alias("servers", ArrayList.class);
         xStream.alias("server", GameInfo.class);
@@ -61,25 +61,28 @@ public class GameInfo {
         try (InputStream inputStream = ConfigLoader.loadInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
             LOGGER.info("#itemModelManager# 解析 <{}> xml ......", GameInfo.class.getName());
             @SuppressWarnings("unchecked")
-            List<GameInfo> list = (List<GameInfo>) xStream.fromXML(inputStream);
+            List<GameInfo> list = (List<GameInfo>)xStream.fromXML(inputStream);
             for (GameInfo info : list) {
                 if (info.isMainServer()) {
-                    if (GAMES_INFO != null)
+                    if (GAMES_INFO != null) {
                         throw new IllegalArgumentException(format("发现服务器 {} 与 {} 同为主服务器", GAMES_INFO.getZoneId(), info.getZoneId()));
+                    }
                     GAMES_INFO = info;
                 }
-                if (map.put(info.getZoneId(), info) != null)
+                if (map.put(info.getZoneId(), info) != null) {
                     throw new IllegalArgumentException(format("发现有重复 serverId {} 的服务器", info.getZoneId()));
+                }
             }
-            if (GAMES_INFO == null)
+            if (GAMES_INFO == null) {
                 throw new IllegalArgumentException(format("未发现主服务器"));
+            }
             LOGGER.info("#itemModelManager# 解析 <{}> xml完成! ", GameInfo.class.getName());
         } catch (IOException e) {
             LOGGER.error("", e);
             throw new RuntimeException(e);
         }
         GameInfo.GAMES_INFO_MAP = Collections.unmodifiableMap(map);
-        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunningChecker.end(GameInfo.class).cost());
+        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunChecker.end(GameInfo.class).costTime());
     }
 
     public static GameInfo info() {
@@ -105,7 +108,6 @@ public class GameInfo {
     public static boolean isHasServer(int zoneId) {
         return GAMES_INFO_MAP.containsKey(zoneId);
     }
-
 
     public GameInfo() {
     }
@@ -147,27 +149,29 @@ public class GameInfo {
     }
 
     public List<InetConnector> getPublicConnectors() {
-        if (this.publicConnectors == null)
+        if (this.publicConnectors == null) {
             return new ArrayList<>();
+        }
         return new ArrayList<>(this.publicConnectors);
     }
 
     public List<InetConnector> getPrivateConnectors() {
-        if (this.privateConnectors == null)
+        if (this.privateConnectors == null) {
             return new ArrayList<>();
+        }
         return new ArrayList<>(this.privateConnectors);
     }
 
     public Optional<InetConnector> getPublicConnector(String connectorID) {
         return this.getPublicConnectors().stream()
-                   .filter(c -> c.getId().equals(connectorID))
-                   .findFirst();
+                .filter(c -> c.getId().equals(connectorID))
+                .findFirst();
     }
 
     public Optional<InetConnector> getPrivateConnector(String connectorID) {
         return this.getPrivateConnectors().stream()
-                   .filter(c -> c.getId().equals(connectorID))
-                   .findFirst();
+                .filter(c -> c.getId().equals(connectorID))
+                .findFirst();
     }
 
     public Instant getStartAt() {
@@ -208,9 +212,9 @@ public class GameInfo {
 
     public Instant openDate(int hour, int minutes, int seconds) {
         return this.openDate.with(ChronoField.HOUR_OF_DAY, hour)
-                            .with(ChronoField.MINUTE_OF_HOUR, minutes)
-                            .with(ChronoField.SECOND_OF_MINUTE, seconds)
-                            .with(ChronoField.NANO_OF_SECOND, 0);
+                .with(ChronoField.MINUTE_OF_HOUR, minutes)
+                .with(ChronoField.SECOND_OF_MINUTE, seconds)
+                .with(ChronoField.NANO_OF_SECOND, 0);
     }
 
 }
