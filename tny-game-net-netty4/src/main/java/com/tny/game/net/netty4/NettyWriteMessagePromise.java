@@ -6,7 +6,7 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * <p>
@@ -15,25 +15,25 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NettyWriteMessagePromise.class);
 
-    private long timeout;
+    private final long timeout;
 
     private volatile ChannelPromise channelPromise;
 
-    private volatile RespondFuture<?> respondFuture;
+    private volatile RespondFuture respondFuture;
 
-    private volatile List<WriteMessageListener> listeners;
+    private volatile WriteMessageListenerHolder holder;
 
-    private List<WriteMessageListener> listeners() {
-        if (this.listeners != null) {
-            return this.listeners;
+    private WriteMessageListenerHolder holder() {
+        if (this.holder != null) {
+            return this.holder;
         }
         synchronized (this) {
-            if (this.listeners != null) {
-                return this.listeners;
+            if (this.holder != null) {
+                return this.holder;
             }
-            this.listeners = new LinkedList<>();
+            this.holder = new WriteMessageListenerHolder();
         }
-        return this.listeners;
+        return this.holder;
     }
 
     public NettyWriteMessagePromise(long timeout) {
@@ -58,7 +58,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     @Override
     public void addWriteListener(WriteMessageListener listener) {
         synchronized (this) {
-            this.listeners().add(listener);
+            this.holder().addWriteListener(listener);
             if (this.isDone()) {
                 fireListeners();
             }
@@ -66,7 +66,17 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     }
 
     @Override
-    public void setRespondFuture(RespondFuture<?> respondFuture) {
+    public void addWriteListeners(Collection<WriteMessageListener> listeners) {
+        synchronized (this) {
+            this.holder().addWriteListeners(listeners);
+            if (this.isDone()) {
+                fireListeners();
+            }
+        }
+    }
+
+    @Override
+    public void setRespondFuture(RespondFuture respondFuture) {
         this.respondFuture = respondFuture;
     }
 
@@ -105,8 +115,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
         }
     }
 
-    @Override
-    public void failed(Throwable cause) {
+    private <E extends Throwable> void failed(E cause, boolean throwOut) throws E {
         if (this.isDone()) {
             return;
         }
@@ -122,6 +131,23 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
                 this.setFailure(cause);
                 this.fireListeners();
             }
+        }
+        if (throwOut) {
+            throw cause;
+        }
+    }
+
+    @Override
+    public <E extends Throwable> void failedAndThrow(E cause) throws E {
+        this.failed(cause, true);
+    }
+
+    @Override
+    public <E extends Throwable> void failed(E cause) {
+        try {
+            this.failed(cause, false);
+        } catch (Throwable e) {
+            LOGGER.error("", e);
         }
     }
 
@@ -153,21 +179,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
         if (!this.isSuccess() && this.respondFuture != null) {
             this.respondFuture.completeExceptionally(this.getRawCause());
         }
-        List<WriteMessageListener> listeners = this.listeners;
-        if (listeners != null) {
-            for (WriteMessageListener listener : listeners) {
-                fireListener(listener);
-            }
-            listeners.clear();
-        }
-    }
-
-    private void fireListener(WriteMessageListener listener) {
-        try {
-            listener.onWrite(this);
-        } catch (Throwable e) {
-            LOGGER.error("fire {} exception", listener, e);
-        }
+        this.holder().fireListeners(this);
     }
 
     @Override

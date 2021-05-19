@@ -20,7 +20,7 @@ public interface MessageCommandListener {
      *
      * @param context 分发上下文
      */
-    default void onExecuteStart(MessageCommand context) {
+    default void onExecuteStart(MessageCommand<? extends MessageCommandContext> context) {
     }
 
     /**
@@ -29,7 +29,7 @@ public interface MessageCommandListener {
      * @param context 分发上下文
      * @param cause   失败异常, 成功为 null
      */
-    default void onExecuteEnd(MessageCommand context, Throwable cause) {
+    default void onExecuteEnd(MessageCommand<? extends MessageCommandContext> context, Throwable cause) {
     }
 
     /**
@@ -38,7 +38,7 @@ public interface MessageCommandListener {
      * @param context 分发上下文
      * @param cause   失败异常, 成功为 null
      */
-    default void onDone(MessageCommand context, Throwable cause) {
+    default void onDone(MessageCommand<? extends MessageCommandContext> context, Throwable cause) {
     }
 
 }

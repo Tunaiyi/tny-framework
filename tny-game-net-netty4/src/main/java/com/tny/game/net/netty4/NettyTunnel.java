@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.common.runtime.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -65,10 +66,12 @@ public abstract class NettyTunnel<UID, E extends NetEndpoint<UID>> extends Abstr
     }
 
     @Override
-    public WriteMessageFuture write(MessageCreator<UID> creator, MessageContext<UID> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException {
         WriteMessagePromise promise = as(context.getWriteMessageFuture());
         ChannelPromise channelPromise = checkAndCreateChannelPromise(context, promise);
-        this.channel.eventLoop().execute(new NettyMessageWriter<>(this.channel, creator, context, channelPromise));
+        ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
+        this.channel.eventLoop()
+                .execute(new NettyMessageBearer<>(this.channel, maker, context, channelPromise, tracer));
         return promise;
     }
 
@@ -80,7 +83,7 @@ public abstract class NettyTunnel<UID, E extends NetEndpoint<UID>> extends Abstr
     }
 
     @Override
-    public void writeBatch(Supplier<Collection<Message>> messageSupplier) {
+    public void write(Supplier<Collection<Message>> messageSupplier) {
         this.channel.eventLoop().execute(() -> {
             Collection<Message> messages = messageSupplier.get();
             for (Message message : messages) {

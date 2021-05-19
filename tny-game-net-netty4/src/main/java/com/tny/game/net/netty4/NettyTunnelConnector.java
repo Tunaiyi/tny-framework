@@ -23,7 +23,7 @@ class NettyTunnelConnector {
 
     private final long interval;
 
-    private final NettyClientTunnel<?> tunnel;
+    private final NetTunnel<?> tunnel;
 
     private final Lock lock = new ReentrantLock();
 
@@ -31,7 +31,7 @@ class NettyTunnelConnector {
 
     private final AtomicBoolean asyncConnect = new AtomicBoolean(false);
 
-    NettyTunnelConnector(NettyClientTunnel<?> tunnel, int retryTimes, long interval) {
+    NettyTunnelConnector(NetTunnel<?> tunnel, int retryTimes, long interval) {
         this.times = 0;
         this.interval = interval;
         this.retryTimes = retryTimes;

@@ -17,10 +17,6 @@ tny:
           security-keys:
             - abcdefghijklmn
             - opqrstuvwxyz
-    event-handler:
+    command-task-processor:
       default:
-        threads: 1
-    command-executor:
-      default:
-        class: com.tny.game.net.command.executor.ConcurrentMessageCommandExecutor
         threads: 10

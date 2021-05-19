@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.*;
  */
 public class CommonMessageHead extends AbstractNetMessageHead {
 
-    private long id;
+    private long id = -1L;
 
     private int line;
 
@@ -70,6 +70,13 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     @Override
     public int getLine() {
         return this.line;
+    }
+
+    @Override
+    public void allotMessageId(long id) {
+        if (this.id <= -1) {
+            this.id = id;
+        }
     }
 
     CommonMessageHead setId(long id) {

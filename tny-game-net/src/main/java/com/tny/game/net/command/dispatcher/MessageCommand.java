@@ -151,6 +151,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
     private void invokeDone(Throwable cause) {
         doInvokeDone(cause);
         this.fireDone(cause);
+        traceDone(NET_TRACE_INPUT_ALL_ATTR, this.message);
     }
 
     protected abstract void doInvokeDone(Throwable cause);
@@ -220,17 +221,14 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
         }
         if (context != null) {
             ProcessTracer allTracer = this.message.attributes().removeAttribute(NET_TRACE_ALL_ATTR_KEY);
-            if (allTracer != null) {
-                context.willWriteFuture();
-            }
             ProcessTracer writtenTracer = NET_TRACE_OUTPUT_WRITTEN_WATCHER.trace();
-            SendContext<?> sendContext = TunnelAides.responseMessage(this.tunnel, this.message, context);
             if (allTracer != null) {
-                sendContext.getWriteFuture().addWriteListener((f) -> {
+                context.willWriteFuture((f) -> {
                     allTracer.done();
                     writtenTracer.done();
                 });
             }
+            TunnelAides.responseMessage(this.tunnel, this.message, context);
         } else {
             if (code.getType() == ResultCodeType.ERROR) {
                 LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getType());

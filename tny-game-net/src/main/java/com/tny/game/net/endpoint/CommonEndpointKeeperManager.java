@@ -24,34 +24,34 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-    private final Map<String, SessionSetting> sessionSettingMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionKeeperSetting> sessionKeeperSettingMap = new ConcurrentHashMap<>();
 
-    private final Map<String, TerminalSetting> terminalSettingMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = new ConcurrentHashMap<>();
 
-    private final Map<String, SessionKeeperFactory<?, SessionSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
-    private final Map<String, TerminalKeeperFactory<?, TerminalSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
     public CommonEndpointKeeperManager() {
     }
 
     private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
         if (tunnelMode == TunnelMode.SERVER) {
-            SessionSetting setting = this.sessionSettingMap.get(userType);
+            SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
             if (setting == null) {
-                setting = this.sessionSettingMap.get(DEFAULT_KEY);
+                setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
             }
             return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
         } else {
-            TerminalSetting setting = this.terminalSettingMap.get(userType);
+            TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(userType);
             if (setting == null) {
-                setting = this.terminalSettingMap.get(DEFAULT_KEY);
+                setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
             }
             return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
         }
     }
 
-    private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointSetting> EK create(
+    private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
             String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
         ThrowAide.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
         return factory.createKeeper(userType, setting);
@@ -95,12 +95,12 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     @Override
     public void prepareStart() {
-        UnitLoader.getLoader(SessionSetting.class).getAllUnits().forEach(unit -> {
-            this.sessionSettingMap.put(unit.getName(), as(unit));
+        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
+            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
             this.sessionFactoryMap.computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
         });
-        UnitLoader.getLoader(TerminalSetting.class).getAllUnits().forEach(unit -> {
-            this.terminalSettingMap.put(unit.getName(), as(unit));
+        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
+            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
             this.terminalFactoryMap
                     .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
         });

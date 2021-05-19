@@ -41,9 +41,6 @@ public class EncodeHandler extends MessageToByteEncoder<Object> {
                 out.writeBytes((ByteBuffer)msg);
                 return;
             }
-            if (msg instanceof NettyMessageWriter) {
-                msg = ((NettyMessageWriter<?>)msg).message();
-            }
             if (msg instanceof Message) {
                 try {
                     this.encoder.encodeObject(ctx, (Message)msg, out);

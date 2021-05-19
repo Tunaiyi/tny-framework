@@ -39,13 +39,9 @@ public class TunnelAides {
     public static <UID> SendContext<UID> responseMessage(NetTunnel<UID> tunnel, Message request, MessageContext<UID> context) {
         ResultCode code = context.getResultCode();
         if (code.getType() == ResultCodeType.ERROR) {
-            context.willWriteFuture();
+            context.willWriteFuture(future -> tunnel.close());
         }
-        SendContext<UID> sendContext = tunnel.send(context);
-        if (code.getType() == ResultCodeType.ERROR) {
-            sendContext.getWriteFuture().addWriteListener(future -> tunnel.close());
-        }
-        return sendContext;
+        return tunnel.send(context);
     }
 
 }

@@ -4,6 +4,8 @@ import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
+import java.util.Collection;
+
 /**
  * Created by Kun Yang on 2017/2/16.
  */
@@ -20,15 +22,13 @@ public abstract class MessageContext<UID> implements SendContext<UID>, MessageCo
      */
     public abstract MessageContext<UID> setBody(Object body);
 
-    /**
-     * @param tail 设置 Message tail
-     * @return 返回 context 自身
-     */
-    public abstract MessageContext<UID> setTail(Object tail);
-
     public abstract MessageContext<UID> willWriteFuture();
 
     public abstract RequestContext<UID> willWriteFuture(long timeoutMills);
+
+    public abstract MessageContext<UID> willWriteFuture(WriteMessageListener listener);
+
+    public abstract MessageContext<UID> willWriteFuture(Collection<WriteMessageListener> listeners);
 
     /**
      * 取消
@@ -42,13 +42,13 @@ public abstract class MessageContext<UID> implements SendContext<UID>, MessageCo
      *
      * @return 是否取消成功
      */
-    public abstract void fail(Throwable throwable);
+    protected abstract void fail(Throwable throwable);
 
     public abstract WriteMessageFuture getWriteMessageFuture();
 
     protected abstract void setWriteMessagePromise(WriteMessagePromise writePromise);
 
-    protected abstract void setRespondFuture(RespondFuture<UID> respondFuture);
+    protected abstract void setRespondFuture(RespondFuture respondFuture);
 
     protected abstract boolean isNeedWriteFuture();
 

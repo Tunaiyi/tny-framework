@@ -18,7 +18,7 @@ import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*
 public class ImportMessageFactoryBeanDefinitionRegistrar extends BaseBeanDefinitionRegistrar {
 
     protected ImportMessageFactoryBeanDefinitionRegistrar() {
-        super(COMMAND_DISPATCHER_HEAD);
+        super(MESSAGE_DISPATCHER_HEAD);
     }
 
     @Override

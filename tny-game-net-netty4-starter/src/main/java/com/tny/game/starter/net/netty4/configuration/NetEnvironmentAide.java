@@ -27,13 +27,9 @@ public interface NetEnvironmentAide {
 
     String CLIENT_HEAD = key(NET_HEAD, "client");
 
-    String EVENT_HANDLER_HEAD = key(NET_HEAD, "event-handler");
+    String COMMAND_TASK_PROCESSOR_HEAD = key(NET_HEAD, "command-task-processor");
 
-    // String MESSAGE_HANDLER_HEAD = key(NET_HEAD, "message-handler");
-
-    String COMMAND_EXECUTOR_HEAD = key(NET_HEAD, "command-executor");
-
-    String COMMAND_DISPATCHER_HEAD = key(NET_HEAD, "command-dispatcher");
+    String MESSAGE_DISPATCHER_HEAD = key(NET_HEAD, "message-dispatcher");
 
     String SESSION_HEAD = key(NET_HEAD, "session");
     String TERMINAL_HEAD = key(NET_HEAD, "terminal");

@@ -6,7 +6,6 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.transport.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -50,9 +49,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyClientBootstrapSetting
     @Override
     public <UID> Client<UID> connect(URL url, PostConnect<UID> connect) {
         NetBootstrapContext<UID> context = this.getContext();
-        EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler = context.getEndpointEndpointEventHandler();
-        Certificate<UID> certificate = context.getCertificateFactory().unauthenticate();
-        NettyClient<UID> client = new NettyClient<>(this, url, certificate, connect, eventHandler, 0);
+        NettyClient<UID> client = new NettyClient<>(this, url, connect, context);
         NettyClient<UID> old = as(this.clients.putIfAbsent(clientKey(url), client));
         if (old != null) {
             return old;

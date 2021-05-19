@@ -8,8 +8,10 @@ public interface NetBootstrapSetting {
 
     String getMessageFactory();
 
-    String getEndpointEventHandler();
-
     String getCertificateFactory();
+
+    String getMessageDispatcher();
+
+    String getCommandTaskProcessor();
 
 }

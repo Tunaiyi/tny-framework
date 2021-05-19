@@ -2,6 +2,7 @@ package com.tny.game.net.netty4;
 
 import com.tny.game.net.transport.*;
 
+import java.util.Collection;
 import java.util.concurrent.*;
 
 /**
@@ -10,13 +11,18 @@ import java.util.concurrent.*;
 public class MockWriteMessagePromise implements WriteMessagePromise {
 
     @Override
-    public void setRespondFuture(RespondFuture<?> respondFuture) {
+    public void setRespondFuture(RespondFuture respondFuture) {
 
     }
 
     @Override
     public void success() {
 
+    }
+
+    @Override
+    public <E extends Throwable> void failedAndThrow(E cause) throws E {
+        
     }
 
     @Override
@@ -45,6 +51,11 @@ public class MockWriteMessagePromise implements WriteMessagePromise {
     }
 
     @Override
+    public void addWriteListeners(Collection<WriteMessageListener> listeners) {
+
+    }
+
+    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
     }
@@ -68,4 +79,5 @@ public class MockWriteMessagePromise implements WriteMessagePromise {
     public Void get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return null;
     }
+
 }

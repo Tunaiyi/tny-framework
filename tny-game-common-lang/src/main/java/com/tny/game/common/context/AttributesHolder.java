@@ -14,11 +14,13 @@ public class AttributesHolder {
 
     private volatile transient Attributes attributes;
 
+    private final Object holderLock = new Object();
+
     public Attributes attributes() {
         if (this.attributes != null) {
             return this.attributes;
         }
-        synchronized (this) {
+        synchronized (this.holderLock) {
             if (this.attributes != null) {
                 return this.attributes;
             }

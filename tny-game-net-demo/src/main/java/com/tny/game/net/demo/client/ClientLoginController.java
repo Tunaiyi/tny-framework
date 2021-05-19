@@ -38,7 +38,7 @@ public class ClientLoginController {
     @Controller(CtrlerIDs.LOGIN$PUSH)
     @BeforePlugin(SuiteParamFilterPlugin.class)
     public void pushMessage(Tunnel<Long> tunnel, @MsgBody String message) {
-        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
+        //        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
     }
 
     @Controller(CtrlerIDs.LOGIN$PING)

@@ -6,10 +6,12 @@ import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Arrays;
+import java.util.*;
 
 import static com.tny.game.net.message.MessageAide.*;
+import static com.tny.game.net.transport.TransportConstants.*;
 
 /**
  * 消息上下文
@@ -208,21 +210,21 @@ public class MessageContexts {
 
         private Object body;
 
-        private Object tail;
+        private long writeTimeout = TIMEOUT_NONE;
 
-        private Long writeTimeout;
-
-        private Long respondTimeout;
+        private long respondTimeout;
 
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
-        private volatile RespondFuture<UID> respondFuture;
+        private volatile RespondFuture respondFuture;
 
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
         private volatile WriteMessagePromise writePromise;
+
+        private volatile List<WriteMessageListener> listeners;
 
         private DefaultMessageContext() {
         }
@@ -297,25 +299,22 @@ public class MessageContexts {
         }
 
         @Override
-        public RequestContext<UID> setTail(Object tail) {
-            this.tail = tail;
-            return this;
-        }
-
-        @Override
         public long getWriteTimeout() {
-            return this.writeTimeout == null ? -1 : this.writeTimeout;
+            return this.writeTimeout == TIMEOUT_NONE ? TIMEOUT_NEVER : this.writeTimeout;
         }
 
         @Override
         protected void setWriteMessagePromise(WriteMessagePromise writeFuture) {
             if (this.writePromise == null) {
                 this.writePromise = writeFuture;
+                if (CollectionUtils.isNotEmpty(this.listeners)) {
+                    this.writePromise.addWriteListeners(this.listeners);
+                }
             }
         }
 
         @Override
-        protected void setRespondFuture(RespondFuture<UID> respondFuture) {
+        protected void setRespondFuture(RespondFuture respondFuture) {
             if (this.mode == MessageMode.REQUEST && this.respondFuture == null) {
                 this.respondFuture = respondFuture;
             }
@@ -337,7 +336,7 @@ public class MessageContexts {
         }
 
         @Override
-        public void fail(Throwable throwable) {
+        protected void fail(Throwable throwable) {
             if (this.writePromise != null && !this.writePromise.isDone()) {
                 this.writePromise.failed(throwable);
             }
@@ -361,13 +360,44 @@ public class MessageContexts {
         }
 
         @Override
+        public MessageContext<UID> willWriteFuture(WriteMessageListener listener) {
+            if (listener != null) {
+                this.writeTimeout = TIMEOUT_NEVER;
+                listeners().add(listener);
+            }
+            return this;
+        }
+
+        @Override
+        public MessageContext<UID> willWriteFuture(Collection<WriteMessageListener> listeners) {
+            if (CollectionUtils.isNotEmpty(listeners)) {
+                this.writeTimeout = TIMEOUT_NEVER;
+                listeners().addAll(listeners);
+            }
+            return this;
+        }
+
+        private List<WriteMessageListener> listeners() {
+            if (this.listeners != null) {
+                return this.listeners;
+            }
+            synchronized (this) {
+                if (this.listeners != null) {
+                    return this.listeners;
+                }
+                this.listeners = new LinkedList<>();
+            }
+            return this.listeners;
+        }
+
+        @Override
         public boolean isNeedWriteFuture() {
-            return this.writeTimeout != null && this.writePromise == null;
+            return this.writeTimeout != TIMEOUT_NONE;
         }
 
         @Override
         public boolean isNeedResponseFuture() {
-            return this.respondTimeout != null && this.respondFuture == null;
+            return this.respondTimeout != TIMEOUT_NONE;
         }
 
         @Override
@@ -381,7 +411,7 @@ public class MessageContexts {
         }
 
         @Override
-        public RespondFuture<UID> getRespondFuture() {
+        public RespondFuture getRespondFuture() {
             return this.respondFuture;
         }
 
@@ -398,7 +428,6 @@ public class MessageContexts {
                     .add("toMessage", this.toMessage)
                     .add("code", this.code)
                     .add("body", this.body)
-                    .add("tail", this.tail)
                     // .add("sendFuture", sendFuture != null)
                     .add("respondFuture", this.respondFuture != null)
                     .add("writeFuture", this.writePromise != null)

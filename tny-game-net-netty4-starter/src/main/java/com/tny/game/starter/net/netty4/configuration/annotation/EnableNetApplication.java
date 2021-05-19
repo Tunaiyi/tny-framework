@@ -29,8 +29,7 @@ import java.lang.annotation.*;
         ImportSessionSettingBeanDefinitionRegistrar.class,
         ImportTerminalKeeperFactoryBeanDefinitionRegistrar.class,
         ImportTerminalSettingBeanDefinitionRegistrar.class,
-        ImportEndpointEventHandlerBeanDefinitionRegistrar.class,
-        ImportMessageCommandExecutorBeanDefinitionRegistrar.class,
+        ImportCommandTaskProcessorBeanDefinitionRegistrar.class,
 })
 public @interface EnableNetApplication {
 

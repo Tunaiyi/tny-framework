@@ -4,7 +4,7 @@ import com.tny.game.net.message.*;
 
 import java.util.concurrent.CompletableFuture;
 
-public class RespondFuture<UID> extends CompletableFuture<Message> {
+public class RespondFuture extends CompletableFuture<Message> {
 
     public static final long DEFAULT_FUTURE_TIMEOUT = 10000L;
 

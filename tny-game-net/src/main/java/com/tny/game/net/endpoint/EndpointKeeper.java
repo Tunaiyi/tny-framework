@@ -1,6 +1,5 @@
 package com.tny.game.net.endpoint;
 
-
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
@@ -87,7 +86,6 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * 使所有endpoint下线
      */
     void offlineAll();
-
 
     /**
      * 是所有session关闭

@@ -25,11 +25,11 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
         Object value = message.getBody(Object.class);
         if (value instanceof List) {
             List paramList = as(value);
-            return factory.authenticate(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
+            return factory.certificate(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
         }
         if (value instanceof LoginDTO) {
             LoginDTO dto = as(value);
-            return factory.authenticate(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
+            return factory.certificate(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
         }
         throw new ValidationException("登录失败");
     }

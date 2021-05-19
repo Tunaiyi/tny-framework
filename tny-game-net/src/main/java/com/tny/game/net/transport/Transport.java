@@ -27,15 +27,23 @@ public interface Transport<UID> {
     /**
      * 写出消息
      *
-     * @param creator 消息创建
+     * @param maker   消息创建
      * @param context 发送消息
      * @throws NetException
      */
-    WriteMessageFuture write(MessageCreator<UID> creator, MessageContext<UID> context) throws NetException;
+    WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException;
 
     /**
      * 批量写出
      */
-    void writeBatch(Supplier<Collection<Message>> messageSupplier);
+    void write(Supplier<Collection<Message>> messageSupplier);
+
+    /**
+     * 创建写出Promise
+     *
+     * @param sendTimeout 写出超时
+     * @return 返回Promise
+     */
+    WriteMessagePromise createWritePromise(long sendTimeout);
 
 }

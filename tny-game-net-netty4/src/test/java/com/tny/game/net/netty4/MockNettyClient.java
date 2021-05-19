@@ -3,14 +3,13 @@ package com.tny.game.net.netty4;
 import com.tny.game.common.url.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
-import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
 
 /**
  * <p>
  */
-public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Long> {
+public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long> {
 
     private URL url;
 
@@ -30,8 +29,8 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
     }
 
     @Override
-    public Channel connect() {
-        return new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091));
+    public NetTransport<Long> connect() {
+        return new NettyChannelTransport<>(new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
     }
 
     @Override
@@ -50,7 +49,7 @@ public class MockNettyClient extends MockNetEndpoint implements NettyTerminal<Lo
     }
 
     @Override
-    public void connectSuccess(NettyClientTunnel<Long> tunnel) {
+    public void onConnected(NetTunnel<Long> tunnel) {
 
     }
 

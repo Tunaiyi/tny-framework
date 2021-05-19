@@ -18,7 +18,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
     private static final ObjectLocker<Object> locker = new ObjectLocker<>();
 
     public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
-            SessionSetting setting) {
+            SessionKeeperSetting setting) {
         super(userType, factory, setting);
     }
 
@@ -55,7 +55,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
             }
         }
         NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
-        NetSession<UID> session = this.factory.create(this.setting, endpoint.getEventHandler());
+        NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext());
         if (oldSession != null) {
             this.endpointMap.remove(oldSession.getUserId(), oldSession);
             if (!oldSession.isClosed()) {

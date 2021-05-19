@@ -23,6 +23,11 @@ public abstract class AbstractNetMessage extends AttributesHolder implements Net
     }
 
     @Override
+    public void allotMessageId(long id) {
+        this.head.allotMessageId(id);
+    }
+
+    @Override
     public MessageHead getHead() {
         return this.head;
     }

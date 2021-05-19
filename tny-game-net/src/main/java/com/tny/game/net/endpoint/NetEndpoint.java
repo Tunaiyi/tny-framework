@@ -1,5 +1,6 @@
 package com.tny.game.net.endpoint;
 
+import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -7,7 +8,7 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public interface NetEndpoint<UID> extends Endpoint<UID>, MessageCreator<UID>, SentMessageHistory, Receiver<UID> {
+public interface NetEndpoint<UID> extends Endpoint<UID>, MessageMaker<UID>, SentMessageHistory, Receiver<UID> {
 
     /**
      * 处理收到消息
@@ -41,11 +42,6 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageCreator<UID>, Se
     void onUnactivated(NetTunnel<UID> tunnel);
 
     /**
-     * @return 消息盒子
-     */
-    EndpointEventsBox<UID> getEventsBox();
-
-    /**
      * 创建消息
      *
      * @param tunnel  管道
@@ -59,15 +55,20 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageCreator<UID>, Se
     RespondFutureHolder getRespondFutureHolder();
 
     /**
-     * 载入消息盒子
-     *
-     * @param eventsBox 消息
+     * @return 消息盒子
      */
-    void takeOver(EndpointEventsBox<UID> eventsBox);
+    CommandTaskBox getCommandTaskBox();
 
     /**
-     * @return 获取输入事件处理器
+     * 载入消息盒子
+     *
+     * @param commandTaskBox 消息
      */
-    EndpointEventsBoxHandler<UID, NetEndpoint<UID>> getEventHandler();
+    void takeOver(CommandTaskBox commandTaskBox);
+
+    /**
+     * @return 获取EndpointContext上下文
+     */
+    EndpointContext<UID> getContext();
 
 }

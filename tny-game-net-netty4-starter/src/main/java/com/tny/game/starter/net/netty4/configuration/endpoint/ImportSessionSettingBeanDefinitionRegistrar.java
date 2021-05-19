@@ -22,9 +22,9 @@ public class ImportSessionSettingBeanDefinitionRegistrar extends BaseBeanDefinit
     @Override
     protected void loadBeanDefinition(String name, BeanDefinitionRegistry registry) {
         String keyHead = key(this.root, name);
-        String settingClassName = this.environment.getProperty(key(keyHead, SETTING_CLASS_NODE), CommonSessionSetting.class.getName());
-        Class<SessionSetting> settingClass = as(ExeAide.callUnchecked(() -> Class.forName(settingClassName)).orElse(null));
-        String settingName = getBeanName(name, SessionSetting.class);
+        String settingClassName = this.environment.getProperty(key(keyHead, SETTING_CLASS_NODE), CommonSessionKeeperSetting.class.getName());
+        Class<SessionKeeperSetting> settingClass = as(ExeAide.callUnchecked(() -> Class.forName(settingClassName)).orElse(null));
+        String settingName = getBeanName(name, SessionKeeperSetting.class);
         registry.registerBeanDefinition(settingName, BeanDefinitionBuilder.genericBeanDefinition(settingClass,
                 () -> Binder.get(this.environment)
                         .bind(keyHead, settingClass)

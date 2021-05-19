@@ -1,6 +1,8 @@
 package com.tny.game.net.base.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.executor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
@@ -10,9 +12,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     private String name;
 
-    private String messageFactory = "default" + MessageFactory.class.getSimpleName();
+    private String messageDispatcher = "default" + MessageDispatcher.class.getSimpleName();
 
-    private String endpointEventHandler = "default" + EndpointEventsBoxHandler.class.getSimpleName();
+    private String commandTaskProcessor = "default" + CommandTaskProcessor.class.getSimpleName();
+
+    private String messageFactory = "default" + MessageFactory.class.getSimpleName();
 
     private String certificateFactory = "default" + CertificateFactory.class.getSimpleName();
 
@@ -39,8 +43,13 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     }
 
     @Override
-    public String getEndpointEventHandler() {
-        return this.endpointEventHandler;
+    public String getMessageDispatcher() {
+        return this.messageDispatcher;
+    }
+
+    @Override
+    public String getCommandTaskProcessor() {
+        return this.commandTaskProcessor;
     }
 
     @Override
@@ -63,13 +72,18 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setEndpointEventHandler(String endpointEventHandler) {
-        this.endpointEventHandler = endpointEventHandler;
+    public CommonNetBootstrapSetting setCertificateFactory(String certificateFactory) {
+        this.certificateFactory = certificateFactory;
         return this;
     }
 
-    public CommonNetBootstrapSetting setCertificateFactory(String certificateFactory) {
-        this.certificateFactory = certificateFactory;
+    public CommonNetBootstrapSetting setMessageDispatcher(String messageDispatcher) {
+        this.messageDispatcher = messageDispatcher;
+        return this;
+    }
+
+    public CommonNetBootstrapSetting setCommandTaskProcessor(String commandTaskProcessor) {
+        this.commandTaskProcessor = commandTaskProcessor;
         return this;
     }
 

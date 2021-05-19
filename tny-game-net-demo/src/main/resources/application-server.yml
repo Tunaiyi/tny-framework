@@ -19,14 +19,8 @@ tny:
           security-keys:
             - abcdefghijklmn
             - opqrstuvwxyz
-    event-handler:
-      test-event-handler:
-        threads: 1
-        command-executor: test-cmd-executor
-    command-executor:
+    command-task-processor:
       default:
-        threads: 10
-      test-cmd-executor:
         threads: 10
     session:
       user:

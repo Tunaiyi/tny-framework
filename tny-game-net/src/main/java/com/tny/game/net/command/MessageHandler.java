@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
  */
 public interface MessageHandler<UID> {
 
-    void handle(NetTunnel<UID> tunnel, Message message, RespondFuture<UID> future);
+    void handle(NetTunnel<UID> tunnel, Message message, RespondFuture future);
 
 }

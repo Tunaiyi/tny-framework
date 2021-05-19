@@ -31,7 +31,7 @@ public class RespondFutureHolder {
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
-                 .scheduleAtFixedRate(RespondFutureHolder::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
+                .scheduleAtFixedRate(RespondFutureHolder::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
     }
 
     public static RespondFutureHolder getHolder(Object object) {
@@ -40,11 +40,11 @@ public class RespondFutureHolder {
 
     public static void removeHolder(Object object) {
         RespondFutureHolder holder = FUTURE_HOLDER_MAP.remove(object);
-        if (holder == null)
+        if (holder == null) {
             return;
+        }
         holder.close();
     }
-
 
     private static void clearTimeoutFuture() {
         for (Entry<Object, RespondFutureHolder> entry : FUTURE_HOLDER_MAP.entrySet()) {
@@ -57,17 +57,19 @@ public class RespondFutureHolder {
         }
     }
 
-    private volatile ConcurrentMap<Long, RespondFuture<?>> futureMap;
+    private volatile ConcurrentMap<Long, RespondFuture> futureMap;
 
     public void clearTimeOut() {
-        ConcurrentMap<Long, RespondFuture<?>> futureMap = this.futureMap;
-        if (futureMap == null)
+        ConcurrentMap<Long, RespondFuture> futureMap = this.futureMap;
+        if (futureMap == null) {
             return;
-        for (Entry<Long, RespondFuture<?>> entry : futureMap.entrySet()) {
+        }
+        for (Entry<Long, RespondFuture> entry : futureMap.entrySet()) {
             try {
-                RespondFuture<?> future = entry.getValue();
-                if (future.isDone() || (future.isTimeout() && future.cancel(true)))
+                RespondFuture future = entry.getValue();
+                if (future.isDone() || (future.isTimeout() && future.cancel(true))) {
                     futureMap.remove(entry.getKey());
+                }
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }
@@ -75,20 +77,22 @@ public class RespondFutureHolder {
     }
 
     public void close() {
-        if (this.close)
+        if (this.close) {
             return;
+        }
         this.close = true;
-        ConcurrentMap<Long, RespondFuture<?>> futureMap = this.futureMap;
-        if (futureMap == null)
+        ConcurrentMap<Long, RespondFuture> futureMap = this.futureMap;
+        if (futureMap == null) {
             return;
-        List<RespondFuture<?>> futures;
+        }
+        List<RespondFuture> futures;
         if (!this.futureMap.isEmpty()) {
             futures = ImmutableList.of();
         } else {
             futures = new ArrayList<>(this.futureMap.values());
             this.futureMap.clear();
         }
-        for (RespondFuture<?> future : futures) {
+        for (RespondFuture future : futures) {
             try {
                 future.cancel(true);
             } catch (Throwable e) {
@@ -97,42 +101,56 @@ public class RespondFutureHolder {
         }
     }
 
-    private ConcurrentMap<Long, RespondFuture<?>> map() {
-        if (futureMap != null)
-            return futureMap;
+    private ConcurrentMap<Long, RespondFuture> map() {
+        if (this.futureMap != null) {
+            return this.futureMap;
+        }
         synchronized (this) {
-            if (futureMap != null)
-                return futureMap;
+            if (this.futureMap != null) {
+                return this.futureMap;
+            }
             this.futureMap = new ConcurrentHashMap<>();
         }
         return this.futureMap;
     }
 
-    public void putFuture(long messageId, RespondFuture<?> future) {
-        if (future == null)
+    public <M> RespondFuture getFuture(long messageId) {
+        ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+        if (map == null) {
+            return null;
+        }
+        return as(map.get(messageId));
+    }
+
+    public <M> RespondFuture pollFuture(long messageId) {
+        ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+        if (map == null) {
+            return null;
+        }
+        return as(map.remove(messageId));
+    }
+
+    public void putFuture(long messageId, RespondFuture future) {
+        if (future == null) {
             return;
-        if (!close) {
-            ConcurrentMap<Long, RespondFuture<?>> map = map();
-            RespondFuture<?> oldFuture = map.put(messageId, future);
-            if (oldFuture != null && !oldFuture.isDone())
+        }
+        if (!this.close) {
+            ConcurrentMap<Long, RespondFuture> map = map();
+            RespondFuture oldFuture = map.put(messageId, future);
+            if (oldFuture != null && !oldFuture.isDone()) {
                 oldFuture.cancel(true);
+            }
         } else {
             future.cancel(true);
         }
     }
 
     public int size() {
-        ConcurrentMap<Long, RespondFuture<?>> map = this.futureMap;
-        if (map == null)
+        ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+        if (map == null) {
             return 0;
+        }
         return map.size();
-    }
-
-    public <M> RespondFuture<M> pollFuture(long messageId) {
-        ConcurrentMap<Long, RespondFuture<?>> map = this.futureMap;
-        if (map == null)
-            return null;
-        return as(map.remove(messageId));
     }
 
 }

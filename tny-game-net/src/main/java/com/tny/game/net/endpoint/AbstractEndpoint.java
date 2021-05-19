@@ -2,7 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.event.*;
+import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -24,7 +24,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractEndpoint.class);
 
     /* 终端 ID */
-    private volatile long id;
+    private final long id;
 
     /* 通讯管道 */
     protected volatile NetTunnel<UID> tunnel;
@@ -39,10 +39,12 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     private final AtomicLong idCreator = new AtomicLong(0);
 
     /* 消息盒子 */
-    private final EndpointEventsBox<UID> eventsBox;
+    private final CommandTaskBox commandTaskBox;
 
-    /* 输入事件 */
-    private final EndpointEventsBoxHandler<UID, NetEndpoint<UID>> eventHandler;
+    /**
+     * 上下文
+     */
+    private final EndpointContext<UID> context;
 
     /* 写出的消息缓存 */
     private final MessageQueue<UID> sentMessageQueue;
@@ -59,14 +61,23 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
-    protected AbstractEndpoint(Certificate<UID> certificate, EndpointEventsBoxHandler<UID, ? extends NetEndpoint<UID>> eventHandler,
-            int cacheSentMessageSize) {
-        this.certificate = certificate;
-        this.state = EndpointStatus.INIT;
-        this.eventsBox = new EndpointEventsBox<>();
-        this.eventHandler = as(eventHandler);
+    protected AbstractEndpoint(SessionSetting setting, EndpointContext<UID> context) {
         this.id = NetAide.newEndpointId();
-        this.sentMessageQueue = new MessageQueue<>(cacheSentMessageSize);
+        this.state = EndpointStatus.INIT;
+        this.context = context;
+        CertificateFactory<UID> certificateFactory = context.getCertificateFactory();
+        this.certificate = certificateFactory.anonymous();
+        this.commandTaskBox = new CommandTaskBox(context.getMessageDispatcher(), context.getCommandTaskProcessor());
+        if (setting != null) {
+            this.sentMessageQueue = new MessageQueue<>(setting.getSendMessageCachedSize());
+        } else {
+            this.sentMessageQueue = new MessageQueue<>(0);
+        }
+    }
+
+    @Override
+    public EndpointContext<UID> getContext() {
+        return this.context;
     }
 
     private RespondFutureHolder futureHolder() {
@@ -81,20 +92,19 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         }
     }
 
-    private void putFuture(long messageId, RespondFuture<UID> respondFuture) {
+    private void putFuture(long messageId, RespondFuture respondFuture) {
         if (respondFuture == null) {
             return;
         }
         futureHolder().putFuture(messageId, respondFuture);
     }
 
-    private <M> RespondFuture<M> pollFuture(Message message) {
+    private <M> RespondFuture pollFuture(Message message) {
         RespondFutureHolder respondFutureHolder = this.respondFutureHolder;
         if (respondFutureHolder == null) {
             return null;
         }
         if (message.getMode() == MessageMode.RESPONSE) {
-            // todo IO 线程处理
             return respondFutureHolder.pollFuture(message.getToMessage());
         }
         return null;
@@ -128,10 +138,6 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
 
     @Override
     public boolean receive(NetTunnel<UID> tunnel, Message message) {
-        RespondFuture<UID> future = pollFuture(message);
-        if (this.isClosed()) {
-            return false;
-        }
         MessageHandleFilter<UID> filter = this.getReceiveFilter();
         if (filter != null) {
             boolean throwable = true;
@@ -145,15 +151,20 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                         LOGGER.warn(causeMessage);
                         throw new EndpointException(causeMessage);
                     }
-                    return false;
+                    return true;
                 default:
                     break;
             }
         }
-        this.eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
-        this.eventHandler.onInput(this.eventsBox, this);
+        //        RespondFuture<UID> future = pollFuture(message);
+        //        if (future != null) {
+        //            this.commandTaskBox.addTask(new RespondCommandTask<>(message, future));
+        //        }
+        return this.commandTaskBox.addMessage(tunnel, message, this::pollFuture);
+        //        this.eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
+        //        this.eventHandler.onInput(this.eventsBox, this);
         //        this.eventHandler.onInputEvent(this, new EndpointReceiveEvent<>(tunnel, message, future));
-        return true;
+        //        return true;
     }
 
     @Override
@@ -212,7 +223,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         }
         //        this.eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
         //        this.eventHandler.onOutput(this.eventsBox, this);
-        tunnel.writeBatch(() -> this.getSentMessages(filter));
+        tunnel.write(() -> this.getSentMessages(filter));
     }
 
     @Override
@@ -223,7 +234,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         if (tunnel == null) {
             tunnel = currentTunnel();
         }
-        tunnel.writeBatch(() -> this.getSentMessages(fromId, bound));
+        tunnel.write(() -> this.getSentMessages(fromId, bound));
     }
 
     @Override
@@ -234,12 +245,12 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
         if (tunnel == null) {
             tunnel = currentTunnel();
         }
-        tunnel.writeBatch(() -> this.getSentMessages(fromId, toId, bound));
+        tunnel.write(() -> this.getSentMessages(fromId, toId, bound));
     }
 
     @Override
-    public void takeOver(EndpointEventsBox<UID> eventsBox) {
-        this.eventsBox.accept(eventsBox);
+    public void takeOver(CommandTaskBox commandTaskBox) {
+        this.commandTaskBox.takeOver(commandTaskBox);
     }
 
     @Override
@@ -262,35 +273,39 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     }
 
     @Override
-    public EndpointEventsBox<UID> getEventsBox() {
-        return this.eventsBox;
+    public CommandTaskBox getCommandTaskBox() {
+        return this.commandTaskBox;
     }
 
     @Override
     public void writeMessage(NetTunnel<UID> tunnel, MessageContext<UID> context) {
         MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
         Message message = messageFactory.create(createMessageId(), context);
-        this.tryCreateFuture(context);
-        RespondFuture<UID> respondFuture = context.getRespondFuture();
+        RespondFuture respondFuture = context.getRespondFuture();
         if (respondFuture != null) {
-            this.putFuture(message.getId(), respondFuture);
+            context.willWriteFuture((future) -> {
+                if (future.isSuccess()) {
+                    this.putFuture(message.getId(), respondFuture);
+                } else {
+                    respondFuture.completeExceptionally(future.cause());
+                }
+            });
         }
-        this.sentMessageQueue.addMessage(message);
+        this.tryCreateFuture(context);
         this.tunnel.write(message, as(context.getWriteMessageFuture()));
     }
 
     @Override
-    public Message createMessage(MessageContext<UID> context) {
+    public Message newMessage(MessageContext<UID> context) {
         MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
         Message message = messageFactory.create(createMessageId(), context);
         this.tryCreateFuture(context);
-        RespondFuture<UID> respondFuture = context.getRespondFuture();
+        RespondFuture respondFuture = context.getRespondFuture();
         if (respondFuture != null) {
             this.putFuture(message.getId(), respondFuture);
         }
         this.sentMessageQueue.addMessage(message);
         return message;
-        //        this.tunnel.write(message, context.getWriteMessagePromise());
     }
 
     private void tryCreateFuture(MessageContext<UID> context) {
@@ -301,9 +316,9 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
                 context.setWriteMessagePromise(promise);
             }
             if (context.isNeedResponseFuture()) {
-                RespondFuture<UID> respondFuture = context.getRespondFuture();
+                RespondFuture respondFuture = context.getRespondFuture();
                 if (respondFuture == null) {
-                    respondFuture = new RespondFuture<>();
+                    respondFuture = new RespondFuture();
                 }
                 context.setRespondFuture(respondFuture);
                 promise.setRespondFuture(respondFuture);
@@ -328,11 +343,6 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     @Override
     public EndpointStatus getStatus() {
         return this.state;
-    }
-
-    @Override
-    public EndpointEventsBoxHandler<UID, NetEndpoint<UID>> getEventHandler() {
-        return this.eventHandler;
     }
 
     @Override

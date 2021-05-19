@@ -55,8 +55,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         if (controller != null) {
             return new ControllerMessageCommand(tunnel, controller, message, this.context, this.endpointKeeperManager);
         }
-        LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocol());
         if (message.getMode() == MessageMode.REQUEST) {
+            LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocol());
             return new RunnableCommand(() -> {
                 tunnel.send(MessageContexts.respond(NetResultCode.NO_SUCH_PROTOCOL, message));
             });

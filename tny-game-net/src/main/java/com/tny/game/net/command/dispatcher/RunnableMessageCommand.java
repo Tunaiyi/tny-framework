@@ -1,13 +1,10 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.runtime.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
-
-import static com.tny.game.net.base.NetLogger.*;
 
 /**
  * <p>
@@ -28,10 +25,8 @@ public class RunnableMessageCommand extends MessageCommand<MessageCommandContext
      * 执行 invoke
      */
     @Override
-    protected void invoke() throws Exception {
-        ProcessTracer tracer = MESSAGE_EXE_RUNNABLE_WATCHER.trace();
+    protected void invoke() {
         this.runnable.run();
-        tracer.done();
     }
 
     @Override

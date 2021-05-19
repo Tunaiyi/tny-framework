@@ -6,6 +6,7 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.coder.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.transport.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -78,7 +79,7 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
     private Message readPayload(Channel channel, ByteBuf in, byte option, int payloadLength) throws Exception {
 
         byte[] bodyBytes;
-        NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+        NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
 
         // 获取打包器
         int index = in.readerIndex();

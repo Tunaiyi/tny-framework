@@ -5,11 +5,12 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
+import io.netty.channel.embedded.EmbeddedChannel;
 
 /**
  * Created by Kun Yang on 2018/8/27.
  */
-public class NettyClientTunnelTest extends NettyTunnelTest<NettyTerminal<Long>, NettyClientTunnel<Long>, MockNettyClient> {
+public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, TestGeneralClientTunnel, MockNettyClient> {
 
     private static final int CONNECT_TIMEOUT = 140;
     private static final int SEND_TIMEOUT = 0;
@@ -20,9 +21,9 @@ public class NettyClientTunnelTest extends NettyTunnelTest<NettyTerminal<Long>, 
             CONNECT_TIMEOUT, SEND_TIMEOUT, LOGIN_TIMEOUT, RESEND_TIMES));
 
     @Override
-    protected TunnelTestInstance<NettyClientTunnel<Long>, MockNettyClient> create(Certificate<Long> certificate, boolean open) {
+    protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate<Long> certificate, boolean open) {
         MockNettyClient client = this.createEndpoint(certificate);
-        NettyClientTunnel<Long> tunnel = this.newTunnel(open);
+        TestGeneralClientTunnel tunnel = this.newTunnel(open);
         tunnel.setEndpoint(client);
         if (certificate.isAuthenticated()) {
             tunnel.bind(client);
@@ -35,12 +36,18 @@ public class NettyClientTunnelTest extends NettyTunnelTest<NettyTerminal<Long>, 
         return new MockNettyClient(this.url, certificate);
     }
 
-    private NettyClientTunnel<Long> newTunnel(boolean open) {
-        NettyClientTunnel<Long> tunnel = new NettyClientTunnel<>(new NetBootstrapContext<>(null, new CommonMessageFactory<>(), null));
+    private TestGeneralClientTunnel newTunnel(boolean open) {
+        TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(
+                new NetBootstrapContext<>(null, null, new CommonMessageFactory<>(), null));
         if (open) {
             tunnel.open();
         }
         return tunnel;
+    }
+
+    @Override
+    protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
+        return (EmbeddedChannel)((NettyChannelTransport<?>)tunnel.getTransport()).getChannel();
     }
 
     // @Override

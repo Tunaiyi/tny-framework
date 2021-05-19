@@ -6,7 +6,7 @@ import com.tny.game.common.unit.annotation.*;
  * <p>
  */
 @UnitInterface
-public interface TerminalKeeperFactory<UID, S extends TerminalSetting> extends EndpointKeeperFactory<UID, EndpointKeeper<UID, Terminal<UID>>, S> {
-
+public interface TerminalKeeperFactory<UID, S extends TerminalKeeperSetting>
+        extends EndpointKeeperFactory<UID, EndpointKeeper<UID, Terminal<UID>>, S> {
 
 }

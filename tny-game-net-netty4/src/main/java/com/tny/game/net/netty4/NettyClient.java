@@ -8,7 +8,6 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
-import org.slf4j.*;
 
 import java.util.concurrent.*;
 
@@ -19,8 +18,6 @@ import static com.tny.game.net.utils.NetConfigs.*;
  * Created by Kun Yang on 2018/8/28.
  */
 public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 
     private static final ScheduledExecutorService CONNECT_EXECUTOR_SERVICE = Executors
             .newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect"));
@@ -33,9 +30,8 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 
     private volatile NettyTunnelConnector connector;
 
-    public NettyClient(NettyClientGuide guide, URL url, Certificate<UID> certificate, PostConnect<UID> postConnect,
-            EndpointEventsBoxHandler<UID, NetEndpoint<UID>> endpointEventHandler, int cacheSentMessageSize) {
-        super(certificate, endpointEventHandler, cacheSentMessageSize);
+    public NettyClient(NettyClientGuide guide, URL url, PostConnect<UID> postConnect, EndpointContext<UID> endpointContext) {
+        super(null, endpointContext);
         this.url = url;
         this.guide = guide;
         this.postConnect = postConnect;
@@ -78,7 +74,7 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
         if (this.tunnel != null) {
             return;
         }
-        NettyClientTunnel<UID> newTunnel;
+        NetTunnel<UID> newTunnel;
         int retryTimes = this.getConnectRetryTimes();
         synchronized (this) {
             if (this.isClosed()) {
@@ -87,7 +83,8 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
             if (this.tunnel != null) {
                 return;
             }
-            this.tunnel = newTunnel = new NettyClientTunnel<>(this.guide.getContext());
+            this.tunnel = newTunnel = new GeneralClientTunnel<UID, NetTerminal<UID>>(this.guide.getContext()) {
+            };
             newTunnel.bind(this);
             this.connector = new NettyTunnelConnector(newTunnel, retryTimes, this.getConnectRetryInterval());
         }
@@ -115,12 +112,13 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     }
 
     @Override
-    public Channel connect() throws NetException {
-        return this.guide.connect(this.url, getConnectTimeout());
+    public NetTransport<UID> connect() throws NetException {
+        Channel channel = this.guide.connect(this.url, getConnectTimeout());
+        return new NettyChannelTransport<>(channel);
     }
 
     @Override
-    public void connectSuccess(NettyClientTunnel<UID> tunnel) {
+    public void onConnected(NetTunnel<UID> tunnel) {
         if (this.tunnel == tunnel) {
             if (this.isClosed()) {
                 tunnel.close();

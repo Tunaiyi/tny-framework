@@ -2,6 +2,7 @@ package com.tny.game.net.passthrough;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -18,14 +19,14 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/3/3 12:02 下午
  */
-public class BaseTubule<UID> extends AbstractTunnel<UID, NetEndpoint<UID>> implements NetTubule<UID> {
+public class BaseTubule<UID> extends GeneralTunnel<UID, NetEndpoint<UID>> implements NetTubule<UID> {
 
     private final NetPipe<UID> pipe;
 
     private final InetSocketAddress remoteAddress;
 
     protected BaseTubule(long id, TunnelMode mode, NetPipe<UID> pipe, InetSocketAddress remoteAddress, NetBootstrapContext<UID> bootstrapContext) {
-        super(id, mode, bootstrapContext);
+        super(id, null, mode, bootstrapContext);
         this.remoteAddress = remoteAddress;
         this.pipe = pipe;
     }
@@ -62,7 +63,7 @@ public class BaseTubule<UID> extends AbstractTunnel<UID, NetEndpoint<UID>> imple
             } else {
                 Certificate<UID> certificate = this.getCertificate();
                 if (!certificate.isAuthenticated()) {
-                    EndpointEventsBox<UID> oldEventBox = this.endpoint.getEventsBox();
+                    CommandTaskBox oldEventBox = this.endpoint.getCommandTaskBox();
                     this.endpoint = endpoint;
                     this.endpoint.takeOver(oldEventBox);
                     return true;
@@ -100,12 +101,12 @@ public class BaseTubule<UID> extends AbstractTunnel<UID, NetEndpoint<UID>> imple
     }
 
     @Override
-    public WriteMessageFuture write(MessageCreator<UID> creator, MessageContext<UID> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException {
         return null;
     }
 
     @Override
-    public void writeBatch(Supplier<Collection<Message>> messageSupplier) {
+    public void write(Supplier<Collection<Message>> messageSupplier) {
 
     }
 

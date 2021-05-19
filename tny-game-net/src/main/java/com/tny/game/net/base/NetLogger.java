@@ -21,6 +21,10 @@ public class NetLogger {
             .of(MessageCommand.class + ".trace_input-all", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
+    public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-decode", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+
     public static final ProcessWatcher NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER = ProcessWatcher
             .of(MessageCommand.class + ".trace_input-read_to_tunnel", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
@@ -37,28 +41,16 @@ public class NetLogger {
             .of(MessageCommand.class + ".trace_output-all", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MESSAGE_DISPATCH_TO_EXECUTE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".dispatch_to_execute", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
-
     public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".encode", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".trace_output-encode", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".decode", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher MESSAGE_DISPATCH_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".dispatch", TrackPrintOption.CLOSE)
+    public static final ProcessWatcher NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_output-write_to_encode", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_WATCHER = ProcessWatcher
             .of(MessageCommand.class + ".command_exe_invoke", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher MESSAGE_EXE_RUNNABLE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".message_exe_runnable", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_GET_CONTROLLER_WATCHER = ProcessWatcher
@@ -89,17 +81,17 @@ public class NetLogger {
             .of(MessageCommand.class + ".command_exe_handle_result", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MSG_TICK_1_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".tick1", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher MSG_TICK_2_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".tick2", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher MSG_TICK_3_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".tick3", TrackPrintOption.CLOSE)
-            .schedule(15, TimeUnit.SECONDS);
+    //    public static final ProcessWatcher MSG_TICK_1_WATCHER = ProcessWatcher
+    //            .of(MessageCommand.class + ".tick1", TrackPrintOption.CLOSE)
+    //            .schedule(15, TimeUnit.SECONDS);
+    //
+    //    public static final ProcessWatcher MSG_TICK_2_WATCHER = ProcessWatcher
+    //            .of(MessageCommand.class + ".tick2", TrackPrintOption.CLOSE)
+    //            .schedule(15, TimeUnit.SECONDS);
+    //
+    //    public static final ProcessWatcher MSG_TICK_3_WATCHER = ProcessWatcher
+    //            .of(MessageCommand.class + ".tick3", TrackPrintOption.CLOSE)
+    //            .schedule(15, TimeUnit.SECONDS);
 
     public static final AttrKey<ProcessTracer> NET_TRACE_ALL_ATTR_KEY =
             AttrKeys.key(ProcessWatcher.class, "NET_TRACE_ALL_ATTR_KEY");
@@ -111,6 +103,8 @@ public class NetLogger {
             AttrKeys.key(ProcessWatcher.class, "NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY");
     public static final AttrKey<ProcessTracer> MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY =
             AttrKeys.key(ProcessWatcher.class, "MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY");
+    public static final AttrKey<ProcessTracer> NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY =
+            AttrKeys.key(ProcessWatcher.class, "NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY");
 
     private static class WatcherAttribute {
 
@@ -132,9 +126,8 @@ public class NetLogger {
             NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER, NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY);
     public static final WatcherAttribute NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR = new WatcherAttribute(
             NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER, NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY);
-
-    public static final WatcherAttribute MSG_DISPATCH_TO_EXECUTE_ATTR = new WatcherAttribute(
-            MESSAGE_DISPATCH_TO_EXECUTE_WATCHER, MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY);
+    public static final WatcherAttribute NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR = new WatcherAttribute(
+            NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER, NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY);
 
     public static void trace(WatcherAttribute attribute, Message message) {
         ProcessTracer tracer = attribute.watcher.trace();

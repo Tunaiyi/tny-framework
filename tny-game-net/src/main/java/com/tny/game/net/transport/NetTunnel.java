@@ -43,18 +43,17 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
     void disconnect();
 
     /**
+     * 断开并重置状态
+     */
+    void reset();
+
+    /**
      * 终端 Endpoint
      *
      * @param endpoint 终端
      * @return 返回是否绑定成功
      */
     boolean bind(NetEndpoint<UID> endpoint);
-
-    /**
-     * @param timeout
-     * @return 创建写出 Future
-     */
-    WriteMessagePromise createWritePromise(long timeout);
 
     /**
      * @return message factory

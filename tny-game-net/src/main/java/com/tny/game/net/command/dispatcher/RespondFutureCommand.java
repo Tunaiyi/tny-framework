@@ -9,11 +9,11 @@ import com.tny.game.net.transport.*;
  */
 public class RespondFutureCommand<UID> implements Command {
 
-    private RespondFuture<UID> future;
+    private RespondFuture future;
 
     private Message message;
 
-    public RespondFutureCommand(Message message, RespondFuture<UID> future) {
+    public RespondFutureCommand(Message message, RespondFuture future) {
         this.message = message;
         this.future = future;
     }

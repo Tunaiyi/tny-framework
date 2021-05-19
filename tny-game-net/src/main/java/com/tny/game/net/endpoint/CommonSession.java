@@ -13,8 +13,8 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
-    public CommonSession(EndpointEventsBoxHandler<UID, ? extends NetEndpoint<UID>> eventHandler, int cacheSentMessageSize) {
-        super(null, eventHandler, cacheSentMessageSize);
+    public CommonSession(SessionSetting setting, EndpointContext<UID> endpointContext) {
+        super(setting, endpointContext);
     }
 
     @Override

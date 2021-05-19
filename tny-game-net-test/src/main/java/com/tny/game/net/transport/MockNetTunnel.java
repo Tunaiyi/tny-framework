@@ -31,7 +31,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
         this.endpoint = endpoint;
         this.state = TunnelStatus.ACTIVATED;
         this.mode = mode;
-        this.context = new NetBootstrapContext<>(endpoint.getEventHandler());
+        this.context = new NetBootstrapContext<>();
     }
 
     @Override
@@ -107,6 +107,12 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
+    public void reset() {
+        this.state = TunnelStatus.INIT;
+
+    }
+
+    @Override
     public boolean bind(NetEndpoint<Long> endpoint) {
         if (this.bindSuccess) {
             this.endpoint = endpoint;
@@ -140,13 +146,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public WriteMessageFuture write(MessageCreator<Long> creator, MessageContext<Long> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<Long> maker, MessageContext<Long> context) throws NetException {
         return null;
     }
 
     @Override
-    public void writeBatch(Supplier<Collection<Message>> messageSupplier) {
-        
+    public void write(Supplier<Collection<Message>> messageSupplier) {
+
     }
 
     @Override

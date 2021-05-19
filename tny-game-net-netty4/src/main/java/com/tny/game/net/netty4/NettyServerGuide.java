@@ -35,7 +35,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
     /**
      * 服务器关闭监听器
      */
-    private BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
+    private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
     public NettyServerGuide(NettyServerBootstrapSetting setting) {
@@ -132,19 +132,18 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
             this.bootstrap.childHandler(new ChannelInitializer<Channel>() {
 
                 @Override
-                protected void initChannel(Channel ch) throws Exception {
+                protected void initChannel(Channel channel) throws Exception {
                     ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
                     if (NettyServerGuide.this.channelMaker != null) {
-                        NettyServerGuide.this.channelMaker.initChannel(ch);
+                        NettyServerGuide.this.channelMaker.initChannel(channel);
                     }
-                    ch.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
+                    channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
                     NetBootstrapContext<Object> context = NettyServerGuide.this.getContext();
-                    NettyTunnel<Object, NetEndpoint<Object>> tunnel = new NettyServerTunnel<>(ch, context);
-                    Certificate<Object> certificate = context.getCertificateFactory().unauthenticate();
-                    EndpointEventsBoxHandler<Object, NetEndpoint<Object>> eventHandler = context.getEndpointEndpointEventHandler();
-                    AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(certificate, eventHandler);
+                    NetTransport<Object> transport = new NettyChannelTransport<>(channel);
+                    NetTunnel<Object> tunnel = new GeneralServerTunnel<>(transport, context);
+                    // channel.attr(NettyAttrKeys.TUNNEL).set(tunnel); // 创建 Tunnel 已经transport.bind
+                    AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(context);
                     tunnel.bind(endpoint);
-                    ch.attr(NettyAttrKeys.TUNNEL).set(tunnel);
                     tunnel.open();
                 }
             });

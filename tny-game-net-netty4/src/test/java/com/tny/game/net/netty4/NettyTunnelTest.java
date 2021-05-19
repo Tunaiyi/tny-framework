@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends NettyTunnel<Long, E>, ME extends MockNetEndpoint>
+public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends GeneralTunnel<Long, E>, ME extends MockNetEndpoint>
         extends NetTunnelTest<T, ME> {
 
     protected EmbeddedChannel mockChannel() {
@@ -357,9 +357,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Net
         //     assertFalse(writeResult.get());
     }
 
-    protected EmbeddedChannel embeddedChannel(T tunnel) {
-        return as(tunnel.getChannel());
-    }
+    protected abstract EmbeddedChannel embeddedChannel(T tunnel);
 
     private void testPingPong(int times, Consumer<T> consumer, MessageMode mode) {
         T activeTunnel = createBindTunnel();

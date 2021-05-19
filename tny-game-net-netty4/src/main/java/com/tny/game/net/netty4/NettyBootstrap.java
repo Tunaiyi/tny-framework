@@ -47,6 +47,22 @@ public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends Ne
         } else {
             return new NioEventLoopGroup(threads, new DefaultThreadFactory(name, true, 8));
         }
+        //        if (epoll) {
+        //            return new EpollEventLoopGroup(threads,
+        //                    new ThreadPerTaskExecutor(new DefaultThreadFactory(name, true, 8)),
+        //                    DefaultEventExecutorChooserFactory.INSTANCE,
+        //                    DefaultSelectStrategyFactory.INSTANCE,
+        //                    RejectedExecutionHandlers.reject(),
+        //                    (size) -> new ConcurrentLinkedQueue<>());
+        //        } else {
+        //            return new NioEventLoopGroup(threads,
+        //                    new ThreadPerTaskExecutor(new DefaultThreadFactory(name, true, 8)),
+        //                    DefaultEventExecutorChooserFactory.INSTANCE,
+        //                    SelectorProvider.provider(),
+        //                    DefaultSelectStrategyFactory.INSTANCE,
+        //                    RejectedExecutionHandlers.reject(),
+        //                    (size) -> new ConcurrentLinkedQueue<>());
+        //        }
     }
 
     @Override

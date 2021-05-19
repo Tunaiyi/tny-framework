@@ -111,9 +111,9 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         tunnel.attributes().setAttribute(AttributesKeys.TICKET_KEY, ticket);
         LOGGER.info("#FolSessionValidator#为IP {} 帐号 {} 创建玩家PlayerID为 {}", tunnel.getRemoteAddress(), ticket.getOpenId(), accountObj.getUid());
         if (relogin) {
-            return factory.authenticate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
+            return factory.certificate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
         } else {
-            return factory.reauthenticate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
+            return factory.renewCertificate(ticket.getTokenId(), accountObj.getUid(), DEFAULT_USER_TYPE, Instant.ofEpochMilli(ticket.getTime()));
         }
     }
 

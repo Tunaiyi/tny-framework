@@ -16,6 +16,4 @@ public interface WriteMessageFuture extends Future<Void> {
 
     long getWriteTimeout();
 
-    void addWriteListener(WriteMessageListener listener);
-
 }

@@ -4,21 +4,21 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
+import io.netty.channel.embedded.EmbeddedChannel;
 
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public class NettyServerTunnelTest extends NettyTunnelTest<NetEndpoint<Long>, NettyServerTunnel<Long>, MockNetEndpoint> {
+public class NettyServerTunnelTest extends NettyTunnelTest<NetEndpoint<Long>, TestGeneralServerTunnel, MockNetEndpoint> {
 
     @Override
-    protected TunnelTestInstance<NettyServerTunnel<Long>, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
-        MockEndpointEventsBoxHandler<NetEndpoint<Long>> handler = new MockEndpointEventsBoxHandler<>();
+    protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
         MockNetEndpoint endpoint = createEndpoint(certificate);
-        NettyServerTunnel<Long> tunnel = this.newTunnel(handler, open);
-        tunnel.setEndpoint(endpoint);
-        if (certificate.isAuthenticated()) {
-            tunnel.bind(endpoint);
-        }
+        TestGeneralServerTunnel tunnel = this.newTunnel(open);
+        tunnel.bind(endpoint);
+        //        if (certificate.isAuthenticated()) {
+        //            tunnel.bind(endpoint);
+        //        }
         return new TunnelTestInstance<>(tunnel, endpoint);
     }
 
@@ -27,13 +27,18 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetEndpoint<Long>, Ne
         return new MockNetEndpoint(certificate);
     }
 
-    private NettyServerTunnel<Long> newTunnel(MockEndpointEventsBoxHandler<NetEndpoint<Long>> handler, boolean open) {
-        NettyServerTunnel<Long> tunnel = new NettyServerTunnel<>(mockChannel(),
-                new NetBootstrapContext<>(handler, new CommonMessageFactory<>(), null));
+    private TestGeneralServerTunnel newTunnel(boolean open) {
+        TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(new NettyChannelTransport<>(mockChannel()),
+                new NetBootstrapContext<>(null, null, new CommonMessageFactory<>(), null));
         if (open) {
             tunnel.open();
         }
         return tunnel;
+    }
+
+    @Override
+    protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
+        return (EmbeddedChannel)((NettyChannelTransport<?>)tunnel.getTransport()).getChannel();
     }
 
 }

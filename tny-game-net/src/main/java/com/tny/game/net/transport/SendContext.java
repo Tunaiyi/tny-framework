@@ -13,7 +13,7 @@ public interface SendContext<UID> {
     /**
      * @return 获取响应 Future, 如果没有返回 null
      */
-    RespondFuture<UID> getRespondFuture();
+    RespondFuture getRespondFuture();
 
     /**
      * @return 是否有响应 Future
@@ -29,4 +29,5 @@ public interface SendContext<UID> {
      * @return 是否有发送 Future
      */
     boolean isHasWriteFuture();
+
 }

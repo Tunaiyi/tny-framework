@@ -13,10 +13,10 @@ import java.time.Instant;
 @UnitInterface
 public interface CertificateFactory<UID> {
 
-    Certificate<UID> unauthenticate();
+    Certificate<UID> anonymous();
 
-    Certificate<UID> authenticate(long id, UID userID, String userType, Instant authenticateAt);
+    Certificate<UID> certificate(long id, UID userID, String userType, Instant authenticateAt);
 
-    Certificate<UID> reauthenticate(long id, UID userID, String userType, Instant authenticateAt);
+    Certificate<UID> renewCertificate(long id, UID userID, String userType, Instant authenticateAt);
 
 }

@@ -30,8 +30,7 @@ public class MessageCodecTest {
 
     private Message createMessage(Object body, Object tail) {
         long uid = 5000L;
-        return this.messageFactory.create(1L, MessageContexts.<Long>request(ProtocolAide.protocol(100_100), body)
-                .setTail(tail));
+        return this.messageFactory.create(1L, MessageContexts.<Long>request(ProtocolAide.protocol(100_100), body));
     }
 
     @Test

@@ -53,7 +53,6 @@ public class GameClientApp {
                 System.out.println("!!@   [发送] 请求 = " + message);
                 SendContext<Long> context = tunnel
                         .send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-                                .setTail(message)
                                 .willWriteFuture(30000L)
                                 .willResponseFuture(30000L));
                 try {

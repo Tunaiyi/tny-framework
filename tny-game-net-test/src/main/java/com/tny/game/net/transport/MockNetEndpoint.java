@@ -2,6 +2,7 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 
@@ -42,18 +43,13 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     }
 
-    @Override
-    public EndpointEventsBox<Long> getEventsBox() {
-        return null;
-    }
-
     //    @Override
     //    public void createMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
     //        this.writeQueue.add(context);
     //    }
 
     @Override
-    public Message createMessage(MessageContext<Long> context) {
+    public Message newMessage(MessageContext<Long> context) {
         this.writeQueue.add(context);
         return null;
     }
@@ -82,7 +78,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     @Override
     public void resend(NetTunnel<Long> tunnel, long fromId, FilterBound bound) {
-        
+
     }
 
     @Override
@@ -96,12 +92,17 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public void takeOver(EndpointEventsBox<Long> eventsBox) {
+    public CommandTaskBox getCommandTaskBox() {
+        return null;
+    }
+
+    @Override
+    public void takeOver(CommandTaskBox commandTaskBox) {
 
     }
 
     @Override
-    public EndpointEventsBoxHandler<Long, NetEndpoint<Long>> getEventHandler() {
+    public EndpointContext<Long> getContext() {
         return null;
     }
 

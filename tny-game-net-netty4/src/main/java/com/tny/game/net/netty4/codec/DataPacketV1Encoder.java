@@ -5,6 +5,7 @@ import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.coder.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.transport.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import org.slf4j.*;
@@ -38,7 +39,7 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
             // 获取打包器
             DataPackager packager = channel.attr(NettyAttrKeys.WRITE_PACKAGER).get();
             if (packager == null) {
-                NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+                NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
                 packager = new DataPackager(tunnel.getAccessId(), this.config);
                 channel.attr(NettyAttrKeys.WRITE_PACKAGER).set(packager);
             }

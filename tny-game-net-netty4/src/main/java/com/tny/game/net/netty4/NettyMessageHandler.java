@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4;
 
+import com.tny.game.common.runtime.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -80,13 +81,18 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        super.write(ctx, msg, promise);
+        try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
+            if (msg instanceof NettyMessageBearer) {
+                msg = ((NettyMessageBearer<?>)msg).message();
+            }
+            ctx.write(msg, promise);
+        }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NettyTunnel<?, ?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
+        NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());

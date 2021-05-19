@@ -25,6 +25,10 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
+    public void allotMessageId(long id) {
+    }
+
+    @Override
     public int getProtocolId() {
         return this.protocol;
     }

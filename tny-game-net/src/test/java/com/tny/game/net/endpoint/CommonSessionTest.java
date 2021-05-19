@@ -1,5 +1,8 @@
 package com.tny.game.net.endpoint;
 
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.executor.*;
+import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -8,8 +11,38 @@ import com.tny.game.net.transport.*;
 public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
     @Override
-    protected CommonSession<Long> newEndpoint(int cacheSize, MockEndpointEventsBoxHandler<CommonSession<Long>> handler) {
-        return new CommonSession<>(handler, cacheSize);
+    protected CommonSession<Long> newEndpoint(CommonSessionSetting setting) {
+        return new CommonSession<>(setting, new EndpointContext<Long>() {
+            @Override
+            public CertificateFactory<Long> getCertificateFactory() {
+                return new DefaultCertificateFactory<>();
+            }
+
+            @Override
+            public MessageDispatcher getMessageDispatcher() {
+                return null;
+            }
+
+            @Override
+            public CommandTaskProcessor getCommandTaskProcessor() {
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void receive() {
+
+    }
+
+    @Override
+    public void send() {
+
+    }
+
+    @Override
+    public void resend() {
+
     }
 
     // @Test

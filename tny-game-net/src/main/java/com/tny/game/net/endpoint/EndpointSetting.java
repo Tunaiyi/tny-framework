@@ -8,8 +8,4 @@ import com.tny.game.common.unit.annotation.*;
 @UnitInterface
 public interface EndpointSetting {
 
-    String getName();
-
-    String getKeeperFactory();
-
 }

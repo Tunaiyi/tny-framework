@@ -17,17 +17,17 @@ import java.time.Instant;
 public class DefaultCertificateFactory<UID> implements CertificateFactory<UID> {
 
     @Override
-    public Certificate<UID> unauthenticate() {
+    public Certificate<UID> anonymous() {
         return Certificates.createUnauthenticated();
     }
 
     @Override
-    public Certificate<UID> authenticate(long id, UID userID, String userType, Instant authenticateAt) {
+    public Certificate<UID> certificate(long id, UID userID, String userType, Instant authenticateAt) {
         return Certificates.createAuthenticated(id, userID, userType, authenticateAt, false);
     }
 
     @Override
-    public Certificate<UID> reauthenticate(long id, UID userID, String userType, Instant authenticateAt) {
+    public Certificate<UID> renewCertificate(long id, UID userID, String userType, Instant authenticateAt) {
         return Certificates.createAuthenticated(id, userID, userType, authenticateAt, true);
     }
 

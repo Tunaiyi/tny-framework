@@ -5,4 +5,6 @@ package com.tny.game.net.message;
  */
 public interface NetMessageHead extends MessageHead {
 
+    void allotMessageId(long id);
+
 }

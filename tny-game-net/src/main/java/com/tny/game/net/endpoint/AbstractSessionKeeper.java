@@ -14,7 +14,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 
     protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    protected SessionSetting setting;
+    protected SessionKeeperSetting setting;
 
     /* 离线session */
     private final Queue<Session<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
@@ -22,7 +22,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
 
     public AbstractSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
-            SessionSetting setting) {
+            SessionKeeperSetting setting) {
         super(userType);
         this.setting = setting;
         this.factory = as(factory);
