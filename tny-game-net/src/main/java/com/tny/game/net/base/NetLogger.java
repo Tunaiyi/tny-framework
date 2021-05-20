@@ -33,6 +33,10 @@ public class NetLogger {
             .of(MessageCommand.class + ".trace_input-tunnel_to_execute", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
+    public static final ProcessWatcher NET_TRACE_INPUT_BOX_PROCESS_WATCHER = ProcessWatcher
+            .of(MessageCommand.class + ".trace_input-box_process", TrackPrintOption.CLOSE)
+            .schedule(15, TimeUnit.SECONDS);
+        
     public static final ProcessWatcher NET_TRACE_INPUT_EXECUTE_COMMAND_WATCHER = ProcessWatcher
             .of(MessageCommand.class + ".trace_input-execute_command", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
@@ -81,10 +85,6 @@ public class NetLogger {
             .of(MessageCommand.class + ".command_exe_handle_result", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
-    //    public static final ProcessWatcher MSG_TICK_1_WATCHER = ProcessWatcher
-    //            .of(MessageCommand.class + ".tick1", TrackPrintOption.CLOSE)
-    //            .schedule(15, TimeUnit.SECONDS);
-    //
     //    public static final ProcessWatcher MSG_TICK_2_WATCHER = ProcessWatcher
     //            .of(MessageCommand.class + ".tick2", TrackPrintOption.CLOSE)
     //            .schedule(15, TimeUnit.SECONDS);

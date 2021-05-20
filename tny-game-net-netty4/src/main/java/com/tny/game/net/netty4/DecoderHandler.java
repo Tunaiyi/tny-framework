@@ -24,6 +24,8 @@ public class DecoderHandler extends ByteToMessageDecoder {
 
     private final DataPacketDecoder decoder;
 
+    private final DataPacketMarker marker = new DataPacketMarker();
+
     public DecoderHandler(DataPacketDecoder decoder) {
         this.decoder = decoder;
     }
@@ -31,20 +33,22 @@ public class DecoderHandler extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         try {
-            ProcessTracer allTrace = NET_TRACE_ALL_WATCHER.trace();
-            ProcessTracer handleTrace = NET_TRACE_INPUT_ALL.trace();
-            ProcessTracer toTunnelTrace = NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER.trace();
             try (ProcessTracer ignored = MESSAGE_DECODE_WATCHER.trace()) {
-                if (in.readableBytes() > 0) {
-                    Object messageObject = this.decoder.decodeObject(ctx, in);
-                    if (messageObject instanceof Message) {
-                        Attributes attributes = ((Message)messageObject).attributes();
-                        attributes.setAttribute(NET_TRACE_ALL_ATTR_KEY, allTrace);
-                        attributes.setAttribute(NET_TRACE_INPUT_ALL_ATTR_KEY, handleTrace);
-                        attributes.setAttribute(NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY, toTunnelTrace);
-                    }
+                while (in.readableBytes() > 0) {
+                    ProcessTracer allTrace = NET_TRACE_ALL_WATCHER.trace();
+                    ProcessTracer handleTrace = NET_TRACE_INPUT_ALL.trace();
+                    ProcessTracer toTunnelTrace = NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER.trace();
+                    Object messageObject = this.decoder.decodeObject(ctx, in, this.marker);
                     if (messageObject != null) {
+                        if (messageObject instanceof Message) {
+                            Attributes attributes = ((Message)messageObject).attributes();
+                            attributes.setAttribute(NET_TRACE_ALL_ATTR_KEY, allTrace);
+                            attributes.setAttribute(NET_TRACE_INPUT_ALL_ATTR_KEY, handleTrace);
+                            attributes.setAttribute(NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY, toTunnelTrace);
+                        }
                         out.add(messageObject);
+                    } else {
+                        break;
                     }
                 }
             }

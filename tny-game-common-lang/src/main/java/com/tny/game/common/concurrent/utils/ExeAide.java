@@ -68,4 +68,17 @@ public interface ExeAide {
         return callUnchecked(callable, LOGGER);
     }
 
+    static <R> R callNullableWithUnchecked(ThrowableCallable<R> callable, Logger logger) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            logger.error("run {} exception", callable.getClass(), e);
+            throw new ExeUncheckedException(e);
+        }
+    }
+
+    static <R> R callNullableWithUnchecked(ThrowableCallable<R> callable) {
+        return callNullableWithUnchecked(callable, LOGGER);
+    }
+
 }

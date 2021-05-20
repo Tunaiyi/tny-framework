@@ -24,7 +24,7 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
      */
     private final boolean daemon;
 
-    private UncaughtExceptionHandler handler;
+    private final UncaughtExceptionHandler handler;
 
     public CoreThreadFactory(String namePrefix) {
         this(namePrefix, null, false);
@@ -50,8 +50,9 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
     public Thread newThread(Runnable paramRunnable) {
         Thread localThread = new Thread(this.group, paramRunnable, threadName(), 0L);
         localThread.setDaemon(this.daemon);
-        if (localThread.getPriority() != 5)
+        if (localThread.getPriority() != 5) {
             localThread.setPriority(5);
+        }
         return localThread;
     }
 
@@ -63,7 +64,6 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
     public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
         return new CoreForkJoinWorkerThread(pool, threadName(), this.daemon, this.handler);
     }
-
 
     private static class CoreForkJoinWorkerThread extends ForkJoinWorkerThread {
 

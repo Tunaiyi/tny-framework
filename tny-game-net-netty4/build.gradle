@@ -5,6 +5,7 @@ apply plugin: "maven"
 dependencies {
 
     api libs.netty
+    api libs.disruptor
     api project(":tny-game-net")
 
     testImplementation libs.spring_context_support

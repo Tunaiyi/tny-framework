@@ -21,7 +21,8 @@ tny:
             - opqrstuvwxyz
     command-task-processor:
       default:
-        threads: 10
+        waitStrategy: YIELDING
+        threads: 4
     session:
       user:
         offline-close-delay: 1000

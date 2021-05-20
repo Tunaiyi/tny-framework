@@ -1,7 +1,8 @@
-package com.tny.game.starter.net.netty4.configuration.executor;
+package com.tny.game.starter.net.netty4.configuration.processor;
 
 import com.tny.game.common.concurrent.utils.*;
-import com.tny.game.net.command.executor.*;
+import com.tny.game.net.command.processor.*;
+import com.tny.game.net.netty4.processor.*;
 import com.tny.game.starter.common.initiator.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -22,8 +23,8 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar<E extends Command
     @Override
     protected void loadBeanDefinition(String name, BeanDefinitionRegistry registry) {
         String keyHead = key(this.root, name);
-        String executorClassName = this.environment.getProperty(key(keyHead, CLASS_NODE), EndpointCommandTaskProcessor.class.getName());
-        Class<E> executorClass = as(ExeAide.callUnchecked(() -> Class.forName(executorClassName)).orElse(null));
+        String executorClassName = this.environment.getProperty(key(keyHead, CLASS_NODE), DisruptorEndpointCommandTaskProcessor.class.getName());
+        Class<E> executorClass = as(ExeAide.callNullableWithUnchecked(() -> Class.forName(executorClassName)));
         String keyName = getBeanName(name, CommandTaskProcessor.class);
         registry.registerBeanDefinition(keyName,
                 BeanDefinitionBuilder.genericBeanDefinition(executorClass,
@@ -31,10 +32,6 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar<E extends Command
                                 .bind(keyHead, executorClass)
                                 .orElseGet(() -> ExeAide.callUnchecked(executorClass::newInstance).orElse(null)))
                         .getBeanDefinition());
-    }
-
-    protected boolean isDefaultClass() {
-        return false;
     }
 
 }

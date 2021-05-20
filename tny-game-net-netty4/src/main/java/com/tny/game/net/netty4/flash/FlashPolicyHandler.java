@@ -5,9 +5,9 @@ import io.netty.channel.*;
 public class FlashPolicyHandler extends SimpleChannelInboundHandler<String> {
 
     private static final String SECURITY_FILE = "<cross-domain-policy>"
-                                                //+ "<site-control permitted-cross-domain-policies=\"all\"/>"
-                                                + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
-                                                + "</cross-domain-policy>" + "\0";
+            //+ "<site-control permitted-cross-domain-policies=\"all\"/>"
+            + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
+            + "</cross-domain-policy>" + "\0";
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
@@ -17,4 +17,5 @@ public class FlashPolicyHandler extends SimpleChannelInboundHandler<String> {
             ctx.flush();
         }
     }
+
 }

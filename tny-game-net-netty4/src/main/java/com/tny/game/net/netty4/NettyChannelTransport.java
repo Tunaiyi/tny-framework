@@ -48,8 +48,12 @@ public class NettyChannelTransport<UID> implements NetTransport<UID> {
         WriteMessagePromise promise = as(context.getWriteMessageFuture());
         ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
         ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
+        //        this.channel.writeAndFlush(new NettyMessageBearer<>(this.channel, maker, context, channelPromise, tracer), channelPromise);
         this.channel.eventLoop()
-                .execute(new NettyMessageBearer<>(this.channel, maker, context, channelPromise, tracer));
+                .execute(() -> {
+                    this.channel.writeAndFlush(maker.newMessage(context), channelPromise);
+                    tracer.done();
+                });
         return promise;
     }
 

@@ -9,6 +9,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.message.protoex.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.transport.*;
 import io.netty.buffer.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -53,7 +54,7 @@ public class DataPacketV1CodecTest {
         this.ctx = mockAs(ChannelHandlerContext.class);
         EmbeddedChannel channel = new EmbeddedChannel();
         when(this.ctx.channel()).thenReturn(channel);
-        NettyTunnel tunnel = mockAs(NettyTunnel.class);
+        NetTunnel tunnel = mockAs(NetTunnel.class);
         when(tunnel.getAccessId()).thenReturn(2018L);
         when(tunnel.getMessageFactory()).thenReturn(this.factory);
         channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
@@ -68,9 +69,10 @@ public class DataPacketV1CodecTest {
     @Test
     public void codec() throws Exception {
         Message message = craeteMessage("1222", 300);
+        DataPacketMarker marker = new DataPacketMarker();
         ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(400);
         this.encoder.encodeObject(this.ctx, message, buffer);
-        Message readMessage = this.decoder.decodeObject(this.ctx, buffer);
+        Message readMessage = this.decoder.decodeObject(this.ctx, buffer, marker);
         assertEquals(message.getHead(), readMessage.getHead());
         assertTrue(CollectionUtils.isEqualCollection(message.getBody(Collection.class), readMessage.getBody(Collection.class)));
     }

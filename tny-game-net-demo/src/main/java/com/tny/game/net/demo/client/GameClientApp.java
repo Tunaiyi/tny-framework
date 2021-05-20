@@ -20,6 +20,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 /**
  * <p>
  *
@@ -66,16 +68,26 @@ public class GameClientApp {
             });
             application.waitForConsole("q", (cmd, cmds) -> {
                 if (cmd.startsWith("@t")) {
-                    if (cmds.length > 3) {
-                        long delay = Long.parseLong(cmds[2]);
+                    if (cmds.length > 4) {
+                        int totalTimes = Integer.parseInt(cmds[1]);
+                        int stepTimes = Integer.parseInt(cmds[2]);
+                        long delay = Long.parseLong(cmds[3]);
+                        String message = cmds[4];
+                        System.out.println(format("每 {} ms 发送 \"{}\" {} 次, 总共 {} 次.", delay, message, stepTimes, totalTimes));
                         SERVICE.schedule(new Runnable() {
 
-                            private final IntLocalNum num = new IntLocalNum(Integer.parseInt(cmds[1]));
+                            private final IntLocalNum num = new IntLocalNum(totalTimes);
 
                             @Override
                             public void run() {
-                                send(client, cmds[3], false);
-                                if (this.num.sub(1) > 0) {
+                                int index = 0;
+                                while (this.num.sub(1) > 0) {
+                                    send(client, message, false);
+                                    if (++index > stepTimes) {
+                                        break;
+                                    }
+                                }
+                                if (this.num.intValue() > 0) {
                                     SERVICE.schedule(this, delay, TimeUnit.MILLISECONDS);
                                 }
                             }

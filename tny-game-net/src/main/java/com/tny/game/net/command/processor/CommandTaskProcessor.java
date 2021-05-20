@@ -1,4 +1,4 @@
-package com.tny.game.net.command.executor;
+package com.tny.game.net.command.processor;
 
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.endpoint.task.*;

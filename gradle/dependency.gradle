@@ -61,7 +61,7 @@ ext.libs = [
         asm                                      : "org.ow2.asm:asm:5.0.4",
 
 
-        disruptor                                : "com.lmax:disruptor:3.4.2",
+        disruptor                                : "com.lmax:disruptor:3.4.4",
 
         cglib_nodep                              : "cglib:cglib-nodep:3.2.0",
 

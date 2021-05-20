@@ -34,46 +34,48 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
     };
 
     @Override
-    public Message decodeObject(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+    public Message decodeObject(ChannelHandlerContext ctx, ByteBuf in, DataPacketMarker marker) throws Exception {
         Channel channel = ctx.channel();
-        // 获取打包器
-        if (in.readableBytes() < CodecConstants.FRAME_MAGIC.length + CodecConstants.OPTION_SIZE + CodecConstants.MESSAGE_LENGTH_SIZE) {
-            return null;
-        }
         byte option;
         int payloadLength;
-        in.markReaderIndex();
-        if (in.readableBytes() < CodecConstants.FRAME_MAGIC.length) {
-            in.resetReaderIndex();
-            return null;
-        }
-        final byte[] magics = MAGICS_LOCAL.get();
-        in.readBytes(magics);
-        if (!isMagic(magics)) {
-            in.resetReaderIndex();
-            throw CodecException.causeDecode("illegal magics");
-        }
+        if (marker.isMark()) {
+            option = marker.getOption();
+            payloadLength = marker.getPayloadLength();
+        } else {
+            // 获取打包器
+            if (in.readableBytes() < CodecConstants.FRAME_MAGIC.length + CodecConstants.OPTION_SIZE + CodecConstants.MESSAGE_LENGTH_SIZE) {
+                return null;
+            }
+            final byte[] magics = MAGICS_LOCAL.get();
+            in.readBytes(magics);
+            if (!isMagic(magics)) {
+                throw CodecException.causeDecode("illegal magics");
+            }
 
-        option = in.readByte();
+            option = in.readByte();
 
-        if (isOption(option, DATA_PACK_OPTION_PING)) {
-            return TickMessage.ping();
-        } else if (isOption(option, DATA_PACK_OPTION_PONG)) {
-            return TickMessage.pong();
+            if (isOption(option, DATA_PACK_OPTION_PING)) {
+                return TickMessage.ping();
+            } else if (isOption(option, DATA_PACK_OPTION_PONG)) {
+                return TickMessage.pong();
+            }
+
+            payloadLength = in.readInt();
+            if (payloadLength > this.config.getMaxPayloadLength()) {
+                throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}", payloadLength,
+                        this.config.getMaxPayloadLength());
+            }
+            marker.record(option, payloadLength);
         }
-
-        payloadLength = in.readInt();
-        if (payloadLength > this.config.getMaxPayloadLength()) {
-            throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}",
-                    payloadLength, this.config.getMaxPayloadLength());
-        }
-
         // 读取请求信息体
         if (in.readableBytes() < payloadLength) {
-            in.resetReaderIndex();
             return null;
         }
-        return readPayload(channel, in, option, payloadLength);
+        try {
+            return readPayload(channel, in, option, payloadLength);
+        } finally {
+            marker.reset();
+        }
     }
 
     private Message readPayload(Channel channel, ByteBuf in, byte option, int payloadLength) throws Exception {

@@ -19,4 +19,5 @@ tny:
             - opqrstuvwxyz
     command-task-processor:
       default:
-        threads: 10
+        class: com.tny.game.net.command.processor.ForkJoinEndpointCommandTaskProcessor
+        threads: 4

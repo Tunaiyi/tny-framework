@@ -1,4 +1,4 @@
-package com.tny.game.net.command.executor;
+package com.tny.game.net.command.processor;
 
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.runtime.*;
@@ -10,7 +10,6 @@ import com.tny.game.net.message.*;
 import org.slf4j.Logger;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tny.game.net.base.NetLogger.*;
@@ -24,22 +23,22 @@ import static org.slf4j.LoggerFactory.*;
  * @author : kgtny
  * @date : 2021/5/17 11:27 上午
  */
-public class EndpointCommandTaskProcessor extends ForkJoinCommandTaskExecutor implements CommandTaskProcessor {
+public abstract class EndpointCommandTaskProcessor implements CommandTaskProcessor {
 
     private static final Set<BoxProcessor> SCHEDULED_PROCESSORS = new ConcurrentHashSet<>();
 
     private static final Logger LOG_NET = getLogger(NetLogger.EXECUTOR);
 
-    @Override
-    public void prepareStart() {
-        super.prepareStart();
-        scheduledExecutor().scheduleAtFixedRate(() -> {
-            for (BoxProcessor processor : SCHEDULED_PROCESSORS) {
-                SCHEDULED_PROCESSORS.remove(processor);
-                processor.onScheduled();
-            }
-        }, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
-    }
+    //    @Override
+    //    public void prepareStart() {
+    //        super.prepareStart();
+    //        scheduledExecutor().scheduleAtFixedRate(() -> {
+    //            for (BoxProcessor processor : SCHEDULED_PROCESSORS) {
+    //                SCHEDULED_PROCESSORS.remove(processor);
+    //                processor.onScheduled();
+    //            }
+    //        }, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
+    //    }
 
     @Override
     public void submit(CommandTaskBox box) {
@@ -50,7 +49,16 @@ public class EndpointCommandTaskProcessor extends ForkJoinCommandTaskExecutor im
         processor.trySubmit();
     }
 
-    private class BoxProcessor implements Runnable {
+    protected void scheduleProcessor() {
+        for (BoxProcessor processor : SCHEDULED_PROCESSORS) {
+            SCHEDULED_PROCESSORS.remove(processor);
+            processor.onScheduled();
+        }
+    }
+
+    protected abstract void execute(BoxProcessor processor);
+
+    protected class BoxProcessor implements Runnable {
 
         /**
          * 执行状态
@@ -75,30 +83,35 @@ public class EndpointCommandTaskProcessor extends ForkJoinCommandTaskExecutor im
         public void run() {
             this.executeStatus.set(PROCESSING_VALUE);
             while (true) {
-                if (isCommandRunning()) {
-                    if (!doCommand(this.currentCommand)) {
-                        this.executeStatus.set(DELAY_VALUE);
-                        SCHEDULED_PROCESSORS.add(this);
-                        break;
+                ProcessTracer tracer = NET_TRACE_INPUT_BOX_PROCESS_WATCHER.trace();
+                try {
+                    if (isCommandRunning()) {
+                        if (!doCommand(this.currentCommand)) {
+                            this.executeStatus.set(DELAY_VALUE);
+                            SCHEDULED_PROCESSORS.add(this);
+                            break;
+                        } else {
+                            this.currentCommand = null;
+                        }
+                    }
+                    // 确保 command 执行完
+                    if (this.taskBox.isClosed()) {
+                        return;
+                    }
+                    CommandTask event = this.taskBox.poll();
+                    if (event != null) {
+                        this.currentCommand = event.createCommand();
+                        if (this.currentCommand instanceof MessageCommand) {
+                            Message message = ((MessageCommand<?>)this.currentCommand).getMessage();
+                            traceDone(NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR, message);
+                        }
                     } else {
-                        this.currentCommand = null;
+                        this.executeStatus.set(STOP_VALUE);
+                        this.trySubmitWhen(STOP);
+                        break;
                     }
-                }
-                // 确保 command 执行完
-                if (this.taskBox.isClosed()) {
-                    return;
-                }
-                CommandTask event = this.taskBox.poll();
-                if (event != null) {
-                    this.currentCommand = event.createCommand();
-                    if (this.currentCommand instanceof MessageCommand) {
-                        Message message = ((MessageCommand<?>)this.currentCommand).getMessage();
-                        traceDone(NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR, message);
-                    }
-                } else {
-                    this.executeStatus.set(STOP_VALUE);
-                    this.trySubmitWhen(STOP);
-                    break;
+                } finally {
+                    tracer.done();
                 }
             }
         }
@@ -116,13 +129,13 @@ public class EndpointCommandTaskProcessor extends ForkJoinCommandTaskExecutor im
             int currentState = this.executeStatus.get();
             if (currentState != SUBMIT_VALUE && currentState != PROCESSING_VALUE
                     && isCanRun() && this.executeStatus.compareAndSet(currentState, SUBMIT_VALUE)) {
-                EndpointCommandTaskProcessor.this.executorService.submit(this);
+                execute(this);
             }
         }
 
         private void trySubmitWhen(CommandTaskBoxStatus status) {
             if (isCanRun() && this.executeStatus.get() == status.getId() && this.executeStatus.compareAndSet(status.getId(), SUBMIT.getId())) {
-                EndpointCommandTaskProcessor.this.executorService.submit(this);
+                execute(this);
             }
         }
 
