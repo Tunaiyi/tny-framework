@@ -13,5 +13,6 @@ public interface CtrlerIDs {
     int LOGIN$SAY = 1000_02;
     int LOGIN$PUSH = 1000_03;
     int LOGIN$PING = 1000_04;
+    int LOGIN$DELAY_SAY = 1000_05;
 
 }

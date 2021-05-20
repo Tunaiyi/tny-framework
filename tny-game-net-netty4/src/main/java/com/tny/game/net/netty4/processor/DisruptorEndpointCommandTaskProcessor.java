@@ -6,6 +6,9 @@ import com.tny.game.common.collection.map.access.*;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.net.command.processor.*;
+import com.tny.game.net.endpoint.task.*;
+import io.netty.util.HashedWheelTimer;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
 import java.util.Map;
@@ -17,7 +20,7 @@ import java.util.concurrent.*;
  * @author : kgtny
  * @date : 2021/5/20 2:06 下午
  */
-public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskProcessor implements AppPrepareStart {
+public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskProcessor<TimerEndpointCommandTaskTrigger> implements AppPrepareStart {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DisruptorEndpointCommandTaskProcessor.class);
 
@@ -34,11 +37,18 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
      */
     private static final int DEFAULT_QUEUE_SIZE = 1024 * 1024;
 
+    private static final int[] DEFAULT_COMMAND_TICK_TIME = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10};
+
     /* 线程数 */
     private int threads = DEFAULT_THREADS;
 
     /* 线程数 */
     private int queueSize = DEFAULT_QUEUE_SIZE;
+
+    /* 任务调度间隔序列 */
+    private int[] commandTickTime = DEFAULT_COMMAND_TICK_TIME;
+
+    private int lastCommandTickTime = this.commandTickTime[this.commandTickTime.length - 1];
 
     /* ChildExecutor command 未完成, 延迟时间*/
     private int nextInterval = DEFAULT_NEXT_INTERVAL;
@@ -48,12 +58,12 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
 
     private ObjectMap waitStrategyProperty = new ObjectMap();
 
-    private RingBuffer<BufferItem<BoxProcessor>> boxProcessorBuffer;
+    private RingBuffer<BufferItem<EndpointCommandTaskTrigger>> boxProcessorBuffer;
 
     private ExecutorService executorService;
 
-    private final ScheduledExecutorService scheduledExecutorService = ThreadPoolExecutors
-            .scheduled(this.getClass().getSimpleName() + "Scheduled", 1, true);
+    private static final HashedWheelTimer TIMER = new HashedWheelTimer(
+            new CoreThreadFactory("DisruptorEndpointCommandTaskTimer"), 1, TimeUnit.MILLISECONDS);
 
     public DisruptorEndpointCommandTaskProcessor() {
         this(Runtime.getRuntime().availableProcessors(), DEFAULT_NEXT_INTERVAL);
@@ -81,21 +91,22 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
         for (int i = 0; i < consumers.length; i++) {
             consumers[i] = new BoxProcessorConsumer("BoxProcessorConsumer-" + i);
         }
-        WorkerPool<BufferItem<BoxProcessor>> workerPool = createWorkerPool(this.boxProcessorBuffer, consumers);
+        WorkerPool<BufferItem<EndpointCommandTaskTrigger>> workerPool = createWorkerPool(this.boxProcessorBuffer, consumers);
         this.executorService = Executors.newCachedThreadPool(new CoreThreadFactory("BoxProcessorConsumer"));
         LOGGER.info("Create WorkerPool with {} threads, {} queueSize, {} waitStrategy by properties {}",
                 this.threads, this.queueSize, this.waitStrategy, this.waitStrategyProperty);
         workerPool.start(this.executorService);
-        this.scheduledExecutorService.scheduleAtFixedRate(this::scheduleProcessor, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
+        TIMER.start();
     }
 
-    private RingBuffer<BufferItem<BoxProcessor>> createRingBuffer() {
+    private RingBuffer<BufferItem<EndpointCommandTaskTrigger>> createRingBuffer() {
         return RingBuffer.create(ProducerType.MULTI, BufferItem::new,
                 this.queueSize, this.waitStrategy.createStrategy(this.waitStrategyProperty));
     }
 
-    private WorkerPool<BufferItem<BoxProcessor>> createWorkerPool(RingBuffer<BufferItem<BoxProcessor>> ringBuffer, BoxProcessorConsumer[] consumers) {
-        WorkerPool<BufferItem<BoxProcessor>> pool = new WorkerPool<>(ringBuffer,
+    private WorkerPool<BufferItem<EndpointCommandTaskTrigger>> createWorkerPool(RingBuffer<BufferItem<EndpointCommandTaskTrigger>> ringBuffer,
+            BoxProcessorConsumer[] consumers) {
+        WorkerPool<BufferItem<EndpointCommandTaskTrigger>> pool = new WorkerPool<>(ringBuffer,
                 // 通过ringBuffer 创建一个屏障
                 ringBuffer.newBarrier(), new BoxProcessorExceptionHandler(), consumers);
         ringBuffer.addGatingSequences(pool.getWorkerSequences());
@@ -108,14 +119,31 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
     }
 
     @Override
-    protected void execute(BoxProcessor processor) {
+    protected TimerEndpointCommandTaskTrigger createTrigger(CommandTaskBox box) {
+        return new TimerEndpointCommandTaskTrigger(box, this);
+    }
+
+    @Override
+    protected void process(TimerEndpointCommandTaskTrigger processor) {
         long sequence = this.boxProcessorBuffer.next();
         try {
-            BufferItem<BoxProcessor> item = this.boxProcessorBuffer.get(sequence);
+            BufferItem<EndpointCommandTaskTrigger> item = this.boxProcessorBuffer.get(sequence);
             item.setItem(processor);
         } finally {
             this.boxProcessorBuffer.publish(sequence);
         }
+    }
+
+    @Override
+    protected void schedule(TimerEndpointCommandTaskTrigger processor) {
+        int times = processor.getCommandTickTimes();
+        long delay;
+        if (times < this.commandTickTime.length) {
+            delay = this.commandTickTime[times];
+        } else {
+            delay = this.lastCommandTickTime;
+        }
+        TIMER.newTimeout(processor, delay, TimeUnit.MILLISECONDS);
     }
 
     public DisruptorEndpointCommandTaskProcessor setWaitStrategyProperty(Map<String, Object> waitStrategyProperty) {
@@ -133,6 +161,14 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
         return this;
     }
 
+    public DisruptorEndpointCommandTaskProcessor setCommandTickTime(int[] commandTickTime) {
+        if (ArrayUtils.isNotEmpty(this.commandTickTime)) {
+            this.commandTickTime = commandTickTime;
+            this.lastCommandTickTime = commandTickTime[commandTickTime.length - 1];
+        }
+        return this;
+    }
+
     public DisruptorEndpointCommandTaskProcessor setThreads(int threads) {
         this.threads = threads;
         return this;
@@ -143,10 +179,10 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
         return this;
     }
 
-    private static class BoxProcessorExceptionHandler implements ExceptionHandler<BufferItem<BoxProcessor>> {
+    private static class BoxProcessorExceptionHandler implements ExceptionHandler<BufferItem<EndpointCommandTaskTrigger>> {
 
         @Override
-        public void handleEventException(Throwable ex, long sequence, BufferItem<BoxProcessor> event) {
+        public void handleEventException(Throwable ex, long sequence, BufferItem<EndpointCommandTaskTrigger> event) {
             LOGGER.error("sequence {} BoxProcessor handler error", event);
         }
 
@@ -162,17 +198,17 @@ public class DisruptorEndpointCommandTaskProcessor extends EndpointCommandTaskPr
 
     }
 
-    private static class BoxProcessorConsumer implements WorkHandler<BufferItem<BoxProcessor>> {
+    private static class BoxProcessorConsumer implements WorkHandler<BufferItem<EndpointCommandTaskTrigger>> {
 
-        private String name;
+        private final String name;
 
         private BoxProcessorConsumer(String name) {
             this.name = name;
         }
 
         @Override
-        public void onEvent(BufferItem<BoxProcessor> event) {
-            BoxProcessor processor = event.getItem();
+        public void onEvent(BufferItem<EndpointCommandTaskTrigger> event) {
+            EndpointCommandTaskTrigger processor = event.getItem();
             try {
                 if (processor != null) {
                     processor.run();

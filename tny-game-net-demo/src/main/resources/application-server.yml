@@ -21,7 +21,7 @@ tny:
             - opqrstuvwxyz
     command-task-processor:
       default:
-        waitStrategy: YIELDING
+        waitStrategy: BLOCKING
         threads: 4
     session:
       user:

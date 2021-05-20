@@ -1,14 +1,19 @@
 package com.tny.game.net.command.processor;
 
 import com.tny.game.common.concurrent.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
+import com.tny.game.net.endpoint.task.*;
 
+import java.util.Set;
 import java.util.concurrent.*;
 
 /**
  * @author KGTny
  */
-public class ForkJoinEndpointCommandTaskProcessor extends EndpointCommandTaskProcessor implements AppPrepareStart {
+public class ForkJoinEndpointCommandTaskProcessor extends EndpointCommandTaskProcessor<EndpointCommandTaskTrigger> implements AppPrepareStart {
+
+    private static final Set<EndpointCommandTaskTrigger> SCHEDULED_PROCESSORS = new ConcurrentHashSet<>();
 
     /**
      * 间歇时间
@@ -56,6 +61,18 @@ public class ForkJoinEndpointCommandTaskProcessor extends EndpointCommandTaskPro
         this.scheduledExecutorService.scheduleAtFixedRate(this::scheduleProcessor, this.nextInterval, this.nextInterval, TimeUnit.MILLISECONDS);
     }
 
+    @Override
+    protected EndpointCommandTaskTrigger createTrigger(CommandTaskBox box) {
+        return new EndpointCommandTaskTrigger(box, this);
+    }
+
+    private void scheduleProcessor() {
+        for (EndpointCommandTaskTrigger processor : SCHEDULED_PROCESSORS) {
+            SCHEDULED_PROCESSORS.remove(processor);
+            processor.trySubmit();
+        }
+    }
+
     public void shutdown() {
         this.executorService.shutdown();
     }
@@ -71,8 +88,13 @@ public class ForkJoinEndpointCommandTaskProcessor extends EndpointCommandTaskPro
     }
 
     @Override
-    protected void execute(BoxProcessor processor) {
+    protected void process(EndpointCommandTaskTrigger processor) {
         this.executorService.execute(processor);
+    }
+
+    @Override
+    protected void schedule(EndpointCommandTaskTrigger processor) {
+        SCHEDULED_PROCESSORS.add(processor);
     }
 
 }

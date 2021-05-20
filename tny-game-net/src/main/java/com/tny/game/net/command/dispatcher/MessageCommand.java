@@ -105,7 +105,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
             MessageHead head = this.message.getHead();
             ControllerContext.setCurrent(head.getProtocolId());
             MessageCommandPromise promise = this.commandContext.getPromise();
-            ProcessTracer processTracer = null;
+            ProcessTracer processTracer;
             try {
                 if (isDone()) {
                     return;

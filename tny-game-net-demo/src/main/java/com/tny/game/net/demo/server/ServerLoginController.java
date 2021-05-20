@@ -1,5 +1,6 @@
 package com.tny.game.net.demo.server;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.demo.common.*;
 import com.tny.game.net.demo.common.dto.*;
@@ -43,6 +44,38 @@ public class ServerLoginController {
         endpoint.send(MessageContexts
                 .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
         return new SayContentDTO(endpoint.getId(), "respond " + message);
+    }
+
+    @Controller(CtrlerIDs.LOGIN$DELAY_SAY)
+    public Waiter<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
+        long timeout = System.currentTimeMillis() + delay;
+        return new Waiter<SayContentDTO>() {
+            @Override
+            public boolean isDone() {
+                return System.currentTimeMillis() - timeout > 0;
+            }
+
+            @Override
+            public boolean isFailed() {
+                return false;
+            }
+
+            @Override
+            public boolean isSuccess() {
+                return isDone();
+            }
+
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+
+            @Override
+            public SayContentDTO getResult() {
+                System.out.println(message);
+                return new SayContentDTO(endpoint.getId(), "delay message : " + message);
+            }
+        };
     }
 
 }

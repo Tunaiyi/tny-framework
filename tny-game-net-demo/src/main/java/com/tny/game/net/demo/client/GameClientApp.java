@@ -93,6 +93,10 @@ public class GameClientApp {
                             }
                         }, delay, TimeUnit.MILLISECONDS);
                     }
+                } else if (cmd.startsWith("@delay")) {
+                    String message = cmds[1];
+                    long delay = Long.parseLong(cmds[2]);
+                    send(client, ProtocolAide.protocol(CtrlerIDs.LOGIN$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
                 } else {
                     send(client, cmd, true);
                 }
@@ -101,6 +105,27 @@ public class GameClientApp {
         } catch (Throwable e) {
             LOGGER.error("{} start exception", GameClientApp.class.getSimpleName(), e);
             System.exit(1);
+        }
+    }
+
+    private static <T> T send(Client<Long> client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
+        RequestContext<Long> messageContent = MessageContexts.requestParams(protocol, params);
+        if (waitTimeout > 0) {
+            SendContext<Long> context = client.send(messageContent
+                    .willResponseFuture(waitTimeout)
+                    .willWriteFuture(300000L));
+            try {
+                Message message = context.getRespondFuture().get();
+                T body = message.getBody(returnClass);
+                LOGGER.info("Client receive : {}", body);
+                return body;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        } else {
+            client.send(messageContent);
+            return null;
         }
     }
 

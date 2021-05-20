@@ -38,7 +38,7 @@ public class MessageCommandPromise {
     }
 
     public boolean isDone() {
-        return done;
+        return this.done;
     }
 
     public boolean isWaiting() {
@@ -46,11 +46,11 @@ public class MessageCommandPromise {
     }
 
     public Object getResult() {
-        return result;
+        return this.result;
     }
 
     public Throwable getCause() {
-        return cause;
+        return this.cause;
     }
 
     void checkWait() {
@@ -65,17 +65,22 @@ public class MessageCommandPromise {
                     setResult(waiter.getCause());
                 }
             } else {
-                if (timeout > 0 && System.currentTimeMillis() > timeout) {
-                    this.setResult(new CommandTimeoutException(NetResultCode.EXECUTE_TIMEOUT, format("执行 {} 超时", this.name)));
+                if (this.timeout > 0 && System.currentTimeMillis() > this.timeout) {
+                    try {
+                        throw new CommandTimeoutException(NetResultCode.EXECUTE_TIMEOUT, format("执行 {} 超时", this.name));
+                    } catch (Throwable e) {
+                        this.setResult(e);
+                    }
+
                 }
             }
         }
     }
 
     public void setResult(Object result) {
-        if (result instanceof Future)
+        if (result instanceof Future) {
             result = Waiter.of(as(result));
-
+        }
         if (result instanceof Waiter) {
             this.waiter = as(result);
             this.timeout = System.currentTimeMillis() + 5000; // 超时
