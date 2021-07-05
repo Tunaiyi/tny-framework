@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
 
 /**
+ * 连接器 负责管理 socket 连接和重连
  * <p>
  *
  * @author : kgtny
@@ -39,7 +40,7 @@ class NettyTunnelConnector {
     }
 
     public void connect(Executor executor) {
-        if (this.tunnel.isAvailable()) {
+        if (this.tunnel.isActive()) {
             return;
         }
         if (executor != null) {
@@ -52,7 +53,7 @@ class NettyTunnelConnector {
     }
 
     public void reconnect(ScheduledExecutorService executor) {
-        if (this.tunnel.isAvailable()) {
+        if (this.tunnel.isActive()) {
             return;
         }
         if (executor != null) {
@@ -73,7 +74,7 @@ class NettyTunnelConnector {
     }
 
     private void doConnect(boolean async) {
-        if (this.tunnel.isAvailable()) {
+        if (this.tunnel.isActive()) {
             return;
         }
         this.lock.lock();
@@ -88,7 +89,7 @@ class NettyTunnelConnector {
     }
 
     private void doReconnect(ScheduledExecutorService executor) {
-        if (this.tunnel.isAvailable()) {
+        if (this.tunnel.isActive()) {
             return;
         }
         boolean stop = false;
@@ -127,11 +128,11 @@ class NettyTunnelConnector {
     }
 
     private boolean openTunnel() {
-        if (this.tunnel.isAvailable()) {
+        if (this.tunnel.isActive()) {
             return true;
         }
         LOGGER.info("{} is ready to submit reconnect {} task for the {} time ", this, this.tunnel, this.times);
-        if (!this.tunnel.isAvailable() && this.tunnel.getStatus() != TunnelStatus.INIT) {
+        if (!this.tunnel.isActive() && this.tunnel.getStatus() != TunnelStatus.INIT) {
             LOGGER.info("{} submit reconnect {} task for the {} time", this, this.tunnel, this.times);
             this.tunnel.reset();
         }

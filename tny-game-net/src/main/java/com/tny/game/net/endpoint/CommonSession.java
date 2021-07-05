@@ -37,7 +37,7 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
                 return;
             }
             Tunnel<UID> currentTunnel = this.currentTunnel();
-            if (currentTunnel.isAvailable()) {
+            if (currentTunnel.isActive()) {
                 return;
             }
             setOffline();

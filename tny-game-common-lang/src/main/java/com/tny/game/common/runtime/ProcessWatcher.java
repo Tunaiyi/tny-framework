@@ -19,11 +19,14 @@ public class ProcessWatcher {
 
     private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = ThreadPoolExecutors.scheduled("ProcessWatcherScheduled", 1);
 
-    private static final TrackPrintOption DEFAULT_PRINT_OPTION = TrackPrintOption.SETTLE;
-    public static final Logger LOGGER = LoggerFactory.getLogger(ProcessWatcher.class);
-
     private static final Map<Object, ProcessWatcher> trackerMap = new ConcurrentHashMap<>();
+
+    private static final TrackPrintOption DEFAULT_PRINT_OPTION = TrackPrintOption.SETTLE;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessWatcher.class);
+
     private static final Consumer<ProcessWatcher> NONE = null;
+
+    private static final ProcessWatcher DEFAULT = ProcessWatcher.of(ProcessWatcher.class);
 
     private final Object target;
     private final Logger logger;
@@ -37,6 +40,10 @@ public class ProcessWatcher {
     private final LongAdder cycleDoneTimes = new LongAdder();
     private final LongAdder cycleTraceTimes = new LongAdder();
     private volatile ScheduledFuture<?> scheduledFuture;
+
+    public static ProcessWatcher getDefault() {
+        return DEFAULT;
+    }
 
     public static ProcessWatcher of(Object target) {
         return of(target, NONE);

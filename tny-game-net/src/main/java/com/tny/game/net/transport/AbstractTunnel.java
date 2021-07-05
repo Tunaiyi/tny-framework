@@ -16,7 +16,7 @@ import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends AbstractNetter<UID> implements NetTunnel<UID> {
+public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends AbstractCommunicator<UID> implements NetTunnel<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractTunnel.class);
 
@@ -77,12 +77,12 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 
     @Override
     public boolean isClosed() {
-        return this.status == TunnelStatus.CLOSE;
+        return this.status == TunnelStatus.CLOSED;
     }
 
     @Override
-    public boolean isActive() {
-        return this.status == TunnelStatus.ACTIVATED;
+    public boolean isOpen() {
+        return this.status == TunnelStatus.OPEN;
     }
 
     @Override
@@ -160,46 +160,47 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
                 return true;
             } else {
                 return StampedLockAide.supplyInWriteLock(this.endpointLock,
-                        () -> replayEndpoint(endpoint));
+                        () -> bindEndpoint(endpoint));
             }
         }
     }
 
-    protected abstract boolean replayEndpoint(NetEndpoint<UID> endpoint);
+    protected abstract boolean bindEndpoint(NetEndpoint<UID> endpoint);
 
     @Override
     public boolean open() {
         if (this.isClosed()) {
             return false;
         }
-        if (this.isAvailable()) {
+        if (this.isActive()) {
             return true;
         }
         synchronized (this) {
             if (this.isClosed()) {
                 return false;
             }
-            if (this.isAvailable()) {
+            if (this.isActive()) {
                 return true;
             }
             if (!this.onOpen()) {
                 return false;
             }
-            this.status = TunnelStatus.ACTIVATED;
+            this.status = TunnelStatus.OPEN;
+            this.onOpened();
         }
         buses().activateEvent().notify(this);
         return true;
     }
-    
+
     @Override
     public void disconnect() {
         NetEndpoint<UID> endpoint;
         synchronized (this) {
-            if (this.status == TunnelStatus.CLOSE || this.status == TunnelStatus.UNACTIVATED) {
+            if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
             }
             this.onDisconnect();
-            this.status = TunnelStatus.UNACTIVATED;
+            this.status = TunnelStatus.SUSPEND;
             endpoint = this.endpoint;
         }
         buses().unactivatedEvent().notify(this);
@@ -210,16 +211,17 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 
     @Override
     public void close() {
-        if (this.status == TunnelStatus.CLOSE) {
+        if (this.status == TunnelStatus.CLOSED) {
             return;
         }
         NetEndpoint<UID> endpoint;
         synchronized (this) {
-            if (this.status == TunnelStatus.CLOSE) {
+            if (this.status == TunnelStatus.CLOSED) {
                 return;
             }
             this.onClose();
-            this.status = TunnelStatus.CLOSE;
+            this.status = TunnelStatus.CLOSED;
+            this.onClosed();
             endpoint = this.endpoint;
         }
         buses().closeEvent().notify(this);
@@ -230,7 +232,11 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 
     protected abstract boolean onOpen();
 
+    protected abstract void onOpened();
+
     protected abstract void onClose();
+
+    protected abstract void onClosed();
 
     protected abstract void onDisconnect();
 

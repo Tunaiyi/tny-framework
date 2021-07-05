@@ -15,7 +15,7 @@ public interface NetTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
     boolean isAsyncConnect();
 
-    NetTransport<UID> connect();
+    Transporter<UID> connect();
 
     void reconnect();
 

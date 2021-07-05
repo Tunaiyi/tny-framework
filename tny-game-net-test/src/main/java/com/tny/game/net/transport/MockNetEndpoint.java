@@ -49,7 +49,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     //    }
 
     @Override
-    public Message newMessage(MessageContext<Long> context) {
+    public Message make(MessageContext<Long> context) {
         this.writeQueue.add(context);
         return null;
     }

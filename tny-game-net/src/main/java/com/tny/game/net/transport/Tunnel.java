@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Netter<UID> {
+public interface Tunnel<UID> extends Communicator<UID> {
 
     /**
      * @return 通道 Id
@@ -26,14 +26,14 @@ public interface Tunnel<UID> extends Netter<UID> {
     TunnelMode getMode();
 
     /**
-     * @return 是否可用
+     * @return 是否激活
      */
-    boolean isAvailable();
+    boolean isActive();
 
     /**
      * @return 是否已经开启
      */
-    boolean isActive();
+    boolean isOpen();
 
     /**
      * @return 获取 Tunnel 状态

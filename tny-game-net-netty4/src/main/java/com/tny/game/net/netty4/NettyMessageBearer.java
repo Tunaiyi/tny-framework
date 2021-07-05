@@ -13,7 +13,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/5/12 8:31 下午
  */
-class NettyMessageBearer<UID> implements Runnable {
+public class NettyMessageBearer<UID> implements Runnable {
 
     private final MessageMaker<UID> maker;
     private final MessageContext<UID> context;
@@ -35,7 +35,7 @@ class NettyMessageBearer<UID> implements Runnable {
                 return this.message;
             }
             if (this.context != null) {
-                this.message = this.maker.newMessage(this.context);
+                this.message = this.maker.make(this.context);
                 return this.message;
             }
         }

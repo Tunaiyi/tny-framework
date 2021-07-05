@@ -1,6 +1,5 @@
 package com.tny.game.suite.cluster;
 
-
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.suite.cluster.game.*;
@@ -32,25 +31,31 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node;
         switch (state) {
             case CREATE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = setLaunch(data.getServerId(), data, true);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, node.getServerId(), node);
+                }
                 break;
             case CHANGE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = this.setLaunch(data.getServerId(), data, false);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} 上线! {} ", path, data.getServerId(), node);
+                }
                 break;
             case DELETE:
-                if (old == null)
+                if (old == null) {
                     return;
+                }
                 node = this.removeLaunch(old.getServerId());
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} 下线! {}", path, old.getServerId(), node);
+                }
                 break;
         }
     };
@@ -59,25 +64,31 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node;
         switch (state) {
             case CREATE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = this.setOutline(data);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Outline 创建! {} ", path, data.getServerId(), node);
+                }
                 break;
             case CHANGE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = this.setOutline(data);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Outline 改变! {} ", path, data.getServerId(), node);
+                }
                 break;
             case DELETE:
-                if (old == null)
+                if (old == null) {
                     return;
+                }
                 node = removeOutline(old.getServerId());
-                if (node != null && this.LOGGER.isDebugEnabled())
+                if (node != null && this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Outline 删除!", path, old.getServerId());
+                }
                 break;
         }
     };
@@ -86,25 +97,31 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node;
         switch (state) {
             case CREATE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = this.setSetting(data.getServerId(), data, true);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Setting 创建! {} ", path, data.getServerId(), node);
+                }
                 break;
             case CHANGE:
-                if (data == null)
+                if (data == null) {
                     return;
+                }
                 node = this.setSetting(data.getServerId(), data, false);
-                if (this.LOGGER.isDebugEnabled())
+                if (this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Setting 改变! {} ", path, data.getServerId(), node);
+                }
                 break;
             case DELETE:
-                if (old == null)
+                if (old == null) {
                     return;
+                }
                 node = removeSetting(old.getServerId());
-                if (node != null && this.LOGGER.isDebugEnabled())
+                if (node != null && this.LOGGER.isDebugEnabled()) {
                     this.LOGGER.debug("path : {} | 服务器 {} Setting 删除!", path, old.getServerId());
+                }
                 break;
         }
     };
@@ -115,7 +132,6 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         // this.protoExSchemaLoader.prepareStart();
         this.monitor();
     }
-
 
     public ServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {
         this(serverType, watchSetting, false, Arrays.asList(monitorWebTypes));
@@ -128,7 +144,6 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
     public ServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices) {
         this(serverType, watchSetting, monitorAllServices, ImmutableList.of());
     }
-
 
     protected ServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices, Collection<String> monitorWebTypes) {
         super(monitorAllServices, monitorWebTypes);
@@ -144,14 +159,13 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
 
     public List<ServerNode> getValidServerNodes() {
         return this.nodeMap.values().stream()
-                           .filter(node -> node.isWork() && node.isInOpenDate() && node.getOutline() != null)
-                           .collect(Collectors.toList());
+                .filter(node -> node.isWork() && node.isInOpenDate() && node.getOutline() != null)
+                .collect(Collectors.toList());
     }
 
     public ServerNode getServerNode(int serverID) {
         return this.nodeMap.get(serverID);
     }
-
 
     @Override
     public void doMonitor() {
@@ -160,8 +174,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         this.remoteMonitor.createFullNode(ClusterUtils.GAMES_LAUNCH_PATH, this.NOTHING, CreateMode.PERSISTENT, false);
         this.remoteMonitor.monitorChildren(ClusterUtils.OUTLINE_LIST_PATH, this.outlineHandler);
         this.remoteMonitor.monitorChildren(ClusterUtils.GAMES_LAUNCH_PATH, this.launchHandler);
-        if (this.watchSetting)
+        if (this.watchSetting) {
             this.remoteMonitor.monitorChildren(ClusterUtils.SETTING_LIST_PATH, this.settingHandler);
+        }
 
         this.postWebMonitor();
     }
@@ -191,8 +206,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node = this.getServerNode(serverId);
         if (node != null) {
             ServerOutline outline = node.getOutline();
-            if (outline == null)
+            if (outline == null) {
                 return null;
+            }
             return outline.getFollowServer();
         }
         return null;
@@ -226,8 +242,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
 
     private ServerNode removeOutline(int serverID) {
         ServerNode node = this.nodeMap().remove(serverID);
-        if (node != null)
+        if (node != null) {
             postRemoveOutline(node);
+        }
         return node;
     }
 
@@ -235,8 +252,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setLaunch(launch);
-            if (launch != null)
+            if (launch != null) {
                 this.postUpdateLaunch(node, launch, create);
+            }
         }
         return node;
     }
@@ -250,7 +268,6 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         return node;
     }
 
-
     protected void updateSetting(ServerNode node, ServerSetting setting) {
         node.setSetting(setting);
     }
@@ -259,8 +276,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
         ServerNode node = this.getOrCreate(serverID);
         if (node != null) {
             node.setSetting(setting);
-            if (setting != null)
+            if (setting != null) {
                 this.postUpdateSetting(node, setting, create);
+            }
         }
         return node;
     }
@@ -310,15 +328,16 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
 
     public Optional<String> gameUrl(int serverID, String... paths) {
         ServerNode node = getServerNode(serverID);
-        if (node == null)
+        if (node == null) {
             return Optional.empty();
+        }
         return node.getPrivateConnector(AppURLPaths.HTTP_INSIDE)
-                   .map(c -> {
-                       StringBuilder urlBuilder = new StringBuilder().append("http://").append(c.getHost()).append(":").append(c.getPort());
-                       for (String path : paths)
-                           urlBuilder.append(path.startsWith("/") ? "" : "/").append(path);
-                       return urlBuilder.toString();
-                   });
+                .map(c -> {
+                    StringBuilder urlBuilder = new StringBuilder().append("http://").append(c.getHost()).append(":").append(c.getPort());
+                    for (String path : paths)
+                        urlBuilder.append(path.startsWith("/") ? "" : "/").append(path);
+                    return urlBuilder.toString();
+                });
     }
 
     public Optional<String> gameUrl(int serverID, AppURLPath path) {

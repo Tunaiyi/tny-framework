@@ -1,21 +1,21 @@
 package com.tny.game.common.runtime;
 
 import com.tny.game.common.utils.*;
-import org.slf4j.Logger;
+import org.slf4j.*;
 
 import java.util.*;
 
 public class RunChecker {
 
-    public static final Logger LOGGER = ProcessWatcher.LOGGER;
-
-    private static final ProcessWatcher WATCHER = ProcessWatcher.of(RunChecker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunChecker.class);
 
     private static final ThreadLocal<Map<Object, ProcessTracer>> TRACER_THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
 
     private static void doDone(ProcessTracer tracer) {
         TRACER_THREAD_LOCAL.get().remove(tracer.getId(), tracer);
     }
+
+    private static final ProcessWatcher DEFAULT_WATCHER = ProcessWatcher.getDefault();
 
     private static ProcessTracer doTrace(Object target, TrackPrintOption option, String message, Object... params) {
         Map<Object, ProcessTracer> counterMap = TRACER_THREAD_LOCAL.get();
@@ -24,9 +24,9 @@ public class RunChecker {
             LOGGER.warn("{} 任务没有结束!!", target);
         }
         if (StringAide.isNoneBlank(message)) {
-            tracer = WATCHER.trace(target.toString(), message, params);
+            tracer = DEFAULT_WATCHER.trace(target.toString(), message, params);
         } else {
-            tracer = WATCHER.trace(target.toString(), option);
+            tracer = DEFAULT_WATCHER.trace(target.toString(), option);
         }
         counterMap.put(target, tracer);
         return tracer.start(message, params);

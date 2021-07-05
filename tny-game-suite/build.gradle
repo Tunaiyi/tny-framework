@@ -28,6 +28,6 @@ dependencies {
     api project(":tny-game-cache-redis")
     api project(":tny-game-cache-mysql")
     api project(":tny-game-oplog-log4j")
-    api project(":tny-game-net-netty4-starter")
+    api project(":tny-game-starter-net-netty4")
 
 }

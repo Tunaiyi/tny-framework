@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class EndpointTest<E extends NetEndpoint<Long>> extends NetterTest<E> {
+public abstract class EndpointTest<E extends NetEndpoint<Long>> extends CommunicatorTest<E> {
 
     protected abstract EndpointTestInstance<E> create(Certificate<Long> certificate);
 

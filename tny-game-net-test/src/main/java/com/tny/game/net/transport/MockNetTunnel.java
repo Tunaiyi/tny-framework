@@ -7,8 +7,6 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.function.Supplier;
 
 /**
  * <p>
@@ -29,7 +27,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
         this.endpoint = endpoint;
-        this.state = TunnelStatus.ACTIVATED;
+        this.state = TunnelStatus.OPEN;
         this.mode = mode;
         this.context = new NetBootstrapContext<>();
     }
@@ -50,13 +48,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public boolean isAvailable() {
-        return this.state == TunnelStatus.ACTIVATED;
+    public boolean isActive() {
+        return this.state == TunnelStatus.OPEN;
     }
 
     @Override
-    public boolean isActive() {
-        return this.state == TunnelStatus.ACTIVATED;
+    public boolean isOpen() {
+        return this.state == TunnelStatus.OPEN;
     }
 
     @Override
@@ -96,13 +94,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     @Override
     public boolean open() {
-        this.state = TunnelStatus.ACTIVATED;
+        this.state = TunnelStatus.OPEN;
         return true;
     }
 
     @Override
     public void disconnect() {
-        this.state = TunnelStatus.UNACTIVATED;
+        this.state = TunnelStatus.SUSPEND;
         this.endpoint.onUnactivated(this);
     }
 
@@ -151,7 +149,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public void write(Supplier<Collection<Message>> messageSupplier) {
+    public void write(MessagesCollector collector) {
 
     }
 
@@ -177,13 +175,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     @Override
     public boolean isClosed() {
-        return this.state == TunnelStatus.CLOSE;
+        return this.state == TunnelStatus.CLOSED;
     }
 
     @Override
     public void close() {
         this.disconnect();
-        this.state = TunnelStatus.CLOSE;
+        this.state = TunnelStatus.CLOSED;
     }
 
     @Override

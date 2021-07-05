@@ -10,12 +10,6 @@ import com.tny.game.net.message.*;
 public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UID>, Sender<UID> {
 
     /**
-     * @return 获取绑定中断
-     */
-    @Override
-    NetEndpoint<UID> getEndpoint();
-
-    /**
      * 设置访问 Id
      *
      * @param accessId 访问 Id
@@ -73,6 +67,12 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
      * @return 获取启动器上下文
      */
     NetBootstrapContext<UID> getNetBootstrapContext();
+
+    /**
+     * @return 获取绑定中断
+     */
+    @Override
+    NetEndpoint<UID> getEndpoint();
 
 }
 

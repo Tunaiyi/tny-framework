@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
+public abstract class TunnelTest<T extends Tunnel<Long>> extends CommunicatorTest<T> {
 
     protected T createBindTunnel() {
         return this.createTunnel(createLoginCert());
@@ -45,7 +45,6 @@ public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
         assertNotNull(tunnel.attributes());
     }
 
-
     @Test
     public void isLogin() {
         T loginTunnel = createBindTunnel();
@@ -54,16 +53,16 @@ public abstract class TunnelTest<T extends Tunnel<Long>> extends NetterTest<T> {
         assertFalse(unloginTunnel.isLogin());
     }
 
-
     private void assertMessageMode(T tunnel, BiConsumer<T, MessageMode[]> setModes,
             BiPredicate<T, MessageMode> testMode, MessageMode... modes) {
         setModes.accept(tunnel, modes);
         List<MessageMode> expected = Arrays.asList(modes);
         for (MessageMode mode : modes) {
-            if (expected.contains(mode))
+            if (expected.contains(mode)) {
                 assertTrue(testMode.test(tunnel, mode));
-            else
+            } else {
                 assertFalse(testMode.test(tunnel, mode));
+            }
         }
     }
 

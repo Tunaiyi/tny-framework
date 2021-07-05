@@ -16,23 +16,23 @@ public enum TunnelStatus implements EnumIdentifiable<Integer> {
     INIT(1),
 
     /**
-     * 激活
+     * 连接
      **/
-    ACTIVATED(2),
+    OPEN(2),
 
     /**
-     * 未激活
+     * 挂起
      */
-    UNACTIVATED(3),
+    SUSPEND(3),
 
     /**
      * 关闭
      **/
-    CLOSE(4);
+    CLOSED(4);
 
     //
 
-    private int id;
+    private final int id;
 
     TunnelStatus(int id) {
         this.id = id;

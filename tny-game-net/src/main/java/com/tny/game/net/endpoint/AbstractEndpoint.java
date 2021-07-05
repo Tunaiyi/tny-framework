@@ -19,7 +19,7 @@ import static com.tny.game.net.endpoint.listener.EndpointEventBuses.*;
 /**
  * <p>
  */
-public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implements NetEndpoint<UID> {
+public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> implements NetEndpoint<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractEndpoint.class);
 
@@ -296,7 +296,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     }
 
     @Override
-    public Message newMessage(MessageContext<UID> context) {
+    public Message make(MessageContext<UID> context) {
         MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
         Message message = messageFactory.create(createMessageId(), context);
         this.tryCreateFuture(context);
@@ -409,7 +409,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractNetter<UID> implemen
     @Override
     public void heartbeat() {
         NetTunnel<UID> tunnel = currentTunnel();
-        if (tunnel.isActive()) {
+        if (tunnel.isOpen()) {
             tunnel.ping();
         }
     }

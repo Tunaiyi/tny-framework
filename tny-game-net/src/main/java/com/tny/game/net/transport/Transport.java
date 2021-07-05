@@ -4,9 +4,6 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 
-import java.util.Collection;
-import java.util.function.Supplier;
-
 /**
  * <p>
  *
@@ -36,7 +33,7 @@ public interface Transport<UID> {
     /**
      * 批量写出
      */
-    void write(Supplier<Collection<Message>> messageSupplier);
+    void write(MessagesCollector collector);
 
     /**
      * 创建写出Promise

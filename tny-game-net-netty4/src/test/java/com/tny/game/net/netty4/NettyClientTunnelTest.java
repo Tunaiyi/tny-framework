@@ -17,8 +17,9 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     private static final int LOGIN_TIMEOUT = 100;
     private static final int RESEND_TIMES = 130;
 
-    private URL url = URL.valueOf(StringAide.format("proto://127.0.0.1:9900?connect_timeout={}&send_timeout={}&login_timeout={}&resend_times={}",
-            CONNECT_TIMEOUT, SEND_TIMEOUT, LOGIN_TIMEOUT, RESEND_TIMES));
+    private final URL url = URL
+            .valueOf(StringAide.format("proto://127.0.0.1:9900?connect_timeout={}&send_timeout={}&login_timeout={}&resend_times={}",
+                    CONNECT_TIMEOUT, SEND_TIMEOUT, LOGIN_TIMEOUT, RESEND_TIMES));
 
     @Override
     protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate<Long> certificate, boolean open) {
@@ -47,7 +48,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
     @Override
     protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
-        return (EmbeddedChannel)((NettyChannelTransport<?>)tunnel.getTransport()).getChannel();
+        return (EmbeddedChannel)((NettyChannelTransporter<?>)tunnel.getTransporter()).getChannel();
     }
 
     // @Override

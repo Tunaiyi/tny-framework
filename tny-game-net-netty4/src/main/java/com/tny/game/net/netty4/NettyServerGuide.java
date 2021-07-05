@@ -134,14 +134,13 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
                 @Override
                 protected void initChannel(Channel channel) throws Exception {
                     ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
-                    if (NettyServerGuide.this.channelMaker != null) {
-                        NettyServerGuide.this.channelMaker.initChannel(channel);
+                    if (maker != null) {
+                        maker.initChannel(channel);
                     }
                     channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
                     NetBootstrapContext<Object> context = NettyServerGuide.this.getContext();
-                    NetTransport<Object> transport = new NettyChannelTransport<>(channel);
-                    NetTunnel<Object> tunnel = new GeneralServerTunnel<>(transport, context);
-                    // channel.attr(NettyAttrKeys.TUNNEL).set(tunnel); // 创建 Tunnel 已经transport.bind
+                    Transporter<Object> transport = new NettyChannelTransporter<>(channel);
+                    NetTunnel<Object> tunnel = new GeneralServerTunnel<>(transport, context); // 创建 Tunnel 已经transport.bind
                     AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(context);
                     tunnel.bind(endpoint);
                     tunnel.open();

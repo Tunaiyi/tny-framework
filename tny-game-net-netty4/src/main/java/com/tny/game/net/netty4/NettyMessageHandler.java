@@ -31,7 +31,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         if (LOG.isInfoEnabled()) {
             Channel channel = ctx.channel();
-            LOG.info("接受连接##通道 {} ==> {} 在 {} 时链接服务器", channel.remoteAddress(), channel.localAddress(), new Date());
+            LOG.info("[Tunnel] 接受连接##通道 {} ==> {} 在 {} 时链接服务器", channel.remoteAddress(), channel.localAddress(), new Date());
         }
         super.channelRegistered(ctx);
     }
@@ -45,9 +45,9 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             } else if (cause instanceof IOException) {
                 LOG.warn(this.getClass().getName() + " # java.io.IOException #" + cause.getMessage());
             } else if (cause instanceof WriteTimeoutException) {
-                LOG.info("{}##通道 {} ==> {} 在 {} 时断开链接", "写出数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
+                LOG.info("[Tunnel] {}##通道 {} ==> {} 在 {} 时断开链接", "写出数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
             } else if (cause instanceof ReadTimeoutException) {
-                LOG.info("{}##通道 {} ==> {} 在 {} 时断开链接", "读取数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
+                LOG.info("[Tunnel] {}##通道 {} ==> {} 在 {} 时断开链接", "读取数据超时", channel.remoteAddress(), channel.localAddress(), new Date());
             } else {
                 LOG.warn(this.getClass().getName() + ".exceptionCaught() 截获异常 : ", cause.getCause());
             }
@@ -56,7 +56,6 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void channelRead(ChannelHandlerContext context, Object object) {
         Channel channel = context.channel();
         if (object == null) {
@@ -69,7 +68,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 NetMessage message = as(object);
                 traceDone(NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR, message);
                 trace(NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR, message);
-                NetTunnel<Object> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+                NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
                 if (tunnel != null) {
                     tunnel.receive(message);
                 }
@@ -95,7 +94,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
+                LOG.info("[Tunnel] 断开链接##通道 {} ==> {} 在 {} 时断开链接", channel.remoteAddress(), channel.localAddress(), new Date());
             }
             if (tunnel.getMode() == TunnelMode.SERVER) {
                 tunnel.close();
@@ -124,7 +123,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                     default:
                         break;
                 }
-                LOG.info("{}##通道 {} ==> {} 在 {} 时开始断开链接", op, channel.remoteAddress(), channel.localAddress(), new Date());
+                LOG.info("[Tunnel] {}##通道 {} ==> {} 在 {} 时开始断开链接", op, channel.remoteAddress(), channel.localAddress(), new Date());
             }
             ctx.close();
         }

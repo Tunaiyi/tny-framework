@@ -112,9 +112,9 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
     }
 
     @Override
-    public NetTransport<UID> connect() throws NetException {
+    public Transporter<UID> connect() throws NetException {
         Channel channel = this.guide.connect(this.url, getConnectTimeout());
-        return new NettyChannelTransport<>(channel);
+        return new NettyChannelTransporter<>(channel);
     }
 
     @Override
