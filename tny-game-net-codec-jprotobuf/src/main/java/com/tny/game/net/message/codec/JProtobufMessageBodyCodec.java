@@ -34,13 +34,11 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
 
     @Override
     public T decode(byte[] bytes) throws Exception {
-        System.out.println("decode ======> " + bytes.length);
         ProtoExInputStream input = new ProtoExInputStream(bytes);
         List<Object> paramList = null;
         Object body = null;
         while (input.hasRemaining()) {
             byte option = input.readByte();
-            System.out.println("doDecode option ======> " + option);
             if ((option & PROTOBUF_MESSAGE_PARAMS) != 0 && paramList == null) {
                 paramList = new ArrayList<>();
                 body = new MessageParamList(paramList);
@@ -81,7 +79,6 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
             doEncode(output, object, false);
         }
         byte[] data = output.toByteArray();
-        System.out.println("encode ======> " + data.length);
         return data;
     }
 
@@ -92,7 +89,6 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
             return;
         }
         ProtobufRawType rawType = ProtobufRawType.ofObject(object);
-        System.out.println("doEncode option ======> " + (byte)(option | rawType.option()));
         output.writeByte((byte)(option | rawType.option()));
         if (rawType.isHasValueWriter()) {
             rawType.writeValue(output, object);
