@@ -17,6 +17,7 @@ pluginManagement {
 
 rootProject.name = 'tny-framework'
 
+include 'tny-game-bom'
 include 'tny-game-common-lang'
 include 'tny-game-common-base'
 include 'tny-game-common-reflect'

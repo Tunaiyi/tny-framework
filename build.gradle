@@ -10,6 +10,8 @@ apply from: "${rootDir}/gradle/git.gradle"
 
 ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
+    moduleProjects = moduleProjects - project(":tny-game-bom")
+    javaProjects = subprojects - project(":tny-game-bom")
 //    moduleProjects = moduleProjects - project(":tny-game-bom")
 }
 
