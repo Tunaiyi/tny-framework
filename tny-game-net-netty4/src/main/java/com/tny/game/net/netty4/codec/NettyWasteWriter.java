@@ -14,37 +14,37 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class NettyWasteWriter extends NettyBytesWaster {
 
-    public NettyWasteWriter(DataPackager packager, DataPacketV1Config config) {
+    public NettyWasteWriter(DataPackageContext packager, DataPacketV1Config config) {
         super(packager, config.isWasteBytesEnable(), config);
     }
 
-
     public void write(ByteBuf wasteBuffer, byte[] data) {
-        for (int index = 0; index < fullWasteByteSize; index++) {
+        for (int index = 0; index < this.fullWasteByteSize; index++) {
             wasteBuffer.writeByte(getWasteByte());
         }
-        if (rightShiftBits > 0) {
+        if (this.rightShiftBits > 0) {
             byte firstByte = getWasteByte();
-            firstByte = (byte) ((firstByte & 0xff) << leftShiftBits);
+            firstByte = (byte)((firstByte & 0xff) << this.leftShiftBits);
             wasteBuffer.writeByte(firstByte);
-            int leftShiftBits = 8 - rightShiftBits;
+            int leftShiftBits = 8 - this.rightShiftBits;
             for (int index = 0; index < data.length; index++) {
                 if (index == 0) {
-                    firstByte = (byte) ((firstByte & 0xff) << leftShiftBits);
-                    firstByte = (byte) (firstByte | (byte) ((data[index] & 0xff) >>> rightShiftBits));
+                    firstByte = (byte)((firstByte & 0xff) << leftShiftBits);
+                    firstByte = (byte)(firstByte | (byte)((data[index] & 0xff) >>> this.rightShiftBits));
                     wasteBuffer.setByte(wasteBuffer.writerIndex() - 1, firstByte);
                 } else {
                     byte value = data[index - 1];
-                    value = (byte) ((value & 0xff) << leftShiftBits);
-                    value = (byte) (value | (byte) ((data[index] & 0xff) >>> rightShiftBits));
+                    value = (byte)((value & 0xff) << leftShiftBits);
+                    value = (byte)(value | (byte)((data[index] & 0xff) >>> this.rightShiftBits));
                     wasteBuffer.writeByte(value);
                 }
             }
             byte value = 0;
-            if (data.length > 0)
-                value = (byte) (((data[data.length - 1] & 0xff) << leftShiftBits));
+            if (data.length > 0) {
+                value = (byte)(((data[data.length - 1] & 0xff) << leftShiftBits));
+            }
             byte compliant = getWasteByte();
-            value = (byte) (value | (byte) ((compliant & 0xff) >>> rightShiftBits));
+            value = (byte)(value | (byte)((compliant & 0xff) >>> this.rightShiftBits));
             wasteBuffer.writeByte(value);
         } else {
             wasteBuffer.writeBytes(data);
@@ -55,7 +55,7 @@ public class NettyWasteWriter extends NettyBytesWaster {
      * @return 获取废字节
      */
     private byte getWasteByte() {
-        return (byte) ThreadLocalRandom.current().nextInt();
+        return (byte)ThreadLocalRandom.current().nextInt();
     }
 
 }

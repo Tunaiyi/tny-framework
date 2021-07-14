@@ -11,11 +11,11 @@ import com.tny.game.net.message.*;
  */
 public class TestMessagePack {
 
-    private RequestContext<Long> context;
+    private RequestContext context;
     private NetMessage message;
 
-    public TestMessagePack(MessageContext<Long> context, NetMessage message) {
-        this.context = (RequestContext<Long>)context;
+    public TestMessagePack(MessageContext context, NetMessage message) {
+        this.context = (RequestContext)context;
         this.message = message;
     }
 
@@ -23,11 +23,11 @@ public class TestMessagePack {
         return this.message;
     }
 
-    public MessageContext<Long> getContext() {
+    public MessageContext getContext() {
         return this.context;
     }
 
-    public RequestContext<Long> getRequestContext() {
+    public RequestContext getRequestContext() {
         return this.context;
     }
 

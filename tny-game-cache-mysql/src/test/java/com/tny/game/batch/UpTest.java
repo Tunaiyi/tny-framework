@@ -1,15 +1,15 @@
 package com.tny.game.batch;
 
 import com.tny.game.common.runtime.*;
-import org.junit.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 import java.util.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class UpTest {
 
@@ -23,7 +23,7 @@ public class UpTest {
 
     //	private static final int size = 10;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
         for (int index = 0; index < size; index++) {
             ids.add(index);
@@ -32,11 +32,11 @@ public class UpTest {
         objects.add(new UpObject(0));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.dao.flushAll();
         //		RunningChecker.start("insert");

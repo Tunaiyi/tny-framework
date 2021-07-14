@@ -10,6 +10,6 @@ import com.tny.game.net.message.*;
  */
 public interface MessageMaker<UID> {
 
-    Message make(MessageContext<UID> context);
+    Message make(MessageContext context);
 
 }

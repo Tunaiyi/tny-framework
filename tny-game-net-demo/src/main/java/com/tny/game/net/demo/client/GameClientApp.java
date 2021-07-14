@@ -53,8 +53,8 @@ public class GameClientApp {
                 tunnel.setAccessId(4000);
                 String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
                 System.out.println("!!@   [发送] 请求 = " + message);
-                SendContext<Long> context = tunnel
-                        .send(MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
+                SendContext context = tunnel
+                        .send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
                                 .willWriteFuture(30000L)
                                 .willResponseFuture(30000L));
                 try {
@@ -67,7 +67,7 @@ public class GameClientApp {
                 return true;
             });
             application.waitForConsole("q", (cmd, cmds) -> {
-                if (cmd.startsWith("@t")) {
+                if (cmd.startsWith("@t ")) {
                     if (cmds.length > 4) {
                         int totalTimes = Integer.parseInt(cmds[1]);
                         int stepTimes = Integer.parseInt(cmds[2]);
@@ -93,10 +93,13 @@ public class GameClientApp {
                             }
                         }, delay, TimeUnit.MILLISECONDS);
                     }
-                } else if (cmd.startsWith("@delay")) {
+                } else if (cmd.startsWith("@delay ")) {
                     String message = cmds[1];
                     long delay = Long.parseLong(cmds[2]);
-                    send(client, ProtocolAide.protocol(CtrlerIDs.LOGIN$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
+                    send(client, Protocols.protocol(CtrlerIDs.LOGIN$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
+                } else if (cmd.startsWith("@test ")) {
+                    String message = cmds[1];
+                    test(client, message, true);
                 } else {
                     send(client, cmd, true);
                 }
@@ -109,9 +112,9 @@ public class GameClientApp {
     }
 
     private static <T> T send(Client<Long> client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
-        RequestContext<Long> messageContent = MessageContexts.requestParams(protocol, params);
+        RequestContext messageContent = MessageContexts.requestParams(protocol, params);
         if (waitTimeout > 0) {
-            SendContext<Long> context = client.send(messageContent
+            SendContext context = client.send(messageContent
                     .willResponseFuture(waitTimeout)
                     .willWriteFuture(300000L));
             try {
@@ -130,9 +133,33 @@ public class GameClientApp {
     }
 
     private static void send(Client<Long> client, String content, boolean wait) {
-        RequestContext<Long> messageContent = MessageContexts.<Long>requestParams(ProtocolAide.protocol(CtrlerIDs.LOGIN$SAY), content);
+        RequestContext messageContent = MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$SAY), content);
         if (wait) {
-            SendContext<Long> context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
+            SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
+            try {
+                Message message = context.getRespondFuture().get();
+                LOGGER.info("Client receive : {}", message.getBody(SayContentDTO.class));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            client.send(messageContent);
+        }
+    }
+
+    private static void test(Client<Long> client, String content, boolean wait) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIDs.LOGIN$TEST),
+                (byte)random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
+                (short)random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
+                random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE),
+                random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
+                random.nextFloat(),
+                random.nextDouble(Double.MIN_VALUE, Double.MAX_VALUE),
+                random.nextInt(2) == 1,
+                content);
+        if (wait) {
+            SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
             try {
                 Message message = context.getRespondFuture().get();
                 LOGGER.info("Client receive : {}", message.getBody(SayContentDTO.class));

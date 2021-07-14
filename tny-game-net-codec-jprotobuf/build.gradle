@@ -1,0 +1,11 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api project(":tny-game-net")
+
+    api libs.jprotobuf
+
+}

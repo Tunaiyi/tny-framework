@@ -144,7 +144,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public WriteMessageFuture write(MessageMaker<Long> maker, MessageContext<Long> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<Long> maker, MessageContext context) throws NetException {
         return null;
     }
 
@@ -190,7 +190,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public SendContext<Long> send(MessageContext<Long> messageContext) {
+    public SendContext send(MessageContext messageContext) {
         return this.endpoint.send(this, messageContext);
     }
 

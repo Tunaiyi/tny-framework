@@ -28,7 +28,7 @@ public interface Transport<UID> {
      * @param context 发送消息
      * @throws NetException
      */
-    WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException;
+    WriteMessageFuture write(MessageMaker<UID> maker, MessageContext context) throws NetException;
 
     /**
      * 批量写出

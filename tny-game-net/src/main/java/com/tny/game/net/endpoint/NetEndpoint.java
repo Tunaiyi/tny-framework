@@ -25,7 +25,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageMaker<UID>, Sent
      * @param messageContext 发送消息上下文
      * @return 返回发送上下文
      */
-    SendContext<UID> send(NetTunnel<UID> tunnel, MessageContext<UID> messageContext);
+    SendContext send(NetTunnel<UID> tunnel, MessageContext messageContext);
 
     /**
      * 使用指定认证登陆
@@ -47,7 +47,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageMaker<UID>, Sent
      * @param tunnel  管道
      * @param context 消息内容
      */
-    void writeMessage(NetTunnel<UID> tunnel, MessageContext<UID> context);
+    void writeMessage(NetTunnel<UID> tunnel, MessageContext context);
 
     /**
      * @return 获取RespondFuture管理器

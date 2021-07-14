@@ -4,6 +4,8 @@ apply plugin: "maven"
 
 dependencies {
 
+    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+    
     api libs.druid
     api libs.guava
     api libs.spring_boot_autoconfigure

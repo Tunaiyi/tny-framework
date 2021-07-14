@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.net.message.coder.*;
+import com.tny.game.net.message.codec.*;
 
 public enum MessageMode {
 
@@ -22,12 +22,12 @@ public enum MessageMode {
     /**
      * PING
      */
-    PING(MessageType.PING, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_EMPTY),
+    PING(MessageType.PING, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PING),
 
     /**
      * PONG
      */
-    PONG(MessageType.PONE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_EMPTY),
+    PONG(MessageType.PONE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PONG),
 
     //
     ;

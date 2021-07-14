@@ -3,21 +3,29 @@ tny:
     name: GameClientApp
     app-type: game
     scope-type: online
-    scan-packages: com.tny.game.net.demo,com.tny.game.net,com.tny.game.starter
+    base-packages: com.tny.game.net.demo,com.tny.game.net,com.tny.game.starter
   net:
     client:
-      game-client:
-        channel:
-          idle-timeout: 360000
-        encoder:
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-        decoder:
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-    command-task-processor:
-      default:
-        class: com.tny.game.net.command.processor.ForkJoinEndpointCommandTaskProcessor
-        threads: 4
+      channel-maker:
+        properties:
+          idleTimeout: 360000
+      encoder:
+        body-codec: JProtobufMessageBodyCodec
+        security-keys:
+          - abcdefghijklmn
+          - opqrstuvwxyz
+      decoder:
+        body-codec: JProtobufMessageBodyCodec
+        security-keys:
+          - abcdefghijklmn
+          - opqrstuvwxyz
+    command:
+      processor:
+        disruptor:
+          setting:
+            enable: true
+            wait-strategy: blocking
+            threads: 4
+
+
+

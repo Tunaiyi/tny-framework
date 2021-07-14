@@ -1,7 +1,7 @@
 package com.tny.game.common.config;
 
 import com.tny.game.common.collection.map.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -92,7 +92,7 @@ public class ConfigTest {
             .put(FIND_TEST_KEY, FIND_TEST_VALUE)
             .build();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.config = new PropertiesConfig(this.map);
     }

@@ -5,7 +5,7 @@ import com.tny.game.actor.stage.*;
 import com.tny.game.actor.stage.invok.*;
 import com.tny.game.common.result.*;
 import org.jmock.Expectations;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;

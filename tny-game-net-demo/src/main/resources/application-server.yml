@@ -3,27 +3,33 @@ tny:
     name: GameServerApp
     app-type: game
     scope-type: game
-    scan-packages: com.tny.game.net.demo,com.tny.game.net.common,com.tny.game.starter
+    base-packages: [ com.tny.game.net.demo, com.tny.game.net.common, com.tny.game.starter ]
   net:
     server:
-      game-server:
-        bind: 127.0.0.1:16800,127.0.0.1:16801
-        event-handler: test-event-handler
-        channel:
-          idle-timeout: 360000
-        encoder:
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-        decoder:
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-    command-task-processor:
-      default:
-        waitStrategy: BLOCKING
-        threads: 4
-    session:
-      user:
+      name: game-server
+      bind: 127.0.0.1:16800,127.0.0.1:16801
+      channel-maker:
+        properties:
+          idleTimeout: 360000
+      encoder:
+        body-codec: JProtobufMessageBodyCodec
+        security-keys:
+          - abcdefghijklmn
+          - opqrstuvwxyz
+      decoder:
+        body-codec: JProtobufMessageBodyCodec
+        security-keys:
+          - abcdefghijklmn
+          - opqrstuvwxyz
+    command:
+      processor:
+        disruptor:
+          setting:
+            enable: true
+            wait-strategy: blocking
+            threads: 4
+    endpoint:
+      session-keeper:
+        name: user
         offline-close-delay: 1000
         offline-max-size: 1000

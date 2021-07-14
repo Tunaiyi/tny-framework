@@ -1,7 +1,7 @@
 package com.tny.game.suite.utils;
 
 import com.tny.game.common.utils.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.concurrent.*;

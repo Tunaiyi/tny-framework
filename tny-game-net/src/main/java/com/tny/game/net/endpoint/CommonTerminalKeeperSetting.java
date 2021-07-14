@@ -6,6 +6,7 @@ package com.tny.game.net.endpoint;
 public class CommonTerminalKeeperSetting implements TerminalKeeperSetting {
 
     private String name;
+    
     private String keeperFactory = "default" + TerminalKeeperFactory.class.getSimpleName();
 
     @Override

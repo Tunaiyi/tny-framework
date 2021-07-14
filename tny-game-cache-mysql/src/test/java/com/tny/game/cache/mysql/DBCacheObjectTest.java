@@ -3,14 +3,14 @@ package com.tny.game.cache.mysql;
 import com.tny.game.cache.*;
 import com.tny.game.cache.mysql.dao.*;
 import com.tny.game.cache.testclass.*;
-import org.junit.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class DBCacheObjectTest {
 
@@ -22,7 +22,7 @@ public class DBCacheObjectTest {
 
     private CacheTestTask task;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.task = new CacheTestTask(this.cache) {
             @Override

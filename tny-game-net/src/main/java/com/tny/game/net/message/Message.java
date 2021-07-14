@@ -12,11 +12,12 @@ import java.io.Serializable;
  * @date: 2018/8/31 下午10:23
  */
 
-public interface Message extends Serializable, MessageContent {
+public interface Message extends Serializable, MessageContent, MessageHead {
 
     /**
      * @return 获取消息 ID
      */
+    @Override
     default long getId() {
         return this.getHead().getId();
     }
@@ -51,6 +52,11 @@ public interface Message extends Serializable, MessageContent {
     @Override
     default int getProtocolId() {
         return getHead().getProtocolId();
+    }
+
+    @Override
+    default long getTime() {
+        return getHead().getTime();
     }
 
     /**

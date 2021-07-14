@@ -4,29 +4,32 @@ import com.tny.game.common.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.coder.*;
+import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.protoex.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.MessageType.*;
-import static com.tny.game.net.message.coder.CodecConstants.*;
+import static com.tny.game.net.message.codec.CodecConstants.*;
 
 @Unit
-public class DefaultMessageCodec<UID> implements MessageCodec<UID> {
+public class DefaultMessageCodec implements MessageCodec {
 
-    private final Codec<?> bodyCoder;
+    private final MessageBodyCodec<?> bodyCoder;
     //    private final Codec<?> tailCoder;
     private final DecodeStrategy bodyDecodeStrategy;
 
-    public DefaultMessageCodec(Codec<?> bodyCoder, Codec<?> tailCoder, DecodeStrategy bodyDecodeStrategy) {
+    public DefaultMessageCodec(MessageBodyCodec<?> bodyCoder) {
+        this(bodyCoder, null);
+    }
+
+    public DefaultMessageCodec(MessageBodyCodec<?> bodyCoder, DecodeStrategy bodyDecodeStrategy) {
         this.bodyCoder = bodyCoder;
-        //        this.tailCoder = tailCoder;
         this.bodyDecodeStrategy = ObjectAide.ifNull(bodyDecodeStrategy, DecodeStrategy.DECODE_ALL_STRATEGY);
     }
 
     @Override
-    public Message decode(byte[] bytes, MessageFactory<UID> messageFactory) throws Exception {
+    public Message decode(byte[] bytes, MessageFactory messageFactory) throws Exception {
         ProtoExInputStream stream = new ProtoExInputStream(bytes);
         long id = stream.readLong();
         byte option = stream.getBuffer().get();
@@ -88,7 +91,7 @@ public class DefaultMessageCodec<UID> implements MessageCodec<UID> {
         return stream.toByteArray();
     }
 
-    private void writeObject(ProtoExOutputStream stream, Object object, Codec<?> coder) throws Exception {
+    private void writeObject(ProtoExOutputStream stream, Object object, MessageBodyCodec<?> coder) throws Exception {
         if (object instanceof byte[]) {
             stream.writeBytes((byte[])object);
         } else if (object instanceof BodyBytes) {

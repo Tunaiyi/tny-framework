@@ -13,97 +13,139 @@ public class BytesAide {
     public static final Logger LOGGER = LoggerFactory.getLogger(BytesAide.class);
 
     public static long bytes2Long(byte[] data, int startAt) {
-        return (((long) data[startAt] & 0xff))
-               | (((long) data[startAt + 1] & 0xff) << 8)
-               | (((long) data[startAt + 2] & 0xff) << 16)
-               | (((long) data[startAt + 3] & 0xff) << 24)
-               | (((long) data[startAt + 4] & 0xff) << 32)
-               | (((long) data[startAt + 5] & 0xff) << 40)
-               | (((long) data[startAt + 6] & 0xff) << 48)
-               | (((long) data[startAt + 7] & 0xff) << 56);
+        return (((long)data[startAt] & 0xff))
+                | (((long)data[startAt + 1] & 0xff) << 8)
+                | (((long)data[startAt + 2] & 0xff) << 16)
+                | (((long)data[startAt + 3] & 0xff) << 24)
+                | (((long)data[startAt + 4] & 0xff) << 32)
+                | (((long)data[startAt + 5] & 0xff) << 40)
+                | (((long)data[startAt + 6] & 0xff) << 48)
+                | (((long)data[startAt + 7] & 0xff) << 56);
     }
 
     public static byte[] long2Bytes(long value, byte[] target, int startAt) {
-        target[startAt] = ((byte) (value & 0xFF));
-        target[startAt + 1] = ((byte) (value >> 8 & 0xFF));
-        target[startAt + 2] = ((byte) (value >> 16 & 0xFF));
-        target[startAt + 3] = ((byte) (value >> 24 & 0xFF));
-        target[startAt + 4] = ((byte) (value >> 32 & 0xFF));
-        target[startAt + 5] = ((byte) (value >> 40 & 0xFF));
-        target[startAt + 6] = ((byte) (value >> 48 & 0xFF));
-        target[startAt + 7] = ((byte) (value >> 56 & 0xFF));
+        target[startAt] = ((byte)(value & 0xFF));
+        target[startAt + 1] = ((byte)(value >> 8 & 0xFF));
+        target[startAt + 2] = ((byte)(value >> 16 & 0xFF));
+        target[startAt + 3] = ((byte)(value >> 24 & 0xFF));
+        target[startAt + 4] = ((byte)(value >> 32 & 0xFF));
+        target[startAt + 5] = ((byte)(value >> 40 & 0xFF));
+        target[startAt + 6] = ((byte)(value >> 48 & 0xFF));
+        target[startAt + 7] = ((byte)(value >> 56 & 0xFF));
         return target;
     }
 
     public static int bytes2Int(byte[] data, int startAt) {
-        return (((int) data[startAt] & 0xff))
-               | (((int) data[startAt + 1] & 0xff) << 8)
-               | (((int) data[startAt + 2] & 0xff) << 16)
-               | (((int) data[startAt + 3] & 0xff) << 24);
+        return (((int)data[startAt] & 0xff))
+                | (((int)data[startAt + 1] & 0xff) << 8)
+                | (((int)data[startAt + 2] & 0xff) << 16)
+                | (((int)data[startAt + 3] & 0xff) << 24);
     }
 
     public static byte[] int2Bytes(int value, byte[] target, int startAt) {
-        target[startAt] = ((byte) (value & 0xFF));
-        target[startAt + 1] = ((byte) (value >> 8 & 0xFF));
-        target[startAt + 2] = ((byte) (value >> 16 & 0xFF));
-        target[startAt + 3] = ((byte) (value >> 24 & 0xFF));
+        target[startAt] = ((byte)(value & 0xFF));
+        target[startAt + 1] = ((byte)(value >> 8 & 0xFF));
+        target[startAt + 2] = ((byte)(value >> 16 & 0xFF));
+        target[startAt + 3] = ((byte)(value >> 24 & 0xFF));
         return target;
     }
 
     public static long bytes2Long(byte[] data) {
-        return (((long) data[0] & 0xff))
-               | (((long) data[1] & 0xff) << 8)
-               | (((long) data[2] & 0xff) << 16)
-               | (((long) data[3] & 0xff) << 24)
-               | (((long) data[4] & 0xff) << 32)
-               | (((long) data[5] & 0xff) << 40)
-               | (((long) data[6] & 0xff) << 48)
-               | (((long) data[7] & 0xff) << 56);
+        switch (data.length) {
+            case 1:
+                return (((long)data[0] & 0xff));
+            case 2:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8);
+            case 3:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8)
+                        | (((long)data[2] & 0xff) << 16);
+            case 4:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8)
+                        | (((long)data[2] & 0xff) << 16)
+                        | (((long)data[3] & 0xff) << 24)
+                        | (((long)data[4] & 0xff) << 32);
+            case 5:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8)
+                        | (((long)data[2] & 0xff) << 16)
+                        | (((long)data[3] & 0xff) << 24)
+                        | (((long)data[4] & 0xff) << 32)
+                        | (((long)data[5] & 0xff) << 40);
+            case 6:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8)
+                        | (((long)data[2] & 0xff) << 16)
+                        | (((long)data[3] & 0xff) << 24)
+                        | (((long)data[4] & 0xff) << 32)
+                        | (((long)data[5] & 0xff) << 40)
+                        | (((long)data[6] & 0xff) << 48);
+            default:
+                return (((long)data[0] & 0xff))
+                        | (((long)data[1] & 0xff) << 8)
+                        | (((long)data[2] & 0xff) << 16)
+                        | (((long)data[3] & 0xff) << 24)
+                        | (((long)data[4] & 0xff) << 32)
+                        | (((long)data[5] & 0xff) << 40)
+                        | (((long)data[6] & 0xff) << 48)
+                        | (((long)data[7] & 0xff) << 56);
+        }
     }
 
     public static byte[] long2Bytes(long value) {
         byte[] data = new byte[8];
-        data[0] = ((byte) (value & 0xFF));
-        data[1] = ((byte) (value >> 8 & 0xFF));
-        data[2] = ((byte) (value >> 16 & 0xFF));
-        data[3] = ((byte) (value >> 24 & 0xFF));
-        data[4] = ((byte) (value >> 32 & 0xFF));
-        data[5] = ((byte) (value >> 40 & 0xFF));
-        data[6] = ((byte) (value >> 48 & 0xFF));
-        data[7] = ((byte) (value >> 56 & 0xFF));
+        data[0] = ((byte)(value & 0xFF));
+        data[1] = ((byte)(value >> 8 & 0xFF));
+        data[2] = ((byte)(value >> 16 & 0xFF));
+        data[3] = ((byte)(value >> 24 & 0xFF));
+        data[4] = ((byte)(value >> 32 & 0xFF));
+        data[5] = ((byte)(value >> 40 & 0xFF));
+        data[6] = ((byte)(value >> 48 & 0xFF));
+        data[7] = ((byte)(value >> 56 & 0xFF));
         return data;
     }
 
     public static int bytes2Int(byte[] data) {
-        return (((int) data[0] & 0xff))
-               | (((int) data[1] & 0xff) << 8)
-               | (((int) data[2] & 0xff) << 16)
-               | (((int) data[3] & 0xff) << 24);
+        switch (data.length) {
+            case 1:
+                return (((int)data[0] & 0xff));
+            case 2:
+                return (((int)data[0] & 0xff))
+                        | (((int)data[1] & 0xff) << 8);
+            case 3:
+                return (((int)data[0] & 0xff))
+                        | (((int)data[1] & 0xff) << 8)
+                        | (((int)data[2] & 0xff) << 16);
+            default:
+                return (((int)data[0] & 0xff))
+                        | (((int)data[1] & 0xff) << 8)
+                        | (((int)data[2] & 0xff) << 16)
+                        | (((int)data[3] & 0xff) << 24);
+        }
     }
 
     public static byte[] int2Bytes(int value) {
         byte[] data = new byte[4];
-        data[0] = ((byte) (value & 0xFF));
-        data[1] = ((byte) (value >> 8 & 0xFF));
-        data[2] = ((byte) (value >> 16 & 0xFF));
-        data[3] = ((byte) (value >> 24 & 0xFF));
+        data[0] = ((byte)(value & 0xFF));
+        data[1] = ((byte)(value >> 8 & 0xFF));
+        data[2] = ((byte)(value >> 16 & 0xFF));
+        data[3] = ((byte)(value >> 24 & 0xFF));
         return data;
     }
 
     /**
      * Convert short to byte array.
      *
-     * @param number
+     * @param value
      * @return
      */
-    public static byte[] short2Bytes(short number) {
-        int temp = number;
-        byte[] b = new byte[2];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = Integer.valueOf(temp & 0xff).byteValue();
-            temp = temp >> 8;
-        }
-        return b;
+    public static byte[] short2Bytes(long value) {
+        byte[] data = new byte[2];
+        data[0] = ((byte)(value & 0xFF));
+        data[1] = ((byte)(value >> 8 & 0xFF));
+        return data;
     }
 
     /**
@@ -114,10 +156,10 @@ public class BytesAide {
      */
     public static short bytes2Short(byte[] b) {
         short s = 0;
-        short s0 = (short) (b[0] & 0xff);
-        short s1 = (short) (b[1] & 0xff);
+        short s0 = (short)(b[0] & 0xff);
+        short s1 = (short)(b[1] & 0xff);
         s1 <<= 8;
-        s = (short) (s0 | s1);
+        s = (short)(s0 | s1);
         return s;
     }
 
@@ -199,8 +241,9 @@ public class BytesAide {
                 }
             }
             int separatorLength = separator.length();
-            if (separatorLength > 0)
+            if (separatorLength > 0) {
                 bodyBinary.append(separator);
+            }
             index += (separatorLength + 8);
         }
     }
@@ -230,7 +273,7 @@ public class BytesAide {
     public static byte[] xor(byte[] data, byte[]... keyBytes) {
         for (int i = 0; i < data.length; i++) {
             for (byte[] keys : keyBytes) {
-                data[i] = (byte) (data[i] ^ keys[i % keys.length]);
+                data[i] = (byte)(data[i] ^ keys[i % keys.length]);
             }
         }
         return data;

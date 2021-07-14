@@ -1,7 +1,7 @@
 package com.tny.game.common.reflect;
 
 import com.tny.game.common.reflect.ReflectAide.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -18,8 +18,10 @@ public class ReflectAideTest {
     /**
      * @uml.property name="methodDada" multiplicity="(0 -1)" dimension="1"
      */
-    private String[] methodDada = new String[]{"getName", "getAge", "isSex", "getSuperName", "getSuperAge",
-            "isSuperSex"};
+    private String[] methodDada = new String[]{
+            "getName", "getAge", "isSex", "getSuperName", "getSuperAge",
+            "isSuperSex"
+    };
 
     /**
      * @uml.property name="pfields"
@@ -36,8 +38,10 @@ public class ReflectAideTest {
     /**
      * @uml.property name="classes" multiplicity="(0 -1)" dimension="2"
      */
-    private Class<?>[][] classes = new Class<?>[][]{{String.class}, {String.class}, {boolean.class},
-            {String.class}, {String.class}, {boolean.class}};
+    private Class<?>[][] classes = new Class<?>[][]{
+            {String.class}, {String.class}, {boolean.class},
+            {String.class}, {String.class}, {boolean.class}
+    };
 
     @Test
     public void testParseMethodName() {

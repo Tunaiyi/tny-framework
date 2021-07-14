@@ -2,7 +2,7 @@ package com.tny.game.common.event;
 
 import org.jmock.*;
 import org.jmock.junit5.JUnit5Mockery;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

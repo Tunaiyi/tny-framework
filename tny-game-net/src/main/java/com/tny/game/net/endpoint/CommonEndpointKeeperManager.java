@@ -1,10 +1,12 @@
 package com.tny.game.net.endpoint;
 
+import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,15 +26,38 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-    private final Map<String, SessionKeeperSetting> sessionKeeperSettingMap = new ConcurrentHashMap<>();
+    private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
-    private final Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = new ConcurrentHashMap<>();
+    private Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
 
     private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
     private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
     public CommonEndpointKeeperManager() {
+    }
+
+    public CommonEndpointKeeperManager(
+            SessionKeeperSetting defaultSessionKeeperSetting,
+            TerminalKeeperSetting defaultTerminalKeeperSetting,
+            Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
+            Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
+        Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
+        Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
+        if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
+            sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+        }
+        if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
+            terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+        }
+        if (defaultSessionKeeperSetting != null) {
+            sessionSettingMap.put(ifNotBlankElse(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
+        }
+        if (defaultTerminalKeeperSetting != null) {
+            terminalSettingMap.put(ifNotBlankElse(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
+        }
+        this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
+        this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
     }
 
     private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
@@ -95,15 +120,24 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     @Override
     public void prepareStart() {
-        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
-            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
-            this.sessionFactoryMap.computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
+        this.sessionKeeperSettingMap.forEach((name, setting) -> {
+            this.sessionFactoryMap
+                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
         });
-        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
-            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
+        this.terminalKeeperSettingMap.forEach((name, setting) -> {
             this.terminalFactoryMap
-                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
+                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
         });
+        //        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
+        //            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
+        //            this.sessionFactoryMap
+        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
+        //        });
+        //        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
+        //            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
+        //            this.terminalFactoryMap
+        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
+        //        });
     }
 
 }

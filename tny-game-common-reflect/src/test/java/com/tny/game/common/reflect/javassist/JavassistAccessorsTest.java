@@ -1,7 +1,7 @@
 package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.reflect.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.InvocationTargetException;
 

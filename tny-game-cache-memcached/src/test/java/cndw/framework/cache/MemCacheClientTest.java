@@ -2,15 +2,15 @@ package cndw.framework.cache;
 
 import com.tny.game.cache.memcached.*;
 import com.tny.game.cache.testclass.*;
-import org.junit.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class MemCacheClientTest {
 
@@ -20,16 +20,16 @@ public class MemCacheClientTest {
 
     private static ClientTestTask task;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
 
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         task = new ClientTestTask(this.client) {
             @Override
@@ -119,4 +119,5 @@ public class MemCacheClientTest {
     public void testCas() {
         task.testCas();
     }
+
 }

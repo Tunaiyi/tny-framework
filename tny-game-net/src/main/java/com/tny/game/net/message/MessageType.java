@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.net.message.coder.*;
+import com.tny.game.net.message.codec.*;
 
 /**
  * <p>

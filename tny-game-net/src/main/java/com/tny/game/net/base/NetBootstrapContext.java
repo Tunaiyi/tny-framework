@@ -15,7 +15,7 @@ import com.tny.game.net.transport.*;
  */
 public class NetBootstrapContext<UID> implements EndpointContext<UID> {
 
-    private final MessageFactory<UID> messageFactory;
+    private final MessageFactory messageFactory;
 
     private final CertificateFactory<UID> certificateFactory;
 
@@ -24,7 +24,7 @@ public class NetBootstrapContext<UID> implements EndpointContext<UID> {
     private final CommandTaskProcessor commandTaskProcessor;
 
     public NetBootstrapContext() {
-        this.messageFactory = new CommonMessageFactory<>();
+        this.messageFactory = new CommonMessageFactory();
         this.certificateFactory = new DefaultCertificateFactory<>();
         this.messageDispatcher = null;
         this.commandTaskProcessor = null;
@@ -33,7 +33,7 @@ public class NetBootstrapContext<UID> implements EndpointContext<UID> {
     public NetBootstrapContext(
             MessageDispatcher messageDispatcher,
             CommandTaskProcessor commandTaskProcessor,
-            MessageFactory<UID> messageFactory,
+            MessageFactory messageFactory,
             CertificateFactory<UID> certificateFactory) {
         this.messageDispatcher = messageDispatcher;
         this.commandTaskProcessor = commandTaskProcessor;
@@ -41,7 +41,7 @@ public class NetBootstrapContext<UID> implements EndpointContext<UID> {
         this.certificateFactory = certificateFactory;
     }
 
-    public MessageFactory<UID> getMessageFactory() {
+    public MessageFactory getMessageFactory() {
         return this.messageFactory;
     }
 

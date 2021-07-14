@@ -13,7 +13,7 @@ public interface NettyAttrKeys {
 
     AttributeKey<DataPacketMarker> DATA_PACKET_MARKER = AttributeKey.valueOf(NettyAttrKeys.class, "DATA_PACKET_MARKER");
 
-    AttributeKey<DataPackager> WRITE_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "WRITE_PACKAGER");
-    AttributeKey<DataPackager> READ_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "READ_PACKAGER");
+    AttributeKey<DataPackageContext> WRITE_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "WRITE_PACKAGER");
+    AttributeKey<DataPackageContext> READ_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "READ_PACKAGER");
 
 }

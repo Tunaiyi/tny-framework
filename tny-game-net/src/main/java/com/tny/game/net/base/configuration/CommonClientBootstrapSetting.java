@@ -7,8 +7,4 @@ public class CommonClientBootstrapSetting extends CommonNetBootstrapSetting impl
     public CommonClientBootstrapSetting() {
     }
 
-    public CommonClientBootstrapSetting(NetAppContext appContext) {
-        super(appContext);
-    }
-
 }

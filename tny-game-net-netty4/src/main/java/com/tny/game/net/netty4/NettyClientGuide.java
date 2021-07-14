@@ -42,6 +42,11 @@ public class NettyClientGuide extends NettyBootstrap<NettyClientBootstrapSetting
         buses().closeEvent().addListener(this.closeListener);
     }
 
+    public NettyClientGuide(NettyClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
+        super(clientSetting, channelMaker);
+        buses().closeEvent().addListener(this.closeListener);
+    }
+
     private String clientKey(URL url) {
         return url.getHost() + ":" + url.getPort();
     }

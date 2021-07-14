@@ -1,7 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.message.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.function.*;

@@ -59,6 +59,8 @@ include 'tny-game-oplog-log4j'
 include 'tny-game-oplog-log4j2kafka'
 include 'tny-game-net-kafka'
 include 'tny-game-net-test'
+include 'tny-game-net-test'
+include 'tny-game-net-codec-jprotobuf'
 
 
 //include 'tny-game-test-lua'

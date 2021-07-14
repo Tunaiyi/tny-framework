@@ -137,7 +137,7 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
     }
 
     @Override
-    public SendContext<UID> send(MessageContext<UID> messageContext) {
+    public SendContext send(MessageContext messageContext) {
         return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
                 () -> this.endpoint.send(this, messageContext));
 

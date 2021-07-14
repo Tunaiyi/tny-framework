@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContext<UID> implements SendContext<UID>, MessageContent {
+public abstract class MessageContext implements SendContext, MessageContent {
 
     /**
      * @return 获取结果码
@@ -20,15 +20,15 @@ public abstract class MessageContext<UID> implements SendContext<UID>, MessageCo
      * @param body 设置 Message Body
      * @return 返回 context 自身
      */
-    public abstract MessageContext<UID> setBody(Object body);
+    public abstract MessageContext setBody(Object body);
 
-    public abstract MessageContext<UID> willWriteFuture();
+    public abstract MessageContext willWriteFuture();
 
-    public abstract RequestContext<UID> willWriteFuture(long timeoutMills);
+    public abstract RequestContext willWriteFuture(long timeoutMills);
 
-    public abstract MessageContext<UID> willWriteFuture(WriteMessageListener listener);
+    public abstract MessageContext willWriteFuture(WriteMessageListener listener);
 
-    public abstract MessageContext<UID> willWriteFuture(Collection<WriteMessageListener> listeners);
+    public abstract MessageContext willWriteFuture(Collection<WriteMessageListener> listeners);
 
     /**
      * 取消

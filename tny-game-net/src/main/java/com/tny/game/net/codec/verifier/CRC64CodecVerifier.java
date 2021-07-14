@@ -26,23 +26,24 @@ public class CRC64CodecVerifier implements CodecVerifier {
     }
 
     @Override
-    public byte[] generate(DataPackager packager, byte[] body, long time) {
-        byte[] generateCode = doGenerate(packager, body, time);
-        if (LOGGER.isDebugEnabled())
+    public byte[] generate(DataPackageContext packager, byte[] body) {
+        byte[] generateCode = doGenerate(packager, body);
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("generate code {} form body {}", toHexString(generateCode), toHexString(body));
+        }
         return generateCode;
     }
 
-    private byte[] doGenerate(DataPackager packager, byte[] body, long time) {
+    private byte[] doGenerate(DataPackageContext packager, byte[] body) {
         byte[] numberBytes = BytesAide.int2Bytes(packager.getPacketNumber());
-        byte[] timeBytes = BytesAide.long2Bytes(time);
+        //        byte[] timeBytes = BytesAide.long2Bytes(time);
         byte[] codeBytes = BytesAide.int2Bytes(packager.getPacketCode());
-        return BytesAide.long2Bytes(CRC64.crc64Long(numberBytes, timeBytes, body, packager.getAccessKeyBytes(), codeBytes));
+        return BytesAide.long2Bytes(CRC64.crc64Long(numberBytes, body, packager.getAccessKeyBytes(), codeBytes));
     }
 
     @Override
-    public boolean verify(DataPackager packager, byte[] body, long time, byte[] verifyCode) {
-        byte[] generateCode = doGenerate(packager, body, time);
+    public boolean verify(DataPackageContext packager, byte[] body, byte[] verifyCode) {
+        byte[] generateCode = doGenerate(packager, body);
         if (!Arrays.equals(generateCode, verifyCode)) {
             LOGGER.debug("verify remote code {} is not equals to local code {} form body {}",
                     toHexString(verifyCode), toHexString(generateCode), toHexString(body));

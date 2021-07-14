@@ -39,7 +39,7 @@ public class TubuleTransporter<UID> implements Transporter<UID> {
     }
 
     @Override
-    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext context) throws NetException {
         WriteMessagePromise promise = as(context.getWriteMessageFuture());
         return this.transmitter.write(() -> new MessageDatagram(this.tubule, maker.make(context)), promise);
     }

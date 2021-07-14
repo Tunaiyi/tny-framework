@@ -23,10 +23,9 @@ public interface CodecVerifier {
      *
      * @param packager
      * @param body
-     * @param time
      * @return
      */
-    byte[] generate(DataPackager packager, byte[] body, long time);
+    byte[] generate(DataPackageContext packager, byte[] body);
 
     /**
      * 校验
@@ -37,6 +36,6 @@ public interface CodecVerifier {
      * @param verifyCode
      * @return
      */
-    boolean verify(DataPackager packager, byte[] body, long time, byte[] verifyCode);
+    boolean verify(DataPackageContext packager, byte[] body, byte[] verifyCode);
 
 }

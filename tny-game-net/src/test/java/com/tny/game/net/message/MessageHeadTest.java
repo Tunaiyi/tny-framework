@@ -2,7 +2,7 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.type.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 

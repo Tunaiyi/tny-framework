@@ -1,10 +1,11 @@
 package com.tny.game.net.netty4.codec;
 
+import com.tny.game.common.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.message.coder.*;
+import com.tny.game.net.message.codec.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.transport.*;
 import io.netty.buffer.ByteBuf;
@@ -13,7 +14,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.message.coder.CodecConstants.*;
+import static com.tny.game.net.message.codec.CodecConstants.*;
 
 public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPacketDecoder {
 
@@ -60,7 +61,10 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
                 return TickMessage.pong();
             }
 
-            payloadLength = in.readInt();
+            byte[] payloadLengthBytes = new byte[2];
+            in.readBytes(payloadLengthBytes);
+            payloadLength = BytesAide.bytes2Int(payloadLengthBytes);
+
             if (payloadLength > this.config.getMaxPayloadLength()) {
                 throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}", payloadLength,
                         this.config.getMaxPayloadLength());
@@ -85,19 +89,18 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
 
         // 获取打包器
         int index = in.readerIndex();
-        long accessId = NettyVarintCoder.readVarint64(in);
-        DataPackager packager = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
-        if (packager == null) {
-            packager = new DataPackager(accessId, this.config);
+        long accessId = NettyVarIntCoder.readVarInt64(in);
+        DataPackageContext packageContext = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
+        if (packageContext == null) {
+            packageContext = new DataPackageContext(accessId, this.config);
             tunnel.setAccessId(accessId);
-            channel.attr(NettyAttrKeys.READ_PACKAGER).set(packager);
+            channel.attr(NettyAttrKeys.READ_PACKAGER).set(packageContext);
         }
 
-        int number = NettyVarintCoder.readVarint32(in);
-        long time = NettyVarintCoder.readVarint64(in);
+        int number = NettyVarIntCoder.readVarInt32(in);
 
         // 移动到当前包序号
-        packager.goToAndCheck(number);
+        packageContext.goToAndCheck(number);
 
         boolean verifyEnable = isOption(option, PACKET_OPTION_VERIFY);
         if (this.config.isVerifyEnable() && !verifyEnable) {
@@ -112,11 +115,11 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
             throw CodecException.causeDecode("packet need waste bytes!");
         }
 
-        // 检测时间
-        packager.checkPacketTime(time);
+        //        // 检测时间
+        //        packager.checkPacketTime(time);
 
         //计算 body length
-        NettyWasteReader reader = new NettyWasteReader(packager, wasteBytesEnable, this.config);
+        NettyWasteReader reader = new NettyWasteReader(packageContext, wasteBytesEnable, this.config);
         int verifyLength = verifyEnable ? this.verifier.getCodeLength() : 0;
         int bodyLength = payloadLength - verifyLength - (in.readerIndex() - index);
         // 读取废字节中的 bodyBytes
@@ -126,7 +129,7 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
 
         // 加密
         if (encryptEnable) {
-            bodyBytes = this.crypto.decrypt(packager, bodyBytes);
+            bodyBytes = this.crypto.decrypt(packageContext, bodyBytes);
             CodecLogger.logBinary(LOGGER, "sendMessage body decryption |  body  {} ", bodyBytes);
         }
 
@@ -134,12 +137,16 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
         if (verifyEnable) {
             byte[] verifyCode = new byte[verifyLength];
             in.readBytes(verifyCode);
-            if (this.verifier.verify(packager, bodyBytes, time, verifyCode)) {
+            if (this.verifier.verify(packageContext, bodyBytes, verifyCode)) {
                 throw CodecException.causeVerify("packet verify failed");
             }
         }
 
         return this.messageCodec.decode(bodyBytes, as(tunnel.getMessageFactory()));
+    }
+
+    public static void main(String[] args) {
+
     }
 
 }

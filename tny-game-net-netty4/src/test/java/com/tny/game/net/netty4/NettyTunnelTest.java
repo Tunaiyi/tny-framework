@@ -6,7 +6,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;

@@ -5,6 +5,6 @@ import java.util.Collection;
 
 public interface ServerBootstrapSetting extends NetBootstrapSetting {
 
-    Collection<InetSocketAddress> getBindAddresses();
+    Collection<InetSocketAddress> getBindAddressList();
 
 }

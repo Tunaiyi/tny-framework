@@ -208,7 +208,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
             body = commandResult.getBody();
             this.invokeDone(cause);
         }
-        MessageContext<Object> context = null;
+        MessageContext context = null;
         switch (this.message.getMode()) {
             case PUSH:
                 if (body != null) {

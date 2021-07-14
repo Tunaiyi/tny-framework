@@ -24,7 +24,7 @@ public class TunnelAides {
      * @param body    消息体
      */
     public static <UID> void responseMessage(NetTunnel<UID> tunnel, Message request, ResultCode code, Object body) {
-        MessageContext<UID> context = MessageContexts
+        MessageContext context = MessageContexts
                 .respond(request, code, body, request.getId());
         responseMessage(tunnel, request, context);
     }
@@ -36,7 +36,7 @@ public class TunnelAides {
      * @param request 响应请求
      * @param context 消息信息上下文
      */
-    public static <UID> SendContext<UID> responseMessage(NetTunnel<UID> tunnel, Message request, MessageContext<UID> context) {
+    public static <UID> SendContext responseMessage(NetTunnel<UID> tunnel, Message request, MessageContext context) {
         ResultCode code = context.getResultCode();
         if (code.getType() == ResultCodeType.ERROR) {
             context.willWriteFuture(future -> tunnel.close());

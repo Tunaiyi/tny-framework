@@ -39,9 +39,10 @@ public class DecoderHandler extends ByteToMessageDecoder {
                     ProcessTracer handleTrace = NET_TRACE_INPUT_ALL.trace();
                     ProcessTracer toTunnelTrace = NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER.trace();
                     Object messageObject = this.decoder.decodeObject(ctx, in, this.marker);
-                    if (messageObject != null) {
-                        if (messageObject instanceof Message) {
-                            Attributes attributes = ((Message)messageObject).attributes();
+                    if (messageObject instanceof Message) {
+                        Message message = as(messageObject);
+                        if (message.getType() == MessageType.MESSAGE) {
+                            Attributes attributes = (message).attributes();
                             attributes.setAttribute(NET_TRACE_ALL_ATTR_KEY, allTrace);
                             attributes.setAttribute(NET_TRACE_INPUT_ALL_ATTR_KEY, handleTrace);
                             attributes.setAttribute(NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY, toTunnelTrace);

@@ -78,7 +78,7 @@ configure(moduleProjects) {
     ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
     if (springBoot) {
-        apply plugin: 'org.springframework.boot'
+//        apply plugin: 'org.springframework.boot'
     }
 
     sourceCompatibility = "${javaVersion}"
@@ -156,6 +156,9 @@ configure(moduleProjects) {
 
     idea {
         module {
+            inheritOutputDirs = false
+            outputDir = compileJava.destinationDir
+            testOutputDir = compileTestJava.destinationDir
             downloadJavadoc = true
             downloadSources = true
         }

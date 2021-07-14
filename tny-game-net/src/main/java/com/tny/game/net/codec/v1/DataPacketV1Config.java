@@ -2,7 +2,8 @@ package com.tny.game.net.codec.v1;
 
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
-import com.tny.game.net.message.protoex.*;
+import com.tny.game.net.message.codec.protoex.*;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created by Kun Yang on 2018/8/13.
@@ -20,13 +21,13 @@ public class DataPacketV1Config {
     // 可跳过包数步长
     private long skipNumberStep = 30;
     // 包超时
-    private long packetTimeout = 6000;
+    private long packetTimeout = 60000;
     // 最大废字节数
-    private int maxWasteBitSize = 0;
+    private int maxWasteBitSize = 30;
     // 消息体编码器
-    private String bodyCodec = ProtoExCodec.class.getSimpleName();
-    // 消息尾编码器
-    private String tailCodec = ProtoExCodec.class.getSimpleName();
+    private String bodyCodec = ProtoExMessageBodyCodec.class.getSimpleName();
+    //    // 消息尾编码器
+    //    private String tailCodec = ProtoExMessageBodyCodec.class.getSimpleName();
     // 消息体解码测刘娥
     private String bodyDecodeStrategy = null;
     // 消息体验证器
@@ -43,18 +44,20 @@ public class DataPacketV1Config {
     }
 
     public String[] getSecurityKeys() {
-        return securityKeys;
+        return this.securityKeys;
     }
 
     private byte[][] securityKeysBytes() {
-        if (securityKeysBytes != null)
-            return securityKeysBytes;
+        if (this.securityKeysBytes != null) {
+            return this.securityKeysBytes;
+        }
         synchronized (this) {
-            if (securityKeysBytes != null)
-                return securityKeysBytes;
-            byte[][] securityBytesKeys = new byte[securityKeys.length][];
-            for (int i = 0; i < securityKeys.length; i++) {
-                securityBytesKeys[i] = securityKeys[i].getBytes();
+            if (this.securityKeysBytes != null) {
+                return this.securityKeysBytes;
+            }
+            byte[][] securityBytesKeys = new byte[this.securityKeys.length][];
+            for (int i = 0; i < this.securityKeys.length; i++) {
+                securityBytesKeys[i] = this.securityKeys[i].getBytes();
             }
             this.securityKeysBytes = securityBytesKeys;
         }
@@ -66,33 +69,31 @@ public class DataPacketV1Config {
         return securityKeysBytes[value % securityKeysBytes.length];
     }
 
-
     public String getSecurityKeys(long value) {
-        return securityKeys[(int) (value % securityKeys.length)];
+        if (ArrayUtils.isEmpty(this.securityKeys)) {
+            return "";
+        }
+        return this.securityKeys[(int)(value % this.securityKeys.length)];
     }
-
 
     public long getSkipNumberStep() {
-        return skipNumberStep;
+        return this.skipNumberStep;
     }
-
 
     public boolean isEncryptEnable() {
-        return encryptEnable;
+        return this.encryptEnable;
     }
-
 
     public boolean isWasteBytesEnable() {
-        return wasteBytesEnable;
+        return this.wasteBytesEnable;
     }
 
-
     public boolean isVerifyEnable() {
-        return verifyEnable;
+        return this.verifyEnable;
     }
 
     public int getMaxWasteBitSize() {
-        return maxWasteBitSize;
+        return this.maxWasteBitSize;
     }
 
     public long getPacketTimeout() {
@@ -100,27 +101,27 @@ public class DataPacketV1Config {
     }
 
     public String getBodyCodec() {
-        return bodyCodec;
+        return this.bodyCodec;
     }
 
-    public String getTailCodec() {
-        return tailCodec;
-    }
+    //        public String getTailCodec() {
+    //            return this.tailCodec;
+    //        }
 
     public String getBodyDecodeStrategy() {
-        return bodyDecodeStrategy;
+        return this.bodyDecodeStrategy;
     }
 
     public String getVerifier() {
-        return verifier;
+        return this.verifier;
     }
 
     public String getCrypto() {
-        return crypto;
+        return this.crypto;
     }
 
     public int getMaxPayloadLength() {
-        return maxPayloadLength;
+        return this.maxPayloadLength;
     }
 
     public DataPacketV1Config setEncryptEnable(boolean encryptEnable) {
@@ -173,10 +174,10 @@ public class DataPacketV1Config {
         return this;
     }
 
-    public DataPacketV1Config setTailCodec(String tailCodec) {
-        this.tailCodec = tailCodec;
-        return this;
-    }
+    //    public DataPacketV1Config setTailCodec(String tailCodec) {
+    //        this.tailCodec = tailCodec;
+    //        return this;
+    //    }
 
     public DataPacketV1Config setBodyDecodeStrategy(String bodyDecodeStrategy) {
         this.bodyDecodeStrategy = bodyDecodeStrategy;
@@ -187,4 +188,5 @@ public class DataPacketV1Config {
         this.maxPayloadLength = maxPayloadLength;
         return this;
     }
+
 }

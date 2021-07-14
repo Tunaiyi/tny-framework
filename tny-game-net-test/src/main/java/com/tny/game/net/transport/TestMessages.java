@@ -19,7 +19,7 @@ public class TestMessages {
 
     private List<TestMessagePack> messages = new ArrayList<>();
 
-    private MessageFactory<Long> messageBuilderFactory = new CommonMessageFactory<>();
+    private MessageFactory messageBuilderFactory = new CommonMessageFactory();
     private Certificate<Long> certificate;
     private AtomicInteger idCreator;
     private int pingSize = 0;
@@ -61,19 +61,19 @@ public class TestMessages {
     }
 
     public TestMessages addPush(ResultCode code, Object body) {
-        return addMessageContext(MessageContexts.push(ProtocolAide.protocol(this.protocol), code, body));
+        return addMessageContext(MessageContexts.push(Protocols.protocol(this.protocol), code, body));
     }
 
     public TestMessages addRequest(Object body) {
-        return addMessageContext(MessageContexts.request(ProtocolAide.protocol(this.protocol), body));
+        return addMessageContext(MessageContexts.request(Protocols.protocol(this.protocol), body));
     }
 
     public TestMessages addResponse(Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(this.protocol), body, toMessage));
+        return addMessageContext(MessageContexts.respond(Protocols.protocol(this.protocol), body, toMessage));
     }
 
     public TestMessages addResponse(ResultCode code, Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(ProtocolAide.protocol(this.protocol), code, body, toMessage));
+        return addMessageContext(MessageContexts.respond(Protocols.protocol(this.protocol), code, body, toMessage));
     }
 
     public TestMessages addPing() {
@@ -113,11 +113,11 @@ public class TestMessages {
         return this.addMessagePack(new TestMessagePack(null, message));
     }
 
-    public TestMessages addMessageContext(MessageContext<Long> context) {
+    public TestMessages addMessageContext(MessageContext context) {
         return this.addMessagePack(new TestMessagePack(context, createMessage(context)));
     }
 
-    private NetMessage createMessage(MessageContext<Long> context) {
+    private NetMessage createMessage(MessageContext context) {
         return this.messageBuilderFactory.create(this.idCreator.incrementAndGet(), context);
     }
 
@@ -154,13 +154,13 @@ public class TestMessages {
         send(sender, null);
     }
 
-    public void send(Sender<Long> sender, Consumer<SendContext<Long>> check) {
+    public void send(Sender<Long> sender, Consumer<SendContext> check) {
         assertFalse(this.messages.isEmpty());
         if (check == null) {
             check = f -> {
             };
         }
-        Consumer<SendContext<Long>> consumer = check;
+        Consumer<SendContext> consumer = check;
         this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
     }
 
@@ -215,11 +215,11 @@ public class TestMessages {
         this.messages.stream().map(TestMessagePack::getMessage).forEach(action);
     }
 
-    public void contextsForEach(Consumer<MessageContext<Long>> action) {
+    public void contextsForEach(Consumer<MessageContext> action) {
         this.messages.stream().map(TestMessagePack::getContext).forEach(action);
     }
 
-    public void requestContextsForEach(Consumer<RequestContext<Long>> action) {
+    public void requestContextsForEach(Consumer<RequestContext> action) {
         this.messages.stream().map(TestMessagePack::getRequestContext).forEach(action);
     }
 

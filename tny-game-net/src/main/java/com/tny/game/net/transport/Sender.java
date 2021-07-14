@@ -16,6 +16,6 @@ public interface Sender<UID> {
      * @param messageContext 发送消息上下文
      * @return 返回发送上下文
      */
-    SendContext<UID> send(MessageContext<UID> messageContext);
+    SendContext send(MessageContext messageContext);
 
 }

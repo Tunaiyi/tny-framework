@@ -6,12 +6,13 @@ import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import static com.tny.game.common.utils.StringAide.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProtoExTest {
 
@@ -226,7 +227,7 @@ public class ProtoExTest {
         int time = 1;
         for (char value : values) {
             char readValue = reader.readChar();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -255,7 +256,7 @@ public class ProtoExTest {
         int time = 1;
         for (byte value : values) {
             byte readValue = reader.readByte();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -288,7 +289,7 @@ public class ProtoExTest {
         int time = 1;
         for (short value : values) {
             short readValue = reader.readShort();
-            Assert.assertEquals(this.msg(value, format, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, format, time++));
         }
     }
 
@@ -321,7 +322,7 @@ public class ProtoExTest {
         int time = 1;
         for (int value : values) {
             int readValue = reader.readInt();
-            Assert.assertEquals(this.msg(value, format, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, format, time++));
         }
     }
 
@@ -354,7 +355,7 @@ public class ProtoExTest {
         int time = 1;
         for (long value : values) {
             long readValue = reader.readLong();
-            Assert.assertEquals(this.msg(value, format, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, format, time++));
         }
     }
 
@@ -383,7 +384,7 @@ public class ProtoExTest {
         int time = 1;
         for (float value : values) {
             float readValue = reader.readFloat();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue, 0.f);
+            assertEquals(value, readValue, 0.f, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -412,7 +413,7 @@ public class ProtoExTest {
         int time = 1;
         for (double value : values) {
             double readValue = reader.readDouble();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue, 0.0);
+            assertEquals(value, readValue, 0.0, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -441,7 +442,7 @@ public class ProtoExTest {
         int time = 1;
         for (boolean value : values) {
             boolean readValue = reader.readBoolean();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -470,7 +471,7 @@ public class ProtoExTest {
         int time = 1;
         for (String value : values) {
             String readValue = reader.readString();
-            Assert.assertEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -501,7 +502,7 @@ public class ProtoExTest {
         System.out.println(data.length);
         ProtoExReader reader = this.createReader(data);
         Collection<Object> readMessage = reader.readMessage();
-        Assert.assertTrue(CollectionUtils.isEqualCollection(writeMessage, readMessage));
+        assertTrue(CollectionUtils.isEqualCollection(writeMessage, readMessage));
     }
 
     private void write(ProtoExWriter writer, byte[][] values) {
@@ -514,7 +515,7 @@ public class ProtoExTest {
         int time = 1;
         for (byte[] value : values) {
             byte[] readValue = reader.readBytes();
-            Assert.assertArrayEquals(this.msg(value, FieldFormat.DEFAULT, time++), value, readValue);
+            assertArrayEquals(value, readValue, this.msg(value, FieldFormat.DEFAULT, time++));
         }
     }
 
@@ -597,7 +598,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -617,7 +618,7 @@ public class ProtoExTest {
         for (Object value : values) {
             System.out.println(typeEncode + " " + time);
             Object readValue = reader.readMessage(TestObject.class);
-            Assert.assertEquals(this.msg(value, typeEncode, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, typeEncode, time++));
         }
     }
 
@@ -637,7 +638,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -665,7 +666,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -691,7 +692,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -710,7 +711,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
         this.readMessage(reader, this.repeatMixValues, Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
@@ -725,7 +726,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -742,7 +743,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -759,7 +760,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -783,7 +784,7 @@ public class ProtoExTest {
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readCollection(elementType);
             String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
-            Assert.assertEquals(this.msg(value, method, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, method, time++));
         }
     }
 
@@ -793,7 +794,7 @@ public class ProtoExTest {
         for (Collection<?> value : values) {
             Collection<?> readValue = reader.readMessage();
             String method = format("el({})-packed({}-elType({})-format({}))", elementType.getName(), packed, elementType, elFormat);
-            Assert.assertEquals(this.msg(value, method, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, method, time++));
         }
     }
 
@@ -818,7 +819,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -849,7 +850,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -885,7 +886,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -910,7 +911,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -929,7 +930,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -948,7 +949,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -967,7 +968,7 @@ public class ProtoExTest {
 
         byte[] data = writer.toByteArray();
         System.out.println(data.length + " " + writer.size());
-        Assert.assertEquals(writer.size(), data.length);
+        assertEquals(writer.size(), data.length);
 
         ProtoExReader reader = this.createReader(data);
 
@@ -997,7 +998,7 @@ public class ProtoExTest {
             String method = format("key({})-keyType({})-keyFormat({})-value({})-valueType({})-valueFormat({}))",
                     keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
 
-            Assert.assertEquals(this.msg(value, method, time++), value, readValue);
+            assertEquals(value, readValue, this.msg(value, method, time++));
         }
     }
 

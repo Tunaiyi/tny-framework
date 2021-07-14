@@ -16,12 +16,12 @@ import static com.tny.game.common.utils.StringAide.*;
 public class NettyMessageBearer<UID> implements Runnable {
 
     private final MessageMaker<UID> maker;
-    private final MessageContext<UID> context;
+    private final MessageContext context;
     private volatile Message message;
     private final Channel channel;
     private final ChannelPromise promise;
 
-    public NettyMessageBearer(Channel channel, MessageMaker<UID> maker, MessageContext<UID> context, ChannelPromise promise) {
+    public NettyMessageBearer(Channel channel, MessageMaker<UID> maker, MessageContext context, ChannelPromise promise) {
         this.maker = maker;
         this.context = context;
         this.channel = channel;

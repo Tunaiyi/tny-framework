@@ -52,7 +52,7 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport<UID>, Receiver<UI
     /**
      * @return message factory
      */
-    default MessageFactory<UID> getMessageFactory() {
+    default MessageFactory getMessageFactory() {
         return this.getNetBootstrapContext().getMessageFactory();
     }
 

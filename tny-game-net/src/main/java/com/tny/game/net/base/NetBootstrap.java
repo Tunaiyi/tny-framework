@@ -32,7 +32,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
     @Override
     public void prepareStart() throws Exception {
-        MessageFactory<Object> messageFactory = as(
+        MessageFactory messageFactory = as(
                 UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.setting.getMessageFactory()));
         //        EndpointEventsBoxHandler<Object, NetEndpoint<Object>> eventHandler = as(
         //                UnitLoader.getLoader(EndpointEventsBoxHandler.class).getUnitAnCheck(this.setting.getEndpointEventHandler()));

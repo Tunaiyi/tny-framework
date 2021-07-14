@@ -1,7 +1,7 @@
 package drama.test;
 
 import com.google.common.collect.Lists;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

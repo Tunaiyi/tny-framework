@@ -1,6 +1,6 @@
 package com.tny.game.net.transport;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.concurrent.ExecutionException;
 

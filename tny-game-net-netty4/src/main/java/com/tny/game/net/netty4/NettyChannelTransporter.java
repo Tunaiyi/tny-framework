@@ -40,7 +40,7 @@ public class NettyChannelTransporter<UID> extends NettyChannelConnection impleme
     }
 
     @Override
-    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext<UID> context) throws NetException {
+    public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext context) throws NetException {
         WriteMessagePromise promise = as(context.getWriteMessageFuture());
         ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
         ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();

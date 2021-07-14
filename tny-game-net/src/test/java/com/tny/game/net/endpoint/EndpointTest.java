@@ -2,7 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.transport.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 

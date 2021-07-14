@@ -1,37 +1,56 @@
 package com.tny.game.starter.net.netty4.configuration.processor;
 
-import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.netty4.processor.*;
+import com.tny.game.net.command.processor.forkjoin.*;
+import com.tny.game.net.netty4.processor.disruptor.*;
 import com.tny.game.starter.common.initiator.*;
+import com.tny.game.starter.net.netty4.configuration.processor.disruptor.*;
+import com.tny.game.starter.net.netty4.configuration.processor.forkjoin.*;
 import org.springframework.beans.factory.support.*;
-import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.type.AnnotationMetadata;
 
-import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.starter.common.environment.EnvironmentAide.*;
-import static com.tny.game.starter.net.netty4.configuration.NetEnvironmentAide.*;
 
 /**
  * <p>
  */
-public class ImportCommandTaskProcessorBeanDefinitionRegistrar<E extends CommandTaskProcessor> extends BaseBeanDefinitionRegistrar {
-
-    protected ImportCommandTaskProcessorBeanDefinitionRegistrar() {
-        super(COMMAND_TASK_PROCESSOR_HEAD);
-    }
+public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ConfigurationImportBeanDefinitionRegistrar {
 
     @Override
-    protected void loadBeanDefinition(String name, BeanDefinitionRegistry registry) {
-        String keyHead = key(this.root, name);
-        String executorClassName = this.environment.getProperty(key(keyHead, CLASS_NODE), DisruptorEndpointCommandTaskProcessor.class.getName());
-        Class<E> executorClass = as(ExeAide.callNullableWithUnchecked(() -> Class.forName(executorClassName)));
-        String keyName = getBeanName(name, CommandTaskProcessor.class);
-        registry.registerBeanDefinition(keyName,
-                BeanDefinitionBuilder.genericBeanDefinition(executorClass,
-                        () -> Binder.get(this.environment)
-                                .bind(keyHead, executorClass)
-                                .orElseGet(() -> ExeAide.callUnchecked(executorClass::newInstance).orElse(null)))
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        DisruptorEndpointCommandTaskProcessorConfigure disruptorConfigure = loadProperties(DisruptorEndpointCommandTaskProcessorConfigure.class);
+        ForkJoinEndpointCommandTaskProcessorConfigure forkJoinConfigure = loadProperties(ForkJoinEndpointCommandTaskProcessorConfigure.class);
+        boolean defaultProcessorInit = loadBeanDefinition("default", disruptorConfigure.getSetting(), registry);
+        if (!defaultProcessorInit) {
+            loadBeanDefinition("default", forkJoinConfigure.getSetting(), registry);
+        }
+        disruptorConfigure.getSettings().forEach((name, setting) -> loadBeanDefinition(name, setting, registry));
+        forkJoinConfigure.getSettings().forEach((name, setting) -> loadBeanDefinition(name, setting, registry));
+    }
+
+    private boolean loadBeanDefinition(String name, ForkJoinEndpointCommandTaskProcessorSetting setting, BeanDefinitionRegistry registry) {
+        if (setting == null || !setting.isEnable()) {
+            return false;
+        }
+        String beanName = getBeanName(name, CommandTaskProcessor.class);
+        registry.registerBeanDefinition(beanName,
+                BeanDefinitionBuilder.genericBeanDefinition(ForkJoinEndpointCommandTaskProcessor.class)
+                        .addConstructorArgValue(setting)
                         .getBeanDefinition());
+        return false;
+    }
+
+    private boolean loadBeanDefinition(String name, DisruptorEndpointCommandTaskProcessorSetting setting, BeanDefinitionRegistry registry) {
+        if (setting == null || !setting.isEnable()) {
+            return false;
+        }
+        String beanName = getBeanName(name, CommandTaskProcessor.class);
+        registry.registerBeanDefinition(beanName,
+                BeanDefinitionBuilder.genericBeanDefinition(DisruptorEndpointCommandTaskProcessor.class)
+                        .addConstructorArgValue(setting)
+                        .getBeanDefinition());
+        return true;
+
     }
 
 }

@@ -4,7 +4,7 @@ import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.message.*;
 
 @Unit
-public class CommonMessageFactory<UID> implements MessageFactory<UID> {
+public class CommonMessageFactory implements MessageFactory {
 
     public CommonMessageFactory() {
     }

@@ -19,7 +19,7 @@ import static com.tny.game.net.transport.TransportConstants.*;
  */
 public class MessageContexts {
 
-    public static <UID> MessageContext<UID> createContext() {
+    public static <UID> MessageContext createContext() {
         return new DefaultMessageContext<>();
     }
 
@@ -29,7 +29,7 @@ public class MessageContexts {
      * @param protocol 协议号
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> push(Protocol protocol) {
+    public static <UID> MessageContext push(Protocol protocol) {
         return push(protocol, ResultCode.SUCCESS);
     }
 
@@ -40,7 +40,7 @@ public class MessageContexts {
      * @param code     消息结果码
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> push(Protocol protocol, ResultCode code) {
+    public static <UID> MessageContext push(Protocol protocol, ResultCode code) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, code);
         return context;
@@ -53,7 +53,7 @@ public class MessageContexts {
      * @param body     消息体
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> push(Protocol protocol, Object body) {
+    public static <UID> MessageContext push(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
                 .setBody(body);
@@ -68,7 +68,7 @@ public class MessageContexts {
      * @param body     消息体
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> push(Protocol protocol, ResultCode code, Object body) {
+    public static <UID> MessageContext push(Protocol protocol, ResultCode code, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.PUSH, protocol, code)
                 .setBody(body);
@@ -81,7 +81,7 @@ public class MessageContexts {
      * @param protocol 协议号
      * @return 创建的消息上下文
      */
-    public static <UID> RequestContext<UID> request(Protocol protocol) {
+    public static <UID> RequestContext request(Protocol protocol) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS);
         return context;
@@ -94,7 +94,7 @@ public class MessageContexts {
      * @param body     请求消息体
      * @return 创建的消息上下文
      */
-    public static <UID> RequestContext<UID> request(Protocol protocol, Object body) {
+    public static <UID> RequestContext request(Protocol protocol, Object body) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
                 .setBody(body);
@@ -109,10 +109,10 @@ public class MessageContexts {
      * @param <UID>         ID
      * @return 创建的消息上下文
      */
-    public static <UID> RequestContext<UID> requestParams(Protocol protocol, Object... requestParams) {
+    public static <UID> RequestContext requestParams(Protocol protocol, Object... requestParams) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-                .setBody(Arrays.asList(requestParams));
+                .setBody(new MessageParamList(requestParams));
         return context;
     }
 
@@ -123,7 +123,7 @@ public class MessageContexts {
      * @param toMessage 响应的请求消息Id
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(Protocol protocol, long toMessage) {
+    public static <UID> MessageContext respond(Protocol protocol, long toMessage) {
         return respond(protocol, ResultCode.SUCCESS, toMessage);
     }
 
@@ -135,7 +135,7 @@ public class MessageContexts {
      * @param toMessage 响应的请求消息Id
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(Protocol protocol, ResultCode code, long toMessage) {
+    public static <UID> MessageContext respond(Protocol protocol, ResultCode code, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, code, toMessage);
         return context;
@@ -149,7 +149,7 @@ public class MessageContexts {
      * @param toMessage 响应的请求消息Id
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(Protocol protocol, Object body, long toMessage) {
+    public static <UID> MessageContext respond(Protocol protocol, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
                 .setBody(body);
@@ -165,7 +165,7 @@ public class MessageContexts {
      * @param toMessage 响应的请求消息Id
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
+    public static <UID> MessageContext respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, protocol, code, toMessage)
                 .setBody(body);
@@ -179,7 +179,7 @@ public class MessageContexts {
      * @param respondHead 响应的请求消息
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(ResultCode code, MessageHead respondHead) {
+    public static <UID> MessageContext respond(ResultCode code, MessageHead respondHead) {
         DefaultMessageContext<UID> context = new DefaultMessageContext<>();
         context.init(MessageMode.RESPONSE, respondHead, code, respondHead.getId());
         return context;
@@ -192,11 +192,11 @@ public class MessageContexts {
      * @param respondMessage 响应的请求消息
      * @return 创建的消息上下文
      */
-    public static <UID> MessageContext<UID> respond(ResultCode code, Message respondMessage) {
+    public static <UID> MessageContext respond(ResultCode code, Message respondMessage) {
         return respond(code, respondMessage.getHead());
     }
 
-    private static class DefaultMessageContext<UID> extends RequestContext<UID> {
+    private static class DefaultMessageContext<UID> extends RequestContext {
 
         private ResultCode code = ResultCode.SUCCESS;
 
@@ -290,7 +290,7 @@ public class MessageContexts {
         }
 
         @Override
-        public RequestContext<UID> setBody(Object body) {
+        public RequestContext setBody(Object body) {
             if (this.body != null) {
                 throw new IllegalArgumentException("body is exist");
             }
@@ -346,7 +346,7 @@ public class MessageContexts {
         }
 
         @Override
-        public RequestContext<UID> willResponseFuture(long timeoutMills) {
+        public RequestContext willResponseFuture(long timeoutMills) {
             if (this.mode == MessageMode.REQUEST) {
                 this.respondTimeout = timeoutMills;
             }
@@ -354,13 +354,13 @@ public class MessageContexts {
         }
 
         @Override
-        public RequestContext<UID> willWriteFuture(long timeoutMills) {
+        public RequestContext willWriteFuture(long timeoutMills) {
             this.writeTimeout = timeoutMills;
             return this;
         }
 
         @Override
-        public MessageContext<UID> willWriteFuture(WriteMessageListener listener) {
+        public MessageContext willWriteFuture(WriteMessageListener listener) {
             if (listener != null) {
                 this.writeTimeout = TIMEOUT_NEVER;
                 listeners().add(listener);
@@ -369,7 +369,7 @@ public class MessageContexts {
         }
 
         @Override
-        public MessageContext<UID> willWriteFuture(Collection<WriteMessageListener> listeners) {
+        public MessageContext willWriteFuture(Collection<WriteMessageListener> listeners) {
             if (CollectionUtils.isNotEmpty(listeners)) {
                 this.writeTimeout = TIMEOUT_NEVER;
                 listeners().addAll(listeners);

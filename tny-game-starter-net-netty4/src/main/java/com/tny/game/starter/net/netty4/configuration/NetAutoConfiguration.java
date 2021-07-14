@@ -1,31 +1,43 @@
 package com.tny.game.starter.net.netty4.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.base.configuration.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.message.codec.protoex.*;
 import com.tny.game.net.message.common.*;
-import com.tny.game.net.message.protoex.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.starter.net.netty4.*;
 import com.tny.game.starter.net.netty4.appliaction.*;
+import com.tny.game.starter.net.netty4.configuration.app.*;
+import com.tny.game.starter.net.netty4.configuration.endpoint.*;
 import com.tny.game.starter.net.netty4.spring.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.bind.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 
 /**
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
+@EnableAutoConfiguration
 public class NetAutoConfiguration {
+
+    @Bean
+    public NetAppContext appContext(SpringBootNetAppConfigure configure) {
+        return new DefaultNetAppContext()
+                .setName(configure.getName())
+                .setAppType(configure.getAppType())
+                .setScopeType(configure.getScopeType())
+                .setScanPackages(configure.getBasePackages());
+    }
 
     @Bean
     public CertificateFactory<?> defaultCertificateFactory() {
@@ -34,8 +46,13 @@ public class NetAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
-    public EndpointKeeperManager endpointKeeperManager() {
-        return new CommonEndpointKeeperManager();
+    public EndpointKeeperManager endpointKeeperManager(
+            SpringNetEndpointConfigure configure) {
+        return new CommonEndpointKeeperManager(
+                configure.getSessionKeeper(),
+                configure.getTerminalKeeper(),
+                configure.getSessionKeeperSettings(),
+                configure.getTerminalKeeperSettings());
     }
 
     @Bean
@@ -45,16 +62,32 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public NetAppContext appContext(ApplicationContext applicationContext) {
-        Environment environment = applicationContext.getEnvironment();
-        return Binder.get(environment)
-                .bind("tny.app", Bindable.ofInstance(new SuiteNetAppContext()))
-                .get();
+    public MessageFactory defaultMessageFactory() {
+        return new CommonMessageFactory();
     }
 
     @Bean
-    @Order(-99999)
+    public SessionFactory<?, ?, ?> defaultSessionFactory() {
+        return new CommonSessionFactory<>();
+    }
+
+    @Bean
+    public SessionKeeperFactory<?, ?> defaultSessionKeeperFactory() {
+        return new CommonSessionKeeperFactory<>();
+    }
+
+    @Bean
+    public TerminalKeeperFactory<?, ?> defaultTerminalKeeperFactory() {
+        return new CommonTerminalKeeperFactory<>();
+    }
+
+    @Bean
+    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
+        return new SpringBootMessageDispatcher(appContext, endpointKeeperManager);
+    }
+
+    @Bean
+    //    @Order(-99999)
     public NetApplication netApplication(ApplicationContext applicationContext, NetAppContext appContext) {
         return new NetApplication(applicationContext, appContext);
     }
@@ -66,12 +99,12 @@ public class NetAutoConfiguration {
 
     @Bean
     public ParamFilterPlugin<?> paramFilterPlugin() {
-        return new SuiteParamFilterPlugin<>();
+        return new SpringBootParamFilterPlugin<>();
     }
 
     @Bean
-    public ProtoExCodec<?> protoExCodec() {
-        return new ProtoExCodec<>();
+    public ProtoExMessageBodyCodec<?> protoExCodec() {
+        return new ProtoExMessageBodyCodec<>();
     }
 
     @Bean

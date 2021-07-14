@@ -4,22 +4,22 @@ import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
-import com.tny.game.net.message.coder.*;
+import com.tny.game.net.message.codec.*;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class DataPacketV1BaseCodec implements AppPrepareStart {
 
-    protected MessageCodec<Object> messageCodec;
+    public MessageCodec messageCodec;
 
-    protected CodecVerifier verifier;
+    public CodecVerifier verifier;
 
-    protected CodecCrypto crypto;
+    public CodecCrypto crypto;
 
-    protected DataPacketV1Config config;
+    public DataPacketV1Config config;
 
-    protected DataPacketV1BaseCodec() {
+    public DataPacketV1BaseCodec() {
     }
 
     public DataPacketV1BaseCodec(DataPacketV1Config config) {
@@ -34,15 +34,37 @@ public abstract class DataPacketV1BaseCodec implements AppPrepareStart {
 
     @Override
     public void prepareStart() {
-        Codec<Object> bodyCoder = as(UnitLoader.getLoader(Codec.class).getUnitAnCheck(this.config.getBodyCodec()));
-        Codec<Object> tailCoder = as(UnitLoader.getLoader(Codec.class).getUnit(this.config.getTailCodec(), null));
+        MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).getUnitAnCheck(this.config.getBodyCodec()));
+        //        MessageBodyCodec<Object> tailCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).getUnit(this.config.getTailCodec(), null));
         DecodeStrategy decodeStrategy;
-        if (StringUtils.isBlank(this.config.getBodyDecodeStrategy()))
+        if (StringUtils.isBlank(this.config.getBodyDecodeStrategy())) {
             decodeStrategy = DecodeStrategy.DECODE_ALL_STRATEGY;
-        else
+        } else {
             decodeStrategy = as(UnitLoader.getLoader(DecodeStrategy.class).getUnitAnCheck(this.config.getBodyDecodeStrategy()));
-        this.messageCodec = new DefaultMessageCodec<>(bodyCoder, tailCoder, decodeStrategy);
+        }
+        this.messageCodec = new DefaultMessageCodec(bodyCoder, decodeStrategy);
         this.verifier = UnitLoader.getLoader(CodecVerifier.class).getUnitAnCheck(this.config.getVerifier());
         this.crypto = UnitLoader.getLoader(CodecCrypto.class).getUnitAnCheck(this.config.getCrypto());
     }
+
+    public DataPacketV1BaseCodec setMessageCodec(MessageCodec messageCodec) {
+        this.messageCodec = messageCodec;
+        return this;
+    }
+
+    public DataPacketV1BaseCodec setVerifier(CodecVerifier verifier) {
+        this.verifier = verifier;
+        return this;
+    }
+
+    public DataPacketV1BaseCodec setCrypto(CodecCrypto crypto) {
+        this.crypto = crypto;
+        return this;
+    }
+
+    public DataPacketV1BaseCodec setConfig(DataPacketV1Config config) {
+        this.config = config;
+        return this;
+    }
+
 }

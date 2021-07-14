@@ -3,8 +3,8 @@ package protoex;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.hamcrest.CoreMatchers;
-import org.junit.*;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
 import org.springframework.util.NumberUtils;
 
 import java.lang.reflect.*;
@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import static com.tny.game.common.utils.StringAide.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ContentCodecTest {
 
@@ -296,7 +297,7 @@ public class ContentCodecTest {
         now = Instant.now();
         for (int index = 0; index < times; index++) {
             ProtoExReader reader = new ProtoExReader(data);
-            reader.readMessage((Class<?>) type);
+            reader.readMessage((Class<?>)type);
         }
         System.out.println(format("解码{}次一共消耗{}毫秒.", times, System.currentTimeMillis() - now.toEpochMilli()));
     }
@@ -368,25 +369,26 @@ public class ContentCodecTest {
 
         ProtoExReader reader = new ProtoExReader(data);
         if (type == AtomicBoolean.class) {
-            AtomicBoolean left = (AtomicBoolean) value;
+            AtomicBoolean left = (AtomicBoolean)value;
             AtomicBoolean right = reader.readMessage(AtomicBoolean.class);
-            Assert.assertTrue(TypeUtils.isInstance(left, type));
-            Assert.assertTrue(TypeUtils.isInstance(right, type));
-            Assert.assertThat(right.get(), CoreMatchers.equalTo(left.get()));
+            assertTrue(TypeUtils.isInstance(left, type));
+            assertTrue(TypeUtils.isInstance(right, type));
+            MatcherAssert.assertThat(right.get(), CoreMatchers.equalTo(left.get()));
         } else if (type == AtomicInteger.class || type == AtomicLong.class) {
-            Number left = (Number) value;
-            Number right = (Number) reader.readMessage((Class<?>) type);
-            Assert.assertTrue(TypeUtils.isInstance(left, type));
-            Assert.assertTrue(TypeUtils.isInstance(right, type));
-            Assert.assertThat(right.longValue(), CoreMatchers.equalTo(left.longValue()));
+            Number left = (Number)value;
+            Number right = (Number)reader.readMessage((Class<?>)type);
+            assertTrue(TypeUtils.isInstance(left, type));
+            assertTrue(TypeUtils.isInstance(right, type));
+
+            MatcherAssert.assertThat(right.longValue(), CoreMatchers.equalTo(left.longValue()));
         } else {
             Object left = value;
-            Object right = reader.readMessage((Class<?>) type);
+            Object right = reader.readMessage((Class<?>)type);
             if (value != null) {
-                Assert.assertTrue(TypeUtils.isInstance(left, type));
-                Assert.assertTrue(TypeUtils.isInstance(right, type));
+                assertTrue(TypeUtils.isInstance(left, type));
+                assertTrue(TypeUtils.isInstance(right, type));
             }
-            Assert.assertThat(right, CoreMatchers.equalTo(left));
+            MatcherAssert.assertThat(right, CoreMatchers.equalTo(left));
         }
     }
 

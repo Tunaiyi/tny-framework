@@ -40,7 +40,12 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
 
     public NettyServerGuide(NettyServerBootstrapSetting setting) {
         super(setting);
-        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddresses());
+        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
+    }
+
+    public NettyServerGuide(NettyServerBootstrapSetting setting, ChannelMaker<Channel> channelMaker) {
+        super(setting, channelMaker);
+        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
     }
 
     @Override

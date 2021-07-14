@@ -1,10 +1,14 @@
 package com.tny.game.net.base;
 
+import com.tny.game.net.codec.v1.*;
+
 public interface NetBootstrapSetting {
 
     String getName();
 
-    NetAppContext getAppContext();
+    DataPacketV1Config getEncoder();
+
+    DataPacketV1Config getDecoder();
 
     String getMessageFactory();
 

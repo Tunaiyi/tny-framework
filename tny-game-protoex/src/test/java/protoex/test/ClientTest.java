@@ -3,7 +3,7 @@ package protoex.test;
 import com.tny.game.common.runtime.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 

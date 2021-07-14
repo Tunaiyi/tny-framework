@@ -1,9 +1,10 @@
 package com.tny.game.net.base.configuration;
 
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.context.*;
 import com.tny.game.net.base.*;
 
-import java.util.*;
+import java.util.List;
 
 public class DefaultNetAppContext implements NetAppContext {
 
@@ -13,9 +14,9 @@ public class DefaultNetAppContext implements NetAppContext {
 
     private String scopeType = "online";
 
-    private List<String> scanPackages;
+    private List<String> scanPackages = ImmutableList.of();
 
-    private Attributes attributes = ContextAttributes.create();
+    private final Attributes attributes = ContextAttributes.create();
 
     public DefaultNetAppContext() {
     }
@@ -42,7 +43,7 @@ public class DefaultNetAppContext implements NetAppContext {
 
     @Override
     public List<String> getScanPackages() {
-        return Collections.unmodifiableList(this.scanPackages);
+        return this.scanPackages;
     }
 
     public DefaultNetAppContext setName(String name) {
@@ -60,8 +61,8 @@ public class DefaultNetAppContext implements NetAppContext {
         return this;
     }
 
-    public DefaultNetAppContext setScanPackages(String[] scanPackages) {
-        this.scanPackages = Arrays.asList(scanPackages);
+    public DefaultNetAppContext setScanPackages(List<String> scanPackages) {
+        this.scanPackages = ImmutableList.copyOf(scanPackages);
         return this;
     }
 

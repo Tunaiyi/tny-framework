@@ -4,6 +4,4 @@ import com.tny.game.net.base.*;
 
 public interface NettyBootstrapSetting extends NetBootstrapSetting {
 
-    String getChannelMaker();
-
 }

@@ -294,8 +294,8 @@ ext.libs = [
         tencentcloud_cos_sdk                     : "com.qcloud:cos_api:5.6.39",
 
         jmock_junit5                             : "org.jmock:jmock-junit5:${vers.jmock}",
-        mockito                                  : "org.mockito:mockito-core:${vers.mockito}",
-
+//        mockito                                  : "org.mockito:mockito-core:${vers.mockito}",
+        mockito                                  : 'org.mockito:mockito-junit-jupiter:3.11.2',
         google_finbugs                           : "com.google.code.findbugs:jsr305:3.0.2",
 
         poi                                      : "org.apache.poi:poi:${vers.poi}",

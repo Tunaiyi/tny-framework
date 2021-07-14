@@ -8,7 +8,7 @@ import com.tny.game.common.unit.annotation.*;
  * @author Kun.y
  */
 @UnitInterface
-public interface MessageFactory<UID> {
+public interface MessageFactory {
 
     NetMessage create(long id, MessageContent subject);
 

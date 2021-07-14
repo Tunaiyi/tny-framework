@@ -3,7 +3,7 @@ package com.tny.game.common.reflect;
 import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.javassist.*;
 import net.sf.cglib.reflect.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -16,15 +16,15 @@ public class ReflectasmTest {
 
     int times = 10000000;
 
-    public Map<Class<?>, Annotation> map = new ConcurrentHashMap<Class<?>, Annotation>();
+    public Map<Class<?>, Annotation> map = new ConcurrentHashMap<>();
 
     @Test
     public void testGetAnn1() {
-        for (Annotation annotation : counter.getClass().getAnnotations())
-            map.put(annotation.getClass(), annotation);
+        for (Annotation annotation : this.counter.getClass().getAnnotations())
+            this.map.put(annotation.getClass(), annotation);
         long time = System.currentTimeMillis();
-        for (int index = 0; index < times; index++) {
-            map.get(Listener.class);
+        for (int index = 0; index < this.times; index++) {
+            this.map.get(Listener.class);
         }
         System.out.println("map ann " + (System.currentTimeMillis() - time));
     }
@@ -34,7 +34,7 @@ public class ReflectasmTest {
         Class<?> clazz = Counter.class;
         clazz.getAnnotation(Listener.class);
         long time = System.currentTimeMillis();
-        for (int index = 0; index < times; index++) {
+        for (int index = 0; index < this.times; index++) {
             clazz.getAnnotation(Listener.class);
         }
         System.out.println("class get " + (System.currentTimeMillis() - time));
@@ -43,8 +43,8 @@ public class ReflectasmTest {
     @Test
     public void testNomal() {
         long time = System.currentTimeMillis();
-        for (int index = 0; index < times; index++)
-            counter.count(80, 2L);
+        for (int index = 0; index < this.times; index++)
+            this.counter.count(80, 2L);
         System.out.println("Nomal  : " + (System.currentTimeMillis() - time));
     }
 
@@ -86,23 +86,25 @@ public class ReflectasmTest {
     public void testNomalCGLIB() throws Exception {
         FastClass clazz = FastClass.create(Counter.class);
         FastMethod method = clazz.getMethod("count", new Class<?>[]{
-                int.class, long.class});
+                int.class, long.class
+        });
         Object[] object = new Object[]{80, 2L};
         long time = System.currentTimeMillis();
-        for (int index = 0; index < times; index++)
-            method.invoke(counter, object);
+        for (int index = 0; index < this.times; index++)
+            method.invoke(this.counter, object);
         System.out.println("CGLIB  : " + (System.currentTimeMillis() - time));
     }
 
     @Test
     public void testNomalJavasisst() throws Exception {
         Method proMethod = Counter.class.getMethod("count", new Class<?>[]{
-                int.class, long.class});
+                int.class, long.class
+        });
         MethodInvoker method = InvokerFactory.newInvoker(proMethod);
         Object[] object = new Object[]{80, 2L};
         long time = System.currentTimeMillis();
-        for (int index = 0; index < times; index++)
-            method.invoke(counter, object);
+        for (int index = 0; index < this.times; index++)
+            method.invoke(this.counter, object);
         System.out.println("Javasisst  : " + (System.currentTimeMillis() - time));
     }
 }

@@ -4,7 +4,7 @@ import com.tny.game.common.buff.*;
 import com.tny.game.protoex.field.*;
 import org.slf4j.*;
 
-import java.nio.charset.Charset;
+import java.nio.charset.*;
 
 /**
  * ProtoEx类型输入流
@@ -13,10 +13,10 @@ import java.nio.charset.Charset;
  */
 public class ProtoExOutputStream implements ProtoExStream {
 
-    protected static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ProtoExOutputStream.class);
-    private ProtoExSchemaContext schemaContext;
+    private final ProtoExSchemaContext schemaContext;
 
     private LinkedByteBuffer byteBuffer;
 
@@ -42,8 +42,9 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     public ProtoExOutputStream(ProtoExSchemaContext schemaContext, int initSize, int nextSize) {
-        if (schemaContext == null)
+        if (schemaContext == null) {
             schemaContext = DefaultProtoExSchemaContext.getDefault();
+        }
         this.schemaContext = schemaContext;
         this.byteBuffer = new LinkedByteBuffer(initSize, nextSize);
     }
@@ -63,16 +64,16 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     public void writeTag(int protoExID, boolean explicit, boolean rawType, int fieldNumber, FieldFormat formatType) {
-        this.doWriteVarint32(WireFormat.makeTypeTag(protoExID, explicit, rawType));
-        this.doWriteVarint32(WireFormat.makeFieldTag(fieldNumber, formatType));
+        this.doWriteVarInt32(WireFormat.makeTypeTag(protoExID, explicit, rawType));
+        this.doWriteVarInt32(WireFormat.makeFieldTag(fieldNumber, formatType));
     }
 
     public void writeChar(char value) {
-        this.doWriteVarint32(value);
+        this.doWriteVarInt32(value);
     }
 
     public void writeShort(short value) {
-        this.doWriteVarint32(value);
+        this.doWriteVarInt32(value);
     }
 
     public void writeSignShort(short value) {
@@ -80,21 +81,21 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     public void writeByte(byte value) {
-        this.doWriteVarint32(value);
+        this.byteBuffer.write(value);
     }
 
     public void writeDouble(final double value) {
         //		this.doWriteLittleEndian64(Double.doubleToRawLongBits(value));
-        this.doWriteVarint64(Double.doubleToRawLongBits(value));
+        this.doWriteVarInt64(Double.doubleToRawLongBits(value));
     }
 
     public void writeFloat(final float value) {
         //		this.doWriteLittleEndian32(Float.floatToRawIntBits(value));
-        this.doWriteVarint32(Float.floatToRawIntBits(value));
+        this.doWriteVarInt32(Float.floatToRawIntBits(value));
     }
 
     public void writeLong(final long value) {
-        this.doWriteVarint64(value);
+        this.doWriteVarInt64(value);
     }
 
     public void writeSignLong(final long value) {
@@ -107,9 +108,9 @@ public class ProtoExOutputStream implements ProtoExStream {
 
     public void writeInt(final int value) {
         if (value >= 0) {
-            this.doWriteVarint32(value);
+            this.doWriteVarInt32(value);
         } else {
-            this.doWriteVarint64(value);
+            this.doWriteVarInt64(value);
         }
     }
 
@@ -122,7 +123,7 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     public void writeBoolean(final boolean value) {
-        this.doWriteVarint32(value ? 1 : 0);
+        this.doWriteVarInt32(value ? 1 : 0);
     }
 
     public void writeEnum(final Enum<?> value) {
@@ -132,7 +133,6 @@ public class ProtoExOutputStream implements ProtoExStream {
     public void writeBytes(byte[] value) {
         this.doWriteBytes(value);
     }
-
 
     /**
      * Write a {@code string} field to the stream.
@@ -146,38 +146,43 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     private <T> void doWriteLengthLimitation(T value, IOConfiger<?> conf, ProtoExSchema<T> schema) {
-        if (value == null)
+        if (value == null) {
             return;
+        }
         if (schema.isRaw()
-            && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
-            && schema.getProtoExId() != WireFormat.PROTO_ID_MAP)
+                && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
+                && schema.getProtoExId() != WireFormat.PROTO_ID_MAP) {
             throw ProtobufExException.rawTypeIsNoLengthLimitation(conf.getDefaultType());
+        }
         LinkedByteBuffer currentBuffer = this.byteBuffer;
         ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.byteBuffer.getTail());
-        LinkedByteBuffer messageBuffer = null;
-        if (remainNode == null)
+        LinkedByteBuffer messageBuffer;
+        if (remainNode == null) {
             messageBuffer = new LinkedByteBuffer(this.byteBuffer.getInitBufferSize(), this.byteBuffer.getNextBufferSize());
-        else
+        } else {
             messageBuffer = new LinkedByteBuffer(remainNode);
+        }
         this.byteBuffer = messageBuffer;
         schema.writeValue(this, value, conf);
         int messageSize = messageBuffer.size();
-        if (LOGGER.isDebugEnabled())
-            LOGGER.debug("protoExOutput.doWriteLengthLimitation 写入 {} 长度为 {} 的对象 : {}", messageSize, value);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("protoExOutput.doWriteLengthLimitation 写入长度为 {} 的对象 : {}", messageSize, value);
+        }
         final int size = computeRawVarint32Size(messageSize);
         LinkedByteBuffer sizeBuffer = new LinkedByteBuffer(size, 1);
         this.byteBuffer = sizeBuffer;
-        this.doWriteVarint32(messageSize);
+        this.doWriteVarInt32(messageSize);
         this.byteBuffer = currentBuffer;
         this.byteBuffer.appand(sizeBuffer);
         this.byteBuffer.appand(messageBuffer);
     }
 
     private void doWriteString(final String value) {
-        if (value == null)
+        if (value == null) {
             return;
+        }
         byte[] bytes = value.getBytes(UTF8);
-        this.doWriteVarint32(bytes.length);
+        this.doWriteVarInt32(bytes.length);
         this.byteBuffer.write(bytes);
     }
 
@@ -185,13 +190,12 @@ public class ProtoExOutputStream implements ProtoExStream {
      * Write a {@code string} field to the stream.
      */
     private void doWriteBytes(final byte[] value) {
-        this.doWriteVarint32(value.length);
+        this.doWriteVarInt32(value.length);
         this.byteBuffer.write(value);
     }
 
-
     public void writeBytes(LinkedByteBuffer value) {
-        this.doWriteVarint32(value.size());
+        this.doWriteVarInt32(value.size());
         this.byteBuffer.appand(value);
     }
 
@@ -213,25 +217,25 @@ public class ProtoExOutputStream implements ProtoExStream {
      * Write an {@code sint32} field to the stream.
      */
     private void doWriteSInt32(final int value) {
-        this.doWriteVarint32(encodeZigZag32(value));
+        this.doWriteVarInt32(encodeZigZag32(value));
     }
 
     /**
      * Write an {@code sint64} field to the stream.
      */
     private void doWriteSInt64(final long value) {
-        this.doWriteVarint64(encodeZigZag64(value));
+        this.doWriteVarInt64(encodeZigZag64(value));
     }
 
-    private void doWriteVarint32(int value) {
+    private void doWriteVarInt32(int value) {
         final int size = computeRawVarint32Size(value);
         if (size == 1) {
-            this.byteBuffer.write((byte) value);
+            this.byteBuffer.write((byte)value);
         } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7) {
-                this.byteBuffer.write((byte) ((value & 0x7F) | 0x80));
+                this.byteBuffer.write((byte)((value & 0x7F) | 0x80));
             }
-            this.byteBuffer.write((byte) value);
+            this.byteBuffer.write((byte)value);
         }
     }
 
@@ -240,90 +244,103 @@ public class ProtoExOutputStream implements ProtoExStream {
     }
 
     private void doWriteLittleEndian64(long value) {
-        this.byteBuffer.write((byte) (value & 0xFF))
-                       .write((byte) (value >> 8 & 0xFF))
-                       .write((byte) (value >> 16 & 0xFF))
-                       .write((byte) (value >> 24 & 0xFF))
-                       .write((byte) (value >> 32 & 0xFF))
-                       .write((byte) (value >> 40 & 0xFF))
-                       .write((byte) (value >> 48 & 0xFF))
-                       .write((byte) (value >> 56 & 0xFF));
+        this.byteBuffer.write((byte)(value & 0xFF))
+                .write((byte)(value >> 8 & 0xFF))
+                .write((byte)(value >> 16 & 0xFF))
+                .write((byte)(value >> 24 & 0xFF))
+                .write((byte)(value >> 32 & 0xFF))
+                .write((byte)(value >> 40 & 0xFF))
+                .write((byte)(value >> 48 & 0xFF))
+                .write((byte)(value >> 56 & 0xFF));
     }
 
     private void doWriteLittleEndian32(int value) {
-        this.byteBuffer.write((byte) (value & 0xFF))
-                       .write((byte) (value >> 8 & 0xFF))
-                       .write((byte) (value >> 16 & 0xFF))
-                       .write((byte) (value >> 24 & 0xFF));
+        this.byteBuffer.write((byte)(value & 0xFF))
+                .write((byte)(value >> 8 & 0xFF))
+                .write((byte)(value >> 16 & 0xFF))
+                .write((byte)(value >> 24 & 0xFF));
     }
 
     /**
      * Returns the buffer encoded with the variable int 32.
      */
-    private void doWriteVarint64(long value) {
-        final int size = computeRawVarint64Size(value);
-        if (size == 1)
-            this.byteBuffer.write((byte) value);
-        else {
+    private void doWriteVarInt64(long value) {
+        final int size = computeRawVarInt64Size(value);
+        if (size == 1) {
+            this.byteBuffer.write((byte)value);
+        } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
-                this.byteBuffer.write((byte) ((value & 0x7F) | 0x80));
-            this.byteBuffer.write((byte) value);
+                this.byteBuffer.write((byte)((value & 0x7F) | 0x80));
+            this.byteBuffer.write((byte)value);
         }
     }
 
-    private static int MAX_INT_7_BIT = 0xffffffff << 7;
-    private static int MAX_INT_14_BIT = 0xffffffff << 14;
-    private static int MAX_INT_21_BIT = 0xffffffff << 21;
-    private static int MAX_INT_28_BIT = 0xffffffff << 28;
+    private final static int MAX_INT_7_BIT = 0xffffffff << 7;
+    private final static int MAX_INT_14_BIT = 0xffffffff << 14;
+    private final static int MAX_INT_21_BIT = 0xffffffff << 21;
+    private final static int MAX_INT_28_BIT = 0xffffffff << 28;
 
     /**
      * Compute the number of bytes that would be needed to encode a varint. {@code value} is treated as unsigned, so it won't be sign-extended if
      * negative.
      */
     public static int computeRawVarint32Size(final int value) {
-        if ((value & (MAX_INT_7_BIT)) == 0)
+        if ((value & (MAX_INT_7_BIT)) == 0) {
             return 1;
-        if ((value & (MAX_INT_14_BIT)) == 0)
+        }
+        if ((value & (MAX_INT_14_BIT)) == 0) {
             return 2;
-        if ((value & (MAX_INT_21_BIT)) == 0)
+        }
+        if ((value & (MAX_INT_21_BIT)) == 0) {
             return 3;
-        if ((value & (MAX_INT_28_BIT)) == 0)
+        }
+        if ((value & (MAX_INT_28_BIT)) == 0) {
             return 4;
+        }
         return 5;
     }
 
-    private static long MAX_LONG_7_BIT = 0xffffffffffffffffL << 7;
-    private static long MAX_LONG_14_BIT = 0xffffffffffffffffL << 14;
-    private static long MAX_LONG_21_BIT = 0xffffffffffffffffL << 21;
-    private static long MAX_LONG_28_BIT = 0xffffffffffffffffL << 28;
-    private static long MAX_LONG_35_BIT = 0xffffffffffffffffL << 35;
-    private static long MAX_LONG_42_BIT = 0xffffffffffffffffL << 42;
-    private static long MAX_LONG_49_BIT = 0xffffffffffffffffL << 49;
-    private static long MAX_LONG_56_BIT = 0xffffffffffffffffL << 56;
-    private static long MAX_LONG_63_BIT = 0xffffffffffffffffL << 63;
+    private final static long MAX_LONG_7_BIT = 0xffffffffffffffffL << 7;
+    private final static long MAX_LONG_14_BIT = 0xffffffffffffffffL << 14;
+    private final static long MAX_LONG_21_BIT = 0xffffffffffffffffL << 21;
+    private final static long MAX_LONG_28_BIT = 0xffffffffffffffffL << 28;
+    private final static long MAX_LONG_35_BIT = 0xffffffffffffffffL << 35;
+    private final static long MAX_LONG_42_BIT = 0xffffffffffffffffL << 42;
+    private final static long MAX_LONG_49_BIT = 0xffffffffffffffffL << 49;
+    private final static long MAX_LONG_56_BIT = 0xffffffffffffffffL << 56;
+    private final static long MAX_LONG_63_BIT = 0xffffffffffffffffL << 63;
 
     /**
      * Compute the number of bytes that would be needed to encode a varint.
      */
-    public static int computeRawVarint64Size(final long value) {
-        if ((value & MAX_LONG_7_BIT) == 0)
+    public static int computeRawVarInt64Size(final long value) {
+        if ((value & MAX_LONG_7_BIT) == 0) {
             return 1;
-        if ((value & MAX_LONG_14_BIT) == 0)
+        }
+        if ((value & MAX_LONG_14_BIT) == 0) {
             return 2;
-        if ((value & MAX_LONG_21_BIT) == 0)
+        }
+        if ((value & MAX_LONG_21_BIT) == 0) {
             return 3;
-        if ((value & MAX_LONG_28_BIT) == 0)
+        }
+        if ((value & MAX_LONG_28_BIT) == 0) {
             return 4;
-        if ((value & MAX_LONG_35_BIT) == 0)
+        }
+        if ((value & MAX_LONG_35_BIT) == 0) {
             return 5;
-        if ((value & MAX_LONG_42_BIT) == 0)
+        }
+        if ((value & MAX_LONG_42_BIT) == 0) {
             return 6;
-        if ((value & MAX_LONG_49_BIT) == 0)
+        }
+        if ((value & MAX_LONG_49_BIT) == 0) {
             return 7;
-        if ((value & MAX_LONG_56_BIT) == 0)
+        }
+        if ((value & MAX_LONG_56_BIT) == 0) {
             return 8;
-        if ((value & MAX_LONG_63_BIT) == 0)
+        }
+        if ((value & MAX_LONG_63_BIT) == 0) {
             return 9;
+        }
         return 10;
     }
 

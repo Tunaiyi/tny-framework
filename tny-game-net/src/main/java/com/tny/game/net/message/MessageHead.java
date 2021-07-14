@@ -32,4 +32,8 @@ public interface MessageHead extends Protocol {
      */
     MessageMode getMode();
 
+    default MessageType getType() {
+        return getMode().getType();
+    }
+
 }

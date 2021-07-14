@@ -2,7 +2,7 @@ package com.tny.game.common.aop;
 
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.common.reflect.proxy.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Method;
 

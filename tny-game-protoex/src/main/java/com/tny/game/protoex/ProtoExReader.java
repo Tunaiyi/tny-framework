@@ -24,7 +24,7 @@ public class ProtoExReader {
     }
 
     public boolean isCanRead() {
-        return this.inputStream.remaining() > 0;
+        return this.inputStream.hasRemaining();
     }
 
     /*

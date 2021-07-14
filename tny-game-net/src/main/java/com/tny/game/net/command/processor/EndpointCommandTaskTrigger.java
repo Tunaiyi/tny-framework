@@ -47,7 +47,7 @@ public class EndpointCommandTaskTrigger implements Runnable {
 
     private int commandTickTimes = 0;
 
-    protected EndpointCommandTaskTrigger(CommandTaskBox taskBox, EndpointCommandTaskProcessor<?> processor) {
+    public EndpointCommandTaskTrigger(CommandTaskBox taskBox, EndpointCommandTaskProcessor<?> processor) {
         this.taskBox = taskBox;
         this.processor = as(processor);
     }

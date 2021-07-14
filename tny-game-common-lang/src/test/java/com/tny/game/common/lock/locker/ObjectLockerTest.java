@@ -1,7 +1,7 @@
 package com.tny.game.common.lock.locker;
 
 import com.tny.game.common.concurrent.lock.locker.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -21,10 +21,10 @@ public class ObjectLockerTest {
     private int initNumber = 0;
     private int number = 0;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.locker = new ObjectLocker<>();
-        this.number = initNumber;
+        this.number = this.initNumber;
     }
 
     @Test
@@ -34,19 +34,19 @@ public class ObjectLockerTest {
         List<Future<Integer>> futures = new ArrayList<>();
         String lockObject = "locker";
         for (int i = 0; i < taskSize; i++) {
-            futures.add(service.submit(() -> {
+            futures.add(this.service.submit(() -> {
                 latch.countDown();
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Lock lock = locker.lock(lockObject);
+                Lock lock = this.locker.lock(lockObject);
                 try {
-                    assertTrue(locker.size() > 0);
-                    return ++number;
+                    assertTrue(this.locker.size() > 0);
+                    return ++this.number;
                 } finally {
-                    locker.unlock(lockObject, lock);
+                    this.locker.unlock(lockObject, lock);
                 }
             }));
         }
@@ -55,11 +55,11 @@ public class ObjectLockerTest {
             sortedSet.add(future.get());
         }
         assertEquals(taskSize, sortedSet.size());
-        int expected = initNumber;
+        int expected = this.initNumber;
         for (int num : sortedSet) {
             assertEquals(++expected, num);
         }
-        assertEquals(0, locker.size());
+        assertEquals(0, this.locker.size());
     }
 
     @Test
@@ -69,36 +69,37 @@ public class ObjectLockerTest {
         List<Future<Boolean>> futures = new ArrayList<>();
         String lockObject = "locker";
         for (int i = 0; i < taskSize; i++) {
-            futures.add(service.submit(() -> {
+            futures.add(this.service.submit(() -> {
                 latch.countDown();
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Optional<Lock> lock = locker.tryLock(lockObject);
+                Optional<Lock> lock = this.locker.tryLock(lockObject);
                 try {
                     if (lock.isPresent()) {
-                        assertEquals(1, locker.size());
-                        ++number;
+                        assertEquals(1, this.locker.size());
+                        ++this.number;
                         Thread.sleep(100);
                         return true;
                     } else {
                         return false;
                     }
                 } finally {
-                    lock.ifPresent(l -> locker.unlock(lockObject, l));
+                    lock.ifPresent(l -> this.locker.unlock(lockObject, l));
                 }
             }));
         }
         int lockNum = 0;
         for (Future<Boolean> future : futures) {
-            if (future.get())
+            if (future.get()) {
                 lockNum++;
+            }
         }
         assertEquals(1, lockNum);
-        assertEquals(1, number);
-        assertEquals(0, locker.size());
+        assertEquals(1, this.number);
+        assertEquals(0, this.locker.size());
     }
 
     @Test
@@ -109,36 +110,37 @@ public class ObjectLockerTest {
         String lockObject = "locker";
         int timeout = 20;
         for (int i = 0; i < taskSize; i++) {
-            futures.add(service.submit(() -> {
+            futures.add(this.service.submit(() -> {
                 latch.countDown();
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Optional<Lock> lock = locker.tryLock(lockObject, timeout, TimeUnit.MILLISECONDS);
+                Optional<Lock> lock = this.locker.tryLock(lockObject, timeout, TimeUnit.MILLISECONDS);
                 try {
                     if (lock.isPresent()) {
-                        assertEquals(1, locker.size());
-                        ++number;
+                        assertEquals(1, this.locker.size());
+                        ++this.number;
                         Thread.sleep(timeout + 100);
                         return true;
                     } else {
                         return false;
                     }
                 } finally {
-                    lock.ifPresent(l -> locker.unlock(lockObject, l));
+                    lock.ifPresent(l -> this.locker.unlock(lockObject, l));
                 }
             }));
         }
         int lockNum = 0;
         for (Future<Boolean> future : futures) {
-            if (future.get())
+            if (future.get()) {
                 lockNum++;
+            }
         }
         assertEquals(1, lockNum);
-        assertEquals(1, number);
-        assertEquals(0, locker.size());
+        assertEquals(1, this.number);
+        assertEquals(0, this.locker.size());
     }
 
     @Test
@@ -150,23 +152,25 @@ public class ObjectLockerTest {
         String lockObject = "locker";
         for (int i = 0; i < taskSize; i++) {
             int taskNum = i;
-            futures.add(service.submit(() -> {
+            futures.add(this.service.submit(() -> {
                 latch.countDown();
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (taskNum < interruptedSize)
+                if (taskNum < interruptedSize) {
                     Thread.currentThread().interrupt();
+                }
                 Lock lock = null;
                 try {
-                    lock = locker.lockInterruptibly(lockObject);
-                    assertEquals(1, locker.size());
-                    return ++number;
+                    lock = this.locker.lockInterruptibly(lockObject);
+                    assertEquals(1, this.locker.size());
+                    return ++this.number;
                 } finally {
-                    if (lock != null)
-                        locker.unlock(lockObject, lock);
+                    if (lock != null) {
+                        this.locker.unlock(lockObject, lock);
+                    }
                 }
             }));
         }
@@ -176,17 +180,18 @@ public class ObjectLockerTest {
             try {
                 sortedSet.add(future.get());
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof InterruptedException)
+                if (e.getCause() instanceof InterruptedException) {
                     interruptedNum++;
+                }
             }
         }
         assertEquals(taskSize - interruptedSize, sortedSet.size());
         assertEquals(interruptedSize, interruptedNum);
-        int expected = initNumber;
+        int expected = this.initNumber;
         for (int num : sortedSet) {
             assertEquals(++expected, num);
         }
-        assertEquals(0, locker.size());
+        assertEquals(0, this.locker.size());
     }
 
 }

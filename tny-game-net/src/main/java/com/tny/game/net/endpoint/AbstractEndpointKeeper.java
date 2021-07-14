@@ -1,6 +1,5 @@
 package com.tny.game.net.endpoint;
 
-
 import com.tny.game.common.event.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.listener.*;
@@ -32,7 +31,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
 
     @Override
     public String getUserType() {
-        return userType;
+        return this.userType;
     }
 
     @Override
@@ -46,7 +45,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
     }
 
     @Override
-    public void send2User(UID userId, MessageContext<UID> context) {
+    public void send2User(UID userId, MessageContext context) {
         E endpoint = this.getEndpoint(userId);
         if (endpoint != null) {
             endpoint.send(context);
@@ -54,17 +53,17 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
     }
 
     @Override
-    public void send2Users(Collection<UID> userIds, MessageContext<UID> context) {
+    public void send2Users(Collection<UID> userIds, MessageContext context) {
         this.doSendMultiId(userIds.stream(), context);
     }
 
     @Override
-    public void send2Users(Stream<UID> userIdsStream, MessageContext<UID> context) {
+    public void send2Users(Stream<UID> userIdsStream, MessageContext context) {
         this.doSendMultiId(userIdsStream, context);
     }
 
     @Override
-    public void send2AllOnline(MessageContext<UID> context) {
+    public void send2AllOnline(MessageContext context) {
         for (E endpoint : this.endpointMap.values())
             endpoint.send(context);
     }
@@ -74,12 +73,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
         return this.endpointMap.size();
     }
 
-
     @Override
     public E close(UID userId) {
         E endpoint = this.endpointMap.get(userId);
-        if (endpoint != null)
+        if (endpoint != null) {
             endpoint.close();
+        }
         return endpoint;
     }
 
@@ -91,8 +90,9 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
     @Override
     public E offline(UID userId) {
         E endpoint = this.endpointMap.get(userId);
-        if (endpoint != null)
+        if (endpoint != null) {
             endpoint.offline();
+        }
         return endpoint;
     }
 
@@ -111,12 +111,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
     public int countOnlineSize() {
         int online = 0;
         for (E endpoint : this.endpointMap.values()) {
-            if (endpoint.isOnline())
+            if (endpoint.isOnline()) {
                 online++;
+            }
         }
         return online;
     }
-
 
     @Override
     public void addListener(EndpointKeeperListener<UID> listener) {
@@ -138,7 +138,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
         onRemoveSession.removeListener(listener);
     }
 
-    private void doSendMultiId(Stream<UID> userIds, MessageContext<UID> context) {
+    private void doSendMultiId(Stream<UID> userIds, MessageContext context) {
         userIds.forEach(userId -> {
             E endpoint = this.getEndpoint(userId);
             if (endpoint != null) {

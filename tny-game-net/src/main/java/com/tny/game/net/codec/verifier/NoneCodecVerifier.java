@@ -16,12 +16,12 @@ public class NoneCodecVerifier implements CodecVerifier {
     }
 
     @Override
-    public byte[] generate(DataPackager packager, byte[] body, long time) {
+    public byte[] generate(DataPackageContext packager, byte[] body) {
         return new byte[0];
     }
 
     @Override
-    public boolean verify(DataPackager packager, byte[] body, long time, byte[] verifyCode) {
+    public boolean verify(DataPackageContext packager, byte[] body, byte[] verifyCode) {
         return true;
     }
 

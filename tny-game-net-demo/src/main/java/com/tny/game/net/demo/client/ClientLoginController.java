@@ -18,14 +18,14 @@ import static com.tny.game.net.message.MessageMode.*;
  */
 @Controller(CtrlerIDs.LOGIN)
 @AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
-@BeforePlugin(SuiteParamFilterPlugin.class)
+@BeforePlugin(SpringBootParamFilterPlugin.class)
 @MessageFilter(modes = {RESPONSE, PUSH})
 public class ClientLoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientLoginController.class);
 
     @Controller(CtrlerIDs.LOGIN$LOGIN)
-    @BeforePlugin(SuiteParamFilterPlugin.class)
+    @BeforePlugin(SpringBootParamFilterPlugin.class)
     @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
     public void login(@MsgCode int code, @MsgBody LoginDTO dto) {
         if (!ResultCodes.isSuccess(code)) {
@@ -36,13 +36,13 @@ public class ClientLoginController {
     }
 
     @Controller(CtrlerIDs.LOGIN$PUSH)
-    @BeforePlugin(SuiteParamFilterPlugin.class)
+    @BeforePlugin(SpringBootParamFilterPlugin.class)
     public void pushMessage(Tunnel<Long> tunnel, @MsgBody String message) {
         //        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
     }
 
     @Controller(CtrlerIDs.LOGIN$PING)
-    @BeforePlugin(SuiteParamFilterPlugin.class)
+    @BeforePlugin(SpringBootParamFilterPlugin.class)
     public void pingMessage(Tunnel<Long> tunnel, @MsgBody String message) {
         LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getUserId(), tunnel.getAccessId(), message);
     }

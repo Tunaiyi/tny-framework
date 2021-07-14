@@ -3,7 +3,7 @@ package com.tny.game.net.transport;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public interface SendContext<UID> {
+public interface SendContext {
 
     /**
      * @return 获取发送超时

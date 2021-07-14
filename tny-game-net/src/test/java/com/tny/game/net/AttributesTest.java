@@ -1,7 +1,7 @@
 package com.tny.game.net;
 
 import com.tny.game.common.context.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,19 +9,19 @@ public class AttributesTest {
 
     private Attributes attributes = ContextAttributes.create();
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -29,12 +29,12 @@ public class AttributesTest {
 
     @Test
     public void testAttribute() {
-        assertNull(attributes.getAttribute(PERSION_KEY));
+        assertNull(this.attributes.getAttribute(PERSION_KEY));
         Person person = new Person("TEST PERSON", 155, "HOME");
-        attributes.setAttribute(PERSION_KEY, person);
-        assertEquals(attributes.getAttribute(PERSION_KEY), person);
-        assertEquals(attributes.removeAttribute(PERSION_KEY), person);
-        assertNull(attributes.getAttribute(PERSION_KEY));
+        this.attributes.setAttribute(PERSION_KEY, person);
+        assertEquals(this.attributes.getAttribute(PERSION_KEY), person);
+        assertEquals(this.attributes.removeAttribute(PERSION_KEY), person);
+        assertNull(this.attributes.getAttribute(PERSION_KEY));
     }
 
 }

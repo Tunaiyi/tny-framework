@@ -43,7 +43,7 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userId  用户ID
      * @param context 消息内容
      */
-    void send2User(UID userId, MessageContext<UID> context);
+    void send2User(UID userId, MessageContext context);
 
     /**
      * 发信息给用户集合 <br>
@@ -51,7 +51,7 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userIds 用户ID列表
      * @param context 消息内容
      */
-    void send2Users(Collection<UID> userIds, MessageContext<UID> context);
+    void send2Users(Collection<UID> userIds, MessageContext context);
 
     /**
      * 发信息给用户集合 <br>
@@ -59,12 +59,12 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userIdsStream 用户ID流
      * @param context       消息内容
      */
-    void send2Users(Stream<UID> userIdsStream, MessageContext<UID> context);
+    void send2Users(Stream<UID> userIdsStream, MessageContext context);
 
     /**
      * 发送给所有在线的用户 <br>
      */
-    void send2AllOnline(MessageContext<UID> context);
+    void send2AllOnline(MessageContext context);
 
     /**
      * 使指定userId的session关闭

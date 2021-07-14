@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

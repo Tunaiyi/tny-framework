@@ -40,7 +40,7 @@ public class NettyTransitServerGuide extends NettyBootstrap<NettyServerBootstrap
 
     public NettyTransitServerGuide(NettyServerBootstrapSetting setting) {
         super(setting);
-        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddresses());
+        this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
     }
 
     @Override

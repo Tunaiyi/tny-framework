@@ -22,13 +22,13 @@ public abstract class NettyBytesWaster {
     // 总废字节数
     protected int totalWasteByteSize;
 
-    public NettyBytesWaster(DataPackager packager, boolean waste, DataPacketV1Config config) {
+    public NettyBytesWaster(DataPackageContext packager, boolean waste, DataPacketV1Config config) {
         if (waste) {
             this.wasteBitSize = packager.getPacketCode() % config.getMaxWasteBitSize();
-            this.fullWasteByteSize = wasteBitSize / 8;
-            this.rightShiftBits = wasteBitSize % 8;
-            this.leftShiftBits = 8 - rightShiftBits;
-            this.totalWasteByteSize = fullWasteByteSize + (rightShiftBits == 0 ? 0 : 1);          // 总废字节数
+            this.fullWasteByteSize = this.wasteBitSize / 8;
+            this.rightShiftBits = this.wasteBitSize % 8;
+            this.leftShiftBits = 8 - this.rightShiftBits;
+            this.totalWasteByteSize = this.fullWasteByteSize + (this.rightShiftBits == 0 ? 0 : 1);          // 总废字节数
         } else {
             this.wasteBitSize = 0;
             this.fullWasteByteSize = 0;
@@ -39,24 +39,23 @@ public abstract class NettyBytesWaster {
     }
 
     public int getWasteBitSize() {
-        return wasteBitSize;
+        return this.wasteBitSize;
     }
 
     public int getFullWasteByteSize() {
-        return fullWasteByteSize;
+        return this.fullWasteByteSize;
     }
 
     public int getRightShiftBits() {
-        return rightShiftBits;
+        return this.rightShiftBits;
     }
 
     public int getLeftShiftBits() {
-        return leftShiftBits;
+        return this.leftShiftBits;
     }
 
     public int getTotalWasteByteSize() {
-        return totalWasteByteSize;
+        return this.totalWasteByteSize;
     }
-
 
 }

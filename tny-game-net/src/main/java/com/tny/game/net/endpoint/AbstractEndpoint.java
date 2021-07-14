@@ -168,7 +168,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
     }
 
     @Override
-    public SendContext<UID> send(NetTunnel<UID> tunnel, MessageContext<UID> context) {
+    public SendContext send(NetTunnel<UID> tunnel, MessageContext context) {
         try {
             tryCreateFuture(context);
             if (this.isClosed()) {
@@ -254,7 +254,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
     }
 
     @Override
-    public SendContext<UID> send(MessageContext<UID> messageContext) {
+    public SendContext send(MessageContext messageContext) {
         return this.send(null, messageContext);
     }
 
@@ -278,8 +278,8 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
     }
 
     @Override
-    public void writeMessage(NetTunnel<UID> tunnel, MessageContext<UID> context) {
-        MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
+    public void writeMessage(NetTunnel<UID> tunnel, MessageContext context) {
+        MessageFactory messageFactory = this.tunnel.getMessageFactory();
         Message message = messageFactory.create(createMessageId(), context);
         RespondFuture respondFuture = context.getRespondFuture();
         if (respondFuture != null) {
@@ -296,8 +296,8 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
     }
 
     @Override
-    public Message make(MessageContext<UID> context) {
-        MessageFactory<UID> messageFactory = this.tunnel.getMessageFactory();
+    public Message make(MessageContext context) {
+        MessageFactory messageFactory = this.tunnel.getMessageFactory();
         Message message = messageFactory.create(createMessageId(), context);
         this.tryCreateFuture(context);
         RespondFuture respondFuture = context.getRespondFuture();
@@ -308,7 +308,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
         return message;
     }
 
-    private void tryCreateFuture(MessageContext<UID> context) {
+    private void tryCreateFuture(MessageContext context) {
         if (context.isNeedResponseFuture() || context.isNeedWriteFuture()) {
             WriteMessagePromise promise = as(context.getWriteMessageFuture());
             if (promise == null) {

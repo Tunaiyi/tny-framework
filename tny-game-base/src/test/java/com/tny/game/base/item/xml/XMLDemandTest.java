@@ -6,10 +6,11 @@ import com.tny.game.common.collection.map.*;
 import com.tny.game.common.result.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
-import org.junit.Test;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class XMLDemandTest {
 
@@ -105,20 +106,20 @@ public class XMLDemandTest {
 
     @Test
     public void testGetItemId() {
-        Assert.assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<>()));
-        Assert.assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<>()));
+        assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<>()));
+        assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<>()));
     }
 
     @Test
     public void testGetName() {
-        Assert.assertEquals(null, this.demand.getName());
-        Assert.assertEquals(ITEM_NAME, this.stuffDemand.getName());
+        assertEquals(null, this.demand.getName());
+        assertEquals(ITEM_NAME, this.stuffDemand.getName());
     }
 
     @Test
     public void testGetDemandType() {
-        Assert.assertEquals(this.demandType, this.demand.getDemandType());
-        Assert.assertEquals(XMLDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
+        assertEquals(this.demandType, this.demand.getDemandType());
+        assertEquals(XMLDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
     }
 
     MapRef<String, Object> ref = new MapRef<String, Object>() {
@@ -127,34 +128,34 @@ public class XMLDemandTest {
     @Test
     public void testIsSatisfy() {
 
-        Assert.assertFalse(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertFalse(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 
         this.item.setNumber(101);
-        Assert.assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 
         this.item.setNumber(100);
-        Assert.assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 
         this.item.setLevel(4);
-        Assert.assertFalse(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertFalse(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
         this.item.setLevel(14);
-        Assert.assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
         this.item.setLevel(10);
-        Assert.assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
     }
 
     @Test
     public void testCountExpectValue() {
-        Assert.assertEquals(100, this.stuffDemand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
-        Assert.assertEquals(10, this.demand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(100, this.stuffDemand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(10, this.demand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
     }
 
     @Test
     public void testCountCurrentValue() {
         this.item.setNumber(0);
-        Assert.assertEquals(0, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(0, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
         this.item.setNumber(101);
-        Assert.assertEquals(101, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(101, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
     }
 
 }

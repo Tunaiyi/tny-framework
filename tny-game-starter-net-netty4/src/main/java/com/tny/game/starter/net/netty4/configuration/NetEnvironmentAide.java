@@ -16,12 +16,8 @@ public interface NetEnvironmentAide {
     String APP_CONTEXT_BEAN_NAME = "appContext";
 
     String NET_HEAD = key(HEAD_KEY, "net");
-    String NET_CHANNEL_NODE = "channel";
-    String NET_ENCODER_NODE = "encoder";
-    String NET_DECODER_NODE = "decoder";
     String CLASS_NODE = "class";
     String SETTING_CLASS_NODE = "setting-class";
-    String NET_NAMES_NODE = "names";
 
     String SERVER_HEAD = key(NET_HEAD, "server");
 

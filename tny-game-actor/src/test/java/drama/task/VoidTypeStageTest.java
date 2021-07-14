@@ -4,7 +4,7 @@ package drama.task;
 import com.tny.game.actor.stage.*;
 import com.tny.game.actor.stage.invok.*;
 import org.jmock.Expectations;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.function.*;
 

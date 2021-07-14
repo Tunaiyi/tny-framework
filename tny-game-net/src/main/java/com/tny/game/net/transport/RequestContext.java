@@ -7,27 +7,27 @@ import static com.tny.game.net.transport.TransportConstants.*;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class RequestContext<UID> extends MessageContext<UID> {
+public abstract class RequestContext extends MessageContext {
 
     /**
      * @param body 设置 Message Body
      * @return 返回 context 自身
      */
     @Override
-    public abstract RequestContext<UID> setBody(Object body);
+    public abstract RequestContext setBody(Object body);
 
-    public RequestContext<UID> willResponseFuture() {
+    public RequestContext willResponseFuture() {
         return willResponseFuture(RespondFuture.DEFAULT_FUTURE_TIMEOUT);
     }
 
-    public abstract RequestContext<UID> willResponseFuture(long timeoutMills);
+    public abstract RequestContext willResponseFuture(long timeoutMills);
 
     @Override
-    public RequestContext<UID> willWriteFuture() {
+    public RequestContext willWriteFuture() {
         return willWriteFuture(TIMEOUT_NEVER);
     }
 
     @Override
-    public abstract RequestContext<UID> willWriteFuture(long timeoutMills);
+    public abstract RequestContext willWriteFuture(long timeoutMills);
 
 }

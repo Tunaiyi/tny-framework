@@ -1,8 +1,10 @@
 package com.tny.game.asyndb;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AsyncDBEntityTest {
 
@@ -66,7 +68,7 @@ public class AsyncDBEntityTest {
 
     private AsyncDBEntity create(AsyncDBState state) {
         Object object = new long[3];
-        AsyncDBEntity entity = new AsyncDBEntity(object, this.synchronizer, state, this.factory.createStrategy(object, life));
+        AsyncDBEntity entity = new AsyncDBEntity(object, this.synchronizer, state, this.factory.createStrategy(object, this.life));
         return entity;
     }
 
@@ -76,24 +78,24 @@ public class AsyncDBEntityTest {
     //
     //		entity = this.create(AsynDBState.NORMAL);
     //		Object value = entity.getValue();
-    //		Assert.assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
     //		entity = this.create(AsynDBState.NORMAL);
     //		entity.mark(Operation.DELETE, value);
-    //		Assert.assertTrue(entity.trySync(1));
-    //		Assert.assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
     //
     //
     //		entity = this.create(AsynDBState.DELETE);
     //		entity.mark(Operation.INSERT, value);
-    //		Assert.assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
     //
     //		entity = this.create(AsynDBState.NORMAL);
     //		entity.mark(Operation.SAVE, value);
-    //		Assert.assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
     //
     //		entity = this.create(AsynDBState.NORMAL);
     //		entity.mark(Operation.UPDATE, value);
-    //		Assert.assertTrue(entity.trySync(1));
+    //		assertTrue(entity.trySync(1));
     //	}
 
     @Test
@@ -135,30 +137,30 @@ public class AsyncDBEntityTest {
     public void testTryVisit() {
         AsyncDBEntity entity = null;
         entity = this.create(AsyncDBState.NORMAL);
-        Assert.assertTrue(entity.tryVisit());
+        assertTrue(entity.tryVisit());
         entity = this.create(AsyncDBState.DELETE);
-        Assert.assertTrue(entity.tryVisit());
+        assertTrue(entity.tryVisit());
         entity = this.create(AsyncDBState.INSERT);
-        Assert.assertTrue(entity.tryVisit());
+        assertTrue(entity.tryVisit());
         entity = this.create(AsyncDBState.SAVE);
-        Assert.assertTrue(entity.tryVisit());
+        assertTrue(entity.tryVisit());
         entity = this.create(AsyncDBState.UPDATE);
-        Assert.assertTrue(entity.tryVisit());
+        assertTrue(entity.tryVisit());
     }
 
     @Test
     public void testVisit() {
         AsyncDBEntity entity = null;
         entity = this.create(AsyncDBState.NORMAL);
-        Assert.assertNotNull(entity.visit());
+        assertNotNull(entity.visit());
         entity = this.create(AsyncDBState.DELETE);
-        Assert.assertNotNull(entity.visit());
+        assertNotNull(entity.visit());
         entity = this.create(AsyncDBState.INSERT);
-        Assert.assertNotNull(entity.visit());
+        assertNotNull(entity.visit());
         entity = this.create(AsyncDBState.SAVE);
-        Assert.assertNotNull(entity.visit());
+        assertNotNull(entity.visit());
         entity = this.create(AsyncDBState.UPDATE);
-        Assert.assertNotNull(entity.visit());
+        assertNotNull(entity.visit());
     }
 
     @Test
@@ -173,24 +175,24 @@ public class AsyncDBEntityTest {
         while (index++ < releaseTime) {
             System.gc();
         }
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         index = 0;
         while (!entity.release(System.currentTimeMillis())) {
             index++;
             System.gc();
         }
         System.out.println(releaseTime = index);
-        Assert.assertTrue(entity.release(System.currentTimeMillis()));
+        assertTrue(entity.release(System.currentTimeMillis()));
 
         // DELETE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
         entity.mark(Operation.DELETE, entity.getObject());
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
         }
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         entity.trySync();
         index = 0;
         while (!entity.release(System.currentTimeMillis())) {
@@ -198,37 +200,37 @@ public class AsyncDBEntityTest {
             System.gc();
         }
         System.out.println(releaseTime = index);
-        Assert.assertTrue(entity.release(System.currentTimeMillis()));
+        assertTrue(entity.release(System.currentTimeMillis()));
 
         // INSERT
         index = 0;
         entity = this.create(AsyncDBState.DELETE);
         entity.mark(Operation.INSERT, entity.getObject());
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
         }
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
 
         // SAVE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
         entity.mark(Operation.SAVE, entity.getObject());
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
         }
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
 
         // UPDATE
         index = 0;
         entity = this.create(AsyncDBState.NORMAL);
         entity.mark(Operation.UPDATE, entity.getObject());
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
         while (index++ < releaseTime) {
             System.gc();
         }
-        Assert.assertFalse(entity.release(System.currentTimeMillis()));
+        assertFalse(entity.release(System.currentTimeMillis()));
     }
 
     public void sleep(long time) {
@@ -246,7 +248,7 @@ public class AsyncDBEntityTest {
         entity = this.create(state);
         Exception exception = null;
         try {
-            Assert.assertEquals(sumint, entity.mark(operation, entity.getObject()));
+            assertEquals(sumint, entity.mark(operation, entity.getObject()));
         } catch (AsyncDBReleaseException e) {
             System.out.println(operation + " AsynDBReleaseException");
             exception = e;
@@ -254,10 +256,11 @@ public class AsyncDBEntityTest {
             System.out.println(operation + " SumitAtWrongStateException");
             exception = e;
         }
-        if (clazz == null)
-            Assert.assertNull(exception);
-        else
-            Assert.assertTrue(clazz.isInstance(exception));
+        if (clazz == null) {
+            assertNull(exception);
+        } else {
+            assertTrue(clazz.isInstance(exception));
+        }
     }
 
 }

@@ -54,7 +54,7 @@ public class EndpointService {
         keeperOpt.ifPresent(k -> k.send2User(uid, toPush(protocol, resultCode, body)));
     }
 
-    private MessageContext<Object> toPush(Protocol protocol, ResultCode resultCode, Object body) {
+    private MessageContext toPush(Protocol protocol, ResultCode resultCode, Object body) {
         return MessageContexts
                 .push(protocol, resultCode, body);
     }
@@ -91,7 +91,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void pushByUid(String userType, Object uid, ResultCode resultCode, Object body) {
-        this.pushByUid(userType, uid, ProtocolAide.PUSH, resultCode, body);
+        this.pushByUid(userType, uid, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -102,7 +102,7 @@ public class EndpointService {
      * @param body     消息体
      */
     public void pushByUid(String userType, Object uid, Object body) {
-        this.pushByUid(userType, uid, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.pushByUid(userType, uid, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -112,7 +112,7 @@ public class EndpointService {
      * @param uid      用户ID
      */
     public void pushByUid(String userType, Object uid, CommandResult message) {
-        this.pushByUid(userType, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.pushByUid(userType, uid, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -157,7 +157,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void pushByUid(Object uid, ResultCode resultCode, Object body) {
-        this.pushByUid(DEFAULT_USER_TYPE, uid, ProtocolAide.PUSH, resultCode, body);
+        this.pushByUid(DEFAULT_USER_TYPE, uid, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -167,7 +167,7 @@ public class EndpointService {
      * @param body 消息体
      */
     public void pushByUid(Object uid, Object body) {
-        this.pushByUid(DEFAULT_USER_TYPE, uid, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.pushByUid(DEFAULT_USER_TYPE, uid, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -176,7 +176,7 @@ public class EndpointService {
      * @param uid 用户ID
      */
     public void pushByUid(Object uid, CommandResult message) {
-        this.pushByUid(DEFAULT_USER_TYPE, uid, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.pushByUid(DEFAULT_USER_TYPE, uid, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -225,7 +225,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2User(String userType, Identifier user, ResultCode resultCode, Object body) {
-        this.push2User(userType, user, ProtocolAide.PUSH, resultCode, body);
+        this.push2User(userType, user, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -236,7 +236,7 @@ public class EndpointService {
      * @param body     消息体
      */
     public void push2User(String userType, Identifier user, Object body) {
-        this.push2User(userType, user, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2User(userType, user, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -246,7 +246,7 @@ public class EndpointService {
      * @param user     可标识用户的对象
      */
     public void push2User(String userType, Identifier user, CommandResult message) {
-        this.push2User(userType, user, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2User(userType, user, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -290,7 +290,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2User(Identifier user, ResultCode resultCode, Object body) {
-        this.push2User(DEFAULT_USER_TYPE, user, ProtocolAide.PUSH, resultCode, body);
+        this.push2User(DEFAULT_USER_TYPE, user, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -300,7 +300,7 @@ public class EndpointService {
      * @param body 消息体
      */
     public void push2User(Identifier user, Object body) {
-        this.push2User(DEFAULT_USER_TYPE, user, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2User(DEFAULT_USER_TYPE, user, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -309,7 +309,7 @@ public class EndpointService {
      * @param user 可标识用户的对象
      */
     public void push2User(Identifier user, CommandResult message) {
-        this.push2User(DEFAULT_USER_TYPE, user, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2User(DEFAULT_USER_TYPE, user, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -358,7 +358,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2Users(String userType, Stream<? extends Identifier> users, ResultCode resultCode, Object body) {
-        this.push2Users(userType, users, ProtocolAide.PUSH, resultCode, body);
+        this.push2Users(userType, users, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -369,7 +369,7 @@ public class EndpointService {
      * @param body     消息体
      */
     public void push2Users(String userType, Stream<? extends Identifier> users, Object body) {
-        this.push2Users(userType, users, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2Users(userType, users, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -379,7 +379,7 @@ public class EndpointService {
      * @param users    用户流
      */
     public void push2Users(String userType, Stream<? extends Identifier> users, CommandResult message) {
-        this.push2Users(userType, users, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2Users(userType, users, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -424,7 +424,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2Users(Stream<? extends Identifier> users, ResultCode resultCode, Object body) {
-        this.push2Users(DEFAULT_USER_TYPE, users, ProtocolAide.PUSH, resultCode, body);
+        this.push2Users(DEFAULT_USER_TYPE, users, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -434,7 +434,7 @@ public class EndpointService {
      * @param body  消息体
      */
     public void push2Users(Stream<? extends Identifier> users, Object body) {
-        this.push2Users(DEFAULT_USER_TYPE, users, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2Users(DEFAULT_USER_TYPE, users, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -443,7 +443,7 @@ public class EndpointService {
      * @param users 用户流
      */
     public void push2Users(Stream<? extends Identifier> users, CommandResult message) {
-        this.push2Users(DEFAULT_USER_TYPE, users, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2Users(DEFAULT_USER_TYPE, users, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -488,7 +488,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2Online(String userType, ResultCode resultCode, Object body) {
-        this.push2Online(userType, ProtocolAide.PUSH, resultCode, body);
+        this.push2Online(userType, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -498,7 +498,7 @@ public class EndpointService {
      * @param body     消息体
      */
     public void push2Online(String userType, Object body) {
-        this.push2Online(userType, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2Online(userType, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
@@ -507,7 +507,7 @@ public class EndpointService {
      * @param userType 用户组
      */
     public void push2Online(String userType, CommandResult message) {
-        this.push2Online(userType, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2Online(userType, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**
@@ -547,7 +547,7 @@ public class EndpointService {
      * @param body       消息体
      */
     public void push2Online(ResultCode resultCode, Object body) {
-        this.push2Online(DEFAULT_USER_TYPE, ProtocolAide.PUSH, resultCode, body);
+        this.push2Online(DEFAULT_USER_TYPE, Protocols.PUSH, resultCode, body);
     }
 
     /**
@@ -556,14 +556,14 @@ public class EndpointService {
      * @param body 消息体
      */
     public void push2Online(Object body) {
-        this.push2Online(DEFAULT_USER_TYPE, ProtocolAide.PUSH, NetResultCode.SUCCESS, body);
+        this.push2Online(DEFAULT_USER_TYPE, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
      * 推送消息给所有在线
      */
     public void push2Online(CommandResult message) {
-        this.push2Online(DEFAULT_USER_TYPE, ProtocolAide.PUSH, message.getResultCode(), message.getBody());
+        this.push2Online(DEFAULT_USER_TYPE, Protocols.PUSH, message.getResultCode(), message.getBody());
     }
 
     /**

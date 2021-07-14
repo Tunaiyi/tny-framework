@@ -372,12 +372,12 @@ public final class MethodControllerHolder extends ControllerHolder {
             } else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
                 this.paramType = ParamType.CODE;
             } else {
-                for (Annotation anno : this.paramAnnotations) {
-                    if (anno.annotationType() == MsgBody.class) {
+                for (Annotation annotation : this.paramAnnotations) {
+                    if (annotation.annotationType() == MsgBody.class) {
                         this.paramType = ParamType.BODY;
-                        this.require = ((MsgBody)anno).require();
-                    } else if (anno.annotationType() == MsgParam.class) {
-                        this.msgParam = (MsgParam)anno;
+                        this.require = ((MsgBody)annotation).require();
+                    } else if (annotation.annotationType() == MsgParam.class) {
+                        this.msgParam = (MsgParam)annotation;
                         this.require = this.msgParam.require();
                         if (StringUtils.isNoneBlank(this.msgParam.value())) {
                             this.name = this.msgParam.value();
@@ -392,9 +392,9 @@ public final class MethodControllerHolder extends ControllerHolder {
                             }
                             this.paramType = ParamType.INDEX_PARAM;
                         }
-                    } else if (anno.annotationType() == UserID.class) {
+                    } else if (annotation.annotationType() == UserID.class) {
                         this.paramType = ParamType.UserID;
-                    } else if (anno.annotationType() == MsgCode.class) {
+                    } else if (annotation.annotationType() == MsgCode.class) {
                         if (paramClass == Integer.class || paramClass == int.class) {
                             this.paramType = ParamType.CODE_NUM;
                         } else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
@@ -456,7 +456,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                             }
                         }
                         if (body instanceof List) {
-                            value = ((List)body).get(this.index);
+                            value = ((List<?>)body).get(this.index);
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {

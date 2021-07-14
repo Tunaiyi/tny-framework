@@ -1,7 +1,7 @@
 package com.tny.game.common.unit;
 
 import com.tny.game.test.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

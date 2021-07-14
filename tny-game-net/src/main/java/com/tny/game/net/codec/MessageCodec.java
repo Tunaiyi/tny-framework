@@ -4,9 +4,9 @@ import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.message.*;
 
 @UnitInterface
-public interface MessageCodec<UID> {
+public interface MessageCodec {
 
-    Message decode(byte[] bytes, MessageFactory<UID> factory) throws Exception;
+    Message decode(byte[] bytes, MessageFactory factory) throws Exception;
 
     byte[] encode(Message message) throws Exception;
 

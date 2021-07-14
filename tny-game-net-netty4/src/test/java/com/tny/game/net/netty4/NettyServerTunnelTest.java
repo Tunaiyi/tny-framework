@@ -29,7 +29,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 
     private TestGeneralServerTunnel newTunnel(boolean open) {
         TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(new NettyChannelTransporter<>(mockChannel()),
-                new NetBootstrapContext<>(null, null, new CommonMessageFactory<>(), null));
+                new NetBootstrapContext<>(null, null, new CommonMessageFactory(), null));
         if (open) {
             tunnel.open();
         }

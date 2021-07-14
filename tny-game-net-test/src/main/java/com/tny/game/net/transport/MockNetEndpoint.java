@@ -16,9 +16,9 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     private Certificate<Long> certificate;
 
-    private List<MessageContext<Long>> writeQueue = new ArrayList<>();
+    private List<MessageContext> writeQueue = new ArrayList<>();
 
-    private List<MessageContext<Long>> sendQueue = new ArrayList<>();
+    private List<MessageContext> sendQueue = new ArrayList<>();
 
     private List<Message> receiveQueue = new ArrayList<>();
 
@@ -49,13 +49,13 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     //    }
 
     @Override
-    public Message make(MessageContext<Long> context) {
+    public Message make(MessageContext context) {
         this.writeQueue.add(context);
         return null;
     }
 
     @Override
-    public void writeMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
+    public void writeMessage(NetTunnel<Long> tunnel, MessageContext context) {
         this.writeQueue.add(context);
     }
 
@@ -66,7 +66,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public SendContext<Long> send(NetTunnel<Long> tunnel, MessageContext<Long> messageContext) {
+    public SendContext send(NetTunnel<Long> tunnel, MessageContext messageContext) {
         this.sendQueue.add(messageContext);
         return messageContext;
     }
@@ -207,15 +207,15 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public SendContext<Long> send(MessageContext<Long> messageContext) {
+    public SendContext send(MessageContext messageContext) {
         return null;
     }
 
-    public List<MessageContext<Long>> getWriteQueue() {
+    public List<MessageContext> getWriteQueue() {
         return this.writeQueue;
     }
 
-    public List<MessageContext<Long>> getSendQueue() {
+    public List<MessageContext> getSendQueue() {
         return this.sendQueue;
     }
 

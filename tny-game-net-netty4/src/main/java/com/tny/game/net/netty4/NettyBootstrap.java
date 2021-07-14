@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.common.unit.*;
 import com.tny.game.net.base.*;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -19,6 +18,11 @@ public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends Ne
 
     public NettyBootstrap(S unitSetting) {
         super(unitSetting);
+    }
+
+    public NettyBootstrap(S unitSetting, ChannelMaker<Channel> channelMaker) {
+        super(unitSetting);
+        this.channelMaker = channelMaker;
     }
 
     protected static boolean isEpoll() {
@@ -67,7 +71,6 @@ public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends Ne
 
     @Override
     public void postPrepared(S setting) {
-        this.channelMaker = UnitLoader.getLoader(ChannelMaker.class).getUnitAnCheck(setting.getChannelMaker());
     }
 
 }
