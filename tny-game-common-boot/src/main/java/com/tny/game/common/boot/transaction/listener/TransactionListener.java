@@ -1,6 +1,6 @@
-package com.tny.game.starter.common.transaction.listener;
+package com.tny.game.common.boot.transaction.listener;
 
-import com.tny.game.starter.common.transaction.*;
+import com.tny.game.common.boot.transaction.*;
 
 public interface TransactionListener {
 

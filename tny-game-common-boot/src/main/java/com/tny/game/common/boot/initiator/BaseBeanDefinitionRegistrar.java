@@ -1,6 +1,6 @@
-package com.tny.game.starter.common.initiator;
+package com.tny.game.common.boot.initiator;
 
-import com.tny.game.starter.common.environment.*;
+import com.tny.game.common.boot.environment.*;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -10,7 +10,7 @@ import org.springframework.lang.*;
 
 import java.util.Set;
 
-import static com.tny.game.starter.common.environment.EnvironmentAide.*;
+import static com.tny.game.common.boot.environment.EnvironmentAide.*;
 
 /**
  * <p>

@@ -1,4 +1,4 @@
-package com.tny.game.starter.common.transaction;
+package com.tny.game.common.boot.transaction;
 
 public class TransactionManager {
 

@@ -1,7 +1,7 @@
-package com.tny.game.starter.common.transaction;
+package com.tny.game.common.boot.transaction;
 
+import com.tny.game.common.boot.transaction.listener.*;
 import com.tny.game.common.context.*;
-import com.tny.game.starter.common.transaction.listener.*;
 
 public class GameTransaction implements Transaction {
 

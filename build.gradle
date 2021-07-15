@@ -161,8 +161,8 @@ configure(moduleProjects) {
             inheritOutputDirs = false
             outputDir = compileJava.destinationDir
             testOutputDir = compileTestJava.destinationDir
-            downloadJavadoc = true
-            downloadSources = true
+            downloadJavadoc = false
+            downloadSources = false
         }
     }
 

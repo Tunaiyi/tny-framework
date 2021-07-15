@@ -1,4 +1,4 @@
-package com.tny.game.starter.common.initiator;
+package com.tny.game.common.boot.initiator;
 
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
@@ -27,8 +27,9 @@ public class UnitLoadInitiator implements AppPrepareStart {
             Unit unit = unitObject.getClass().getAnnotation(Unit.class);
             if (unit != null) {
                 Set<String> names = UnitLoader.register(unitObject);
-                if (!names.contains(k))
+                if (!names.contains(k)) {
                     UnitLoader.register(k, unitObject);
+                }
             } else {
                 UnitLoader.register(k, unitObject);
             }

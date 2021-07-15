@@ -1,4 +1,4 @@
-package com.tny.game.starter.common.initiator;
+package com.tny.game.common.boot.initiator;
 
 import com.tny.game.common.event.*;
 import com.tny.game.common.event.annotation.*;

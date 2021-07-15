@@ -1,7 +1,7 @@
 package com.tny.game.suite.scheduler.cache;
 
+import com.tny.game.common.boot.transaction.*;
 import com.tny.game.common.scheduler.*;
-import com.tny.game.starter.common.transaction.*;
 import com.tny.game.suite.scheduler.*;
 import org.slf4j.*;
 
@@ -40,9 +40,9 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
         final TaskReceiver receiver;
         if (dbReceiver == null) {
             receiver = TaskReceiverBuilder.create()
-                                          .setGroup(receiverType)
-                                          .setPlayerId(playerId)
-                                          .build();
+                    .setGroup(receiverType)
+                    .setPlayerId(playerId)
+                    .build();
             this.taskReceiverManager.insert(receiver);
         } else {
             receiver = dbReceiver;

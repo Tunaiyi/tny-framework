@@ -1,15 +1,15 @@
 package com.tny.game.starter.net.netty4.configuration.processor;
 
+import com.tny.game.common.boot.initiator.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.netty4.processor.disruptor.*;
-import com.tny.game.starter.common.initiator.*;
 import com.tny.game.starter.net.netty4.configuration.processor.disruptor.*;
 import com.tny.game.starter.net.netty4.configuration.processor.forkjoin.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
-import static com.tny.game.starter.common.environment.EnvironmentAide.*;
+import static com.tny.game.common.boot.environment.EnvironmentAide.*;
 
 /**
  * <p>

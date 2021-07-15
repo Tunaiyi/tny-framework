@@ -1,4 +1,4 @@
-package com.tny.game.starter.common.environment;
+package com.tny.game.common.boot.environment;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.*;
@@ -13,12 +13,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public interface EnvironmentAide {
 
-    String HEAD_KEY = "tny";
-
     String DEFAULT_NAME_KEY = "default";
-
-    // String APP_KEY = key(HEAD_KEY, "app");
-    // String APP_CONTEXT_BEAN_NAME = "appContext";
 
     static String getBeanName(String beanName, Class<?> unitInterface) {
         if (beanName.equals(DEFAULT_NAME_KEY)) {
@@ -42,7 +37,7 @@ public interface EnvironmentAide {
             MutablePropertySources propertySources = ((ConfigurableEnvironment)environment).getPropertySources();
             return StreamSupport.stream(propertySources.spliterator(), true)
                     .filter(EnumerablePropertySource.class::isInstance)
-                    .map(ps -> ((EnumerablePropertySource)ps).getPropertyNames())
+                    .map(ps -> ((EnumerablePropertySource<?>)ps).getPropertyNames())
                     .flatMap(Arrays::stream)
                     .filter(propName -> propName.startsWith(keyHead + "."))
                     .filter(propName -> !Objects.equals(propName, keyHead))
