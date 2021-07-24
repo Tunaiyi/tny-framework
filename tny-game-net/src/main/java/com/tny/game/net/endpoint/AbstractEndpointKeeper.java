@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.listener.*;
 import org.slf4j.*;

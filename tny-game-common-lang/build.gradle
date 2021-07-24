@@ -5,11 +5,10 @@ apply plugin: "maven"
 dependencies {
 
 //    api project(":tny-game-common")
+    api libs.guava
     api libs.commons_lang3
-    api libs.google_finbugs
+//    api libs.google_finbugs
 //    api libs.commons_codec
-//    api libs.commons_collections4
-//    api libs.guava
 //    api libs.cglib_nodep
 //    api libs.javassist
 

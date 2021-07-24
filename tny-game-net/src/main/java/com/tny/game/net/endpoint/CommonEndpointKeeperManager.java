@@ -78,7 +78,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
             String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
-        ThrowAide.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
+        Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
         return factory.createKeeper(userType, setting);
     }
 

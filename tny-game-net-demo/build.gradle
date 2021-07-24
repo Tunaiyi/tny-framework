@@ -16,6 +16,8 @@ dependencies {
     implementation libs.log4j_core
     implementation libs.log4j_slf4j_impl
     implementation libs.disruptor
+
+    implementation libs.jprotobuf
     implementation libs.spring_boot_starter_log4j2
     implementation project(":tny-game-starter-net-netty4")
     implementation project(":tny-game-net-codec-jprotobuf")

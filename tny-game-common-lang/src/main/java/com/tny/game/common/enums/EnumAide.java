@@ -16,41 +16,44 @@ public class EnumAide {
     private static final Map<Class<?>, Map<String, Object>> enumMap = new ConcurrentHashMap<>();
 
     public static <I, E extends EnumIdentifiable<I>> E of(Class<E> enumClass, I id) {
-        return ThrowAide.checkNotNull(uncheckOf(enumClass, id),
+        return Asserts.checkNotNull(uncheckOf(enumClass, id),
                 "ID 为 {} 的 {} 枚举实例不存在", id, enumClass);
     }
 
     public static <E> E ofName(Class<E> enumClass, String name) {
-        return ThrowAide.checkNotNull(uncheckOfName(enumClass, name),
+        return Asserts.checkNotNull(uncheckOfName(enumClass, name),
                 "ID 为 {} 的 {} 枚举实例不存在", name, enumClass);
     }
 
     public static <E extends Enum<E>, S> E of(Class<E> enumClass, Function<E, S> getter, S value) {
-        return ThrowAide.checkNotNull(uncheckOf(enumClass, getter, value),
+        return Asserts.checkNotNull(uncheckOf(enumClass, getter, value),
                 "{} 为 {} 的 {} 枚举实例不存在", getter, value, enumClass);
     }
 
     public static <E, S> Set<E> find(Class<E> enumClass, Function<E, S> getter, Collection<? extends S> value) {
         Set<E> enums = new HashSet<>();
         for (E e : enumClass.getEnumConstants()) {
-            if (value.contains(getter.apply(e)))
+            if (value.contains(getter.apply(e))) {
                 enums.add(e);
+            }
         }
         return enums;
     }
 
     public static <E, S> E uncheckOf(Class<E> enumClass, Function<E, S> getter, S value) {
         for (E e : enumClass.getEnumConstants()) {
-            if (Objects.equals(getter.apply(e), value))
+            if (Objects.equals(getter.apply(e), value)) {
                 return e;
+            }
         }
         return null;
     }
 
     public static <I, E extends EnumIdentifiable<I>> E uncheckOf(Class<E> enumClass, I id) {
         for (E e : enumClass.getEnumConstants()) {
-            if (e.getId().equals(id))
+            if (e.getId().equals(id)) {
                 return e;
+            }
         }
         return null;
     }
@@ -60,7 +63,7 @@ public class EnumAide {
             return ObjectAide.as(enumMap.computeIfAbsent(enumClass, c -> {
                 try {
                     Method method = c.getMethod("values");
-                    Object[] inter = (Object[]) method.invoke(null);
+                    Object[] inter = (Object[])method.invoke(null);
                     Map<String, Object> builder = new HashMap<>();
                     for (Object e : inter) {
                         builder.put(e.toString(), e);

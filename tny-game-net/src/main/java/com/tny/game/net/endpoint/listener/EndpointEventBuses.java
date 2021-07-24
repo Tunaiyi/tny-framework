@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint.listener;
 
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 
@@ -40,16 +40,15 @@ public class EndpointEventBuses extends BaseEventBuses<EndpointListener> {
     // }
 
     public BindVoidEventBus<EndpointOnlineListener, Endpoint> onlineEvent() {
-        return ON_ONLINE;
+        return this.ON_ONLINE;
     }
 
     public BindVoidEventBus<EndpointOfflineListener, Endpoint> offlineEvent() {
-        return ON_OFFLINE;
+        return this.ON_OFFLINE;
     }
 
     public BindVoidEventBus<EndpointCloseListener, Endpoint> closeEvent() {
-        return ON_CLOSE;
+        return this.ON_CLOSE;
     }
-
 
 }

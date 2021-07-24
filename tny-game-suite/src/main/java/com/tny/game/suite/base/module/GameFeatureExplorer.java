@@ -22,23 +22,25 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     }
 
     protected GameFeatureExplorer(Set<Feature> openedFeatures, Set<Module> openedModules) {
-        ThrowAide.checkNotNull(openedFeatures);
-        ThrowAide.checkNotNull(openedModules);
+        Asserts.checkNotNull(openedFeatures);
+        Asserts.checkNotNull(openedModules);
         this.openedModules = new AtomicReference<>(ImmutableSet.copyOf(openedModules));
         this.openedFeatures = new AtomicReference<>(ImmutableSet.copyOf(openedFeatures));
     }
 
     protected <T> boolean open(AtomicReference<Set<T>> ref, T value) {
         Set<T> set = ref.get();
-        if (set.contains(value))
+        if (set.contains(value)) {
             return false;
+        }
         while (true) {
             Set<T> newSet = ImmutableSet.<T>builder()
                     .addAll(set)
                     .add(value)
                     .build();
-            if (ref.compareAndSet(set, newSet))
+            if (ref.compareAndSet(set, newSet)) {
                 return true;
+            }
         }
 
     }
@@ -77,4 +79,5 @@ public abstract class GameFeatureExplorer implements FeatureExplorer {
     public Set<Feature> getOpenedFeatures() {
         return this.openedFeatures.get();
     }
+
 }

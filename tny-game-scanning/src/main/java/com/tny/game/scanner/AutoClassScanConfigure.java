@@ -15,7 +15,7 @@ public final class AutoClassScanConfigure {
 
     private final static String FACTORY_FILE_PATH = "META-INF/tny-factory.properties";
 
-    private static ConcurrentMap<Class<?>, Set<Class<?>>> CLASSES_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, Set<Class<?>>> CLASSES_MAP = new ConcurrentHashMap<>();
 
     private AutoClassScanConfigure() {
     }
@@ -33,21 +33,23 @@ public final class AutoClassScanConfigure {
                     properties.load(stream);
                 } catch (IOException ex) {
                     if (con instanceof HttpURLConnection) {
-                        ((HttpURLConnection) con).disconnect();
+                        ((HttpURLConnection)con).disconnect();
                     }
                     throw ex;
                 }
                 for (Entry<Object, Object> entry : properties.entrySet()) {
-                    if (entry == null)
+                    if (entry == null) {
                         continue;
+                    }
                     String classesValue = entry.getValue().toString();
                     String keyValue = entry.getKey().toString();
                     String[] classes = StringUtils.split(classesValue, ",");
                     Set<Class<?>> set = CLASSES_MAP.computeIfAbsent(Class.forName(keyValue), (k) -> new CopyOnWriteArraySet<>());
                     Set<Class<?>> temp = new HashSet<>();
                     for (String clazz : classes) {
-                        if (StringUtils.isNoneBlank(clazz))
+                        if (StringUtils.isNoneBlank(clazz)) {
                             temp.add(Class.forName(clazz));
+                        }
                     }
                     set.addAll(temp);
                 }
@@ -61,4 +63,5 @@ public final class AutoClassScanConfigure {
     public static Set<Class<?>> getClasses(Class<?> clazz) {
         return CLASSES_MAP.getOrDefault(clazz, Collections.emptySet());
     }
+
 }

@@ -1,6 +1,5 @@
 package com.tny.game.suite.cluster;
 
-
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.utils.*;
@@ -31,7 +30,7 @@ public class AppURLPaths {
             this.appType = serverType;
             String key = Configs.PATH_HEAD + serverType + "." + name;
             this.path = Configs.PROTOCOLS_CONFIG.getStr(key, defaultPath);
-            ThrowAide.checkNotNull(this.path, "{} path is null", key);
+            Asserts.checkNotNull(this.path, "{} path is null", key);
         }
 
         @Override
@@ -57,9 +56,11 @@ public class AppURLPaths {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("name", this.name)
-                              .add("path", this.path)
-                              .toString();
+                    .add("name", this.name)
+                    .add("path", this.path)
+                    .toString();
         }
+
     }
+
 }

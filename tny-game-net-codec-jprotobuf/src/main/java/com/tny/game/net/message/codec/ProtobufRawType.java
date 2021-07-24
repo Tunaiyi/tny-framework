@@ -26,7 +26,7 @@ final class ClassTypeMapHolder {
 
 public enum ProtobufRawType implements EnumIdentifiable<Byte> {
 
-    NULL(PROTOBUF_RAW_TYPE_ID_NULL, null, null, null),
+    NULL(PROTOBUF_RAW_TYPE_ID_NULL, null, (out, v) -> ObjectAide.noOps(), (in) -> null),
 
     BYTE(PROTOBUF_RAW_TYPE_ID_BYTE, Byte.class, ProtoExOutputStream::writeByte, ProtoExInputStream::readByte),
 
@@ -81,7 +81,7 @@ public enum ProtobufRawType implements EnumIdentifiable<Byte> {
         this.valueWriter = as(valueWriter);
         this.valueReader = as(valueReader);
         ProtobufRawType old = ClassTypeMapHolder.CLASS_TYPE_MAP.put(classTypes, this);
-        ThrowAide.checkArgument(old == null,
+        Asserts.checkArgument(old == null,
                 "{} 与 {} 都关联 Class {}", this, old, classTypes);
     }
 

@@ -5,7 +5,6 @@ apply plugin: "maven"
 dependencies {
 
     api project(":tny-game-expr")
-    api project(":tny-game-common-collection")
     api project(":tny-game-common-base")
     api libs.mvel
 

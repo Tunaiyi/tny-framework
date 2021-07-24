@@ -31,6 +31,10 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
             LoginDTO dto = as(value);
             return factory.certificate(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
         }
+        if (value instanceof UserLoginResultDTO) {
+            UserLoginResultDTO dto = as(value);
+            return factory.certificate(System.currentTimeMillis(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
+        }
         throw new ValidationException("登录失败");
     }
 

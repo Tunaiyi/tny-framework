@@ -40,10 +40,9 @@ public class CacheEntry<K extends Comparable<K>, O> {
      */
     private boolean replaceable;
 
-
     CacheEntry(K id, O object, boolean replaceable, ReleaseStrategy<K, O> releaseStrategy) {
-        this.setValue(ThrowAide.checkNotNull(id, "{} id is null", object),
-                ThrowAide.checkNotNull(object, "{} value is null", id));
+        this.setValue(Asserts.checkNotNull(id, "{} id is null", object),
+                Asserts.checkNotNull(object, "{} value is null", id));
         this.releaseStrategy = releaseStrategy;
         this.replaceable = replaceable;
         this.visit();
@@ -66,7 +65,6 @@ public class CacheEntry<K extends Comparable<K>, O> {
         return this.object.get();
     }
 
-
     /**
      * 尝试访问对象
      *
@@ -83,11 +81,12 @@ public class CacheEntry<K extends Comparable<K>, O> {
      * @return 返回是否替换成功
      */
     boolean replace(K id, O object) {
-        ThrowAide.checkArgument(this.id.equals(id), "current id {} not equals id {}", this.id, id);
+        Asserts.checkArgument(this.id.equals(id), "current id {} not equals id {}", this.id, id);
         this.lock.lock();
         try {
-            if (!this.tryVisit())
+            if (!this.tryVisit()) {
                 return false;
+            }
             O returnObject = this.object.get();
             if (returnObject != object) {
                 this.setValue(id, object);
@@ -136,7 +135,6 @@ public class CacheEntry<K extends Comparable<K>, O> {
             this.lock.unlock();
         }
     }
-
 
     /**
      * 释放对象

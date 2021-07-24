@@ -8,9 +8,9 @@ import com.tny.game.net.demo.common.*;
 import com.tny.game.net.demo.common.dto.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.netty4.appliaction.*;
+import com.tny.game.net.netty4.configuration.annotation.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.starter.net.netty4.appliaction.*;
-import com.tny.game.starter.net.netty4.configuration.annotation.*;
 import org.slf4j.*;
 import org.springframework.boot.*;
 import org.springframework.context.ApplicationContext;
@@ -49,23 +49,42 @@ public class GameClientApp {
             ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
             long userId = 1000;
             AtomicInteger times = new AtomicInteger();
-            Client<Long> client = clientGuide.connect(URL.valueOf("protoex://127.0.0.1:16800"), tunnel -> {
-                tunnel.setAccessId(4000);
-                String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
-                System.out.println("!!@   [发送] 请求 = " + message);
-                SendContext context = tunnel
-                        .send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-                                .willWriteFuture(30000L)
-                                .willResponseFuture(30000L));
-                try {
-                    Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
-                    System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                return true;
-            });
+            Client<Long> client = clientGuide.connect(URL.valueOf("protoex://127.0.0.1:16800"),
+                    tunnel -> {
+                        tunnel.setAccessId(4000);
+                        String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
+                        System.out.println("!!@   [发送] 请求 = " + message);
+                        SendContext context = tunnel
+                                .send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
+                                        .willWriteFuture(30000L)
+                                        .willResponseFuture(30000L));
+                        try {
+                            Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
+                            System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return false;
+                        }
+                        return true;
+                    });
+            //            Client<Long> client = clientGuide.connect(URL.valueOf("protoex://127.0.0.1:2100"),
+            //                    tunnel -> {
+            //                        tunnel.setAccessId(4000);
+            //                        String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
+            //                        System.out.println("!!@   [发送] 请求 = " + message);
+            //                        SendContext context = tunnel
+            //                                .send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.GAME_LOGIN$LOGIN), userId)
+            //                                        .willWriteFuture(30000L)
+            //                                        .willResponseFuture(30000L));
+            //                        try {
+            //                            Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
+            //                            System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));
+            //                        } catch (Exception e) {
+            //                            e.printStackTrace();
+            //                            return false;
+            //                        }
+            //                        return true;
+            //                    });
             application.waitForConsole("q", (cmd, cmds) -> {
                 if (cmd.startsWith("@t ")) {
                     if (cmds.length > 4) {

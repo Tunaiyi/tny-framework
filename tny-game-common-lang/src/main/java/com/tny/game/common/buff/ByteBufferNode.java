@@ -1,12 +1,13 @@
 package com.tny.game.common.buff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class ByteBufferNode {
 
     public static final int DEFAULT_INIT_BUFFER_SIZE = 128;
 
-    private byte[] buffer;
+    private final byte[] buffer;
 
     private final int start;
 
@@ -21,8 +22,9 @@ public class ByteBufferNode {
     }
 
     public static ByteBufferNode cutBuffer(ByteBufferNode node) {
-        if (node.isSealed() || node.remainSize() == 0)
+        if (node.isSealed() || node.remainSize() == 0) {
             return null;
+        }
         ByteBufferNode cutOne = new ByteBufferNode(node.buffer, node.offset, node.offset, node.limitLength);
         node.seal();
         return cutOne;
@@ -46,6 +48,14 @@ public class ByteBufferNode {
 
     public static ByteBufferNode wrapBuffer(byte[] buffer, int start, int offset) {
         return new ByteBufferNode(buffer, start, offset);
+    }
+
+    public static ByteBufferNode wrapBuffer(byte[] buffer, int start, int offset, int limitLength) {
+        return new ByteBufferNode(buffer, start, offset, limitLength);
+    }
+
+    public static ByteBufferNode wrapBuffer(ByteBuffer buffer, boolean readable) {
+        return new ByteBufferNode(buffer.array(), buffer.arrayOffset(), readable ? buffer.limit() : 0, buffer.remaining());
     }
 
     private ByteBufferNode(ByteBufferNode node) {
@@ -93,8 +103,9 @@ public class ByteBufferNode {
     }
 
     public int length() {
-        if (this.limitLength >= 0)
+        if (this.limitLength >= 0) {
             return this.limitLength;
+        }
         return this.offset - this.start;
     }
 
@@ -117,24 +128,27 @@ public class ByteBufferNode {
     //	}
 
     public int write(byte value) throws IOException {
-        if (this.isSealed())
+        if (this.isSealed()) {
             throw new IOException("bufferNode is sealed!");
+        }
         this.buffer[this.offset] = value;
         this.offset++;
         return 1;
     }
 
     public int write(byte[] data) throws IOException {
-        if (this.isSealed())
+        if (this.isSealed()) {
             throw new IOException("bufferNode is sealed!");
+        }
         System.arraycopy(data, 0, this.buffer, this.offset, data.length);
         this.offset += data.length;
         return data.length;
     }
 
     public int write(byte[] data, int start, int length) throws IOException {
-        if (this.isSealed())
+        if (this.isSealed()) {
             throw new IOException("bufferNode is sealed!");
+        }
         System.arraycopy(data, start, this.buffer, this.offset, length);
         this.offset += data.length;
         return data.length;
@@ -145,17 +159,20 @@ public class ByteBufferNode {
     }
 
     public static String toString(byte[] a, int start, int offset) {
-        if (a == null)
+        if (a == null) {
             return "null";
-        if (start == offset)
+        }
+        if (start == offset) {
             return "[]";
+        }
 
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = start; ; i++) {
             b.append(a[i]);
-            if (i == offset - 1)
+            if (i == offset - 1) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }

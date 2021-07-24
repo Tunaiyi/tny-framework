@@ -1,0 +1,18 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api project(":tny-game-common-lang")
+//    api libs.guava
+    api libs.spring_core
+    
+    api libs.commons_lang3
+    api libs.commons_collections4
+//    api libs.google_finbugs
+//    api libs.commons_codec
+//    api libs.cglib_nodep
+//    api libs.javassist
+
+}

@@ -43,7 +43,7 @@ public class Capacities {
     }
 
     public static CapacityGroup getGroup(int id) {
-        return ThrowAide.checkNotNull(groupMap.get(id), "CapacityGroup [{}] is not exist", id);
+        return Asserts.checkNotNull(groupMap.get(id), "CapacityGroup [{}] is not exist", id);
     }
 
 }

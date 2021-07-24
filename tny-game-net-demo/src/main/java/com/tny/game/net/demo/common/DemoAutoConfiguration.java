@@ -1,7 +1,6 @@
 package com.tny.game.net.demo.common;
 
-import com.tny.game.net.message.codec.*;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Game Suite 的默认配置
@@ -9,10 +8,10 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 public class DemoAutoConfiguration {
-
-    @Bean
-    public JProtobufMessageBodyCodec<?> protobufBodyCodec() {
-        return new JProtobufMessageBodyCodec<>();
-    }
+    
+    //    @Bean
+    //    public JProtobufMessageBodyCodec<?> protobufBodyCodec() {
+    //        return new JProtobufMessageBodyCodec<>();
+    //    }
 
 }

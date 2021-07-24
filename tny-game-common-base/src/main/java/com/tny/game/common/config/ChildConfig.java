@@ -1,6 +1,5 @@
 package com.tny.game.common.config;
 
-
 import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,8 +21,8 @@ class ChildConfig implements Config {
     private String subKeyHead;
 
     ChildConfig(String parentKey, String delimiter, Config parent) {
-        ThrowAide.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
-        ThrowAide.checkNotNull(parent, "parent 不可为null");
+        Asserts.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Asserts.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
@@ -31,14 +30,13 @@ class ChildConfig implements Config {
     }
 
     private ChildConfig(String parentKey, String subKeyHead, String delimiter, Config parent) {
-        ThrowAide.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
-        ThrowAide.checkNotNull(parent, "parent 不可为null");
+        Asserts.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Asserts.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
         String del = delimiter == null ? "." : delimiter;
         this.subKeyHead = subKeyHead + del;
     }
-
 
     @Override
     public Config child(String key) {
@@ -47,7 +45,7 @@ class ChildConfig implements Config {
 
     @Override
     public Config child(String key, String delimiter) {
-        ThrowAide.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
+        Asserts.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
         String subKey = key.replace(this.subKeyHead, "");
         return new ChildConfig(key, subKey, delimiter, this);
     }
@@ -160,23 +158,23 @@ class ChildConfig implements Config {
     @Override
     public Set<Entry<String, Object>> entrySet() {
         return this.parent.entrySet().stream()
-                          .filter((e) -> e.getKey().startsWith(this.subKeyHead))
-                          .collect(Collectors.toSet());
+                .filter((e) -> e.getKey().startsWith(this.subKeyHead))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> keySet() {
         return this.parent.keySet().stream()
-                          .filter((e) -> e.startsWith(this.subKeyHead))
-                          .collect(Collectors.toSet());
+                .filter((e) -> e.startsWith(this.subKeyHead))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Object> values() {
         return this.parent.entrySet().stream()
-                          .filter(e -> e.getKey().startsWith(this.subKeyHead))
-                          .map(Entry::getValue)
-                          .collect(Collectors.toList());
+                .filter(e -> e.getKey().startsWith(this.subKeyHead))
+                .map(Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     @Override

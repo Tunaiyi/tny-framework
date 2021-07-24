@@ -22,14 +22,15 @@ public class EnumDocHolder {
 
     public static <E extends Enum<E>> EnumDocHolder create(Class<E> clazz) {
         ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
-        ThrowAide.checkNotNull(classDoc, "{} is not classDoc", clazz);
+        Asserts.checkNotNull(classDoc, "{} is not classDoc", clazz);
         EnumDocHolder holder = new EnumDocHolder();
         holder.classDoc = classDoc;
         holder.entityClass = clazz;
         holder.enumList = Collections.unmodifiableList(createFieldList(clazz));
         holder.className = classDoc.name();
-        if (StringUtils.isBlank(holder.className))
+        if (StringUtils.isBlank(holder.className)) {
             holder.className = clazz.getSimpleName();
+        }
         return holder;
     }
 
@@ -39,8 +40,9 @@ public class EnumDocHolder {
             try {
                 Field enumField = clazz.getDeclaredField(enumObject.name());
                 FieldDocHolder fieldDocHolder = FieldDocHolder.create(enumField);
-                if (fieldDocHolder != null)
+                if (fieldDocHolder != null) {
                     list.add(fieldDocHolder);
+                }
             } catch (SecurityException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -56,7 +58,6 @@ public class EnumDocHolder {
         return this.entityClass;
     }
 
-
     public List<FieldDocHolder> getEnumList() {
         return this.enumList;
     }
@@ -64,4 +65,5 @@ public class EnumDocHolder {
     public String getClassName() {
         return this.className;
     }
+
 }

@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.base.capacity.event.*;
 

@@ -1,0 +1,17 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+
+    api libs.spring_boot_autoconfigure
+
+    api project(":tny-game-common-boot")
+
+    implementation project(":tny-game-common-codec-jprotobuf")
+    implementation project(":tny-game-common-codec-jackson")
+
+}
+

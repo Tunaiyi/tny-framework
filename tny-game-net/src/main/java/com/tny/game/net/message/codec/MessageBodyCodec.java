@@ -2,11 +2,13 @@ package com.tny.game.net.message.codec;
 
 import com.tny.game.common.unit.annotation.*;
 
+import java.nio.ByteBuffer;
+
 @UnitInterface
 public interface MessageBodyCodec<I> {
 
-    I decode(byte[] bytes) throws Exception;
+    I decode(ByteBuffer buffer) throws Exception;
 
-    byte[] encode(I object) throws Exception;
+    ByteBuffer encode(I object) throws Exception;
 
 }

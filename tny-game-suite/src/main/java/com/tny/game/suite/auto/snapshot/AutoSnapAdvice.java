@@ -4,7 +4,7 @@ import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.boot.transaction.*;
 import com.tny.game.common.boot.transaction.listener.*;
-import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.oplog.*;
 import com.tny.game.suite.auto.*;

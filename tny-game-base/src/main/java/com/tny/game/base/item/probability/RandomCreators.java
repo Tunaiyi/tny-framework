@@ -28,7 +28,7 @@ public class RandomCreators {
 
     static void register(RandomCreatorFactory<?, ?> factory) {
         RandomCreatorFactory<?, ?> old = FACTORIES.putIfAbsent(factory.getName(), factory);
-        ThrowAide.checkArgument(old == null, "{} 与 {} name都为 {}", old, factory, factory.getName());
+        Asserts.checkArgument(old == null, "{} 与 {} name都为 {}", old, factory, factory.getName());
     }
 
     @SuppressWarnings("unchecked")

@@ -31,8 +31,9 @@ public abstract class BaseEvent<T> implements Event<T> {
      *
      * @return 返回事件源
      */
+    @Override
     public T getSource() {
-        return source;
+        return this.source;
     }
 
 }

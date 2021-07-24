@@ -15,7 +15,7 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public void set(N number) {
-        ThrowAide.checkNotNull(number, "number is null");
+        Asserts.checkNotNull(number, "number is null");
         this.number = number;
     }
 

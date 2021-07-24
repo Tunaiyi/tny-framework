@@ -81,7 +81,7 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
     }
 
     public boolean channelPromise(ChannelPromise promise) {
-        ThrowAide.checkNotNull(promise, "channelPromise is null");
+        Asserts.checkNotNull(promise, "channelPromise is null");
         if (this.isDone() || this.channelPromise != null) {
             return false;
         }

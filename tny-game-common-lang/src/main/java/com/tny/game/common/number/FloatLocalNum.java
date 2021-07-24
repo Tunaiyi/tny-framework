@@ -15,7 +15,7 @@ public class FloatLocalNum extends Number {
     }
 
     public void set(float number) {
-        ThrowAide.checkNotNull(number, "number is null");
+        Asserts.checkNotNull(number, "number is null");
         this.number = number;
     }
 
@@ -161,12 +161,12 @@ public class FloatLocalNum extends Number {
 
     @Override
     public int intValue() {
-        return (int) this.number;
+        return (int)this.number;
     }
 
     @Override
     public long longValue() {
-        return (long) this.number;
+        return (long)this.number;
     }
 
     @Override
@@ -176,7 +176,7 @@ public class FloatLocalNum extends Number {
 
     @Override
     public double doubleValue() {
-        return (double) this.number;
+        return (double)this.number;
     }
 
 }

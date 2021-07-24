@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.codec;
 
-import com.tny.game.common.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.message.*;
@@ -54,9 +53,9 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
 
         // 写入 Option
         byte option = message.getMode().getType().getOption();
-        option = CodecConstants.setOption(option, PACKET_OPTION_VERIFY, this.config.isVerifyEnable());
-        option = CodecConstants.setOption(option, PACKET_OPTION_ENCRYPT, this.config.isEncryptEnable());
-        option = CodecConstants.setOption(option, PACKET_OPTION_WASTE_BYTES, this.config.isWasteBytesEnable());
+        option = CodecConstants.setOption(option, DATA_PACK_OPTION_VERIFY, this.config.isVerifyEnable());
+        option = CodecConstants.setOption(option, DATA_PACK_OPTION_ENCRYPT, this.config.isEncryptEnable());
+        option = CodecConstants.setOption(option, DATA_PACK_OPTION_WASTE_BYTES, this.config.isWasteBytesEnable());
         out.writeByte(option);
 
         int payloadLength = 0;
@@ -95,13 +94,12 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
         // payloadLength += NettyVarintCoder.varint32Size(body.length);
         payloadLength += body.length;
 
-        if (payloadLength > PAYLOAD_BYTES_MAX_SIZE) {
+        if (payloadLength > this.config.getMaxPayloadLength()) {
             LOGGER.warn("encode message {} failed payloadLength {} > maxPayloadLength {}", message, payloadLength, PAYLOAD_BYTES_MAX_SIZE);
         }
 
         // 写入包长度
-        out.writeBytes(BytesAide.short2Bytes(payloadLength));
-
+        out.writeInt(payloadLength);
         // 写入 accessId
         NettyVarIntCoder.writeVarInt64(accessId, out);
         // 写入 number

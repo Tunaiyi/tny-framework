@@ -23,8 +23,9 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         this.endTime = endTime;
         this.speedMills = speedMills;
         this.suspendTime = suspendTime;
-        if (start && isCanStart())
+        if (start && isCanStart()) {
             this.start();
+        }
     }
 
     @Override
@@ -73,26 +74,31 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public boolean start(C timeCycle, Instant startTime, Instant endTime) {
-        if (this.nextTime != null)
+        if (this.nextTime != null) {
             return false;
-        if (startTime == null && this.startTime == null)
+        }
+        if (startTime == null && this.startTime == null) {
             throw new NullPointerException("startTime is null");
-        if (timeCycle == null && this.timeCycle == null)
+        }
+        if (timeCycle == null && this.timeCycle == null) {
             throw new NullPointerException("timeCycle is null");
+        }
         if (endTime != null) {
             Instant checkStartTime = startTime != null ? startTime : this.startTime;
-            ThrowAide.checkArgument(endTime.isAfter(checkStartTime));
+            Asserts.checkArgument(endTime.isAfter(checkStartTime));
             this.endTime = endTime;
             this.reset();
         }
-        if (timeCycle != null)
+        if (timeCycle != null) {
             this.timeCycle = timeCycle;
+        }
         if (startTime != null) {
             this.startTime = startTime;
             this.previousTime = startTime;
         }
-        if (this.previousTime == null)
+        if (this.previousTime == null) {
             this.previousTime = this.startTime;
+        }
         setup(timeCycle, this.previousTime, false);
         return !this.isFinish();
     }
@@ -104,12 +110,14 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public void restart(C timeCycle, Instant startTime, Instant endTime) {
-        if (startTime == null && this.startTime == null)
+        if (startTime == null && this.startTime == null) {
             throw new NullPointerException("startTime is null");
-        if (timeCycle == null && this.timeCycle == null)
+        }
+        if (timeCycle == null && this.timeCycle == null) {
             throw new NullPointerException("timeCycle is null");
+        }
         if (endTime != null) {
-            ThrowAide.checkArgument(endTime.isAfter(startTime));
+            Asserts.checkArgument(endTime.isAfter(startTime));
             this.endTime = endTime;
             this.reset();
         }
@@ -118,11 +126,13 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     }
 
     private void setup(C timeCycle, Instant time, boolean stop) {
-        if (timeCycle != null)
+        if (timeCycle != null) {
             this.timeCycle = timeCycle;
+        }
         this.previousTime = time;
-        if (!stop)
+        if (!stop) {
             this.nextTime = getNextTimeAfter(time);
+        }
     }
 
     @Override
@@ -140,8 +150,9 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public boolean speedUp(long timeMills) {
-        if (!isWorking() || timeMills <= 0)
+        if (!isWorking() || timeMills <= 0) {
             return false;
+        }
         this.speedMills = Math.max(this.speedMills + timeMills, 0L);
         return true;
     }
@@ -159,8 +170,9 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     }
 
     private Instant getNextTimeAfter(Instant time) {
-        if (this.timeCycle == null)
+        if (this.timeCycle == null) {
             return null;
+        }
         Instant pot = this.timeCycle.getTimeAfter(time);
         if (this.endTime != null && pot.isAfter(this.endTime)) {
             return null;
@@ -172,7 +184,6 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         return this.speedMills + mills;
     }
 
-
     @Override
     public Instant getSuspendTime() {
         return this.suspendTime;
@@ -182,35 +193,40 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
     public boolean resume(Instant time) {
         Instant nextTime = this.nextTime;
         Instant suspendTime = this.suspendTime;
-        if (nextTime == null || suspendTime == null || suspendTime.isAfter(time))
+        if (nextTime == null || suspendTime == null || suspendTime.isAfter(time)) {
             return false;
+        }
         long suspendMills = Math.max(time.toEpochMilli() - suspendTime.toEpochMilli(), 0);
-        this.nextTime = nextTime.plusMillis((int) suspendMills);
+        this.nextTime = nextTime.plusMillis((int)suspendMills);
         Instant endTime = this.endTime;
-        if (endTime != null)
-            this.endTime = endTime.plusMillis((int) suspendMills);
+        if (endTime != null) {
+            this.endTime = endTime.plusMillis((int)suspendMills);
+        }
         this.suspendTime = null;
         return true;
     }
 
     @Override
     public boolean suspend(Instant time) {
-        if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
-                                .isAfter(this.getNextTime()))
+        if (!isWorking() && time.plusMillis((int)this.getSpeedMills())
+                .isAfter(this.getNextTime())) {
             return false;
+        }
         this.suspendTime = time;
         return true;
     }
 
     @Override
     public boolean lengthen(long timeMillis) {
-        if (isFinish() || timeMillis <= 0)
+        if (isFinish() || timeMillis <= 0) {
             return false;
+        }
         Instant nextTime = this.nextTime;
         Instant endTime = this.endTime;
-        this.nextTime = nextTime.plusMillis((int) timeMillis);
-        if (endTime != null)
-            this.endTime = endTime.plusMillis((int) timeMillis);
+        this.nextTime = nextTime.plusMillis((int)timeMillis);
+        if (endTime != null) {
+            this.endTime = endTime.plusMillis((int)timeMillis);
+        }
         return false;
     }
 

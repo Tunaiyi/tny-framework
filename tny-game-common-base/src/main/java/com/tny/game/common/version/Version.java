@@ -27,10 +27,10 @@ public class Version implements Comparable<Version> {
     }
 
     private Version(String version, String separator) {
-        ThrowAide.checkNotNull(version, "version is null");
-        ThrowAide.checkNotNull(separator, "separator is null");
-        ThrowAide.checkArgument(StringUtils.isNoneBlank(version), "version mush not blank");
-        ThrowAide.checkArgument(StringUtils.isNoneBlank(separator), "separator mush not blank");
+        Asserts.checkNotNull(version, "version is null");
+        Asserts.checkNotNull(separator, "separator is null");
+        Asserts.checkArgument(StringUtils.isNoneBlank(version), "version mush not blank");
+        Asserts.checkArgument(StringUtils.isNoneBlank(separator), "separator mush not blank");
         this.fullVersion = version;
         this.subVersions = StringUtils.split(version, separator);
     }
@@ -80,37 +80,42 @@ public class Version implements Comparable<Version> {
         other = format(other);
         boolean oneDgt = NumberUtils.isDigits(one);
         boolean otherDgt = NumberUtils.isDigits(other);
-        if (oneDgt != otherDgt)
+        if (oneDgt != otherDgt) {
             return oneDgt ? 1 : -1;
+        }
         int lengthCompare = one.length() - other.length();
-        if (lengthCompare != 0)
+        if (lengthCompare != 0) {
             return lengthCompare;
+        }
         return one.compareTo(other);
     };
 
-
     @Override
     public int compareTo(Version other) {
-        if (this.fullVersion.equals(other.getFullVersion()))
+        if (this.fullVersion.equals(other.getFullVersion())) {
             return 0;
+        }
         int length = Math.min(this.subVersions.length, other.subVersions.length);
         for (int index = 0; index < length; index++) {
             String thisSubVer = this.subVersions[index];
             String otherSubVer = other.subVersions[index];
             int subCpResult = comparator.compare(thisSubVer, otherSubVer);
-            if (subCpResult != 0)
+            if (subCpResult != 0) {
                 return subCpResult;
+            }
         }
         return this.subVersions.length - other.subVersions.length;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Version))
+        }
+        if (!(o instanceof Version)) {
             return false;
-        Version version = (Version) o;
+        }
+        Version version = (Version)o;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals(getSubVersions(), version.getSubVersions());
     }
@@ -124,10 +129,11 @@ public class Version implements Comparable<Version> {
         for (int index = 0; index < value.length(); index++) {
             char c = value.charAt(index);
             if (c != '0') {
-                if (index == 0)
+                if (index == 0) {
                     return value;
-                else
+                } else {
                     return value.substring(index);
+                }
             }
         }
         return "0";
@@ -137,4 +143,5 @@ public class Version implements Comparable<Version> {
     public String toString() {
         return "Version{" + "fullVersion='" + this.fullVersion + '\'' + '}';
     }
+
 }

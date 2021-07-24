@@ -1,5 +1,4 @@
 apply plugin: "maven-publish"
-apply plugin: "io.spring.dependency-management"
 
 
 apply from: "$rootDir/gradle/dependency.gradle"
@@ -19,7 +18,7 @@ publishing {
                     description = project.description
                 }
                 organization {
-                    name = "Indra Soft"
+                    name = "Tny Game Framework"
                 }
                 licenses {
                     license {

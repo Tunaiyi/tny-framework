@@ -6,7 +6,7 @@ dependencies {
 
     api libs.mockito
     api libs.junit_jupiter_api
-    api project(":tny-game-common-lang")
     api libs.commons_lang3
+    api project(":tny-game-common-lang")
 
 }

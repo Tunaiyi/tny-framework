@@ -1,7 +1,7 @@
 package com.tny.game.common.boot.initiator;
 
-import com.tny.game.common.event.*;
-import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.lifecycle.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

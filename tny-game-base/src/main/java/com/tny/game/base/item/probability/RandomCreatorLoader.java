@@ -19,19 +19,20 @@ public final class RandomCreatorLoader {
     @ClassSelectorProvider
     public static ClassSelector selector() {
         return ClassSelector.instance()
-                            .addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
-                            .setHandler(RandomCreatorLoader::handle);
+                .addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
+                .setHandler(RandomCreatorLoader::handle);
     }
 
     private static void handle(Collection<Class<?>> classes) {
         for (Class<?> clazz : classes) {
-            if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) || RandomCreators.isDefault(clazz))
+            if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) || RandomCreators.isDefault(clazz)) {
                 continue;
+            }
             try {
-                RandomCreatorFactory factory = (RandomCreatorFactory) clazz.newInstance();
+                RandomCreatorFactory factory = (RandomCreatorFactory)clazz.newInstance();
                 factory.registerSelf();
             } catch (Exception e) {
-                ThrowAide.throwByCause(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
+                Asserts.throwByCause(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
             }
         }
     }

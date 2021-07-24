@@ -1,6 +1,6 @@
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.2' apply false
-    id 'org.springframework.boot' version '2.4.4' apply false
+    id 'org.springframework.boot' version '2.5.2' apply false
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
     id 'com.baidu.jprotobuf' version "1.0.9" apply false
 }
@@ -58,20 +58,20 @@ configure(allprojects) {
 
     repositories {
         mavenLocal()
+        maven { url "https://m2.tnydev.com/repository/maven-public/" }
+        maven { url "https://maven.aliyun.com/repository/spring" }
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/central" }
         maven { url "https://maven.aliyun.com/repository/google" }
         maven { url "https://maven.aliyun.com/repository/jcenter" }
-        maven { url "https://maven.aliyun.com/repository/spring" }
-        maven { url "https://m2.tnydev.com/repository/maven-public/" }
     }
 
 
 }
 
-configure(moduleProjects) {
+configure(javaProjects) {
+
     apply plugin: 'java'
-    apply plugin: "idea"
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply from: "$rootDir/gradle/publications.gradle"
@@ -97,6 +97,11 @@ configure(moduleProjects) {
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
 
+    compileJava {
+        options.compilerArgs << '-XDignore.symbol.file'
+        options.fork = true // may not needed on 1.8
+        options.forkOptions.executable = 'javac' // may not needed on 1.8
+    }
 
     task createJavaProject {
         doLast {
@@ -107,6 +112,20 @@ configure(moduleProjects) {
 
     jar {
         exclude("**.sql", "**.xml", "**.properties")
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        archiveClassifier.set("sources")
+        from sourceSets.main.allSource
+    }
+
+    java {
+        withSourcesJar()
     }
 
     dependencies {
@@ -120,10 +139,10 @@ configure(moduleProjects) {
         testImplementation libs.slf4j_simple
         testImplementation project(":tny-game-tester")
 
-        testRuntimeOnly libs.junit_jupiter_engine
-        testRuntimeOnly libs.junit_vintage_engine
-        testRuntimeOnly libs.junit_platform_launcher
-        testRuntimeOnly libs.junit_platform_commons
+//        testRuntimeOnly libs.junit_jupiter_engine
+//        testRuntimeOnly libs.junit_vintage_engine
+//        testRuntimeOnly libs.junit_platform_launcher
+//        testRuntimeOnly libs.junit_platform_commons
 
     }
 

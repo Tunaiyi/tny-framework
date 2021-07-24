@@ -1,33 +1,28 @@
 package com.tny.game.net.message.codec.protoex;
 
-import com.tny.game.common.buff.*;
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.message.codec.*;
-import com.tny.game.net.message.common.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
+
+import java.nio.ByteBuffer;
 
 @Unit
 public class ProtoExMessageBodyCodec<T> implements MessageBodyCodec<T> {
 
     @Override
-    public T decode(byte[] bytes) {
-        ProtoExReader bodyReader = new ProtoExReader(bytes);
+    public T decode(ByteBuffer bodyBuffer) {
+        ProtoExReader bodyReader = new ProtoExReader(new ProtoExInputStream(bodyBuffer));
         return bodyReader.readMessage();
     }
 
     @Override
-    public byte[] encode(T object) {
+    public ByteBuffer encode(T object) {
         ProtoExWriter writer = new ProtoExWriter();
         if (object != null) {
-            if (object instanceof BodyBytes) {
-                LinkedByteBuffer buffer = writer.getByteBuffer();
-                buffer.write(((BodyBytes)object).getBodyBytes());
-            } else {
-                writer.writeMessage(object, TypeEncode.EXPLICIT);
-            }
+            writer.writeMessage(object, TypeEncode.EXPLICIT);
         }
-        return writer.toByteArray();
+        return ByteBuffer.wrap(writer.toByteArray());
     }
 
 }

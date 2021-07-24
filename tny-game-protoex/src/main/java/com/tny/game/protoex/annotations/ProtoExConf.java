@@ -36,4 +36,5 @@ public @interface ProtoExConf {
      * @return
      */
     Class<?> use() default Void.class;
+
 }

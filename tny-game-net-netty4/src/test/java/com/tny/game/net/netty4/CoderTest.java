@@ -14,6 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.*;
 
@@ -35,15 +36,15 @@ public class CoderTest {
         MessageCodec codec = new DefaultMessageCodec(new MessageBodyCodec<String>() {
 
             @Override
-            public String decode(byte[] bytes) {
-                return new String(bytes, UTF_8);
+            public String decode(ByteBuffer buffer) throws Exception {
+                return new String(buffer.array(), UTF_8);
             }
 
             @Override
-            public byte[] encode(String object) {
+            public ByteBuffer encode(String object) {
                 byte[] bytes = object.getBytes(UTF_8);
                 System.out.println(BytesAide.toHexString(bytes));
-                return bytes;
+                return ByteBuffer.wrap(bytes);
             }
 
         });

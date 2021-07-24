@@ -1,6 +1,6 @@
 package com.tny.game.net.transport.listener;
 
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.transport.*;
 
@@ -43,14 +43,15 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
     // }
 
     public BindVoidEventBus<TunnelActivateListener, Tunnel> activateEvent() {
-        return ON_ACTIVATE;
+        return this.ON_ACTIVATE;
     }
 
     public BindVoidEventBus<TunnelUnactivatedListener, Tunnel> unactivatedEvent() {
-        return ON_UNACTIVATED;
+        return this.ON_UNACTIVATED;
     }
 
     public BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
-        return ON_CLOSE;
+        return this.ON_CLOSE;
     }
+
 }

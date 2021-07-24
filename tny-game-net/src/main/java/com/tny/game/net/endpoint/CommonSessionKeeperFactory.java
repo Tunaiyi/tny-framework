@@ -1,10 +1,12 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.unit.*;
+import com.tny.game.common.unit.annotation.*;
 
 /**
  * <p>
  */
+@Unit
 public class CommonSessionKeeperFactory<UID> implements SessionKeeperFactory<UID, SessionKeeperSetting> {
 
     public CommonSessionKeeperFactory() {

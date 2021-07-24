@@ -312,7 +312,6 @@ public class RuntimeUnsafeFieldDescFactory {
 
         private IOConfiger<?> elementDesc;
 
-        @SuppressWarnings("unchecked")
         protected UnsafeMessageFieldDesc(Field field) {
             super(ProtoExType.MESSAGE, field);
             ProtoExElement protoExElement = field.getAnnotation(ProtoExElement.class);

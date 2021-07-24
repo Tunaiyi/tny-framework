@@ -5,7 +5,7 @@ import com.tny.game.common.boot.transaction.*;
 import com.tny.game.common.boot.transaction.listener.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.suite.auto.*;

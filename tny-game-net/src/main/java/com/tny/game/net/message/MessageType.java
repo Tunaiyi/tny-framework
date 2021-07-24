@@ -10,11 +10,11 @@ import com.tny.game.net.message.codec.*;
  */
 public enum MessageType {
 
-    MESSAGE(CodecConstants.DATA_PACK_OPTION_MESSAGE),
+    MESSAGE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_MESSAGE),
 
-    PING(CodecConstants.DATA_PACK_OPTION_PING),
+    PING(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING),
 
-    PONE(CodecConstants.DATA_PACK_OPTION_PONG),
+    PONE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PONG),
 
     ;
 

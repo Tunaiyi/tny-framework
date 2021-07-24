@@ -2,7 +2,7 @@ package com.tny.game.net.base;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.concurrent.utils.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 
 import java.lang.reflect.Field;
 import java.util.*;

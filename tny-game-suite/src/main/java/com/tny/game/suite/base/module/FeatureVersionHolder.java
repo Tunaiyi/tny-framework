@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.common.config.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.common.version.*;
 import com.tny.game.suite.base.module.event.*;
 import com.tny.game.suite.utils.*;
@@ -29,18 +29,21 @@ public class FeatureVersionHolder {
 
     FeatureVersionHolder() {
         this.initConfigVersion(Configs.VERSION_CONFIG, Configs.VERSION_FEATURE_VERSION, this::getDefVersion, this::setDefVersion)
-            .initConfigVersion(Configs.DEVELOP_CONFIG, Configs.DEVELOP_FEATURE_VERSION, this::getDevVersion, this::setDevVersion);
+                .initConfigVersion(Configs.DEVELOP_CONFIG, Configs.DEVELOP_FEATURE_VERSION, this::getDevVersion, this::setDevVersion);
     }
 
     public Optional<Version> getFeatureVersion() {
         this.readLock.lock();
         try {
-            if (this.devVersion != null)
+            if (this.devVersion != null) {
                 return Optional.of(this.devVersion);
-            if (this.version != null)
+            }
+            if (this.version != null) {
                 return Optional.of(this.version);
-            if (this.defVersion != null)
+            }
+            if (this.defVersion != null) {
                 return Optional.of(this.defVersion);
+            }
             return Optional.empty();
         } finally {
             this.readLock.unlock();
@@ -67,17 +70,21 @@ public class FeatureVersionHolder {
         try {
             Version oldVersion = versionGetter.get();
             if (newVersion != null) {
-                if (newVersion.equals(oldVersion))
+                if (newVersion.equals(oldVersion)) {
                     return this;
+                }
                 versionSetter.accept(newVersion);
-                if (event)
+                if (event) {
                     ON_CHANGE.notify(this);
+                }
             } else {
-                if (oldVersion == null)
+                if (oldVersion == null) {
                     return this;
+                }
                 versionSetter.accept(null);
-                if (event)
+                if (event) {
                     ON_CHANGE.notify(this);
+                }
             }
         } finally {
             this.writeLock.unlock();

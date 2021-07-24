@@ -5,13 +5,15 @@ apply plugin: "maven"
 dependencies {
 
     annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
-    
+
     api libs.druid
     api libs.guava
     api libs.spring_boot_autoconfigure
-    api libs.spring_boot_configuration_processor
 
     api project(":tny-game-common-boot")
     api project(":tny-game-net-netty4")
+
+    implementation project(":tny-game-net-codec-jprotobuf")
+    implementation project(":tny-game-starter-object-codec")
 
 }

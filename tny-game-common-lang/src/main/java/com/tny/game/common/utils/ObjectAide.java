@@ -15,6 +15,9 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class ObjectAide {
 
+    public static void noOps() {
+    }
+
     public static <T> T none() {
         return null;
     }

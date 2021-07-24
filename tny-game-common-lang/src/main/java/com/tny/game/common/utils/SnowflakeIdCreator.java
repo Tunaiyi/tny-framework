@@ -15,7 +15,7 @@ public class SnowflakeIdCreator {
     public static final Logger LOGGER = LoggerFactory.getLogger(SnowflakeIdCreator.class);
 
     private final static long BASE_TIME = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
-                                                       .toInstant().toEpochMilli();
+            .toInstant().toEpochMilli();
 
     private final static long DEFAULT_WORKER_ID_BITS = 12;
     private final static long DEFAULT_SEQUENCE_BITS = 10;
@@ -61,15 +61,14 @@ public class SnowflakeIdCreator {
     }
 
     public SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits) {
-        ThrowAide.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
+        Asserts.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
         long maxWorkerID = ~(-1L << workerIDBits);
-        ThrowAide.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
+        Asserts.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
         this.sequenceMask = ~(-1L << sequenceBits);
         this.workerIdShift = sequenceBits;
         this.timestampShift = sequenceBits + workerIDBits;
         this.workerID = workerID;
     }
-
 
     public long createId() {
         long lockStamp = 0;
@@ -98,8 +97,9 @@ public class SnowflakeIdCreator {
                         lockStamp = writeStamp;
                         long currentSequence = ++this.sequence;
                         seq = currentSequence & this.sequenceMask;
-                        if (seq == 0)
+                        if (seq == 0) {
                             timestamp = tilNextMillis(lastTime);
+                        }
                         this.lastTimestamp = timestamp;
                         break;
                     } else {
@@ -119,10 +119,11 @@ public class SnowflakeIdCreator {
                     }
                 }
             }
-            return ((timestamp - BASE_TIME) << (int) this.timestampShift) | (this.workerID << (int) this.workerIdShift) | seq;
+            return ((timestamp - BASE_TIME) << (int)this.timestampShift) | (this.workerID << (int)this.workerIdShift) | seq;
         } finally {
-            if (lockStamp != 0)
+            if (lockStamp != 0) {
                 this.lock.unlock(lockStamp);
+            }
         }
     }
 

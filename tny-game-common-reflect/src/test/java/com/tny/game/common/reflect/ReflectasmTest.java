@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect;
 
-import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.javassist.*;
 import net.sf.cglib.reflect.*;
 import org.junit.jupiter.api.*;
@@ -107,4 +107,5 @@ public class ReflectasmTest {
             method.invoke(this.counter, object);
         System.out.println("Javasisst  : " + (System.currentTimeMillis() - time));
     }
+
 }

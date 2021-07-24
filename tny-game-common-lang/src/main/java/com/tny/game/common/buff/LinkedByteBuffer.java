@@ -1,6 +1,9 @@
 package com.tny.game.common.buff;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+
+import static com.tny.game.common.utils.StringAide.*;
 
 public class LinkedByteBuffer {
 
@@ -22,6 +25,14 @@ public class LinkedByteBuffer {
         this(ByteBufferNode.wrapBuffer(bytes, 0), DEFAULT_BUFFER_SIZE);
     }
 
+    public LinkedByteBuffer(byte[] bytes, int start, int offset) {
+        this(ByteBufferNode.wrapBuffer(bytes, start, offset, offset), DEFAULT_BUFFER_SIZE);
+    }
+
+    public LinkedByteBuffer(byte[] bytes, int start, int offset, int lengthLimit) {
+        this(ByteBufferNode.wrapBuffer(bytes, start, offset, lengthLimit), DEFAULT_BUFFER_SIZE);
+    }
+
     public LinkedByteBuffer(int initSize) {
         this(ByteBufferNode.newBuffer(initSize), DEFAULT_BUFFER_SIZE);
     }
@@ -35,13 +46,15 @@ public class LinkedByteBuffer {
     }
 
     public LinkedByteBuffer(ByteBufferNode head, int nextBufferSize) {
-        if (head == null)
+        if (head == null) {
             throw new NullPointerException("head is null");
+        }
         this.tail = head;
         this.head = head;
         this.nextBufferSize = nextBufferSize;
-        if (this.nextBufferSize <= 0)
+        if (this.nextBufferSize <= 0) {
             this.nextBufferSize = DEFAULT_BUFFER_SIZE;
+        }
     }
 
     public void clear() {
@@ -81,6 +94,30 @@ public class LinkedByteBuffer {
         return this;
     }
 
+    public LinkedByteBuffer write(byte[] data, int offset, int length) {
+        if (offset + length > data.length) {
+            throw new IllegalArgumentException(format(
+                    "offset {} + length {} is {} > data.length", offset, length, offset + length));
+        }
+        if (this.tail.remainSize() > length) {
+            try {
+                this.size += this.tail.write(data, offset, length);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.tail);
+            ByteBufferNode value = ByteBufferNode.wrapBuffer(data, offset, offset + length);
+            if (remainNode != null) {
+                value.setNext(remainNode);
+            }
+            this.tail.setNext(value);
+            this.moveTail();
+            this.size += value.length();
+        }
+        return this;
+    }
+
     public LinkedByteBuffer write(byte[] data) {
         if (this.tail.remainSize() > data.length) {
             try {
@@ -91,12 +128,34 @@ public class LinkedByteBuffer {
         } else {
             ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.tail);
             ByteBufferNode value = ByteBufferNode.wrapBuffer(data, data.length);
-            if (remainNode != null)
+            if (remainNode != null) {
                 value.setNext(remainNode);
+            }
             this.tail.setNext(value);
             this.moveTail();
             this.size += value.length();
         }
+        return this;
+    }
+
+    public LinkedByteBuffer append(byte[] data) {
+        this.append(data, 0, data.length, data.length);
+        return this;
+    }
+
+    public LinkedByteBuffer append(byte[] data, int start, int offset) {
+        return append(data, start, offset, offset);
+    }
+
+    public LinkedByteBuffer append(byte[] data, int start, int offset, int lengthLimit) {
+        ByteBufferNode remainNode = ByteBufferNode.cutBuffer(this.tail);
+        ByteBufferNode value = ByteBufferNode.wrapBuffer(data, start, offset, lengthLimit);
+        if (remainNode != null) {
+            value.setNext(remainNode);
+        }
+        this.tail.setNext(value);
+        this.moveTail();
+        this.size += value.length();
         return this;
     }
 
@@ -126,6 +185,16 @@ public class LinkedByteBuffer {
             }
         } while ((node = node.getNext()) != null);
         return buf;
+    }
+
+    public void toBuffer(ByteBuffer buffer) {
+        ByteBufferNode node = this.head;
+        do {
+            if (node.length() > 0) {
+                buffer.put(node.getBuffer(), node.getStart(), node.length());
+                //                System.arraycopy(node.getBuffer(), node.getStart(), buf, offset, node.length());
+            }
+        } while ((node = node.getNext()) != null);
     }
 
     public int getNextBufferSize() {

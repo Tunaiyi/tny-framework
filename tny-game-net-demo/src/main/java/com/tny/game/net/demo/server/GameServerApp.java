@@ -1,8 +1,8 @@
 package com.tny.game.net.demo.server;
 
 import com.tny.game.net.annotation.*;
-import com.tny.game.starter.net.netty4.appliaction.*;
-import com.tny.game.starter.net.netty4.configuration.annotation.*;
+import com.tny.game.net.netty4.appliaction.*;
+import com.tny.game.net.netty4.configuration.annotation.*;
 import org.slf4j.*;
 import org.springframework.boot.*;
 import org.springframework.context.ApplicationContext;

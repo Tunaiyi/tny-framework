@@ -65,7 +65,7 @@ public abstract class ControllerHolder {
             throw new IllegalArgumentException("executor is null");
         }
         this.controllerClass = executor.getClass();
-        ThrowAide.checkNotNull(controller, "{} controller is null", this.controllerClass);
+        Asserts.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.controller = controller;
         this.auth = auth;
         if (this.auth != null && this.auth.enable()) {
@@ -108,7 +108,7 @@ public abstract class ControllerHolder {
         for (A pluginAnnotation : pluginAnnotations) {
             Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
             final CommandPlugin<?, ?> plugin = context.getPlugin(as(pluginClass));
-            ThrowAide.checkNotNull(plugin, "{} plugin is null", pluginClass);
+            Asserts.checkNotNull(plugin, "{} plugin is null", pluginClass);
             plugins.add(holderFactory.create(this, plugin, pluginAnnotation, exprHolderFactory));
         }
         return ImmutableList.copyOf(plugins);

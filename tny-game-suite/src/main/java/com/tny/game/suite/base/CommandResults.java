@@ -14,17 +14,19 @@ public class CommandResults extends com.tny.game.net.base.CommandResults {
         DemandResult result = tryToDoResult.getFailResult();
         DemandType demandType = result.getDemandType();
         ResultCode code = demandType.getResultCode();
-        if (code != null)
+        if (code != null) {
             return fail(code, TryToDoFailDTO.tryToDoResult2DTO(tryToDoResult));
+        }
         return fail(ItemResultCode.TRY_TO_DO_FAIL, TryToDoFailDTO.tryToDoResult2DTO(tryToDoResult));
     }
 
     public static CommandResult fail(TryResult<?> done) {
-        ThrowAide.checkArgument(done.isFailure(), "TryDone is success");
-        if (done.isFailedToTry())
+        Asserts.checkArgument(done.isFailure(), "TryDone is success");
+        if (done.isFailedToTry()) {
             return fail(done.getResult());
-        else
+        } else {
             return fail(done.getCode());
+        }
     }
 
     public static CommandResult fail(TryToDoException exception) {

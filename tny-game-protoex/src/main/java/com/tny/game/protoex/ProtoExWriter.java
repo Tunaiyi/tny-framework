@@ -4,6 +4,7 @@ import com.tny.game.common.buff.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -15,7 +16,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ProtoExWriter {
 
-    private ProtoExOutputStream outputStream;
+    private final ProtoExOutputStream outputStream;
 
     public ProtoExWriter() {
         this.outputStream = new ProtoExOutputStream();
@@ -212,6 +213,10 @@ public class ProtoExWriter {
      */
     public byte[] toByteArray() {
         return this.outputStream.toByteArray();
+    }
+
+    public void toBuffer(ByteBuffer buffer) {
+        this.outputStream.toBuffer(buffer);
     }
 
     public LinkedByteBuffer getByteBuffer() {

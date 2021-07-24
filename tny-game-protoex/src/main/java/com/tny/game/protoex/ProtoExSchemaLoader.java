@@ -29,7 +29,7 @@ public final class ProtoExSchemaLoader {
     }
 
     private static void loadClasses(Collection<Class<?>> classes) {
-        LOGGER.info("启动初始化ProtoSchema任务!");
+        LOGGER.info("启动初始化 ProtoSchema 任务!");
         // forkJoinTask = ForkJoinPool.commonPool().submit(() -> {
         Class<?> clazz;
         RunChecker.trace(ProtoExSchemaLoader.class);

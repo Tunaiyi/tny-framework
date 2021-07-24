@@ -11,9 +11,9 @@ public abstract class AbstractAttributes implements Attributes {
      */
     private volatile transient Map<AttrKey<?>, Object> attributeMap = null;
 
-    private volatile ReadWriteLock lock = null;
+    private volatile Lock lock = null;
 
-    private ReadWriteLock getLock() {
+    private Lock getLock() {
         if (this.lock != null) {
             return this.lock;
         }
@@ -21,25 +21,25 @@ public abstract class AbstractAttributes implements Attributes {
             if (this.lock != null) {
                 return this.lock;
             }
-            this.lock = new ReentrantReadWriteLock();
+            this.lock = new ReentrantLock();
         }
         return this.lock;
     }
 
     private void writeLock() {
-        this.getLock().writeLock().lock();
+        this.getLock().lock();
     }
 
     private void writeUnlock() {
-        this.getLock().writeLock().unlock();
+        this.getLock().unlock();
     }
 
     private void readLock() {
-        this.getLock().readLock().lock();
+        this.getLock().lock();
     }
 
     private void readUnlock() {
-        this.getLock().readLock().unlock();
+        this.getLock().unlock();
     }
 
     protected AbstractAttributes() {

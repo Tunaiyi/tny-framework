@@ -4,8 +4,8 @@ import com.tny.game.common.result.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.demo.common.*;
 import com.tny.game.net.demo.common.dto.*;
+import com.tny.game.net.netty4.spring.*;
 import com.tny.game.net.transport.*;
-import com.tny.game.starter.net.netty4.spring.*;
 import org.slf4j.*;
 
 import static com.tny.game.net.message.MessageMode.*;

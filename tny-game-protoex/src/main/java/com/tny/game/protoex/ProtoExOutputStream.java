@@ -4,6 +4,7 @@ import com.tny.game.common.buff.*;
 import com.tny.game.protoex.field.*;
 import org.slf4j.*;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.*;
 
 /**
@@ -16,6 +17,9 @@ public class ProtoExOutputStream implements ProtoExStream {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ProtoExOutputStream.class);
+
+    private static final ProtoExSchemaContext NULL = null;
+
     private final ProtoExSchemaContext schemaContext;
 
     private LinkedByteBuffer byteBuffer;
@@ -25,12 +29,22 @@ public class ProtoExOutputStream implements ProtoExStream {
         this.schemaContext = DefaultProtoExSchemaContext.getDefault();
     }
 
+    public ProtoExOutputStream(byte[] bytes) {
+        this.byteBuffer = new LinkedByteBuffer(bytes, 0, 0);
+        this.schemaContext = DefaultProtoExSchemaContext.getDefault();
+    }
+
+    public ProtoExOutputStream(byte[] bytes, int start, int offset) {
+        this.byteBuffer = new LinkedByteBuffer(bytes, start, offset);
+        this.schemaContext = DefaultProtoExSchemaContext.getDefault();
+    }
+
     public ProtoExOutputStream(int initSize) {
-        this(null, initSize, LinkedByteBuffer.DEFAULT_BUFFER_SIZE);
+        this(NULL, initSize, LinkedByteBuffer.DEFAULT_BUFFER_SIZE);
     }
 
     public ProtoExOutputStream(int initSize, int nextSize) {
-        this(null, initSize, nextSize);
+        this(NULL, initSize, nextSize);
     }
 
     public ProtoExOutputStream(ProtoExSchemaContext schemaContext) {
@@ -134,6 +148,10 @@ public class ProtoExOutputStream implements ProtoExStream {
         this.doWriteBytes(value);
     }
 
+    public void writeBytes(byte[] value, int offset, int length) {
+        this.doWriteBytes(value, offset, length);
+    }
+
     /**
      * Write a {@code string} field to the stream.
      */
@@ -194,6 +212,14 @@ public class ProtoExOutputStream implements ProtoExStream {
         this.byteBuffer.write(value);
     }
 
+    /**
+     * Write a {@code string} field to the stream.
+     */
+    private void doWriteBytes(final byte[] value, int Offset, int length) {
+        this.doWriteVarInt32(value.length);
+        this.byteBuffer.write(value, Offset, length);
+    }
+
     public void writeBytes(LinkedByteBuffer value) {
         this.doWriteVarInt32(value.size());
         this.byteBuffer.appand(value);
@@ -241,6 +267,10 @@ public class ProtoExOutputStream implements ProtoExStream {
 
     public byte[] toByteArray() {
         return this.byteBuffer.toByteArray();
+    }
+
+    public void toBuffer(ByteBuffer buffer) {
+        this.byteBuffer.toBuffer(buffer);
     }
 
     private void doWriteLittleEndian64(long value) {

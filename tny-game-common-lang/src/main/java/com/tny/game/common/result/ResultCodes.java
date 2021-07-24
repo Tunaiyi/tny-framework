@@ -1,7 +1,6 @@
 package com.tny.game.common.result;
 
-
-import com.tny.game.common.utils.StringAide;
+import com.tny.game.common.utils.*;
 
 import java.util.*;
 
@@ -13,9 +12,9 @@ public class ResultCodes {
         return codeMap.get(id);
     }
 
-    static void registerCode(ResultCode code) {
+    public static void registerCode(ResultCode code) {
         ResultCode old = codeMap.put(code.getCode(), code);
-        if (old != null) {
+        if (old != null && old != code) {
             IllegalArgumentException e = new IllegalArgumentException(StringAide.format("{}.{} 与 {}.{} id 都为 {}",
                     code.getClass(), code, old.getClass(), old, old.getCode()));
             e.printStackTrace();

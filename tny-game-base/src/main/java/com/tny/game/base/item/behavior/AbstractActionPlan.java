@@ -48,17 +48,19 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     }
 
     private Action checkAction(Action action) {
-        if (this.actions.contains(action))
+        if (this.actions.contains(action)) {
             return action;
-        ThrowAide.checkNotNull(null, "{] action is null", action);
+        }
+        Asserts.checkNotNull(null, "{] action is null", action);
         return null;
     }
 
     @Override
     public DemandResultCollector tryToDo(long playerId, boolean tryAll, DemandResultCollector collector, Map<String, Object> attributeMap) {
         this.checkResult(playerId, this.demandList, tryAll, collector, ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
-        if (!tryAll && collector.isFailed())
+        if (!tryAll && collector.isFailed()) {
             return collector;
+        }
         if (this.costPlan != null) {
             this.costPlan.tryToDo(playerId, tryAll, collector, attributeMap);
         }
@@ -80,16 +82,18 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     @Override
     public AwardList getAwardList(long playerId, Action action, Map<String, Object> attributeMap) {
         action = checkAction(action);
-        if (this.awardPlan == null)
+        if (this.awardPlan == null) {
             return new SimpleAwardList(action);
+        }
         return this.doAwardList(playerId, action, attributeMap);
     }
 
     @Override
     public CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap) {
         action = checkAction(action);
-        if (this.costPlan == null)
+        if (this.costPlan == null) {
             return new SimpleCostList(action);
+        }
         setAttrMap(playerId, this.attrAliasSet, attributeMap);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributeMap);
         return this.costPlan.getCostList(playerId, action, attributeMap);
@@ -102,18 +106,21 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         Trade cost = null;
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
-        if (this.awardPlan != null)
+        if (this.awardPlan != null) {
             award = this.awardPlan.createTrade(playerId, action, attributes);
-        if (this.costPlan != null)
+        }
+        if (this.costPlan != null) {
             cost = this.costPlan.createTrade(playerId, action, attributes);
+        }
         return new ActionTrades(action, award, cost);
     }
 
     @Override
     public Trade createAward(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
-        if (this.awardPlan == null)
+        if (this.awardPlan == null) {
             return new SimpleTrade(action, TradeType.AWARD);
+        }
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.createTrade(playerId, action, attributes);
@@ -122,8 +129,9 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     @Override
     public Trade createCost(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
-        if (this.costPlan == null)
+        if (this.costPlan == null) {
             return new SimpleTrade(action, TradeType.COST);
+        }
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.costPlan.createTrade(playerId, action, attributes);
@@ -135,8 +143,9 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
     }
 
     private AwardList doAwardList(long playerId, Action action, Map<String, Object> attributes) {
-        if (this.awardPlan == null)
+        if (this.awardPlan == null) {
             return new SimpleAwardList(action);
+        }
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         return this.awardPlan.getAwardList(playerId, action, attributes);
@@ -147,26 +156,29 @@ public abstract class AbstractActionPlan extends DemandHolderObject implements A
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);
         ExprHolder formula = this.optionMap.get(option);
-        if (formula == null)
+        if (formula == null) {
             throw new GameRuningException(option, ItemResultCode.ACTION_NO_EXIST);
+        }
         return formula.createExpr().putAll(attributes).execute(null);
     }
-
 
     @Override
     public void init(ItemModel itemModel, ItemModelContext context) {
         super.init(itemModel, context);
-        if (this.optionMap == null)
+        if (this.optionMap == null) {
             this.optionMap = ImmutableMap.of();
+        }
         if (this.action != null) {
             this.actions = ImmutableSet.of(this.action);
         } else if (this.actions != null) {
             this.actions = ImmutableSet.copyOf(this.actions);
         }
-        if (this.awardPlan != null)
+        if (this.awardPlan != null) {
             this.awardPlan.init(itemModel, context);
-        if (this.costPlan != null)
+        }
+        if (this.costPlan != null) {
             this.costPlan.init(itemModel, context);
+        }
         for (String alias : this.attrAliasSet) {
             AliasCollectUtils.addAlias(alias);
         }

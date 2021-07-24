@@ -29,7 +29,7 @@ public class ConfigurationImportBeanDefinitionRegistrar implements ImportBeanDef
 
     protected <P> P loadProperties(Class<P> propertiesClass) {
         ConfigurationProperties configurationProperties = propertiesClass.getAnnotation(ConfigurationProperties.class);
-        ThrowAide.checkNotNull(configurationProperties, "{} @ConfigurationProperties annotation is null", propertiesClass);
+        Asserts.checkNotNull(configurationProperties, "{} @ConfigurationProperties annotation is null", propertiesClass);
         String keyHead = configurationProperties.value();
         if (StringUtils.isBlank(keyHead)) {
             keyHead = configurationProperties.prefix();

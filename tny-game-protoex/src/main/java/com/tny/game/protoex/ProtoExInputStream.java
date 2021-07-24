@@ -27,8 +27,32 @@ public class ProtoExInputStream implements ProtoExStream {
         this(null, buffer);
     }
 
+    public ProtoExInputStream(byte[] buffer, int offset, int length) {
+        this(null, buffer, offset, length);
+    }
+
+    public ProtoExInputStream(ByteBuffer buffer) {
+        this(null, buffer);
+    }
+
+    public ProtoExInputStream(ProtoExSchemaContext schemaContext, ByteBuffer buffer) {
+        this.buffer = buffer;
+        this.schemaContext = schemaContext;
+        if (this.schemaContext == null) {
+            this.schemaContext = DefaultProtoExSchemaContext.getDefault();
+        }
+    }
+
     public ProtoExInputStream(ProtoExSchemaContext schemaContext, byte[] buffer) {
         this.buffer = ByteBuffer.wrap(buffer);
+        this.schemaContext = schemaContext;
+        if (this.schemaContext == null) {
+            this.schemaContext = DefaultProtoExSchemaContext.getDefault();
+        }
+    }
+
+    public ProtoExInputStream(ProtoExSchemaContext schemaContext, byte[] buffer, int offset, int length) {
+        this.buffer = ByteBuffer.wrap(buffer, offset, length);
         this.schemaContext = schemaContext;
         if (this.schemaContext == null) {
             this.schemaContext = DefaultProtoExSchemaContext.getDefault();
@@ -116,6 +140,10 @@ public class ProtoExInputStream implements ProtoExStream {
 
     public byte[] readBytes() {
         return this.doReadBytes();
+    }
+
+    public ByteBuffer readBuffer() {
+        return this.doReadBuffer();
     }
 
     public String readString() {
@@ -275,6 +303,22 @@ public class ProtoExInputStream implements ProtoExStream {
         final byte[] copy = new byte[length];
         this.buffer.get(copy);
         return copy;
+    }
+
+    private ByteBuffer doReadBuffer() {
+        final int length = this.doReadRawVarInt32();
+        if (length < 0) {
+            throw ProtobufExException.negativeSize(length);
+        }
+
+        if (this.buffer.remaining() < length) {
+            throw ProtobufExException.notEnoughSize(length, this.buffer.remaining());
+        }
+
+        int position = this.buffer.position();
+        ByteBuffer byteBuffer = ByteBuffer.wrap(this.buffer.array(), position, length);
+        this.buffer.position(position + length);
+        return byteBuffer;
     }
 
     //	public <T> T readMessage(int protoExID, boolean raw, boolean packed, FieldFormat format) {

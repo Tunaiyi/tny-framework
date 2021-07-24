@@ -35,7 +35,7 @@ public class DataPacketV1Config {
     // 消息体加密器
     private String crypto = XOrCodecCrypto.class.getSimpleName();
     // 默认最大包大小
-    private int maxPayloadLength = 1024 * 1024;
+    private int maxPayloadLength = 0xFFFF;
 
     // 密钥字节
     private volatile byte[][] securityKeysBytes;

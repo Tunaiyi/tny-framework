@@ -34,7 +34,7 @@ public class OpLogMapperInitiator implements AppPrepareStart {
 
     @PostConstruct
     public void init() {
-        LOGGER.info("启动初始化OpLogMapper任务!");
+        LOGGER.info("启动初始化 OpLogMapper 任务!");
         this.task = ForkJoinPool.commonPool().submit(() -> {
             Class<?> clazz = null;
             try {

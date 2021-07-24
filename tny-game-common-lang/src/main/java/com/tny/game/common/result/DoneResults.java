@@ -27,7 +27,7 @@ public class DoneResults {
      * @return
      */
     public static <M, MC extends M> DoneResult<M> success(MC value) {
-        ThrowAide.checkNotNull(value, "DoneResult.value is null");
+        Asserts.checkNotNull(value, "DoneResult.value is null");
         return new DefaultDoneResult<>(ResultCode.SUCCESS, value, null);
     }
 
@@ -117,7 +117,7 @@ public class DoneResults {
      * @return 返回结果
      */
     public static <M> DoneResult<M> failure(ResultCode code) {
-        ThrowAide.checkArgument(code.isFailure(), "code [{}] is success", code);
+        Asserts.checkArgument(code.isFailure(), "code [{}] is success", code);
         return new DefaultDoneResult<>(code, null, null);
     }
 
@@ -128,7 +128,7 @@ public class DoneResults {
      * @return 返回结果
      */
     public static <M> DoneResult<M> failure(ResultCode code, String message, Object... messageParams) {
-        ThrowAide.checkArgument(code.isFailure(), "code [{}] is success", code.getCode());
+        Asserts.checkArgument(code.isFailure(), "code [{}] is success", code.getCode());
         return new DefaultDoneResult<>(code, null, StringAide.format(message, messageParams));
     }
 
@@ -139,7 +139,7 @@ public class DoneResults {
      * @return 返回结果
      */
     public static <M> DoneResult<M> failure(DoneResult<?> result) {
-        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        Asserts.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return new DefaultDoneResult<>(result.getCode(), null, result.getMessage());
     }
 
@@ -150,7 +150,7 @@ public class DoneResults {
      * @return 返回结果
      */
     public static <M> DoneResult<M> failure(DoneResult<?> result, String message, Object... messageParams) {
-        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        Asserts.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return new DefaultDoneResult<>(result.getCode(), null, StringAide.format(message, messageParams));
     }
 
@@ -175,7 +175,7 @@ public class DoneResults {
      * @return DoneResults
      */
     public static <M, S> DoneResult<M> map(DoneResult<S> result, Function<S, M> mapper) {
-        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        Asserts.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return new DefaultDoneResult<>(result.getCode(), mapper.apply(result.get()), result.getMessage());
     }
 

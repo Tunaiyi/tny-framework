@@ -15,32 +15,32 @@ public final class Certificates {
     public static final String ANONYMITY_USER_TYPE = "#anonymity";
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return createAuthenticated(id, userID, DEFAULT_USER_TYPE, Instant.now());
     }
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return createAuthenticated(id, userID, userType, Instant.now());
     }
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, Instant authenticateAt) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return createAuthenticated(id, userID, DEFAULT_USER_TYPE, authenticateAt);
     }
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType, Instant authenticateAt) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return new CommonCertificate<>(id, userID, userType, AUTHENTICATED, authenticateAt);
     }
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, Instant authenticateAt, boolean renew) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return createAuthenticated(id, userID, DEFAULT_USER_TYPE, authenticateAt, renew);
     }
 
     public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType, Instant authenticateAt, boolean renew) {
-        ThrowAide.checkArgument(id > 0, "loginId must > 0");
+        Asserts.checkArgument(id > 0, "loginId must > 0");
         return new CommonCertificate<>(id, userID, userType, renew ? RENEW : AUTHENTICATED, authenticateAt);
     }
 

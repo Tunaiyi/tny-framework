@@ -1,6 +1,6 @@
 package com.tny.game.common.reflect;
 
-import com.tny.game.common.event.annotation.*;
+import com.tny.game.common.event.bus.annotation.*;
 
 @Listener
 public class Counter {
@@ -19,7 +19,7 @@ public class Counter {
     }
 
     public double count(int time, long size) {
-        return (number - num1 + num2) * time / size;
+        return (this.number - this.num1 + this.num2) * time / size;
     }
 
 }

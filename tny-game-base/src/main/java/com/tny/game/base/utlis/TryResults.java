@@ -23,7 +23,7 @@ public class TryResults {
      * @return 返回 TryResult
      */
     public static <M, MC extends M> TryResult<M> success(MC value) {
-        ThrowAide.checkNotNull(value, "TryDone.value is null");
+        Asserts.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(ResultCode.SUCCESS, value);
     }
 
@@ -59,7 +59,7 @@ public class TryResults {
      * @return 返回结果
      */
     public static <M> TryResult<M> failure(ResultCode code) {
-        ThrowAide.checkArgument(code.isFailure(), "code [{}] is success", code);
+        Asserts.checkArgument(code.isFailure(), "code [{}] is success", code);
         return new DefaultTryResult<>(code, null);
     }
 
@@ -81,7 +81,7 @@ public class TryResults {
      * @return 返回结果
      */
     public static <M, MC extends M> TryResult<M> failure(TryToDoResult result, MC value) {
-        ThrowAide.checkArgument(result.isUnsatisfied(), "TryToDoResult [{}] is satisfied", result);
+        Asserts.checkArgument(result.isUnsatisfied(), "TryToDoResult [{}] is satisfied", result);
         return new DefaultTryResult<>(result, value);
     }
 
@@ -92,7 +92,7 @@ public class TryResults {
      * @return 返
      */
     public static <M> TryResult<M> failure(TryResult<?> result) {
-        ThrowAide.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        Asserts.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
         return map(result, null);
     }
 
@@ -118,7 +118,7 @@ public class TryResults {
      * @return TryResult
      */
     public static <M, MC extends M> TryResult<M> done(TryToDoResult result, MC value) {
-        ThrowAide.checkNotNull(value, "TryDone.value is null");
+        Asserts.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(result, value);
     }
 
@@ -149,7 +149,7 @@ public class TryResults {
      * @return TryResult
      */
     public static <M, MC extends M> DoneMessage<M, ? extends TryResult<M>> with(TryToDoResult result, MC value) {
-        ThrowAide.checkNotNull(value, "TryDone.value is null");
+        Asserts.checkNotNull(value, "TryDone.value is null");
         return new DefaultTryResult<>(result, value);
     }
 
@@ -168,9 +168,11 @@ public class TryResults {
      * @return 返回 TryResult
      */
     public static <M, MC extends M> TryResult<MC> map(TryResult<?> result, MC value) {
-        if (result.getResult() != null)
+        if (result.getResult() != null) {
             return new DefaultTryResult<>(result.getResult(), value);
-        else
+        } else {
             return new DefaultTryResult<>(result.getCode(), value);
+        }
     }
+
 }

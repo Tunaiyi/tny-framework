@@ -3,7 +3,7 @@ package com.tny.game.base.item.listener;
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 
 /**
  * Created by Kun Yang on 16/2/13.

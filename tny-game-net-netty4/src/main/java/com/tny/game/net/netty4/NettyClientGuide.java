@@ -96,7 +96,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyClientBootstrapSetting
     }
 
     Channel connect(URL url, long connectTimeout) throws NetException {
-        ThrowAide.checkNotNull(url, "url is null");
+        Asserts.checkNotNull(url, "url is null");
         ChannelFuture channelFuture = null;
         try {
             channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));

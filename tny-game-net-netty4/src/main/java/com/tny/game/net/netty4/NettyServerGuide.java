@@ -2,7 +2,7 @@ package com.tny.game.net.netty4;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;
 import com.tny.game.net.endpoint.*;
@@ -147,6 +147,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
                     Transporter<Object> transport = new NettyChannelTransporter<>(channel);
                     NetTunnel<Object> tunnel = new GeneralServerTunnel<>(transport, context); // 创建 Tunnel 已经transport.bind
                     AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(context);
+                    endpoint.setTunnel(tunnel);
                     tunnel.bind(endpoint);
                     tunnel.open();
                 }

@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint.listener;
 
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
@@ -36,20 +36,19 @@ public class ClientEventBuses extends BaseEventBuses<ClientListener> {
     }
 
     public BindP1EventBus<ClientActivateListener, Client, Tunnel> activateEvent() {
-        return ON_ACTIVATE;
+        return this.ON_ACTIVATE;
     }
 
     public BindP1EventBus<ClientUnactivatedListener, Client, Tunnel> unactivatedEvent() {
-        return ON_UNACTIVATED;
+        return this.ON_UNACTIVATED;
     }
 
     public BindVoidEventBus<ClientOpenListener, Client> openEvent() {
-        return ON_OPEN;
+        return this.ON_OPEN;
     }
 
     public BindVoidEventBus<ClientCloseListener, Client> closeEvent() {
-        return ON_CLOSE;
+        return this.ON_CLOSE;
     }
-
 
 }

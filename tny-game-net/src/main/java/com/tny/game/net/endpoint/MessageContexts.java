@@ -234,8 +234,8 @@ public class MessageContexts {
         }
 
         private DefaultMessageContext<UID> init(MessageMode mode, Protocol protocol, ResultCode code, Long toMessage) {
-            ThrowAide.checkNotNull(protocol, "protocol is null");
-            ThrowAide.checkNotNull(code, "code is null");
+            Asserts.checkNotNull(protocol, "protocol is null");
+            Asserts.checkNotNull(code, "code is null");
             this.protocol = protocol.getProtocolId();
             this.line = protocol.getLine();
             this.code = code;

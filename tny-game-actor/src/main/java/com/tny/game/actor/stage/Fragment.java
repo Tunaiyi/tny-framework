@@ -11,7 +11,6 @@ public abstract class Fragment<V, R> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(Fragment.class);
 
-
     /* 片段是否完成 */
     private boolean done;
 
@@ -38,7 +37,7 @@ public abstract class Fragment<V, R> {
     @SuppressWarnings("unchecked")
     protected void execute(Object returnVal, Throwable cause) {
         try {
-            doExecute((V) returnVal, cause);
+            doExecute((V)returnVal, cause);
         } catch (Throwable e) {
             fail(e);
             LOGGER.error("", e);
@@ -60,9 +59,9 @@ public abstract class Fragment<V, R> {
      */
     @SuppressWarnings("unchecked")
     protected void finish(Object result) {
-        ThrowAide.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
+        Asserts.checkState(!isDone(), "设置运行成功结果时错误, 运行结果已经完成");
         this.done = true;
-        this.result = (R) result;
+        this.result = (R)result;
     }
 
     /**
@@ -71,7 +70,7 @@ public abstract class Fragment<V, R> {
      * @param cause
      */
     protected void fail(Throwable cause) {
-        ThrowAide.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
+        Asserts.checkState(!isDone(), "设置运行失败结果时错误, 运行结果已经完成");
         this.done = true;
         this.cause = cause;
     }
@@ -141,6 +140,5 @@ public abstract class Fragment<V, R> {
     //     this.cause = result;
     //     this.result = null;
     // }
-
 
 }

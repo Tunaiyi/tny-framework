@@ -1,11 +1,13 @@
 package com.tny.game.net.message.codec;
 
+import com.tny.game.common.codec.*;
+import com.tny.game.common.codec.typeprotobuf.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.unit.annotation.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.protoex.*;
-import org.slf4j.*;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -20,21 +22,19 @@ import static com.tny.game.net.message.codec.ProtobufConstants.*;
 @Unit
 public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JProtobufMessageBodyCodec.class);
-
-    private final ProtobufObjectCodecorFactory codecorFactory;
+    private final TypeProtobufObjectCodecFactory codecFactory;
 
     public JProtobufMessageBodyCodec() {
-        this.codecorFactory = ProtobufObjectCodecorFactory.getDefault();
+        this.codecFactory = new TypeProtobufObjectCodecFactory();
     }
 
-    public JProtobufMessageBodyCodec(ProtobufObjectCodecorFactory codecorFactory) {
-        this.codecorFactory = codecorFactory;
+    public JProtobufMessageBodyCodec(TypeProtobufObjectCodecFactory codecFactory) {
+        this.codecFactory = codecFactory;
     }
 
     @Override
-    public T decode(byte[] bytes) throws Exception {
-        ProtoExInputStream input = new ProtoExInputStream(bytes);
+    public T decode(ByteBuffer buffer) throws Exception {
+        ProtoExInputStream input = new ProtoExInputStream(buffer);
         List<Object> paramList = null;
         Object body = null;
         while (input.hasRemaining()) {
@@ -58,18 +58,13 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
         if (rawType.isHasValueReader()) {
             return rawType.readerValue(input);
         } else {
-            int protobufId = input.readInt();
-            ProtobufCodec<Object> codec = this.codecorFactory.getCodecor(protobufId);
-            if (codec == null) {
-                LOGGER.warn("未找到 protobufId = {} 关联的 ProtobufCodec !!!", protobufId);
-                return null;
-            }
-            return codec.decode(input.readBytes());
+            ObjectCodec<T> codec = this.codecFactory.createCodecor(null);
+            return codec.decodeByBytes(input.readBytes());
         }
     }
 
     @Override
-    public byte[] encode(T object) throws Exception {
+    public ByteBuffer encode(T object) throws Exception {
         ProtoExOutputStream output = new ProtoExOutputStream();
         if (object instanceof MessageParamList) {
             for (Object param : ((MessageParamList)object)) {
@@ -78,8 +73,7 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
         } else {
             doEncode(output, object, false);
         }
-        byte[] data = output.toByteArray();
-        return data;
+        return ByteBuffer.wrap(output.toByteArray());
     }
 
     private void doEncode(ProtoExOutputStream output, Object object, boolean params) throws Exception {
@@ -93,9 +87,8 @@ public class JProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
         if (rawType.isHasValueWriter()) {
             rawType.writeValue(output, object);
         } else {
-            ProtobufCodec<Object> codec = this.codecorFactory.getCodecor(object.getClass());
-            output.writeInt(codec.getTypeId());
-            byte[] objectBytes = codec.encode(object);
+            ObjectCodec<Object> codec = this.codecFactory.createCodecor(null);
+            byte[] objectBytes = codec.encodeToBytes(object);
             output.writeBytes(objectBytes);
         }
     }

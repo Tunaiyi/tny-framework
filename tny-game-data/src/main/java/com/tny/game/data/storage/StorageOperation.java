@@ -162,7 +162,7 @@ public enum StorageOperation {
      */
     public StorageState getOperateState(StorageState state) {
         StorageState newState = this.operateStorageStateMap.get(state);
-        ThrowAide.check(newState != null, new StoreOperateException("can not {} in {} state", this, state));
+        Asserts.check(newState != null, new StoreOperateException("can not {} in {} state", this, state));
         return newState;
     }
 
@@ -179,14 +179,16 @@ public enum StorageOperation {
     }
 
     public <O> boolean operate(ObjectAccessor<?, O> accessor, O object) {
-        if (this.singleOperate == null)
+        if (this.singleOperate == null) {
             return true;
+        }
         return this.singleOperate.apply(accessor, object);
     }
 
     public <O> Collection<O> operate(ObjectAccessor<?, O> accessor, Collection<O> objects) {
-        if (this.multiOperate == null)
+        if (this.multiOperate == null) {
             return Collections.emptyList();
+        }
         return as(this.multiOperate.apply(accessor, objects));
     }
 

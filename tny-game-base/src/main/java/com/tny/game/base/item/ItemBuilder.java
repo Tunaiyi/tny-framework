@@ -31,7 +31,7 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      */
     public B setPlayerId(long playerId) {
         this.playerId = playerId;
-        return (B) this;
+        return (B)this;
     }
 
     /**
@@ -41,9 +41,9 @@ public abstract class ItemBuilder<I extends AbstractItem<IM>, IM extends ItemMod
      * @return 构建器
      */
     public B setModel(IM model) {
-        ThrowAide.checkNotNull(model);
+        Asserts.checkNotNull(model);
         this.itemModel = model;
-        return (B) this;
+        return (B)this;
     }
 
     /**

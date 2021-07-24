@@ -66,7 +66,7 @@ public class DisruptorEndpointCommandTaskProcessorSetting {
     public DisruptorEndpointCommandTaskProcessorSetting setCommandTickTimeList(int[] commandTickTimeList) {
         if (ArrayUtils.isNotEmpty(commandTickTimeList)) {
             for (int value : commandTickTimeList) {
-                ThrowAide.checkArgument(value > 0, "illegal argument commandTickTimeList [{}]", StringUtils.join(",", commandTickTimeList));
+                Asserts.checkArgument(value > 0, "illegal argument commandTickTimeList [{}]", StringUtils.join(",", commandTickTimeList));
             }
             this.commandTickTimeList = commandTickTimeList;
         }

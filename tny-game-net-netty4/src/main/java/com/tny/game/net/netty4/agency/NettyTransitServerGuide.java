@@ -2,7 +2,7 @@ package com.tny.game.net.netty4.agency;
 
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.net.agency.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;

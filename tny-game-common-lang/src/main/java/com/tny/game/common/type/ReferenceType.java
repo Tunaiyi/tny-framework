@@ -1,6 +1,6 @@
 package com.tny.game.common.type;
 
-import com.tny.game.common.utils.ThrowAide;
+import com.tny.game.common.utils.*;
 
 import java.lang.reflect.*;
 
@@ -14,17 +14,16 @@ public abstract class ReferenceType<T> {
     protected ReferenceType() {
         Class<?> parameterizedTypeReferenceSubclass = findReferenceTypeSubclass(getClass());
         Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
-        ThrowAide.checkArgument(type instanceof ParameterizedType, "Type must be a parameterized type");
-        ParameterizedType parameterizedType = (ParameterizedType) type;
+        Asserts.checkArgument(type instanceof ParameterizedType, "Type must be a parameterized type");
+        ParameterizedType parameterizedType = (ParameterizedType)type;
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        ThrowAide.checkArgument(actualTypeArguments.length == 1, "Number of type arguments must be 1");
+        Asserts.checkArgument(actualTypeArguments.length == 1, "Number of type arguments must be 1");
         this.type = actualTypeArguments[0];
     }
 
     private ReferenceType(Type type) {
         this.type = type;
     }
-
 
     public Type getType() {
         return this.type;
@@ -33,7 +32,7 @@ public abstract class ReferenceType<T> {
     @Override
     public boolean equals(Object other) {
         return (this == other || (other instanceof ReferenceType &&
-                                  this.type.equals(((ReferenceType<?>) other).type)));
+                                          this.type.equals(((ReferenceType<?>)other).type)));
     }
 
     @Override
@@ -45,7 +44,6 @@ public abstract class ReferenceType<T> {
     public String toString() {
         return "ReferenceType<" + this.type + ">";
     }
-
 
     /**
      * Build a {@code ReferenceType} wrapping the given type.

@@ -5,6 +5,7 @@ apply plugin: "maven"
 dependencies {
 
     api project(":tny-game-net")
+    api project(":tny-game-common-codec-jprotobuf")
 
     api libs.jprotobuf
 

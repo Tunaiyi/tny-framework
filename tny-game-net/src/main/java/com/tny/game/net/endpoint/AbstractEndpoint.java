@@ -444,7 +444,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 
     @Override
     public void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
-        ThrowAide.checkNotNull(tunnel, "newSession is null");
+        Asserts.checkNotNull(tunnel, "newSession is null");
         checkOnlineCertificate(certificate);
         synchronized (this) {
             checkOnlineCertificate(certificate);

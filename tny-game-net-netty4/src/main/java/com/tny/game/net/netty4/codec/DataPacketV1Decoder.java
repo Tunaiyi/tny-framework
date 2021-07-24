@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.codec;
 
-import com.tny.game.common.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.exception.*;
@@ -55,15 +54,13 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
 
             option = in.readByte();
 
-            if (isOption(option, DATA_PACK_OPTION_PING)) {
+            if (isOption(option, DATA_PACK_OPTION_MESSAGE_TYPE_MASK, DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING)) {
                 return TickMessage.ping();
-            } else if (isOption(option, DATA_PACK_OPTION_PONG)) {
+            } else if (isOption(option, DATA_PACK_OPTION_MESSAGE_TYPE_MASK, DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PONG)) {
                 return TickMessage.pong();
             }
 
-            byte[] payloadLengthBytes = new byte[2];
-            in.readBytes(payloadLengthBytes);
-            payloadLength = BytesAide.bytes2Int(payloadLengthBytes);
+            payloadLength = in.readInt();
 
             if (payloadLength > this.config.getMaxPayloadLength()) {
                 throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}", payloadLength,
@@ -102,15 +99,15 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
         // 移动到当前包序号
         packageContext.goToAndCheck(number);
 
-        boolean verifyEnable = isOption(option, PACKET_OPTION_VERIFY);
+        boolean verifyEnable = isOption(option, DATA_PACK_OPTION_VERIFY, DATA_PACK_OPTION_VERIFY);
         if (this.config.isVerifyEnable() && !verifyEnable) {
             throw CodecException.causeDecode("packet need verify!");
         }
-        boolean encryptEnable = isOption(option, PACKET_OPTION_ENCRYPT);
+        boolean encryptEnable = isOption(option, DATA_PACK_OPTION_ENCRYPT, DATA_PACK_OPTION_ENCRYPT);
         if (this.config.isEncryptEnable() && !encryptEnable) {
             throw CodecException.causeDecode("packet need encrypt!");
         }
-        boolean wasteBytesEnable = isOption(option, PACKET_OPTION_WASTE_BYTES);
+        boolean wasteBytesEnable = isOption(option, DATA_PACK_OPTION_WASTE_BYTES, DATA_PACK_OPTION_WASTE_BYTES);
         if (this.config.isWasteBytesEnable() && !wasteBytesEnable) {
             throw CodecException.causeDecode("packet need waste bytes!");
         }

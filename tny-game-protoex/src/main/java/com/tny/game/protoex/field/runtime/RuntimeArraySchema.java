@@ -28,23 +28,28 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
 
     @Override
     public void writeMessage(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
-        if (array != null)
-            ThrowAide.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
-        if (array == null || Array.getLength(array) == 0)
+        if (array != null) {
+            Asserts.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+        }
+        if (array == null || Array.getLength(array) == 0) {
             return;
+        }
         this.writeTag(outputStream, conf);
         outputStream.writeLengthLimitation(array, conf, this);
     }
 
     @Override
     public void writeValue(ProtoExOutputStream outputStream, Object array, IOConfiger<?> conf) {
-        if (array != null)
-            ThrowAide.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
-        if (array == null || Array.getLength(array) == 0)
+        if (array != null) {
+            Asserts.checkArgument(array.getClass().isArray(), "{} 不是 Array", array.getClass());
+        }
+        if (array == null || Array.getLength(array) == 0) {
             return;
-        if (!(conf instanceof RepeatIOConfiger))
+        }
+        if (!(conf instanceof RepeatIOConfiger)) {
             throw ProtobufExException.notRepeatIOConfiger(conf);
-        RepeatIOConfiger<?> repeatIOConf = (RepeatIOConfiger<?>) conf;
+        }
+        RepeatIOConfiger<?> repeatIOConf = (RepeatIOConfiger<?>)conf;
         IOConfiger<?> elementDesc = repeatIOConf.getElementConfiger();
         if (conf.isPacked()) {
             ProtoExSchema<Object> elementSchema = outputStream.getSchemaContext().getSchema(elementDesc.getDefaultType());
@@ -59,8 +64,9 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
         int length = Array.getLength(array);
         for (int index = 0; index < length; index++) {
             Object value = Array.get(array, index);
-            if (value == null)
+            if (value == null) {
                 continue;
+            }
             if (elementSchema.isRaw()) {
                 elementSchema.writeValue(outputStream, value, elementDesc);
             } else {
@@ -75,8 +81,9 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
         int length = Array.getLength(array);
         for (int index = 0; index < length; index++) {
             Object value = Array.get(array, index);
-            if (value == null)
+            if (value == null) {
                 continue;
+            }
             ProtoExSchema<Object> schema = schemaContext.getSchema(value.getClass());
             schema.writeMessage(outputStream, value, elementDesc);
         }
@@ -93,20 +100,23 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
     @Override
     public Object readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
         int length = inputStream.readInt();
-        if (length < 0)
+        if (length < 0) {
             throw ProtobufExException.negativeSize(length);
+        }
 
-        if (!(conf instanceof RepeatIOConfiger))
+        if (!(conf instanceof RepeatIOConfiger)) {
             throw ProtobufExException.notRepeatIOConfiger(conf);
-        RepeatIOConfiger<?> repeatIOConf = (RepeatIOConfiger<?>) conf;
+        }
+        RepeatIOConfiger<?> repeatIOConf = (RepeatIOConfiger<?>)conf;
         IOConfiger<?> elementDesc = repeatIOConf.getElementConfiger();
 
         int offset = inputStream.position();
         int repeatOption = inputStream.readInt();
         int optionSize = inputStream.position() - offset;
         length = length - optionSize;
-        if (length < 0)
+        if (length < 0) {
             throw ProtobufExException.negativeSize(length);
+        }
         boolean packed = WireFormat.isRepeatPacked(repeatOption);
         int repeatChildID = WireFormat.getRepeatChildId(repeatOption);
         boolean raw = WireFormat.isRepeatChildRaw(repeatOption);
@@ -127,8 +137,9 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
         int position = inputStream.position();
         while (position - startAt < length) {
             Object value = schema.readValue(inputStream, tag, elConf);
-            if (value != null)
+            if (value != null) {
                 valueList.add(value);
+            }
             position = inputStream.position();
         }
         return toArray(valueList, elConf.getDefaultType());
@@ -143,8 +154,9 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
             Tag targetTag = inputStream.getTag();
             ProtoExSchema<Object> schema = schemaContext.getSchema(targetTag.getProtoExId(), targetTag.isRaw(), elConf.getDefaultType());
             Object value = schema.readMessage(inputStream, elConf);
-            if (value != null)
+            if (value != null) {
                 valueList.add(value);
+            }
             position = inputStream.position();
         }
         return toArray(valueList, elConf.getDefaultType());
@@ -169,7 +181,7 @@ public class RuntimeArraySchema extends BaseProtoExSchema<Object> {
             }
         }
         Object object = Array.newInstance(elClass, valueList.size());
-        return valueList.toArray((Object[]) object);
+        return valueList.toArray((Object[])object);
     }
 
 }

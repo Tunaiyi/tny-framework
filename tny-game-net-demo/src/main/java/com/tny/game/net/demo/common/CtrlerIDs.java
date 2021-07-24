@@ -8,12 +8,15 @@ package com.tny.game.net.demo.common;
  */
 public interface CtrlerIDs {
 
-    int LOGIN = 1000;
-    int LOGIN$LOGIN = 1000_01;
-    int LOGIN$SAY = 1000_02;
-    int LOGIN$PUSH = 1000_03;
-    int LOGIN$PING = 1000_04;
-    int LOGIN$DELAY_SAY = 1000_05;
-    int LOGIN$TEST = 1000_06;
+    int LOGIN = 100;
+    int LOGIN$LOGIN = 100_01;
+    int LOGIN$SAY = 100_02;
+    int LOGIN$PUSH = 100_03;
+    int LOGIN$PING = 100_04;
+    int LOGIN$DELAY_SAY = 100_05;
+    int LOGIN$TEST = 100_06;
+
+    int GAME_LOGIN = 1000;
+    int GAME_LOGIN$LOGIN = 1000_01;
 
 }

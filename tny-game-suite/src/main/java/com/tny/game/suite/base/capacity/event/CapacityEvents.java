@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.capacity.event;
 
-import com.tny.game.common.event.*;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.suite.base.capacity.*;
 
 /**

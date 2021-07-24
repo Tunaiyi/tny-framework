@@ -66,7 +66,7 @@ public class DefaultMessageDispatcherContext implements MessageDispatcherContext
         AuthenticateValidator<Object> validator = null;
         if (validatorClass != null) {
             validator = as(this.authValidators.get(validatorClass));
-            ThrowAide.checkNotNull(validator, "{} 认证器不存在", validatorClass);
+            Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
         }
         if (validator == null) {
             validator = as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
@@ -108,7 +108,7 @@ public class DefaultMessageDispatcherContext implements MessageDispatcherContext
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                ThrowAide.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, this.defaultValidator.getClass());
+                Asserts.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, this.defaultValidator.getClass());
                 this.defaultValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {
@@ -151,7 +151,7 @@ public class DefaultMessageDispatcherContext implements MessageDispatcherContext
     private <K, V> void putObject(Map<K, V> map, K key, V value) {
         V oldValue = map.put(key, value);
         if (oldValue != null) {
-            ThrowAide.throwException(IllegalArgumentException::new,
+            Asserts.throwException(IllegalArgumentException::new,
                     "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
         }
     }

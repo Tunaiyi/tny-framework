@@ -4,12 +4,10 @@ import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.unit.*;
 import com.tny.game.common.unit.annotation.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 
-@Component
 public class UnitLoadInitiator implements AppPrepareStart {
 
     @Resource
