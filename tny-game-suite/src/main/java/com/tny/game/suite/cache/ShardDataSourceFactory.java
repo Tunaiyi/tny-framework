@@ -2,7 +2,7 @@ package com.tny.game.suite.cache;
 
 import com.alibaba.druid.pool.*;
 import com.google.common.collect.Maps;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import net.paoding.rose.jade.context.spring.SpringDataSourceFactory;
 import net.paoding.rose.jade.dataaccess.*;
 import net.paoding.rose.jade.shard.ShardInterpreter;
@@ -68,10 +68,12 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
     public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> runtime) {
         DataSourceHolder holder = null;
         Object shardObject = runtime.get(ShardInterpreter.SHARD_BY_KEY);
-        if (shardObject != null && shardObject instanceof ShardTable)
-            holder = this.holderMap.get(((ShardTable) shardObject).getSid());
-        if (holder == null)
+        if (shardObject != null && shardObject instanceof ShardTable) {
+            holder = this.holderMap.get(((ShardTable)shardObject).getSid());
+        }
+        if (holder == null) {
             return this.defaultFactory.getHolder(metaData, runtime);
+        }
         return holder;
     }
 
@@ -100,9 +102,10 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
             this.port = port;
             this.name = name;
             Properties properties = this.createProperties(host, port, name);
-            DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
-            if (LOGGER.isDebugEnabled())
+            DruidDataSource dataSource = (DruidDataSource)DruidDataSourceFactory.createDataSource(properties);
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("创建 [s{}] 数据源 {}:{}/{} 发生[成功]!", serverID, host, port, name);
+            }
             this.init(dataSource);
             this.druidDataSource = dataSource;
             this.properties = properties;
@@ -117,8 +120,9 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
                     port == null ? this.port : port,
                     name == null ? this.name : name);
             properties.put(DruidDataSourceFactory.PROP_URL, url);
-            if (properties.get(DruidDataSourceFactory.PROP_PASSWORD) == null)
+            if (properties.get(DruidDataSourceFactory.PROP_PASSWORD) == null) {
                 properties.setProperty(DruidDataSourceFactory.PROP_PASSWORD, "");
+            }
             return properties;
         }
 
@@ -130,13 +134,15 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
             Properties properties = this.createProperties(host, port, name);
             if (properties == null || Maps.difference(this.properties, properties).areEqual()) {
                 try {
-                    if (properties == null)
+                    if (properties == null) {
                         properties = new Properties();
+                    }
                     this.druidDataSource.restart();
                     DruidDataSourceFactory.config(this.druidDataSource, properties);
                     this.properties = properties;
-                    if (LOGGER.isDebugEnabled())
+                    if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("重新配置 [s{}] 数据源 {}:{}/{} 发生[成功]!", this.serverID, this.host, this.port, this.name);
+                    }
                 } catch (SQLException e) {
                     LOGGER.error("重新配置 [s{}] 数据源 {}:{}/{} 发生异常",
                             this.serverID, this.host, this.port, this.name, e);
@@ -157,4 +163,5 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
         map2.put(3, "3");
         System.out.println(Maps.difference(map1, map2).areEqual());
     }
+
 }

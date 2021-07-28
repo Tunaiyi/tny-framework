@@ -29,7 +29,7 @@ ext.vers = [
         alibaba_cloud                       : "2021.1",
 
         httpclient                          : "4.5.12",
-        redisson                            : "3.13.6",
+        redisson                            : "3.16.0",
 
 //        tny_framework                       : "4.2.x-SNAPSHOT",
 
@@ -57,7 +57,7 @@ ext.libs = [
         log4j_web                                : "org.apache.logging.log4j:log4j-web",
 
 
-        javassist                                : "org.javassist:javassist:3.27.0-GA",
+        javassist                                : "org.javassist:javassist:3.28.0-GA",
         asm                                      : "org.ow2.asm:asm:5.0.4",
 
 

@@ -1,13 +1,11 @@
 package com.tny.game.net.netty4.appliaction;
 
-import com.tny.game.common.boot.transaction.*;
-import com.tny.game.common.runtime.*;
-import com.tny.game.loader.lifecycle.*;
+import com.google.common.collect.ImmutableList;
+import com.tny.game.boot.transaction.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.telnet.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 
 import java.io.*;
@@ -18,7 +16,7 @@ import java.util.function.*;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public class NetApplication implements InitializingBean {
+public class NetApplication {
 
     private ApplicationContext applicationContext;
 
@@ -34,7 +32,9 @@ public class NetApplication implements InitializingBean {
 
     private Consumer<ApplicationContext> complete;
 
-    private AppLifecycleProcessor processor = new AppLifecycleProcessor();
+    private Collection<ServerGuide> servers = ImmutableList.of();
+
+    //    private final AppLifecycleProcessor processor = new AppLifecycleProcessor();
 
     private static Logger LOG = LoggerFactory.getLogger(NetApplication.class);
 
@@ -51,19 +51,21 @@ public class NetApplication implements InitializingBean {
         try {
             // processor.setApplicationContext(this.appContext);
             //per initServer
+            this.startAt = Instant.now();
             runPoint(this.beforeInitServer);
-            Collection<ServerGuide> servers = this.initApplication();
-            AppLifecycleProcessor.loadHandler(this.applicationContext);
+            this.servers = this.initApplication();
+            //            ApplicationLifecycleProcessor.loadHandler(this.applicationContext);
             runPoint(this.afterInitServer);
             //post initServer
 
-            this.processor.onPrepareStart(false);
+            //            this.processor.onPrepareStart(false);
             LOG.info("服务器启动服务器!");
 
             // per start
             runPoint(this.beforeStartServer);
-            servers.forEach(ServerGuide::open);
+            this.servers.forEach(ServerGuide::open);
             runPoint(this.afterStartServer);
+
             // post start
 
             // if (this.applicationContext.getBeanNamesForType(TelnetServer.class).length > 0) {
@@ -71,23 +73,17 @@ public class NetApplication implements InitializingBean {
             //     if (telnetServer != null)
             //         telnetServer.start();
             // }
-            this.processor.onPostStart(false);
-            ShutdownHook.register(() -> servers.forEach(guide -> {
-                TransactionManager.open();
-                try {
-                    guide.close();
-                } catch (Throwable throwable) {
-                    LOG.error("ShutdownHook handle close", throwable);
-                } finally {
-                    try {
-                        this.processor.onClosed(true);
-                    } catch (Throwable throwable) {
-                        LOG.error("ShutdownHook handle close", throwable);
-                    }
-                    TransactionManager.close();
-                }
-            }));
-
+            //            this.processor.onPostStart(false);
+            //            ShutdownHook.register(() -> this.servers.forEach(guide -> {
+            //                TransactionManager.open();
+            //                try {
+            //                    guide.close();
+            //                } catch (Throwable throwable) {
+            //                    LOG.error("ShutdownHook handle close", throwable);
+            //                } finally {
+            //                    TransactionManager.close();
+            //                }
+            //            }));
             // complete
             runPoint(this.complete);
             LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - this.startAt.toEpochMilli());
@@ -95,6 +91,27 @@ public class NetApplication implements InitializingBean {
             TransactionManager.close();
         }
         return this;
+    }
+
+    public NetAppContext getAppContext() {
+        return this.appContext;
+    }
+
+    public Instant getStartAt() {
+        return this.startAt;
+    }
+
+    public void close() {
+        this.servers.forEach(guide -> {
+            TransactionManager.open();
+            try {
+                guide.close();
+            } catch (Throwable throwable) {
+                LOG.error("ShutdownHook handle close", throwable);
+            } finally {
+                TransactionManager.close();
+            }
+        });
     }
 
     public NetApplication afterInitServer(Consumer<ApplicationContext> afterInitServer) {
@@ -180,10 +197,10 @@ public class NetApplication implements InitializingBean {
         }
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        this.startAt = Instant.now();
-        this.processor.onStaticInit(this.appContext.getScanPackages());
-    }
+    //    @Override
+    //    public void afterPropertiesSet() {
+    //        this.startAt = Instant.now();
+    //        this.processor.onStaticInit(this.appContext.getScanPackages());
+    //    }
 
 }

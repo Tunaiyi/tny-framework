@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.netty4.codec.*;
 import io.netty.channel.*;
 

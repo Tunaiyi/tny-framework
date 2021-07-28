@@ -10,14 +10,15 @@ dependencies {
     api libs.spring_webmvc
     api libs.spring_aspects
     api libs.spring_orm
+    api libs.commons_io
     api libs.guava
     api libs.poi
     api libs.poi_ooxml
     api libs.poi_ooxml_schemas
 
     api project(":tny-game-protoex")
+    api project(":tny-game-codec-jackson")
     api project(":tny-game-common-lang")
-    api project(":tny-game-common-codec-jackson")
 //    api project(":tny-game-base")
 //    compile(libs.'shiro') {
 //        exclude module: 'guava'

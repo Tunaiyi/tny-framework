@@ -1,0 +1,16 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api libs.spring_boot_autoconfigure
+    api libs.spring_boot_configuration_processor
+
+    api project(":tny-game-boot")
+
+    implementation libs.log4j_api
+    implementation libs.log4j_core
+    implementation libs.log4j_slf4j_impl
+
+}

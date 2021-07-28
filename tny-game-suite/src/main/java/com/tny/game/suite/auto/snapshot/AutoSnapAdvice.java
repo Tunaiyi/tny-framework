@@ -2,8 +2,8 @@ package com.tny.game.suite.auto.snapshot;
 
 import com.tny.game.base.item.*;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.boot.transaction.*;
-import com.tny.game.common.boot.transaction.listener.*;
+import com.tny.game.boot.transaction.*;
+import com.tny.game.boot.transaction.listener.*;
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.oplog.*;

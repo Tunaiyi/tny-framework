@@ -4,14 +4,14 @@
 *.war
 *.ear
 /log
+/build
 *.settings/
 */build
 *.classpath
 *.project
-*/sg.iml
 *.iml
 *.idea/
 .externalToolBuilders
 .gradle
-*client_code
-/build
+*.ipr
+*.iws

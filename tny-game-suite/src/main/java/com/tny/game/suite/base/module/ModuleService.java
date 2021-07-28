@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.suite.utils.*;

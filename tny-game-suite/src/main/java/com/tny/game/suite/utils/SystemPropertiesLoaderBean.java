@@ -1,6 +1,6 @@
 package com.tny.game.suite.utils;
 
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.*;
 

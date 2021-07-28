@@ -1,11 +1,10 @@
 package com.tny.game.suite.utils;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.utils.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.*;
@@ -26,27 +25,11 @@ public interface Configs {
     String SNAP_REASON_SYS_KEY = "tny.oplog.reason.path";
     Config SNAP_REASON_CONFIG = ConfigLib.getConfig(System.getProperty(SNAP_REASON_SYS_KEY, SNAP_REASON_PATH));
 
-    //region Kafka配置 kafka.properties
-    String KAFKA_CONFIG_PATH = "kafka.properties";
-    Config KAFKA_CONFIG = ConfigLib.getConfig(KAFKA_CONFIG_PATH);
-    //endregion
-
-    //region cluster.IP配置 cluster.properties
-    String CLUSTER_CONFIG_PATH = "cluster.properties";
-    Config CLUSTER_CONFIG = ConfigLib.getConfig(CLUSTER_CONFIG_PATH);
-    String CLUSTER_KAFKA_PRODUCER_IP_LIST = "tny.kafka.producer.ip_list";
-    String CLUSTER_KAFKA_CONSUMER_IP_LIST = "tny.kafka.consumer.ip_list";
-    //endregion
-
     //region 套件配置 suite.properties
     String SUITE_CONFIG_PATH = "suite.properties";
     Config SUITE_CONFIG = ConfigLib.getConfig(SUITE_CONFIG_PATH);
     String SUITE_SCAN_PATHS /*                          */ = "tny.app.scan_paths";
 
-    String SUITE_WORD_FILTER_CONFIG_PATH /*             */ = "tny.app.word.filter_path";
-    String SUITE_WORD_REPLACE_SYMBOL /*                 */ = "tny.app.word.replace_symbol";
-    String SUITE_MSG_CHECKER_RANDOM_SEQ /*              */ = "tny.app.message_checker.random_seq";
-    String SUITE_MSG_CHECKER_CHECK_GROUPS /*            */ = "tny.app.message_checker.check_groups";
     String SUITE_LAUNCHER_PROFILES /*                   */ = "tny.app.launcher.profiles";
     String SUITE_ASYNC_DB_EXE_STEP /*                   */ = "tny.app.async_db.executor.step";
     String SUITE_ASYNC_DB_EXE_WAIT_TIME /*              */ = "tny.app.async_db.executor.wait_time";
@@ -57,15 +40,6 @@ public interface Configs {
     String SUITE_TIME_TASK_PATH /*                      */ = "tny.app.time_task.path";
     String SUITE_FEATURE_MODEL_CONFIG_PATH /*           */ = "tny.app.base.default_item_model.path";
     String SUITE_BASE_DEFAULT_ITEM_MODEL_PATH /*        */ = "tny.app.base.default_item_model.path";
-    String SUITE_BASE_ITEM_TYPE_CLASS /*                */ = "tny.app.base.item_type_class";
-    String SUITE_BASE_ABILITY_CLASS /*                  */ = "tny.app.base.ability_class";
-    String SUITE_BASE_ACTION_CLASS /*                   */ = "tny.app.base.action_class";
-    String SUITE_BASE_BEHAVIOR_CLASS /*                 */ = "tny.app.base.behavior_class";
-    String SUITE_BASE_DEMAND_TYPE_CLASS /*              */ = "tny.app.base.demand_type_class";
-    String SUITE_BASE_DEMAND_PARAM_CLASS /*             */ = "tny.app.base.demand_param_class";
-    String SUITE_BASE_MODULE_CLASS /*                   */ = "tny.app.base.module_class";
-    String SUITE_BASE_FEATURE_CLASS /*                  */ = "tny.app.base.feature_class";
-    String SUITE_BASE_OPEN_MODE_CLASS /*                */ = "tny.app.base.open_mode_class";
 
     static Collection<String> getProfiles() {
         String profiles = Configs.SUITE_CONFIG.getString(Configs.SUITE_LAUNCHER_PROFILES);
@@ -102,10 +76,10 @@ public interface Configs {
 
     };
 
+    Config SERVICE_CONFIG = ConfigLib.getConfig("service.properties");
+
     //region 服务器配置 service.properties
-    Config SERVICE_CONFIG = NetConfigs.NET_CONFIG;
     String SERVER_ID /*                     */ = "tny.net.server.id";
-    String SERVER_SCOPE /*                  */ = NetConfigs.SERVER_SCOPE_TYPE;
     String SERVER_LOCAL /*                  */ = "tny.net.server.local";
     String SERVER_URL /*                    */ = "tny.net.server.url";
     //endregion
@@ -162,7 +136,6 @@ public interface Configs {
     String DEVELOP_MODULE_TIME_CONSUMING /* */ = "tny.server.dev.module.time_consuming";
     String DEVELOP_FEATURE_VERSION /*       */ = "tny.server.dev.feature_version";
 
-
     static LocalDate devDate(String key, LocalDate... defaultValue) {
         String crateAt = DEVELOP_CONFIG.getString(key);
         if (crateAt != null) {
@@ -199,7 +172,6 @@ public interface Configs {
         return defaultValue;
     }
     //endregion
-
 
     //region 协议配置
     String PROTOCOLS_CONFIG_PATH = "protocols.properties";

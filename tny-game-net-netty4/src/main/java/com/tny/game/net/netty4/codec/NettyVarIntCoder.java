@@ -99,4 +99,40 @@ public class NettyVarIntCoder {
         throw CodecException.causeDecode("error varint");
     }
 
+    public static int readFixed32(ByteBuf buffer) {
+        return ((buffer.readByte() & 0xff))
+                | ((buffer.readByte() & 0xff) << 8)
+                | ((buffer.readByte() & 0xff) << 16)
+                | ((buffer.readByte() & 0xff) << 24);
+    }
+
+    private static long readFixed64(ByteBuf buffer) {
+        return (((long)buffer.readByte() & 0xff))
+                | (((long)buffer.readByte() & 0xff) << 8)
+                | (((long)buffer.readByte() & 0xff) << 16)
+                | (((long)buffer.readByte() & 0xff) << 24)
+                | (((long)buffer.readByte() & 0xff) << 32)
+                | (((long)buffer.readByte() & 0xff) << 40)
+                | (((long)buffer.readByte() & 0xff) << 48)
+                | (((long)buffer.readByte() & 0xff) << 56);
+    }
+
+    public static void writeFixed32(int value, ByteBuf buffer) {
+        buffer.writeByte((byte)(value & 0xFF))
+                .writeByte((byte)(value >> 8 & 0xFF))
+                .writeByte((byte)(value >> 16 & 0xFF))
+                .writeByte((byte)(value >> 24 & 0xFF));
+    }
+
+    private static void writeFixed64(long value, ByteBuf buffer) {
+        buffer.writeByte((byte)(value & 0xFF))
+                .writeByte((byte)(value >> 8 & 0xFF))
+                .writeByte((byte)(value >> 16 & 0xFF))
+                .writeByte((byte)(value >> 24 & 0xFF))
+                .writeByte((byte)(value >> 32 & 0xFF))
+                .writeByte((byte)(value >> 40 & 0xFF))
+                .writeByte((byte)(value >> 48 & 0xFF))
+                .writeByte((byte)(value >> 56 & 0xFF));
+    }
+
 }

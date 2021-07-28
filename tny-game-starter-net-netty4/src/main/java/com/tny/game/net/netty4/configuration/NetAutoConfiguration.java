@@ -1,7 +1,6 @@
 package com.tny.game.net.netty4.configuration;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.base.configuration.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.command.dispatcher.*;
@@ -18,7 +17,7 @@ import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.spring.*;
 import com.tny.game.net.transport.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 
@@ -31,12 +30,9 @@ import org.springframework.context.annotation.*;
 public class NetAutoConfiguration {
 
     @Bean
+    @ConditionalOnBean(SpringBootNetAppConfigure.class)
     public NetAppContext appContext(SpringBootNetAppConfigure configure) {
-        return new DefaultNetAppContext()
-                .setName(configure.getName())
-                .setAppType(configure.getAppType())
-                .setScopeType(configure.getScopeType())
-                .setScanPackages(configure.getBasePackages());
+        return new SpringBootNetAppContext(configure);
     }
 
     @Bean
@@ -45,9 +41,9 @@ public class NetAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(SpringBootNetAppConfigure.class)
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
-    public EndpointKeeperManager endpointKeeperManager(
-            SpringNetEndpointConfigure configure) {
+    public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointConfigure configure) {
         return new CommonEndpointKeeperManager(
                 configure.getSessionKeeper(),
                 configure.getTerminalKeeper(),

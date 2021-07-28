@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.configuration.processor;
 
-import com.tny.game.common.boot.initiator.*;
+import com.tny.game.boot.initiator.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.netty4.configuration.processor.disruptor.*;
@@ -9,12 +9,12 @@ import com.tny.game.net.netty4.processor.disruptor.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
-import static com.tny.game.common.boot.environment.EnvironmentAide.*;
+import static com.tny.game.boot.environment.EnvironmentAide.*;
 
 /**
  * <p>
  */
-public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ConfigurationImportBeanDefinitionRegistrar {
+public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {

@@ -3,7 +3,7 @@ package com.tny.game.suite.cluster;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.suite.cluster.game.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.suite.core.*;
 import com.tny.game.zookeeper.*;
 import org.apache.commons.lang3.*;
 import org.apache.zookeeper.CreateMode;
@@ -11,8 +11,6 @@ import org.apache.zookeeper.CreateMode;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
-import static com.tny.game.suite.utils.Configs.*;
 
 public abstract class ServiceCluster extends SpringBaseCluster implements AppPostStart {
 
@@ -147,7 +145,7 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
 
     protected ServiceCluster(String serverType, boolean watchSetting, boolean monitorAllServices, Collection<String> monitorWebTypes) {
         super(monitorAllServices, monitorWebTypes);
-        int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID);
+        int serverID = GameInfo.info().getServerId();
         this.serverType = serverType;
         this.watchSetting = watchSetting;
         this.serviceId = serverID;
@@ -191,8 +189,9 @@ public abstract class ServiceCluster extends SpringBaseCluster implements AppPos
     }
 
     protected String[] clusterUrls() {
-        Map<String, String> urls = SERVICE_CONFIG.find(Configs.SERVER_URL + ".*");
-        return urls.values().toArray(new String[0]);
+        //        Map<String, String> urls = SERVICE_CONFIG.find(Configs.SERVER_URL + ".*");
+        //        return urls.values().toArray(new String[0]);
+        return new String[0];
     }
 
     protected void postWebMonitor() {

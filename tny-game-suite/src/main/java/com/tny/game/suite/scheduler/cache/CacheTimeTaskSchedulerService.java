@@ -1,6 +1,6 @@
 package com.tny.game.suite.scheduler.cache;
 
-import com.tny.game.common.boot.transaction.*;
+import com.tny.game.boot.transaction.*;
 import com.tny.game.common.scheduler.*;
 import com.tny.game.suite.scheduler.*;
 import org.slf4j.*;

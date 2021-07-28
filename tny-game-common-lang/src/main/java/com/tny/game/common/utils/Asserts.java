@@ -21,7 +21,7 @@ public class Asserts {
 
     }
 
-    public static void throwException(ExceptionCreator<? extends RuntimeException> creator, String errorMessageTemplate, Object... errorMessageArgs) {
+    public static void throwBy(ExceptionCreator<? extends RuntimeException> creator, String errorMessageTemplate, Object... errorMessageArgs) {
         throw creator.create(format(errorMessageTemplate, errorMessageArgs));
     }
 

@@ -1,7 +1,8 @@
 dependencies {
 
     api project(":tny-game-scanning")
-    api project(":tny-game-common-base")
+    api project(":tny-game-common-lang")
+//    api project(":tny-game-common-lifecycle")
     api libs.spring_context
 
 }

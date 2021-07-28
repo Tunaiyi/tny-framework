@@ -1,9 +1,9 @@
 package com.tny.game.net.message.codec;
 
-import com.tny.game.common.codec.*;
-import com.tny.game.common.codec.typeprotobuf.*;
+import com.tny.game.codec.*;
+import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.protoex.*;
 

@@ -1,8 +1,7 @@
 package com.tny.game.net.base;
 
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.net.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -20,9 +19,9 @@ public final class ScopeTypes extends ClassImporter {
 
     };
 
-    static {
-        loadClass(NetConfigs.NET_CONFIG, NetConfigs.BASE_SCOPE_TYPE_CLASS);
-    }
+    //    static {
+    //        loadClass(NetConfigs.NET_CONFIG, NetConfigs.BASE_SCOPE_TYPE_CLASS);
+    //    }
 
     private ScopeTypes() {
     }

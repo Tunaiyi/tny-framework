@@ -1,6 +1,6 @@
 package com.tny.game.net.message;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 
 /**
  * 客户端响应构建器

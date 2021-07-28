@@ -14,7 +14,7 @@ public class ScriptExpr extends AbstractExpr {
     /**
      * 构建的context
      */
-    private ScriptExprContext context;
+    private final ScriptExprContext context;
 
     /**
      * 每次运行的Binding

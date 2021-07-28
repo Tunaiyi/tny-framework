@@ -49,7 +49,7 @@ public class ClassSelector {
     }
 
     public Collection<Class<?>> getClasses() {
-        return Collections.unmodifiableCollection(classes);
+        return Collections.unmodifiableCollection(this.classes);
     }
 
     public ClassSelector addFilter(ClassFilter... filters) {
@@ -68,11 +68,12 @@ public class ClassSelector {
             try {
                 Thread current = Thread.currentThread();
                 if (clazz == null) {
-                    if (loader == null)
+                    if (loader == null) {
                         loader = current.getContextClassLoader();
+                    }
                     clazz = loader.loadClass(fullClassName);
                 }
-                mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
+                this.mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
                         .add(clazz);
                 return clazz;
             } catch (Throwable e) {
@@ -84,24 +85,27 @@ public class ClassSelector {
 
     private boolean filter(MetadataReader reader) {
         for (ClassFilter fileFilter : this.filters) {
-            if (!fileFilter.include(reader) || fileFilter.exclude(reader))
+            if (!fileFilter.include(reader) || fileFilter.exclude(reader)) {
                 return false;
+            }
         }
         return true;
     }
 
     void selected() {
-        this.classes = mapClass.values().stream()
-                               .flatMap(Collection::stream)
-                               .distinct()
-                               .collect(Collectors.toList());
+        this.classes = this.mapClass.values().stream()
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
         this.mapClass.clear();
         this.mapClass = null;
-        if (handler != null)
-            handler.selected(this.getClasses());
+        if (this.handler != null) {
+            this.handler.selected(this.getClasses());
+        }
     }
 
     public void clear() {
         this.classes = Collections.emptyList();
     }
+
 }

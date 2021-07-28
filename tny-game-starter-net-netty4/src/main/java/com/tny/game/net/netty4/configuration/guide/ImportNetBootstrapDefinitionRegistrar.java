@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.configuration.guide;
 
-import com.tny.game.common.boot.initiator.*;
+import com.tny.game.boot.initiator.*;
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.codec.v1.*;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -17,7 +18,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  */
-public class ImportNetBootstrapDefinitionRegistrar extends ConfigurationImportBeanDefinitionRegistrar {
+public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
     //    private Set<String> getNetNames(NetType netType) {
     //        List<String> propertiesAppNames = as(this.environment.getProperty(keyOf(netType, NET_NAMES_NODE), List.class));
@@ -29,7 +30,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ConfigurationImportBe
     //    }
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         SpringBootNetBootstrapConfigure bootstrapConfigure = loadProperties(SpringBootNetBootstrapConfigure.class);
         registry.registerBeanDefinition(bootstrapConfigure.getClass().getSimpleName(), BeanDefinitionBuilder
                 .genericBeanDefinition(SpringBootNetBootstrapConfigure.class, () -> bootstrapConfigure)

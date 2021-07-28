@@ -50,7 +50,7 @@ public class ClassScanner {
             List<ClassSelectorProviderInvoker> invokers = ClassSelectorProviderInvoker.instance(clazz);
             for (ClassSelectorProviderInvoker invoker : invokers) {
                 try {
-                    selectors.add(invoker.selector());
+                    this.selectors.add(invoker.selector());
                 } catch (Exception e) {
                     onFail(e, clazz + " 获取 selector 异常");
                 }
@@ -96,7 +96,7 @@ public class ClassScanner {
             // 定义一个枚举的集合 并进行循环来处理这个目录下的things
             Enumeration<URL> dirs;
             try {
-                dirs = classLoader.getResources(packageDirName);
+                dirs = this.classLoader.getResources(packageDirName);
                 // 循环迭代下去
                 while (dirs.hasMoreElements()) {
                     // 获取下一个元素
@@ -117,19 +117,20 @@ public class ClassScanner {
                 LOG.error("scan {} 异常", pack, e);
             }
         });
-        for (ClassSelector selector : selectors) {
+        for (ClassSelector selector : this.selectors) {
             selector.selected();
         }
     }
 
     private void findAndAddClassesInJar(URL url) throws IOException {
         UrlResource jarRes;
-        if (StringUtils.endsWith(url.getPath(), "/"))
+        if (StringUtils.endsWith(url.getPath(), "/")) {
             jarRes = new UrlResource(url);
-        else
+        } else {
             jarRes = new UrlResource(url + "/");
+        }
         URLConnection con = jarRes.getURL().openConnection();
-        JarURLConnection jarCon = (JarURLConnection) con;
+        JarURLConnection jarCon = (JarURLConnection)con;
         JarFile jarFile = jarCon.getJarFile();
         JarEntry jarEntry = jarCon.getJarEntry();
         String rootEntryPath = (jarEntry != null ? jarEntry.getName() : "");
@@ -158,11 +159,12 @@ public class ClassScanner {
         // 如果存在 就获取包下的所有文件 包括目录
         // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
         File[] dirFiles = dir.listFiles(file -> (recursive && file.isDirectory()) || (file.getName().endsWith(".class")));
-        if (dirFiles == null || ArrayUtils.isEmpty(dirFiles))
+        if (dirFiles == null || ArrayUtils.isEmpty(dirFiles)) {
             return;
+        }
         // 循环所有文件
         Stream.of(dirFiles)
-              .forEach(file -> loadMetadataReader(packageName, file, recursive));
+                .forEach(file -> loadMetadataReader(packageName, file, recursive));
     }
 
     private void loadMetadataReader(String packageName, File file, boolean recursive) {
@@ -180,18 +182,19 @@ public class ClassScanner {
         }
     }
 
-
     private void loadMetadataReader(String rootPath, UrlResource jar, JarEntry entry) {
         String entryPath = entry.getName();
-        if (!entryPath.startsWith(rootPath))
+        if (!entryPath.startsWith(rootPath)) {
             return;
+        }
         try {
             String relativePath = entryPath.substring(rootPath.length());
             if (relativePath.endsWith(".class")) {
                 Resource resource;
                 resource = jar.createRelative(relativePath);
-                if (!resource.isReadable())
+                if (!resource.isReadable()) {
                     return;
+                }
                 select(this.classLoader, readerFactory.getMetadataReader(resource));
             }
         } catch (Throwable e) {
@@ -201,15 +204,16 @@ public class ClassScanner {
 
     private void select(ClassLoader loader, MetadataReader reader) {
         Class<?> clazz = null;
-        for (ClassSelector selector : selectors) {
+        for (ClassSelector selector : this.selectors) {
             Class<?> selClass = selector.selector(reader, loader, null);
-            if (clazz == null && selClass != null)
+            if (clazz == null && selClass != null) {
                 clazz = selClass;
+            }
         }
     }
 
     private void onFail(Throwable e, String message) {
-        if (throwOnScanFail) {
+        if (this.throwOnScanFail) {
             throw new ClassScanException(message, e);
         } else {
             LOG.error(message, e);
@@ -225,7 +229,7 @@ public class ClassScanner {
         }
 
         public ClassSelector selector() throws Exception {
-            return (ClassSelector) method.invoke(null);
+            return (ClassSelector)this.method.invoke(null);
         }
 
         public static List<ClassSelectorProviderInvoker> instance(Class<?> clazz) {
@@ -237,8 +241,9 @@ public class ClassScanner {
                     invokers.add(new ClassSelectorProviderInvoker(method));
                 }
             }
-            if (invokers.isEmpty())
+            if (invokers.isEmpty()) {
                 throw new IllegalArgumentException(clazz + " 不存在 " + ClassSelectorProvider.class + " 方法");
+            }
             return invokers;
         }
 

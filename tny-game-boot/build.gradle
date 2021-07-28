@@ -1,0 +1,13 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api libs.spring_boot_autoconfigure
+    api libs.spring_boot_configuration_processor
+
+    api project(":tny-game-common-lifecycle")
+    api project(":tny-game-loader")
+
+}

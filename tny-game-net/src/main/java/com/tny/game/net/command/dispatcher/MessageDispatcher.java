@@ -1,6 +1,6 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.exception.*;

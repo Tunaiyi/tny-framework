@@ -1,6 +1,5 @@
 package com.tny.game.suite.cluster.game;
 
-
 import com.tny.game.common.event.bus.*;
 import com.tny.game.suite.cluster.*;
 import com.tny.game.suite.cluster.event.*;
@@ -26,18 +25,20 @@ public class GameServerCluster extends SpringBaseCluster {
 
     private volatile ServerSetting serverSetting;
 
-    private NodeWatcher<ServerSetting> settingHandler = (path, state, oldData, newData) -> {
+    private final NodeWatcher<ServerSetting> settingHandler = (path, state, oldData, newData) -> {
         switch (state) {
             case CREATE:
                 this.serverSetting = newData;
-                if (LOGGER.isDebugEnabled())
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("path : {} | 服务器 {} Setting 创建监听!", path, this.serverSetting);
+                }
                 ON_SETTING_CHANGE.notify(this, newData);
                 break;
             case CHANGE:
                 this.serverSetting = newData;
-                if (LOGGER.isDebugEnabled())
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("path : {} | 服务器 {} Setting 发生变化!", path, this.serverSetting);
+                }
                 ON_SETTING_CHANGE.notify(this, newData);
                 break;
             case DELETE:
@@ -51,7 +52,7 @@ public class GameServerCluster extends SpringBaseCluster {
 
     @Override
     protected void register() {
-        List<ServerOutline> outlines = this.currentConfiger();
+        List<ServerOutline> outlines = this.currentConfigure();
         for (ServerOutline outline : outlines) {
             String currentOutlinePath = ClusterUtils.getServerOutlinePath(outline.getServerId());
             String currentLaunchPath = ClusterUtils.getServerLaunchPath(outline.getServerId());
@@ -84,12 +85,13 @@ public class GameServerCluster extends SpringBaseCluster {
         return setting != null && setting.getServerState() == ServerState.ONLINE;
     }
 
-    private List<ServerOutline> currentConfiger() {
+    private List<ServerOutline> currentConfigure() {
         List<ServerOutline> outlines = new ArrayList<>();
         GameInfo main = GameInfo.info();
         for (GameInfo info : GameInfo.getAllGamesInfo()) {
-            if (!info.isRegister())
+            if (!info.isRegister()) {
                 continue;
+            }
             Collection<InetConnector> publicConnectors = new CopyOnWriteArraySet<>(info.getPublicConnectors());
             Collection<InetConnector> privateConnectors = new CopyOnWriteArraySet<>(info.getPrivateConnectors());
             ServerOutline outline = new ServerOutline()
@@ -113,6 +115,5 @@ public class GameServerCluster extends SpringBaseCluster {
         }
         return outlines;
     }
-
 
 }

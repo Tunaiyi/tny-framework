@@ -8,5 +8,6 @@ dependencies {
     api libs.spring_context_support
     api project(":tny-game-scanning")
     api project(":tny-game-expr-groovy")
+    api project(":tny-game-common-io")
 
 }

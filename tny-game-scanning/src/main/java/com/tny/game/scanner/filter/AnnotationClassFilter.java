@@ -35,10 +35,12 @@ public class AnnotationClassFilter implements ClassFilter {
     private AnnotationClassFilter(
             Collection<Class<? extends Annotation>> includes,
             Collection<Class<? extends Annotation>> excludes) {
-        if (includes != null)
+        if (includes != null) {
             this.includes.addAll(includes);
-        if (excludes != null)
+        }
+        if (excludes != null) {
             this.excludes.addAll(excludes);
+        }
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tny.game.net.codec;
 
 import com.tny.game.common.buff.*;
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;

@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.unit.*;
+import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;

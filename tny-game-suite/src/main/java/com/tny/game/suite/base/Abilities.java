@@ -1,9 +1,8 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -14,9 +13,9 @@ public final class Abilities extends ClassImporter {
 
     protected static EnumeratorHolder<Ability> holder = new EnumeratorHolder<>();
 
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_ABILITY_CLASS);
-    }
+    //    static {
+    //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_ABILITY_CLASS);
+    //    }
 
     private Abilities() {
     }

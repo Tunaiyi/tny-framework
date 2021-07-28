@@ -4,7 +4,7 @@ import com.tny.game.asyndb.*;
 import com.tny.game.asyndb.impl.*;
 import com.tny.game.asyndb.spring.*;
 import com.tny.game.cache.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.net.transport.*;
 import com.tny.game.suite.cache.*;
 import com.tny.game.suite.utils.*;
@@ -57,6 +57,5 @@ public class CacheConfiguration {
     public SpringToCacheClassHolderAndLinkHandlerFactory toCacheClassHolderAndLinkHandlerFactory() {
         return new SpringToCacheClassHolderAndLinkHandlerFactory(Configs.getScanPathList());
     }
-
 
 }

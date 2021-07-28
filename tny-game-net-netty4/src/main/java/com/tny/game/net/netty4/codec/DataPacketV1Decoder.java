@@ -60,7 +60,8 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
                 return TickMessage.pong();
             }
 
-            payloadLength = in.readInt();
+            //            payloadLength = in.readInt();
+            payloadLength = NettyVarIntCoder.readFixed32(in);
 
             if (payloadLength > this.config.getMaxPayloadLength()) {
                 throw CodecException.causeDecode("decode message failed, because payloadLength {} > maxPayloadLength {}", payloadLength,

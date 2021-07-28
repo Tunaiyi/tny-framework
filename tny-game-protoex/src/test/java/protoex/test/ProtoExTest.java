@@ -1,7 +1,7 @@
 package protoex.test;
 
-import com.tny.game.common.binary.*;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.digest.binary.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.protoex.field.*;

@@ -99,7 +99,8 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
         }
 
         // 写入包长度
-        out.writeInt(payloadLength);
+        //        out.writeInt(payloadLength);
+        NettyVarIntCoder.writeFixed32(payloadLength, out);
         // 写入 accessId
         NettyVarIntCoder.writeVarInt64(accessId, out);
         // 写入 number

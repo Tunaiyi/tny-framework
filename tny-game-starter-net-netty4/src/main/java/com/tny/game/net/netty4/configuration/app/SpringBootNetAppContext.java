@@ -1,8 +1,9 @@
 package com.tny.game.net.netty4.configuration.app;
 
-import com.tny.game.net.base.configuration.*;
+import com.tny.game.boot.launcher.*;
+import com.tny.game.net.base.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -12,24 +13,16 @@ import java.util.List;
  */
 public class SpringBootNetAppContext extends DefaultNetAppContext {
 
-    @Override
-    public DefaultNetAppContext setName(String name) {
-        return super.setName(name);
-    }
-
-    @Override
-    public DefaultNetAppContext setAppType(String appType) {
-        return super.setAppType(appType);
-    }
-
-    @Override
-    public DefaultNetAppContext setScopeType(String scopeType) {
-        return super.setScopeType(scopeType);
-    }
-
-    @Override
-    public DefaultNetAppContext setScanPackages(List<String> scanPackages) {
-        return super.setScanPackages(scanPackages);
+    public SpringBootNetAppContext(SpringBootNetAppConfigure configure) {
+        super();
+        Set<String> scanPackages = new HashSet<>(ApplicationLauncherContext.getBasePackages());
+        scanPackages.addAll(configure.getBasePackages());
+        this.setName(configure.getName());
+        this.setServerId(configure.getServerId());
+        this.setLocale(configure.getLocale());
+        this.setAppType(configure.getAppType());
+        this.setScopeType(configure.getScopeType());
+        this.setScanPackages(scanPackages);
     }
 
 }

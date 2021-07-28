@@ -18,11 +18,24 @@ public class SpringBootNetAppConfigure {
 
     private String name;
 
+    private int serverId;
+
     private String appType = "default";
 
     private String scopeType = "online";
 
+    private String locale = "zh-CN";
+
     private List<String> basePackages;
+
+    public int getServerId() {
+        return this.serverId;
+    }
+
+    public SpringBootNetAppConfigure setServerId(int serverId) {
+        this.serverId = serverId;
+        return this;
+    }
 
     public String getName() {
         return this.name;
@@ -30,6 +43,15 @@ public class SpringBootNetAppConfigure {
 
     public SpringBootNetAppConfigure setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getLocale() {
+        return this.locale;
+    }
+
+    public SpringBootNetAppConfigure setLocale(String locale) {
+        this.locale = locale;
         return this;
     }
 

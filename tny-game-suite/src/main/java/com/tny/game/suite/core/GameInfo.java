@@ -2,11 +2,10 @@ package com.tny.game.suite.core;
 
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.base.log.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.utils.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
@@ -23,10 +22,6 @@ public class GameInfo {
 
     private final static Instant startAt = Instant.now();
 
-    private static ScopeType scopeType;
-
-    private static String local;
-
     private static Map<Integer, GameInfo> GAMES_INFO_MAP;
 
     private int serverId;
@@ -39,6 +34,10 @@ public class GameInfo {
 
     private Instant openDate;
 
+    private AppType appType;
+
+    private ScopeType scopeType;
+
     private List<InetConnector> publicConnectors;
 
     private List<InetConnector> privateConnectors;
@@ -46,9 +45,6 @@ public class GameInfo {
     private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
     static {
-        String scopeStr = NetConfigs.NET_CONFIG.getString(Configs.SERVER_SCOPE);
-        GameInfo.local = NetConfigs.NET_CONFIG.getStr(Configs.SERVER_LOCAL, "zh-cn");
-        GameInfo.scopeType = ScopeTypes.of(scopeStr.toUpperCase());
         LOGGER.info("# {} 创建 {} xstream 对象 ", GameInfo.class.getName(), GameInfo.class.getName());
         XStream xStream = new XStream();
         RunChecker.trace(GameInfo.class);
@@ -58,7 +54,7 @@ public class GameInfo {
         xStream.alias("connector", InetConnector.class);
         xStream.registerLocalConverter(GameInfo.class, "openDate", new DateTimeConverter(DateTimeAide.DATE_TIME_MIN_FORMAT));
         Map<Integer, GameInfo> map = new HashMap<>();
-        try (InputStream inputStream = ConfigLoader.loadInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
+        try (InputStream inputStream = FileIOAide.openInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
             LOGGER.info("#itemModelManager# 解析 <{}> xml ......", GameInfo.class.getName());
             @SuppressWarnings("unchecked")
             List<GameInfo> list = (List<GameInfo>)xStream.fromXML(inputStream);
@@ -93,12 +89,12 @@ public class GameInfo {
         return GAMES_INFO_MAP.get(zoneId);
     }
 
-    public static boolean isLocal(String local) {
-        return GameInfo.local.toLowerCase().equals(local.toLowerCase());
+    public static boolean isLocale(String local) {
+        return getLocale().equals(local.toLowerCase());
     }
 
-    public static String getLocal() {
-        return GameInfo.local;
+    public static String getLocale() {
+        return NetAppContextHolder.getContext().getLocale();
     }
 
     public static int getMainZoneId() {
@@ -124,20 +120,26 @@ public class GameInfo {
         return this.serverId;
     }
 
-    public AppType getServerType() {
-        return GameInfo.scopeType.getAppType();
+    public AppType getAppType() {
+        if (this.appType != null) {
+            return this.appType;
+        }
+        return this.appType = AppTypes.of(NetAppContextHolder.getContext().getAppType());
     }
 
     public ScopeType getScopeType() {
-        return GameInfo.scopeType;
+        if (this.scopeType != null) {
+            return this.scopeType;
+        }
+        return this.scopeType = ScopeTypes.of(NetAppContextHolder.getContext().getScopeType());
     }
 
-    public boolean isType(AppType serverType) {
-        return GameInfo.scopeType == serverType;
+    public boolean isType(AppType appType) {
+        return getAppType() == appType;
     }
 
     public boolean isScope(ScopeType scopeType) {
-        return GameInfo.scopeType == scopeType;
+        return getScopeType() == scopeType;
     }
 
     public Instant getOpenDate() {

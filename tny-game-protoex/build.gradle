@@ -6,12 +6,13 @@ dependencies {
 
     api project(":tny-game-common-lang")
     api project(":tny-game-common-reflect")
+    api project(":tny-game-common-digest")
     api project(":tny-game-scanning")
 
     testImplementation libs.protobuf_java3
     testImplementation libs.guava
     testImplementation libs.jackson_databind
-    testImplementation project(":tny-game-common-base")
+    testImplementation project(":tny-game-common-lifecycle")
 
 
 }

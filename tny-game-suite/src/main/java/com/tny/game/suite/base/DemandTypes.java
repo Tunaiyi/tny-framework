@@ -1,9 +1,8 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -14,9 +13,9 @@ public final class DemandTypes extends ClassImporter {
 
     protected static EnumeratorHolder<DemandType> holder = new EnumeratorHolder<>();
 
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_DEMAND_TYPE_CLASS);
-    }
+    //    static {
+    //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_DEMAND_TYPE_CLASS);
+    //    }
 
     private DemandTypes() {
     }

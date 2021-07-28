@@ -1,6 +1,6 @@
 package com.tny.game.net.codec;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 
 /**
  * <p>

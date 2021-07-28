@@ -1,7 +1,7 @@
 package com.tny.game.cache.redis;
 
 import com.google.common.collect.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -31,7 +31,7 @@ public class ShareJedisPools {
     public ShareJedisPools(String... paths) throws IOException {
         Properties properties = new Properties();
         for (String path : paths)
-            properties.load(ConfigLoader.loadInputStream(path));
+            properties.load(FileIOAide.openInputStream(path));
         Map<String, JedisConfig> configMap = new HashMap<>();
         Map<String, JedisPool> jedisPoolMap = new HashMap<>();
         Config config = ConfigLib.newConfig(properties);

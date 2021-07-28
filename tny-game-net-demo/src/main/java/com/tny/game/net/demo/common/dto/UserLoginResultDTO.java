@@ -1,7 +1,7 @@
 package com.tny.game.net.demo.common.dto;
 
 import com.baidu.bjf.remoting.protobuf.annotation.*;
-import com.tny.game.net.message.codec.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
 
 /**
  * <p>
@@ -10,7 +10,7 @@ import com.tny.game.net.message.codec.*;
  * @date : 2021/7/15 2:49 下午
  */
 @ProtobufClass
-@ProtobufType(10_00_0000)
+@TypeProtobuf(10_00_0000)
 public class UserLoginResultDTO {
 
     @Protobuf

@@ -10,5 +10,6 @@ dependencies {
     api libs.commons_beanutils
     api libs.jedis
     api project(":tny-game-cache")
+    api project(":tny-game-common-io")
 
 }

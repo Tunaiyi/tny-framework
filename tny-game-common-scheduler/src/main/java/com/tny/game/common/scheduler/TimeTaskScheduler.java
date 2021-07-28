@@ -2,7 +2,7 @@ package com.tny.game.common.scheduler;
 
 import com.thoughtworks.xstream.XStream;
 import com.tny.game.common.concurrent.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.common.utils.*;
 import org.apache.commons.io.monitor.*;
 import org.slf4j.*;
@@ -219,7 +219,7 @@ public class TimeTaskScheduler {
         SchedulerBackup backup = this.store.load();
         if (backup != null) {
             long now = System.currentTimeMillis();
-            long startTime = backup.stopTime > now ? now : backup.stopTime;
+            long startTime = Math.min(backup.stopTime, now);
             LOG.info("\n 读取存储备份 : {} 最后运行时间 - {}", backup, new Date(startTime));
             this.stopTime = startTime;
             if (backup.getTimeTaskQueue() != null) {
@@ -308,7 +308,7 @@ public class TimeTaskScheduler {
             InputStream inputStream = null;
             try {
                 this.load();
-                inputStream = ConfigLoader.loadInputStream(this.path, this.listener);
+                inputStream = FileIOAide.openInputStream(this.path, this.listener);
                 this.initSchedule(inputStream);
             } catch (Exception e) {
                 if (this.executorService != null && !this.executorService.isShutdown()) {
@@ -345,6 +345,9 @@ public class TimeTaskScheduler {
         TimeTaskModel taskModel;
         do {
             taskModel = this.taskModelSet.pollFirst();
+            if (taskModel == null) {
+                break;
+            }
             if (timeTask == null) {
                 timeTask = new TimeTask(taskModel);
             } else {

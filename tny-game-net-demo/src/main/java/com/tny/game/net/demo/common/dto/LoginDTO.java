@@ -1,8 +1,8 @@
 package com.tny.game.net.demo.common.dto;
 
 import com.baidu.bjf.remoting.protobuf.annotation.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.doc.annotation.*;
-import com.tny.game.net.message.codec.*;
 import com.tny.game.protoex.annotations.*;
 
 /**
@@ -12,7 +12,7 @@ import com.tny.game.protoex.annotations.*;
 @DTODoc("登录DTO")
 @ProtoEx(1000_01_00)
 @ProtobufClass
-@ProtobufType(1000_01_00)
+@TypeProtobuf(1000_01_00)
 public class LoginDTO {
 
     @ProtoExField(1)

@@ -2,12 +2,10 @@ package com.tny.game.suite.auto.snapshot;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.config.*;
 import com.tny.game.oplog.*;
 import com.tny.game.oplog.annotation.*;
 import com.tny.game.suite.auto.*;
 import com.tny.game.suite.auto.annotation.*;
-import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
@@ -31,8 +29,6 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
 
     private List<SnapParamHolder> paramSnapsHolders;
 
-    private static Config CONFIG = Configs.SNAP_REASON_CONFIG;
-
     public AutoSnapMethod(Class<SN> snClass, Function<SN, Action> actionGetter, Method method) {
         super(method, Snap.class, null, null);
         Class<? extends Snapper>[] snapShotTypes = this.autoInvoke.value();
@@ -41,12 +37,14 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
         Annotation[][] paramsAnnotations = method.getParameterAnnotations();
         for (int pIndex = 0; pIndex < paramsAnnotations.length; pIndex++) {
             Annotation[] paramAnnos = paramsAnnotations[pIndex];
-            if (paramAnnos.length == 0)
+            if (paramAnnos.length == 0) {
                 continue;
+            }
             for (Annotation anno : paramAnnos) {
-                if (!(anno instanceof Snap))
+                if (!(anno instanceof Snap)) {
                     continue;
-                paramSnapsHolders.add(new SnapParamHolder((Snap) anno, pIndex));
+                }
+                paramSnapsHolders.add(new SnapParamHolder((Snap)anno, pIndex));
                 break;
             }
         }
@@ -74,32 +72,36 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
     }
 
     public Class<? extends Snapper>[] getSnapshotTypes() {
-        return snapShotTypes;
+        return this.snapShotTypes;
     }
 
     public Action getAction() {
-        return action;
+        return this.action;
     }
 
     public int getActionParamIndex() {
-        return actionParamIndex;
+        return this.actionParamIndex;
     }
 
     public Action getAction(Object[] param) {
-        if (this.action != null)
+        if (this.action != null) {
             return this.action;
-        if (param.length > this.actionParamIndex)
-            return (Action) param[this.actionParamIndex];
+        }
+        if (param.length > this.actionParamIndex) {
+            return (Action)param[this.actionParamIndex];
+        }
         return null;
     }
 
     public Collection<SnapParamEntry> getSnapParams(Object[] args) {
-        if (paramSnapsHolders.isEmpty())
+        if (this.paramSnapsHolders.isEmpty()) {
             return ImmutableList.of();
+        }
         Collection<SnapParamEntry> snapParamEntries = new ArrayList<>();
-        paramSnapsHolders.forEach(holder -> {
-            if (holder.index >= args.length)
+        this.paramSnapsHolders.forEach(holder -> {
+            if (holder.index >= args.length) {
                 return;
+            }
             Object value = args[holder.index];
             snapParamEntries.add(new SnapParamEntry(value, holder.snap));
         });
@@ -111,6 +113,7 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
     }
 
     private static class SnapParamHolder {
+
         private Snap snap;
         private int index;
 
@@ -120,15 +123,17 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
         }
 
         public Snap getSnap() {
-            return snap;
+            return this.snap;
         }
 
         public int getIndex() {
-            return index;
+            return this.index;
         }
+
     }
 
     public static class SnapParamEntry {
+
         private Object object;
         private Snap snap;
 
@@ -138,16 +143,17 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
         }
 
         public Object getObject() {
-            return object;
+            return this.object;
         }
 
         public Snap getSnap() {
-            return snap;
+            return this.snap;
         }
 
         public Class<? extends Snapper>[] getSnapshotTypes() {
-            return snap.value();
+            return this.snap.value();
         }
+
     }
 
 }

@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4;
 
-import com.tny.game.common.binary.*;
+import com.tny.game.common.digest.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.endpoint.*;

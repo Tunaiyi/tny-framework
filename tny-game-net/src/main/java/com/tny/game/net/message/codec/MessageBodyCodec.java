@@ -1,6 +1,6 @@
 package com.tny.game.net.message.codec;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 
 import java.nio.ByteBuffer;
 

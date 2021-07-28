@@ -5,6 +5,6 @@ apply plugin: "maven"
 dependencies {
 
     api libs.spring_context_support
-    api project(":tny-game-common-base")
+    api project(":tny-game-common-lifecycle")
 
 }

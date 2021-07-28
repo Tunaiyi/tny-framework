@@ -1,8 +1,8 @@
 package com.tny.game.suite.scheduler.database;
 
 import com.tny.game.common.scheduler.*;
+import com.tny.game.suite.core.*;
 import com.tny.game.suite.scheduler.cache.*;
-import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class DBSchedulerStore implements SchedulerStore {
     @Override
     public void save(TimeTaskScheduler timeTaskScheduler) {
         try {
-            int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID, 0);
+            int serverID = GameInfo.info().getServerId();//Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID, 0);
             CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
                     getKey(serverID), timeTaskScheduler);
             this.schedulerObjectManager.saveSchedulerBackup(cacheSchedulerBackup);

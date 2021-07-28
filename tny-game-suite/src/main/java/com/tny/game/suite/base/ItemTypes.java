@@ -1,9 +1,8 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.tny.game.base.item.ItemType.*;
@@ -20,10 +19,6 @@ public class ItemTypes extends ClassImporter {
             putAndCheck("$" + object.getAliasHead(), object);
         }
     };
-
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_ITEM_TYPE_CLASS);
-    }
 
     private ItemTypes() {
     }

@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.configuration;
 
-import com.tny.game.common.word.*;
+import com.tny.game.common.io.word.*;
 import com.tny.game.net.command.plugins.filter.text.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.*;

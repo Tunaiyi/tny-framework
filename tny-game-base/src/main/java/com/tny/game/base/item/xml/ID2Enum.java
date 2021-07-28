@@ -47,20 +47,23 @@ public class ID2Enum<ID, T extends Enum<T> & EnumIdentifiable<ID>> extends Abstr
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unchecked"})
     public boolean canConvert(Class clazz) {
         for (Class<T> enumClass : this.enumClassList) {
-            if (clazz.isAssignableFrom(enumClass))
+            if (clazz.isAssignableFrom(enumClass)) {
                 return true;
+            }
         }
         return false;
     }
 
     @Override
     public Object fromString(String value) {
-        Object enumObject = this.enumMap.get(fn.apply(value));
-        if (enumObject == null)
+        Object enumObject = this.enumMap.get(this.fn.apply(value));
+        if (enumObject == null) {
             throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", value));
+        }
         return enumObject;
     }
+
 }

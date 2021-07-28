@@ -1,0 +1,15 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    api project(":tny-game-common-io")
+    api project(":tny-game-codec-jackson")
+
+    api project(":tny-game-boot")
+
+    api libs.javassist
+    api libs.redisson
+
+}

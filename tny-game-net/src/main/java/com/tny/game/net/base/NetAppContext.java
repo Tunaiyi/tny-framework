@@ -1,7 +1,7 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.context.*;
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 
 import java.util.List;
 
@@ -12,10 +12,14 @@ public interface NetAppContext {
 
     String getAppType();
 
+    String getLocale();
+
     String getScopeType();
 
-    Attributes attributes();
+    long getServerId();
 
     List<String> getScanPackages();
+
+    Attributes attributes();
 
 }

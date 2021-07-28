@@ -1,6 +1,6 @@
 package com.tny.game.net.message.common;
 
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.message.*;
 
 @Unit

@@ -1,9 +1,8 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -12,36 +11,36 @@ import java.util.Collection;
  */
 public final class OpenModes extends ClassImporter {
 
-    protected static EnumeratorHolder<OpenMode> holder = new EnumeratorHolder<>();
+    protected static EnumeratorHolder<OpenMode<?>> holder = new EnumeratorHolder<>();
 
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_OPEN_MODE_CLASS);
-    }
+    //    static {
+    //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_OPEN_MODE_CLASS);
+    //    }
 
     private OpenModes() {
     }
 
-    static void register(OpenMode value) {
+    public static void register(OpenMode<?> value) {
         holder.register(value);
     }
 
-    public static <T extends OpenMode> T of(String key) {
+    public static <T extends OpenMode<?>> T of(String key) {
         return holder.ofAndCheck(key, "获取 {} OpenMode 不存在", key);
     }
 
-    public static <T extends OpenMode> T of(int id) {
+    public static <T extends OpenMode<?>> T of(int id) {
         return holder.ofAndCheck(id, "获取 ID为 {} 的 OpenMode 不存在", id);
     }
 
-    public static <T extends OpenMode> T ofUncheck(int id) {
+    public static <T extends OpenMode<?>> T ofUncheck(int id) {
         return holder.of(id);
     }
 
-    public static <T extends OpenMode> T ofUncheck(String key) {
+    public static <T extends OpenMode<?>> T ofUncheck(String key) {
         return holder.of(key);
     }
 
-    public static Collection<OpenMode> getAll() {
+    public static Collection<OpenMode<?>> getAll() {
         return holder.values();
     }
 

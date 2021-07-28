@@ -12,7 +12,7 @@ import com.tny.game.base.log.*;
 import com.tny.game.base.module.*;
 import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.config.*;
+import com.tny.game.common.io.config.*;
 import com.tny.game.common.reflect.proxy.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.expr.*;

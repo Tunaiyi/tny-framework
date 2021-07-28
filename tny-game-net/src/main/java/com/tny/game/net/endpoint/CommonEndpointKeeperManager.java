@@ -2,8 +2,8 @@ package com.tny.game.net.endpoint;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.unit.*;
-import com.tny.game.common.unit.annotation.*;
+import com.tny.game.common.lifecycle.unit.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.collections4.MapUtils;

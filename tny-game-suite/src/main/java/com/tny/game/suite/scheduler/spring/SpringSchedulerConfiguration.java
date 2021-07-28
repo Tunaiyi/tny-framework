@@ -1,10 +1,11 @@
 package com.tny.game.suite.scheduler.spring;
 
+import com.tny.game.net.base.*;
 import com.tny.game.suite.login.*;
 import com.tny.game.suite.scheduler.*;
 import com.tny.game.suite.scheduler.cache.*;
 import com.tny.game.suite.scheduler.database.*;
-import com.tny.game.suite.utils.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.*;
 
 import static com.tny.game.suite.SuiteProfiles.*;
@@ -23,9 +24,9 @@ public class SpringSchedulerConfiguration {
 
     @Bean
     @Profile({SCHEDULER_CACHE})
-    public TimeTaskSchedulerService cacheSchedulerService() {
-        int serverID = Configs.SERVICE_CONFIG.getInt(Configs.SERVER_ID, 0);
-        return new CacheTimeTaskSchedulerService(serverID);
+    @ConditionalOnBean(NetAppContext.class)
+    public TimeTaskSchedulerService cacheSchedulerService(NetAppContext context) {
+        return new CacheTimeTaskSchedulerService(context.getServerId());
     }
 
     @Bean

@@ -41,10 +41,10 @@ public class EnumeratorHolder<O> {
 
     public void register(O object) {
         if (object.getClass().isEnum()) {
-            putAndCheck(((Enum<?>) object).name(), object);
+            putAndCheck(((Enum<?>)object).name(), object);
         }
         if (object instanceof EnumIdentifiable) {
-            putAndCheck(((EnumIdentifiable<?>) object).getId(), object);
+            putAndCheck(((EnumIdentifiable<?>)object).getId(), object);
         }
         postRegister(object);
     }
@@ -52,29 +52,30 @@ public class EnumeratorHolder<O> {
     protected void postRegister(O object) {
     }
 
-    protected EnumeratorHolder<O> putAndCheck(Object key, O o) {
-        if (this.enumeratorMap.containsKey(key)) {
-            O old = this.enumeratorMap.get(key);
-            if (old != null)
+    protected EnumeratorHolder<O> putAndCheck(Object key, O value) {
+        O old = this.enumeratorMap.putIfAbsent(key, value);
+        if (old != null) {
+            if (old != value) {
                 throw new IllegalStateException(StringAide.format(
-                        "注册 {} [key:{}, object:{}] 发现已存在对象 {}", o.getClass(), key, o, old));
+                        "注册 {} [key:{}, object:{}] 发现已存在对象 {}", value.getClass(), key, value, old));
+            }
+        } else {
+            this.enumerators.add(value);
+            this.classes.add((Class<? extends O>)value.getClass());
         }
-        this.enumeratorMap.put(key, o);
-        this.enumerators.add(o);
-        this.classes.add((Class<? extends O>) o.getClass());
         return this;
     }
 
-
     public <T extends O> T ofAndCheck(Object key, String message, Object... args) {
-        T value = (T) this.enumeratorMap.get(key);
-        if (value == null)
+        T value = (T)this.enumeratorMap.get(key);
+        if (value == null) {
             throw new NullPointerException(StringAide.format(message, args));
+        }
         return value;
     }
 
     public <T extends O> T of(Object key) {
-        return (T) this.enumeratorMap.get(key);
+        return (T)this.enumeratorMap.get(key);
     }
 
     public Set<O> values() {
@@ -86,7 +87,7 @@ public class EnumeratorHolder<O> {
     }
 
     public <T extends Enum<T>> Set<Class<T>> getAllEnumClasses() {
-        return this.classes.stream().filter(Class::isEnum).map((c) -> (Class<T>) c).collect(Collectors.toSet());
+        return this.classes.stream().filter(Class::isEnum).map((c) -> (Class<T>)c).collect(Collectors.toSet());
     }
 
 }

@@ -1,9 +1,8 @@
 package com.tny.game.suite.base.module;
 
 import com.tny.game.base.module.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -14,14 +13,14 @@ public final class Features extends ClassImporter {
 
     protected static EnumeratorHolder<Feature> holder = new EnumeratorHolder<>();
 
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_FEATURE_CLASS);
-    }
+    //    static {
+    //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_FEATURE_CLASS);
+    //    }
 
     private Features() {
     }
 
-    static void register(Feature value) {
+    public static void register(Feature value) {
         holder.register(value);
     }
 

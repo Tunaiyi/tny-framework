@@ -1,9 +1,8 @@
 package com.tny.game.suite.base;
 
 import com.tny.game.base.item.behavior.*;
-import com.tny.game.common.config.*;
 import com.tny.game.common.enums.*;
-import com.tny.game.suite.utils.*;
+import com.tny.game.common.io.config.*;
 
 import java.util.Collection;
 
@@ -14,9 +13,9 @@ public final class Behaviors extends ClassImporter {
 
     protected static EnumeratorHolder<Behavior> holder = new EnumeratorHolder<>();
 
-    static {
-        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_BEHAVIOR_CLASS);
-    }
+    //    static {
+    //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_BEHAVIOR_CLASS);
+    //    }
 
     private Behaviors() {
     }

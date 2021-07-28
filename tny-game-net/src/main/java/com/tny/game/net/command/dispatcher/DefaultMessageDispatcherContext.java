@@ -151,7 +151,7 @@ public class DefaultMessageDispatcherContext implements MessageDispatcherContext
     private <K, V> void putObject(Map<K, V> map, K key, V value) {
         V oldValue = map.put(key, value);
         if (oldValue != null) {
-            Asserts.throwException(IllegalArgumentException::new,
+            Asserts.throwBy(IllegalArgumentException::new,
                     "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
         }
     }
