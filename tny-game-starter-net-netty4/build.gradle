@@ -8,11 +8,8 @@ dependencies {
 
     api project(":tny-game-boot")
     api project(":tny-game-net-netty4")
-    
-    api libs.druid
-    api libs.guava
-    api libs.spring_boot_autoconfigure
 
+    api libs.spring_boot_autoconfigure
 
     implementation project(":tny-game-net-codec-jprotobuf")
     implementation project(":tny-game-starter-codec")

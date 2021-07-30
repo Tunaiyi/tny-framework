@@ -2,18 +2,16 @@ package com.tny.game.suite.base.capacity;
 
 import com.tny.game.base.item.*;
 import com.tny.game.doc.annotation.*;
-import com.tny.game.suite.base.*;
 
 /**
  * 能力值提供器的游戏能力值
  */
 @ClassDoc("游戏能力值")
-public interface Capacity extends GameAbility {
+public interface Capacity extends Ability {
 
     CapacityValueType getValueType();
 
     CapacityGroup getGroup();
-
 
     default Number getDefault() {
         return 0;
@@ -38,11 +36,5 @@ public interface Capacity extends GameAbility {
     }
 
     Number countFinalCapacity(Number baseValue, CapacityGather gather);
-
-    @Override
-    default void registerSelf() {
-        GameAbility.super.registerSelf();
-        Capacities.register(this);
-    }
 
 }

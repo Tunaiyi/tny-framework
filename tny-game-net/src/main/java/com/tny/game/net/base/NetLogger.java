@@ -5,52 +5,51 @@ import com.tny.game.common.runtime.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class NetLogger {
 
     public static final ProcessWatcher NET_TRACE_ALL_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_all_receive_send", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_all_receive_send", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_ALL = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-all", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-all", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-decode", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-decode", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-read_to_tunnel", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-read_to_tunnel", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-tunnel_to_execute", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-tunnel_to_execute", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_BOX_PROCESS_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-box_process", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-box_process", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
-        
+
     public static final ProcessWatcher NET_TRACE_INPUT_EXECUTE_COMMAND_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_input-execute_command", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_input-execute_command", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_OUTPUT_WRITTEN_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_output-all", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_output-all", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_output-encode", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_output-encode", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER = ProcessWatcher
-            .of(MessageCommand.class + ".trace_output-write_to_encode", TrackPrintOption.CLOSE)
+            .of(MessageCommand.class + ".track_output-write_to_encode", TrackPrintOption.CLOSE)
             .schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_WATCHER = ProcessWatcher
@@ -157,18 +156,17 @@ public class NetLogger {
     private static final Logger SEND_PUSH_LOGGER = LoggerFactory.getLogger(NetLogger.SEND_PUSH);
 
     public static final String CODER = "netCoder";
-    private static final String RECEIVE_RQS = "receiveRequest";
-    private static final String RECEIVE_RSP = "receiveResponse";
-    private static final String RECEIVE_PUSH = "receivePush";
-    private static final String SEND_RQS = "sendRequest";
-    private static final String SEND_RSP = "sendResponse";
-    private static final String SEND_PUSH = "sendPush";
-    public static final String CHECKER = "signGenerator";
-    public static final String DISPATCHER = "dispatcher";
-    public static final String NET = "coreLogger";
-    public static final String CLIENT = "coreClient";
-    public static final String SESSION = "session";
-    public static final String EXECUTOR = "executor";
+    private static final String RECEIVE_RQS = "com.tny.game.net.message.receive.Request";
+    private static final String RECEIVE_RSP = "com.tny.game.net.message.receive.Response";
+    private static final String RECEIVE_PUSH = "com.tny.game.net.message.receive.Push";
+    private static final String SEND_RQS = "com.tny.game.net.message.send.Request";
+    private static final String SEND_RSP = "com.tny.game.net.message.send.Response";
+    private static final String SEND_PUSH = "com.tny.game.net.message.send.Push";
+    public static final String CHECKER = "com.tny.game.net.checker";
+    public static final String DISPATCHER = "com.tny.game.net.dispatcher";
+    public static final String CLIENT = "com.tny.game.net.client";
+    public static final String SESSION = "com.tny.game.net.session";
+    public static final String EXECUTOR = "com.tny.game.net.executor";
 
     private static Logger getLoggerByMessage(Message message, Logger pushLogger, Logger rqsLogger, Logger rspLogger) {
         if (message == null) {
@@ -193,67 +191,59 @@ public class NetLogger {
         return getLoggerByMessage(message, RECEIVE_PUSH_LOGGER, RECEIVE_RQS_LOGGER, RECEIVE_RSP_LOGGER);
     }
 
-    public static void debugReceive(Message message, String msg, Object... args) {
+    //    private static Object[] toMessageArgs(Message message, Object[] args) {
+    //        Object[] msgArgs = new Object[5];
+    //        MessageHead head = message.getHead();
+    //        msgArgs[0] = message.getMode();
+    //        msgArgs[1] = head.getId();
+    //        msgArgs[2] = head.getId();
+    //        msgArgs[3] = head.getToMessage();
+    //        msgArgs[4] = message.getBody(Object.class);
+    //        if (args.length > 0) {
+    //            msgArgs = ArrayUtils.addAll(msgArgs, args);
+    //        }
+    //        return msgArgs;
+    //    }
+
+    public static void logSend(Supplier<Tunnel<?>> tunnel, Message message) {
+        Logger logger = getSendLogger(message);
+        if (logger != null && logger.isDebugEnabled()) {
+            doLogSend(logger, tunnel.get(), message);
+        }
+
+    }
+
+    private static void logSend(Tunnel<?> tunnel, Message message) {
+        Logger logger = getSendLogger(message);
+        if (logger != null && logger.isDebugEnabled()) {
+            doLogSend(logger, tunnel, message);
+        }
+
+    }
+
+    public static void doLogSend(Logger logger, Tunnel<?> tunnel, Message message) {
+        MessageHead head = message.getHead();
+        logger.debug("\n    # Tunnel {} >> [发送]消息 {}", tunnel, message);
+    }
+
+    public static void logReceive(Supplier<Tunnel<?>> tunnel, Message message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = toMessageArgs(message, args);
-            logger.debug(
-                    "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#<< 接受 {} 消息 \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n#<<" +
-                            msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
+            doLogReceive(logger, tunnel.get(), message);
         }
-    }
-
-    public static void debugSend(Message message, String msg, Object... args) {
-        Logger logger = getSendLogger(message);
-        if (logger != null && logger.isDebugEnabled()) {
-            Object[] msgArgs = toMessageArgs(message, args);
-            logger.debug(
-                    "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-\n#>> 发送 {} 消息 \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} | 消息体 : {} \n>>" +
-                            msg + "\n#-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-", msgArgs);
-        }
-    }
-
-    private static Object[] toMessageArgs(Message message, Object[] args) {
-        Object[] msgArgs = new Object[5];
-        MessageHead head = message.getHead();
-        msgArgs[0] = message.getMode();
-        msgArgs[1] = head.getId();
-        msgArgs[2] = head.getId();
-        msgArgs[3] = head.getToMessage();
-        msgArgs[4] = message.getBody(Object.class);
-        if (args.length > 0) {
-            msgArgs = ArrayUtils.addAll(msgArgs, args);
-        }
-        return msgArgs;
-    }
-
-    public static void logSend(Tunnel<?> tunnel, Message message) {
-        Logger logger = getSendLogger(message);
-        if (logger != null && logger.isDebugEnabled()) {
-            MessageHead head = message.getHead();
-            logger.debug(
-                    "\n#---------------------------------------------\n#>> 发送 {} 消息 [{}] \n#>> - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#>> 创建时间 : {} \n#>> 消息码 : {} \n#>> 消息体 : {}\n#---------------------------------------------",
-                    message.getMode(),
-                    tunnel,
-                    head.getId(), head.getId(), head.getToMessage(),
-                    new Date(head.getTime()), head.getCode(), message.getBody(Object.class));
-        }
-
     }
 
     public static void logReceive(Tunnel<?> tunnel, Message message) {
         Logger logger = getReceiveLogger(message);
         if (logger != null && logger.isDebugEnabled()) {
-            MessageHead head = message.getHead();
-            logger.debug(
-                    "\n#---------------------------------------------\n#<< 接收 {} 消息 [{}] \n#<< - Protocol : {} | 消息ID : {} | 响应请求ID {} \n#<< 创建时间 : {} \n#<< 消息码 : {} \n#<< 消息体 : {}\n#---------------------------------------------",
-                    message.getMode(),
-                    tunnel,
-                    head.getId(), head.getId(), head.getToMessage(),
-                    new Date(head.getTime()), head.getCode(), message.getBody(Object.class));
+            doLogReceive(logger, tunnel, message);
         }
     }
 
+    private static void doLogReceive(Logger logger, Tunnel<?> tunnel, Message message) {
+        MessageHead head = message.getHead();
+        logger.debug("\n    # Tunnel {} << [接收]消息 {}", tunnel, message);
+    }
     // public static void log(Session session, Protocol protocol, ResultCode code, Object body) {
     //     if (RECEIVE_LOGGER.isDebugEnabled())
     //         RECEIVE_LOGGER.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",

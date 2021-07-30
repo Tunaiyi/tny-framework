@@ -5,10 +5,6 @@ import com.tny.game.base.item.behavior.*;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public interface GameDemandParam extends DemandParam, RegisterSelf {
+public interface GameDemandParam extends DemandParam {
 
-    @Override
-    default void registerSelf() {
-        DemandParams.register(this);
-    }
 }

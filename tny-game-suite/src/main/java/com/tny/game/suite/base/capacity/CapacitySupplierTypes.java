@@ -19,15 +19,15 @@ public class CapacitySupplierTypes {
     }
 
     public static <T extends CapacitySupplierType> T of(String key) {
-        return holder.ofAndCheck(key, "获取 {} CapacitySupplyType 不存在", key);
+        return holder.check(key, "获取 {} CapacitySupplyType 不存在", key);
     }
 
     public static <T extends CapacitySupplierType> T of(int id) {
-        return holder.ofAndCheck(id, "获取 ID为 {} 的 CapacitySupplyType 不存在", id);
+        return holder.check(id, "获取 ID为 {} 的 CapacitySupplyType 不存在", id);
     }
 
     public static Collection<CapacitySupplierType> getAll() {
-        return holder.values();
+        return holder.allValues();
     }
 
 }

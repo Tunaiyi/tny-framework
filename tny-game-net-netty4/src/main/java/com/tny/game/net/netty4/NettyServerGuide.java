@@ -18,7 +18,7 @@ import java.util.*;
 
 public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting> implements ServerGuide {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyServerGuide.class);
 
     private static final boolean EPOLL = isEpoll();
 

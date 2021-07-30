@@ -15,6 +15,6 @@ public interface ObjectCodecorFactory {
 
     Collection<MimeType> getMediaTypes();
 
-    <T> ObjectCodec<T> createCodecor(Type clazz);
+    <T> ObjectCodec<T> createCodec(Type clazz);
 
 }

@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import java.net.InetSocketAddress;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static java.lang.String.*;
 
 /**
  * <p>
@@ -49,6 +50,11 @@ public abstract class NettyChannelConnection implements Connection {
             }
         }
         return channelPromise;
+    }
+
+    @Override
+    public String toString() {
+        return valueOf(this.channel);
     }
 
 }

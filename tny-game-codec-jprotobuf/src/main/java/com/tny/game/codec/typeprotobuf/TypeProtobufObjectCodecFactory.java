@@ -47,7 +47,7 @@ public class TypeProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
     }
 
     @Override
-    public <T> ObjectCodec<T> createCodecor(Type type) {
+    public <T> ObjectCodec<T> createCodec(Type type) {
         return as(this.codec);
     }
 

@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.configuration.processor;
 
-import com.tny.game.boot.initiator.*;
+import com.tny.game.boot.registrar.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.netty4.configuration.processor.disruptor.*;

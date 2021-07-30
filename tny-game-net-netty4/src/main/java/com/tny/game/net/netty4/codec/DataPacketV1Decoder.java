@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4.codec;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.exception.*;
@@ -36,6 +37,7 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
     @Override
     public Message decodeObject(ChannelHandlerContext ctx, ByteBuf in, DataPacketMarker marker) throws Exception {
         Channel channel = ctx.channel();
+
         byte option;
         int payloadLength;
         if (marker.isMark()) {
@@ -74,7 +76,9 @@ public class DataPacketV1Decoder extends DataPacketV1BaseCodec implements DataPa
             return null;
         }
         try {
-            return readPayload(channel, in, option, payloadLength);
+            Message message = readPayload(channel, in, option, payloadLength);
+            NetLogger.logReceive(() -> channel.attr(NettyAttrKeys.TUNNEL).get(), message);
+            return message;
         } finally {
             marker.reset();
         }

@@ -1,10 +1,9 @@
 package com.tny.game.net.netty4.agency;
 
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.agency.*;
-import com.tny.game.net.agency.datagram.*;
-import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.relay.*;
+import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -26,15 +25,15 @@ import static com.tny.game.net.base.NetLogger.*;
 @Sharable
 public class NettyTransitDatagramHandler extends ChannelDuplexHandler {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyTransitDatagramHandler.class);
 
-    private final AgentDatagramHandler transitDatagramHandler;
+    private final RelayPacketHandler transitDatagramHandler;
 
     public NettyTransitDatagramHandler() {
-        this(new DefaultAgentDatagramHandler());
+        this(new DefaultRelayPacketHandler());
     }
 
-    public NettyTransitDatagramHandler(AgentDatagramHandler transitDatagramHandler) {
+    public NettyTransitDatagramHandler(RelayPacketHandler transitDatagramHandler) {
         this.transitDatagramHandler = transitDatagramHandler;
     }
 
@@ -55,9 +54,9 @@ public class NettyTransitDatagramHandler extends ChannelDuplexHandler {
             channel.disconnect();
             return;
         }
-        if (object instanceof TubuleDatagram) {
+        if (object instanceof RelayPacket) {
             try {
-                TubuleDatagram datagram = as(object);
+                RelayPacket datagram = as(object);
                 NetPipe<?> pipe = channel.attr(NettyAttrKeys.PIPE).get();
                 if (pipe != null) {
                     datagram.getType().invoke(this.transitDatagramHandler, pipe, datagram);
@@ -68,7 +67,7 @@ public class NettyTransitDatagramHandler extends ChannelDuplexHandler {
                 LOG.error("#GameServerHandler#接受请求异常", ex);
             }
         } else {
-            LOG.error("处理器无法处理非 {} 的消息, message : {} ", TubuleDatagram.class, object);
+            LOG.error("处理器无法处理非 {} 的消息, message : {} ", RelayPacket.class, object);
         }
     }
 
@@ -94,8 +93,8 @@ public class NettyTransitDatagramHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
-            if (msg instanceof AgentDatagramMaker) {
-                msg = ((AgentDatagramMaker)msg).make();
+            if (msg instanceof RelayPacketMaker) {
+                msg = ((RelayPacketMaker)msg).make();
             }
             ctx.write(msg, promise);
         }

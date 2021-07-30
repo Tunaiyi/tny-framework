@@ -52,7 +52,7 @@ public class JacksonObjectCodecFactory extends AbstractObjectCodecFactory {
     }
 
     @Override
-    public <T> ObjectCodec<T> createCodecor(Type clazz) {
+    public <T> ObjectCodec<T> createCodec(Type clazz) {
         JavaType type = this.mapper.getTypeFactory().constructType(clazz);
         return new JacksonObjectCodec<>(type, this.mapper);
     }

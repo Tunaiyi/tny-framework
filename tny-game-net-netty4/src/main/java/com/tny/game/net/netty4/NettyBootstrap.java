@@ -12,7 +12,7 @@ import org.slf4j.*;
  */
 public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends NetBootstrap<S> {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyBootstrap.class);
 
     protected ChannelMaker<Channel> channelMaker;
 

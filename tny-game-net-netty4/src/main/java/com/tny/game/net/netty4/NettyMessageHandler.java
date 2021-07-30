@@ -1,7 +1,6 @@
 package com.tny.game.net.netty4;
 
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -24,7 +23,7 @@ import static com.tny.game.net.base.NetLogger.*;
 @Sharable
 public class NettyMessageHandler extends ChannelDuplexHandler {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyMessageHandler.class);
 
     @Override
     @SuppressWarnings("unchecked")

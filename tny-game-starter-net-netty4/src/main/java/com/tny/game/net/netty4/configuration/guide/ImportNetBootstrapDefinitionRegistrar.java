@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.configuration.guide;
 
-import com.tny.game.boot.initiator.*;
+import com.tny.game.boot.registrar.*;
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.codec.v1.*;

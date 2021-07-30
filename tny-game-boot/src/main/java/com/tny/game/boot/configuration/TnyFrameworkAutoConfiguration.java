@@ -1,6 +1,6 @@
 package com.tny.game.boot.configuration;
 
-import com.tny.game.boot.initiator.*;
+import com.tny.game.boot.registrar.*;
 import org.springframework.context.annotation.*;
 
 /**

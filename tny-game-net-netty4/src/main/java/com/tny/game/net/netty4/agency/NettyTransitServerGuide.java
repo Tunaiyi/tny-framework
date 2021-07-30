@@ -3,10 +3,10 @@ package com.tny.game.net.netty4.agency;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.bus.*;
-import com.tny.game.net.agency.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.relay.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
@@ -18,7 +18,7 @@ import java.util.*;
 
 public class NettyTransitServerGuide extends NettyBootstrap<NettyServerBootstrapSetting> implements ServerGuide {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.NET);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyTransitServerGuide.class);
 
     private static final boolean EPOLL = isEpoll();
 
@@ -148,7 +148,7 @@ public class NettyTransitServerGuide extends NettyBootstrap<NettyServerBootstrap
 
     private void openPipe(Channel channel) {
         NetBootstrapContext<Object> context = NettyTransitServerGuide.this.getContext();
-        AgentDatagramTransmitter transmitter = new NettyChannelAgentDatagramTransmitter(channel);
+        RelayPacketTransmitter transmitter = new NettyChannelRelayPacketTransmitter(channel);
         NetPipe<?> pipe = new GeneralPipe<>(transmitter, context);
         pipe.open();
     }

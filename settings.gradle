@@ -67,7 +67,6 @@ include 'tny-game-oplog-log4j2kafka'
 
 include 'tny-game-protoex'
 include 'tny-game-rpc'
-include 'tny-game-base'
 include 'tny-game-actor'
 include 'tny-game-asyndb'
 include 'tny-game-data'
@@ -76,6 +75,9 @@ include 'tny-game-web'
 include 'tny-game-zookeeper'
 include 'tny-game-suite'
 include 'tny-game-protobuf'
+
+include 'tny-game-base'
+include 'tny-game-starter-game-base'
 
 include 'tny-game-redisson'
 include 'tny-game-starter-redisson'

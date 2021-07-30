@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * Created by Kun Yang on 16/1/29.
  */
 @SuppressWarnings("unchecked")
-public class EnumeratorHolder<O> {
+public class EnumeratorHolder<O> implements Enumerator<O> {
 
     private final Map<Object, O> enumeratorMap;
 
@@ -66,7 +66,8 @@ public class EnumeratorHolder<O> {
         return this;
     }
 
-    public <T extends O> T ofAndCheck(Object key, String message, Object... args) {
+    @Override
+    public <T extends O> T check(Object key, String message, Object... args) {
         T value = (T)this.enumeratorMap.get(key);
         if (value == null) {
             throw new NullPointerException(StringAide.format(message, args));
@@ -74,19 +75,28 @@ public class EnumeratorHolder<O> {
         return value;
     }
 
+    @Override
     public <T extends O> T of(Object key) {
         return (T)this.enumeratorMap.get(key);
     }
 
-    public Set<O> values() {
-        return Collections.unmodifiableSet(this.enumerators);
+    @Override
+    public <T extends O> Optional<T> option(Object key) {
+        return Optional.ofNullable((T)this.enumeratorMap.get(key));
     }
 
-    public Set<Class<? extends O>> getAllClasses() {
+    @Override
+    public <T extends O> Set<T> allValues() {
+        return (Set<T>)Collections.unmodifiableSet(this.enumerators);
+    }
+
+    @Override
+    public Set<Class<? extends O>> allClasses() {
         return Collections.unmodifiableSet(this.classes);
     }
 
-    public <T extends Enum<T>> Set<Class<T>> getAllEnumClasses() {
+    @Override
+    public <T extends Enum<T>> Set<Class<T>> allEnumClasses() {
         return this.classes.stream().filter(Class::isEnum).map((c) -> (Class<T>)c).collect(Collectors.toSet());
     }
 

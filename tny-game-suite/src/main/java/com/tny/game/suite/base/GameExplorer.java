@@ -375,7 +375,7 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
                 if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
                 }
-                putManager(managerMap, ItemTypes.of(id), manager);
+                putManager(managerMap, ItemTypes.check(id), manager);
             }
         }
         if (manager instanceof ItemTypeManageable) {
@@ -401,7 +401,7 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
                 if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
                 }
-                managerItemTypes.add(ItemTypes.of(id));
+                managerItemTypes.add(ItemTypes.check(id));
             }
         }
         if (manager instanceof ItemTypeManageable) {
@@ -419,7 +419,7 @@ public class GameExplorer implements ItemExplorer, StorageExplorer, ModelExplore
                 if (id / ID_TAIL_SIZE == 0) {
                     id *= ID_TAIL_SIZE;
                 }
-                putManager(managerMap, ItemTypes.of(id), manager);
+                putManager(managerMap, ItemTypes.check(id), manager);
             }
         }
     }

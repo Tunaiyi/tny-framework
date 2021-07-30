@@ -35,7 +35,7 @@ public class DefaultMessageCodec implements MessageCodec {
     public Message decode(byte[] bytes, MessageFactory messageFactory) throws Exception {
         ProtoExInputStream stream = new ProtoExInputStream(bytes);
         long id = stream.readLong();
-        byte option = stream.getBuffer().get();
+        byte option = stream.readByte();
         MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & MESSAGE_HEAD_OPTION_MODE_MASK));
         int protocol = stream.readInt();
         int code = stream.readInt();
@@ -75,11 +75,12 @@ public class DefaultMessageCodec implements MessageCodec {
                     MESSAGE_HEAD_OPTION_LINE_VALUE_MIN, MESSAGE_HEAD_OPTION_LINE_VALUE_MAX);
         }
         option = (byte)(option | line << MESSAGE_HEAD_OPTION_LINE_SHIFT);
-        stream.getByteBuffer().write(option);
+        stream.writeByte(option);
         stream.writeInt(head.getProtocolId());
         stream.writeInt(head.getCode());
         stream.writeLong(head.getToMessage());
         stream.writeLong(head.getTime());
+
         if (message.existBody()) {
             Object body = message.getBody(Object.class);
             writeObject(stream, body, this.bodyCoder);

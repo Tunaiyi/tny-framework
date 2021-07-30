@@ -8,6 +8,7 @@ import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.codec.protoex.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.netty4.*;
@@ -16,8 +17,8 @@ import com.tny.game.net.netty4.configuration.app.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.spring.*;
 import com.tny.game.net.transport.*;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 
@@ -26,12 +27,12 @@ import org.springframework.context.annotation.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@EnableAutoConfiguration
+@EnableConfigurationProperties({SpringBootNetAppProperties.class})
 public class NetAutoConfiguration {
 
     @Bean
-    @ConditionalOnBean(SpringBootNetAppConfigure.class)
-    public NetAppContext appContext(SpringBootNetAppConfigure configure) {
+    @ConditionalOnBean(SpringBootNetAppProperties.class)
+    public NetAppContext appContext(SpringBootNetAppProperties configure) {
         return new SpringBootNetAppContext(configure);
     }
 
@@ -41,7 +42,7 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(SpringBootNetAppConfigure.class)
+    @ConditionalOnBean(SpringBootNetAppProperties.class)
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
     public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointConfigure configure) {
         return new CommonEndpointKeeperManager(
@@ -99,8 +100,15 @@ public class NetAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(ProtoExMessageBodyCodec.class)
     public ProtoExMessageBodyCodec<?> protoExCodec() {
         return new ProtoExMessageBodyCodec<>();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(TypeProtobufMessageBodyCodec.class)
+    public MessageBodyCodec<Object> typeProtobufMessageBodyCodec() {
+        return new TypeProtobufMessageBodyCodec<>();
     }
 
     @Bean
@@ -117,10 +125,5 @@ public class NetAutoConfiguration {
     public NoneCodecCrypto noneCodecCrypto() {
         return new NoneCodecCrypto();
     }
-
-    // @Bean(name = "messageTimeoutChecker")
-    // public MessageTimeoutCheckerPlugin messageTimeoutChecker() {
-    //     return new MessageTimeoutCheckerPlugin();
-    // }
 
 }

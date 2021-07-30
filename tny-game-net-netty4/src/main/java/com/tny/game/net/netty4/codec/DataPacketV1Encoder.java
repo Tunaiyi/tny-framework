@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4.codec;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.message.*;
@@ -38,11 +39,13 @@ public class DataPacketV1Encoder extends DataPacketV1BaseCodec implements DataPa
             }
             // 获取打包器
             DataPackageContext packageContext = channel.attr(NettyAttrKeys.WRITE_PACKAGER).get();
+            NetTunnel<?> tunnel = null;
             if (packageContext == null) {
-                NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+                tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
                 packageContext = new DataPackageContext(tunnel.getAccessId(), this.config);
                 channel.attr(NettyAttrKeys.WRITE_PACKAGER).set(packageContext);
             }
+            NetLogger.logSend(() -> channel.attr(NettyAttrKeys.TUNNEL).get(), message);
             writePayload(packageContext, message, out);
         } catch (Exception e) {
             LOGGER.error("编码 message {} 异常", message, e);

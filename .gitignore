@@ -5,8 +5,10 @@
 *.ear
 /log
 /build
+/out
 *.settings/
 */build
+*/out
 *.classpath
 *.project
 *.iml

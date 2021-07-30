@@ -9,14 +9,16 @@ import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
 
-import javax.annotation.Resource;
+import javax.annotation.*;
 import java.util.*;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class FeatureService<DTO> implements AppPrepareStart, ApplicationContextAware {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SuiteLog.MODULE);
 
-    private static FeatureService FUNC_SYS_SERVICE;
+    private static FeatureService<?> FUNC_SYS_SERVICE;
 
     @Resource
     private FeatureExplorerManager featureExplorerManager;
@@ -29,7 +31,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
 
     private ApplicationContext applicationContext;
 
-    private Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
+    private final Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
 
     public FeatureService() {
         FUNC_SYS_SERVICE = this;
@@ -43,7 +45,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
         return this.doIsOpen(explorerID, feature);
     }
 
-    public <C> void openFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
+    public <C> void openFeature(GameFeatureExplorer explorer, OpenMode<?> openMode, C context) {
         this.doOpenFeature(explorer, openMode, context);
     }
 
@@ -76,11 +78,10 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
         return this.featureModelManager.getVersionHolder().getFeatureVersion();
     }
 
-    @SuppressWarnings("unchecked")
-    private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode openMode, C context) {
+    private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode<? extends FeatureModel> openMode, C context) {
         for (FeatureModel model : this.featureModelManager.getModels(openMode)) {
             FeatureHandler handler = this.handlerMap.get(model.getFeature());
-            if (handler == null || !model.isEffect() || !openMode.check(explorer, model, context)) {
+            if (handler == null || !model.isEffect() || !openMode.check(explorer, as(model), context)) {
                 continue;
             }
             if (!model.isCanOpen(explorer, openMode)
@@ -162,17 +163,18 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
     @Override
     public void prepareStart() throws Exception {
-        List<GameFeatureHandler> featureHandlers = new ArrayList<>(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
-        for (GameFeatureHandler feature : featureHandlers) {
+        Collection<GameFeatureHandler<?>> collection = as(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
+        List<GameFeatureHandler<?>> featureHandlers = new ArrayList<>(collection);
+        for (GameFeatureHandler<?> feature : featureHandlers) {
             this.handlerMap.put(feature.getFeature(), feature);
         }
-        for (Feature feature : Features.values()) { //TODO AA 临时注释掉的
+        for (Feature feature : Features.all()) { //TODO AA 临时注释掉的
             if (!this.handlerMap.containsKey(feature)) {
                 FeatureHandler handler = new DefaultFuncSysHandler(feature);
                 this.handlerMap.put(feature, handler);

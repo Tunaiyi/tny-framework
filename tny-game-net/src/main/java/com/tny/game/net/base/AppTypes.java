@@ -27,15 +27,15 @@ public final class AppTypes extends ClassImporter {
     }
 
     public static <T extends AppType> T of(String name) {
-        return holder.ofAndCheck(name, "获取 {} ServerType不存在", name);
+        return holder.check(name, "获取 {} ServerType不存在", name);
     }
 
     public static <T extends AppType> T valueOfEnum(String enumName) {
-        return holder.ofAndCheck(enumName, "获取 {} 的ServerType不存在", enumName);
+        return holder.check(enumName, "获取 {} 的ServerType不存在", enumName);
     }
 
     public static Collection<AppType> getAll() {
-        return holder.values();
+        return holder.allValues();
     }
 
 }

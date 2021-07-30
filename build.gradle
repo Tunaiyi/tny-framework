@@ -74,7 +74,7 @@ configure(javaProjects) {
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply from: "$rootDir/gradle/publications.gradle"
+    apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
 
     ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
@@ -100,6 +100,7 @@ configure(javaProjects) {
     compileJava {
         options.compilerArgs << '-XDignore.symbol.file'
         options.fork = true // may not needed on 1.8
+        options.encoding = "UTF-8"
         options.forkOptions.executable = 'javac' // may not needed on 1.8
     }
 

@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class SpringBootNetAppContext extends DefaultNetAppContext {
 
-    public SpringBootNetAppContext(SpringBootNetAppConfigure configure) {
+    public SpringBootNetAppContext(SpringBootNetAppProperties configure) {
         super();
         Set<String> scanPackages = new HashSet<>(ApplicationLauncherContext.getBasePackages());
         scanPackages.addAll(configure.getBasePackages());

@@ -20,7 +20,7 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
 
     @Override
     protected ItemModelContext context() {
-        return context;
+        return this.context;
     }
 
     // @Override
@@ -57,12 +57,12 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
 
     protected GameModelManager(Class<? extends M> modelClass, String... paths) {
         super(modelClass, paths);
-        ItemTypes.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        Abilities.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        Actions.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        Behaviors.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        DemandTypes.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        DemandParams.holder.getAllEnumClasses().forEach(this::addEnumClass);
+        ItemTypes.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        Abilities.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        Actions.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        Behaviors.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        DemandTypes.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        DemandParams.enumerator().allEnumClasses().forEach(this::addEnumClass);
     }
 
     protected GameModelManager(Class<? extends M> modelClass, Class<? extends Enum<? extends Option>> optionClass, String... paths) {
@@ -102,4 +102,5 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 }

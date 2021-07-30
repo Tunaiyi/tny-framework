@@ -8,7 +8,7 @@ import com.tny.game.net.message.*;
 import java.net.InetSocketAddress;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.*;
+import static java.lang.String.*;
 
 /**
  * Created by Kun Yang on 2017/3/28.
@@ -141,6 +141,10 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Tran
     protected AbstractTunnel<UID, E> setEndpoint(E endpoint) {
         this.endpoint = endpoint;
         return this;
+    }
+
+    @Override public String toString() {
+        return this.getMode() + "[" + this.getUserType() + "(" + this.getUserId() + ") " + this.transporter + "]";
     }
 
 }

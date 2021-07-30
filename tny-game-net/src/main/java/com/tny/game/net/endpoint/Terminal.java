@@ -1,6 +1,5 @@
 package com.tny.game.net.endpoint;
 
-
 import com.tny.game.common.url.*;
 
 /**

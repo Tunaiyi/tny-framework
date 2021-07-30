@@ -6,7 +6,6 @@ import com.tny.game.base.item.xml.XMLDemand.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.*;
-import com.tny.game.suite.base.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -113,8 +112,8 @@ public class DemandResultDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "DemandResultDTO [itemId=" + itemID + ", demandType="
-               + demandType + ", expectValue=" + expectValue + "]";
+        return "DemandResultDTO [itemId=" + this.itemID + ", demandType="
+                + this.demandType + ", expectValue=" + this.expectValue + "]";
     }
 
 }

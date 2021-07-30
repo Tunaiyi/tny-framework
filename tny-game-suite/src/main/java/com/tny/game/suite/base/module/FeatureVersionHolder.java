@@ -23,9 +23,9 @@ public class FeatureVersionHolder {
     private volatile Version devVersion;
     private volatile Version defVersion;
 
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private Lock readLock = this.readWriteLock.readLock();
-    private Lock writeLock = this.readWriteLock.writeLock();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = this.readWriteLock.readLock();
+    private final Lock writeLock = this.readWriteLock.writeLock();
 
     FeatureVersionHolder() {
         this.initConfigVersion(Configs.VERSION_CONFIG, Configs.VERSION_FEATURE_VERSION, this::getDefVersion, this::setDefVersion)
@@ -74,17 +74,14 @@ public class FeatureVersionHolder {
                     return this;
                 }
                 versionSetter.accept(newVersion);
-                if (event) {
-                    ON_CHANGE.notify(this);
-                }
             } else {
                 if (oldVersion == null) {
                     return this;
                 }
                 versionSetter.accept(null);
-                if (event) {
-                    ON_CHANGE.notify(this);
-                }
+            }
+            if (event) {
+                ON_CHANGE.notify(this);
             }
         } finally {
             this.writeLock.unlock();

@@ -106,7 +106,7 @@ ext.libs = [
         okhttp                                   : "com.squareup.okhttp:okhttp:2.7.5",
         okhttp3                                  : "com.squareup.okhttp3:okhttp:$vers.okhttp3",
         okhttp3_logging_interceptor              : "com.squareup.okhttp3:logging-interceptor:$vers.okhttp3",
-        druid                                    : "com.alibaba:druid:1.1.16",
+        druid                                    : "com.alibaba:druid:1.2.6",
 
 
 

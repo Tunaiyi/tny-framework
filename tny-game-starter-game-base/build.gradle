@@ -1,0 +1,28 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+
+dependencies {
+
+    annotationProcessor libs.spring_boot_configuration_processor
+
+    api libs.spring_boot_autoconfigure
+
+    api project(":tny-game-base")
+//    api project(":tny-game-common-scheduler")
+//    api project(":tny-game-expr-mvel")
+//    api project(":tny-game-net-netty4")
+//    api project(":tny-game-doc")
+//    api project(":tny-game-cache")
+//    api project(":tny-game-loader")
+//    api project(":tny-game-scanning")
+//    api project(":tny-game-oplog")
+//    api project(":tny-game-zookeeper")
+////    api project(":tny-game-cache-mysql")
+//    api project(":tny-game-protobuf")
+//    api project(":tny-game-cache-redis")
+//    api project(":tny-game-cache-mysql")
+//    api project(":tny-game-oplog-log4j")
+//    api project(":tny-game-starter-net-netty4")
+
+}

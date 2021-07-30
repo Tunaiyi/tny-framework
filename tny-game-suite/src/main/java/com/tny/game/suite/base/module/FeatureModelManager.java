@@ -23,9 +23,9 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
 
     private Set<Feature> features;
 
-    private Map<OpenMode, List<FM>> modelsMap;
+    private Map<OpenMode<FM>, List<FM>> modelsMap;
 
-    private FeatureVersionHolder versionHolder = new FeatureVersionHolder();
+    private final FeatureVersionHolder versionHolder = new FeatureVersionHolder();
 
     private static final SingleValueConverter versionConverter = new SingleValueConverter() {
 
@@ -45,20 +45,17 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         }
     };
 
-
     protected FeatureModelManager(Class<? extends FM> modelClass) {
         super(modelClass, Configs.SUITE_CONFIG.getStr(Configs.SUITE_FEATURE_MODEL_CONFIG_PATH, Configs.FEATURE_MODEL_CONFIG_PATH));
-        Features.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        Modules.holder.getAllEnumClasses().forEach(this::addEnumClass);
-        OpenModes.holder.getAllEnumClasses().forEach(this::addEnumClass);
+        Features.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        Modules.enumerator().allEnumClasses().forEach(this::addEnumClass);
+        OpenModes.enumerator().allEnumClasses().forEach(this::addEnumClass);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     protected void initXStream(XStream xStream) {
         xStream.alias("feature", Feature.class);
         xStream.alias("module", Module.class);
-        // xStream.alias("openModes", Set.class);
         xStream.alias("mode", OpenMode.class);
         xStream.alias("openPlan", OpenPlan.class);
         xStream.registerConverter(versionConverter);
@@ -66,7 +63,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
 
     private static class FeatureComparator<FM extends FeatureModel> implements Comparator<FM> {
 
-        private OpenMode<?> mode;
+        private final OpenMode<?> mode;
 
         private FeatureComparator(OpenMode<?> mode) {
             this.mode = mode;
@@ -75,13 +72,16 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         @Override
         public int compare(FM o1, FM o2) {
             int levelComp;
-            if ((levelComp = o1.getOpenLevel(this.mode) - o2.getOpenLevel(this.mode)) != 0)
+            if ((levelComp = o1.getOpenLevel(this.mode) - o2.getOpenLevel(this.mode)) != 0) {
                 return levelComp;
+            }
             int proComp;
-            if ((proComp = o1.getPriority() - o2.getPriority()) != 0)
+            if ((proComp = o1.getPriority() - o2.getPriority()) != 0) {
                 return proComp;
+            }
             return o1.getId() - o2.getId();
         }
+
     }
 
     @Override
@@ -90,19 +90,19 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         LOGGER.info("当前版本 {} ", version);
         Optional<Version> current = this.versionHolder.getFeatureVersion();
         Map<Feature, FM> typeMap = new HashMap<>();
-        Map<OpenMode, SortedSet<FM>> modelSetMap = new HashMap<>();
+        Map<OpenMode<FM>, SortedSet<FM>> modelSetMap = new HashMap<>();
         for (FM model : this.modelMap.values()) {
             if (current.map(currVer -> model.getOpenVersion().map(v -> v.lessEqualsThan(currVer)).orElse(true)).orElse(true)) {
                 typeMap.put(model.getFeature(), model);
                 model.getOpenPlan()
-                     .forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
+                        .forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
             } else {
                 LOGGER.warn("当前版本 {} | 功能 {}({}) | 激活版本 [{}] | 未激活", version, model.getDesc(), model.getAlias(), model.getOpenVersion().orElse(null));
             }
         }
         this.typeMap = Collections.unmodifiableMap(typeMap);
         this.features = ImmutableSet.copyOf(typeMap.keySet());
-        Map<OpenMode, List<FM>> modelsMap = new HashMap<>();
+        Map<OpenMode<FM>, List<FM>> modelsMap = new HashMap<>();
         modelSetMap.forEach((openMode, models) -> modelsMap.put(openMode, ImmutableList.copyOf(models)));
         this.modelsMap = ImmutableMap.copyOf(modelsMap);
     }
@@ -115,8 +115,9 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
 
     public FeatureModel getAndCheckModelBy(Feature feature) {
         FeatureModel model = this.typeMap.get(feature);
-        if (model == null)
+        if (model == null) {
             throw new NullPointerException(format("{} 系统 model 为 null", feature));
+        }
         return model;
     }
 
@@ -140,7 +141,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
         return this.modelsMap.getOrDefault(openMode, ImmutableList.of());
     }
 
-    public Map<OpenMode, List<FM>> getModelsMap() {
+    public Map<OpenMode<FM>, List<FM>> getModelsMap() {
         return this.modelsMap;
     }
 

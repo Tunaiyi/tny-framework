@@ -2,9 +2,11 @@ package com.tny.game.codec;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.codec.annotation.*;
+import com.tny.game.codec.exception.*;
 import com.tny.game.common.utils.*;
 import org.springframework.util.MimeType;
 
+import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,9 +55,51 @@ public class ObjectCodecService {
         return as(this.DEFAULT_OBJECT_HOLDER_MAP.computeIfAbsent(type, ObjectCodecorHolder::new).loadOrCreateObjectCodec(mineType));
     }
 
+    private <T> ObjectCodecorHolder<T> holder(Type type) {
+        return as(this.DEFAULT_OBJECT_HOLDER_MAP.computeIfAbsent(type, ObjectCodecorHolder::new));
+    }
+
+    public <T> byte[] encodeToBytes(T value) {
+        ObjectCodecorHolder<T> holder = holder(value.getClass());
+        try {
+            return holder.getDefaultCodecor().encodeToBytes(value);
+        } catch (IOException e) {
+            throw new ObjectCodecException(e, "encode {} to default format {} exception", value.getClass(), holder.getDefaultFormat());
+        }
+    }
+
+    public <T> T decodeByBytes(Class<T> type, byte[] data) {
+        ObjectCodecorHolder<T> holder = holder(type);
+        try {
+            return holder.getDefaultCodecor().decodeByBytes(data);
+        } catch (IOException e) {
+            throw new ObjectCodecException(e, "decode {} from default format {} exception", type, holder.getDefaultFormat());
+        }
+    }
+
+    public <T> byte[] encodeToBytes(T value, String mineType) {
+        ObjectCodec<T> codec = codec(value.getClass(), mineType);
+        try {
+            return codec.encodeToBytes(value);
+        } catch (IOException e) {
+            throw new ObjectCodecException(e, "encode {} to {} format exception", value.getClass(), mineType);
+        }
+    }
+
+    public <T> T decodeByBytes(Class<T> type, byte[] data, String mineType) {
+        ObjectCodec<T> codec = codec(type, mineType);
+        try {
+            return codec.decodeByBytes(data);
+        } catch (IOException e) {
+            throw new ObjectCodecException(e, "decode {} from {} format exception", type, mineType);
+        }
+    }
+
     public class ObjectCodecorHolder<T> {
 
         private final Type type;
+
+        private final String defaultFormat;
 
         private final ObjectCodec<T> defaultCodecor;
 
@@ -63,14 +107,18 @@ public class ObjectCodecService {
 
         public ObjectCodecorHolder(Type type) {
             this.type = type;
-            String format = loadTypeFormat(type);
-            ObjectCodec<T> codecor = createObjectCodec(format);
+            this.defaultFormat = loadTypeFormat(type);
+            ObjectCodec<T> codecor = createObjectCodec(this.defaultFormat);
             this.defaultCodecor = codecor;
-            this.DEFAULT_OBJECT_CODEC_MAP.put(format, codecor);
+            this.DEFAULT_OBJECT_CODEC_MAP.put(this.defaultFormat, codecor);
         }
 
         public ObjectCodec<T> getDefaultCodecor() {
             return this.defaultCodecor;
+        }
+
+        public String getDefaultFormat() {
+            return this.defaultFormat;
         }
 
         public ObjectCodec<T> loadOrCreateObjectCodec(String format) {
@@ -81,11 +129,11 @@ public class ObjectCodecService {
             MimeType mimeType = MimeType.valueOf(format);
             ObjectCodecorFactory codecorFactory = ObjectCodecService.this.codecorFactoryMap.get(mimeType);
             if (codecorFactory != null) {
-                return codecorFactory.createCodecor(this.type);
+                return codecorFactory.createCodec(this.type);
             }
             Optional<ObjectCodec<Object>> objectCodecorOpt = ObjectCodecService.this.codecorFactoryMap.entrySet()
                     .stream().filter(e -> e.getKey().includes(mimeType))
-                    .map(e -> e.getValue().createCodecor(this.type))
+                    .map(e -> e.getValue().createCodec(this.type))
                     .filter(Objects::nonNull)
                     .findFirst();
             return as(objectCodecorOpt.orElseThrow(() -> new NullPointerException(format("{} ObjectCodecorFactory is null", mimeType))));

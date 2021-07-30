@@ -7,6 +7,7 @@ import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.filter.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.*;
 import org.springframework.util.MimeType;
 
 /**
@@ -16,6 +17,8 @@ import org.springframework.util.MimeType;
  * @date 2020-03-05 13:08
  */
 public class ProtobufObjectLoader {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ProtobufObjectLoader.class);
 
     private static final ProtobufObjectCodecFactory FACTORY = new ProtobufObjectCodecFactory();
 
@@ -31,7 +34,12 @@ public class ProtobufObjectLoader {
                         Asserts.checkArgument(StringUtils.isNoneBlank(mime), "{} mime {} is blank", cl, mime);
                         MimeType mimeType = MimeType.valueOf(mime);
                         if (findType.isCompatibleWith(mimeType)) {
-                            FACTORY.createCodecor(cl);
+                            try {
+                                FACTORY.createCodec(cl);
+                            } catch (Throwable e) {
+                                LOGGER.error("{} create codecor exception", cl, e);
+                                throw e;
+                            }
                         }
                     });
                 });

@@ -2,29 +2,27 @@ package com.tny.game.net.netty4.configuration;
 
 import com.tny.game.common.io.word.*;
 import com.tny.game.net.command.plugins.filter.text.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.context.annotation.*;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
 @ConditionalOnProperty(value = "tny.net.filter.words.enable", havingValue = "true")
+@EnableConfigurationProperties(TextFilterProperties.class)
 public class TextFilterAutoConfiguration {
 
-    @Value("{tny.net.filter.text_check.file_url:words.txt}")
-    private String file;
-
-    @Value("{tny.net.filter.text_check.hide_symbol:*}")
-    private String hideSymbol;
+    @Resource
+    private TextFilterProperties textFilterProperties;
 
     @Bean
     public WordsFilter wordsFilter() throws Exception {
-        LocalWordsFilter filter = new LocalWordsFilter(this.file, this.hideSymbol);
+        LocalWordsFilter filter = new LocalWordsFilter(this.textFilterProperties.getFile(), this.textFilterProperties.getHideSymbol());
         filter.load();
         return filter;
     }

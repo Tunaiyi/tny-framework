@@ -31,9 +31,9 @@ import java.util.Map.Entry;
  */
 public abstract class AbstractXMLModelManager<M extends Model> extends AbstractModelManager<M> implements SingleValueConverter {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
-    private static List<String> repeatAliasList = new ArrayList<>();
+    private static final List<String> ALIAS_CHECKED_LIST = new ArrayList<>();
 
     /**
      * 模型的实现类类型
@@ -50,7 +50,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
      */
     protected Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
 
-    private Set<Class<? extends Enum>> enumClassSet = new HashSet<>();
+    private final Set<Class<? extends Enum<?>>> enumClassSet = new HashSet<>();
 
     private static final Class<?>[] classes = new Class<?>[]{
             Behavior.class,
@@ -114,7 +114,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
         return map;
     }
 
-    protected void addEnumClass(Class<? extends Enum> clazz) {
+    protected void addEnumClass(Class<? extends Enum<?>> clazz) {
         this.enumClassSet.add(clazz);
     }
 
@@ -260,7 +260,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
                 modelMap.put(proxyModel.getId(), proxyModel);
                 if (proxyModel.getAlias() != null) {
                     if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
-                        repeatAliasList.add(proxyModel.getAlias());
+                        ALIAS_CHECKED_LIST.add(proxyModel.getAlias());
                     }
                 }
             } else {

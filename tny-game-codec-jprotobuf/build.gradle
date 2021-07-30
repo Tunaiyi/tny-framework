@@ -1,0 +1,25 @@
+group "com.tny.game"
+
+apply plugin: "maven"
+apply plugin: 'com.baidu.jprotobuf'
+
+jprotobuf_precompile {
+    filterClassPackage = "com.tny.game.codec.protobuf;com.tny.game.codec.typeprotobuf"        // 设置要预编译的包前缀，多个用 ";"分隔
+    generateProtoFile = "true"                          // 设置是否怎么生成proto描述文件, 默认是false, 不生成
+}
+
+jprotobuf_precompile.dependsOn(compileJava)
+build.dependsOn(jprotobuf_precompile)
+
+dependencies {
+
+    api project(":tny-game-loader")
+    api project(":tny-game-scanning")
+    api project(":tny-game-codec")
+
+
+    api(libs.jprotobuf) {
+        exclude module: 'javassist'
+    }
+
+}

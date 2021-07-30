@@ -38,7 +38,7 @@ public class ProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
     }
 
     @Override
-    public <T> ObjectCodec<T> createCodecor(Type type) {
+    public <T> ObjectCodec<T> createCodec(Type type) {
         Class<T> valueClass = loadClassFrom(type);
         ObjectCodec<?> codec = CODEC_MAP.computeIfAbsent(valueClass, clazz -> {
             Asserts.checkNotNull(valueClass.getAnnotation(ProtobufClass.class), "class {} is miss {} annotation", clazz, ProtobufClass.class);

@@ -3,6 +3,8 @@ package com.tny.game.net.message;
 import com.tny.game.common.context.*;
 import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
+import org.apache.commons.lang3.builder.*;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 public abstract class AbstractNetMessage extends AttributesHolder implements NetMessage {
 
@@ -50,6 +52,18 @@ public abstract class AbstractNetMessage extends AttributesHolder implements Net
     protected AbstractNetMessage setBody(Object body) {
         this.body = body;
         return this;
+    }
+
+    @Override public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
+                .append("id", this.head.getId())
+                .append("mode", this.head.getMode())
+                .append("protocol", this.head.getProtocolId())
+                .append("to", this.head.getToMessage())
+                .append("date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.format(this.head.getTime()))
+                .append("code", this.head.getCode())
+                .append("body", this.body)
+                .toString();
     }
 
 }

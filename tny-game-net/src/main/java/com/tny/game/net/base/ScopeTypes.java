@@ -31,15 +31,15 @@ public final class ScopeTypes extends ClassImporter {
     }
 
     public static <T extends ScopeType> T of(String name) {
-        return holder.ofAndCheck(name, "获取 {} ScopeType 不存在", name);
+        return holder.check(name, "获取 {} ScopeType 不存在", name);
     }
 
     public static <T extends ScopeType> T valueOfEnum(String enumName) {
-        return holder.ofAndCheck(enumName, "获取 {} 的ScopeType 不存在", enumName);
+        return holder.check(enumName, "获取 {} 的ScopeType 不存在", enumName);
     }
 
     public static Collection<ScopeType> getAll() {
-        return holder.values();
+        return holder.allValues();
     }
 
 }

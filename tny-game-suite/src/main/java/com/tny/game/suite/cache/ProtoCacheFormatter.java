@@ -14,7 +14,6 @@ import org.slf4j.*;
 import javax.annotation.Resource;
 import java.util.*;
 
-
 public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFormatter<I, Object> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SuiteLog.FORMATTER);
@@ -25,11 +24,12 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     @Override
     public Object format2Save(String key, I object) {
         P proto = this.object2Proto(key, object);
-        if (proto == null)
+        if (proto == null) {
             return null;
+        }
         try {
             if (object instanceof Item) {
-                Item<?> item = (Item<?>) object;
+                Item<?> item = (Item<?>)object;
                 return new ProtoItem(proto2Bytes(proto), item, this.getNumber(object), this.getState(object));
             } else {
                 return proto2Bytes(proto);
@@ -43,7 +43,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     @Override
     public Object format2Load(String key, Object data) {
         try {
-            P proto = this.bytes2Proto((byte[]) data);
+            P proto = this.bytes2Proto((byte[])data);
             return this.proto2Object(key, proto);
         } catch (Exception e) {
             LOG.error("{}解析异常", this.getClass().getName(), e);
@@ -56,8 +56,9 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     protected <T extends Trade> T proto2Trade(TradeFactory<T> creator, TradeProto tradeProto) {
-        if (tradeProto.getItemCount() == 0)
+        if (tradeProto.getItemCount() == 0) {
             return null;
+        }
         List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
         for (TradeItemProto awardProto : tradeProto.getItemList()) {
             ItemModel awardModel = this.godExplorer.getModel(awardProto.getItemId());
@@ -66,7 +67,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
                         awardProto.getValid()));
             }
         }
-        return creator.create(Actions.of(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
+        return creator.create(Actions.check(tradeProto.getAction()), TradeType.get(tradeProto.getTradeType()), tradeItemList);
     }
 
     protected Trade proto2Trade(TradeProto tradeProto) {
@@ -78,30 +79,32 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     protected TradeProto trade2Proto(TradeInfo trade) {
-        if (trade == null || trade.isEmpty())
+        if (trade == null || trade.isEmpty()) {
             return TradeProto.newBuilder().build();
+        }
         List<TradeItemProto> list = new ArrayList<>();
         for (TradeItem<?> item : trade.getAllTradeItem()) {
             list.add(TradeItemProto.newBuilder()
-                                   .setItemId(item.getItemModel().getId())
-                                   .setNumber(item.getNumber().longValue())
-                                   .setAlterType(item.getAlertType().getId())
-                                   .setValid(item.isValid())
-                                   .build());
+                    .setItemId(item.getItemModel().getId())
+                    .setNumber(item.getNumber().longValue())
+                    .setAlterType(item.getAlertType().getId())
+                    .setValid(item.isValid())
+                    .build());
         }
         return TradeProto.newBuilder().setAction(trade.getAction().getId())
-                         .addAllItem(list)
-                         .setAction(trade.getAction().getId())
-                         .setTradeType(trade.getTradeType().getId())
-                         .build();
+                .addAllItem(list)
+                .setAction(trade.getAction().getId())
+                .setTradeType(trade.getTradeType().getId())
+                .build();
     }
 
     protected Collection<Trade> protos2Trades(Collection<TradeProto> tradeProtos) {
         List<Trade> trades = new ArrayList<>();
         for (TradeProto tradeProto : tradeProtos) {
             Trade trade = this.proto2Trade(tradeProto);
-            if (trade != null)
+            if (trade != null) {
                 trades.add(trade);
+            }
         }
         return trades;
     }
@@ -137,8 +140,9 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     }
 
     public static <V> V toRead(V value, V nullValue, V defValue) {
-        if (value == null || value.equals(nullValue))
+        if (value == null || value.equals(nullValue)) {
             return defValue;
+        }
         return value;
     }
 
