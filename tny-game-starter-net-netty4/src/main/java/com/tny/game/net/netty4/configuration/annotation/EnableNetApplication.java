@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4.configuration.annotation;
 
 import com.tny.game.net.netty4.configuration.*;
+import com.tny.game.net.netty4.configuration.filter.*;
 import com.tny.game.net.netty4.configuration.guide.*;
 import com.tny.game.net.netty4.configuration.processor.*;
 import org.springframework.context.annotation.Import;

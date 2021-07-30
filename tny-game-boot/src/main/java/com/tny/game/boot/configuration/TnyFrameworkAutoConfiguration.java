@@ -1,5 +1,6 @@
 package com.tny.game.boot.configuration;
 
+import com.tny.game.boot.launcher.*;
 import com.tny.game.boot.registrar.*;
 import org.springframework.context.annotation.*;
 
@@ -15,6 +16,16 @@ public class TnyFrameworkAutoConfiguration {
     @Bean
     public UnitLoadInitiator unitLoadInitiator() {
         return new UnitLoadInitiator();
+    }
+
+    @Bean
+    public EventListenerInitiator eventListenerInitiator() {
+        return new EventListenerInitiator();
+    }
+
+    @Bean
+    public ApplicationLauncherLifecycle applicationLauncherLifecycle() {
+        return new ApplicationLauncherLifecycle();
     }
 
 }

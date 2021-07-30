@@ -134,4 +134,9 @@ public class NetAutoConfiguration {
         return new NoneCodecCrypto();
     }
 
+    @Bean
+    public NetApplicationLifecycle netApplicationLifecycle() {
+        return new NetApplicationLifecycle();
+    }
+
 }

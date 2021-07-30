@@ -5,7 +5,6 @@ import com.tny.game.net.netty4.appliaction.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 
@@ -15,7 +14,6 @@ import javax.annotation.Nonnull;
  * @author : kgtny
  * @date : 2021/7/26 3:56 下午
  */
-@Component
 public class NetApplicationLifecycle implements ApplicationLauncher, ApplicationContextAware {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NetApplicationLifecycle.class);

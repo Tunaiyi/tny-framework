@@ -4,7 +4,6 @@ import com.tny.game.boot.exception.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -15,7 +14,6 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/2/28 3:26 上午
  */
-@Component
 public class ApplicationLauncherLifecycle implements SmartLifecycle, ApplicationContextAware {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ApplicationLauncherLifecycle.class);

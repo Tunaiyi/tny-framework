@@ -1,4 +1,4 @@
-package com.tny.game.net.netty4.configuration;
+package com.tny.game.net.netty4.configuration.filter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

@@ -6,6 +6,7 @@ import com.tny.game.net.netty4.appliaction.*;
 import com.tny.game.net.netty4.configuration.annotation.*;
 import org.slf4j.*;
 import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -15,8 +16,9 @@ import org.springframework.context.annotation.ComponentScan.Filter;
  */
 @SpringBootConfiguration
 @EnableNetApplication
+@EnableAutoConfiguration
 @ComponentScan(
-        basePackages = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common", "com.tny.game.net.netty4", "com.tny.game.boot"},
+        basePackages = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common"},
         includeFilters = @Filter(Controller.class))
 public class GameServerApp {
 

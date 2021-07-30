@@ -4,12 +4,10 @@ import com.tny.game.common.event.bus.*;
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.lifecycle.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 
-@Component
 public class EventListenerInitiator implements AppPrepareStart {
 
     @Resource
