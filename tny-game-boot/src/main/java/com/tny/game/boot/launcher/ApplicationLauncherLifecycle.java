@@ -52,6 +52,15 @@ public class ApplicationLauncherLifecycle implements SmartLifecycle, Application
     @Override
     public void stop() {
         LOGGER.info("ApplicationLifecycleProcessor.close...");
+        List<ApplicationLauncher> applications = new ArrayList<>(this.context.getBeansOfType(
+                ApplicationLauncher.class).values());
+        for (ApplicationLauncher application : applications) {
+            try {
+                application.stop();
+            } catch (Exception exception) {
+                throw new BootApplicationException(exception);
+            }
+        }
         ApplicationLauncherContext.close();
         LOGGER.info("ApplicationLifecycleProcessor.close finish");
         this.running = false;

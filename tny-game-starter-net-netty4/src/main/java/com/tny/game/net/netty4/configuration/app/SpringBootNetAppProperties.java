@@ -24,7 +24,7 @@ public class SpringBootNetAppProperties {
 
     private String locale = "zh-CN";
 
-    private List<String> basePackages;
+    private List<String> basePackages = ImmutableList.of();
 
     public int getServerId() {
         return this.serverId;

@@ -1,1 +1,3 @@
-#org.springframework.boot.autoconfigure.EnableAutoConfiguration=
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#com.tny.game.net.netty4.configuration.NetAutoConfiguration,\
+#com.tny.game.net.netty4.configuration.TextFilterAutoConfiguration

@@ -30,9 +30,9 @@ public class ImportConfigurationBeanDefinitionRegistrar implements ImportBeanDef
     protected <P> P loadProperties(Class<P> propertiesClass) {
         ConfigurationProperties configurationProperties = propertiesClass.getAnnotation(ConfigurationProperties.class);
         Asserts.checkNotNull(configurationProperties, "{} @ConfigurationProperties annotation is null", propertiesClass);
-        String keyHead = configurationProperties.value();
+        String keyHead = configurationProperties.prefix();
         if (StringUtils.isBlank(keyHead)) {
-            keyHead = configurationProperties.prefix();
+            keyHead = configurationProperties.value();
         }
         return loadProperties(keyHead, propertiesClass);
     }

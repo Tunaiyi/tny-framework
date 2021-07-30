@@ -2,7 +2,6 @@ package com.tny.game.net.netty4.configuration.endpoint;
 
 import com.google.common.collect.ImmutableMap;
 import org.springframework.boot.context.properties.*;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
@@ -14,14 +13,13 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/7/15 3:45 上午
  */
-@Configuration
 @ConfigurationProperties(prefix = "tny.net.endpoint")
-public class SpringNetEndpointConfigure {
+public class SpringNetEndpointProperties {
+
+    private Map<String, SpringNetSessionKeeperSetting> sessionKeeperSettings = ImmutableMap.of();
 
     @NestedConfigurationProperty
     private SpringNetSessionKeeperSetting sessionKeeper = new SpringNetSessionKeeperSetting();
-
-    private Map<String, SpringNetSessionKeeperSetting> sessionKeeperSettings = ImmutableMap.of();
 
     @NestedConfigurationProperty
     private SpringNetTerminalKeeperSetting terminalKeeper = new SpringNetTerminalKeeperSetting();
@@ -32,7 +30,7 @@ public class SpringNetEndpointConfigure {
         return this.sessionKeeper;
     }
 
-    public SpringNetEndpointConfigure setSessionKeeper(SpringNetSessionKeeperSetting sessionKeeper) {
+    public SpringNetEndpointProperties setSessionKeeper(SpringNetSessionKeeperSetting sessionKeeper) {
         this.sessionKeeper = sessionKeeper;
         return this;
     }
@@ -41,7 +39,7 @@ public class SpringNetEndpointConfigure {
         return this.sessionKeeperSettings;
     }
 
-    public SpringNetEndpointConfigure setSessionKeeperSettings(
+    public SpringNetEndpointProperties setSessionKeeperSettings(
             Map<String, SpringNetSessionKeeperSetting> sessionKeeperSettings) {
         sessionKeeperSettings.forEach((name, setting) -> setting.setName(ifNotBlankElse(setting.getName(), name)));
         this.sessionKeeperSettings = ImmutableMap.copyOf(sessionKeeperSettings);
@@ -52,7 +50,7 @@ public class SpringNetEndpointConfigure {
         return this.terminalKeeper;
     }
 
-    public SpringNetEndpointConfigure setTerminalKeeper(
+    public SpringNetEndpointProperties setTerminalKeeper(
             SpringNetTerminalKeeperSetting terminalKeeper) {
         this.terminalKeeper = terminalKeeper;
         return this;
@@ -62,7 +60,7 @@ public class SpringNetEndpointConfigure {
         return this.terminalKeeperSettings;
     }
 
-    public SpringNetEndpointConfigure setTerminalKeeperSettings(Map<String, SpringNetTerminalKeeperSetting> terminalKeeperSettings) {
+    public SpringNetEndpointProperties setTerminalKeeperSettings(Map<String, SpringNetTerminalKeeperSetting> terminalKeeperSettings) {
         terminalKeeperSettings.forEach((name, setting) -> setting.setName(ifNotBlankElse(setting.getName(), name)));
         this.terminalKeeperSettings = ImmutableMap.copyOf(terminalKeeperSettings);
         return this;

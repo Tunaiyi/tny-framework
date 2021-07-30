@@ -1,5 +1,6 @@
 package com.tny.game.net.demo.client;
 
+import com.tny.game.boot.launcher.*;
 import com.tny.game.common.number.*;
 import com.tny.game.common.url.*;
 import com.tny.game.net.annotation.*;
@@ -31,7 +32,7 @@ import static com.tny.game.common.utils.StringAide.*;
 @SpringBootConfiguration
 @EnableNetApplication
 @ComponentScan(
-        value = {"com.tny.game.net.demo.client", "com.tny.game.net.demo.common", "com.tny.game.starter"},
+        basePackages = {"com.tny.game.net.demo.client", "com.tny.game.net.demo.common", "com.tny.game.net.netty4", "com.tny.game.boot"},
         includeFilters = @Filter(Controller.class))
 public class GameClientApp {
 
@@ -43,9 +44,9 @@ public class GameClientApp {
 
     public static void main(String[] args) {
         try {
+            ApplicationLauncherContext.register(GameClientApp.class);
             ApplicationContext applicationContext = SpringApplication.run(GameClientApp.class, args);
             NetApplication application = applicationContext.getBean(NetApplication.class);
-            application.start();
             ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
             long userId = 1000;
             AtomicInteger times = new AtomicInteger();

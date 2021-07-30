@@ -18,8 +18,8 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ImportCon
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        DisruptorEndpointCommandTaskProcessorConfigure disruptorConfigure = loadProperties(DisruptorEndpointCommandTaskProcessorConfigure.class);
-        ForkJoinEndpointCommandTaskProcessorConfigure forkJoinConfigure = loadProperties(ForkJoinEndpointCommandTaskProcessorConfigure.class);
+        DisruptorEndpointCommandTaskProcessorProperties disruptorConfigure = loadProperties(DisruptorEndpointCommandTaskProcessorProperties.class);
+        ForkJoinEndpointCommandTaskProcessorProperties forkJoinConfigure = loadProperties(ForkJoinEndpointCommandTaskProcessorProperties.class);
         boolean defaultProcessorInit = loadBeanDefinition("default", disruptorConfigure.getSetting(), registry);
         if (!defaultProcessorInit) {
             loadBeanDefinition("default", forkJoinConfigure.getSetting(), registry);

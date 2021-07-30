@@ -31,9 +31,9 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        SpringBootNetBootstrapConfigure bootstrapConfigure = loadProperties(SpringBootNetBootstrapConfigure.class);
+        SpringBootNetBootstrapProperties bootstrapConfigure = loadProperties(SpringBootNetBootstrapProperties.class);
         registry.registerBeanDefinition(bootstrapConfigure.getClass().getSimpleName(), BeanDefinitionBuilder
-                .genericBeanDefinition(SpringBootNetBootstrapConfigure.class, () -> bootstrapConfigure)
+                .genericBeanDefinition(SpringBootNetBootstrapProperties.class, () -> bootstrapConfigure)
                 .getBeanDefinition());
         if (bootstrapConfigure.getServer() != null) {
             registerNettyServerGuides(Collections.singleton(bootstrapConfigure.getServer()), registry);

@@ -35,7 +35,7 @@ public final class TypeProtobufSchemeManager {
 
     public <T> TypeProtobufScheme<T> getScheme(int id) {
         TypeProtobufScheme<T> scheme = as(idSchemeMap.get(id));
-        return Asserts.checkNotNull(scheme, "TypeProtobuf Id {} TypeProtobufScheme is no exist");
+        return Asserts.checkNotNull(scheme, "TypeProtobuf Id {} TypeProtobufScheme is no exist", id);
     }
 
     public <T> TypeProtobufScheme<T> loadScheme(Class<T> valueClass) {

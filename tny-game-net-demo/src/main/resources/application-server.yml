@@ -12,12 +12,12 @@ tny:
         properties:
           idleTimeout: 360000
       encoder:
-        body-codec: jprotobufMessageBodyCodec
+        body-codec: typeProtobufMessageBodyCodec
         security-keys:
           - abcdefghijklmn
           - opqrstuvwxyz
       decoder:
-        body-codec: jprotobufMessageBodyCodec
+        body-codec: typeProtobufMessageBodyCodec
         security-keys:
           - abcdefghijklmn
           - opqrstuvwxyz

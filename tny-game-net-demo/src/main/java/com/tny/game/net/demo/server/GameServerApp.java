@@ -1,5 +1,6 @@
 package com.tny.game.net.demo.server;
 
+import com.tny.game.boot.launcher.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.netty4.appliaction.*;
 import com.tny.game.net.netty4.configuration.annotation.*;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 @SpringBootConfiguration
 @EnableNetApplication
 @ComponentScan(
-        basePackages = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common", "com.tny.game.starter"},
+        basePackages = {"com.tny.game.net.demo.server", "com.tny.game.net.demo.common", "com.tny.game.net.netty4", "com.tny.game.boot"},
         includeFilters = @Filter(Controller.class))
 public class GameServerApp {
 
@@ -23,9 +24,10 @@ public class GameServerApp {
 
     public static void main(String[] args) {
         try {
+            ApplicationLauncherContext.register(GameServerApp.class);
             ApplicationContext context = SpringApplication.run(GameServerApp.class, args);
             NetApplication application = context.getBean(NetApplication.class);
-            application.start();
+            //                        application.start();
             application.waitForConsole("q");
         } catch (Throwable e) {
             LOGGER.error("{} start exception", GameServerApp.class.getSimpleName(), e);

@@ -15,6 +15,9 @@ import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.appliaction.*;
 import com.tny.game.net.netty4.configuration.app.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
+import com.tny.game.net.netty4.configuration.guide.*;
+import com.tny.game.net.netty4.configuration.processor.disruptor.*;
+import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
 import com.tny.game.net.netty4.spring.*;
 import com.tny.game.net.transport.*;
 import org.springframework.boot.autoconfigure.condition.*;
@@ -27,14 +30,14 @@ import org.springframework.context.annotation.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration
-@EnableConfigurationProperties({SpringBootNetAppProperties.class})
+@EnableConfigurationProperties({
+        SpringBootNetAppProperties.class,
+        SpringNetEndpointProperties.class,
+        SpringBootNetBootstrapProperties.class,
+        DisruptorEndpointCommandTaskProcessorProperties.class,
+        ForkJoinEndpointCommandTaskProcessorProperties.class,
+})
 public class NetAutoConfiguration {
-
-    @Bean
-    @ConditionalOnBean(SpringBootNetAppProperties.class)
-    public NetAppContext appContext(SpringBootNetAppProperties configure) {
-        return new SpringBootNetAppContext(configure);
-    }
 
     @Bean
     public CertificateFactory<?> defaultCertificateFactory() {
@@ -42,9 +45,8 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(SpringBootNetAppProperties.class)
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
-    public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointConfigure configure) {
+    public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointProperties configure) {
         return new CommonEndpointKeeperManager(
                 configure.getSessionKeeper(),
                 configure.getTerminalKeeper(),
@@ -54,6 +56,7 @@ public class NetAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(EndpointService.class)
+    @ConditionalOnBean(EndpointKeeperManager.class)
     public EndpointService endpointService() {
         return new EndpointService();
     }
@@ -79,12 +82,17 @@ public class NetAutoConfiguration {
     }
 
     @Bean
+    public NetAppContext appContext(SpringBootNetAppProperties configure) {
+        return new SpringBootNetAppContext(configure);
+    }
+
+    @Bean
+    @ConditionalOnBean({EndpointKeeperManager.class, NetAppContext.class})
     public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
         return new SpringBootMessageDispatcher(appContext, endpointKeeperManager);
     }
 
     @Bean
-    //    @Order(-99999)
     public NetApplication netApplication(ApplicationContext applicationContext, NetAppContext appContext) {
         return new NetApplication(applicationContext, appContext);
     }
