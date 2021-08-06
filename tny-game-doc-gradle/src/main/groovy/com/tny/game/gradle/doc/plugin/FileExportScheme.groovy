@@ -192,7 +192,7 @@ class FileExportScheme {
     }
 
     void dtoAttributeFactory(Action<DTOTableAttributeSpec> action) {
-        def spec = objectFactory.newInstance(DTOTableAttributeSpec.class, objectFactory)
+        def spec = objectFactory.newInstance(DTOTableAttributeSpec.class)
         action.execute(spec)
         this.attributeFactory = spec.createFactory()
     }

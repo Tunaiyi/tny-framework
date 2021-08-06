@@ -25,19 +25,8 @@ class DTOTableAttributeSpec {
 
     private Function<Annotation, Object> fieldAnnotationId;
 
-    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
     @Inject
     DTOTableAttributeSpec() {
-//		try {
-//			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-//			this.classAnnotation = as(loader.loadClass(classAnnotation));
-//			this.fieldAnnotation = as(loader.loadClass(fieldAnnotation));
-//		} catch (ClassNotFoundException e) {
-//			throw new IllegalArgumentException(e);
-//		}
-//		this.classIdGetter = as(classIdGetter);
-//		this.fieldIdGetter = as(fieldIdGetter);
     }
 
     @Input
@@ -81,7 +70,7 @@ class DTOTableAttributeSpec {
     }
 
     void fieldAnnotation(String annClass) {
-        this.fieldAnnotation = loader.loadClass(annClass) as Class<Annotation>;
+        this.fieldAnnotation = annClass;
     }
 
     void fieldAnnotation(Class<? extends Annotation> annClass) {
