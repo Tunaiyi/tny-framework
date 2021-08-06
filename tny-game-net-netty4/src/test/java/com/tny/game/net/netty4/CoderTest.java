@@ -114,7 +114,7 @@ public class CoderTest {
             for (Object data : messags) {
                 Message message = as(data);
                 System.out.println(format("ID : {} Mode : {} Body : {}",
-                        message.getId(), message.getMode(), message.getBody(String.class)));
+                        message.getId(), message.getMode(), message.bodyAs(String.class)));
             }
         } catch (Throwable e) {
             e.printStackTrace();

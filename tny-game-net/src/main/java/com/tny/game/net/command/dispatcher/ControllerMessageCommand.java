@@ -99,7 +99,7 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
     private void checkAuthenticate(MethodControllerHolder controller) throws CommandException, ValidationException {
         if (!this.tunnel.isLogin()) {
             AuthenticateValidator<Object> validator = as(
-                    this.dispatcherContext.getValidator(this.message.getProtocol(), controller.getAuthValidator()));
+                    this.dispatcherContext.getValidator(this.message.getProtocolId(), controller.getAuthValidator()));
             if (validator == null) {
                 return;
             }

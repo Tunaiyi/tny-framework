@@ -18,19 +18,19 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class GameClassLoader {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(GameClassLoader.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(GameClassLoader.class);
 
-    @SuppressWarnings("unchecked")
-    public static <E, A extends Enum<A>> ClassSelector createSelector(Class<E> type, Consumer<E> handler) {
-        return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(type))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
-                        enumList.forEach(v -> handler.accept(as(v)));
-                    }
-                    LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
-                }));
-    }
+	@SuppressWarnings("unchecked")
+	public static <E, A extends Enum<A>> ClassSelector createSelector(Class<E> type, Consumer<E> handler) {
+		return ClassSelector.create()
+				.addFilter(SubOfClassFilter.ofInclude(type))
+				.setHandler((classes) -> classes.forEach(codeClass -> {
+					if (codeClass.isEnum()) {
+						List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
+						enumList.forEach(v -> handler.accept(as(v)));
+					}
+					LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
+				}));
+	}
 
 }

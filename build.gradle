@@ -11,13 +11,15 @@ apply from: "${rootDir}/gradle/git.gradle"
 ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
     moduleProjects = moduleProjects - project(":tny-game-bom")
-    javaProjects = subprojects - project(":tny-game-bom")
+    javaProjects = moduleProjects - project(":tny-game-bom")
+    javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
+    gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
 //    moduleProjects = moduleProjects - project(":tny-game-bom")
 }
 
 configure(allprojects) {
     apply plugin: "idea"
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
     apply plugin: "io.spring.dependency-management"
 
     group 'com.tny.game'
@@ -69,6 +71,44 @@ configure(allprojects) {
 
 }
 
+configure(gradleProjects) {
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply from: "${rootDir}/gradle/publications.gradle"
+
+    configurations {
+        all {
+            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+        }
+    }
+
+    [compileJava, compileGroovy, javadoc]*.options*.encoding = "${encoding}"
+
+    dependencies {
+        api gradleApi()
+        api localGroovy()
+//            compile 'com.intellij:forms_rt:7.0.3'
+//            compile 'org.hidetake:gradle-ssh-plugin:2.9.0'
+//            compile 'org.ajoberstar:grgit:2.2.0'
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        archiveClassifier.set("sources")
+        from sourceSets.main.allSource
+    }
+
+    task createProject {
+        doLast {
+            sourceSets*.groovy.srcDirs*.each { it.mkdirs() }
+            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+        }
+    }
+}
+
 configure(javaProjects) {
 
     apply plugin: 'java'
@@ -79,12 +119,15 @@ configure(javaProjects) {
 
     ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
-    if (springBoot) {
-//        apply plugin: 'org.springframework.boot'
-    }
-
     sourceCompatibility = "${javaVersion}"
     targetCompatibility = "${javaVersion}"
+
+    task createProject {
+        doLast {
+            sourceSets*.java.srcDirs*.each { it.mkdirs() }
+            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+        }
+    }
 
     configurations {
         all {
@@ -102,13 +145,6 @@ configure(javaProjects) {
         options.fork = true // may not needed on 1.8
         options.encoding = "UTF-8"
         options.forkOptions.executable = 'javac' // may not needed on 1.8
-    }
-
-    task createJavaProject {
-        doLast {
-            sourceSets*.java.srcDirs*.each { it.mkdirs() }
-            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-        }
     }
 
     jar {
@@ -139,41 +175,7 @@ configure(javaProjects) {
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple
         testImplementation project(":tny-game-tester")
-
-//        testRuntimeOnly libs.junit_jupiter_engine
-//        testRuntimeOnly libs.junit_vintage_engine
-//        testRuntimeOnly libs.junit_platform_launcher
-//        testRuntimeOnly libs.junit_platform_commons
-
     }
-
-//    uploadArchives {
-//
-//        repositories {
-//
-//            mavenDeployer {
-//
-//                pom.groupId = project.group
-//                pom.artifactId = project.name
-//                pom.version = project.version
-//
-//                pom.project {
-//                    name = project.name
-//                    packaging = hasProperty('POM_PACKAGING') ? POM_PACKAGING : "jar"
-//                    description = hasProperty("POM_DESCRIPTION") ? POM_DESCRIPTION : "";
-//                    url = hasProperty("POM_URL") ? POM_URL : "";
-//                }
-//
-//                repository(url: getReleaseRepositoryUrl()) {
-//                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-//                }
-//                snapshotRepository(url: getSnapshotRepositoryUrl()) {
-//                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-//                }
-//            }
-//        }
-//
-//    }
 
 
     idea {

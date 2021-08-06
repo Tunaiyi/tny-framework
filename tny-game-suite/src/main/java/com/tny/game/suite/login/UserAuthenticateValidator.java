@@ -91,7 +91,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
 
     protected Certificate<Long> checkUserLogin(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory, boolean relogin)
             throws CommandException {
-        List<String> params = message.getBody(BODY_CLASS);
+        List<String> params = message.bodyAs(BODY_CLASS);
         String openID = params.get(0);
         String openKey = params.get(1);
         String ticketWord = params.get(3);

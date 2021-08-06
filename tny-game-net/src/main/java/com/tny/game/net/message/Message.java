@@ -42,13 +42,6 @@ public interface Message extends Serializable, MessageContent, MessageHead {
         return this.getHead().getCode();
     }
 
-    /**
-     * @return 获取协议码
-     */
-    default int getProtocol() {
-        return this.getHead().getProtocolId();
-    }
-
     @Override
     default int getProtocolId() {
         return getHead().getProtocolId();

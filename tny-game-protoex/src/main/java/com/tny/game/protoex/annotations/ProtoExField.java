@@ -1,5 +1,7 @@
 package com.tny.game.protoex.annotations;
 
+import com.tny.game.doc.annotation.*;
+
 import java.lang.annotation.*;
 
 /**
@@ -14,20 +16,21 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@DocAnnotationClass
 public @interface ProtoExField {
 
-    /**
-     * ProtoEx类型字段ID 取值方位 1 - 536870911
-     *
-     * @return
-     */
-    int value();
+	/**
+	 * ProtoEx类型字段ID 取值方位 1 - 536870911
+	 *
+	 * @return
+	 */
+	int value();
 
-    /**
-     * 配置字段编码方式
-     *
-     * @return
-     */
-    ProtoExConf conf() default @ProtoExConf;
+	/**
+	 * 配置字段编码方式
+	 *
+	 * @return
+	 */
+	ProtoExConf conf() default @ProtoExConf;
 
 }

@@ -17,20 +17,20 @@ import java.util.List;
  */
 public class ResultCodeCheckLoader {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ResultCodeCheckLoader.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(ResultCodeCheckLoader.class);
 
-    @ClassSelectorProvider
-    @SuppressWarnings("unchecked")
-    static <E extends Enum<E> & ResultCode> ClassSelector ResultCodeClassesSelector() {
-        return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(ResultCode.class))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<E> enumList = EnumUtils.getEnumList((Class<E>)codeClass);
-                        enumList.forEach(ResultCodes::registerCode);
-                    }
-                    LOGGER.info("ResultCodeCheckLoader : {}", codeClass);
-                }));
-    }
+	@ClassSelectorProvider
+	@SuppressWarnings("unchecked")
+	static <E extends Enum<E> & ResultCode> ClassSelector ResultCodeClassesSelector() {
+		return ClassSelector.create()
+				.addFilter(SubOfClassFilter.ofInclude(ResultCode.class))
+				.setHandler((classes) -> classes.forEach(codeClass -> {
+					if (codeClass.isEnum()) {
+						List<E> enumList = EnumUtils.getEnumList((Class<E>)codeClass);
+						enumList.forEach(ResultCodes::registerCode);
+					}
+					LOGGER.info("ResultCodeCheckLoader : {}", codeClass);
+				}));
+	}
 
 }

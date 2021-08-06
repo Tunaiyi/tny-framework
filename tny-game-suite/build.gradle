@@ -1,6 +1,6 @@
 group "com.tny.game"
 
-apply plugin: "maven"
+apply plugin: "maven-publish"
 
 dependencies {
 

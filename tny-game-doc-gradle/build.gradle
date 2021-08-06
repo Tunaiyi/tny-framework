@@ -1,0 +1,37 @@
+group "com.tny.game"
+
+apply plugin: "java-gradle-plugin"
+apply plugin: "maven-publish"
+
+gradlePlugin {
+    plugins {
+        classesScanPlugin {
+            id = "tny.game.gradle"
+            implementationClass = 'com.tny.game.gradle.doc.plugin.TnyGamePlugin'
+        }
+    }
+}
+
+//sourceSets {
+//    main {
+//        groovy.srcDirs += ["src/main/groovy"]
+//    }
+//}
+
+dependencies {
+//    groovy localGroovy()
+
+//            gradleApi(),
+//            libs.'groovy-all',
+//    api project(":tny-game-net")
+    api project(":tny-game-doc")
+    api project(":tny-game-doc-annotation")
+    api project(":tny-game-common-lang")
+    api project(":tny-game-scanning")
+    api libs.commons_io
+    api libs.jackson_core
+    api libs.jackson_databind
+    api libs.jackson_annotations
+//    api libs.xstream
+
+}

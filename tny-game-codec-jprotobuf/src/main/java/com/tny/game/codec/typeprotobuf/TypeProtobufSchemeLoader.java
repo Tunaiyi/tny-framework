@@ -13,11 +13,11 @@ import com.tny.game.scanner.filter.*;
  */
 public class TypeProtobufSchemeLoader {
 
-    @ClassSelectorProvider
-    static ClassSelector autoMixClassesSelector() {
-        return ClassSelector.instance()
-                .addFilter(AnnotationClassFilter.ofInclude(TypeProtobuf.class))
-                .setHandler((classes) -> classes.forEach(cl -> TypeProtobufSchemeManager.getInstance().loadScheme(cl)));
-    }
+	@ClassSelectorProvider
+	static ClassSelector autoMixClassesSelector() {
+		return ClassSelector.create()
+				.addFilter(AnnotationClassFilter.ofInclude(TypeProtobuf.class))
+				.setHandler((classes) -> classes.forEach(cl -> TypeProtobufSchemeManager.getInstance().loadScheme(cl)));
+	}
 
 }

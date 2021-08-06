@@ -44,29 +44,29 @@ public class MessageCodecTest {
 
         Message decodeMessage = this.codec.decode(data, this.messageFactory);
         assertEquals(encodeMessage.getHead(), decodeMessage.getHead());
-        assertEquals(encodeMessage.getBody(TestMsgOject.class), decodeMessage.getBody(TestMsgOject.class));
+        assertEquals(encodeMessage.bodyAs(TestMsgOject.class), decodeMessage.bodyAs(TestMsgOject.class));
 
         // 不解析 Body, 有 Body
         Message noDecodeBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
         assertEquals(encodeMessage.getHead(), noDecodeBodyMessage.getHead());
-        bodyBytes = noDecodeBodyMessage.getBody(BodyBytes.class);
+        bodyBytes = noDecodeBodyMessage.bodyAs(BodyBytes.class);
         assertNotNull(bodyBytes);
 
         ProtoExReader bodyReader = new ProtoExReader(bodyBytes.getBodyBytes());
         TestMsgOject realBody = bodyReader.readMessage(TestMsgOject.class);
-        assertEquals(encodeMessage.getBody(TestMsgOject.class), realBody);
+        assertEquals(encodeMessage.bodyAs(TestMsgOject.class), realBody);
 
         // 正常解析 无 Body
         Message encodeNoBodyMessage = createMessage(null, attachment);
         data = this.codec.encode(encodeNoBodyMessage);
         Message decodeNoBodyMessage = this.codec.decode(data, this.messageFactory);
         assertEquals(encodeNoBodyMessage.getHead(), decodeNoBodyMessage.getHead());
-        assertNull(decodeNoBodyMessage.getBody(TestMsgOject.class));
+        assertNull(decodeNoBodyMessage.bodyAs(TestMsgOject.class));
 
         // 不解析 Body, 无 Body
         Message noDecodeBodyNoBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
         assertEquals(encodeNoBodyMessage.getHead(), noDecodeBodyNoBodyMessage.getHead());
-        bodyBytes = noDecodeBodyNoBodyMessage.getBody(BodyBytes.class);
+        bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(BodyBytes.class);
         assertNull(bodyBytes);
     }
 

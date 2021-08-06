@@ -1,6 +1,7 @@
 package com.tny.game.doc.imports;
 
 import com.thoughtworks.xstream.annotations.*;
+import com.tny.game.common.collection.map.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.table.*;
 
@@ -8,32 +9,34 @@ import java.util.*;
 
 public class ImportTableAttribute implements TableAttribute {
 
-    private ImportList importList = new ImportList();
+	private ImportList importList = new ImportList();
 
-    @XStreamAlias("importList")
-    private static class ImportList {
+	@XStreamAlias("importList")
+	private static class ImportList {
 
-        @XStreamAsAttribute
-        @XStreamAlias("class")
-        private String type = "list";
+		@XStreamAsAttribute
+		@XStreamAlias("class")
+		private String type = "list";
 
-        @XStreamImplicit(itemFieldName = "import")
-        private SortedSet<ImportInfo> importList = new TreeSet<>();
+		@XStreamImplicit(itemFieldName = "import")
+		private SortedSet<ImportInfo> importList = new TreeSet<>();
 
-    }
+	}
 
-    @Override
-    public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
-        this.importList.importList.add(new ImportInfo(clazz));
-    }
+	@Override
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+		this.importList.importList.add(new ImportInfo(clazz));
+	}
 
-    @Override
-    public Object getContent() {
-        return importList;
-    }
+	@Override
+	public Map<String, Object> getContext() {
+		return MapBuilder.<String, Object>newBuilder()
+				.put("importList", importList)
+				.build();
+	}
 
-    public Collection<ImportInfo> getImportList() {
-        return Collections.unmodifiableSortedSet(importList.importList);
-    }
+	public Collection<ImportInfo> getImportList() {
+		return Collections.unmodifiableSortedSet(importList.importList);
+	}
 
 }

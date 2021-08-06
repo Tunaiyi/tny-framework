@@ -22,7 +22,7 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
     @Override
     public Certificate<Long> validate(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory)
             throws CommandException, ValidationException {
-        Object value = message.getBody(Object.class);
+        Object value = message.bodyAs(Object.class);
         if (value instanceof List) {
             List paramList = as(value);
             return factory.certificate(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());

@@ -12,19 +12,19 @@ import org.apache.commons.lang3.EnumUtils;
  */
 public final class EnumLoader {
 
-    private EnumLoader() {
-    }
+	private EnumLoader() {
+	}
 
-    @SuppressWarnings("unchecked")
-    @ClassSelectorProvider
-    public static <E extends Enum<E>> ClassSelector selector() {
-        return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(AutoClassScanConfigure.getClasses(EnumLoader.class)))
-                .setHandler((classes) -> classes.stream()
-                        .filter(Class::isEnum)
-                        .map(c -> (Class<E>)c)
-                        .forEach(EnumUtils::getEnumList)
-                );
-    }
+	@SuppressWarnings("unchecked")
+	@ClassSelectorProvider
+	public static <E extends Enum<E>> ClassSelector selector() {
+		return ClassSelector.create()
+				.addFilter(SubOfClassFilter.ofInclude(AutoClassScanConfigure.getClasses(EnumLoader.class)))
+				.setHandler((classes) -> classes.stream()
+						.filter(Class::isEnum)
+						.map(c -> (Class<E>)c)
+						.forEach(EnumUtils::getEnumList)
+				);
+	}
 
 }

@@ -33,7 +33,7 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
     public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws CommandException {
         List<A> annotations = holder.getParamsAnnotationsByType(this.annClass);
         int index = 0;
-        Object body = message.getBody(Object.class);
+        Object body = message.bodyAs(Object.class);
         for (A an : annotations) {
             if (an != null) {
                 P param = (P)holder.getParameterValue(index, as(tunnel), message, body);

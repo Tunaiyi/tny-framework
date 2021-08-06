@@ -302,4 +302,6 @@ ext.libs = [
         poi_ooxml                                : "org.apache.poi:poi-ooxml:${vers.poi}",
         poi_ooxml_schemas                        : "org.apache.poi:poi-ooxml-schemas:${vers.poi}",
 
+        tools_template                           : "com.funs.game:tools-template:0.0.1-SNAPSHOT",
+
 ]

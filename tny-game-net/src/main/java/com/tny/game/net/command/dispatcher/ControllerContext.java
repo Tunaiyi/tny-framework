@@ -10,66 +10,61 @@ package com.tny.game.net.command.dispatcher;
  * <p>
  * <br>
  */
-public class ControllerContext<UID> {
+public class ControllerContext {
+	//	private static final String SYSTEM_THREAD_CONTROLLER = "SysThreadController";
+	//	private static final String SYSTEM_THREAD_HANDLER = "SysThreadHandler";
+	private static final ThreadLocal<ControllerContext> local = new ThreadLocal<>();
+	private int protocol;
+	private Thread thread;
 
-    //	private static final String SYSTEM_THREAD_CONTROLLER = "SysThreadController";
-    //	private static final String SYSTEM_THREAD_HANDLER = "SysThreadHandler";
+	private ControllerContext() {
+	}
 
-    private static ThreadLocal<ControllerContext> local = new ThreadLocal<>();
+	private ControllerContext(int protocol, Thread thread) {
+		this.protocol = protocol;
+		this.thread = thread;
+	}
 
-    private int protocol;
+	/**
+	 * 获取当前线程正在执行的控制信息 <br>
+	 *
+	 * @return
+	 */
+	public static <ID> ControllerContext getCurrent() {
+		ControllerContext info = local.get();
+		if (info == null) {
+			info = new ControllerContext();
+			info.protocol = 0;
+			local.set(info);
+		}
+		return info;
+	}
 
-    private Thread thread;
+	static <ID> void setCurrent(int protocol) {
+		ControllerContext info = local.get();
+		if (info == null) {
+			info = new ControllerContext();
+			local.set(info);
+		}
+		info.protocol = protocol;
+	}
 
-    private ControllerContext() {
-    }
+	public Thread getThread() {
+		return this.thread;
+	}
 
-    private ControllerContext(int protocol, Thread thread) {
-        this.protocol = protocol;
-        this.thread = thread;
-    }
+	/**
+	 * 业务方法名称
+	 * <p>
+	 *
+	 * @return
+	 */
+	public int getProtocol() {
+		return this.protocol;
+	}
 
-    /**
-     * 获取当前线程正在执行的控制信息 <br>
-     *
-     * @return
-     */
-    public static <ID> ControllerContext<ID> getCurrent() {
-        ControllerContext info = local.get();
-        if (info == null) {
-            info = new ControllerContext();
-            info.protocol = 0;
-            local.set(info);
-        }
-        return info;
-    }
-
-    static <ID> void setCurrent(int protocol) {
-        ControllerContext info = local.get();
-        if (info == null) {
-            info = new ControllerContext();
-            local.set(info);
-        }
-        info.protocol = protocol;
-    }
-
-    public Thread getThread() {
-        return this.thread;
-    }
-
-    /**
-     * 业务方法名称
-     * <p>
-     *
-     * @return
-     */
-    public int getProtocol() {
-        return this.protocol;
-    }
-
-    @Override
-    public String toString() {
-        return "ControllerInfo [getProtocol()=" + this.getProtocol() + "]";
-    }
+	@Override public String toString() {
+		return "ControllerInfo [getProtocol()=" + this.getProtocol() + "]";
+	}
 
 }

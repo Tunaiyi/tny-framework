@@ -51,12 +51,12 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
     @Override
     public Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException {
         // 获取方法持有器
-        MethodControllerHolder controller = this.getController(message.getProtocol(), message.getMode());
+        MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
         if (controller != null) {
             return new ControllerMessageCommand(tunnel, controller, message, this.context, this.endpointKeeperManager);
         }
         if (message.getMode() == MessageMode.REQUEST) {
-            LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocol());
+            LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
             return new RunnableCommand(() -> {
                 tunnel.send(MessageContexts.respond(NetResultCode.NO_SUCH_PROTOCOL, message));
             });

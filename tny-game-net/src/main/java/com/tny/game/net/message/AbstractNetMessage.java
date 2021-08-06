@@ -35,12 +35,17 @@ public abstract class AbstractNetMessage extends AttributesHolder implements Net
     }
 
     @Override
-    public <T> T getBody(ReferenceType<T> type) {
+    public Object getBody() {
+        return this.body;
+    }
+
+    @Override
+    public <T> T bodyAs(ReferenceType<T> type) {
         return ObjectAide.convertTo(this.body, type);
     }
 
     @Override
-    public <T> T getBody(Class<T> clazz) {
+    public <T> T bodyAs(Class<T> clazz) {
         return ObjectAide.convertTo(this.body, clazz);
     }
 

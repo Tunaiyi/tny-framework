@@ -61,6 +61,7 @@ include 'tny-game-starter-net-netty4'
 
 include 'tny-game-doc'
 include 'tny-game-doc-annotation'
+include 'tny-game-doc-gradle'
 
 include 'tny-game-oplog-log4j'
 include 'tny-game-oplog-log4j2kafka'

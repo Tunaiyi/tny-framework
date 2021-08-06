@@ -19,7 +19,7 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);
 
-    public static final Logger TEST_LOGGER = LoggerFactory.getLogger("test");
+    private static final Logger TEST_LOGGER = LoggerFactory.getLogger("test");
 
     @Resource
     private TimeTaskSchedulerService taskSchedulerService;
@@ -28,7 +28,7 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     public void doExecute(Tunnel<Long> tunnel, Message message, MessageCommandContext context) throws Exception {
         if (tunnel.getUserType().equals(Certificates.DEFAULT_USER_TYPE)) {
             if (IDAide.isSystem(tunnel.getUserId())) {
-                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", tunnel.getUserId(), tunnel.isLogin(), tunnel, message.getProtocol(),
+                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", tunnel.getUserId(), tunnel.isLogin(), tunnel, message.getProtocolId(),
                         new RuntimeException());
             } else {
                 try {

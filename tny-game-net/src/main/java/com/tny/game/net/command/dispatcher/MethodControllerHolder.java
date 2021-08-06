@@ -305,7 +305,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     protected Object invoke(NetTunnel<?> tunnel, Message message, MessageCommandContext context) throws Exception {
         // 获取调用方法的参数类型
         Object[] param = new Object[this.getParametersSize()];
-        Object body = message.getBody(Object.class);
+        Object body = message.bodyAs(Object.class);
         for (int index = 0; index < param.length; index++) {
             param[index] = this.getParameterValue(index, tunnel, message, body);
         }
@@ -411,7 +411,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         private Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
             boolean require = this.require;
             if (body == null) {
-                body = message.getBody(Object.class);
+                body = message.bodyAs(Object.class);
             }
             MessageHead head = message.getHead();
             Object value = null;

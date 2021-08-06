@@ -63,7 +63,7 @@ public class GameClientApp {
                                         .willResponseFuture(30000L));
                         try {
                             Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
-                            System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));
+                            System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));
                         } catch (Exception e) {
                             e.printStackTrace();
                             return false;
@@ -141,7 +141,7 @@ public class GameClientApp {
                     .willWriteFuture(300000L));
             try {
                 Message message = context.getRespondFuture().get();
-                T body = message.getBody(returnClass);
+                T body = message.bodyAs(returnClass);
                 LOGGER.info("Client receive : {}", body);
                 return body;
             } catch (Exception e) {
@@ -160,7 +160,7 @@ public class GameClientApp {
             SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
             try {
                 Message message = context.getRespondFuture().get();
-                LOGGER.info("Client receive : {}", message.getBody(SayContentDTO.class));
+                LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -184,7 +184,7 @@ public class GameClientApp {
             SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
             try {
                 Message message = context.getRespondFuture().get();
-                LOGGER.info("Client receive : {}", message.getBody(SayContentDTO.class));
+                LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }

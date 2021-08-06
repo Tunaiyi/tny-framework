@@ -16,34 +16,34 @@ import java.util.List;
  */
 public class NetClassLoader {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(NetClassLoader.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(NetClassLoader.class);
 
-    @ClassSelectorProvider
-    @SuppressWarnings("unchecked")
-    static <A extends Enum<A> & AppType> ClassSelector appTypeSelector() {
-        return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
-                        enumList.forEach(AppTypes::register);
-                    }
-                    LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
-                }));
-    }
+	@ClassSelectorProvider
+	@SuppressWarnings("unchecked")
+	static <A extends Enum<A> & AppType> ClassSelector appTypeSelector() {
+		return ClassSelector.create()
+				.addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
+				.setHandler((classes) -> classes.forEach(codeClass -> {
+					if (codeClass.isEnum()) {
+						List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
+						enumList.forEach(AppTypes::register);
+					}
+					LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
+				}));
+	}
 
-    @ClassSelectorProvider
-    @SuppressWarnings("unchecked")
-    static <S extends Enum<S> & ScopeType> ClassSelector scopeTypeSelector() {
-        return ClassSelector.instance()
-                .addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<S> enumList = EnumUtils.getEnumList((Class<S>)codeClass);
-                        enumList.forEach(ScopeTypes::register);
-                    }
-                    LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
-                }));
-    }
+	@ClassSelectorProvider
+	@SuppressWarnings("unchecked")
+	static <S extends Enum<S> & ScopeType> ClassSelector scopeTypeSelector() {
+		return ClassSelector.create()
+				.addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
+				.setHandler((classes) -> classes.forEach(codeClass -> {
+					if (codeClass.isEnum()) {
+						List<S> enumList = EnumUtils.getEnumList((Class<S>)codeClass);
+						enumList.forEach(ScopeTypes::register);
+					}
+					LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
+				}));
+	}
 
 }

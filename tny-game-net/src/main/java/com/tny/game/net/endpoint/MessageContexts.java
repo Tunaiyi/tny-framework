@@ -279,13 +279,17 @@ public class MessageContexts {
             return this.body != null;
         }
 
+        @Override public Object getBody() {
+            return this.body;
+        }
+
         @Override
-        public <T> T getBody(Class<T> clazz) {
+        public <T> T bodyAs(Class<T> clazz) {
             return ObjectAide.convertTo(this.body, clazz);
         }
 
         @Override
-        public <T> T getBody(ReferenceType<T> clazz) {
+        public <T> T bodyAs(ReferenceType<T> clazz) {
             return ObjectAide.convertTo(this.body, clazz);
         }
 

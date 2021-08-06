@@ -1,6 +1,6 @@
 group "com.tny.game"
 
-apply plugin: "maven"
+apply plugin: "maven-publish"
 
 //sourceSets {
 //    main {
@@ -18,8 +18,11 @@ dependencies {
     api project(":tny-game-doc-annotation")
     api project(":tny-game-common-lang")
     api project(":tny-game-scanning")
+    api project(":tny-game-expr-mvel")
     api libs.jackson_core
     api libs.jackson_databind
     api libs.jackson_annotations
+//    api libs.mvel
+//    implementation libs.tools_template
 
 }

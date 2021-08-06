@@ -76,7 +76,7 @@ public class DataPacketV1CodecTest {
         this.encoder.encodeObject(this.ctx, message, buffer);
         Message readMessage = this.decoder.decodeObject(this.ctx, buffer, marker);
         assertEquals(message.getHead(), readMessage.getHead());
-        assertTrue(CollectionUtils.isEqualCollection(message.getBody(Collection.class), readMessage.getBody(Collection.class)));
+        assertTrue(CollectionUtils.isEqualCollection(message.bodyAs(Collection.class), readMessage.bodyAs(Collection.class)));
     }
 
 }

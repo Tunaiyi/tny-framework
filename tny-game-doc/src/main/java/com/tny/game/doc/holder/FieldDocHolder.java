@@ -1,45 +1,60 @@
 package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
-import com.tny.game.protoex.annotations.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
 public class FieldDocHolder {
 
-    private VarDoc varDoc;
+	private VarDoc varDoc;
 
-    private Field field;
+	private Field field;
 
-    private int id = -1;
+	private Object id;
 
-    private FieldDocHolder() {
-        super();
-    }
+	private FieldDocHolder() {
+		super();
+	}
 
-    public static FieldDocHolder create(Field field) {
-        VarDoc varDoc = field.getAnnotation(VarDoc.class);
-        if (varDoc == null)
-            return null;
-        FieldDocHolder holder = new FieldDocHolder();
-        holder.varDoc = varDoc;
-        holder.field = field;
-        ProtoExField protoExField = field.getAnnotation(ProtoExField.class);
-        if (protoExField != null)
-            holder.id = protoExField.value();
-        return holder;
-    }
+	public static FieldDocHolder create(Field field) {
+		VarDoc varDoc = field.getAnnotation(VarDoc.class);
+		if (varDoc == null) {
+			return null;
+		}
+		FieldDocHolder holder = new FieldDocHolder();
+		holder.varDoc = varDoc;
+		holder.field = field;
+		return holder;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public static <F extends Annotation> FieldDocHolder create(Field field,
+			Class<F> fieldAnnotation, Function<F, Object> fieldIdGetter) {
+		VarDoc varDoc = field.getAnnotation(VarDoc.class);
+		if (varDoc == null) {
+			return null;
+		}
+		FieldDocHolder holder = new FieldDocHolder();
+		holder.varDoc = varDoc;
+		holder.field = field;
+		F fieldAnn = field.getAnnotation(fieldAnnotation);
+		if (fieldAnn != null) {
+			holder.id = fieldIdGetter.apply(fieldAnn);
+		}
+		return holder;
+	}
 
-    public VarDoc getVarDoc() {
-        return varDoc;
-    }
+	public Object getId() {
+		return id;
+	}
 
-    public Field getField() {
-        return field;
-    }
+	public VarDoc getVarDoc() {
+		return varDoc;
+	}
+
+	public Field getField() {
+		return field;
+	}
 
 }

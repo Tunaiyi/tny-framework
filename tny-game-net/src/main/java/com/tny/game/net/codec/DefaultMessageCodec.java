@@ -82,7 +82,7 @@ public class DefaultMessageCodec implements MessageCodec {
         stream.writeLong(head.getTime());
 
         if (message.existBody()) {
-            Object body = message.getBody(Object.class);
+            Object body = message.bodyAs(Object.class);
             writeObject(stream, body, this.bodyCoder);
         }
         return stream.toByteArray();

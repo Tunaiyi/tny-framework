@@ -1,6 +1,5 @@
 package com.tny.game.net.annotation;
 
-
 import java.lang.annotation.*;
 
 /**
@@ -50,6 +49,11 @@ public @interface Controller {
      */
     int value();
 
+    /**
+     * @return 线路id
+     */
+    int line() default 0;
+
     // /**
     //  * 模块/业务方法名称
     //  * <p>
@@ -61,7 +65,6 @@ public @interface Controller {
     //  * @see Request
     //  */
     // String name() default "";
-
 
     // /**
     //  * (移到Checker)

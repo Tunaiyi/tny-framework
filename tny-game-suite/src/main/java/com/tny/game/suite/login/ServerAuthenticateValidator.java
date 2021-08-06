@@ -23,7 +23,7 @@ public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integ
         if (code.isFailure()) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT, new CommandException(code));
         }
-        ServerTicket ticket = message.getBody(ServerTicket.class);
+        ServerTicket ticket = message.bodyAs(ServerTicket.class);
         if (System.currentTimeMillis() - ticket.getTime() > 60000) {
             throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
         }

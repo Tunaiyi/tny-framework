@@ -7,20 +7,21 @@ import java.util.function.Supplier;
  */
 public enum OutputType {
 
-    XML(XMLExporter::new),
+	XML(XMLExporter::new),
 
-    JSON(JSONExporter::new),
+	JSON(JSONExporter::new),
 
-    //
-    ;
+	MVEL(MVELExporter::new),
+	//
+	;
 
-    private Supplier<Exporter> creator;
+	private Supplier<Exporter> creator;
 
-    OutputType(Supplier<Exporter> creator) {
-        this.creator = creator;
-    }
+	OutputType(Supplier<Exporter> creator) {
+		this.creator = creator;
+	}
 
-    public Exporter create() {
-        return creator.get();
-    }
+	public Exporter create() {
+		return creator.get();
+	}
 }
