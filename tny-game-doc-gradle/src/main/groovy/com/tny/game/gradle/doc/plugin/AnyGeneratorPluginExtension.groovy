@@ -60,16 +60,15 @@ class AnyGeneratorPluginExtension {
     void scheme(Action<? extends AnyGenerateScheme> action) {
         def newScheme = objectFactory.newInstance(AnyGenerateScheme.class, this.objectFactory)
         action.execute(newScheme)
-        project.logger.quiet("newScheme : ${newScheme.name}")
         schemes.add(newScheme)
     }
 
     @Internal
     void extendTask(ProjectInternal project) {
         Map<String, AnyGenerateTask> taskMap = [:]
-        project.logger.quiet("AnyGenerateScheme size : ${this.schemes.size()}")
+        project.logger.info("AnyGenerateScheme size : ${this.schemes.size()}")
         for (AnyGenerateScheme scheme : this.schemes) {
-            project.logger.quiet("create AnyGenerateScheme ${scheme.name}")
+            project.logger.info("create AnyGenerateScheme ${scheme.name}")
             List<FileExportScheme> exportSchemes = scheme.exportSchemes
             for (FileExportScheme exportScheme : exportSchemes) {
                 Set<String> taskNames = []
@@ -77,7 +76,7 @@ class AnyGeneratorPluginExtension {
                 taskNames.add("anyGenerate")
                 for (String name : taskNames) {
                     AnyGenerateTask task = taskMap.computeIfAbsent(name, {
-                        project.logger.quiet("create AnyGenerateTask ${name}")
+                        project.logger.info("create AnyGenerateTask ${name}")
                         AnyGenerateTask task = project.tasks.create(name, AnyGenerateTask.class)
                         task.classPackages = this.classPackages
                         task.outputParentDirectory = project.buildDir.absolutePath

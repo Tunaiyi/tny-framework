@@ -9,8 +9,8 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/5/21 3:13 下午
  */
-public interface RelayPacketTransmitter extends Connection, RelayPacketTransmissible {
+public interface RelayTransmitter extends Connection, RelayTransmissible {
 
-    void bind(GeneralPipe<?> pipe);
+	void bind(GeneralPipe<?> pipe);
 
 }

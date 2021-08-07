@@ -32,7 +32,7 @@ public final class RandomCreatorLoader {
 				RandomCreatorFactory factory = (RandomCreatorFactory)clazz.newInstance();
 				factory.registerSelf();
 			} catch (Exception e) {
-				Asserts.throwByCause(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
+				Asserts.throwWith(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
 			}
 		}
 	}

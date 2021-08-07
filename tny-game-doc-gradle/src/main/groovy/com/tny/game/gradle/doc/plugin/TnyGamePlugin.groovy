@@ -15,14 +15,14 @@ class TnyGamePlugin implements Plugin<ProjectInternal> {
 
     @Override
     void apply(ProjectInternal project) {
-        project.logger.quiet("init AnyGeneratorPlugin")
+        project.logger.info("init AnyGeneratorPlugin")
         project.getPluginManager().apply(JavaPlugin.class)
         AnyGeneratorPluginExtension extension = project.extensions.create("anyGenerator", AnyGeneratorPluginExtension.class, project)
 //        anyGeneratorExtension.extendTask(project)
         project.afterEvaluate {
-            project.logger.quiet("AnyGenerateScheme size : ${extension.schemes.size()}")
+            project.logger.info("AnyGenerateScheme size : ${extension.schemes.size()}")
             extension.extendTask(project)
-            project.logger.quiet("init AnyGeneratorPlugin finished")
+            project.logger.info("init AnyGeneratorPlugin finished")
         }
     }
 

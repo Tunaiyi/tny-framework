@@ -9,9 +9,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 
 import javax.inject.Inject
 import java.lang.reflect.Method
@@ -50,12 +48,13 @@ class AnyGenerateTask extends DefaultTask {
         return classPackages
     }
 
+    @Classpath
     @InputFiles
     List<File> getClassFiles() {
         return classFiles
     }
 
-    @Input
+    @InputDirectory
     String getOutputParentDirectory() {
         return outputParentDirectory
     }
@@ -74,7 +73,7 @@ class AnyGenerateTask extends DefaultTask {
 
     @TaskAction
     void doAction() {
-        project.logger.quiet("begin to execute AnyGenerateTask action. ${classPackages}")
+        project.logger.info("begin to execute AnyGenerateTask action : ${classPackages}")
         Task javaCompileTask = project.getTasks().getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME)
         Method createSpecMethod = ReflectionUtils.findMethod(javaCompileTask.getClass(), "createSpec")
         final List<URL> classesUrlList = new ArrayList<URL>()
@@ -94,19 +93,21 @@ class AnyGenerateTask extends DefaultTask {
         }
 
         File classPath = new File(outputParentDirectory + File.separator + CLASSES_PATH)
-        logger.quiet("import classPath : ${classPath}")
+        logger.info("导入 classPath : ${classPath}")
         classPath.mkdir()
         File libsPath = new File(outputParentDirectory + File.separator + LIBS_PATH)
-        logger.quiet("import classPath : ${libsPath}")
+        logger.info("导入 libsPath : ${libsPath}")
         libsPath.mkdir()
         try {
             classesUrlList.add(classPath.toURI().toURL())
         } catch (MalformedURLException e1) {
             e1.printStackTrace()
         }
+        addFileUrls(classPath, "class", new ArrayList<URL>())
         addFileUrls(libsPath, "jar", classesUrlList)
         classFiles.add(classPath)
         classFiles.add(libsPath)
+        classFiles.forEach({ logger.info("导入文件 classFile -> ${it}") })
 
         URL[] classesUrls = classesUrlList.toArray(new URL[classesUrlList.size()])
         URLClassLoader classLoader = new URLClassLoader(classesUrls, ClassDoc.class.getClassLoader())
