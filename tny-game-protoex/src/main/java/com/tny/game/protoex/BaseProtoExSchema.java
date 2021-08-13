@@ -10,43 +10,50 @@ import com.tny.game.protoex.field.*;
  */
 public abstract class BaseProtoExSchema<T> implements ProtoExSchema<T> {
 
-    protected int protoExID;
-    protected String name;
-    protected boolean raw;
+	protected int protoExID;
 
-    protected BaseProtoExSchema(int protoExID, boolean raw, String name) {
-        this.protoExID = protoExID;
-        this.raw = raw;
-        this.name = name + "_ProtoExSchema";
-    }
+	protected String name;
 
-    @Override
-    public boolean isRaw() {
-        return this.raw;
-    }
+	protected boolean raw;
 
-    @Override
-    public int getProtoExId() {
-        return this.protoExID;
-    }
+	protected BaseProtoExSchema(int protoExID, boolean raw, String name) {
+		this.protoExID = protoExID;
+		this.raw = raw;
+		this.name = name + "_ProtoExSchema";
+	}
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
+	@Override
+	public boolean isRaw() {
+		return this.raw;
+	}
 
-    @Override
-    public T readMessage(ProtoExInputStream inputStream, IOConfiger<?> conf) {
-        Tag tag = this.readTag(inputStream);
-        return this.readValue(inputStream, tag, conf);
-    }
+	@Override
+	public int getProtoExId() {
+		return this.protoExID;
+	}
 
-    public Tag readTag(ProtoExInputStream inputStream) {
-        return inputStream.readTag();
-    }
+	@Override
+	public String getName() {
+		return this.name;
+	}
 
-    public void writeTag(ProtoExOutputStream outputStream, IOConfiger<?> conf) {
-        outputStream.writeTag(this.protoExID, conf.isExplicit(), this.raw, conf.getIndex(), conf.getFormat());
-    }
+	@Override
+	public T readMessage(ProtoExInputStream inputStream, FieldOptions<?> options) {
+		Tag tag = this.readTag(inputStream);
+		return this.readValue(inputStream, tag, options);
+	}
+
+	public Tag readTag(ProtoExInputStream inputStream) {
+		return inputStream.readTag();
+	}
+
+	public void writeTag(ProtoExOutputStream outputStream, FieldOptions<?> options) {
+		try {
+			outputStream.writeTag(this.protoExID, options.isExplicit(), this.raw, options.getIndex(), options.getFormat());
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+
+	}
 
 }

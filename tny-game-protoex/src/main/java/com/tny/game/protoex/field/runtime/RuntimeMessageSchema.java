@@ -87,20 +87,20 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 	}
 
 	@Override
-	public void writeMessage(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf) {
+	public void writeMessage(ProtoExOutputStream outputStream, T value, FieldOptions<?> options) {
 		if (value == null) {
 			return;
 		}
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("写入 Tag | {} -> IOConfiger : {}", this.accessor.getName(), conf);
+			LOGGER.debug("写入 Tag | {} -> IOConfiger : {}", this.accessor.getName(), options);
 		}
-		this.writeTag(outputStream, conf);
-		outputStream.writeLengthLimitation(value, conf, this);
+		this.writeTag(outputStream, options);
+		outputStream.writeLengthLimitation(value, options, this);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void writeValue(ProtoExOutputStream outputStream, T value, IOConfiger<?> conf) {
+	public void writeValue(ProtoExOutputStream outputStream, T value, FieldOptions<?> options) {
 		for (FieldDesc<?> field : this.fields) {
 			FieldDesc<Object> childDesc = (FieldDesc<Object>)field;
 			Object fieldValue = childDesc.getValue(value);
@@ -114,7 +114,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T readValue(ProtoExInputStream inputStream, Tag tag, IOConfiger<?> conf) {
+	public T readValue(ProtoExInputStream inputStream, Tag tag, FieldOptions<?> options) {
 		T message = null;
 		try {
 			message = (T)this.accessor.newInstance();
@@ -126,7 +126,6 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
 		int length = inputStream.readInt();
 		while (inputStream.position() - offset < length) {
 			Tag currentTag = inputStream.getTag();
-			System.out.println("currentTag.getFieldNumber() = " + currentTag.getFieldNumber());
 			fieldIndex = currentTag.getFieldNumber();
 			//判断是否显示 读取
 			final FieldDesc<Object> field = (FieldDesc<Object>)this.getFieldDesc(fieldIndex);

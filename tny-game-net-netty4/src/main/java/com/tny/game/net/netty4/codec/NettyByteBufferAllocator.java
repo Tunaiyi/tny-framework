@@ -19,6 +19,10 @@ public class NettyByteBufferAllocator implements ByteBufferAllocator {
 
 	private final List<ByteBuf> byteBufList = new ArrayList<>();
 
+	public NettyByteBufferAllocator() {
+		this.allocator = ByteBufAllocator.DEFAULT;
+	}
+
 	public NettyByteBufferAllocator(ByteBufAllocator allocator) {
 		this.allocator = allocator;
 	}

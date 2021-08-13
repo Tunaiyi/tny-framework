@@ -27,7 +27,9 @@ public class NioByteBufferAllocator implements ByteBufferAllocator {
 
 	@Override
 	public void release() {
-		LOGGER.warn("NioByteBufferAllocator release {} count, total {} size", this.count, this.size);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("NioByteBufferAllocator release {} count, total {} size", this.count, this.size);
+		}
 	}
 
 }

@@ -2,13 +2,13 @@ package protoex;
 
 import com.tny.game.protoex.annotations.*;
 
-@ProtoEx(1002)
+@ProtoEx(3004)
 public enum MockEnumeration {
 
-    PROTOSS,
+	PROTOSS,
 
-    TERRAN,
+	TERRAN,
 
-    ZERG;
+	ZERG;
 
 }

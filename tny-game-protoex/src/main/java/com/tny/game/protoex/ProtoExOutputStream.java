@@ -182,24 +182,24 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
 		this.doWriteString(value);
 	}
 
-	public <T> void writeLengthLimitation(T value, IOConfiger<?> conf, ProtoExSchema<T> schema) {
-		this.doWriteLengthLimitation(value, conf, schema);
+	public <T> void writeLengthLimitation(T value, FieldOptions<?> options, ProtoExSchema<T> schema) {
+		this.doWriteLengthLimitation(value, options, schema);
 	}
 
-	private <T> void doWriteLengthLimitation(T value, IOConfiger<?> conf, ProtoExSchema<T> schema) {
+	private <T> void doWriteLengthLimitation(T value, FieldOptions<?> options, ProtoExSchema<T> schema) {
 		if (value == null) {
 			return;
 		}
 		if (schema.isRaw()
 				&& schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
 				&& schema.getProtoExId() != WireFormat.PROTO_ID_MAP) {
-			throw ProtobufExException.rawTypeIsNoLengthLimitation(conf.getDefaultType());
+			throw ProtobufExException.rawTypeIsNoLengthLimitation(options.getDefaultType());
 		}
 		LinkedBuffer currentBuffer = this.byteBuffer;
 		LinkedBuffer messageBuffer = this.byteBuffer.slice();
 		// 先用 messageBuffer 替换调 当前 byteBuffer, 序列化 schema 的 value 后, 再切换回来.
 		this.byteBuffer = messageBuffer;
-		schema.writeValue(this, value, conf);
+		schema.writeValue(this, value, options);
 		int messageSize = messageBuffer.size();
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("protoExOutput.doWriteLengthLimitation 写入长度为 {} 的对象 : {}", messageSize, value);

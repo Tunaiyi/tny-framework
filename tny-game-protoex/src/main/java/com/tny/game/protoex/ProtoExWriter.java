@@ -153,10 +153,16 @@ public class ProtoExWriter implements AutoCloseable {
 	}
 
 	public void writeMessage(Object value, TypeEncode typeEncode) {
+		if (value == null) {
+			return;
+		}
 		ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, value.getClass());
 		if (value instanceof Collection) {
 			schema.writeMessage(this.outputStream, value,
 					ProtoExIO.createRepeat(as(value.getClass()), Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT));
+		} else if (value.getClass().isArray()) {
+			schema.writeMessage(this.outputStream, value,
+					ProtoExIO.createArray(as(value.getClass()), Object.class, false, TypeEncode.EXPLICIT, FieldFormat.DEFAULT));
 		} else {
 			schema.writeMessage(this.outputStream, value,
 					ProtoExIO.createNormal(ProtoExType.MESSAGE, value, typeEncode));
@@ -174,7 +180,8 @@ public class ProtoExWriter implements AutoCloseable {
 		this.writeCollection(value, elementType, packed, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
 	}
 
-	public <T> void writeCollection(Collection<?> value, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat elFormat) {
+	public <T> void writeCollection(Collection<?> value, Class<T> elementType, boolean packed, TypeEncode elTypeEncode, FieldFormat
+			elFormat) {
 		ProtoExSchema<Object> schema = ProtoExIO.getSchema(this.outputStream, value.getClass());
 		schema.writeMessage(this.outputStream, value,
 				ProtoExIO.createRepeat(value.getClass(), elementType, packed, elTypeEncode, elFormat));

@@ -33,7 +33,7 @@ public class RuntimeUnsafeFieldDescFactory {
 	private RuntimeUnsafeFieldDescFactory() {
 	}
 
-	public static class UnsafeFieldDesc<T> extends BaseIOConfiger<T> implements FieldDesc<T> {
+	public static class UnsafeFieldDesc<T> extends BaseFieldOptions<T> implements FieldDesc<T> {
 
 		protected long offset;
 
@@ -308,9 +308,9 @@ public class RuntimeUnsafeFieldDescFactory {
 
 	public static final FieldDescFactory<Object> OBJECT = field -> new UnsafeMessageFieldDesc(field);
 
-	public static class UnsafeMessageFieldDesc extends UnsafeFieldDesc<Object> implements RepeatIOConfiger<Object> {
+	public static class UnsafeMessageFieldDesc extends UnsafeFieldDesc<Object> implements RepeatFieldOptions<Object> {
 
-		private IOConfiger<?> elementDesc;
+		private FieldOptions<?> elementDesc;
 
 		protected UnsafeMessageFieldDesc(Field field) {
 			super(ProtoExType.MESSAGE, field);
@@ -318,9 +318,9 @@ public class RuntimeUnsafeFieldDescFactory {
 			if (protoExElement == null) {
 				//				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field,
 				//				ProtoExElement.class));
-				this.elementDesc = new SimpleIOConfiger<>(Object.class, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+				this.elementDesc = new SimpleFieldOptions<>(Object.class, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 			} else {
-				this.elementDesc = new SimpleIOConfiger<>(Object.class, 0, protoExElement.value());
+				this.elementDesc = new SimpleFieldOptions<>(Object.class, 0, protoExElement.value());
 			}
 			this.packed = false;
 		}
@@ -335,15 +335,15 @@ public class RuntimeUnsafeFieldDescFactory {
 		}
 
 		@Override
-		public IOConfiger<?> getElementConfiger() {
+		public FieldOptions<?> getElementOptions() {
 			return this.elementDesc;
 		}
 
 	}
 
-	public static class UnsafeRepeatFieldDesc extends UnsafeFieldDesc<Object> implements RepeatIOConfiger<Object> {
+	public static class UnsafeRepeatFieldDesc extends UnsafeFieldDesc<Object> implements RepeatFieldOptions<Object> {
 
-		private IOConfiger<?> elementDesc;
+		private FieldOptions<?> elementDesc;
 
 		@SuppressWarnings("unchecked")
 		protected UnsafeRepeatFieldDesc(Field field) {
@@ -353,9 +353,9 @@ public class RuntimeUnsafeFieldDescFactory {
 			if (protoExElement == null) {
 				//				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field,
 				//				ProtoExElement.class));
-				this.elementDesc = new SimpleIOConfiger<>(elementType, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+				this.elementDesc = new SimpleFieldOptions<>(elementType, 0, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 			} else {
-				this.elementDesc = new SimpleIOConfiger<>(elementType, 0, protoExElement.value());
+				this.elementDesc = new SimpleFieldOptions<>(elementType, 0, protoExElement.value());
 			}
 			Packed packed = field.getAnnotation(Packed.class);
 			ProtoExType elementExType = ProtoExType.getProtoExType(elementType);
@@ -390,17 +390,17 @@ public class RuntimeUnsafeFieldDescFactory {
 		}
 
 		@Override
-		public IOConfiger<?> getElementConfiger() {
+		public FieldOptions<?> getElementOptions() {
 			return this.elementDesc;
 		}
 
 	}
 
-	public static class UnsafeMapFieldDesc extends UnsafeFieldDesc<Object> implements MapIOConfiger<Object> {
+	public static class UnsafeMapFieldDesc extends UnsafeFieldDesc<Object> implements MapFieldOptions<Object> {
 
-		private IOConfiger<?> keyDesc;
+		private FieldOptions<?> keyDesc;
 
-		private IOConfiger<?> valueDesc;
+		private FieldOptions<?> valueDesc;
 
 		@SuppressWarnings("unchecked")
 		protected UnsafeMapFieldDesc(Field field) {
@@ -412,21 +412,21 @@ public class RuntimeUnsafeFieldDescFactory {
 			if (protoExEntry == null) {
 				//				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExEntry
 				//				.class));
-				this.keyDesc = new SimpleIOConfiger<>(EntryType.KEY, keyClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
-				this.valueDesc = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+				this.keyDesc = new SimpleFieldOptions<>(EntryType.KEY, keyClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
+				this.valueDesc = new SimpleFieldOptions<>(EntryType.VALUE, valueClass, TypeEncode.EXPLICIT, FieldFormat.DEFAULT);
 			} else {
-				this.keyDesc = new SimpleIOConfiger<>(EntryType.KEY, keyClass, protoExEntry.key());
-				this.valueDesc = new SimpleIOConfiger<>(EntryType.VALUE, valueClass, protoExEntry.value());
+				this.keyDesc = new SimpleFieldOptions<>(EntryType.KEY, keyClass, protoExEntry.key());
+				this.valueDesc = new SimpleFieldOptions<>(EntryType.VALUE, valueClass, protoExEntry.value());
 			}
 		}
 
 		@Override
-		public IOConfiger<?> getKeyConfiger() {
+		public FieldOptions<?> getKeyOptions() {
 			return this.keyDesc;
 		}
 
 		@Override
-		public IOConfiger<?> getValueConfiger() {
+		public FieldOptions<?> getValueOptions() {
 			return this.valueDesc;
 		}
 

@@ -151,13 +151,13 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
 		return this.doReadString();
 	}
 
-	public <T> T readLengthLimitation(Tag tag, ProtoExSchema<T> schema, IOConfiger<?> conf) {
-		return this.doReadLengthLimitation(tag, schema, conf);
+	public <T> T readLengthLimitation(Tag tag, ProtoExSchema<T> schema, FieldOptions<?> options) {
+		return this.doReadLengthLimitation(tag, schema, options);
 	}
 
-	private <T> T doReadLengthLimitation(Tag tag, ProtoExSchema<T> schema, IOConfiger<?> conf) {
+	private <T> T doReadLengthLimitation(Tag tag, ProtoExSchema<T> schema, FieldOptions<?> options) {
 		if (schema.isRaw()) {
-			throw ProtobufExException.rawTypeIsNoLengthLimitation(conf.getDefaultType());
+			throw ProtobufExException.rawTypeIsNoLengthLimitation(options.getDefaultType());
 		}
 		final int length = this.doReadRawVarInt32();
 		if (length < 0) {
@@ -167,7 +167,7 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
 			throw ProtobufExException.notEnoughSize(length, this.buffer.remaining());
 		}
 		int startAt = this.buffer.position();
-		T value = schema.readValue(this, tag, conf);
+		T value = schema.readValue(this, tag, options);
 		int endAt = this.buffer.position();
 		int readSize = endAt - startAt;
 		if (readSize != length) {
