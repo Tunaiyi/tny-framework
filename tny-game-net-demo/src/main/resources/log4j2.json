@@ -76,6 +76,17 @@
           ]
         },
         {
+          "name": "com.tny.game.net.netty4.codec.MemoryAllotCounter",
+          "includeLocation": "true",
+          "level": "DEBUG",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        },
+        {
           "name": "coreLogger",
           "includeLocation": "true",
           "level": "INFO",

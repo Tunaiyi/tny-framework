@@ -11,7 +11,8 @@ dependencies {
 
     api libs.spring_boot_autoconfigure
 
-    implementation project(":tny-game-net-codec-jprotobuf")
+    implementation project(":tny-game-net-netty4-codec-protoex")
+    implementation project(":tny-game-net-netty4-codec-jprotobuf")
     implementation project(":tny-game-starter-codec")
 
 }

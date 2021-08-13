@@ -1,7 +1,7 @@
 package com.tny.game.net.netty4.configuration.guide;
 
-import com.tny.game.net.codec.v1.*;
 import com.tny.game.net.netty4.*;
+import com.tny.game.net.netty4.codec.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
@@ -14,13 +14,13 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 //@Configuration
 public class SpringNettyServerBootstrapSetting extends NettyServerBootstrapSetting {
 
-    @NestedConfigurationProperty
-    private NettyChannelMakerSetting channelMaker;
+	@NestedConfigurationProperty
+	private NettyChannelMakerSetting channelMaker;
 
-    @NestedConfigurationProperty
-    private DataPacketV1Config encoder;
+	@NestedConfigurationProperty
+	private DataPacketCodecSetting encoder;
 
-    @NestedConfigurationProperty
-    private DataPacketV1Config decoder;
+	@NestedConfigurationProperty
+	private DataPacketCodecSetting decoder;
 
 }

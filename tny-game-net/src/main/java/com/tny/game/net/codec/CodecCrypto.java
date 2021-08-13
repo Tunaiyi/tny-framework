@@ -11,8 +11,8 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @UnitInterface
 public interface CodecCrypto {
 
-    byte[] encrypt(DataPackageContext packager, byte[] bytes);
+	byte[] encrypt(DataPackageContext packager, byte[] bytes, int offset, int length);
 
-    byte[] decrypt(DataPackageContext packager, byte[] bytes);
+	byte[] decrypt(DataPackageContext packager, byte[] bytes, int offset, int length);
 
 }

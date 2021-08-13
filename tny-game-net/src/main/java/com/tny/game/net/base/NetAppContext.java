@@ -8,18 +8,18 @@ import java.util.List;
 @UnitInterface
 public interface NetAppContext {
 
-    String getName();
+	String getName();
 
-    String getAppType();
+	String getAppType();
 
-    String getLocale();
+	String getLocale();
 
-    String getScopeType();
+	String getScopeType();
 
-    long getServerId();
+	long getServerId();
 
-    List<String> getScanPackages();
+	List<String> getScanPackages();
 
-    Attributes attributes();
+	Attributes attributes();
 
 }

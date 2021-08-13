@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
  */
 public interface RelayTransmitter extends Connection, RelayTransmissible {
 
-	void bind(GeneralPipe<?> pipe);
+	void bind(GeneralRelayPipe<?> pipe);
 
 }

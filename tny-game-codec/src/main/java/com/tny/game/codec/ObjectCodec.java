@@ -1,6 +1,6 @@
 package com.tny.game.codec;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Base64;
 
 /**
@@ -11,45 +11,36 @@ import java.util.Base64;
  */
 public interface ObjectCodec<T> {
 
-    /**
-     * @return 判断 encode 得到数据是否是数组
-     */
-    default boolean isPlaintext() {
-        return false;
-    }
+	boolean isPlaintext();
 
-    byte[] encodeToBytes(T value) throws IOException;
+	byte[] encode(T value) throws IOException;
 
-    default String bytesData2String(byte[] data) {
-        if (data == null) {
-            return null;
-        }
-        if (isPlaintext()) {
-            return new String(data, CoderCharsets.DEFAULT);
-        } else {
-            return Base64.getUrlEncoder().encodeToString(data);
-        }
-    }
+	void encode(T value, OutputStream output) throws IOException;
 
-    default byte[] stringData2Bytes(String data) {
-        if (data == null) {
-            return null;
-        }
-        if (isPlaintext()) {
-            return data.getBytes(CoderCharsets.DEFAULT);
-        } else {
-            return Base64.getUrlDecoder().decode(data);
-        }
-    }
+	T decode(byte[] bytes) throws IOException;
 
-    default String encodeToString(T value) throws IOException {
-        return bytesData2String(encodeToBytes(value));
-    }
+	T decode(InputStream input) throws IOException;
 
-    T decodeByBytes(byte[] bytes) throws IOException;
+	default String formatBytes(byte[] data) {
+		if (data == null) {
+			return null;
+		}
+		if (isPlaintext()) {
+			return new String(data, CoderCharsets.DEFAULT);
+		} else {
+			return Base64.getUrlEncoder().encodeToString(data);
+		}
+	}
 
-    default T decodeByString(String value) throws IOException {
-        return decodeByBytes(stringData2Bytes(value));
-    }
+	default byte[] parseBytes(String data) {
+		if (data == null) {
+			return null;
+		}
+		if (isPlaintext()) {
+			return data.getBytes(CoderCharsets.DEFAULT);
+		} else {
+			return Base64.getUrlDecoder().decode(data);
+		}
+	}
 
 }

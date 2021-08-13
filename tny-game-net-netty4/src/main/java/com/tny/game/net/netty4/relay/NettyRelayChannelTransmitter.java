@@ -30,7 +30,7 @@ public class NettyRelayChannelTransmitter extends NettyChannelConnection impleme
 
 	@Override
 	public void close() {
-		NetPipe<?> pipe = this.channel.attr(PIPE).getAndSet(null);
+		NetRelayPipe<?> pipe = this.channel.attr(PIPE).getAndSet(null);
 		if (pipe != null && pipe.isActive()) {
 			pipe.close();
 		}
@@ -52,7 +52,7 @@ public class NettyRelayChannelTransmitter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public void bind(GeneralPipe<?> pipe) {
+	public void bind(GeneralRelayPipe<?> pipe) {
 		this.channel.attr(PIPE).set(pipe);
 	}
 

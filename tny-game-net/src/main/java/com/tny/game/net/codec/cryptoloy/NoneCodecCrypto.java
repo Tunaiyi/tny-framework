@@ -13,14 +13,14 @@ import com.tny.game.net.codec.*;
 @Unit
 public class NoneCodecCrypto implements CodecCrypto {
 
-    @Override
-    public byte[] encrypt(DataPackageContext packager, byte[] bytes) {
-        return bytes;
-    }
+	@Override
+	public byte[] encrypt(DataPackageContext packager, byte[] bytes, int offset, int length) {
+		return bytes;
+	}
 
-    @Override
-    public byte[] decrypt(DataPackageContext packager, byte[] bytes) {
-        return bytes;
-    }
+	@Override
+	public byte[] decrypt(DataPackageContext packager, byte[] bytes, int offset, int length) {
+		return bytes;
+	}
 
 }

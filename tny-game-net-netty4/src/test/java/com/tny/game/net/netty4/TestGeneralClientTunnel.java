@@ -11,18 +11,18 @@ import com.tny.game.net.transport.*;
  */
 public class TestGeneralClientTunnel extends GeneralClientTunnel<Long, MockNettyClient> {
 
-    public TestGeneralClientTunnel(NetBootstrapContext<Long> bootstrapContext) {
-        super(bootstrapContext);
-    }
+	public TestGeneralClientTunnel(long id, NetBootstrapContext<Long> bootstrapContext) {
+		super(id, bootstrapContext);
+	}
 
-    @Override
-    protected AbstractTunnel<Long, MockNettyClient> setEndpoint(MockNettyClient endpoint) {
-        return super.setEndpoint(endpoint);
-    }
+	@Override
+	protected AbstractTunnel<Long, MockNettyClient> setEndpoint(MockNettyClient endpoint) {
+		return super.setEndpoint(endpoint);
+	}
 
-    @Override
-    protected Transporter<Long> getTransporter() {
-        return super.getTransporter();
-    }
+	@Override
+	protected Transporter<Long> getTransporter() {
+		return super.getTransporter();
+	}
 
 }

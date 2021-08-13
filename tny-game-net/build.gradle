@@ -5,7 +5,6 @@ apply plugin: "maven-publish"
 dependencies {
     api project(":tny-game-base")
     api project(":tny-game-expr-groovy")
-    api project(":tny-game-protoex")
     api project(":tny-game-common-io")
     api project(":tny-game-common-digest")
 

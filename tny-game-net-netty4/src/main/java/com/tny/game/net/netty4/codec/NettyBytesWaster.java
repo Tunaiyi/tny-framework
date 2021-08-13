@@ -1,7 +1,6 @@
 package com.tny.game.net.netty4.codec;
 
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.*;
 
 /**
  * <p>
@@ -11,51 +10,55 @@ import com.tny.game.net.codec.v1.*;
  */
 public abstract class NettyBytesWaster {
 
-    // 废字节位数
-    protected int wasteBitSize;
-    // 完全废弃的字节数
-    protected int fullWasteByteSize;
-    // 需要右移的字节右移的位数
-    protected int rightShiftBits;
-    // 需要左移的字节左移的位数
-    protected int leftShiftBits;
-    // 总废字节数
-    protected int totalWasteByteSize;
+	// 废字节位数
+	protected int wasteBitSize;
 
-    public NettyBytesWaster(DataPackageContext packager, boolean waste, DataPacketV1Config config) {
-        if (waste) {
-            this.wasteBitSize = packager.getPacketCode() % config.getMaxWasteBitSize();
-            this.fullWasteByteSize = this.wasteBitSize / 8;
-            this.rightShiftBits = this.wasteBitSize % 8;
-            this.leftShiftBits = 8 - this.rightShiftBits;
-            this.totalWasteByteSize = this.fullWasteByteSize + (this.rightShiftBits == 0 ? 0 : 1);          // 总废字节数
-        } else {
-            this.wasteBitSize = 0;
-            this.fullWasteByteSize = 0;
-            this.rightShiftBits = 0;
-            this.leftShiftBits = 0;
-            this.totalWasteByteSize = 0;          // 总废字节数
-        }
-    }
+	// 完全废弃的字节数
+	protected int fullWasteByteSize;
 
-    public int getWasteBitSize() {
-        return this.wasteBitSize;
-    }
+	// 需要右移的字节右移的位数
+	protected int rightShiftBits;
 
-    public int getFullWasteByteSize() {
-        return this.fullWasteByteSize;
-    }
+	// 需要左移的字节左移的位数
+	protected int leftShiftBits;
 
-    public int getRightShiftBits() {
-        return this.rightShiftBits;
-    }
+	// 总废字节数
+	protected int totalWasteByteSize;
 
-    public int getLeftShiftBits() {
-        return this.leftShiftBits;
-    }
+	public NettyBytesWaster(DataPackageContext packager, boolean waste, DataPackCodecOptions options) {
+		if (waste) {
+			this.wasteBitSize = packager.getPacketCode() % options.getMaxWasteBitSize();
+			this.fullWasteByteSize = this.wasteBitSize / 8;
+			this.rightShiftBits = this.wasteBitSize % 8;
+			this.leftShiftBits = 8 - this.rightShiftBits;
+			this.totalWasteByteSize = this.fullWasteByteSize + (this.rightShiftBits == 0 ? 0 : 1);          // 总废字节数
+		} else {
+			this.wasteBitSize = 0;
+			this.fullWasteByteSize = 0;
+			this.rightShiftBits = 0;
+			this.leftShiftBits = 0;
+			this.totalWasteByteSize = 0;          // 总废字节数
+		}
+	}
 
-    public int getTotalWasteByteSize() {
-        return this.totalWasteByteSize;
-    }
+	public int getWasteBitSize() {
+		return this.wasteBitSize;
+	}
+
+	public int getFullWasteByteSize() {
+		return this.fullWasteByteSize;
+	}
+
+	public int getRightShiftBits() {
+		return this.rightShiftBits;
+	}
+
+	public int getLeftShiftBits() {
+		return this.leftShiftBits;
+	}
+
+	public int getTotalWasteByteSize() {
+		return this.totalWasteByteSize;
+	}
 
 }

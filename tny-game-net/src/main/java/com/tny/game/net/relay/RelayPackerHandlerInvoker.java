@@ -10,8 +10,8 @@ import com.tny.game.net.relay.packet.*;
  * @date : 2021/5/25 8:07 下午
  */
 @FunctionalInterface
-public interface RelayPackerHandlerInvoker<D extends RelayPacket> {
+public interface RelayPackerHandlerInvoker<D extends RelayPacket<?>> {
 
-    void invoke(RelayPacketHandler handler, NetPipe<?> pipe, D datagram) throws InvokeHandlerException;
+	void invoke(RelayPacketHandler handler, NetRelayPipe<?> pipe, D datagram) throws InvokeHandlerException;
 
 }

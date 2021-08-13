@@ -19,148 +19,151 @@ import static com.tny.game.net.utils.NetConfigs.*;
  */
 public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
 
-    private static final ScheduledExecutorService CONNECT_EXECUTOR_SERVICE = Executors
-            .newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect"));
+	private static final ScheduledExecutorService CONNECT_EXECUTOR_SERVICE = Executors
+			.newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect"));
 
-    private final URL url;
+	private final URL url;
 
-    private final NettyClientGuide guide;
+	private final NettyClientGuide guide;
 
-    private final PostConnect<UID> postConnect;
+	private final PostConnect<UID> postConnect;
 
-    private volatile NettyTunnelConnector connector;
+	private volatile TunnelConnector connector;
 
-    public NettyClient(NettyClientGuide guide, URL url, PostConnect<UID> postConnect, EndpointContext<UID> endpointContext) {
-        super(null, endpointContext);
-        this.url = url;
-        this.guide = guide;
-        this.postConnect = postConnect;
-    }
+	private final NetIdGenerator idGenerator;
 
-    @Override
-    public URL getUrl() {
-        return this.url;
-    }
+	public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url, PostConnect<UID> postConnect,
+			EndpointContext<UID> endpointContext) {
+		super(null, endpointContext);
+		this.url = url;
+		this.idGenerator = idGenerator;
+		this.guide = guide;
+		this.postConnect = postConnect;
+	}
 
-    @Override
-    public long getConnectTimeout() {
-        return this.url.getParameter(CONNECT_TIMEOUT_URL_PARAM, CONNECT_TIMEOUT_DEFAULT_VALUE);
-    }
+	@Override
+	public URL getUrl() {
+		return this.url;
+	}
 
-    @Override
-    public boolean isAsyncConnect() {
-        return this.url.getParameter(CONNECT_ASYNC_URL_PARAM, CONNECT_ASYNC_DEFAULT_VALUE);
-    }
+	@Override
+	public long getConnectTimeout() {
+		return this.url.getParameter(CONNECT_TIMEOUT_URL_PARAM, CONNECT_TIMEOUT_DEFAULT_VALUE);
+	}
 
-    @Override
-    public int getConnectRetryTimes() {
-        return this.url.getParameter(RETRY_TIMES_URL_PARAM, RETRY_TIMES_DEFAULT_VALUE);
-    }
+	@Override
+	public boolean isAsyncConnect() {
+		return this.url.getParameter(CONNECT_ASYNC_URL_PARAM, CONNECT_ASYNC_DEFAULT_VALUE);
+	}
 
-    @Override
-    public long getConnectRetryInterval() {
-        return this.url.getParameter(RETRY_INTERVAL_URL_PARAM, RETRY_INTERVAL_DEFAULT_VALUE);
-    }
+	@Override
+	public int getConnectRetryTimes() {
+		return this.url.getParameter(RETRY_TIMES_URL_PARAM, RETRY_TIMES_DEFAULT_VALUE);
+	}
 
-    @Override
-    public Certificate<UID> getCertificate() {
-        return this.certificate;
-    }
+	@Override
+	public long getConnectRetryInterval() {
+		return this.url.getParameter(RETRY_INTERVAL_URL_PARAM, RETRY_INTERVAL_DEFAULT_VALUE);
+	}
 
-    void open() {
-        if (this.isClosed()) {
-            return;
-        }
-        if (this.tunnel != null) {
-            return;
-        }
-        NetTunnel<UID> newTunnel;
-        int retryTimes = this.getConnectRetryTimes();
-        synchronized (this) {
-            if (this.isClosed()) {
-                return;
-            }
-            if (this.tunnel != null) {
-                return;
-            }
-            this.tunnel = newTunnel = new GeneralClientTunnel<UID, NetTerminal<UID>>(this.guide.getContext()) {
-            };
-            newTunnel.bind(this);
-            this.connector = new NettyTunnelConnector(newTunnel, retryTimes, this.getConnectRetryInterval());
-        }
-        this.connect(this.isAsyncConnect(), retryTimes > 1);
-        buses().openEvent().notify(this);
-    }
+	@Override
+	public Certificate<UID> getCertificate() {
+		return this.certificate;
+	}
 
-    private void connect(boolean async, boolean retry) {
-        ScheduledExecutorService executor = async ? CONNECT_EXECUTOR_SERVICE : null;
-        if (retry) {
-            this.connector.connect(executor);
-        } else {
-            this.connector.reconnect(executor);
-        }
-    }
+	void open() {
+		if (this.isClosed()) {
+			return;
+		}
+		if (this.tunnel != null) {
+			return;
+		}
+		NetTunnel<UID> newTunnel;
+		int retryTimes = this.getConnectRetryTimes();
+		synchronized (this) {
+			if (this.isClosed()) {
+				return;
+			}
+			if (this.tunnel != null) {
+				return;
+			}
+			this.tunnel = newTunnel = new GeneralClientTunnel<>(this.idGenerator.generate(), this.guide.getContext());
+			newTunnel.bind(this);
+			this.connector = new TunnelConnector(newTunnel, retryTimes, this.getConnectRetryInterval());
+		}
+		this.connect(this.isAsyncConnect(), retryTimes > 1);
+		buses().openEvent().notify(this);
+	}
 
-    @Override
-    public void reconnect() {
-        this.connect(true, true);
-    }
+	private void connect(boolean async, boolean retry) {
+		ScheduledExecutorService executor = async ? CONNECT_EXECUTOR_SERVICE : null;
+		if (retry) {
+			this.connector.connect(executor);
+		} else {
+			this.connector.reconnect(executor);
+		}
+	}
 
-    @Override
-    protected NetTunnel<UID> currentTunnel() {
-        return this.tunnel;
-    }
+	@Override
+	public void reconnect() {
+		this.connect(true, true);
+	}
 
-    @Override
-    public Transporter<UID> connect() throws NetException {
-        Channel channel = this.guide.connect(this.url, getConnectTimeout());
-        return new NettyChannelTransporter<>(channel);
-    }
+	@Override
+	protected NetTunnel<UID> currentTunnel() {
+		return this.tunnel;
+	}
 
-    @Override
-    public void onConnected(NetTunnel<UID> tunnel) {
-        if (this.tunnel == tunnel) {
-            if (this.isClosed()) {
-                tunnel.close();
-                throw new TunnelCloseException("{} tunnel is closed", tunnel);
-            }
-            try {
-                if (!this.postConnect.onConnected(tunnel)) {
-                    throw new TunnelException("{} tunnel post connect failed", tunnel);
-                }
-                buses().activateEvent().notify(this, this.tunnel);
-            } catch (Exception e) {
-                throw new TunnelException(e, "{} tunnel post connect failed", tunnel);
-            }
-        }
-    }
+	@Override
+	public Transporter<UID> connect() throws NetException {
+		Channel channel = this.guide.connect(this.url, getConnectTimeout());
+		return new NettyChannelTransporter<>(channel);
+	}
 
-    @Override
-    public void onUnactivated(NetTunnel<UID> tunnel) {
-        buses().unactivatedEvent().notify(this, tunnel);
-        if (isOffline()) {
-            this.reconnect();
-            return;
-        }
-        synchronized (this) {
-            if (isOffline()) {
-                this.reconnect();
-                return;
-            }
-            Tunnel<UID> currentTunnel = this.currentTunnel();
-            if (currentTunnel.isClosed()) {
-                return;
-            }
-            setOffline();
-            this.reconnect();
-        }
-    }
+	@Override
+	public void onConnected(NetTunnel<UID> tunnel) {
+		if (this.tunnel == tunnel) {
+			if (this.isClosed()) {
+				tunnel.close();
+				throw new TunnelCloseException("{} tunnel is closed", tunnel);
+			}
+			try {
+				if (!this.postConnect.onConnected(tunnel)) {
+					throw new TunnelException("{} tunnel post connect failed", tunnel);
+				}
+				buses().activateEvent().notify(this, this.tunnel);
+			} catch (Exception e) {
+				throw new TunnelException(e, "{} tunnel post connect failed", tunnel);
+			}
+		}
+	}
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("url", this.url)
-                .toString();
-    }
+	@Override
+	public void onUnactivated(NetTunnel<UID> tunnel) {
+		buses().unactivatedEvent().notify(this, tunnel);
+		if (isOffline()) {
+			this.reconnect();
+			return;
+		}
+		synchronized (this) {
+			if (isOffline()) {
+				this.reconnect();
+				return;
+			}
+			Tunnel<UID> currentTunnel = this.currentTunnel();
+			if (currentTunnel.isClosed()) {
+				return;
+			}
+			setOffline();
+			this.reconnect();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("url", this.url)
+				.toString();
+	}
 
 }

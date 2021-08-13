@@ -8,8 +8,8 @@ import com.tny.game.net.endpoint.*;
  */
 public class GeneralServerTunnel<UID> extends BaseServerTunnel<UID, NetSession<UID>, Transporter<UID>> {
 
-    public GeneralServerTunnel(Transporter<UID> transport, NetBootstrapContext<UID> bootstrapContext) {
-        super(transport, bootstrapContext);
-    }
+	public GeneralServerTunnel(long id, Transporter<UID> transport, NetBootstrapContext<UID> bootstrapContext) {
+		super(id, transport, bootstrapContext);
+	}
 
 }

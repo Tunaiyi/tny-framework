@@ -169,8 +169,9 @@ configure(javaProjects) {
 
         implementation libs.slf4j_api
 
-        testImplementation libs.mockito
+        testImplementation libs.mockito_junit_jupiter
         testImplementation libs.junit_jupiter_api
+        testImplementation libs.junit_jupiter_engine
         testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple

@@ -149,7 +149,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyServerBootstrapSe
 	private void openPipe(Channel channel) {
 		NetBootstrapContext<Object> context = NettyRelayServerGuide.this.getContext();
 		RelayTransmitter transmitter = new NettyRelayChannelTransmitter(channel);
-		NetPipe<?> pipe = new GeneralPipe<>(transmitter, context);
+		NetRelayPipe<?> pipe = new GeneralRelayPipe<>(transmitter, context);
 		pipe.open();
 	}
 

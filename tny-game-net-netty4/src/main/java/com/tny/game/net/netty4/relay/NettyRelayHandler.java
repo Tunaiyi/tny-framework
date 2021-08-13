@@ -57,7 +57,7 @@ public class NettyRelayHandler extends ChannelDuplexHandler {
 		if (object instanceof RelayPacket) {
 			try {
 				RelayPacket datagram = as(object);
-				NetPipe<?> pipe = channel.attr(NettyAttrKeys.PIPE).get();
+				NetRelayPipe<?> pipe = channel.attr(NettyAttrKeys.PIPE).get();
 				if (pipe != null) {
 					datagram.getType().invoke(this.relayPacketHandler, pipe, datagram);
 				} else {

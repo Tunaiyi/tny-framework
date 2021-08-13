@@ -8,12 +8,12 @@ import io.netty.util.AttributeKey;
 
 public interface NettyAttrKeys {
 
-    AttributeKey<NetTunnel<?>> TUNNEL = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
-    AttributeKey<NetPipe<?>> PIPE = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".PIPE");
+	AttributeKey<NetTunnel<?>> TUNNEL = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".TUNNEL");
+	AttributeKey<NetRelayPipe<?>> PIPE = AttributeKey.valueOf(NettyAttrKeys.class.getName() + ".PIPE");
 
-    AttributeKey<DataPacketMarker> DATA_PACKET_MARKER = AttributeKey.valueOf(NettyAttrKeys.class, "DATA_PACKET_MARKER");
+	AttributeKey<NetPackDecodeMarker> DATA_PACKET_MARKER = AttributeKey.valueOf(NettyAttrKeys.class, "DATA_PACKET_MARKER");
 
-    AttributeKey<DataPackageContext> WRITE_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "WRITE_PACKAGER");
-    AttributeKey<DataPackageContext> READ_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "READ_PACKAGER");
+	AttributeKey<DataPackageContext> WRITE_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "WRITE_PACKAGER");
+	AttributeKey<DataPackageContext> READ_PACKAGER = AttributeKey.valueOf(NettyAttrKeys.class, "READ_PACKAGER");
 
 }

@@ -1,5 +1,7 @@
 package com.tny.game.net.relay.packet;
 
+import com.tny.game.net.relay.packet.arguments.*;
+
 /**
  * 通道事件
  * <p>
@@ -7,12 +9,14 @@ package com.tny.game.net.relay.packet;
  * @author : kgtny
  * @date : 2021/3/1 9:06 下午
  */
-public interface RelayPacket {
+public interface RelayPacket<A extends RelayPacketArguments> {
 
-    long getTunnelId();
+	long getTunnelId();
 
-    RelayPacketType getType();
+	RelayPacketType getType();
 
-    long getNanoTime();
+	long getTime();
+
+	A getArguments();
 
 }

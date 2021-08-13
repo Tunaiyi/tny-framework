@@ -1,0 +1,12 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+    api project(":tny-game-net-netty4")
+    api project(":tny-game-protoex")
+
+    api libs.jprotobuf
+
+}

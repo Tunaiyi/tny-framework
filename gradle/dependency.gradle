@@ -1,7 +1,7 @@
 ext.vers = [
 
         jmock                               : "2.12.0",
-        junit                               : "5.7.0",
+        junit                               : "5.7.2",
         junit_platform                      : "1.7.0",
         junirocketmqt5                      : "5.4.2",
         mockito                             : "3.9.0",
@@ -294,8 +294,7 @@ ext.libs = [
         tencentcloud_cos_sdk                     : "com.qcloud:cos_api:5.6.39",
 
         jmock_junit5                             : "org.jmock:jmock-junit5:${vers.jmock}",
-//        mockito                                  : "org.mockito:mockito-core:${vers.mockito}",
-        mockito                                  : 'org.mockito:mockito-junit-jupiter:3.11.2',
+        mockito_junit_jupiter                    : 'org.mockito:mockito-junit-jupiter:3.11.2',
         google_finbugs                           : "com.google.code.findbugs:jsr305:3.0.2",
 
         poi                                      : "org.apache.poi:poi:${vers.poi}",

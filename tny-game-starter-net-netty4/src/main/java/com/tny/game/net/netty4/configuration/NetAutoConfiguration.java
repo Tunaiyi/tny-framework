@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.command.dispatcher.*;
@@ -9,10 +10,10 @@ import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.codec.*;
-import com.tny.game.net.message.codec.protoex.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.appliaction.*;
+import com.tny.game.net.netty4.codec.*;
 import com.tny.game.net.netty4.configuration.app.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.configuration.guide.*;
@@ -31,112 +32,122 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @EnableConfigurationProperties({
-        SpringBootNetAppProperties.class,
-        SpringNetEndpointProperties.class,
-        SpringBootNetBootstrapProperties.class,
-        DisruptorEndpointCommandTaskProcessorProperties.class,
-        ForkJoinEndpointCommandTaskProcessorProperties.class,
+		SpringBootNetAppProperties.class,
+		SpringNetEndpointProperties.class,
+		SpringBootNetBootstrapProperties.class,
+		DisruptorEndpointCommandTaskProcessorProperties.class,
+		ForkJoinEndpointCommandTaskProcessorProperties.class,
 })
 public class NetAutoConfiguration {
 
-    @Bean
-    public CertificateFactory<?> defaultCertificateFactory() {
-        return new DefaultCertificateFactory<>();
-    }
+	@Bean
+	public CertificateFactory<?> defaultCertificateFactory() {
+		return new DefaultCertificateFactory<>();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(EndpointKeeperManager.class)
-    public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointProperties configure) {
-        return new CommonEndpointKeeperManager(
-                configure.getSessionKeeper(),
-                configure.getTerminalKeeper(),
-                configure.getSessionKeeperSettings(),
-                configure.getTerminalKeeperSettings());
-    }
+	@Bean
+	@ConditionalOnMissingBean(EndpointKeeperManager.class)
+	public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointProperties configure) {
+		return new CommonEndpointKeeperManager(
+				configure.getSessionKeeper(),
+				configure.getTerminalKeeper(),
+				configure.getSessionKeeperSettings(),
+				configure.getTerminalKeeperSettings());
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(EndpointService.class)
-    @ConditionalOnBean(EndpointKeeperManager.class)
-    public EndpointService endpointService() {
-        return new EndpointService();
-    }
+	@Bean
+	@ConditionalOnMissingBean(EndpointService.class)
+	@ConditionalOnBean(EndpointKeeperManager.class)
+	public EndpointService endpointService() {
+		return new EndpointService();
+	}
 
-    @Bean
-    public MessageFactory defaultMessageFactory() {
-        return new CommonMessageFactory();
-    }
+	@Bean
+	public MessageFactory defaultMessageFactory() {
+		return new CommonMessageFactory();
+	}
 
-    @Bean
-    public SessionFactory<?, ?, ?> defaultSessionFactory() {
-        return new CommonSessionFactory<>();
-    }
+	@Bean
+	public SessionFactory<?, ?, ?> defaultSessionFactory() {
+		return new CommonSessionFactory<>();
+	}
 
-    @Bean
-    public SessionKeeperFactory<?, ?> defaultSessionKeeperFactory() {
-        return new CommonSessionKeeperFactory<>();
-    }
+	@Bean
+	public SessionKeeperFactory<?, ?> defaultSessionKeeperFactory() {
+		return new CommonSessionKeeperFactory<>();
+	}
 
-    @Bean
-    public TerminalKeeperFactory<?, ?> defaultTerminalKeeperFactory() {
-        return new CommonTerminalKeeperFactory<>();
-    }
+	@Bean
+	public TerminalKeeperFactory<?, ?> defaultTerminalKeeperFactory() {
+		return new CommonTerminalKeeperFactory<>();
+	}
 
-    @Bean
-    public NetAppContext appContext(SpringBootNetAppProperties configure) {
-        return new SpringBootNetAppContext(configure);
-    }
+	@Bean
+	public NetAppContext appContext(SpringBootNetAppProperties configure) {
+		return new SpringBootNetAppContext(configure);
+	}
 
-    @Bean
-    @ConditionalOnBean({EndpointKeeperManager.class, NetAppContext.class})
-    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
-        return new SpringBootMessageDispatcher(appContext, endpointKeeperManager);
-    }
+	@Bean
+	@ConditionalOnBean({EndpointKeeperManager.class, NetAppContext.class})
+	public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
+		return new SpringBootMessageDispatcher(appContext, endpointKeeperManager);
+	}
 
-    @Bean
-    public NetApplication netApplication(ApplicationContext applicationContext, NetAppContext appContext) {
-        return new NetApplication(applicationContext, appContext);
-    }
+	@Bean
+	public NetIdGenerator defaultNetIdGenerator() {
+		return new SimpleNetIdGenerator();
+	}
 
-    @Bean
-    public MessageSequenceCheckerPlugin messageSequenceCheckerPlugin() {
-        return new MessageSequenceCheckerPlugin();
-    }
+	@Bean
+	public NetApplication netApplication(ApplicationContext applicationContext, NetAppContext appContext) {
+		return new NetApplication(applicationContext, appContext);
+	}
 
-    @Bean
-    public ParamFilterPlugin<?> paramFilterPlugin() {
-        return new SpringBootParamFilterPlugin<>();
-    }
+	@Bean
+	public MessageSequenceCheckerPlugin messageSequenceCheckerPlugin() {
+		return new MessageSequenceCheckerPlugin();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(ProtoExMessageBodyCodec.class)
-    public ProtoExMessageBodyCodec<?> protoExCodec() {
-        return new ProtoExMessageBodyCodec<>();
-    }
+	@Bean
+	public ParamFilterPlugin<?> paramFilterPlugin() {
+		return new SpringBootParamFilterPlugin<>();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(TypeProtobufMessageBodyCodec.class)
-    public MessageBodyCodec<Object> typeProtobufMessageBodyCodec() {
-        return new TypeProtobufMessageBodyCodec<>();
-    }
+	@Bean
+	@ConditionalOnClass(ProtoExMessageBodyCodec.class)
+	public MessageBodyCodec<?> protoExMessageBodyCodec() {
+		return new ProtoExMessageBodyCodec<>();
+	}
 
-    @Bean
-    public CRC64CodecVerifier crc64CodecVerifier() {
-        return new CRC64CodecVerifier();
-    }
+	@Bean
+	@ConditionalOnClass(TypeProtobufMessageBodyCodec.class)
+	public MessageBodyCodec<Object> typeProtobufMessageBodyCodec() {
+		return new TypeProtobufMessageBodyCodec<>();
+	}
 
-    @Bean
-    public XOrCodecCrypto xOrCodecCrypto() {
-        return new XOrCodecCrypto();
-    }
+	@Bean
+	public LocalControllerRelayStrategy localControllerRelayStrategy(MessageDispatcher dispatcher) {
+		return new LocalControllerRelayStrategy(dispatcher);
+	}
 
-    @Bean
-    public NoneCodecCrypto noneCodecCrypto() {
-        return new NoneCodecCrypto();
-    }
+	@Bean
+	public CRC64CodecVerifier crc64CodecVerifier() {
+		return new CRC64CodecVerifier();
+	}
 
-    @Bean
-    public NetApplicationLifecycle netApplicationLifecycle() {
-        return new NetApplicationLifecycle();
-    }
+	@Bean
+	public XOrCodecCrypto xOrCodecCrypto() {
+		return new XOrCodecCrypto();
+	}
+
+	@Bean
+	public NoneCodecCrypto noneCodecCrypto() {
+		return new NoneCodecCrypto();
+	}
+
+	@Bean
+	public NetApplicationLifecycle netApplicationLifecycle() {
+		return new NetApplicationLifecycle();
+	}
 
 }

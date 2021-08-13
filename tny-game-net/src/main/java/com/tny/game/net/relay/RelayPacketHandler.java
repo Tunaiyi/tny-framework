@@ -10,16 +10,20 @@ import com.tny.game.net.relay.packet.*;
  */
 public interface RelayPacketHandler {
 
-    void onConnect(NetPipe<?> pipe, ConnectPacket packet);
+	void onPipeOpen(NetRelayPipe<?> pipe, PipeOpenPacket packet);
 
-    void onMessage(NetPipe<?> pipe, MessagePacket packet);
+	void onPipeClose(NetRelayPipe<?> pipe, PipeClosePacket packet);
 
-    void onDisconnect(NetPipe<?> pipe, DisconnectPacket packet);
+	void onPipeHeartBeat(NetRelayPipe<?> pipe, PipeHeartBeatPacket packet);
 
-    void onHeartBeat(NetPipe<?> pipe, HeartbeatPacket packet);
+	void onTubuleConnect(NetRelayPipe<?> pipe, TubuleConnectPacket packet);
 
-    void onDisconnected(NetPipe<?> pipe, DisconnectedPacket packet);
+	void onTubuleConnected(NetRelayPipe<?> pipe, TubuleConnectedPacket packet);
 
-    void onConnected(NetPipe<?> pipe, ConnectedPacket packet);
+	void onTubuleDisconnect(NetRelayPipe<?> pipe, TubuleDisconnectPacket packet);
+
+	void onTubuleDisconnected(NetRelayPipe<?> pipe, TubuleDisconnectedPacket packet);
+
+	void onTubuleRelay(NetRelayPipe<?> pipe, TubuleMessagePacket packet);
 
 }

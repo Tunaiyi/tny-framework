@@ -3,7 +3,6 @@ package com.tny.game.net.codec.cryptoloy;
 import com.tny.game.common.digest.binary.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.codec.*;
-import com.tny.game.net.codec.v1.*;
 
 /**
  * <p>
@@ -14,21 +13,20 @@ import com.tny.game.net.codec.v1.*;
 @Unit
 public class XOrCodecCrypto implements CodecCrypto {
 
-    @Override
-    public byte[] encrypt(DataPackageContext packager, byte[] bytes) {
-        return xor(packager, bytes);
-    }
+	private byte[] xor(DataPackageContext context, byte[] bytes, int offset, int length) {
+		byte[] security = context.getPackSecurityKey();
+		byte[] code = BytesAide.int2Bytes(context.getPacketCode());
+		return BytesAide.xor(bytes, offset, length, security, code);
+	}
 
-    @Override
-    public byte[] decrypt(DataPackageContext packager, byte[] bytes) {
-        return xor(packager, bytes);
-    }
+	@Override
+	public byte[] encrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
+		return xor(context, bytes, offset, length);
+	}
 
-    public byte[] xor(DataPackageContext packager, byte[] bytes) {
-        DataPacketV1Config config = packager.getConfig();
-        byte[] security = config.getSecurityKeyBytes(packager.getPacketNumber());
-        byte[] code = BytesAide.int2Bytes(packager.getPacketCode());
-        return BytesAide.xor(bytes, security, code);
-    }
+	@Override
+	public byte[] decrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
+		return xor(context, bytes, offset, length);
+	}
 
 }

@@ -19,13 +19,13 @@ public class ImportTableAttribute implements TableAttribute {
 		private String type = "list";
 
 		@XStreamImplicit(itemFieldName = "import")
-		private SortedSet<ImportInfo> importList = new TreeSet<>();
+		private SortedSet<ImportDto> importList = new TreeSet<>();
 
 	}
 
 	@Override
 	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
-		this.importList.importList.add(new ImportInfo(clazz));
+		this.importList.importList.add(new ImportDto(clazz));
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class ImportTableAttribute implements TableAttribute {
 				.build();
 	}
 
-	public Collection<ImportInfo> getImportList() {
+	public Collection<ImportDto> getImportList() {
 		return Collections.unmodifiableSortedSet(importList.importList);
 	}
 

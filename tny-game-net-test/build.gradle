@@ -6,7 +6,7 @@ apply plugin: "maven-publish"
 dependencies {
 
     api project(":tny-game-net")
-    api libs.mockito
 
     api libs.junit_jupiter_api
+    api libs.mockito_junit_jupiter
 }

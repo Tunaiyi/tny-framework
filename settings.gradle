@@ -47,6 +47,7 @@ include 'tny-game-cache-test'
 include 'tny-game-codec'
 include 'tny-game-codec-jackson'
 include 'tny-game-codec-jprotobuf'
+include 'tny-game-codec-protoex'
 include 'tny-game-starter-codec'
 
 include 'tny-game-net'
@@ -55,7 +56,8 @@ include 'tny-game-net-test'
 include 'tny-game-net-netty4'
 include 'tny-game-net-kafka'
 include 'tny-game-net-test'
-include 'tny-game-net-codec-jprotobuf'
+include 'tny-game-net-netty4-codec-jprotobuf'
+include 'tny-game-net-netty4-codec-protoex'
 include 'tny-game-starter-net-netty4'
 
 

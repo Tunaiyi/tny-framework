@@ -1,6 +1,7 @@
 package com.tny.game.net.relay.packet;
 
 import com.tny.game.net.relay.*;
+import com.tny.game.net.relay.packet.arguments.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -10,46 +11,64 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author : kgtny
  * @date : 2021/3/4 8:23 下午
  */
-public abstract class BaseRelayPacket implements RelayPacket {
+public abstract class BaseRelayPacket<A extends RelayPacketArguments> implements RelayPacket<A> {
 
-    private final long nanoTime;
+	private final long time;
 
-    private final long tunnelId;
+	private final long tunnelId;
 
-    public BaseRelayPacket(long tunnelId) {
-        this.tunnelId = tunnelId;
-        this.nanoTime = System.nanoTime();
-    }
+	private final RelayPacketType type;
 
-    public BaseRelayPacket(long tunnelId, long nanoTime) {
-        this.tunnelId = tunnelId;
-        this.nanoTime = nanoTime;
-    }
+	private final A arguments;
 
-    public BaseRelayPacket(Tubule<?> tubule, long nanoTime) {
-        this(tubule.getId(), nanoTime);
-    }
+	public BaseRelayPacket(RelayPacketType type, long tunnelId, A arguments) {
+		this.type = type;
+		this.tunnelId = tunnelId;
+		this.arguments = arguments;
+		this.time = System.currentTimeMillis();
+	}
 
-    public BaseRelayPacket(Tubule<?> tubule) {
-        this(tubule, System.nanoTime());
-    }
+	public BaseRelayPacket(RelayPacketType type, long tunnelId, long time, A arguments) {
+		this.type = type;
+		this.tunnelId = tunnelId;
+		this.arguments = arguments;
+		this.time = time;
+	}
 
-    @Override
-    public long getTunnelId() {
-        return this.tunnelId;
-    }
+	public BaseRelayPacket(RelayPacketType type, RelayTubule<?> tubule, long time, A arguments) {
+		this(type, tubule.getId(), time, arguments);
+	}
 
-    @Override
-    public long getNanoTime() {
-        return this.nanoTime;
-    }
+	public BaseRelayPacket(RelayPacketType type, RelayTubule<?> tubule, A arguments) {
+		this(type, tubule.getId(), arguments);
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("nanoTime", this.nanoTime)
-                .append("tunnelId", this.tunnelId)
-                .toString();
-    }
+	@Override
+	public RelayPacketType getType() {
+		return type;
+	}
+
+	@Override
+	public long getTunnelId() {
+		return this.tunnelId;
+	}
+
+	@Override
+	public long getTime() {
+		return this.time;
+	}
+
+	@Override
+	public A getArguments() {
+		return arguments;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("nanoTime", this.time)
+				.append("tunnelId", this.tunnelId)
+				.toString();
+	}
 
 }

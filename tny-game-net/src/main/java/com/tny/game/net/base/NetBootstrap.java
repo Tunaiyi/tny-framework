@@ -18,40 +18,40 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareStart {
 
-    protected S setting;
+	protected S setting;
 
-    private NetBootstrapContext<Object> context;
+	protected NetIdGenerator idGenerator;
 
-    public NetBootstrap(S setting) {
-        this.setting = setting;
-    }
+	private NetBootstrapContext<Object> context;
 
-    public <T> NetBootstrapContext<T> getContext() {
-        return as(this.context);
-    }
+	public NetBootstrap(S setting) {
+		this.setting = setting;
+	}
 
-    @Override
-    public void prepareStart() throws Exception {
-        MessageFactory messageFactory = as(
-                UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.setting.getMessageFactory()));
-        //        EndpointEventsBoxHandler<Object, NetEndpoint<Object>> eventHandler = as(
-        //                UnitLoader.getLoader(EndpointEventsBoxHandler.class).getUnitAnCheck(this.setting.getEndpointEventHandler()));
-        CertificateFactory<Object> certificateFactory = as(
-                UnitLoader.getLoader(CertificateFactory.class).getUnitAnCheck(this.setting.getCertificateFactory()));
-        MessageDispatcher messageDispatcher = as(
-                UnitLoader.getLoader(MessageDispatcher.class).getUnitAnCheck(this.setting.getMessageDispatcher()));
-        CommandTaskProcessor commandTaskProcessor = as(
-                UnitLoader.getLoader(CommandTaskProcessor.class).getUnitAnCheck(this.setting.getCommandTaskProcessor()));
-        this.context = new NetBootstrapContext<>(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
-        this.postPrepared(this.setting);
-    }
+	public <T> NetBootstrapContext<T> getContext() {
+		return as(this.context);
+	}
 
-    @Override
-    public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
-    }
+	@Override
+	public void prepareStart() throws Exception {
+		MessageFactory messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.setting.getMessageFactory()));
+		CertificateFactory<Object> certificateFactory = as(
+				UnitLoader.getLoader(CertificateFactory.class).getUnitAnCheck(this.setting.getCertificateFactory()));
+		MessageDispatcher messageDispatcher = as(
+				UnitLoader.getLoader(MessageDispatcher.class).getUnitAnCheck(this.setting.getMessageDispatcher()));
+		CommandTaskProcessor commandTaskProcessor = as(
+				UnitLoader.getLoader(CommandTaskProcessor.class).getUnitAnCheck(this.setting.getCommandTaskProcessor()));
+		this.context = new NetBootstrapContext<>(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
+		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).getUnitAnCheck(this.setting.getTunnelIdGenerator()));
+		this.postPrepared(this.setting);
+	}
 
-    protected void postPrepared(S setting) {
-    }
+	@Override
+	public PrepareStarter getPrepareStarter() {
+		return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
+	}
+
+	protected void postPrepared(S setting) {
+	}
 
 }

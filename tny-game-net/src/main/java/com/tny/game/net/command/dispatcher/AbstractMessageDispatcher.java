@@ -30,97 +30,102 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageDispatcher.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageDispatcher.class);
 
-    /**
-     * Controller Map
-     */
-    private final Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
+	/**
+	 * Controller Map
+	 */
+	private final Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = new ConcurrentHashMap<>();
 
-    private final ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+	private final ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
-    protected final DefaultMessageDispatcherContext context;
+	protected final NetMessageDispatcherContext context;
 
-    private final EndpointKeeperManager endpointKeeperManager;
+	private final EndpointKeeperManager endpointKeeperManager;
 
-    protected AbstractMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
-        this.context = new DefaultMessageDispatcherContext(appContext);
-        this.endpointKeeperManager = endpointKeeperManager;
-    }
+	protected AbstractMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager) {
+		this.context = new DefaultMessageDispatcherContext(appContext);
+		this.endpointKeeperManager = endpointKeeperManager;
+	}
 
-    @Override
-    public Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException {
-        // 获取方法持有器
-        MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
-        if (controller != null) {
-            return new ControllerMessageCommand(tunnel, controller, message, this.context, this.endpointKeeperManager);
-        }
-        if (message.getMode() == MessageMode.REQUEST) {
-            LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
-            return new RunnableCommand(() -> {
-                tunnel.send(MessageContexts.respond(NetResultCode.NO_SUCH_PROTOCOL, message));
-            });
-        }
-        return null;
-    }
+	@Override
+	public Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException {
+		// 获取方法持有器
+		MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
+		if (controller != null) {
+			return new ControllerMessageCommand(tunnel, controller, message, this.context, this.endpointKeeperManager);
+		}
+		if (message.getMode() == MessageMode.REQUEST) {
+			LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
+			return new RunnableCommand(() -> {
+				tunnel.send(MessageContexts.respond(NetResultCode.NO_SUCH_PROTOCOL, message));
+			});
+		}
+		return null;
+	}
 
-    private MethodControllerHolder getController(Object protocol, MessageMode mode) {
-        // 获取方法持有器
-        MethodControllerHolder controller = null;
-        final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(protocol);
-        if (controllerMap != null) {
-            controller = controllerMap.get(mode);
-        }
-        return controller;
-    }
+	@Override
+	public boolean isCanDispatch(MessageHead head) {
+		return this.getController(head.getProtocolId(), head.getMode()) != null;
+	}
 
-    /**
-     * 添加控制器对象列表
-     *
-     * @param objects 控制器对象列表
-     */
-    protected void addController(Collection<Object> objects) {
-        objects.forEach(this::addController);
-    }
+	private MethodControllerHolder getController(Object protocol, MessageMode mode) {
+		// 获取方法持有器
+		MethodControllerHolder controller = null;
+		final Map<MessageMode, MethodControllerHolder> controllerMap = this.methodHolder.get(protocol);
+		if (controllerMap != null) {
+			controller = controllerMap.get(mode);
+		}
+		return controller;
+	}
 
-    /**
-     * 添加控制器对象
-     *
-     * @param object 控制器对象
-     */
-    protected void addController(Object object) {
-        Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
-        final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
-        for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
-            MethodControllerHolder controller = entry.getValue();
-            Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
-            for (MessageMode mode : controller.getMessageModes()) {
-                MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
-                if (old != null) {
-                    throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
-                }
-            }
-        }
-    }
+	/**
+	 * 添加控制器对象列表
+	 *
+	 * @param objects 控制器对象列表
+	 */
+	protected void addController(Collection<Object> objects) {
+		objects.forEach(this::addController);
+	}
 
-    @Override
-    public void addCommandListener(MessageCommandListener listener) {
-        this.context.addCommandListener(listener);
-    }
+	/**
+	 * 添加控制器对象
+	 *
+	 * @param object 控制器对象
+	 */
+	protected void addController(Object object) {
+		Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
+		final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
+		for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
+			MethodControllerHolder controller = entry.getValue();
+			Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
+			for (MessageMode mode : controller.getMessageModes()) {
+				MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
+				if (old != null) {
+					throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
+				}
+			}
+		}
+	}
 
-    @Override
-    public void addCommandListener(Collection<MessageCommandListener> listeners) {
-        this.context.addCommandListener(listeners);
-    }
+	@Override
+	public void addCommandListener(MessageCommandListener listener) {
+		this.context.addCommandListener(listener);
+	}
 
-    @Override
-    public void removeCommandListener(MessageCommandListener listener) {
-        this.context.removeCommandListener(listener);
-    }
+	@Override
+	public void addCommandListener(Collection<MessageCommandListener> listeners) {
+		this.context.addCommandListener(listeners);
+	}
 
-    @Override
-    public void clearCommandListeners() {
-        this.context.clearCommandListeners();
-    }
+	@Override
+	public void removeCommandListener(MessageCommandListener listener) {
+		this.context.removeCommandListener(listener);
+	}
+
+	@Override
+	public void clearCommandListeners() {
+		this.context.clearCommandListeners();
+	}
 
 }
