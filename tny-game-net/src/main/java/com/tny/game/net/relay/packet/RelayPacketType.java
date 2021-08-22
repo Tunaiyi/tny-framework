@@ -52,7 +52,7 @@ public enum RelayPacketType implements EnumIdentifiable<Byte>, RelayPackerHandle
 			TubuleConnectedPacket.FACTORY,
 			RelayPacketHandler::onTubuleConnected),
 
-	TUBULE_DISCONNECTED(RELAY_PACKET_TYPE_TUBULE_CONNECTED,
+	TUBULE_DISCONNECTED(RELAY_PACKET_TYPE_TUBULE_DISCONNECTED,
 			TubuleDisconnectedPacket.class, VoidPacketArguments.class,
 			TubuleDisconnectedPacket.FACTORY,
 			RelayPacketHandler::onTubuleDisconnected),
