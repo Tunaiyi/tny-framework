@@ -13,21 +13,19 @@ import java.lang.annotation.*;
 @Documented
 public @interface AuthenticationRequired {
 
-    /**
-     * 用户组名称
-     * <p>
-     * <p>
-     * 当userType System<br>
-     *
-     * @return
-     */
-    String[] value() default {};
+	/**
+	 * 用户组名称
+	 * <p>
+	 * <p>
+	 * 当userType System<br>
+	 */
+	String[] value() default {};
 
-    /**
-     * @return 验证器
-     */
-    Class<? extends AuthenticateValidator> validator() default AuthenticateValidator.class;
+	/**
+	 * @return 验证器
+	 */
+	Class<? extends AuthenticateValidator> validator() default AuthenticateValidator.class;
 
-    boolean enable() default true;
+	boolean enable() default true;
 
 }

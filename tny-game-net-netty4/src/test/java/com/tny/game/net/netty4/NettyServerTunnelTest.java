@@ -31,7 +31,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 	}
 
 	private TestGeneralServerTunnel newTunnel(boolean open) {
-		TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelTransporter<>(mockChannel()),
+		TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelMessageTransporter<>(mockChannel()),
 				new NetBootstrapContext<>(null, null, new CommonMessageFactory(), null));
 		if (open) {
 			tunnel.open();
@@ -41,7 +41,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 
 	@Override
 	protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
-		return (EmbeddedChannel)((NettyChannelTransporter<?>)tunnel.getTransporter()).getChannel();
+		return (EmbeddedChannel)((NettyChannelMessageTransporter<?>)tunnel.getTransporter()).getChannel();
 	}
 
 }

@@ -58,7 +58,7 @@ public class DataPacketV1CodecTest {
 		NetTunnel tunnel = mockAs(NetTunnel.class);
 		when(tunnel.getAccessId()).thenReturn(2018L);
 		when(tunnel.getMessageFactory()).thenReturn(this.factory);
-		channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
+		channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);
 		DataPacketCodecSetting config = new DataPacketCodecSetting();
 		config.setSecurityKeys(new String[]{"1s1394d3kssvonxasanfkwhzfk0jy0zm"});
 		this.decoder = new NetPackV1Decoder(config);

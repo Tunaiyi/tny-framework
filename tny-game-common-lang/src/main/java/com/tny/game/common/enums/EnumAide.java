@@ -77,10 +77,12 @@ public class EnumAide {
 		return null;
 	}
 
+	@SafeVarargs
 	public static <E extends Enum<E>> boolean isIn(E value, E... elements) {
 		return Stream.of(elements).anyMatch(v -> v == value);
 	}
 
+	@SafeVarargs
 	public static <E extends Enum<E>> boolean isOut(E value, E... elements) {
 		return Stream.of(elements).noneMatch(v -> v == value);
 	}

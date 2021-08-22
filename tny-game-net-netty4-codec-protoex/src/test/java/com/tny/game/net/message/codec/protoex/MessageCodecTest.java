@@ -29,7 +29,7 @@ public class MessageCodecTest {
 
 	private CommonMessageFactory messageFactory = new CommonMessageFactory();
 
-	private Message createMessage(Object body, Object tail) {
+	private NetMessage createMessage(Object body, Object tail) {
 		long uid = 5000L;
 		return this.messageFactory.create(1L, MessageContexts.<Long>request(Protocols.protocol(100_100), body));
 	}
@@ -39,9 +39,9 @@ public class MessageCodecTest {
 		TestMsgObject body = new TestMsgObject(100, "I am test body!");
 		TestMsgObject attachment = new TestMsgObject(100, "I am test attachment!");
 		ByteBuf data;
-		BytesArrayMessageBody bodyBytes;
+		OctetArrayMessageBody bodyBytes;
 		// 正常解析 有 Body
-		Message encodeMessage = createMessage(body, attachment);
+		NetMessage encodeMessage = createMessage(body, attachment);
 		data = ByteBufAllocator.DEFAULT.heapBuffer();
 		data.markReaderIndex();
 		this.codec.encode(encodeMessage, data);
@@ -52,13 +52,13 @@ public class MessageCodecTest {
 		data.resetReaderIndex();
 		Message noDecodeBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
 		assertEquals(encodeMessage.getHead(), noDecodeBodyMessage.getHead());
-		bodyBytes = noDecodeBodyMessage.bodyAs(BytesArrayMessageBody.class);
+		bodyBytes = noDecodeBodyMessage.bodyAs(OctetArrayMessageBody.class);
 		assertNotNull(bodyBytes);
 		ProtoExReader bodyReader = new ProtoExReader(bodyBytes.getBodyBytes());
 		TestMsgObject realBody = bodyReader.readMessage(TestMsgObject.class);
 		assertEquals(encodeMessage.bodyAs(TestMsgObject.class), realBody);
 		// 正常解析 无 Body
-		Message encodeNoBodyMessage = createMessage(null, attachment);
+		NetMessage encodeNoBodyMessage = createMessage(null, attachment);
 
 		data.clear();
 		this.codec.encode(encodeNoBodyMessage, data);
@@ -68,7 +68,7 @@ public class MessageCodecTest {
 		// 不解析 Body, 无 Body
 		Message noDecodeBodyNoBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
 		assertEquals(encodeNoBodyMessage.getHead(), noDecodeBodyNoBodyMessage.getHead());
-		bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(BytesArrayMessageBody.class);
+		bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(OctetArrayMessageBody.class);
 		assertNull(bodyBytes);
 	}
 

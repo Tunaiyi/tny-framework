@@ -1,8 +1,9 @@
 package com.tny.game.net.netty4.configuration.guide;
 
 import com.tny.game.net.netty4.*;
-import com.tny.game.net.netty4.codec.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * 只是为了生成配置说明
@@ -15,12 +16,20 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class SpringNettyClientBootstrapSetting extends NettyClientBootstrapSetting {
 
 	@NestedConfigurationProperty
-	private DataPacketCodecSetting encoder;
+	private SpringNettyChannelSetting channel;
 
-	@NestedConfigurationProperty
-	private DataPacketCodecSetting decoder;
+	public SpringNettyClientBootstrapSetting() {
+		super(new SpringNettyChannelSetting());
+	}
 
-	@NestedConfigurationProperty
-	private NettyChannelMakerSetting channelMaker;
+	@Override
+	public SpringNettyChannelSetting getChannel() {
+		return as(super.getChannel());
+	}
+
+	public SpringNettyClientBootstrapSetting setChannel(SpringNettyChannelSetting channel) {
+		super.setChannel(channel);
+		return this;
+	}
 
 }

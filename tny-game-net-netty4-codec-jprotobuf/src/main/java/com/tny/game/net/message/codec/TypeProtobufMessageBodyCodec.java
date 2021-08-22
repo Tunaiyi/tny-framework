@@ -28,7 +28,7 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
 
 	private final TypeProtobufObjectCodecFactory codecFactory;
 
-	private FastThreadLocal<MemoryAllotCounter> counterThreadLocal = new FastThreadLocal<>();
+	private final FastThreadLocal<MemoryAllotCounter> counterThreadLocal = new FastThreadLocal<>();
 
 	public TypeProtobufMessageBodyCodec() {
 		this.codecFactory = new TypeProtobufObjectCodecFactory();
@@ -109,7 +109,7 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
 			MemoryAllotCounter counter = this.counter();
 			ObjectCodec<Object> codec = this.codecFactory.createCodec(null);
 			int allotSize = counter.allot();
-			ByteBuf objectBuf = allocator.heapBuffer();
+			ByteBuf objectBuf = allocator.heapBuffer(allotSize);
 			try (ByteBufOutputStream objectOutput = new ByteBufOutputStream(objectBuf)) {
 				codec.encode(object, objectOutput);
 				int size = objectBuf.readableBytes();

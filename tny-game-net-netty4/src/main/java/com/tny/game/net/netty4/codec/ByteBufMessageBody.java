@@ -4,18 +4,41 @@ import com.tny.game.net.message.common.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/8/11 4:23 下午
  */
-public class ByteBufMessageBody implements MessageBytesBody {
+public class ByteBufMessageBody implements OctetMessageBody {
 
+	/**
+	 * 消息体 buf
+	 */
 	private ByteBuf buffer;
 
-	public ByteBufMessageBody(ByteBuf buffer) {
+	/**
+	 * 是否是转发
+	 */
+	private final boolean relay;
+
+	private final AtomicBoolean released = new AtomicBoolean(false);
+
+	public ByteBufMessageBody(ByteBuf buffer, boolean relay) {
 		this.buffer = buffer;
+		this.relay = relay;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		this.release();
+	}
+
+	@Override
+	public boolean isRelay() {
+		return relay;
 	}
 
 	@Override
@@ -23,10 +46,15 @@ public class ByteBufMessageBody implements MessageBytesBody {
 		return buffer;
 	}
 
+	@Override
 	public void release() {
-		ByteBuf buffer = this.buffer;
-		this.buffer = null;
-		ReferenceCountUtil.release(buffer);
+		if (released.compareAndSet(false, true)) {
+			ByteBuf buffer = this.buffer;
+			if (buffer != null) {
+				this.buffer = null;
+				ReferenceCountUtil.release(buffer);
+			}
+		}
 	}
 
 }

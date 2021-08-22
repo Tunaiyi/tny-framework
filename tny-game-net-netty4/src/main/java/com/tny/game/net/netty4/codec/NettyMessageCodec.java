@@ -7,8 +7,8 @@ import io.netty.buffer.ByteBuf;
 @UnitInterface
 public interface NettyMessageCodec {
 
-	Message decode(ByteBuf bytes, MessageFactory factory) throws Exception;
+	NetMessage decode(ByteBuf bytes, MessageFactory factory) throws Exception;
 
-	void encode(Message message, ByteBuf buffer) throws Exception;
+	void encode(NetMessage message, ByteBuf buffer) throws Exception;
 
 }

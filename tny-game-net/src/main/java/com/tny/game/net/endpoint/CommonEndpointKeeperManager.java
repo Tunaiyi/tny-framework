@@ -22,122 +22,122 @@ import static com.tny.game.common.utils.StringAide.*;
 @Unit
 public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPrepareStart {
 
-    private static final String DEFAULT_KEY = "default";
+	private static final String DEFAULT_KEY = "default";
 
-    private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
+	private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-    private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
+	private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
-    private Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
+	private Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
 
-    private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
+	private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
-    private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+	private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
-    public CommonEndpointKeeperManager() {
-    }
+	public CommonEndpointKeeperManager() {
+	}
 
-    public CommonEndpointKeeperManager(
-            SessionKeeperSetting defaultSessionKeeperSetting,
-            TerminalKeeperSetting defaultTerminalKeeperSetting,
-            Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
-            Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
-        Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
-        Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
-        if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
-            sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
-        }
-        if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
-            terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
-        }
-        if (defaultSessionKeeperSetting != null) {
-            sessionSettingMap.put(ifNotBlankElse(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
-        }
-        if (defaultTerminalKeeperSetting != null) {
-            terminalSettingMap.put(ifNotBlankElse(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
-        }
-        this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
-        this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
-    }
+	public CommonEndpointKeeperManager(
+			SessionKeeperSetting defaultSessionKeeperSetting,
+			TerminalKeeperSetting defaultTerminalKeeperSetting,
+			Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
+			Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
+		Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
+		Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
+			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+		}
+		if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
+			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+		}
+		if (defaultSessionKeeperSetting != null) {
+			sessionSettingMap.put(ifNotBlankElse(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
+		}
+		if (defaultTerminalKeeperSetting != null) {
+			terminalSettingMap.put(ifNotBlankElse(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
+		}
+		this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
+		this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
+	}
 
-    private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
-        if (tunnelMode == TunnelMode.SERVER) {
-            SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
-            if (setting == null) {
-                setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
-            }
-            return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
-        } else {
-            TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(userType);
-            if (setting == null) {
-                setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
-            }
-            return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
-        }
-    }
+	private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
+		if (tunnelMode == TunnelMode.SERVER) {
+			SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
+			if (setting == null) {
+				setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
+			}
+			return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
+		} else {
+			TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(userType);
+			if (setting == null) {
+				setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
+			}
+			return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
+		}
+	}
 
-    private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
-            String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
-        Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
-        return factory.createKeeper(userType, setting);
-    }
+	private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
+			String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
+		Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
+		return factory.createKeeper(userType, setting);
+	}
 
-    @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode) {
-        return as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> create(k, tunnelMode)));
-    }
+	@Override
+	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode) {
+		return as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> create(k, tunnelMode)));
+	}
 
-    @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType) {
-        return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
-    }
+	@Override
+	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType) {
+		return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
+	}
 
-    @Override
-    public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType) {
-        return this.getKeeper(userType, SessionKeeper.class);
-    }
+	@Override
+	public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType) {
+		return this.getKeeper(userType, SessionKeeper.class);
+	}
 
-    @Override
-    public <UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType) {
-        return this.getKeeper(userType, TerminalKeeper.class);
-    }
+	@Override
+	public <UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType) {
+		return this.getKeeper(userType, TerminalKeeper.class);
+	}
 
-    private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
-        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
-        if (keeper == null) {
-            return Optional.empty();
-        }
-        if (keeperClass.isInstance(keeper)) {
-            return Optional.of(as(keeper));
-        }
-        throw new ClassCastException(format("{} not instance of {}", keeper, keeperClass));
-    }
+	private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
+		EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
+		if (keeper == null) {
+			return Optional.empty();
+		}
+		if (keeperClass.isInstance(keeper)) {
+			return Optional.of(as(keeper));
+		}
+		throw new ClassCastException(format("{} not instance of {}", keeper, keeperClass));
+	}
 
-    @Override
-    public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
-    }
+	@Override
+	public PrepareStarter getPrepareStarter() {
+		return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
+	}
 
-    @Override
-    public void prepareStart() {
-        this.sessionKeeperSettingMap.forEach((name, setting) -> {
-            this.sessionFactoryMap
-                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
-        });
-        this.terminalKeeperSettingMap.forEach((name, setting) -> {
-            this.terminalFactoryMap
-                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
-        });
-        //        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
-        //            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
-        //            this.sessionFactoryMap
-        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
-        //        });
-        //        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
-        //            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
-        //            this.terminalFactoryMap
-        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
-        //        });
-    }
+	@Override
+	public void prepareStart() {
+		this.sessionKeeperSettingMap.forEach((name, setting) -> {
+			this.sessionFactoryMap
+					.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).checkUnit(f));
+		});
+		this.terminalKeeperSettingMap.forEach((name, setting) -> {
+			this.terminalFactoryMap
+					.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f));
+		});
+		//        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
+		//            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
+		//            this.sessionFactoryMap
+		//                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
+		//        });
+		//        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
+		//            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
+		//            this.terminalFactoryMap
+		//                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
+		//        });
+	}
 
 }

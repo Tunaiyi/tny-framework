@@ -31,7 +31,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 	}
 
 	@Override
-	public Message decode(ByteBuf buffer, MessageFactory messageFactory) throws Exception {
+	public NetMessage decode(ByteBuf buffer, MessageFactory messageFactory) throws Exception {
 		long id = NettyVarIntCoder.readVarInt64(buffer);
 		byte option = buffer.readByte();
 		MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & MESSAGE_HEAD_OPTION_MODE_MASK));
@@ -46,20 +46,24 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		if (CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST)) {
 			int length = NettyVarIntCoder.readVarInt32(buffer);
 			if (this.relayStrategy.isRelay(head)) {
-				// WARN 不释放, 等待释放
+				// WARN 不释放, 等待转发后释放
 				ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
 				buffer.readBytes(bodyBuff, length);
-				body = new ByteBufMessageBody(bodyBuff);
+				body = new ByteBufMessageBody(bodyBuff, true);
 			} else {
 				ByteBuf bodyBuff = buffer.copy(buffer.readerIndex(), length);
-				body = this.bodyCoder.decode(bodyBuff);
+				try {
+					body = this.bodyCoder.decode(bodyBuff);
+				} finally {
+					ReferenceCountUtil.release(bodyBuff);
+				}
 			}
 		}
 		return messageFactory.create(head, body);
 	}
 
 	@Override
-	public void encode(Message message, ByteBuf buffer) throws Exception {
+	public void encode(NetMessage message, ByteBuf buffer) throws Exception {
 		if (message.getMode().getType() != MESSAGE) {
 			return;
 		}
@@ -87,32 +91,36 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 	}
 
 	private void writeObject(ByteBuf buffer, Object object, MessageBodyCodec<Object> coder) throws Exception {
-		if (object instanceof byte[]) {
-			write(buffer, (byte[])object);
-		} else if (object instanceof BytesArrayMessageBody) {
-			byte[] data = ((BytesArrayMessageBody)object).getBodyBytes();
-			write(buffer, data);
-		} else if (object instanceof ByteBufMessageBody) {
-			ByteBufMessageBody messageBody = (ByteBufMessageBody)object;
-			try {
+		OctetMessageBody bodyBody = null;
+		try {
+			if (object instanceof byte[]) {
+				write(buffer, (byte[])object);
+			} else if (object instanceof OctetArrayMessageBody) {
+				OctetArrayMessageBody arrayMessageBody = as(object);
+				byte[] data = arrayMessageBody.getBodyBytes();
+				bodyBody = arrayMessageBody;
+				write(buffer, data);
+			} else if (object instanceof ByteBufMessageBody) {
+				ByteBufMessageBody messageBody = (ByteBufMessageBody)object;
+				bodyBody = messageBody;
 				ByteBuf data = messageBody.getBodyBytes();
 				if (data == null) {
 					throw CodecException.causeEncode("ByteBufMessageBody is released");
 				}
 				buffer.writeBytes(data);
-			} finally {
-				ReferenceCountUtil.release(messageBody);
+			} else {
+				ByteBuf bodyBuf = null;
+				try {
+					bodyBuf = buffer.alloc().heapBuffer();
+					coder.encode(as(object), bodyBuf);
+					NettyVarIntCoder.writeVarInt32(bodyBuf.readableBytes(), buffer);
+					buffer.writeBytes(bodyBuf);
+				} finally {
+					ReferenceCountUtil.release(bodyBuf);
+				}
 			}
-		} else {
-			ByteBuf bodyBuf = null;
-			try {
-				bodyBuf = buffer.alloc().heapBuffer();
-				coder.encode(as(object), bodyBuf);
-				NettyVarIntCoder.writeVarInt32(bodyBuf.readableBytes(), buffer);
-				buffer.writeBytes(bodyBuf);
-			} finally {
-				ReferenceCountUtil.release(bodyBuf);
-			}
+		} finally {
+			OctetMessageBody.release(bodyBody);
 		}
 	}
 

@@ -44,7 +44,8 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 
 	public void registerNettyServerGuides(Collection<? extends NettyServerBootstrapSetting> settings, BeanDefinitionRegistry registry) {
 		for (NettyServerBootstrapSetting setting : settings) {
-			String channelMaker = registerChannelMaker(setting, setting.getChannelMaker(), registry);
+			NettyChannelSetting channelSetting = setting.getChannel();
+			String channelMaker = registerChannelMaker(setting, registry);
 			String beanName = setting.getName() + NettyServerGuide.class.getSimpleName();
 			registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 					.genericBeanDefinition(NettyServerGuide.class)
@@ -56,7 +57,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 
 	private void registerNettyClientGuides(Collection<? extends NettyClientBootstrapSetting> settings, BeanDefinitionRegistry registry) {
 		for (NettyClientBootstrapSetting setting : settings) {
-			String channelMaker = registerChannelMaker(setting, setting.getChannelMaker(), registry);
+			String channelMaker = registerChannelMaker(setting, registry);
 			String beanName = setting.getName() + NettyServerGuide.class.getSimpleName();
 			registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 					.genericBeanDefinition(NettyClientGuide.class)
@@ -66,10 +67,11 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 		}
 	}
 
-	private String registerChannelMaker(NettyBootstrapSetting setting, NettyChannelMakerSetting channelMakerSetting,
-			BeanDefinitionRegistry registry) {
-		DataPacketCodecSetting encoderConfig = setting.getEncoder();
-		DataPacketCodecSetting decoderConfig = setting.getDecoder();
+	private String registerChannelMaker(NettyBootstrapSetting setting, BeanDefinitionRegistry registry) {
+		NettyChannelSetting channelSetting = setting.getChannel();
+		DataPacketCodecSetting encoderConfig = channelSetting.getEncoder();
+		DataPacketCodecSetting decoderConfig = channelSetting.getDecoder();
+		NettyChannelMakerSetting channelMaker = channelSetting.getMaker();
 		NetPackV1Encoder encoder = new NetPackV1Encoder(encoderConfig);
 		NetPackV1Decoder decoder = new NetPackV1Decoder(decoderConfig);
 		String encoderBeanName = setting.getName() + NetPackEncoder.class.getSimpleName();
@@ -80,16 +82,16 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 		registry.registerBeanDefinition(decoderBeanName, BeanDefinitionBuilder
 				.genericBeanDefinition(NetPackV1Decoder.class, () -> decoder)
 				.getBeanDefinition());
-		String channelMakerClassName = channelMakerSetting.getMakerClass();
+		String channelMakerClassName = channelMaker.getMakerClass();
 		Class<Object> channelMakerClass = as(ExeAide.callNullableWithUnchecked(() -> Class.forName(channelMakerClassName)));
-		String channelMaker = setting.getName() + ChannelMaker.class.getSimpleName();
+		String channelMakerName = setting.getName() + ChannelMaker.class.getSimpleName();
 		BeanDefinitionBuilder channelMakerBuilder = BeanDefinitionBuilder.genericBeanDefinition(channelMakerClass)
 				.addPropertyReference("encoder", encoderBeanName)
 				.addPropertyReference("decoder", decoderBeanName);
-		channelMakerSetting.getProperties().forEach(channelMakerBuilder::addPropertyValue);
-		channelMakerSetting.getReferences().forEach(channelMakerBuilder::addPropertyReference);
-		registry.registerBeanDefinition(channelMaker, channelMakerBuilder.getBeanDefinition());
-		return channelMaker;
+		channelMaker.getProperties().forEach(channelMakerBuilder::addPropertyValue);
+		channelMaker.getReferences().forEach(channelMakerBuilder::addPropertyReference);
+		registry.registerBeanDefinition(channelMakerName, channelMakerBuilder.getBeanDefinition());
+		return channelMakerName;
 	}
 	//    public void registerNetBeanDefinitions(NetType netType, BeanDefinitionRegistry registry) {
 	//        Set<String> netNames = getNetNames(netType);

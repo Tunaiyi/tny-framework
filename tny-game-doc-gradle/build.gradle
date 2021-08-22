@@ -24,7 +24,9 @@ dependencies {
 //            gradleApi(),
 //            libs.'groovy-all',
 //    api project(":tny-game-net")
-    api project(":tny-game-doc")
+    api(project(":tny-game-doc")) {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
     api project(":tny-game-doc-annotation")
     api project(":tny-game-common-lang")
     api project(":tny-game-scanning")

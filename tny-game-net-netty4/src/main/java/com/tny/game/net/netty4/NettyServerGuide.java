@@ -3,6 +3,7 @@ package com.tny.game.net.netty4;
 import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.bus.*;
+import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;
 import com.tny.game.net.endpoint.*;
@@ -127,8 +128,10 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
 			if (this.bootstrap != null) {
 				return this.bootstrap;
 			}
-			this.bootstrap = new io.netty.bootstrap.ServerBootstrap();
-			NettyMessageHandler nettyMessageHandler = new NettyMessageHandler();
+			this.bootstrap = new ServerBootstrap();
+			NettyChannelSetting channelSetting = setting.getChannel();
+			NettyMessageHandler nettyMessageHandler = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getHandler());
+			NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getTunnelFactory());
 			this.bootstrap.group(parentGroup, childGroup);
 			this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
 			this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
@@ -144,8 +147,10 @@ public class NettyServerGuide extends NettyBootstrap<NettyServerBootstrapSetting
 					}
 					channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
 					NetBootstrapContext<Object> context = NettyServerGuide.this.getContext();
-					Transporter<Object> transport = new NettyChannelTransporter<>(channel);
-					NetTunnel<Object> tunnel = new GeneralServerTunnel<>(idGenerator.generate(), transport, context); // 创建 Tunnel 已经transport.bind
+					// MessageTransporter<Object> transport = new NettyChannelMessageTransporter<>(channel);
+					// NetTunnel<Object> tunnel = new GeneralServerTunnel<>(idGenerator.generate(), transport, context); // 创建
+					// Tunnel 已经transport.bind
+					NetTunnel<Object> tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
 					AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(context);
 					endpoint.setTunnel(tunnel);
 					tunnel.bind(endpoint);

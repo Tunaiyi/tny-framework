@@ -59,7 +59,6 @@ public class GameClientApp {
 						System.out.println("!!@   [发送] 请求 = " + message);
 						SendContext context = tunnel
 								.send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-										.willWriteFuture(30000L)
 										.willResponseFuture(30000L));
 						try {
 							Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
@@ -137,8 +136,7 @@ public class GameClientApp {
 		RequestContext messageContent = MessageContexts.requestParams(protocol, params);
 		if (waitTimeout > 0) {
 			SendContext context = client.send(messageContent
-					.willResponseFuture(waitTimeout)
-					.willWriteFuture(300000L));
+					.willResponseFuture(waitTimeout));
 			try {
 				Message message = context.getRespondFuture().get();
 				T body = message.bodyAs(returnClass);
@@ -156,7 +154,7 @@ public class GameClientApp {
 	private static void send(Client<Long> client, String content, boolean wait) {
 		RequestContext messageContent = MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$SAY), content);
 		if (wait) {
-			SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
+			SendContext context = client.send(messageContent.willResponseFuture(300000L));
 			try {
 				Message message = context.getRespondFuture().get();
 				LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));
@@ -180,7 +178,7 @@ public class GameClientApp {
 				random.nextInt(2) == 1,
 				content);
 		if (wait) {
-			SendContext context = client.send(messageContent.willResponseFuture().willWriteFuture(300000L));
+			SendContext context = client.send(messageContent.willResponseFuture(300000L));
 			try {
 				Message message = context.getRespondFuture().get();
 				LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));

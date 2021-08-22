@@ -17,44 +17,45 @@ import static java.lang.String.*;
  */
 public abstract class NettyChannelConnection implements Connection {
 
-    protected Channel channel;
+	protected Channel channel;
 
-    @Override
-    public InetSocketAddress getRemoteAddress() {
-        return (InetSocketAddress)this.channel.remoteAddress();
-    }
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		return (InetSocketAddress)this.channel.remoteAddress();
+	}
 
-    @Override
-    public InetSocketAddress getLocalAddress() {
-        return (InetSocketAddress)this.channel.localAddress();
-    }
+	@Override
+	public InetSocketAddress getLocalAddress() {
+		return (InetSocketAddress)this.channel.localAddress();
+	}
 
-    @Override
-    public boolean isActive() {
-        return this.channel.isActive();
-    }
+	@Override
+	public boolean isActive() {
+		return this.channel.isActive();
+	}
 
-    protected NettyChannelConnection(Channel channel) {
-        this.channel = channel;
-    }
+	protected NettyChannelConnection(Channel channel) {
+		this.channel = channel;
+	}
 
-    protected ChannelPromise checkAndCreateChannelPromise(WriteMessagePromise promise) {
-        if (promise != null && !(promise instanceof NettyWriteMessagePromise)) {
-            promise.failedAndThrow(new TunnelException("Cannot support {}", promise.getClass()));
-        }
-        ChannelPromise channelPromise = this.channel.newPromise();
-        if (promise != null) {
-            NettyWriteMessagePromise messagePromise = as(promise);
-            if (!messagePromise.channelPromise(channelPromise)) {
-                messagePromise.failedAndThrow(new TunnelException("WriteMessageFuture {} is done", messagePromise));
-            }
-        }
-        return channelPromise;
-    }
+	protected ChannelPromise checkAndCreateChannelPromise(WriteMessagePromise promise) {
+		if (promise != null && !(promise instanceof NettyWriteMessagePromise)) {
+			promise.failedAndThrow(new TunnelException("Cannot support {}", promise.getClass()));
+		}
+		ChannelPromise channelPromise = this.channel.newPromise();
+		if (promise != null) {
+			// WriteMessagePromise 关联 Netty 的 ChannelPromise
+			NettyWriteMessagePromise messagePromise = as(promise);
+			if (!messagePromise.channelPromise(channelPromise)) {
+				messagePromise.failedAndThrow(new TunnelException("WriteMessageFuture {} is done", messagePromise));
+			}
+		}
+		return channelPromise;
+	}
 
-    @Override
-    public String toString() {
-        return valueOf(this.channel);
-    }
+	@Override
+	public String toString() {
+		return valueOf(this.channel);
+	}
 
 }

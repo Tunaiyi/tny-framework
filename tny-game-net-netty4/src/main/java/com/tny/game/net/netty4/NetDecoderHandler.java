@@ -68,7 +68,7 @@ public class NetDecoderHandler extends ByteToMessageDecoder {
 			Channel channel = null;
 			if (ctx != null) {
 				channel = ctx.channel();
-				tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+				tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
 			}
 			LOG.error("#BaseCoder# IP {} 解码 {} 信息异常", channel, tunnel == null ? "SOME ONE UNLOGION!" : tunnel.getUserId(), exception);
 			if (channel != null && exception instanceof CommandException) {

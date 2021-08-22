@@ -9,10 +9,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class BaseServerTunnel<UID, E extends NetSession<UID>, T extends Transporter<UID>> extends BaseTunnel<UID, E, T> {
-	//    public BaseServerTunnel(T transport, NetBootstrapContext<UID> bootstrapContext) {
-	//        super(transport, TunnelMode.SERVER, bootstrapContext);
-	//    }
+public class BaseServerTunnel<UID, E extends NetSession<UID>, T extends MessageTransporter<UID>> extends BaseTunnel<UID, E, T> {
 
 	public BaseServerTunnel(long id, T transporter, NetBootstrapContext<UID> bootstrapContext) {
 		super(id, transporter, TunnelMode.SERVER, bootstrapContext);

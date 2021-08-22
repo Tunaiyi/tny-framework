@@ -13,207 +13,212 @@ import java.net.InetSocketAddress;
  */
 public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
-    private long accessId;
-    private TunnelMode mode;
-    private TunnelStatus state;
-    private NetEndpoint<Long> endpoint;
-    private InetSocketAddress address = new InetSocketAddress(7100);
-    private int pingTimes = 0;
-    private int pongTimes = 0;
-    private int writeTimes = 0;
-    private boolean bindSuccess = true;
-    private boolean writeSuccess = true;
-    private NetBootstrapContext<Long> context;
+	private long accessId;
 
-    public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
-        this.endpoint = endpoint;
-        this.state = TunnelStatus.OPEN;
-        this.mode = mode;
-        this.context = new NetBootstrapContext<>();
-    }
+	private TunnelMode mode;
 
-    @Override
-    public long getId() {
-        return 1;
-    }
+	private TunnelStatus state;
 
-    @Override
-    public long getAccessId() {
-        return this.accessId;
-    }
+	private NetEndpoint<Long> endpoint;
 
-    @Override
-    public TunnelMode getMode() {
-        return this.mode;
-    }
+	private InetSocketAddress address = new InetSocketAddress(7100);
 
-    @Override
-    public boolean isActive() {
-        return this.state == TunnelStatus.OPEN;
-    }
+	private int pingTimes = 0;
 
-    @Override
-    public boolean isOpen() {
-        return this.state == TunnelStatus.OPEN;
-    }
+	private int pongTimes = 0;
 
-    @Override
-    public TunnelStatus getStatus() {
-        return this.state;
-    }
+	private int writeTimes = 0;
 
-    @Override
-    public InetSocketAddress getRemoteAddress() {
-        return this.address;
-    }
+	private boolean bindSuccess = true;
 
-    @Override
-    public InetSocketAddress getLocalAddress() {
-        return this.address;
-    }
+	private boolean writeSuccess = true;
 
-    @Override
-    public NetEndpoint<Long> getEndpoint() {
-        return this.endpoint;
-    }
+	private NetBootstrapContext<Long> context;
 
-    @Override
-    public void setAccessId(long accessId) {
-        this.accessId = accessId;
-    }
+	public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
+		this.endpoint = endpoint;
+		this.state = TunnelStatus.OPEN;
+		this.mode = mode;
+		this.context = new NetBootstrapContext<>();
+	}
 
-    @Override
-    public void ping() {
-        this.pingTimes++;
-    }
+	@Override
+	public long getId() {
+		return 1;
+	}
 
-    @Override
-    public void pong() {
-        this.pongTimes++;
-    }
+	@Override
+	public long getAccessId() {
+		return this.accessId;
+	}
 
-    @Override
-    public boolean open() {
-        this.state = TunnelStatus.OPEN;
-        return true;
-    }
+	@Override
+	public TunnelMode getMode() {
+		return this.mode;
+	}
 
-    @Override
-    public void disconnect() {
-        this.state = TunnelStatus.SUSPEND;
-        this.endpoint.onUnactivated(this);
-    }
+	@Override
+	public boolean isActive() {
+		return this.state == TunnelStatus.OPEN;
+	}
 
-    @Override
-    public void reset() {
-        this.state = TunnelStatus.INIT;
+	@Override
+	public boolean isOpen() {
+		return this.state == TunnelStatus.OPEN;
+	}
 
-    }
+	@Override
+	public TunnelStatus getStatus() {
+		return this.state;
+	}
 
-    @Override
-    public boolean bind(NetEndpoint<Long> endpoint) {
-        if (this.bindSuccess) {
-            this.endpoint = endpoint;
-            return true;
-        }
-        return false;
-    }
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		return this.address;
+	}
 
-    @Override
-    public WriteMessagePromise createWritePromise(long timeout) {
-        return new MockWriteMessagePromise(timeout);
-    }
+	@Override
+	public InetSocketAddress getLocalAddress() {
+		return this.address;
+	}
 
-    @Override
-    public NetBootstrapContext<Long> getNetBootstrapContext() {
-        return this.context;
-    }
+	@Override
+	public NetEndpoint<Long> getEndpoint() {
+		return this.endpoint;
+	}
 
-    @Override
-    public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
-        if (promise == null) {
-            promise = createWritePromise(-1);
-        }
-        if (this.writeSuccess) {
-            this.writeTimes++;
-            promise.success();
-        } else {
-            promise.failed(new RuntimeException());
-        }
-        return promise;
-    }
+	@Override
+	public void setAccessId(long accessId) {
+		this.accessId = accessId;
+	}
 
-    @Override
-    public WriteMessageFuture write(MessageMaker<Long> maker, MessageContext context) throws NetException {
-        return null;
-    }
+	@Override
+	public void ping() {
+		this.pingTimes++;
+	}
 
-    @Override
-    public void write(MessagesCollector collector) {
+	@Override
+	public void pong() {
+		this.pongTimes++;
+	}
 
-    }
+	@Override
+	public boolean open() {
+		this.state = TunnelStatus.OPEN;
+		return true;
+	}
 
-    @Override
-    public Long getUserId() {
-        return this.endpoint.getUserId();
-    }
+	@Override
+	public void disconnect() {
+		this.state = TunnelStatus.SUSPEND;
+		this.endpoint.onUnactivated(this);
+	}
 
-    @Override
-    public String getUserType() {
-        return this.endpoint.getUserType();
-    }
+	@Override
+	public void reset() {
+		this.state = TunnelStatus.INIT;
 
-    @Override
-    public Certificate<Long> getCertificate() {
-        return this.endpoint.getCertificate();
-    }
+	}
 
-    @Override
-    public boolean isLogin() {
-        return this.endpoint.isLogin();
-    }
+	@Override
+	public boolean bind(NetEndpoint<Long> endpoint) {
+		if (this.bindSuccess) {
+			this.endpoint = endpoint;
+			return true;
+		}
+		return false;
+	}
 
-    @Override
-    public boolean isClosed() {
-        return this.state == TunnelStatus.CLOSED;
-    }
+	@Override
+	public WriteMessagePromise createWritePromise() {
+		return new MockWriteMessagePromise();
+	}
 
-    @Override
-    public void close() {
-        this.disconnect();
-        this.state = TunnelStatus.CLOSED;
-    }
+	@Override
+	public NetBootstrapContext<Long> getNetBootstrapContext() {
+		return this.context;
+	}
 
-    @Override
-    public boolean receive(Message message) {
-        return this.endpoint.receive(this, message);
-    }
+	@Override
+	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
+		if (promise == null) {
+			promise = createWritePromise();
+		}
+		if (this.writeSuccess) {
+			this.writeTimes++;
+			promise.success();
+		} else {
+			promise.failed(new RuntimeException());
+		}
+		return promise;
+	}
 
-    @Override
-    public SendContext send(MessageContext messageContext) {
-        return this.endpoint.send(this, messageContext);
-    }
+	@Override
+	public WriteMessageFuture write(MessageAllocator maker, MessageContext context) throws NetException {
+		return null;
+	}
 
-    public MockNetTunnel setBindSuccess(boolean bindSuccess) {
-        this.bindSuccess = bindSuccess;
-        return this;
-    }
+	@Override
+	public Long getUserId() {
+		return this.endpoint.getUserId();
+	}
 
-    public MockNetTunnel setWriteSuccess(boolean writeSuccess) {
-        this.writeSuccess = writeSuccess;
-        return this;
-    }
+	@Override
+	public String getUserType() {
+		return this.endpoint.getUserType();
+	}
 
-    public int getWriteTimes() {
-        return this.writeTimes;
-    }
+	@Override
+	public Certificate<Long> getCertificate() {
+		return this.endpoint.getCertificate();
+	}
 
-    public int getPingTimes() {
-        return this.pingTimes;
-    }
+	@Override
+	public boolean isLogin() {
+		return this.endpoint.isLogin();
+	}
 
-    public int getPongTimes() {
-        return this.pongTimes;
-    }
+	@Override
+	public boolean isClosed() {
+		return this.state == TunnelStatus.CLOSED;
+	}
+
+	@Override
+	public void close() {
+		this.disconnect();
+		this.state = TunnelStatus.CLOSED;
+	}
+
+	@Override
+	public boolean receive(Message message) {
+		return this.endpoint.receive(this, message);
+	}
+
+	@Override
+	public SendContext send(MessageContext messageContext) {
+		return this.endpoint.send(this, messageContext);
+	}
+
+	public MockNetTunnel setBindSuccess(boolean bindSuccess) {
+		this.bindSuccess = bindSuccess;
+		return this;
+	}
+
+	public MockNetTunnel setWriteSuccess(boolean writeSuccess) {
+		this.writeSuccess = writeSuccess;
+		return this;
+	}
+
+	public int getWriteTimes() {
+		return this.writeTimes;
+	}
+
+	public int getPingTimes() {
+		return this.pingTimes;
+	}
+
+	public int getPongTimes() {
+		return this.pongTimes;
+	}
 
 }

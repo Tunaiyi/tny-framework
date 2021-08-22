@@ -19,62 +19,58 @@ import java.util.*;
 @ConditionalOnMissingBean(SpringBootNetBootstrapProperties.class)
 public class SpringBootNetBootstrapProperties {
 
-    @NestedConfigurationProperty
-    private SpringNettyServerBootstrapSetting server;
+	@NestedConfigurationProperty
+	private SpringNettyServerBootstrapSetting server;
 
-    @NestedConfigurationProperty
-    private SpringNettyClientBootstrapSetting client;
+	@NestedConfigurationProperty
+	private SpringNettyClientBootstrapSetting client;
 
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyServerBootstrapSetting> servers = ImmutableMap.of();
+	//    @NestedConfigurationProperty
+	private Map<String, SpringNettyServerBootstrapSetting> servers = ImmutableMap.of();
 
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyClientBootstrapSetting> clients = ImmutableMap.of();
+	//    @NestedConfigurationProperty
+	private Map<String, SpringNettyClientBootstrapSetting> clients = ImmutableMap.of();
 
-    public SpringNettyServerBootstrapSetting getServer() {
-        return this.server;
-    }
+	public SpringNettyServerBootstrapSetting getServer() {
+		return this.server;
+	}
 
-    public SpringBootNetBootstrapProperties setServer(SpringNettyServerBootstrapSetting server) {
-        this.server = server;
-        return this;
-    }
+	public SpringBootNetBootstrapProperties setServer(SpringNettyServerBootstrapSetting server) {
+		this.server = server;
+		return this;
+	}
 
-    public SpringNettyClientBootstrapSetting getClient() {
-        return this.client;
-    }
+	public SpringNettyClientBootstrapSetting getClient() {
+		return this.client;
+	}
 
-    public SpringBootNetBootstrapProperties setClient(SpringNettyClientBootstrapSetting client) {
-        this.client = client;
-        return this;
-    }
+	public SpringBootNetBootstrapProperties setClient(SpringNettyClientBootstrapSetting client) {
+		this.client = client;
+		return this;
+	}
 
-    public Map<String, SpringNettyServerBootstrapSetting> getServers() {
-        return Collections.unmodifiableMap(this.servers);
-    }
+	public Map<String, SpringNettyServerBootstrapSetting> getServers() {
+		return Collections.unmodifiableMap(this.servers);
+	}
 
-    public SpringBootNetBootstrapProperties setServers(Map<String, SpringNettyServerBootstrapSetting> servers) {
-        if (servers != null) {
-            servers.forEach((name, setting) -> {
-                setting.setName(name);
-            });
-            this.servers = servers;
-        }
-        return this;
-    }
+	public SpringBootNetBootstrapProperties setServers(Map<String, SpringNettyServerBootstrapSetting> servers) {
+		if (servers != null) {
+			servers.forEach((name, setting) -> setting.setName(name));
+			this.servers = servers;
+		}
+		return this;
+	}
 
-    public Map<String, SpringNettyClientBootstrapSetting> getClients() {
-        return Collections.unmodifiableMap(this.clients);
-    }
+	public Map<String, SpringNettyClientBootstrapSetting> getClients() {
+		return Collections.unmodifiableMap(this.clients);
+	}
 
-    public SpringBootNetBootstrapProperties setClients(Map<String, SpringNettyClientBootstrapSetting> clients) {
-        if (clients != null) {
-            clients.forEach((name, setting) -> {
-                setting.setName(name);
-            });
-            this.clients = clients;
-        }
-        return this;
-    }
+	public SpringBootNetBootstrapProperties setClients(Map<String, SpringNettyClientBootstrapSetting> clients) {
+		if (clients != null) {
+			clients.forEach((name, setting) -> setting.setName(name));
+			this.clients = clients;
+		}
+		return this;
+	}
 
 }

@@ -2,59 +2,59 @@ package com.tny.game.net.message;
 
 public class Protocols {
 
-    public static final DefaultProtocol PUSH = new DefaultProtocol(-1);
+	public static final DefaultProtocol PUSH = new DefaultProtocol(0);
 
-    protected static class DefaultProtocol implements Protocol {
+	protected static class DefaultProtocol implements Protocol {
 
-        private int id;
+		private int id;
 
-        private int line = 0;
+		private int line = 0;
 
-        private DefaultProtocol(int id) {
-            this.id = id;
-        }
+		private DefaultProtocol(int id) {
+			this.id = id;
+		}
 
-        @Override
-        public int getProtocolId() {
-            return this.id;
-        }
+		@Override
+		public int getProtocolId() {
+			return this.id;
+		}
 
-        @Override
-        public int getLine() {
-            return this.line;
-        }
+		@Override
+		public int getLine() {
+			return this.line;
+		}
 
-        public void setId(int id) {
-            this.id = id;
-        }
+		public void setId(int id) {
+			this.id = id;
+		}
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + this.id;
-            return result;
-        }
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + this.id;
+			return result;
+		}
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            Protocol other = (Protocol)obj;
-            return this.id == other.getProtocolId();
-        }
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			Protocol other = (Protocol)obj;
+			return this.id == other.getProtocolId();
+		}
 
-    }
+	}
 
-    public static Protocol protocol(int protocol) {
-        return new DefaultProtocol(protocol);
-    }
+	public static Protocol protocol(int protocol) {
+		return new DefaultProtocol(protocol);
+	}
 
 }

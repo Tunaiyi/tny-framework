@@ -12,10 +12,10 @@ import com.tny.game.net.transport.*;
  */
 public interface EndpointContext<UID> {
 
-    CertificateFactory<UID> getCertificateFactory();
+	CertificateFactory<UID> getCertificateFactory();
 
-    MessageDispatcher getMessageDispatcher();
+	MessageDispatcher getMessageDispatcher();
 
-    CommandTaskProcessor getCommandTaskProcessor();
+	CommandTaskProcessor getCommandTaskProcessor();
 
 }

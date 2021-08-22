@@ -7,18 +7,18 @@ import com.tny.game.net.endpoint.*;
  */
 public interface NetTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
-    long getConnectTimeout();
+	long getConnectTimeout();
 
-    int getConnectRetryTimes();
+	int getConnectRetryTimes();
 
-    long getConnectRetryInterval();
+	long getConnectRetryInterval();
 
-    boolean isAsyncConnect();
+	boolean isAsyncConnect();
 
-    Transporter<UID> connect();
+	MessageTransporter<UID> connect();
 
-    void reconnect();
+	void reconnect();
 
-    void onConnected(NetTunnel<UID> tunnel);
+	void onConnected(NetTunnel<UID> tunnel);
 
 }

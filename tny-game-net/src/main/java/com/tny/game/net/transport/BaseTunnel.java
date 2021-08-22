@@ -12,12 +12,9 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/3/28.
  */
-public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Transporter<UID>> extends AbstractTunnel<UID, E> {
+public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends MessageTransporter<UID>> extends AbstractTunnel<UID, E> {
 
 	protected volatile T transporter;
-	//    protected BaseTunnel(T transporter, TunnelMode mode, NetBootstrapContext<UID> bootstrapContext) {
-	//        this(NetAide.newTunnelId(), transporter, mode, bootstrapContext);
-	//    }
 
 	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetBootstrapContext<UID> bootstrapContext) {
 		super(id, mode, bootstrapContext);
@@ -27,7 +24,7 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Tran
 		}
 	}
 
-	protected Transporter<UID> getTransporter() {
+	protected MessageTransporter<UID> getTransporter() {
 		return this.transporter;
 	}
 
@@ -47,10 +44,6 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Tran
 		return this.getStatus() == TunnelStatus.OPEN && transporter != null && transporter.isActive();
 	}
 
-	Transporter<UID> getNetTransport() {
-		return this.transporter;
-	}
-
 	@Override
 	public void reset() {
 		if (this.status == TunnelStatus.INIT) {
@@ -68,22 +61,16 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Tran
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageMaker<UID> maker, MessageContext context) throws NetException {
-		WriteMessagePromise promise = as(context.getWriteMessageFuture());
-		this.checkAvailable(promise);
-		return this.transporter.write(maker, context);
-	}
-
-	@Override
 	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
 		this.checkAvailable(promise);
 		return this.transporter.write(message, promise);
 	}
 
 	@Override
-	public void write(MessagesCollector collector) {
-		this.checkAvailable(null);
-		this.transporter.write(collector);
+	public WriteMessageFuture write(MessageAllocator maker, MessageContext context) throws NetException {
+		WriteMessagePromise promise = as(context.getWriteMessageFuture());
+		this.checkAvailable(promise);
+		return this.transporter.write(maker, this.getMessageFactory(), context);
 	}
 
 	@Override
@@ -127,14 +114,14 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Tran
 	}
 
 	@Override
-	public WriteMessagePromise createWritePromise(long sendTimeout) {
-		return this.transporter.createWritePromise(sendTimeout);
+	public WriteMessagePromise createWritePromise() {
+		return this.transporter.createWritePromise();
 	}
 
-	protected AbstractTunnel<UID, E> setNetTransport(T transport) {
-		this.transporter = transport;
-		return this;
-	}
+	//	protected AbstractTunnel<UID, E> setNetTransport(T transport) {
+	//		this.transporter = transport;
+	//		return this;
+	//	}
 
 	protected AbstractTunnel<UID, E> setEndpoint(E endpoint) {
 		this.endpoint = endpoint;

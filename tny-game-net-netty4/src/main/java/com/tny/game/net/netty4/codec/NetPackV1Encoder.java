@@ -39,14 +39,14 @@ public class NetPackV1Encoder extends NetPackV1Codec implements NetPackEncoder {
 				return;
 			}
 			// 获取打包器
-			DataPackageContext packageContext = channel.attr(NettyAttrKeys.WRITE_PACKAGER).get();
+			DataPackageContext packageContext = channel.attr(NettyNetAttrKeys.WRITE_PACKAGER).get();
 			NetTunnel<?> tunnel;
 			if (packageContext == null) {
-				tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+				tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
 				packageContext = new DataPackageContext(tunnel.getAccessId(), config);
-				channel.attr(NettyAttrKeys.WRITE_PACKAGER).set(packageContext);
+				channel.attr(NettyNetAttrKeys.WRITE_PACKAGER).set(packageContext);
 			}
-			NetLogger.logSend(() -> channel.attr(NettyAttrKeys.TUNNEL).get(), message);
+			NetLogger.logSend(() -> channel.attr(NettyNetAttrKeys.TUNNEL).get(), message);
 			writePayload(packageContext, message, out);
 		} catch (Exception e) {
 			LOGGER.error("编码 message {} 异常", message, e);

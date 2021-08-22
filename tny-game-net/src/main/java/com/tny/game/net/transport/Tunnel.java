@@ -10,49 +10,49 @@ import java.net.InetSocketAddress;
  */
 public interface Tunnel<UID> extends Communicator<UID> {
 
-    /**
-     * @return 通道 Id
-     */
-    long getId();
+	/**
+	 * @return 通道 Id
+	 */
+	long getId();
 
-    /**
-     * @return 访问 Id
-     */
-    long getAccessId();
+	/**
+	 * @return 访问 Id
+	 */
+	long getAccessId();
 
-    /**
-     * @return 终端模式
-     */
-    TunnelMode getMode();
+	/**
+	 * @return 终端模式
+	 */
+	TunnelMode getMode();
 
-    /**
-     * @return 是否激活
-     */
-    boolean isActive();
+	/**
+	 * @return 是否激活
+	 */
+	boolean isActive();
 
-    /**
-     * @return 是否已经开启
-     */
-    boolean isOpen();
+	/**
+	 * @return 是否已经开启
+	 */
+	boolean isOpen();
 
-    /**
-     * @return 获取 Tunnel 状态
-     */
-    TunnelStatus getStatus();
+	/**
+	 * @return 获取 Tunnel 状态
+	 */
+	TunnelStatus getStatus();
 
-    /**
-     * @return 返回远程地址
-     */
-    InetSocketAddress getRemoteAddress();
+	/**
+	 * @return 返回远程地址
+	 */
+	InetSocketAddress getRemoteAddress();
 
-    /**
-     * @return 返回本地地址
-     */
-    InetSocketAddress getLocalAddress();
+	/**
+	 * @return 返回本地地址
+	 */
+	InetSocketAddress getLocalAddress();
 
-    /**
-     * @return 获取绑定中断
-     */
-    Endpoint<UID> getEndpoint();
+	/**
+	 * @return 获取绑定中断
+	 */
+	Endpoint<UID> getEndpoint();
 
 }

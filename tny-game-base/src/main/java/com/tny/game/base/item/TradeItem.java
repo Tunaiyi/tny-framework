@@ -5,15 +5,15 @@ package com.tny.game.base.item;
  *
  * @param <I> ItemModel类型
  */
-public interface TradeItem<I extends ItemModel> extends DealedItem<I> {
+public interface TradeItem<I extends ItemModel> extends DealItem<I> {
 
-    AlterType getAlertType();
+	AlterType getAlertType();
 
-    boolean isValid();
+	boolean isValid();
 
-    @SuppressWarnings("unchecked")
-    default <IM extends I> TradeItem<IM> as() {
-        return (TradeItem<IM>) this;
-    }
+	@SuppressWarnings("unchecked")
+	default <IM extends I> TradeItem<IM> as() {
+		return (TradeItem<IM>)this;
+	}
 
 }

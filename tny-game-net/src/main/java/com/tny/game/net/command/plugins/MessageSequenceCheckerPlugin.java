@@ -10,24 +10,24 @@ import org.slf4j.*;
 
 public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
 
-    private static final AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
+	private static final AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
 
-    @Override
-    public void doExecute(Tunnel<Object> tunnel, Message message, MessageCommandContext context) {
-        if (!tunnel.isLogin()) {
-            return;
-        }
-        Endpoint<Object> endpoint = tunnel.getEndpoint();
-        Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
-        MessageHead head = message.getHead();
-        if (head.getId() > lastHandledId) {
-            endpoint.attributes().setAttribute(CHECK_MESSAGE_ID, lastHandledId);
-        } else {
-            LOGGER.warn("message [{}] is handled, the id of the last message handled is {}", message, lastHandledId);
-            context.doneAndIntercept(NetResultCode.MESSAGE_HANDLED);
-        }
-    }
+	@Override
+	public void doExecute(Tunnel<Object> tunnel, Message message, MessageCommandContext context) {
+		if (!tunnel.isLogin()) {
+			return;
+		}
+		Endpoint<Object> endpoint = tunnel.getEndpoint();
+		Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
+		MessageHead head = message.getHead();
+		if (head.getId() > lastHandledId) {
+			endpoint.attributes().setAttribute(CHECK_MESSAGE_ID, lastHandledId);
+		} else {
+			LOGGER.warn("message [{}] is handled, the id of the last message handled is {}", message, lastHandledId);
+			context.doneAndIntercept(NetResultCode.MESSAGE_HANDLED);
+		}
+	}
 
 }

@@ -11,47 +11,43 @@ import java.util.Collection;
  */
 public abstract class MessageContext implements SendContext, MessageContent {
 
-    /**
-     * @return 获取结果码
-     */
-    public abstract ResultCode getResultCode();
+	/**
+	 * @return 获取结果码
+	 */
+	public abstract ResultCode getResultCode();
 
-    /**
-     * @param body 设置 Message Body
-     * @return 返回 context 自身
-     */
-    public abstract MessageContext setBody(Object body);
+	/**
+	 * @param body 设置 Message Body
+	 * @return 返回 context 自身
+	 */
+	public abstract MessageContext setBody(Object body);
 
-    public abstract MessageContext willWriteFuture();
+	public abstract MessageContext willWriteFuture();
 
-    public abstract RequestContext willWriteFuture(long timeoutMills);
+	public abstract MessageContext willWriteFuture(WriteMessageListener listener);
 
-    public abstract MessageContext willWriteFuture(WriteMessageListener listener);
+	public abstract MessageContext willWriteFuture(Collection<WriteMessageListener> listeners);
 
-    public abstract MessageContext willWriteFuture(Collection<WriteMessageListener> listeners);
+	/**
+	 * 取消
+	 *
+	 * @param mayInterruptIfRunning 打断所欲运行
+	 */
+	public abstract void cancel(boolean mayInterruptIfRunning);
 
-    /**
-     * 取消
-     *
-     * @param mayInterruptIfRunning 打断所欲运行
-     */
-    public abstract void cancel(boolean mayInterruptIfRunning);
+	/**
+	 * 取消
+	 */
+	protected abstract void fail(Throwable throwable);
 
-    /**
-     * 取消
-     *
-     * @return 是否取消成功
-     */
-    protected abstract void fail(Throwable throwable);
+	public abstract WriteMessageFuture getWriteMessageFuture();
 
-    public abstract WriteMessageFuture getWriteMessageFuture();
+	protected abstract void setWriteMessagePromise(WriteMessagePromise writePromise);
 
-    protected abstract void setWriteMessagePromise(WriteMessagePromise writePromise);
+	protected abstract void setRespondFuture(RespondFuture respondFuture);
 
-    protected abstract void setRespondFuture(RespondFuture respondFuture);
+	protected abstract boolean isNeedWriteFuture();
 
-    protected abstract boolean isNeedWriteFuture();
-
-    protected abstract boolean isNeedResponseFuture();
+	protected abstract boolean isNeedResponseFuture();
 
 }

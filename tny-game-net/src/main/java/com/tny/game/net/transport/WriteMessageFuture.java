@@ -10,10 +10,8 @@ import java.util.concurrent.Future;
  */
 public interface WriteMessageFuture extends Future<Void> {
 
-    boolean isSuccess();
+	boolean isSuccess();
 
-    Throwable cause();
-
-    long getWriteTimeout();
+	Throwable cause();
 
 }

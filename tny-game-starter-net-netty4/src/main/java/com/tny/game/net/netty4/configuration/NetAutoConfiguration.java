@@ -63,6 +63,11 @@ public class NetAutoConfiguration {
 	}
 
 	@Bean
+	public NettyMessageHandler defaultNettyMessageHandler() {
+		return new NettyMessageHandler();
+	}
+
+	@Bean
 	public MessageFactory defaultMessageFactory() {
 		return new CommonMessageFactory();
 	}
@@ -143,6 +148,11 @@ public class NetAutoConfiguration {
 	@Bean
 	public NoneCodecCrypto noneCodecCrypto() {
 		return new NoneCodecCrypto();
+	}
+
+	@Bean
+	public GeneralNettyServerTunnelFactory defaultNettyTunnelFactory() {
+		return new GeneralNettyServerTunnelFactory();
 	}
 
 	@Bean

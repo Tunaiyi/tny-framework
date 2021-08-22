@@ -74,7 +74,7 @@ public class NetPackV1Decoder extends NetPackV1Codec implements NetPackDecoder {
 		}
 		try {
 			Message message = readPayload(channel, in, option, payloadLength);
-			NetLogger.logReceive(() -> channel.attr(NettyAttrKeys.TUNNEL).get(), message);
+			NetLogger.logReceive(() -> channel.attr(NettyNetAttrKeys.TUNNEL).get(), message);
 			return message;
 		} finally {
 			marker.reset();
@@ -85,15 +85,15 @@ public class NetPackV1Decoder extends NetPackV1Codec implements NetPackDecoder {
 		ByteBuf bodyBuffer = null;
 		try {
 			byte[] bodyBytes;
-			NetTunnel<?> tunnel = channel.attr(NettyAttrKeys.TUNNEL).get();
+			NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
 			// 获取打包器
 			int index = in.readerIndex();
 			long accessId = NettyVarIntCoder.readVarInt64(in);
-			DataPackageContext packageContext = channel.attr(NettyAttrKeys.READ_PACKAGER).get();
+			DataPackageContext packageContext = channel.attr(NettyNetAttrKeys.READ_PACKAGER).get();
 			if (packageContext == null) {
 				packageContext = new DataPackageContext(accessId, config);
 				tunnel.setAccessId(accessId);
-				channel.attr(NettyAttrKeys.READ_PACKAGER).set(packageContext);
+				channel.attr(NettyNetAttrKeys.READ_PACKAGER).set(packageContext);
 			}
 			int number = NettyVarIntCoder.readVarInt32(in);
 			// 移动到当前包序号

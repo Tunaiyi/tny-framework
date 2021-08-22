@@ -5,12 +5,12 @@ package com.tny.game.net.endpoint;
  */
 public class CommonSessionFactory<UID> implements SessionFactory<UID, CommonSession<UID>, SessionSetting> {
 
-    public CommonSessionFactory() {
-    }
+	public CommonSessionFactory() {
+	}
 
-    @Override
-    public CommonSession<UID> create(SessionSetting setting, EndpointContext<UID> endpointContext) {
-        return new CommonSession<>(setting, endpointContext);
-    }
+	@Override
+	public CommonSession<UID> create(SessionSetting setting, EndpointContext<UID> endpointContext) {
+		return new CommonSession<>(setting, endpointContext);
+	}
 
 }

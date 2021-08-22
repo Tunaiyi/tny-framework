@@ -8,6 +8,6 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @UnitInterface
 public interface EndpointFactory<UID, E extends Endpoint<UID>, S extends EndpointSetting> {
 
-    E create(S setting, EndpointContext<UID> endpointContext);
+	E create(S setting, EndpointContext<UID> endpointContext);
 
 }

@@ -12,12 +12,12 @@ import java.util.Optional;
 @UnitInterface
 public interface EndpointKeeperManager {
 
-    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode);
+	<UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode);
 
-    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType);
+	<UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType);
 
-    <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType);
+	<UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType);
 
-    <UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType);
+	<UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType);
 
 }

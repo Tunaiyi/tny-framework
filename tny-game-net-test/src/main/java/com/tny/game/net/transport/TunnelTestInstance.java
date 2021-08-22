@@ -5,20 +5,21 @@ package com.tny.game.net.transport;
  */
 public class TunnelTestInstance<T, E extends MockNetEndpoint> {
 
-    private T tunnel;
+	private T tunnel;
 
-    private E endpoint;
+	private E endpoint;
 
-    public TunnelTestInstance(T tunnel, E endpoint) {
-        this.tunnel = tunnel;
-        this.endpoint = endpoint;
-    }
+	public TunnelTestInstance(T tunnel, E endpoint) {
+		this.tunnel = tunnel;
+		this.endpoint = endpoint;
+	}
 
-    public T getTunnel() {
-        return tunnel;
-    }
+	public T getTunnel() {
+		return tunnel;
+	}
 
-    public E getEndpoint() {
-        return endpoint;
-    }
+	public E getEndpoint() {
+		return endpoint;
+	}
+
 }

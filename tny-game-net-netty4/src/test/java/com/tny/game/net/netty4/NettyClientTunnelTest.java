@@ -54,7 +54,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
 	@Override
 	protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
-		return (EmbeddedChannel)((NettyChannelTransporter<?>)tunnel.getTransporter()).getChannel();
+		return (EmbeddedChannel)((NettyChannelMessageTransporter<?>)tunnel.getTransporter()).getChannel();
 	}
 	// @Override
 	// protected NettyClientTunnel<Long> createUnloginTunnel(SessionFactory<Long> sessionFactory, MessageBuilderFactory<Long>

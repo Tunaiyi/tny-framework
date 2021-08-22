@@ -7,21 +7,21 @@ import com.tny.game.net.transport.*;
  */
 public class EndpointTestInstance<E extends NetEndpoint<Long>> {
 
-    private E endpoint;
+	private E endpoint;
 
-    private MockNetTunnel tunnel;
+	private MockNetTunnel tunnel;
 
-    public EndpointTestInstance(E endpoint, MockNetTunnel tunnel) {
-        this.endpoint = endpoint;
-        this.tunnel = tunnel;
-    }
+	public EndpointTestInstance(E endpoint, MockNetTunnel tunnel) {
+		this.endpoint = endpoint;
+		this.tunnel = tunnel;
+	}
 
-    public E getEndpoint() {
-        return this.endpoint;
-    }
+	public E getEndpoint() {
+		return this.endpoint;
+	}
 
-    public MockNetTunnel getTunnel() {
-        return this.tunnel;
-    }
+	public MockNetTunnel getTunnel() {
+		return this.tunnel;
+	}
 
 }

@@ -10,7 +10,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Transporter<UID>> extends BaseTunnel<UID, E, T> {
+public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTransporter<UID>> extends BaseTunnel<UID, E, T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseClientTunnel.class);
 

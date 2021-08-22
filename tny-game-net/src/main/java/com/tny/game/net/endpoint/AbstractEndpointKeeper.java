@@ -12,139 +12,139 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK extends E> implements EndpointKeeper<UID, E> {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
+	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onAddSession =
-            EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onAddEndpoint);
+	protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onAddSession =
+			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onAddEndpoint);
 
-    protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onRemoveSession =
-            EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onRemoveEndpoint);
+	protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onRemoveSession =
+			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onRemoveEndpoint);
 
-    /* 所有 endpoint */
-    protected final Map<UID, EK> endpointMap = new ConcurrentHashMap<>();
+	/* 所有 endpoint */
+	protected final Map<UID, EK> endpointMap = new ConcurrentHashMap<>();
 
-    private String userType;
+	private String userType;
 
-    protected AbstractEndpointKeeper(String userType) {
-        this.userType = userType;
-    }
+	protected AbstractEndpointKeeper(String userType) {
+		this.userType = userType;
+	}
 
-    @Override
-    public String getUserType() {
-        return this.userType;
-    }
+	@Override
+	public String getUserType() {
+		return this.userType;
+	}
 
-    @Override
-    public E getEndpoint(UID userId) {
-        return this.endpointMap.get(userId);
-    }
+	@Override
+	public E getEndpoint(UID userId) {
+		return this.endpointMap.get(userId);
+	}
 
-    @Override
-    public Map<UID, E> getAllEndpoints() {
-        return Collections.unmodifiableMap(this.endpointMap);
-    }
+	@Override
+	public Map<UID, E> getAllEndpoints() {
+		return Collections.unmodifiableMap(this.endpointMap);
+	}
 
-    @Override
-    public void send2User(UID userId, MessageContext context) {
-        E endpoint = this.getEndpoint(userId);
-        if (endpoint != null) {
-            endpoint.send(context);
-        }
-    }
+	@Override
+	public void send2User(UID userId, MessageContext context) {
+		E endpoint = this.getEndpoint(userId);
+		if (endpoint != null) {
+			endpoint.send(context);
+		}
+	}
 
-    @Override
-    public void send2Users(Collection<UID> userIds, MessageContext context) {
-        this.doSendMultiId(userIds.stream(), context);
-    }
+	@Override
+	public void send2Users(Collection<UID> userIds, MessageContext context) {
+		this.doSendMultiId(userIds.stream(), context);
+	}
 
-    @Override
-    public void send2Users(Stream<UID> userIdsStream, MessageContext context) {
-        this.doSendMultiId(userIdsStream, context);
-    }
+	@Override
+	public void send2Users(Stream<UID> userIdsStream, MessageContext context) {
+		this.doSendMultiId(userIdsStream, context);
+	}
 
-    @Override
-    public void send2AllOnline(MessageContext context) {
-        for (E endpoint : this.endpointMap.values())
-            endpoint.send(context);
-    }
+	@Override
+	public void send2AllOnline(MessageContext context) {
+		for (E endpoint : this.endpointMap.values())
+			endpoint.send(context);
+	}
 
-    @Override
-    public int size() {
-        return this.endpointMap.size();
-    }
+	@Override
+	public int size() {
+		return this.endpointMap.size();
+	}
 
-    @Override
-    public E close(UID userId) {
-        E endpoint = this.endpointMap.get(userId);
-        if (endpoint != null) {
-            endpoint.close();
-        }
-        return endpoint;
-    }
+	@Override
+	public E close(UID userId) {
+		E endpoint = this.endpointMap.get(userId);
+		if (endpoint != null) {
+			endpoint.close();
+		}
+		return endpoint;
+	}
 
-    @Override
-    public void closeAll() {
-        this.endpointMap.forEach((key, endpoint) -> endpoint.close());
-    }
+	@Override
+	public void closeAll() {
+		this.endpointMap.forEach((key, endpoint) -> endpoint.close());
+	}
 
-    @Override
-    public E offline(UID userId) {
-        E endpoint = this.endpointMap.get(userId);
-        if (endpoint != null) {
-            endpoint.offline();
-        }
-        return endpoint;
-    }
+	@Override
+	public E offline(UID userId) {
+		E endpoint = this.endpointMap.get(userId);
+		if (endpoint != null) {
+			endpoint.offline();
+		}
+		return endpoint;
+	}
 
-    @Override
-    public void offlineAll() {
-        this.endpointMap.forEach((key, session) -> session.offline());
-    }
+	@Override
+	public void offlineAll() {
+		this.endpointMap.forEach((key, session) -> session.offline());
+	}
 
-    @Override
-    public boolean isOnline(UID userId) {
-        E endpoint = this.getEndpoint(userId);
-        return endpoint != null && endpoint.isOnline();
-    }
+	@Override
+	public boolean isOnline(UID userId) {
+		E endpoint = this.getEndpoint(userId);
+		return endpoint != null && endpoint.isOnline();
+	}
 
-    @Override
-    public int countOnlineSize() {
-        int online = 0;
-        for (E endpoint : this.endpointMap.values()) {
-            if (endpoint.isOnline()) {
-                online++;
-            }
-        }
-        return online;
-    }
+	@Override
+	public int countOnlineSize() {
+		int online = 0;
+		for (E endpoint : this.endpointMap.values()) {
+			if (endpoint.isOnline()) {
+				online++;
+			}
+		}
+		return online;
+	}
 
-    @Override
-    public void addListener(EndpointKeeperListener<UID> listener) {
-        onAddSession.addListener(listener);
-        onRemoveSession.addListener(listener);
-    }
+	@Override
+	public void addListener(EndpointKeeperListener<UID> listener) {
+		onAddSession.addListener(listener);
+		onRemoveSession.addListener(listener);
+	}
 
-    @Override
-    public void addListener(Collection<EndpointKeeperListener<UID>> listeners) {
-        listeners.forEach(l -> {
-            onAddSession.addListener(l);
-            onAddSession.addListener(l);
-        });
-    }
+	@Override
+	public void addListener(Collection<EndpointKeeperListener<UID>> listeners) {
+		listeners.forEach(l -> {
+			onAddSession.addListener(l);
+			onAddSession.addListener(l);
+		});
+	}
 
-    @Override
-    public void removeListener(EndpointKeeperListener<UID> listener) {
-        onAddSession.removeListener(listener);
-        onRemoveSession.removeListener(listener);
-    }
+	@Override
+	public void removeListener(EndpointKeeperListener<UID> listener) {
+		onAddSession.removeListener(listener);
+		onRemoveSession.removeListener(listener);
+	}
 
-    private void doSendMultiId(Stream<UID> userIds, MessageContext context) {
-        userIds.forEach(userId -> {
-            E endpoint = this.getEndpoint(userId);
-            if (endpoint != null) {
-                endpoint.send(context);
-            }
-        });
-    }
+	private void doSendMultiId(Stream<UID> userIds, MessageContext context) {
+		userIds.forEach(userId -> {
+			E endpoint = this.getEndpoint(userId);
+			if (endpoint != null) {
+				endpoint.send(context);
+			}
+		});
+	}
 
 }

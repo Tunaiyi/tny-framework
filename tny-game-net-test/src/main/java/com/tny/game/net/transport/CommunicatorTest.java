@@ -11,48 +11,51 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public abstract class CommunicatorTest<C extends Communicator<Long>> {
 
-    protected static Long uid = 100L;
-    protected static Long unloginUid = null;
-    protected static String userGroup = Certificates.DEFAULT_USER_TYPE;
-    protected static Long certificateId = System.currentTimeMillis();
+	protected static Long uid = 100L;
 
-    protected Certificate<Long> createUnLoginCert() {
-        return Certificates.createUnauthenticated(unloginUid);
-    }
+	protected static Long unloginUid = null;
 
-    protected Certificate<Long> createLoginCert() {
-        return Certificates.createAuthenticated(certificateId, uid, Instant.now());
-    }
+	protected static String userGroup = Certificates.DEFAULT_USER_TYPE;
 
-    protected Certificate<Long> createLoginCert(long certificateId, Long uid) {
-        return Certificates.createAuthenticated(certificateId, uid, Instant.now());
-    }
+	protected static Long certificateId = System.currentTimeMillis();
 
-    protected CommunicatorTest() {
-    }
+	protected Certificate<Long> createUnLoginCert() {
+		return Certificates.createUnauthenticated(unloginUid);
+	}
 
-    public abstract C createNetter(Certificate<Long> certificate);
+	protected Certificate<Long> createLoginCert() {
+		return Certificates.createAuthenticated(certificateId, uid, Instant.now());
+	}
 
-    @Test
-    public void getUserId() {
-        C loginCommunicator = createNetter(createLoginCert());
-        assertEquals(uid, loginCommunicator.getUserId());
-    }
+	protected Certificate<Long> createLoginCert(long certificateId, Long uid) {
+		return Certificates.createAuthenticated(certificateId, uid, Instant.now());
+	}
 
-    @Test
-    public void getUserType() {
-        C loginCommunicator = createNetter(createLoginCert());
-        assertEquals(userGroup, loginCommunicator.getUserType());
-    }
+	protected CommunicatorTest() {
+	}
 
-    @Test
-    public void isClosed() {
-        C loginCommunicator = createNetter(createLoginCert());
-        assertFalse(loginCommunicator.isClosed());
-        loginCommunicator.close();
-        assertTrue(loginCommunicator.isClosed());
-        loginCommunicator.close();
-        assertTrue(loginCommunicator.isClosed());
-    }
+	public abstract C createNetter(Certificate<Long> certificate);
+
+	@Test
+	public void getUserId() {
+		C loginCommunicator = createNetter(createLoginCert());
+		assertEquals(uid, loginCommunicator.getUserId());
+	}
+
+	@Test
+	public void getUserType() {
+		C loginCommunicator = createNetter(createLoginCert());
+		assertEquals(userGroup, loginCommunicator.getUserType());
+	}
+
+	@Test
+	public void isClosed() {
+		C loginCommunicator = createNetter(createLoginCert());
+		assertFalse(loginCommunicator.isClosed());
+		loginCommunicator.close();
+		assertTrue(loginCommunicator.isClosed());
+		loginCommunicator.close();
+		assertTrue(loginCommunicator.isClosed());
+	}
 
 }

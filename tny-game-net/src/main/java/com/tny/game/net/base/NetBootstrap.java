@@ -34,15 +34,15 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
 	@Override
 	public void prepareStart() throws Exception {
-		MessageFactory messageFactory = as(UnitLoader.getLoader(MessageFactory.class).getUnitAnCheck(this.setting.getMessageFactory()));
+		MessageFactory messageFactory = as(UnitLoader.getLoader(MessageFactory.class).checkUnit(this.setting.getMessageFactory()));
 		CertificateFactory<Object> certificateFactory = as(
-				UnitLoader.getLoader(CertificateFactory.class).getUnitAnCheck(this.setting.getCertificateFactory()));
+				UnitLoader.getLoader(CertificateFactory.class).checkUnit(this.setting.getCertificateFactory()));
 		MessageDispatcher messageDispatcher = as(
-				UnitLoader.getLoader(MessageDispatcher.class).getUnitAnCheck(this.setting.getMessageDispatcher()));
+				UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
 		CommandTaskProcessor commandTaskProcessor = as(
-				UnitLoader.getLoader(CommandTaskProcessor.class).getUnitAnCheck(this.setting.getCommandTaskProcessor()));
+				UnitLoader.getLoader(CommandTaskProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
 		this.context = new NetBootstrapContext<>(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
-		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).getUnitAnCheck(this.setting.getTunnelIdGenerator()));
+		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
 		this.postPrepared(this.setting);
 	}
 

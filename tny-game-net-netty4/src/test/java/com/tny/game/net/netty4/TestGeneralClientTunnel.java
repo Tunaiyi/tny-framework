@@ -21,7 +21,7 @@ public class TestGeneralClientTunnel extends GeneralClientTunnel<Long, MockNetty
 	}
 
 	@Override
-	protected Transporter<Long> getTransporter() {
+	protected MessageTransporter<Long> getTransporter() {
 		return super.getTransporter();
 	}
 

@@ -4,10 +4,10 @@ import com.tny.game.net.endpoint.*;
 
 public interface EndpointKeeperListener<UID> {
 
-    default void onAddEndpoint(EndpointKeeper<UID, Endpoint<UID>> holder, Endpoint<UID> endpoint) {
-    }
+	default void onAddEndpoint(EndpointKeeper<UID, Endpoint<UID>> holder, Endpoint<UID> endpoint) {
+	}
 
-    default void onRemoveEndpoint(EndpointKeeper<UID, Endpoint<UID>> holder, Endpoint<UID> endpoint) {
-    }
+	default void onRemoveEndpoint(EndpointKeeper<UID, Endpoint<UID>> holder, Endpoint<UID> endpoint) {
+	}
 
 }

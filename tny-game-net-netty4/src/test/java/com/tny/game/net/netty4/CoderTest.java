@@ -52,7 +52,7 @@ public class CoderTest {
 		when(tunnel.getAccessId()).thenReturn(999999L);
 		when(tunnel.getMessageFactory()).thenReturn(messageFactory);
 		EmbeddedChannel channel = new EmbeddedChannel();
-		channel.attr(NettyAttrKeys.TUNNEL).set(tunnel);
+		channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);
 		when(ctx.channel()).thenReturn(channel);
 		UnpooledByteBufAllocator allocator = new UnpooledByteBufAllocator(false);
 		ByteBuf byteBuf = allocator.buffer();

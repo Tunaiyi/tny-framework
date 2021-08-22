@@ -10,24 +10,24 @@ import java.net.InetSocketAddress;
  */
 public interface Connection {
 
-    /**
-     * @return 远程地址
-     */
-    InetSocketAddress getRemoteAddress();
+	/**
+	 * @return 远程地址
+	 */
+	InetSocketAddress getRemoteAddress();
 
-    /**
-     * @return 本地地址
-     */
-    InetSocketAddress getLocalAddress();
+	/**
+	 * @return 本地地址
+	 */
+	InetSocketAddress getLocalAddress();
 
-    /**
-     * @return 是否活跃
-     */
-    boolean isActive();
+	/**
+	 * @return 是否活跃
+	 */
+	boolean isActive();
 
-    /**
-     * 关闭断开连接
-     */
-    void close();
+	/**
+	 * 关闭断开连接
+	 */
+	void close();
 
 }

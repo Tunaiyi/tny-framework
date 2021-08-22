@@ -1,29 +1,31 @@
 package com.tny.game.net.exception;
 
-public class NetException extends RuntimeException {
+import com.tny.game.common.exception.*;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public class NetException extends CommonRuntimeException {
 
-    public NetException() {
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public NetException(String message) {
-        super(message);
-    }
+	public NetException() {
+	}
 
-    public NetException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public NetException(String message) {
+		super(message);
+	}
 
-    public NetException(Throwable cause) {
-        super(cause);
-    }
+	public NetException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public NetException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+	public NetException(Throwable cause) {
+		super(cause);
+	}
+
+	public NetException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 
 }

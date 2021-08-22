@@ -6,6 +6,8 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
+import static com.tny.game.net.base.configuration.NetUnitUtils.*;
+
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
 	/**
@@ -16,15 +18,15 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 	/**
 	 * 消息分发起名气
 	 */
-	private String messageDispatcher = "default" + MessageDispatcher.class.getSimpleName();
+	private String messageDispatcher = defaultName(MessageDispatcher.class);
 
-	private String commandTaskProcessor = "default" + CommandTaskProcessor.class.getSimpleName();
+	private String commandTaskProcessor = defaultName(CommandTaskProcessor.class);
 
-	private String messageFactory = "default" + MessageFactory.class.getSimpleName();
+	private String messageFactory = defaultName(MessageFactory.class);
 
-	private String certificateFactory = "default" + CertificateFactory.class.getSimpleName();
+	private String certificateFactory = defaultName(CertificateFactory.class);
 
-	private String tunnelIdGenerator = "default" + NetIdGenerator.class.getSimpleName();
+	private String tunnelIdGenerator = defaultName(NetIdGenerator.class);
 
 	protected CommonNetBootstrapSetting() {
 	}

@@ -32,16 +32,16 @@ public abstract class NetPackV1Codec implements AppPrepareStart {
 
 	@Override
 	public void prepareStart() {
-		MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).getUnitAnCheck(this.config.getBodyCodec()));
+		MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).checkUnit(this.config.getBodyCodec()));
 		RelayStrategy relayStrategy;
 		if (StringUtils.isBlank(this.config.getRelayStrategy())) {
 			relayStrategy = RelayStrategy.NO_RELAY_STRATEGY;
 		} else {
-			relayStrategy = as(UnitLoader.getLoader(RelayStrategy.class).getUnitAnCheck(this.config.getRelayStrategy()));
+			relayStrategy = as(UnitLoader.getLoader(RelayStrategy.class).checkUnit(this.config.getRelayStrategy()));
 		}
 		this.messageCodec = new DefaultNettyMessageCodec(bodyCoder, relayStrategy);
-		this.verifier = UnitLoader.getLoader(CodecVerifier.class).getUnitAnCheck(this.config.getVerifier());
-		this.crypto = UnitLoader.getLoader(CodecCrypto.class).getUnitAnCheck(this.config.getCrypto());
+		this.verifier = UnitLoader.getLoader(CodecVerifier.class).checkUnit(this.config.getVerifier());
+		this.crypto = UnitLoader.getLoader(CodecCrypto.class).checkUnit(this.config.getCrypto());
 	}
 
 	public NetPackV1Codec setMessageCodec(NettyMessageCodec messageCodec) {

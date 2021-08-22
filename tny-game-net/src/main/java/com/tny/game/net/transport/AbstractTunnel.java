@@ -122,25 +122,29 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 
 	@Override
 	public boolean receive(Message message) {
-		return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
-				() -> {
-					E endpoint = this.endpoint;
-					while (true) {
-						if (endpoint.isClosed()) {
-							return false;
-						}
-						if (endpoint.receive(this, message)) {
-							return true;
-						}
-					}
-				});
+		return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, () -> doReceive(message));
+	}
+
+	protected boolean doReceive(Message message) {
+		E endpoint = this.endpoint;
+		while (true) {
+			if (endpoint.isClosed()) {
+				return false;
+			}
+			if (endpoint.receive(this, message)) {
+				return true;
+			}
+		}
 	}
 
 	@Override
 	public SendContext send(MessageContext messageContext) {
 		return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
-				() -> this.endpoint.send(this, messageContext));
+				() -> doSend(messageContext));
+	}
 
+	private SendContext doSend(MessageContext messageContext) {
+		return this.endpoint.send(this, messageContext);
 	}
 
 	@Override

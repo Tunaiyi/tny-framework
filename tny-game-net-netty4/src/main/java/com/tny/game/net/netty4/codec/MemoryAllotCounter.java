@@ -66,7 +66,7 @@ public class MemoryAllotCounter {
 		return Math.max((totalSize / count) * 2, initSize) + (this.deviationSize / count) * 2;
 	}
 
-	public void reset() {
+	private void reset() {
 		this.totalSize = 0;
 		this.count = 0;
 		this.maxSize = 0;

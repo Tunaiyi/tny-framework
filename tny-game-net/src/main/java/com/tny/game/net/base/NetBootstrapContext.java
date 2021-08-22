@@ -15,49 +15,49 @@ import com.tny.game.net.transport.*;
  */
 public class NetBootstrapContext<UID> implements EndpointContext<UID> {
 
-    private final MessageFactory messageFactory;
+	private final MessageFactory messageFactory;
 
-    private final CertificateFactory<UID> certificateFactory;
+	private final CertificateFactory<UID> certificateFactory;
 
-    private final MessageDispatcher messageDispatcher;
+	private final MessageDispatcher messageDispatcher;
 
-    private final CommandTaskProcessor commandTaskProcessor;
+	private final CommandTaskProcessor commandTaskProcessor;
 
-    public NetBootstrapContext() {
-        this.messageFactory = new CommonMessageFactory();
-        this.certificateFactory = new DefaultCertificateFactory<>();
-        this.messageDispatcher = null;
-        this.commandTaskProcessor = null;
-    }
+	public NetBootstrapContext() {
+		this.messageFactory = new CommonMessageFactory();
+		this.certificateFactory = new DefaultCertificateFactory<>();
+		this.messageDispatcher = null;
+		this.commandTaskProcessor = null;
+	}
 
-    public NetBootstrapContext(
-            MessageDispatcher messageDispatcher,
-            CommandTaskProcessor commandTaskProcessor,
-            MessageFactory messageFactory,
-            CertificateFactory<UID> certificateFactory) {
-        this.messageDispatcher = messageDispatcher;
-        this.commandTaskProcessor = commandTaskProcessor;
-        this.messageFactory = messageFactory;
-        this.certificateFactory = certificateFactory;
-    }
+	public NetBootstrapContext(
+			MessageDispatcher messageDispatcher,
+			CommandTaskProcessor commandTaskProcessor,
+			MessageFactory messageFactory,
+			CertificateFactory<UID> certificateFactory) {
+		this.messageDispatcher = messageDispatcher;
+		this.commandTaskProcessor = commandTaskProcessor;
+		this.messageFactory = messageFactory;
+		this.certificateFactory = certificateFactory;
+	}
 
-    public MessageFactory getMessageFactory() {
-        return this.messageFactory;
-    }
+	public MessageFactory getMessageFactory() {
+		return this.messageFactory;
+	}
 
-    @Override
-    public CertificateFactory<UID> getCertificateFactory() {
-        return this.certificateFactory;
-    }
+	@Override
+	public CertificateFactory<UID> getCertificateFactory() {
+		return this.certificateFactory;
+	}
 
-    @Override
-    public MessageDispatcher getMessageDispatcher() {
-        return this.messageDispatcher;
-    }
+	@Override
+	public MessageDispatcher getMessageDispatcher() {
+		return this.messageDispatcher;
+	}
 
-    @Override
-    public CommandTaskProcessor getCommandTaskProcessor() {
-        return this.commandTaskProcessor;
-    }
+	@Override
+	public CommandTaskProcessor getCommandTaskProcessor() {
+		return this.commandTaskProcessor;
+	}
 
 }
