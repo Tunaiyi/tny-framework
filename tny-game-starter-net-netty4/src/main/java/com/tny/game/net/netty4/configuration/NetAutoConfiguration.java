@@ -4,6 +4,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.*;
@@ -11,16 +12,16 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.common.*;
-import com.tny.game.net.netty4.*;
-import com.tny.game.net.netty4.appliaction.*;
-import com.tny.game.net.netty4.codec.*;
-import com.tny.game.net.netty4.configuration.app.*;
+import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.netty4.configuration.application.*;
+import com.tny.game.net.netty4.configuration.channel.*;
+import com.tny.game.net.netty4.configuration.command.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
-import com.tny.game.net.netty4.configuration.guide.*;
 import com.tny.game.net.netty4.configuration.processor.disruptor.*;
 import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
-import com.tny.game.net.netty4.spring.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.netty4.datagram.*;
+import com.tny.game.net.netty4.datagram.codec.*;
+import com.tny.game.net.netty4.datagram.configuration.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -32,9 +33,9 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @EnableConfigurationProperties({
-		SpringBootNetAppProperties.class,
+		SpringNetAppProperties.class,
 		SpringNetEndpointProperties.class,
-		SpringBootNetBootstrapProperties.class,
+		ReadIdlePipelineChainProperties.class,
 		DisruptorEndpointCommandTaskProcessorProperties.class,
 		ForkJoinEndpointCommandTaskProcessorProperties.class,
 })
@@ -88,8 +89,8 @@ public class NetAutoConfiguration {
 	}
 
 	@Bean
-	public NetAppContext appContext(SpringBootNetAppProperties configure) {
-		return new SpringBootNetAppContext(configure);
+	public NetAppContext appContext(SpringNetAppProperties configure) {
+		return new SpringNetAppContext(configure);
 	}
 
 	@Bean
@@ -131,8 +132,8 @@ public class NetAutoConfiguration {
 	}
 
 	@Bean
-	public LocalControllerRelayStrategy localControllerRelayStrategy(MessageDispatcher dispatcher) {
-		return new LocalControllerRelayStrategy(dispatcher);
+	public ControllerRelayStrategy controllerRelayStrategy(MessageDispatcher dispatcher) {
+		return new ControllerRelayStrategy(dispatcher);
 	}
 
 	@Bean
@@ -151,13 +152,19 @@ public class NetAutoConfiguration {
 	}
 
 	@Bean
-	public GeneralNettyServerTunnelFactory defaultNettyTunnelFactory() {
-		return new GeneralNettyServerTunnelFactory();
+	public ServerTunnelFactory defaultNettyTunnelFactory() {
+		return new ServerTunnelFactory();
 	}
 
 	@Bean
 	public NetApplicationLifecycle netApplicationLifecycle() {
 		return new NetApplicationLifecycle();
+	}
+
+	@Bean
+	public ReadIdlePipelineChain<?> readIdlePipelineChain(ReadIdlePipelineChainProperties properties) {
+		return new ReadIdlePipelineChain<>()
+				.setIdleTimeout(properties.getIdleTimeout());
 	}
 
 }

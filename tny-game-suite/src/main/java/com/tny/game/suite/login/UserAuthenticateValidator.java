@@ -3,6 +3,7 @@ package com.tny.game.suite.login;
 import com.tny.game.common.digest.md5.*;
 import com.tny.game.common.type.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
 import java.time.Instant;
 import java.util.List;
 
-import static com.tny.game.net.transport.Certificates.*;
+import static com.tny.game.net.command.Certificates.*;
 
 public abstract class UserAuthenticateValidator extends GameAuthenticateValidator<Long> {
 

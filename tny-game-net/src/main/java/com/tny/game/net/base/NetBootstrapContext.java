@@ -1,11 +1,10 @@
 package com.tny.game.net.base;
 
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
-import com.tny.game.net.transport.*;
 
 /**
  * <p>
@@ -13,7 +12,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/5/6 12:09 下午
  */
-public class NetBootstrapContext<UID> implements EndpointContext<UID> {
+public class NetBootstrapContext<UID> implements NetworkContext<UID> {
 
 	private final MessageFactory messageFactory;
 
@@ -41,6 +40,7 @@ public class NetBootstrapContext<UID> implements EndpointContext<UID> {
 		this.certificateFactory = certificateFactory;
 	}
 
+	@Override
 	public MessageFactory getMessageFactory() {
 		return this.messageFactory;
 	}

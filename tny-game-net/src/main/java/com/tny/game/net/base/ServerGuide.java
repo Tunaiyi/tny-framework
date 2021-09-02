@@ -9,16 +9,16 @@ import java.util.Collection;
  */
 public interface ServerGuide {
 
-    void open();
+	void open();
 
-    boolean isBound();
+	boolean isBound();
 
-    boolean close();
+	boolean close();
 
-    void addClosedListener(ServerClosedListener listener);
+	void addClosedListener(ServerClosedListener listener);
 
-    void addClosedListeners(Collection<ServerClosedListener> listenerCollection);
+	void addClosedListeners(Collection<ServerClosedListener> listenerCollection);
 
-    void clearClosedListener();
+	void clearClosedListener();
 
 }

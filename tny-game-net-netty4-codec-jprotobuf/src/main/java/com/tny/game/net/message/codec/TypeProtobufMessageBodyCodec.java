@@ -5,7 +5,7 @@ import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.netty4.codec.*;
+import com.tny.game.net.netty4.datagram.codec.*;
 import com.tny.game.protoex.*;
 import io.netty.buffer.*;
 import io.netty.util.concurrent.FastThreadLocal;

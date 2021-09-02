@@ -6,8 +6,8 @@ import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
-import com.tny.game.net.netty4.*;
-import com.tny.game.net.netty4.codec.*;
+import com.tny.game.net.netty4.datagram.*;
+import com.tny.game.net.netty4.datagram.codec.*;
 import com.tny.game.net.transport.*;
 import io.netty.buffer.*;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,9 +34,9 @@ public class DataPacketV1CodecTest {
 
 	private CommonMessageFactory factory = new CommonMessageFactory();
 
-	private NetPackV1Decoder decoder;
+	private DatagramPackV1Decoder decoder;
 
-	private NetPackV1Encoder encoder;
+	private DatagramPackV1Encoder encoder;
 
 	@BeforeAll
 	public static void initUnit() {
@@ -59,10 +59,10 @@ public class DataPacketV1CodecTest {
 		when(tunnel.getAccessId()).thenReturn(2018L);
 		when(tunnel.getMessageFactory()).thenReturn(this.factory);
 		channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);
-		DataPacketCodecSetting config = new DataPacketCodecSetting();
+		DatagramPackCodecSetting config = new DatagramPackCodecSetting();
 		config.setSecurityKeys(new String[]{"1s1394d3kssvonxasanfkwhzfk0jy0zm"});
-		this.decoder = new NetPackV1Decoder(config);
-		this.encoder = new NetPackV1Encoder(config);
+		this.decoder = new DatagramPackV1Decoder(config);
+		this.encoder = new DatagramPackV1Encoder(config);
 		this.decoder.prepareStart();
 		this.encoder.prepareStart();
 	}
@@ -70,7 +70,7 @@ public class DataPacketV1CodecTest {
 	@Test
 	public void codec() throws Exception {
 		Message message = craeteMessage("1222", 300);
-		NetPackDecodeMarker marker = new NetPackDecodeMarker();
+		DatagramPackDecodeMarker marker = new DatagramPackDecodeMarker();
 		ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(400);
 		this.encoder.encodeObject(this.ctx, message, buffer);
 		Message readMessage = this.decoder.decodeObject(this.ctx, buffer, marker);

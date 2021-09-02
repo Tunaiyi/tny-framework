@@ -1,6 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
@@ -198,8 +199,9 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		this.state = EndpointStatus.CLOSE;
+		return true;
 	}
 
 	@Override

@@ -1,9 +1,8 @@
 package com.tny.game.net.endpoint;
 
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.message.common.*;
-import com.tny.game.net.transport.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.

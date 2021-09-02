@@ -1,6 +1,6 @@
 package com.tny.game.net.endpoint;
 
-import static com.tny.game.net.base.configuration.NetUnitUtils.*;
+import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
 /**
  * <p>

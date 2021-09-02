@@ -16,8 +16,8 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 
 	protected volatile T transporter;
 
-	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetBootstrapContext<UID> bootstrapContext) {
-		super(id, mode, bootstrapContext);
+	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetworkContext<UID> context) {
+		super(id, mode, context);
 		if (transporter != null) {
 			this.transporter = transporter;
 			this.transporter.bind(this);
@@ -67,10 +67,10 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator maker, MessageContext context) throws NetException {
+	public WriteMessageFuture write(MessageAllocator allocator, MessageContext context) throws NetException {
 		WriteMessagePromise promise = as(context.getWriteMessageFuture());
 		this.checkAvailable(promise);
-		return this.transporter.write(maker, this.getMessageFactory(), context);
+		return this.transporter.write(allocator, this.getMessageFactory(), context);
 	}
 
 	@Override

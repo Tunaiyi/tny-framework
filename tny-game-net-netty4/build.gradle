@@ -6,6 +6,7 @@ dependencies {
 
     api libs.netty
     api libs.disruptor
+    api libs.jprotobuf
     api project(":tny-game-net")
 
     testImplementation libs.spring_context_support

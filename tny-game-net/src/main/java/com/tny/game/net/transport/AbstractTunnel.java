@@ -2,6 +2,7 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import org.slf4j.*;
@@ -34,15 +35,15 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	/* 会话终端 */
 	protected volatile E endpoint;
 
-	private final NetBootstrapContext<UID> bootstrapContext;
+	private final NetworkContext<UID> context;
 
 	/* endpoint 锁 */
 	private final StampedLock endpointLock = new StampedLock();
 
-	protected AbstractTunnel(long id, TunnelMode mode, NetBootstrapContext<UID> bootstrapContext) {
+	protected AbstractTunnel(long id, TunnelMode mode, NetworkContext<UID> context) {
 		this.id = id;
 		this.mode = mode;
-		this.bootstrapContext = bootstrapContext;
+		this.context = context;
 	}
 
 	@Override
@@ -116,8 +117,8 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	}
 
 	@Override
-	public NetBootstrapContext<UID> getNetBootstrapContext() {
-		return this.bootstrapContext;
+	public NetworkContext<UID> getContext() {
+		return this.context;
 	}
 
 	@Override
@@ -214,14 +215,14 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		if (this.status == TunnelStatus.CLOSED) {
-			return;
+			return false;
 		}
 		NetEndpoint<UID> endpoint;
 		synchronized (this) {
 			if (this.status == TunnelStatus.CLOSED) {
-				return;
+				return false;
 			}
 			this.onClose();
 			this.status = TunnelStatus.CLOSED;
@@ -232,6 +233,7 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 		if (endpoint != null) {
 			endpoint.onUnactivated(this);
 		}
+		return true;
 	}
 
 	protected abstract boolean onOpen();

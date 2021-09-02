@@ -1,6 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.task.*;
 
@@ -11,8 +12,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class BaseServerTunnel<UID, E extends NetSession<UID>, T extends MessageTransporter<UID>> extends BaseTunnel<UID, E, T> {
 
-	public BaseServerTunnel(long id, T transporter, NetBootstrapContext<UID> bootstrapContext) {
-		super(id, transporter, TunnelMode.SERVER, bootstrapContext);
+	public BaseServerTunnel(long id, T transporter, NetworkContext<UID> context) {
+		super(id, transporter, TunnelMode.SERVER, context);
 	}
 
 	@Override

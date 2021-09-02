@@ -3,22 +3,22 @@ tny:
     name: GameClientApp
     app-type: game
     scope-type: online
-    base-packages: com.tny.game.net.demo,com.tny.game.net,com.tny.game.starter
   net:
     client:
-      channel-maker:
-        properties:
-          idleTimeout: 360000
-      encoder:
-        body-codec: typeProtobufMessageBodyCodec
-        security-keys:
-          - abcdefghijklmn
-          - opqrstuvwxyz
-      decoder:
-        body-codec: typeProtobufMessageBodyCodec
-        security-keys:
-          - abcdefghijklmn
-          - opqrstuvwxyz
+      channel:
+        maker:
+          properties:
+            idleTimeout: 360000
+        encoder:
+          body-codec: typeProtobufMessageBodyCodec
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
+        decoder:
+          body-codec: typeProtobufMessageBodyCodec
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
     command:
       processor:
         disruptor:

@@ -14,8 +14,8 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseClientTunnel.class);
 
-	public BaseClientTunnel(long id, NetBootstrapContext<UID> bootstrapContext) {
-		super(id, null, TunnelMode.CLIENT, bootstrapContext);
+	public BaseClientTunnel(long id, NetworkContext<UID> context) {
+		super(id, null, TunnelMode.CLIENT, context);
 	}
 
 	@Override

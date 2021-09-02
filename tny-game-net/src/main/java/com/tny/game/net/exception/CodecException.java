@@ -12,20 +12,36 @@ public class CodecException extends CommandException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static CodecException causeEncode(Throwable cause, String message, Object... params) {
+	public static CodecException causeEncodeFailed(Throwable cause, String message, Object... params) {
 		return new CodecException(NetResultCode.ENCODE_FAILED, format(message, params), cause);
 	}
 
-	public static CodecException causeDecode(Throwable cause, String message, Object... params) {
-		return new CodecException(NetResultCode.DECODE_ERROR, format(message, params), cause);
-	}
-
-	public static CodecException causeEncode(String message, Object... params) {
+	public static CodecException causeEncodeFailed(String message, Object... params) {
 		return new CodecException(NetResultCode.ENCODE_FAILED, format(message, params));
 	}
 
-	public static CodecException causeDecode(String message, Object... params) {
+	public static CodecException causeEncodeError(Throwable cause, String message, Object... params) {
+		return new CodecException(NetResultCode.ENCODE_ERROR, format(message, params), cause);
+	}
+
+	public static CodecException causeEncodeError(String message, Object... params) {
+		return new CodecException(NetResultCode.ENCODE_ERROR, format(message, params));
+	}
+
+	public static CodecException causeDecodeError(Throwable cause, String message, Object... params) {
+		return new CodecException(NetResultCode.DECODE_ERROR, format(message, params), cause);
+	}
+
+	public static CodecException causeDecodeError(String message, Object... params) {
 		return new CodecException(NetResultCode.DECODE_ERROR, format(message, params));
+	}
+
+	public static CodecException causeDecodeFailed(Throwable cause, String message, Object... params) {
+		return new CodecException(NetResultCode.DECODE_FAILED, format(message, params), cause);
+	}
+
+	public static CodecException causeDecodeFailed(String message, Object... params) {
+		return new CodecException(NetResultCode.DECODE_FAILED, format(message, params));
 	}
 
 	public static CodecException causeTimeout(String message, Object... params) {

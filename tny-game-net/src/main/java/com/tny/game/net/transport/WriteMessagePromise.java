@@ -1,7 +1,5 @@
 package com.tny.game.net.transport;
 
-import java.util.Collection;
-
 /**
  * <p>
  *
@@ -10,16 +8,12 @@ import java.util.Collection;
  */
 public interface WriteMessagePromise extends WriteMessageFuture {
 
-    void setRespondFuture(RespondFuture respondFuture);
+	void setRespondFuture(RespondFuture respondFuture);
 
-    void success();
+	void success();
 
-    <E extends Throwable> void failed(E cause);
+	<E extends Throwable> void failed(E cause);
 
-    <E extends Throwable> void failedAndThrow(E cause) throws E;
-
-    void addWriteListener(WriteMessageListener listener);
-
-    void addWriteListeners(Collection<WriteMessageListener> listeners);
+	<E extends Throwable> void failedAndThrow(E cause) throws E;
 
 }

@@ -1,0 +1,52 @@
+tny:
+  app:
+    name: GatewayApp
+    app-type: gateway
+    scope-type: online
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-server
+          bind: 127.0.0.1:16800,127.0.0.1:16801
+          channel:
+            #            maker:
+            #              pipeline-chains:
+            #                - readIdlePipelineChain
+            encoder:
+              body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              body-codec: typeProtobufMessageBodyCodec
+              relay-strategy: controllerRelayStrategy
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            tunnel-factory: "localRelayTunnelFactory"
+      relay:
+        client:
+          channel:
+            encoder:
+              body-codec: typeProtobufMessageBodyCodec
+            decoder:
+              body-codec: typeProtobufMessageBodyCodec
+    cluster:
+      serve-clusters:
+        - id: "GameServer"
+          instances:
+            - id: 1
+              uri: tcp://127.0.0.1:15800
+    command:
+      processor:
+        disruptor:
+          setting:
+            enable: true
+            wait-strategy: blocking
+            threads: 4
+    endpoint:
+      session-keeper:
+        name: user
+        offline-close-delay: 1000
+        offline-max-size: 1000

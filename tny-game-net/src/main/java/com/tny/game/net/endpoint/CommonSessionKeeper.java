@@ -2,6 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.concurrent.lock.locker.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;

@@ -2,6 +2,7 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -135,7 +136,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public NetBootstrapContext<Long> getNetBootstrapContext() {
+	public NetBootstrapContext<Long> getContext() {
 		return this.context;
 	}
 
@@ -154,7 +155,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator maker, MessageContext context) throws NetException {
+	public WriteMessageFuture write(MessageAllocator allocator, MessageContext context) throws NetException {
 		return null;
 	}
 
@@ -184,9 +185,10 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		this.disconnect();
 		this.state = TunnelStatus.CLOSED;
+		return true;
 	}
 
 	@Override

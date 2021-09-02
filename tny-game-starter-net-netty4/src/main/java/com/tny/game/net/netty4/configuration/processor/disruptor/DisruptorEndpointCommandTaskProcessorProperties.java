@@ -17,29 +17,29 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "tny.net.command.processor.disruptor")
 public class DisruptorEndpointCommandTaskProcessorProperties {
 
-    @NestedConfigurationProperty
-    private DisruptorEndpointCommandTaskProcessorSetting setting = new DisruptorEndpointCommandTaskProcessorSetting()
-            .setEnable(false);
+	@NestedConfigurationProperty
+	private DisruptorEndpointCommandTaskProcessorSetting setting = new DisruptorEndpointCommandTaskProcessorSetting()
+			.setEnable(false);
 
-    private Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings = ImmutableMap.of();
+	private Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings = ImmutableMap.of();
 
-    public DisruptorEndpointCommandTaskProcessorSetting getSetting() {
-        return this.setting;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting getSetting() {
+		return this.setting;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorProperties setSetting(
-            DisruptorEndpointCommandTaskProcessorSetting setting) {
-        this.setting = setting;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorProperties setSetting(
+			DisruptorEndpointCommandTaskProcessorSetting setting) {
+		this.setting = setting;
+		return this;
+	}
 
-    public Map<String, DisruptorEndpointCommandTaskProcessorSetting> getSettings() {
-        return this.settings;
-    }
+	public Map<String, DisruptorEndpointCommandTaskProcessorSetting> getSettings() {
+		return this.settings;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorProperties setSettings(Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings) {
-        this.settings = settings;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorProperties setSettings(Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings) {
+		this.settings = settings;
+		return this;
+	}
 
 }

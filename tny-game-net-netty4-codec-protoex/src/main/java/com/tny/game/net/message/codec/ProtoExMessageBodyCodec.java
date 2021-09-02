@@ -1,7 +1,7 @@
 package com.tny.game.net.message.codec;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.netty4.codec.*;
+import com.tny.game.net.netty4.datagram.codec.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import io.netty.buffer.ByteBuf;

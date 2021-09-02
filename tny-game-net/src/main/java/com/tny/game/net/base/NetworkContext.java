@@ -1,0 +1,16 @@
+package com.tny.game.net.base;
+
+import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/8/26 2:22 下午
+ */
+public interface NetworkContext<UID> extends EndpointContext<UID> {
+
+	MessageFactory getMessageFactory();
+
+}

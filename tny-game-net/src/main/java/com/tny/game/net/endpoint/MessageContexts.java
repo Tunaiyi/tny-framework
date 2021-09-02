@@ -19,7 +19,7 @@ import static com.tny.game.net.transport.TransportConstants.*;
  */
 public class MessageContexts {
 
-	public static <UID> MessageContext createContext() {
+	public static MessageContext createContext() {
 		return new DefaultMessageContext<>();
 	}
 
@@ -29,7 +29,7 @@ public class MessageContexts {
 	 * @param protocol 协议号
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext push(Protocol protocol) {
+	public static MessageContext push(Protocol protocol) {
 		return push(protocol, ResultCode.SUCCESS);
 	}
 
@@ -40,8 +40,8 @@ public class MessageContexts {
 	 * @param code     消息结果码
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext push(Protocol protocol, ResultCode code) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext push(Protocol protocol, ResultCode code) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.PUSH, protocol, code);
 		return context;
 	}
@@ -53,8 +53,8 @@ public class MessageContexts {
 	 * @param body     消息体
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext push(Protocol protocol, Object body) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext push(Protocol protocol, Object body) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
 				.setBody(body);
 		return context;
@@ -68,8 +68,8 @@ public class MessageContexts {
 	 * @param body     消息体
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext push(Protocol protocol, ResultCode code, Object body) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext push(Protocol protocol, ResultCode code, Object body) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.PUSH, protocol, code)
 				.setBody(body);
 		return context;
@@ -81,8 +81,8 @@ public class MessageContexts {
 	 * @param protocol 协议号
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> RequestContext request(Protocol protocol) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static RequestContext request(Protocol protocol) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS);
 		return context;
 	}
@@ -94,8 +94,8 @@ public class MessageContexts {
 	 * @param body     请求消息体
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> RequestContext request(Protocol protocol, Object body) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static RequestContext request(Protocol protocol, Object body) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
 				.setBody(body);
 		return context;
@@ -106,11 +106,10 @@ public class MessageContexts {
 	 *
 	 * @param protocol      协议号
 	 * @param requestParams 请求参数, Body 转为 List
-	 * @param <UID>         ID
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> RequestContext requestParams(Protocol protocol, Object... requestParams) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static RequestContext requestParams(Protocol protocol, Object... requestParams) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
 				.setBody(new MessageParamList(requestParams));
 		return context;
@@ -123,7 +122,7 @@ public class MessageContexts {
 	 * @param toMessage 响应的请求消息Id
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(Protocol protocol, long toMessage) {
+	public static MessageContext respond(Protocol protocol, long toMessage) {
 		return respond(protocol, ResultCode.SUCCESS, toMessage);
 	}
 
@@ -135,8 +134,8 @@ public class MessageContexts {
 	 * @param toMessage 响应的请求消息Id
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(Protocol protocol, ResultCode code, long toMessage) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext respond(Protocol protocol, ResultCode code, long toMessage) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.RESPONSE, protocol, code, toMessage);
 		return context;
 	}
@@ -149,8 +148,8 @@ public class MessageContexts {
 	 * @param toMessage 响应的请求消息Id
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(Protocol protocol, Object body, long toMessage) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext respond(Protocol protocol, Object body, long toMessage) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
 				.setBody(body);
 		return context;
@@ -165,8 +164,8 @@ public class MessageContexts {
 	 * @param toMessage 响应的请求消息Id
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.RESPONSE, protocol, code, toMessage)
 				.setBody(body);
 		return context;
@@ -179,8 +178,8 @@ public class MessageContexts {
 	 * @param respondHead 响应的请求消息
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(ResultCode code, MessageHead respondHead) {
-		DefaultMessageContext<UID> context = new DefaultMessageContext<>();
+	public static MessageContext respond(ResultCode code, MessageHead respondHead) {
+		DefaultMessageContext<?> context = new DefaultMessageContext<>();
 		context.init(MessageMode.RESPONSE, respondHead, code, respondHead.getId());
 		return context;
 	}
@@ -192,7 +191,7 @@ public class MessageContexts {
 	 * @param respondMessage 响应的请求消息
 	 * @return 创建的消息上下文
 	 */
-	public static <UID> MessageContext respond(ResultCode code, Message respondMessage) {
+	public static MessageContext respond(ResultCode code, Message respondMessage) {
 		return respond(code, respondMessage.getHead());
 	}
 

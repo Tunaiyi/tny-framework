@@ -2,10 +2,10 @@ package com.tny.game.net.base;
 
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.lifecycle.LifecycleLevel.*;
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -22,13 +22,13 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
 	protected NetIdGenerator idGenerator;
 
-	private NetBootstrapContext<Object> context;
+	private NetworkContext<Object> context;
 
 	public NetBootstrap(S setting) {
 		this.setting = setting;
 	}
 
-	public <T> NetBootstrapContext<T> getContext() {
+	public <T> NetworkContext<T> getContext() {
 		return as(this.context);
 	}
 
@@ -43,7 +43,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 				UnitLoader.getLoader(CommandTaskProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
 		this.context = new NetBootstrapContext<>(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
 		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
-		this.postPrepared(this.setting);
+		this.onLoadUnit(this.setting);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 		return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
 	}
 
-	protected void postPrepared(S setting) {
+	protected void onLoadUnit(S setting) {
 	}
 
 }

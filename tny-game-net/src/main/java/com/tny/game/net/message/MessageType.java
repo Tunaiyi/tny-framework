@@ -13,6 +13,8 @@ public enum MessageType {
 	PING(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING),
 
 	PONE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PONG),
+
+	//
 	;
 
 	byte option;

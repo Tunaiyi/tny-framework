@@ -12,15 +12,15 @@ import io.netty.util.*;
  */
 public class TimerEndpointCommandTaskTrigger extends EndpointCommandTaskTrigger implements TimerTask {
 
-    protected TimerEndpointCommandTaskTrigger(CommandTaskBox taskBox, EndpointCommandTaskProcessor<?> processor) {
-        super(taskBox, processor);
-    }
+	protected TimerEndpointCommandTaskTrigger(CommandTaskBox taskBox, EndpointCommandTaskProcessor<?> processor) {
+		super(taskBox, processor);
+	}
 
-    @Override
-    public void run(Timeout timeout) {
-        if (!timeout.isCancelled()) {
-            this.trySubmit();
-        }
-    }
+	@Override
+	public void run(Timeout timeout) {
+		if (!timeout.isCancelled()) {
+			this.trySubmit();
+		}
+	}
 
 }

@@ -2,6 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -14,7 +15,7 @@ import java.util.function.Predicate;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.endpoint.listener.EndpointEventBuses.*;
+import static com.tny.game.net.endpoint.EndpointEventBuses.*;
 
 /**
  * <p>
@@ -420,16 +421,17 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		if (this.state == EndpointStatus.CLOSE) {
-			return;
+			return false;
 		}
 		synchronized (this) {
 			if (this.state == EndpointStatus.CLOSE) {
-				return;
+				return false;
 			}
 			this.offline();
 			this.setClose();
+			return true;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.tny.game.net.annotation;
 
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -15,9 +16,9 @@ import javax.xml.bind.ValidationException;
  */
 public class VoidAuthenticateValidator<T> implements AuthenticateValidator<T> {
 
-    @Override
-    public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {
+		throw new UnsupportedOperationException();
+	}
 
 }

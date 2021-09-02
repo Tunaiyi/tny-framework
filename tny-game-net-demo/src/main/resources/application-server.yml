@@ -3,24 +3,24 @@ tny:
     name: GameServerApp
     app-type: game
     scope-type: game
-    base-packages: [ com.tny.game.net.demo, com.tny.game.net.common, com.tny.game.starter ]
   net:
     server:
       name: game-server
       bind: 127.0.0.1:16800,127.0.0.1:16801
-      channel-maker:
-        properties:
-          idleTimeout: 360000
-      encoder:
-        body-codec: typeProtobufMessageBodyCodec
-        security-keys:
-          - abcdefghijklmn
-          - opqrstuvwxyz
-      decoder:
-        body-codec: typeProtobufMessageBodyCodec
-        security-keys:
-          - abcdefghijklmn
-          - opqrstuvwxyz
+      channel:
+        maker:
+          properties:
+            idleTimeout: 360000
+        encoder:
+          body-codec: typeProtobufMessageBodyCodec
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
+        decoder:
+          body-codec: typeProtobufMessageBodyCodec
+          security-keys:
+            - abcdefghijklmn
+            - opqrstuvwxyz
     command:
       processor:
         disruptor:

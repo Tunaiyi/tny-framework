@@ -17,57 +17,65 @@ public enum NetResultCode implements ResultCode {
 	/**
 	 * 服务端返回响应编码响应异常
 	 */
-	ENCODE_FAILED(191, "编码响应异常", ResultCodeType.WARN),
-
-	/**
-	 * 收到的网络包超时失效
-	 */
-	PACKET_TIMEOUT(192, "网络包超时失效", ResultCodeType.WARN),
-	/**
-	 * 网络包校验失败
-	 */
-	PACKET_VERIFY_FAILED(193, "网络包校验失败", ResultCodeType.WARN),
+	ENCODE_FAILED(192, "编码响应异常", ResultCodeType.WARN),
 
 	/**
 	 * 服务端接受请求解码格式错误(断开连接)
 	 */
-	DECODE_ERROR(194, "解码格式错误", ResultCodeType.ERROR),
+	DECODE_ERROR(193, "解码格式错误", ResultCodeType.ERROR),
+
+	/**
+	 * 服务端返回响应编码响应异常
+	 */
+	ENCODE_ERROR(194, "编码响应错误", ResultCodeType.ERROR),
+	/**
+	 * 收到的网络包超时失效
+	 */
+	PACKET_TIMEOUT(195, "网络包超时失效", ResultCodeType.WARN),
+	/**
+	 * 网络包校验失败
+	 */
+	PACKET_VERIFY_FAILED(196, "网络包校验失败", ResultCodeType.WARN),
 
 	/**
 	 * 服务端接受请求异常
 	 */
-	RECEIVE_ERROR(200, "服务端接受请求异常", ResultCodeType.WARN),
+	SERVER_ERROR(200, "服务端异常", ResultCodeType.WARN),
+	/**
+	 * 服务端接受请求异常
+	 */
+	SERVER_RECEIVE_EXCEPTION(201, "服务端接受请求异常", ResultCodeType.WARN),
 	/**
 	 * 服务端执行业务异常
 	 */
-	EXECUTE_EXCEPTION(201, "服务端执行业务异常", ResultCodeType.GENERAL),
+	SERVER_EXECUTE_EXCEPTION(202, "服务端执行业务异常", ResultCodeType.GENERAL),
 	/**
 	 * 请求模块不存在
 	 */
 	@Deprecated
-	NO_SUCH_MODULE(204, "请求模块不存在", ResultCodeType.WARN),
+	SERVER_NO_SUCH_MODULE(204, "请求模块不存在", ResultCodeType.WARN),
 	/**
 	 * 请求操作不存在
 	 */
-	NO_SUCH_PROTOCOL(205, "请求操作不存在", ResultCodeType.WARN),
+	SERVER_NO_SUCH_PROTOCOL(205, "请求操作不存在", ResultCodeType.WARN),
 	/**
 	 * 分发消息异常
 	 */
-	DISPATCH_EXCEPTION(206, "分发消息异常", ResultCodeType.WARN),
+	SERVER_DISPATCH_EXCEPTION(206, "分发消息异常", ResultCodeType.WARN),
 	/**
 	 * 非法请求参数
 	 */
-	ILLEGAL_PARAMETERS(207, "非法请求参数", ResultCodeType.WARN),
+	SERVER_ILLEGAL_PARAMETERS(207, "非法请求参数", ResultCodeType.WARN),
 
 	/**
 	 * 无法接收该类型消息
 	 */
-	NO_RECEIVE_MODE(208, "无法接收该类型消息", ResultCodeType.WARN),
+	SERVER_NO_RECEIVE_MODE(208, "无法接收该类型消息", ResultCodeType.WARN),
 
 	/**
 	 * 无法发送该类型消息
 	 */
-	NO_SEND_MODE(209, "无法发送该类型消息", ResultCodeType.WARN),
+	SERVER_NO_SEND_MODE(209, "无法发送该类型消息", ResultCodeType.WARN),
 
 	/**
 	 * 验证失败
@@ -84,7 +92,7 @@ public enum NetResultCode implements ResultCode {
 	/**
 	 * 请求消息被篡改
 	 */
-	FALSIFY(213, "请求消息被篡改", ResultCodeType.WARN),
+	MESSAGE_FALSIFY(213, "请求消息被篡改", ResultCodeType.WARN),
 	/**
 	 * 请求过期
 	 */
@@ -107,7 +115,7 @@ public enum NetResultCode implements ResultCode {
 	SESSION_CREATE_FAILED(218, "会话创建失败", ResultCodeType.GENERAL),
 
 	/**
-	 * 请求序号错误
+	 * 消息已处理过
 	 */
 	MESSAGE_HANDLED(219, "消息已处理过", ResultCodeType.WARN),
 	/**
@@ -135,7 +143,11 @@ public enum NetResultCode implements ResultCode {
 	/**
 	 * 集群网络未接通
 	 */
-	CLUSTER_NETWORK_ERROR(225, "集群网络未接通错误", ResultCodeType.ERROR),
+	CLUSTER_NETWORK_UNCONNECTED_ERROR(225, "集群网络未接通错误", ResultCodeType.ERROR),
+	/**
+	 * 集群不存在
+	 */
+	CLUSTER_NOT_EXIST_ERROR(226, "集群不存在", ResultCodeType.ERROR),
 
 	/**
 	 * 客户端IO异常

@@ -25,7 +25,7 @@ public interface Transport {
 	 *
 	 * @param context 发送消息
 	 */
-	WriteMessageFuture write(MessageAllocator maker, MessageContext context) throws NetException;
+	WriteMessageFuture write(MessageAllocator allocator, MessageContext context) throws NetException;
 
 	/**
 	 * 创建写出Promise

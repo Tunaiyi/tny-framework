@@ -1,5 +1,6 @@
 package com.tny.game.net.transport;
 
+import java.util.Collection;
 import java.util.concurrent.Future;
 
 /**
@@ -13,5 +14,9 @@ public interface WriteMessageFuture extends Future<Void> {
 	boolean isSuccess();
 
 	Throwable cause();
+
+	void addWriteListener(WriteMessageListener listener);
+
+	void addWriteListeners(Collection<WriteMessageListener> listeners);
 
 }

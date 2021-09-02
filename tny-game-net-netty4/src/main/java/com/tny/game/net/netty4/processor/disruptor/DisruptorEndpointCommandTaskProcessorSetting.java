@@ -12,92 +12,94 @@ import org.apache.commons.lang3.*;
  */
 public class DisruptorEndpointCommandTaskProcessorSetting {
 
-    /**
-     * 间歇时间
-     */
-    private static final int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
-    /**
-     * 时间
-     */
-    private static final int DEFAULT_QUEUE_SIZE = 1024 * 1024;
-    /**
-     * 间歇时间
-     */
-    private static final int[] DEFAULT_COMMAND_TICK_TIME = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10};
+	/**
+	 * 间歇时间
+	 */
+	private static final int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
 
-    private boolean enable;
+	/**
+	 * 时间
+	 */
+	private static final int DEFAULT_QUEUE_SIZE = 1024 * 1024;
 
-    /* 线程数 */
-    private int threads = DEFAULT_THREADS;
+	/**
+	 * 间歇时间
+	 */
+	private static final int[] DEFAULT_COMMAND_TICK_TIME = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10};
 
-    /* 线程数 */
-    private int queueSize = DEFAULT_QUEUE_SIZE;
+	private boolean enable;
 
-    /* 任务调度间隔序列 */
-    private int[] commandTickTimeList = DEFAULT_COMMAND_TICK_TIME;
+	/* 线程数 */
+	private int threads = DEFAULT_THREADS;
 
-    /* ChildExecutor command 未完成, 延迟时间*/
-    private DisruptorWaitStrategy waitStrategy = DisruptorWaitStrategy.BLOCKING;
+	/* 线程数 */
+	private int queueSize = DEFAULT_QUEUE_SIZE;
 
-    private ObjectMap waitStrategyProperty = new ObjectMap();
+	/* 任务调度间隔序列 */
+	private int[] commandTickTimeList = DEFAULT_COMMAND_TICK_TIME;
 
-    public int getThreads() {
-        return this.threads;
-    }
+	/* ChildExecutor command 未完成, 延迟时间*/
+	private DisruptorWaitStrategy waitStrategy = DisruptorWaitStrategy.BLOCKING;
 
-    public DisruptorEndpointCommandTaskProcessorSetting setThreads(int threads) {
-        this.threads = threads;
-        return this;
-    }
+	private ObjectMap waitStrategyProperty = new ObjectMap();
 
-    public int getQueueSize() {
-        return this.queueSize;
-    }
+	public int getThreads() {
+		return this.threads;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorSetting setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting setThreads(int threads) {
+		this.threads = threads;
+		return this;
+	}
 
-    public int[] getCommandTickTimeList() {
-        return this.commandTickTimeList;
-    }
+	public int getQueueSize() {
+		return this.queueSize;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorSetting setCommandTickTimeList(int[] commandTickTimeList) {
-        if (ArrayUtils.isNotEmpty(commandTickTimeList)) {
-            for (int value : commandTickTimeList) {
-                Asserts.checkArgument(value > 0, "illegal argument commandTickTimeList [{}]", StringUtils.join(",", commandTickTimeList));
-            }
-            this.commandTickTimeList = commandTickTimeList;
-        }
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting setQueueSize(int queueSize) {
+		this.queueSize = queueSize;
+		return this;
+	}
 
-    public DisruptorWaitStrategy getWaitStrategy() {
-        return this.waitStrategy;
-    }
+	public int[] getCommandTickTimeList() {
+		return this.commandTickTimeList;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorSetting setWaitStrategy(DisruptorWaitStrategy waitStrategy) {
-        this.waitStrategy = waitStrategy;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting setCommandTickTimeList(int[] commandTickTimeList) {
+		if (ArrayUtils.isNotEmpty(commandTickTimeList)) {
+			for (int value : commandTickTimeList) {
+				Asserts.checkArgument(value > 0, "illegal argument commandTickTimeList [{}]", StringUtils.join(",", commandTickTimeList));
+			}
+			this.commandTickTimeList = commandTickTimeList;
+		}
+		return this;
+	}
 
-    public ObjectMap getWaitStrategyProperty() {
-        return this.waitStrategyProperty;
-    }
+	public DisruptorWaitStrategy getWaitStrategy() {
+		return this.waitStrategy;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorSetting setWaitStrategyProperty(ObjectMap waitStrategyProperty) {
-        this.waitStrategyProperty = waitStrategyProperty;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting setWaitStrategy(DisruptorWaitStrategy waitStrategy) {
+		this.waitStrategy = waitStrategy;
+		return this;
+	}
 
-    public boolean isEnable() {
-        return this.enable;
-    }
+	public ObjectMap getWaitStrategyProperty() {
+		return this.waitStrategyProperty;
+	}
 
-    public DisruptorEndpointCommandTaskProcessorSetting setEnable(boolean enable) {
-        this.enable = enable;
-        return this;
-    }
+	public DisruptorEndpointCommandTaskProcessorSetting setWaitStrategyProperty(ObjectMap waitStrategyProperty) {
+		this.waitStrategyProperty = waitStrategyProperty;
+		return this;
+	}
+
+	public boolean isEnable() {
+		return this.enable;
+	}
+
+	public DisruptorEndpointCommandTaskProcessorSetting setEnable(boolean enable) {
+		this.enable = enable;
+		return this;
+	}
 
 }

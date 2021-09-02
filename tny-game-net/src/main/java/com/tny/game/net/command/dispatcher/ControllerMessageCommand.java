@@ -2,6 +2,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -41,7 +42,7 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 		if (controller == null) {
 			MessageHead head = this.message.getHead();
 			DISPATCHER_LOG.warn("Controller [{}] 没有存在对应Controller ", head.getId());
-			this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+			this.commandContext.doneAndIntercept(NetResultCode.SERVER_NO_SUCH_PROTOCOL);
 			return;
 		}
 		tracer.done();
@@ -55,13 +56,13 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 		String appType = this.getAppType();
 		if (!controller.isActiveByAppType(appType)) {
 			DISPATCHER_LOG.warn("Controller [{}] App类型 {} 无法此协议", this.getName(), appType);
-			this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+			this.commandContext.doneAndIntercept(NetResultCode.SERVER_NO_SUCH_PROTOCOL);
 			return;
 		}
 		String scopeType = this.getScopeType();
 		if (!controller.isActiveByScope(scopeType)) {
 			DISPATCHER_LOG.error("Controller [{}] Scope类型 {} 无法此协议", this.getName(), appType);
-			this.commandContext.doneAndIntercept(NetResultCode.NO_SUCH_PROTOCOL);
+			this.commandContext.doneAndIntercept(NetResultCode.SERVER_NO_SUCH_PROTOCOL);
 			return;
 		}
 		DISPATCHER_LOG.debug("Controller [{}] 检测已登陆认证", this.getName());

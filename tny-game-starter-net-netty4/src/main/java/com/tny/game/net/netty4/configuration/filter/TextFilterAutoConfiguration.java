@@ -18,20 +18,20 @@ import java.util.List;
 @EnableConfigurationProperties(TextFilterProperties.class)
 public class TextFilterAutoConfiguration {
 
-    @Resource
-    private TextFilterProperties textFilterProperties;
+	@Resource
+	private TextFilterProperties textFilterProperties;
 
-    @Bean
-    public WordsFilter wordsFilter() throws Exception {
-        LocalWordsFilter filter = new LocalWordsFilter(this.textFilterProperties.getFile(), this.textFilterProperties.getHideSymbol());
-        filter.load();
-        return filter;
-    }
+	@Bean
+	public WordsFilter wordsFilter() throws Exception {
+		LocalWordsFilter filter = new LocalWordsFilter(this.textFilterProperties.getFile(), this.textFilterProperties.getHideSymbol());
+		filter.load();
+		return filter;
+	}
 
-    @Bean
-    @ConditionalOnBean(WordsFilter.class)
-    public TextCheckFilter<?> textCheckFilter(List<WordsFilter> wordsFilters) {
-        return new TextCheckFilter<>();
-    }
+	@Bean
+	@ConditionalOnBean(WordsFilter.class)
+	public TextCheckFilter<?> textCheckFilter(List<WordsFilter> wordsFilters) {
+		return new TextCheckFilter<>();
+	}
 
 }

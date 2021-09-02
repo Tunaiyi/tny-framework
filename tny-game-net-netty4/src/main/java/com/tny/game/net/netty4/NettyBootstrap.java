@@ -1,6 +1,7 @@
 package com.tny.game.net.netty4;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.netty4.channel.*;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -10,7 +11,7 @@ import org.slf4j.*;
 /**
  * Created by Kun Yang on 2017/3/24.
  */
-public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends NetBootstrap<S> {
+public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetBootstrap<S> {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(NettyBootstrap.class);
 
@@ -67,10 +68,6 @@ public abstract class NettyBootstrap<S extends NettyBootstrapSetting> extends Ne
 		//                    RejectedExecutionHandlers.reject(),
 		//                    (size) -> new ConcurrentLinkedQueue<>());
 		//        }
-	}
-
-	@Override
-	public void postPrepared(S setting) {
 	}
 
 }

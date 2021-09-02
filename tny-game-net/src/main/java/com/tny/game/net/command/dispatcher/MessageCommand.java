@@ -173,7 +173,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 			return this.exceptionResult(e.getCause());
 		} else {
 			DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
-			return CommandResults.fail(NetResultCode.EXECUTE_EXCEPTION);
+			return CommandResults.fail(NetResultCode.SERVER_EXECUTE_EXCEPTION);
 		}
 	}
 

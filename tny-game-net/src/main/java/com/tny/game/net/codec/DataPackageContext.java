@@ -105,11 +105,11 @@ public class DataPackageContext {
 	 */
 	public void goToAndCheck(int number) {
 		if (this.packetNumber >= number) {
-			throw CodecException.causeDecode("id " + number + " is handled!");
+			throw CodecException.causeDecodeError("id " + number + " is handled!");
 		}
 		long maxSkipNumber = this.config.getSkipNumberStep();
 		if (number - this.packetNumber > maxSkipNumber) {
-			throw CodecException.causeDecode("id " + number + " is illegal!");
+			throw CodecException.causeDecodeError("id " + number + " is illegal!");
 		}
 		while (this.packetNumber < number) {
 			if (this.random != null) {

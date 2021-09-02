@@ -198,12 +198,12 @@ public final class MethodControllerHolder extends ControllerHolder {
 
 	public Object getParameterValue(int index, NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
 		if (index >= this.parameterDescs.size()) {
-			throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
+			throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
 					format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.parameterDescs.size()));
 		}
 		ParamDesc desc = this.parameterDescs.get(index);
 		if (desc == null) {
-			throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+			throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
 		}
 		return desc.getValue(tunnel, message, body);
 	}
@@ -465,13 +465,13 @@ public final class MethodControllerHolder extends ControllerHolder {
 						} else if (body.getClass().isArray()) {
 							value = Array.get(body, this.index);
 						} else {
-							throw new CommandException(NetResultCode.EXECUTE_EXCEPTION,
+							throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
 									format("{} 收到消息体为 {}, 不可通过index获取", this.holder, body.getClass()));
 						}
 					} catch (CommandException e) {
 						throw e;
 					} catch (Throwable e) {
-						throw new CommandException(NetResultCode.EXECUTE_EXCEPTION, format("{} 调用异常", this.holder), e);
+						throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 调用异常", this.holder), e);
 					}
 					break;
 				case KEY_PARAM:

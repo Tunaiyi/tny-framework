@@ -15,7 +15,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 	@Resource
 	private EndpointKeeperManager endpointKeeperManager;
 
-	private String userType;
+	private final String userType;
 
 	public OnlineReleaseStrategyFactory(String userType, long defaultAddLife) {
 		this.userType = userType;

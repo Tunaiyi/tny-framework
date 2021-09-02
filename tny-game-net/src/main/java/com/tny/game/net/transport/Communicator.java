@@ -1,6 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
+import com.tny.game.net.command.*;
 
 /**
  * 联系人
@@ -37,7 +38,7 @@ public interface Communicator<UID> {
 	/**
 	 * 关闭终端
 	 */
-	void close();
+	boolean close();
 
 	/**
 	 * @return 获取会话属性

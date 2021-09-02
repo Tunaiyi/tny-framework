@@ -1,12 +1,13 @@
 package com.tny.game.net.base.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
+import org.apache.commons.lang3.StringUtils;
 
-import static com.tny.game.net.base.configuration.NetUnitUtils.*;
+import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
@@ -62,7 +63,9 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 	}
 
 	public CommonNetBootstrapSetting setName(String name) {
-		this.name = name;
+		if (StringUtils.isBlank(this.name)) {
+			this.name = name;
+		}
 		return this;
 	}
 

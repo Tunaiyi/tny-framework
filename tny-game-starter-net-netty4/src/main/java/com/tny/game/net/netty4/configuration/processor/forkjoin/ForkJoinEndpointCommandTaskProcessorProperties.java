@@ -17,29 +17,29 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "tny.net.command.processor.forkjoin")
 public class ForkJoinEndpointCommandTaskProcessorProperties {
 
-    @NestedConfigurationProperty
-    private ForkJoinEndpointCommandTaskProcessorSetting setting = new ForkJoinEndpointCommandTaskProcessorSetting()
-            .setEnable(false);
+	@NestedConfigurationProperty
+	private ForkJoinEndpointCommandTaskProcessorSetting setting = new ForkJoinEndpointCommandTaskProcessorSetting()
+			.setEnable(false);
 
-    private Map<String, ForkJoinEndpointCommandTaskProcessorSetting> settings = ImmutableMap.of();
+	private Map<String, ForkJoinEndpointCommandTaskProcessorSetting> settings = ImmutableMap.of();
 
-    public ForkJoinEndpointCommandTaskProcessorSetting getSetting() {
-        return this.setting;
-    }
+	public ForkJoinEndpointCommandTaskProcessorSetting getSetting() {
+		return this.setting;
+	}
 
-    public ForkJoinEndpointCommandTaskProcessorProperties setSetting(
-            ForkJoinEndpointCommandTaskProcessorSetting setting) {
-        this.setting = setting;
-        return this;
-    }
+	public ForkJoinEndpointCommandTaskProcessorProperties setSetting(
+			ForkJoinEndpointCommandTaskProcessorSetting setting) {
+		this.setting = setting;
+		return this;
+	}
 
-    public Map<String, ForkJoinEndpointCommandTaskProcessorSetting> getSettings() {
-        return this.settings;
-    }
+	public Map<String, ForkJoinEndpointCommandTaskProcessorSetting> getSettings() {
+		return this.settings;
+	}
 
-    public ForkJoinEndpointCommandTaskProcessorProperties setSettings(Map<String, ForkJoinEndpointCommandTaskProcessorSetting> settings) {
-        this.settings = settings;
-        return this;
-    }
+	public ForkJoinEndpointCommandTaskProcessorProperties setSettings(Map<String, ForkJoinEndpointCommandTaskProcessorSetting> settings) {
+		this.settings = settings;
+		return this;
+	}
 
 }
