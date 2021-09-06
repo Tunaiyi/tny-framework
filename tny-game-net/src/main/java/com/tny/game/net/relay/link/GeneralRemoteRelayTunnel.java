@@ -15,12 +15,23 @@ import java.net.InetSocketAddress;
  */
 public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSession<UID>, MessageTransporter<UID>> implements RemoteRelayTunnel<UID> {
 
+	private final long instanceId;
+
 	private final InetSocketAddress remoteAddress;
 
-	public GeneralRemoteRelayTunnel(long id, MessageTransporter<UID> transporter,
-			InetSocketAddress remoteAddress, NetworkContext<UID> context) {
+	private final RemoteRelayMessageTransporter<UID> transporter;
+
+	public GeneralRemoteRelayTunnel(long instanceId, long id, RemoteRelayMessageTransporter<UID> transporter,
+			InetSocketAddress remoteAddress, NetworkContext context) {
 		super(id, transporter, context);
+		this.transporter = transporter;
+		this.instanceId = instanceId;
 		this.remoteAddress = remoteAddress;
+	}
+
+	@Override
+	public long getInstanceId() {
+		return instanceId;
 	}
 
 	@Override
@@ -36,8 +47,18 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	}
 
 	@Override
-	public void closeOnLink(NetRelayLink link) {
-		this.close();
+	public boolean switchLink(RemoteRelayLink link) {
+		return this.transporter.switchLink(link);
 	}
+
+	//	@Override
+	//	public void onLinkDisconnect(NetRelayLink link) {
+	//		this.close();
+	//	}
+	//
+	//	@Override
+	//	public void disconnectOnLink(NetRelayLink link) {
+	//		this.disconnect();
+	//	}
 
 }

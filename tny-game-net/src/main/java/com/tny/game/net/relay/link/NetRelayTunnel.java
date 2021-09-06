@@ -24,11 +24,11 @@ import com.tny.game.net.transport.*;
  */
 public interface NetRelayTunnel<UID> extends NetTunnel<UID>, RelayTunnel<UID> {
 
-	/**
-	 * link 转发连接发送关闭请求
-	 *
-	 * @param link 发送关闭的 link
-	 */
-	void closeOnLink(NetRelayLink link);
+	//	/**
+	//	 * 如果当前 link 是指定 link 对象的话, 关闭 tunnel
+	//	 *
+	//	 * @param link 发送关闭的 link
+	//	 */
+	//	void onLinkDisconnect(NetRelayLink link);
 
 }

@@ -18,11 +18,25 @@ public interface LocalRelayLink extends NetRelayLink {
 	void auth(String clusterId, long instanceId);
 
 	/**
-	 * 绑定客户端传到
+	 * 切换link
 	 *
-	 * @param tunnel 客户端管道
-	 * @return 成功返回true 失败返回 false
+	 * @param tunnel tunnel
 	 */
-	boolean bindTunnel(NetRelayTunnel<?> tunnel);
+	void switchTunnel(LocalRelayTunnel<?> tunnel);
+
+	//	/**
+	//	 * 绑定客户端传到
+	//	 *
+	//	 * @param tunnel 客户端管道
+	//	 * @return 成功返回true 失败返回 false
+	//	 */
+	//	boolean registerTunnel(RelayTunnel<?> tunnel);
+	//
+	//	/**
+	//	 * 反注册 tunnel
+	//	 *
+	//	 * @param tunnel 移除的tunnel
+	//	 */
+	//	void unregisterTunnel(RelayTunnel<?> tunnel);
 
 }

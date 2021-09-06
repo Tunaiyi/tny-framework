@@ -14,10 +14,12 @@ public interface LocalServeInstance extends ServeInstance {
 
 	List<LocalRelayLink> getRelayLinks();
 
-	void register(RelayLink link);
+	void register(LocalRelayLink link);
 
-	void relieve(RelayLink link);
+	void relieve(LocalRelayLink link);
 
 	void close();
+
+	void heartbeat();
 
 }

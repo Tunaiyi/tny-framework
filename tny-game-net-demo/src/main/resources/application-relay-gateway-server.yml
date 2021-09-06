@@ -20,11 +20,12 @@ tny:
                 - opqrstuvwxyz
             decoder:
               body-codec: typeProtobufMessageBodyCodec
-              relay-strategy: controllerRelayStrategy
+              message-relay-strategy: controllerRelayStrategy
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
             tunnel-factory: "localRelayTunnelFactory"
+            message-handler: "relayMessageHandler"
       relay:
         client:
           channel:
@@ -32,12 +33,16 @@ tny:
               body-codec: typeProtobufMessageBodyCodec
             decoder:
               body-codec: typeProtobufMessageBodyCodec
-    cluster:
-      serve-clusters:
-        - id: "GameServer"
-          instances:
-            - id: 1
-              uri: tcp://127.0.0.1:15800
+    relay:
+      cluster:
+        serve-clusters:
+          - id: "GameServer"
+            instances:
+              - id: 1
+                url: tcp://127.0.0.1:15800
+      router:
+        fixed-message-router:
+          cluster-id: "GameServer"
     command:
       processor:
         disruptor:

@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
  */
 public interface LocalServeInstanceAllotStrategy {
 
-	LocalServeInstance allot(NetTunnel<?> tunnel, LocalServeCluster cluster);
+	LocalServeInstance allot(Tunnel<?> tunnel, LocalServeCluster cluster);
 
 }

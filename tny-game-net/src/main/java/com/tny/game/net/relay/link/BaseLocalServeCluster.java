@@ -1,7 +1,6 @@
 package com.tny.game.net.relay.link;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.number.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.allot.*;
 import com.tny.game.net.transport.*;
@@ -20,11 +19,9 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/8/21 4:37 上午
  */
-public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implements LocalServeCluster {
+public abstract class BaseLocalServeCluster implements LocalServeCluster {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeCluster.class);
-
-	private static final ThreadLocal<LocalBoolean> CREATED_INSTANCE = ThreadLocal.withInitial(() -> new LocalBoolean(false));
 
 	private final String id;
 
@@ -32,11 +29,9 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 
 	private final LocalRelayLinkAllotStrategy relayLinkAllotStrategy;
 
-	private volatile Map<Long, T> instanceMap = new ConcurrentHashMap<>();
+	private volatile Map<Long, LocalServeInstance> instanceMap = new ConcurrentHashMap<>();
 
-	private volatile List<T> instances = ImmutableList.of();
-
-	private LocalServeInstanceFactory<T> instanceFactory;
+	private volatile List<LocalServeInstance> instances = ImmutableList.of();
 
 	public AtomicBoolean close = new AtomicBoolean(false);
 
@@ -58,11 +53,6 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
 	}
 
-	protected BaseLocalServeCluster<T> setInstanceFactory(LocalServeInstanceFactory<T> instanceFactory) {
-		this.instanceFactory = instanceFactory;
-		return this;
-	}
-
 	@Override
 	public String getId() {
 		return id;
@@ -74,7 +64,7 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 	}
 
 	@Override
-	public LocalRelayLink allotLink(NetTunnel<?> tunnel) {
+	public LocalRelayLink allotLink(Tunnel<?> tunnel) {
 		LocalServeInstance instance = instanceAllotStrategy.allot(tunnel, this);
 		if (instance == null) {
 			return null;
@@ -83,22 +73,16 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 	}
 
 	@Override
-	public T loadInstance(ServeNode node) {
-		LocalBoolean created = CREATED_INSTANCE.get();
-		try {
-			T instance = instanceMap.computeIfAbsent(node.getId(), (id) -> {
-				created.set(true);
-				return instanceFactory.create(this, node);
-			});
+	public LocalServeInstance registerInstance(LocalServeInstance instance) {
+		LocalServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
+		if (old == null) {
 			this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
-			return instance;
-		} finally {
-			created.set(false);
 		}
+		return instance;
 	}
 
 	@Override
-	public synchronized void unloadInstance(long instanceId) {
+	public synchronized void unregisterInstance(long instanceId) {
 		LocalServeInstance instance = instanceMap.remove(instanceId);
 		if (instance != null && !instance.isClose()) {
 			instance.close();
@@ -106,30 +90,30 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 		}
 	}
 
-	@Override
-	public synchronized T registerLink(NetRelayLink link) {
-		T instance = instanceMap.get(link.getInstanceId());
-		if (instance == null) {
-			LOGGER.warn("注册 {} 时候, 未找到 {}-{} 服务器节点实例对象, 关闭连接.", link, link.getClusterId(), link.getInstanceId());
-			link.close();
-			return null;
-		}
-		instance.register(link);
-		return instance;
-	}
-
-	@Override
-	public void relieveLink(NetRelayLink link) {
-		LocalServeInstance instance = instanceMap.get(link.getInstanceId());
-		if (instance != null) {
-			instance.relieve(link);
-		}
-	}
+	//	@Override
+	//	public synchronized T registerLink(NetRelayLink link) {
+	//		T instance = instanceMap.get(link.getInstanceId());
+	//		if (instance == null) {
+	//			LOGGER.warn("注册 {} 时候, 未找到 {}-{} 服务器节点实例对象, 关闭连接.", link, link.getClusterId(), link.getInstanceId());
+	//			link.close();
+	//			return null;
+	//		}
+	//		//		instance.register(link);
+	//		return instance;
+	//	}
+	//
+	//	@Override
+	//	public void relieveLink(NetRelayLink link) {
+	//		LocalServeInstance instance = instanceMap.get(link.getInstanceId());
+	//		if (instance != null) {
+	//			//			instance.relieve(link);
+	//		}
+	//	}
 
 	@Override
 	public synchronized void close() {
 		if (close.compareAndSet(false, true)) {
-			List<T> oldList = instances;
+			List<LocalServeInstance> oldList = instances;
 			instances = ImmutableList.of();
 			oldList.forEach(LocalServeInstance::close);
 			instanceMap = new ConcurrentHashMap<>();
@@ -146,7 +130,7 @@ public abstract class BaseLocalServeCluster<T extends LocalServeInstance> implem
 			return false;
 		}
 
-		BaseLocalServeCluster<?> that = (BaseLocalServeCluster<?>)o;
+		BaseLocalServeCluster that = (BaseLocalServeCluster)o;
 
 		return new EqualsBuilder().append(getId(), that.getId()).isEquals();
 	}

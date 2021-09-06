@@ -10,4 +10,6 @@ public interface TunnelPacketArguments extends RelayPacketArguments {
 
 	long getTunnelId();
 
+	long getInstanceId();
+
 }

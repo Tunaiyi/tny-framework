@@ -16,19 +16,16 @@ import io.netty.channel.Channel;
  */
 public class LocalRelayTunnelFactory implements NettyTunnelFactory {
 
-	private final NettyTunnelFactory tunnelFactory;
-
 	private final LocalRelayExplorer localRelayExplorer;
 
-	public LocalRelayTunnelFactory(NettyTunnelFactory tunnelFactory, LocalRelayExplorer localRelayExplorer) {
-		this.tunnelFactory = tunnelFactory;
+	public LocalRelayTunnelFactory(LocalRelayExplorer localRelayExplorer) {
 		this.localRelayExplorer = localRelayExplorer;
 	}
 
 	@Override
-	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext<T> context) {
-		NetTunnel<T> tunnel = tunnelFactory.create(id, channel, context);
-		DoneResult<LocalRelayTunnel<T>> result = localRelayExplorer.bindTunnel(tunnel);
+	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
+		MessageTransporter<T> transport = new NettyChannelMessageTransporter<>(channel);
+		DoneResult<LocalRelayTunnel<T>> result = localRelayExplorer.createTunnel(id, transport, context);
 		if (result.isFailure()) {
 			throw new NetGeneralException(result.getCode());
 		}

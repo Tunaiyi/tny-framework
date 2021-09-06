@@ -24,7 +24,7 @@ public class TunnelConnectedArgumentsProto extends BaseTunnelArgumentsProto<Tunn
 
 	@Override
 	public TunnelConnectedArguments toArguments() {
-		return TunnelConnectedArguments.ofResult(this.getTunnelId(), this.result);
+		return TunnelConnectedArguments.ofResult(this.getInstanceId(), this.getTunnelId(), this.result);
 	}
 
 	public boolean isResult() {

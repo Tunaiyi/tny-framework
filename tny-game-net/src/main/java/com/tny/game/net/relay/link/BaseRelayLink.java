@@ -11,8 +11,6 @@ import org.apache.commons.lang3.builder.*;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -26,6 +24,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
 public abstract class BaseRelayLink implements NetRelayLink {
 
 	public final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+	private long latelyHeartbeatTime = System.currentTimeMillis();
 
 	/**
 	 * 连接 id
@@ -63,11 +63,6 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	protected final NetRelayTransporter transporter;
 
 	/**
-	 * 转发终端管道 map
-	 */
-	protected final Map<Long, NetRelayTunnel<?>> tunnelMap = new ConcurrentHashMap<>();
-
-	/**
 	 * 转发关掉事件
 	 */
 	private final EventFirer<RelayLinkListener, NetRelayLink> event = EventFirers.trigger(RelayLinkListener.class);
@@ -77,10 +72,10 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	 */
 	private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-	public BaseRelayLink(String clusterId, long instanceId, String key, NetRelayTransporter transporter) {
+	public BaseRelayLink(String key, String clusterId, long instanceId, NetRelayTransporter transporter) {
+		this.key = key;
 		this.clusterId = clusterId;
 		this.instanceId = instanceId;
-		this.key = key;
 		this.id = NetRelayLink.idOf(this);
 		this.transporter = transporter;
 		this.createAt = System.currentTimeMillis();
@@ -143,14 +138,24 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	}
 
 	@Override
-	public WriteMessageFuture relay(long tunnelId, Message message, WriteMessagePromise promise) {
-		return this.transporter.write(new TunnelRelayPacket(createPacketId(), tunnelId, message), promise);
+	public void heartbeat() {
+		this.latelyHeartbeatTime = System.currentTimeMillis();
 	}
 
 	@Override
-	public WriteMessageFuture relay(long tunnelId, MessageAllocator allocator, MessageFactory factory, MessageContext context) {
+	public long getLatelyHeartbeatTime() {
+		return latelyHeartbeatTime;
+	}
+
+	@Override
+	public WriteMessageFuture relay(RelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
+		return this.transporter.write(new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), message), promise);
+	}
+
+	@Override
+	public WriteMessageFuture relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContext context) {
 		return this.transporter.write(
-				() -> new TunnelRelayPacket(createPacketId(), tunnelId, allocator.allocate(factory, context)),
+				() -> new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), allocator.allocate(factory, context)),
 				as(context.getWriteMessageFuture(), WriteMessagePromise.class));
 	}
 
@@ -177,40 +182,8 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	}
 
 	@Override
-	public void destroyTunnel(NetTunnel<?> tunnel) {
-		NetRelayTunnel<?> relayTunnel = this.tunnelMap.get(tunnel.getId());
-		if (relayTunnel != tunnel) {
-			return;
-		}
-		if (this.tunnelMap.remove(relayTunnel.getId(), relayTunnel)) {
-			relayTunnel.attributes().removeAttribute(NetRelayAttrKeys.RELAY_LINK);
-			relayTunnel.closeOnLink(this);
-		}
-	}
-
-	@Override
-	public void closeTunnel(long tunnelId) {
-		NetRelayTunnel<?> tunnel = this.tunnelMap.get(tunnelId);
-		if (tunnel != null) {
-			tunnel.closeOnLink(this);
-			this.tunnelMap.remove(tunnelId, tunnel);
-		}
-	}
-
-	@Override
-	public <UID> NetTunnel<UID> getTunnel(long tunnelId) {
-		return as(this.tunnelMap.get(tunnelId));
-	}
-
-	public boolean addTunnel(NetRelayTunnel<?> tunnel) {
-		if (!this.isActive()) {
-			return false;
-		}
-		if (this.tunnelMap.putIfAbsent(tunnel.getId(), tunnel) == null) {
-			tunnel.attributes().setAttributeIfNoKey(NetRelayAttrKeys.RELAY_LINK, this);
-			return true;
-		}
-		return false;
+	public EventSource<RelayLinkListener> event() {
+		return event;
 	}
 
 	@Override
@@ -224,24 +197,57 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			}
 			this.status = RelayLinkStatus.OPEN;
 			this.onOpen();
+			this.heartbeat();
 			LOGGER.info("RelayLink [{}:{}] 转发链接打开 ", this, this.status);
 			event.trigger(RelayLinkListener::onOpen, this);
 		}
 	}
 
-	public void openOnFailure() {
-		WriteMessageFuture future = this.write(LinkOpenedPacket.FACTORY, LinkOpenedArguments.failure(), true);
-		future.addWriteListener((f) -> this.close());
-	}
-
-	//	public eventTrigger
-
 	protected void onOpen() {
 	}
 
+	public void openOnFailure() {
+		if (this.status != RelayLinkStatus.INIT) {
+			return;
+		}
+		synchronized (this) {
+			if (this.status != RelayLinkStatus.INIT) {
+				return;
+			}
+			this.write(LinkOpenedPacket.FACTORY, LinkOpenedArguments.failure(), true);
+			this.doDisconnect();
+			this.onOpenFailure();
+		}
+	}
+
+	protected void onOpenFailure() {
+	}
+
 	@Override
-	public EventSource<RelayLinkListener> event() {
-		return event;
+	public void disconnect() {
+		if (this.status != RelayLinkStatus.OPEN) {
+			return;
+		}
+		synchronized (this) {
+			if (this.status != RelayLinkStatus.OPEN) {
+				return;
+			}
+			this.status = RelayLinkStatus.DISCONNECT;
+			this.doDisconnect();
+			event.trigger(RelayLinkListener::onDisconnect, this);
+			LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
+			this.onDisconnect();
+		}
+	}
+
+	protected void onDisconnect() {
+	}
+
+	private void doDisconnect() {
+		RelayTransporter transporter = this.transporter;
+		if (transporter != null && transporter.isActive()) {
+			transporter.close();
+		}
 	}
 
 	@Override
@@ -255,25 +261,24 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			}
 			this.status = RelayLinkStatus.CLOSING;
 			event.trigger(RelayLinkListener::onClosing, this);
-			this.tunnelMap.forEach((id, tunnel) -> tunnel.close());
+			this.write(LinkClosePacket.FACTORY, null);
+			this.doDisconnect();
 			this.status = RelayLinkStatus.CLOSED;
 			event.trigger(RelayLinkListener::onClosed, this);
 			LOGGER.info("RelayLink [{}:{}] 转发链接关闭 ", this, this.status);
-			this.tunnelMap.clear();
 			this.onClosed();
-
 		}
 	}
 
 	protected void onClosed() {
-		this.write(LinkClosePacket.FACTORY, null);
-		RelayTransporter transporter = this.transporter;
-		if (transporter != null && transporter.isActive()) {
-			transporter.close();
-		}
 	}
 
-	protected int createPacketId() {
+	@Override
+	public void closeTunnel(RelayTunnel<?> tunnel) {
+		this.write(TunnelDisconnectPacket.FACTORY, new TunnelVoidArguments(tunnel));
+	}
+
+	private int createPacketId() {
 		return this.packetIdCreator.incrementAndGet();
 	}
 

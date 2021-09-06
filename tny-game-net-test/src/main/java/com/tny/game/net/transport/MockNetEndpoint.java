@@ -104,7 +104,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public EndpointContext<Long> getContext() {
+	public EndpointContext getContext() {
 		return null;
 	}
 

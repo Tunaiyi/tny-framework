@@ -8,7 +8,6 @@ import com.tny.game.net.codec.*;
 import com.tny.game.net.netty4.datagram.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -43,13 +42,13 @@ public abstract class DatagramPackV1Codec implements AppPrepareStart {
 	@Override
 	public void prepareStart() {
 		MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).checkUnit(this.config.getBodyCodec()));
-		RelayStrategy relayStrategy;
-		if (StringUtils.isBlank(this.config.getRelayStrategy())) {
-			relayStrategy = RelayStrategy.NO_RELAY_STRATEGY;
+		MessageRelayStrategy messageRelayStrategy;
+		if (this.config.isHasMessageRelayStrategy()) {
+			messageRelayStrategy = as(UnitLoader.getLoader(MessageRelayStrategy.class).checkUnit(this.config.getMessageRelayStrategy()));
 		} else {
-			relayStrategy = as(UnitLoader.getLoader(RelayStrategy.class).checkUnit(this.config.getRelayStrategy()));
+			messageRelayStrategy = MessageRelayStrategy.NO_RELAY_STRATEGY;
 		}
-		this.messageCodec = new DefaultNettyMessageCodec(bodyCoder, relayStrategy);
+		this.messageCodec = new DefaultNettyMessageCodec(bodyCoder, messageRelayStrategy);
 		this.verifier = UnitLoader.getLoader(CodecVerifier.class).checkUnit(this.config.getVerifier());
 		this.crypto = UnitLoader.getLoader(CodecCrypto.class).checkUnit(this.config.getCrypto());
 	}

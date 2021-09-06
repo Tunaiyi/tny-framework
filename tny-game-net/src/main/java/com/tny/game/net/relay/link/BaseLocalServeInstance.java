@@ -1,14 +1,14 @@
 package com.tny.game.net.relay.link;
 
 import com.google.common.collect.ImmutableList;
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.relay.cluster.*;
 import org.apache.commons.lang3.builder.*;
+import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -17,6 +17,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @date : 2021/8/21 4:39 上午
  */
 public class BaseLocalServeInstance implements LocalServeInstance {
+
+	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeInstance.class);
 
 	protected final LocalServeCluster cluster;
 
@@ -85,7 +87,23 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 			this.relayLinkMap = new ConcurrentHashMap<>();
 			oldMap.forEach((id, link) -> link.close());
 			oldMap.clear();
-			this.prepareClose();
+			this.postClose();
+		}
+	}
+
+	@Override
+	public void heartbeat() {
+		long lifeTime = cluster.getContext().getLinkMaxIdleTime();
+		long now = System.currentTimeMillis();
+		for (LocalRelayLink link : relayLinks) {
+			ExeAide.runQuietly(() -> {
+				if (link.isActive()) {
+					link.ping();
+					if (now - link.getLatelyHeartbeatTime() > lifeTime) {
+						link.disconnect();
+					}
+				}
+			}, LOGGER);
 		}
 	}
 
@@ -96,26 +114,32 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 	}
 
 	@Override
-	public synchronized void register(RelayLink link) {
-		if (link instanceof LocalRelayLink) {
-			NetRelayLink old = relayLinkMap.put(link.getId(), as(link));
-			if (old != null && old != link) {
-				old.close();
-			}
-			relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
+	public synchronized void register(LocalRelayLink link) {
+		NetRelayLink old = relayLinkMap.put(link.getId(), link);
+		if (old != null && old != link) {
+			old.close();
 		}
+		relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
+		onRegister(link);
 	}
 
 	@Override
-	public synchronized void relieve(RelayLink link) {
-		if (link instanceof LocalRelayLink) {
-			if (relayLinkMap.remove(link.getId(), link)) {
-				if (link.isActive()) {
-					link.close();
-				}
-				relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
+	public synchronized void relieve(LocalRelayLink link) {
+		if (relayLinkMap.remove(link.getId(), link)) {
+			if (link.isActive()) {
+				link.close();
 			}
+			relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
+			onRelieve(link);
 		}
+	}
+
+	protected void onRegister(LocalRelayLink link) {
+
+	}
+
+	protected void onRelieve(LocalRelayLink link) {
+
 	}
 
 	@Override

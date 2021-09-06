@@ -1,7 +1,5 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
@@ -74,39 +72,18 @@ public interface RelayLink {
 	WriteMessagePromise createWritePromise();
 
 	/**
-	 * 准备
-	 */
-	void open();
-
-	/**
 	 * 关闭
 	 */
 	void close();
 
 	/**
+	 * 关闭
+	 */
+	void disconnect();
+
+	/**
 	 * 是否活跃
 	 */
 	boolean isActive();
-
-	/**
-	 * 转发消息到目标服务器
-	 *
-	 * @param tunnelId id
-	 * @param message  消息
-	 * @param promise  发送应答对象
-	 * @return 返回转发应答对象
-	 */
-	WriteMessageFuture relay(long tunnelId, Message message, WriteMessagePromise promise);
-
-	/**
-	 * 转发消息到目标服务器
-	 *
-	 * @param tunnelId  id
-	 * @param allocator 消息装配器
-	 * @param factory   消息工厂
-	 * @param context   消息上下文
-	 * @return 返回转发应答对象
-	 */
-	WriteMessageFuture relay(long tunnelId, MessageAllocator allocator, MessageFactory factory, MessageContext context);
 
 }

@@ -19,7 +19,7 @@ public class TunnelVoidArgumentsProto extends BaseTunnelArgumentsProto<TunnelVoi
 
 	@Override
 	public TunnelVoidArguments toArguments() {
-		return new TunnelVoidArguments(this.getTunnelId());
+		return new TunnelVoidArguments(this.getInstanceId(), this.getTunnelId());
 	}
 
 }

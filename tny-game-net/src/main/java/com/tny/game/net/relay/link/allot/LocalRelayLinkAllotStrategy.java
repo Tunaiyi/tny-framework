@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
  */
 public interface LocalRelayLinkAllotStrategy {
 
-	LocalRelayLink allot(NetTunnel<?> tunnel, LocalServeInstance instance);
+	LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance);
 
 }

@@ -26,7 +26,7 @@ enum RelayConnectorStatus {
 	/**
 	 * 失败
 	 */
-	FAILURE(true),
+	DISCONNECT(true),
 
 	/**
 	 * 关闭

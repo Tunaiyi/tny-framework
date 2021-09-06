@@ -14,7 +14,7 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseClientTunnel.class);
 
-	public BaseClientTunnel(long id, NetworkContext<UID> context) {
+	public BaseClientTunnel(long id, NetworkContext context) {
 		super(id, null, TunnelMode.CLIENT, context);
 	}
 
@@ -38,11 +38,6 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 		}
 		LOGGER.warn("{} is available", this);
 		return false;
-	}
-
-	@Override
-	protected void onDisconnect() {
-		this.closeTransport();
 	}
 
 	@Override

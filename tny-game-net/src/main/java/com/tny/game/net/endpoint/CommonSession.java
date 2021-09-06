@@ -14,7 +14,7 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
 
-	public CommonSession(SessionSetting setting, EndpointContext<UID> endpointContext) {
+	public CommonSession(SessionSetting setting, EndpointContext endpointContext) {
 		super(setting, endpointContext);
 	}
 

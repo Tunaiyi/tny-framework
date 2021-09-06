@@ -11,26 +11,27 @@ import org.slf4j.*;
  */
 public class RunnableMessageCommand extends MessageCommand<MessageCommandContext> {
 
-    private final Runnable runnable;
+	private final Runnable runnable;
 
-    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
+	private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
-    protected RunnableMessageCommand(NetTunnel<?> tunnel, Runnable runnable,
-            Message message, MessageDispatcherContext context, EndpointKeeperManager endpointKeeperManager) {
-        super(new DefaultMessageCommandContext(RunnableMessageCommand.class), tunnel, message, context, endpointKeeperManager);
-        this.runnable = runnable;
-    }
+	protected RunnableMessageCommand(NetTunnel<?> tunnel, Runnable runnable,
+			Message message, MessageDispatcherContext context, EndpointKeeperManager endpointKeeperManager) {
+		super(new DefaultMessageCommandContext(RunnableMessageCommand.class), tunnel, message, context, endpointKeeperManager, false);
+		this.runnable = runnable;
+	}
 
-    /**
-     * 执行 invoke
-     */
-    @Override
-    protected void invoke() {
-        this.runnable.run();
-    }
+	/**
+	 * 执行 invoke
+	 */
+	@Override
+	protected void invoke() {
+		this.runnable.run();
+		this.commandContext.setResult(Void.class);
+	}
 
-    @Override
-    protected void doInvokeDone(Throwable cause) {
-    }
+	@Override
+	protected void doInvokeDone(Throwable cause) {
+	}
 
 }

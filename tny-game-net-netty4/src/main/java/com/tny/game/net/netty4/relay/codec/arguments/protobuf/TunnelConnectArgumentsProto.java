@@ -51,7 +51,7 @@ public class TunnelConnectArgumentsProto extends BaseTunnelArgumentsProto<Tunnel
 
 	@Override
 	public TunnelConnectArguments toArguments() {
-		return new TunnelConnectArguments(this.getTunnelId(), this.ipValue, this.port);
+		return new TunnelConnectArguments(this.getInstanceId(), this.getTunnelId(), this.ipValue, this.port);
 	}
 
 }

@@ -11,7 +11,7 @@ import com.tny.game.net.message.*;
  * @date : 2021/8/7 3:46 下午
  */
 @Unit
-public class ControllerRelayStrategy implements RelayStrategy {
+public class ControllerRelayStrategy implements MessageRelayStrategy {
 
 	private final MessageDispatcher messageDispatcher;
 

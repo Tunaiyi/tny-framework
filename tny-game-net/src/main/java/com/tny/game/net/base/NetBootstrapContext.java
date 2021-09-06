@@ -6,17 +6,19 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/5/6 12:09 下午
  */
-public class NetBootstrapContext<UID> implements NetworkContext<UID> {
+public class NetBootstrapContext implements NetworkContext {
 
 	private final MessageFactory messageFactory;
 
-	private final CertificateFactory<UID> certificateFactory;
+	private final CertificateFactory<?> certificateFactory;
 
 	private final MessageDispatcher messageDispatcher;
 
@@ -33,7 +35,7 @@ public class NetBootstrapContext<UID> implements NetworkContext<UID> {
 			MessageDispatcher messageDispatcher,
 			CommandTaskProcessor commandTaskProcessor,
 			MessageFactory messageFactory,
-			CertificateFactory<UID> certificateFactory) {
+			CertificateFactory<?> certificateFactory) {
 		this.messageDispatcher = messageDispatcher;
 		this.commandTaskProcessor = commandTaskProcessor;
 		this.messageFactory = messageFactory;
@@ -46,8 +48,8 @@ public class NetBootstrapContext<UID> implements NetworkContext<UID> {
 	}
 
 	@Override
-	public CertificateFactory<UID> getCertificateFactory() {
-		return this.certificateFactory;
+	public <I> CertificateFactory<I> getCertificateFactory() {
+		return as(this.certificateFactory);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ public class CommonSessionFactory<UID> implements SessionFactory<UID, CommonSess
 	}
 
 	@Override
-	public CommonSession<UID> create(SessionSetting setting, EndpointContext<UID> endpointContext) {
+	public CommonSession<UID> create(SessionSetting setting, EndpointContext endpointContext) {
 		return new CommonSession<>(setting, endpointContext);
 	}
 

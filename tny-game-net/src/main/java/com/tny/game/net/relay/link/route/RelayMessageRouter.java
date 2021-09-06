@@ -2,9 +2,6 @@ package com.tny.game.net.relay.link.route;
 
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
-import com.tny.game.net.transport.*;
-
-import java.util.Map;
 
 /**
  * 转发消息路由器
@@ -15,6 +12,13 @@ import java.util.Map;
  */
 public interface RelayMessageRouter {
 
-	LocalRelayLink route(Tunnel<?> tunnel, MessageSchema schema, Map<String, TunnelRelayLinker> map);
+	/**
+	 * 消息路由转发连接
+	 *
+	 * @param tunnel 发送的管道
+	 * @param schema 消息
+	 * @return 返回转发的连接
+	 */
+	String route(LocalRelayTunnel<?> tunnel, MessageSchema schema);
 
 }

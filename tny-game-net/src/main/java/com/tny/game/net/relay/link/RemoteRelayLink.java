@@ -1,7 +1,5 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.transport.*;
-
 /**
  * <p>
  *
@@ -10,6 +8,6 @@ import com.tny.game.net.transport.*;
  */
 public interface RemoteRelayLink extends NetRelayLink {
 
-	<UID> NetTunnel<UID> acceptTunnel(long tunnelId, String host, int port);
+	//	<UID> NetTunnel<UID> acceptTunnel(long tunnelId, String host, int port);
 
 }

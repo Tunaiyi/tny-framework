@@ -19,13 +19,17 @@ public enum RelayLinkStatus implements EnumIdentifiable<Integer> {
 	 **/
 	OPEN(2, false),
 	/**
+	 * 打开
+	 **/
+	DISCONNECT(3, false),
+	/**
 	 * 关闭中
 	 */
-	CLOSING(3, true),
+	CLOSING(4, true),
 	/**
 	 * 关闭
 	 **/
-	CLOSED(4, true);
+	CLOSED(5, true);
 	//
 	;
 

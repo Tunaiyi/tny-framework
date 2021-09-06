@@ -45,7 +45,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	/**
 	 * 上下文
 	 */
-	private final EndpointContext<UID> context;
+	private final EndpointContext context;
 
 	/* 写出的消息缓存 */
 	private final MessageQueue<UID> sentMessageQueue;
@@ -62,7 +62,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	/* 发送消息过滤器 */
 	private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
-	protected AbstractEndpoint(SessionSetting setting, EndpointContext<UID> context) {
+	protected AbstractEndpoint(SessionSetting setting, EndpointContext context) {
 		this.id = NetAide.newEndpointId();
 		this.state = EndpointStatus.INIT;
 		this.context = context;
@@ -77,7 +77,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public EndpointContext<UID> getContext() {
+	public EndpointContext getContext() {
 		return this.context;
 	}
 

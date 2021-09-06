@@ -3,6 +3,7 @@ package com.tny.game.net.netty4.datagram.codec;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
@@ -15,7 +16,7 @@ public class DatagramPackCodecSetting extends DataPackCodecOptions {
 	private String bodyCodec = null;
 
 	// 消息转发策略
-	private String relayStrategy = null;
+	private String messageRelayStrategy = null;
 
 	// 消息体验证器
 	private String verifier = lowerCamelName(CRC64CodecVerifier.class);
@@ -32,8 +33,12 @@ public class DatagramPackCodecSetting extends DataPackCodecOptions {
 		return this.bodyCodec;
 	}
 
-	public String getRelayStrategy() {
-		return this.relayStrategy;
+	public boolean isHasMessageRelayStrategy() {
+		return StringUtils.isNoneBlank(this.messageRelayStrategy);
+	}
+
+	public String getMessageRelayStrategy() {
+		return this.messageRelayStrategy;
 	}
 
 	public String getVerifier() {
@@ -63,8 +68,8 @@ public class DatagramPackCodecSetting extends DataPackCodecOptions {
 		return this;
 	}
 
-	public DatagramPackCodecSetting setRelayStrategy(String relayStrategy) {
-		this.relayStrategy = relayStrategy;
+	public DatagramPackCodecSetting setMessageRelayStrategy(String messageRelayStrategy) {
+		this.messageRelayStrategy = messageRelayStrategy;
 		return this;
 	}
 

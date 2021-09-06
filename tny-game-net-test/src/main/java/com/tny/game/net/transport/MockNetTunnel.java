@@ -34,13 +34,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
 	private boolean writeSuccess = true;
 
-	private NetBootstrapContext<Long> context;
+	private NetBootstrapContext context;
 
 	public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
 		this.endpoint = endpoint;
 		this.state = TunnelStatus.OPEN;
 		this.mode = mode;
-		this.context = new NetBootstrapContext<>();
+		this.context = new NetBootstrapContext();
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public NetBootstrapContext<Long> getContext() {
+	public NetBootstrapContext getContext() {
 		return this.context;
 	}
 

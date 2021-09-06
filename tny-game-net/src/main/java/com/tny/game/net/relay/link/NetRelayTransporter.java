@@ -24,7 +24,7 @@ public interface NetRelayTransporter extends RelayTransporter {
 	/**
 	 * @return 获取启动器上下文
 	 */
-	NetworkContext<?> getContext();
+	NetworkContext getContext();
 
 	/**
 	 * 写出数据

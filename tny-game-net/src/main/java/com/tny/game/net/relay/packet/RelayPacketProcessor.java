@@ -24,6 +24,8 @@ public interface RelayPacketProcessor {
 
 	void onTunnelDisconnect(NetRelayLink link, TunnelDisconnectPacket packet);
 
+	void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet);
+
 	void onTunnelRelay(NetRelayLink link, TunnelRelayPacket packet);
 
 }

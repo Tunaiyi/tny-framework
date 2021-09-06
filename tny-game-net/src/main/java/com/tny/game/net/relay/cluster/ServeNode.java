@@ -44,7 +44,7 @@ public interface ServeNode extends Comparable<ServeNode> {
 	/**
 	 * @return 获取地址
 	 */
-	default URL getUrl() {
+	default URL url() {
 		return new URL(this.getScheme(), this.getHost(), this.getPort());
 	}
 

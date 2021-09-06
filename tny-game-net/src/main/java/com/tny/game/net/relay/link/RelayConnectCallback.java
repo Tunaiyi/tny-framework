@@ -1,7 +1,6 @@
-package com.tny.game.net.netty4.relay;
+package com.tny.game.net.relay.link;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.relay.link.*;
 
 /**
  * <p>

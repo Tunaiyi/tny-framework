@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 		NetAutoConfiguration.class,
 		RelayAccessAutoConfiguration.class,
 		ImportRelayBootstrapDefinitionRegistrar.class,
-		ImportRelayServeClusterBootstrapDefinitionRegistrar.class
+		ImportRelayServeClusterBootstrapDefinitionRegistrar.class,
 })
 public @interface EnableRelayAccessApplication {
 

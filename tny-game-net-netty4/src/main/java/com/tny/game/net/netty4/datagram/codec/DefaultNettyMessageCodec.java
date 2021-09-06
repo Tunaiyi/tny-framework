@@ -18,15 +18,15 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 
 	private final MessageBodyCodec<Object> bodyCoder;
 
-	private final RelayStrategy relayStrategy;
+	private final MessageRelayStrategy messageRelayStrategy;
 
 	public DefaultNettyMessageCodec(MessageBodyCodec<?> bodyCoder) {
 		this(bodyCoder, null);
 	}
 
-	public DefaultNettyMessageCodec(MessageBodyCodec<?> bodyCoder, RelayStrategy relayStrategy) {
+	public DefaultNettyMessageCodec(MessageBodyCodec<?> bodyCoder, MessageRelayStrategy relayStrategy) {
 		this.bodyCoder = as(bodyCoder);
-		this.relayStrategy = ObjectAide.ifNull(relayStrategy, RelayStrategy.NO_RELAY_STRATEGY);
+		this.messageRelayStrategy = ObjectAide.ifNull(relayStrategy, MessageRelayStrategy.NO_RELAY_STRATEGY);
 	}
 
 	@Override
@@ -44,13 +44,13 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		CommonMessageHead head = new CommonMessageHead(id, mode, line, protocol, code, toMessage, time);
 		if (CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST)) {
 			int length = NettyVarIntCoder.readVarInt32(buffer);
-			if (this.relayStrategy.isRelay(head)) {
+			ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
+			if (this.messageRelayStrategy.isRelay(head)) {
 				// WARN 不释放, 等待转发后释放
-				ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
 				buffer.readBytes(bodyBuff, length);
 				body = new ByteBufMessageBody(bodyBuff, true);
 			} else {
-				ByteBuf bodyBuff = buffer.copy(buffer.readerIndex(), length);
+				buffer.readBytes(bodyBuff, length);
 				try {
 					body = this.bodyCoder.decode(bodyBuff);
 				} finally {
@@ -98,6 +98,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 				OctetArrayMessageBody arrayMessageBody = as(object);
 				byte[] data = arrayMessageBody.getBodyBytes();
 				bodyBody = arrayMessageBody;
+				NettyVarIntCoder.writeVarInt32(data.length, buffer);
 				write(buffer, data);
 			} else if (object instanceof ByteBufMessageBody) {
 				ByteBufMessageBody messageBody = (ByteBufMessageBody)object;
@@ -106,6 +107,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 				if (data == null) {
 					throw CodecException.causeEncodeFailed("ByteBufMessageBody is released");
 				}
+				NettyVarIntCoder.writeVarInt32(data.readableBytes(), buffer);
 				buffer.writeBytes(data);
 			} else {
 				ByteBuf bodyBuf = null;

@@ -10,13 +10,13 @@ import io.netty.channel.ChannelHandlerContext;
  * @author : kgtny
  * @date : 2021/8/10 6:03 下午
  */
-public class BaseRelayPackCodec {
+public interface RelayPackCodec {
 
-	public RelayLink getRelayPipe(ChannelHandlerContext ctx) {
+	default RelayLink getRelayPipe(ChannelHandlerContext ctx) {
 		return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
 	}
 
-	public RelayLink loadOrCreateRelayPipe(ChannelHandlerContext ctx, long id) {
+	default RelayLink loadOrCreateRelayPipe(ChannelHandlerContext ctx, long id) {
 		return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
 	}
 

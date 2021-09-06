@@ -11,10 +11,10 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
 	@Override
 	protected CommonSession<Long> newEndpoint(CommonSessionSetting setting) {
-		return new CommonSession<>(setting, new EndpointContext<Long>() {
+		return new CommonSession<>(setting, new EndpointContext() {
 
 			@Override
-			public CertificateFactory<Long> getCertificateFactory() {
+			public <T> CertificateFactory<T> getCertificateFactory() {
 				return new DefaultCertificateFactory<>();
 			}
 

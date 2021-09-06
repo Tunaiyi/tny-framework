@@ -14,8 +14,12 @@ public interface RelayServeClusterSetting {
 
 	String getId();
 
-	int getConnectionSize();
+	int getLinkConnectionSize();
 
 	List<ServeNode> getNodes();
+
+	long getLinkHeartbeatInterval();
+
+	long getLinkMaxIdleTime();
 
 }

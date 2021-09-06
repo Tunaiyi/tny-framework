@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4.relay;
 
+import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
@@ -28,7 +29,7 @@ import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
 public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootstrapSetting> implements RelayClientGuide {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.CLIENT);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CLIENT);
 
 	private static final boolean EPOLL = isEpoll();
 
@@ -39,6 +40,8 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 	private final Map<String, NettyClient<?>> clients = new ConcurrentHashMap<>();
 
 	private final AtomicBoolean closed = new AtomicBoolean(false);
+
+	private LocalRelayExplorer localRelayExplorer;
 
 	private final ClientCloseListener<?> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
 
@@ -99,6 +102,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
 	@Override
 	protected void onLoadUnit(NettyRelayClientBootstrapSetting setting) {
+		this.localRelayExplorer = UnitLoader.getLoader(LocalRelayExplorer.class).checkUnit();
 	}
 
 	private Bootstrap getBootstrap() {
@@ -110,7 +114,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 				return this.bootstrap;
 			}
 			this.bootstrap = new Bootstrap();
-			RelayPacketProcessor relayPacketProcessor = new LocalRelayPacketProcessor();
+			RelayPacketProcessor relayPacketProcessor = new LocalRelayPacketProcessor(this.localRelayExplorer);
 			NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(relayPacketProcessor);
 			this.bootstrap.group(workerGroup)
 					.channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
@@ -120,21 +124,22 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 					.handler(new ChannelInitializer<Channel>() {
 
 						@Override
-						protected void initChannel(Channel ch) throws Exception {
-							if (NettyRelayClientGuide.this.channelMaker != null) {
-								NettyRelayClientGuide.this.channelMaker.initChannel(ch);
+						protected void initChannel(Channel channel) throws Exception {
+							try {
+								if (NettyRelayClientGuide.this.channelMaker != null) {
+									NettyRelayClientGuide.this.channelMaker.initChannel(channel);
+								}
+								channel.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
+							} catch (Throwable e) {
+								LOGGER.info("init {} channel exception", channel, e);
+								throw e;
 							}
-							ch.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
 						}
 
 					});
 			return this.bootstrap;
 		}
 
-	}
-
-	private NetRelayTransporter createNetRelayLink(Channel channel) {
-		return new NettyChannelRelayTransporter(channel, this.getContext());
 	}
 
 	@Override
@@ -151,6 +156,10 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 			return true;
 		}
 		return false;
+	}
+
+	private NetRelayTransporter createNetRelayLink(Channel channel) {
+		return new NettyChannelRelayTransporter(channel, this.getContext());
 	}
 
 }

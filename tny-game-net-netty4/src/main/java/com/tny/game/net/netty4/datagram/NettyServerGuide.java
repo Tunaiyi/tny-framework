@@ -6,7 +6,6 @@ import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.base.listener.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.transport.*;
@@ -21,7 +20,7 @@ import java.util.*;
 
 public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSetting> implements ServerGuide {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NettyServerGuide.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(NettyServerGuide.class);
 
 	private static final boolean EPOLL = isEpoll();
 
@@ -63,21 +62,21 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 	@Override
 	public boolean close() {
-		LOG.info("#NettyServer [ {} ] | 正在关闭服务器......", this.setting.getName());
+		LOGGER.info("#NettyServer [ {} ] | 正在关闭服务器......", this.setting.getName());
 		this.channels.forEach((address, channel) -> {
 			try {
-				NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭中......", this.setting.getName(), channel);
+				NettyServerGuide.LOGGER.info("#NettyServer [ {} ] | Channel {} 关闭中......", this.setting.getName(), channel);
 				channel.disconnect();
-				NettyServerGuide.LOG.info("#NettyServer [ {} ] | Channel {} 关闭完成", this.setting.getName(), channel);
+				NettyServerGuide.LOGGER.info("#NettyServer [ {} ] | Channel {} 关闭完成", this.setting.getName(), channel);
 			} catch (Throwable e) {
-				NettyServerGuide.LOG.error("#NettyServer [ {} ] | Channel {} 关闭异常!!!", this.setting.getName(), channel, e);
-				LOG.error("NettyServer [ {} ] | {} close exception", this.setting.getName(), address, e);
+				NettyServerGuide.LOGGER.error("#NettyServer [ {} ] | Channel {} 关闭异常!!!", this.setting.getName(), channel, e);
+				LOGGER.error("NettyServer [ {} ] | {} close exception", this.setting.getName(), address, e);
 			}
 		});
 		parentGroup.shutdownGracefully();
 		childGroup.shutdownGracefully();
 		NettyServerGuide.this.fireServerClosed();
-		NettyServerGuide.LOG.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
+		NettyServerGuide.LOGGER.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
 		return true;
 	}
 
@@ -112,13 +111,13 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 				this.channels.remove(addressString, channel);
 			}
 		}
-		LOG.info("#NettyServer [ {} ] | 正在打开监听{}端口", this.setting.getName(), address);
+		LOGGER.info("#NettyServer [ {} ] | 正在打开监听{}端口", this.setting.getName(), address);
 		ChannelFuture channelFuture = this.bootstrap().bind(address);
 		if (channelFuture.awaitUninterruptibly(30000L)) {
 			this.channels.put(addressString, channelFuture.channel());
-			LOG.info("#NettyServer [ {} ] | {}端口已监听", this.setting.getName(), address);
+			LOGGER.info("#NettyServer [ {} ] | {}端口已监听", this.setting.getName(), address);
 		} else {
-			LOG.info("#NettyServer [ {} ] | {}端口监听失败", this.setting.getName(), address);
+			LOGGER.info("#NettyServer [ {} ] | {}端口监听失败", this.setting.getName(), address);
 		}
 	}
 
@@ -132,7 +131,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 			}
 			this.bootstrap = new ServerBootstrap();
 			NettyDatagramChannelSetting channelSetting = setting.getChannel();
-			NettyMessageHandler nettyMessageHandler = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getHandler());
+			NettyMessageHandler nettyMessageHandler = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getMessageHandler());
 			NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class).checkUnit(channelSetting.getTunnelFactory());
 			this.bootstrap.group(parentGroup, childGroup);
 			this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
@@ -143,17 +142,19 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 				@Override
 				protected void initChannel(Channel channel) throws Exception {
-					ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
-					if (maker != null) {
-						maker.initChannel(channel);
+					try {
+						ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
+						if (maker != null) {
+							maker.initChannel(channel);
+						}
+						channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
+						NetworkContext context = NettyServerGuide.this.getContext();
+						NetTunnel<Object> tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
+						tunnel.open();
+					} catch (Throwable e) {
+						LOGGER.info("init {} channel exception", channel, e);
+						throw e;
 					}
-					channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
-					NetworkContext<Object> context = NettyServerGuide.this.getContext();
-					NetTunnel<Object> tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
-					AnonymityEndpoint<Object> endpoint = new AnonymityEndpoint<>(context);
-					endpoint.setTunnel(tunnel);
-					tunnel.bind(endpoint);
-					tunnel.open();
 				}
 			});
 			return this.bootstrap;

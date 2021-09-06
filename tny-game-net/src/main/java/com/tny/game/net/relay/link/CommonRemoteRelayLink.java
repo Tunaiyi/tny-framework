@@ -1,13 +1,7 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.base.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
-import com.tny.game.net.transport.*;
-
-import java.net.InetSocketAddress;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -17,11 +11,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayLink {
 
-	private final NetworkContext<?> networkContext;
-
 	public CommonRemoteRelayLink(NetRelayTransporter transporter, String clusterId, long instanceId, String key) {
-		super(clusterId, instanceId, key, transporter);
-		this.networkContext = transporter.getContext();
+		super(key, clusterId, instanceId, transporter);
 	}
 
 	@Override
@@ -30,15 +21,8 @@ public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayL
 	}
 
 	@Override
-	public <UID> NetTunnel<UID> acceptTunnel(long tunnelId, String host, int port) {
-		MessageTransporter<UID> transporter = new RemoteRelayMessageTransporter<>(this);
-		NetRelayTunnel<UID> tunnel = new GeneralRemoteRelayTunnel<>(tunnelId, transporter, new InetSocketAddress(host, port),
-				as(this.networkContext));
-		if (addTunnel(tunnel)) {
-			tunnel.open();
-			return tunnel;
-		}
-		return null;
+	public void openTunnel(RelayTunnel<?> tunnel) {
+		this.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.success(tunnel));
 	}
 
 }

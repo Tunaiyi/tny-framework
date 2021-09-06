@@ -16,7 +16,7 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 
 	protected volatile T transporter;
 
-	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetworkContext<UID> context) {
+	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetworkContext context) {
 		super(id, mode, context);
 		if (transporter != null) {
 			this.transporter = transporter;
@@ -74,12 +74,19 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 	}
 
 	@Override
-	protected void onClose() {
-		this.closeTransport();
+	protected void onDisconnect() {
+	}
+
+	@Override
+	protected void onDisconnected() {
 	}
 
 	@Override
 	protected void onOpened() {
+	}
+
+	@Override
+	protected void onClose() {
 	}
 
 	@Override
@@ -89,13 +96,14 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 	protected void onWriteUnavailable() {
 	}
 
-	protected void closeTransport() {
+	@Override
+	protected void doDisconnect() {
 		T transporter = this.transporter;
 		if (transporter != null && transporter.isActive()) {
 			try {
 				transporter.close();
 			} catch (Throwable e) {
-				LOGGER.error("", e);
+				LOGGER.error("transporter close error", e);
 			}
 		}
 	}

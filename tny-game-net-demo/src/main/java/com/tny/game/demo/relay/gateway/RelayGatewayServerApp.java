@@ -24,7 +24,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 @EnableAutoConfiguration
 @EnableRelayAccessApplication
 @ComponentScan(
-		basePackages = {"com.tny.game.demo.relay.gateway", "com.tny.game.demo.core.common", "com.tny.game.demo.core.server"},
+		basePackages = {"com.tny.game.demo.relay.gateway", "com.tny.game.demo.core.common", "com.tny.game.demo.core.gateway"},
 		includeFilters = @Filter(Controller.class))
 public class RelayGatewayServerApp {
 

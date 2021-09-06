@@ -12,7 +12,7 @@ public class AnonymityEndpoint<UID> extends AbstractEndpoint<UID> implements Net
 
 	private NetTunnel<UID> tunnel;
 
-	public AnonymityEndpoint(EndpointContext<UID> endpointContext) {
+	public AnonymityEndpoint(EndpointContext endpointContext) {
 		super(SETTING, endpointContext);
 	}
 

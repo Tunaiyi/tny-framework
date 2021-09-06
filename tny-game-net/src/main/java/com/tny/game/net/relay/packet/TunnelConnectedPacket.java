@@ -1,5 +1,6 @@
 package com.tny.game.net.relay.packet;
 
+import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.arguments.*;
 
 /**
@@ -12,8 +13,12 @@ public class TunnelConnectedPacket extends BaseTunnelPacket<TunnelConnectedArgum
 
 	public static final RelayPacketFactory<TunnelConnectedPacket, TunnelConnectedArguments> FACTORY = TunnelConnectedPacket::new;
 
-	public TunnelConnectedPacket(int id, long tunnelId, boolean result) {
-		super(id, RelayPacketType.TUNNEL_CONNECTED, TunnelConnectedArguments.ofResult(tunnelId, result));
+	public TunnelConnectedPacket(int id, RelayTunnel<?> tunnel, boolean result) {
+		super(id, RelayPacketType.TUNNEL_CONNECTED, TunnelConnectedArguments.ofResult(tunnel.getInstanceId(), tunnel.getId(), result));
+	}
+
+	public TunnelConnectedPacket(int id, long instanceId, long tunnelId, boolean result) {
+		super(id, RelayPacketType.TUNNEL_CONNECTED, TunnelConnectedArguments.ofResult(instanceId, tunnelId, result));
 	}
 
 	public TunnelConnectedPacket(int id, TunnelConnectedArguments arguments) {

@@ -317,8 +317,14 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
 		}
 
 		int position = this.buffer.position();
-		ByteBuffer byteBuffer = ByteBuffer.wrap(this.buffer.array(), this.buffer.arrayOffset() + position, length);
-		this.buffer.position(position + length);
+		ByteBuffer byteBuffer;
+		if (this.buffer.isDirect()) {
+			byteBuffer = ByteBuffer.allocate(length);
+			this.buffer.get(byteBuffer.array(), 0, length);
+		} else {
+			byteBuffer = ByteBuffer.wrap(this.buffer.array(), this.buffer.arrayOffset() + position, length);
+			this.buffer.position(position + length);
+		}
 		return byteBuffer;
 	}
 

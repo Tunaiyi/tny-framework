@@ -30,12 +30,12 @@ public class PollingRelayAllotStrategy implements LocalRelayLinkAllotStrategy, L
 	}
 
 	@Override
-	public LocalRelayLink allot(NetTunnel<?> tunnel, LocalServeInstance instance) {
+	public LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance) {
 		return random(instance.getRelayLinks(), linkCounter);
 	}
 
 	@Override
-	public LocalServeInstance allot(NetTunnel<?> tunnel, LocalServeCluster cluster) {
+	public LocalServeInstance allot(Tunnel<?> tunnel, LocalServeCluster cluster) {
 		return random(cluster.getLocalInstances(), instanceCounter);
 	}
 

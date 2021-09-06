@@ -7,7 +7,7 @@ import com.tny.game.net.base.*;
  */
 public class GeneralClientTunnel<UID, E extends NetTerminal<UID>> extends BaseClientTunnel<UID, E, MessageTransporter<UID>> {
 
-	public GeneralClientTunnel(long id, NetworkContext<UID> context) {
+	public GeneralClientTunnel(long id, NetworkContext context) {
 		super(id, context);
 	}
 

@@ -15,105 +15,111 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProcessTracer implements AutoCloseable {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
-            .withZone(ZoneId.systemDefault());
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+			.withZone(ZoneId.systemDefault());
 
-    private final Object watcher;
-    private final Object id;
-    private long startAt = -1;
-    private long endAt = -1;
-    private final Logger logger;
-    private final TrackPrintOption printOption;
-    private final TraceOnDone callback;
+	private final Object watcher;
 
-    ProcessTracer(Object watcher, Object id, Logger logger, TrackPrintOption printOption, TraceOnDone callback) {
-        super();
-        this.id = id;
-        this.watcher = watcher;
-        this.logger = logger;
-        this.printOption = printOption;
-        this.callback = callback;
-    }
+	private final Object id;
 
-    ProcessTracer start() {
-        return start(null);
-    }
+	private long startAt = -1;
 
-    ProcessTracer start(String message, Object... params) {
-        if (this.startAt == -1) {
-            this.startAt = TimeUnit.NANOSECONDS.toMicros(System.nanoTime());
-            if (this.printOption.isOnStart()) {
-                this.log(LogFragment
-                        .message("执行监控 [ {} ] 跟踪执行 < {} > | 开始 [>>] : {}", this.watcher, this.getId(),
-                                FORMATTER.format(Instant.ofEpochMilli(TimeUnit.MICROSECONDS.toMillis(this.startAt))))
-                        .append(message, params));
-            }
-        }
-        return this;
-    }
+	private long endAt = -1;
 
-    public Object getId() {
-        return this.id;
-    }
+	private final Logger logger;
 
-    public long getStartAt() {
-        return this.startAt;
-    }
+	private final TrackPrintOption printOption;
 
-    public long getEndAt() {
-        return this.endAt;
-    }
+	private final TraceOnDone callback;
 
-    private void end(String message, Object... params) {
-        if (this.endAt == -1) {
-            this.endAt = TimeUnit.NANOSECONDS.toMicros(System.nanoTime());
-            if (this.callback != null) {
-                this.callback.onDone(this);
-            }
-            if (this.printOption.isOnEnd()) {
-                this.log(LogFragment
-                        .message("执行监控 [ {} ] 跟踪执行 < {} > | 结束 [!!] : {}", this.watcher, this.getId(),
-                                FORMATTER.format(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(this.endAt))))
-                        .append(message, params));
-            }
-        }
-    }
+	ProcessTracer(Object watcher, Object id, Logger logger, TrackPrintOption printOption, TraceOnDone callback) {
+		super();
+		this.id = id;
+		this.watcher = watcher;
+		this.logger = logger;
+		this.printOption = printOption;
+		this.callback = callback;
+	}
 
-    public long costTime() {
-        return this.endAt - this.startAt;
-    }
+	ProcessTracer start() {
+		return start(null);
+	}
 
-    public ProcessTracer done() {
-        return done(null);
-    }
+	ProcessTracer start(String message, Object... params) {
+		if (this.startAt == -1) {
+			this.startAt = TimeUnit.NANOSECONDS.toMicros(System.nanoTime());
+			if (this.printOption.isOnStart()) {
+				this.log(LogFragment
+						.message("执行监控 [ {} ] 跟踪执行 < {} > | 开始 [>>] : {}", this.watcher, this.getId(),
+								FORMATTER.format(Instant.ofEpochMilli(TimeUnit.MICROSECONDS.toMillis(this.startAt))))
+						.append(message, params));
+			}
+		}
+		return this;
+	}
 
-    public ProcessTracer done(String message, Object... params) {
-        this.end(message, params);
-        if (this.printOption.isOnSettle()) {
-            this.log("执行监控 [ {} ] 跟踪执行 < {} > | 执行耗时 [##] : {} us", this.watcher, this.getId(), this.costTime());
-        }
-        return this;
-    }
+	public Object getId() {
+		return this.id;
+	}
 
-    @Override
-    public void close() throws Exception {
-        this.done();
-    }
+	public long getStartAt() {
+		return this.startAt;
+	}
 
-    public boolean isDone() {
-        return this.endAt > 0;
-    }
+	public long getEndAt() {
+		return this.endAt;
+	}
 
-    private static boolean isEmpty(Object[] params) {
-        return params == null || params.length == 0;
-    }
+	private void end(String message, Object... params) {
+		if (this.endAt == -1) {
+			this.endAt = TimeUnit.NANOSECONDS.toMicros(System.nanoTime());
+			if (this.callback != null) {
+				this.callback.onDone(this);
+			}
+			if (this.printOption.isOnEnd()) {
+				this.log(LogFragment
+						.message("执行监控 [ {} ] 跟踪执行 < {} > | 结束 [!!] : {}", this.watcher, this.getId(),
+								FORMATTER.format(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(this.endAt))))
+						.append(message, params));
+			}
+		}
+	}
 
-    private void log(LogFragment fragment) {
-        fragment.log(this.logger);
-    }
+	public long costTime() {
+		return this.endAt - this.startAt;
+	}
 
-    private void log(String message, Object... params) {
-        this.logger.debug(message, params);
-    }
+	public ProcessTracer done() {
+		return done(null);
+	}
+
+	public ProcessTracer done(String message, Object... params) {
+		this.end(message, params);
+		if (this.printOption.isOnSettle()) {
+			this.log("执行监控 [ {} ] 跟踪执行 < {} > | 执行耗时 [##] : {} us", this.watcher, this.getId(), this.costTime());
+		}
+		return this;
+	}
+
+	@Override
+	public void close() {
+		this.done();
+	}
+
+	public boolean isDone() {
+		return this.endAt > 0;
+	}
+
+	private static boolean isEmpty(Object[] params) {
+		return params == null || params.length == 0;
+	}
+
+	private void log(LogFragment fragment) {
+		fragment.log(this.logger);
+	}
+
+	private void log(String message, Object... params) {
+		this.logger.debug(message, params);
+	}
 
 }

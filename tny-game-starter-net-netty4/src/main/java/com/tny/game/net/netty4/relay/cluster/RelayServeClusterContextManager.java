@@ -1,6 +1,6 @@
 package com.tny.game.net.netty4.relay.cluster;
 
-import com.tny.game.net.netty4.relay.*;
+import com.tny.game.net.relay.link.*;
 
 import java.util.List;
 
@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class RelayServeClusterContextManager {
 
-	private List<RelayServeClusterContext> clusterContexts;
+	private List<LocalServeClusterContext> clusterContexts;
 
-	public RelayServeClusterContextManager(List<RelayServeClusterContext> clusterContexts) {
+	public RelayServeClusterContextManager(List<LocalServeClusterContext> clusterContexts) {
 		this.clusterContexts = clusterContexts;
 	}
 
-	public List<RelayServeClusterContext> getClusterContexts() {
+	public List<LocalServeClusterContext> getClusterContexts() {
 		return clusterContexts;
 	}
 
-	public RelayServeClusterContextManager setClusterContexts(List<RelayServeClusterContext> clusterContexts) {
+	public RelayServeClusterContextManager setClusterContexts(List<LocalServeClusterContext> clusterContexts) {
 		this.clusterContexts = clusterContexts;
 		return this;
 	}

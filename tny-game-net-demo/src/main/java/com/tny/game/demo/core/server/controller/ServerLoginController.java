@@ -1,4 +1,4 @@
-package com.tny.game.demo.core.server.login;
+package com.tny.game.demo.core.server.controller;
 
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;

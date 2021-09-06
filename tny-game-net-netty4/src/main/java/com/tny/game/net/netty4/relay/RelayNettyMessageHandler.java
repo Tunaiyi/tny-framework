@@ -23,9 +23,9 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/8/16 5:35 下午
  */
-@Unit
 @Sharable
-public class NettyRelayMessageHandler extends NettyMessageHandler {
+@Unit("relayMessageHandler")
+public class RelayNettyMessageHandler extends NettyMessageHandler {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(NettyMessageHandler.class);
 
@@ -35,6 +35,7 @@ public class NettyRelayMessageHandler extends NettyMessageHandler {
 			RelayMessage message = new RelayMessage(as(object));
 			if (message.isRelay()) {
 				relayMessage(context, message);
+				return;
 			}
 		}
 		super.channelRead(context, object);
@@ -53,7 +54,7 @@ public class NettyRelayMessageHandler extends NettyMessageHandler {
 	}
 
 	@Override
-	public void write(ChannelHandlerContext context, Object object, ChannelPromise promise) throws Exception {
+	public void write(ChannelHandlerContext context, Object object, ChannelPromise promise) {
 		super.write(context, object, promise);
 	}
 

@@ -83,6 +83,11 @@ public class RelayCodecConstants {
 	 */
 	public static final byte RELAY_PACKET_TYPE_TUNNEL_DISCONNECT = RELAY_PACKET_FOR_TUNNEL | (byte)3;
 
+	/**
+	 * 转播通道断开
+	 */
+	public static final byte RELAY_PACKET_TYPE_TUNNEL_SWITCH_LINK = RELAY_PACKET_FOR_TUNNEL | (byte)4;
+
 	//	/**
 	//	 * 转播通道连接确认
 	//	 */

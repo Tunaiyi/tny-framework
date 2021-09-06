@@ -13,8 +13,8 @@ public class TunnelRelayArguments extends BaseTunnelPacketArguments {
 
 	private final Message message;
 
-	public TunnelRelayArguments(long tunnelId, Message message) {
-		super(tunnelId);
+	public TunnelRelayArguments(long instanceId, long tunnelId, Message message) {
+		super(instanceId, tunnelId);
 		this.message = message;
 	}
 

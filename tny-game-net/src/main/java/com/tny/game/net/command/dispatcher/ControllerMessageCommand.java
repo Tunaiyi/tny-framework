@@ -1,6 +1,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.runtime.*;
+import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
@@ -24,7 +25,8 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 
 	protected ControllerMessageCommand(NetTunnel<?> tunnel, MethodControllerHolder methodHolder,
 			Message message, MessageDispatcherContext context, EndpointKeeperManager endpointKeeperManager) {
-		super(new ControllerMessageCommandContext(methodHolder), tunnel, message, context, endpointKeeperManager);
+		super(new ControllerMessageCommandContext(methodHolder), tunnel, message, context, endpointKeeperManager,
+				methodHolder.getMethodAnnotation(RelayTo.class) != null);
 	}
 
 	@Override
@@ -89,8 +91,13 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 
 		tracer = MESSAGE_EXE_INVOKE_INVOKING_WATCHER.trace();
 		DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
-		Object returnResult = controller.invoke(this.tunnel, this.message, this.commandContext);
-		this.commandContext.setResult(returnResult);
+		Object returnResult = controller.invoke(this.tunnel, this.message);
+		Class<?> returnType = controller.getReturnType();
+		if (returnType == void.class || returnType == Void.class) {
+			this.commandContext.setVoidResult();
+		} else {
+			this.commandContext.setResult(returnResult);
+		}
 		tracer.done();
 	}
 

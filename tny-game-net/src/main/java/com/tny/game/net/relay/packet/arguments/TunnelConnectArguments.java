@@ -1,5 +1,6 @@
 package com.tny.game.net.relay.packet.arguments;
 
+import com.tny.game.net.relay.link.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -16,8 +17,12 @@ public class TunnelConnectArguments extends BaseTunnelPacketArguments {
 
 	private final int port;
 
-	public TunnelConnectArguments(long tunnelId, byte[] ip, int port) {
-		super(tunnelId);
+	public TunnelConnectArguments(RelayTunnel<?> tunnel, byte[] ip, int port) {
+		this(tunnel.getInstanceId(), tunnel.getId(), ip, port);
+	}
+
+	public TunnelConnectArguments(long instanceId, long tunnelId, byte[] ip, int port) {
+		super(instanceId, tunnelId);
 		this.ipValue = new int[4];
 		for (int i = 0; i < ipValue.length; i++) {
 			ipValue[i] = ip[i] & 0xff;

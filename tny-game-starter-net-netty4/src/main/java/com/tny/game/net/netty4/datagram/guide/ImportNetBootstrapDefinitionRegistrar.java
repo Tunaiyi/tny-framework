@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
 /**
  * <p>
@@ -66,8 +67,16 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 		DatagramPackCodecSetting encoderConfig = channelSetting.getEncoder();
 		DatagramPackCodecSetting decoderConfig = channelSetting.getDecoder();
 		NettyChannelMakerSetting channelMaker = channelSetting.getMaker();
+
 		DatagramPackV1Encoder encoder = new DatagramPackV1Encoder(encoderConfig);
 		DatagramPackV1Decoder decoder = new DatagramPackV1Decoder(decoderConfig);
+		String encoderName = unitName(setting.getName(), DatagramPackEncoder.class);
+		String decoderName = unitName(setting.getName(), DatagramPackDecoder.class);
+		registry.registerBeanDefinition(encoderName,
+				BeanDefinitionBuilder.genericBeanDefinition(DatagramPackV1Encoder.class, () -> encoder).getBeanDefinition());
+		registry.registerBeanDefinition(decoderName,
+				BeanDefinitionBuilder.genericBeanDefinition(DatagramPackV1Decoder.class, () -> decoder).getBeanDefinition());
+
 		Class<DatagramChannelMaker<?>> channelMakerClass = as(channelMaker.getMakerClass());
 		DatagramChannelMaker<?> maker;
 		try {

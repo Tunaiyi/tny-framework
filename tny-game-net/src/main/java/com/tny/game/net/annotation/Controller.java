@@ -38,40 +38,40 @@ import java.lang.annotation.*;
 @Documented
 public @interface Controller {
 
-    /**
-     * 处理协议号
-     * <p>
-     * <p>
-     * 被Controller标记的类的模塊ID <br>
-     * 被Controller标记的方法的业务方法ID <br>
-     *
-     * @return 处理协议号
-     */
-    int value();
+	/**
+	 * 处理协议号
+	 * <p>
+	 * <p>
+	 * 被Controller标记的类的模塊ID <br>
+	 * 被Controller标记的方法的业务方法ID <br>
+	 *
+	 * @return 处理协议号
+	 */
+	int value();
 
-    /**
-     * @return 线路id
-     */
-    int line() default 0;
+	/**
+	 * @return 线路id
+	 */
+	int[] line() default {};
 
-    // /**
-    //  * 模块/业务方法名称
-    //  * <p>
-    //  * <p>
-    //  * 被Controller标记的类的模塊名稱,與Request的Module相对应,默認為類名<br>
-    //  * 被Controller标记的方法的业务方法名稱,與Request的Protocol相对应,默認為方法名<br>
-    //  *
-    //  * @return
-    //  * @see Request
-    //  */
-    // String name() default "";
+	// /**
+	//  * 模块/业务方法名称
+	//  * <p>
+	//  * <p>
+	//  * 被Controller标记的类的模塊名稱,與Request的Module相对应,默認為類名<br>
+	//  * 被Controller标记的方法的业务方法名稱,與Request的Protocol相对应,默認為方法名<br>
+	//  *
+	//  * @return
+	//  * @see Request
+	//  */
+	// String name() default "";
 
-    // /**
-    //  * (移到Checker)
-    //  * 程序类型(服务器类型)
-    //  *
-    //  * @return 程序类型
-    //  */
-    // String[] appType() default {};
+	// /**
+	//  * (移到Checker)
+	//  * 程序类型(服务器类型)
+	//  *
+	//  * @return 程序类型
+	//  */
+	// String[] appType() default {};
 
 }

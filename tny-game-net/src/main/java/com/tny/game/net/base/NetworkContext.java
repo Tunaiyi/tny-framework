@@ -9,7 +9,7 @@ import com.tny.game.net.message.*;
  * @author : kgtny
  * @date : 2021/8/26 2:22 下午
  */
-public interface NetworkContext<UID> extends EndpointContext<UID> {
+public interface NetworkContext extends EndpointContext {
 
 	MessageFactory getMessageFactory();
 

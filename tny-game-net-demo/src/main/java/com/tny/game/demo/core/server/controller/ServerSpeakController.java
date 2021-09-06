@@ -1,4 +1,4 @@
-package com.tny.game.demo.core.server.speak;
+package com.tny.game.demo.core.server.controller;
 
 import com.tny.game.common.concurrent.*;
 import com.tny.game.demo.core.common.*;

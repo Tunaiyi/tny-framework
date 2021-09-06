@@ -19,7 +19,7 @@ public class NettyDatagramChannelSetting {
 
 	private DatagramPackCodecSetting decoder;
 
-	private String handler = defaultName(NettyMessageHandler.class);
+	private String messageHandler = defaultName(NettyMessageHandler.class);
 
 	private String tunnelFactory = defaultName(NettyTunnelFactory.class);
 
@@ -45,8 +45,8 @@ public class NettyDatagramChannelSetting {
 		return decoder;
 	}
 
-	public String getHandler() {
-		return handler;
+	public String getMessageHandler() {
+		return messageHandler;
 	}
 
 	public String getTunnelFactory() {
@@ -68,8 +68,8 @@ public class NettyDatagramChannelSetting {
 		return this;
 	}
 
-	public NettyDatagramChannelSetting setHandler(String handler) {
-		this.handler = handler;
+	public NettyDatagramChannelSetting setMessageHandler(String messageHandler) {
+		this.messageHandler = messageHandler;
 		return this;
 	}
 

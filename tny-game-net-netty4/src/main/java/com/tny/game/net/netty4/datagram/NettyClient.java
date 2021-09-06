@@ -34,7 +34,7 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	private final NetIdGenerator idGenerator;
 
 	public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url, PostConnect<UID> postConnect,
-			EndpointContext<UID> endpointContext) {
+			EndpointContext endpointContext) {
 		super(null, endpointContext);
 		this.url = url;
 		this.idGenerator = idGenerator;

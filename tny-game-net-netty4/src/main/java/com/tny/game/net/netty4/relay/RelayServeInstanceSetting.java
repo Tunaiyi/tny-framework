@@ -13,7 +13,7 @@ public class RelayServeInstanceSetting implements ServeNode {
 
 	private long id;
 
-	private String uri;
+	private String url;
 
 	private String scheme = "tcp";
 
@@ -36,12 +36,12 @@ public class RelayServeInstanceSetting implements ServeNode {
 		return this;
 	}
 
-	public String getUri() {
-		return uri;
+	public String getUrl() {
+		return url;
 	}
 
-	public RelayServeInstanceSetting setUri(String uri) {
-		this.uri = uri;
+	public RelayServeInstanceSetting setUrl(String uri) {
+		this.url = uri;
 		URL url = URL.valueOf(uri);
 		this.scheme = url.getScheme();
 		this.host = url.getHost();

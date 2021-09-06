@@ -67,7 +67,7 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport, Receiver, Sender
 	/**
 	 * @return 获取上下文
 	 */
-	NetworkContext<UID> getContext();
+	NetworkContext getContext();
 
 	/**
 	 * @return 获取绑定中断

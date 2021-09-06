@@ -35,12 +35,12 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	/* 会话终端 */
 	protected volatile E endpoint;
 
-	private final NetworkContext<UID> context;
+	private final NetworkContext context;
 
 	/* endpoint 锁 */
 	private final StampedLock endpointLock = new StampedLock();
 
-	protected AbstractTunnel(long id, TunnelMode mode, NetworkContext<UID> context) {
+	protected AbstractTunnel(long id, TunnelMode mode, NetworkContext context) {
 		this.id = id;
 		this.mode = mode;
 		this.context = context;
@@ -117,7 +117,7 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	}
 
 	@Override
-	public NetworkContext<UID> getContext() {
+	public NetworkContext getContext() {
 		return this.context;
 	}
 
@@ -205,6 +205,8 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 				return;
 			}
 			this.onDisconnect();
+			this.doDisconnect();
+			this.onDisconnected();
 			this.status = TunnelStatus.SUSPEND;
 			endpoint = this.endpoint;
 		}
@@ -224,8 +226,9 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 			if (this.status == TunnelStatus.CLOSED) {
 				return false;
 			}
-			this.onClose();
 			this.status = TunnelStatus.CLOSED;
+			this.onClose();
+			this.doDisconnect();
 			this.onClosed();
 			endpoint = this.endpoint;
 		}
@@ -236,6 +239,8 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 		return true;
 	}
 
+	protected abstract void doDisconnect();
+
 	protected abstract boolean onOpen();
 
 	protected abstract void onOpened();
@@ -245,6 +250,8 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	protected abstract void onClosed();
 
 	protected abstract void onDisconnect();
+
+	protected abstract void onDisconnected();
 
 	@Override
 	public boolean equals(Object o) {

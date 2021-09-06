@@ -120,8 +120,10 @@ public class NetLogger {
 			NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER, NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY);
 
 	public static void trace(WatcherAttribute attribute, Message message) {
-		ProcessTracer tracer = attribute.watcher.trace();
-		message.attributes().setAttribute(attribute.key, tracer);
+		if (attribute.watcher.isSchedule()) {
+			ProcessTracer tracer = attribute.watcher.trace();
+			message.attributes().setAttribute(attribute.key, tracer);
+		}
 	}
 
 	public static void traceDone(WatcherAttribute attribute, Message message) {

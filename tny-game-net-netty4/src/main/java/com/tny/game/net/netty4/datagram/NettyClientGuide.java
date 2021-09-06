@@ -25,7 +25,7 @@ import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
 public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSetting> implements ClientGuide {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.CLIENT);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CLIENT);
 
 	private static final boolean EPOLL = isEpoll();
 
@@ -55,7 +55,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
 	@Override
 	public <UID> Client<UID> connect(URL url, PostConnect<UID> connect) {
-		NetworkContext<UID> context = this.getContext();
+		NetworkContext context = this.getContext();
 		NettyClient<UID> client = new NettyClient<>(this, this.idGenerator, url, connect, context);
 		NettyClient<UID> old = as(this.clients.putIfAbsent(clientKey(url), client));
 		if (old != null) {
@@ -84,11 +84,16 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 					.handler(new ChannelInitializer<Channel>() {
 
 						@Override
-						protected void initChannel(Channel ch) throws Exception {
-							if (NettyClientGuide.this.channelMaker != null) {
-								NettyClientGuide.this.channelMaker.initChannel(ch);
+						protected void initChannel(Channel channel) throws Exception {
+							try {
+								if (NettyClientGuide.this.channelMaker != null) {
+									NettyClientGuide.this.channelMaker.initChannel(channel);
+								}
+								channel.pipeline().addLast("nettyMessageHandler", messageHandler);
+							} catch (Throwable e) {
+								LOGGER.info("init {} channel exception", channel, e);
+								throw e;
 							}
-							ch.pipeline().addLast("nettyMessageHandler", messageHandler);
 						}
 
 					});

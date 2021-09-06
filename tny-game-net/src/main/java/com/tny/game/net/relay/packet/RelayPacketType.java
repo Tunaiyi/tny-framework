@@ -58,6 +58,11 @@ public enum RelayPacketType implements EnumIdentifiable<Byte> {
 			TunnelDisconnectPacket.FACTORY,
 			RelayPacketProcessor::onTunnelDisconnect),
 
+	TUNNEL_SWITCH_LINK(RELAY_PACKET_TYPE_TUNNEL_SWITCH_LINK,
+			TunnelSwitchLinkPacket.class, TunnelVoidArguments.class,
+			TunnelSwitchLinkPacket.FACTORY,
+			RelayPacketProcessor::onTunnelSwitchLink),
+
 	TUNNEL_RELAY(RELAY_PACKET_TYPE_TUNNEL_RELAY,
 			TunnelRelayPacket.class, TunnelRelayArguments.class,
 			TunnelRelayPacket.FACTORY,

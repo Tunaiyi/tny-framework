@@ -11,7 +11,7 @@ import com.tny.game.net.transport.*;
  */
 public class TestGeneralClientTunnel extends GeneralClientTunnel<Long, MockNettyClient> {
 
-	public TestGeneralClientTunnel(long id, NetBootstrapContext<Long> bootstrapContext) {
+	public TestGeneralClientTunnel(long id, NetBootstrapContext bootstrapContext) {
 		super(id, bootstrapContext);
 	}
 

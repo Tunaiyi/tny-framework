@@ -11,9 +11,9 @@ import com.tny.game.net.message.*;
  */
 @UnitInterface
 @FunctionalInterface
-public interface RelayStrategy {
+public interface MessageRelayStrategy {
 
-	RelayStrategy NO_RELAY_STRATEGY = (head) -> false;
+	MessageRelayStrategy NO_RELAY_STRATEGY = (head) -> false;
 
 	boolean isRelay(MessageHead head);
 

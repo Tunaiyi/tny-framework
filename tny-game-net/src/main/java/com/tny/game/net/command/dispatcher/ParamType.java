@@ -11,6 +11,8 @@ public enum ParamType {
 
     TUNNEL,
 
+    RELAY_TUNNEL,
+
     SESSION,
 
     CLIENT,

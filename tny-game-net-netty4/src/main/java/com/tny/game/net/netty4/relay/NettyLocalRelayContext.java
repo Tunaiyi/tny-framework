@@ -1,14 +1,12 @@
 package com.tny.game.net.netty4.relay;
 
-import com.tny.game.common.concurrent.*;
-import com.tny.game.common.url.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.route.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -19,25 +17,20 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class NettyLocalRelayContext implements LocalRelayContext {
 
-	private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1,
-			new CoreThreadFactory("RelayReconnectScheduled"));
+	private String launchId;
 
-	private final NetAppContext appContext;
+	private NetAppContext appContext;
 
-	private final RelayMessageRouter relayMessageRouter;
+	private RelayMessageRouter relayMessageRouter;
 
-	private final RelayClientGuide guide;
-
-	private final String launchId;
+	private ServeClusterFilter serveClusterFilter;
 
 	private final AtomicLong indexCounter = new AtomicLong();
 
-	public NettyLocalRelayContext(NetAppContext appContext, RelayClientGuide guide, RelayMessageRouter relayMessageRouter) {
-		this.guide = guide;
-		this.appContext = appContext;
+	public NettyLocalRelayContext(NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
+		this.setAppContext(appContext);
 		this.relayMessageRouter = relayMessageRouter;
-		this.launchId = this.getClusterId() + "." + this.getInstanceId() + "." +
-				System.nanoTime() + "." + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+		this.serveClusterFilter = serveClusterFilter;
 	}
 
 	@Override
@@ -51,7 +44,7 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 	}
 
 	@Override
-	public String createId() {
+	public String createLinkId() {
 		return UUID.nameUUIDFromBytes((this.launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8)).toString();
 	}
 
@@ -60,18 +53,36 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 		return relayMessageRouter;
 	}
 
-	/**
-	 * @param url url
-	 */
-	public void connect(URL url, RelayConnectCallback callback) {
-		guide.connect(url, callback);
+	@Override
+	public ServeClusterFilter getServeClusterFilter() {
+		return serveClusterFilter;
 	}
 
-	/**
-	 * @param url url
-	 */
-	public void connect(URL url, RelayConnectCallback callback, long delayTime) {
-		executorService.schedule(() -> guide.connect(url, callback), delayTime, TimeUnit.MILLISECONDS);
+	@Override
+	public NetAppContext getAppContext() {
+		return appContext;
+	}
+
+	public NettyLocalRelayContext setAppContext(NetAppContext appContext) {
+		this.appContext = appContext;
+		this.launchId = this.getClusterId() + "." + this.getInstanceId() + "." +
+				System.nanoTime() + "." + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+		return this;
+	}
+
+	public NettyLocalRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
+		this.relayMessageRouter = relayMessageRouter;
+		return this;
+	}
+
+	public NettyLocalRelayContext setLaunchId(String launchId) {
+		this.launchId = launchId;
+		return this;
+	}
+
+	public NettyLocalRelayContext setServeClusterFilter(ServeClusterFilter serveClusterFilter) {
+		this.serveClusterFilter = serveClusterFilter;
+		return this;
 	}
 
 }

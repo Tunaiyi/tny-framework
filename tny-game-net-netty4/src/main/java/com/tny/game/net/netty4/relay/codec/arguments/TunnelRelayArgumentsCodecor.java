@@ -32,7 +32,8 @@ public class TunnelRelayArgumentsCodecor implements RelayPacketArgumentsCodecor<
 
 	@Override
 	public void encode(ChannelHandlerContext ctx, TunnelRelayArguments arguments, ByteBuf out) throws Exception {
-		NettyVarIntCoder.writeVarInt64(arguments.getTunnelId(), out);
+		NettyVarIntCoder.writeFixed64(arguments.getInstanceId(), out);
+		NettyVarIntCoder.writeFixed64(arguments.getTunnelId(), out);
 		Message message = arguments.getMessage();
 		messageCodec.encode(as(message), out);
 	}
@@ -40,10 +41,11 @@ public class TunnelRelayArgumentsCodecor implements RelayPacketArgumentsCodecor<
 	@Override
 	public TunnelRelayArguments decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception {
 		NetRelayTransporter transporter = ctx.channel().attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
-		NetworkContext<?> context = transporter.getContext();
+		NetworkContext context = transporter.getContext();
+		long instanceId = NettyVarIntCoder.readFixed64(out);
 		long tunnelId = NettyVarIntCoder.readFixed64(out);
 		NetMessage message = messageCodec.decode(out, context.getMessageFactory());
-		return new TunnelRelayArguments(tunnelId, message);
+		return new TunnelRelayArguments(instanceId, tunnelId, message);
 	}
 
 }

@@ -71,6 +71,6 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
 	/**
 	 * @return 获取EndpointContext上下文
 	 */
-	EndpointContext<UID> getContext();
+	EndpointContext getContext();
 
 }

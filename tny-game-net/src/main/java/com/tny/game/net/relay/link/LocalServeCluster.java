@@ -25,6 +25,11 @@ public interface LocalServeCluster extends ServeCluster {
 	void close();
 
 	/**
+	 * @return 获取上下文
+	 */
+	LocalServeClusterContext getContext();
+
+	/**
 	 * @return 集群实例列表
 	 */
 	List<LocalServeInstance> getLocalInstances();
@@ -35,36 +40,36 @@ public interface LocalServeCluster extends ServeCluster {
 	 * @param tunnel 指定 tunnel
 	 * @return 返回分配的 link
 	 */
-	LocalRelayLink allotLink(NetTunnel<?> tunnel);
+	LocalRelayLink allotLink(Tunnel<?> tunnel);
 
 	/**
-	 * 加载 LocaleServeInstance, 如果没有则创建
+	 * 注册 LocaleServeInstance, 如果存在返回旧的 instance
 	 *
-	 * @param node 获取 instance 的节点
+	 * @param instance 注册的 instance
 	 * @return 返回 instance
 	 */
-	LocalServeInstance loadInstance(ServeNode node);
+	LocalServeInstance registerInstance(LocalServeInstance instance);
 
 	/**
 	 * 卸载指定 instanceId 的 Instance
 	 *
 	 * @param instanceId 指定的Instance id
 	 */
-	void unloadInstance(long instanceId);
+	void unregisterInstance(long instanceId);
 
-	/**
-	 * 注册 link
-	 *
-	 * @param link 注册的 link
-	 * @return 返回 instance
-	 */
-	LocalServeInstance registerLink(NetRelayLink link);
-
-	/**
-	 * 释放 link
-	 *
-	 * @param link 释放的link
-	 */
-	void relieveLink(NetRelayLink link);
+	//	/**
+	//	 * 注册 link
+	//	 *
+	//	 * @param link 注册的 link
+	//	 * @return 返回 instance
+	//	 */
+	//	LocalServeInstance registerLink(NetRelayLink link);
+	//
+	//	/**
+	//	 * 释放 link
+	//	 *
+	//	 * @param link 释放的link
+	//	 */
+	//	void relieveLink(NetRelayLink link);
 
 }

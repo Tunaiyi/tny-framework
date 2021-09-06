@@ -11,6 +11,7 @@ import com.tny.game.net.command.listener.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -20,7 +21,6 @@ import java.util.concurrent.*;
 
 import static com.tny.game.common.runtime.TrackPrintOption.*;
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.base.NetLogger.*;
 
 /**
  * <p>
@@ -37,6 +37,10 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 
 	protected NetTunnel<Object> tunnel;
 
+	protected RelayTunnel<Object> relayTunnel;
+
+	private final boolean relay;
+
 	protected NetMessage message;
 
 	protected MessageDispatcherContext dispatcherContext;
@@ -52,12 +56,20 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 	}
 
 	protected MessageCommand(C commandContext, NetTunnel<?> tunnel, Message message,
-			MessageDispatcherContext dispatcherContext, EndpointKeeperManager endpointKeeperManager) {
+			MessageDispatcherContext dispatcherContext, EndpointKeeperManager endpointKeeperManager, boolean relay) {
 		this.tunnel = as(tunnel);
 		this.message = as(message);
 		this.dispatcherContext = dispatcherContext;
 		this.endpointKeeperManager = endpointKeeperManager;
 		this.commandContext = commandContext;
+		this.relay = relay;
+		if (relay) {
+			if (tunnel instanceof RelayTunnel) {
+				relayTunnel = as(tunnel);
+			} else {
+				throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "not relay tunnel");
+			}
+		}
 	}
 
 	public Message getMessage() {
@@ -105,21 +117,18 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 			MessageHead head = this.message.getHead();
 			ControllerContext.setCurrent(head.getProtocolId());
 			MessageCommandPromise promise = this.commandContext.getPromise();
-			ProcessTracer processTracer;
 			try {
 				if (isDone()) {
 					return;
 				}
 				this.fireExecuteStart();
 				if (!this.start) {
-					processTracer = MESSAGE_EXE_INVOKE_WATCHER.trace();
 					try {
 						// 调用逻辑业务
 						this.invoke();
 					} finally {
 						this.start = true;
 					}
-					processTracer.done();
 				}
 				if (!this.isDone()) {
 					if (promise.isWaiting()) {
@@ -127,19 +136,15 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 						promise.checkWait();
 					}
 				}
-				processTracer = MESSAGE_EXE_HANDLE_RESULT_WATCHER.trace();
-				if (this.isDone()) {
-					this.handleResult();
-				}
-				processTracer.done();
 			} catch (Throwable e) {
 				cause = e;
 				promise.setResult(e);
-				this.handleResult();
 			} finally {
+				if (this.isDone()) {
+					this.handleResult();
+				}
 				this.fireExecuteEnd(cause);
 			}
-		} catch (Exception ignored) {
 		}
 	}
 
@@ -151,7 +156,6 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 	private void invokeDone(Throwable cause) {
 		doInvokeDone(cause);
 		this.fireDone(cause);
-		traceDone(NET_TRACE_INPUT_ALL_ATTR, this.message);
 	}
 
 	protected abstract void doInvokeDone(Throwable cause);
@@ -187,9 +191,11 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 		}
 		MessageHead head = this.message.getHead();
 		ResultCode code;
+		boolean voidable = false;
 		Object body = null;
 		if (promise.isSuccess()) {
 			Object result = promise.getResult();
+			voidable = promise.isVoidable();
 			if (result instanceof CommandResult) {
 				CommandResult commandResult = (CommandResult)result;
 				code = commandResult.getResultCode();
@@ -216,24 +222,21 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 				}
 				break;
 			case REQUEST:
-				context = MessageContexts.respond(this.message, code, body, this.message.getId());
+				if (!relay || !voidable) {
+					context = MessageContexts.respond(this.message, code, body, this.message.getId());
+				}
 				break;
 		}
 		if (context != null) {
-			ProcessTracer allTracer = this.message.attributes().removeAttribute(NET_TRACE_ALL_ATTR_KEY);
-			ProcessTracer writtenTracer = NET_TRACE_OUTPUT_WRITTEN_WATCHER.trace();
-			if (allTracer != null) {
-				context.willWriteFuture((f) -> {
-					allTracer.done();
-					writtenTracer.done();
-				});
-			}
 			TunnelAides.responseMessage(this.tunnel, context);
-		} else {
-			if (code.getType() == ResultCodeType.ERROR) {
-				LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getType());
-				this.tunnel.close();
-			}
+		}
+		if (relay && code.isSuccess()) {
+			this.relayTunnel.relay(message, false);
+			return;
+		}
+		if (code.getType() == ResultCodeType.ERROR) {
+			LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getType());
+			this.tunnel.close();
 		}
 	}
 

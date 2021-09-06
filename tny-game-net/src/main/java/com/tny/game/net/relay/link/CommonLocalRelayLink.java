@@ -13,8 +13,13 @@ import java.net.*;
  */
 public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLink {
 
-	public CommonLocalRelayLink(LocalServeInstance serveInstance, String key, NetRelayTransporter transporter) {
-		super(serveInstance.getClusterId(), serveInstance.getId(), key, transporter);
+	private static final byte[] DEFAULT_ADDRESS = {0, 0, 0, 0};
+
+	private final LocalServeInstance serveInstance;
+
+	public CommonLocalRelayLink(String key, LocalServeInstance serveInstance, NetRelayTransporter transporter) {
+		super(key, serveInstance.getClusterId(), serveInstance.getId(), transporter);
+		this.serveInstance = serveInstance;
 	}
 
 	@Override
@@ -23,19 +28,59 @@ public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLin
 	}
 
 	@Override
-	public boolean bindTunnel(NetRelayTunnel<?> tunnel) {
-		if (!this.isActive()) {
-			return false;
+	public void switchTunnel(LocalRelayTunnel<?> tunnel) {
+		if (tunnel.getLink(this.getClusterId()) == this) {
+			this.write(TunnelSwitchLinkPacket.FACTORY, new TunnelVoidArguments(tunnel));
 		}
-		if (this.tunnelMap.putIfAbsent(tunnel.getId(), tunnel) == null) {
-			tunnel.attributes().setAttributeIfNoKey(NetRelayAttrKeys.RELAY_LINK, this);
-			InetSocketAddress address = tunnel.getRemoteAddress();
-			InetAddress inetAddress = address.getAddress();
-			TunnelConnectArguments arguments = new TunnelConnectArguments(tunnel.getId(), inetAddress.getAddress(), address.getPort());
-			this.write(TunnelConnectPacket.FACTORY, arguments, false);
-			return true;
-		}
-		return false;
 	}
+
+	@Override
+	public void openTunnel(RelayTunnel<?> tunnel) {
+		byte[] address = DEFAULT_ADDRESS;
+		int port = 0;
+		InetSocketAddress socketAddress = tunnel.getRemoteAddress();
+		if (socketAddress != null) {
+			port = socketAddress.getPort();
+			InetAddress inetAddress = socketAddress.getAddress();
+			if (inetAddress != null) {
+				byte[] ipAddress = inetAddress.getAddress();
+				if (ipAddress != null) {
+					address = ipAddress;
+				}
+			}
+		}
+		this.write(TunnelConnectPacket.FACTORY, new TunnelConnectArguments(tunnel, address, port));
+	}
+
+	@Override
+	protected void onDisconnect() {
+	}
+
+	@Override
+	protected void onOpen() {
+		this.serveInstance.register(this);
+		super.onOpen();
+	}
+
+	@Override
+	protected void onClosed() {
+		this.serveInstance.relieve(this);
+	}
+
+	//	@Override
+	//	public boolean registerTunnel(NetRelayTunnel<?> tunnel) {
+	//		if (!this.isActive()) {
+	//			return false;
+	//		}
+	//		if (this.tunnelMap.putIfAbsent(tunnel.getId(), tunnel) == null) {
+	//			tunnel.attributes().setAttributeIfNoKey(NetRelayAttrKeys.RELAY_LINK, this);
+	//			InetSocketAddress address = tunnel.getRemoteAddress();
+	//			InetAddress inetAddress = address.getAddress();
+	//			TunnelConnectArguments arguments = new TunnelConnectArguments(tunnel.getId(), inetAddress.getAddress(), address.getPort());
+	//			this.write(TunnelConnectPacket.FACTORY, arguments, false);
+	//			return true;
+	//		}
+	//		return false;
+	//	}
 
 }

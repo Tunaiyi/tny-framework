@@ -12,6 +12,8 @@ public interface RelayLinkListener {
 
 	void onOpen(NetRelayLink link);
 
+	void onDisconnect(NetRelayLink link);
+
 	void onClosing(NetRelayLink link);
 
 	void onClosed(NetRelayLink link);

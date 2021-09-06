@@ -20,7 +20,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private String clientGuide = defaultName(RelayClientGuide.class);
 
-	private int connectionSize = 1;
+	private int linkConnectionSize = 1;
+
+	private long linkHeartbeatInterval = 5000;
+
+	private long linkMaxIdleTime = 10000;
 
 	private String serveInstanceAllotStrategy;
 
@@ -42,19 +46,24 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return clientGuide;
 	}
 
-	public SpringRelayServeClusterSetting setClientGuide(String clientGuide) {
-		this.clientGuide = clientGuide;
-		return this;
+	@Override
+	public List<ServeNode> getNodes() {
+		return Collections.unmodifiableList(instances);
 	}
 
 	@Override
-	public int getConnectionSize() {
-		return connectionSize;
+	public long getLinkHeartbeatInterval() {
+		return linkHeartbeatInterval;
 	}
 
-	public SpringRelayServeClusterSetting setConnectionSize(int connectionSize) {
-		this.connectionSize = connectionSize;
-		return this;
+	@Override
+	public long getLinkMaxIdleTime() {
+		return linkMaxIdleTime;
+	}
+
+	@Override
+	public int getLinkConnectionSize() {
+		return linkConnectionSize;
 	}
 
 	public boolean isHasServeInstanceAllotStrategy() {
@@ -65,11 +74,6 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return serveInstanceAllotStrategy;
 	}
 
-	public SpringRelayServeClusterSetting setServeInstanceAllotStrategy(String serveInstanceAllotStrategy) {
-		this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
-		return this;
-	}
-
 	public boolean isHasRelayLinkAllotStrategy() {
 		return StringUtils.isNoneBlank(relayLinkAllotStrategy);
 	}
@@ -78,13 +82,28 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return relayLinkAllotStrategy;
 	}
 
-	public SpringRelayServeClusterSetting setRelayLinkAllotStrategy(String relayLinkAllotStrategy) {
-		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
+	public List<SpringRelayServeInstanceSetting> getInstances() {
+		return instances;
+	}
+
+	public SpringRelayServeClusterSetting setClientGuide(String clientGuide) {
+		this.clientGuide = clientGuide;
 		return this;
 	}
 
-	public List<SpringRelayServeInstanceSetting> getInstances() {
-		return instances;
+	public SpringRelayServeClusterSetting setLinkConnectionSize(int linkConnectionSize) {
+		this.linkConnectionSize = linkConnectionSize;
+		return this;
+	}
+
+	public SpringRelayServeClusterSetting setServeInstanceAllotStrategy(String serveInstanceAllotStrategy) {
+		this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
+		return this;
+	}
+
+	public SpringRelayServeClusterSetting setRelayLinkAllotStrategy(String relayLinkAllotStrategy) {
+		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
+		return this;
 	}
 
 	public SpringRelayServeClusterSetting setInstances(List<SpringRelayServeInstanceSetting> instances) {
@@ -92,9 +111,14 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return this;
 	}
 
-	@Override
-	public List<ServeNode> getNodes() {
-		return Collections.unmodifiableList(instances);
+	public SpringRelayServeClusterSetting setLinkMaxIdleTime(long linkMaxIdleTime) {
+		this.linkMaxIdleTime = linkMaxIdleTime;
+		return this;
+	}
+
+	public SpringRelayServeClusterSetting setLinkHeartbeatInterval(long linkHeartbeatInterval) {
+		this.linkHeartbeatInterval = linkHeartbeatInterval;
+		return this;
 	}
 
 }

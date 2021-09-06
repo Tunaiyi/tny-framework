@@ -22,13 +22,13 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
 	protected NetIdGenerator idGenerator;
 
-	private NetworkContext<Object> context;
+	private NetworkContext context;
 
 	public NetBootstrap(S setting) {
 		this.setting = setting;
 	}
 
-	public <T> NetworkContext<T> getContext() {
+	public <T> NetworkContext getContext() {
 		return as(this.context);
 	}
 
@@ -41,7 +41,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 				UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
 		CommandTaskProcessor commandTaskProcessor = as(
 				UnitLoader.getLoader(CommandTaskProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
-		this.context = new NetBootstrapContext<>(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
+		this.context = new NetBootstrapContext(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
 		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
 		this.onLoadUnit(this.setting);
 	}

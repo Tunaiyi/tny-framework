@@ -10,9 +10,9 @@ import com.tny.game.net.command.processor.*;
  * @author : kgtny
  * @date : 2021/5/17 7:32 下午
  */
-public interface EndpointContext<UID> {
+public interface EndpointContext {
 
-	CertificateFactory<UID> getCertificateFactory();
+	<UID> CertificateFactory<UID> getCertificateFactory();
 
 	MessageDispatcher getMessageDispatcher();
 

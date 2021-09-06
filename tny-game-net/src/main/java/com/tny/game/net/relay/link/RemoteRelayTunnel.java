@@ -8,4 +8,11 @@ package com.tny.game.net.relay.link;
  */
 public interface RemoteRelayTunnel<UID> extends NetRelayTunnel<UID> {
 
+	/**
+	 * 切换 link
+	 *
+	 * @param link 切换的 link
+	 */
+	boolean switchLink(RemoteRelayLink link);
+
 }

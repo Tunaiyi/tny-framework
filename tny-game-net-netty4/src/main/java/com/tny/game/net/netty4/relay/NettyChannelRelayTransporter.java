@@ -10,6 +10,8 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
 
+import java.util.function.Consumer;
+
 /**
  * <p>
  *
@@ -20,9 +22,9 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
 
-	private final NetworkContext<?> context;
+	private final NetworkContext context;
 
-	public NettyChannelRelayTransporter(Channel channel, NetworkContext<?> context) {
+	public NettyChannelRelayTransporter(Channel channel, NetworkContext context) {
 		super(channel);
 		this.context = context;
 		this.channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).setIfAbsent(this);
@@ -38,7 +40,7 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	public void close() {
 		NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
 		if (link != null && link.isActive()) {
-			link.close();
+			link.disconnect();
 		}
 		this.channel.disconnect();
 	}
@@ -63,8 +65,13 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public NetworkContext<?> getContext() {
+	public NetworkContext getContext() {
 		return context;
+	}
+
+	@Override
+	public void addOnClose(Consumer<NetRelayTransporter> onClose) {
+		this.channel.closeFuture().addListener((f) -> onClose.accept(this));
 	}
 
 }

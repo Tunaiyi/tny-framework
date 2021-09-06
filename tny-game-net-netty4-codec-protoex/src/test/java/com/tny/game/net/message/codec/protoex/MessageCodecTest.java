@@ -21,7 +21,7 @@ public class MessageCodecTest {
 
 	private NettyMessageCodec codec = new DefaultNettyMessageCodec(
 			this.objectCodec,
-			RelayStrategy.NO_RELAY_STRATEGY);
+			MessageRelayStrategy.NO_RELAY_STRATEGY);
 
 	private NettyMessageCodec codecNoDecode = new DefaultNettyMessageCodec(
 			this.objectCodec,

@@ -4,21 +4,20 @@ tny:
     app-type: game
     scope-type: online
   net:
-    client:
-      channel:
-        maker:
-          properties:
-            idleTimeout: 360000
-        encoder:
-          body-codec: typeProtobufMessageBodyCodec
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-        decoder:
-          body-codec: typeProtobufMessageBodyCodec
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
+    bootstrap:
+      network:
+        client:
+          channel:
+            encoder:
+              body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
     command:
       processor:
         disruptor:

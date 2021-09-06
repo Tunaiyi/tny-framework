@@ -1,5 +1,7 @@
 package com.tny.game.net.relay.packet.arguments;
 
+import com.tny.game.net.relay.link.*;
+
 /**
  * <p>
  *
@@ -8,8 +10,16 @@ package com.tny.game.net.relay.packet.arguments;
  */
 public class TunnelVoidArguments extends BaseTunnelPacketArguments {
 
-	public TunnelVoidArguments(long tunnelId) {
-		super(tunnelId);
+	public TunnelVoidArguments(TunnelPacketArguments arguments) {
+		super(arguments.getInstanceId(), arguments.getTunnelId());
+	}
+
+	public TunnelVoidArguments(RelayTunnel<?> tunnel) {
+		super(tunnel.getInstanceId(), tunnel.getId());
+	}
+
+	public TunnelVoidArguments(long instanceId, long tunnelId) {
+		super(instanceId, tunnelId);
 	}
 
 }

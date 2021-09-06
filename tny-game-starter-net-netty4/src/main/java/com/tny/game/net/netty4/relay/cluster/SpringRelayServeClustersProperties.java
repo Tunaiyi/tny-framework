@@ -11,12 +11,8 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/8/26 1:50 下午
  */
-@ConfigurationProperties("tny.net.cluster")
+@ConfigurationProperties("tny.net.relay.cluster")
 public class SpringRelayServeClustersProperties {
-
-	private String relayMessageRouter;
-
-	private String localServeClusterSelector;
 
 	private List<SpringRelayServeClusterSetting> serveClusters = ImmutableList.of();
 
@@ -28,23 +24,13 @@ public class SpringRelayServeClustersProperties {
 		this.serveClusters = ImmutableList.copyOf(serveClusters);
 		return this;
 	}
-
-	public String getRelayMessageRouter() {
-		return relayMessageRouter;
-	}
-
-	public SpringRelayServeClustersProperties setRelayMessageRouter(String relayMessageRouter) {
-		this.relayMessageRouter = relayMessageRouter;
-		return this;
-	}
-
-	public String getLocalServeClusterSelector() {
-		return localServeClusterSelector;
-	}
-
-	public SpringRelayServeClustersProperties setLocalServeClusterSelector(String localServeClusterSelector) {
-		this.localServeClusterSelector = localServeClusterSelector;
-		return this;
-	}
+	//
+	//	public String getRelayMessageRouter() {
+	//		return relayMessageRouter;
+	//	}
+	//
+	//	public String getServeClusterSelector() {
+	//		return serveClusterSelector;
+	//	}
 
 }

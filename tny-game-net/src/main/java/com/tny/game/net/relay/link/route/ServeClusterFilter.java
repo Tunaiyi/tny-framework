@@ -10,8 +10,8 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/9/2 5:16 下午
  */
-public interface LocalServeClusterSelector {
+public interface ServeClusterFilter {
 
-	ServeClusterImportance route(Tunnel<?> tunnel, LocalServeCluster cluster);
+	ServeClusterImportance select(Tunnel<?> tunnel, LocalServeCluster cluster);
 
 }

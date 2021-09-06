@@ -12,6 +12,11 @@ import com.tny.game.net.transport.*;
 public interface RelayTunnel<UID> extends Tunnel<UID> {
 
 	/**
+	 * @return 服务实例 id
+	 */
+	long getInstanceId();
+
+	/**
 	 * 把 message 转发到 tunnel 绑定的目标
 	 *
 	 * @param message 消息

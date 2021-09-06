@@ -10,13 +10,21 @@ public abstract class BaseTunnelPacketArguments implements TunnelPacketArguments
 
 	private final long tunnelId;
 
-	protected BaseTunnelPacketArguments(long tunnelId) {
+	private final long instanceId;
+
+	protected BaseTunnelPacketArguments(long instanceId, long tunnelId) {
+		this.instanceId = instanceId;
 		this.tunnelId = tunnelId;
 	}
 
 	@Override
 	public long getTunnelId() {
 		return tunnelId;
+	}
+
+	@Override
+	public long getInstanceId() {
+		return instanceId;
 	}
 
 }
