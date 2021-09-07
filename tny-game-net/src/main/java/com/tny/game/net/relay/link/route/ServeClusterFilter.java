@@ -12,6 +12,6 @@ import com.tny.game.net.transport.*;
  */
 public interface ServeClusterFilter {
 
-	ServeClusterImportance select(Tunnel<?> tunnel, LocalServeCluster cluster);
+	ServeClusterFilterStatus filter(Tunnel<?> tunnel, LocalServeCluster cluster);
 
 }

@@ -25,4 +25,9 @@ public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayL
 		this.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.success(tunnel));
 	}
 
+	@Override
+	public void closeTunnel(RelayTunnel<?> tunnel) {
+		super.closeTunnel(tunnel);
+	}
+
 }

@@ -24,6 +24,13 @@ public interface LocalRelayLink extends NetRelayLink {
 	 */
 	void switchTunnel(LocalRelayTunnel<?> tunnel);
 
+	/**
+	 * 断开link 与 tunnel的关联
+	 *
+	 * @param tunnel tunnel
+	 */
+	void delinkTunnel(RelayTunnel<?> tunnel);
+
 	//	/**
 	//	 * 绑定客户端传到
 	//	 *

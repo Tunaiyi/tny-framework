@@ -7,6 +7,7 @@ import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 
 /**
+ * 远程 RelayPacket 处理器
  * <p>
  *
  * @author : kgtny
@@ -46,7 +47,7 @@ public class RemoteRelayPacketProcessor extends BaseRelayPacketProcessor {
 	@Override
 	public void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet) {
 		LinkOpenArguments arguments = packet.getArguments();
-		LOGGER.info("[ RelayLink({}) [{} ==> {}] ]  接受连接", NetRelayLink.idOf(arguments.getCluster(), arguments.getInstance(), arguments.getKey()),
+		LOGGER.info("#RelayLink({}) [{} ==> {}]  接受连接", NetRelayLink.idOf(arguments.getCluster(), arguments.getInstance(), arguments.getKey()),
 				transporter.getLocalAddress(), transporter.getRemoteAddress());
 		remoteRelayExplorer.acceptOpenLink(transporter, arguments.getCluster(), arguments.getInstance(), arguments.getKey());
 	}
@@ -55,7 +56,7 @@ public class RemoteRelayPacketProcessor extends BaseRelayPacketProcessor {
 	public void onTunnelConnect(NetRelayLink link, TunnelConnectPacket packet) {
 		checkLink(link, packet);
 		TunnelConnectArguments arguments = packet.getArguments();
-		LOGGER.info("[ RelayLink({}) [{} ==> {}] ] Tunnel连接接受 [ RelayTunnel({}) ]",
+		LOGGER.info("#RelayLink({}) [{} ==> {}] #Tunnel# 连接接受 [ RelayTunnel({}) ]",
 				link.getId(), link.getLocalAddress(), link.getRemoteAddress(), arguments.getTunnelId());
 		remoteRelayExplorer.acceptConnectTunnel(link, this.networkContext,
 				arguments.getInstanceId(), arguments.getTunnelId(), arguments.getIp(), arguments.getPort());
@@ -65,7 +66,7 @@ public class RemoteRelayPacketProcessor extends BaseRelayPacketProcessor {
 	public void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet) {
 		checkLink(link, packet);
 		TunnelVoidArguments arguments = packet.getArguments();
-		LOGGER.info("[ RelayLink({}) [{} ==> {}] ] Tunnel切换连接 [ RelayTunnel({}) ]",
+		LOGGER.info("#RelayLink({}) [{} ==> {}] #Tunnel# 切换连接 [ RelayTunnel({}) ]",
 				link.getId(), link.getLocalAddress(), link.getRemoteAddress(), arguments.getTunnelId());
 		remoteRelayExplorer.switchTunnelLink(link, arguments.getInstanceId(), arguments.getTunnelId());
 	}

@@ -2,6 +2,7 @@ package com.tny.game.net.netty4.relay.cluster;
 
 import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.relay.cluster.*;
+import com.tny.game.net.relay.link.allot.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -26,9 +27,9 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private long linkMaxIdleTime = 10000;
 
-	private String serveInstanceAllotStrategy;
+	private String serveInstanceAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
-	private String relayLinkAllotStrategy;
+	private String relayLinkAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
 	private List<SpringRelayServeInstanceSetting> instances = new ArrayList<>();
 

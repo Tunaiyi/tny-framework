@@ -42,7 +42,7 @@ class NettyServeInstanceConnector {
 		}
 		List<NettyRelayLinkConnectMonitor> monitors = new ArrayList<>();
 		for (int i = 0; i < connectionSize; i++) {
-			monitors.add(new NettyRelayLinkConnectMonitor(relayContext.createLinkId(), relayContext, instance, this));
+			monitors.add(new NettyRelayLinkConnectMonitor(relayContext, instance, this));
 		}
 		this.monitors.addAll(monitors);
 		for (NettyRelayLinkConnectMonitor monitor : monitors) {

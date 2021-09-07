@@ -70,7 +70,7 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public void addOnClose(Consumer<NetRelayTransporter> onClose) {
+	public void addCloseListener(Consumer<NetRelayTransporter> onClose) {
 		this.channel.closeFuture().addListener((f) -> onClose.accept(this));
 	}
 

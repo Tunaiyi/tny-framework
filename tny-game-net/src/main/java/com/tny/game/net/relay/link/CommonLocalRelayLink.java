@@ -35,6 +35,10 @@ public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLin
 	}
 
 	@Override
+	public void delinkTunnel(RelayTunnel<?> tunnel) {
+	}
+
+	@Override
 	public void openTunnel(RelayTunnel<?> tunnel) {
 		byte[] address = DEFAULT_ADDRESS;
 		int port = 0;

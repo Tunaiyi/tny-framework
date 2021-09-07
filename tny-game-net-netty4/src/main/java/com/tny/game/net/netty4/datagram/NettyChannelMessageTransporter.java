@@ -59,7 +59,6 @@ public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection 
 		if (tunnel != null && (tunnel.isOpen() || tunnel.isActive())) {
 			tunnel.disconnect();
 		}
-		this.channel.disconnect();
 	}
 
 	@Override

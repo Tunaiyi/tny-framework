@@ -11,7 +11,7 @@ import com.tny.game.net.relay.link.*;
  */
 class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 
-	private final String key;
+	private String key;
 
 	private final LocalRelayContext relayContext;
 
@@ -27,8 +27,8 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 
 	private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-	NettyRelayLinkConnectMonitor(String key, LocalRelayContext relayContext, LocalServeInstance instance, NettyServeInstanceConnector connector) {
-		this.key = key;
+	NettyRelayLinkConnectMonitor(LocalRelayContext relayContext, LocalServeInstance instance, NettyServeInstanceConnector connector) {
+		this.key = relayContext.getClusterId();
 		this.relayContext = relayContext;
 		this.instance = instance;
 		this.connector = connector;
@@ -55,9 +55,10 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 		}
 		this.status = RelayConnectorStatus.OPEN;
 		this.times = 0;
+		this.key = relayContext.createLinkId();
 		this.link = new CommonLocalRelayLink(this.key, instance, transporter);
 		this.link.auth(relayContext.getClusterId(), relayContext.getInstanceId());
-		transporter.addOnClose(this::onClose);
+		transporter.addCloseListener(this::onClose);
 	}
 
 	private void onReconnected() {

@@ -1,6 +1,8 @@
 package com.tny.game.net.relay.link;
 
+import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.concurrent.collection.*;
+import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -18,21 +20,36 @@ import java.util.*;
  */
 public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSession<UID>, MessageTransporter<UID>> implements LocalRelayTunnel<UID> {
 
+	/**
+	 * 当前服务器的服务实例 id
+	 */
 	private final long instanceId;
 
+	/**
+	 * 关联的 link
+	 */
 	private Map<String, LocalRelayLink> linkMap = new CopyOnWriteMap<>();
 
+	/**
+	 * 关联的 link
+	 */
+	private Map<String, LocalTunnelRelayer> relayerMap;
+
+	/**
+	 * 消息路由器
+	 */
 	private final RelayMessageRouter relayMessageRouter;
 
-	private final LocalRelayExplorer localRelayExplorer;
-
-	public GeneralLocalRelayTunnel(long instanceId, long id,
-			MessageTransporter<UID> transport, NetworkContext context,
-			LocalRelayExplorer localRelayExplorer, RelayMessageRouter relayMessageRouter) {
+	public GeneralLocalRelayTunnel(long instanceId, long id, MessageTransporter<UID> transport,
+			NetworkContext context, RelayMessageRouter relayMessageRouter) {
 		super(id, transport, context);
 		this.instanceId = instanceId;
 		this.relayMessageRouter = relayMessageRouter;
-		this.localRelayExplorer = localRelayExplorer;
+	}
+
+	public GeneralLocalRelayTunnel<UID> initRelayers(Map<String, LocalTunnelRelayer> relayerMap) {
+		this.relayerMap = ImmutableMap.copyOf(relayerMap);
+		return this;
 	}
 
 	@Override
@@ -50,17 +67,17 @@ public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSessi
 		WriteMessagePromise promise = needPromise ? this.createWritePromise() : null;
 		String id = relayMessageRouter.route(this, message);
 		if (id == null) {
-			id = "";
+			id = "-None";
 		}
-		LocalRelayLink link = this.getLink(id);
-		if (link == null || !link.isActive()) {
-			link = localRelayExplorer.allotLink(this, id);
-		}
-		if (link != null && link.isActive()) {
-			return link.relay(this, message, promise);
+		LocalTunnelRelayer relayer = relayerMap.get(id);
+		if (relayer != null) {
+			return relayer.relay(this, message, promise);
 		} else {
+			ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
+			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, id);
+			TunnelAides.responseMessage(this, MessageContexts.push(Protocols.PUSH, code));
 			if (promise != null) {
-				promise.failed(new NetGeneralException(NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR));
+				promise.failed(new NetGeneralException(code));
 			}
 		}
 		return promise;
@@ -76,6 +93,7 @@ public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSessi
 		synchronized (this) {
 			LocalRelayLink old = linkMap.put(link.getClusterId(), link);
 			if (old != null) {
+				old.delinkTunnel(this);
 				link.switchTunnel(this);
 			} else {
 				link.openTunnel(this);

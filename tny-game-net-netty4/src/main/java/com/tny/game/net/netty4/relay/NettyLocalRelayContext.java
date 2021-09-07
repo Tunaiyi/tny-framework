@@ -45,7 +45,10 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 
 	@Override
 	public String createLinkId() {
-		return UUID.nameUUIDFromBytes((this.launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8)).toString();
+		UUID uuid = UUID.nameUUIDFromBytes((this.launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
+		String head = Long.toUnsignedString(uuid.getMostSignificantBits(), 32);
+		String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32);
+		return head + "-" + tail;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 轮询分配策略
  * <p>
  *
  * @author : kgtny

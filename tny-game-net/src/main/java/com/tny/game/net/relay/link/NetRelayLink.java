@@ -22,7 +22,7 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
 	}
 
 	static String idOf(String clusterId, long id, String key) {
-		return clusterId + "#" + id + "#" + key;
+		return clusterId + "-" + id + "-" + key;
 	}
 
 	/**

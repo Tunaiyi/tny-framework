@@ -10,7 +10,7 @@ import com.tny.game.net.transport.*;
  */
 public interface TunnelUnactivatedListener<UID> {
 
-    default void onUnactivated(Tunnel<UID> session) {
-    }
+	default void onUnactivated(Tunnel<UID> tunnel) {
+	}
 
 }

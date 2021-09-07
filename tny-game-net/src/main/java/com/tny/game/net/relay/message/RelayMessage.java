@@ -15,8 +15,14 @@ import java.util.Optional;
  */
 public class RelayMessage implements NetMessage {
 
+	/**
+	 * 释放需要转发
+	 */
 	private final boolean relay;
 
+	/**
+	 * 消息
+	 */
 	private final NetMessage message;
 
 	public RelayMessage(NetMessage message) {

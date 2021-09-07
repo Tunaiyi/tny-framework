@@ -8,6 +8,4 @@ package com.tny.game.net.relay.link;
  */
 public interface RemoteRelayLink extends NetRelayLink {
 
-	//	<UID> NetTunnel<UID> acceptTunnel(long tunnelId, String host, int port);
-
 }

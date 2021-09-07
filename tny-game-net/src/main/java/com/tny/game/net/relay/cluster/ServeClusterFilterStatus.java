@@ -6,7 +6,7 @@ package com.tny.game.net.relay.cluster;
  * @author : kgtny
  * @date : 2021/8/25 7:49 下午
  */
-public enum ServeClusterImportance {
+public enum ServeClusterFilterStatus {
 
 	/**
 	 * 可选, 申请不到继续创建 tunnel

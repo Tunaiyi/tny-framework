@@ -4,6 +4,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.relay.link.route.*;
 
 /**
+ * 本地转发服务上下问
  * <p>
  *
  * @author : kgtny

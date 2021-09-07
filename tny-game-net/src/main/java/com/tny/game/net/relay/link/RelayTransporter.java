@@ -13,6 +13,9 @@ import java.util.function.Consumer;
  */
 public interface RelayTransporter extends WritableConnection {
 
-	void addOnClose(Consumer<NetRelayTransporter> onClose);
+	/**
+	 * @param onClose 注册关闭监听器
+	 */
+	void addCloseListener(Consumer<NetRelayTransporter> onClose);
 
 }

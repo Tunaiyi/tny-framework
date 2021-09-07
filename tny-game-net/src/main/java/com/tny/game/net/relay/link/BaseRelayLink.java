@@ -198,7 +198,6 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			this.status = RelayLinkStatus.OPEN;
 			this.onOpen();
 			this.heartbeat();
-			LOGGER.info("RelayLink [{}:{}] 转发链接打开 ", this, this.status);
 			event.trigger(RelayLinkListener::onOpen, this);
 		}
 	}
