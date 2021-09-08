@@ -1,6 +1,6 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.common.event.trigger.*;
+import com.tny.game.common.event.firer.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;

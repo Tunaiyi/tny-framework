@@ -20,9 +20,9 @@ import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.configuration.filter.*;
 import com.tny.game.net.netty4.configuration.processor.disruptor.*;
 import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
-import com.tny.game.net.netty4.datagram.*;
-import com.tny.game.net.netty4.datagram.codec.*;
-import com.tny.game.net.netty4.datagram.configuration.*;
+import com.tny.game.net.netty4.network.*;
+import com.tny.game.net.netty4.network.codec.*;
+import com.tny.game.net.netty4.network.configuration.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -138,6 +138,11 @@ public class NetAutoConfiguration {
 	@Bean
 	public ControllerRelayStrategy controllerRelayStrategy(MessageDispatcher dispatcher) {
 		return new ControllerRelayStrategy(dispatcher);
+	}
+
+	@Bean
+	public AllRelayStrategy allRelayStrategy() {
+		return new AllRelayStrategy();
 	}
 
 	@Bean

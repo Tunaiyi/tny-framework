@@ -14,9 +14,9 @@ tny:
             #              pipeline-chains:
             #                - readIdlePipelineChain
             encoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
             decoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
     pipeline:
       read-idle-pipeline-chain:
         idle-timeout: 18000

@@ -11,5 +11,4 @@ dependencies {
 
     api libs.javassist
     api libs.redisson
-
 }

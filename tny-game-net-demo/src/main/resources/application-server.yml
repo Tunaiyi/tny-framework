@@ -4,23 +4,22 @@ tny:
     app-type: game
     scope-type: game
   net:
-    server:
-      name: game-server
-      bind: 127.0.0.1:16800,127.0.0.1:16801
-      channel:
-        maker:
-          properties:
-            idleTimeout: 360000
-        encoder:
-          body-codec: typeProtobufMessageBodyCodec
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
-        decoder:
-          body-codec: typeProtobufMessageBodyCodec
-          security-keys:
-            - abcdefghijklmn
-            - opqrstuvwxyz
+    bootstrap:
+      network:
+        server:
+          name: game-server
+          bind: 127.0.0.1:16800,127.0.0.1:16801
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
     command:
       processor:
         disruptor:

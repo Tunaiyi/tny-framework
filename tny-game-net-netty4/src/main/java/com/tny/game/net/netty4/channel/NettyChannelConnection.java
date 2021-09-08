@@ -1,7 +1,7 @@
 package com.tny.game.net.netty4.channel;
 
 import com.tny.game.net.exception.*;
-import com.tny.game.net.netty4.datagram.*;
+import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 

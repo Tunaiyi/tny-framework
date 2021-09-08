@@ -8,7 +8,7 @@ import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
-import com.tny.game.net.netty4.datagram.*;
+import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;

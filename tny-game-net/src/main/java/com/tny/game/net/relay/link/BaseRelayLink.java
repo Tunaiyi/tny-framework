@@ -1,6 +1,6 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.common.event.trigger.*;
+import com.tny.game.common.event.firer.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
@@ -65,7 +65,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	/**
 	 * 转发关掉事件
 	 */
-	private final EventFirer<RelayLinkListener, NetRelayLink> event = EventFirers.trigger(RelayLinkListener.class);
+	private final EventFirer<RelayLinkListener, NetRelayLink> event = EventFirers.firer(RelayLinkListener.class);
 
 	/**
 	 * 数据包 id 创建器
@@ -198,7 +198,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			this.status = RelayLinkStatus.OPEN;
 			this.onOpen();
 			this.heartbeat();
-			event.trigger(RelayLinkListener::onOpen, this);
+			event.fire(RelayLinkListener::onOpen, this);
 		}
 	}
 
@@ -233,7 +233,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			}
 			this.status = RelayLinkStatus.DISCONNECT;
 			this.doDisconnect();
-			event.trigger(RelayLinkListener::onDisconnect, this);
+			event.fire(RelayLinkListener::onDisconnect, this);
 			LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
 			this.onDisconnect();
 		}
@@ -259,11 +259,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
 				return;
 			}
 			this.status = RelayLinkStatus.CLOSING;
-			event.trigger(RelayLinkListener::onClosing, this);
+			event.fire(RelayLinkListener::onClosing, this);
 			this.write(LinkClosePacket.FACTORY, null);
 			this.doDisconnect();
 			this.status = RelayLinkStatus.CLOSED;
-			event.trigger(RelayLinkListener::onClosed, this);
+			event.fire(RelayLinkListener::onClosed, this);
 			LOGGER.info("RelayLink [{}:{}] 转发链接关闭 ", this, this.status);
 			this.onClosed();
 		}

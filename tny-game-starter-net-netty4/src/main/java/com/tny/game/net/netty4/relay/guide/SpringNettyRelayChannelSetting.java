@@ -29,10 +29,10 @@ public class SpringNettyRelayChannelSetting extends NettyRelayChannelSetting {
 	public SpringNettyRelayChannelSetting() {
 		this.setMaker(new NettyChannelMakerSetting(DefaultRelayChannelMaker.class))
 				.setEncoder(new RelayPacketCodecSetting()
-						.setBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+						.setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
 						.setCloseOnError(false))
 				.setDecoder(new RelayPacketCodecSetting()
-						.setBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+						.setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
 						.setCloseOnError(true));
 	}
 

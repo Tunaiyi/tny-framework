@@ -9,12 +9,12 @@ tny:
         client:
           channel:
             encoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
             decoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz

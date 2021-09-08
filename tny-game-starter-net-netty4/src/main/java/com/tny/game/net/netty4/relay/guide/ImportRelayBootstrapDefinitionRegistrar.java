@@ -2,7 +2,7 @@ package com.tny.game.net.netty4.relay.guide;
 
 import com.tny.game.boot.registrar.*;
 import com.tny.game.net.netty4.channel.*;
-import com.tny.game.net.netty4.datagram.codec.*;
+import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.netty4.relay.codec.*;
 import com.tny.game.net.netty4.relay.codec.arguments.*;
@@ -67,9 +67,9 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
 		String messageCodecName = name + codeType + NettyMessageCodec.class;
 		BeanDefinitionBuilder messageCodecBuilder = BeanDefinitionBuilder
 				.genericBeanDefinition(DefaultNettyMessageCodec.class)
-				.addConstructorArgReference(setting.getBodyCodec());
+				.addConstructorArgReference(setting.getMessageBodyCodec());
 		if (setting.isHasRelayStrategy()) {
-			messageCodecBuilder.addConstructorArgReference(setting.getRelayStrategy());
+			messageCodecBuilder.addConstructorArgReference(setting.getMessageRelayStrategy());
 		}
 		registry.registerBeanDefinition(messageCodecName, messageCodecBuilder.getBeanDefinition());
 
@@ -90,7 +90,7 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
 		RelayPacketArgumentsCodecService encoderArgumentsCodecService =
 				registerRelayPacketArgumentsCodecService(setting.getName(), "Encoder", registry, encoderConfig);
 		RelayPacketArgumentsCodecService decoderArgumentsCodecService =
-				registerRelayPacketArgumentsCodecService(setting.getName(), "Decoder", registry, encoderConfig);
+				registerRelayPacketArgumentsCodecService(setting.getName(), "Decoder", registry, decoderConfig);
 
 		RelayPackEncoder encoder = new RelayPackV1Encoder(encoderArgumentsCodecService);
 		RelayPackDecoder decoder = new RelayPackV1Decoder(decoderArgumentsCodecService);

@@ -15,12 +15,12 @@ tny:
             #              pipeline-chains:
             #                - readIdlePipelineChain
             encoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
             decoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
               message-relay-strategy: controllerRelayStrategy
               security-keys:
                 - abcdefghijklmn
@@ -31,9 +31,9 @@ tny:
         client:
           channel:
             encoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
             decoder:
-              body-codec: typeProtobufMessageBodyCodec
+              message-body-codec: typeProtobufMessageBodyCodec
     relay:
       cluster:
         serve-clusters:

@@ -2,7 +2,7 @@ package com.tny.game.net.netty4.relay.codec;
 
 import com.tny.game.common.enums.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.netty4.datagram.codec.*;
+import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.relay.codec.arguments.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.packet.*;

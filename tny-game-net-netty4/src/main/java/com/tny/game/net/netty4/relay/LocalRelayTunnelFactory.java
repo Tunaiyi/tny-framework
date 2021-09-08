@@ -3,7 +3,7 @@ package com.tny.game.net.netty4.relay;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.netty4.datagram.*;
+import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;

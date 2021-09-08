@@ -8,13 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 public class RelayPacketCodecSetting {
 
 	// 消息体编码器
-	private String bodyCodec;
+	private String messageBodyCodec;
 
 	// 错误时候是否关闭
 	private boolean closeOnError = false;
 
 	// 消息转发策略
-	private String relayStrategy = null;
+	private String messageRelayStrategy = null;
 
 	public RelayPacketCodecSetting() {
 	}
@@ -24,24 +24,24 @@ public class RelayPacketCodecSetting {
 	}
 
 	public boolean isHasRelayStrategy() {
-		return StringUtils.isNoneBlank(relayStrategy);
+		return StringUtils.isNoneBlank(messageRelayStrategy);
 	}
 
-	public String getRelayStrategy() {
-		return relayStrategy;
+	public String getMessageRelayStrategy() {
+		return messageRelayStrategy;
 	}
 
-	public RelayPacketCodecSetting setRelayStrategy(String relayStrategy) {
-		this.relayStrategy = relayStrategy;
+	public RelayPacketCodecSetting setMessageRelayStrategy(String messageRelayStrategy) {
+		this.messageRelayStrategy = messageRelayStrategy;
 		return this;
 	}
 
-	public String getBodyCodec() {
-		return bodyCodec;
+	public String getMessageBodyCodec() {
+		return messageBodyCodec;
 	}
 
-	public RelayPacketCodecSetting setBodyCodec(String bodyCodec) {
-		this.bodyCodec = bodyCodec;
+	public RelayPacketCodecSetting setMessageBodyCodec(String messageBodyCodec) {
+		this.messageBodyCodec = messageBodyCodec;
 		return this;
 	}
 
