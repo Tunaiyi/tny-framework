@@ -34,12 +34,12 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 	}
 
 	@Override
-	public String getClusterId() {
+	public String getCurrentServeName() {
 		return appContext.getAppType();
 	}
 
 	@Override
-	public long getInstanceId() {
+	public long getCurrentInstanceId() {
 		return appContext.getServerId();
 	}
 
@@ -68,7 +68,7 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 
 	public NettyLocalRelayContext setAppContext(NetAppContext appContext) {
 		this.appContext = appContext;
-		this.launchId = this.getClusterId() + "." + this.getInstanceId() + "." +
+		this.launchId = this.getCurrentServeName() + "." + this.getCurrentInstanceId() + "." +
 				System.nanoTime() + "." + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
 		return this;
 	}

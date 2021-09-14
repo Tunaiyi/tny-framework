@@ -12,10 +12,10 @@ public interface LocalRelayLink extends NetRelayLink {
 	/**
 	 * 连接认证
 	 *
-	 * @param clusterId  集群 id
+	 * @param serveName  服务名
 	 * @param instanceId 实例 id
 	 */
-	void auth(String clusterId, long instanceId);
+	void auth(String serveName, long instanceId);
 
 	/**
 	 * 切换link

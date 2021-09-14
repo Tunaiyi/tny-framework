@@ -16,18 +16,18 @@ public class NettyLocalServeCluster extends BaseLocalServeCluster {
 	private final LocalServeClusterContext clusterContext;
 
 	public NettyLocalServeCluster(LocalServeClusterContext clusterContext, LocalRelayContext relayContext) {
-		super(clusterContext.getId(), clusterContext.getServeInstanceAllotStrategy(), clusterContext.getRelayLinkAllotStrategy());
+		super(clusterContext.getServeName(), clusterContext.getServeInstanceAllotStrategy(), clusterContext.getRelayLinkAllotStrategy());
 		this.clusterContext = clusterContext;
 		this.relayContext = relayContext;
 
 	}
 
-	public String getLocalClusterId() {
-		return relayContext.getClusterId();
+	public String getCurrentServeName() {
+		return relayContext.getCurrentServeName();
 	}
 
-	public long getLocalInstanceId() {
-		return relayContext.getInstanceId();
+	public long getCurrentInstanceId() {
+		return relayContext.getCurrentInstanceId();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class NettyLocalServeCluster extends BaseLocalServeCluster {
 	}
 
 	public void heartbeat() {
-		for (LocalServeInstance instance : this.getLocalInstances()) {
+		for (NetLocalServeInstance instance : this.instances()) {
 			ExeAide.runQuietly(instance::heartbeat, LOGGER);
 		}
 	}

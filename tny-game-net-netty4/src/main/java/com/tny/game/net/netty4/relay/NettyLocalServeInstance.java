@@ -19,7 +19,7 @@ public class NettyLocalServeInstance extends BaseLocalServeInstance {
 	 */
 	private final NettyServeInstanceConnector connector;
 
-	public NettyLocalServeInstance(LocalServeCluster cluster, ServeNode node, NettyServeInstanceConnector connector) {
+	public NettyLocalServeInstance(NetLocalServeCluster cluster, ServeNode node, NettyServeInstanceConnector connector) {
 		super(cluster, node);
 		this.connector = connector;
 	}

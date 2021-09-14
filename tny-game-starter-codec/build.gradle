@@ -10,8 +10,8 @@ dependencies {
 
     api project(":tny-game-boot")
 
-    implementation project(":tny-game-codec-jprotobuf")
-    implementation project(":tny-game-codec-jackson")
+    compileOnly project(":tny-game-codec-jprotobuf")
+    compileOnly project(":tny-game-codec-jackson")
 
 }
 

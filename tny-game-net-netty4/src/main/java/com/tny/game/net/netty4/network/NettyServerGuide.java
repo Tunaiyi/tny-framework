@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.network;
 
-import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.unit.*;
@@ -30,7 +29,9 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 	private volatile ServerBootstrap bootstrap;
 
-	private final Collection<InetSocketAddress> bindAddresses;
+	private final InetSocketAddress bindAddress;
+
+	public final InetSocketAddress serveAddress;
 
 	private final Map<String, Channel> channels = new CopyOnWriteMap<>();
 
@@ -42,17 +43,29 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 	public NettyServerGuide(NettyNetServerBootstrapSetting setting) {
 		super(setting);
-		this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
+		this.bindAddress = this.setting.bindAddress();
+		this.serveAddress = this.setting.serveAddress();
+	}
+
+	@Override
+	public InetSocketAddress getBindAddress() {
+		return bindAddress;
+	}
+
+	@Override
+	public InetSocketAddress getServeAddress() {
+		return serveAddress;
 	}
 
 	public NettyServerGuide(NettyNetServerBootstrapSetting setting, ChannelMaker<Channel> channelMaker) {
 		super(setting, channelMaker);
-		this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
+		this.bindAddress = this.setting.bindAddress();
+		this.serveAddress = this.setting.serveAddress();
 	}
 
 	@Override
 	public void open() {
-		this.bindAddresses.forEach(this::bind);
+		this.bind(this.bindAddress);
 	}
 
 	@Override
@@ -78,6 +91,11 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 		NettyServerGuide.this.fireServerClosed();
 		NettyServerGuide.LOGGER.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
 		return true;
+	}
+
+	@Override
+	public String getScheme() {
+		return "tcp";
 	}
 
 	@Override

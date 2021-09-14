@@ -39,7 +39,7 @@ public class RelayAccessAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(value = "tny.net.relay.router.fixed-message-router.cluster-id")
 	public RelayMessageRouter fixedRelayMessageRouter(FixedRelayMessageRoutersProperties properties) {
-		return new FixedRelayMessageRouter(properties.getClusterId());
+		return new FixedRelayMessageRouter(properties.getServeName());
 	}
 
 	@Bean
@@ -49,13 +49,14 @@ public class RelayAccessAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnBean(NetAppContext.class)
 	public LocalRelayContext localRelayContext(
 			NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
 		return new NettyLocalRelayContext(appContext, relayMessageRouter, serveClusterFilter);
 	}
 
 	@Bean
-	public LocalRelayExplorer localRelayExplorer(LocalRelayContext localRelayContext, List<NettyLocalServeClusterContext> clusterContexts) {
+	public NettyLocalRelayExplorer localRelayExplorer(LocalRelayContext localRelayContext, List<NettyLocalServeClusterContext> clusterContexts) {
 		return new NettyLocalRelayExplorer(localRelayContext, clusterContexts);
 	}
 

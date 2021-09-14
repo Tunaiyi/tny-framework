@@ -1,6 +1,7 @@
 package com.tny.game.net.relay.link;
 
 import com.google.common.collect.ImmutableList;
+import com.tny.game.common.collection.map.access.*;
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.relay.cluster.*;
 import org.apache.commons.lang3.builder.*;
@@ -9,6 +10,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -16,13 +18,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author : kgtny
  * @date : 2021/8/21 4:39 上午
  */
-public class BaseLocalServeInstance implements LocalServeInstance {
+public class BaseLocalServeInstance implements NetLocalServeInstance {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeInstance.class);
 
-	protected final LocalServeCluster cluster;
+	protected final NetLocalServeCluster cluster;
 
 	private final long id;
+
+	private final String appType;
+
+	private final String scopeType;
 
 	private final String scheme;
 
@@ -30,23 +36,30 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 
 	private final int port;
 
+	private boolean healthy;
+
+	private ObjectMap metadata = new ObjectMap();
+
 	private final AtomicBoolean close = new AtomicBoolean(false);
 
 	private Map<String, LocalRelayLink> relayLinkMap = new ConcurrentHashMap<>();
 
-	private volatile List<LocalRelayLink> relayLinks = ImmutableList.of();
+	private volatile List<LocalRelayLink> activeRelayLinks = ImmutableList.of();
 
-	public BaseLocalServeInstance(LocalServeCluster cluster, ServeNode node) {
+	public BaseLocalServeInstance(NetLocalServeCluster cluster, ServeNode node) {
 		this.id = node.getId();
 		this.scheme = node.getScheme();
 		this.host = node.getHost();
 		this.port = node.getPort();
+		this.appType = node.getAppType();
+		this.scopeType = node.getScopeType();
+		this.healthy = node.isHealthy();
 		this.cluster = cluster;
 	}
 
 	@Override
-	public String getClusterId() {
-		return cluster.getId();
+	public String getServeName() {
+		return cluster.getServeName();
 	}
 
 	@Override
@@ -60,8 +73,33 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 	}
 
 	@Override
+	public String getAppType() {
+		return appType;
+	}
+
+	@Override
+	public String getScopeType() {
+		return scopeType;
+	}
+
+	@Override
+	public boolean isHealthy() {
+		return !activeRelayLinks.isEmpty() && this.healthy;
+	}
+
+	@Override
 	public int getPort() {
 		return port;
+	}
+
+	@Override
+	public MapAccessor metadata() {
+		return metadata;
+	}
+
+	@Override
+	public Map<String, Object> getMetadata() {
+		return Collections.unmodifiableMap(metadata);
 	}
 
 	@Override
@@ -70,8 +108,8 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 	}
 
 	@Override
-	public List<LocalRelayLink> getRelayLinks() {
-		return relayLinks;
+	public List<LocalRelayLink> getActiveRelayLinks() {
+		return activeRelayLinks;
 	}
 
 	@Override
@@ -95,7 +133,7 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 	public void heartbeat() {
 		long lifeTime = cluster.getContext().getLinkMaxIdleTime();
 		long now = System.currentTimeMillis();
-		for (LocalRelayLink link : relayLinks) {
+		for (LocalRelayLink link : relayLinkMap.values()) {
 			ExeAide.runQuietly(() -> {
 				if (link.isActive()) {
 					link.ping();
@@ -107,10 +145,32 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 		}
 	}
 
+	@Override
+	public boolean updateHealthy(boolean healthy) {
+		if (this.healthy != healthy) {
+			this.healthy = healthy;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void updateMetadata(Map<String, Object> metadata) {
+		this.metadata = new ObjectMap(metadata);
+	}
+
 	protected void prepareClose() {
 	}
 
 	protected void postClose() {
+	}
+
+	private synchronized void refreshActiveLinks() {
+		this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values()
+				.stream()
+				.filter(RelayLink::isActive)
+				.collect(Collectors.toList()));
+		cluster.refreshInstances();
 	}
 
 	@Override
@@ -119,8 +179,20 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 		if (old != null && old != link) {
 			old.close();
 		}
-		relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
-		onRegister(link);
+		this.refreshActiveLinks();
+		this.onRegister(link);
+	}
+
+	@Override
+	public void disconnected(LocalRelayLink link) {
+		NetRelayLink current = relayLinkMap.get(link.getId());
+		if (current != link) {
+			return;
+		}
+		if (current.isActive() && !this.activeRelayLinks.contains(current) ||
+				!current.isActive() && this.activeRelayLinks.contains(current)) {
+			this.refreshActiveLinks();
+		}
 	}
 
 	@Override
@@ -129,8 +201,8 @@ public class BaseLocalServeInstance implements LocalServeInstance {
 			if (link.isActive()) {
 				link.close();
 			}
-			relayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values());
-			onRelieve(link);
+			this.refreshActiveLinks();
+			this.onRelieve(link);
 		}
 	}
 

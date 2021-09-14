@@ -9,13 +9,13 @@ import com.tny.game.net.relay.link.*;
  * @author : kgtny
  * @date : 2021/8/30 9:09 下午
  */
-class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
+class NettyRelayLinkConnector implements RelayConnectCallback {
 
 	private String key;
 
 	private final LocalRelayContext relayContext;
 
-	private final LocalServeInstance instance;
+	private final NetLocalServeInstance instance;
 
 	private final NettyServeInstanceConnector connector;
 
@@ -27,11 +27,15 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 
 	private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-	NettyRelayLinkConnectMonitor(LocalRelayContext relayContext, LocalServeInstance instance, NettyServeInstanceConnector connector) {
-		this.key = relayContext.getClusterId();
+	NettyRelayLinkConnector(LocalRelayContext relayContext, NetLocalServeInstance instance, NettyServeInstanceConnector connector) {
+		this.key = relayContext.getCurrentServeName();
 		this.relayContext = relayContext;
 		this.instance = instance;
 		this.connector = connector;
+	}
+
+	public URL getUrl() {
+		return instance.url();
 	}
 
 	public synchronized void connect() {
@@ -44,10 +48,6 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 		}
 	}
 
-	public URL getUrl() {
-		return instance.url();
-	}
-
 	private void onConnected(NetRelayTransporter transporter) {
 		if (status != RelayConnectorStatus.CONNECTING) {
 			transporter.close();
@@ -57,7 +57,7 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 		this.times = 0;
 		this.key = relayContext.createLinkId();
 		this.link = new CommonLocalRelayLink(this.key, instance, transporter);
-		this.link.auth(relayContext.getClusterId(), relayContext.getInstanceId());
+		this.link.auth(relayContext.getCurrentServeName(), relayContext.getCurrentInstanceId());
 		transporter.addCloseListener(this::onClose);
 	}
 
@@ -81,14 +81,20 @@ class NettyRelayLinkConnectMonitor implements RelayConnectCallback {
 
 	@Override
 	public void complete(boolean result, URL url, NetRelayTransporter transporter, Throwable cause) {
-		if (result) {
+		if (this.status == RelayConnectorStatus.CLOSE) {
+			NettyLocalServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
+					relayContext.getCurrentServeName(), relayContext.getCurrentInstanceId(), this.key);
+			transporter.close();
+			return;
+		}
+		if (result && transporter.isActive()) {
 			NettyLocalServeInstance.LOGGER.info("Server [{}-{}-{}] connect to {} success on the {}th times",
-					relayContext.getClusterId(), relayContext.getInstanceId(), this.key, url, times);
+					relayContext.getCurrentServeName(), relayContext.getCurrentInstanceId(), this.key, url, times);
 			onConnected(transporter);
 		} else {
 			this.status = RelayConnectorStatus.DISCONNECT;
 			NettyLocalServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
-					relayContext.getClusterId(), relayContext.getInstanceId(), this.key, url, times, cause.getCause());
+					relayContext.getCurrentServeName(), relayContext.getCurrentInstanceId(), this.key, url, times, cause.getCause());
 			onReconnected();
 		}
 	}

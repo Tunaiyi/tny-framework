@@ -14,7 +14,7 @@ import com.tny.game.net.relay.packet.arguments.*;
 public class LinkOpenArgumentsProto extends BaseLinkArgumentsProto<LinkOpenArguments> {
 
 	@Protobuf(order = 1)
-	private String cluster;
+	private String serveName;
 
 	@Protobuf(order = 2, fieldType = FieldType.FIXED64)
 	private long instance;
@@ -27,18 +27,18 @@ public class LinkOpenArgumentsProto extends BaseLinkArgumentsProto<LinkOpenArgum
 
 	public LinkOpenArgumentsProto(LinkOpenArguments arguments) {
 		super(arguments);
-		this.cluster = arguments.getCluster();
+		this.serveName = arguments.getServeName();
 		this.instance = arguments.getInstance();
 		this.key = arguments.getKey();
 	}
 
 	@Override
 	public LinkOpenArguments toArguments() {
-		return new LinkOpenArguments(this.cluster, this.instance, this.key);
+		return new LinkOpenArguments(this.serveName, this.instance, this.key);
 	}
 
-	public String getCluster() {
-		return cluster;
+	public String getServeName() {
+		return serveName;
 	}
 
 	public long getInstance() {

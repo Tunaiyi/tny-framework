@@ -25,8 +25,8 @@ public class DefaultRemoteRelayExplorer extends BaseRelayExplorer<RemoteRelayTun
 	private final Map<String, RemoteRelayLink> linkMap = new ConcurrentHashMap<>();
 
 	@Override
-	public void acceptOpenLink(NetRelayTransporter transporter, String clusterId, long instance, String key) {
-		CommonRemoteRelayLink link = new CommonRemoteRelayLink(transporter, clusterId, instance, key);
+	public void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key) {
+		CommonRemoteRelayLink link = new CommonRemoteRelayLink(transporter, serveName, instance, key);
 		RemoteRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
 		if (relayLink != null && !Objects.equals(relayLink.getTransporter(), transporter)) {
 			link.openOnFailure();

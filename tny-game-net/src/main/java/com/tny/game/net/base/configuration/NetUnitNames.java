@@ -22,6 +22,10 @@ public final class NetUnitNames {
 		return name.substring(0, 1).toLowerCase() + name.substring(1);
 	}
 
+	public static String lowerCamelName(String name) {
+		return name.substring(0, 1).toLowerCase() + name.substring(1);
+	}
+
 	public static String unitName(String key, Class<?> clazz) {
 		return key + clazz.getSimpleName();
 	}

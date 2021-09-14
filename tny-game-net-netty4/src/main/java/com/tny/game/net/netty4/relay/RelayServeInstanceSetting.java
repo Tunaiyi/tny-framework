@@ -1,7 +1,8 @@
 package com.tny.game.net.netty4.relay;
 
-import com.tny.game.common.url.*;
 import com.tny.game.net.relay.cluster.*;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -9,74 +10,58 @@ import com.tny.game.net.relay.cluster.*;
  * @author : kgtny
  * @date : 2021/9/2 3:42 下午
  */
-public class RelayServeInstanceSetting implements ServeNode {
+public class RelayServeInstanceSetting extends BaseServeNode {
 
-	private long id;
+	public RelayServeInstanceSetting() {
+	}
 
-	private String url;
-
-	private String scheme = "tcp";
-
-	private String host;
-
-	private int port;
-
-	@Override
-	public String getClusterId() {
-		return null;
+	public RelayServeInstanceSetting(String serveName, String appType, String scopeType, long id, String scheme, String host, int port) {
+		super(serveName, appType, scopeType, id, scheme, host, port);
 	}
 
 	@Override
-	public long getId() {
-		return id;
-	}
-
-	public RelayServeInstanceSetting setId(long id) {
-		this.id = id;
-		return this;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public RelayServeInstanceSetting setUrl(String uri) {
-		this.url = uri;
-		URL url = URL.valueOf(uri);
-		this.scheme = url.getScheme();
-		this.host = url.getHost();
-		this.port = url.getPort();
-		return this;
+	public BaseServeNode setServeName(String serveName) {
+		return super.setServeName(serveName);
 	}
 
 	@Override
-	public String getScheme() {
-		return scheme;
-	}
-
-	public RelayServeInstanceSetting setScheme(String scheme) {
-		this.scheme = scheme;
-		return this;
+	public BaseServeNode setId(long id) {
+		return super.setId(id);
 	}
 
 	@Override
-	public String getHost() {
-		return host;
-	}
-
-	public RelayServeInstanceSetting setHost(String host) {
-		this.host = host;
-		return this;
+	public BaseServeNode setAppType(String appType) {
+		return super.setAppType(appType);
 	}
 
 	@Override
-	public int getPort() {
-		return port;
+	public BaseServeNode setScopeType(String scopeType) {
+		return super.setScopeType(scopeType);
 	}
 
-	public RelayServeInstanceSetting setPort(int port) {
-		this.port = port;
-		return this;
+	@Override
+	public BaseServeNode setHealthy(boolean healthy) {
+		return super.setHealthy(healthy);
+	}
+
+	@Override
+	public BaseServeNode setScheme(String scheme) {
+		return super.setScheme(scheme);
+	}
+
+	@Override
+	public BaseServeNode setHost(String host) {
+		return super.setHost(host);
+	}
+
+	@Override
+	public BaseServeNode setPort(int port) {
+		return super.setPort(port);
+	}
+
+	@Override
+	public BaseServeNode setMetadata(Map<String, Object> metadata) {
+		return super.setMetadata(metadata);
 	}
 
 }

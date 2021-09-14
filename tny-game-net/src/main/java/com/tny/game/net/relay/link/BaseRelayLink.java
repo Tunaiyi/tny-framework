@@ -40,7 +40,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	/**
 	 * 集群id
 	 */
-	private final String clusterId;
+	private final String serveName;
 
 	/**
 	 * 集群实例(节点) id
@@ -72,9 +72,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	 */
 	private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-	public BaseRelayLink(String key, String clusterId, long instanceId, NetRelayTransporter transporter) {
+	public BaseRelayLink(String key, String serveName, long instanceId, NetRelayTransporter transporter) {
 		this.key = key;
-		this.clusterId = clusterId;
+		this.serveName = serveName;
 		this.instanceId = instanceId;
 		this.id = NetRelayLink.idOf(this);
 		this.transporter = transporter;
@@ -88,8 +88,8 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	}
 
 	@Override
-	public String getClusterId() {
-		return clusterId;
+	public String getServeName() {
+		return serveName;
 	}
 
 	@Override
@@ -233,9 +233,6 @@ public abstract class BaseRelayLink implements NetRelayLink {
 			}
 			this.status = RelayLinkStatus.DISCONNECT;
 			this.doDisconnect();
-			event.fire(RelayLinkListener::onDisconnect, this);
-			LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
-			this.onDisconnect();
 		}
 	}
 
@@ -247,6 +244,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
 		if (transporter != null && transporter.isActive()) {
 			transporter.close();
 		}
+		event.fire(RelayLinkListener::onDisconnect, this);
+		LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
+		this.onDisconnect();
 	}
 
 	@Override
@@ -292,13 +292,13 @@ public abstract class BaseRelayLink implements NetRelayLink {
 		BaseRelayLink that = (BaseRelayLink)o;
 		return new EqualsBuilder().append(getInstanceId(), that.getInstanceId())
 				.append(getId(), that.getId())
-				.append(getClusterId(), that.getClusterId())
+				.append(getServeName(), that.getServeName())
 				.isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 37).append(getId()).append(getClusterId()).append(getInstanceId()).toHashCode();
+		return new HashCodeBuilder(17, 37).append(getId()).append(getServeName()).append(getInstanceId()).toHashCode();
 	}
 
 	@Override

@@ -6,14 +6,11 @@ import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.slf4j.*;
 
 /**
  * Created by Kun Yang on 2017/3/24.
  */
 public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetBootstrap<S> {
-
-	protected static final Logger LOG = LoggerFactory.getLogger(NettyBootstrap.class);
 
 	protected ChannelMaker<Channel> channelMaker;
 
@@ -24,6 +21,10 @@ public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetB
 	public NettyBootstrap(S unitSetting, ChannelMaker<Channel> channelMaker) {
 		super(unitSetting);
 		this.channelMaker = channelMaker;
+	}
+
+	public String getName() {
+		return setting.getName();
 	}
 
 	protected static boolean isEpoll() {

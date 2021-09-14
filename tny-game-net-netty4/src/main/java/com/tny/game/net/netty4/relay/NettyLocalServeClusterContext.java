@@ -1,11 +1,8 @@
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.allot.*;
-
-import java.util.*;
 
 /**
  * <p>
@@ -15,15 +12,7 @@ import java.util.*;
  */
 public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 
-	private String id;
-
-	private int linkConnectionSize;
-
-	private long linkHeartbeatInterval;
-
-	private long linkMaxIdleTime;
-
-	private List<ServeNode> nodes = new ArrayList<>();
+	private final LocalServeClusterSetting setting;
 
 	private RelayClientGuide clientGuide;
 
@@ -32,16 +21,12 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 	private LocalRelayLinkAllotStrategy relayLinkAllotStrategy = new PollingRelayAllotStrategy();
 
 	public NettyLocalServeClusterContext(RelayServeClusterSetting setting) {
-		this.id = setting.getId();
-		this.linkMaxIdleTime = setting.getLinkMaxIdleTime();
-		this.linkConnectionSize = setting.getLinkConnectionSize();
-		this.linkHeartbeatInterval = setting.getLinkHeartbeatInterval();
-		this.nodes.addAll(setting.getNodes());
+		this.setting = setting;
 	}
 
 	@Override
-	public String getId() {
-		return id;
+	public String getServeName() {
+		return setting.getServeName();
 	}
 
 	public RelayClientGuide getClientGuide() {
@@ -50,17 +35,22 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 
 	@Override
 	public long getLinkMaxIdleTime() {
-		return linkMaxIdleTime;
+		return setting.getLinkMaxIdleTime();
 	}
 
 	@Override
 	public int getLinkConnectionSize() {
-		return linkConnectionSize;
+		return setting.getLinkConnectionSize();
+	}
+
+	@Override
+	public boolean isDiscoveryEnable() {
+		return setting.isDiscoveryEnable();
 	}
 
 	@Override
 	public long getLinkHeartbeatInterval() {
-		return this.linkHeartbeatInterval;
+		return this.setting.getLinkHeartbeatInterval();
 	}
 
 	@Override
@@ -79,35 +69,6 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 	@Override
 	public void connect(URL url, RelayConnectCallback callback) {
 		clientGuide.connect(url, callback);
-	}
-
-	public Collection<ServeNode> getNodes() {
-		return Collections.unmodifiableList(nodes);
-	}
-
-	public NettyLocalServeClusterContext setId(String id) {
-		this.id = id;
-		return this;
-	}
-
-	public NettyLocalServeClusterContext setLinkConnectionSize(int linkConnectionSize) {
-		this.linkConnectionSize = linkConnectionSize;
-		return this;
-	}
-
-	public NettyLocalServeClusterContext setLinkHeartbeatInterval(long linkHeartbeatInterval) {
-		this.linkHeartbeatInterval = linkHeartbeatInterval;
-		return this;
-	}
-
-	public NettyLocalServeClusterContext setLinkMaxIdleTime(long linkMaxIdleTime) {
-		this.linkMaxIdleTime = linkMaxIdleTime;
-		return this;
-	}
-
-	public NettyLocalServeClusterContext setNodes(List<ServeNode> nodes) {
-		this.nodes = nodes;
-		return this;
 	}
 
 	public NettyLocalServeClusterContext setClientGuide(RelayClientGuide clientGuide) {

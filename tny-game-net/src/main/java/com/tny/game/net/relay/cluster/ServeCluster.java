@@ -12,9 +12,9 @@ import java.util.List;
 public interface ServeCluster {
 
 	/**
-	 * @return 集群 id
+	 * @return 集群 Serve id
 	 */
-	String getId();
+	String getServeName();
 
 	/**
 	 * @return 集群实例列表

@@ -25,14 +25,15 @@ public class NettyLocalRelayExplorer extends BaseLocalRelayExplorer<NettyLocalSe
 	private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1,
 			new CoreThreadFactory("RelayReconnectScheduled"));
 
-	private final List<NettyLocalServeClusterContext> clusterContexts;
-
 	private final LocalRelayContext localRelayContext;
 
 	public NettyLocalRelayExplorer(LocalRelayContext localRelayContext, List<NettyLocalServeClusterContext> clusterContexts) {
 		super(localRelayContext);
 		this.localRelayContext = localRelayContext;
-		this.clusterContexts = clusterContexts;
+		Set<NettyLocalServeCluster> clusters = clusterContexts.stream()
+				.map(ctx -> new NettyLocalServeCluster(ctx, localRelayContext))
+				.collect(Collectors.toSet());
+		this.initClusters(clusters);
 	}
 
 	@Override
@@ -41,19 +42,51 @@ public class NettyLocalRelayExplorer extends BaseLocalRelayExplorer<NettyLocalSe
 	}
 
 	@Override
-	public void prepareStart() throws Exception {
-		Set<NettyLocalServeCluster> clusters = clusterContexts.stream()
-				.map(ctx -> new NettyLocalServeCluster(ctx, localRelayContext))
-				.collect(Collectors.toSet());
-		this.initClusters(clusters);
-		for (NettyLocalServeClusterContext clusterContext : clusterContexts) {
-			NettyLocalServeCluster cluster = this.clusterOf(clusterContext.getId());
-			for (ServeNode node : clusterContext.getNodes()) {
-				NettyServeInstanceConnector connector = new NettyServeInstanceConnector(localRelayContext, clusterContext, executorService);
-				LocalServeInstance instance = new NettyLocalServeInstance(cluster, node, connector);
-				connector.start(instance, clusterContext.getLinkConnectionSize());
-				cluster.registerInstance(instance);
+	public void putInstance(ServeNode node) {
+		NettyLocalServeCluster cluster = this.clusterOf(node.getServeName());
+		if (cluster != null) {
+			addInstance(node, cluster);
+		}
+	}
+
+	@Override
+	public void removeInstance(ServeNode node) {
+		NettyLocalServeCluster cluster = this.clusterOf(node.getServeName());
+		if (cluster != null) {
+			cluster.unregisterInstance(node.getId());
+		}
+	}
+
+	/**
+	 * 变健康
+	 */
+	@Override
+	public void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses) {
+		NettyLocalServeCluster cluster = this.clusterOf(node.getServeName());
+		if (cluster != null) {
+			if (statuses.contains(ServeNodeChangeStatus.URL_CHANGE)) {
+				cluster.unregisterInstance(node.getId());
+				this.putInstance(node);
+				return;
 			}
+			if (statuses.contains(ServeNodeChangeStatus.METADATA_CHANGE)) {
+				cluster.updateInstance(node);
+			}
+		}
+	}
+
+	private void addInstance(ServeNode node, NettyLocalServeCluster cluster) {
+		LocalServeClusterContext context = cluster.getContext();
+		NettyServeInstanceConnector connector = new NettyServeInstanceConnector(localRelayContext, context, executorService);
+		NetLocalServeInstance instance = new NettyLocalServeInstance(cluster, node, connector);
+		connector.start(instance, context.getLinkConnectionSize());
+		cluster.registerInstance(instance);
+	}
+
+	@Override
+	public void prepareStart() throws Exception {
+		for (NettyLocalServeCluster cluster : this.clusters()) {
+			LocalServeClusterContext clusterContext = cluster.getContext();
 			long heartbeatInterval = clusterContext.getLinkHeartbeatInterval();
 			if (heartbeatInterval > 0) {
 				executorService.scheduleWithFixedDelay(cluster::heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
@@ -63,7 +96,7 @@ public class NettyLocalRelayExplorer extends BaseLocalRelayExplorer<NettyLocalSe
 
 	@Override
 	public void onClosed() {
-		for (LocalServeCluster cluster : getClusters()) {
+		for (NetLocalServeCluster cluster : clusters()) {
 			cluster.close();
 		}
 	}

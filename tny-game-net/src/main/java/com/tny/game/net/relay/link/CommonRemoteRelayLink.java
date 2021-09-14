@@ -11,8 +11,8 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayLink {
 
-	public CommonRemoteRelayLink(NetRelayTransporter transporter, String clusterId, long instanceId, String key) {
-		super(key, clusterId, instanceId, transporter);
+	public CommonRemoteRelayLink(NetRelayTransporter transporter, String serveName, long instanceId, String key) {
+		super(key, serveName, instanceId, transporter);
 	}
 
 	@Override

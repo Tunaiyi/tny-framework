@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  */
 class NettyServeInstanceConnector {
 
-	private final List<NettyRelayLinkConnectMonitor> monitors = new CopyOnWriteArrayList<>();
+	private final List<NettyRelayLinkConnector> connectors = new CopyOnWriteArrayList<>();
 
 	private final LocalRelayContext relayContext;
 
@@ -28,32 +28,33 @@ class NettyServeInstanceConnector {
 		this.executorService = executorService;
 	}
 
-	protected void connect(NettyRelayLinkConnectMonitor monitor) {
+	protected void connect(NettyRelayLinkConnector monitor) {
 		serveClusterContext.connect(monitor.getUrl(), monitor);
 	}
 
-	protected void connect(NettyRelayLinkConnectMonitor monitor, long delayTime) {
+	protected void connect(NettyRelayLinkConnector monitor, long delayTime) {
 		executorService.schedule(monitor::connect, delayTime, TimeUnit.MILLISECONDS);
 	}
 
-	public synchronized void start(LocalServeInstance instance, int connectionSize) {
-		if (!this.monitors.isEmpty()) {
+	public synchronized void start(NetLocalServeInstance instance, int connectionSize) {
+		if (!this.connectors.isEmpty()) {
 			return;
 		}
-		List<NettyRelayLinkConnectMonitor> monitors = new ArrayList<>();
+		List<NettyRelayLinkConnector> monitors = new ArrayList<>();
 		for (int i = 0; i < connectionSize; i++) {
-			monitors.add(new NettyRelayLinkConnectMonitor(relayContext, instance, this));
+			monitors.add(new NettyRelayLinkConnector(relayContext, instance, this));
 		}
-		this.monitors.addAll(monitors);
-		for (NettyRelayLinkConnectMonitor monitor : monitors) {
-			monitor.connect();
+		this.connectors.addAll(monitors);
+		for (NettyRelayLinkConnector connector : monitors) {
+			connector.connect();
 		}
 	}
 
 	public synchronized void stop() {
-		for (NettyRelayLinkConnectMonitor monitor : monitors) {
+		for (NettyRelayLinkConnector monitor : connectors) {
 			monitor.close();
 		}
+		connectors.clear();
 	}
 
 }

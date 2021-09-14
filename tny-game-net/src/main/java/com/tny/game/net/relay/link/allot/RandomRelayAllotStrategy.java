@@ -28,12 +28,12 @@ public class RandomRelayAllotStrategy implements LocalRelayLinkAllotStrategy, Lo
 
 	@Override
 	public LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance) {
-		return random(instance.getRelayLinks());
+		return random(instance.getActiveRelayLinks());
 	}
 
 	@Override
-	public LocalServeInstance allot(Tunnel<?> tunnel, LocalServeCluster cluster) {
-		return random(cluster.getLocalInstances());
+	public LocalServeInstance allot(Tunnel<?> tunnel, NetLocalServeCluster cluster) {
+		return random(cluster.getHealthyLocalInstances());
 	}
 
 }

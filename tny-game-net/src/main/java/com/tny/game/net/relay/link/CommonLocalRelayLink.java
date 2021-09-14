@@ -15,21 +15,21 @@ public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLin
 
 	private static final byte[] DEFAULT_ADDRESS = {0, 0, 0, 0};
 
-	private final LocalServeInstance serveInstance;
+	private final NetLocalServeInstance serveInstance;
 
-	public CommonLocalRelayLink(String key, LocalServeInstance serveInstance, NetRelayTransporter transporter) {
-		super(key, serveInstance.getClusterId(), serveInstance.getId(), transporter);
+	public CommonLocalRelayLink(String key, NetLocalServeInstance serveInstance, NetRelayTransporter transporter) {
+		super(key, serveInstance.getServeName(), serveInstance.getId(), transporter);
 		this.serveInstance = serveInstance;
 	}
 
 	@Override
-	public void auth(String clusterId, long serverId) {
-		this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(clusterId, serverId, this.getKey()));
+	public void auth(String serveName, long serverId) {
+		this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(serveName, serverId, this.getKey()));
 	}
 
 	@Override
 	public void switchTunnel(LocalRelayTunnel<?> tunnel) {
-		if (tunnel.getLink(this.getClusterId()) == this) {
+		if (tunnel.getLink(this.getServeName()) == this) {
 			this.write(TunnelSwitchLinkPacket.FACTORY, new TunnelVoidArguments(tunnel));
 		}
 	}
@@ -58,6 +58,7 @@ public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLin
 
 	@Override
 	protected void onDisconnect() {
+		this.serveInstance.disconnected(this);
 	}
 
 	@Override

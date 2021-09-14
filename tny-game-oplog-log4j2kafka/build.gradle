@@ -5,10 +5,13 @@ apply plugin: "maven-publish"
 
 dependencies {
 
-    api libs.kafka_clients
 //            libs.'kafka_2.11',
     api project(":tny-game-common-lang")
     api project(":tny-game-oplog")
     api project(":tny-game-oplog-log4j")
 
+    api libs.kafka_clients
+    api libs.log4j_api
+    api libs.log4j_jul
+    api libs.log4j_core
 }

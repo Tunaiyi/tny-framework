@@ -1,6 +1,6 @@
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.2' apply false
-    id 'org.springframework.boot' version '2.5.2' apply false
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
     id 'com.baidu.jprotobuf' version "1.0.9" apply false
 }
@@ -25,13 +25,16 @@ configure(allprojects) {
     group 'com.tny.game'
     version "${projectVersion}"
 
+
     dependencyManagement {
 
         imports {
-            mavenBom(libs.jackson_bom)
-            mavenBom(libs.spring_cloud_dependencies)
-            mavenBom(libs.spring_boot_dependencies)
-            mavenBom(libs.alibaba_cloud_dependencies)
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}"
+            mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
+            mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
+
         }
 
         dependencies {

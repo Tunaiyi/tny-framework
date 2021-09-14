@@ -22,7 +22,7 @@ import static com.tny.game.net.relay.cluster.ServeClusterFilterStatus.*;
  * @author : kgtny
  * @date : 2021/8/25 9:00 下午
  */
-public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extends BaseRelayExplorer<LocalRelayTunnel<?>> implements LocalRelayExplorer {
+public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> extends BaseRelayExplorer<LocalRelayTunnel<?>> implements NetLocalRelayExplorer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalRelayExplorer.class);
 
@@ -38,7 +38,7 @@ public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extend
 
 	protected BaseLocalRelayExplorer<T> initClusters(Collection<T> clusters) {
 		this.clusters = ImmutableList.copyOf(clusters);
-		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(LocalServeCluster::getId, ObjectAide::self)));
+		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetLocalServeCluster::getServeName, ObjectAide::self)));
 		return this;
 	}
 
@@ -55,15 +55,16 @@ public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extend
 	@Override
 	public <D> DoneResult<LocalRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context) {
 		RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
-		GeneralLocalRelayTunnel<D> tunnel = new GeneralLocalRelayTunnel<>(this.context.getInstanceId(), id, transport, context, relayMessageRouter);
+		GeneralLocalRelayTunnel<D> tunnel = new GeneralLocalRelayTunnel<>(this.context.getCurrentInstanceId(), id, transport, context,
+				relayMessageRouter);
 		Map<String, LocalTunnelRelayer> relayer = preassignRelayer(tunnel);
 		tunnel.initRelayers(relayer);
 		return DoneResults.success(putTunnel(tunnel));
 	}
 
 	@Override
-	public <D> LocalRelayLink allotLink(LocalRelayTunnel<D> tunnel, String clusterId) {
-		LocalServeCluster cluster = this.getCluster(clusterId);
+	public <D> LocalRelayLink allotLink(LocalRelayTunnel<D> tunnel, String serveName) {
+		LocalServeCluster cluster = this.getCluster(serveName);
 		if (cluster == null) {
 			return null;
 		}
@@ -81,10 +82,10 @@ public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extend
 
 	// 预分配 link, 但集群
 	private Map<String, LocalTunnelRelayer> preassignForSingleCluster(LocalRelayTunnel<?> tunnel) {
-		for (LocalServeCluster cluster : clusters) {
+		for (NetLocalServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
-				return ImmutableMap.of(relayer.getClusterId(), relayer);
+				return ImmutableMap.of(relayer.getServeName(), relayer);
 			}
 		}
 		return ImmutableMap.of();
@@ -93,28 +94,28 @@ public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extend
 	// 预分配 link, 但多集群
 	private Map<String, LocalTunnelRelayer> preassignForMultipleCluster(LocalRelayTunnel<?> tunnel) {
 		Map<String, LocalTunnelRelayer> relayerMap = ImmutableMap.of();
-		for (LocalServeCluster cluster : clusters) {
+		for (NetLocalServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
-				relayerMap.put(relayer.getClusterId(), relayer);
+				relayerMap.put(relayer.getServeName(), relayer);
 			}
 		}
 		return relayerMap;
 	}
 
-	private LocalTunnelRelayer assignRelayer(LocalRelayTunnel<?> tunnel, LocalServeCluster cluster) {
+	private LocalTunnelRelayer assignRelayer(LocalRelayTunnel<?> tunnel, NetLocalServeCluster cluster) {
 		ServeClusterFilter serveClusterFilter = context.getServeClusterFilter();
 		ServeClusterFilterStatus filterStatus = serveClusterFilter.filter(tunnel, cluster); // 过滤器
 		if (filterStatus == UNNECESSARY) {
 			return null;
 		}
-		LocalTunnelRelayer relayer = new LocalTunnelRelayer(cluster.getId(), filterStatus, this);
+		LocalTunnelRelayer relayer = new LocalTunnelRelayer(cluster.getServeName(), filterStatus, this);
 		LocalRelayLink link = relayer.allot(tunnel); // 分配
 		if ((link == null || !link.isActive())) {
 			if (filterStatus == ServeClusterFilterStatus.REQUIRED) {
-				throw new RelayLinkNoExistException("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getId());
+				throw new RelayLinkNoExistException("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getServeName());
 			} else {
-				LOGGER.warn("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getId());
+				LOGGER.warn("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getServeName());
 			}
 		}
 		return relayer;
@@ -122,6 +123,10 @@ public abstract class BaseLocalRelayExplorer<T extends LocalServeCluster> extend
 
 	protected T clusterOf(String id) {
 		return clusterMap.get(id);
+	}
+
+	protected List<T> clusters() {
+		return clusters;
 	}
 
 }

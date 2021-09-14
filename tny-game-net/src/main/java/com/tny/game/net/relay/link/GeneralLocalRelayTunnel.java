@@ -91,7 +91,7 @@ public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSessi
 	@Override
 	public void bindLink(LocalRelayLink link) {
 		synchronized (this) {
-			LocalRelayLink old = linkMap.put(link.getClusterId(), link);
+			LocalRelayLink old = linkMap.put(link.getServeName(), link);
 			if (old != null) {
 				old.delinkTunnel(this);
 				link.switchTunnel(this);
@@ -104,15 +104,15 @@ public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSessi
 	@Override
 	public void unbindLink(LocalRelayLink link) {
 		synchronized (this) {
-			if (linkMap.remove(link.getClusterId(), link)) {
+			if (linkMap.remove(link.getServeName(), link)) {
 				link.closeTunnel(this);
 			}
 		}
 	}
 
 	@Override
-	public LocalRelayLink getLink(String clusterId) {
-		return linkMap.get(clusterId);
+	public LocalRelayLink getLink(String serveName) {
+		return linkMap.get(serveName);
 	}
 
 	@Override

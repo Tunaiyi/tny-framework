@@ -12,16 +12,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class FixedRelayMessageRoutersProperties {
 
 	/**
-	 * name : clusterId
+	 * name : serveName
 	 */
-	private String clusterId;
+	private String serveName;
 
-	public String getClusterId() {
-		return clusterId;
+	public String getServeName() {
+		return serveName;
 	}
 
-	public FixedRelayMessageRoutersProperties setClusterId(String clusterId) {
-		this.clusterId = clusterId;
+	public FixedRelayMessageRoutersProperties setServeName(String serveName) {
+		this.serveName = serveName;
 		return this;
 	}
 

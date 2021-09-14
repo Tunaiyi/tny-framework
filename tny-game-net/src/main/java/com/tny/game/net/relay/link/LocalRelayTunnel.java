@@ -28,10 +28,10 @@ public interface LocalRelayTunnel<UID> extends NetRelayTunnel<UID> {
 	/**
 	 * 更具 集群id 获取转发连接
 	 *
-	 * @param clusterId 集群 id
+	 * @param serveName 集群 id
 	 * @return 返回获取的转发连接
 	 */
-	LocalRelayLink getLink(String clusterId);
+	LocalRelayLink getLink(String serveName);
 
 	/**
 	 * @return 获取所有转发连接的 key

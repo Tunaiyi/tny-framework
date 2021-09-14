@@ -37,7 +37,7 @@ public interface RelayLink {
 	/**
 	 * @return 连接类型
 	 */
-	String getClusterId();
+	String getServeName();
 
 	/**
 	 * @return 节点 id

@@ -17,7 +17,7 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
  */
 public class SpringRelayServeClusterSetting implements RelayServeClusterSetting {
 
-	private String id;
+	private String serveName;
 
 	private String clientGuide = defaultName(RelayClientGuide.class);
 
@@ -27,6 +27,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private long linkMaxIdleTime = 10000;
 
+	private boolean discoveryEnable = true;
+
 	private String serveInstanceAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
 	private String relayLinkAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
@@ -34,12 +36,12 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	private List<SpringRelayServeInstanceSetting> instances = new ArrayList<>();
 
 	@Override
-	public String getId() {
-		return id;
+	public String getServeName() {
+		return serveName;
 	}
 
-	public SpringRelayServeClusterSetting setId(String id) {
-		this.id = id;
+	public SpringRelayServeClusterSetting setServeName(String serveName) {
+		this.serveName = serveName;
 		return this;
 	}
 
@@ -50,6 +52,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	@Override
 	public List<ServeNode> getNodes() {
 		return Collections.unmodifiableList(instances);
+	}
+
+	@Override
+	public boolean isDiscoveryEnable() {
+		return discoveryEnable;
 	}
 
 	@Override
@@ -85,6 +92,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	public List<SpringRelayServeInstanceSetting> getInstances() {
 		return instances;
+	}
+
+	public SpringRelayServeClusterSetting setDiscoveryEnable(boolean discoveryEnable) {
+		this.discoveryEnable = discoveryEnable;
+		return this;
 	}
 
 	public SpringRelayServeClusterSetting setClientGuide(String clientGuide) {

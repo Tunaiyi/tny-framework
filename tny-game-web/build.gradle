@@ -4,7 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
-    compileOnlyApi libs.'javaee'
+    compileOnly libs.'javaee'
 
     api libs.aspectjrt
     api libs.spring_webmvc

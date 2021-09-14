@@ -3,8 +3,8 @@ ext.springBoot = true
 buildscript {
     dependencyManagement {
         imports {
-            mavenBom libs.spring_boot_dependencies
-            mavenBom libs.spring_cloud_dependencies
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
         }
     }
 }

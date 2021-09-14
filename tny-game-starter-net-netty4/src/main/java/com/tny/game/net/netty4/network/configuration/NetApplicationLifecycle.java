@@ -2,6 +2,7 @@ package com.tny.game.net.netty4.network.configuration;
 
 import com.tny.game.boot.launcher.*;
 import com.tny.game.net.netty4.configuration.application.*;
+import com.tny.game.net.netty4.network.configuration.event.*;
 import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -18,19 +19,25 @@ public class NetApplicationLifecycle implements ApplicationLauncher, Application
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NetApplicationLifecycle.class);
 
-	private ApplicationContext context;
+	private ApplicationContext applicationContext;
+
+	private NetApplication netApplication;
 
 	private volatile boolean running;
 
 	@Override
 	public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
-		this.context = applicationContext;
+		this.applicationContext = applicationContext;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 
 	@Override
 	public void start() {
 		if (!this.running) {
-			NetApplication application = this.context.getBean(NetApplication.class);
+			NetApplication application = this.applicationContext.getBean(NetApplication.class);
 			ApplicationContext context = application.getApplicationContext();
 			LOGGER.info("NetApplication {} starting ... ", context.getApplicationName());
 			try {
@@ -38,6 +45,7 @@ public class NetApplicationLifecycle implements ApplicationLauncher, Application
 			} catch (Throwable e) {
 				throw new ApplicationContextException(context.getApplicationName(), e);
 			}
+			applicationContext.publishEvent(new NetApplicationStartEvent(application));
 			LOGGER.info("NetApplication {} started success", context.getApplicationName());
 			this.running = true;
 		}
@@ -47,7 +55,7 @@ public class NetApplicationLifecycle implements ApplicationLauncher, Application
 	public void stop() {
 		this.running = false;
 		if (this.running) {
-			NetApplication application = this.context.getBean(NetApplication.class);
+			NetApplication application = this.applicationContext.getBean(NetApplication.class);
 			ApplicationContext context = application.getApplicationContext();
 			LOGGER.info("NetApplication {} stopping ... ", context.getApplicationName());
 			try {
@@ -55,6 +63,7 @@ public class NetApplicationLifecycle implements ApplicationLauncher, Application
 			} catch (Throwable e) {
 				throw new ApplicationContextException(context.getApplicationName(), e);
 			}
+			applicationContext.publishEvent(new NetApplicationStopEvent(application));
 			LOGGER.info("NetApplication {} stopped success", context.getApplicationName());
 		}
 	}

@@ -10,4 +10,9 @@ import com.tny.game.net.base.*;
  */
 public interface RelayServerGuide extends ServerGuide {
 
+	@Override
+	default String getScheme() {
+		return "tcp";
+	}
+
 }

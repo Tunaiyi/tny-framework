@@ -39,7 +39,7 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	@Override
 	public void close() {
 		NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
-		if (link != null && link.isActive()) {
+		if (link != null) {
 			link.disconnect();
 		}
 		this.channel.disconnect();

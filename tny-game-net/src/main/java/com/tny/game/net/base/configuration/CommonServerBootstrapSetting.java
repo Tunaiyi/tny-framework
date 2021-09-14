@@ -1,39 +1,52 @@
 package com.tny.game.net.base.configuration;
 
-import com.google.common.collect.ImmutableList;
 import com.tny.game.net.base.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.net.InetSocketAddress;
-import java.util.*;
 
 public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting implements ServerBootstrapSetting {
 
-	private Collection<InetSocketAddress> bindAddressList;
+	private InetSocketAddress bindAddress;
 
-	private List<String> bind;
+	private InetSocketAddress serveAddress;
+
+	private String bindAddressValue;
+
+	private String serveAddressValue;
 
 	public CommonServerBootstrapSetting() {
 	}
 
 	@Override
-	public Collection<InetSocketAddress> getBindAddressList() {
-		return this.bindAddressList;
+	public InetSocketAddress bindAddress() {
+		return this.bindAddress;
 	}
 
-	public List<String> getBind() {
-		return this.bind;
+	@Override
+	public InetSocketAddress serveAddress() {
+		return serveAddress;
 	}
 
-	public void setBind(List<String> bindAddresses) {
-		this.bind = bindAddresses;
-		Collection<InetSocketAddress> addressList = new ArrayList<>();
-		for (String address : bindAddresses) {
-			String[] hostPort = StringUtils.split(address, ":");
-			addressList.add(new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1])));
-		}
-		this.bindAddressList = ImmutableList.copyOf(addressList);
+	public String getBindAddress() {
+		return this.bindAddressValue;
+	}
+
+	public void setBindAddress(String address) {
+		this.bindAddressValue = address;
+		String[] hostPort = StringUtils.split(address, ":");
+		this.bindAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+	}
+
+	public String getServeAddress() {
+		return this.serveAddressValue;
+	}
+
+	public void setServeAddress(String address) {
+		this.serveAddressValue = address;
+		String[] hostPort = StringUtils.split(address, ":");
+		this.serveAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
 	}
 
 }

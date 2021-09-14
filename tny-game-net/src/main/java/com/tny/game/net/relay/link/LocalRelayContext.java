@@ -13,14 +13,14 @@ import com.tny.game.net.relay.link.route.*;
 public interface LocalRelayContext {
 
 	/**
-	 * @return 获取前服务集群 id
+	 * @return 获取前服务ServeName
 	 */
-	String getClusterId();
+	String getCurrentServeName();
 
 	/**
 	 * @return 获取当前服务实例 id
 	 */
-	long getInstanceId();
+	long getCurrentInstanceId();
 
 	/**
 	 * @return 分配 link id

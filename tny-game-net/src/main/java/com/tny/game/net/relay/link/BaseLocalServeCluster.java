@@ -10,6 +10,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -19,21 +20,36 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/8/21 4:37 上午
  */
-public abstract class BaseLocalServeCluster implements LocalServeCluster {
+public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeCluster.class);
 
-	private final String id;
+	private final String serveName;
 
 	private final LocalServeInstanceAllotStrategy instanceAllotStrategy;
 
 	private final LocalRelayLinkAllotStrategy relayLinkAllotStrategy;
 
-	private volatile Map<Long, LocalServeInstance> instanceMap = new ConcurrentHashMap<>();
+	private volatile Map<Long, NetLocalServeInstance> instanceMap = new ConcurrentHashMap<>();
 
-	private volatile List<LocalServeInstance> instances = ImmutableList.of();
+	private volatile List<NetLocalServeInstance> instances = ImmutableList.of();
+
+	private volatile List<NetLocalServeInstance> healthyInstances = ImmutableList.of();
 
 	public AtomicBoolean close = new AtomicBoolean(false);
+
+	@Override
+	public LocalServeInstance getLocalInstance(long id) {
+		return instanceMap.get(id);
+	}
+
+	public NetLocalServeInstance instanceOf(long id) {
+		return instanceMap.get(id);
+	}
+
+	protected List<NetLocalServeInstance> instances() {
+		return instances;
+	}
 
 	@Override
 	public List<ServeInstance> getInstances() {
@@ -41,21 +57,21 @@ public abstract class BaseLocalServeCluster implements LocalServeCluster {
 	}
 
 	@Override
-	public List<LocalServeInstance> getLocalInstances() {
-		return as(instances);
+	public List<LocalServeInstance> getHealthyLocalInstances() {
+		return as(healthyInstances);
 	}
 
-	public BaseLocalServeCluster(String id,
+	public BaseLocalServeCluster(String serveName,
 			LocalServeInstanceAllotStrategy instanceAllotStrategy,
 			LocalRelayLinkAllotStrategy relayLinkAllotStrategy) {
-		this.id = id;
+		this.serveName = serveName;
 		this.instanceAllotStrategy = instanceAllotStrategy;
 		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
 	}
 
 	@Override
-	public String getId() {
-		return id;
+	public String getServeName() {
+		return serveName;
 	}
 
 	@Override
@@ -73,49 +89,52 @@ public abstract class BaseLocalServeCluster implements LocalServeCluster {
 	}
 
 	@Override
-	public LocalServeInstance registerInstance(LocalServeInstance instance) {
+	public LocalServeInstance registerInstance(NetLocalServeInstance instance) {
 		LocalServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
 		if (old == null) {
-			this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
+			this.doRefreshInstances();
 		}
 		return instance;
 	}
 
 	@Override
 	public synchronized void unregisterInstance(long instanceId) {
-		LocalServeInstance instance = instanceMap.remove(instanceId);
+		NetLocalServeInstance instance = instanceMap.remove(instanceId);
 		if (instance != null && !instance.isClose()) {
 			instance.close();
-			this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
+			this.doRefreshInstances();
 		}
 	}
 
-	//	@Override
-	//	public synchronized T registerLink(NetRelayLink link) {
-	//		T instance = instanceMap.get(link.getInstanceId());
-	//		if (instance == null) {
-	//			LOGGER.warn("注册 {} 时候, 未找到 {}-{} 服务器节点实例对象, 关闭连接.", link, link.getClusterId(), link.getInstanceId());
-	//			link.close();
-	//			return null;
-	//		}
-	//		//		instance.register(link);
-	//		return instance;
-	//	}
-	//
-	//	@Override
-	//	public void relieveLink(NetRelayLink link) {
-	//		LocalServeInstance instance = instanceMap.get(link.getInstanceId());
-	//		if (instance != null) {
-	//			//			instance.relieve(link);
-	//		}
-	//	}
+	@Override
+	public void updateInstance(ServeNode node) {
+		NetLocalServeInstance instance = instanceMap.get(node.getId());
+		if (instance != null) {
+			instance.updateMetadata(node.getMetadata());
+			if (instance.updateHealthy(node.isHealthy())) {
+				this.refreshInstances();
+			}
+		}
+	}
+
+	@Override
+	public synchronized void refreshInstances() {
+		this.doRefreshInstances();
+	}
+
+	private void doRefreshInstances() {
+		this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
+		this.healthyInstances = ImmutableList.copyOf(instances.stream()
+				.filter(NetLocalServeInstance::isHealthy)
+				.collect(Collectors.toList()));
+	}
 
 	@Override
 	public synchronized void close() {
 		if (close.compareAndSet(false, true)) {
-			List<LocalServeInstance> oldList = instances;
+			List<NetLocalServeInstance> oldList = instances;
 			instances = ImmutableList.of();
-			oldList.forEach(LocalServeInstance::close);
+			oldList.forEach(NetLocalServeInstance::close);
 			instanceMap = new ConcurrentHashMap<>();
 		}
 	}
@@ -132,12 +151,12 @@ public abstract class BaseLocalServeCluster implements LocalServeCluster {
 
 		BaseLocalServeCluster that = (BaseLocalServeCluster)o;
 
-		return new EqualsBuilder().append(getId(), that.getId()).isEquals();
+		return new EqualsBuilder().append(getServeName(), that.getServeName()).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 37).append(getId()).toHashCode();
+		return new HashCodeBuilder(17, 37).append(getServeName()).toHashCode();
 	}
 
 }

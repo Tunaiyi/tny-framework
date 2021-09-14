@@ -9,15 +9,7 @@ import com.tny.game.net.relay.link.allot.*;
  * @author : kgtny
  * @date : 2021/9/3 8:47 下午
  */
-public interface LocalServeClusterContext {
-
-	String getId();
-
-	long getLinkMaxIdleTime();
-
-	long getLinkHeartbeatInterval();
-
-	int getLinkConnectionSize();
+public interface LocalServeClusterContext extends LocalServeClusterSetting {
 
 	LocalServeInstanceAllotStrategy getServeInstanceAllotStrategy();
 

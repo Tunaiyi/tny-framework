@@ -17,10 +17,10 @@ public interface RemoteRelayExplorer extends RelayExplorer<RemoteRelayTunnel<?>>
 	 * 接收打开的 link
 	 *
 	 * @param transporter 转发器
-	 * @param clusterId   集群 id
+	 * @param serveName   集群 id
 	 * @param instance    实例 id
 	 */
-	void acceptOpenLink(NetRelayTransporter transporter, String clusterId, long instance, String key);
+	void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key);
 
 	/**
 	 * 接收连接的 Tunnel

@@ -20,21 +20,21 @@ public class LocalTunnelRelayer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(LocalTunnelRelayer.class);
 
-	private final String clusterId;
+	private final String serveName;
 
 	private final ServeClusterFilterStatus filterStatus;
 
 	private final LocalRelayExplorer localRelayExplorer;
 
-	public LocalTunnelRelayer(String clusterId, ServeClusterFilterStatus filterStatus,
+	public LocalTunnelRelayer(String serveName, ServeClusterFilterStatus filterStatus,
 			LocalRelayExplorer localRelayExplorer) {
-		this.clusterId = clusterId;
+		this.serveName = serveName;
 		this.filterStatus = filterStatus;
 		this.localRelayExplorer = localRelayExplorer;
 	}
 
-	public String getClusterId() {
-		return clusterId;
+	public String getServeName() {
+		return serveName;
 	}
 
 	public WriteMessageFuture relay(LocalRelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
@@ -46,19 +46,19 @@ public class LocalTunnelRelayer {
 			if (promise != null) {
 				promise.failed(new NetGeneralException(code));
 			}
-			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.clusterId);
+			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.serveName);
 			TunnelAides.responseMessage(tunnel, MessageContexts.push(Protocols.PUSH, code));
 		}
 		return promise;
 	}
 
 	public LocalRelayLink allot(LocalRelayTunnel<?> tunnel) {
-		LocalRelayLink link = tunnel.getLink(clusterId);
+		LocalRelayLink link = tunnel.getLink(serveName);
 		if (link != null && link.isActive()) {
 			return link;
 		}
 		for (int i = 0; i < 3; i++) {
-			link = localRelayExplorer.allotLink(tunnel, clusterId);
+			link = localRelayExplorer.allotLink(tunnel, serveName);
 			if (link == null) {
 				return null;
 			}

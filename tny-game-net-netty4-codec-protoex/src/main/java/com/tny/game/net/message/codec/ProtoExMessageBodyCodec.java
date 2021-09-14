@@ -5,12 +5,9 @@ import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.protoex.*;
 import com.tny.game.protoex.annotations.*;
 import io.netty.buffer.ByteBuf;
-import org.slf4j.*;
 
 @Unit
 public class ProtoExMessageBodyCodec<T> implements MessageBodyCodec<T> {
-
-	public static final Logger LOGGER = LoggerFactory.getLogger(ProtoExMessageBodyCodec.class);
 
 	@Override
 	public T decode(ByteBuf buffer) {

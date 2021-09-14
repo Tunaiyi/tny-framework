@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.relay;
 
-import com.google.common.collect.ImmutableSet;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.unit.*;
@@ -32,7 +31,9 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
 	private volatile ServerBootstrap bootstrap;
 
-	private final Collection<InetSocketAddress> bindAddresses;
+	private final InetSocketAddress bindAddress;
+
+	private final InetSocketAddress serveAddress;
 
 	private RemoteRelayExplorer remoteRelayExplorer;
 
@@ -46,17 +47,29 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
 	public NettyRelayServerGuide(NettyRelayServerBootstrapSetting unitSetting) {
 		super(unitSetting);
-		this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
+		this.bindAddress = this.setting.bindAddress();
+		this.serveAddress = this.setting.serveAddress();
 	}
 
 	public NettyRelayServerGuide(NettyRelayServerBootstrapSetting unitSetting, ChannelMaker<Channel> channelMaker) {
 		super(unitSetting, channelMaker);
-		this.bindAddresses = ImmutableSet.copyOf(this.setting.getBindAddressList());
+		this.bindAddress = this.setting.bindAddress();
+		this.serveAddress = this.setting.serveAddress();
+	}
+
+	@Override
+	public InetSocketAddress getBindAddress() {
+		return bindAddress;
+	}
+
+	@Override
+	public InetSocketAddress getServeAddress() {
+		return serveAddress;
 	}
 
 	@Override
 	public void open() {
-		this.bindAddresses.forEach(this::bind);
+		this.bind(this.bindAddress);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.tny.game.net.base;
 
 import com.tny.game.net.base.listener.*;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
 
 /**
@@ -9,11 +10,19 @@ import java.util.Collection;
  */
 public interface ServerGuide {
 
+	String getName();
+
 	void open();
 
 	boolean isBound();
 
 	boolean close();
+
+	String getScheme();
+
+	InetSocketAddress getBindAddress();
+
+	InetSocketAddress getServeAddress();
 
 	void addClosedListener(ServerClosedListener listener);
 

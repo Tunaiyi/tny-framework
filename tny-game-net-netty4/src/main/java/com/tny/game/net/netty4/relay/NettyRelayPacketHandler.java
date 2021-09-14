@@ -41,9 +41,13 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 		if (LOGGER.isInfoEnabled()) {
 			Channel channel = ctx.channel();
-			LOGGER.info("[RelayLink] 接受连接 ## 通道 {} ==> {} 链接服务器", channel.localAddress(), channel.remoteAddress());
+			if (channel.isActive()) {
+				LOGGER.info("[RelayLink] 接受连接 ## 通道 {} ==> {} 链接服务器", channel.localAddress(), channel.remoteAddress());
+				super.channelRegistered(ctx);
+			} else {
+				LOGGER.info("[RelayLink] 无效连接 ## 通道 {} ==> {}", channel.localAddress(), channel.remoteAddress());
+			}
 		}
-		super.channelRegistered(ctx);
 	}
 
 	@Override
