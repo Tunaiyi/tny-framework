@@ -15,7 +15,7 @@ dependencies {
 
     api project(":tny-game-common-scheduler")
     api project(":tny-game-expr-mvel")
-    api project(":tny-game-base")
+    api project(":tny-game-basics")
     api project(":tny-game-net-netty4")
     api project(":tny-game-doc")
     api project(":tny-game-cache")

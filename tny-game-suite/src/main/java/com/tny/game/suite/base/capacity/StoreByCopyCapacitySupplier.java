@@ -3,7 +3,7 @@ package com.tny.game.suite.base.capacity;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 
 import java.util.*;
 

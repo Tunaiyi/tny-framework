@@ -419,4 +419,15 @@ public class Asserts {
 		return format("end index ({}) must not be less than start index ({})", end, start);
 	}
 
+	/**
+	 * Checks that the given argument is strictly positive. If it is not, throws {@link IllegalArgumentException}.
+	 * Otherwise, returns the argument.
+	 */
+	public static long checkPositive(long l, String name) {
+		if (l <= 0) {
+			throw new IllegalArgumentException(name + ": " + l + " (expected: > 0)");
+		}
+		return l;
+	}
+
 }

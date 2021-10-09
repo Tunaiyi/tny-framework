@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.tny.game.data.configuration.GameDataBeanConfiguration,\
+  com.tny.game.data.configuration.GameDataAutoConfiguration

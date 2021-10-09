@@ -1,7 +1,7 @@
 package com.tny.game.suite.scheduler;
 
 import com.tny.game.asyndb.annotation.*;
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.cache.annotation.*;
 import com.tny.game.common.scheduler.*;
 import com.tny.game.suite.*;

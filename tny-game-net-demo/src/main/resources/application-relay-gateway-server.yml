@@ -57,3 +57,8 @@ tny:
         name: user
         offline-close-delay: 1000
         offline-max-size: 1000
+
+  data:
+    storage:
+      enable: false
+

@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto.persistent.annotation;
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 
 import java.lang.annotation.*;
 

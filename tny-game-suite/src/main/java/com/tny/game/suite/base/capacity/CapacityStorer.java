@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.capacity;
 
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 
 import java.util.Collection;
 import java.util.stream.*;

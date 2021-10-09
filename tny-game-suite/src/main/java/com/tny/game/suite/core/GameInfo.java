@@ -1,7 +1,7 @@
 package com.tny.game.suite.core;
 
 import com.thoughtworks.xstream.XStream;
-import com.tny.game.base.log.*;
+import com.tny.game.basics.log.*;
 import com.tny.game.common.io.config.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.utils.*;

@@ -1,8 +1,8 @@
 package com.tny.game.suite.base.dto;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.xml.XMLDemand.*;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.xml.XMLDemand.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.*;

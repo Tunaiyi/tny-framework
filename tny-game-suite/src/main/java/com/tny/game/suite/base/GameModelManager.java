@@ -1,8 +1,8 @@
 package com.tny.game.suite.base;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.xml.*;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.xml.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
 

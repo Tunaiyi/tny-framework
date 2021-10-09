@@ -1,7 +1,7 @@
 package com.tny.game.suite.auto.snapshot;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.basics.item.behavior.*;
 import com.tny.game.oplog.*;
 import com.tny.game.oplog.annotation.*;
 import com.tny.game.suite.auto.*;

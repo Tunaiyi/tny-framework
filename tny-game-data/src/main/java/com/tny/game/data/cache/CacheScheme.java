@@ -1,45 +1,51 @@
 package com.tny.game.data.cache;
 
-import com.tny.game.common.reflect.*;
 import com.tny.game.data.annotation.*;
-
-import java.util.List;
 
 /**
  * <p>
  */
 public class CacheScheme {
 
-    private final Class<?> objectClass;
+	private final Class<?> entityClass;
 
-    private final CacheId cacheId;
+	private final EntityObject entityObject;
 
-    private final CacheObject cache;
+	public CacheScheme(Class<?> entityClass) {
+		this.entityClass = entityClass;
+		this.entityObject = entityClass.getAnnotation(EntityObject.class);
+	}
 
-    private List<PropertyAccessor> idPropertyAccessors;
+	public String cacheFactory() {
+		return entityObject.cacheFactory();
+	}
 
-    public CacheScheme(Class<?> objectClass, CacheObject cache, CacheId cacheId) {
-        this.objectClass = objectClass;
-        this.cache = cache;
-        this.cacheId = cacheId;
-        // if (cacheId != null) {
-        //     List<Field> idFieldList = ReflectAide.getDeepFieldByAnnotation(objectClass, CacheId.class);
-        //     this.initIDMethods(gClass, idFieldList);
-        // } else {
-        //     this.initIDMethods(gClass, this.toCache.cacheKeys());
-        // }
-    }
+	public String storageFactory() {
+		return entityObject.storageFactory();
+	}
 
-    public Class<?> getObjectClass() {
-        return this.objectClass;
-    }
+	public String keyMakerFactory() {
+		return entityObject.keyMakerFactory();
+	}
 
-    public long maxCacheSize() {
-        return this.cache.maxCacheSize();
-    }
+	public Class<?> getEntityClass() {
+		return this.entityClass;
+	}
 
-    public int concurrencyLevel() {
-        return this.cache.concurrencyLevel();
-    }
+	public Class<?> getCacheClass() {
+		return entityObject.cache() == Self.class ? entityClass : entityObject.cache();
+	}
+
+	public boolean isCacheSelf() {
+		return entityObject.cache() == Self.class;
+	}
+
+	public long maxCacheSize() {
+		return this.entityObject.maxCacheSize();
+	}
+
+	public int concurrencyLevel() {
+		return this.entityObject.concurrencyLevel();
+	}
 
 }

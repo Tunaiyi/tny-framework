@@ -7,8 +7,8 @@ import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.network.annotation.*;
 import com.tny.game.net.netty4.relay.annotation.*;
 import org.slf4j.*;
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -20,12 +20,9 @@ import org.springframework.context.annotation.ComponentScan.Filter;
  * @date : 2021/8/31 12:34 下午
  */
 @EnableNetApplication
-@SpringBootConfiguration
-@EnableAutoConfiguration
 @EnableRelayAccessApplication
-@ComponentScan(
-		basePackages = {"com.tny.game.demo.relay.gateway", "com.tny.game.demo.core.common", "com.tny.game.demo.core.gateway"},
-		includeFilters = @Filter(Controller.class))
+@SpringBootApplication(scanBasePackages = {"com.tny.game.demo.relay.gateway", "com.tny.game.demo.core.common", "com.tny.game.demo.core.gateway"})
+@ComponentScan(includeFilters = @Filter(Controller.class))
 public class RelayGatewayServerApp {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RelayGatewayServerApp.class);

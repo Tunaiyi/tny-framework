@@ -16,7 +16,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
 	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-	private static final ObjectLocker<Object> locker = new ObjectLocker<>();
+	private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
 
 	public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
 			SessionKeeperSetting setting) {

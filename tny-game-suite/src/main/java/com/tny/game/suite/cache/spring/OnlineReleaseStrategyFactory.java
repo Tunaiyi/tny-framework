@@ -1,7 +1,7 @@
 package com.tny.game.suite.cache.spring;
 
 import com.tny.game.asyndb.*;
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.suite.login.*;
 

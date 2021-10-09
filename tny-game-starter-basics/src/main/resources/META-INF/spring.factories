@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.tny.game.basics.configuration.BasicsAutoConfiguration

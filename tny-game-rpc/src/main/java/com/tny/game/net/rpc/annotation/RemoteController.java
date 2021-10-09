@@ -40,27 +40,27 @@ import java.lang.annotation.*;
 @Documented
 public @interface RemoteController {
 
-    /**
-     * 处理协议号
-     * <p>
-     * <p>
-     * 被Controller标记的类的模塊ID <br>
-     * 被Controller标记的方法的业务方法ID <br>
-     *
-     * @return 处理协议号
-     */
-    int value();
+	/**
+	 * 处理协议号
+	 * <p>
+	 * <p>
+	 * 被Controller标记的类的模塊ID <br>
+	 * 被Controller标记的方法的业务方法ID <br>
+	 *
+	 * @return 处理协议号
+	 */
+	int value();
 
-    /**
-     * 用户类型,指连接到服务器的客户类型
-     *
-     * @return 用户类型
-     */
-    String userType();
+	/**
+	 * 用户类型,指连接到服务器的客户类型
+	 *
+	 * @return 用户类型
+	 */
+	String userType();
 
-    /**
-     * @return 路由器类
-     */
-    Class<? extends EndpointRouter> router();
+	/**
+	 * @return 路由器类
+	 */
+	Class<? extends EndpointRouter> router();
 
 }

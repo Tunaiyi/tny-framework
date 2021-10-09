@@ -3,7 +3,7 @@ package com.tny.game.suite.base.capacity;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 
-import static com.tny.game.base.GameClassLoader.*;
+import static com.tny.game.basics.GameClassLoader.*;
 
 /**
  * <p>

@@ -1,0 +1,16 @@
+package com.tny.game.basics.item.capacity;
+
+import com.tny.game.basics.item.*;
+
+import java.util.Set;
+
+/**
+ * Created by Kun Yang on 2017/7/24.
+ */
+public interface CapacityItemModel extends ItemModel {
+
+    Set<Capacity> getCapacities();
+
+    Set<CapacityGroup> getCapacityGroups();
+
+}

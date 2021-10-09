@@ -3,29 +3,16 @@ package com.tny.game.data.storage;
 /**
  * <p>
  */
-public interface ObjectStorage<K extends Comparable<K>, O> {
+public interface ObjectStorage<K extends Comparable<?>, O> {
 
-    void start();
+	O get(K id);
 
-    void stop();
+	boolean insert(K id, O object);
 
-    O get(K id);
+	boolean update(K id, O object);
 
-    boolean insert(K id, O object);
+	boolean save(K id, O object);
 
-    boolean update(K id, O object);
+	boolean delete(K key, O object);
 
-    boolean delete(K id, O object);
-
-    boolean save(K id, O object);
-
-    long getInsertNumber();
-
-    long getUpdateNumber();
-
-    long getSaveNumber();
-
-    long getDeleteNumber();
-
-    long getFailedNumber();
 }

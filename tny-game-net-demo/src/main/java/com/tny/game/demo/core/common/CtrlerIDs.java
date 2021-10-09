@@ -18,6 +18,13 @@ public interface CtrlerIDs {
 	int SPEAK$DELAY_SAY = 200_05;
 	int SPEAK$TEST = 200_06;
 
+	int PLAYER = 201;
+	int PLAYER$GET = 201_00;
+	int PLAYER$ADD = 201_01;
+	int PLAYER$SAVE = 201_02;
+	int PLAYER$UPDATE = 201_03;
+	int PLAYER$DELETE = 201_04;
+
 	int GAME_LOGIN = 1000;
 	int GAME_LOGIN$LOGIN = 1000_01;
 

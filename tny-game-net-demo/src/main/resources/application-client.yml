@@ -1,3 +1,10 @@
+spring:
+  redis:
+    host: '${r2.redis.host:127.0.0.1}'
+    password: '${r2.redis.password:tNbrH3NSErGd}'
+    port: '${r2.redis.post:6379}'
+    database: '${r2.redis.db:9}'
+
 tny:
   app:
     name: GameClientApp
@@ -25,6 +32,8 @@ tny:
             enable: true
             wait-strategy: blocking
             threads: 4
-
+  data:
+    storage:
+      enable: false
 
 

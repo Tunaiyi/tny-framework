@@ -1,6 +1,6 @@
 package com.tny.game.oplog.simple;
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.oplog.*;
 
 public class SimpleTradeLog implements StuffTradeLog {

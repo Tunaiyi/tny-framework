@@ -11,24 +11,24 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ImportRedissonBeanDefinitionRegistrar extends ImportRedisBeanDefinitionRegistrar {
 
-    //    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRedissonBeanDefinitionRegistrar.class);
+	//    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRedissonBeanDefinitionRegistrar.class);
 
-    @Override
-    protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType, String source) {
-        String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";
-        registry.registerBeanDefinition(codecName, BeanDefinitionBuilder
-                .genericBeanDefinition(ObjectCodecableCodec.class)
-                .addConstructorArgValue(entityClass)
-                .addConstructorArgValue(mimeType)
-                .addConstructorArgReference("objectCodecService")
-                .getBeanDefinition());
-        TypedRedisson<?> typedRedisson = RedissonFactory.createTypedRedisson(entityClass, source);
-        Class<TypedRedisson<?>> clazz = as(typedRedisson.getClass());
-        registry.registerBeanDefinition(clazz.getSimpleName(),
-                BeanDefinitionBuilder
-                        .genericBeanDefinition(clazz, () -> typedRedisson)
-                        .addPropertyReference("codec", codecName)
-                        .getBeanDefinition());
-    }
+	@Override
+	protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType) {
+		String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";
+		registry.registerBeanDefinition(codecName, BeanDefinitionBuilder
+				.genericBeanDefinition(ObjectCodecableCodec.class)
+				.addConstructorArgValue(entityClass)
+				.addConstructorArgValue(mimeType)
+				.addConstructorArgReference("objectCodecService")
+				.getBeanDefinition());
+		TypedRedisson<?> typedRedisson = RedissonFactory.createTypedRedisson(entityClass);
+		Class<TypedRedisson<?>> clazz = as(typedRedisson.getClass());
+		registry.registerBeanDefinition(clazz.getSimpleName(),
+				BeanDefinitionBuilder
+						.genericBeanDefinition(clazz, () -> typedRedisson)
+						.addPropertyReference("codec", codecName)
+						.getBeanDefinition());
+	}
 
 }

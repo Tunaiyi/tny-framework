@@ -1,7 +1,7 @@
 package com.tny.game.suite.oplog;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.utils.*;

@@ -1,10 +1,10 @@
 package com.tny.game.suite.cache;
 
 import com.google.protobuf.Message;
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
-import com.tny.game.base.item.behavior.simple.*;
-import com.tny.game.base.item.behavior.trade.*;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.behavior.simple.*;
+import com.tny.game.basics.item.behavior.trade.*;
 import com.tny.game.cache.*;
 import com.tny.game.protobuf.PBCommon.*;
 import com.tny.game.suite.base.*;

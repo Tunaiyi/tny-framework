@@ -1,7 +1,7 @@
 package com.tny.game.oplog;
 
-import com.tny.game.base.item.*;
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
 
 public interface OpLogger {
 
@@ -150,7 +150,7 @@ public interface OpLogger {
 	 * @param types  快照器类型
 	 * @return 返回Logger
 	 */
-	OpLogger logSnapshotByType(Owned item, Action action, SnapperType... types);
+	OpLogger logSnapshotByType(AnyOwned item, Action action, SnapperType... types);
 
 	/**
 	 * 记录快照
@@ -161,7 +161,7 @@ public interface OpLogger {
 	 * @return 返回Logger
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	OpLogger logSnapshotByClass(Owned item, Action action, Class<? extends Snapper>... snapperTypes);
+	OpLogger logSnapshotByClass(AnyOwned item, Action action, Class<? extends Snapper>... snapperTypes);
 
 	/**
 	 * 记录快照
@@ -170,7 +170,7 @@ public interface OpLogger {
 	 * @param action 记录原因(操作Action)
 	 * @return 返回Logger
 	 */
-	OpLogger logSnapshot(Owned item, Action action);
+	OpLogger logSnapshot(AnyOwned item, Action action);
 
 	/**
 	 * @return 是否开启记录 返回Logger

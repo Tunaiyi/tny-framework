@@ -1,3 +1,10 @@
+spring:
+  redis:
+    host: '${r2.redis.host:127.0.0.1}'
+    password: '${r2.redis.password:tNbrH3NSErGd}'
+    port: '${r2.redis.post:6379}'
+    database: '${r2.redis.db:9}'
+
 tny:
   app:
     name: GameServerApp
@@ -8,7 +15,7 @@ tny:
       network:
         server:
           name: game-server
-          bind: 127.0.0.1:16800,127.0.0.1:16801
+          bind-address: 127.0.0.1:16800
           channel:
             encoder:
               message-body-codec: typeProtobufMessageBodyCodec
@@ -32,3 +39,20 @@ tny:
         name: user
         offline-close-delay: 1000
         offline-max-size: 1000
+  data:
+    cache:
+      recycler:
+        scheduled-cache-recycler:
+          recycle-interval-time: 15000
+    storage-accessor:
+      redisson-accessor:
+        table-head: "tny:demo:sever"
+    store-executor:
+      fork-join:
+        enable: true
+        idle-interval: 3000
+    storage:
+      queue-storage:
+        accessor-factory: redissonStorageAccessorFactory
+        store-executor: forkJoinAsyncObjectStoreExecutor
+

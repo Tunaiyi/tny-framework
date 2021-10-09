@@ -14,7 +14,7 @@ import com.tny.game.net.netty4.network.annotation.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -32,10 +32,12 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 @SpringBootConfiguration
 @EnableNetApplication
-@EnableAutoConfiguration
-@ComponentScan(
-		basePackages = {"com.tny.game.demo.net.client", "com.tny.game.demo.core.common", "com.tny.game.demo.core.client"},
-		includeFilters = @Filter(Controller.class))
+@ComponentScan(basePackages = {
+		"com.tny.game.demo.net.client",
+		"com.tny.game.demo.core.common",
+		"com.tny.game.demo.core.client",
+		"com.tny.game.data"}, includeFilters = @Filter({Controller.class}))
+@SpringBootApplication
 public class GameClientApp {
 
 	private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1);
@@ -121,6 +123,29 @@ public class GameClientApp {
 				} else if (cmd.startsWith("@test ")) {
 					String message = cmds[1];
 					test(client, message, true);
+				} else if (cmd.startsWith("@player ")) {
+					String op = cmds[1];
+					long playerId = Long.parseLong(cmds[2]);
+					switch (op) {
+						case "g":
+							send(client, Protocols.protocol(CtrlerIDs.PLAYER$GET), PlayerDTO.class, 3000, playerId);
+							break;
+						case "d":
+							send(client, Protocols.protocol(CtrlerIDs.PLAYER$DELETE), PlayerDTO.class, 3000, playerId);
+							break;
+						case "a":
+							send(client, Protocols.protocol(CtrlerIDs.PLAYER$ADD), PlayerDTO.class, 3000, playerId, cmds[3],
+									Integer.parseInt(cmds[4]));
+							break;
+						case "u":
+							send(client, Protocols.protocol(CtrlerIDs.PLAYER$UPDATE), PlayerDTO.class, 3000, playerId, cmds[3],
+									Integer.parseInt(cmds[4]));
+							break;
+						case "s":
+							send(client, Protocols.protocol(CtrlerIDs.PLAYER$SAVE), PlayerDTO.class, 3000, playerId, cmds[3],
+									Integer.parseInt(cmds[4]));
+							break;
+					}
 				} else {
 					send(client, cmd, true);
 				}

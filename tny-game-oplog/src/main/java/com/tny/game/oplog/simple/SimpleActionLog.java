@@ -1,6 +1,6 @@
 package com.tny.game.oplog.simple;
 
-import com.tny.game.base.item.behavior.*;
+import com.tny.game.basics.item.behavior.*;
 import com.tny.game.oplog.*;
 
 import java.util.*;

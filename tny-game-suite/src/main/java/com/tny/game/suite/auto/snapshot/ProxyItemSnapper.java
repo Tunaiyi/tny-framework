@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto.snapshot;
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.oplog.*;
 
 public abstract class ProxyItemSnapper<O, I extends Item<?>, S extends ItemSnapshot> extends ProxySnapper<O, I, S> {

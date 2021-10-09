@@ -1,57 +1,139 @@
 package com.tny.game.data;
 
+import java.util.*;
+
 /**
  * <p>
  */
-public interface EntityManager<K extends Comparable<K>, O> {
+public interface EntityManager<K extends Comparable<?>, E> {
 
-    /**
-     * 加载, 如果没有则创建并插入
-     *
-     * @param id      id
-     * @param factory 实体工厂
-     * @return
-     */
-    O load(K id, EntityCreator<K, O> factory);
+	/**
+	 * 加载, 如果没有则创建并插入
+	 *
+	 * @param id      id
+	 * @param creator 实体工厂
+	 */
+	E loadEntity(K id, EntityCreator<K, E> creator);
 
-    /**
-     * 插入实体
-     *
-     * @param object 实体
-     * @return 返回实体
-     */
-    boolean insert(O object);
+	/**
+	 * 获取指定id的实体
+	 *
+	 * @param id id
+	 * @return 返回获取实体
+	 */
+	E getEntity(K id);
 
-    /**
-     * 获取指定id的实体
-     *
-     * @param id id
-     * @return 返回获取实体
-     */
-    O get(K id);
+	/**
+	 * 批量获取实体
+	 *
+	 * @param keys 指定 key 列表
+	 * @return 返回 key
+	 */
+	default List<E> getEntities(Collection<K> keys) {
+		List<E> entities = new ArrayList<>();
+		for (K key : keys) {
+			E value = getEntity(key);
+			if (value != null) {
+				entities.add(value);
+			}
+		}
+		return entities;
+	}
 
-    /**
-     * 更新指定实体
-     *
-     * @param object 对象
-     * @return 返回更新成功
-     */
-    boolean update(O object);
+	/**
+	 * 插入实体
+	 *
+	 * @param entities 实体
+	 * @return 返回实体
+	 */
+	boolean insertEntity(E entities);
 
-    /**
-     * 保存(无则插入有则更新)指定实体
-     *
-     * @param object 对象
-     * @return 是否保存成功
-     */
-    boolean save(O object);
+	/**
+	 * 插入实体
+	 *
+	 * @param entities 实体
+	 * @return 返回实体
+	 */
+	default int insertEntities(Collection<E> entities) {
+		int updateSize = 0;
+		for (E entity : entities) {
+			if (this.insertEntity(entity)) {
+				updateSize++;
+			}
+		}
+		return updateSize;
+	}
 
-    /**
-     * 删除指定 id 的对象
-     *
-     * @param id
-     * @return 返回移除对象
-     */
-    O delete(K id);
+	/**
+	 * 更新指定实体
+	 *
+	 * @param entities 对象
+	 * @return 返回更新成功
+	 */
+	boolean updateEntity(E entities);
+
+	/**
+	 * 更新指定实体
+	 *
+	 * @param entities 对象
+	 * @return 返回更新成功
+	 */
+	default int updateEntities(Collection<E> entities) {
+		int updateSize = 0;
+		for (E entity : entities) {
+			if (this.updateEntity(entity)) {
+				updateSize++;
+			}
+		}
+		return updateSize;
+	}
+
+	/**
+	 * 保存(无则插入有则更新)指定实体
+	 *
+	 * @param entities 对象
+	 * @return 是否保存成功
+	 */
+	boolean saveEntity(E entities);
+
+	/**
+	 * 批量保存(无则插入有则更新)指定实体
+	 *
+	 * @param entities 对象
+	 * @return 返回更新成功
+	 */
+	default int saveEntities(Collection<E> entities) {
+		int updateSize = 0;
+		for (E entity : entities) {
+			if (this.saveEntity(entity)) {
+				updateSize++;
+			}
+		}
+		return updateSize;
+	}
+
+	/**
+	 * 删除指定 id 的对象
+	 *
+	 * @param id id
+	 * @return 返回移除对象
+	 */
+	boolean deleteEntity(E object);
+
+	/**
+	 * 批量保存(无则插入有则更新)指定实体
+	 *
+	 * @param entities 对象
+	 * @return 返回更新成功
+	 */
+	default int deleteEntities(Collection<E> entities) {
+		int deleteSize = 0;
+		for (E entity : entities) {
+			if (this.deleteEntity(entity)) {
+				deleteSize++;
+			}
+		}
+		return deleteSize;
+	}
 
 }

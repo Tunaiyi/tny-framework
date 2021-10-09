@@ -1,6 +1,6 @@
 package com.tny.game.suite.cache;
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.cache.*;
 import org.slf4j.*;
 

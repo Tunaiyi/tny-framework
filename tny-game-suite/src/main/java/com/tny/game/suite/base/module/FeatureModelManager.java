@@ -3,7 +3,7 @@ package com.tny.game.suite.base.module;
 import com.google.common.collect.*;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
-import com.tny.game.base.module.*;
+import com.tny.game.basics.module.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.version.*;
 import com.tny.game.suite.base.*;

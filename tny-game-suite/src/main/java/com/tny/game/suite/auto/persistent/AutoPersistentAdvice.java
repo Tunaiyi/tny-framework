@@ -1,6 +1,6 @@
 package com.tny.game.suite.auto.persistent;
 
-import com.tny.game.base.item.*;
+import com.tny.game.basics.item.*;
 import com.tny.game.boot.transaction.*;
 import com.tny.game.boot.transaction.listener.*;
 import com.tny.game.common.concurrent.collection.*;

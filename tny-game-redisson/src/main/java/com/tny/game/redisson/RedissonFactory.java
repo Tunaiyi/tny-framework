@@ -1,6 +1,7 @@
 package com.tny.game.redisson;
 
 import com.tny.game.common.concurrent.collection.*;
+import com.tny.game.redisson.annotation.*;
 import com.tny.game.redisson.exception.*;
 import javassist.*;
 import javassist.bytecode.*;
@@ -10,7 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -26,15 +28,9 @@ public class RedissonFactory {
 
 	private static final Set<Class<?>> REDIS_TEMPLATE_CLASSES = new ConcurrentHashSet<>();
 
-	/**
-	 * 生成 TypedRedisson 类
-	 *
-	 * @param persistClass 转换元类型
-	 * @reurn 返回JsonTypedRedisson
-	 */
-	public static <T, R extends TypedRedisson<T>> R createTypedRedisson(Class<T> persistClass, String redisSourceName) {
-		Class<?> redisClass = TypedRedisson.class;
-		// 检测是否存在 redisClass
+	private static final Map<Class<?>, TypedRedisson<?>> REDISSON_MAP = new ConcurrentHashMap<>();
+
+	private static void importClass(Class<?> redisClass) {
 		if (!REDIS_TEMPLATE_CLASSES.contains(redisClass)) {
 			synchronized (REDIS_TEMPLATE_CLASSES) {
 				// 重检 redisClass
@@ -45,6 +41,41 @@ public class RedissonFactory {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 生成 TypedRedisson 类
+	 *
+	 * @param persistClass 转换元类型
+	 * @reurn 返回JsonTypedRedisson
+	 */
+	public static <T, R extends TypedRedisson<T>> R createTypedRedisson(Class<T> persistClass) {
+		Class<?> redisClass = TypedRedisson.class;
+		importClass(redisClass);
+
+		TypedRedisson<?> redisson = REDISSON_MAP.get(persistClass);
+
+		if (redisson != null) {
+			return as(redisson);
+		}
+
+		synchronized (RedissonFactory.class) {
+
+			redisson = REDISSON_MAP.get(persistClass);
+			if (redisson != null) {
+				return as(redisson);
+			}
+
+			R newOne = doCreate(persistClass);
+			REDISSON_MAP.put(persistClass, newOne);
+			return newOne;
+		}
+	}
+
+	private static <T, R extends TypedRedisson<T>> R doCreate(Class<T> persistClass) {
+		Class<?> redisClass = TypedRedisson.class;
+		// 检测是否存在 redisClass
+		RedisObject redisObject = persistClass.getAnnotation(RedisObject.class);
 		String className = persistClass.getSimpleName() + redisClass.getSimpleName();
 		String proxyClassName = persistClass.getPackage().getName() + "." + className;
 		Class<?> proxyClass;
@@ -66,7 +97,7 @@ public class RedissonFactory {
 				ctConstructor.setBody("{super();}");
 				ctClass.addConstructor(ctConstructor);
 				// 如果配置数据源
-				if (StringUtils.isNotBlank(redisSourceName)) {
+				if (StringUtils.isNotBlank(redisObject.source())) {
 					// 重写 setConnectionFactory
 					CtMethod setRedissonClientMethod = CtNewMethod
 							.make(format("public void setRedissonClient({} redissonClient) { super.setRedissonClient($1); }",
@@ -76,7 +107,7 @@ public class RedissonFactory {
 					AnnotationsAttribute setConnectionFactoryMethodAttribute = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
 					Annotation autowiredAnnotation = new Annotation(Autowired.class.getName(), constpool);
 					Annotation qualifierAnnotation = new Annotation(Qualifier.class.getName(), constpool);
-					qualifierAnnotation.addMemberValue("value", new StringMemberValue(redisSourceName, ccFile.getConstPool()));
+					qualifierAnnotation.addMemberValue("value", new StringMemberValue(redisObject.source(), ccFile.getConstPool()));
 					setConnectionFactoryMethodAttribute.addAnnotation(autowiredAnnotation);
 					setConnectionFactoryMethodAttribute.addAnnotation(qualifierAnnotation);
 					setRedissonClientMethod.getMethodInfo().addAttribute(setConnectionFactoryMethodAttribute);
