@@ -16,8 +16,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Listener {
+public @interface EventListener {
 
-    public int level() default 0;
+	int level() default 0;
 
 }

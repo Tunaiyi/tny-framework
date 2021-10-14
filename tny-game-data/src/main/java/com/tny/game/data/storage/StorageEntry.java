@@ -17,10 +17,10 @@ public class StorageEntry<K extends Comparable<?>, O> {
 
 	private int failureTimes;
 
-	public StorageEntry(K key, O value) {
+	public StorageEntry(K key, O value, StorageAction action) {
 		this.key = key;
 		this.value = value;
-		this.operator = StorageOperator.NORMAL;
+		this.operator = action.getDefaultOperator();
 	}
 
 	public K getKey() {

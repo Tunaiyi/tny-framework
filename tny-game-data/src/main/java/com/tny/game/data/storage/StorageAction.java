@@ -75,7 +75,7 @@ public enum StorageAction {
 	/**
 	 * 删除数据
 	 */
-	DELETE(StorageOperator.DELETED,
+	DELETE(StorageOperator.DELETE,
 			new StorageOperator[][]{
 					// NL
 					{StorageOperator.NORMAL, StorageOperator.DELETE}, // NL

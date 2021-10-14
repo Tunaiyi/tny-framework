@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     testImplementation project(":tny-game-cache-test")
 
     api libs.spring_context_support
@@ -13,3 +14,4 @@ dependencies {
     api project(":tny-game-common-io")
 
 }
+

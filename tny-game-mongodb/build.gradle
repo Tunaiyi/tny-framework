@@ -1,0 +1,20 @@
+dependencies {
+
+    annotationProcessor libs.spring_boot_configuration_processor
+
+    api libs.spring_boot_autoconfigure
+    api libs.spring_boot_starter_data_mongodb
+
+    api project(":tny-game-boot")
+    api project(":tny-game-codec-jackson")
+
+//    api libs.spring_boot_autoconfigure
+//    api 'org.mongodb:mongo-java-driver:3.12.10'
+
+    api libs.jackson_core
+    api libs.jackson_databind
+    api libs.jackson_annotations
+    api libs.jackson_datatype_java8
+
+}
+

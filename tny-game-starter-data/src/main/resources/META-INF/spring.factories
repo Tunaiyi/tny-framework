@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tny.game.data.configuration.GameDataBeanConfiguration,\
+  com.tny.game.data.configuration.redisson.RedissonStorageAutoConfiguration,\
+  com.tny.game.data.configuration.mongodb.MongodbStorageAutoConfiguration,\
   com.tny.game.data.configuration.GameDataAutoConfiguration

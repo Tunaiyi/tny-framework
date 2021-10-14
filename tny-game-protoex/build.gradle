@@ -10,6 +10,7 @@ dependencies {
     api project(":tny-game-doc-annotation")
     api project(":tny-game-scanning")
 
+
     testImplementation libs.protobuf_java3
     testImplementation libs.guava
     testImplementation libs.jackson_databind
@@ -17,3 +18,4 @@ dependencies {
 
 
 }
+

@@ -1,5 +1,6 @@
 package com.tny.game.data.configuration.storage;
 
+import com.tny.game.boot.utils.*;
 import com.tny.game.data.storage.*;
 
 /**
@@ -10,20 +11,9 @@ import com.tny.game.data.storage.*;
  */
 public class QueueObjectStorageFactorySetting {
 
-	private String name = QueueObjectStorageFactory.STORAGE_NAME;
-
-	private String storeExecutor = "forkJoinAsyncObjectStoreExecutor";
+	private String storeExecutor = BeanNameUtils.lowerCamelName(ForkJoinAsyncObjectStoreExecutor.class);
 
 	private String accessorFactory;
-
-	public String getName() {
-		return name;
-	}
-
-	public QueueObjectStorageFactorySetting setName(String name) {
-		this.name = name;
-		return this;
-	}
 
 	public String getStoreExecutor() {
 		return storeExecutor;

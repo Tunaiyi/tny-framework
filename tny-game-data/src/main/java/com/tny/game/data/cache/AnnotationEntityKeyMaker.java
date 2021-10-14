@@ -29,17 +29,17 @@ public class AnnotationEntityKeyMaker<K extends Comparable<K>> implements Entity
 
 	public AnnotationEntityKeyMaker(Class<?> cacheClass) {
 		this.cacheClass = cacheClass;
-		List<Field> fields = ReflectAide.getDeepFieldsByAnnotation(cacheClass, EntityKey.class);
-		List<Method> methods = ReflectAide.getDeepMethodsByAnnotation(cacheClass, EntityKey.class);
+		List<Field> fields = ReflectAide.getDeepFieldsByAnnotation(cacheClass, EntityId.class);
+		List<Method> methods = ReflectAide.getDeepMethodsByAnnotation(cacheClass, EntityId.class);
 		ClassAccessor accessor = JavassistAccessors.getGClass(cacheClass);
-		Asserts.checkState(!fields.isEmpty() || !methods.isEmpty(), "Class {} 不存在标记有 {} 注解的字段或方法", cacheClass, EntityKey.class);
+		Asserts.checkState(!fields.isEmpty() || !methods.isEmpty(), "Class {} 不存在标记有 {} 注解的字段或方法", cacheClass, EntityId.class);
 		if (!fields.isEmpty()) {
-			Asserts.checkState(fields.size() == 1, "Class {} 存在标记 {} 注解的字段 {} 数量>1", cacheClass, EntityKey.class, fields);
+			Asserts.checkState(fields.size() == 1, "Class {} 存在标记 {} 注解的字段 {} 数量>1", cacheClass, EntityId.class, fields);
 			Field field = fields.get(0);
 			this.propertyAccessor = accessor.getProperty(field.getName());
 			this.keyClass = propertyAccessor.getPropertyType();
 		} else if (!methods.isEmpty()) {
-			Asserts.checkState(methods.size() == 1, "Class {} 存在标记 {} 注解的方法 {} 数量>1", cacheClass, EntityKey.class, fields);
+			Asserts.checkState(methods.size() == 1, "Class {} 存在标记 {} 注解的方法 {} 数量>1", cacheClass, EntityId.class, fields);
 			Method method = methods.get(0);
 			this.methodAccessor = accessor.getMethod(method);
 			this.keyClass = method.getReturnType();

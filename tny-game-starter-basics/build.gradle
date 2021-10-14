@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     annotationProcessor libs.spring_boot_configuration_processor
 
     api libs.spring_boot_autoconfigure
@@ -30,3 +31,5 @@ dependencies {
 //    api project(":tny-game-starter-net-netty4")
 
 }
+
+

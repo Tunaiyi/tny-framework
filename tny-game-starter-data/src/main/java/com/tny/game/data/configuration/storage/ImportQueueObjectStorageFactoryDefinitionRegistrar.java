@@ -7,8 +7,6 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
 
-import static com.tny.game.common.utils.StringAide.*;
-
 /**
  * <p>
  *
@@ -28,16 +26,15 @@ public class ImportQueueObjectStorageFactoryDefinitionRegistrar extends ImportCo
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-		QueueObjectStorageFactoriesProperties properties = loadProperties(QueueObjectStorageFactoriesProperties.class);
+		AsyncObjectStorageFactoriesProperties properties = loadProperties(AsyncObjectStorageFactoriesProperties.class);
 		if (!properties.isEnable()) {
 			return;
 		}
-		QueueObjectStorageFactorySetting queueSetting = properties.getQueueStorage();
+		QueueObjectStorageFactorySetting queueSetting = properties.getStorage();
 		if (queueSetting != null) {
-			registerQueueObjectStorageFactory(registry, queueSetting,
-					ifNotBlankElse(queueSetting.getName(), QueueObjectStorageFactory.STORAGE_NAME));
+			registerQueueObjectStorageFactory(registry, queueSetting, QueueObjectStorageFactory.STORAGE_NAME);
 		}
-		properties.getQueueStorages().forEach((name, setting) -> registerQueueObjectStorageFactory(registry, setting, name));
+		properties.getStorages().forEach((name, setting) -> registerQueueObjectStorageFactory(registry, setting, name));
 	}
 
 }

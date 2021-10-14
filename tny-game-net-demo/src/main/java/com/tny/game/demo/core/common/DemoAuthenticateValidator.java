@@ -20,6 +20,10 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @Component
 public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 
+	public DemoAuthenticateValidator() {
+		System.out.println("DemoAuthenticateValidator");
+	}
+
 	@Override
 	public Certificate<Long> validate(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory)
 	throws CommandException, ValidationException {

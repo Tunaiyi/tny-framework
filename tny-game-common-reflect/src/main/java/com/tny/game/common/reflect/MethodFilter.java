@@ -4,6 +4,6 @@ import java.lang.reflect.Method;
 
 public interface MethodFilter {
 
-    public boolean filter(Method method);
+	boolean filter(Method method);
 
 }

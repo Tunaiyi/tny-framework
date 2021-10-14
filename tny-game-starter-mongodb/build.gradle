@@ -1,0 +1,7 @@
+dependencies {
+
+    annotationProcessor libs.spring_boot_configuration_processor
+
+    api project(":tny-game-mongodb")
+
+}

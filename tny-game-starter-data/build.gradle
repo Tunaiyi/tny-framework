@@ -4,17 +4,18 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
 
     api libs.spring_boot_autoconfigure
-    api libs.spring_cloud_starter_bootstrap
 
     api project(":tny-game-data")
     api project(":tny-game-boot")
 
     compileOnly project(":tny-game-data-redisson")
-
+    compileOnly project(":tny-game-data-mongodb")
 
     testImplementation libs.spring_boot_starter_test
     testImplementation project(":tny-game-data-redisson")
 }
+

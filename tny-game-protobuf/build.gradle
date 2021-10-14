@@ -8,6 +8,7 @@ dependencies {
 
     api libs.protobuf_java3
 
+
 }
 
 buildscript {
@@ -53,3 +54,4 @@ idea {
         sourceDirs += file("src/main/proto");
     }
 }
+

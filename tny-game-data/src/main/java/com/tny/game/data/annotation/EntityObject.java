@@ -1,7 +1,6 @@
 package com.tny.game.data.annotation;
 
 import com.tny.game.data.cache.*;
-import com.tny.game.data.storage.*;
 
 import java.lang.annotation.*;
 
@@ -57,16 +56,16 @@ public @interface EntityObject {
 	/**
 	 * @return 存储器工厂
 	 */
-	String keyMakerFactory() default AnnotationEntityKeyMakerFactory.MAKER_NAME;
+	String keyMakerFactory() default "";
 
 	/**
 	 * @return 缓存工厂
 	 */
-	String cacheFactory() default LocalObjectCacheFactory.CACHE_NAME;
+	String cacheFactory() default "";
 
 	/**
 	 * @return 存储器工厂
 	 */
-	String storageFactory() default QueueObjectStorageFactory.STORAGE_NAME;
+	String storageFactory() default "";
 
 }

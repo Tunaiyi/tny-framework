@@ -5,6 +5,7 @@ import com.tny.game.data.accessor.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.*;
 
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 
@@ -44,16 +45,6 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	 * 对象锁
 	 */
 	private final ObjectLocker<Object> locker;
-
-	//	/**
-	//	 * 删除对象延迟清理时间
-	//	 */
-	//	private final int deletedDelayClear;
-
-	//	/**
-	//	 * 最后一次清理时间
-	//	 */
-	//	private long lastDeletedClearTime = 0;
 
 	public QueueObjectStorage(Class<O> objectClass, StorageAccessor<K, O> accessor, ObjectLocker<Object> locker) {
 		this.accessor = accessor;
@@ -104,16 +95,26 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	}
 
 	@Override
+	public void operateAll() {
+		if (!entriesMap.isEmpty()) {
+			this.entriesQueue.addAll(entriesMap.values());
+		}
+	}
+
+	@Override
 	public StoreExecuteAction store(int maxSize, int tryTimes) {
 		int operateSize = 0;
 		long startAt = System.currentTimeMillis();
 		long costTime;
 		StoreExecuteAction action = StoreExecuteAction.WAIT;
+		List<StorageEntry<K, O>> retryQueue = new ArrayList<>();
 		// 连续获取, 最多获取 Step 个记录进行同步
 		while (operateSize < maxSize) {
 			StorageEntry<K, O> entry = this.entriesQueue.poll();
 			if (entry != null) {
-				handleStorageEntry(entry, tryTimes);
+				if (!handleStorageEntry(entry)) {
+					retryQueue.add(entry);
+				}
 				operateSize++;
 				if (operateSize == maxSize) {
 					action = StoreExecuteAction.YIELD;
@@ -121,6 +122,10 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 			} else {
 				break;
 			}
+		}
+		if (!retryQueue.isEmpty()) {
+			this.entriesQueue.addAll(retryQueue);
+			retryQueue.clear();
 		}
 		costTime = System.currentTimeMillis() - startAt;
 		// 如果同步够 Step 个记录进行一次休眠, 如果少于 step 个则有 take 进行阻塞等待.
@@ -162,49 +167,47 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	//		}
 	//	}
 
-	private void operate(K key, O object, StorageAction operation) {
+	private void operate(K key, O object, StorageAction action) {
 		Lock lock = locker.lock(key);
 		try {
 			StorageEntry<K, O> entry = this.entriesMap.get(key);
 			if (entry == null) {
-				entry = new StorageEntry<>(key, object);
-			}
-			if (entry.updateOperator(object, operation) && this.entriesMap.putIfAbsent(key, entry) == null) {
-				this.entriesQueue.add(entry);
+				entry = new StorageEntry<>(key, object, action);
+				if (this.entriesMap.putIfAbsent(key, entry) == null) {
+					this.entriesQueue.add(entry);
+				}
+			} else {
+				if (!entry.updateOperator(object, action)) {
+					LOGGER.warn("{} entry current operator[{}] can not change to Action[{}]", entry.getValue(), entry.getOperator(), action);
+				}
 			}
 		} finally {
 			locker.unlock(key, lock);
 		}
 	}
 
-	private void handleStorageEntry(StorageEntry<K, O> entry, int tryTimes) {
+	private boolean handleStorageEntry(StorageEntry<K, O> entry) {
 		StorageOperator operator = null;
 		O value = null;
-		while (true) {
-			Lock lock = locker.lock(entry.getKey());
-			try {
-				operator = entry.getOperator();
-				if (!operator.isNeedOperate()) {
-					return;
-				}
-				value = entry.getValue();
-				operator.operate(this.accessor, value);
-				this.entriesMap.remove(entry.getKey(), entry); // TODO 是否直接清除可以??
-				monitor.onSuccess(operator);
-				return;
-			} catch (Throwable e) {
-				LOGGER.error("operator [{}] {} exception", operator, value, e);
-				entry.operationFailed();
-				monitor.onFailure();
-				// 失败重试
-				if (entry.getFailureTimes() <= tryTimes) {
-					this.entriesQueue.add(entry);
-				} else {
-					break;
-				}
-			} finally {
-				locker.unlock(entry.getKey(), lock);
+		Lock lock = locker.lock(entry.getKey());
+		try {
+			operator = entry.getOperator();
+			if (!operator.isNeedOperate()) {
+				this.entriesMap.remove(entry.getKey(), entry);
+				return true;
 			}
+			value = entry.getValue();
+			operator.operate(this.accessor, value);
+			this.entriesMap.remove(entry.getKey(), entry); // TODO 是否直接清除可以??
+			monitor.onSuccess(operator);
+			return true;
+		} catch (Throwable e) {
+			LOGGER.error("operator [{}] {} exception", operator, value, e);
+			entry.operationFailed();
+			monitor.onFailure();
+			return false;
+		} finally {
+			locker.unlock(entry.getKey(), lock);
 		}
 	}
 

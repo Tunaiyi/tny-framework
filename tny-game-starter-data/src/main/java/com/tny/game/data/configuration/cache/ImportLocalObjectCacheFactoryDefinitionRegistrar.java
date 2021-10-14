@@ -7,8 +7,6 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
 
-import static com.tny.game.common.utils.StringAide.*;
-
 /**
  * <p>
  *
@@ -32,12 +30,11 @@ public class ImportLocalObjectCacheFactoryDefinitionRegistrar extends ImportConf
 		if (!properties.isEnable()) {
 			return;
 		}
-		LocalObjectCacheFactorySetting cacheSetting = properties.getLocalCache();
+		LocalObjectCacheFactorySetting cacheSetting = properties.getCache();
 		if (cacheSetting != null) {
-			registerLocalObjectCacheFactory(registry, cacheSetting,
-					ifNotBlankElse(cacheSetting.getName(), LocalObjectCacheFactory.CACHE_NAME));
+			registerLocalObjectCacheFactory(registry, cacheSetting, LocalObjectCacheFactory.CACHE_NAME);
 		}
-		properties.getLocalCaches().forEach((name, setting) -> registerLocalObjectCacheFactory(registry, setting, name));
+		properties.getCaches().forEach((name, setting) -> registerLocalObjectCacheFactory(registry, setting, name));
 	}
 
 }

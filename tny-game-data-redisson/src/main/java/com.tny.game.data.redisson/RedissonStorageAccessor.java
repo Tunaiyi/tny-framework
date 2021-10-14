@@ -36,8 +36,8 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
 	}
 
 	@Override
-	public Map<K, O> get(Collection<? extends K> ids) {
-		return redisson.<K>getMap(table).getAll(ImmutableSet.copyOf(ids));
+	public List<O> get(Collection<? extends K> keys) {
+		return new ArrayList<>(redisson.<K>getMap(table).getAll(ImmutableSet.copyOf(keys)).values());
 	}
 
 	@Override

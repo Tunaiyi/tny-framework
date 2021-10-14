@@ -22,7 +22,9 @@ dependencies {
     api libs.jackson_core
     api libs.jackson_databind
     api libs.jackson_annotations
+
 //    api libs.mvel
 //    implementation libs.tools_template
 
 }
+

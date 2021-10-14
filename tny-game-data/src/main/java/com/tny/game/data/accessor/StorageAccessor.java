@@ -7,9 +7,21 @@ import java.util.*;
  */
 public interface StorageAccessor<K extends Comparable<?>, O> {
 
+	/**
+	 * 获取指定key的对象
+	 *
+	 * @param key 指定 key
+	 * @return 返回对象
+	 */
 	O get(K key);
 
-	Map<K, ? extends O> get(Collection<? extends K> ids);
+	/**
+	 * 批量获取指定key的对象
+	 *
+	 * @param keys 指定 key 列表
+	 * @return 返回对象
+	 */
+	List<O> get(Collection<? extends K> keys);
 
 	/**
 	 * 插入
@@ -44,20 +56,6 @@ public interface StorageAccessor<K extends Comparable<?>, O> {
 	Collection<O> update(Collection<O> objects);
 
 	/**
-	 * 删除
-	 *
-	 * @param object 删除对象
-	 */
-	void delete(O object);
-
-	/**
-	 * 批量删除
-	 *
-	 * @param objects 删除对象
-	 */
-	void delete(Collection<O> objects);
-
-	/**
 	 * 保存
 	 *
 	 * @param object 保存对象
@@ -72,5 +70,19 @@ public interface StorageAccessor<K extends Comparable<?>, O> {
 	 * @return 返回失败列表
 	 */
 	Collection<O> save(Collection<O> objects);
+
+	/**
+	 * 删除
+	 *
+	 * @param object 删除对象
+	 */
+	void delete(O object);
+
+	/**
+	 * 批量删除
+	 *
+	 * @param objects 删除对象
+	 */
+	void delete(Collection<O> objects);
 
 }

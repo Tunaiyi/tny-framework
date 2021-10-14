@@ -108,6 +108,7 @@ public class ForkJoinAsyncObjectStoreExecutor implements AsyncObjectStoreExecuto
 			StoreExecuteAction action = StoreExecuteAction.WAIT;
 			try {
 				action = storage.store(setting.getStep(), setting.getTryTime());
+				storage.operateAll();
 			} catch (Throwable e) {
 				LOGGER.error("{} exception on store", storage, e);
 			} finally {

@@ -19,11 +19,11 @@ public class ImportReleaseStrategyDefinitionRegistrar extends ImportConfiguratio
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
 		ReleaseStrategyProperties properties = loadProperties(ReleaseStrategyProperties.class);
-		if (properties.getTimeoutStrategy() != null) {
-			registerTimeoutReleaseStrategyFactory(registry, properties.getTimeoutStrategy(),
+		if (properties.getStrategy() != null) {
+			registerTimeoutReleaseStrategyFactory(registry, properties.getStrategy(),
 					BeanNameUtils.lowerCamelName(TimeoutReleaseStrategyFactory.class));
 		}
-		properties.getTimeoutStrategies().forEach((name, setting) -> registerTimeoutReleaseStrategyFactory(registry, setting, name));
+		properties.getStrategies().forEach((name, setting) -> registerTimeoutReleaseStrategyFactory(registry, setting, name));
 	}
 
 	private void registerTimeoutReleaseStrategyFactory(BeanDefinitionRegistry registry, TimeoutReleaseStrategySetting setting,

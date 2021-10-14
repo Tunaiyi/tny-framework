@@ -8,18 +8,7 @@ package com.tny.game.data.configuration.redisson;
  */
 public class RedissonStorageAccessorFactorySetting {
 
-	private String name;
-
 	private String tableHead;
-
-	public String getName() {
-		return name;
-	}
-
-	public RedissonStorageAccessorFactorySetting setName(String name) {
-		this.name = name;
-		return this;
-	}
 
 	public String getTableHead() {
 		return tableHead;

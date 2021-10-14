@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
 
     api project(":tny-game-boot")
@@ -18,3 +19,4 @@ dependencies {
     compileOnly libs.alibaba_cloud_starter_nacos_discovery
 
 }
+

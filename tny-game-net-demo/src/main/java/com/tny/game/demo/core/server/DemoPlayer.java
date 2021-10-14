@@ -5,6 +5,8 @@ import com.tny.game.codec.annotation.*;
 import com.tny.game.codec.protobuf.*;
 import com.tny.game.data.annotation.*;
 import com.tny.game.redisson.annotation.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * <p>
@@ -16,9 +18,11 @@ import com.tny.game.redisson.annotation.*;
 @ProtobufClass
 @Codecable(ProtobufMimeType.PROTOBUF)
 @EntityObject
+@Document
 public class DemoPlayer {
 
-	@EntityKey
+	@Id
+	@EntityId
 	@Protobuf(order = 1)
 	private long id;
 

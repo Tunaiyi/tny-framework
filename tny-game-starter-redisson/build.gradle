@@ -4,10 +4,10 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     annotationProcessor libs.spring_boot_configuration_processor
 
-    api libs.spring_boot_autoconfigure
-    
+//    api libs.spring_boot_autoconfigure
     api(libs.redisson_spring_boot_starter) {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
     }
@@ -17,4 +17,6 @@ dependencies {
     api project(":tny-game-redisson")
 
 }
+
+
 

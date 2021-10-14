@@ -1,5 +1,6 @@
 package com.tny.game.demo.core.server.controller;
 
+import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.result.*;
 import com.tny.game.data.*;
 import com.tny.game.demo.core.common.*;
@@ -25,7 +26,7 @@ import static com.tny.game.net.message.MessageMode.*;
 @AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 @MessageFilter(modes = {REQUEST, PUSH})
-public class PlayerController {
+public class PlayerController implements AppPostStart {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlayerController.class);
 
@@ -94,6 +95,11 @@ public class PlayerController {
 			LOGGER.error("delete Player : 玩家 {} 不存在", playerId);
 		}
 		return CommandResults.fail(ResultCode.FAILURE);
+	}
+
+	@Override
+	public void postStart() {
+		entityCacheManager.getEntity(1L);
 	}
 
 }

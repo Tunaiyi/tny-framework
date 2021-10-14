@@ -1,0 +1,6 @@
+dependencies {
+
+    api project(":tny-game-mongodb")
+    api project(":tny-game-data")
+
+}

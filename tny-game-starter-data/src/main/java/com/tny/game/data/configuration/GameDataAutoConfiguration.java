@@ -1,8 +1,12 @@
 package com.tny.game.data.configuration;
 
+import com.tny.game.data.cache.*;
 import com.tny.game.data.configuration.cache.*;
-import com.tny.game.data.configuration.redisson.*;
+import com.tny.game.data.configuration.manager.*;
 import com.tny.game.data.configuration.storage.*;
+import com.tny.game.data.configuration.storage.executor.*;
+import com.tny.game.data.storage.*;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
@@ -14,19 +18,38 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @Import({
-		GameDataBeanConfiguration.class,
 		ImportReleaseStrategyDefinitionRegistrar.class,
 		ImportLocalObjectCacheFactoryDefinitionRegistrar.class,
 		ImportQueueObjectStorageFactoryDefinitionRegistrar.class,
-		ImportRedissonStorageAccessorFactoryDefinitionRegistrar.class,
 		ImportEntityCacheManagerDefinitionRegistrar.class
 })
 @EnableConfigurationProperties({
-		LocalObjectCacheFactoriesProperties.class,
+		CacheRecyclerProperties.class,
 		ReleaseStrategyProperties.class,
-		RedissonStorageAccessorFactoryProperties.class,
-		QueueObjectStorageFactoriesProperties.class
+		LocalObjectCacheFactoriesProperties.class,
+		EntityCacheManagerProperties.class,
+		AsyncObjectStorageFactoriesProperties.class,
+		AsyncObjectStoreExecutorProperties.class,
+
 })
 public class GameDataAutoConfiguration {
+
+	@Bean
+	@ConditionalOnClass(CacheRecyclerProperties.class)
+	public ScheduledCacheRecycler scheduledCacheRecycler(CacheRecyclerProperties properties) {
+		ScheduledCacheRecyclerSetting setting = properties.getScheduled();
+		return new ScheduledCacheRecycler(setting.getRecycleIntervalTime());
+	}
+
+	@Bean
+	public AnnotationEntityKeyMakerFactory annotationEntityKeyMakerFactory() {
+		return new AnnotationEntityKeyMakerFactory();
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "tny.data.store-executor.fork-join.enable", havingValue = "true")
+	public ForkJoinAsyncObjectStoreExecutor forkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorProperties properties) {
+		return new SpringForkJoinAsyncObjectStoreExecutor(properties);
+	}
 
 }

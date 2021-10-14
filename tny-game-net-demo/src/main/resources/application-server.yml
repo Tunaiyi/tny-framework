@@ -1,9 +1,6 @@
 spring:
-  redis:
-    host: '${r2.redis.host:127.0.0.1}'
-    password: '${r2.redis.password:tNbrH3NSErGd}'
-    port: '${r2.redis.post:6379}'
-    database: '${r2.redis.db:9}'
+  application:
+    name: GameServerApp
 
 tny:
   app:
@@ -39,20 +36,38 @@ tny:
         name: user
         offline-close-delay: 1000
         offline-max-size: 1000
+
+  datasource:
+    mongodb:
+      setting:
+        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
+        auto-index-creation: true
+    redisson:
+      setting:
+        host: '${r2.redis.host:127.0.0.1}'
+        password: '${r2.redis.password:tNbrH3NSErGd}'
+        port: '${r2.redis.post:6379}'
+        database: '${r2.redis.db:9}'
+
   data:
-    cache:
+    object-cache:
       recycler:
-        scheduled-cache-recycler:
-          recycle-interval-time: 15000
+        scheduled-recycler:
+          scheduled:
+            recycle-interval-time:
     storage-accessor:
       redisson-accessor:
-        table-head: "tny:demo:sever"
+        accessor:
+          table-head: "tny:demo:sever"
     store-executor:
       fork-join:
         enable: true
         idle-interval: 3000
-    storage:
-      queue-storage:
-        accessor-factory: redissonStorageAccessorFactory
-        store-executor: forkJoinAsyncObjectStoreExecutor
+    object-storage:
+      async-storage:
+        storage:
+          accessor-factory: mongodbStorageAccessorFactory
+          store-executor: forkJoinAsyncObjectStoreExecutor
+
+
 

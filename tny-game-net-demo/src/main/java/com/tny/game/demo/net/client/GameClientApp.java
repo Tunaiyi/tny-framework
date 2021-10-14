@@ -5,7 +5,6 @@ import com.tny.game.common.number.*;
 import com.tny.game.common.url.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
-import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
@@ -13,11 +12,9 @@ import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.network.annotation.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
-import org.springframework.boot.*;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,14 +27,11 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author: Kun Yang
  * @date: 2018-10-30 16:49
  */
-@SpringBootConfiguration
 @EnableNetApplication
-@ComponentScan(basePackages = {
+@SpringBootApplication(scanBasePackages = {
 		"com.tny.game.demo.net.client",
 		"com.tny.game.demo.core.common",
-		"com.tny.game.demo.core.client",
-		"com.tny.game.data"}, includeFilters = @Filter({Controller.class}))
-@SpringBootApplication
+		"com.tny.game.demo.core.client"})
 public class GameClientApp {
 
 	private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1);

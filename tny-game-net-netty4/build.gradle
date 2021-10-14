@@ -9,7 +9,9 @@ dependencies {
     api libs.jprotobuf
     api project(":tny-game-net")
 
+
     testImplementation libs.spring_context_support
     testImplementation project(":tny-game-net-test")
 
 }
+

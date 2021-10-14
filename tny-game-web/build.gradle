@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     compileOnly libs.'javaee'
 
     api libs.aspectjrt
@@ -26,3 +27,4 @@ dependencies {
     api libs.httpclient
 
 }
+

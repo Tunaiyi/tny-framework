@@ -10,15 +10,15 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/9/17 5:21 下午
  */
-@ConfigurationProperties(prefix = "tny.data.cache")
+@ConfigurationProperties(prefix = "tny.data.object-cache.local-cache")
 public class LocalObjectCacheFactoriesProperties {
 
 	private boolean enable = true;
 
 	@NestedConfigurationProperty
-	private LocalObjectCacheFactorySetting localCache = new LocalObjectCacheFactorySetting();
+	private LocalObjectCacheFactorySetting cache = new LocalObjectCacheFactorySetting();
 
-	private Map<String, LocalObjectCacheFactorySetting> localCaches = new HashMap<>();
+	private Map<String, LocalObjectCacheFactorySetting> caches = new HashMap<>();
 
 	public boolean isEnable() {
 		return enable;
@@ -29,28 +29,28 @@ public class LocalObjectCacheFactoriesProperties {
 		return this;
 	}
 
-	public LocalObjectCacheFactorySetting getLocalCache() {
-		return localCache;
+	public LocalObjectCacheFactorySetting getCache() {
+		return cache;
 	}
 
-	public LocalObjectCacheFactoriesProperties setLocalCache(LocalObjectCacheFactorySetting localCache) {
-		this.localCache = localCache;
+	public LocalObjectCacheFactoriesProperties setCache(LocalObjectCacheFactorySetting cache) {
+		this.cache = cache;
 		return this;
 	}
 
 	public LocalObjectCacheFactorySetting getCache(String name) {
 		if (name.isEmpty()) {
-			return this.localCache;
+			return this.cache;
 		}
-		return localCaches.get(name);
+		return caches.get(name);
 	}
 
-	public Map<String, LocalObjectCacheFactorySetting> getLocalCaches() {
-		return localCaches;
+	public Map<String, LocalObjectCacheFactorySetting> getCaches() {
+		return caches;
 	}
 
-	public LocalObjectCacheFactoriesProperties setLocalCaches(Map<String, LocalObjectCacheFactorySetting> localCaches) {
-		this.localCaches = localCaches;
+	public LocalObjectCacheFactoriesProperties setCaches(Map<String, LocalObjectCacheFactorySetting> caches) {
+		this.caches = caches;
 		return this;
 	}
 

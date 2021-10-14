@@ -14,4 +14,6 @@ public interface AsyncObjectStorage<K extends Comparable<?>, O> extends ObjectSt
 
 	StoreExecuteAction store(int maxSize, int tryTimes);
 
+	void operateAll();
+
 }

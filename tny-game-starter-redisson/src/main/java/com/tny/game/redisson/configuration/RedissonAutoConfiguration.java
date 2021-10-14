@@ -1,5 +1,6 @@
 package com.tny.game.redisson.configuration;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.context.annotation.*;
  * @date : 2021/7/26 2:09 下午
  */
 @Configuration
-@Import({ImportRedissonBeanDefinitionRegistrar.class})
+@Import({ImportRedissonBeanDefinitionRegistrar.class, ImportRedisDataSourceBeanDefinitionRegistrar.class})
+@EnableConfigurationProperties(RedissonDataSourceProperties.class)
 public class RedissonAutoConfiguration {
 
 }

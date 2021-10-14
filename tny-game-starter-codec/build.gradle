@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+
     annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
 
     api libs.spring_boot_autoconfigure
@@ -14,4 +15,6 @@ dependencies {
     compileOnly project(":tny-game-codec-jackson")
 
 }
+
+
 

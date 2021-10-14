@@ -11,8 +11,6 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ImportRedissonBeanDefinitionRegistrar extends ImportRedisBeanDefinitionRegistrar {
 
-	//    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRedissonBeanDefinitionRegistrar.class);
-
 	@Override
 	protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType) {
 		String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";

@@ -5,6 +5,11 @@ spring:
     port: '${r2.redis.post:6379}'
     database: '${r2.redis.db:9}'
 
+#  data:
+#    mongodb:
+#      uri: '${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}'
+#      database: '${uc.mongodb.database:tny-framework-demo}'
+#      auto-index-creation: true
 tny:
   app:
     name: GameClientApp
@@ -33,7 +38,8 @@ tny:
             wait-strategy: blocking
             threads: 4
   data:
-    storage:
-      enable: false
+    object-storage:
+      async-storage:
+        enable: false
 
 
