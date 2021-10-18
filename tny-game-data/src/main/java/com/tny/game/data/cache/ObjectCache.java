@@ -9,7 +9,7 @@ public interface ObjectCache<K extends Comparable<?>, O> {
 	/**
 	 * @return 缓存
 	 */
-	CacheScheme getScheme();
+	EntityScheme getScheme();
 
 	/**
 	 * 通过 key 获取 对象

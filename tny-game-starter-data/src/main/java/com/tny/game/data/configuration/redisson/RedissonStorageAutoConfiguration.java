@@ -4,6 +4,7 @@ import com.tny.game.data.configuration.*;
 import com.tny.game.data.redisson.*;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
 /**
@@ -17,6 +18,9 @@ import org.springframework.context.annotation.*;
 @AutoConfigureBefore(GameDataAutoConfiguration.class)
 @Import({
 		ImportRedissonStorageAccessorFactoryDefinitionRegistrar.class
+})
+@EnableConfigurationProperties({
+		RedissonStorageAccessorFactoryProperties.class
 })
 public class RedissonStorageAutoConfiguration {
 

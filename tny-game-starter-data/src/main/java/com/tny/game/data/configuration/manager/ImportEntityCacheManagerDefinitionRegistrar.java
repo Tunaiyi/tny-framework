@@ -6,6 +6,7 @@ import com.tny.game.common.type.*;
 import com.tny.game.data.*;
 import com.tny.game.data.cache.*;
 import com.tny.game.data.storage.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.support.*;
@@ -15,7 +16,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * <p>
@@ -35,29 +35,32 @@ public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigura
 		this.beanFactory = beanFactory;
 	}
 
-	private String nameOf(String name, String defaultName) {
-		return ifNotBlankElse(name, defaultName);
+	private String beamName(String name, String defaultName) {
+		if (StringUtils.isBlank(name)) {
+			return defaultName;
+		}
+		return name;
 	}
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
 		EntityCacheManagerProperties properties = loadProperties(EntityCacheManagerProperties.class);
 		Set<Class<?>> registeredClasses = new HashSet<>();
-		for (CacheScheme scheme : DataClassLoader.getAllCacheSchemeSchemes()) {
+		for (EntityScheme scheme : EntitySchemeLoader.getAllCacheSchemes()) {
 			Class<?> objectClass = scheme.getCacheClass();
 			if (!registeredClasses.add(objectClass)) {
 				continue;
 			}
 			EntityKeyMakerFactory entityKeyMakerFactory = beanFactory.getBean(
-					nameOf(scheme.keyMakerFactory(), properties.getKeyMakerFactory()), EntityKeyMakerFactory.class);
+					beamName(scheme.keyMakerFactory(), properties.getKeyMakerFactory()), EntityKeyMakerFactory.class);
 			EntityKeyMaker<?, ?> keyMaker = entityKeyMakerFactory.createMaker(scheme);
 
 			ObjectCacheFactory objectCacheFactory = beanFactory.getBean(
-					nameOf(scheme.cacheFactory(), properties.getCacheFactory()), ObjectCacheFactory.class);
+					beamName(scheme.cacheFactory(), properties.getCacheFactory()), ObjectCacheFactory.class);
 			ObjectCache<?, ?> objectCache = objectCacheFactory.createCache(scheme, as(keyMaker));
 
 			ObjectStorageFactory objectStorageFactory = beanFactory.getBean(
-					nameOf(scheme.storageFactory(), properties.getStorageFactory()), ObjectStorageFactory.class);
+					beamName(scheme.storageFactory(), properties.getStorageFactory()), ObjectStorageFactory.class);
 			ObjectStorage<?, ?> objectStorage = objectStorageFactory.createStorage(scheme, as(keyMaker));
 
 			Class<? extends Comparable<?>> keyClass = keyMaker.getKeyClass();

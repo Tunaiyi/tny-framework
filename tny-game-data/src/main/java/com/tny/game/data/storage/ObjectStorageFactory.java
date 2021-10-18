@@ -7,6 +7,6 @@ import com.tny.game.data.cache.*;
  */
 public interface ObjectStorageFactory {
 
-	<K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(CacheScheme cacheScheme, EntityKeyMaker<K, O> keyMaker);
+	<K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker);
 
 }

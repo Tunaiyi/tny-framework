@@ -11,7 +11,7 @@ import com.tny.game.data.cache.*;
 public class ItemKeyMaker implements EntityKeyMaker<String, Item<?>> {
 
 	@Override
-	public String make(Item<?> object) {
+	public String make(EntityScheme scheme, Item<?> object) {
 		return makeId(object.getClass(), object.getPlayerId(), object.getId());
 	}
 

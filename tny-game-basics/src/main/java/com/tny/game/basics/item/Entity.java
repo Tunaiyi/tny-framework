@@ -7,20 +7,14 @@ import java.util.Set;
 public interface Entity<M extends Model> extends AnyOwned, Taggable {
 
 	/**
-	 * @return 玩家ID
-	 */
-	@Override
-	long getPlayerId();
-
-	/**
 	 * @return 获取对象别名
 	 */
 	String getAlias();
 
 	/**
-	 * @return 获取该事物对象ID
+	 * @return 获取该事物模型ID
 	 */
-	int getItemId();
+	int getModelId();
 
 	/**
 	 * @return 获取该事物对象的模型

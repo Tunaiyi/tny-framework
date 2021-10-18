@@ -8,8 +8,8 @@ public abstract class ProxySupplyCapacitySupplierItem<IM extends CapacityItemMod
 		implements ProxySupplyCapacitySupplier {
 
 	@Override
-	public int getItemId() {
-		return super.getItemId();
+	public int getModelId() {
+		return super.getModelId();
 	}
 
 	@Override

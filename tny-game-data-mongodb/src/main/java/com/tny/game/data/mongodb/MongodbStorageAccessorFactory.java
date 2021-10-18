@@ -34,7 +34,7 @@ public class MongodbStorageAccessorFactory extends AbstractCachedFactory<Class<?
 	}
 
 	@Override
-	public <A extends StorageAccessor<?, ?>> A createAccessor(CacheScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+	public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
 		return loadOrCreate(scheme.getEntityClass(), (clazz) -> new MongodbStorageAccessor<>(
 				clazz, as(idConverter), entityConverter, mongoTemplate));
 	}

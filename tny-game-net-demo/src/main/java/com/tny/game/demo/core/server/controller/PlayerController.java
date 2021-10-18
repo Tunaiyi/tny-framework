@@ -74,13 +74,15 @@ public class PlayerController implements AppPostStart {
 
 	@Controller(CtrlerIDs.PLAYER$SAVE)
 	public CommandResult savePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
-		DemoPlayer player = new DemoPlayer(playerId, name, age);
-		if (entityCacheManager.saveEntity(player)) {
-			return CommandResults.success(new PlayerDTO(player));
-		} else {
-			LOGGER.error("save Player : 保存玩家 {} 失败", player);
+		DemoPlayer player = null;
+		for (int id = 0; id < 100000; id++) {
+			player = new DemoPlayer(playerId + id, name, age);
+			if (entityCacheManager.saveEntity(player)) {
+			} else {
+				LOGGER.error("save Player : 保存玩家 {} 失败", player);
+			}
 		}
-		return CommandResults.fail(ResultCode.FAILURE);
+		return CommandResults.success(new PlayerDTO(player));
 	}
 
 	@Controller(CtrlerIDs.PLAYER$DELETE)

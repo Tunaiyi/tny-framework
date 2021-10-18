@@ -19,7 +19,7 @@ public class LocalObjectCacheFactory extends AbstractCachedFactory<Class<?>, Obj
 	private ReleaseStrategyFactory<?, ?> releaseStrategyFactory;
 
 	@Override
-	public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(CacheScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
+	public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
 		return loadOrCreate(cacheScheme.getEntityClass(), key -> {
 			LocalObjectCache<K, O> cache = new LocalObjectCache<>(cacheScheme, as(releaseStrategyFactory));
 			this.recycler.accept(cache);

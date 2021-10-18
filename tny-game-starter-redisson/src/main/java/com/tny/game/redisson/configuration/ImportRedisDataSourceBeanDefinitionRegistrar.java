@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.tny.game.boot.utils.BeanNameUtils.*;
 import static java.util.Objects.*;
 
 /**
@@ -110,14 +111,14 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
 		}
 
 		RedissonClient redissonClient = Redisson.create(config);
-		String clientBeanName = beanName + RedissonClient.class.getSimpleName();
+		String clientBeanName = nameOf(beanName, RedissonClient.class);
 		registry.registerBeanDefinition(clientBeanName, BeanDefinitionBuilder
 				.genericBeanDefinition(RedissonClient.class, () -> redissonClient)
 				.setDestroyMethodName("shutdown")
 				.getBeanDefinition());
 
 		RedisConnectionFactory redissonConnectionFactory = new RedissonConnectionFactory(redissonClient);
-		String connectionFactoryBeanName = beanName + RedisConnectionFactory.class.getSimpleName();
+		String connectionFactoryBeanName = nameOf(beanName, RedisConnectionFactory.class);
 		registry.registerBeanDefinition(connectionFactoryBeanName, BeanDefinitionBuilder
 				.genericBeanDefinition(RedisConnectionFactory.class, () -> redissonConnectionFactory)
 				.getBeanDefinition());
@@ -125,7 +126,7 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
 		if (redisProperties.isTemplateEnable()) {
 			RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
 			template.setConnectionFactory(redissonConnectionFactory);
-			String templateBeanName = beanName + RedisTemplate.class;
+			String templateBeanName = nameOf(beanName, RedisTemplate.class);
 			registry.registerBeanDefinition(templateBeanName, BeanDefinitionBuilder
 					.genericBeanDefinition(RedisTemplate.class, () -> template)
 					.getBeanDefinition());
@@ -134,7 +135,7 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
 		if (redisProperties.isStringTemplateEnable()) {
 			StringRedisTemplate stringTemplate = new StringRedisTemplate();
 			stringTemplate.setConnectionFactory(redissonConnectionFactory);
-			String stringTemplateBeanName = beanName + StringRedisTemplate.class;
+			String stringTemplateBeanName = nameOf(beanName, StringRedisTemplate.class);
 			registry.registerBeanDefinition(stringTemplateBeanName, BeanDefinitionBuilder
 					.genericBeanDefinition(RedisTemplate.class, () -> stringTemplate)
 					.getBeanDefinition());

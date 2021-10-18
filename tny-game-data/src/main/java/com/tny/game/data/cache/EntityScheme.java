@@ -3,17 +3,28 @@ package com.tny.game.data.cache;
 import com.tny.game.data.annotation.*;
 
 /**
+ * 实体方案
  * <p>
  */
-public class CacheScheme {
+public class EntityScheme {
 
+	/**
+	 * 实体类
+	 */
 	private final Class<?> entityClass;
 
+	/**
+	 * 视图配置
+	 */
 	private final EntityObject entityObject;
 
-	public CacheScheme(Class<?> entityClass) {
+	public EntityScheme(Class<?> entityClass) {
 		this.entityClass = entityClass;
 		this.entityObject = entityClass.getAnnotation(EntityObject.class);
+	}
+
+	public String prefix() {
+		return entityObject.prefix();
 	}
 
 	public String cacheFactory() {

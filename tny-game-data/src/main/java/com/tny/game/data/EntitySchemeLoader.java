@@ -11,18 +11,21 @@ import org.slf4j.*;
 import java.util.*;
 
 /**
+ * 实体方案加载器
  * <p>
  *
  * @author : kgtny
  * @date : 2021/7/25 9:46 下午
  */
-public class DataClassLoader {
+public class EntitySchemeLoader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataClassLoader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntitySchemeLoader.class);
 
 	private static final Set<Class<?>> cacheObjectClasses = new ConcurrentHashSet<>();
 
-	private static final Set<CacheScheme> cacheSchemeSchemes = new ConcurrentHashSet<>();
+	private static final Set<EntityScheme> cacheSchemes = new ConcurrentHashSet<>();
+
+	private static final Map<Class<?>, EntityScheme> cacheSchemeMap = new CopyOnWriteMap<>();
 
 	@ClassSelectorProvider
 	static ClassSelector cacheObjectSelector() {
@@ -35,33 +38,42 @@ public class DataClassLoader {
 				});
 	}
 
-	public static Set<Class<?>> getAllCacheObjectClasses() {
+	public static Set<Class<?>> getAllCacheEntityClasses() {
 		return Collections.unmodifiableSet(cacheObjectClasses);
 	}
 
-	public static Set<CacheScheme> getAllCacheSchemeSchemes() {
-		return Collections.unmodifiableSet(cacheSchemeSchemes);
+	public static Set<EntityScheme> getAllCacheSchemes() {
+		return Collections.unmodifiableSet(cacheSchemes);
+	}
+
+	public static EntityScheme getCacheScheme(Class<?> clazz) {
+		return cacheSchemeMap.get(clazz);
 	}
 
 	private static void registerScheme(Collection<Class<?>> classes) {
 		cacheObjectClasses.addAll(classes);
-		Map<Class<?>, CacheScheme> schemeMap = new HashMap<>();
+		Map<Class<?>, EntityScheme> schemeMap = new HashMap<>();
 		for (Class<?> clazz : classes) {
 			parseScheme(clazz, schemeMap);
 		}
-		cacheSchemeSchemes.addAll(schemeMap.values());
+		cacheSchemes.addAll(schemeMap.values());
+		cacheSchemeMap.putAll(schemeMap);
 	}
 
-	private static void parseScheme(Class<?> clazz, Map<Class<?>, CacheScheme> schemeMap) {
-		if (schemeMap.containsKey(clazz)) {
-			return;
+	private static EntityScheme parseScheme(Class<?> clazz, Map<Class<?>, EntityScheme> schemeMap) {
+		EntityScheme scheme = schemeMap.get(clazz);
+		if (scheme != null) {
+			return scheme;
 		}
-		CacheScheme scheme = new CacheScheme(clazz);
+		scheme = new EntityScheme(clazz);
 		if (scheme.isCacheSelf()) {
 			schemeMap.put(scheme.getEntityClass(), scheme);
+			return scheme;
 		} else {
-			parseScheme(scheme.getCacheClass(), schemeMap);
+			scheme = parseScheme(scheme.getCacheClass(), schemeMap);
+			schemeMap.put(clazz, scheme);
 		}
+		return scheme;
 	}
 
 }

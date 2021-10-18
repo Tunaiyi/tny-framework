@@ -3,6 +3,7 @@ package com.tny.game.data.mongodb;
 import com.tny.game.common.reflect.*;
 import com.tny.game.common.reflect.javassist.*;
 import com.tny.game.common.utils.*;
+import com.tny.game.data.*;
 import com.tny.game.data.mongodb.exception.*;
 import org.springframework.data.annotation.Id;
 

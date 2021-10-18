@@ -1,4 +1,4 @@
-package com.tny.game.data.mongodb;
+package com.tny.game.data;
 
 /**
  * <p>

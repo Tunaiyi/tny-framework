@@ -13,7 +13,7 @@ public class NoopObjectCacheFactory extends AbstractCachedFactory<Class<?>, Obje
 	public static final String CACHE_NAME = "noopObjectCacheFactory";
 
 	@Override
-	public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(CacheScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
+	public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
 		return loadOrCreate(cacheScheme.getEntityClass(), (key) -> new NoopObjectCache<>(cacheScheme));
 	}
 

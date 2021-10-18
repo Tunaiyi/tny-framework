@@ -4,7 +4,7 @@ import com.tny.game.boot.registrar.*;
 import com.tny.game.data.configuration.*;
 import com.tny.game.data.redisson.*;
 import org.springframework.beans.factory.support.*;
-import org.springframework.boot.autoconfigure.*;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
  * @author : kgtny
  * @date : 2021/9/17 5:42 下午
  */
-@AutoConfigureOrder(-9999)
 @AutoConfigureBefore(GameDataAutoConfiguration.class)
 public class ImportRedissonStorageAccessorFactoryDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 

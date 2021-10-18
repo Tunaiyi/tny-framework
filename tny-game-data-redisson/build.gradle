@@ -1,7 +1,6 @@
 dependencies {
 
-    api project(":tny-game-data")
     api project(":tny-game-redisson")
-
+    api project(":tny-game-data")
 
 }

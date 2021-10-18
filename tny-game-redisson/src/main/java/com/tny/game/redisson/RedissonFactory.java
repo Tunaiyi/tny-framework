@@ -1,15 +1,10 @@
 package com.tny.game.redisson;
 
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.redisson.annotation.*;
 import com.tny.game.redisson.exception.*;
 import javassist.*;
-import javassist.bytecode.*;
 import javassist.bytecode.SignatureAttribute.*;
-import javassist.bytecode.annotation.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +36,14 @@ public class RedissonFactory {
 				}
 			}
 		}
+	}
+
+	public static <T, R extends TypedRedisson<T>> R getTypedRedisson(Class<T> persistClass) {
+		TypedRedisson<?> redisson = REDISSON_MAP.get(persistClass);
+		if (redisson != null) {
+			return as(redisson);
+		}
+		throw new NullPointerException(format("{} TypedRedisson is null", persistClass));
 	}
 
 	/**
@@ -75,7 +78,6 @@ public class RedissonFactory {
 	private static <T, R extends TypedRedisson<T>> R doCreate(Class<T> persistClass) {
 		Class<?> redisClass = TypedRedisson.class;
 		// 检测是否存在 redisClass
-		RedisObject redisObject = persistClass.getAnnotation(RedisObject.class);
 		String className = persistClass.getSimpleName() + redisClass.getSimpleName();
 		String proxyClassName = persistClass.getPackage().getName() + "." + className;
 		Class<?> proxyClass;
@@ -96,23 +98,7 @@ public class RedissonFactory {
 				ctConstructor.setModifiers(Modifier.PUBLIC);
 				ctConstructor.setBody("{super();}");
 				ctClass.addConstructor(ctConstructor);
-				// 如果配置数据源
-				if (StringUtils.isNotBlank(redisObject.source())) {
-					// 重写 setConnectionFactory
-					CtMethod setRedissonClientMethod = CtNewMethod
-							.make(format("public void setRedissonClient({} redissonClient) { super.setRedissonClient($1); }",
-									TypedRedisson.class.getName()), ctClass);
-					ClassFile ccFile = ctClass.getClassFile();
-					ConstPool constpool = ccFile.getConstPool();
-					AnnotationsAttribute setConnectionFactoryMethodAttribute = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
-					Annotation autowiredAnnotation = new Annotation(Autowired.class.getName(), constpool);
-					Annotation qualifierAnnotation = new Annotation(Qualifier.class.getName(), constpool);
-					qualifierAnnotation.addMemberValue("value", new StringMemberValue(redisObject.source(), ccFile.getConstPool()));
-					setConnectionFactoryMethodAttribute.addAnnotation(autowiredAnnotation);
-					setConnectionFactoryMethodAttribute.addAnnotation(qualifierAnnotation);
-					setRedissonClientMethod.getMethodInfo().addAttribute(setConnectionFactoryMethodAttribute);
-					ctClass.addMethod(setRedissonClientMethod);
-				}
+
 				proxyClass = ctClass.toClass(persistClass.getClassLoader(), null);
 				LOGGER.info("生成 {} Class 的 TypedRedisson 类 {} 完成", persistClass, proxyClassName);
 			} catch (Exception ex) {

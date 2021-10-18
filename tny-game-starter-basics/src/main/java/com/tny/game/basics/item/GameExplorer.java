@@ -64,7 +64,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean insertItem(Entity<?>... items) {
 		boolean result = true;
 		for (Entity<?> item : items) {
-			GameManager<Object> manager = this.getItemManager(item.getItemId());
+			GameManager<Object> manager = this.getItemManager(item.getModelId());
 			if (!manager.insert(item)) {
 				result = false;
 			}
@@ -88,7 +88,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean updateItem(Entity<?>... items) {
 		boolean result = true;
 		for (Entity<?> item : items) {
-			GameManager<Object> manager = this.getItemManager(item.getItemId());
+			GameManager<Object> manager = this.getItemManager(item.getModelId());
 			if (!manager.update(item)) {
 				result = false;
 			}
@@ -112,7 +112,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean saveItem(Entity<?>... items) {
 		boolean result = true;
 		for (Entity<?> item : items) {
-			GameManager<Object> manager = this.getItemManager(item.getItemId());
+			GameManager<Object> manager = this.getItemManager(item.getModelId());
 			if (!manager.save(item)) {
 				result = false;
 			}
@@ -135,7 +135,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public void deleteItem(Entity<?>... items) {
 		for (Entity<?> item : items) {
 			GameManager<Object> manager;
-			manager = this.getItemManager(item.getItemId());
+			manager = this.getItemManager(item.getModelId());
 			manager.delete(item);
 		}
 	}
@@ -157,7 +157,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean insertStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getItemId());
+			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
 			if (manager.insert(owner)) {
 				continue;
 			}
@@ -183,7 +183,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean updateStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getItemId());
+			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
 			if (manager.update(owner)) {
 				continue;
 			}
@@ -209,7 +209,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean saveStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getItemId());
+			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
 			if (!manager.save(owner)) {
 				result = false;
 			}
@@ -232,7 +232,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	@Override
 	public void deleteStorage(StuffOwner<?, ?>... ownerArray) {
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getItemId());
+			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
 			manager.delete(owner);
 		}
 	}

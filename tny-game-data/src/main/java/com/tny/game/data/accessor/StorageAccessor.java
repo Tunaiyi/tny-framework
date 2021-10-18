@@ -85,4 +85,9 @@ public interface StorageAccessor<K extends Comparable<?>, O> {
 	 */
 	void delete(Collection<O> objects);
 
+	/**
+	 * 持久化
+	 */
+	void execute();
+
 }

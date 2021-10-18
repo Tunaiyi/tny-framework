@@ -4,25 +4,19 @@ import com.tny.game.common.tag.*;
 
 public interface Model extends Taggable {
 
-    /**
-     * 事物ID
-     *
-     * @return
-     */
-    int getId();
+	/**
+	 * @return 事物ID
+	 */
+	int getId();
 
-    /**
-     * 获取别名
-     *
-     * @return
-     */
-    String getAlias();
+	/**
+	 * @return 获取别名
+	 */
+	String getAlias();
 
-    /**
-     * 获取描述
-     *
-     * @return
-     */
-    String getDesc();
+	/**
+	 * @return 获取描述
+	 */
+	String getDesc();
 
 }

@@ -8,6 +8,6 @@ package com.tny.game.data.cache;
  */
 public interface EntityKeyMakerFactory {
 
-	EntityKeyMaker<?, ?> createMaker(CacheScheme cacheScheme);
+	EntityKeyMaker<?, ?> createMaker(EntityScheme cacheScheme);
 
 }

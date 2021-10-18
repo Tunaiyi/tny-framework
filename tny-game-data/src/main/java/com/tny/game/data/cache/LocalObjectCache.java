@@ -23,7 +23,7 @@ public class LocalObjectCache<K extends Comparable<?>, O> implements ObjectCache
 	/**
 	 * 缓存方案
 	 */
-	private CacheScheme scheme;
+	private EntityScheme scheme;
 
 	/**
 	 * 回收策略工厂
@@ -33,7 +33,7 @@ public class LocalObjectCache<K extends Comparable<?>, O> implements ObjectCache
 	public LocalObjectCache() {
 	}
 
-	public LocalObjectCache(CacheScheme scheme, ReleaseStrategyFactory<K, O> releaseStrategyFactory) {
+	public LocalObjectCache(EntityScheme scheme, ReleaseStrategyFactory<K, O> releaseStrategyFactory) {
 		this.scheme = scheme;
 		this.releaseStrategyFactory = releaseStrategyFactory;
 		this.cache = CacheBuilder.newBuilder()
@@ -47,7 +47,7 @@ public class LocalObjectCache<K extends Comparable<?>, O> implements ObjectCache
 	}
 
 	@Override
-	public CacheScheme getScheme() {
+	public EntityScheme getScheme() {
 		return scheme;
 	}
 
@@ -116,7 +116,7 @@ public class LocalObjectCache<K extends Comparable<?>, O> implements ObjectCache
 				this.scheme.getEntityClass(), size, removeSize, this.cache.size());
 	}
 
-	protected LocalObjectCache<K, O> setScheme(CacheScheme scheme) {
+	protected LocalObjectCache<K, O> setScheme(EntityScheme scheme) {
 		this.scheme = scheme;
 		CacheBuilder<Object, Object> build = CacheBuilder.newBuilder();
 		build.concurrencyLevel(scheme.concurrencyLevel());

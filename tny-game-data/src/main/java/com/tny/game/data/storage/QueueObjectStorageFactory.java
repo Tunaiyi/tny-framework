@@ -41,7 +41,7 @@ public class QueueObjectStorageFactory extends AbstractCachedFactory<Class<?>, O
 	}
 
 	@Override
-	public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(CacheScheme scheme, EntityKeyMaker<K, O> keyMaker) {
+	public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme scheme, EntityKeyMaker<K, O> keyMaker) {
 		return loadOrCreate(scheme.getEntityClass(), (key) -> {
 			StorageAccessor<K, O> accessor = accessorFactory.createAccessor(scheme, keyMaker);
 			AsyncObjectStorage<K, O> storage = new QueueObjectStorage<>(

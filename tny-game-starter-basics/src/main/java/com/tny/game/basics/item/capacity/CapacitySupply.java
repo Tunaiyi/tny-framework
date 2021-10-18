@@ -65,7 +65,7 @@ public interface CapacitySupply extends Capable {
 	 * @param capacity 能力类型
 	 * @return 获取  capacity double 能力值
 	 */
-	default double getDoubleVaule(Capacity capacity) {
+	default double getDoubleValue(Capacity capacity) {
 		return getValue(capacity, capacity.getDefault()).doubleValue();
 	}
 
@@ -73,7 +73,7 @@ public interface CapacitySupply extends Capable {
 	 * @param capacity 能力类型
 	 * @return 获取  capacity float 能力值
 	 */
-	default float getFloatVaule(Capacity capacity) {
+	default float getFloatValue(Capacity capacity) {
 		return getValue(capacity, capacity.getDefault()).shortValue();
 	}
 

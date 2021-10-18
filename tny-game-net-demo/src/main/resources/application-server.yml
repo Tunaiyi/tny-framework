@@ -40,7 +40,8 @@ tny:
   datasource:
     mongodb:
       setting:
-        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
+        #                uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
+        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@192.168.2.103:27017/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
         auto-index-creation: true
     redisson:
       setting:
@@ -66,7 +67,7 @@ tny:
     object-storage:
       async-storage:
         storage:
-          accessor-factory: mongodbStorageAccessorFactory
+          accessor-factory: mongoClientStorageAccessorFactory
           store-executor: forkJoinAsyncObjectStoreExecutor
 
 

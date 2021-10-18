@@ -1,8 +1,7 @@
 package com.tny.game.data.redisson;
 
-import com.google.common.collect.ImmutableSet;
+import com.tny.game.data.*;
 import com.tny.game.data.accessor.*;
-import com.tny.game.data.cache.*;
 import com.tny.game.redisson.*;
 import org.redisson.api.*;
 
@@ -22,36 +21,36 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
 
 	private final TypedRedisson<O> redisson;
 
-	private final EntityKeyMaker<K, O> keyMaker;
+	private final EntityIdConverter<K, O, ?> idConvertor;
 
-	public RedissonStorageAccessor(String table, TypedRedisson<O> redisson, EntityKeyMaker<K, O> keyMaker) {
+	public RedissonStorageAccessor(String table, EntityIdConverter<K, O, ?> idConvertor, TypedRedisson<O> redisson) {
 		this.table = table;
 		this.redisson = redisson;
-		this.keyMaker = keyMaker;
+		this.idConvertor = idConvertor;
 	}
 
 	@Override
-	public O get(K id) {
-		return redisson.getMap(table).get(id);
+	public O get(K key) {
+		return redisson.getMap(table).get(keyToId(key));
 	}
 
 	@Override
 	public List<O> get(Collection<? extends K> keys) {
-		return new ArrayList<>(redisson.<K>getMap(table).getAll(ImmutableSet.copyOf(keys)).values());
+		return new ArrayList<>(redisson.getMap(table).getAll(keysToIds(keys, new HashSet<>())).values());
 	}
 
 	@Override
 	public boolean insert(O object) {
-		return redisson.<K>getMap(table).fastPutIfAbsent(keyMaker.make(object), object);
+		return redisson.getMap(table).fastPutIfAbsent(entityToId(object), object);
 	}
 
 	@Override
 	public Collection<O> insert(Collection<O> objects) {
 		Collection<O> failureList = new ArrayList<>();
-		RMapAsync<K, O> mapAsync = redisson.getMap(table);
+		RMapAsync<Object, O> mapAsync = redisson.getMap(table);
 		Map<RFuture<Boolean>, O> futures = new HashMap<>();
 		for (O object : objects) {
-			futures.put(mapAsync.fastPutIfAbsentAsync(keyMaker.make(object), object), object);
+			futures.put(mapAsync.fastPutIfAbsentAsync(entityToId(object), object), object);
 		}
 		for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
 			RFuture<Boolean> future = entry.getKey();
@@ -64,21 +63,21 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
 
 	@Override
 	public boolean update(O object) {
-		return redisson.<K>getMap(table).fastPutIfExists(keyMaker.make(object), object);
+		return redisson.getMap(table).fastPutIfExists(entityToId(object), object);
 	}
 
 	@Override
 	public boolean save(O object) {
-		return redisson.getMap(table).fastPut(keyMaker.make(object), object);
+		return redisson.getMap(table).fastPut(entityToId(object), object);
 	}
 
 	@Override
 	public Collection<O> save(Collection<O> objects) {
 		Collection<O> failureList = new ArrayList<>();
-		RMapAsync<K, O> mapAsync = redisson.getMap(table);
+		RMapAsync<Object, O> mapAsync = redisson.getMap(table);
 		Map<RFuture<Boolean>, O> futures = new HashMap<>();
 		for (O object : objects) {
-			futures.put(mapAsync.fastPutAsync(keyMaker.make(object), object), object);
+			futures.put(mapAsync.fastPutAsync(entityToId(object), object), object);
 		}
 		for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
 			RFuture<Boolean> future = entry.getKey();
@@ -92,10 +91,10 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
 	@Override
 	public Collection<O> update(Collection<O> objects) {
 		Collection<O> failureList = new ArrayList<>();
-		RMapAsync<K, O> mapAsync = redisson.getMap(table);
+		RMapAsync<Object, O> mapAsync = redisson.getMap(table);
 		Map<RFuture<Boolean>, O> futures = new HashMap<>();
 		for (O object : objects) {
-			futures.put(mapAsync.fastPutIfExistsAsync(keyMaker.make(object), object), object);
+			futures.put(mapAsync.fastPutIfExistsAsync(entityToId(object), object), object);
 		}
 		for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
 			RFuture<Boolean> future = entry.getKey();
@@ -109,14 +108,34 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
 	@Override
 	public void delete(O object) {
 		redisson.getMap(table)
-				.fastRemove(keyMaker.make(object));
+				.fastRemove(entityToId(object));
 	}
 
 	@Override
 	public void delete(Collection<O> objects) {
 		for (O object : objects) {
-			redisson.getMap(table).fastRemove(keyMaker.make(object));
+			redisson.getMap(table).fastRemove(entityToId(object));
 		}
+	}
+
+	@Override
+	public void execute() {
+	}
+
+	private Object entityToId(O entity) {
+		return idConvertor.entityToId(entity);
+	}
+
+	private Object keyToId(K key) {
+		return idConvertor.keyToId(key);
+	}
+
+	private <C extends Collection<Object>> C keysToIds(Collection<? extends K> keys, C collection) {
+		for (K key : keys) {
+			Object id = idConvertor.keyToId(key);
+			collection.add(id);
+		}
+		return collection;
 	}
 
 }

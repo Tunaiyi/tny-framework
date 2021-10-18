@@ -3,8 +3,8 @@ package com.tny.game.data.mongodb.configuration;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.tny.game.boot.registrar.*;
+import com.tny.game.boot.utils.*;
 import com.tny.game.common.exception.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.*;
 import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.support.*;
@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.mongo.*;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.*;
 import org.springframework.data.mongodb.core.convert.*;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
@@ -58,61 +59,60 @@ public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfig
 
 		MongodbDataSourceSetting sourcesSetting = properties.getSetting();
 		if (sourcesSetting != null) {
-			registerMongoBeanFactory(registry, sourcesSetting, mongoEntityClasses, customizers, conversions, "default");
+			registerMongoBeanFactory(registry, sourcesSetting, mongoEntityClasses, customizers, conversions, "default", true);
 		}
 		properties.getSettings()
-				.forEach((name, setting) -> registerMongoBeanFactory(registry, setting, mongoEntityClasses, customizers, conversions, name));
+				.forEach((name, setting) -> registerMongoBeanFactory(registry, setting, mongoEntityClasses, customizers, conversions, name, false));
 	}
 
 	private void registerMongoBeanFactory(BeanDefinitionRegistry registry, MongodbDataSourceSetting properties,
 			MongoEntityClasses mongoEntityClasses, List<MongoClientSettingsBuilderCustomizer> customizers,
-			MongoCustomConversions conversions, String beanName) {
+			MongoCustomConversions conversions, String beanName, boolean primary) {
 		try {
 			MongoClientSettings clientSettings = MongoClientSettings.builder().build();
 
-			MongoDatabaseFactorySupport<?> factory;
-			if (StringUtils.isNoneBlank(properties.getUri())) {
-				factory = new SimpleMongoClientDatabaseFactory(properties.getUri());
-			} else {
+			MongoPropertiesClientSettingsBuilderCustomizer customizer =
+					new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
+			List<MongoClientSettingsBuilderCustomizer> builderCustomizers = new ArrayList<>();
+			builderCustomizers.add(customizer);
+			builderCustomizers.addAll(customizers);
 
-				MongoPropertiesClientSettingsBuilderCustomizer customizer =
-						new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
-				List<MongoClientSettingsBuilderCustomizer> builderCustomizers = new ArrayList<>();
-				builderCustomizers.add(customizer);
-				builderCustomizers.addAll(customizers);
+			MongoClient mongoClient = new MongoClientFactory(builderCustomizers)
+					.createMongoClient(clientSettings);
+			String clientBeanName = BeanNameUtils.nameOf(beanName, MongoClient.class);
+			registry.registerBeanDefinition(clientBeanName, BeanDefinitionBuilder
+					.genericBeanDefinition(MongoClient.class, () -> mongoClient)
+					.setPrimary(primary)
+					.getBeanDefinition());
 
-				MongoClient mongoClient = new MongoClientFactory(builderCustomizers)
-						.createMongoClient(clientSettings);
-				String clientBeanName = beanName + MongoClient.class.getSimpleName();
-				registry.registerBeanDefinition(clientBeanName, BeanDefinitionBuilder
-						.genericBeanDefinition(MongoClient.class, () -> mongoClient)
-						.getBeanDefinition());
-				factory = new SimpleMongoClientDatabaseFactory(mongoClient, properties.getMongoClientDatabase());
-			}
-
-			String factoryBeanName = beanName + MongoDatabaseFactorySupport.class.getSimpleName();
+			MongoDatabaseFactory factory = new SimpleMongoClientDatabaseFactory(mongoClient, properties.getMongoClientDatabase());
+			String factoryBeanName = BeanNameUtils.nameOf(beanName, MongoDatabaseFactory.class);
 			registry.registerBeanDefinition(factoryBeanName, BeanDefinitionBuilder
-					.genericBeanDefinition(MongoDatabaseFactorySupport.class, () -> factory)
+					.genericBeanDefinition(MongoDatabaseFactory.class, () -> factory)
+					.setPrimary(primary)
 					.getBeanDefinition());
 
 			MongoMappingContext context = mongoMappingContext(mongoEntityClasses, properties, conversions);
-			String contextBeanName = beanName + MongoMappingContext.class.getSimpleName();
+			String contextBeanName = BeanNameUtils.nameOf(beanName, MongoMappingContext.class);
 			registry.registerBeanDefinition(contextBeanName, BeanDefinitionBuilder
 					.genericBeanDefinition(MongoMappingContext.class, () -> context)
+					.setPrimary(primary)
 					.getBeanDefinition());
 
 			DbRefResolver dbRefResolver = new DefaultDbRefResolver(factory);
 			MappingMongoConverter mappingConverter = new MappingMongoConverter(dbRefResolver, context);
 			mappingConverter.setCustomConversions(conversions);
-			String converterBeanName = beanName + MappingMongoConverter.class.getSimpleName();
+			String converterBeanName = BeanNameUtils.nameOf(beanName, MappingMongoConverter.class);
 			registry.registerBeanDefinition(converterBeanName, BeanDefinitionBuilder
 					.genericBeanDefinition(MappingMongoConverter.class, () -> mappingConverter)
+					.setPrimary(primary)
 					.getBeanDefinition());
 
 			MongoTemplate mongoTemplate = new MongoTemplate(factory, mappingConverter);
-			String mongoTemplateBeanName = beanName + MongoTemplate.class.getSimpleName();
+			String mongoTemplateBeanName = BeanNameUtils.nameOf(beanName, MongoTemplate.class);
 			registry.registerBeanDefinition(mongoTemplateBeanName, BeanDefinitionBuilder
 					.genericBeanDefinition(MongoTemplate.class, () -> mongoTemplate)
+					.setPrimary(primary)
 					.getBeanDefinition());
 		} catch (Throwable e) {
 			throw new CommonRuntimeException(e, "create mongodb data source {} exception", beanName);

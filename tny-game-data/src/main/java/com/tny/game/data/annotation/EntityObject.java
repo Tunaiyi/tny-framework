@@ -27,6 +27,16 @@ import java.lang.annotation.*;
 public @interface EntityObject {
 
 	/**
+	 * 关联key前缀
+	 * <p>
+	 * <p>
+	 * 关联Item的key的前缀<br>
+	 *
+	 * @return 返回key前缀
+	 */
+	String prefix() default "";
+
+	/**
 	 * 则通过 cacheClass 查找存储器
 	 *
 	 * @return 缓存器类(默认是注解标识的类)

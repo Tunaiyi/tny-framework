@@ -8,17 +8,17 @@ public class NoopObjectCache<K extends Comparable<?>, O> implements ObjectCache<
 	/**
 	 * 缓存方案
 	 */
-	private CacheScheme scheme;
+	private EntityScheme scheme;
 
 	public NoopObjectCache() {
 	}
 
-	public NoopObjectCache(CacheScheme scheme) {
+	public NoopObjectCache(EntityScheme scheme) {
 		this.scheme = scheme;
 	}
 
 	@Override
-	public CacheScheme getScheme() {
+	public EntityScheme getScheme() {
 		return scheme;
 	}
 

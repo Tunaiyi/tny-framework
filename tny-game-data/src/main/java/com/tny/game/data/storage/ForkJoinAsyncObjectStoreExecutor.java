@@ -108,7 +108,6 @@ public class ForkJoinAsyncObjectStoreExecutor implements AsyncObjectStoreExecuto
 			StoreExecuteAction action = StoreExecuteAction.WAIT;
 			try {
 				action = storage.store(setting.getStep(), setting.getTryTime());
-				storage.operateAll();
 			} catch (Throwable e) {
 				LOGGER.error("{} exception on store", storage, e);
 			} finally {
@@ -132,6 +131,8 @@ public class ForkJoinAsyncObjectStoreExecutor implements AsyncObjectStoreExecuto
 		public void onFlush() {
 			lock.lock();
 			try {
+				storage.store(Integer.MAX_VALUE, setting.getTryTime());
+				storage.operateAll();
 				storage.store(Integer.MAX_VALUE, setting.getTryTime());
 			} catch (Throwable e) {
 				LOGGER.error("{} exception on flush", storage, e);

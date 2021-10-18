@@ -10,9 +10,9 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * Created by Kun Yang on 16/8/13.
  */
-public class SnowflakeIdCreator {
+public class ButterflyIdCreator {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(SnowflakeIdCreator.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(ButterflyIdCreator.class);
 
 	private final static long BASE_TIME = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
 			.toInstant().toEpochMilli();
@@ -23,9 +23,6 @@ public class SnowflakeIdCreator {
 
 	private final static long WORKER_SEQUENCE_BITS = DEFAULT_WORKER_ID_BITS + DEFAULT_SEQUENCE_BITS;
 
-	// private long workerIDBits;
-	// private long sequenceBits;
-	// private long maxWorkerID;
 	private final long sequenceMask;
 
 	private final long workerIdShift;
@@ -60,15 +57,15 @@ public class SnowflakeIdCreator {
 		return BASE_TIME + (id >> workIDBit + sequenceBits);
 	}
 
-	public SnowflakeIdCreator(long workerID) {
+	public ButterflyIdCreator(long workerID) {
 		this(workerID, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
 	}
 
-	public SnowflakeIdCreator(long workerID, long workerIDBits) {
+	public ButterflyIdCreator(long workerID, long workerIDBits) {
 		this(workerID, workerIDBits, WORKER_SEQUENCE_BITS - workerIDBits);
 	}
 
-	public SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits) {
+	public ButterflyIdCreator(long workerID, long workerIDBits, long sequenceBits) {
 		Asserts.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
 		long maxWorkerID = ~(-1L << workerIDBits);
 		Asserts.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);

@@ -19,7 +19,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	/**
 	 * 存储的类型
 	 */
-	private final Class<O> objectClass;
+	private final Class<O> entityClass;
 
 	/**
 	 * 对象访问器
@@ -34,7 +34,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	/**
 	 * 提交的任务
 	 */
-	private final TransferQueue<StorageEntry<K, O>> entriesQueue = new LinkedTransferQueue<>();
+	private final Queue<StorageEntry<K, O>> entriesQueue = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * 监视器
@@ -46,11 +46,11 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	 */
 	private final ObjectLocker<Object> locker;
 
-	public QueueObjectStorage(Class<O> objectClass, StorageAccessor<K, O> accessor, ObjectLocker<Object> locker) {
+	public QueueObjectStorage(Class<O> entityClass, StorageAccessor<K, O> accessor, ObjectLocker<Object> locker) {
 		this.accessor = accessor;
 		this.locker = locker;
-		this.objectClass = objectClass;
-		this.monitor = new ObjectStorageMonitor(this.objectClass);
+		this.entityClass = entityClass;
+		this.monitor = new ObjectStorageMonitor(this.entityClass);
 	}
 
 	@Override
@@ -107,22 +107,36 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 		long startAt = System.currentTimeMillis();
 		long costTime;
 		StoreExecuteAction action = StoreExecuteAction.WAIT;
-		List<StorageEntry<K, O>> retryQueue = new ArrayList<>();
+		List<StorageEntry<K, O>> unconfirmedQueue = new LinkedList<>();
+		List<StorageEntry<K, O>> retryQueue = new LinkedList<>();
 		// 连续获取, 最多获取 Step 个记录进行同步
-		while (operateSize < maxSize) {
-			StorageEntry<K, O> entry = this.entriesQueue.poll();
-			if (entry != null) {
-				if (!handleStorageEntry(entry)) {
-					retryQueue.add(entry);
+		try {
+			while (operateSize < 10000) {
+				StorageEntry<K, O> entry = this.entriesQueue.poll();
+				if (entry != null) {
+					if (!handleStorageEntry(entry)) {
+						retryQueue.add(entry);
+					} else {
+						unconfirmedQueue.add(entry);
+					}
+					operateSize++;
+					if (operateSize == maxSize) {
+						action = StoreExecuteAction.YIELD;
+					}
+				} else {
+					break;
 				}
-				operateSize++;
-				if (operateSize == maxSize) {
-					action = StoreExecuteAction.YIELD;
-				}
-			} else {
-				break;
 			}
+			if (!unconfirmedQueue.isEmpty()) {
+				accessor.execute();
+				unconfirmedQueue.clear();
+			}
+		} catch (Throwable e) {
+			LOGGER.error("{} store exception", entityClass, e);
+			this.entriesQueue.addAll(unconfirmedQueue);
+			unconfirmedQueue.clear();
 		}
+
 		if (!retryQueue.isEmpty()) {
 			this.entriesQueue.addAll(retryQueue);
 			retryQueue.clear();
@@ -131,7 +145,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 		// 如果同步够 Step 个记录进行一次休眠, 如果少于 step 个则有 take 进行阻塞等待.
 		if (LOGGER.isInfoEnabled() && operateSize > 0) {
 			LOGGER.info("同步器 {} [{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}",
-					QueueObjectStorage.class.getSimpleName(), this.objectClass, costTime, operateSize, this.entriesQueue.size());
+					QueueObjectStorage.class.getSimpleName(), this.entityClass, costTime, operateSize, this.entriesQueue.size());
 		}
 		return action;
 	}
@@ -214,7 +228,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append("objectClass", objectClass)
+				.append("objectClass", entityClass)
 				.toString();
 	}
 

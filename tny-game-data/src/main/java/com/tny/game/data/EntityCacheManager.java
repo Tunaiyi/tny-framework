@@ -21,14 +21,14 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 	private ObjectCache<K, O> cache;
 
 	/**
-	 * 持久化
-	 */
-	private ObjectStorage<K, O> storage;
-
-	/**
 	 * id 构建器
 	 */
 	private EntityKeyMaker<K, O> keyMaker;
+
+	/**
+	 * 持久化
+	 */
+	private ObjectStorage<K, O> storage;
 
 	/**
 	 * 对象锁管理器
@@ -49,8 +49,12 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 		this.locker = locker;
 	}
 
+	public EntityScheme getCacheScheme() {
+		return cache.getScheme();
+	}
+
 	public K idOf(O object) {
-		return this.keyMaker.make(object);
+		return this.keyMaker.make(cache.getScheme(), object);
 	}
 
 	@Override

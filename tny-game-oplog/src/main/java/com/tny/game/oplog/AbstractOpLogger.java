@@ -42,7 +42,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 		if (item == null) {
 			return this;
 		}
-		return logReceive(item.getPlayerId(), item.getId(), item.getItemId(), action, oldNum, alter, newNum);
+		return logReceive(item.getPlayerId(), item.getId(), item.getModelId(), action, oldNum, alter, newNum);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 		if (item == null) {
 			return this;
 		}
-		return settleReceive(item.getPlayerId(), item.getItemId(), alter, newNum);
+		return settleReceive(item.getPlayerId(), item.getModelId(), alter, newNum);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 		if (item == null) {
 			return this;
 		}
-		return logConsume(item.getPlayerId(), item.getId(), item.getItemId(), action, oldNum, alter, newNum);
+		return logConsume(item.getPlayerId(), item.getId(), item.getModelId(), action, oldNum, alter, newNum);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 		if (item == null) {
 			return this;
 		}
-		return settleConsume(item.getPlayerId(), item.getItemId(), alter, newNum);
+		return settleConsume(item.getPlayerId(), item.getModelId(), alter, newNum);
 	}
 
 	@Override
