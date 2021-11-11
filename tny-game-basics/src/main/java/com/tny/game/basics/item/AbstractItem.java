@@ -19,11 +19,19 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 	protected IM model;
 
 	/**
+	 *
+	 */
+	private volatile AnyUnid unid;
+
+	/**
 	 * @return 全局唯一id
 	 */
 	@Override
-	public String getUuid() {
-		return ItemUid.formatUuid(playerId, getId());
+	public AnyUnid getUnid() {
+		if (unid == null) {
+			unid = AnyUnid.uidOf(this);
+		}
+		return unid;
 	}
 
 	@Override

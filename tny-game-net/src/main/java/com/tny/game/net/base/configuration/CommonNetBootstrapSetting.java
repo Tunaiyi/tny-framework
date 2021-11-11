@@ -21,7 +21,7 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 	 */
 	private String messageDispatcher = defaultName(MessageDispatcher.class);
 
-	private String commandTaskProcessor = defaultName(CommandTaskProcessor.class);
+	private String commandTaskProcessor = defaultName(CommandTaskBoxProcessor.class);
 
 	private String messageFactory = defaultName(MessageFactory.class);
 

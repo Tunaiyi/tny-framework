@@ -140,7 +140,7 @@ configure(javaProjects) {
         compile.exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
     }
 
-
+    compileJava.dependsOn(processResources)
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
 
     compileJava {

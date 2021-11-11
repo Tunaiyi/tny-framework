@@ -25,14 +25,14 @@ public abstract class ImportRedisBeanDefinitionRegistrar implements ImportBeanDe
 			if (source == null) {
 				continue;
 			}
-			register(registry, entityClass, source);
+			register(registry, entityClass, source, true);
 		}
 		for (RedisObjectRegistrar registrar : RedisObjectClassLoader.getAllRegistrars()) {
-			register(registry, registrar.value(), registrar.object());
+			register(registry, registrar.value(), registrar.object(), false);
 		}
 	}
 
-	private void register(BeanDefinitionRegistry registry, Class<?> entityClass, RedisObject source) {
+	private void register(BeanDefinitionRegistry registry, Class<?> entityClass, RedisObject source, boolean primary) {
 		Codecable codecable = source.codec();
 		String mimeType = MimeTypeAide.getMimeType(codecable);
 		if (Objects.equals(mimeType, MimeTypeAide.NONE)) {
@@ -41,9 +41,9 @@ public abstract class ImportRedisBeanDefinitionRegistrar implements ImportBeanDe
 			mimeType = MimeTypeAide.getMimeType(codecable);
 		}
 		Asserts.checkArgument(StringUtils.isNotBlank(mimeType), "{} mimeType must not blank {} ", entityClass, mimeType);
-		doRegister(registry, entityClass, mimeType);
+		doRegister(registry, entityClass, mimeType, primary);
 	}
 
-	protected abstract <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType);
+	protected abstract <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType, boolean primary);
 
 }

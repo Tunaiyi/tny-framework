@@ -43,7 +43,7 @@ import org.springframework.context.annotation.*;
 })
 @Import({
 		TextFilterAutoConfiguration.class,
-		ImportControllerBeanDefinitionRegistrar.class
+		ImportControllerBeanDefinitionRegistrar.class,
 })
 public class NetAutoConfiguration {
 

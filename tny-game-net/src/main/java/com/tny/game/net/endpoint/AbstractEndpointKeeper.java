@@ -7,23 +7,28 @@ import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK extends E> implements EndpointKeeper<UID, E> {
+public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE extends E> implements EndpointKeeper<UID, E> {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
+	private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-	protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onAddSession =
+	@SuppressWarnings("rawtypes")
+	protected final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onAddSession =
 			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onAddEndpoint);
 
-	protected static final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Session> onRemoveSession =
+	@SuppressWarnings("rawtypes")
+	protected final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onRemoveSession =
 			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onRemoveEndpoint);
 
 	/* 所有 endpoint */
-	protected final Map<UID, EK> endpointMap = new ConcurrentHashMap<>();
+	private final String userType;
 
-	private String userType;
+	private final LongAdder version = new LongAdder();
+
+	private final Map<UID, NE> endpointMap = new ConcurrentHashMap<>();
 
 	protected AbstractEndpointKeeper(String userType) {
 		this.userType = userType;
@@ -118,6 +123,29 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
 		return online;
 	}
 
+	protected NE findEndpoint(UID uid) {
+		return this.endpointMap.get(uid);
+	}
+
+	protected boolean removeEndpoint(UID uid, NE existOne) {
+		if (this.endpointMap.remove(uid, existOne)) {
+			this.version.increment();
+			onRemoveSession.notify(this, existOne);
+			return true;
+		}
+		return false;
+	}
+
+	protected NE replaceEndpoint(UID uid, NE newOne) {
+		NE oldOne = this.endpointMap.put(uid, newOne);
+		if (oldOne != null && oldOne != newOne) {
+			oldOne.close();
+			onRemoveSession.notify(this, oldOne);
+		}
+		onAddSession.notify(this, newOne);
+		return oldOne;
+	}
+
 	@Override
 	public void addListener(EndpointKeeperListener<UID> listener) {
 		onAddSession.addListener(listener);
@@ -128,7 +156,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
 	public void addListener(Collection<EndpointKeeperListener<UID>> listeners) {
 		listeners.forEach(l -> {
 			onAddSession.addListener(l);
-			onAddSession.addListener(l);
+			onRemoveSession.addListener(l);
 		});
 	}
 
@@ -145,6 +173,18 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, EK ex
 				endpoint.send(context);
 			}
 		});
+	}
+
+	protected void monitorEndpoint() {
+		int size = 0;
+		int online = 0;
+		for (NE session : this.endpointMap.values()) {
+			size++;
+			if (session.isOnline()) {
+				online++;
+			}
+		}
+		LOG.info("会话管理器#{} Group -> 会话数量为 {} | 在线数 {}", this.getUserType(), size, online);
 	}
 
 }

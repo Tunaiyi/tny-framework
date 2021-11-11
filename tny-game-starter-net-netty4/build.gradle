@@ -2,12 +2,15 @@ group "com.tny.game"
 
 apply plugin: "maven-publish"
 
+compileJava.dependsOn(processResources)
+
 dependencies {
 
 
     annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
 
     api project(":tny-game-boot")
+    api project(":tny-game-rpc")
     api project(":tny-game-net-netty4")
 
     api libs.spring_boot_autoconfigure

@@ -75,7 +75,7 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 		}
 		DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
 		if (!controller.isUserGroup(this.tunnel.getUserType())) {
-			DISPATCHER_LOG.error("Controller [{}] 用户为[{}]用户组, 无法调用此协议", this.getName(), this.tunnel.getUserType());
+			DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), this.tunnel.getUserType());
 			this.commandContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
 			return;
 		}

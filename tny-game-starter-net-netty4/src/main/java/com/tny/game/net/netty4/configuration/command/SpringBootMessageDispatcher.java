@@ -22,7 +22,7 @@ public final class SpringBootMessageDispatcher extends DefaultMessageDispatcher 
 	@Override
 	public void prepareStart() {
 		super.prepareStart();
-		final Map<String, Object> handlerMap = this.applicationContext.getBeansWithAnnotation(Controller.class);
+		final Map<String, Object> handlerMap = this.applicationContext.getBeansWithAnnotation(RpcController.class);
 		this.addController(handlerMap.values());
 	}
 

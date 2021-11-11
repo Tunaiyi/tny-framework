@@ -78,7 +78,7 @@ public class EndpointService {
 	 * @param uid      用户ID
 	 * @param protocol 协议
 	 */
-	public void pushByUid(String userType, Object uid, Protocol protocol, CommandResult message) {
+	public void pushByUid(String userType, Object uid, Protocol protocol, RpcResult<?> message) {
 		this.pushByUid(userType, uid, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -111,7 +111,7 @@ public class EndpointService {
 	 * @param userType 用户组
 	 * @param uid      用户ID
 	 */
-	public void pushByUid(String userType, Object uid, CommandResult message) {
+	public void pushByUid(String userType, Object uid, RpcResult<?> message) {
 		this.pushByUid(userType, uid, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -145,7 +145,7 @@ public class EndpointService {
 	 * @param uid      用户ID
 	 * @param protocol 协议
 	 */
-	public void pushByUid(Object uid, Protocol protocol, CommandResult message) {
+	public void pushByUid(Object uid, Protocol protocol, RpcResult<?> message) {
 		this.pushByUid(DEFAULT_USER_TYPE, uid, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -175,7 +175,7 @@ public class EndpointService {
 	 *
 	 * @param uid 用户ID
 	 */
-	public void pushByUid(Object uid, CommandResult message) {
+	public void pushByUid(Object uid, RpcResult<?> message) {
 		this.pushByUid(DEFAULT_USER_TYPE, uid, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -212,7 +212,7 @@ public class EndpointService {
 	 * @param user     可标识用户的对象
 	 * @param protocol 协议
 	 */
-	public void push2User(String userType, Identifier user, Protocol protocol, CommandResult message) {
+	public void push2User(String userType, Identifier user, Protocol protocol, RpcResult<?> message) {
 		this.push2User(userType, user, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -245,7 +245,7 @@ public class EndpointService {
 	 * @param userType 用户组
 	 * @param user     可标识用户的对象
 	 */
-	public void push2User(String userType, Identifier user, CommandResult message) {
+	public void push2User(String userType, Identifier user, RpcResult<?> message) {
 		this.push2User(userType, user, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -278,7 +278,7 @@ public class EndpointService {
 	 * @param user     可标识用户的对象
 	 * @param protocol 协议
 	 */
-	public void push2User(Identifier user, Protocol protocol, CommandResult message) {
+	public void push2User(Identifier user, Protocol protocol, RpcResult<?> message) {
 		this.push2User(DEFAULT_USER_TYPE, user, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -308,7 +308,7 @@ public class EndpointService {
 	 *
 	 * @param user 可标识用户的对象
 	 */
-	public void push2User(Identifier user, CommandResult message) {
+	public void push2User(Identifier user, RpcResult<?> message) {
 		this.push2User(DEFAULT_USER_TYPE, user, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -345,7 +345,7 @@ public class EndpointService {
 	 * @param users    用户流
 	 * @param protocol 协议
 	 */
-	public void push2Users(String userType, Stream<? extends Identifier> users, Protocol protocol, CommandResult message) {
+	public void push2Users(String userType, Stream<? extends Identifier> users, Protocol protocol, RpcResult<?> message) {
 		this.push2Users(userType, users, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -378,7 +378,7 @@ public class EndpointService {
 	 * @param userType 用户组
 	 * @param users    用户流
 	 */
-	public void push2Users(String userType, Stream<? extends Identifier> users, CommandResult message) {
+	public void push2Users(String userType, Stream<? extends Identifier> users, RpcResult<?> message) {
 		this.push2Users(userType, users, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -412,7 +412,7 @@ public class EndpointService {
 	 * @param users    用户流
 	 * @param protocol 协议
 	 */
-	public void push2Users(Stream<? extends Identifier> users, Protocol protocol, CommandResult message) {
+	public void push2Users(Stream<? extends Identifier> users, Protocol protocol, RpcResult<?> message) {
 		this.push2Users(DEFAULT_USER_TYPE, users, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -442,7 +442,7 @@ public class EndpointService {
 	 *
 	 * @param users 用户流
 	 */
-	public void push2Users(Stream<? extends Identifier> users, CommandResult message) {
+	public void push2Users(Stream<? extends Identifier> users, RpcResult<?> message) {
 		this.push2Users(DEFAULT_USER_TYPE, users, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -476,7 +476,7 @@ public class EndpointService {
 	 * @param userType 用户组
 	 * @param protocol 协议
 	 */
-	public void push2Online(String userType, Protocol protocol, CommandResult message) {
+	public void push2Online(String userType, Protocol protocol, RpcResult<?> message) {
 		this.push2Online(userType, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -506,7 +506,7 @@ public class EndpointService {
 	 *
 	 * @param userType 用户组
 	 */
-	public void push2Online(String userType, CommandResult message) {
+	public void push2Online(String userType, RpcResult<?> message) {
 		this.push2Online(userType, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 
@@ -536,7 +536,7 @@ public class EndpointService {
 	 *
 	 * @param protocol 协议
 	 */
-	public void push2Online(Protocol protocol, CommandResult message) {
+	public void push2Online(Protocol protocol, RpcResult<?> message) {
 		this.push2Online(DEFAULT_USER_TYPE, protocol, message.getResultCode(), message.getBody());
 	}
 
@@ -562,7 +562,7 @@ public class EndpointService {
 	/**
 	 * 推送消息给所有在线
 	 */
-	public void push2Online(CommandResult message) {
+	public void push2Online(RpcResult<?> message) {
 		this.push2Online(DEFAULT_USER_TYPE, Protocols.PUSH, message.getResultCode(), message.getBody());
 	}
 

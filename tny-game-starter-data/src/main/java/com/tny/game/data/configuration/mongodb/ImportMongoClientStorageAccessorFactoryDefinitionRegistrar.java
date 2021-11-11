@@ -24,8 +24,8 @@ public class ImportMongoClientStorageAccessorFactoryDefinitionRegistrar extends 
 		MongoClientStorageAccessorFactory factory = new MongoClientStorageAccessorFactory();
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.genericBeanDefinition(MongoClientStorageAccessorFactory.class, () -> factory);
-		builder.addPropertyReference("idConverter", setting.getIdConverter());
-		builder.addPropertyReference("entityConverter", setting.getEntityConverter());
+		builder.addPropertyReference("entityIdConverterFactory", setting.getIdConverterFactory());
+		builder.addPropertyReference("entityObjectConverter", setting.getEntityObjectConverter());
 		if (StringUtils.isBlank(setting.getDataSource())) {
 			builder.addAutowiredProperty("databaseFactory");
 		} else {

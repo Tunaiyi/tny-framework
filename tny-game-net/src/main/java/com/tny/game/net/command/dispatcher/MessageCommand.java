@@ -166,18 +166,18 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 	 * @param e 异常
 	 * @return 返回消息
 	 */
-	private CommandResult exceptionResult(Throwable e) {
+	private RpcResult<?> exceptionResult(Throwable e) {
 		if (e instanceof CommandException) {
 			CommandException dex = (CommandException)e;
 			DISPATCHER_LOG.error(dex.getMessage(), dex);
-			return CommandResults.fail(dex.getResultCode(), dex.getBody());
+			return RpcResults.fail(dex.getResultCode(), dex.getBody());
 		} else if (e instanceof InvocationTargetException) {
 			return this.exceptionResult(((InvocationTargetException)e).getTargetException());
 		} else if (e instanceof ExecutionException) {
 			return this.exceptionResult(e.getCause());
 		} else {
 			DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
-			return CommandResults.fail(NetResultCode.SERVER_EXECUTE_EXCEPTION);
+			return RpcResults.fail(NetResultCode.SERVER_EXECUTE_EXCEPTION);
 		}
 	}
 
@@ -196,8 +196,8 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 		if (promise.isSuccess()) {
 			Object result = promise.getResult();
 			voidable = promise.isVoidable();
-			if (result instanceof CommandResult) {
-				CommandResult commandResult = (CommandResult)result;
+			if (result instanceof RpcResult) {
+				RpcResult<?> commandResult = as(result);
 				code = commandResult.getResultCode();
 				body = commandResult.getBody();
 			} else if (result instanceof ResultCode) {
@@ -209,7 +209,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 			this.invokeDone(null);
 		} else {
 			Throwable cause = promise.getCause();
-			CommandResult commandResult = exceptionResult(promise.getCause());
+			RpcResult<?> commandResult = exceptionResult(promise.getCause());
 			code = commandResult.getResultCode();
 			body = commandResult.getBody();
 			this.invokeDone(cause);

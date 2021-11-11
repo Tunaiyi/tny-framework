@@ -1,14 +1,11 @@
 package com.tny.game.basics.item.capacity;
 
-import org.springframework.stereotype.Component;
-
 import java.util.*;
 
 /**
  * 游戏能力值Service
  * Created by Kun Yang on 16/2/17.
  */
-@Component
 public class CapacityService {
 
 	public void accept(CapacityGoalItem<?> goal, CapacitySupplier... suppliers) {

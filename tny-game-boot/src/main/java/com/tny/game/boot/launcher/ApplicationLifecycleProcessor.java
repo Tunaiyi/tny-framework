@@ -2,7 +2,7 @@ package com.tny.game.boot.launcher;
 
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.common.lifecycle.annotaion.*;
+import com.tny.game.common.lifecycle.annotation.*;
 import com.tny.game.common.lifecycle.exception.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.scanner.*;
@@ -35,6 +35,9 @@ class ApplicationLifecycleProcessor {
 		LOGGER.info("开始初始化 Class Scan ...");
 		ClassScanner.instance(loader, true).scan(paths);
 		LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costTime());
+		//		AsLifecycle
+		Set<Class<?>> lifecycleClass = AutoClassScanConfigure.getClasses(AsLifecycle.class);
+		lifecycleClass.forEach(LifecycleLoader::register);
 		for (StaticInitiator Initiator : LifecycleLoader.getStaticInitiators()) {
 			Class<?> c = Initiator.getInitiatorClass();
 			int number = 0;
@@ -122,7 +125,7 @@ class ApplicationLifecycleProcessor {
 	}
 
 	private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue)
-	throws Exception {
+			throws Exception {
 		String name = processorClass.getSimpleName();
 		LOGGER.info("服务生命周期处理 {} ! 初始化开始......", name);
 		// Map<String, ? extends T> InitiatorMap = this.appContext.getBeansOfType(processorClass);

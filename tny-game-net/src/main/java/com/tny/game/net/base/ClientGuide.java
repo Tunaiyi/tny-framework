@@ -23,14 +23,16 @@ public interface ClientGuide {
 	 * @param postConnect 连接后处理
 	 * @return 返回客户端
 	 */
-	<UID> Client<UID> connect(URL url, PostConnect<UID> postConnect);
+	<UID> Client<UID> client(URL url, PostConnect<UID> postConnect);
 
 	/**
 	 * @param url   url
 	 * @param <UID> * @return
 	 */
-	default <UID> Client<UID> connect(URL url) {
-		return connect(url, null);
+	default <UID> Client<UID> client(URL url) {
+		return client(url, null);
 	}
+
+	ClientBootstrapSetting getSetting();
 
 }

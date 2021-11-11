@@ -18,26 +18,26 @@ import java.util.Map;
 public class DisruptorEndpointCommandTaskProcessorProperties {
 
 	@NestedConfigurationProperty
-	private DisruptorEndpointCommandTaskProcessorSetting setting = new DisruptorEndpointCommandTaskProcessorSetting()
+	private DisruptorEndpointCommandTaskBoxProcessorSetting setting = new DisruptorEndpointCommandTaskBoxProcessorSetting()
 			.setEnable(false);
 
-	private Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings = ImmutableMap.of();
+	private Map<String, DisruptorEndpointCommandTaskBoxProcessorSetting> settings = ImmutableMap.of();
 
-	public DisruptorEndpointCommandTaskProcessorSetting getSetting() {
+	public DisruptorEndpointCommandTaskBoxProcessorSetting getSetting() {
 		return this.setting;
 	}
 
 	public DisruptorEndpointCommandTaskProcessorProperties setSetting(
-			DisruptorEndpointCommandTaskProcessorSetting setting) {
+			DisruptorEndpointCommandTaskBoxProcessorSetting setting) {
 		this.setting = setting;
 		return this;
 	}
 
-	public Map<String, DisruptorEndpointCommandTaskProcessorSetting> getSettings() {
+	public Map<String, DisruptorEndpointCommandTaskBoxProcessorSetting> getSettings() {
 		return this.settings;
 	}
 
-	public DisruptorEndpointCommandTaskProcessorProperties setSettings(Map<String, DisruptorEndpointCommandTaskProcessorSetting> settings) {
+	public DisruptorEndpointCommandTaskProcessorProperties setSettings(Map<String, DisruptorEndpointCommandTaskBoxProcessorSetting> settings) {
 		this.settings = settings;
 		return this;
 	}

@@ -1,13 +1,13 @@
 package com.tny.game.net.netty4.network.guide;
 
 import com.tny.game.boot.registrar.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.network.codec.*;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.*;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 	public void registerNettyServerGuides(Collection<? extends NettyNetServerBootstrapSetting> settings, BeanDefinitionRegistry registry) {
 		for (NettyNetServerBootstrapSetting setting : settings) {
 			String channelMaker = registerChannelMaker(setting, registry);
-			String beanName = setting.getName() + NettyServerGuide.class.getSimpleName();
+			String beanName = setting.getName() + ServerGuide.class.getSimpleName();
 			registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 					.genericBeanDefinition(NettyServerGuide.class)
 					.addConstructorArgValue(setting)
@@ -53,7 +53,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 	private void registerNettyClientGuides(Collection<? extends NettyNetClientBootstrapSetting> settings, BeanDefinitionRegistry registry) {
 		for (NettyNetClientBootstrapSetting setting : settings) {
 			String channelMaker = registerChannelMaker(setting, registry);
-			String beanName = setting.getName() + NettyServerGuide.class.getSimpleName();
+			String beanName = setting.getName() + ClientGuide.class.getSimpleName();
 			registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 					.genericBeanDefinition(NettyClientGuide.class)
 					.addConstructorArgValue(setting)
@@ -98,11 +98,6 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 				.addPropertyValue("channelPipelineChains", channelPipelineChains)
 				.getBeanDefinition());
 		return channelMakerName;
-	}
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
 	}
 
 }

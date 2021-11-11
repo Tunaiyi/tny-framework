@@ -5,7 +5,7 @@ spring:
 tny:
   app:
     name: GameServerApp
-    app-type: game
+    app-type: game-server
     scope-type: game
   net:
     bootstrap:
@@ -32,16 +32,15 @@ tny:
             wait-strategy: blocking
             threads: 4
     endpoint:
-      session-keeper:
-        name: user
-        offline-close-delay: 1000
-        offline-max-size: 1000
-
+      session-keeper-settings:
+        user:
+          offline-close-delay: 1000
+          offline-max-size: 1000
   datasource:
     mongodb:
       setting:
-        #                uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
-        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@192.168.2.103:27017/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
+        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
+        #        uri: "${uc.mongodb.uri:mongodb://ucenter:ucenter0626@192.168.2.103:27017/tny-framework-demo?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}"
         auto-index-creation: true
     redisson:
       setting:
@@ -55,7 +54,7 @@ tny:
       recycler:
         scheduled-recycler:
           scheduled:
-            recycle-interval-time:
+            recycle-interval-time: 50000
     storage-accessor:
       redisson-accessor:
         accessor:

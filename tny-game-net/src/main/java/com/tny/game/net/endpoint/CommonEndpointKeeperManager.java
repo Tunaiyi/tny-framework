@@ -1,10 +1,12 @@
 package com.tny.game.net.endpoint;
 
 import com.google.common.collect.ImmutableMap;
+import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.utils.*;
+import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.collections4.MapUtils;
 
@@ -33,6 +35,10 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 	private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
 	private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static final BindVoidEventBus<EndpointKeeperCreateListener, EndpointKeeper> ON_CREATE =
+			EventBuses.of(EndpointKeeperCreateListener.class, EndpointKeeperCreateListener::onCreate);
 
 	public CommonEndpointKeeperManager() {
 	}
@@ -84,7 +90,16 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
 	@Override
 	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode) {
-		return as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> create(k, tunnelMode)));
+		EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
+		if (keeper != null) {
+			return as(keeper);
+		}
+		EndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
+		keeper = as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> newOne));
+		if (keeper == newOne) {
+			ON_CREATE.notify(keeper);
+		}
+		return as(keeper);
 	}
 
 	@Override

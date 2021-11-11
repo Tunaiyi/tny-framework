@@ -2,8 +2,6 @@ package com.tny.game.common.exception;
 
 import com.tny.game.common.result.*;
 
-import static com.tny.game.common.utils.StringAide.*;
-
 /**
  * <p>
  *
@@ -27,7 +25,7 @@ public class ResultCodeRuntimeException extends CommonRuntimeException {
 	}
 
 	public ResultCodeRuntimeException(ResultCode code, Throwable cause, String message, Object... messageParams) {
-		super(format(message, messageParams), cause);
+		super(cause, message, messageParams);
 		this.code = code;
 	}
 

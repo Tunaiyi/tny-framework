@@ -15,6 +15,9 @@ dependencies {
     api project(":tny-game-data")
     api project(":tny-game-codec-jprotobuf")
     api project(":tny-game-common-scheduler")
+
+    compileOnly project(":tny-game-data-mongodb")
+
 //    api project(":tny-game-expr-mvel")
 //    api project(":tny-game-net-netty4")
 //    api project(":tny-game-doc")

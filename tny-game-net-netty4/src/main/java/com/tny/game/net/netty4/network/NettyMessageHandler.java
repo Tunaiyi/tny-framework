@@ -32,12 +32,16 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(NettyMessageHandler.class);
 
 	@Override
-	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		if (LOGGER.isInfoEnabled()) {
 			Channel channel = ctx.channel();
-			LOGGER.info("[Tunnel] 连接成功 ## 通道 {} ==> {}", channel.remoteAddress(), channel.localAddress());
+			if (channel.isActive()) {
+				LOGGER.info("[Tunnel] 连接成功 ## 通道 {} ==> {}", channel.remoteAddress(), channel.localAddress());
+			} else {
+				LOGGER.info("[Tunnel] 连接失败 ## 通道 {} ==> {}", channel.remoteAddress(), channel.localAddress());
+			}
 		}
-		super.channelRegistered(ctx);
+		super.channelActive(ctx);
 	}
 
 	@Override

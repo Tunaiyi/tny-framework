@@ -22,7 +22,7 @@ public class NetBootstrapContext implements NetworkContext {
 
 	private final MessageDispatcher messageDispatcher;
 
-	private final CommandTaskProcessor commandTaskProcessor;
+	private final CommandTaskBoxProcessor commandTaskProcessor;
 
 	public NetBootstrapContext() {
 		this.messageFactory = new CommonMessageFactory();
@@ -33,7 +33,7 @@ public class NetBootstrapContext implements NetworkContext {
 
 	public NetBootstrapContext(
 			MessageDispatcher messageDispatcher,
-			CommandTaskProcessor commandTaskProcessor,
+			CommandTaskBoxProcessor commandTaskProcessor,
 			MessageFactory messageFactory,
 			CertificateFactory<?> certificateFactory) {
 		this.messageDispatcher = messageDispatcher;
@@ -58,7 +58,7 @@ public class NetBootstrapContext implements NetworkContext {
 	}
 
 	@Override
-	public CommandTaskProcessor getCommandTaskProcessor() {
+	public CommandTaskBoxProcessor getCommandTaskProcessor() {
 		return this.commandTaskProcessor;
 	}
 

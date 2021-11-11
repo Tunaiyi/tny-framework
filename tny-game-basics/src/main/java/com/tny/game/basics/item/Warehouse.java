@@ -7,14 +7,7 @@ import java.util.List;
  *
  * @author KGTny
  */
-public interface Warehouse<O extends StuffOwner<?, ?>> {
-
-	/**
-	 * 玩家id
-	 *
-	 * @return
-	 */
-	long getPlayerId();
+public interface Warehouse<O extends StuffOwner<?, ?>> extends Any {
 
 	/**
 	 * 获取指定itemType的Storage对象

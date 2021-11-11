@@ -13,7 +13,6 @@ import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -57,9 +56,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 		}
 		if (message.getMode() == MessageMode.REQUEST) {
 			LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
-			return new RunnableCommand(() -> {
-				tunnel.send(MessageContexts.respond(NetResultCode.SERVER_NO_SUCH_PROTOCOL, message));
-			});
+			return new RunnableCommand(() -> tunnel.send(MessageContexts.respond(NetResultCode.SERVER_NO_SUCH_PROTOCOL, message)));
 		}
 		return null;
 	}
@@ -96,9 +93,8 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 	protected void addController(Object object) {
 		Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
 		final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
-		for (Entry<Integer, MethodControllerHolder> entry : holder.getMethodHolderMap().entrySet()) {
-			MethodControllerHolder controller = entry.getValue();
-			Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getId(), k -> new CopyOnWriteMap<>());
+		for (MethodControllerHolder controller : holder.getControllers()) {
+			Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getProtocol(), k -> new CopyOnWriteMap<>());
 			for (MessageMode mode : controller.getMessageModes()) {
 				MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
 				if (old != null) {

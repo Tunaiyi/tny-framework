@@ -30,7 +30,7 @@ public class NacosEventListener implements AppClosed {
 	}
 
 	@Override
-	public void onClosed() throws Exception {
+	public void onClosed() {
 		this.netAutoServiceRegister.stop();
 	}
 

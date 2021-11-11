@@ -88,10 +88,14 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 					this.channelPromise.setSuccess();
 				}
 			} else {
-				this.set(null);
-				this.fireListeners();
+				doSuccess();
 			}
 		}
+	}
+
+	private void doSuccess() {
+		this.set(null);
+		this.fireListeners();
 	}
 
 	private <E extends Throwable> void failed(E cause, boolean throwOut) throws E {
@@ -107,13 +111,17 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 					this.channelPromise.setFailure(cause);
 				}
 			} else {
-				this.setFailure(cause);
-				this.fireListeners();
+				doFailed(cause);
 			}
 		}
 		if (throwOut) {
 			throw cause;
 		}
+	}
+
+	private void doFailed(Throwable cause) {
+		this.setFailure(cause);
+		this.fireListeners();
 	}
 
 	@Override
@@ -142,13 +150,17 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 			if (this.channelPromise != null) {
 				return this.channelPromise.cancel(mayInterruptIfRunning);
 			} else {
-				if (super.cancel(mayInterruptIfRunning)) {
-					this.fireListeners();
-					return true;
-				}
-				return false;
+				return this.doCancel(mayInterruptIfRunning);
 			}
 		}
+	}
+
+	private boolean doCancel(boolean mayInterruptIfRunning) {
+		if (super.cancel(mayInterruptIfRunning)) {
+			this.fireListeners();
+			return true;
+		}
+		return false;
 	}
 
 	private void fireListeners() {
@@ -168,13 +180,12 @@ public class NettyWriteMessagePromise extends AbstractFuture<Void> implements Wr
 	public void operationComplete(ChannelFuture future) {
 		synchronized (this) {
 			if (future.isSuccess()) {
-				super.set(null);
+				this.doSuccess();
 			} else if (future.isCancelled()) {
-				super.cancel(true);
+				this.cancel(true);
 			} else if (future.cause() != null) {
-				super.setFailure(future.cause());
+				this.doFailed(future.cause());
 			}
-			this.fireListeners();
 		}
 	}
 

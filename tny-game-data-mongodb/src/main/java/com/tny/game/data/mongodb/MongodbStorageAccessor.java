@@ -29,17 +29,17 @@ public class MongodbStorageAccessor<K extends Comparable<?>, O> implements Batch
 
 	private final Class<O> entityClass;
 
-	private final EntityConverter entityConverter;
+	private final EntityObjectConverter entityObjectConverter;
 
 	private final EntityIdConverter<K, O, ?> idConvertor;
 
 	private final ThreadLocal<BulkOperations> bulkOperations;
 
-	public MongodbStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityConverter entityConverter,
+	public MongodbStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityObjectConverter entityObjectConverter,
 			MongoTemplate mongoTemplate) {
 		this.entityClass = entityClass;
 		this.idConvertor = idConverter;
-		this.entityConverter = entityConverter;
+		this.entityObjectConverter = entityObjectConverter;
 		this.mongoTemplate = mongoTemplate;
 		this.bulkOperations = new ThreadLocal<>();
 		//ThreadLocal.withInitial(() -> mongoTemplate.bulkOps(BulkMode.ORDERED, entityClass));
@@ -199,8 +199,9 @@ public class MongodbStorageAccessor<K extends Comparable<?>, O> implements Batch
 		return operations;
 	}
 
-	private <T> Document toDocument(T entity) {
-		return this.entityConverter.convert(entity, Document.class);
+	private Document toDocument(O entity) {
+		Object id = entityToId(entity);
+		return this.entityObjectConverter.convertToWrite(id, entity, Document.class);
 	}
 
 	private Object keyToId(K key) {

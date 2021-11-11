@@ -8,6 +8,7 @@ import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.data.mongodb.*;
 import com.tny.game.data.mongodb.loader.*;
 import com.tny.game.data.mongodb.mapper.*;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScanner;
 import org.springframework.context.ApplicationContext;
@@ -53,15 +54,18 @@ public class MongodbBeanConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(value = EntityConverter.class)
-	public EntityConverter jsonEntityDocumentConverter(EntityOnLoadService entityOnLoadService) {
+	public EntityConverter jsonEntityConverter(EntityOnLoadService entityOnLoadService,
+			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
-		mapper.setAnnotationIntrospector(new MongoIdIntrospector());
-		return new JsonEntityDocumentConverter(entityOnLoadService, mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+				.setAnnotationIntrospector(new MongoIdIntrospector())
 				.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 				.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
 				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
-				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false));
+				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+		mapperCustomizers.forEach((action) -> action.customize(mapper));
+		return new JsonEntityConverter(entityOnLoadService, mapper);
 	}
 
 }

@@ -39,8 +39,8 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 				UnitLoader.getLoader(CertificateFactory.class).checkUnit(this.setting.getCertificateFactory()));
 		MessageDispatcher messageDispatcher = as(
 				UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
-		CommandTaskProcessor commandTaskProcessor = as(
-				UnitLoader.getLoader(CommandTaskProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
+		CommandTaskBoxProcessor commandTaskProcessor = as(
+				UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
 		this.context = new NetBootstrapContext(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
 		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
 		this.onLoadUnit(this.setting);
@@ -49,6 +49,10 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 	@Override
 	public PrepareStarter getPrepareStarter() {
 		return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
+	}
+
+	public S getSetting() {
+		return setting;
 	}
 
 	protected void onLoadUnit(S setting) {

@@ -11,7 +11,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.*;
 
 import static com.tny.game.net.message.MessageAide.*;
-import static com.tny.game.net.transport.TransportConstants.*;
 
 /**
  * 消息上下文
@@ -211,8 +210,6 @@ public class MessageContexts {
 
 		private boolean writeFuture = false;
 
-		private long respondTimeout;
-
 		/**
 		 * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
 		 */
@@ -347,7 +344,7 @@ public class MessageContexts {
 		@Override
 		public RequestContext willResponseFuture(long timeoutMills) {
 			if (this.mode == MessageMode.REQUEST) {
-				this.respondTimeout = timeoutMills;
+				this.respondFuture = new RespondFuture(timeoutMills);
 			}
 			return this;
 		}
@@ -396,7 +393,7 @@ public class MessageContexts {
 
 		@Override
 		public boolean isNeedResponseFuture() {
-			return this.respondTimeout != TIMEOUT_NONE;
+			return this.respondFuture != null;
 		}
 
 		@Override

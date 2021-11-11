@@ -11,20 +11,20 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/5/14 2:33 下午
  */
-public class RespondCommandTask<UID> implements CommandTask {
+public class RespondCommandTask implements CommandTask {
 
-    private final Message message;
+	private final Message message;
 
-    private final RespondFuture respondFuture;
+	private final RespondFuture respondFuture;
 
-    public RespondCommandTask(Message message, RespondFuture respondFuture) {
-        this.message = message;
-        this.respondFuture = respondFuture;
-    }
+	public RespondCommandTask(Message message, RespondFuture respondFuture) {
+		this.message = message;
+		this.respondFuture = respondFuture;
+	}
 
-    @Override
-    public Command createCommand() {
-        return new RespondFutureCommand<>(this.message, this.respondFuture);
-    }
+	@Override
+	public Command createCommand() {
+		return new RespondFutureCommand(this.message, this.respondFuture);
+	}
 
 }

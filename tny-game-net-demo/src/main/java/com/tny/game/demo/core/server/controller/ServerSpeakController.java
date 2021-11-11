@@ -8,10 +8,9 @@ import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.command.*;
+import com.tny.game.net.rpc.*;
 
 import java.util.concurrent.ThreadLocalRandom;
-
-import static com.tny.game.net.message.MessageMode.*;
 
 /**
  * <p>
@@ -19,20 +18,24 @@ import static com.tny.game.net.message.MessageMode.*;
  * @author: Kun Yang
  * @date: 2018-10-31 16:46
  */
-@Controller(CtrlerIDs.SPEAK)
-@AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
+@RpcController
+@AuthenticationRequired({Certificates.DEFAULT_USER_TYPE, "game-client"})
 @BeforePlugin(SpringBootParamFilterPlugin.class)
-@MessageFilter(modes = {REQUEST, PUSH})
 public class ServerSpeakController {
 
-	@Controller(CtrlerIDs.SPEAK$SAY)
+	@Rpc(CtrlerIDs.SPEAK$SAY)
 	public SayContentDTO say(Endpoint<Long> endpoint, @MsgParam String message) {
 		endpoint.send(MessageContexts
 				.push(Protocols.protocol(CtrlerIDs.SPEAK$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
 		return new SayContentDTO(endpoint.getId(), "respond " + message);
 	}
 
-	@Controller(CtrlerIDs.SPEAK$TEST)
+	@Rpc(CtrlerIDs.SPEAK$SAY_FOR_RPC)
+	public SayContentDTO say(@UserID RpcLinkerId id, @MsgParam String message) {
+		return new SayContentDTO(id.getId(), "respond " + message);
+	}
+
+	@Rpc(CtrlerIDs.SPEAK$TEST)
 	public SayContentDTO test(Endpoint<Long> endpoint,
 			@MsgParam byte byteValue,
 			@MsgParam short shortValue,
@@ -55,10 +58,10 @@ public class ServerSpeakController {
 		return new SayContentDTO(endpoint.getId(), "test result: " + content);
 	}
 
-	@Controller(CtrlerIDs.SPEAK$DELAY_SAY)
-	public Waiter<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
+	@Rpc(CtrlerIDs.SPEAK$DELAY_SAY)
+	public Waiting<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
 		long timeout = System.currentTimeMillis() + delay;
-		return new Waiter<SayContentDTO>() {
+		return new Waiting<SayContentDTO>() {
 
 			@Override
 			public boolean isDone() {

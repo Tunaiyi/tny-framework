@@ -22,10 +22,9 @@ import static com.tny.game.net.message.MessageMode.*;
  * @author: Kun Yang
  * @date: 2018-10-31 16:46
  */
-@Controller(CtrlerIDs.PLAYER)
 @AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
-@MessageFilter(modes = {REQUEST, PUSH})
+@RpcController(modes = {REQUEST, PUSH})
 public class PlayerController implements AppPostStart {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlayerController.class);
@@ -33,70 +32,69 @@ public class PlayerController implements AppPostStart {
 	@Resource
 	private EntityCacheManager<Long, DemoPlayer> entityCacheManager;
 
-	@Controller(CtrlerIDs.PLAYER$GET)
-	public CommandResult getPlayer(@MsgParam long playerId) {
+	@Rpc(CtrlerIDs.PLAYER$GET)
+	public RpcResult<PlayerDTO> getPlayer(@MsgParam long playerId) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {
-			return CommandResults.success(new PlayerDTO(player));
+			return RpcResults.success(new PlayerDTO(player));
 		} else {
 			LOGGER.error("get Player : 玩家 {} 不存在", playerId);
-			return CommandResults.fail(ResultCode.FAILURE);
+			return RpcResults.fail(ResultCode.FAILURE);
 		}
 	}
 
-	@Controller(CtrlerIDs.PLAYER$ADD)
-	public CommandResult addPlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
+	@Rpc(CtrlerIDs.PLAYER$ADD)
+	public RpcResult<PlayerDTO> addPlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		entityCacheManager.getEntity(playerId);
 		DemoPlayer player = new DemoPlayer(playerId, name, age);
 		if (entityCacheManager.insertEntity(player)) {
-			return CommandResults.success(new PlayerDTO(player));
+			return RpcResults.success(new PlayerDTO(player));
 		} else {
 			LOGGER.error("add Player : 添加玩家 {} 失败", player);
-			return CommandResults.fail(ResultCode.FAILURE);
+			return RpcResults.fail(ResultCode.FAILURE);
 		}
 	}
 
-	@Controller(CtrlerIDs.PLAYER$UPDATE)
-	public CommandResult updatePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
+	@Rpc(CtrlerIDs.PLAYER$UPDATE)
+	public RpcResult<PlayerDTO> updatePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {
 			player.setAge(age);
 			player.setName(name);
 			if (entityCacheManager.updateEntity(player)) {
-				return CommandResults.success(new PlayerDTO(player));
+				return RpcResults.success(new PlayerDTO(player));
 			}
 			LOGGER.error("update Player : 更新玩家 {} 失败", player);
 		} else {
 			LOGGER.error("update Player : 玩家 {} 不存在", playerId);
 		}
-		return CommandResults.fail(ResultCode.FAILURE);
+		return RpcResults.fail(ResultCode.FAILURE);
 	}
 
-	@Controller(CtrlerIDs.PLAYER$SAVE)
-	public CommandResult savePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
+	@Rpc(CtrlerIDs.PLAYER$SAVE)
+	public RpcResult<PlayerDTO> savePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		DemoPlayer player = null;
-		for (int id = 0; id < 100000; id++) {
+		for (int id = 0; id < 500000; id++) {
 			player = new DemoPlayer(playerId + id, name, age);
-			if (entityCacheManager.saveEntity(player)) {
-			} else {
+			if (!entityCacheManager.saveEntity(player)) {
 				LOGGER.error("save Player : 保存玩家 {} 失败", player);
 			}
 		}
-		return CommandResults.success(new PlayerDTO(player));
+		return RpcResults.success(new PlayerDTO(player));
 	}
 
-	@Controller(CtrlerIDs.PLAYER$DELETE)
-	public CommandResult deletePlayer(@MsgParam long playerId) {
+	@Rpc(CtrlerIDs.PLAYER$DELETE)
+	public RpcResult<PlayerDTO> deletePlayer(@MsgParam long playerId) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {
 			if (entityCacheManager.deleteEntity(player)) {
-				return CommandResults.success(new PlayerDTO(player));
+				return RpcResults.success(new PlayerDTO(player));
 			}
 			LOGGER.error("delete Player :  删除玩家 {} 失败", player);
 		} else {
 			LOGGER.error("delete Player : 玩家 {} 不存在", playerId);
 		}
-		return CommandResults.fail(ResultCode.FAILURE);
+		return RpcResults.fail(ResultCode.FAILURE);
 	}
 
 	@Override

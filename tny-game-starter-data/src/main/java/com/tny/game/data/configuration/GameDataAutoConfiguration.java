@@ -47,6 +47,11 @@ public class GameDataAutoConfiguration {
 	}
 
 	@Bean
+	public EntityKeyMakerIdConverterFactory entityKeyMakerIdConverterFactory() {
+		return new EntityKeyMakerIdConverterFactory();
+	}
+
+	@Bean
 	@ConditionalOnProperty(value = "tny.data.store-executor.fork-join.enable", havingValue = "true")
 	public ForkJoinAsyncObjectStoreExecutor forkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorProperties properties) {
 		return new SpringForkJoinAsyncObjectStoreExecutor(properties);

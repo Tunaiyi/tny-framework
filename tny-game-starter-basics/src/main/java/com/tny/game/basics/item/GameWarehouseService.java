@@ -5,15 +5,13 @@ import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.context.*;
 import com.tny.game.common.result.*;
 import org.slf4j.*;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.function.BiConsumer;
 
-import static com.tny.game.basics.common.BasicsResultCode.*;
+import static com.tny.game.basics.common.BasicResultCode.*;
 import static com.tny.game.basics.item.behavior.TradeType.*;
 
-@Component
 public class GameWarehouseService implements WarehouseService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameWarehouseService.class);
@@ -21,46 +19,6 @@ public class GameWarehouseService implements WarehouseService {
 	@Resource
 	private GameWarehouseManager gameWarehouseManager;
 
-	/**
-	 * 异步发奖励
-	 * 慎用~不一定发成功
-	 */
-	//    public void asynTrade(long playerId, Trade trade) {
-	//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
-	//        if (warehouse != null) {
-	//            try {
-	//                warehouse.pushTrade(trade);
-	//                this.gameWarehouseManager.saveWarehouse(warehouse);
-	//            } catch (Exception e) {
-	//                LOGGER.error("玩家 {} 添加异步Trade {} 异常", playerId, trade, e);
-	//            }
-	//        }
-	//    }
-
-	/**
-	 * 异步发奖励
-	 * 慎用~不一定发成功
-	 */
-	//    public void checkAsynTrade(long playerId) {
-	//        GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);
-	//        Trade trade = null;
-	//        if (warehouse != null) {
-	//            if (warehouse.isTradesEmpty())
-	//                return;
-	//            try {
-	//                while ((trade = warehouse.popTrade()) != null) {
-	//                    if (trade.getTradeType() == TradeType.AWARD) {
-	//                        this.doHandleTrade(playerId, trade, warehouse::receive);
-	//                    } else {
-	//                        this.doHandleTrade(playerId, trade, warehouse::consume);
-	//                    }
-	//                }
-	//                this.gameWarehouseManager.saveWarehouse(warehouse);
-	//            } catch (Exception e) {
-	//                LOGGER.error("玩家 {} 异步处理Trade {} 异常", playerId, trade, e);
-	//            }
-	//        }
-	//    }
 	@Override
 	public void consume(long playerId, Trade trade, AttrEntry<?>... entries) {
 		GameWarehouse warehouse = this.gameWarehouseManager.getWarehouse(playerId);

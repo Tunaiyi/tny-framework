@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface StuffOwnerExplorer {
 
-	<O extends StuffOwner<?, ?>> O getStorage(long playerId, int itemID);
+	<O extends StuffOwner<?, ?>> O getOwner(long playerId, int itemID);
 
 	boolean insertStorage(StuffOwner<?, ?>... storageArray);
 

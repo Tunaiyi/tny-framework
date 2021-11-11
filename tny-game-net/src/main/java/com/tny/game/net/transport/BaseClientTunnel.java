@@ -2,7 +2,6 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.*;
 import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -33,11 +32,13 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 				}
 			} catch (Exception e) {
 				this.disconnect();
-				throw new TunnelException(e, "{} failed to connect to server", this);
+				//				throw new TunnelException(e, "{} failed to connect to server", this);
+				LOGGER.warn("{} open failed case : {}", this, e.getMessage());
+				return false;
 			}
 		}
 		LOGGER.warn("{} is available", this);
-		return false;
+		return true;
 	}
 
 	@Override

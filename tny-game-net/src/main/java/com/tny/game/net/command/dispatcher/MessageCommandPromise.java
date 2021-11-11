@@ -21,7 +21,7 @@ public class MessageCommandPromise {
 
 	private boolean voidable = false;
 
-	private Waiter<Object> waiter;
+	private Waiting<Object> waiter;
 
 	private Object result;
 
@@ -62,7 +62,7 @@ public class MessageCommandPromise {
 	void checkWait() {
 		if (this.waiter != null) { // 检测是否
 			if (this.waiter.isDone()) {
-				Waiter<Object> waiter = this.waiter;
+				Waiting<Object> waiter = this.waiter;
 				if (waiter.isSuccess()) {
 					// 等待成功
 					this.setResult(waiter.getResult());
@@ -92,9 +92,9 @@ public class MessageCommandPromise {
 
 	public void setResult(Object result) {
 		if (result instanceof Future) {
-			result = Waiter.of(as(result));
+			result = Waiting.of(as(result));
 		}
-		if (result instanceof Waiter) {
+		if (result instanceof Waiting) {
 			this.waiter = as(result);
 			this.timeout = System.currentTimeMillis() + 5000; // 超时
 		} else if (result instanceof Throwable) {

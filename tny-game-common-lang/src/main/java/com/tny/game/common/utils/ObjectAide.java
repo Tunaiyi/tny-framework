@@ -98,6 +98,15 @@ public class ObjectAide {
 	}
 
 	@SuppressWarnings("unchecked")
+	public static <T> T as(Object object, ReferenceType<T> referenceType) {
+		if (object == null) {
+			return null;
+		}
+		return (T)object;
+		//		throw new ClassCastException(object + "is not " + clazz + "instance");
+	}
+
+	@SuppressWarnings("unchecked")
 	private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
 		Type[] types = referenceType.getClass().getGenericInterfaces();
 		Type subType = ((ParameterizedType)types[0]).getActualTypeArguments()[0];

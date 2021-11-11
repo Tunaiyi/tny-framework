@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4.network;
 
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
@@ -15,11 +16,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.*;
+import java.rmi.server.UID;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
@@ -33,20 +34,24 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
 	private Bootstrap bootstrap = null;
 
-	private final Map<String, NettyClient<?>> clients = new ConcurrentHashMap<>();
+	private final Set<Client<?>> clients = new ConcurrentHashSet<>();
 
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	private final ClientCloseListener<?> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
+	private final ClientCloseListener<Object> closeListener = this.clients::remove;
+
+	private final ClientOpenListener<Object> openListener = this.clients::add;
 
 	public NettyClientGuide(NettyNetClientBootstrapSetting clientSetting) {
 		super(clientSetting);
-		buses().closeEvent().addListener(this.closeListener);
+		buses().<Object>closeEvent().addListener(this.closeListener);
+		buses().<Object>openEvent().addListener(this.openListener);
 	}
 
 	public NettyClientGuide(NettyNetClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
 		super(clientSetting, channelMaker);
 		buses().closeEvent().addListener(this.closeListener);
+		buses().openEvent().addListener(this.openListener);
 	}
 
 	private String clientKey(URL url) {
@@ -54,16 +59,9 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 	}
 
 	@Override
-	public <UID> Client<UID> connect(URL url, PostConnect<UID> connect) {
+	public <UID> Client<UID> client(URL url, PostConnect<UID> connect) {
 		NetworkContext context = this.getContext();
-		NettyClient<UID> client = new NettyClient<>(this, this.idGenerator, url, connect, context);
-		NettyClient<UID> old = as(this.clients.putIfAbsent(clientKey(url), client));
-		if (old != null) {
-			return old;
-		} else {
-			client.open();
-			return client;
-		}
+		return new NettyClient<>(this, this.idGenerator, url, connect, context);
 	}
 
 	private Bootstrap getBootstrap() {
@@ -143,7 +141,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 	@Override
 	public boolean close() {
 		if (this.closed.compareAndSet(false, true)) {
-			this.clients.values().forEach(NettyClient::close);
+			this.clients.forEach(Client::close);
 			workerGroup.shutdownGracefully();
 			buses().closeEvent().removeListener(this.closeListener);
 			return true;

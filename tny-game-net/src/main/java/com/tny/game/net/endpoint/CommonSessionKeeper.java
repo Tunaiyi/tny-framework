@@ -46,7 +46,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 	}
 
 	private Session<UID> doNewSession(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws ValidatorFailException {
-		Session<UID> oldSession = this.endpointMap.get(certificate.getUserId());
+		NetSession<UID> oldSession = findEndpoint(certificate.getUserId());
 		if (oldSession != null) { // 如果旧 session 存在
 			Certificate<UID> oldCert = oldSession.getCertificate();
 			// 判断新授权是否比原有授权时间早, 如果是则无法登录
@@ -58,21 +58,18 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 		NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
 		NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext());
 		if (oldSession != null) {
-			this.endpointMap.remove(oldSession.getUserId(), oldSession);
 			if (!oldSession.isClosed()) {
 				oldSession.close();
 			}
-			onRemoveSession.notify(this, oldSession);
 		}
 		session.online(certificate, newTunnel);
-		this.endpointMap.put(session.getUserId(), session);
-		onAddSession.notify(this, session);
-		this.debugSessionSize();
+		replaceEndpoint(session.getUserId(), session);
+		this.monitorEndpoint();
 		return session;
 	}
 
 	private Session<UID> doAcceptTunnel(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws ValidatorFailException {
-		NetSession<UID> existSession = this.endpointMap.get(certificate.getUserId());
+		NetSession<UID> existSession = this.findEndpoint(certificate.getUserId());
 		if (existSession == null) { // 旧 session 失效
 			LOG.warn("旧session {} 已经丢失", newTunnel.getUserId());
 			throw new ValidatorFailException(NetResultCode.SESSION_LOSS_ERROR);

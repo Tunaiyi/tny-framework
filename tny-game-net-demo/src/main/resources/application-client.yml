@@ -13,7 +13,7 @@ spring:
 tny:
   app:
     name: GameClientApp
-    app-type: game
+    app-type: game-client
     scope-type: online
   net:
     bootstrap:
@@ -30,6 +30,8 @@ tny:
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
+          connector:
+            retry-intervals: [ 3000, 5000, 7000, 8000, 9000 ,10000 ]
     command:
       processor:
         disruptor:
@@ -37,6 +39,13 @@ tny:
             enable: true
             wait-strategy: blocking
             threads: 4
+    rpc:
+      client:
+        services:
+          - name: DemoRpcService
+            host: 127.0.0.1
+            port: 16800
+
   data:
     object-storage:
       async-storage:

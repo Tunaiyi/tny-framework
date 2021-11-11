@@ -1,6 +1,7 @@
 package com.tny.game.data.cache;
 
 import com.tny.game.data.annotation.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 实体方案
@@ -25,6 +26,10 @@ public class EntityScheme {
 
 	public String prefix() {
 		return entityObject.prefix();
+	}
+
+	public boolean isHasPrefix() {
+		return StringUtils.isNoneBlank(entityObject.prefix());
 	}
 
 	public String cacheFactory() {

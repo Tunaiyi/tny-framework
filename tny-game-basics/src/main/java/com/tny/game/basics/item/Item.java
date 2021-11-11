@@ -15,7 +15,7 @@ public interface Item<M extends ItemModel> extends Entity<M> {
 	/**
 	 * @return 全局唯一id
 	 */
-	String getUuid();
+	AnyUnid getUnid();
 
 	/**
 	 * @return 获取该事物对象所属类型

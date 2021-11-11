@@ -3,13 +3,16 @@ package com.tny.game.demo.net.client;
 import com.tny.game.boot.launcher.*;
 import com.tny.game.common.number.*;
 import com.tny.game.common.url.*;
+import com.tny.game.demo.core.client.service.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.network.annotation.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 import org.springframework.boot.SpringApplication;
@@ -40,6 +43,8 @@ public class GameClientApp {
 
 	private static final String IDS = ThreadLocalRandom.current().nextInt(1, 900) + "";
 
+	private static SpeakService speakService;
+
 	public static void main(String[] args) {
 		try {
 			ApplicationLauncherContext.register(GameClientApp.class);
@@ -48,14 +53,14 @@ public class GameClientApp {
 			ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
 			long userId = 1000;
 			AtomicInteger times = new AtomicInteger();
-			Client<Long> client = clientGuide.connect(URL.valueOf("protoex://127.0.0.1:16800"),
+			Client<Long> client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:16800"),
 					tunnel -> {
 						tunnel.setAccessId(4000);
 						String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
 						System.out.println("!!@   [发送] 请求 = " + message);
 						SendContext context = tunnel
 								.send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-										.willResponseFuture(30000L));
+										.willResponseFuture(300000L));
 						try {
 							Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
 							System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));
@@ -65,24 +70,8 @@ public class GameClientApp {
 						}
 						return true;
 					});
-			//            Client<Long> client = clientGuide.connect(URL.valueOf("protoex://127.0.0.1:2100"),
-			//                    tunnel -> {
-			//                        tunnel.setAccessId(4000);
-			//                        String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
-			//                        System.out.println("!!@   [发送] 请求 = " + message);
-			//                        SendContext context = tunnel
-			//                                .send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.GAME_LOGIN$LOGIN), userId)
-			//                                        .willWriteFuture(30000L)
-			//                                        .willResponseFuture(30000L));
-			//                        try {
-			//                            Message response = context.getRespondFuture().get(300000L, TimeUnit.MILLISECONDS);
-			//                            System.out.println("!!@   [响应] 请求 = " + response.getBody(Object.class));
-			//                        } catch (Exception e) {
-			//                            e.printStackTrace();
-			//                            return false;
-			//                        }
-			//                        return true;
-			//                    });
+			client.open();
+			speakService = applicationContext.getBean(SpeakService.class);
 			application.waitForConsole("q", (cmd, cmds) -> {
 				if (cmd.startsWith("@t ")) {
 					if (cmds.length > 4) {
@@ -140,6 +129,37 @@ public class GameClientApp {
 									Integer.parseInt(cmds[4]));
 							break;
 					}
+				} else if (cmd.startsWith("@rpc ")) {
+					String op = cmds[1];
+					String message = cmds[2];
+					try {
+						switch (op) {
+							case "s": {
+								RpcResult<SayContentDTO> result = speakService.say(message);
+								LOGGER.info("Sync Call : RpcResult [ {}, {} ]", result.getResultCode(), result.get());
+								break;
+							}
+							case "sb": {
+								SayContentDTO body = speakService.sayForBody(message);
+								LOGGER.info("Sync Call : Body [ {} ]", body);
+								break;
+							}
+							case "a": {
+								RpcFuture<RpcResult<SayContentDTO>> future = speakService.asyncSay(message);
+								RpcResult<SayContentDTO> result = future.get();
+								LOGGER.info("Async Call : RpcResult [ {}, {} ]", result.getResultCode(), result.get());
+								break;
+							}
+							case "ab": {
+								RpcFuture<SayContentDTO> future = speakService.asyncSayForBody(message);
+								SayContentDTO body = future.get();
+								LOGGER.info("Sync Call : Body [ {} ]", body);
+								break;
+							}
+						}
+					} catch (Throwable e) {
+						LOGGER.error("", e);
+					}
 				} else {
 					send(client, cmd, true);
 				}
@@ -171,15 +191,10 @@ public class GameClientApp {
 	}
 
 	private static void send(Client<Long> client, String content, boolean wait) {
-		RequestContext messageContent = MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.SPEAK$SAY), content);
+		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIDs.SPEAK$SAY), content);
 		if (wait) {
-			SendContext context = client.send(messageContent.willResponseFuture(300000L));
-			try {
-				Message message = context.getRespondFuture().get();
-				LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			RpcResult<SayContentDTO> result = speakService.say(content);
+			LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
 		} else {
 			client.send(messageContent);
 		}

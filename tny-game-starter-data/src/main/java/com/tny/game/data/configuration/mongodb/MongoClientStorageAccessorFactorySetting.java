@@ -1,7 +1,6 @@
 package com.tny.game.data.configuration.mongodb;
 
 import com.tny.game.boot.utils.*;
-import com.tny.game.data.*;
 import com.tny.game.data.mongodb.*;
 
 /**
@@ -12,27 +11,27 @@ import com.tny.game.data.mongodb.*;
  */
 public class MongoClientStorageAccessorFactorySetting {
 
-	private String idConverter = BeanNameUtils.defaultName(EntityIdConverter.class);
+	private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
 
-	private String entityConverter = BeanNameUtils.lowerCamelName(JsonEntityDocumentConverter.class);
+	private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonEntityObjectConverter.class);
 
 	private String dataSource = "";
 
-	public String getIdConverter() {
-		return idConverter;
+	public String getIdConverterFactory() {
+		return idConverterFactory;
 	}
 
-	public MongoClientStorageAccessorFactorySetting setIdConverter(String idConverter) {
-		this.idConverter = idConverter;
+	public MongoClientStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
+		this.idConverterFactory = idConverterFactory;
 		return this;
 	}
 
-	public String getEntityConverter() {
-		return entityConverter;
+	public String getEntityObjectConverter() {
+		return entityObjectConverter;
 	}
 
-	public MongoClientStorageAccessorFactorySetting setEntityConverter(String entityConverter) {
-		this.entityConverter = entityConverter;
+	public MongoClientStorageAccessorFactorySetting setEntityObjectConverter(String entityObjectConverter) {
+		this.entityObjectConverter = entityObjectConverter;
 		return this;
 	}
 

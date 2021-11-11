@@ -10,7 +10,7 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * Created by Kun Yang on 16/8/13.
  */
-public class SnowflakeIdCreator {
+public class SnowflakeIdCreator implements IdCreator {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(SnowflakeIdCreator.class);
 
@@ -78,6 +78,7 @@ public class SnowflakeIdCreator {
 		this.workerID = workerID;
 	}
 
+	@Override
 	public long createId() {
 		long lockStamp = 0;
 		try {

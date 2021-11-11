@@ -5,8 +5,8 @@ import com.mongodb.client.MongoClient;
 import com.tny.game.boot.registrar.*;
 import com.tny.game.boot.utils.*;
 import com.tny.game.common.exception.*;
-import org.springframework.beans.*;
-import org.springframework.beans.factory.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.autoconfigure.mongo.*;
 import org.springframework.boot.context.properties.PropertyMapper;
@@ -28,14 +28,7 @@ import java.util.stream.Collectors;
  * @date 2020/6/28 2:43 上午
  */
 
-public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar implements BeanFactoryAware {
-
-	private BeanFactory beanFactory;
-
-	@Override
-	public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, @Nonnull BeanDefinitionRegistry registry) {

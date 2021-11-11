@@ -6,11 +6,12 @@ import com.tny.game.basics.item.dto.*;
 import com.tny.game.basics.utlis.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 
-public class CommandResults extends com.tny.game.net.base.CommandResults {
+public class CommandResults extends RpcResults {
 
-	public static CommandResult fail(TryToDoResult tryToDoResult) {
+	public static RpcResult fail(TryToDoResult tryToDoResult) {
 		DemandResult result = tryToDoResult.getFailResult();
 		DemandType demandType = result.getDemandType();
 		ResultCode code = demandType.getResultCode();
@@ -20,7 +21,7 @@ public class CommandResults extends com.tny.game.net.base.CommandResults {
 		return fail(ItemResultCode.TRY_TO_DO_FAIL, TryToDoFailDTO.tryToDoResult2DTO(tryToDoResult));
 	}
 
-	public static CommandResult fail(TryResult<?> done) {
+	public static RpcResult fail(TryResult<?> done) {
 		Asserts.checkArgument(done.isFailure(), "TryDone is success");
 		if (done.isFailedToTry()) {
 			return fail(done.getResult());
@@ -29,7 +30,7 @@ public class CommandResults extends com.tny.game.net.base.CommandResults {
 		}
 	}
 
-	public static CommandResult fail(TryToDoException exception) {
+	public static RpcResult fail(TryToDoException exception) {
 		return fail(ItemResultCode.TRY_TO_DO_FAIL, TryToDoFailDTO.exception2DTO(exception));
 	}
 

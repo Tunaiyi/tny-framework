@@ -323,9 +323,6 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 			}
 			if (context.isNeedResponseFuture()) {
 				RespondFuture respondFuture = context.getRespondFuture();
-				if (respondFuture == null) {
-					respondFuture = new RespondFuture();
-				}
 				context.setRespondFuture(respondFuture);
 				promise.setRespondFuture(respondFuture);
 			}

@@ -148,8 +148,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> O getStorage(long playerId, int itemID) {
-		GameManager<Object> manager = this.getStorageManager(itemID);
+	public <O extends StuffOwner<?, ?>> O getOwner(long playerId, int itemID) {
+		GameManager<Object> manager = this.getOwnerManager(itemID);
 		return (O)manager.get(playerId);
 	}
 
@@ -157,7 +157,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean insertStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
 			if (manager.insert(owner)) {
 				continue;
 			}
@@ -183,7 +183,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean updateStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
 			if (manager.update(owner)) {
 				continue;
 			}
@@ -209,7 +209,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean saveStorage(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
 			if (!manager.save(owner)) {
 				result = false;
 			}
@@ -232,7 +232,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	@Override
 	public void deleteStorage(StuffOwner<?, ?>... ownerArray) {
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getStorageManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
 			manager.delete(owner);
 		}
 	}
@@ -244,7 +244,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		}
 	}
 
-	private GameManager<Object> getStorageManager(int itemID) {
+	private GameManager<Object> getOwnerManager(int itemID) {
 		ItemType itemType = ItemTypes.ofItemId(itemID);
 		GameManager<Object> manager = this.typeStorageManagerMap.get(itemType);
 		if (manager == null) {

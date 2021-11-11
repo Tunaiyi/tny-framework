@@ -1,11 +1,17 @@
 package com.tny.game.data.configuration.mongodb;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.*;
+import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.data.*;
 import com.tny.game.data.configuration.*;
 import com.tny.game.data.mongodb.*;
 import com.tny.game.data.mongodb.configuration.*;
+import com.tny.game.data.mongodb.loader.*;
+import com.tny.game.data.mongodb.mapper.*;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
@@ -16,7 +22,7 @@ import org.springframework.context.annotation.*;
  * @date : 2021/9/17 5:29 下午
  */
 @Configuration
-@ConditionalOnClass(MongodbStorageAccessorFactory.class)
+@ConditionalOnClass(MongoTemplateStorageAccessorFactory.class)
 @AutoConfigureAfter({MongodbAutoConfiguration.class})
 @AutoConfigureBefore(GameDataAutoConfiguration.class)
 @Import({
@@ -31,8 +37,25 @@ public class MongoStorageAutoConfiguration {
 
 	@Bean
 	@ConditionalOnClass(EntityIdConverter.class)
-	public EntityIdConverter<?, ?, ?> defaultEntityIdConverter() {
-		return new DefaultEntityIdConverter<>();
+	public MongoEntityIdConverterFactory mongoEntityIdConverterFactory() {
+		return new MongoEntityIdConverterFactory();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(JsonEntityObjectConverter.class)
+	JsonEntityObjectConverter jsonEntityObjectConverter(
+			EntityOnLoadService entityOnLoadService,
+			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
+		ObjectMapper mapper = ObjectMapperFactory.createMapper();
+		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+				.setAnnotationIntrospector(new MongoIdIntrospector())
+				.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+		mapperCustomizers.forEach((action) -> action.customize(mapper));
+		return new JsonEntityObjectConverter(entityOnLoadService, mapper);
 	}
 
 }

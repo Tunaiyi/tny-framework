@@ -16,6 +16,6 @@ public interface EndpointContext {
 
 	MessageDispatcher getMessageDispatcher();
 
-	CommandTaskProcessor getCommandTaskProcessor();
+	CommandTaskBoxProcessor getCommandTaskProcessor();
 
 }

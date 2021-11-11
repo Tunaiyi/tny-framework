@@ -20,7 +20,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
  */
 @EnableRelayTargetApplication
 @SpringBootApplication(scanBasePackages = {"com.tny.game.demo.relay.server", "com.tny.game.demo.core.common", "com.tny.game.demo.core.server"})
-@ComponentScan(includeFilters = @Filter(Controller.class))
+@ComponentScan(includeFilters = @Filter(Rpc.class))
 public class RelayGameServerApp {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RelayGameServerApp.class);

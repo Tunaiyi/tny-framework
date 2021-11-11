@@ -32,21 +32,21 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ImportCon
 		if (setting == null || !setting.isEnable()) {
 			return false;
 		}
-		String beanName = getBeanName(name, CommandTaskProcessor.class);
+		String beanName = getBeanName(name, CommandTaskBoxProcessor.class);
 		registry.registerBeanDefinition(beanName,
-				BeanDefinitionBuilder.genericBeanDefinition(ForkJoinEndpointCommandTaskProcessor.class)
+				BeanDefinitionBuilder.genericBeanDefinition(ForkJoinEndpointCommandTaskBoxProcessor.class)
 						.addConstructorArgValue(setting)
 						.getBeanDefinition());
 		return false;
 	}
 
-	private boolean loadBeanDefinition(String name, DisruptorEndpointCommandTaskProcessorSetting setting, BeanDefinitionRegistry registry) {
+	private boolean loadBeanDefinition(String name, DisruptorEndpointCommandTaskBoxProcessorSetting setting, BeanDefinitionRegistry registry) {
 		if (setting == null || !setting.isEnable()) {
 			return false;
 		}
-		String beanName = getBeanName(name, CommandTaskProcessor.class);
+		String beanName = getBeanName(name, CommandTaskBoxProcessor.class);
 		registry.registerBeanDefinition(beanName,
-				BeanDefinitionBuilder.genericBeanDefinition(DisruptorEndpointCommandTaskProcessor.class)
+				BeanDefinitionBuilder.genericBeanDefinition(DisruptorEndpointCommandTaskBoxProcessor.class)
 						.addConstructorArgValue(setting)
 						.getBeanDefinition());
 		return true;

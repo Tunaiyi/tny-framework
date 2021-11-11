@@ -22,7 +22,7 @@ public class HashObjectLocker<O> implements ObjectLocker<O> {
 	}
 
 	private Lock lockOf(O object) {
-		return locks[object.hashCode() % currentLevel];
+		return locks[Math.abs(object.hashCode()) % currentLevel];
 	}
 
 	@Override

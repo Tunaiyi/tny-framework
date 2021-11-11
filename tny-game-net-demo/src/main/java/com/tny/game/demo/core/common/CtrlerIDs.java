@@ -18,6 +18,8 @@ public interface CtrlerIDs {
 	int SPEAK$DELAY_SAY = 200_05;
 	int SPEAK$TEST = 200_06;
 
+	int SPEAK$SAY_FOR_RPC = 200_07;
+
 	int PLAYER = 201;
 	int PLAYER$GET = 201_00;
 	int PLAYER$ADD = 201_01;

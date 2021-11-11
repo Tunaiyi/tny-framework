@@ -21,11 +21,11 @@ public class ImportMongoTemplateStorageAccessorFactoryDefinitionRegistrar extend
 
 	private void registerMongodbStorageAccessorFactory(
 			BeanDefinitionRegistry registry, MongoTemplateStorageAccessorFactorySetting setting, String beanName) {
-		MongodbStorageAccessorFactory factory = new MongodbStorageAccessorFactory();
+		MongoTemplateStorageAccessorFactory factory = new MongoTemplateStorageAccessorFactory();
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
-				.genericBeanDefinition(MongodbStorageAccessorFactory.class, () -> factory);
-		builder.addPropertyReference("idConverter", setting.getIdConverter());
-		builder.addPropertyReference("entityConverter", setting.getEntityConverter());
+				.genericBeanDefinition(MongoTemplateStorageAccessorFactory.class, () -> factory)
+				.addPropertyReference("entityIdConverterFactory", setting.getIdConverterFactory())
+				.addPropertyReference("entityObjectConverter", setting.getEntityObjectConverter());
 		if (StringUtils.isBlank(setting.getDataSource())) {
 			builder.addAutowiredProperty("mongoTemplate");
 		} else {
@@ -42,11 +42,11 @@ public class ImportMongoTemplateStorageAccessorFactoryDefinitionRegistrar extend
 		}
 		MongoTemplateStorageAccessorFactorySetting defaultSetting = properties.getAccessor();
 		if (defaultSetting != null) {
-			registerMongodbStorageAccessorFactory(registry, defaultSetting, MongodbStorageAccessorFactory.ACCESSOR_NAME);
+			registerMongodbStorageAccessorFactory(registry, defaultSetting, MongoTemplateStorageAccessorFactory.ACCESSOR_NAME);
 		}
 		properties.getAccessors()
 				.forEach((name, setting) -> registerMongodbStorageAccessorFactory(registry, setting,
-						nameOf(name, MongoClientStorageAccessorFactory.class)));
+						nameOf(name, MongoTemplateStorageAccessorFactory.class)));
 	}
 
 }

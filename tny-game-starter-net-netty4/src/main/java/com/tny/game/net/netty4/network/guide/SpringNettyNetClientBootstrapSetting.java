@@ -1,5 +1,6 @@
 package com.tny.game.net.netty4.network.guide;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.network.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -11,12 +12,13 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/7/13 8:26 下午
  */
-//@Order(HIGHEST_PRECEDENCE)
-//@Configuration
 public class SpringNettyNetClientBootstrapSetting extends NettyNetClientBootstrapSetting {
 
 	@NestedConfigurationProperty
 	private SpringNettyDatagramChannelSetting channel;
+
+	@NestedConfigurationProperty
+	private ClientConnectorSetting connector;
 
 	public SpringNettyNetClientBootstrapSetting() {
 		super(new SpringNettyDatagramChannelSetting());
@@ -29,6 +31,17 @@ public class SpringNettyNetClientBootstrapSetting extends NettyNetClientBootstra
 
 	public NettyNetClientBootstrapSetting setChannel(SpringNettyDatagramChannelSetting channel) {
 		return super.setChannel(channel);
+	}
+
+	@Override
+	public ClientConnectorSetting getConnector() {
+		return super.getConnector();
+	}
+
+	@Override
+	public NettyNetClientBootstrapSetting setConnector(ClientConnectorSetting connector) {
+		super.setConnector(connector);
+		return this;
 	}
 
 }

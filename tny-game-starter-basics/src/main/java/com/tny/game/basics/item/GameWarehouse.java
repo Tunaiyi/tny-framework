@@ -7,6 +7,10 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public class GameWarehouse extends AbstractWarehouse<GameStuffOwner<?, ?, ?>> {
 
+	protected GameWarehouse(long playerId, StuffOwnerExplorer stuffOwnerExplorer) {
+		super(playerId, stuffOwnerExplorer);
+	}
+
 	@Override
 	protected void consume(Trade result, AttrEntry<?>... entries) {
 		super.consume(result, entries);

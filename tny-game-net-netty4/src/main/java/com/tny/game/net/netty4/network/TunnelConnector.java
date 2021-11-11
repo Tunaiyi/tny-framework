@@ -1,11 +1,18 @@
 package com.tny.game.net.netty4.network;
 
+import com.tny.game.net.base.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
 
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
+
+import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.net.utils.NetConfigs.*;
 
 /**
  * 连接器 负责管理 socket 连接和重连
@@ -20,109 +27,125 @@ class TunnelConnector {
 
 	private int times;
 
-	private final int retryTimes;
-
-	private final long interval;
-
 	private final NetTunnel<?> tunnel;
 
 	private final Lock lock = new ReentrantLock();
 
-	private final AtomicBoolean asyncReconnect = new AtomicBoolean(false);
+	private final TunnelConnectExecutor executor;
 
 	private final AtomicBoolean asyncConnect = new AtomicBoolean(false);
 
-	TunnelConnector(NetTunnel<?> tunnel, int retryTimes, long interval) {
+	private final AtomicBoolean autoRetrying = new AtomicBoolean(false);
+
+	private final NettyClient<?> client;
+
+	TunnelConnector(NetTunnel<?> tunnel, NettyClient<?> client, TunnelConnectExecutor executor) {
 		this.times = 0;
-		this.interval = interval;
-		this.retryTimes = retryTimes;
+		this.executor = executor;
+		this.client = client;
 		this.tunnel = tunnel;
 	}
 
-	public void connect(Executor executor) {
+	public void connect(ConnectCallback callback) {
+		callback = ifNull(callback, ConnectCallback.NOOP);
 		if (this.tunnel.isActive()) {
-			return;
+			callback.onConnect(ConnectCallbackStatus.CONNECTED, this.tunnel, null);
 		}
-		if (executor != null) {
-			if (this.asyncConnect.compareAndSet(false, true)) {
-				executor.execute(() -> doConnect(true));
-			}
+		if (this.asyncConnect.compareAndSet(false, true)) {
+			ConnectCallback cb = callback;
+			executor.execute(() -> doConnect(cb));
 		} else {
-			this.doConnect(false);
+			callback.onConnect(ConnectCallbackStatus.CONNECTING, this.tunnel, new ConnectingException("connecting"));
 		}
 	}
 
-	public void reconnect(ScheduledExecutorService executor) {
+	public void reconnect() {
+		if (!this.client.isAutoReconnect()) {
+			return;
+		}
+		if (executor == null) {
+			return;
+		}
 		if (this.tunnel.isActive()) {
 			return;
 		}
-		if (executor != null) {
-			if (this.asyncReconnect.compareAndSet(false, true)) {
-				scheduleReconnect(executor, 0);
-			}
-		} else {
-			this.doReconnect(null);
+		if (this.autoRetrying.compareAndSet(false, true)) {
+			this.times = 0;
+			scheduleReconnect();
 		}
 	}
 
-	private void scheduleReconnect(ScheduledExecutorService executor, long delay) {
-		if (delay > 0) {
-			executor.schedule(() -> this.doReconnect(executor), delay, TimeUnit.MILLISECONDS);
-		} else {
-			executor.execute(() -> this.doReconnect(executor));
-		}
+	private void scheduleReconnect() {
+		executor.schedule(this::doReconnect, getInterval(this.times), TimeUnit.MILLISECONDS);
 	}
 
-	private void doConnect(boolean async) {
-		if (this.tunnel.isActive()) {
-			return;
+	private long getInterval(int times) {
+		List<Long> intervals = this.client.getConnectRetryIntervals();
+		if (CollectionUtils.isEmpty(intervals)) {
+			return RETRY_INTERVAL_DEFAULT_VALUE;
 		}
-		this.lock.lock();
+		if (times >= intervals.size()) {
+			return intervals.get(intervals.size() - 1);
+		}
+		return intervals.get(times);
+	}
+
+	private void doConnect(ConnectCallback callback) {
 		try {
-			openTunnel();
-		} finally {
-			if (async) {
-				this.asyncConnect.set(false);
+			if (this.tunnel.isActive()) {
+				callback.onConnect(ConnectCallbackStatus.CONNECTED, this.tunnel, null);
+				return;
 			}
-			this.lock.unlock();
+			this.lock.lock();
+			try {
+				if (openTunnel()) {
+					callback.onConnect(ConnectCallbackStatus.CONNECTED, this.tunnel, null);
+				} else {
+					callback.onConnect(ConnectCallbackStatus.EXCEPTION, this.tunnel, new ConnectFailedException("connect failed"));
+					if (this.client.isAutoReconnect()) {
+						reconnect();
+					}
+				}
+			} catch (Throwable e) {
+				callback.onConnect(ConnectCallbackStatus.EXCEPTION, this.tunnel, e);
+			} finally {
+				this.lock.unlock();
+			}
+		} finally {
+			this.asyncConnect.set(false);
 		}
 	}
 
-	private void doReconnect(ScheduledExecutorService executor) {
-		if (this.tunnel.isActive()) {
-			return;
-		}
+	private void doReconnect() {
 		boolean stop = false;
 		try {
-			while (this.asyncReconnect.get() && this.times < this.retryTimes) {
-				this.lock.lock();
-				try {
-					LOGGER.info("{} reconnect {} times", this.tunnel, this.times);
-					if (openTunnel()) { // 成功停止
-						LOGGER.info("{} reconnect {} times success", this.tunnel, this.times);
-						this.times = 0;
+			if (this.tunnel.isActive()) {
+				return;
+			}
+			this.lock.lock();
+			try {
+				LOGGER.info("{} reconnect {} times", this.tunnel, this.times);
+				if (openTunnel()) { // 成功停止
+					LOGGER.info("{} reconnect {} times success", this.tunnel, this.times);
+					stop = true;
+				} else {
+					int retryTimes = client.getConnectRetryTimes();// 失败
+					LOGGER.info("{} reconnect {} times failed", this.tunnel, this.times);
+					this.times++;
+					if (retryTimes < 0 || this.times < retryTimes) { // 继续重试
+						this.scheduleReconnect();
+					} else { // 尝试次数满停止
+						LOGGER.warn("reconnect {} failed times {} >= {}, stop reconnect", this.tunnel, this.times, retryTimes);
 						stop = true;
-						return;
-					} else {            // 失败
-						LOGGER.info("{} reconnect {} times failed", this.tunnel, this.times);
-						this.times++;
-						if (this.times < this.retryTimes) { // 继续重试
-							if (executor != null) { // 异步提交, 否则继续循环
-								this.scheduleReconnect(executor, this.interval);
-							}
-						} else { // 尝试次数满停止
-							LOGGER.warn("reconnect {} failed times {} >= {}, stop reconnect", this.tunnel, this.times, this.retryTimes);
-							this.times = 0;
-							stop = true;
-						}
 					}
-				} finally {
-					this.lock.unlock();
 				}
+			} finally {
+				this.lock.unlock();
 			}
 		} finally {
-			if (executor != null && stop) { // 如果是异步成功 重置asyncReconnect状态
-				this.asyncReconnect.set(false);
+			if (stop) {
+				this.times = 0;
+				autoRetrying.set(false);
 			}
 		}
 	}

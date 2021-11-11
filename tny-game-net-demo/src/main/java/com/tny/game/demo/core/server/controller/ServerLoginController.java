@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.message.MessageMode.*;
 
 /**
  * <p>
@@ -20,15 +19,14 @@ import static com.tny.game.net.message.MessageMode.*;
  * @author: Kun Yang
  * @date: 2018-10-31 16:46
  */
-@Controller(CtrlerIDs.LOGIN)
+@RpcController
 @AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
-@MessageFilter(modes = {REQUEST, PUSH})
 public class ServerLoginController {
 
 	private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
 
-	@Controller(CtrlerIDs.LOGIN$LOGIN)
+	@Rpc(CtrlerIDs.LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
 	public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {

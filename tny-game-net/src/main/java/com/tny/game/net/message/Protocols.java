@@ -2,7 +2,7 @@ package com.tny.game.net.message;
 
 public class Protocols {
 
-	public static final DefaultProtocol PUSH = new DefaultProtocol(0);
+	public static final DefaultProtocol PUSH = new DefaultProtocol(0, 0);
 
 	protected static class DefaultProtocol implements Protocol {
 
@@ -10,8 +10,9 @@ public class Protocols {
 
 		private int line = 0;
 
-		private DefaultProtocol(int id) {
+		private DefaultProtocol(int id, int line) {
 			this.id = id;
+			this.line = line;
 		}
 
 		@Override
@@ -54,7 +55,11 @@ public class Protocols {
 	}
 
 	public static Protocol protocol(int protocol) {
-		return new DefaultProtocol(protocol);
+		return new DefaultProtocol(protocol, 0);
+	}
+
+	public static Protocol protocol(int protocol, int line) {
+		return new DefaultProtocol(protocol, line);
 	}
 
 }

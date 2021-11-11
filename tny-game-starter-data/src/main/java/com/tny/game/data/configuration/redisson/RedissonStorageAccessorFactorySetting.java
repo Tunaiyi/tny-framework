@@ -1,5 +1,8 @@
 package com.tny.game.data.configuration.redisson;
 
+import com.tny.game.boot.utils.*;
+import com.tny.game.data.cache.*;
+
 /**
  * <p>
  *
@@ -10,12 +13,23 @@ public class RedissonStorageAccessorFactorySetting {
 
 	private String tableHead;
 
+	private String idConverterFactory = BeanNameUtils.lowerCamelName(EntityKeyMakerIdConverterFactory.class);
+
 	public String getTableHead() {
 		return tableHead;
 	}
 
 	public RedissonStorageAccessorFactorySetting setTableHead(String tableHead) {
 		this.tableHead = tableHead;
+		return this;
+	}
+
+	public String getIdConverterFactory() {
+		return idConverterFactory;
+	}
+
+	public RedissonStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
+		this.idConverterFactory = idConverterFactory;
 		return this;
 	}
 

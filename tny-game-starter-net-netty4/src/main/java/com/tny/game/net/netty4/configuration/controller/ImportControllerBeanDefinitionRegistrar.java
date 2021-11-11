@@ -19,7 +19,7 @@ public class ImportControllerBeanDefinitionRegistrar implements ImportBeanDefini
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-		Set<Class<?>> classes = ControllerLoader.getControllerClasses();
+		Set<Class<?>> classes = RpcControllerLoader.getControllerClasses();
 		for (Class<?> controllerClass : classes) {
 			registry.registerBeanDefinition(BeanNameUtils.lowerCamelName(controllerClass),
 					BeanDefinitionBuilder.genericBeanDefinition(controllerClass).getBeanDefinition());

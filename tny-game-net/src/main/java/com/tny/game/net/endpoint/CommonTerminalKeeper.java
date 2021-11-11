@@ -24,10 +24,7 @@ public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Termi
 			if (endpoint instanceof Client) {
 				endpoint.online(certificate, tunnel);
 				Terminal<UID> client = as(endpoint);
-				Terminal<UID> oldClient = this.endpointMap.put(client.getUserId(), client);
-				if (oldClient != null && client != oldClient) {
-					oldClient.close();
-				}
+				this.replaceEndpoint(client.getUserId(), client);
 				return Optional.of(client);
 			}
 		}

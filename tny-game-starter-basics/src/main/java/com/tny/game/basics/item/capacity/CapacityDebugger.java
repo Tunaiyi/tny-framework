@@ -2,14 +2,11 @@ package com.tny.game.basics.item.capacity;
 
 import com.tny.game.basics.item.*;
 import org.slf4j.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.*;
 
-import static com.tny.game.basics.item.capacity.CapacityConstants.*;
 import static com.tny.game.basics.item.capacity.CapacityObjectType.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -18,8 +15,6 @@ import static com.tny.game.common.utils.StringAide.*;
  * 游戏能力值Service
  * Created by Kun Yang on 16/2/17.
  */
-@Component
-@ConditionalOnProperty(value = CAPACITY_MODULE_ENABLE, havingValue = "true")
 public class CapacityDebugger {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CapacityDebugger.class);

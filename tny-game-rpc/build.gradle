@@ -1,0 +1,14 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+//    api project(":tny-game-base")
+    api libs.jackson_core
+    api libs.jackson_databind
+    api libs.jackson_annotations
+    api project(":tny-game-net")
+
+}
+

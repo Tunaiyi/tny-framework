@@ -43,7 +43,7 @@ public abstract class MessageCommandContext {
 	 *
 	 * @param result 运行结果
 	 */
-	public void doneAndIntercept(CommandResult result) {
+	public void doneAndIntercept(RpcResult<?> result) {
 		if (!this.intercept) {
 			this.intercept = true;
 			this.setResult(result);
@@ -69,7 +69,7 @@ public abstract class MessageCommandContext {
 	 * @param result 运行结果
 	 */
 
-	public void setResult(CommandResult result) {
+	public void setResult(RpcResult<?> result) {
 		this.promise.setResult(result);
 	}
 
@@ -89,7 +89,7 @@ public abstract class MessageCommandContext {
 	 * @param body 消息体
 	 */
 	public void setResult(ResultCode code, Object body) {
-		this.promise.setResult(CommandResults.create(code, body));
+		this.promise.setResult(RpcResults.create(code, body));
 	}
 
 	/**

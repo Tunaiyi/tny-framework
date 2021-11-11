@@ -7,8 +7,6 @@ import com.tny.game.data.*;
 import com.tny.game.data.cache.*;
 import com.tny.game.data.storage.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -23,17 +21,9 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/9/17 5:42 下午
  */
-public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar implements BeanFactoryAware {
+public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
 	private final static DynamicEntityCacheManagerFactory entityCacheManagerFactory = new DynamicEntityCacheManagerFactory();
-
-	private BeanFactory beanFactory;
-
-	// 实现BeanFactoryAware的方法，设置BeanFactory
-	@Override
-	public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
 
 	private String beamName(String name, String defaultName) {
 		if (StringUtils.isBlank(name)) {

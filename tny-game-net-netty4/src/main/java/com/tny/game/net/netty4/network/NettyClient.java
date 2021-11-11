@@ -9,8 +9,11 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.stream.*;
 
 import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 import static com.tny.game.net.utils.NetConfigs.*;
@@ -20,8 +23,8 @@ import static com.tny.game.net.utils.NetConfigs.*;
  */
 public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
 
-	private static final ScheduledExecutorService CONNECT_EXECUTOR_SERVICE = Executors
-			.newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect"));
+	private static final TunnelConnectExecutor EXECUTOR_SERVICE = new ScheduledTunnelConnectExecutor(
+			Executors.newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect")));
 
 	private final URL url;
 
@@ -58,13 +61,29 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	}
 
 	@Override
-	public int getConnectRetryTimes() {
-		return this.url.getParameter(RETRY_TIMES_URL_PARAM, RETRY_TIMES_DEFAULT_VALUE);
+	public boolean isAutoReconnect() {
+		ClientConnectorSetting setting = guide.getSetting().getConnector();
+		return this.url.getParameter(AUTO_RECONNECT_PARAM, setting.isAutoReconnect());
 	}
 
 	@Override
-	public long getConnectRetryInterval() {
-		return this.url.getParameter(RETRY_INTERVAL_URL_PARAM, RETRY_INTERVAL_DEFAULT_VALUE);
+	public int getConnectRetryTimes() {
+		ClientConnectorSetting setting = guide.getSetting().getConnector();
+		return this.url.getParameter(RETRY_TIMES_URL_PARAM, setting.getRetryTimes());
+	}
+
+	@Override
+	public List<Long> getConnectRetryIntervals() {
+		ClientConnectorSetting setting = guide.getSetting().getConnector();
+		String intervals = this.url.getParameter(RETRY_INTERVAL_URL_PARAM, "");
+		if (StringUtils.isEmpty(intervals)) {
+			return setting.getRetryIntervals();
+		}
+		String[] data = StringUtils.split(intervals, ",");
+		return Stream.of(data)
+				.map(Long::parseLong)
+				.filter(i -> i > 0)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -72,42 +91,54 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 		return this.certificate;
 	}
 
-	void open() {
+	private ClientConnectFuture<UID> checkPreOpen() {
 		if (this.isClosed()) {
-			return;
+			return DefaultClientConnectFuture.closed(this.getUrl());
 		}
+		return null;
+	}
+
+	private void initTunnel() {
+		NetTunnel<UID> newTunnel;
 		if (this.tunnel != null) {
 			return;
 		}
-		NetTunnel<UID> newTunnel;
-		int retryTimes = this.getConnectRetryTimes();
 		synchronized (this) {
-			if (this.isClosed()) {
-				return;
-			}
 			if (this.tunnel != null) {
 				return;
 			}
 			this.tunnel = newTunnel = new GeneralClientTunnel<>(this.idGenerator.generate(), this.guide.getContext());
 			newTunnel.bind(this);
-			this.connector = new TunnelConnector(newTunnel, retryTimes, this.getConnectRetryInterval());
-		}
-		this.connect(this.isAsyncConnect(), retryTimes > 1);
-		buses().openEvent().notify(this);
-	}
-
-	private void connect(boolean async, boolean retry) {
-		ScheduledExecutorService executor = async ? CONNECT_EXECUTOR_SERVICE : null;
-		if (retry) {
-			this.connector.connect(executor);
-		} else {
-			this.connector.reconnect(executor);
+			this.connector = new TunnelConnector(newTunnel, this, EXECUTOR_SERVICE);
 		}
 	}
 
 	@Override
+	public ClientConnectFuture<UID> open() {
+		ClientConnectFuture<UID> future = checkPreOpen();
+		if (future != null) {
+			return future;
+		}
+		initTunnel();
+		DefaultClientConnectFuture<UID> connectFuture = new DefaultClientConnectFuture<>();
+		this.doConnect((status, tunnel, cause) -> {
+			if (status.isSuccess()) {
+				buses().<UID>openEvent().notify(this);
+				connectFuture.complete(this);
+			} else {
+				connectFuture.completeExceptionally(cause);
+			}
+		});
+		return connectFuture;
+	}
+
+	private void doConnect(ConnectCallback callback) {
+		this.connector.connect(callback);
+	}
+
+	@Override
 	public void reconnect() {
-		this.connect(true, true);
+		this.connector.reconnect();
 	}
 
 	@Override
@@ -132,7 +163,7 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 				if (!this.postConnect.onConnected(tunnel)) {
 					throw new TunnelException("{} tunnel post connect failed", tunnel);
 				}
-				buses().activateEvent().notify(this, this.tunnel);
+				buses().<UID>activateEvent().notify(this, this.tunnel);
 			} catch (Exception e) {
 				throw new TunnelException(e, "{} tunnel post connect failed", tunnel);
 			}
@@ -141,7 +172,7 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 
 	@Override
 	public void onUnactivated(NetTunnel<UID> tunnel) {
-		buses().unactivatedEvent().notify(this, tunnel);
+		buses().<UID>unactivatedEvent().notify(this, tunnel);
 		if (isOffline()) {
 			this.reconnect();
 			return;

@@ -49,12 +49,8 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 		this.locker = locker;
 	}
 
-	public EntityScheme getCacheScheme() {
-		return cache.getScheme();
-	}
-
-	public K idOf(O object) {
-		return this.keyMaker.make(cache.getScheme(), object);
+	private K idOf(O object) {
+		return this.keyMaker.make(object);
 	}
 
 	@Override

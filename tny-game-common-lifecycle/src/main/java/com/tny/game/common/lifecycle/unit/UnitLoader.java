@@ -17,15 +17,15 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class UnitLoader<T> {
 
-	private static ConcurrentMap<Class<?>, UnitLoader<?>> unitLoaders = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Class<?>, UnitLoader<?>> unitLoaders = new ConcurrentHashMap<>();
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(UnitLoader.class);
 
-	private Class<T> unitInterface;
+	private final Class<T> unitInterface;
 
-	private ConcurrentMap<String, T> unitMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, T> unitMap = new ConcurrentHashMap<>();
 
-	private Set<T> unitSet = new ConcurrentHashSet<>();
+	private final Set<T> unitSet = new ConcurrentHashSet<>();
 
 	private UnitLoader(Class<T> unitInterface) {
 		this.unitInterface = unitInterface;

@@ -6,8 +6,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties.*;
 import org.springframework.core.type.AnnotationMetadata;
@@ -25,14 +24,7 @@ import static java.util.Objects.*;
 /**
  * <p>
  */
-public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar implements BeanFactoryAware {
-
-	private BeanFactory beanFactory;
-
-	@Override
-	public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
 	private static final String REDIS_PROTOCOL_PREFIX = "redis://";
 
@@ -124,7 +116,7 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
 				.getBeanDefinition());
 
 		if (redisProperties.isTemplateEnable()) {
-			RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
+			RedisTemplate<Object, Object> template = new RedisTemplate<>();
 			template.setConnectionFactory(redissonConnectionFactory);
 			String templateBeanName = nameOf(beanName, RedisTemplate.class);
 			registry.registerBeanDefinition(templateBeanName, BeanDefinitionBuilder
@@ -144,7 +136,7 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
 	}
 
 	private String[] convert(List<String> nodesObject) {
-		List<String> nodes = new ArrayList<String>(nodesObject.size());
+		List<String> nodes = new ArrayList<>(nodesObject.size());
 		for (String node : nodesObject) {
 			if (!node.startsWith(REDIS_PROTOCOL_PREFIX) && !node.startsWith(REDISS_PROTOCOL_PREFIX)) {
 				nodes.add(REDIS_PROTOCOL_PREFIX + node);

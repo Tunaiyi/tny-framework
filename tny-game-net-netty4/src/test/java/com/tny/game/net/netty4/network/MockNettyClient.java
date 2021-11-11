@@ -6,6 +6,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
+import java.util.*;
 
 /**
  * <p>
@@ -40,8 +41,8 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long
 	}
 
 	@Override
-	public long getConnectRetryInterval() {
-		return 0;
+	public List<Long> getConnectRetryIntervals() {
+		return Collections.singletonList(30000L);
 	}
 
 	@Override

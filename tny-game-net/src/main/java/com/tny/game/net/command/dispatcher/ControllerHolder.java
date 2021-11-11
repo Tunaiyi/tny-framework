@@ -22,11 +22,6 @@ public abstract class ControllerHolder {
 	protected final Class<?> controllerClass;
 
 	/**
-	 * 控制器操作配置
-	 */
-	protected final Controller controller;
-
-	/**
 	 * 是否需要验证授权
 	 */
 	protected final AuthenticationRequired auth;
@@ -61,15 +56,13 @@ public abstract class ControllerHolder {
 	 */
 	protected final List<String> scopes;
 
-	protected ControllerHolder(final Object executor, final MessageDispatcherContext context, final Controller controller,
-			final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth, final MessageFilter filter,
+	protected ControllerHolder(final Object executor, final MessageDispatcherContext context,
+			final BeforePlugin[] beforePlugins, final AfterPlugin[] afterPlugins, final AuthenticationRequired auth,
 			final AppProfile appProfile, final ScopeProfile scopeProfile, ExprHolderFactory exprHolderFactory) {
 		if (executor == null) {
 			throw new IllegalArgumentException("executor is null");
 		}
 		this.controllerClass = executor.getClass();
-		Asserts.checkNotNull(controller, "{} controller is null", this.controllerClass);
-		this.controller = controller;
 		this.auth = auth;
 		if (this.auth != null && this.auth.enable()) {
 			this.userGroups = ImmutableList.copyOf(this.auth.value());
@@ -94,10 +87,16 @@ public abstract class ControllerHolder {
 			this.afterPlugins = this
 					.initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, ControllerPluginHolder::new);
 		}
+	}
 
-		if (filter != null) {
-			this.messageModes = ImmutableSet.copyOf(filter.modes());
-		}
+	protected ControllerHolder setMessageModes(Set<MessageMode> messageModes) {
+		this.messageModes = ImmutableSet.copyOf(messageModes);
+		return this;
+	}
+
+	protected ControllerHolder setMessageModes(MessageMode... messageModes) {
+		this.messageModes = ImmutableSet.copyOf(messageModes);
+		return this;
 	}
 
 	@SuppressWarnings({"rawtypes"})
@@ -155,8 +154,6 @@ public abstract class ControllerHolder {
 	protected abstract List<ControllerPluginHolder> getControllerAfterPlugins();
 
 	public abstract String getName();
-
-	public abstract int getId();
 
 	public abstract <A extends Annotation> A getAnnotation(Class<A> annotationClass);
 

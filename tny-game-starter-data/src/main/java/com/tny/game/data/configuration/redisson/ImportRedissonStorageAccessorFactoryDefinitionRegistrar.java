@@ -23,6 +23,7 @@ public class ImportRedissonStorageAccessorFactoryDefinitionRegistrar extends Imp
 		RedissonStorageAccessorFactory factory = new RedissonStorageAccessorFactory(setting.getTableHead());
 		registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 				.genericBeanDefinition(RedissonStorageAccessorFactory.class, () -> factory)
+				.addPropertyReference("entityIdConverterFactory", setting.getIdConverterFactory())
 				.getBeanDefinition());
 	}
 

@@ -11,12 +11,12 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<UID, Session<UID>, NetSession<UID>> {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
+	private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
 	protected SessionKeeperSetting setting;
 
 	/* 离线session */
-	private final Queue<Session<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
+	private final Queue<NetSession<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
 
 	protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
 
@@ -39,7 +39,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 		if (!this.getUserType().equals(session.getUserType())) {
 			return;
 		}
-		Session<UID> netSession = as(session);
+		NetSession<UID> netSession = as(session);
 		this.offlineSessionQueue.remove(netSession);
 	}
 
@@ -59,8 +59,8 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 		if (!session.isLogin()) {
 			return;
 		}
-		Session<UID> netSession = as(session);
-		this.endpointMap.remove(netSession.getUserId(), netSession);
+		NetSession<UID> netSession = as(session);
+		this.removeEndpoint(netSession.getUserId(), netSession);
 		this.offlineSessionQueue.remove(netSession);
 	}
 
@@ -70,10 +70,10 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 	private void clearInvalidedSession() {
 		long now = System.currentTimeMillis();
 		// int size = this.offlineSessions.size() - offlineSessionMaxSize;
-		Set<Session<?>> closeSessions = new HashSet<>();
+		Set<NetSession<UID>> closeSessions = new HashSet<>();
 		this.offlineSessionQueue.forEach(session -> {
 					try {
-						Session<UID> closeSession = null;
+						NetSession<UID> closeSession = null;
 						if (session.isClosed()) {
 							LOG.info("移除已关闭的 OfflineSession userId : {}", session.getUserId());
 							closeSession = session;
@@ -83,7 +83,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 							closeSession = session;
 						}
 						if (closeSession != null) {
-							this.endpointMap.remove(closeSession.getUserId(), closeSession);
+							this.removeEndpoint(closeSession.getUserId(), closeSession);
 							closeSessions.add(closeSession);
 						}
 					} catch (Throwable e) {
@@ -108,19 +108,12 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 				}
 			}
 		}
-		debugSessionSize();
+		monitorEndpoint();
 	}
 
-	protected void debugSessionSize() {
-		int size = 0;
-		int online = 0;
-		for (Session<UID> session : this.endpointMap.values()) {
-			size++;
-			if (session.isOnline()) {
-				online++;
-			}
-		}
-		LOG.info("会话管理器#{} Group -> 会话数量为 {} | 在线数 {}", this.getUserType(), size, online);
+	@Override
+	protected void monitorEndpoint() {
+		super.monitorEndpoint();
 		LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", this.getUserType(), this.offlineSessionQueue.size(), this.setting.getOfflineMaxSize());
 	}
 

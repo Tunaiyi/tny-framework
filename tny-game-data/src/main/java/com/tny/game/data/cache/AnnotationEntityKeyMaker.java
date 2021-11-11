@@ -49,7 +49,7 @@ public class AnnotationEntityKeyMaker<K extends Comparable<K>> implements Entity
 	}
 
 	@Override
-	public K make(EntityScheme scheme, Object object) {
+	public K make(Object object) {
 		try {
 			if (propertyAccessor != null) {
 				return as(propertyAccessor.getPropertyValue(object));

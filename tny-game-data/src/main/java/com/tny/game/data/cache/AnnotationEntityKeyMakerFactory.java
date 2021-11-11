@@ -16,8 +16,8 @@ public class AnnotationEntityKeyMakerFactory implements EntityKeyMakerFactory {
 	private static final Map<Class<?>, EntityKeyMaker<?, ?>> makerMap = new ConcurrentHashMap<>();
 
 	@Override
-	public EntityKeyMaker<?, ?> createMaker(EntityScheme cacheScheme) {
-		Class<?> entityClass = cacheScheme.getEntityClass();
+	public EntityKeyMaker<?, ?> createMaker(EntityScheme scheme) {
+		Class<?> entityClass = scheme.getEntityClass();
 		return makerMap.computeIfAbsent(entityClass, AnnotationEntityKeyMaker::new);
 	}
 

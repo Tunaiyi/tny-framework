@@ -5,6 +5,7 @@ import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.netty4.relay.cluster.*;
 import com.tny.game.net.netty4.relay.guide.*;
 import com.tny.game.net.netty4.relay.router.*;
+import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.allot.*;
 import com.tny.game.net.relay.link.route.*;
@@ -53,6 +54,13 @@ public class RelayAccessAutoConfiguration {
 	public LocalRelayContext localRelayContext(
 			NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
 		return new NettyLocalRelayContext(appContext, relayMessageRouter, serveClusterFilter);
+	}
+
+	@Bean
+	@ConditionalOnBean(ServeNodeClient.class)
+	public LocalRelayServeNodeWatchService localRelayServeNodeWatchService(
+			ServeNodeClient serveNodeClient, NetLocalRelayExplorer localRelayExplorer) {
+		return new LocalRelayServeNodeWatchService(serveNodeClient, localRelayExplorer);
 	}
 
 	@Bean

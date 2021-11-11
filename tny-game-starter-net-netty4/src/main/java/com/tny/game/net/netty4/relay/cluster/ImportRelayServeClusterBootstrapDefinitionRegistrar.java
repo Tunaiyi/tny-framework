@@ -3,7 +3,6 @@ package com.tny.game.net.netty4.relay.cluster;
 import com.tny.game.boot.registrar.*;
 import com.tny.game.net.netty4.relay.*;
 import org.springframework.beans.factory.support.*;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
@@ -46,11 +45,6 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
 			builder.addPropertyReference("relayLinkAllotStrategy", setting.getRelayLinkAllotStrategy());
 		}
 		registry.registerBeanDefinition(name, builder.getBeanDefinition());
-	}
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
 	}
 
 }

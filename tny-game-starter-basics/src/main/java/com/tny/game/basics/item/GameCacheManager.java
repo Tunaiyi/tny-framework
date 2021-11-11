@@ -13,9 +13,7 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameCacheManager.class);
 
 	@Resource
-	protected EntityCacheManager<String, O> entityManager;
-
-	private final ItemKeyMaker itemIdMaker = new ItemKeyMaker();
+	protected EntityCacheManager<AnyUnid, O> entityManager;
 
 	private final Consumer<O> onLoad;
 
@@ -30,7 +28,8 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 
 	@Override
 	protected O get(long playerId) {
-		O value = this.entityManager.getEntity(itemIdMaker.makeId(this.entityClass, playerId));
+		AnyUnid unid = AnyUnid.uidOf(playerId, playerId);
+		O value = this.entityManager.getEntity(unid);
 		if (value == null) {
 			return null;
 		}
@@ -39,7 +38,8 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 
 	@Override
 	protected O get(long playerId, long id) {
-		O value = this.entityManager.getEntity(itemIdMaker.makeId(this.entityClass, playerId, id));
+		AnyUnid unid = AnyUnid.uidOf(playerId, id);
+		O value = this.entityManager.getEntity(unid);
 		if (value == null) {
 			return null;
 		}
@@ -48,22 +48,22 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 
 	@Override
 	protected Collection<O> getAll(long playerId, Collection<Long> ids) {
-		List<String> keys = ids.stream()
-				.map(id -> this.itemIdMaker.makeId(this.entityClass, playerId, id))
+		List<AnyUnid> keys = ids.stream()
+				.map(id -> AnyUnid.uidOf(playerId, id))
 				.collect(Collectors.toList());
 		return onLoad(this.entityManager.getEntities(keys));
 	}
 
-	protected Collection<O> getByKeys(String... keys) {
+	protected Collection<O> getByKeys(AnyUnid... keys) {
 		return onLoad(this.entityManager.getEntities(Arrays.asList(keys)));
 	}
 
-	protected Collection<O> getByKeys(Collection<String> keys) {
+	protected Collection<O> getByKeys(Collection<AnyUnid> keys) {
 		return onLoad(this.entityManager.getEntities(keys));
 	}
 
 	protected O getByKey(long playerId, long id) {
-		return onLoad(this.entityManager.getEntity(this.itemIdMaker.makeId(this.entityClass, playerId, id)));
+		return onLoad(this.entityManager.getEntity(AnyUnid.uidOf(playerId, id)));
 	}
 
 	private O onLoad(O o) {

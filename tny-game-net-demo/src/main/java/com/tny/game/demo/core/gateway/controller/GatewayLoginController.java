@@ -9,24 +9,21 @@ import org.slf4j.*;
 
 import java.time.ZonedDateTime;
 
-import static com.tny.game.net.message.MessageMode.*;
-
 /**
  * <p>
  *
  * @author: Kun Yang
  * @date: 2018-10-31 16:46
  */
-@Controller(CtrlerIDs.LOGIN)
+@RpcController
 @AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
-@MessageFilter(modes = {REQUEST, PUSH})
 public class GatewayLoginController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayLoginController.class);
 
 	@RelayTo
-	@Controller(CtrlerIDs.LOGIN$LOGIN)
+	@Rpc(CtrlerIDs.LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
 	public void login(Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {

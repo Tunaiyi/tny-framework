@@ -14,6 +14,7 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -80,21 +81,26 @@ public final class MethodControllerHolder extends ControllerHolder {
 	private PluginContext afterContext;
 
 	/**
+	 * 控制器操作配置
+	 */
+	private final RpcProfile profile;
+
+	/**
 	 * 构造方法
 	 *
 	 * @param executor 调用的执行对象
 	 * @param method   方法
 	 */
 	MethodControllerHolder(final Object executor, final MessageDispatcherContext context, ExprHolderFactory exprHolderFactory,
-			final ClassControllerHolder classController, final MethodAccessor method, final Controller controller) {
-		super(executor, context, controller,
+			final ClassControllerHolder classController, final MethodAccessor method, final RpcProfile rpcProfile) {
+		super(executor, context,
 				method.getJavaMethod().getAnnotationsByType(BeforePlugin.class),
 				method.getJavaMethod().getAnnotationsByType(AfterPlugin.class),
 				method.getJavaMethod().getAnnotation(AuthenticationRequired.class),
-				method.getJavaMethod().getAnnotation(MessageFilter.class),
 				method.getJavaMethod().getAnnotation(AppProfile.class),
 				method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
 		try {
+			this.profile = RpcProfile.of(method.getJavaMethod());
 			this.classController = classController;
 			this.method = method;
 			this.executor = executor;
@@ -152,6 +158,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 			for (ControllerPluginHolder plugin : this.getControllerAfterPlugins())
 				this.afterContext = this.putPlugin(this.afterContext, plugin);
 			this.returnType = method.getReturnType();
+			this.setMessageModes(rpcProfile.getModeSet());
 		} catch (Exception e) {
 			throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
 		}
@@ -166,7 +173,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
 	@Override
 	public Set<MessageMode> getMessageModes() {
-		if (this.messageModes != null) {
+		if (CollectionUtils.isNotEmpty(this.messageModes)) {
 			return this.messageModes;
 		}
 		return this.classController.getMessageModes();
@@ -215,9 +222,8 @@ public final class MethodControllerHolder extends ControllerHolder {
 		return this.name;
 	}
 
-	@Override
-	public int getId() {
-		return this.controller != null ? this.controller.value() : -1;
+	public int getProtocol() {
+		return this.profile != null ? this.profile.getProtocol() : -1;
 	}
 
 	/**
@@ -378,37 +384,43 @@ public final class MethodControllerHolder extends ControllerHolder {
 			} else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
 				this.paramType = ParamType.CODE;
 			} else {
-				for (Annotation annotation : this.paramAnnotations) {
-					if (annotation.annotationType() == MsgBody.class) {
-						this.paramType = ParamType.BODY;
-						this.require = ((MsgBody)annotation).require();
-					} else if (annotation.annotationType() == MsgParam.class) {
-						/* 参数注解 */
-						MsgParam msgParam = (MsgParam)annotation;
-						this.require = msgParam.require();
-						if (StringUtils.isNoneBlank(msgParam.value())) {
-							this.name = msgParam.value();
-							this.formula = exprHolderFactory.create("_body." + this.name.trim());
-							this.paramType = ParamType.KEY_PARAM;
-						} else {
-							if (msgParam.index() >= 0) {
-								this.index = msgParam.index();
+				if (this.paramAnnotations.isEmpty()) {
+					this.index = indexCounter.intValue();
+					indexCounter.add(1);
+					this.paramType = ParamType.INDEX_PARAM;
+				} else {
+					for (Annotation annotation : this.paramAnnotations) {
+						if (annotation.annotationType() == MsgBody.class) {
+							this.paramType = ParamType.BODY;
+							this.require = ((MsgBody)annotation).require();
+						} else if (annotation.annotationType() == MsgParam.class) {
+							/* 参数注解 */
+							MsgParam msgParam = (MsgParam)annotation;
+							this.require = msgParam.require();
+							if (StringUtils.isNoneBlank(msgParam.value())) {
+								this.name = msgParam.value();
+								this.formula = exprHolderFactory.create("_body." + this.name.trim());
+								this.paramType = ParamType.KEY_PARAM;
 							} else {
-								this.index = indexCounter.intValue();
-								indexCounter.add(1);
+								if (msgParam.index() >= 0) {
+									this.index = msgParam.index();
+								} else {
+									this.index = indexCounter.intValue();
+									indexCounter.add(1);
+								}
+								this.paramType = ParamType.INDEX_PARAM;
 							}
-							this.paramType = ParamType.INDEX_PARAM;
-						}
-					} else if (annotation.annotationType() == UserID.class) {
-						this.paramType = ParamType.UserID;
-					} else if (annotation.annotationType() == MsgCode.class) {
-						if (paramClass == Integer.class || paramClass == int.class) {
-							this.paramType = ParamType.CODE_NUM;
-						} else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
-							this.paramType = ParamType.CODE;
-						} else {
-							throw new IllegalArgumentException(format("{} 类型参数只能是 {} {} {}, 无法为 {}",
-									MsgCode.class, Integer.class, int.class, ResultCode.class));
+						} else if (annotation.annotationType() == UserID.class) {
+							this.paramType = ParamType.UserID;
+						} else if (annotation.annotationType() == MsgCode.class) {
+							if (paramClass == Integer.class || paramClass == int.class) {
+								this.paramType = ParamType.CODE_NUM;
+							} else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
+								this.paramType = ParamType.CODE;
+							} else {
+								throw new IllegalArgumentException(format("{} 类型参数只能是 {} {} {}, 无法为 {}",
+										MsgCode.class, Integer.class, int.class, ResultCode.class));
+							}
 						}
 					}
 				}

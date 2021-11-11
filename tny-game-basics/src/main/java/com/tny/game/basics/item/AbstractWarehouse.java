@@ -22,7 +22,12 @@ public abstract class AbstractWarehouse<O extends StuffOwner<?, ?>> implements W
 
 	private StuffOwnerExplorer stuffOwnerExplorer;
 
-	private Map<ItemType, WeakReference<? extends O>> stuffOwnerMap = new CopyOnWriteMap<>();
+	private final Map<ItemType, WeakReference<? extends O>> stuffOwnerMap = new CopyOnWriteMap<>();
+
+	protected AbstractWarehouse(long playerId, StuffOwnerExplorer stuffOwnerExplorer) {
+		this.playerId = playerId;
+		this.stuffOwnerExplorer = stuffOwnerExplorer;
+	}
 
 	@Override
 	public long getId() {
@@ -41,7 +46,7 @@ public abstract class AbstractWarehouse<O extends StuffOwner<?, ?>> implements W
 		if (owner != null) {
 			return (SO)owner;
 		}
-		owner = this.stuffOwnerExplorer.getStorage(this.playerId, itemType.getId());
+		owner = this.stuffOwnerExplorer.getOwner(this.playerId, itemType.getId());
 		if (owner == null) {
 			throw new NullPointerException(MessageFormat.format("{0} 玩家 {1} {2} owner的对象为 null", this.playerId, itemType));
 		}
@@ -74,28 +79,28 @@ public abstract class AbstractWarehouse<O extends StuffOwner<?, ?>> implements W
 	protected void consume(Trade result, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
 		for (TradeItem tradeItem : result.getAllTradeItem()) {
-			this.consume0(tradeItem, result.getAction(), attributes);
+			this.consumeTrade(tradeItem, result.getAction(), attributes);
 		}
 		TradeEvents.CONSUME_EVENT.notify(this, result.getAction(), result, attributes);
 	}
 
 	protected void consume(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		this.consume0(tradeItem, action, attributes);
+		this.consumeTrade(tradeItem, action, attributes);
 		TradeEvents.CONSUME_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), attributes);
 	}
 
 	protected void receive(Trade result, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
 		for (TradeItem tradeItem : result.getAllTradeItem()) {
-			this.receive0(tradeItem, result.getAction(), attributes);
+			this.receiveTrade(tradeItem, result.getAction(), attributes);
 		}
 		TradeEvents.RECEIVE_EVENT.notify(this, result.getAction(), result, attributes);
 	}
 
 	protected void receive(TradeItem<?> tradeItem, Action action, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		this.receive0(tradeItem, action, attributes);
+		this.receiveTrade(tradeItem, action, attributes);
 		TradeEvents.RECEIVE_EVENT.notify(this, action, new SimpleTrade(action, TradeType.AWARD, tradeItem), attributes);
 	}
 
@@ -107,7 +112,7 @@ public abstract class AbstractWarehouse<O extends StuffOwner<?, ?>> implements W
 		this.stuffOwnerExplorer = stuffOwnerExplorer;
 	}
 
-	private void consume0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
+	private void consumeTrade(TradeItem<?> tradeItem, Action action, Attributes attributes) {
 		if (!tradeItem.isValid()) {
 			return;
 		}
@@ -126,7 +131,7 @@ public abstract class AbstractWarehouse<O extends StuffOwner<?, ?>> implements W
 		}
 	}
 
-	private void receive0(TradeItem<?> tradeItem, Action action, Attributes attributes) {
+	private void receiveTrade(TradeItem<?> tradeItem, Action action, Attributes attributes) {
 		if (!tradeItem.isValid()) {
 			return;
 		}

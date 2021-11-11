@@ -18,9 +18,9 @@ public class MongoClientStorageAccessorFactory extends AbstractCachedFactory<Cla
 
 	public static final String ACCESSOR_NAME = "mongoClientStorageAccessorFactory";
 
-	private EntityIdConverter<?, ?, ?> idConverter;
+	private EntityIdConverterFactory entityIdConverterFactory;
 
-	private EntityConverter entityConverter;
+	private EntityObjectConverter entityObjectConverter;
 
 	private MongoDatabaseFactory databaseFactory;
 
@@ -28,27 +28,28 @@ public class MongoClientStorageAccessorFactory extends AbstractCachedFactory<Cla
 	}
 
 	public MongoClientStorageAccessorFactory(
-			EntityIdConverter<?, ?, ?> idConvertor,
-			EntityConverter entityConverter,
+			EntityObjectConverter entityObjectConverter,
+			EntityIdConverterFactory entityIdConverterFactory,
 			MongoDatabaseFactory databaseFactory) {
-		this.idConverter = idConvertor;
-		this.entityConverter = entityConverter;
+		this.entityIdConverterFactory = entityIdConverterFactory;
+		this.entityObjectConverter = entityObjectConverter;
 		this.databaseFactory = databaseFactory;
 	}
 
 	@Override
 	public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+		EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
 		return loadOrCreate(scheme.getEntityClass(), (clazz) -> new MongoClientStorageAccessor<>(
-				clazz, as(idConverter), entityConverter, databaseFactory.getMongoDatabase()));
+				clazz, as(idConverter), entityObjectConverter, databaseFactory.getMongoDatabase()));
 	}
 
-	public MongoClientStorageAccessorFactory setIdConverter(EntityIdConverter<?, ?, ?> idConverter) {
-		this.idConverter = idConverter;
+	public MongoClientStorageAccessorFactory setEntityIdConverterFactory(EntityIdConverterFactory entityIdConverterFactory) {
+		this.entityIdConverterFactory = entityIdConverterFactory;
 		return this;
 	}
 
-	public MongoClientStorageAccessorFactory setEntityConverter(EntityConverter entityConverter) {
-		this.entityConverter = entityConverter;
+	public MongoClientStorageAccessorFactory setEntityObjectConverter(EntityObjectConverter entityObjectConverter) {
+		this.entityObjectConverter = entityObjectConverter;
 		return this;
 	}
 

@@ -24,7 +24,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 			}
 
 			@Override
-			public CommandTaskProcessor getCommandTaskProcessor() {
+			public CommandTaskBoxProcessor getCommandTaskProcessor() {
 				return null;
 			}
 		});

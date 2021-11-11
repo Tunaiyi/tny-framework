@@ -30,17 +30,17 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements S
 
 	private final Class<O> entityClass;
 
-	private final EntityConverter entityConverter;
+	private final EntityObjectConverter entityObjectConverter;
 
 	private final EntityIdConverter<K, O, ?> idConvertor;
 
 	private final ThreadLocal<List<WriteModel<? extends Document>>> bulkOperations;
 
-	public MongoClientStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityConverter entityConverter,
+	public MongoClientStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityObjectConverter entityObjectConverter,
 			MongoDatabase database) {
 		this.entityClass = entityClass;
 		this.idConvertor = idConverter;
-		this.entityConverter = entityConverter;
+		this.entityObjectConverter = entityObjectConverter;
 		this.database = database;
 		this.bulkOperations = ThreadLocal.withInitial(LinkedList::new);
 	}
@@ -58,7 +58,7 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements S
 		if (document == null) {
 			return null;
 		}
-		return entityConverter.convert(documents, entityClass);
+		return entityObjectConverter.convertToRead(document, entityClass);
 	}
 
 	@Override
@@ -78,7 +78,8 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements S
 		MongoCollection<Document> collection = collection();
 		FindIterable<Document> documents = collection.find(queryIdIn(idList).getQueryObject());
 		for (Document document : documents) {
-			objects.add(entityConverter.convert(document, this.entityClass));
+			//			Object id = entityToId(key);
+			objects.add(entityObjectConverter.convertToRead(document, this.entityClass));
 		}
 		return objects;
 	}
@@ -204,8 +205,9 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements S
 		}
 	}
 
-	private <T> Document toDocument(T entity) {
-		return this.entityConverter.convert(entity, Document.class);
+	private Document toDocument(O entity) {
+		Object id = entityToId(entity);
+		return this.entityObjectConverter.convertToWrite(id, entity, Document.class);
 	}
 
 	private Object keyToId(K key) {

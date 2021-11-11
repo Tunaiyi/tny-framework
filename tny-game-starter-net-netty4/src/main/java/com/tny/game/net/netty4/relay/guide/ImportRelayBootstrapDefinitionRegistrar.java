@@ -8,7 +8,6 @@ import com.tny.game.net.netty4.relay.codec.*;
 import com.tny.game.net.netty4.relay.codec.arguments.*;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.*;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
@@ -116,11 +115,6 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
 				.addPropertyValue("channelPipelineChains", channelPipelineChains)
 				.getBeanDefinition());
 		return channelMakerName;
-	}
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
 	}
 
 }

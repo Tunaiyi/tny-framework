@@ -13,175 +13,191 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class MessageParamList extends AbstractList<Object> {
 
-    private final List<Object> paramList;
+	private final List<Object> paramList;
 
-    public MessageParamList(List<Object> paramList) {
-        this.paramList = paramList;
-    }
+	public static Optional<MessageParamList> of(Object body) {
+		if (body == null) {
+			return Optional.empty();
+		}
+		if (body instanceof MessageParamList) {
+			return Optional.of(as(body));
+		}
+		if (body instanceof Object[]) {
+			return Optional.of(new MessageParamList(as(body, Object[].class)));
+		}
+		if (body instanceof List) {
+			return Optional.of(new MessageParamList((List<?>)body));
+		}
+		return Optional.empty();
+	}
 
-    public MessageParamList(Object... params) {
-        this.paramList = Arrays.asList(params);
-    }
+	public MessageParamList(List<?> paramList) {
+		this.paramList = as(paramList);
+	}
 
-    @Override
-    public Object get(int index) {
-        return this.paramList.get(index);
-    }
+	public MessageParamList(Object... params) {
+		this.paramList = Arrays.asList(params);
+	}
 
-    @Override
-    public int size() {
-        return this.paramList.size();
-    }
+	@Override
+	public Object get(int index) {
+		return this.paramList.get(index);
+	}
 
-    /**
-     * 如果 没有则返回 null
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
-    public <T> T getObject(int index) {
-        return as(this.get(index));
-    }
+	@Override
+	public int size() {
+		return this.paramList.size();
+	}
 
-    public <T> T getObject(int index, T defaultValue) {
-        T value = getObject(index);
-        return value != null ? value : defaultValue;
-    }
+	/**
+	 * 如果 没有则返回 null
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
+	public <T> T getObject(int index) {
+		return as(this.get(index));
+	}
 
-    public String getString(int index) {
-        return asObject(index, null, String.class);
-    }
+	public <T> T getObject(int index, T defaultValue) {
+		T value = getObject(index);
+		return value != null ? value : defaultValue;
+	}
 
-    public String getString(int index, String defaultValue) {
-        return asObject(index, defaultValue, String.class);
-    }
+	public String getString(int index) {
+		return asObject(index, null, String.class);
+	}
 
-    /**
-     * getByte 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public String getString(int index, String defaultValue) {
+		return asObject(index, defaultValue, String.class);
+	}
 
-    public byte getByte(int index) {
-        return asNotNullObject(index, Byte.class);
-    }
+	/**
+	 * getByte 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public byte getByte(int index, byte defaultValue) {
-        return asObject(index, defaultValue, Byte.class);
-    }
+	public byte getByte(int index) {
+		return asNotNullObject(index, Byte.class);
+	}
 
-    /**
-     * getInt 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public byte getByte(int index, byte defaultValue) {
+		return asObject(index, defaultValue, Byte.class);
+	}
 
-    public int getInt(int index) {
-        return asNotNullObject(index, Integer.class);
-    }
+	/**
+	 * getInt 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public int getInt(int index, int defaultValue) {
-        return asObject(index, defaultValue, Integer.class);
-    }
+	public int getInt(int index) {
+		return asNotNullObject(index, Integer.class);
+	}
 
-    /**
-     * getShort 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public int getInt(int index, int defaultValue) {
+		return asObject(index, defaultValue, Integer.class);
+	}
 
-    public short getShort(int index) {
-        return asNotNullObject(index, Short.class);
-    }
+	/**
+	 * getShort 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public short getShort(int index, short defaultValue) {
-        return asObject(index, defaultValue, Short.class);
-    }
+	public short getShort(int index) {
+		return asNotNullObject(index, Short.class);
+	}
 
-    /**
-     * getLong 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public short getShort(int index, short defaultValue) {
+		return asObject(index, defaultValue, Short.class);
+	}
 
-    public long getLong(int index) {
-        return asNotNullObject(index, Long.class);
-    }
+	/**
+	 * getLong 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public long getLong(int index, long defaultValue) {
-        return asObject(index, defaultValue, Long.class);
-    }
+	public long getLong(int index) {
+		return asNotNullObject(index, Long.class);
+	}
 
-    /**
-     * getDouble 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public long getLong(int index, long defaultValue) {
+		return asObject(index, defaultValue, Long.class);
+	}
 
-    public double getDouble(int index) {
-        return asNotNullObject(index, Double.class);
-    }
+	/**
+	 * getDouble 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public double getDouble(int index, double defaultValue) {
-        return asObject(index, defaultValue, Double.class);
-    }
+	public double getDouble(int index) {
+		return asNotNullObject(index, Double.class);
+	}
 
-    /**
-     * getFloat 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public double getDouble(int index, double defaultValue) {
+		return asObject(index, defaultValue, Double.class);
+	}
 
-    public float getFloat(int index) {
-        return asNotNullObject(index, Float.class);
-    }
+	/**
+	 * getFloat 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public float getFloat(int index, float defaultValue) {
-        return asObject(index, defaultValue, float.class);
-    }
+	public float getFloat(int index) {
+		return asNotNullObject(index, Float.class);
+	}
 
-    /**
-     * getBoolean 如果为 Null 抛出异常
-     *
-     * @param index 查找的 index
-     * @return 返回查找的值
-     */
+	public float getFloat(int index, float defaultValue) {
+		return asObject(index, defaultValue, float.class);
+	}
 
-    public boolean getBoolean(int index) {
-        return asNotNullObject(index, Boolean.class);
-    }
+	/**
+	 * getBoolean 如果为 Null 抛出异常
+	 *
+	 * @param index 查找的 index
+	 * @return 返回查找的值
+	 */
 
-    public boolean getBoolean(int index, boolean defaultValue) {
-        return asObject(index, defaultValue, Boolean.class);
-    }
+	public boolean getBoolean(int index) {
+		return asNotNullObject(index, Boolean.class);
+	}
 
-    private <T> T asObject(int index, T defaultValue, Class<T> valueClass) {
-        T value = getObject(index);
-        if (value == null) {
-            return defaultValue;
-        }
-        return convertTo(value, valueClass);
-    }
+	public boolean getBoolean(int index, boolean defaultValue) {
+		return asObject(index, defaultValue, Boolean.class);
+	}
 
-    private <T> T asNotNullObject(int index, Class<T> valueClass) {
-        Object value = getObject(index);
-        if (value == null) {
-            throw new NullPointerException("[" + index + "] value is null");
-        }
-        return convertTo(value, valueClass);
-    }
+	private <T> T asObject(int index, T defaultValue, Class<T> valueClass) {
+		T value = getObject(index);
+		if (value == null) {
+			return defaultValue;
+		}
+		return convertTo(value, valueClass);
+	}
 
-    public <T> void getNotNullToFunction(int index, Function<T, ?> function, Class<T> valueClass) {
-        Object value = getObject(index);
-        if (value != null) {
-            function.apply(convertTo(value, valueClass));
-        }
-    }
+	private <T> T asNotNullObject(int index, Class<T> valueClass) {
+		Object value = getObject(index);
+		if (value == null) {
+			throw new NullPointerException("[" + index + "] value is null");
+		}
+		return convertTo(value, valueClass);
+	}
+
+	public <T> void getNotNullToFunction(int index, Function<T, ?> function, Class<T> valueClass) {
+		Object value = getObject(index);
+		if (value != null) {
+			function.apply(convertTo(value, valueClass));
+		}
+	}
 
 }
