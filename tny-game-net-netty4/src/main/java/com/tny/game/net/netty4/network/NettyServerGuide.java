@@ -95,7 +95,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 	@Override
 	public String getScheme() {
-		return "tcp";
+		return setting.getScheme();
 	}
 
 	@Override

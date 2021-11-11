@@ -8,6 +8,8 @@ import java.net.InetSocketAddress;
 
 public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting implements ServerBootstrapSetting {
 
+	private String scheme = "tcp";
+
 	private InetSocketAddress bindAddress;
 
 	private InetSocketAddress serveAddress;
@@ -29,6 +31,10 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
 		return serveAddress;
 	}
 
+	public String getScheme() {
+		return scheme;
+	}
+
 	public String getBindAddress() {
 		return this.bindAddressValue;
 	}
@@ -47,6 +53,11 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
 		this.serveAddressValue = address;
 		String[] hostPort = StringUtils.split(address, ":");
 		this.serveAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+	}
+
+	public CommonServerBootstrapSetting setScheme(String scheme) {
+		this.scheme = scheme;
+		return this;
 	}
 
 }
