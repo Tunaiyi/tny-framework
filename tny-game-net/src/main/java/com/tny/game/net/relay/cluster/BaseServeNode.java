@@ -1,9 +1,8 @@
 package com.tny.game.net.relay.cluster;
 
-import com.tny.game.common.collection.map.access.*;
 import org.apache.commons.lang3.builder.*;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * <p>
@@ -11,58 +10,35 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/9/10 4:00 下午
  */
-public class BaseServeNode implements ServeNode {
-
-	private String serveName;
-
-	private long id;
+public class BaseServeNode extends BaseNetAccessPoint implements ServeNode {
 
 	private String appType;
 
 	private String scopeType;
 
-	private String scheme;
-
-	private String host;
-
-	private boolean healthy = true;
-
-	private int port;
-
-	private ObjectMap metadata = new ObjectMap();
+	private String serveName;
 
 	public BaseServeNode() {
+		super();
+	}
+
+	public BaseServeNode(String appType, String scopeType, String serveName, NetAccessPoint point) {
+		super(point);
+		this.appType = appType;
+		this.scopeType = scopeType;
+		this.serveName = serveName;
 	}
 
 	public BaseServeNode(String serveName, String appType, String scopeType, long id, String scheme, String host, int port) {
+		super(id, scheme, host, port, true);
 		this.serveName = serveName;
-		this.id = id;
-		this.scheme = scheme;
 		this.appType = appType;
 		this.scopeType = scopeType;
-		this.host = host;
-		this.port = port;
-		this.metadata = new ObjectMap();
 	}
 
 	@Override
 	public String getServeName() {
 		return serveName;
-	}
-
-	@Override
-	public long getId() {
-		return id;
-	}
-
-	@Override
-	public String getScheme() {
-		return scheme;
-	}
-
-	@Override
-	public String getHost() {
-		return host;
 	}
 
 	@Override
@@ -75,33 +51,8 @@ public class BaseServeNode implements ServeNode {
 		return scopeType;
 	}
 
-	@Override
-	public boolean isHealthy() {
-		return healthy;
-	}
-
-	@Override
-	public int getPort() {
-		return port;
-	}
-
-	@Override
-	public Map<String, Object> getMetadata() {
-		return Collections.unmodifiableMap(metadata);
-	}
-
-	@Override
-	public MapAccessor metadata() {
-		return metadata;
-	}
-
 	protected BaseServeNode setServeName(String serveName) {
 		this.serveName = serveName;
-		return this;
-	}
-
-	protected BaseServeNode setId(long id) {
-		this.id = id;
 		return this;
 	}
 
@@ -115,28 +66,45 @@ public class BaseServeNode implements ServeNode {
 		return this;
 	}
 
+	@Override
+	protected BaseServeNode setId(long id) {
+		super.setId(id);
+		return this;
+	}
+
+	@Override
 	protected BaseServeNode setHealthy(boolean healthy) {
-		this.healthy = healthy;
+		super.setHealthy(healthy);
 		return this;
 	}
 
+	@Override
 	protected BaseServeNode setScheme(String scheme) {
-		this.scheme = scheme;
+		super.setScheme(scheme);
 		return this;
 	}
 
+	@Override
 	protected BaseServeNode setHost(String host) {
-		this.host = host;
+		super.setHost(host);
 		return this;
 	}
 
+	@Override
 	protected BaseServeNode setPort(int port) {
-		this.port = port;
+		super.setPort(port);
 		return this;
 	}
 
+	@Override
 	protected BaseServeNode setMetadata(Map<String, Object> metadata) {
-		this.metadata = new ObjectMap(metadata);
+		super.setMetadata(metadata);
+		return this;
+	}
+
+	@Override
+	protected BaseServeNode setUrl(String value) {
+		super.setUrl(value);
 		return this;
 	}
 
@@ -164,11 +132,11 @@ public class BaseServeNode implements ServeNode {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
 				.append("serveName", serveName)
-				.append("id", id)
-				.append("healthy", healthy)
-				.append("scheme", scheme)
-				.append("host", host)
-				.append("port", port)
+				.append("id", getScheme())
+				.append("healthy", isHealthy())
+				.append("scheme", getScheme())
+				.append("host", getHost())
+				.append("port", getPort())
 				.toString();
 	}
 

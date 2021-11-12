@@ -1,8 +1,13 @@
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.allot.*;
+
+import java.util.List;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -10,17 +15,17 @@ import com.tny.game.net.relay.link.allot.*;
  * @author : kgtny
  * @date : 2021/8/23 9:20 下午
  */
-public class NettyLocalServeClusterContext implements LocalServeClusterContext {
+public class NettyRemoteServeClusterContext implements RemoteServeClusterContext {
 
-	private final LocalServeClusterSetting setting;
+	private final RelayServeClusterSetting setting;
 
 	private RelayClientGuide clientGuide;
 
-	private LocalServeInstanceAllotStrategy serveInstanceAllotStrategy = new PollingRelayAllotStrategy();
+	private ServeInstanceAllotStrategy serveInstanceAllotStrategy = new PollingRelayAllotStrategy();
 
-	private LocalRelayLinkAllotStrategy relayLinkAllotStrategy = new PollingRelayAllotStrategy();
+	private RelayLinkAllotStrategy relayLinkAllotStrategy = new PollingRelayAllotStrategy();
 
-	public NettyLocalServeClusterContext(RelayServeClusterSetting setting) {
+	public NettyRemoteServeClusterContext(RelayServeClusterSetting setting) {
 		this.setting = setting;
 	}
 
@@ -59,12 +64,17 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 	}
 
 	@Override
-	public LocalServeInstanceAllotStrategy getServeInstanceAllotStrategy() {
+	public List<NetAccessPoint> getInstances() {
+		return as(setting.getInstanceList());
+	}
+
+	@Override
+	public ServeInstanceAllotStrategy getServeInstanceAllotStrategy() {
 		return serveInstanceAllotStrategy;
 	}
 
 	@Override
-	public LocalRelayLinkAllotStrategy getRelayLinkAllotStrategy() {
+	public RelayLinkAllotStrategy getRelayLinkAllotStrategy() {
 		return relayLinkAllotStrategy;
 	}
 
@@ -76,18 +86,18 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 		clientGuide.connect(url, callback);
 	}
 
-	public NettyLocalServeClusterContext setClientGuide(RelayClientGuide clientGuide) {
+	public NettyRemoteServeClusterContext setClientGuide(RelayClientGuide clientGuide) {
 		this.clientGuide = clientGuide;
 		return this;
 	}
 
-	public NettyLocalServeClusterContext setServeInstanceAllotStrategy(
-			LocalServeInstanceAllotStrategy serveInstanceAllotStrategy) {
+	public NettyRemoteServeClusterContext setServeInstanceAllotStrategy(
+			ServeInstanceAllotStrategy serveInstanceAllotStrategy) {
 		this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
 		return this;
 	}
 
-	public NettyLocalServeClusterContext setRelayLinkAllotStrategy(LocalRelayLinkAllotStrategy relayLinkAllotStrategy) {
+	public NettyRemoteServeClusterContext setRelayLinkAllotStrategy(RelayLinkAllotStrategy relayLinkAllotStrategy) {
 		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
 		return this;
 	}

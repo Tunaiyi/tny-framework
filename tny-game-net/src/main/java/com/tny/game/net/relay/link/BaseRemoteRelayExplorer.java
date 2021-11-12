@@ -22,40 +22,40 @@ import static com.tny.game.net.relay.cluster.ServeClusterFilterStatus.*;
  * @author : kgtny
  * @date : 2021/8/25 9:00 下午
  */
-public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> extends BaseRelayExplorer<LocalRelayTunnel<?>> implements NetLocalRelayExplorer {
+public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> extends BaseRelayExplorer<RemoteRelayTunnel<?>> implements NetRemoteRelayExplorer {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalRelayExplorer.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(BaseRemoteRelayExplorer.class);
 
 	private volatile List<T> clusters = ImmutableList.of();
 
 	private volatile Map<String, T> clusterMap = ImmutableMap.of();
 
-	private final LocalRelayContext context;
+	private final RemoteRelayContext context;
 
-	public BaseLocalRelayExplorer(LocalRelayContext localRelayContext) {
-		this.context = localRelayContext;
+	public BaseRemoteRelayExplorer(RemoteRelayContext RemoteRelayContext) {
+		this.context = RemoteRelayContext;
 	}
 
-	protected BaseLocalRelayExplorer<T> initClusters(Collection<T> clusters) {
+	protected BaseRemoteRelayExplorer<T> initClusters(Collection<T> clusters) {
 		this.clusters = ImmutableList.copyOf(clusters);
-		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetLocalServeCluster::getServeName, ObjectAide::self)));
+		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::getServeName, ObjectAide::self)));
 		return this;
 	}
 
 	@Override
-	public LocalServeCluster getCluster(String id) {
+	public RemoteServeCluster getCluster(String id) {
 		return clusterMap.get(id);
 	}
 
 	@Override
-	public List<LocalServeCluster> getClusters() {
+	public List<RemoteServeCluster> getClusters() {
 		return as(clusters);
 	}
 
 	@Override
-	public <D> DoneResult<LocalRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context) {
+	public <D> DoneResult<RemoteRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context) {
 		RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
-		GeneralLocalRelayTunnel<D> tunnel = new GeneralLocalRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
+		GeneralRemoteRelayTunnel<D> tunnel = new GeneralRemoteRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
 				relayMessageRouter);
 		Map<String, LocalTunnelRelayer> relayer = preassignRelayer(tunnel);
 		tunnel.initRelayers(relayer);
@@ -63,8 +63,8 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 	}
 
 	@Override
-	public <D> LocalRelayLink allotLink(LocalRelayTunnel<D> tunnel, String serveName) {
-		LocalServeCluster cluster = this.getCluster(serveName);
+	public <D> RemoteRelayLink allotLink(RemoteRelayTunnel<D> tunnel, String serveName) {
+		RemoteServeCluster cluster = this.getCluster(serveName);
 		if (cluster == null) {
 			return null;
 		}
@@ -72,7 +72,7 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 	}
 
 	// 预分配 link
-	private Map<String, LocalTunnelRelayer> preassignRelayer(LocalRelayTunnel<?> tunnel) {
+	private Map<String, LocalTunnelRelayer> preassignRelayer(RemoteRelayTunnel<?> tunnel) {
 		if (this.clusters.size() == 1) {
 			return preassignForSingleCluster(tunnel);
 		} else {
@@ -81,8 +81,8 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 	}
 
 	// 预分配 link, 但集群
-	private Map<String, LocalTunnelRelayer> preassignForSingleCluster(LocalRelayTunnel<?> tunnel) {
-		for (NetLocalServeCluster cluster : clusters) {
+	private Map<String, LocalTunnelRelayer> preassignForSingleCluster(RemoteRelayTunnel<?> tunnel) {
+		for (NetRemoteServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
 				return ImmutableMap.of(relayer.getServeName(), relayer);
@@ -92,9 +92,9 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 	}
 
 	// 预分配 link, 但多集群
-	private Map<String, LocalTunnelRelayer> preassignForMultipleCluster(LocalRelayTunnel<?> tunnel) {
+	private Map<String, LocalTunnelRelayer> preassignForMultipleCluster(RemoteRelayTunnel<?> tunnel) {
 		Map<String, LocalTunnelRelayer> relayerMap = ImmutableMap.of();
-		for (NetLocalServeCluster cluster : clusters) {
+		for (NetRemoteServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
 				relayerMap.put(relayer.getServeName(), relayer);
@@ -103,14 +103,14 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 		return relayerMap;
 	}
 
-	private LocalTunnelRelayer assignRelayer(LocalRelayTunnel<?> tunnel, NetLocalServeCluster cluster) {
+	private LocalTunnelRelayer assignRelayer(RemoteRelayTunnel<?> tunnel, NetRemoteServeCluster cluster) {
 		ServeClusterFilter serveClusterFilter = context.getServeClusterFilter();
 		ServeClusterFilterStatus filterStatus = serveClusterFilter.filter(tunnel, cluster); // 过滤器
 		if (filterStatus == UNNECESSARY) {
 			return null;
 		}
 		LocalTunnelRelayer relayer = new LocalTunnelRelayer(cluster.getServeName(), filterStatus, this);
-		LocalRelayLink link = relayer.allot(tunnel); // 分配
+		RemoteRelayLink link = relayer.allot(tunnel); // 分配
 		if ((link == null || !link.isActive())) {
 			if (filterStatus == ServeClusterFilterStatus.REQUIRED) {
 				throw new RelayLinkNoExistException("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getServeName());

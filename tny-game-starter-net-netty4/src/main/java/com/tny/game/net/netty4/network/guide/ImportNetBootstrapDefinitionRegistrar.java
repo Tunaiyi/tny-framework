@@ -38,7 +38,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 		registerNettyClientGuides(bootstrapConfigure.getClients().values(), registry);
 	}
 
-	public void registerNettyServerGuides(Collection<? extends NettyNetServerBootstrapSetting> settings, BeanDefinitionRegistry registry) {
+	private void registerNettyServerGuides(Collection<? extends NettyNetServerBootstrapSetting> settings, BeanDefinitionRegistry registry) {
 		for (NettyNetServerBootstrapSetting setting : settings) {
 			String channelMaker = registerChannelMaker(setting, registry);
 			String beanName = setting.getName() + ServerGuide.class.getSimpleName();

@@ -20,11 +20,11 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/8/21 4:39 上午
  */
-public class BaseLocalServeInstance implements NetLocalServeInstance {
+public class BaseRemoteServeInstance implements NetRemoteServeInstance {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeInstance.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(BaseRemoteServeInstance.class);
 
-	protected final NetLocalServeCluster cluster;
+	protected final NetRemoteServeCluster cluster;
 
 	private final long id;
 
@@ -44,11 +44,11 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 
 	private final AtomicBoolean close = new AtomicBoolean(false);
 
-	private Map<String, LocalRelayLink> relayLinkMap = new ConcurrentHashMap<>();
+	private Map<String, RemoteRelayLink> relayLinkMap = new ConcurrentHashMap<>();
 
-	private volatile List<LocalRelayLink> activeRelayLinks = ImmutableList.of();
+	private volatile List<RemoteRelayLink> activeRelayLinks = ImmutableList.of();
 
-	public BaseLocalServeInstance(NetLocalServeCluster cluster, ServeNode node) {
+	public BaseRemoteServeInstance(NetRemoteServeCluster cluster, ServeNode node) {
 		this.id = node.getId();
 		this.scheme = node.getScheme();
 		this.host = node.getHost();
@@ -120,7 +120,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	}
 
 	@Override
-	public List<LocalRelayLink> getActiveRelayLinks() {
+	public List<RemoteRelayLink> getActiveRelayLinks() {
 		return activeRelayLinks;
 	}
 
@@ -133,7 +133,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	public synchronized void close() {
 		if (close.compareAndSet(false, true)) {
 			this.prepareClose();
-			Map<String, LocalRelayLink> oldMap = this.relayLinkMap;
+			Map<String, RemoteRelayLink> oldMap = this.relayLinkMap;
 			this.relayLinkMap = new ConcurrentHashMap<>();
 			oldMap.forEach((id, link) -> link.close());
 			oldMap.clear();
@@ -145,7 +145,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	public void heartbeat() {
 		long lifeTime = cluster.getContext().getLinkMaxIdleTime();
 		long now = System.currentTimeMillis();
-		for (LocalRelayLink link : relayLinkMap.values()) {
+		for (RemoteRelayLink link : relayLinkMap.values()) {
 			ExeAide.runQuietly(() -> {
 				if (link.isActive()) {
 					link.ping();
@@ -178,7 +178,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	}
 
 	private synchronized void refreshActiveLinks() {
-		this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(LocalRelayLink::getId), relayLinkMap.values()
+		this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(RemoteRelayLink::getId), relayLinkMap.values()
 				.stream()
 				.filter(RelayLink::isActive)
 				.collect(Collectors.toList()));
@@ -186,7 +186,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	}
 
 	@Override
-	public synchronized void register(LocalRelayLink link) {
+	public synchronized void register(RemoteRelayLink link) {
 		NetRelayLink old = relayLinkMap.put(link.getId(), link);
 		if (old != null && old != link) {
 			old.close();
@@ -196,7 +196,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	}
 
 	@Override
-	public void disconnected(LocalRelayLink link) {
+	public void disconnected(RemoteRelayLink link) {
 		NetRelayLink current = relayLinkMap.get(link.getId());
 		if (current != link) {
 			return;
@@ -208,7 +208,7 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	}
 
 	@Override
-	public synchronized void relieve(LocalRelayLink link) {
+	public synchronized void relieve(RemoteRelayLink link) {
 		if (relayLinkMap.remove(link.getId(), link)) {
 			if (link.isActive()) {
 				link.close();
@@ -218,11 +218,11 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 		}
 	}
 
-	protected void onRegister(LocalRelayLink link) {
+	protected void onRegister(RemoteRelayLink link) {
 
 	}
 
-	protected void onRelieve(LocalRelayLink link) {
+	protected void onRelieve(RemoteRelayLink link) {
 
 	}
 
@@ -232,11 +232,11 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 			return true;
 		}
 
-		if (!(o instanceof BaseLocalServeInstance)) {
+		if (!(o instanceof BaseRemoteServeInstance)) {
 			return false;
 		}
 
-		BaseLocalServeInstance that = (BaseLocalServeInstance)o;
+		BaseRemoteServeInstance that = (BaseRemoteServeInstance)o;
 
 		return new EqualsBuilder().append(getId(), that.getId()).append(cluster, that.cluster).isEquals();
 	}

@@ -15,14 +15,14 @@ class NettyServeInstanceConnectMonitor {
 
 	private final List<NettyRelayLinkConnector> connectors = new CopyOnWriteArrayList<>();
 
-	private final LocalRelayContext relayContext;
+	private final RemoteRelayContext relayContext;
 
-	private final LocalServeClusterContext serveClusterContext;
+	private final RemoteServeClusterContext serveClusterContext;
 
 	private final ScheduledExecutorService executorService;
 
 	NettyServeInstanceConnectMonitor(
-			LocalRelayContext relayContext, LocalServeClusterContext serveClusterContext, ScheduledExecutorService executorService) {
+			RemoteRelayContext relayContext, RemoteServeClusterContext serveClusterContext, ScheduledExecutorService executorService) {
 		this.relayContext = relayContext;
 		this.serveClusterContext = serveClusterContext;
 		this.executorService = executorService;
@@ -36,7 +36,7 @@ class NettyServeInstanceConnectMonitor {
 		executorService.schedule(monitor::connect, delayTime, TimeUnit.MILLISECONDS);
 	}
 
-	public synchronized void start(NetLocalServeInstance instance, int connectionSize) {
+	public synchronized void start(NetRemoteServeInstance instance, int connectionSize) {
 		if (!this.connectors.isEmpty()) {
 			return;
 		}

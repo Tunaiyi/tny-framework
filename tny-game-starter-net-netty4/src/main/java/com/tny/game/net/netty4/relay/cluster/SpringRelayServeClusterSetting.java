@@ -1,7 +1,7 @@
 package com.tny.game.net.netty4.relay.cluster;
 
+import com.google.common.collect.Lists;
 import com.tny.game.net.netty4.relay.*;
-import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.allot.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,11 +57,6 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	}
 
 	@Override
-	public List<ServeNode> getNodes() {
-		return Collections.unmodifiableList(instances);
-	}
-
-	@Override
 	public boolean isDiscoveryEnable() {
 		return discoveryEnable;
 	}
@@ -79,6 +74,15 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	@Override
 	public int getLinkConnectionSize() {
 		return linkConnectionSize;
+	}
+
+	@Override
+	public List<RelayServeInstanceSetting> getInstanceList() {
+		return Lists.newArrayList(instances);
+	}
+
+	public List<SpringRelayServeInstanceSetting> getInstances() {
+		return instances;
 	}
 
 	public SpringRelayServeClusterSetting setUsername(String username) {
@@ -100,10 +104,6 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	public String getRelayLinkAllotStrategy() {
 		return relayLinkAllotStrategy;
-	}
-
-	public List<SpringRelayServeInstanceSetting> getInstances() {
-		return instances;
 	}
 
 	public SpringRelayServeClusterSetting setDiscoveryEnable(boolean discoveryEnable) {

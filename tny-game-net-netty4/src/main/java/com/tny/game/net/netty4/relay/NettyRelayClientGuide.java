@@ -41,7 +41,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	private LocalRelayExplorer localRelayExplorer;
+	private RemoteRelayExplorer localRelayExplorer;
 
 	private final ClientCloseListener<Object> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()),
 			as(client, NettyClient.class));
@@ -103,7 +103,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
 	@Override
 	protected void onLoadUnit(NettyRelayClientBootstrapSetting setting) {
-		this.localRelayExplorer = UnitLoader.getLoader(LocalRelayExplorer.class).checkUnit();
+		this.localRelayExplorer = UnitLoader.getLoader(RemoteRelayExplorer.class).checkUnit();
 	}
 
 	private Bootstrap getBootstrap() {
@@ -115,7 +115,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 				return this.bootstrap;
 			}
 			this.bootstrap = new Bootstrap();
-			RelayPacketProcessor relayPacketProcessor = new LocalRelayPacketProcessor(this.localRelayExplorer);
+			RelayPacketProcessor relayPacketProcessor = new RemoteRelayPacketProcessor(this.localRelayExplorer);
 			NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(relayPacketProcessor);
 			this.bootstrap.group(workerGroup)
 					.channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)

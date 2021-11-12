@@ -34,9 +34,9 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
 	}
 
 	private void registerRelayServeClusterContext(SpringRelayServeClusterSetting setting, BeanDefinitionRegistry registry) {
-		NettyLocalServeClusterContext clusterContext = new NettyLocalServeClusterContext(setting);
-		String name = unitName(setting.getServeName(), NettyLocalServeClusterContext.class);
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NettyLocalServeClusterContext.class, () -> clusterContext)
+		NettyRemoteServeClusterContext clusterContext = new NettyRemoteServeClusterContext(setting);
+		String name = unitName(setting.getServeName(), NettyRemoteServeClusterContext.class);
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NettyRemoteServeClusterContext.class, () -> clusterContext)
 				.addPropertyReference("clientGuide", setting.getClientGuide());
 		if (setting.isHasServeInstanceAllotStrategy()) {
 			builder.addPropertyReference("serveInstanceAllotStrategy", setting.getServeInstanceAllotStrategy());

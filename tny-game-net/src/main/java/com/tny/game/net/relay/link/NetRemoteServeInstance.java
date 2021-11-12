@@ -9,26 +9,26 @@ import java.util.Map;
  * @author : kgtny
  * @date : 2021/8/23 9:24 下午
  */
-public interface NetLocalServeInstance extends LocalServeInstance {
+public interface NetRemoteServeInstance extends RemoteServeInstance {
 
 	/**
 	 * 注册转发连接
 	 *
 	 * @param link 集群实例
 	 */
-	void register(LocalRelayLink link);
+	void register(RemoteRelayLink link);
 
 	/**
 	 * @param link 断开连接
 	 */
-	void disconnected(LocalRelayLink link);
+	void disconnected(RemoteRelayLink link);
 
 	/**
 	 * 释放转发连接
 	 *
 	 * @param link 集群实例
 	 */
-	void relieve(LocalRelayLink link);
+	void relieve(RemoteRelayLink link);
 
 	/**
 	 * @return 获取登录用户名

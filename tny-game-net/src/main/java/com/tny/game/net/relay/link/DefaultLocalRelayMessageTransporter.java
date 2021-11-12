@@ -13,13 +13,13 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/8/24 1:02 下午
  */
-public class DefaultRemoteRelayMessageTransporter<UID> implements RemoteRelayMessageTransporter<UID> {
+public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessageTransporter<UID> {
 
-	private RemoteRelayTunnel<UID> tunnel;
+	private LocalRelayTunnel<UID> tunnel;
 
-	private volatile RemoteRelayLink link;
+	private volatile LocalRelayLink link;
 
-	public DefaultRemoteRelayMessageTransporter(RemoteRelayLink link) {
+	public DefaultLocalRelayMessageTransporter(LocalRelayLink link) {
 		this.link = link;
 	}
 
@@ -56,7 +56,7 @@ public class DefaultRemoteRelayMessageTransporter<UID> implements RemoteRelayMes
 	@Override
 	public void bind(NetTunnel<UID> tunnel) {
 		if (this.tunnel == null) {
-			this.tunnel = (RemoteRelayTunnel<UID>)tunnel;
+			this.tunnel = (LocalRelayTunnel<UID>)tunnel;
 		}
 	}
 
@@ -66,7 +66,7 @@ public class DefaultRemoteRelayMessageTransporter<UID> implements RemoteRelayMes
 	}
 
 	@Override
-	public boolean switchLink(RemoteRelayLink link) {
+	public boolean switchLink(LocalRelayLink link) {
 		if (this.link == null) {
 			return false;
 		}

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author : kgtny
  * @date : 2021/9/2 1:54 下午
  */
-public class PollingRelayAllotStrategy implements LocalRelayLinkAllotStrategy, LocalServeInstanceAllotStrategy {
+public class PollingRelayAllotStrategy implements RelayLinkAllotStrategy, ServeInstanceAllotStrategy {
 
 	private final AtomicInteger instanceCounter = new AtomicInteger();
 
@@ -31,12 +31,12 @@ public class PollingRelayAllotStrategy implements LocalRelayLinkAllotStrategy, L
 	}
 
 	@Override
-	public LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance) {
+	public RemoteRelayLink allot(Tunnel<?> tunnel, RemoteServeInstance instance) {
 		return random(instance.getActiveRelayLinks(), linkCounter);
 	}
 
 	@Override
-	public LocalServeInstance allot(Tunnel<?> tunnel, NetLocalServeCluster cluster) {
+	public RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster) {
 		return random(cluster.getHealthyLocalInstances(), instanceCounter);
 	}
 

@@ -24,6 +24,7 @@ import org.springframework.context.annotation.*;
 		ImportEntityCacheManagerDefinitionRegistrar.class
 })
 @EnableConfigurationProperties({
+		DataConfigurationProperties.class,
 		CacheRecyclerProperties.class,
 		ReleaseStrategyProperties.class,
 		LocalObjectCacheFactoriesProperties.class,
@@ -32,7 +33,8 @@ import org.springframework.context.annotation.*;
 		AsyncObjectStoreExecutorProperties.class,
 
 })
-public class GameDataAutoConfiguration {
+@ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
+public class DataAutoConfiguration {
 
 	@Bean
 	@ConditionalOnClass(CacheRecyclerProperties.class)

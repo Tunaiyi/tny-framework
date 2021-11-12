@@ -11,7 +11,7 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/9/14 7:36 下午
  */
-public interface LocalServeCluster extends ServeCluster {
+public interface RemoteServeCluster extends ServeCluster {
 
 	/**
 	 * @return 登录用户
@@ -26,7 +26,7 @@ public interface LocalServeCluster extends ServeCluster {
 	/**
 	 * @return 获取上下文
 	 */
-	LocalServeClusterContext getContext();
+	RemoteServeClusterContext getContext();
 
 	/**
 	 * 获取指定 id 的 instance
@@ -34,12 +34,12 @@ public interface LocalServeCluster extends ServeCluster {
 	 * @param id 指定 id
 	 * @return 返回 instance
 	 */
-	LocalServeInstance getLocalInstance(long id);
+	RemoteServeInstance getLocalInstance(long id);
 
 	/**
 	 * @return 健康集群实例列表
 	 */
-	List<LocalServeInstance> getHealthyLocalInstances();
+	List<RemoteServeInstance> getHealthyLocalInstances();
 
 	/**
 	 * 分配 link 给指定 tunnel
@@ -47,6 +47,6 @@ public interface LocalServeCluster extends ServeCluster {
 	 * @param tunnel 指定 tunnel
 	 * @return 返回分配的 link
 	 */
-	LocalRelayLink allotLink(Tunnel<?> tunnel);
+	RemoteRelayLink allotLink(Tunnel<?> tunnel);
 
 }

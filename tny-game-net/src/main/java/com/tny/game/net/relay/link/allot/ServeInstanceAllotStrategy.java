@@ -10,7 +10,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/8/23 8:11 下午
  */
-public interface LocalServeInstanceAllotStrategy {
+public interface ServeInstanceAllotStrategy {
 
 	/**
 	 * 分配服务实例
@@ -19,6 +19,6 @@ public interface LocalServeInstanceAllotStrategy {
 	 * @param cluster 目标集群
 	 * @return 返回服务实例
 	 */
-	LocalServeInstance allot(Tunnel<?> tunnel, NetLocalServeCluster cluster);
+	RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster);
 
 }

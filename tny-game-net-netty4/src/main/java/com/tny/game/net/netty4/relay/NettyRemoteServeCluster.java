@@ -9,13 +9,13 @@ import com.tny.game.net.relay.link.*;
  * @author : kgtny
  * @date : 2021/8/30 8:49 下午
  */
-public class NettyLocalServeCluster extends BaseLocalServeCluster {
+public class NettyRemoteServeCluster extends BaseRemoteServeCluster {
 
 	//	private final LocalRelayContext relayContext;
 
-	private final LocalServeClusterContext clusterContext;
+	private final RemoteServeClusterContext clusterContext;
 
-	public NettyLocalServeCluster(LocalServeClusterContext clusterContext) {
+	public NettyRemoteServeCluster(RemoteServeClusterContext clusterContext) {
 		super(clusterContext.getServeName(),
 				clusterContext.getUsername(),
 				clusterContext.getServeInstanceAllotStrategy(),
@@ -32,12 +32,12 @@ public class NettyLocalServeCluster extends BaseLocalServeCluster {
 	//	}
 
 	@Override
-	public LocalServeClusterContext getContext() {
+	public RemoteServeClusterContext getContext() {
 		return this.clusterContext;
 	}
 
 	public void heartbeat() {
-		for (NetLocalServeInstance instance : this.instances()) {
+		for (NetRemoteServeInstance instance : this.instances()) {
 			ExeAide.runQuietly(instance::heartbeat, LOGGER);
 		}
 	}

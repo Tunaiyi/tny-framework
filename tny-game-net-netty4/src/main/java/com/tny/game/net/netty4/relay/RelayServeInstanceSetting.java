@@ -10,58 +10,51 @@ import java.util.Map;
  * @author : kgtny
  * @date : 2021/9/2 3:42 下午
  */
-public class RelayServeInstanceSetting extends BaseServeNode {
+public class RelayServeInstanceSetting extends BaseNetAccessPoint {
 
 	public RelayServeInstanceSetting() {
 	}
 
-	public RelayServeInstanceSetting(String serveName, String appType, String scopeType, long id, String scheme, String host, int port) {
-		super(serveName, appType, scopeType, id, scheme, host, port);
+	@Override
+	public RelayServeInstanceSetting setId(long id) {
+		super.setId(id);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setServeName(String serveName) {
-		return super.setServeName(serveName);
+	public RelayServeInstanceSetting setHealthy(boolean healthy) {
+		super.setHealthy(healthy);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setId(long id) {
-		return super.setId(id);
+	public RelayServeInstanceSetting setScheme(String scheme) {
+		super.setScheme(scheme);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setAppType(String appType) {
-		return super.setAppType(appType);
+	public RelayServeInstanceSetting setHost(String host) {
+		super.setHost(host);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setScopeType(String scopeType) {
-		return super.setScopeType(scopeType);
+	public RelayServeInstanceSetting setPort(int port) {
+		super.setPort(port);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setHealthy(boolean healthy) {
-		return super.setHealthy(healthy);
+	public RelayServeInstanceSetting setMetadata(Map<String, Object> metadata) {
+		super.setMetadata(metadata);
+		return this;
 	}
 
 	@Override
-	public BaseServeNode setScheme(String scheme) {
-		return super.setScheme(scheme);
-	}
-
-	@Override
-	public BaseServeNode setHost(String host) {
-		return super.setHost(host);
-	}
-
-	@Override
-	public BaseServeNode setPort(int port) {
-		return super.setPort(port);
-	}
-
-	@Override
-	public BaseServeNode setMetadata(Map<String, Object> metadata) {
-		return super.setMetadata(metadata);
+	public RelayServeInstanceSetting setUrl(String value) {
+		super.setUrl(value);
+		return this;
 	}
 
 }

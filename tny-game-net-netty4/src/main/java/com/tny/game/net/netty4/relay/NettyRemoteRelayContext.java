@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author : kgtny
  * @date : 2021/8/30 9:04 下午
  */
-public class NettyLocalRelayContext implements LocalRelayContext {
+public class NettyRemoteRelayContext implements RemoteRelayContext {
 
 	private NetAppContext appContext;
 
@@ -27,7 +27,7 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 
 	private final AtomicLong indexCounter = new AtomicLong();
 
-	public NettyLocalRelayContext(NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
+	public NettyRemoteRelayContext(NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
 		this.setAppContext(appContext);
 		this.relayMessageRouter = relayMessageRouter;
 		this.serveClusterFilter = serveClusterFilter;
@@ -71,17 +71,17 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 		return appContext;
 	}
 
-	public NettyLocalRelayContext setAppContext(NetAppContext appContext) {
+	public NettyRemoteRelayContext setAppContext(NetAppContext appContext) {
 		this.appContext = appContext;
 		return this;
 	}
 
-	public NettyLocalRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
+	public NettyRemoteRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
 		this.relayMessageRouter = relayMessageRouter;
 		return this;
 	}
 
-	public NettyLocalRelayContext setServeClusterFilter(ServeClusterFilter serveClusterFilter) {
+	public NettyRemoteRelayContext setServeClusterFilter(ServeClusterFilter serveClusterFilter) {
 		this.serveClusterFilter = serveClusterFilter;
 		return this;
 	}

@@ -1,10 +1,14 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.transport.*;
+
+import java.util.List;
 
 /**
- * 远程(客户端连接不在本地)转发服务
+ * 本地(客户端连接在本地)转发服务
  * <p>
  *
  * @author : kgtny
@@ -14,33 +18,35 @@ import com.tny.game.net.base.*;
 public interface RemoteRelayExplorer extends RelayExplorer<RemoteRelayTunnel<?>> {
 
 	/**
-	 * 接收打开的 link
+	 * 获取指定 id 的集群
 	 *
-	 * @param transporter 转发器
-	 * @param serveName   集群 id
-	 * @param instance    实例 id
+	 * @param id id
+	 * @return 返回获取集群
 	 */
-	void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key);
+	RemoteServeCluster getCluster(String id);
 
 	/**
-	 * 接收连接的 Tunnel
-	 *
-	 * @param link           关联的 link
-	 * @param networkContext 网络上下文
-	 * @param instanceId     服务实例 id
-	 * @param tunnelId       管道 id
-	 * @param ip             远程ip
-	 * @param port           远程端口
+	 * @return 获取所有集群列表
 	 */
-	void acceptConnectTunnel(NetRelayLink link, NetworkContext networkContext, long instanceId, long tunnelId, String ip, int port);
+	List<RemoteServeCluster> getClusters();
 
 	/**
-	 * 切换 tunnel link
+	 * 创建可转发的本地管道, 并且关联转发的目标服务
 	 *
-	 * @param link       转发连接
-	 * @param instanceId tunnel的服务实例 id
-	 * @param tunnelId   tunnel id
+	 * @param id        管道id
+	 * @param transport 通讯器
+	 * @param context   网络上下文
+	 * @return 返回创建的管道
 	 */
-	void switchTunnelLink(NetRelayLink link, long instanceId, long tunnelId);
+	<D> DoneResult<RemoteRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context);
+
+	/**
+	 * 为通讯管道分配指定的集群转发连接
+	 *
+	 * @param tunnel  分配的通讯管道
+	 * @param cluster 集群 id
+	 * @return 返回分配的连接
+	 */
+	<D> RemoteRelayLink allotLink(RemoteRelayTunnel<D> tunnel, String cluster);
 
 }

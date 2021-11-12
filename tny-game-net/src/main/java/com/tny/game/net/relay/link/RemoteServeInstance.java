@@ -11,11 +11,11 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/8/23 9:24 下午
  */
-public interface LocalServeInstance extends ServeInstance {
+public interface RemoteServeInstance extends ServeInstance {
 
 	/**
 	 * @return 获取本地服务实例所有转发连接
 	 */
-	List<LocalRelayLink> getActiveRelayLinks();
+	List<RemoteRelayLink> getActiveRelayLinks();
 
 }

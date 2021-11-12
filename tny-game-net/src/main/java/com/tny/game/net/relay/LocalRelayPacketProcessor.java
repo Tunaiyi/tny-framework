@@ -1,12 +1,13 @@
 package com.tny.game.net.relay;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 
 /**
- * 本地数据包处理器
+ * 远程 RelayPacket 处理器
  * <p>
  *
  * @author : kgtny
@@ -16,21 +17,12 @@ public class LocalRelayPacketProcessor extends BaseRelayPacketProcessor {
 
 	private final LocalRelayExplorer localRelayExplorer;
 
-	public LocalRelayPacketProcessor(LocalRelayExplorer localRelayExplorer) {
+	private final NetworkContext networkContext;
+
+	public LocalRelayPacketProcessor(LocalRelayExplorer localRelayExplorer, NetworkContext networkContext) {
 		super(localRelayExplorer);
 		this.localRelayExplorer = localRelayExplorer;
-	}
-
-	@Override
-	public void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet) {
-	}
-
-	@Override
-	public void onTunnelConnect(NetRelayLink link, TunnelConnectPacket packet) {
-	}
-
-	@Override
-	public void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet) {
+		this.networkContext = networkContext;
 	}
 
 	@Override
@@ -45,7 +37,38 @@ public class LocalRelayPacketProcessor extends BaseRelayPacketProcessor {
 			return;
 		}
 		Message message = arguments.getMessage();
-		tunnel.write(message, null);
+		if (message == null) {
+			LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], message 为 null", link, packet, arguments.getTunnelId());
+			return;
+		}
+		tunnel.receive(message);
+	}
+
+	@Override
+	public void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet) {
+		LinkOpenArguments arguments = packet.getArguments();
+		LOGGER.info("#RelayLink({}) [{} ==> {}]  接受连接", NetRelayLink.idOf(arguments.getServeName(), arguments.getInstance(), arguments.getKey()),
+				transporter.getLocalAddress(), transporter.getRemoteAddress());
+		localRelayExplorer.acceptOpenLink(transporter, arguments.getServeName(), arguments.getInstance(), arguments.getKey());
+	}
+
+	@Override
+	public void onTunnelConnect(NetRelayLink link, TunnelConnectPacket packet) {
+		checkLink(link, packet);
+		TunnelConnectArguments arguments = packet.getArguments();
+		LOGGER.info("#RelayLink({}) [{} ==> {}] #Tunnel# 连接接受 [ RelayTunnel({}) ]",
+				link.getId(), link.getLocalAddress(), link.getRemoteAddress(), arguments.getTunnelId());
+		localRelayExplorer.acceptConnectTunnel(link, this.networkContext,
+				arguments.getInstanceId(), arguments.getTunnelId(), arguments.getIp(), arguments.getPort());
+	}
+
+	@Override
+	public void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet) {
+		checkLink(link, packet);
+		TunnelVoidArguments arguments = packet.getArguments();
+		LOGGER.info("#RelayLink({}) [{} ==> {}] #Tunnel# 切换连接 [ RelayTunnel({}) ]",
+				link.getId(), link.getLocalAddress(), link.getRemoteAddress(), arguments.getTunnelId());
+		localRelayExplorer.switchTunnelLink(link, arguments.getInstanceId(), arguments.getTunnelId());
 	}
 
 }

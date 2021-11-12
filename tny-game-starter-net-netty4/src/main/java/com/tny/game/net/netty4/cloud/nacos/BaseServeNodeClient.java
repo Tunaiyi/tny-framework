@@ -124,10 +124,10 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 			LOGGER.warn("serve {} is not exist", serviceName);
 			return;
 		}
-		List<NacosServeNode> nodes = new ArrayList<>();
+		List<NacosRemoteServeNode> nodes = new ArrayList<>();
 		for (Instance instance : event.getInstances()) {
 			try {
-				NacosServeNode node = new NacosServeNode(instance, OBJECT_MAPPER);
+				NacosRemoteServeNode node = new NacosRemoteServeNode(instance, OBJECT_MAPPER);
 				nodes.add(node);
 			} catch (Throwable e) {
 				LOGGER.error("", e);
@@ -142,11 +142,11 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 
 		public final AtomicBoolean start = new AtomicBoolean(false);
 
-		private volatile Map<Long, NacosServeNode> allNodeMap = ImmutableMap.of();
+		private volatile Map<Long, NacosRemoteServeNode> allNodeMap = ImmutableMap.of();
 
-		private volatile List<NacosServeNode> allNodes = ImmutableList.of();
+		private volatile List<NacosRemoteServeNode> allNodes = ImmutableList.of();
 
-		private volatile List<NacosServeNode> healthyNodes = ImmutableList.of();
+		private volatile List<NacosRemoteServeNode> healthyNodes = ImmutableList.of();
 
 		private final List<ServeNodeListener> listeners = new CopyOnWriteArrayList<>();
 
@@ -162,15 +162,15 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 			return allNodeMap.get(id);
 		}
 
-		private Map<Long, NacosServeNode> getAllNodeMap() {
+		private Map<Long, NacosRemoteServeNode> getAllNodeMap() {
 			return allNodeMap;
 		}
 
-		private List<NacosServeNode> getAllNodes() {
+		private List<NacosRemoteServeNode> getAllNodes() {
 			return allNodes;
 		}
 
-		private List<NacosServeNode> getHealthyNodes() {
+		private List<NacosRemoteServeNode> getHealthyNodes() {
 			return healthyNodes;
 		}
 
@@ -198,13 +198,13 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 			}
 		}
 
-		private void onChange(List<NacosServeNode> nodes) {
-			Map<NacosServeNode, List<ServeNodeChangeStatus>> changes = new LinkedHashMap<>();
-			List<NacosServeNode> creates = new ArrayList<>();
-			List<NacosServeNode> healthyNodes = new ArrayList<>();
-			Map<Long, NacosServeNode> newNodeMap = new HashMap<>();
-			Map<Long, NacosServeNode> oldNodeMap = new HashMap<>(allNodeMap);
-			for (NacosServeNode node : nodes) {
+		private void onChange(List<NacosRemoteServeNode> nodes) {
+			Map<NacosRemoteServeNode, List<ServeNodeChangeStatus>> changes = new LinkedHashMap<>();
+			List<NacosRemoteServeNode> creates = new ArrayList<>();
+			List<NacosRemoteServeNode> healthyNodes = new ArrayList<>();
+			Map<Long, NacosRemoteServeNode> newNodeMap = new HashMap<>();
+			Map<Long, NacosRemoteServeNode> oldNodeMap = new HashMap<>(allNodeMap);
+			for (NacosRemoteServeNode node : nodes) {
 				ServeNode oldNode = oldNodeMap.remove(node.getId());
 				if (oldNode == null) {
 					creates.add(node);
@@ -219,7 +219,7 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 					healthyNodes.add(node);
 				}
 			}
-			List<NacosServeNode> removes = new ArrayList<>(oldNodeMap.values());
+			List<NacosRemoteServeNode> removes = new ArrayList<>(oldNodeMap.values());
 			this.allNodeMap = ImmutableMap.copyOf(newNodeMap);
 			this.allNodes = ImmutableList.copyOf(nodes);
 			this.healthyNodes = ImmutableList.copyOf(healthyNodes);

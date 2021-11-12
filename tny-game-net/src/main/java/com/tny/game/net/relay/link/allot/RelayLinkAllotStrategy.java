@@ -10,7 +10,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/8/23 8:11 下午
  */
-public interface LocalRelayLinkAllotStrategy {
+public interface RelayLinkAllotStrategy {
 
 	/**
 	 * 分配转发连接
@@ -19,6 +19,6 @@ public interface LocalRelayLinkAllotStrategy {
 	 * @param instance 目标服务实例
 	 * @return 返回分配的转发目标连接
 	 */
-	LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance);
+	RemoteRelayLink allot(Tunnel<?> tunnel, RemoteServeInstance instance);
 
 }

@@ -24,21 +24,21 @@ public class LocalTunnelRelayer {
 
 	private final ServeClusterFilterStatus filterStatus;
 
-	private final LocalRelayExplorer localRelayExplorer;
+	private final RemoteRelayExplorer remoteRelayExplorer;
 
 	public LocalTunnelRelayer(String serveName, ServeClusterFilterStatus filterStatus,
-			LocalRelayExplorer localRelayExplorer) {
+			RemoteRelayExplorer remoteRelayExplorer) {
 		this.serveName = serveName;
 		this.filterStatus = filterStatus;
-		this.localRelayExplorer = localRelayExplorer;
+		this.remoteRelayExplorer = remoteRelayExplorer;
 	}
 
 	public String getServeName() {
 		return serveName;
 	}
 
-	public WriteMessageFuture relay(LocalRelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
-		LocalRelayLink link = allot(tunnel);
+	public WriteMessageFuture relay(RemoteRelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
+		RemoteRelayLink link = allot(tunnel);
 		if (link != null && link.isActive()) {
 			return link.relay(tunnel, message, promise);
 		} else {
@@ -52,13 +52,13 @@ public class LocalTunnelRelayer {
 		return promise;
 	}
 
-	public LocalRelayLink allot(LocalRelayTunnel<?> tunnel) {
-		LocalRelayLink link = tunnel.getLink(serveName);
+	public RemoteRelayLink allot(RemoteRelayTunnel<?> tunnel) {
+		RemoteRelayLink link = tunnel.getLink(serveName);
 		if (link != null && link.isActive()) {
 			return link;
 		}
 		for (int i = 0; i < 3; i++) {
-			link = localRelayExplorer.allotLink(tunnel, serveName);
+			link = remoteRelayExplorer.allotLink(tunnel, serveName);
 			if (link == null) {
 				return null;
 			}

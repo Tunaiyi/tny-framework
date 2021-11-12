@@ -8,7 +8,7 @@ import com.tny.game.net.transport.*;
  * @author: Kun Yang
  * @date: 2018-10-11 17:45
  */
-public interface RemoteRelayMessageTransporter<UID> extends MessageTransporter<UID> {
+public interface LocalRelayMessageTransporter<UID> extends MessageTransporter<UID> {
 
 	/**
 	 * 切换 link
@@ -16,6 +16,6 @@ public interface RemoteRelayMessageTransporter<UID> extends MessageTransporter<U
 	 * @param link 新 link
 	 * @return 返回是否切换成功
 	 */
-	boolean switchLink(RemoteRelayLink link);
+	boolean switchLink(LocalRelayLink link);
 
 }

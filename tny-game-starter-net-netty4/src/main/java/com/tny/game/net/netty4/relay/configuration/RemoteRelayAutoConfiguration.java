@@ -25,7 +25,7 @@ import java.util.List;
 		SpringRelayServeClustersProperties.class,
 		SpringBootRelayBootstrapProperties.class
 })
-public class RelayAccessAutoConfiguration {
+public class RemoteRelayAutoConfiguration {
 
 	@Bean
 	public PollingRelayAllotStrategy pollingRelayAllotStrategy() {
@@ -51,26 +51,27 @@ public class RelayAccessAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(NetAppContext.class)
-	public LocalRelayContext localRelayContext(
+	public RemoteRelayContext remoteRelayContext(
 			NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
-		return new NettyLocalRelayContext(appContext, relayMessageRouter, serveClusterFilter);
+		return new NettyRemoteRelayContext(appContext, relayMessageRouter, serveClusterFilter);
 	}
 
 	@Bean
 	@ConditionalOnBean(ServeNodeClient.class)
-	public LocalRelayServeNodeWatchService localRelayServeNodeWatchService(
-			ServeNodeClient serveNodeClient, NetLocalRelayExplorer localRelayExplorer) {
-		return new LocalRelayServeNodeWatchService(serveNodeClient, localRelayExplorer);
+	public LocalRelayServeNodeWatchService remoteRelayServeNodeWatchService(
+			ServeNodeClient serveNodeClient, NetRemoteRelayExplorer remoteRelayExplorer) {
+		return new LocalRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);
 	}
 
 	@Bean
-	public NettyLocalRelayExplorer localRelayExplorer(LocalRelayContext localRelayContext, List<NettyLocalServeClusterContext> clusterContexts) {
-		return new NettyLocalRelayExplorer(localRelayContext, clusterContexts);
+	public NettyRemoteRelayExplorer remoteRelayExplorer(RemoteRelayContext remoteRelayContext,
+			List<NettyRemoteServeClusterContext> clusterContexts) {
+		return new NettyRemoteRelayExplorer(remoteRelayContext, clusterContexts);
 	}
 
 	@Bean
-	public LocalRelayTunnelFactory localRelayTunnelFactory(LocalRelayExplorer localRelayExplorer) {
-		return new LocalRelayTunnelFactory(localRelayExplorer);
+	public RemoteRelayTunnelFactory remoteRelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+		return new RemoteRelayTunnelFactory(remoteRelayExplorer);
 	}
 
 	@Bean

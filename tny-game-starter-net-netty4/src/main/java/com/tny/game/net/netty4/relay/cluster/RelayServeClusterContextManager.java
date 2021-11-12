@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class RelayServeClusterContextManager {
 
-	private List<LocalServeClusterContext> clusterContexts;
+	private List<RemoteServeClusterContext> clusterContexts;
 
-	public RelayServeClusterContextManager(List<LocalServeClusterContext> clusterContexts) {
+	public RelayServeClusterContextManager(List<RemoteServeClusterContext> clusterContexts) {
 		this.clusterContexts = clusterContexts;
 	}
 
-	public List<LocalServeClusterContext> getClusterContexts() {
+	public List<RemoteServeClusterContext> getClusterContexts() {
 		return clusterContexts;
 	}
 
-	public RelayServeClusterContextManager setClusterContexts(List<LocalServeClusterContext> clusterContexts) {
+	public RelayServeClusterContextManager setClusterContexts(List<RemoteServeClusterContext> clusterContexts) {
 		this.clusterContexts = clusterContexts;
 		return this;
 	}

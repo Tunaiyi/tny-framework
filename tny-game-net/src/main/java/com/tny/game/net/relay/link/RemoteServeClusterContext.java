@@ -1,7 +1,10 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.allot.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -9,11 +12,13 @@ import com.tny.game.net.relay.link.allot.*;
  * @author : kgtny
  * @date : 2021/9/3 8:47 下午
  */
-public interface LocalServeClusterContext extends LocalServeClusterSetting {
+public interface RemoteServeClusterContext extends RemoteServeClusterSetting {
 
-	LocalServeInstanceAllotStrategy getServeInstanceAllotStrategy();
+	List<NetAccessPoint> getInstances();
 
-	LocalRelayLinkAllotStrategy getRelayLinkAllotStrategy();
+	ServeInstanceAllotStrategy getServeInstanceAllotStrategy();
+
+	RelayLinkAllotStrategy getRelayLinkAllotStrategy();
 
 	/**
 	 * 连接 link

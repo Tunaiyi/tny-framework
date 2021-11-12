@@ -19,7 +19,7 @@ public class FixedRelayMessageRouter implements RelayMessageRouter {
 	}
 
 	@Override
-	public String route(LocalRelayTunnel<?> tunnel, MessageSchema schema) {
+	public String route(RemoteRelayTunnel<?> tunnel, MessageSchema schema) {
 		return serveName;
 	}
 

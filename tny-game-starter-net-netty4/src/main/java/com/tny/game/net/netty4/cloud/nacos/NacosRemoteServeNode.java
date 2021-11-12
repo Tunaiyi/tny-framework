@@ -15,9 +15,9 @@ import java.util.Map;
  * @author : kgtny
  * @date : 2021/9/10 4:00 下午
  */
-public class NacosServeNode extends RemoteServeNode {
+public class NacosRemoteServeNode extends RemoteServeNode {
 
-	public NacosServeNode(Instance instance, ObjectMapper mapper) throws JsonProcessingException {
+	public NacosRemoteServeNode(Instance instance, ObjectMapper mapper) throws JsonProcessingException {
 		Map<String, String> metadata = instance.getMetadata();
 		String serveName = metadata.get(NacosMetaDataKey.NET_SERVE_NAME);
 		String serverId = metadata.getOrDefault(NacosMetaDataKey.NET_SERVER_ID, "0");
@@ -36,55 +36,55 @@ public class NacosServeNode extends RemoteServeNode {
 	}
 
 	@Override
-	protected NacosServeNode setServeName(String serveName) {
+	protected NacosRemoteServeNode setServeName(String serveName) {
 		super.setServeName(serveName);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setId(long id) {
+	protected NacosRemoteServeNode setId(long id) {
 		super.setId(id);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setAppType(String appType) {
+	protected NacosRemoteServeNode setAppType(String appType) {
 		super.setAppType(appType);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setScopeType(String scopeType) {
+	protected NacosRemoteServeNode setScopeType(String scopeType) {
 		super.setScopeType(scopeType);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setHealthy(boolean healthy) {
+	protected NacosRemoteServeNode setHealthy(boolean healthy) {
 		super.setHealthy(healthy);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setScheme(String scheme) {
+	protected NacosRemoteServeNode setScheme(String scheme) {
 		super.setScheme(scheme);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setHost(String host) {
+	protected NacosRemoteServeNode setHost(String host) {
 		super.setHost(host);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setPort(int port) {
+	protected NacosRemoteServeNode setPort(int port) {
 		super.setPort(port);
 		return this;
 	}
 
 	@Override
-	protected NacosServeNode setMetadata(Map<String, Object> metadata) {
+	protected NacosRemoteServeNode setMetadata(Map<String, Object> metadata) {
 		super.setMetadata(metadata);
 		return this;
 	}

@@ -14,18 +14,18 @@ import io.netty.channel.Channel;
  * @author : kgtny
  * @date : 2021/8/24 3:28 下午
  */
-public class LocalRelayTunnelFactory implements NettyTunnelFactory {
+public class RemoteRelayTunnelFactory implements NettyTunnelFactory {
 
-	private final LocalRelayExplorer localRelayExplorer;
+	private final RemoteRelayExplorer remoteRelayExplorer;
 
-	public LocalRelayTunnelFactory(LocalRelayExplorer localRelayExplorer) {
-		this.localRelayExplorer = localRelayExplorer;
+	public RemoteRelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+		this.remoteRelayExplorer = remoteRelayExplorer;
 	}
 
 	@Override
 	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
 		MessageTransporter<T> transport = new NettyChannelMessageTransporter<>(channel);
-		DoneResult<LocalRelayTunnel<T>> result = localRelayExplorer.createTunnel(id, transport, context);
+		DoneResult<RemoteRelayTunnel<T>> result = remoteRelayExplorer.createTunnel(id, transport, context);
 		if (result.isFailure()) {
 			throw new NetGeneralException(result.getCode());
 		}

@@ -24,7 +24,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 @ConditionalOnClass(MongoTemplateStorageAccessorFactory.class)
 @AutoConfigureAfter({MongodbAutoConfiguration.class})
-@AutoConfigureBefore(GameDataAutoConfiguration.class)
+@AutoConfigureBefore(DataAutoConfiguration.class)
 @Import({
 		ImportMongoClientStorageAccessorFactoryDefinitionRegistrar.class,
 		ImportMongoTemplateStorageAccessorFactoryDefinitionRegistrar.class
@@ -33,6 +33,7 @@ import org.springframework.context.annotation.*;
 		MongoClientStorageAccessorFactoryProperties.class,
 		MongoTemplateStorageAccessorFactoryProperties.class
 })
+@ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
 public class MongoStorageAutoConfiguration {
 
 	@Bean

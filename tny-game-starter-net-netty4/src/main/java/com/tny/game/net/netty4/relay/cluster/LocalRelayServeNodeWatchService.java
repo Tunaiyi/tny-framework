@@ -21,11 +21,11 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 
 	private final Set<ServeInstanceWatcher> watchers = new ConcurrentHashSet<>();
 
-	private final NetLocalRelayExplorer localRelayExplorer;
+	private final NetRemoteRelayExplorer localRelayExplorer;
 
 	private final ServeNodeClient serveNodeClient;
 
-	public LocalRelayServeNodeWatchService(ServeNodeClient serveNodeClient, NetLocalRelayExplorer localRelayExplorer) {
+	public LocalRelayServeNodeWatchService(ServeNodeClient serveNodeClient, NetRemoteRelayExplorer localRelayExplorer) {
 		this.serveNodeClient = serveNodeClient;
 		this.localRelayExplorer = localRelayExplorer;
 	}
@@ -39,7 +39,7 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 
 	@Override
 	public void prepareStart() {
-		for (LocalServeCluster cluster : localRelayExplorer.getClusters()) {
+		for (RemoteServeCluster cluster : localRelayExplorer.getClusters()) {
 			ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
 			if (watchers.add(watcher)) {
 				watcher.start();
@@ -49,7 +49,7 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 
 	private class ServeInstanceWatcher implements ServeNodeListener {
 
-		private final LocalServeCluster cluster;
+		private final RemoteServeCluster cluster;
 
 		private void start() {
 			serveNodeClient.subscribe(cluster.getServeName(), this);
@@ -59,7 +59,7 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 			serveNodeClient.unsubscribe(cluster.getServeName(), this);
 		}
 
-		private ServeInstanceWatcher(LocalServeCluster cluster) {
+		private ServeInstanceWatcher(RemoteServeCluster cluster) {
 			this.cluster = cluster;
 		}
 

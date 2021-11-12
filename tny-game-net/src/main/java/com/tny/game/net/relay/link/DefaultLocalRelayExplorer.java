@@ -18,16 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date : 2021/8/25 9:00 下午
  */
 @Unit
-public class DefaultRemoteRelayExplorer extends BaseRelayExplorer<RemoteRelayTunnel<?>> implements RemoteRelayExplorer {
+public class DefaultLocalRelayExplorer extends BaseRelayExplorer<LocalRelayTunnel<?>> implements LocalRelayExplorer {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(DefaultRemoteRelayExplorer.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(DefaultLocalRelayExplorer.class);
 
-	private final Map<String, RemoteRelayLink> linkMap = new ConcurrentHashMap<>();
+	private final Map<String, LocalRelayLink> linkMap = new ConcurrentHashMap<>();
 
 	@Override
 	public void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key) {
-		CommonRemoteRelayLink link = new CommonRemoteRelayLink(transporter, serveName, instance, key);
-		RemoteRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
+		CommonLocalRelayLink link = new CommonLocalRelayLink(transporter, serveName, instance, key);
+		LocalRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
 		if (relayLink != null && !Objects.equals(relayLink.getTransporter(), transporter)) {
 			link.openOnFailure();
 		} else {
@@ -37,14 +37,14 @@ public class DefaultRemoteRelayExplorer extends BaseRelayExplorer<RemoteRelayTun
 
 	@Override
 	public void acceptConnectTunnel(NetRelayLink link, NetworkContext networkContext, long instanceId, long tunnelId, String host, int port) {
-		RemoteRelayLink relayLink = linkMap.get(link.getId());
+		LocalRelayLink relayLink = linkMap.get(link.getId());
 		if (relayLink == null) {
 			link.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.failure(instanceId, tunnelId));
 			LOGGER.warn("acceptConnectTunnel link[{}] 不存在", link.getId());
 			return;
 		}
-		RemoteRelayMessageTransporter<UID> transporter = new DefaultRemoteRelayMessageTransporter<>(relayLink);
-		RemoteRelayTunnel<?> replayTunnel = new GeneralRemoteRelayTunnel<>(
+		LocalRelayMessageTransporter<UID> transporter = new DefaultLocalRelayMessageTransporter<>(relayLink);
+		LocalRelayTunnel<?> replayTunnel = new GeneralLocalRelayTunnel<>(
 				instanceId, tunnelId, transporter, new InetSocketAddress(host, port), networkContext);
 		putTunnel(replayTunnel);
 		relayLink.openTunnel(replayTunnel);
@@ -53,13 +53,13 @@ public class DefaultRemoteRelayExplorer extends BaseRelayExplorer<RemoteRelayTun
 
 	@Override
 	public void switchTunnelLink(NetRelayLink link, long instanceId, long tunnelId) {
-		RemoteRelayTunnel<?> tunnel = this.getTunnel(instanceId, tunnelId);
+		LocalRelayTunnel<?> tunnel = this.getTunnel(instanceId, tunnelId);
 		if (tunnel == null) {
 			link.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.failure(instanceId, tunnelId));
 			LOGGER.warn("switchTunnelLink tunnel[{}-{}] 不存在", instanceId, tunnelId);
 			return;
 		}
-		RemoteRelayLink relayLink = linkMap.get(link.getId());
+		LocalRelayLink relayLink = linkMap.get(link.getId());
 		if (relayLink == null) {
 			link.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.failure(instanceId, tunnelId));
 			LOGGER.warn("switchTunnelLink link[{}] 不存在", link.getId());

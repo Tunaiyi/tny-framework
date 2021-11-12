@@ -20,36 +20,36 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/8/21 4:37 上午
  */
-public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
+public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(BaseLocalServeCluster.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(BaseRemoteServeCluster.class);
 
 	private final String serveName;
 
 	private final String username;
 
-	private final LocalServeInstanceAllotStrategy instanceAllotStrategy;
+	private final ServeInstanceAllotStrategy instanceAllotStrategy;
 
-	private final LocalRelayLinkAllotStrategy relayLinkAllotStrategy;
+	private final RelayLinkAllotStrategy relayLinkAllotStrategy;
 
-	private volatile Map<Long, NetLocalServeInstance> instanceMap = new ConcurrentHashMap<>();
+	private volatile Map<Long, NetRemoteServeInstance> instanceMap = new ConcurrentHashMap<>();
 
-	private volatile List<NetLocalServeInstance> instances = ImmutableList.of();
+	private volatile List<NetRemoteServeInstance> instances = ImmutableList.of();
 
-	private volatile List<NetLocalServeInstance> healthyInstances = ImmutableList.of();
+	private volatile List<NetRemoteServeInstance> healthyInstances = ImmutableList.of();
 
 	public AtomicBoolean close = new AtomicBoolean(false);
 
 	@Override
-	public LocalServeInstance getLocalInstance(long id) {
+	public RemoteServeInstance getLocalInstance(long id) {
 		return instanceMap.get(id);
 	}
 
-	public NetLocalServeInstance instanceOf(long id) {
+	public NetRemoteServeInstance instanceOf(long id) {
 		return instanceMap.get(id);
 	}
 
-	protected List<NetLocalServeInstance> instances() {
+	protected List<NetRemoteServeInstance> instances() {
 		return instances;
 	}
 
@@ -59,15 +59,15 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 	}
 
 	@Override
-	public List<LocalServeInstance> getHealthyLocalInstances() {
+	public List<RemoteServeInstance> getHealthyLocalInstances() {
 		return as(healthyInstances);
 	}
 
-	public BaseLocalServeCluster(
+	public BaseRemoteServeCluster(
 			String serveName,
 			String username,
-			LocalServeInstanceAllotStrategy instanceAllotStrategy,
-			LocalRelayLinkAllotStrategy relayLinkAllotStrategy) {
+			ServeInstanceAllotStrategy instanceAllotStrategy,
+			RelayLinkAllotStrategy relayLinkAllotStrategy) {
 		this.serveName = serveName;
 		this.username = username;
 		this.instanceAllotStrategy = instanceAllotStrategy;
@@ -90,8 +90,8 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 	}
 
 	@Override
-	public LocalRelayLink allotLink(Tunnel<?> tunnel) {
-		LocalServeInstance instance = instanceAllotStrategy.allot(tunnel, this);
+	public RemoteRelayLink allotLink(Tunnel<?> tunnel) {
+		RemoteServeInstance instance = instanceAllotStrategy.allot(tunnel, this);
 		if (instance == null) {
 			return null;
 		}
@@ -99,8 +99,8 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 	}
 
 	@Override
-	public LocalServeInstance registerInstance(NetLocalServeInstance instance) {
-		LocalServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
+	public RemoteServeInstance registerInstance(NetRemoteServeInstance instance) {
+		RemoteServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
 		if (old == null) {
 			this.doRefreshInstances();
 		}
@@ -109,7 +109,7 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 
 	@Override
 	public synchronized void unregisterInstance(long instanceId) {
-		NetLocalServeInstance instance = instanceMap.remove(instanceId);
+		NetRemoteServeInstance instance = instanceMap.remove(instanceId);
 		if (instance != null && !instance.isClose()) {
 			instance.close();
 			this.doRefreshInstances();
@@ -118,7 +118,7 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 
 	@Override
 	public void updateInstance(ServeNode node) {
-		NetLocalServeInstance instance = instanceMap.get(node.getId());
+		NetRemoteServeInstance instance = instanceMap.get(node.getId());
 		if (instance != null) {
 			instance.updateMetadata(node.getMetadata());
 			if (instance.updateHealthy(node.isHealthy())) {
@@ -135,16 +135,16 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 	private void doRefreshInstances() {
 		this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
 		this.healthyInstances = ImmutableList.copyOf(instances.stream()
-				.filter(NetLocalServeInstance::isHealthy)
+				.filter(NetRemoteServeInstance::isHealthy)
 				.collect(Collectors.toList()));
 	}
 
 	@Override
 	public synchronized void close() {
 		if (close.compareAndSet(false, true)) {
-			List<NetLocalServeInstance> oldList = instances;
+			List<NetRemoteServeInstance> oldList = instances;
 			instances = ImmutableList.of();
-			oldList.forEach(NetLocalServeInstance::close);
+			oldList.forEach(NetRemoteServeInstance::close);
 			instanceMap = new ConcurrentHashMap<>();
 		}
 	}
@@ -155,11 +155,11 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 			return true;
 		}
 
-		if (!(o instanceof BaseLocalServeCluster)) {
+		if (!(o instanceof BaseRemoteServeCluster)) {
 			return false;
 		}
 
-		BaseLocalServeCluster that = (BaseLocalServeCluster)o;
+		BaseRemoteServeCluster that = (BaseRemoteServeCluster)o;
 
 		return new EqualsBuilder().append(getServeName(), that.getServeName()).isEquals();
 	}

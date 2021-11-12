@@ -35,7 +35,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
 	private final InetSocketAddress serveAddress;
 
-	private RemoteRelayExplorer remoteRelayExplorer;
+	private LocalRelayExplorer localRelayExplorer;
 
 	private final Map<String, Channel> channels = new CopyOnWriteMap<>();
 
@@ -147,7 +147,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 				return this.bootstrap;
 			}
 			this.bootstrap = new ServerBootstrap();
-			RelayPacketProcessor relayPacketProcessor = new RemoteRelayPacketProcessor(this.remoteRelayExplorer, this.getContext());
+			RelayPacketProcessor relayPacketProcessor = new LocalRelayPacketProcessor(this.localRelayExplorer, this.getContext());
 			NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(relayPacketProcessor);
 			this.bootstrap.group(parentGroup, childGroup);
 			this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
@@ -179,7 +179,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
 	@Override
 	protected void onLoadUnit(NettyRelayServerBootstrapSetting setting) {
-		this.remoteRelayExplorer = UnitLoader.getLoader(RemoteRelayExplorer.class).checkUnit();
+		this.localRelayExplorer = UnitLoader.getLoader(LocalRelayExplorer.class).checkUnit();
 	}
 
 	private void createRelayChannelTransmitter(Channel channel) {

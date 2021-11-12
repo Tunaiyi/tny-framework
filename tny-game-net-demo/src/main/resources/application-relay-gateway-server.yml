@@ -9,7 +9,7 @@ tny:
       network:
         server:
           name: game-server
-          bind-address: 127.0.0.1:16800,127.0.0.1:16801
+          bind-address: 127.0.0.1:17800
           channel:
             #            maker:
             #              pipeline-chains:
@@ -25,7 +25,7 @@ tny:
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
-            tunnel-factory: "localRelayTunnelFactory"
+            tunnel-factory: "remoteRelayTunnelFactory"
             message-handler: "relayMessageHandler"
       relay:
         client:
@@ -37,8 +37,8 @@ tny:
     relay:
       cluster:
         serve-clusters:
-          - id: "GameServer"
-            link-connection-size: 10
+          - serve-name: "GameServer"
+            link-connection-size: 1
             instances:
               - id: 1
                 url: tcp://127.0.0.1:15800

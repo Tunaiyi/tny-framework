@@ -9,7 +9,7 @@ import com.tny.game.net.relay.cluster.*;
  * @author : kgtny
  * @date : 2021/8/23 9:20 下午
  */
-public interface NetLocalServeCluster extends LocalServeCluster {
+public interface NetRemoteServeCluster extends RemoteServeCluster {
 
 	/**
 	 * 关闭本地集群连接
@@ -22,7 +22,7 @@ public interface NetLocalServeCluster extends LocalServeCluster {
 	 * @param instance 注册的 instance
 	 * @return 返回 instance
 	 */
-	LocalServeInstance registerInstance(NetLocalServeInstance instance);
+	RemoteServeInstance registerInstance(NetRemoteServeInstance instance);
 
 	/**
 	 * 刷新实例

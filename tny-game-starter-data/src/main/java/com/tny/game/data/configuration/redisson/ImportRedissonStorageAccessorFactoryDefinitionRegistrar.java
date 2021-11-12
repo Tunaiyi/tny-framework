@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
  * @author : kgtny
  * @date : 2021/9/17 5:42 下午
  */
-@AutoConfigureBefore(GameDataAutoConfiguration.class)
+@AutoConfigureBefore(DataAutoConfiguration.class)
 public class ImportRedissonStorageAccessorFactoryDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
 	private void registerRedissonStorageAccessorFactory(

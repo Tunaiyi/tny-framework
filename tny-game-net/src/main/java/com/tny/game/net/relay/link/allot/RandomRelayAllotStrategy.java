@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author : kgtny
  * @date : 2021/9/2 1:54 下午
  */
-public class RandomRelayAllotStrategy implements LocalRelayLinkAllotStrategy, LocalServeInstanceAllotStrategy {
+public class RandomRelayAllotStrategy implements RelayLinkAllotStrategy, ServeInstanceAllotStrategy {
 
 	private <T> T random(List<T> values) {
 		int size = values.size();
@@ -27,12 +27,12 @@ public class RandomRelayAllotStrategy implements LocalRelayLinkAllotStrategy, Lo
 	}
 
 	@Override
-	public LocalRelayLink allot(Tunnel<?> tunnel, LocalServeInstance instance) {
+	public RemoteRelayLink allot(Tunnel<?> tunnel, RemoteServeInstance instance) {
 		return random(instance.getActiveRelayLinks());
 	}
 
 	@Override
-	public LocalServeInstance allot(Tunnel<?> tunnel, NetLocalServeCluster cluster) {
+	public RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster) {
 		return random(cluster.getHealthyLocalInstances());
 	}
 

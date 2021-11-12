@@ -10,16 +10,16 @@ import org.slf4j.*;
  * @author : kgtny
  * @date : 2021/8/30 8:50 下午
  */
-public class NettyLocalServeInstance extends BaseLocalServeInstance {
+public class NettyRemoteServeInstance extends BaseRemoteServeInstance {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NettyLocalServeInstance.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(NettyRemoteServeInstance.class);
 
 	/**
 	 * 连接任务
 	 */
 	private final NettyServeInstanceConnectMonitor monitor;
 
-	public NettyLocalServeInstance(NetLocalServeCluster cluster, ServeNode node, NettyServeInstanceConnectMonitor monitor) {
+	public NettyRemoteServeInstance(NetRemoteServeCluster cluster, ServeNode node, NettyServeInstanceConnectMonitor monitor) {
 		super(cluster, node);
 		this.monitor = monitor;
 	}

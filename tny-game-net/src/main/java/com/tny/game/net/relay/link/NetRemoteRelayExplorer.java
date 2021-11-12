@@ -11,7 +11,7 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/8/25 7:31 下午
  */
-public interface NetLocalRelayExplorer extends LocalRelayExplorer {
+public interface NetRemoteRelayExplorer extends RemoteRelayExplorer {
 
 	void putInstance(ServeNode node);
 
