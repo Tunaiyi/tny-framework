@@ -14,14 +14,14 @@ public class FixedRelayMessageRoutersProperties {
 	/**
 	 * name : serveName
 	 */
-	private String serveName;
+	private String service;
 
-	public String getServeName() {
-		return serveName;
+	public String getService() {
+		return service;
 	}
 
-	public FixedRelayMessageRoutersProperties setServeName(String serveName) {
-		this.serveName = serveName;
+	public FixedRelayMessageRoutersProperties setService(String service) {
+		this.service = service;
 		return this;
 	}
 

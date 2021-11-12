@@ -11,25 +11,16 @@ import com.tny.game.net.relay.link.*;
  */
 public class NettyRemoteServeCluster extends BaseRemoteServeCluster {
 
-	//	private final LocalRelayContext relayContext;
-
 	private final RemoteServeClusterContext clusterContext;
 
 	public NettyRemoteServeCluster(RemoteServeClusterContext clusterContext) {
 		super(clusterContext.getServeName(),
+				clusterContext.getService(),
 				clusterContext.getUsername(),
 				clusterContext.getServeInstanceAllotStrategy(),
 				clusterContext.getRelayLinkAllotStrategy());
 		this.clusterContext = clusterContext;
 	}
-
-	//	public String getCurrentServeName() {
-	//		return relayContext.getCurrentServeName();
-	//	}
-	//
-	//	public long getCurrentInstanceId() {
-	//		return relayContext.getCurrentInstanceId();
-	//	}
 
 	@Override
 	public RemoteServeClusterContext getContext() {

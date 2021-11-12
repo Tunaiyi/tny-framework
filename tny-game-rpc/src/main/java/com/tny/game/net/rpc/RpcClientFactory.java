@@ -6,6 +6,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.rpc.auth.*;
 import com.tny.game.net.rpc.setting.*;
+import com.tny.game.net.serve.*;
 import com.tny.game.net.transport.*;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @author : kgtny
  * @date : 2021/11/10 2:22 下午
  */
-public class RpcClientFactory {
+public class RpcClientFactory implements Serve {
 
 	private ClientGuide clientGuide;
 
@@ -37,8 +38,18 @@ public class RpcClientFactory {
 		return setting;
 	}
 
-	public String getServiceName() {
-		return setting.getServiceName();
+	public String getS() {
+		return setting.serviceName();
+	}
+
+	@Override
+	public String getServeName() {
+		return setting.getServeName();
+	}
+
+	@Override
+	public String getService() {
+		return setting.getService();
 	}
 
 	public boolean isDiscovery() {

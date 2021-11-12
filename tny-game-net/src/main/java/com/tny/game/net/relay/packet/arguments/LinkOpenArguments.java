@@ -8,20 +8,20 @@ package com.tny.game.net.relay.packet.arguments;
  */
 public class LinkOpenArguments implements LinkPacketArguments {
 
-	private final String serveName;
+	private final String service;
 
 	private final long instance;
 
 	private final String key;
 
-	public LinkOpenArguments(String serveName, long instance, String key) {
-		this.serveName = serveName;
+	public LinkOpenArguments(String service, long instance, String key) {
+		this.service = service;
 		this.instance = instance;
 		this.key = key;
 	}
 
-	public String getServeName() {
-		return serveName;
+	public String getService() {
+		return service;
 	}
 
 	public long getInstance() {

@@ -68,11 +68,12 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 		return this.name;
 	}
 
+	@Override
 	public String getService() {
 		return service;
 	}
 
-	public String getServiceName() {
+	public String serviceName() {
 		return ifBlank(service, this.name);
 	}
 

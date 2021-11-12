@@ -44,7 +44,7 @@ public class NettyRemoteRelayExplorer extends BaseRemoteRelayExplorer<NettyRemot
 
 	@Override
 	public void putInstance(ServeNode node) {
-		NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
+		NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
 		if (cluster != null) {
 			addInstance(node, cluster);
 		}
@@ -52,7 +52,7 @@ public class NettyRemoteRelayExplorer extends BaseRemoteRelayExplorer<NettyRemot
 
 	@Override
 	public void removeInstance(ServeNode node) {
-		NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
+		NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
 		if (cluster != null) {
 			cluster.unregisterInstance(node.getId());
 		}
@@ -63,7 +63,7 @@ public class NettyRemoteRelayExplorer extends BaseRemoteRelayExplorer<NettyRemot
 	 */
 	@Override
 	public void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses) {
-		NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
+		NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
 		if (cluster != null) {
 			if (statuses.contains(ServeNodeChangeStatus.URL_CHANGE)) {
 				cluster.unregisterInstance(node.getId());
@@ -91,7 +91,7 @@ public class NettyRemoteRelayExplorer extends BaseRemoteRelayExplorer<NettyRemot
 			List<NetAccessPoint> instances = clusterContext.getInstances();
 			if (CollectionUtils.isNotEmpty(instances)) {
 				instances.forEach(point -> {
-					RemoteServeNode node = new RemoteServeNode(null, null, cluster.getServeName(), point);
+					RemoteServeNode node = new RemoteServeNode(null, null, cluster.getServeName(), cluster.getService(), point);
 					addInstance(node, cluster);
 				});
 			}

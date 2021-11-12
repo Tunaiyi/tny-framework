@@ -17,10 +17,10 @@ public interface LocalRelayExplorer extends RelayExplorer<LocalRelayTunnel<?>> {
 	 * 接收打开的 link
 	 *
 	 * @param transporter 转发器
-	 * @param serveName   集群 id
+	 * @param service     集群 id
 	 * @param instance    实例 id
 	 */
-	void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key);
+	void acceptOpenLink(NetRelayTransporter transporter, String service, long instance, String key);
 
 	/**
 	 * 接收连接的 Tunnel

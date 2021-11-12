@@ -20,9 +20,11 @@ public class NacosRemoteServeNode extends RemoteServeNode {
 	public NacosRemoteServeNode(Instance instance, ObjectMapper mapper) throws JsonProcessingException {
 		Map<String, String> metadata = instance.getMetadata();
 		String serveName = metadata.get(NacosMetaDataKey.NET_SERVE_NAME);
+		String service = metadata.get(NacosMetaDataKey.NET_SERVICE);
 		String serverId = metadata.getOrDefault(NacosMetaDataKey.NET_SERVER_ID, "0");
 		String netMetadata = metadata.get(NacosMetaDataKey.NET_METADATA);
-		this.setServeName(serveName)
+		this.setService(service)
+				.setServeName(serveName)
 				.setId(Long.parseLong(serverId))
 				.setAppType(metadata.get(NacosMetaDataKey.NET_APP_TYPE))
 				.setScopeType(metadata.get(NacosMetaDataKey.NET_SCOPE_TYPE))
@@ -38,6 +40,12 @@ public class NacosRemoteServeNode extends RemoteServeNode {
 	@Override
 	protected NacosRemoteServeNode setServeName(String serveName) {
 		super.setServeName(serveName);
+		return this;
+	}
+
+	@Override
+	protected NacosRemoteServeNode setService(String service) {
+		super.setService(service);
 		return this;
 	}
 

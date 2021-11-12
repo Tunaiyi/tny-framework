@@ -40,7 +40,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	/**
 	 * 集群id
 	 */
-	private final String serveName;
+	private final String service;
 
 	/**
 	 * 集群实例(节点) id
@@ -72,9 +72,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	 */
 	private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-	public BaseRelayLink(String key, String serveName, long instanceId, NetRelayTransporter transporter) {
+	public BaseRelayLink(String key, String service, long instanceId, NetRelayTransporter transporter) {
 		this.key = key;
-		this.serveName = serveName;
+		this.service = service;
 		this.instanceId = instanceId;
 		this.id = NetRelayLink.idOf(this);
 		this.transporter = transporter;
@@ -88,8 +88,8 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	}
 
 	@Override
-	public String getServeName() {
-		return serveName;
+	public String getService() {
+		return service;
 	}
 
 	@Override
@@ -292,13 +292,13 @@ public abstract class BaseRelayLink implements NetRelayLink {
 		BaseRelayLink that = (BaseRelayLink)o;
 		return new EqualsBuilder().append(getInstanceId(), that.getInstanceId())
 				.append(getId(), that.getId())
-				.append(getServeName(), that.getServeName())
+				.append(getService(), that.getService())
 				.isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 37).append(getId()).append(getServeName()).append(getInstanceId()).toHashCode();
+		return new HashCodeBuilder(17, 37).append(getId()).append(getService()).append(getInstanceId()).toHashCode();
 	}
 
 	@Override

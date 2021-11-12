@@ -12,10 +12,10 @@ public interface RemoteRelayLink extends NetRelayLink {
 	/**
 	 * 连接认证
 	 *
-	 * @param serveName  服务名
+	 * @param service    服务名
 	 * @param instanceId 实例 id
 	 */
-	void auth(String serveName, long instanceId);
+	void auth(String service, long instanceId);
 
 	/**
 	 * 切换link

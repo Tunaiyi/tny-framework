@@ -42,7 +42,7 @@ tny:
     rpc:
       client:
         services:
-          - name: game-service
+          - serveName: game-service
             host: 127.0.0.1
             port: 16800
             username: game-client

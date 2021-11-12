@@ -31,7 +31,7 @@ public class ImportRpcConnectorDefinitionRegistrar extends ImportConfigurationBe
 	}
 
 	private <T> void registerRpcConnector(BeanDefinitionRegistry registry, RpcServiceSetting serviceSetting) {
-		String beanName = BeanNameUtils.lowerCamelName(serviceSetting.getName() + RpcClientFactory.class.getSimpleName());
+		String beanName = BeanNameUtils.lowerCamelName(serviceSetting.serviceName() + RpcClientFactory.class.getSimpleName());
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.genericBeanDefinition(RpcClientFactory.class)
 				.addAutowiredProperty("appContext")

@@ -12,15 +12,15 @@ import com.tny.game.net.relay.link.*;
  */
 public class FixedRelayMessageRouter implements RelayMessageRouter {
 
-	private final String serveName;
+	private final String service;
 
-	public FixedRelayMessageRouter(String serveName) {
-		this.serveName = serveName;
+	public FixedRelayMessageRouter(String service) {
+		this.service = service;
 	}
 
 	@Override
 	public String route(RemoteRelayTunnel<?> tunnel, MessageSchema schema) {
-		return serveName;
+		return service;
 	}
 
 }

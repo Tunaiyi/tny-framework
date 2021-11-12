@@ -47,9 +47,9 @@ public class LocalRelayPacketProcessor extends BaseRelayPacketProcessor {
 	@Override
 	public void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet) {
 		LinkOpenArguments arguments = packet.getArguments();
-		LOGGER.info("#RelayLink({}) [{} ==> {}]  接受连接", NetRelayLink.idOf(arguments.getServeName(), arguments.getInstance(), arguments.getKey()),
+		LOGGER.info("#RelayLink({}) [{} ==> {}]  接受连接", NetRelayLink.idOf(arguments.getService(), arguments.getInstance(), arguments.getKey()),
 				transporter.getLocalAddress(), transporter.getRemoteAddress());
-		localRelayExplorer.acceptOpenLink(transporter, arguments.getServeName(), arguments.getInstance(), arguments.getKey());
+		localRelayExplorer.acceptOpenLink(transporter, arguments.getService(), arguments.getInstance(), arguments.getKey());
 	}
 
 	@Override

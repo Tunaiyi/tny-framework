@@ -38,7 +38,7 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 
 	protected BaseRemoteRelayExplorer<T> initClusters(Collection<T> clusters) {
 		this.clusters = ImmutableList.copyOf(clusters);
-		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::getServeName, ObjectAide::self)));
+		this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::serviceName, ObjectAide::self)));
 		return this;
 	}
 
@@ -58,13 +58,13 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		GeneralRemoteRelayTunnel<D> tunnel = new GeneralRemoteRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
 				relayMessageRouter);
 		Map<String, LocalTunnelRelayer> relayer = preassignRelayer(tunnel);
-		tunnel.initRelayers(relayer);
+		tunnel.initRelayer(relayer);
 		return DoneResults.success(putTunnel(tunnel));
 	}
 
 	@Override
-	public <D> RemoteRelayLink allotLink(RemoteRelayTunnel<D> tunnel, String serveName) {
-		RemoteServeCluster cluster = this.getCluster(serveName);
+	public <D> RemoteRelayLink allotLink(RemoteRelayTunnel<D> tunnel, String service) {
+		RemoteServeCluster cluster = this.getCluster(service);
 		if (cluster == null) {
 			return null;
 		}
@@ -85,7 +85,7 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		for (NetRemoteServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
-				return ImmutableMap.of(relayer.getServeName(), relayer);
+				return ImmutableMap.of(relayer.getService(), relayer);
 			}
 		}
 		return ImmutableMap.of();
@@ -97,7 +97,7 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		for (NetRemoteServeCluster cluster : clusters) {
 			LocalTunnelRelayer relayer = assignRelayer(tunnel, cluster);
 			if (relayer != null) {
-				relayerMap.put(relayer.getServeName(), relayer);
+				relayerMap.put(relayer.getService(), relayer);
 			}
 		}
 		return relayerMap;
@@ -121,8 +121,8 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		return relayer;
 	}
 
-	protected T clusterOf(String id) {
-		return clusterMap.get(id);
+	protected T clusterOf(String service) {
+		return clusterMap.get(service);
 	}
 
 	protected List<T> clusters() {

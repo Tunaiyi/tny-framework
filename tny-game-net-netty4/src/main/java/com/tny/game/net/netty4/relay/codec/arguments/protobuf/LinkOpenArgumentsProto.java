@@ -27,7 +27,7 @@ public class LinkOpenArgumentsProto extends BaseLinkArgumentsProto<LinkOpenArgum
 
 	public LinkOpenArgumentsProto(LinkOpenArguments arguments) {
 		super(arguments);
-		this.serveName = arguments.getServeName();
+		this.serveName = arguments.getService();
 		this.instance = arguments.getInstance();
 		this.key = arguments.getKey();
 	}

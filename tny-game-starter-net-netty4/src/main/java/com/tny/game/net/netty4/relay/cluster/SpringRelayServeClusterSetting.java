@@ -19,6 +19,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private String serveName;
 
+	private String service;
+
 	private String username;
 
 	private String clientGuide = defaultName(RelayClientGuide.class);
@@ -47,9 +49,9 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return username;
 	}
 
-	public SpringRelayServeClusterSetting setServeName(String serveName) {
-		this.serveName = serveName;
-		return this;
+	@Override
+	public String getService() {
+		return service;
 	}
 
 	public String getClientGuide() {
@@ -104,6 +106,16 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	public String getRelayLinkAllotStrategy() {
 		return relayLinkAllotStrategy;
+	}
+
+	public SpringRelayServeClusterSetting setService(String service) {
+		this.service = service;
+		return this;
+	}
+
+	public SpringRelayServeClusterSetting setServeName(String serveName) {
+		this.serveName = serveName;
+		return this;
 	}
 
 	public SpringRelayServeClusterSetting setDiscoveryEnable(boolean discoveryEnable) {

@@ -65,6 +65,11 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
 	}
 
 	@Override
+	public String getService() {
+		return cluster.getService();
+	}
+
+	@Override
 	public long getId() {
 		return id;
 	}

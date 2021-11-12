@@ -10,9 +10,19 @@ import java.util.Map;
  * @author : kgtny
  * @date : 2021/9/2 3:42 下午
  */
-public class RelayServeInstanceSetting extends BaseNetAccessPoint {
+public class RelayServeInstanceSetting extends BaseServeNode {
 
 	public RelayServeInstanceSetting() {
+	}
+
+	public RelayServeInstanceSetting(String appType, String scopeType, String serveName, String service,
+			NetAccessPoint point) {
+		super(appType, scopeType, serveName, service, point);
+	}
+
+	public RelayServeInstanceSetting(String serveName, String service, String appType, String scopeType, long id, String scheme, String host,
+			int port) {
+		super(serveName, service, appType, scopeType, id, scheme, host, port);
 	}
 
 	@Override

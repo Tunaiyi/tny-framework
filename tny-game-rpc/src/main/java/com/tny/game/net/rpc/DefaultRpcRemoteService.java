@@ -21,7 +21,7 @@ public class DefaultRpcRemoteService implements RpcRemoteService, EndpointKeeper
 
 	public DefaultRpcRemoteService(RpcClientSetting setting) {
 		setting.getServices()
-				.stream().map(RpcServiceSetting::getName)
+				.stream().map(RpcServiceSetting::serviceName)
 				.forEach(this::loadOrCreate);
 	}
 

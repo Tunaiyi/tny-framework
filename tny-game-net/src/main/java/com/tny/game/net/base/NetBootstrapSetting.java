@@ -4,6 +4,8 @@ public interface NetBootstrapSetting {
 
 	String getName();
 
+	String getService();
+
 	String getTunnelIdGenerator();
 
 	String getMessageFactory();

@@ -47,8 +47,8 @@ public class NettyRemoteRelayContext implements RemoteRelayContext {
 	}
 
 	@Override
-	public String createLinkKey(String serverName) {
-		String launchId = serverName + "." + this.getAppInstanceId() + "." + launchNum + "." +
+	public String createLinkKey(String service) {
+		String launchId = service + "." + this.getAppInstanceId() + "." + launchNum + "." +
 				ThreadLocalRandom.current().nextInt(100000000, 1000000000);
 		UUID uuid = UUID.nameUUIDFromBytes((launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
 		String head = Long.toUnsignedString(uuid.getMostSignificantBits(), 32);

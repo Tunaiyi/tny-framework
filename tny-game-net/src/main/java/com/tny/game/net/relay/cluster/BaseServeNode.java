@@ -18,22 +18,32 @@ public class BaseServeNode extends BaseNetAccessPoint implements ServeNode {
 
 	private String serveName;
 
+	private String service;
+
 	public BaseServeNode() {
 		super();
 	}
 
-	public BaseServeNode(String appType, String scopeType, String serveName, NetAccessPoint point) {
+	public BaseServeNode(String serveName, String service, NetAccessPoint point) {
+		super(point);
+		this.serveName = serveName;
+		this.service = service;
+	}
+
+	public BaseServeNode(String appType, String scopeType, String serveName, String service, NetAccessPoint point) {
 		super(point);
 		this.appType = appType;
 		this.scopeType = scopeType;
 		this.serveName = serveName;
+		this.service = service;
 	}
 
-	public BaseServeNode(String serveName, String appType, String scopeType, long id, String scheme, String host, int port) {
+	public BaseServeNode(String serveName, String service, String appType, String scopeType, long id, String scheme, String host, int port) {
 		super(id, scheme, host, port, true);
 		this.serveName = serveName;
 		this.appType = appType;
 		this.scopeType = scopeType;
+		this.service = service;
 	}
 
 	@Override
@@ -51,8 +61,18 @@ public class BaseServeNode extends BaseNetAccessPoint implements ServeNode {
 		return scopeType;
 	}
 
+	@Override
+	public String getService() {
+		return service;
+	}
+
 	protected BaseServeNode setServeName(String serveName) {
 		this.serveName = serveName;
+		return this;
+	}
+
+	protected BaseServeNode setService(String service) {
+		this.service = service;
 		return this;
 	}
 

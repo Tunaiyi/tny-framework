@@ -35,6 +35,11 @@ public class NettyRemoteServeClusterContext implements RemoteServeClusterContext
 	}
 
 	@Override
+	public String getService() {
+		return setting.getService();
+	}
+
+	@Override
 	public String getUsername() {
 		return setting.getUsername();
 	}

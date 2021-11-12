@@ -20,21 +20,21 @@ public class LocalTunnelRelayer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(LocalTunnelRelayer.class);
 
-	private final String serveName;
+	private final String service;
 
 	private final ServeClusterFilterStatus filterStatus;
 
 	private final RemoteRelayExplorer remoteRelayExplorer;
 
-	public LocalTunnelRelayer(String serveName, ServeClusterFilterStatus filterStatus,
+	public LocalTunnelRelayer(String service, ServeClusterFilterStatus filterStatus,
 			RemoteRelayExplorer remoteRelayExplorer) {
-		this.serveName = serveName;
+		this.service = service;
 		this.filterStatus = filterStatus;
 		this.remoteRelayExplorer = remoteRelayExplorer;
 	}
 
-	public String getServeName() {
-		return serveName;
+	public String getService() {
+		return service;
 	}
 
 	public WriteMessageFuture relay(RemoteRelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
@@ -46,19 +46,19 @@ public class LocalTunnelRelayer {
 			if (promise != null) {
 				promise.failed(new NetGeneralException(code));
 			}
-			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.serveName);
+			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.service);
 			TunnelAides.responseMessage(tunnel, MessageContexts.push(Protocols.PUSH, code));
 		}
 		return promise;
 	}
 
 	public RemoteRelayLink allot(RemoteRelayTunnel<?> tunnel) {
-		RemoteRelayLink link = tunnel.getLink(serveName);
+		RemoteRelayLink link = tunnel.getLink(service);
 		if (link != null && link.isActive()) {
 			return link;
 		}
 		for (int i = 0; i < 3; i++) {
-			link = remoteRelayExplorer.allotLink(tunnel, serveName);
+			link = remoteRelayExplorer.allotLink(tunnel, service);
 			if (link == null) {
 				return null;
 			}

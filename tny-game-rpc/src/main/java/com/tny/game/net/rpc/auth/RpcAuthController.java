@@ -24,7 +24,7 @@ public class RpcAuthController {
 	@RpcRequest(RPC_AUTH_$_AUTHENTICATE)
 	@AuthenticationRequired(validator = RpcPasswordValidator.class)
 	public RpcResult<String> authenticate(ServerBootstrapSetting setting, @UserID RpcLinkerId id) {
-		String token = rpcAuthService.createToken(setting.getServiceName(), id);
+		String token = rpcAuthService.createToken(setting.serviceName(), id);
 		return RpcResults.success(token);
 	}
 

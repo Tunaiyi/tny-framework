@@ -1,6 +1,7 @@
 package com.tny.game.net.relay.cluster;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.serve.*;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -12,14 +13,9 @@ import java.util.Comparator;
  * @author : kgtny
  * @date : 2021/8/23 9:21 下午
  */
-public interface ServeNode extends NetAccessPoint, Comparable<ServeNode> {
+public interface ServeNode extends NetAccessPoint, Serve, Comparable<ServeNode> {
 
 	Comparator<ServeNode> COMPARATOR = Comparator.comparingLong(ServeNode::getId);
-
-	/**
-	 * @return 集群 ServeName
-	 */
-	String getServeName();
 
 	/**
 	 * @return app 类型

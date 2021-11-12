@@ -25,7 +25,7 @@ public interface RemoteRelayContext {
 	/**
 	 * @return 分配 link id
 	 */
-	String createLinkKey(String serverName);
+	String createLinkKey(String service);
 
 	/**
 	 * @return 获取 message 路由器

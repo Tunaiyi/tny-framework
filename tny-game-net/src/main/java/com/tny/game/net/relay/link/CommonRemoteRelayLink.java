@@ -18,18 +18,18 @@ public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayL
 	private final NetRemoteServeInstance serveInstance;
 
 	public CommonRemoteRelayLink(String key, NetRemoteServeInstance serveInstance, NetRelayTransporter transporter) {
-		super(key, serveInstance.getServeName(), serveInstance.getId(), transporter);
+		super(key, serveInstance.serviceName(), serveInstance.getId(), transporter);
 		this.serveInstance = serveInstance;
 	}
 
 	@Override
-	public void auth(String serveName, long serverId) {
-		this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(serveName, serverId, this.getKey()));
+	public void auth(String service, long serverId) {
+		this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(service, serverId, this.getKey()));
 	}
 
 	@Override
 	public void switchTunnel(RemoteRelayTunnel<?> tunnel) {
-		if (tunnel.getLink(this.getServeName()) == this) {
+		if (tunnel.getLink(this.getService()) == this) {
 			this.write(TunnelSwitchLinkPacket.FACTORY, new TunnelVoidArguments(tunnel));
 		}
 	}

@@ -18,11 +18,11 @@ import com.tny.game.net.transport.*;
 public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkListener> {
 
 	static String idOf(NetRelayLink relayLink) {
-		return idOf(relayLink.getServeName(), relayLink.getInstanceId(), relayLink.getKey());
+		return idOf(relayLink.getService(), relayLink.getInstanceId(), relayLink.getKey());
 	}
 
-	static String idOf(String serveName, long id, String key) {
-		return serveName + "-" + id + "-" + key;
+	static String idOf(String service, long id, String key) {
+		return service + "-" + id + "-" + key;
 	}
 
 	/**

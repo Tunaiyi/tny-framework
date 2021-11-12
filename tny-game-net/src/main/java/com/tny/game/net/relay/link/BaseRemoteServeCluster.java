@@ -24,6 +24,8 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BaseRemoteServeCluster.class);
 
+	private final String service;
+
 	private final String serveName;
 
 	private final String username;
@@ -65,11 +67,13 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
 	public BaseRemoteServeCluster(
 			String serveName,
+			String service,
 			String username,
 			ServeInstanceAllotStrategy instanceAllotStrategy,
 			RelayLinkAllotStrategy relayLinkAllotStrategy) {
 		this.serveName = serveName;
 		this.username = username;
+		this.service = service;
 		this.instanceAllotStrategy = instanceAllotStrategy;
 		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
 	}
@@ -77,6 +81,11 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 	@Override
 	public String getServeName() {
 		return serveName;
+	}
+
+	@Override
+	public String getService() {
+		return service;
 	}
 
 	@Override

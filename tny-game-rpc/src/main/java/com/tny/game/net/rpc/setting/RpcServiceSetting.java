@@ -18,14 +18,14 @@ public class RpcServiceSetting {
 	/**
 	 * rpc服务名
 	 */
-	private String name;
-
-	private boolean discovery = false;
+	private String service;
 
 	/**
-	 * 服务发现-服务名
+	 * 服务发现-服务器服务名
 	 */
-	private String service;
+	private String serveName;
+
+	private boolean discovery = false;
 
 	private String password = "";
 
@@ -43,8 +43,8 @@ public class RpcServiceSetting {
 		return discovery;
 	}
 
-	public String getName() {
-		return name;
+	public String getServeName() {
+		return serveName;
 	}
 
 	public String getPassword() {
@@ -79,11 +79,8 @@ public class RpcServiceSetting {
 		return username;
 	}
 
-	public String getServiceName() {
-		if (StringUtils.isNoneBlank(service)) {
-			return service;
-		}
-		return name;
+	public String serviceName() {
+		return ifBlank(service, serveName);
 	}
 
 	public Optional<URL> url() {
@@ -93,8 +90,8 @@ public class RpcServiceSetting {
 		return Optional.of(URL.valueOf(format("rpc://{}:{}", this.getHost(), this.getPort())));
 	}
 
-	public RpcServiceSetting setName(String name) {
-		this.name = name;
+	public RpcServiceSetting setServeName(String serveName) {
+		this.serveName = serveName;
 		return this;
 	}
 

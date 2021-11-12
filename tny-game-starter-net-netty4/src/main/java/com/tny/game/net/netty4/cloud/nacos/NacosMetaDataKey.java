@@ -10,6 +10,8 @@ public class NacosMetaDataKey {
 
 	public static final String NET_SERVE_NAME = "net-serveName";
 
+	public static final String NET_SERVICE = "net-service";
+
 	public static final String NET_SERVER_ID = "net-serverId";
 
 	public static final String NET_APP_TYPE = "net-appType";

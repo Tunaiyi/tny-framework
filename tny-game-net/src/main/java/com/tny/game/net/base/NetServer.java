@@ -1,5 +1,7 @@
 package com.tny.game.net.base;
 
+import com.tny.game.net.serve.*;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -8,7 +10,7 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/11/11 8:36 下午
  */
-public interface NetServer {
+public interface NetServer extends Serve {
 
 	String getName();
 

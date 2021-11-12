@@ -47,7 +47,7 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 		this.relayMessageRouter = relayMessageRouter;
 	}
 
-	public GeneralRemoteRelayTunnel<UID> initRelayers(Map<String, LocalTunnelRelayer> relayerMap) {
+	public GeneralRemoteRelayTunnel<UID> initRelayer(Map<String, LocalTunnelRelayer> relayerMap) {
 		this.relayerMap = ImmutableMap.copyOf(relayerMap);
 		return this;
 	}
@@ -65,16 +65,16 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	@Override
 	public WriteMessageFuture relay(Message message, boolean needPromise) {
 		WriteMessagePromise promise = needPromise ? this.createWritePromise() : null;
-		String id = relayMessageRouter.route(this, message);
-		if (id == null) {
-			id = "-None";
+		String service = relayMessageRouter.route(this, message);
+		if (service == null) {
+			service = "-None";
 		}
-		LocalTunnelRelayer relayer = relayerMap.get(id);
+		LocalTunnelRelayer relayer = relayerMap.get(service);
 		if (relayer != null) {
 			return relayer.relay(this, message, promise);
 		} else {
 			ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
-			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, id);
+			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, service);
 			TunnelAides.responseMessage(this, MessageContexts.push(Protocols.PUSH, code));
 			if (promise != null) {
 				promise.failed(new NetGeneralException(code));
@@ -91,7 +91,7 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	@Override
 	public void bindLink(RemoteRelayLink link) {
 		synchronized (this) {
-			RemoteRelayLink old = linkMap.put(link.getServeName(), link);
+			RemoteRelayLink old = linkMap.put(link.getService(), link);
 			if (old != null) {
 				old.delinkTunnel(this);
 				link.switchTunnel(this);
@@ -104,15 +104,15 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	@Override
 	public void unbindLink(RemoteRelayLink link) {
 		synchronized (this) {
-			if (linkMap.remove(link.getServeName(), link)) {
+			if (linkMap.remove(link.getService(), link)) {
 				link.closeTunnel(this);
 			}
 		}
 	}
 
 	@Override
-	public RemoteRelayLink getLink(String serveName) {
-		return linkMap.get(serveName);
+	public RemoteRelayLink getLink(String service) {
+		return linkMap.get(service);
 	}
 
 	@Override

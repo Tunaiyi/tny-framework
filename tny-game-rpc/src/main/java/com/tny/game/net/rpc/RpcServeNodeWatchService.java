@@ -74,9 +74,9 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 				ClientConnectFuture<?> future = client.open();
 				future.handle((cl, cause) -> {
 					if (cause != null) {
-						LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.getServiceName(), url, cause);
+						LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.serviceName(), url, cause);
 					} else {
-						LOGGER.info("Rpc [{}] Client {} connect success", clientCreator.getServiceName(), url);
+						LOGGER.info("Rpc [{}] Client {} connect success", clientCreator.serviceName(), url);
 					}
 					return cl;
 				});
@@ -118,7 +118,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
 		private void start() {
 			if (connector.isDiscovery()) {
-				serveNodeClient.subscribe(connector.getServiceName(), this);
+				serveNodeClient.subscribe(connector.getServeName(), this);
 			} else {
 				RpcServiceSetting setting = connector.getSetting();
 				setting.url().ifPresent(this::connect);
@@ -135,7 +135,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
 		private void stop() {
 			if (connector.isDiscovery()) {
-				serveNodeClient.unsubscribe(connector.getServiceName(), this);
+				serveNodeClient.unsubscribe(connector.getServeName(), this);
 			}
 			this.close();
 		}

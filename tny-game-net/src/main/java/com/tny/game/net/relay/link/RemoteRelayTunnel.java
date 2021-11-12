@@ -28,10 +28,10 @@ public interface RemoteRelayTunnel<UID> extends NetRelayTunnel<UID> {
 	/**
 	 * 更具 集群id 获取转发连接
 	 *
-	 * @param serveName 集群 id
+	 * @param service 服务名
 	 * @return 返回获取的转发连接
 	 */
-	RemoteRelayLink getLink(String serveName);
+	RemoteRelayLink getLink(String service);
 
 	/**
 	 * @return 获取所有转发连接的 key

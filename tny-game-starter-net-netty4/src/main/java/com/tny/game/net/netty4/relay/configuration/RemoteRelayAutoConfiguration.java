@@ -40,7 +40,7 @@ public class RemoteRelayAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(value = "tny.net.relay.router.fixed-message-router.cluster-id")
 	public RelayMessageRouter fixedRelayMessageRouter(FixedRelayMessageRoutersProperties properties) {
-		return new FixedRelayMessageRouter(properties.getServeName());
+		return new FixedRelayMessageRouter(properties.getService());
 	}
 
 	@Bean

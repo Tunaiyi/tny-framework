@@ -70,7 +70,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
 				host = defaultDiscoveryProperties.getIp();
 			}
 		}
-		LocalServeNode node = new LocalServeNode(netAppContext, guide.getName(), guide.getScheme(), host, port);
+		LocalServeNode node = new LocalServeNode(netAppContext, guide.getServeName(), guide.serviceName(), guide.getScheme(), host, port);
 		for (LocalServerNodeCustomizer customizer : localServerNodeCustomizers) {
 			customizer.customize(node);
 		}
@@ -86,6 +86,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
 				metadata.put(NacosMetaDataKey.NET_METADATA, netMetadata);
 			}
 			metadata.put(NacosMetaDataKey.NET_SERVE_NAME, node.getServeName());
+			metadata.put(NacosMetaDataKey.NET_SERVICE, node.getService());
 			metadata.put(NacosMetaDataKey.NET_SERVER_ID, node.getId() + "");
 			metadata.put(NacosMetaDataKey.NET_APP_TYPE, node.getAppType());
 			metadata.put(NacosMetaDataKey.NET_SCOPE_TYPE, node.getScopeType());

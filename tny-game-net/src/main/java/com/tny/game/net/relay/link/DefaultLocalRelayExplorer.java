@@ -25,8 +25,8 @@ public class DefaultLocalRelayExplorer extends BaseRelayExplorer<LocalRelayTunne
 	private final Map<String, LocalRelayLink> linkMap = new ConcurrentHashMap<>();
 
 	@Override
-	public void acceptOpenLink(NetRelayTransporter transporter, String serveName, long instance, String key) {
-		CommonLocalRelayLink link = new CommonLocalRelayLink(transporter, serveName, instance, key);
+	public void acceptOpenLink(NetRelayTransporter transporter, String service, long instance, String key) {
+		CommonLocalRelayLink link = new CommonLocalRelayLink(transporter, service, instance, key);
 		LocalRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
 		if (relayLink != null && !Objects.equals(relayLink.getTransporter(), transporter)) {
 			link.openOnFailure();

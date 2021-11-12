@@ -35,9 +35,9 @@ public interface RelayLink {
 	String getKey();
 
 	/**
-	 * @return 连接类型
+	 * @return 发现服务器服务名
 	 */
-	String getServeName();
+	String getService();
 
 	/**
 	 * @return 节点 id

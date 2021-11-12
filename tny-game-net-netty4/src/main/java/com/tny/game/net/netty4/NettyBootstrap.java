@@ -27,6 +27,14 @@ public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetB
 		return setting.getName();
 	}
 
+	public String getServeName() {
+		return setting.getName();
+	}
+
+	public String getService() {
+		return setting.getService();
+	}
+
 	protected static boolean isEpoll() {
 		String osName = System.getProperties().getProperty("os.name");
 		String osVersion = System.getProperties().getProperty("os.version");
