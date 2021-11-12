@@ -7,6 +7,7 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import org.apache.commons.lang3.StringUtils;
 
+import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
@@ -15,6 +16,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 	 * 启动器名字
 	 */
 	private String name;
+
+	/**
+	 * 服务名, 如果没有定义则使用 name
+	 */
+	private String service;
 
 	/**
 	 * 消息分发起名气
@@ -62,10 +68,23 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 		return this.name;
 	}
 
+	public String getService() {
+		return service;
+	}
+
+	public String getServiceName() {
+		return ifBlank(service, this.name);
+	}
+
 	public CommonNetBootstrapSetting setName(String name) {
 		if (StringUtils.isBlank(this.name)) {
 			this.name = name;
 		}
+		return this;
+	}
+
+	public CommonNetBootstrapSetting setService(String service) {
+		this.service = service;
 		return this;
 	}
 
