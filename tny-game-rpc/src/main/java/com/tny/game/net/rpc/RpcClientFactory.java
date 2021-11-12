@@ -1,6 +1,7 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.url.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.rpc.auth.*;
@@ -46,8 +47,9 @@ public class RpcClientFactory {
 
 	private <ID> PostConnect<ID> postConnect(long id) {
 		return (c) -> {
+			String user = StringAide.ifBlank(setting.getUsername(), appContext.getAppType());
 			RequestContext context = RpcAuthMessageContexts
-					.authRequest(appContext.getAppType(), appContext.getServerId(), id, setting.getPassword())
+					.authRequest(user, appContext.getServerId(), id, setting.getPassword())
 					.willResponseFuture(3000L);
 			c.send(context);
 			context.getRespondFuture().get(12000, TimeUnit.MILLISECONDS);

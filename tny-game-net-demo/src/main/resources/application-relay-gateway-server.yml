@@ -9,7 +9,7 @@ tny:
       network:
         server:
           name: game-server
-          bind: 127.0.0.1:16800,127.0.0.1:16801
+          bind-address: 127.0.0.1:16800,127.0.0.1:16801
           channel:
             #            maker:
             #              pipeline-chains:
@@ -44,7 +44,7 @@ tny:
                 url: tcp://127.0.0.1:15800
       router:
         fixed-message-router:
-          cluster-id: "GameServer"
+          serve-name: "GameServer"
     command:
       processor:
         disruptor:
@@ -59,6 +59,7 @@ tny:
         offline-max-size: 1000
 
   data:
-    storage:
-      enable: false
+    object-storage:
+      async-storage:
+        enable: false
 

@@ -14,6 +14,11 @@ import java.util.List;
 public interface LocalServeCluster extends ServeCluster {
 
 	/**
+	 * @return 登录用户
+	 */
+	String getUsername();
+
+	/**
 	 * @return 集群是否关闭
 	 */
 	boolean isClose();

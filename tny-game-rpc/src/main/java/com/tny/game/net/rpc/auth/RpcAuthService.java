@@ -13,7 +13,7 @@ public interface RpcAuthService {
 
 	DoneResult<RpcLinkerId> auth(String service, long serverId, long instance, String password);
 
-	String createToken(RpcLinkerId id);
+	String createToken(String serviceName, RpcLinkerId id);
 
 	DoneResult<RpcToken> verify(String token);
 

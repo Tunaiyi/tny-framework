@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 /**
  * <p>
  *
@@ -80,6 +82,16 @@ public class BaseLocalServeInstance implements NetLocalServeInstance {
 	@Override
 	public String getScopeType() {
 		return scopeType;
+	}
+
+	@Override
+	public String getUsername() {
+		return cluster.getUsername();
+	}
+
+	@Override
+	public String username(String defaultName) {
+		return ifBlank(cluster.getUsername(), defaultName);
 	}
 
 	@Override

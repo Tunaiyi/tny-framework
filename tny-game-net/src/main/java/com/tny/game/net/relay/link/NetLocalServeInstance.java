@@ -31,6 +31,17 @@ public interface NetLocalServeInstance extends LocalServeInstance {
 	void relieve(LocalRelayLink link);
 
 	/**
+	 * @return 获取登录用户名
+	 */
+	String getUsername();
+
+	/**
+	 * @param defaultName 默认吗
+	 * @return 如果登录用户名为空, 返回 defaultName, 否则返回用户名
+	 */
+	String username(String defaultName);
+
+	/**
 	 * 关闭服务实例
 	 */
 	void close();

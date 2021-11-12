@@ -13,7 +13,7 @@ spring:
 tny:
   app:
     name: GameClientApp
-    app-type: game-client
+    app-type: client
     scope-type: online
   net:
     bootstrap:
@@ -42,9 +42,10 @@ tny:
     rpc:
       client:
         services:
-          - name: DemoRpcService
+          - name: game-service
             host: 127.0.0.1
             port: 16800
+            username: game-client
 
   data:
     object-storage:

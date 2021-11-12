@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class NettyLocalRelayContext implements LocalRelayContext {
 
-	private String launchId;
-
 	private NetAppContext appContext;
+
+	private final String launchNum;
 
 	private RelayMessageRouter relayMessageRouter;
 
@@ -31,21 +31,26 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 		this.setAppContext(appContext);
 		this.relayMessageRouter = relayMessageRouter;
 		this.serveClusterFilter = serveClusterFilter;
+		long launchAt = System.nanoTime();
+		String value = String.valueOf(launchAt);
+		this.launchNum = value.substring(value.length() - 12);
 	}
 
 	@Override
-	public String getCurrentServeName() {
+	public String getAppServeName() {
 		return appContext.getAppType();
 	}
 
 	@Override
-	public long getCurrentInstanceId() {
+	public long getAppInstanceId() {
 		return appContext.getServerId();
 	}
 
 	@Override
-	public String createLinkId() {
-		UUID uuid = UUID.nameUUIDFromBytes((this.launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
+	public String createLinkKey(String serverName) {
+		String launchId = serverName + "." + this.getAppInstanceId() + "." + launchNum + "." +
+				ThreadLocalRandom.current().nextInt(100000000, 1000000000);
+		UUID uuid = UUID.nameUUIDFromBytes((launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
 		String head = Long.toUnsignedString(uuid.getMostSignificantBits(), 32);
 		String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32);
 		return head + "-" + tail;
@@ -68,18 +73,11 @@ public class NettyLocalRelayContext implements LocalRelayContext {
 
 	public NettyLocalRelayContext setAppContext(NetAppContext appContext) {
 		this.appContext = appContext;
-		this.launchId = this.getCurrentServeName() + "." + this.getCurrentInstanceId() + "." +
-				System.nanoTime() + "." + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
 		return this;
 	}
 
 	public NettyLocalRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
 		this.relayMessageRouter = relayMessageRouter;
-		return this;
-	}
-
-	public NettyLocalRelayContext setLaunchId(String launchId) {
-		this.launchId = launchId;
 		return this;
 	}
 

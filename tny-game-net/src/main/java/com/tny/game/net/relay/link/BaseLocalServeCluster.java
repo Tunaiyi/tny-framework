@@ -26,6 +26,8 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 
 	private final String serveName;
 
+	private final String username;
+
 	private final LocalServeInstanceAllotStrategy instanceAllotStrategy;
 
 	private final LocalRelayLinkAllotStrategy relayLinkAllotStrategy;
@@ -61,10 +63,13 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 		return as(healthyInstances);
 	}
 
-	public BaseLocalServeCluster(String serveName,
+	public BaseLocalServeCluster(
+			String serveName,
+			String username,
 			LocalServeInstanceAllotStrategy instanceAllotStrategy,
 			LocalRelayLinkAllotStrategy relayLinkAllotStrategy) {
 		this.serveName = serveName;
+		this.username = username;
 		this.instanceAllotStrategy = instanceAllotStrategy;
 		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
 	}
@@ -72,6 +77,11 @@ public abstract class BaseLocalServeCluster implements NetLocalServeCluster {
 	@Override
 	public String getServeName() {
 		return serveName;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
 	}
 
 	@Override

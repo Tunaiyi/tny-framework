@@ -29,6 +29,11 @@ public class NettyLocalServeClusterContext implements LocalServeClusterContext {
 		return setting.getServeName();
 	}
 
+	@Override
+	public String getUsername() {
+		return setting.getUsername();
+	}
+
 	public RelayClientGuide getClientGuide() {
 		return clientGuide;
 	}

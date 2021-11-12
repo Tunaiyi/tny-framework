@@ -31,7 +31,7 @@ public class NettyLocalRelayExplorer extends BaseLocalRelayExplorer<NettyLocalSe
 		super(localRelayContext);
 		this.localRelayContext = localRelayContext;
 		Set<NettyLocalServeCluster> clusters = clusterContexts.stream()
-				.map(ctx -> new NettyLocalServeCluster(ctx, localRelayContext))
+				.map(NettyLocalServeCluster::new)
 				.collect(Collectors.toSet());
 		this.initClusters(clusters);
 	}
@@ -77,9 +77,9 @@ public class NettyLocalRelayExplorer extends BaseLocalRelayExplorer<NettyLocalSe
 
 	private void addInstance(ServeNode node, NettyLocalServeCluster cluster) {
 		LocalServeClusterContext context = cluster.getContext();
-		NettyServeInstanceConnector connector = new NettyServeInstanceConnector(localRelayContext, context, executorService);
-		NetLocalServeInstance instance = new NettyLocalServeInstance(cluster, node, connector);
-		connector.start(instance, context.getLinkConnectionSize());
+		NettyServeInstanceConnectMonitor connectMonitor = new NettyServeInstanceConnectMonitor(localRelayContext, context, executorService);
+		NetLocalServeInstance instance = new NettyLocalServeInstance(cluster, node, connectMonitor);
+		connectMonitor.start(instance, context.getLinkConnectionSize());
 		cluster.registerInstance(instance);
 	}
 

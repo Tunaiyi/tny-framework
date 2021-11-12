@@ -5,13 +5,13 @@ spring:
 tny:
   app:
     name: GameServerApp
-    app-type: game-server
+    app-type: game
     scope-type: game
   net:
     bootstrap:
       network:
         server:
-          name: game-server
+          name: game-service
           bind-address: 127.0.0.1:16800
           channel:
             encoder:

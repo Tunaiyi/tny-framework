@@ -31,7 +31,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
 
 	private final InetSocketAddress bindAddress;
 
-	public final InetSocketAddress serveAddress;
+	private final InetSocketAddress serveAddress;
 
 	private final Map<String, Channel> channels = new CopyOnWriteMap<>();
 

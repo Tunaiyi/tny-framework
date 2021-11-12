@@ -43,7 +43,7 @@ public class GameClientApp {
 
 	private static final String IDS = ThreadLocalRandom.current().nextInt(1, 900) + "";
 
-	private static SpeakService speakService;
+	private static SpeakRemoteService speakService;
 
 	public static void main(String[] args) {
 		try {
@@ -71,7 +71,7 @@ public class GameClientApp {
 						return true;
 					});
 			client.open();
-			speakService = applicationContext.getBean(SpeakService.class);
+			speakService = applicationContext.getBean(SpeakRemoteService.class);
 			application.waitForConsole("q", (cmd, cmds) -> {
 				if (cmd.startsWith("@t ")) {
 					if (cmds.length > 4) {

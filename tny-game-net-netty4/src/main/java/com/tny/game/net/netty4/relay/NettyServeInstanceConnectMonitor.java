@@ -11,7 +11,7 @@ import java.util.concurrent.*;
  * @author : kgtny
  * @date : 2021/8/30 9:09 下午
  */
-class NettyServeInstanceConnector {
+class NettyServeInstanceConnectMonitor {
 
 	private final List<NettyRelayLinkConnector> connectors = new CopyOnWriteArrayList<>();
 
@@ -21,7 +21,7 @@ class NettyServeInstanceConnector {
 
 	private final ScheduledExecutorService executorService;
 
-	NettyServeInstanceConnector(
+	NettyServeInstanceConnectMonitor(
 			LocalRelayContext relayContext, LocalServeClusterContext serveClusterContext, ScheduledExecutorService executorService) {
 		this.relayContext = relayContext;
 		this.serveClusterContext = serveClusterContext;

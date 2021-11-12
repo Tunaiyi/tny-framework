@@ -46,7 +46,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
 	private TestGeneralClientTunnel newTunnel(boolean open) {
 		TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(),
-				new NetBootstrapContext(null, null, new CommonMessageFactory(), null));
+				new NetBootstrapContext(null, null, null, new CommonMessageFactory(), null));
 		if (open) {
 			tunnel.open();
 		}

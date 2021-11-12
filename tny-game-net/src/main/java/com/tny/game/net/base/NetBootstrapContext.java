@@ -16,6 +16,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NetBootstrapContext implements NetworkContext {
 
+	private final NetBootstrapSetting setting;
+
 	private final MessageFactory messageFactory;
 
 	private final CertificateFactory<?> certificateFactory;
@@ -27,19 +29,27 @@ public class NetBootstrapContext implements NetworkContext {
 	public NetBootstrapContext() {
 		this.messageFactory = new CommonMessageFactory();
 		this.certificateFactory = new DefaultCertificateFactory<>();
+		this.setting = null;
 		this.messageDispatcher = null;
 		this.commandTaskProcessor = null;
 	}
 
 	public NetBootstrapContext(
+			NetBootstrapSetting setting,
 			MessageDispatcher messageDispatcher,
 			CommandTaskBoxProcessor commandTaskProcessor,
 			MessageFactory messageFactory,
 			CertificateFactory<?> certificateFactory) {
+		this.setting = setting;
 		this.messageDispatcher = messageDispatcher;
 		this.commandTaskProcessor = commandTaskProcessor;
 		this.messageFactory = messageFactory;
 		this.certificateFactory = certificateFactory;
+	}
+
+	@Override
+	public NetBootstrapSetting getSetting() {
+		return setting;
 	}
 
 	@Override

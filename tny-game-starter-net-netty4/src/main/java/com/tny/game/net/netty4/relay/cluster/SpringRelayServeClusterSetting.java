@@ -19,6 +19,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private String serveName;
 
+	private String username;
+
 	private String clientGuide = defaultName(RelayClientGuide.class);
 
 	private int linkConnectionSize = 1;
@@ -38,6 +40,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	@Override
 	public String getServeName() {
 		return serveName;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
 	}
 
 	public SpringRelayServeClusterSetting setServeName(String serveName) {
@@ -72,6 +79,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	@Override
 	public int getLinkConnectionSize() {
 		return linkConnectionSize;
+	}
+
+	public SpringRelayServeClusterSetting setUsername(String username) {
+		this.username = username;
+		return this;
 	}
 
 	public boolean isHasServeInstanceAllotStrategy() {

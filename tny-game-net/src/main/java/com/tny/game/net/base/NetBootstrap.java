@@ -41,7 +41,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 				UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
 		CommandTaskBoxProcessor commandTaskProcessor = as(
 				UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
-		this.context = new NetBootstrapContext(messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
+		this.context = new NetBootstrapContext(this.setting, messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
 		this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
 		this.onLoadUnit(this.setting);
 	}

@@ -17,16 +17,16 @@ public class NettyLocalServeInstance extends BaseLocalServeInstance {
 	/**
 	 * 连接任务
 	 */
-	private final NettyServeInstanceConnector connector;
+	private final NettyServeInstanceConnectMonitor monitor;
 
-	public NettyLocalServeInstance(NetLocalServeCluster cluster, ServeNode node, NettyServeInstanceConnector connector) {
+	public NettyLocalServeInstance(NetLocalServeCluster cluster, ServeNode node, NettyServeInstanceConnectMonitor monitor) {
 		super(cluster, node);
-		this.connector = connector;
+		this.monitor = monitor;
 	}
 
 	@Override
 	protected void prepareClose() {
-		connector.stop();
+		monitor.stop();
 	}
 
 }

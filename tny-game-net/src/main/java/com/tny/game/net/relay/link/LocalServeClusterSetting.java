@@ -10,6 +10,8 @@ public interface LocalServeClusterSetting {
 
 	String getServeName();
 
+	String getUsername();
+
 	long getLinkMaxIdleTime();
 
 	long getLinkHeartbeatInterval();

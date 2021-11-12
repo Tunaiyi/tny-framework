@@ -51,16 +51,16 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 		Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
 		Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
 		if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
-			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(StringAide.ifBlank(setting.getName(), name), setting));
 		}
 		if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
-			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(ifNotBlankElse(setting.getName(), name), setting));
+			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getName(), name), setting));
 		}
 		if (defaultSessionKeeperSetting != null) {
-			sessionSettingMap.put(ifNotBlankElse(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
+			sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
 		}
 		if (defaultTerminalKeeperSetting != null) {
-			terminalSettingMap.put(ifNotBlankElse(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
+			terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
 		}
 		this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
 		this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);

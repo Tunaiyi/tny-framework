@@ -15,17 +15,17 @@ public interface LocalRelayContext {
 	/**
 	 * @return 获取前服务ServeName
 	 */
-	String getCurrentServeName();
+	String getAppServeName();
 
 	/**
 	 * @return 获取当前服务实例 id
 	 */
-	long getCurrentInstanceId();
+	long getAppInstanceId();
 
 	/**
 	 * @return 分配 link id
 	 */
-	String createLinkId();
+	String createLinkKey(String serverName);
 
 	/**
 	 * @return 获取 message 路由器

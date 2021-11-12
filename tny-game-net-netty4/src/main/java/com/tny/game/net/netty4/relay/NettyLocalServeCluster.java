@@ -11,24 +11,25 @@ import com.tny.game.net.relay.link.*;
  */
 public class NettyLocalServeCluster extends BaseLocalServeCluster {
 
-	private final LocalRelayContext relayContext;
+	//	private final LocalRelayContext relayContext;
 
 	private final LocalServeClusterContext clusterContext;
 
-	public NettyLocalServeCluster(LocalServeClusterContext clusterContext, LocalRelayContext relayContext) {
-		super(clusterContext.getServeName(), clusterContext.getServeInstanceAllotStrategy(), clusterContext.getRelayLinkAllotStrategy());
+	public NettyLocalServeCluster(LocalServeClusterContext clusterContext) {
+		super(clusterContext.getServeName(),
+				clusterContext.getUsername(),
+				clusterContext.getServeInstanceAllotStrategy(),
+				clusterContext.getRelayLinkAllotStrategy());
 		this.clusterContext = clusterContext;
-		this.relayContext = relayContext;
-
 	}
 
-	public String getCurrentServeName() {
-		return relayContext.getCurrentServeName();
-	}
-
-	public long getCurrentInstanceId() {
-		return relayContext.getCurrentInstanceId();
-	}
+	//	public String getCurrentServeName() {
+	//		return relayContext.getCurrentServeName();
+	//	}
+	//
+	//	public long getCurrentInstanceId() {
+	//		return relayContext.getCurrentInstanceId();
+	//	}
 
 	@Override
 	public LocalServeClusterContext getContext() {

@@ -123,7 +123,7 @@ public class StringAide {
 	 * @param elseValue 其他值
 	 * @return value is blank 返回 value, 否则返回elseValue
 	 */
-	public static String ifBlankElse(String value, String elseValue) {
+	public static String ifNotBlank(String value, String elseValue) {
 		if (isBlank(value)) {
 			return value;
 		}
@@ -137,11 +137,11 @@ public class StringAide {
 	 * @param elseValue 其他值提供者
 	 * @return value is blank 返回 value, 否则返回elseValue.get()
 	 */
-	public static String ifBlankElse(String value, Supplier<String> elseValue) {
+	public static String ifNotBlank(String value, Supplier<String> elseValue) {
 		if (isBlank(value)) {
-			return value;
+			return elseValue.get();
 		}
-		return elseValue.get();
+		return value;
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class StringAide {
 	 * @param elseValue 其他值
 	 * @return value is not blank 返回 value, 否则返回elseValue
 	 */
-	public static String ifNotBlankElse(String value, String elseValue) {
+	public static String ifBlank(String value, String elseValue) {
 		if (isNoneBlank(value)) {
 			return value;
 		}
@@ -165,7 +165,7 @@ public class StringAide {
 	 * @param elseValue 其他值提供者
 	 * @return value is not blank 返回 value, 否则返回elseValue.get()
 	 */
-	public static String ifNotBlankElse(String value, Supplier<String> elseValue) {
+	public static String ifBlank(String value, Supplier<String> elseValue) {
 		if (isNoneBlank(value)) {
 			return value;
 		}

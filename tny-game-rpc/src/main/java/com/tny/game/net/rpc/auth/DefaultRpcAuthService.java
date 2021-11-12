@@ -35,8 +35,8 @@ public class DefaultRpcAuthService implements RpcAuthService {
 	}
 
 	@Override
-	public String createToken(RpcLinkerId id) {
-		RpcToken token = new RpcToken(netAppContext.getAppType(), netAppContext.getServerId(), id.getId(), id);
+	public String createToken(String serviceName, RpcLinkerId id) {
+		RpcToken token = new RpcToken(serviceName, netAppContext.getServerId(), id.getId(), id);
 		try {
 			return objectMapper.writeValueAsString(token);
 		} catch (JsonProcessingException e) {

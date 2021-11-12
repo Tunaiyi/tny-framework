@@ -35,6 +35,8 @@ public class RpcServiceSetting {
 
 	private String guide;
 
+	private String username;
+
 	private int connectSize = 1;
 
 	public boolean isDiscovery() {
@@ -71,6 +73,10 @@ public class RpcServiceSetting {
 
 	public String getService() {
 		return service;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	public String getServiceName() {
@@ -114,6 +120,11 @@ public class RpcServiceSetting {
 
 	public RpcServiceSetting setService(String service) {
 		this.service = service;
+		return this;
+	}
+
+	public RpcServiceSetting setUsername(String username) {
+		this.username = username;
 		return this;
 	}
 

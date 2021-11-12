@@ -55,7 +55,7 @@ public abstract class BaseLocalRelayExplorer<T extends NetLocalServeCluster> ext
 	@Override
 	public <D> DoneResult<LocalRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context) {
 		RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
-		GeneralLocalRelayTunnel<D> tunnel = new GeneralLocalRelayTunnel<>(this.context.getCurrentInstanceId(), id, transport, context,
+		GeneralLocalRelayTunnel<D> tunnel = new GeneralLocalRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
 				relayMessageRouter);
 		Map<String, LocalTunnelRelayer> relayer = preassignRelayer(tunnel);
 		tunnel.initRelayers(relayer);

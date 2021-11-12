@@ -371,7 +371,10 @@ public final class MethodControllerHolder extends ControllerHolder {
 			this.paramClass = paramClass;
 			this.paramAnnotations = paramAnnotations;
 			this.require = true;
-			if (paramClass == Endpoint.class) {
+			this.paramType = ParamType.ENDPOINT;
+			if (NetBootstrapSetting.class.isAssignableFrom(this.paramClass)) {
+				this.paramType = ParamType.SETTING;
+			} else if (paramClass == Endpoint.class) {
 				this.paramType = ParamType.ENDPOINT;
 			} else if (paramClass == Session.class) {
 				this.paramType = ParamType.SESSION;
@@ -465,6 +468,10 @@ public final class MethodControllerHolder extends ControllerHolder {
 					} else {
 						throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 并非可转发通道 RelayTunnel", tunnel));
 					}
+					break;
+				case SETTING:
+					NetworkContext context = tunnel.getContext();
+					value = context.getSetting();
 					break;
 				case BODY:
 					value = body;
