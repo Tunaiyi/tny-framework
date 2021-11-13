@@ -18,6 +18,6 @@ public interface RemoteServeClusterSetting extends Serve {
 
 	int getLinkConnectionSize();
 
-	boolean isDiscoveryEnable();
+	boolean isDiscovery();
 
 }

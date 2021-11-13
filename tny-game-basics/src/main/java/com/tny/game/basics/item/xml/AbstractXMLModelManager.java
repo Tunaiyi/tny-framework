@@ -31,308 +31,311 @@ import java.util.Map.Entry;
  */
 public abstract class AbstractXMLModelManager<M extends Model> extends AbstractModelManager<M> implements SingleValueConverter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
-    private static final List<String> ALIAS_CHECKED_LIST = new ArrayList<>();
+	private static final List<String> ALIAS_CHECKED_LIST = new ArrayList<>();
 
-    /**
-     * 模型的实现类类型
-     */
-    protected final Class<? extends M> modelClass;
+	/**
+	 * 模型的实现类类型
+	 */
+	protected final Class<? extends M> modelClass;
 
-    /**
-     * 文件读取器
-     */
-    protected List<FileLoader> fileLoaderList;
+	/**
+	 * 文件读取器
+	 */
+	protected List<FileLoader> fileLoaderList;
 
-    /**
-     * 模型代理处理器Map
-     */
-    protected Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
+	/**
+	 * 模型代理处理器Map
+	 */
+	protected Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
 
-    private final Set<Class<? extends Enum<?>>> enumClassSet = new HashSet<>();
+	private final Set<Class<? extends Enum<?>>> enumClassSet = new HashSet<>();
 
-    private static final Class<?>[] classes = new Class<?>[]{
-            Behavior.class,
-            Action.class,
-            Ability.class,
-            DemandType.class,
-            Option.class,
-            DemandParam.class,
-            Feature.class,
-            Module.class,
-            OpenMode.class
-    };
+	private static final Class<?>[] classes = new Class<?>[]{
+			Behavior.class,
+			Action.class,
+			Ability.class,
+			DemandType.class,
+			Option.class,
+			DemandParam.class,
+			Feature.class,
+			Module.class,
+			OpenMode.class
+	};
 
-    protected AbstractXMLModelManager(
-            Class<? extends M> modelClass,
-            String... paths) {
-        super();
-        LOGGER.info("创建 {} 对象, 调用构造方法!!", this.getClass());
-        this.modelClass = modelClass;
-        WrapperProxyFactory.getWrapperProxyClass(this.modelClass);
-        this.fileLoaderList = new ArrayList<>();
-        for (String path : paths) {
-            this.fileLoaderList.add(new XMLFileLoader(path));
-        }
-    }
+	protected AbstractXMLModelManager(
+			Class<? extends M> modelClass,
+			String... paths) {
+		super();
+		LOGGER.info("创建 {} 对象, 调用构造方法!!", this.getClass());
+		this.modelClass = modelClass;
+		WrapperProxyFactory.getWrapperProxyClass(this.modelClass);
+		this.fileLoaderList = new ArrayList<>();
+		for (String path : paths) {
+			this.fileLoaderList.add(new XMLFileLoader(path));
+		}
+	}
 
-    protected AbstractXMLModelManager(
-            Class<? extends M> modelClass,
-            Class<? extends Enum<?>>[] enumClasses,
-            String... paths) {
-        this(modelClass, paths);
-        this.enumClassSet.addAll(Arrays.asList(enumClasses));
-    }
+	protected AbstractXMLModelManager(
+			Class<? extends M> modelClass,
+			Class<? extends Enum<?>>[] enumClasses,
+			String... paths) {
+		this(modelClass, paths);
+		this.enumClassSet.addAll(Arrays.asList(enumClasses));
+	}
 
-    protected AbstractXMLModelManager(
-            Class<? extends M> modelClass,
-            Class<? extends Enum<? extends Behavior>> behaviorClass,
-            Class<? extends Enum<? extends DemandType>> demandTypeClass,
-            Class<? extends Enum<? extends Action>> actionClass,
-            Class<? extends Enum<? extends Ability>> abilityClass,
-            Class<? extends Enum<? extends Option>> optionClass,
-            String... paths) {
-        this(modelClass, paths);
-        LOGGER.info("创建 {} 对象, 调用构造方法!!", this.getClass());
-        this.enumClassSet.add(behaviorClass);
-        this.enumClassSet.add(actionClass);
-        this.enumClassSet.add(abilityClass);
-        this.enumClassSet.add(demandTypeClass);
-        if (optionClass != null) {
-            this.enumClassSet.add(optionClass);
-        }
-    }
+	protected AbstractXMLModelManager(
+			Class<? extends M> modelClass,
+			Class<? extends Enum<? extends Behavior>> behaviorClass,
+			Class<? extends Enum<? extends DemandType>> demandTypeClass,
+			Class<? extends Enum<? extends Action>> actionClass,
+			Class<? extends Enum<? extends Ability>> abilityClass,
+			Class<? extends Enum<? extends Option>> optionClass,
+			String... paths) {
+		this(modelClass, paths);
+		LOGGER.info("创建 {} 对象, 调用构造方法!!", this.getClass());
+		this.enumClassSet.add(behaviorClass);
+		this.enumClassSet.add(actionClass);
+		this.enumClassSet.add(abilityClass);
+		this.enumClassSet.add(demandTypeClass);
+		if (optionClass != null) {
+			this.enumClassSet.add(optionClass);
+		}
+	}
 
-    @SuppressWarnings("rawtypes")
-    private Map<Class<?>, List<Class<? extends Enum>>> createEnumClassMap() {
-        Map<Class<?>, List<Class<? extends Enum>>> map = new HashMap<>();
-        for (Class<?> interfaceClass : classes) {
-            map.put(interfaceClass, new ArrayList<>());
-        }
-        map.put(this.getClass(), new ArrayList<>());
-        return map;
-    }
+	@SuppressWarnings("rawtypes")
+	private Map<Class<?>, List<Class<? extends Enum>>> createEnumClassMap() {
+		Map<Class<?>, List<Class<? extends Enum>>> map = new HashMap<>();
+		for (Class<?> interfaceClass : classes) {
+			map.put(interfaceClass, new ArrayList<>());
+		}
+		map.put(this.getClass(), new ArrayList<>());
+		return map;
+	}
 
-    protected void addEnumClass(Class<? extends Enum<?>> clazz) {
-        this.enumClassSet.add(clazz);
-    }
+	protected void addEnumClass(Class<? extends Enum<?>> clazz) {
+		this.enumClassSet.add(clazz);
+	}
 
-    @PostConstruct
-    protected void initManager() {
-        this.fileLoaderList.parallelStream().forEach(loader -> {
-            try {
-                loader.load();
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        });
-        synchronized (this) {
-            this.parseAllComplete();
-        }
-    }
+	@PostConstruct
+	protected void initManager() {
+		this.fileLoaderList.parallelStream().forEach(loader -> {
+			try {
+				loader.load();
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		});
+		synchronized (this) {
+			this.parseAllComplete();
+		}
+	}
 
-    protected XStream createXStream() {
-        return new XStream(new Xpp3DomDriver());
-    }
+	protected XStream createXStream() {
+		return new XStream(new Xpp3DomDriver());
+	}
 
-    protected abstract ItemModelContext context();
+	protected abstract ItemModelContext context();
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
-            throws IOException, InstantiationException, IllegalAccessException {
-        LOGGER.info("# {} 创建 {} xstream 对象 ", this.getClass().getName(), this.modelClass.getName());
-        XStream xStream = createXStream();
-        Mapper mapper = xStream.getMapper().lookupMapperOfType(DefaultImplementationsMapper.class);
-        xStream.addDefaultImplementation(EmptyImmutableList.class, List.class);
-        xStream.addDefaultImplementation(EmptyImmutableList.class, Collection.class);
-        xStream.addDefaultImplementation(EmptyImmutableSet.class, Set.class);
-        xStream.addDefaultImplementation(EmptyImmutableMap.class, Map.class);
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
+			throws IOException, InstantiationException, IllegalAccessException {
+		LOGGER.info("# {} 创建 {} xstream 对象 ", this.getClass().getName(), this.modelClass.getName());
+		XStream xStream = createXStream();
+		xStream.allowTypesByRegExp(new String[]{".*"});
+		Mapper mapper = xStream.getMapper().lookupMapperOfType(DefaultImplementationsMapper.class);
+		xStream.addDefaultImplementation(EmptyImmutableList.class, List.class);
+		xStream.addDefaultImplementation(EmptyImmutableList.class, Collection.class);
+		xStream.addDefaultImplementation(EmptyImmutableSet.class, Set.class);
+		xStream.addDefaultImplementation(EmptyImmutableMap.class, Map.class);
 
-        xStream.registerConverter(new CollectionConverter(mapper) {
-            @Override
-            public boolean canConvert(Class type) {
-                if (!super.canConvert(type)) {
-                    return type.equals(EmptyImmutableSet.class) || type.equals(EmptyImmutableList.class);
-                }
-                return true;
-            }
-        });
-        xStream.registerConverter(new MapConverter(mapper) {
-            @Override
-            public boolean canConvert(Class type) {
-                if (!super.canConvert(type)) {
-                    return type.equals(EmptyImmutableMap.class);
-                }
-                return true;
-            }
-        });
+		xStream.registerConverter(new CollectionConverter(mapper) {
 
-        RunChecker.trace(this.getClass());
+			@Override
+			public boolean canConvert(Class type) {
+				if (!super.canConvert(type)) {
+					return type.equals(EmptyImmutableSet.class) || type.equals(EmptyImmutableList.class);
+				}
+				return true;
+			}
+		});
+		xStream.registerConverter(new MapConverter(mapper) {
 
-        xStream.autodetectAnnotations(true);
-        String2Formula exprHolderConverter = new String2Formula(this.context().getExprHolderFactory());
-        xStream.registerConverter(exprHolderConverter);
-        String2RandomCreator randomConverter = new String2RandomCreator();
-        xStream.registerConverter(randomConverter);
-        xStream.alias("itemList", ArrayList.class);
-        xStream.alias("item", this.modelClass);
+			@Override
+			public boolean canConvert(Class type) {
+				if (!super.canConvert(type)) {
+					return type.equals(EmptyImmutableMap.class);
+				}
+				return true;
+			}
+		});
 
-        xStream.alias("alias", String.class);
-        xStream.alias("demand", XMLDemand.class);
+		RunChecker.trace(this.getClass());
 
-        xStream.alias("behaviorPlan", XMLBehaviorPlan.class);
+		xStream.autodetectAnnotations(true);
+		String2Formula exprHolderConverter = new String2Formula(this.context().getExprHolderFactory());
+		xStream.registerConverter(exprHolderConverter);
+		String2RandomCreator randomConverter = new String2RandomCreator();
+		xStream.registerConverter(randomConverter);
+		xStream.alias("itemList", ArrayList.class);
+		xStream.alias("item", this.modelClass);
 
-        xStream.alias("actionPlan", XMLActionPlan.class);
-        xStream.alias("action", Action.class);
+		xStream.alias("alias", String.class);
+		xStream.alias("demand", XMLDemand.class);
 
-        xStream.alias("actionOption", Entry.class);
-        xStream.alias("option", Option.class);
-        xStream.alias("formula", ExprHolder.class);
+		xStream.alias("behaviorPlan", XMLBehaviorPlan.class);
 
-        xStream.alias("costPlan", AbstractCostPlan.class, SimpleCostPlan.class);
-        xStream.alias("cost", XMLDemand.class);
+		xStream.alias("actionPlan", XMLActionPlan.class);
+		xStream.alias("action", Action.class);
 
-        xStream.alias("awardPlan", AbstractAwardPlan.class, SimpleAwardPlan.class);
-        xStream.alias("awardGroupSet", TreeSet.class);
-        xStream.alias("awardGroup", SimpleAwardGroup.class);
-        xStream.alias("award", XMLAward.class);
+		xStream.alias("actionOption", Entry.class);
+		xStream.alias("option", Option.class);
+		xStream.alias("formula", ExprHolder.class);
 
-        xStream.alias("paramEntry", Entry.class);
-        xStream.alias("tradeParam", Entry.class);
-        xStream.alias("param", DemandParam.class);
-        xStream.alias("formula", ExprHolder.class);
+		xStream.alias("costPlan", AbstractCostPlan.class, SimpleCostPlan.class);
+		xStream.alias("cost", XMLDemand.class);
 
-        xStream.alias("itemAbility", Entry.class);
-        xStream.alias("ability", Ability.class);
+		xStream.alias("awardPlan", AbstractAwardPlan.class, SimpleAwardPlan.class);
+		xStream.alias("awardGroupSet", TreeSet.class);
+		xStream.alias("awardGroup", SimpleAwardGroup.class);
+		xStream.alias("award", XMLAward.class);
 
-        xStream.alias("demandParam", Entry.class);
-        xStream.alias("param", DemandParam.class);
+		xStream.alias("paramEntry", Entry.class);
+		xStream.alias("tradeParam", Entry.class);
+		xStream.alias("param", DemandParam.class);
+		xStream.alias("formula", ExprHolder.class);
 
-        xStream.alias("entry", Entry.class);
-        xStream.alias("tag", String.class);
+		xStream.alias("itemAbility", Entry.class);
+		xStream.alias("ability", Ability.class);
 
-        this.initXStream(xStream);
+		xStream.alias("demandParam", Entry.class);
+		xStream.alias("param", DemandParam.class);
 
-        Map<Class<?>, List<Class<? extends Enum>>> map = this.createEnumClassMap();
-        for (Class<? extends Enum> clazz : this.enumClassSet) {
-            boolean find = false;
-            for (Class<?> interfaceClass : classes) {
-                if (interfaceClass.isAssignableFrom(clazz)) {
-                    List<Class<? extends Enum>> list = map.get(interfaceClass);
-                    find = true;
-                    list.add(clazz);
-                    break;
-                }
-            }
-            if (!find) {
-                map.computeIfAbsent(clazz, k -> new ArrayList<>()).add(clazz);
-            }
-        }
+		xStream.alias("entry", Entry.class);
+		xStream.alias("tag", String.class);
 
-        for (List<Class<? extends Enum>> classList : map.values()) {
-            xStream.registerConverter(new String2Enum(classList));
-        }
+		this.initXStream(xStream);
 
-        LOGGER.info("#itemModelManager# 解析 <{}> xml ......", path);
-        List<? extends M> list = this.parseModel(xStream, inputStream);
-        LOGGER.info("#itemModelManager# 解析 <{}> xml 完成! ", path);
+		Map<Class<?>, List<Class<? extends Enum>>> map = this.createEnumClassMap();
+		for (Class<? extends Enum> clazz : this.enumClassSet) {
+			boolean find = false;
+			for (Class<?> interfaceClass : classes) {
+				if (interfaceClass.isAssignableFrom(clazz)) {
+					List<Class<? extends Enum>> list = map.get(interfaceClass);
+					find = true;
+					list.add(clazz);
+					break;
+				}
+			}
+			if (!find) {
+				map.computeIfAbsent(clazz, k -> new ArrayList<>()).add(clazz);
+			}
+		}
 
-        LOGGER.info("#itemModelManager# 装载 <{}> model [{}] ......", path, this.modelClass.getName());
-        List<M> models = new ArrayList<>();
+		for (List<Class<? extends Enum>> classList : map.values()) {
+			xStream.registerConverter(new String2Enum(classList));
+		}
 
-        Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
-        Map<Integer, M> modelMap = new HashMap<>();
-        Map<String, M> modelAliasMap = new HashMap<>();
+		LOGGER.info("#itemModelManager# 解析 <{}> xml ......", path);
+		List<? extends M> list = this.parseModel(xStream, inputStream);
+		LOGGER.info("#itemModelManager# 解析 <{}> xml 完成! ", path);
 
-        ItemModelContext context = context();
-        for (M model : list) {
-            if (model instanceof XMLItemModel) {
-                ((XMLItemModel)model).init(context);
-            } else if (model instanceof XMLModel) {
-                ((XMLModel)model).init();
-            }
-            WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
-            if (wrapperModel == null) {
-                wrapperModel = WrapperProxyFactory.createWrapper(model);
-                M proxyModel = wrapperModel.get$Wrapper();
-                handlerMap.put(model.getId(), wrapperModel);
-                modelMap.put(proxyModel.getId(), proxyModel);
-                if (proxyModel.getAlias() != null) {
-                    if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
-                        ALIAS_CHECKED_LIST.add(proxyModel.getAlias());
-                    }
-                }
-            } else {
-                wrapperModel.set$Proxied(model);
-            }
-            models.add(wrapperModel.get$Wrapper());
-            ItemModels.register(wrapperModel.get$Wrapper());
-        }
-        if (!handlerMap.isEmpty()) {
-            this.handlerMap.putAll(handlerMap);
-        }
-        if (!modelMap.isEmpty()) {
-            this.modelMap.putAll(modelMap);
-        }
-        if (!modelAliasMap.isEmpty()) {
-            this.modelAliasMap.putAll(modelAliasMap);
-        }
-        this.parseComplete(models);
-        synchronized (this) {
-            this.parseAllComplete();
-            if (reload) {
-                this.reloadAllComplete();
-            }
-        }
-        LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
-                RunChecker.end(this.getClass()).costTime());
-    }
+		LOGGER.info("#itemModelManager# 装载 <{}> model [{}] ......", path, this.modelClass.getName());
+		List<M> models = new ArrayList<>();
 
-    @SuppressWarnings({"unchecked"})
-    private List<M> parseModel(XStream xStream, InputStream input) {
-        return (List<M>)xStream.fromXML(input);
-    }
+		Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
+		Map<Integer, M> modelMap = new HashMap<>();
+		Map<String, M> modelAliasMap = new HashMap<>();
 
-    protected void initXStream(XStream xStream) {
-    }
+		ItemModelContext context = context();
+		for (M model : list) {
+			if (model instanceof XMLItemModel) {
+				((XMLItemModel)model).init(context);
+			} else if (model instanceof XMLModel) {
+				((XMLModel)model).init();
+			}
+			WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
+			if (wrapperModel == null) {
+				wrapperModel = WrapperProxyFactory.createWrapper(model);
+				M proxyModel = wrapperModel.get$Wrapper();
+				handlerMap.put(model.getId(), wrapperModel);
+				modelMap.put(proxyModel.getId(), proxyModel);
+				if (proxyModel.getAlias() != null) {
+					if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
+						ALIAS_CHECKED_LIST.add(proxyModel.getAlias());
+					}
+				}
+			} else {
+				wrapperModel.set$Proxied(model);
+			}
+			models.add(wrapperModel.get$Wrapper());
+			ItemModels.register(wrapperModel.get$Wrapper());
+		}
+		if (!handlerMap.isEmpty()) {
+			this.handlerMap.putAll(handlerMap);
+		}
+		if (!modelMap.isEmpty()) {
+			this.modelMap.putAll(modelMap);
+		}
+		if (!modelAliasMap.isEmpty()) {
+			this.modelAliasMap.putAll(modelAliasMap);
+		}
+		this.parseComplete(models);
+		synchronized (this) {
+			this.parseAllComplete();
+			if (reload) {
+				this.reloadAllComplete();
+			}
+		}
+		LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
+				RunChecker.end(this.getClass()).costTime());
+	}
 
-    protected void parseComplete(List<M> models) {
-    }
+	@SuppressWarnings({"unchecked"})
+	private List<M> parseModel(XStream xStream, InputStream input) {
+		return (List<M>)xStream.fromXML(input);
+	}
 
-    protected void reloadAllComplete() {
-    }
+	protected void initXStream(XStream xStream) {
+	}
 
-    protected void parseAllComplete() {
-    }
+	protected void parseComplete(List<M> models) {
+	}
 
-    @Override
-    public String toString(Object obj) {
-        return obj == null ? null : obj.toString();
-    }
+	protected void reloadAllComplete() {
+	}
 
-    @Override
-    public Object fromString(String str) {
-        return this.getAndCheckModelByAlias(str);
-    }
+	protected void parseAllComplete() {
+	}
 
-    @Override
-    @SuppressWarnings("rawtypes")
-    public boolean canConvert(Class type) {
-        return this.modelClass.isAssignableFrom(type);
-    }
+	@Override
+	public String toString(Object obj) {
+		return obj == null ? null : obj.toString();
+	}
 
-    protected class XMLFileLoader extends FileLoader {
+	@Override
+	public Object fromString(String str) {
+		return this.getAndCheckModelByAlias(str);
+	}
 
-        protected XMLFileLoader(String path) {
-            super(path);
-        }
+	@Override
+	@SuppressWarnings("rawtypes")
+	public boolean canConvert(Class type) {
+		return this.modelClass.isAssignableFrom(type);
+	}
 
-        @Override
-        protected void doLoad(InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
-            AbstractXMLModelManager.this.loadAndInitModel(this.getPath(), inputStream, reload);
-        }
+	protected class XMLFileLoader extends FileLoader {
 
-    }
+		protected XMLFileLoader(String path) {
+			super(path);
+		}
+
+		@Override
+		protected void doLoad(InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
+			AbstractXMLModelManager.this.loadAndInitModel(this.getPath(), inputStream, reload);
+		}
+
+	}
 
 }

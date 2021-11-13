@@ -1,6 +1,7 @@
 package com.tny.game.net.rpc.setting;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.serve.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -13,7 +14,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/11/5 5:02 下午
  */
-public class RpcServiceSetting {
+public class RpcServiceSetting implements Serve {
 
 	/**
 	 * rpc服务名
@@ -40,11 +41,17 @@ public class RpcServiceSetting {
 	private int connectSize = 1;
 
 	public boolean isDiscovery() {
-		return discovery;
+		return discovery || StringUtils.isNoneBlank(serveName);
 	}
 
+	@Override
 	public String getServeName() {
 		return serveName;
+	}
+
+	@Override
+	public String getService() {
+		return service;
 	}
 
 	public String getPassword() {
@@ -71,16 +78,8 @@ public class RpcServiceSetting {
 		return connectSize;
 	}
 
-	public String getService() {
-		return service;
-	}
-
 	public String getUsername() {
 		return username;
-	}
-
-	public String serviceName() {
-		return ifBlank(service, serveName);
 	}
 
 	public Optional<URL> url() {

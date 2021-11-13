@@ -14,11 +14,11 @@ import io.netty.channel.Channel;
  * @author : kgtny
  * @date : 2021/8/24 3:28 下午
  */
-public class RemoteRelayTunnelFactory implements NettyTunnelFactory {
+public class RelayTunnelFactory implements NettyTunnelFactory {
 
 	private final RemoteRelayExplorer remoteRelayExplorer;
 
-	public RemoteRelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+	public RelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
 		this.remoteRelayExplorer = remoteRelayExplorer;
 	}
 

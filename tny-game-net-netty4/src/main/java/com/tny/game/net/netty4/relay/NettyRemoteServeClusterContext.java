@@ -59,8 +59,8 @@ public class NettyRemoteServeClusterContext implements RemoteServeClusterContext
 	}
 
 	@Override
-	public boolean isDiscoveryEnable() {
-		return setting.isDiscoveryEnable();
+	public boolean isDiscovery() {
+		return setting.isDiscovery();
 	}
 
 	@Override

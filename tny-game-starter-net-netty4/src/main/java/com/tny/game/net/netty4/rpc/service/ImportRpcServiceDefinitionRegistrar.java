@@ -2,7 +2,6 @@ package com.tny.game.net.netty4.rpc.service;
 
 import com.tny.game.boot.registrar.*;
 import com.tny.game.boot.utils.*;
-import com.tny.game.net.netty4.relay.cluster.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.rpc.loader.*;
 import org.slf4j.*;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
-
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
 /**
  * <p>
@@ -22,10 +19,6 @@ public class ImportRpcServiceDefinitionRegistrar extends ImportConfigurationBean
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		SpringRelayServeClustersProperties properties = loadProperties(SpringRelayServeClustersProperties.class);
-		registry.registerBeanDefinition(lowerCamelName(properties.getClass()), BeanDefinitionBuilder
-				.genericBeanDefinition(SpringRelayServeClustersProperties.class, () -> properties)
-				.getBeanDefinition());
 		RpcInstanceFactory factory = beanFactory.getBean(RpcInstanceFactory.class);
 		for (Class<?> serviceClass : RpcServiceLoader.getServiceClasses()) {
 			registerRpcInstance(registry, factory, serviceClass);

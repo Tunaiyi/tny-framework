@@ -31,7 +31,7 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
 	private long linkMaxIdleTime = 10000;
 
-	private boolean discoveryEnable = true;
+	private boolean discovery = true;
 
 	private String serveInstanceAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
@@ -59,8 +59,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 	}
 
 	@Override
-	public boolean isDiscoveryEnable() {
-		return discoveryEnable;
+	public boolean isDiscovery() {
+		return discovery || StringUtils.isNoneBlank(this.serveName);
 	}
 
 	@Override
@@ -118,8 +118,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 		return this;
 	}
 
-	public SpringRelayServeClusterSetting setDiscoveryEnable(boolean discoveryEnable) {
-		this.discoveryEnable = discoveryEnable;
+	public SpringRelayServeClusterSetting setDiscovery(boolean discovery) {
+		this.discovery = discovery;
 		return this;
 	}
 

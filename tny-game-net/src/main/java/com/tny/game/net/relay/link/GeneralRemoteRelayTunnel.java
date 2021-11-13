@@ -47,7 +47,7 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 		this.relayMessageRouter = relayMessageRouter;
 	}
 
-	public GeneralRemoteRelayTunnel<UID> initRelayer(Map<String, LocalTunnelRelayer> relayerMap) {
+	public GeneralRemoteRelayTunnel<UID> initRelayers(Map<String, LocalTunnelRelayer> relayerMap) {
 		this.relayerMap = ImmutableMap.copyOf(relayerMap);
 		return this;
 	}

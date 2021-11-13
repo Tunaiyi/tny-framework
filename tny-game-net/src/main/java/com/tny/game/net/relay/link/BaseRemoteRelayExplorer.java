@@ -58,7 +58,7 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		GeneralRemoteRelayTunnel<D> tunnel = new GeneralRemoteRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
 				relayMessageRouter);
 		Map<String, LocalTunnelRelayer> relayer = preassignRelayer(tunnel);
-		tunnel.initRelayer(relayer);
+		tunnel.initRelayers(relayer);
 		return DoneResults.success(putTunnel(tunnel));
 	}
 

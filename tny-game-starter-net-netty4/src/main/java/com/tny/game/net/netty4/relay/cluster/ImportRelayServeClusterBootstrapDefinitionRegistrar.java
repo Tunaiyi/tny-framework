@@ -17,20 +17,9 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		SpringRelayServeClustersProperties properties = loadProperties(SpringRelayServeClustersProperties.class);
-		registry.registerBeanDefinition(lowerCamelName(properties.getClass()), BeanDefinitionBuilder
-				.genericBeanDefinition(SpringRelayServeClustersProperties.class, () -> properties)
-				.getBeanDefinition());
 		for (SpringRelayServeClusterSetting setting : properties.getServeClusters()) {
 			registerRelayServeClusterContext(setting, registry);
 		}
-		//		NettyLocalRelayContext relayContext = new NettyLocalRelayContext();
-		//		registry.registerBeanDefinition(lowerCamelName(NettyLocalRelayContext.class), BeanDefinitionBuilder
-		//				.genericBeanDefinition(NettyLocalRelayContext.class, () -> relayContext)
-		//				.addAutowiredProperty("appContext")
-		//				.addAutowiredProperty("relayMessageRouter")
-		//				.addAutowiredProperty("serveClusterFilter")
-		//				.getBeanDefinition());
-
 	}
 
 	private void registerRelayServeClusterContext(SpringRelayServeClusterSetting setting, BeanDefinitionRegistry registry) {

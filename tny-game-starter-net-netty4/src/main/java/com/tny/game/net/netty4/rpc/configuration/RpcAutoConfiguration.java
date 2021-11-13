@@ -31,6 +31,7 @@ public class RpcAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(RpcRemoteService.class)
 	public RpcRemoteService rpcRemoteService(RpcProperties properties) {
 		return new DefaultRpcRemoteService(properties.getClient());
 	}
@@ -53,6 +54,7 @@ public class RpcAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(RpcAuthController.class)
 	public RpcAuthController rpcAuthController() {
 		return new RpcAuthController();
 	}

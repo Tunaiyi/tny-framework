@@ -57,10 +57,9 @@ public class RemoteRelayAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnBean(ServeNodeClient.class)
-	public LocalRelayServeNodeWatchService remoteRelayServeNodeWatchService(
+	public RemoteRelayServeNodeWatchService remoteRelayServeNodeWatchService(
 			ServeNodeClient serveNodeClient, NetRemoteRelayExplorer remoteRelayExplorer) {
-		return new LocalRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);
+		return new RemoteRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);
 	}
 
 	@Bean
@@ -70,8 +69,8 @@ public class RemoteRelayAutoConfiguration {
 	}
 
 	@Bean
-	public RemoteRelayTunnelFactory remoteRelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
-		return new RemoteRelayTunnelFactory(remoteRelayExplorer);
+	public RelayTunnelFactory relayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+		return new RelayTunnelFactory(remoteRelayExplorer);
 	}
 
 	@Bean

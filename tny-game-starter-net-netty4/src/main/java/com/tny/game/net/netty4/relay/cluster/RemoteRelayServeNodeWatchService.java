@@ -15,9 +15,9 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/9/13 8:50 下午
  */
-public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClosed {
+public class RemoteRelayServeNodeWatchService implements AppPrepareStart, AppClosed {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(LocalRelayServeNodeWatchService.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(RemoteRelayServeNodeWatchService.class);
 
 	private final Set<ServeInstanceWatcher> watchers = new ConcurrentHashSet<>();
 
@@ -25,7 +25,7 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 
 	private final ServeNodeClient serveNodeClient;
 
-	public LocalRelayServeNodeWatchService(ServeNodeClient serveNodeClient, NetRemoteRelayExplorer localRelayExplorer) {
+	public RemoteRelayServeNodeWatchService(ServeNodeClient serveNodeClient, NetRemoteRelayExplorer localRelayExplorer) {
 		this.serveNodeClient = serveNodeClient;
 		this.localRelayExplorer = localRelayExplorer;
 	}
@@ -40,9 +40,12 @@ public class LocalRelayServeNodeWatchService implements AppPrepareStart, AppClos
 	@Override
 	public void prepareStart() {
 		for (RemoteServeCluster cluster : localRelayExplorer.getClusters()) {
-			ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
-			if (watchers.add(watcher)) {
-				watcher.start();
+			RemoteServeClusterContext context = cluster.getContext();
+			if (context.isDiscovery()) {
+				ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
+				if (watchers.add(watcher)) {
+					watcher.start();
+				}
 			}
 		}
 	}
