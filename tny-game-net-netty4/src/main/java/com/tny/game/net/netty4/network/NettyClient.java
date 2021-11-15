@@ -147,6 +147,14 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	}
 
 	@Override
+	protected void prepareClose() {
+		TunnelConnector connector = this.connector;
+		if (connector != null) {
+			connector.shutdown();
+		}
+	}
+
+	@Override
 	public MessageTransporter<UID> connect() throws NetException {
 		Channel channel = this.guide.connect(this.url, getConnectTimeout());
 		return new NettyChannelMessageTransporter<>(channel);
@@ -189,6 +197,13 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 			setOffline();
 			this.reconnect();
 		}
+	}
+
+	@Override
+	protected void postClose() {
+		TunnelConnector connector = this.connector;
+		connector.shutdown();
+		this.connector = null;
 	}
 
 	@Override

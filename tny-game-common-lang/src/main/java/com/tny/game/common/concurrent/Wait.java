@@ -5,10 +5,10 @@ import java.util.concurrent.Future;
 /**
  * Created by Kun Yang on 2017/6/2.
  */
-public interface Waiting<R> {
+public interface Wait<R> {
 
-	static <V> Waiting<V> of(Future<V> future) {
-		return new FutureWaiter<>(future);
+	static <V> Wait<V> of(Future<V> future) {
+		return new FutureWait<>(future);
 	}
 
 	boolean isDone();

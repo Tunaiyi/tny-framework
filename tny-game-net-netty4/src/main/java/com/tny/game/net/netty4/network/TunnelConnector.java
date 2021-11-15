@@ -7,7 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
 
@@ -27,6 +27,8 @@ class TunnelConnector {
 
 	private int times;
 
+	private final AtomicBoolean shoutdown = new AtomicBoolean(false);
+
 	private final NetTunnel<?> tunnel;
 
 	private final Lock lock = new ReentrantLock();
@@ -38,6 +40,8 @@ class TunnelConnector {
 	private final AtomicBoolean autoRetrying = new AtomicBoolean(false);
 
 	private final NettyClient<?> client;
+
+	private volatile ScheduledFuture<Void> future;
 
 	TunnelConnector(NetTunnel<?> tunnel, NettyClient<?> client, TunnelConnectExecutor executor) {
 		this.times = 0;
@@ -76,7 +80,10 @@ class TunnelConnector {
 	}
 
 	private void scheduleReconnect() {
-		executor.schedule(this::doReconnect, getInterval(this.times), TimeUnit.MILLISECONDS);
+		if (this.checkNotReconnect()) {
+			return;
+		}
+		future = executor.schedule(this::doReconnect, getInterval(this.times), TimeUnit.MILLISECONDS);
 	}
 
 	private long getInterval(int times) {
@@ -116,17 +123,25 @@ class TunnelConnector {
 		}
 	}
 
+	private boolean checkNotReconnect() {
+		return this.shoutdown.get() || this.tunnel.isClosed() || this.tunnel.isActive();
+	}
+
 	private void doReconnect() {
 		boolean stop = false;
 		try {
-			if (this.tunnel.isActive()) {
+			if (!checkNotReconnect()) {
 				return;
 			}
 			this.lock.lock();
 			try {
+				if (!checkNotReconnect()) {
+					return;
+				}
 				LOGGER.info("{} reconnect {} times", this.tunnel, this.times);
 				if (openTunnel()) { // 成功停止
 					LOGGER.info("{} reconnect {} times success", this.tunnel, this.times);
+					future = null;
 					stop = true;
 				} else {
 					int retryTimes = client.getConnectRetryTimes();// 失败
@@ -161,6 +176,15 @@ class TunnelConnector {
 		}
 		LOGGER.info("try connect {}", this);
 		return this.tunnel.open();
+	}
+
+	public void shutdown() {
+		if (this.shoutdown.compareAndSet(false, true)) {
+			ScheduledFuture<Void> future = this.future;
+			if (future != null) {
+				future.cancel(false);
+			}
+		}
 	}
 
 }

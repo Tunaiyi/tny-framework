@@ -31,4 +31,19 @@ public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Termi
 		return Optional.empty();
 	}
 
+	@Override
+	protected void onEndpointOnline(Endpoint<?> endpoint) {
+
+	}
+
+	@Override
+	protected void onEndpointOffline(Endpoint<?> endpoint) {
+
+	}
+
+	@Override
+	protected void onEndpointClose(Endpoint<?> endpoint) {
+
+	}
+
 }

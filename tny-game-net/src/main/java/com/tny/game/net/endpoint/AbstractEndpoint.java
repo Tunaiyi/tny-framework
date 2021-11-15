@@ -427,9 +427,17 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 				return false;
 			}
 			this.offline();
+			this.prepareClose();
 			this.setClose();
+			this.prepareClose();
 			return true;
 		}
+	}
+
+	protected void prepareClose() {
+	}
+
+	protected void postClose() {
 	}
 
 	private void checkOnlineCertificate(Certificate<UID> certificate) {

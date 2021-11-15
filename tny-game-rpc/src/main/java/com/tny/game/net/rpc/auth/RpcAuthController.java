@@ -31,7 +31,6 @@ public class RpcAuthController {
 	@RpcResponse(RPC_AUTH_$_AUTHENTICATE)
 	@AuthenticationRequired(validator = RpcTokenValidator.class)
 	public void authenticated(@UserID RpcLinkerId id) {
-		System.out.println(1111);
 	}
 
 }

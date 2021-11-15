@@ -14,7 +14,7 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> implements SessionKeeper<UID> {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
+	private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
 	private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
 

@@ -28,39 +28,25 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 		ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
 		sessionScanExecutor
 				.scheduleAtFixedRate(this::clearInvalidedSession, setting.getClearInterval(), setting.getClearInterval(), TimeUnit.MILLISECONDS);
-		EndpointEventBuses buses = EndpointEventBuses.buses();
-		buses.onlineEvent().add(this::onOnline);
-		buses.offlineEvent().add(this::onOffline);
-		buses.onlineEvent().add(this::onOnline);
-		buses.closeEvent().add(this::onClose);
+
 	}
 
-	private void onOnline(Endpoint<?> session) {
-		if (!this.getUserType().equals(session.getUserType())) {
-			return;
-		}
+	@Override
+	protected void onEndpointOnline(Endpoint<?> session) {
 		NetSession<UID> netSession = as(session);
 		this.offlineSessionQueue.remove(netSession);
 	}
 
-	private void onOffline(Endpoint<?> session) {
-		if (!this.getUserType().equals(session.getUserType())) {
-			return;
-		}
+	@Override
+	protected void onEndpointOffline(Endpoint<?> session) {
 		if (session.isLogin() && session.isOffline()) {
 			this.offlineSessionQueue.add(as(session));
 		}
 	}
 
-	private void onClose(Endpoint<?> session) {
-		if (!this.getUserType().equals(session.getUserType())) {
-			return;
-		}
-		if (!session.isLogin()) {
-			return;
-		}
+	@Override
+	protected void onEndpointClose(Endpoint<?> session) {
 		NetSession<UID> netSession = as(session);
-		this.removeEndpoint(netSession.getUserId(), netSession);
 		this.offlineSessionQueue.remove(netSession);
 	}
 

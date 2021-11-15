@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 /**
  * Created by Kun Yang on 2017/6/2.
  */
-class FutureWaiter<R> implements Waiting<R> {
+class FutureWait<R> implements Wait<R> {
 
 	public static final int EXECUTE = 1;
 
@@ -21,7 +21,7 @@ class FutureWaiter<R> implements Waiting<R> {
 
 	private volatile R value;
 
-	FutureWaiter(Future<R> future) {
+	FutureWait(Future<R> future) {
 		this.future = future;
 	}
 

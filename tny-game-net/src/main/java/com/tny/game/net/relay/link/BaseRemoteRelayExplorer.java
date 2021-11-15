@@ -109,7 +109,7 @@ public abstract class BaseRemoteRelayExplorer<T extends NetRemoteServeCluster> e
 		if (filterStatus == UNNECESSARY) {
 			return null;
 		}
-		LocalTunnelRelayer relayer = new LocalTunnelRelayer(cluster.getServeName(), filterStatus, this);
+		LocalTunnelRelayer relayer = new LocalTunnelRelayer(cluster.serviceName(), filterStatus, this);
 		RemoteRelayLink link = relayer.allot(tunnel); // 分配
 		if ((link == null || !link.isActive())) {
 			if (filterStatus == ServeClusterFilterStatus.REQUIRED) {

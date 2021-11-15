@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
  * 流程
  * Created by Kun Yang on 2017/5/30.
  */
-public interface Flow extends Runnable, Waiting<Object> {
+public interface Flow extends Runnable, Wait<Object> {
 
 	void cancel();
 

@@ -38,7 +38,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 	}
 
 	@Override
-	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		if (LOGGER.isInfoEnabled()) {
 			Channel channel = ctx.channel();
 			if (channel.isActive()) {

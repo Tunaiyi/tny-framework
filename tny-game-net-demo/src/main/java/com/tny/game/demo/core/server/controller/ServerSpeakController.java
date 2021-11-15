@@ -59,9 +59,9 @@ public class ServerSpeakController {
 	}
 
 	@Rpc(CtrlerIDs.SPEAK$DELAY_SAY)
-	public Waiting<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
+	public Wait<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
 		long timeout = System.currentTimeMillis() + delay;
-		return new Waiting<SayContentDTO>() {
+		return new Wait<SayContentDTO>() {
 
 			@Override
 			public boolean isDone() {

@@ -10,17 +10,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Stream;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 @SuppressWarnings("unchecked")
 public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE extends E> implements EndpointKeeper<UID, E> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
 	@SuppressWarnings("rawtypes")
-	protected final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onAddSession =
+	private final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onAddSession =
 			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onAddEndpoint);
 
 	@SuppressWarnings("rawtypes")
-	protected final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onRemoveSession =
+	private final BindP1EventBus<EndpointKeeperListener, EndpointKeeper, Endpoint> onRemoveSession =
 			EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onRemoveEndpoint);
 
 	/* 所有 endpoint */
@@ -32,6 +34,46 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
 	protected AbstractEndpointKeeper(String userType) {
 		this.userType = userType;
+		EndpointEventBuses buses = EndpointEventBuses.buses();
+		buses.onlineEvent().add(this::notifyEndpointOnline);
+		buses.offlineEvent().add(this::notifyEndpointOffline);
+		buses.closeEvent().add(this::notifyEndpointClose);
+	}
+
+	protected void onEndpointOnline(Endpoint<?> endpoint) {
+
+	}
+
+	protected void onEndpointOffline(Endpoint<?> endpoint) {
+
+	}
+
+	protected void onEndpointClose(Endpoint<?> endpoint) {
+
+	}
+
+	private void notifyEndpointOnline(Endpoint<?> endpoint) {
+		if (!this.getUserType().equals(endpoint.getUserType())) {
+			return;
+		}
+		this.onEndpointOnline(endpoint);
+	}
+
+	private void notifyEndpointOffline(Endpoint<?> endpoint) {
+		if (!this.getUserType().equals(endpoint.getUserType())) {
+			return;
+		}
+		this.onEndpointOffline(endpoint);
+	}
+
+	private void notifyEndpointClose(Endpoint<?> endpoint) {
+		if (!this.getUserType().equals(endpoint.getUserType())) {
+			return;
+		}
+		NE netSession = as(endpoint);
+		if (this.removeEndpoint(netSession.getUserId(), netSession)) {
+			onEndpointClose(endpoint);
+		}
 	}
 
 	@Override
