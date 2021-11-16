@@ -10,7 +10,7 @@ import static com.tny.game.basics.develop.ItemModelPaths.*;
  * @author : kgtny
  * @date : 2021/9/24 1:09 下午
  */
-@ConfigurationProperties("tny.basics.item.default-item-model")
+@ConfigurationProperties("tny.game.basics.item.default-item-model")
 public class DefaultItemModelProperties {
 
 	private String[] paths = {DEFAULT_ITEM_MODEL_CONFIG_PATH};

@@ -10,7 +10,15 @@ public class BasicsPropertiesConstants {
 
 	public static final String BASICS_PREFIX = "tny.basics";
 
+	public static final String BASICS_FEATURE_MANAGER = "tny.game.basics.feature-manager";
+
+	public static final String BASICS_FEATURE_MANAGER_ENABLE = "tny.game.basics.feature-manager.enable";
+
+	public static final String BASICS_CAPACITY_MODULE = "tny.game.basics.capacity-module";
+
 	public static final String BASICS_CAPACITY_MODULE_ENABLE = "tny.game.basics.capacity-module.enable";
+
+	public static final String BASICS_WAREHOUSE_MODULE = "tny.game.basics.warehouse-module";
 
 	public static final String BASICS_WAREHOUSE_MODULE_ENABLE = "tny.game.basics.warehouse-module.enable";
 

@@ -3,7 +3,6 @@ package com.tny.game.basics.item.module;
 import com.google.common.collect.*;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
-import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.module.*;
 import com.tny.game.common.lifecycle.*;
@@ -15,7 +14,7 @@ import java.util.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
-public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelManager<FM> implements AppPrepareStart {
+public class FeatureModelManager<FM extends DefaultFeatureModel> extends BaseModelManager<FM> implements AppPrepareStart {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureModelManager.class);
 
@@ -23,7 +22,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelM
 
 	private Set<Feature> features;
 
-	private Map<OpenMode<FM>, List<FM>> modelsMap;
+	private Map<FeatureOpenMode<FM>, List<FM>> modelsMap;
 
 	private final FeatureVersionHolder versionHolder = new FeatureVersionHolder();
 
@@ -45,27 +44,27 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelM
 		}
 	};
 
-	protected FeatureModelManager(String path, Class<? extends FM> modelClass) {
-		super(modelClass, path, ItemModelPaths.FEATURE_MODEL_CONFIG_PATH);
+	public FeatureModelManager(String path, Class<? extends FM> modelClass) {
+		super(modelClass, path);
 		Features.enumerator().allEnumClasses().forEach(this::addEnumClass);
-		Modules.enumerator().allEnumClasses().forEach(this::addEnumClass);
-		OpenModes.enumerator().allEnumClasses().forEach(this::addEnumClass);
+		Modulers.enumerator().allEnumClasses().forEach(this::addEnumClass);
+		FeatureOpenModes.enumerator().allEnumClasses().forEach(this::addEnumClass);
 	}
 
 	@Override
 	protected void initXStream(XStream xStream) {
 		xStream.alias("feature", Feature.class);
-		xStream.alias("module", Module.class);
-		xStream.alias("mode", OpenMode.class);
-		xStream.alias("openPlan", OpenPlan.class);
+		xStream.alias("module", Moduler.class);
+		xStream.alias("mode", FeatureOpenMode.class);
+		xStream.alias("openPlan", FeatureOpenPlan.class);
 		xStream.registerConverter(versionConverter);
 	}
 
 	private static class FeatureComparator<FM extends FeatureModel> implements Comparator<FM> {
 
-		private final OpenMode<?> mode;
+		private final FeatureOpenMode<?> mode;
 
-		private FeatureComparator(OpenMode<?> mode) {
+		private FeatureComparator(FeatureOpenMode<?> mode) {
 			this.mode = mode;
 		}
 
@@ -90,7 +89,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelM
 		LOGGER.info("当前版本 {} ", version);
 		Optional<Version> current = this.versionHolder.getFeatureVersion();
 		Map<Feature, FM> typeMap = new HashMap<>();
-		Map<OpenMode<FM>, SortedSet<FM>> modelSetMap = new HashMap<>();
+		Map<FeatureOpenMode<FM>, SortedSet<FM>> modelSetMap = new HashMap<>();
 		for (FM model : this.modelMap.values()) {
 			if (current.map(currVer -> model.getOpenVersion().map(v -> v.lessEqualsThan(currVer)).orElse(true)).orElse(true)) {
 				typeMap.put(model.getFeature(), model);
@@ -103,7 +102,7 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelM
 		}
 		this.typeMap = Collections.unmodifiableMap(typeMap);
 		this.features = ImmutableSet.copyOf(typeMap.keySet());
-		Map<OpenMode<FM>, List<FM>> modelsMap = new HashMap<>();
+		Map<FeatureOpenMode<FM>, List<FM>> modelsMap = new HashMap<>();
 		modelSetMap.forEach((openMode, models) -> modelsMap.put(openMode, ImmutableList.copyOf(models)));
 		this.modelsMap = ImmutableMap.copyOf(modelsMap);
 	}
@@ -138,11 +137,11 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends BaseModelM
 		return this.typeMap.get(feature);
 	}
 
-	public List<FM> getModels(OpenMode<?> openMode) {
+	public List<FM> getModels(FeatureOpenMode<?> openMode) {
 		return this.modelsMap.getOrDefault(openMode, ImmutableList.of());
 	}
 
-	public Map<OpenMode<FM>, List<FM>> getModelsMap() {
+	public Map<FeatureOpenMode<FM>, List<FM>> getModelsMap() {
 		return this.modelsMap;
 	}
 

@@ -12,14 +12,14 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class XMLDemandTest {
+class XMLDemandTest {
 
 	/**
 	 * 消耗物品在公式中的名字
 	 */
-	public static final String ITEM_NAME = "data";
+	private static final String ITEM_NAME = "data";
 
-	DemandType demandType = new DemandType() {
+	private DemandType demandType = new DemandType() {
 
 		@Override
 		public ResultCode getResultCode() {
@@ -38,9 +38,9 @@ public class XMLDemandTest {
 
 	};
 
-	String itemAlias = "pl$player";
+	private String itemAlias = "pl$player";
 
-	int number = 10;
+	private int number = 10;
 
 	class TestDemandItemModel extends AbstractItemModel {
 
@@ -84,19 +84,19 @@ public class XMLDemandTest {
 
 	String name = "player";
 
-	int level = 10;
+	private int level = 10;
 
-	TestPlayer item = new TestPlayer(this.number, this.level, this.itemAlias);
+	private TestPlayer item = new TestPlayer(this.number, this.level, this.itemAlias);
 
-	TempExplorer explorer = new TempExplorer(this.model, this.item);
+	private TempExplorer explorer = new TempExplorer(this.model, this.item);
 
 	private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
 	private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
-	XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
+	private XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
 
-	XMLDemand demand = new XMLDemand("pl$player", null, this.demandType,
+	private XMLDemand demand = new XMLDemand("pl$player", null, this.demandType,
 			"pl$player != null ? pl$player.level : 0",
 			"10",
 			"pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE, exprHolderFactory);
@@ -108,29 +108,29 @@ public class XMLDemandTest {
 	}
 
 	@Test
-	public void testGetItemId() {
+	void testGetItemId() {
 		assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<>()));
 		assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<>()));
 	}
 
 	@Test
-	public void testGetName() {
+	void testGetName() {
 		assertEquals(null, this.demand.getName());
 		assertEquals(ITEM_NAME, this.stuffDemand.getName());
 	}
 
 	@Test
-	public void testGetDemandType() {
+	void testGetDemandType() {
 		assertEquals(this.demandType, this.demand.getDemandType());
 		assertEquals(XMLDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
 	}
 
-	MapRef<String, Object> ref = new MapRef<String, Object>() {
+	private MapRef<String, Object> ref = new MapRef<String, Object>() {
 
 	};
 
 	@Test
-	public void testIsSatisfy() {
+	void testIsSatisfy() {
 
 		assertFalse(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 
@@ -149,13 +149,13 @@ public class XMLDemandTest {
 	}
 
 	@Test
-	public void testCountExpectValue() {
+	void testCountExpectValue() {
 		assertEquals(100, this.stuffDemand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 		assertEquals(10, this.demand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 	}
 
 	@Test
-	public void testCountCurrentValue() {
+	void testCountCurrentValue() {
 		this.item.setNumber(0);
 		assertEquals(0, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
 		this.item.setNumber(101);

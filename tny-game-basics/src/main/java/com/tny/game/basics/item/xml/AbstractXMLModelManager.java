@@ -60,8 +60,8 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 			Option.class,
 			DemandParam.class,
 			Feature.class,
-			Module.class,
-			OpenMode.class
+			Moduler.class,
+			FeatureOpenMode.class
 	};
 
 	protected AbstractXMLModelManager(

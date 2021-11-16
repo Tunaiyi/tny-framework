@@ -5,9 +5,9 @@ import com.tny.game.common.event.bus.*;
 
 public interface ModuleListener {
 
-    BindP1EventBus<ModuleListener, FeatureExplorer, Module> OPEN_MODULE_EVENT = EventBuses.of(ModuleListener.class,
-            ModuleListener::handleOpenModule);
+	BindP1EventBus<ModuleListener, FeatureLauncher, Moduler> OPEN_MODULE_EVENT = EventBuses.of(ModuleListener.class,
+			ModuleListener::handleOpenModule);
 
-    void handleOpenModule(FeatureExplorer explorer, Module openedModule);
+	void handleOpenModule(FeatureLauncher explorer, Moduler openedModule);
 
 }

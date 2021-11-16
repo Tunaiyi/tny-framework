@@ -2,22 +2,22 @@ package com.tny.game.basics.module;
 
 public interface FeatureHandler {
 
-    /**
-     * 系统开启
-     *
-     * @return
-     */
-    Feature getFeature();
+	/**
+	 * 系统开启
+	 *
+	 * @return
+	 */
+	Feature getFeature();
 
-    /**
-     * 开启模块
-     *
-     * @param explorer
-     * @return
-     */
-    boolean openFeature(FeatureExplorer explorer);
+	/**
+	 * 开启模块
+	 *
+	 * @param explorer
+	 * @return
+	 */
+	boolean openFeature(FeatureLauncher explorer);
 
-    default void loadFeature(FeatureExplorer explorer) {
-    }
+	default void loadFeature(FeatureLauncher explorer) {
+	}
 
 }

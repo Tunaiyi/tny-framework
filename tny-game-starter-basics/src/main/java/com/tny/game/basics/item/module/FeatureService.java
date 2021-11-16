@@ -8,53 +8,55 @@ import org.slf4j.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public abstract class FeatureService<DTO> implements AppPrepareStart, ApplicationContextAware {
+public abstract class FeatureService implements AppPrepareStart, ApplicationContextAware {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(FeatureService.class);
 
-	private static FeatureService<?> FUNC_SYS_SERVICE;
+	private static FeatureService FUNC_SYS_SERVICE;
 
-	@Resource
-	private FeatureExplorerManager featureExplorerManager;
+	private final FeatureLauncherManager featureLauncherManager;
 
-	@Resource
-	private ModuleService<DTO> moduleService;
+	private final ModulerService moduleService;
 
-	@Resource
-	private FeatureModelManager<? extends FeatureModel> featureModelManager;
+	private final FeatureModelManager<? extends FeatureModel> featureModelManager;
 
 	private ApplicationContext applicationContext;
 
 	private final Map<Feature, FeatureHandler> handlerMap = new HashMap<>();
 
-	public FeatureService() {
-		FUNC_SYS_SERVICE = this;
+	public FeatureService(
+			FeatureLauncherManager featureLauncherManager,
+			ModulerService moduleService,
+			FeatureModelManager<? extends FeatureModel> featureModelManager) {
+		this.featureLauncherManager = featureLauncherManager;
+		this.moduleService = moduleService;
+		this.featureModelManager = featureModelManager;
 	}
 
-	public static boolean isFeatureOpened(long explorerID, Feature feature) {
-		return FUNC_SYS_SERVICE.doIsOpen(explorerID, feature);
+	public static boolean isFeatureOpened(long playerId, Feature feature) {
+		return FUNC_SYS_SERVICE.doIsOpen(playerId, feature);
 	}
 
-	public boolean isOpened(long explorerID, Feature feature) {
-		return this.doIsOpen(explorerID, feature);
+	public boolean isOpened(long playerId, Feature feature) {
+		return this.doIsOpen(playerId, feature);
 	}
 
-	public <C> void openFeature(GameFeatureExplorer explorer, OpenMode<?> openMode, C context) {
-		this.doOpenFeature(explorer, openMode, context);
+	public <T> void openFeature(GameFeatureLauncher launcher, FeatureOpenMode<?> openMode, T context) {
+		this.doOpenFeature(launcher, openMode, context);
 	}
 
-	public void loadFeature(GameFeatureExplorer explorer) {
-		this.doLoadFeature(explorer);
+	public void loadFeature(GameFeatureLauncher launcher) {
+		this.doLoadFeature(launcher);
 	}
 
 	private boolean doIsOpen(long explorerID, Feature feature) {
-		GameFeatureExplorer explorer = this.featureExplorerManager.getExplorer(explorerID);
-		return explorer.isFeatureOpened(feature);
+		GameFeatureLauncher launcher = this.featureLauncherManager.getLauncher(explorerID);
+		return launcher.isFeatureOpened(feature);
 	}
 
 	public boolean isEffect(Feature feature) {
@@ -65,80 +67,78 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
 		return this.featureModelManager.getVersionHolder().getFeatureVersion();
 	}
 
-	private <C> void doOpenFeature(GameFeatureExplorer explorer, OpenMode<? extends FeatureModel> openMode, C context) {
+	private <T> void doOpenFeature(GameFeatureLauncher launcher, FeatureOpenMode<? extends FeatureModel> openMode, T context) {
 		for (FeatureModel model : this.featureModelManager.getModels(openMode)) {
 			FeatureHandler handler = this.handlerMap.get(model.getFeature());
-			if (handler == null || !model.isEffect() || !openMode.check(explorer, as(model), context)) {
+			if (handler == null || !model.isEffect() || !openMode.check(launcher, as(model), context)) {
 				continue;
 			}
-			if (!model.isCanOpen(explorer, openMode)
-					&& model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)) {
+			if (!model.isCanOpen(launcher, openMode)
+					&& model.getParent().map(f -> !launcher.isFeatureOpened(f)).orElse(false)) {
 				continue;
 			}
 			Feature feature = handler.getFeature();
 			try {
-				synchronized (explorer) {
-					if (explorer.isFeatureOpened(feature)) {
+				synchronized (launcher) {
+					if (launcher.isFeatureOpened(feature)) {
 						continue;
 					}
 					if (this.LOGGER.isInfoEnabled()) {
 						RunChecker.trace(model.getFeature());
-						this.LOGGER.debug("{} 玩家开启 {} 功能....", explorer.getPlayerId(), feature);
+						this.LOGGER.debug("{} 玩家开启 {} 功能....", launcher.getPlayerId(), feature);
 					}
-					if (this.moduleService.openModule(explorer, feature.dependModules()) && handler.openFeature(explorer)) {
-						explorer.open(model);
+					if (this.moduleService.openModule(launcher, feature.dependModules())) {
+						launcher.openFeature(model, handler);
 					}
 					if (this.LOGGER.isInfoEnabled()) {
 						long time = RunChecker.end(model.getFeature()).costTime();
-						this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
+						this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", launcher.getPlayerId(), feature, time);
 					}
 				}
 			} catch (Throwable e) {
-				this.LOGGER.error("玩家[{}] 开启 {} 功能失败", explorer.getPlayerId(), feature, e);
+				this.LOGGER.error("玩家[{}] 开启 {} 功能失败", launcher.getPlayerId(), feature, e);
 			}
 		}
 	}
 
-	private void doLoadFeature(final GameFeatureExplorer explorer) {
-		HashSet<Module> moduleSet = new HashSet<>();
-		for (Feature feature : explorer.getOpenedFeatures()) {
-			if (explorer.isFeatureOpened(feature)) {
-				for (Module module : feature.dependModules()) {
+	private void doLoadFeature(final GameFeatureLauncher launcher) {
+		HashSet<Moduler> moduleSet = new HashSet<>();
+		for (Feature feature : launcher.getOpenedFeatures()) {
+			if (launcher.isFeatureOpened(feature)) {
+				for (Moduler module : feature.dependModules()) {
 					if (!moduleSet.add(module)) {
 						continue;
 					}
-					this.moduleService.doLoadModule(explorer, module);
+					this.moduleService.doLoadModule(launcher, module);
 				}
 				if (feature.isValid()) {
-					doLoadFeature(explorer, feature);
+					doLoadFeature(launcher, feature);
 				}
 			}
 		}
 	}
 
-	private void doLoadFeature(final FeatureExplorer explorer, final Feature feature) {
+	private void doLoadFeature(final FeatureLauncher launcher, final Feature feature) {
 		try {
 			if (feature.isValid()) {
 				FeatureHandler featureHandler = this.handlerMap.get(feature);
-				featureHandler.loadFeature(explorer);
+				featureHandler.loadFeature(launcher);
 			}
 		} catch (Throwable e) {
-			this.LOGGER.error("玩家[{}] 预加载 {} 功能异常", explorer.getPlayerId(), feature, e);
+			this.LOGGER.error("玩家[{}] 预加载 {} 功能异常", launcher.getPlayerId(), feature, e);
 		}
 	}
 
-	protected abstract DTO createDTO();
+	//	protected abstract <T> T createContext();
 
-	public DTO updateDTO(GameFeatureExplorer explorer) {
-		DTO dto = createDTO();
-		this.moduleService.updateDTO(explorer, dto);
-		return dto;
+	public <T> T updateContext(GameFeatureLauncher launcher, T context) {
+		this.moduleService.loadContext(launcher, context);
+		return context;
 	}
 
-	public DTO updateDTO(GameFeatureExplorer explorer, Collection<? extends Module> modules) {
-		DTO dto = createDTO();
-		this.moduleService.updateDTO(explorer, modules, dto);
-		return dto;
+	public <T> T updateContext(GameFeatureLauncher launcher, T context, Collection<? extends Moduler> modules) {
+		this.moduleService.updateContext(launcher, modules, context);
+		return context;
 	}
 
 	public void updateFeatureVersion(String featureVersion) {
@@ -152,9 +152,9 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
 
 	@Override
 	public void prepareStart() throws Exception {
-		Collection<GameFeatureHandler<?>> collection = as(this.applicationContext.getBeansOfType(GameFeatureHandler.class).values());
-		List<GameFeatureHandler<?>> featureHandlers = new ArrayList<>(collection);
-		for (GameFeatureHandler<?> feature : featureHandlers) {
+		Collection<BaseFeatureHandler<?>> collection = as(this.applicationContext.getBeansOfType(BaseFeatureHandler.class).values());
+		List<BaseFeatureHandler<?>> featureHandlers = new ArrayList<>(collection);
+		for (BaseFeatureHandler<?> feature : featureHandlers) {
 			this.handlerMap.put(feature.getFeature(), feature);
 		}
 		for (Feature feature : Features.all()) {

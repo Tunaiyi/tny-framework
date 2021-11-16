@@ -6,16 +6,16 @@ import java.util.*;
 
 public interface Feature extends EnumIdentifiable<Integer> {
 
-    String name();
+	String name();
 
-    Collection<Module> dependModules();
+	Collection<Moduler> dependModules();
 
-    String getDesc();
+	String getDesc();
 
-    boolean isValid();
+	boolean isValid();
 
-    boolean isHasHandler();
+	boolean isHasHandler();
 
-    Optional<Feature> getParent();
+	Optional<Feature> getParent();
 
 }

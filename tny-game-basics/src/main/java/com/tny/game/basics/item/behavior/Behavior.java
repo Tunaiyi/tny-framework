@@ -10,33 +10,33 @@ import com.tny.game.common.enums.*;
  */
 public interface Behavior extends EnumIdentifiable<Integer> {
 
-    /**
-     * 获取模块类型
-     *
-     * @return
-     */
-    Feature getFeature();
+	/**
+	 * 获取模块类型
+	 *
+	 * @return
+	 */
+	Feature getFeature();
 
-    /**
-     * 标识
-     *
-     * @return
-     */
-    String name();
+	/**
+	 * 标识
+	 *
+	 * @return
+	 */
+	String name();
 
-    /**
-     * 描述
-     *
-     * @return
-     */
-    String getDesc();
+	/**
+	 * 描述
+	 *
+	 * @return
+	 */
+	String getDesc();
 
-    /**
-     * 通过指定值获取对应的Action
-     *
-     * @param value 对应直
-     * @return 对应的Action
-     */
-    Action forAction(Object value);
+	/**
+	 * 通过指定值获取对应的Action
+	 *
+	 * @param value 对应直
+	 * @return 对应的Action
+	 */
+	Action forAction(Object value);
 
 }

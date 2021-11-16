@@ -1,12 +1,12 @@
 package com.tny.game.basics.configuration;
 
+import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.*;
-import com.tny.game.basics.item.capacity.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.mvel.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 
 import java.util.Optional;
 
@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 @Configuration
 @EnableConfigurationProperties({
-		DefaultItemModelProperties.class
+		DefaultItemModelProperties.class,
 })
 public class BasicsAutoConfiguration {
 
@@ -31,28 +31,16 @@ public class BasicsAutoConfiguration {
 	}
 
 	@Bean
+	DevelopEnvs developEnvs(Environment environment) {
+		DevelopEnvs.init(environment);
+		return DevelopEnvs.envs();
+	}
+
+	@Bean
 	public GameItemModelContext itemModelContext(GameExplorer gameExplorer, Optional<ExprHolderFactoryInitiator> initiatorOpt) {
 		ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory();
 		initiatorOpt.ifPresent(initiator -> initiator.init(exprHolderFactory));
 		return new GameItemModelContext(gameExplorer, exprHolderFactory);
-	}
-
-	@Bean
-	@ConditionalOnProperty(value = BasicsPropertiesConstants.BASICS_WAREHOUSE_MODULE_ENABLE, havingValue = "true")
-	public GameWarehouseService gameWarehouseService() {
-		return new GameWarehouseService();
-	}
-
-	@Bean
-	@ConditionalOnProperty(value = BasicsPropertiesConstants.BASICS_WAREHOUSE_MODULE_ENABLE, havingValue = "true")
-	public CapacityDebugger capacityDebugger() {
-		return new CapacityDebugger();
-	}
-
-	@Bean
-	@ConditionalOnProperty(value = BasicsPropertiesConstants.BASICS_CAPACITY_MODULE_ENABLE, havingValue = "true")
-	public CapacityService capacityService() {
-		return new CapacityService();
 	}
 
 	@Bean
