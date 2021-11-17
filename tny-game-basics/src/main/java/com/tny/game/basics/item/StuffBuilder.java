@@ -9,20 +9,20 @@ package com.tny.game.basics.item;
  * @author KGTny
  */
 @SuppressWarnings("unchecked")
-public abstract class StuffBuilder<S extends AbstractItem<SM>, SM extends CountableStuffModel, B extends StuffBuilder<S, SM, B>> extends
-        ItemBuilder<S, SM, B> {
+public abstract class StuffBuilder<S extends BaseItem<SM>, SM extends StuffModel, B extends StuffBuilder<S, SM, B>> extends
+		ItemBuilder<S, SM, B> {
 
-    protected int number;
+	protected int number;
 
-    /**
-     * 设置number <br>
-     *
-     * @param number 数量
-     * @return 构建器
-     */
-    public B setNumber(int number) {
-        this.number = number;
-        return (B) this;
-    }
+	/**
+	 * 设置number <br>
+	 *
+	 * @param number 数量
+	 * @return 构建器
+	 */
+	public B setNumber(int number) {
+		this.number = number;
+		return (B)this;
+	}
 
 }

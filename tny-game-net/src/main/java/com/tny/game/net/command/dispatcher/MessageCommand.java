@@ -90,7 +90,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 	 * 身份认证
 	 */
 	protected void authenticate(AuthenticateValidator<Object> validator, CertificateFactory<Object> certificateFactory)
-	throws CommandException, ValidationException {
+			throws CommandException, ValidationException {
 		if (this.tunnel.isLogin()) {
 			return;
 		}

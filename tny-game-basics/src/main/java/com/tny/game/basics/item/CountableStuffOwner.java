@@ -9,25 +9,25 @@ package com.tny.game.basics.item;
  * <p>
  * <br>
  */
-public interface CountableStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends CountableStuff<SM, ?>>
+public interface CountableStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<SM>>
 		extends StuffOwner<IM, S> {
 
 	/**
 	 * 检测是否满了
 	 *
-	 * @param model
-	 * @param number
-	 * @return
+	 * @param model  测试物品模型
+	 * @param number 添加数量
+	 * @return 溢出返回 true 否则返回 false
 	 */
-	boolean isOverUpperLimit(IM model, AlterType type, Number number);
+	boolean isOverflow(SM model, AlterType type, Number number);
 
 	/**
 	 * 检测是否足够
 	 *
-	 * @param model
-	 * @param number
-	 * @return
+	 * @param model  测试物品模型
+	 * @param number 扣除数量
+	 * @return 不足返回 true 否则返回 false
 	 */
-	boolean isOverLowerLimit(IM model, AlterType type, Number number);
+	boolean isNotEnough(SM model, AlterType type, Number number);
 
 }

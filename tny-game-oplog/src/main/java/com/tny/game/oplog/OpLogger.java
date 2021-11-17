@@ -150,7 +150,7 @@ public interface OpLogger {
 	 * @param types  快照器类型
 	 * @return 返回Logger
 	 */
-	OpLogger logSnapshotByType(AnyOwned item, Action action, SnapperType... types);
+	OpLogger logSnapshotByType(Any item, Action action, SnapperType... types);
 
 	/**
 	 * 记录快照
@@ -160,8 +160,8 @@ public interface OpLogger {
 	 * @param snapperTypes 快照器Class
 	 * @return 返回Logger
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	OpLogger logSnapshotByClass(AnyOwned item, Action action, Class<? extends Snapper>... snapperTypes);
+	@SuppressWarnings({"unchecked"})
+	OpLogger logSnapshotByClass(Any item, Action action, Class<? extends Snapper<?, ?>>... snapperTypes);
 
 	/**
 	 * 记录快照
@@ -170,7 +170,7 @@ public interface OpLogger {
 	 * @param action 记录原因(操作Action)
 	 * @return 返回Logger
 	 */
-	OpLogger logSnapshot(AnyOwned item, Action action);
+	OpLogger logSnapshot(Any item, Action action);
 
 	/**
 	 * @return 是否开启记录 返回Logger

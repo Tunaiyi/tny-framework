@@ -6,7 +6,7 @@ package com.tny.game.basics.item;
  * @param <IM>
  * @author KGTny
  */
-public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
+public abstract class BaseItem<IM extends ItemModel> implements Item<IM> {
 
 	/**
 	 * 事物所属玩家id
@@ -97,7 +97,7 @@ public abstract class AbstractItem<IM extends ItemModel> implements Item<IM> {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		AbstractItem other = (AbstractItem)obj;
+		BaseItem other = (BaseItem)obj;
 		if (this.model == null) {
 			if (other.model != null) {
 				return false;

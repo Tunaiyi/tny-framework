@@ -6,7 +6,7 @@ import org.slf4j.*;
 
 public abstract class AbstractOpLogger implements OpLogger {
 
-	private ThreadLocal<OpLog> localOpLog = new ThreadLocal<>();
+	private final ThreadLocal<OpLog> localOpLog = new ThreadLocal<>();
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractOpLogger.class);
 
@@ -160,7 +160,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logSnapshotByType(AnyOwned item, Action action, SnapperType... types) {
+	public OpLogger logSnapshotByType(Any item, Action action, SnapperType... types) {
 		try {
 			action = this.transAction(action);
 			if (types.length == 0) {
@@ -177,8 +177,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 
 	@Override
 	@SafeVarargs
-	@SuppressWarnings("rawtypes")
-	public final OpLogger logSnapshotByClass(AnyOwned item, Action action, Class<? extends Snapper>... snapperTypes) {
+	public final OpLogger logSnapshotByClass(Any item, Action action, Class<? extends Snapper<?, ?>>... snapperTypes) {
 		try {
 			action = this.transAction(action);
 			if (snapperTypes.length == 0) {
@@ -194,7 +193,7 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logSnapshot(AnyOwned item, Action action) {
+	public OpLogger logSnapshot(Any item, Action action) {
 		action = this.transAction(action);
 		this.doLogSnapshot(action, item);
 		return this;
@@ -220,12 +219,12 @@ public abstract class AbstractOpLogger implements OpLogger {
 		return (S)log.getSnapshot(action, id, type);
 	}
 
-	protected abstract void doLogSnapshot(Action action, AnyOwned item, SnapperType type);
+	protected abstract void doLogSnapshot(Action action, Any item, SnapperType type);
 
 	@SuppressWarnings("rawtypes")
-	protected abstract void doLogSnapshot(Action action, AnyOwned item, Class<? extends Snapper> type);
+	protected abstract void doLogSnapshot(Action action, Any item, Class<? extends Snapper> type);
 
-	protected abstract void doLogSnapshot(Action action, AnyOwned item);
+	protected abstract void doLogSnapshot(Action action, Any item);
 
 	protected OpLog pollLog() {
 		OpLog log = this.localOpLog.get();

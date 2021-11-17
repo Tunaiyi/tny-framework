@@ -14,7 +14,7 @@ import java.util.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
-public class FeatureModelManager<FM extends DefaultFeatureModel> extends BaseModelManager<FM> implements AppPrepareStart {
+public class FeatureModelManager<FM extends DefaultFeatureModel> extends GameModelManager<FM> implements AppPrepareStart {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureModelManager.class);
 

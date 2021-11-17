@@ -2,47 +2,49 @@ package com.tny.game.basics.item.xml;
 
 import com.tny.game.basics.item.*;
 
-public class TestPlayer extends AbstractItem<ItemModel> {
+public class TestPlayer extends BaseItem<ItemModel> {
 
-    private int number;
-    private int level;
-    private String itemAlias;
+	private int number;
 
-    public TestPlayer(int number, int level, String alias) {
-        super();
-        this.number = number;
-        this.level = level;
-        this.itemAlias = alias;
-    }
+	private int level;
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+	private String itemAlias;
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+	public TestPlayer(int number, int level, String alias) {
+		super();
+		this.number = number;
+		this.level = level;
+		this.itemAlias = alias;
+	}
 
-    public void setItemAlias(String itemAlias) {
-        this.itemAlias = itemAlias;
-    }
+	public void setNumber(int number) {
+		this.number = number;
+	}
 
-    public int getNumber() {
-        return number;
-    }
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
-    public int getLevel() {
-        return level;
-    }
+	public void setItemAlias(String itemAlias) {
+		this.itemAlias = itemAlias;
+	}
 
-    @Override
-    public long getId() {
-        return 0;
-    }
+	public int getNumber() {
+		return number;
+	}
 
-    @Override
-    public String getAlias() {
-        return itemAlias;
-    }
+	public int getLevel() {
+		return level;
+	}
+
+	@Override
+	public long getId() {
+		return 0;
+	}
+
+	@Override
+	public String getAlias() {
+		return itemAlias;
+	}
 
 }

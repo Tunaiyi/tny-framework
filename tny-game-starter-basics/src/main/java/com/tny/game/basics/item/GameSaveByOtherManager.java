@@ -33,15 +33,14 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
 	/**
 	 * 获取 item 存储所在的对象的manager
 	 *
-	 * @param item 实例
 	 * @return 返回存储的实例的 manager
 	 */
-	protected abstract Manager<SO> getManager(O item);
+	protected abstract GameManager<SO> manager();
 
 	@Override
 	public boolean save(O item) {
 		SO object = this.getSaveObject(item);
-		Manager<SO> manager = this.getManager(item);
+		Manager<SO> manager = this.manager();
 		if (object != null) {
 			return manager.save(object);
 		}
@@ -62,7 +61,7 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
 	@Override
 	public boolean update(O item) {
 		SO object = this.getSaveObject(item);
-		Manager<SO> manager = this.getManager(item);
+		Manager<SO> manager = this.manager();
 		if (object != null) {
 			return manager.update(object);
 		}

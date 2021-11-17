@@ -8,20 +8,20 @@ import java.io.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class BaseItemModelManager<IM extends ItemModel> extends BaseModelManager<IM> implements ItemTypeManageable {
+public abstract class GameItemModelManager<IM extends ItemModel> extends GameModelManager<IM> implements ItemTypeManageable {
 
 	private volatile Set<ItemType> itemTypes = ImmutableSet.of();
 
-	protected BaseItemModelManager(Class<? extends IM> modelClass, String... paths) {
+	protected GameItemModelManager(Class<? extends IM> modelClass, String... paths) {
 		super(modelClass, paths);
 	}
 
-	protected BaseItemModelManager(Class<? extends IM> modelClass, Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+	protected GameItemModelManager(Class<? extends IM> modelClass, Class<? extends Enum<? extends Option>> optionClass, String... paths) {
 		this(modelClass, paths);
 		this.addEnumClass(optionClass);
 	}
 
-	protected BaseItemModelManager(Class<? extends IM> modelClass,
+	protected GameItemModelManager(Class<? extends IM> modelClass,
 			Class<? extends Enum<? extends DemandType>> demandTypeClass,
 			Class<? extends Enum<? extends Ability>> abilityClass,
 			Class<? extends Enum<? extends Option>> optionClass, String... paths) {
@@ -31,7 +31,7 @@ public abstract class BaseItemModelManager<IM extends ItemModel> extends BaseMod
 		this.addEnumClass(optionClass);
 	}
 
-	protected BaseItemModelManager(Class<? extends IM> modelClass,
+	protected GameItemModelManager(Class<? extends IM> modelClass,
 			Class<? extends Enum<? extends Ability>> abilityClass,
 			Class<? extends Enum<? extends Option>> optionClass, String... paths) {
 		this(modelClass, paths);
@@ -39,7 +39,7 @@ public abstract class BaseItemModelManager<IM extends ItemModel> extends BaseMod
 		this.addEnumClass(optionClass);
 	}
 
-	protected BaseItemModelManager(
+	protected GameItemModelManager(
 			Class<? extends IM> modelClass,
 			Class<? extends Enum<?>>[] enumClasses,
 			String... paths) {
@@ -51,7 +51,7 @@ public abstract class BaseItemModelManager<IM extends ItemModel> extends BaseMod
 
 	@Override
 	protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
-	throws IOException, InstantiationException, IllegalAccessException {
+			throws IOException, InstantiationException, IllegalAccessException {
 		super.loadAndInitModel(path, inputStream, reload);
 		this.itemTypes = ImmutableSet.copyOf(this.modelMap.values().stream()
 				.map(m -> Asserts.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))

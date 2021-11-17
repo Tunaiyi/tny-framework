@@ -52,7 +52,7 @@ public class ForkJoinEndpointCommandTaskBoxProcessor extends EndpointCommandTask
 	}
 
 	@Override
-	protected CommandTaskBoxDriver createTrigger(CommandTaskBox box) {
+	protected CommandTaskBoxDriver createDriver(CommandTaskBox box) {
 		return new CommandTaskBoxDriver(box, this);
 	}
 

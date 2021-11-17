@@ -6,8 +6,8 @@ import com.tny.game.common.context.*;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public abstract class GameStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<?>>
-		extends GameItem<IM>
+public abstract class BaseStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<?>>
+		extends BaseItem<IM>
 		implements StuffOwner<IM, S> {
 
 	/**
@@ -17,7 +17,7 @@ public abstract class GameStuffOwner<IM extends ItemModel, SM extends ItemModel,
 	 * @param action     交易行为
 	 * @param attributes 参数
 	 */
-	protected abstract void consume(TradeItem<SM> tradeItem, Action action, Attributes attributes);
+	protected abstract void deduct(TradeItem<SM> tradeItem, Action action, Attributes attributes);
 
 	/**
 	 * 添加事物
@@ -26,6 +26,6 @@ public abstract class GameStuffOwner<IM extends ItemModel, SM extends ItemModel,
 	 * @param action     交易行为
 	 * @param attributes 参数
 	 */
-	protected abstract void receive(TradeItem<SM> tradeItem, Action action, Attributes attributes);
+	protected abstract void reward(TradeItem<SM> tradeItem, Action action, Attributes attributes);
 
 }

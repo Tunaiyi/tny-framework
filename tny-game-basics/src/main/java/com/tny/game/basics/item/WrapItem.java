@@ -4,7 +4,7 @@ import com.tny.game.basics.item.behavior.*;
 
 import java.util.*;
 
-public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM>> extends AbstractItem<IM> implements Item<IM> {
+public abstract class WrapItem<IM extends ItemModel, I extends Item<? extends IM>> extends BaseItem<IM> implements Item<IM> {
 
 	protected I item;
 

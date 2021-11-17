@@ -6,7 +6,7 @@ import java.util.List;
 
 import static com.tny.game.common.utils.StringAide.*;
 
-public abstract class SingleItemModelManager<IM extends ItemModel> extends BaseItemModelManager<IM> {
+public abstract class SingleItemModelManager<IM extends ItemModel> extends GameItemModelManager<IM> {
 
 	private IM model;
 

@@ -4,7 +4,7 @@ import com.tny.game.common.concurrent.collection.*;
 
 import java.util.*;
 
-public class DefaultItemModelManager extends BaseItemModelManager<DefaultItemModel> {
+public class DefaultItemModelManager extends GameItemModelManager<DefaultItemModel> {
 
 	private final Map<ItemType, DefaultItemModel> typeMap = new CopyOnWriteMap<>();
 

@@ -19,12 +19,12 @@ public abstract class EndpointCommandTaskBoxProcessor<T extends CommandTaskBoxDr
 		CommandTaskBoxDriver driver = box.getAttachment(this);
 		if (driver == null) {
 			// 创角任务触发器
-			driver = box.setAttachmentIfNull(this, () -> createTrigger(box));
+			driver = box.setAttachmentIfNull(this, () -> createDriver(box));
 		}
 		driver.trySubmit();// 尝试提交
 	}
 
-	protected abstract T createTrigger(CommandTaskBox box);
+	protected abstract T createDriver(CommandTaskBox box);
 
 	protected abstract void process(T processor);
 

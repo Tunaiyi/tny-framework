@@ -84,7 +84,7 @@ public class DisruptorEndpointCommandTaskBoxProcessor extends EndpointCommandTas
 	}
 
 	@Override
-	protected TimerCommandTaskBoxDriver createTrigger(CommandTaskBox box) {
+	protected TimerCommandTaskBoxDriver createDriver(CommandTaskBox box) {
 		return new TimerCommandTaskBoxDriver(box, this);
 	}
 
