@@ -1,6 +1,7 @@
 package com.tny.game.basics.item;
 
 import com.tny.game.basics.item.exception.*;
+import com.tny.game.data.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -27,8 +28,9 @@ public abstract class GameStuffOwnerManager<O> extends GameCacheManager<O> {
 	 *                         可通过 配置AItem class @{@link com.tny.game.suite.auto.persistent.annotation.AutoDBBy} manager = AStorageManager.class
 	 *                         通过AStorageManager 自动持久化
 	 */
-	protected GameStuffOwnerManager(Class<? extends O> entityClass, ItemType itemType, Class<?>... otherSaveClasses) {
-		super(entityClass);
+	protected GameStuffOwnerManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager, ItemType itemType,
+			Class<?>... otherSaveClasses) {
+		super(entityClass, manager);
 		this.itemType = itemType;
 		this.saveItemClasses = otherSaveClasses;
 	}
@@ -41,8 +43,9 @@ public abstract class GameStuffOwnerManager<O> extends GameCacheManager<O> {
 	 *                         可通过 配置AItem class @{@link com.tny.game.suite.auto.persistent.annotation.AutoDBBy} manager = AStorageManager.class
 	 *                         通过AStorageManager 自动持久化
 	 */
-	protected GameStuffOwnerManager(Class<? extends O> entityClass, ItemType itemType, Collection<? extends Class<?>> otherSaveClasses) {
-		super(entityClass);
+	protected GameStuffOwnerManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager, ItemType itemType,
+			Collection<? extends Class<?>> otherSaveClasses) {
+		super(entityClass, manager);
 		this.itemType = itemType;
 		this.saveItemClasses = otherSaveClasses.toArray(this.saveItemClasses);
 	}

@@ -14,7 +14,7 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 
 	private long id;
 
-	private int itemID;
+	private int itemId;
 
 	private long playerId;
 
@@ -24,11 +24,11 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 
 	private Set<CapacityGroup> groups;
 
-	StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerId, Map<Capacity, Number> capacityMap,
+	StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemId, long playerId, Map<Capacity, Number> capacityMap,
 			Set<CapacityGroup> groups, long expireAt) {
 		super(expireAt);
 		this.id = id;
-		this.itemID = itemID;
+		this.itemId = itemId;
 		this.playerId = playerId;
 		this.type = type;
 		this.capacityMap = ImmutableMap.copyOf(capacityMap);
@@ -42,7 +42,7 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 
 	@Override
 	public int getItemId() {
-		return this.itemID;
+		return this.itemId;
 	}
 
 	@Override
@@ -94,8 +94,8 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", this.id)
-				.add("itemId", this.itemID)
-				.add("name", ItemModels.name(this.itemID))
+				.add("itemId", this.itemId)
+				.add("name", ItemModels.name(this.itemId))
 				.toString();
 	}
 

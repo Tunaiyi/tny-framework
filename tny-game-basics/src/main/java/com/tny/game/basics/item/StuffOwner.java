@@ -26,11 +26,11 @@ public interface StuffOwner<M extends ItemModel, S extends Stuff<?>> extends Ite
 	/**
 	 * 获取某事物的信息 <br>
 	 *
-	 * @param itemID 物品ID
+	 * @param itemId 物品ID
 	 * @return 物品信息
 	 */
-	default List<S> getItemsByItemId(int itemID) {
-		S stuff = getItemByItemId(itemID);
+	default List<S> getItemsByItemId(int itemId) {
+		S stuff = getItemByItemId(itemId);
 		if (stuff != null) {
 			return ImmutableList.of(stuff);
 		}
@@ -40,9 +40,9 @@ public interface StuffOwner<M extends ItemModel, S extends Stuff<?>> extends Ite
 	/**
 	 * 获取某事物的信息 <br>
 	 *
-	 * @param itemID 物品ID
+	 * @param itemId 物品ID
 	 * @return 物品信息
 	 */
-	S getItemByItemId(int itemID);
+	S getItemByItemId(int itemId);
 
 }

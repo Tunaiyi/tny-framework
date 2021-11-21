@@ -15,112 +15,113 @@ import java.util.*;
  */
 public class SimpleUserOpLog extends UserOpLog {
 
-    private long userId;
+	private long userId;
 
-    private String openId;
+	private String openId;
 
-    private String pf;
+	private String pf;
 
-    private int serverId;
+	private int serverId;
 
-    private String name;
+	private String name;
 
-    private int level;
+	private int level;
 
-    private int vip;
+	private int vip;
 
-    private Instant createAt;
+	private Instant createAt;
 
-    private Attributes attributes;
+	private Attributes attributes;
 
-    private List<ActionLog> actionLogs = new ArrayList<>();
+	private List<ActionLog> actionLogs = new ArrayList<>();
 
-    private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
+	private Map<Integer, StuffSettleLog> stuffLogs = new HashMap<>();
 
-    public SimpleUserOpLog(long userId, String pf, String openId, int serverId, String name, Instant createAt, int level, int vip) {
-        super();
-        this.userId = userId;
-        this.openId = openId;
-        this.createAt = createAt;
-        this.pf = pf;
-        this.serverId = serverId;
-        this.name = name;
-        this.vip = vip;
-        this.level = level;
-    }
+	public SimpleUserOpLog(long userId, String pf, String openId, int serverId, String name, Instant createAt, int level, int vip) {
+		super();
+		this.userId = userId;
+		this.openId = openId;
+		this.createAt = createAt;
+		this.pf = pf;
+		this.serverId = serverId;
+		this.name = name;
+		this.vip = vip;
+		this.level = level;
+	}
 
-    @Override
-    public long getUserId() {
-        return this.userId;
-    }
+	@Override
+	public long getUserId() {
+		return this.userId;
+	}
 
-    @Override
-    public int getServerId() {
-        return this.serverId;
-    }
+	@Override
+	public int getServerId() {
+		return this.serverId;
+	}
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
+	@Override
+	public String getName() {
+		return this.name;
+	}
 
-    @Override
-    public int getLevel() {
-        return this.level;
-    }
+	@Override
+	public int getLevel() {
+		return this.level;
+	}
 
-    @Override
-    public int getVip() {
-        return this.vip;
-    }
+	@Override
+	public int getVip() {
+		return this.vip;
+	}
 
-    @Override
-    public String getPF() {
-        return this.pf;
-    }
+	@Override
+	public String getPF() {
+		return this.pf;
+	}
 
-    @Override
-    public String getOpenId() {
-        return this.openId;
-    }
+	@Override
+	public String getOpenId() {
+		return this.openId;
+	}
 
-    @Override
-    public Instant getCreateAt() {
-        return this.createAt;
-    }
+	@Override
+	public Instant getCreateAt() {
+		return this.createAt;
+	}
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Collection<ActionLog> getActionLogs() {
-        Collection<? extends ActionLog> logs = Collections.unmodifiableCollection(this.actionLogs);
-        return (Collection<ActionLog>) logs;
-    }
+	@Override
+	@SuppressWarnings("unchecked")
+	public Collection<ActionLog> getActionLogs() {
+		Collection<? extends ActionLog> logs = Collections.unmodifiableCollection(this.actionLogs);
+		return (Collection<ActionLog>)logs;
+	}
 
-    @Override
-    public Collection<StuffSettleLog> getStuffSettleLogs() {
-        return this.stuffLogs.values();
-    }
+	@Override
+	public Collection<StuffSettleLog> getStuffSettleLogs() {
+		return this.stuffLogs.values();
+	}
 
-    @Override
-    public Attributes attributes() {
-        return this.attributes;
-    }
+	@Override
+	public Attributes attributes() {
+		return this.attributes;
+	}
 
-    @Override
-    protected ActionLog getActionLog(Action action) {
-        for (int index = 0; index < this.actionLogs.size(); index++) {
-            ActionLog log = this.actionLogs.get(index);
-            if (log.getActionId() == action.getId())
-                return log;
-        }
-        ActionLog actionLog = new SimpleActionLog(action);
-        this.actionLogs.add(actionLog);
-        return actionLog;
-    }
+	@Override
+	protected ActionLog getActionLog(Action action) {
+		for (int index = 0; index < this.actionLogs.size(); index++) {
+			ActionLog log = this.actionLogs.get(index);
+			if (log.getActionId() == action.getId()) {
+				return log;
+			}
+		}
+		ActionLog actionLog = new SimpleActionLog(action);
+		this.actionLogs.add(actionLog);
+		return actionLog;
+	}
 
-    @Override
-    protected StuffSettleLog getStuffSettleLog(int itemID) {
-        return this.stuffLogs.computeIfAbsent(itemID, StuffRecord::new);
-    }
+	@Override
+	protected StuffSettleLog getStuffSettleLog(int itemId) {
+		return this.stuffLogs.computeIfAbsent(itemId, StuffRecord::new);
+	}
 
 }

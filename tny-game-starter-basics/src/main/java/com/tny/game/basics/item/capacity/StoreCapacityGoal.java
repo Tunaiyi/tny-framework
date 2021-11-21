@@ -12,9 +12,9 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
 
 	static StoreCapacityGoal saveByGoal(CapacityGoal goal, CapacityVisitor visitor, long expireAt) {
 		if (goal instanceof StoreCapacityGoal) {
-            if (expireAt == 0 || ((StoreCapacityGoal)goal).getExpireAt() == expireAt) {
-                return ObjectAide.as(goal);
-            }
+			if (expireAt == 0 || ((StoreCapacityGoal)goal).getExpireAt() == expireAt) {
+				return ObjectAide.as(goal);
+			}
 		}
 		return saveBySuppliers(
 				goal.getId(),
@@ -24,27 +24,27 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
 				ExpireCapable.expireAtOf(goal, expireAt));
 	}
 
-	static StoreCapacityGoal saveByGather(long id, int itemID, CapacityGather gather, CapacityVisitor visitor, long expireAt) {
+	static StoreCapacityGoal saveByGather(long id, int itemId, CapacityGather gather, CapacityVisitor visitor, long expireAt) {
 		return new StoreByCopyCapacityGoal(
-				id, itemID,
+				id, itemId,
 				gather.suppliersStream()
 						.filter(CapacitySupplier::isSupplying),
 				visitor,
 				ExpireCapable.expireAtOf(gather, expireAt));
 	}
 
-	static StoreCapacityGoal saveBySuppliers(long id, int itemID, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor,
+	static StoreCapacityGoal saveBySuppliers(long id, int itemId, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor,
 			long expireAt) {
 		return new StoreByCopyCapacityGoal(
-				id, itemID,
+				id, itemId,
 				suppliers.filter(CapacitySupplier::isSupplying),
 				visitor,
 				expireAt > 0 ? expireAt : -1);
 	}
 
-	static StoreCapacityGoal saveBySupplierIDs(long id, int itemID, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor,
+	static StoreCapacityGoal saveBySupplierIDs(long id, int itemId, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor,
 			long expireAt) {
-		return new StoreByCopyCapacityGoal(id, itemID, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
+		return new StoreByCopyCapacityGoal(id, itemId, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
 	}
 
 	void expireAt(long at);

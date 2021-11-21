@@ -1,7 +1,7 @@
 package com.tny.game.basics.item.module;
 
 import com.google.common.collect.*;
-import com.tny.game.basics.item.xml.*;
+import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.module.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.common.version.*;
@@ -9,7 +9,7 @@ import com.tny.game.common.version.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultFeatureModel extends XMLModel implements FeatureModel {
+public class DefaultFeatureModel extends BaseModel<Object> implements FeatureModel {
 
 	private int id;
 
@@ -32,7 +32,7 @@ public class DefaultFeatureModel extends XMLModel implements FeatureModel {
 	private boolean effect;
 
 	@Override
-	protected void doInit() {
+	protected void doInit(Object context) {
 		if (this.openPlans == null) {
 			this.openPlans = ImmutableSet.of();
 		} else {

@@ -1,4 +1,4 @@
-package com.tny.game.basics.item.xml;
+package com.tny.game.basics.item.model;
 
 import com.tny.game.basics.item.behavior.*;
 
@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  *
  * @author KGTny
  */
-public class XMLActionPlan extends AbstractActionPlan {
+public class BaseActionPlan extends AbstractActionPlan {
 
 }

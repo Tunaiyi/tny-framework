@@ -4,30 +4,31 @@ import com.tny.game.basics.item.*;
 
 public class TestAwardModel extends AbstractItemModel {
 
-    public TestAwardModel(String alias) {
-        this.alias = alias;
-    }
+	public TestAwardModel(String alias) {
+		this.alias = alias;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public ItemType getItemType() {
-        return new ItemType() {
+	@SuppressWarnings("unchecked")
+	@Override
+	public ItemType getItemType() {
+		return new ItemType() {
 
-            @Override
-            public Integer getId() {
-                return 0;
-            }
+			@Override
+			public Integer getId() {
+				return 0;
+			}
 
-            @Override
-            public String getAliasHead() {
-                return null;
-            }
+			@Override
+			public String getAliasHead() {
+				return null;
+			}
 
-            @Override
-            public String getDesc() {
-                return null;
-            }
+			@Override
+			public String getDesc() {
+				return null;
+			}
 
-        };
-    }
+		};
+	}
+
 }

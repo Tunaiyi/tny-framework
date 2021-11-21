@@ -5,7 +5,7 @@ import com.tny.game.basics.item.xml.*;
 
 import javax.annotation.Resource;
 
-public abstract class GameModelManager<M extends Model> extends AbstractXMLModelManager<M> {
+public abstract class GameModelManager<M extends Model> extends XMLModelManager<M> {
 
 	/**
 	 * 事物对象管理器

@@ -17,21 +17,49 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedissonStorageAccessor<K extends Comparable<?>, O> implements StorageAccessor<K, O> {
 
+	private final String dataSource;
+
 	private final String table;
 
 	private final TypedRedisson<O> redisson;
 
 	private final EntityIdConverter<K, O, ?> idConvertor;
 
-	public RedissonStorageAccessor(String table, EntityIdConverter<K, O, ?> idConvertor, TypedRedisson<O> redisson) {
+	public RedissonStorageAccessor(String dataSource, String table, EntityIdConverter<K, O, ?> idConvertor, TypedRedisson<O> redisson) {
+		this.dataSource = dataSource;
 		this.table = table;
 		this.redisson = redisson;
 		this.idConvertor = idConvertor;
 	}
 
 	@Override
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	@Override
 	public O get(K key) {
 		return redisson.getMap(table).get(keyToId(key));
+	}
+
+	@Override
+	public <T> List<T> find(Map<String, Object> findValue, Class<T> returnClass) {
+		return new ArrayList<>();
+	}
+
+	@Override
+	public <T> List<T> findAll(Class<T> returnClass) {
+		return new ArrayList<>();
+	}
+
+	@Override
+	public List<O> find(Map<String, Object> findValue) {
+		return new ArrayList<>();
+	}
+
+	@Override
+	public List<O> findAll() {
+		return new ArrayList<>();
 	}
 
 	@Override

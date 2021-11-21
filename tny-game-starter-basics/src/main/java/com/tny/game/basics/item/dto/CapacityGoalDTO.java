@@ -17,9 +17,9 @@ public class CapacityGoalDTO {
 	@ProtoExField(1)
 	private long id;
 
-	@VarDoc("提供者itemID")
+	@VarDoc("提供者itemId")
 	@ProtoExField(2)
-	private int itemID;
+	private int itemId;
 
 	@VarDoc("能力值目标依赖的能力值提供器列表")
 	@ProtoExField(3)
@@ -32,7 +32,7 @@ public class CapacityGoalDTO {
 	public static CapacityGoalDTO goal2DTO(CapacityGoal goal) {
 		CapacityGoalDTO dto = new CapacityGoalDTO();
 		dto.id = goal.getId();
-		dto.itemID = goal.getItemId();
+		dto.itemId = goal.getItemId();
 		dto.capacityGroups = goal.getSuppliersCapacityGroups()
 				.stream()
 				.map(CapacityGroup::getId)
@@ -47,7 +47,7 @@ public class CapacityGoalDTO {
 	public static CapacityGoalDTO goal2RemoveDTO(CapacityGoal goal) {
 		CapacityGoalDTO dto = new CapacityGoalDTO();
 		dto.id = goal.getId();
-		dto.itemID = goal.getItemId();
+		dto.itemId = goal.getItemId();
 		dto.dependSuppliers = ImmutableList.of();
 		dto.capacityGroups = ImmutableSet.of();
 		return dto;

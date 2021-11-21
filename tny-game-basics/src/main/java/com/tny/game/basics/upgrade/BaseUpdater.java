@@ -35,7 +35,7 @@ public abstract class BaseUpdater<I extends Item<?>> implements Updater<I> {
 		return level;
 	}
 
-	protected int upgrade(Action action, int upgradeLevel) {
+	public int upgrade(Action action, int upgradeLevel) {
 		int maxLevel = getMaxLevel();
 		int level = this.level;
 		if (level >= maxLevel) {
@@ -54,7 +54,7 @@ public abstract class BaseUpdater<I extends Item<?>> implements Updater<I> {
 		return upgradeLevel;
 	}
 
-	protected void reset(Action action) {
+	public void reset(Action action) {
 		int oldLevel = this.level;
 		this.level = this.getInitLevel();
 		if (onReset != null) {

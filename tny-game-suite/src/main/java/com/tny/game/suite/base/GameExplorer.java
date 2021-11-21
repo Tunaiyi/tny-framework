@@ -45,8 +45,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <IM extends Model> IM getModel(int itemID) {
-		return (IM)this.getModelManager(itemID).getModel(itemID);
+	public <IM extends Model> IM getModel(int itemId) {
+		return (IM)this.getModelManager(itemId).getModel(itemId);
 	}
 
 	@Override
@@ -60,13 +60,13 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <I extends Entity<?>> I getItem(long playerId, int itemID, Object... object) {
-		GameManager<Object> manager = this.getItemManager(itemID);
+	public <I extends Entity<?>> I getItem(long playerId, int itemId, Object... object) {
+		GameManager<Object> manager = this.getItemManager(itemId);
 		if (manager == null) {
 			return null;
 		}
 		Object[] params = new Object[object.length + 1];
-		params[0] = itemID;
+		params[0] = itemId;
 		if (object.length > 0) {
 			System.arraycopy(object, 0, params, 1, object.length);
 		}
@@ -180,8 +180,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> O getStorage(long playerId, int itemID, Object... object) {
-		GameManager<Object> manager = this.getStorageManager(itemID);
+	public <O extends StuffOwner<?, ?>> O getStorage(long playerId, int itemId, Object... object) {
+		GameManager<Object> manager = this.getStorageManager(itemId);
 		if (manager == null) {
 			return null;
 		}
@@ -294,8 +294,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		return fail;
 	}
 
-	private GameManager<Object> getStorageManager(int itemID) {
-		ItemType itemType = ItemTypes.ofItemId(itemID);
+	private GameManager<Object> getStorageManager(int itemId) {
+		ItemType itemType = ItemTypes.ofItemId(itemId);
 		GameManager<Object> manager = this.typeStorageManagerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的storage manager 为null", itemType));
@@ -303,8 +303,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		return manager;
 	}
 
-	private GameManager<Object> getItemManager(int itemID) {
-		ItemType itemType = ItemTypes.ofItemId(itemID);
+	private GameManager<Object> getItemManager(int itemId) {
+		ItemType itemType = ItemTypes.ofItemId(itemId);
 		GameManager<Object> manager = this.typeManagerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的item manager 为null", itemType));
@@ -312,8 +312,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		return manager;
 	}
 
-	private ModelManager<Model> getModelManager(int itemID) {
-		ItemType itemType = ItemTypes.ofItemId(itemID);
+	private ModelManager<Model> getModelManager(int itemId) {
+		ItemType itemType = ItemTypes.ofItemId(itemId);
 		return this.getModelManager(itemType);
 	}
 
@@ -337,7 +337,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
-	throws BeansException {
+			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 

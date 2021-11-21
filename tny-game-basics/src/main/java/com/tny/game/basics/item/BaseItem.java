@@ -21,15 +21,15 @@ public abstract class BaseItem<IM extends ItemModel> implements Item<IM> {
 	/**
 	 *
 	 */
-	private volatile AnyUnid unid;
+	private transient volatile AnyId unid;
 
 	/**
 	 * @return 全局唯一id
 	 */
 	@Override
-	public AnyUnid getUnid() {
+	public AnyId getAnyId() {
 		if (unid == null) {
-			unid = AnyUnid.uidOf(this);
+			unid = AnyId.idOf(this);
 		}
 		return unid;
 	}

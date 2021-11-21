@@ -1,96 +1,95 @@
 package com.tny.game.basics.item;
 
+import com.google.common.collect.ImmutableMap;
 import com.tny.game.data.*;
-import org.slf4j.*;
+import com.tny.game.data.storage.*;
 
-import javax.annotation.Resource;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class GameCacheManager<O> extends GameManager<O> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GameCacheManager.class);
+	private final EntityCacheManager<AnyId, O> entityManager;
 
-	@Resource
-	protected EntityCacheManager<AnyUnid, O> entityManager;
+	private EntityOnLoad<AnyId, O> onLoad;
 
-	private final Consumer<O> onLoad;
-
-	protected GameCacheManager(Class<? extends O> entityClass) {
-		this(entityClass, null);
+	protected GameCacheManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager) {
+		this(entityClass, manager, null);
 	}
 
-	protected GameCacheManager(Class<? extends O> entityClass, Consumer<O> onLoad) {
+	protected GameCacheManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager, EntityOnLoad<AnyId, O> onLoad) {
 		super(entityClass);
+		this.entityManager = manager;
 		this.onLoad = onLoad;
 	}
 
 	@Override
 	protected O get(long playerId) {
-		AnyUnid unid = AnyUnid.uidOf(playerId, playerId);
-		O value = this.entityManager.getEntity(unid);
-		if (value == null) {
-			return null;
-		}
-		return onLoad(value);
+		AnyId unid = AnyId.idOf(playerId, playerId);
+		return this.entityManager.getEntity(unid, onLoad);
 	}
 
 	@Override
 	protected O get(long playerId, long id) {
-		AnyUnid unid = AnyUnid.uidOf(playerId, id);
-		O value = this.entityManager.getEntity(unid);
-		if (value == null) {
-			return null;
-		}
-		return onLoad(value);
+		AnyId unid = AnyId.idOf(playerId, id);
+		return this.entityManager.getEntity(unid, onLoad);
 	}
 
 	@Override
 	protected Collection<O> getAll(long playerId, Collection<Long> ids) {
-		List<AnyUnid> keys = ids.stream()
-				.map(id -> AnyUnid.uidOf(playerId, id))
+		List<AnyId> keys = ids.stream()
+				.map(id -> AnyId.idOf(playerId, id))
 				.collect(Collectors.toList());
-		return onLoad(this.entityManager.getEntities(keys));
+		return this.entityManager.getEntities(keys, onLoad);
 	}
 
-	protected Collection<O> getByKeys(AnyUnid... keys) {
-		return onLoad(this.entityManager.getEntities(Arrays.asList(keys)));
+	protected Collection<O> getByKeys(AnyId... keys) {
+		return this.entityManager.getEntities(Arrays.asList(keys), onLoad);
 	}
 
-	protected Collection<O> getByKeys(Collection<AnyUnid> keys) {
-		return onLoad(this.entityManager.getEntities(keys));
+	protected Collection<O> getByKeys(Collection<AnyId> keys) {
+		return this.entityManager.getEntities(keys, onLoad);
 	}
 
 	protected O getByKey(long playerId, long id) {
-		return onLoad(this.entityManager.getEntity(AnyUnid.uidOf(playerId, id)));
+		return this.entityManager.getEntity(AnyId.idOf(playerId, id), onLoad);
 	}
 
-	private O onLoad(O o) {
-		if (o == null || this.onLoad == null) {
-			return o;
-		}
-		try {
-			this.onLoad.accept(o);
-		} catch (Throwable e) {
-			LOGGER.error("", e);
-		}
-		return o;
+	protected List<AnyId> findIdList(long playerId) {
+		ObjectStorage<AnyId, O> storage = entityManager.getStorage();
+		return storage.find(ImmutableMap.of("playerId", playerId), AnyId.class);
 	}
 
-	private Collection<O> onLoad(Collection<O> os) {
-		if (os == null || os.isEmpty() || this.onLoad == null) {
-			return os;
-		}
-		for (O o : os) {
-			try {
-				this.onLoad.accept(o);
-			} catch (Throwable e) {
-				LOGGER.error("", e);
-			}
-		}
-		return os;
+	protected List<AnyId> findAllIdList() {
+		ObjectStorage<AnyId, O> storage = entityManager.getStorage();
+		return storage.findAll(AnyId.class);
 	}
+
+	//	private O onLoad(O o) {
+	//		if (o == null || this.onLoad == null) {
+	//			return o;
+	//		}
+	//		try {
+	//			this.onLoad.accept(o);
+	//		} catch (Throwable e) {
+	//			LOGGER.error("", e);
+	//		}
+	//		return o;
+	//	}
+
+	//	private Collection<O> onLoad(Collection<O> os) {
+	//		if (os == null || os.isEmpty() || this.onLoad == null) {
+	//			return os;
+	//		}
+	//		for (O o : os) {
+	//			try {
+	//				this.onLoad.accept(o);
+	//			} catch (Throwable e) {
+	//				LOGGER.error("", e);
+	//			}
+	//		}
+	//		return os;
+	//	}
 
 	@Override
 	public boolean save(O item) {
@@ -130,6 +129,10 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	@Override
 	public void delete(Collection<O> itemCollection) {
 		itemCollection.forEach(this::delete);
+	}
+
+	protected void onLoad(EntityOnLoad<AnyId, O> onLoad) {
+		this.onLoad = onLoad;
 	}
 
 }

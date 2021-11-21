@@ -2,7 +2,7 @@ package com.tny.game.basics.item.dto;
 
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
-import com.tny.game.basics.item.xml.XMLDemand.*;
+import com.tny.game.basics.item.model.BaseDemand.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.protoex.annotations.*;
 
@@ -18,9 +18,9 @@ public class DemandResultDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("条件相关的itemID")
+	@VarDoc("条件相关的itemId")
 	@ProtoExField(1)
-	protected int itemID;
+	protected int itemId;
 
 	@VarDoc("条件相关的item类型")
 	@ProtoExField(2)
@@ -34,7 +34,7 @@ public class DemandResultDTO implements Serializable {
 	@ProtoExField(5)
 	protected Long expectValue;
 
-	@VarDoc("条件相关item的ID")
+	@VarDoc("条件相关item的Id")
 	@ProtoExField(6)
 	protected long id;
 
@@ -57,7 +57,7 @@ public class DemandResultDTO implements Serializable {
 
 	protected static void setDTO(DemandResultDTO dto, DemandResult result) {
 		dto.id = result.getId();
-		dto.itemID = result.getItemId();
+		dto.itemId = result.getItemId();
 		dto.itemType = ItemTypes.ofItemId(result.getItemId()).getId();
 		dto.demandType = result.getDemandType().getId();
 		//        dto.currentValue = result.getCurrentValue(Long.class);
@@ -93,7 +93,7 @@ public class DemandResultDTO implements Serializable {
 
 	public static DemandResultDTO tradeItem2DTO(TradeType tradeType, TradeItem<ItemModel> tradeItem) {
 		DemandResultDTO dto = new DemandResultDTO();
-		dto.itemID = tradeItem.getItemModel().getId();
+		dto.itemId = tradeItem.getItemModel().getId();
 		dto.itemType = tradeItem.getItemModel().getItemType().getId();
 		dto.expectValue = tradeItem.getNumber().longValue();
 		dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
@@ -102,7 +102,7 @@ public class DemandResultDTO implements Serializable {
 
 	public static DemandResultDTO itemModel2DTO(TradeType tradeType, ItemModel itemModel, Number number) {
 		DemandResultDTO dto = new DemandResultDTO();
-		dto.itemID = itemModel.getId();
+		dto.itemId = itemModel.getId();
 		dto.itemType = itemModel.getItemType().getId();
 		dto.expectValue = number.longValue();
 		dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
@@ -111,7 +111,7 @@ public class DemandResultDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DemandResultDTO [itemId=" + this.itemID + ", demandType="
+		return "DemandResultDTO [itemId=" + this.itemId + ", demandType="
 				+ this.demandType + ", expectValue=" + this.expectValue + "]";
 	}
 

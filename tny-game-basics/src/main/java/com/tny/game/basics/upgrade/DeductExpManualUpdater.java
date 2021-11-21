@@ -15,12 +15,12 @@ public abstract class DeductExpManualUpdater<I extends Item<?>, EM extends ExpMo
 	}
 
 	@Override
-	protected int upgrade(Action action) {
+	protected int doUpgrade(Action action) {
 		return upgrade(action, 1);
 	}
 
 	@Override
-	protected int upgrade(Action action, int upgradeLevel) {
+	public int upgrade(Action action, int upgradeLevel) {
 		int alterLevel = 0;
 		int oldLevel = this.level;
 		for (int index = 0; upgradeLevel < 0 || index < upgradeLevel; index++) {

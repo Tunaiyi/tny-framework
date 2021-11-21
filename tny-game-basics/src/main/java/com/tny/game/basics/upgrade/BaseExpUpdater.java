@@ -56,7 +56,7 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 	}
 
 	@Override
-	protected void reset(Action action) {
+	public void reset(Action action) {
 		int oldLevel = this.level;
 		this.level = this.getInitLevel();
 		this.exp = 0;
@@ -65,7 +65,7 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 		}
 	}
 
-	protected void receive(EM expModel, long recvExp, Action action, Attributes attributes) {
+	public void receive(EM expModel, long recvExp, Action action, Attributes attributes) {
 		if (recvExp <= 0 || expModel.getExpType() != this.getExpType()) {
 			return;
 		}
@@ -74,7 +74,7 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 		this.exp = this.exp + recvExp;
 		postReceiveExp(action, expModel, oldExp, recvExp);
 		if (this.upgradeOnMax) {
-			this.upgrade(action);
+			this.doUpgrade(action);
 		}
 	}
 
@@ -111,7 +111,7 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 		UPGRADE_EVENT.notify(this, action, oldLevel, upLevel);
 	}
 
-	protected abstract int upgrade(Action action);
+	protected abstract int doUpgrade(Action action);
 
 	protected BaseExpUpdater<I, EM> setExp(long exp) {
 		this.exp = exp;

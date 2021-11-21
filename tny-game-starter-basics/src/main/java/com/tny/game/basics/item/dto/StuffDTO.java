@@ -18,7 +18,7 @@ public class StuffDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("条件相关的itemID")
+	@VarDoc("条件相关的itemId")
 	@ProtoExField(1)
 	@JsonProperty
 	private int itemId;
@@ -70,9 +70,9 @@ public class StuffDTO implements Serializable {
 		return dto;
 	}
 
-	public static StuffDTO attr2DTO(int itemID, long number) {
+	public static StuffDTO attr2DTO(int itemId, long number) {
 		StuffDTO dto = new StuffDTO();
-		dto.itemId = itemID;
+		dto.itemId = itemId;
 		dto.number = number;
 		return dto;
 	}

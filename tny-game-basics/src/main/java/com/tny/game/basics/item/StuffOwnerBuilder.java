@@ -64,7 +64,7 @@ public abstract class StuffOwnerBuilder<IM extends ItemModel, S extends Stuff<?>
 	 * @return Storage对象
 	 */
 	public O build() {
-		Owner<IM, ?, S> entity = createItemStorage();
+		AbstractStuffOwner<IM, ?, S> entity = createItemStorage();
 		entity.setPlayerId(this.playerId);
 		for (S item : this.itemSet) {
 			entity.itemMap.put(item.getId(), item);
@@ -77,6 +77,6 @@ public abstract class StuffOwnerBuilder<IM extends ItemModel, S extends Stuff<?>
 	 *
 	 * @return
 	 */
-	protected abstract Owner<IM, ?, S> createItemStorage();
+	protected abstract AbstractStuffOwner<IM, ?, S> createItemStorage();
 
 }

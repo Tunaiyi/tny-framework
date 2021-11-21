@@ -15,13 +15,13 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2020/11/4 4:24 下午
  */
-public class DefaultEntityOnLoadService implements EntityOnLoadService, AppPrepareStart {
+public class DefaultEntityLoadedService implements EntityLoadedService, AppPrepareStart {
 
 	private final ApplicationContext applicationContext;
 
-	private volatile Map<Class<?>, EntityOnLoad<?>> onLoadMap = ImmutableMap.of();
+	private volatile Map<Class<?>, EntityLoaded<?>> onLoadMap = ImmutableMap.of();
 
-	public DefaultEntityOnLoadService(ApplicationContext applicationContext) {
+	public DefaultEntityLoadedService(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
@@ -35,7 +35,7 @@ public class DefaultEntityOnLoadService implements EntityOnLoadService, AppPrepa
 		if (object == null) {
 			return null;
 		}
-		EntityOnLoad<T> objectOnLoad = as(onLoadMap.get(object.getClass()));
+		EntityLoaded<T> objectOnLoad = as(onLoadMap.get(object.getClass()));
 		if (objectOnLoad == null) {
 			return object;
 		}
@@ -44,8 +44,8 @@ public class DefaultEntityOnLoadService implements EntityOnLoadService, AppPrepa
 
 	@Override
 	public void prepareStart() {
-		Map<Class<?>, EntityOnLoad<?>> onLoadMap = as(
-				SpringBeanUtils.beanMapOfType(applicationContext, EntityOnLoad.class, EntityOnLoad::getLoadClass));
+		Map<Class<?>, EntityLoaded<?>> onLoadMap = as(
+				SpringBeanUtils.beanMapOfType(applicationContext, EntityLoaded.class, EntityLoaded::getLoadClass));
 		this.onLoadMap = ImmutableMap.copyOf(onLoadMap);
 	}
 

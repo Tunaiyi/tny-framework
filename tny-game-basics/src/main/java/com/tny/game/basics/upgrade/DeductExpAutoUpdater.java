@@ -14,7 +14,7 @@ public abstract class DeductExpAutoUpdater<I extends Item<?>, EM extends ExpMode
 	}
 
 	@Override
-	protected int upgrade(Action action) {
+	protected int doUpgrade(Action action) {
 		long maxExp = getMaxExp();
 		int oldLevel = this.level;
 		int alter = 0;

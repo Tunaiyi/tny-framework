@@ -1,6 +1,5 @@
 package com.tny.game.suite.base.capacity;
 
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.basics.item.*;
@@ -13,89 +12,91 @@ import java.util.*;
  */
 public class StoreByCopyCapacitySupplier extends BaseStoreCapacitiable implements StoreCapacitySupplier {
 
-    private long id;
+	private long id;
 
-    private int itemID;
+	private int itemId;
 
-    private long playerId;
+	private long playerId;
 
-    private CapacitySupplierType type;
+	private CapacitySupplierType type;
 
-    private ImmutableMap<Capacity, Number> capacityMap;
+	private ImmutableMap<Capacity, Number> capacityMap;
 
-    private Set<CapacityGroup> groups;
+	private Set<CapacityGroup> groups;
 
-    StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemID, long playerId, Map<Capacity, Number> capacityMap,
-            Set<CapacityGroup> groups, long expireAt) {
-        super(expireAt);
-        this.id = id;
-        this.itemID = itemID;
-        this.playerId = playerId;
-        this.type = type;
-        this.capacityMap = ImmutableMap.copyOf(capacityMap);
-        this.groups = Collections.unmodifiableSet(groups);
-    }
+	StoreByCopyCapacitySupplier(CapacitySupplierType type, long id, int itemId, long playerId, Map<Capacity, Number> capacityMap,
+			Set<CapacityGroup> groups, long expireAt) {
+		super(expireAt);
+		this.id = id;
+		this.itemId = itemId;
+		this.playerId = playerId;
+		this.type = type;
+		this.capacityMap = ImmutableMap.copyOf(capacityMap);
+		this.groups = Collections.unmodifiableSet(groups);
+	}
 
-    @Override
-    public long getId() {
-        return this.id;
-    }
+	@Override
+	public long getId() {
+		return this.id;
+	}
 
-    @Override
-    public int getItemId() {
-        return this.itemID;
-    }
+	@Override
+	public int getItemId() {
+		return this.itemId;
+	}
 
-    @Override
-    public long getPlayerId() {
-        return this.playerId;
-    }
+	@Override
+	public long getPlayerId() {
+		return this.playerId;
+	}
 
-    @Override
-    public CapacitySupplierType getSupplierType() {
-        return this.type;
-    }
+	@Override
+	public CapacitySupplierType getSupplierType() {
+		return this.type;
+	}
 
-    @Override
-    public boolean isHasValue(Capacity capacity) {
-        if (!this.isSupplying())
+	@Override
+	public boolean isHasValue(Capacity capacity) {
+        if (!this.isSupplying()) {
             return false;
-        return getAllValues().containsKey(capacity);
-    }
+        }
+		return getAllValues().containsKey(capacity);
+	}
 
-    @Override
-    public Number getValue(Capacity capacity, Number defaultValue) {
-        if (!this.isSupplying())
+	@Override
+	public Number getValue(Capacity capacity, Number defaultValue) {
+        if (!this.isSupplying()) {
             return defaultValue;
-        Number number = getAllValues().get(capacity);
-        return number == null ? defaultValue : number;
-    }
+        }
+		Number number = getAllValues().get(capacity);
+		return number == null ? defaultValue : number;
+	}
 
-    @Override
-    public Set<CapacityGroup> getAllCapacityGroups() {
-        return this.groups;
-    }
+	@Override
+	public Set<CapacityGroup> getAllCapacityGroups() {
+		return this.groups;
+	}
 
-    @Override
-    public Number getValue(Capacity capacity) {
-        return getValue(capacity, null);
-    }
+	@Override
+	public Number getValue(Capacity capacity) {
+		return getValue(capacity, null);
+	}
 
-
-    @Override
-    public Map<Capacity, Number> getAllValues() {
-        if (!this.isSupplying())
+	@Override
+	public Map<Capacity, Number> getAllValues() {
+        if (!this.isSupplying()) {
             return ImmutableMap.of();
-        return this.capacityMap;
-    }
+        }
+		return this.capacityMap;
+	}
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("id", this.id)
-                          .add("itemId", this.itemID)
-                          .add("name", ItemModels.name(this.itemID))
-                          .toString();
-    }
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("id", this.id)
+				.add("itemId", this.itemId)
+				.add("name", ItemModels.name(this.itemId))
+				.toString();
+	}
 
 }

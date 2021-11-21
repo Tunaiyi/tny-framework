@@ -8,6 +8,43 @@ import java.util.*;
 public interface StorageAccessor<K extends Comparable<?>, O> {
 
 	/**
+	 * 按索引字段查找
+	 *
+	 * @param findValue   索引调节
+	 * @param returnClass 返回类型
+	 * @return 返回查找信息
+	 */
+	<T> List<T> find(Map<String, Object> findValue, Class<T> returnClass);
+
+	/**
+	 * 查找所有
+	 *
+	 * @param returnClass 返回类型
+	 * @return 返回查找信息
+	 */
+	<T> List<T> findAll(Class<T> returnClass);
+
+	/**
+	 * 按索引字段查找实体类
+	 *
+	 * @param findValue 索引调节
+	 * @return 返回查找信息
+	 */
+	List<O> find(Map<String, Object> findValue);
+
+	/**
+	 * 查找所有实体类
+	 *
+	 * @return 返回查找信息
+	 */
+	List<O> findAll();
+
+	/**
+	 * @return 数据源
+	 */
+	String getDataSource();
+
+	/**
 	 * 获取指定key的对象
 	 *
 	 * @param key 指定 key

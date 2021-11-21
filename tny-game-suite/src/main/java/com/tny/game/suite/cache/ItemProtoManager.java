@@ -17,93 +17,94 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({PROTOBUF_MAPPER})
 public class ItemProtoManager {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ItemProtoManager.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(ItemProtoManager.class);
 
-    @Resource
-    private ItemFindDAO findDAO;
+	@Resource
+	private ItemFindDAO findDAO;
 
-    public UidRange getUidRange(String table) {
-        return this.findDAO.getUidRange(table);
-    }
+	public UidRange getUidRange(String table) {
+		return this.findDAO.getUidRange(table);
+	}
 
-    public List<Message> findAll(String table) {
-        List<DBCacheItem> dbItems = this.findDAO.findAll(table);
-        return parser(table, dbItems);
-    }
+	public List<Message> findAll(String table) {
+		List<DBCacheItem> dbItems = this.findDAO.findAll(table);
+		return parser(table, dbItems);
+	}
 
-    public List<Message> findByItemId(String table, Integer... itemIds) {
-        List<DBCacheItem> dbItems;
-        switch (itemIds.length) {
-            case 0:
-                dbItems = this.findDAO.findAll(table);
-                break;
-            case 1:
-                dbItems = this.findDAO.findByItemId(table, itemIds[0]);
-                break;
-            default:
-                dbItems = this.findDAO.findByItemId(table, Arrays.asList(itemIds));
-                break;
-        }
-        return parser(table, dbItems);
-    }
+	public List<Message> findByItemId(String table, Integer... itemIds) {
+		List<DBCacheItem> dbItems;
+		switch (itemIds.length) {
+			case 0:
+				dbItems = this.findDAO.findAll(table);
+				break;
+			case 1:
+				dbItems = this.findDAO.findByItemId(table, itemIds[0]);
+				break;
+			default:
+				dbItems = this.findDAO.findByItemId(table, Arrays.asList(itemIds));
+				break;
+		}
+		return parser(table, dbItems);
+	}
 
-    public List<Message> findByUid(String table, long uid, Integer... itemIDs) {
-        List<DBCacheItem> dbItems;
-        switch (itemIDs.length) {
-            case 0:
-                dbItems = this.findDAO.findByUid(table, uid);
-                break;
-            case 1:
-                dbItems = this.findDAO.findByUid(table, uid, itemIDs[0]);
-                break;
-            default:
-                dbItems = this.findDAO.findByUid(table, uid, Arrays.asList(itemIDs));
-                break;
-        }
-        return parser(table, dbItems);
-    }
+	public List<Message> findByUid(String table, long uid, Integer... itemIds) {
+		List<DBCacheItem> dbItems;
+		switch (itemIds.length) {
+			case 0:
+				dbItems = this.findDAO.findByUid(table, uid);
+				break;
+			case 1:
+				dbItems = this.findDAO.findByUid(table, uid, itemIds[0]);
+				break;
+			default:
+				dbItems = this.findDAO.findByUid(table, uid, Arrays.asList(itemIds));
+				break;
+		}
+		return parser(table, dbItems);
+	}
 
-    public List<Message> findByUids(String table, List<Long> uids, Integer... itemIDs) {
-        List<DBCacheItem> dbItems;
-        switch (itemIDs.length) {
-            case 0:
-                dbItems = this.findDAO.findByUids(table, uids);
-                break;
-            case 1:
-                dbItems = this.findDAO.findByUids(table, uids, itemIDs[0]);
-                break;
-            default:
-                dbItems = this.findDAO.findByUids(table, uids, Arrays.asList(itemIDs));
-                break;
-        }
-        return parser(table, dbItems);
-    }
+	public List<Message> findByUids(String table, List<Long> uids, Integer... itemIds) {
+		List<DBCacheItem> dbItems;
+		switch (itemIds.length) {
+			case 0:
+				dbItems = this.findDAO.findByUids(table, uids);
+				break;
+			case 1:
+				dbItems = this.findDAO.findByUids(table, uids, itemIds[0]);
+				break;
+			default:
+				dbItems = this.findDAO.findByUids(table, uids, Arrays.asList(itemIds));
+				break;
+		}
+		return parser(table, dbItems);
+	}
 
-    public List<Message> findByUidRange(String table, long startUID, long endUID, Integer... itemIDs) {
-        List<DBCacheItem> dbItems;
-        switch (itemIDs.length) {
-            case 0:
-                dbItems = this.findDAO.findByUidRange(table, startUID, endUID);
-                break;
-            case 1:
-                dbItems = this.findDAO.findByUidRange(table, startUID, endUID, itemIDs[0]);
-                break;
-            default:
-                dbItems = this.findDAO.findByUidRange(table, startUID, endUID, Arrays.asList(itemIDs));
-                break;
-        }
-        return parser(table, dbItems);
-    }
+	public List<Message> findByUidRange(String table, long startUID, long endUID, Integer... itemIds) {
+		List<DBCacheItem> dbItems;
+		switch (itemIds.length) {
+			case 0:
+				dbItems = this.findDAO.findByUidRange(table, startUID, endUID);
+				break;
+			case 1:
+				dbItems = this.findDAO.findByUidRange(table, startUID, endUID, itemIds[0]);
+				break;
+			default:
+				dbItems = this.findDAO.findByUidRange(table, startUID, endUID, Arrays.asList(itemIds));
+				break;
+		}
+		return parser(table, dbItems);
+	}
 
-    private List<Message> parser(String table, List<DBCacheItem> dbItems) {
-        if (dbItems == null || dbItems.isEmpty())
-            return ImmutableList.of();
-        Optional<ProtobufTableMapper> mapperOpt = ProtobufTableMapper.mapper(table);
-        mapperOpt.orElseThrow(() -> new NullPointerException(table + "ProtobufTableMapper is null"));
-        ProtobufTableMapper mapper = mapperOpt.get();
-        return dbItems.stream()
-                      .map(item -> mapper.parser(item.getData()))
-                      .collect(Collectors.toList());
-    }
+	private List<Message> parser(String table, List<DBCacheItem> dbItems) {
+		if (dbItems == null || dbItems.isEmpty()) {
+			return ImmutableList.of();
+		}
+		Optional<ProtobufTableMapper> mapperOpt = ProtobufTableMapper.mapper(table);
+		mapperOpt.orElseThrow(() -> new NullPointerException(table + "ProtobufTableMapper is null"));
+		ProtobufTableMapper mapper = mapperOpt.get();
+		return dbItems.stream()
+				.map(item -> mapper.parser(item.getData()))
+				.collect(Collectors.toList());
+	}
 
 }

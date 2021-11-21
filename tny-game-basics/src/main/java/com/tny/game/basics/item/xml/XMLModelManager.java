@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.mapper.*;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.behavior.plan.*;
+import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.log.*;
 import com.tny.game.basics.module.*;
 import com.tny.game.common.collection.empty.*;
@@ -23,17 +24,19 @@ import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 /**
  * xml映射事物模型管理器
  *
  * @param <M>
  * @author KGTny
  */
-public abstract class AbstractXMLModelManager<M extends Model> extends AbstractModelManager<M> implements SingleValueConverter {
+public abstract class XMLModelManager<M extends Model> extends BaseModelManager<M> implements SingleValueConverter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogName.ITEM_MANAGER);
 
-	private static final List<String> ALIAS_CHECKED_LIST = new ArrayList<>();
+	private static final Set<String> ALIAS_CHECKED_LIST = new HashSet<>();
 
 	/**
 	 * 模型的实现类类型
@@ -64,7 +67,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 			FeatureOpenMode.class
 	};
 
-	protected AbstractXMLModelManager(
+	protected XMLModelManager(
 			Class<? extends M> modelClass,
 			String... paths) {
 		super();
@@ -77,7 +80,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 		}
 	}
 
-	protected AbstractXMLModelManager(
+	protected XMLModelManager(
 			Class<? extends M> modelClass,
 			Class<? extends Enum<?>>[] enumClasses,
 			String... paths) {
@@ -85,7 +88,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 		this.enumClassSet.addAll(Arrays.asList(enumClasses));
 	}
 
-	protected AbstractXMLModelManager(
+	protected XMLModelManager(
 			Class<? extends M> modelClass,
 			Class<? extends Enum<? extends Behavior>> behaviorClass,
 			Class<? extends Enum<? extends DemandType>> demandTypeClass,
@@ -182,11 +185,11 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 		xStream.alias("item", this.modelClass);
 
 		xStream.alias("alias", String.class);
-		xStream.alias("demand", XMLDemand.class);
+		xStream.alias("demand", BaseDemand.class);
 
-		xStream.alias("behaviorPlan", XMLBehaviorPlan.class);
+		xStream.alias("behaviorPlan", BaseBehaviorPlan.class);
 
-		xStream.alias("actionPlan", XMLActionPlan.class);
+		xStream.alias("actionPlan", BaseActionPlan.class);
 		xStream.alias("action", Action.class);
 
 		xStream.alias("actionOption", Entry.class);
@@ -194,12 +197,12 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 		xStream.alias("formula", ExprHolder.class);
 
 		xStream.alias("costPlan", AbstractCostPlan.class, SimpleCostPlan.class);
-		xStream.alias("cost", XMLDemand.class);
+		xStream.alias("cost", BaseDemand.class);
 
 		xStream.alias("awardPlan", AbstractAwardPlan.class, SimpleAwardPlan.class);
 		xStream.alias("awardGroupSet", TreeSet.class);
 		xStream.alias("awardGroup", SimpleAwardGroup.class);
-		xStream.alias("award", XMLAward.class);
+		xStream.alias("award", BaseAward.class);
 
 		xStream.alias("paramEntry", Entry.class);
 		xStream.alias("tradeParam", Entry.class);
@@ -250,11 +253,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
 		ItemModelContext context = context();
 		for (M model : list) {
-			if (model instanceof XMLItemModel) {
-				((XMLItemModel)model).init(context);
-			} else if (model instanceof XMLModel) {
-				((XMLModel)model).init();
-			}
+			this.initModel(context, model);
 			WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
 			if (wrapperModel == null) {
 				wrapperModel = WrapperProxyFactory.createWrapper(model);
@@ -262,8 +261,9 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 				handlerMap.put(model.getId(), wrapperModel);
 				modelMap.put(proxyModel.getId(), proxyModel);
 				if (proxyModel.getAlias() != null) {
-					if (modelAliasMap.put(proxyModel.getAlias(), proxyModel) != null) {
-						ALIAS_CHECKED_LIST.add(proxyModel.getAlias());
+					M old = modelAliasMap.putIfAbsent(proxyModel.getAlias(), proxyModel);
+					if (old != null) {
+						throw new IllegalArgumentException(format("{} {} 与 {} 相同的别名", this.modelClass, model.getId(), old.getId()));
 					}
 				}
 			} else {
@@ -320,7 +320,6 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
 	public boolean canConvert(Class type) {
 		return this.modelClass.isAssignableFrom(type);
 	}
@@ -333,7 +332,7 @@ public abstract class AbstractXMLModelManager<M extends Model> extends AbstractM
 
 		@Override
 		protected void doLoad(InputStream inputStream, boolean reload) throws IOException, InstantiationException, IllegalAccessException {
-			AbstractXMLModelManager.this.loadAndInitModel(this.getPath(), inputStream, reload);
+			XMLModelManager.this.loadAndInitModel(this.getPath(), inputStream, reload);
 		}
 
 	}

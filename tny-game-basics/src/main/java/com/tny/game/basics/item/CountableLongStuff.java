@@ -18,22 +18,22 @@ public abstract class CountableLongStuff<SM extends StuffModel<Long>> extends Ba
 	}
 
 	@Override
-	protected void consume(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
-		long alter = this.getConsumeAlterType(tradeItem).consume(this, tradeItem.getNumber()).longValue();
+	protected void deduct(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+		long alter = this.getDeductAlterType(tradeItem).deduct(this, tradeItem.getNumber()).longValue();
 		if (alter > 0) {
 			long oldNumber = this.getNumber();
 			this.number -= alter;
-			this.postConsume(alter, oldNumber, this.number, action, attributes);
+			this.postDeduct(alter, oldNumber, this.number, action, attributes);
 		}
 	}
 
 	@Override
-	protected void receive(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
-		long alter = this.getReceiveAlterType(tradeItem).receive(this, tradeItem.getNumber()).longValue();
+	protected void reward(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
+		long alter = this.getRewardAlterType(tradeItem).reward(this, tradeItem.getNumber()).longValue();
 		if (alter > 0) {
 			long oldNumber = this.getNumber();
 			this.number += alter;
-			this.postReceive(alter, oldNumber, this.number, action, attributes);
+			this.postReward(alter, oldNumber, this.number, action, attributes);
 		}
 	}
 

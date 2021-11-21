@@ -13,7 +13,7 @@ import org.bson.Document;
  */
 public class GameJsonEntityObjectConverter extends JsonEntityObjectConverter {
 
-	public GameJsonEntityObjectConverter(EntityOnLoadService objectOnLoadService, ObjectMapper objectMapper) {
+	public GameJsonEntityObjectConverter(EntityLoadedService objectOnLoadService, ObjectMapper objectMapper) {
 		super(objectOnLoadService, objectMapper);
 	}
 

@@ -6,7 +6,7 @@ package com.tny.game.data.mongodb;
  * @author : kgtny
  * @date : 2020/11/4 4:22 下午
  */
-public interface EntityOnLoad<T> {
+public interface EntityLoaded<T> {
 
 	Class<T> getLoadClass();
 

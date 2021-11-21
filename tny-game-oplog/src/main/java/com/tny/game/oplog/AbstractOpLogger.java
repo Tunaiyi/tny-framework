@@ -54,14 +54,14 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logReceive(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
+	public OpLogger logReceive(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum) {
 		try {
 			action = this.transAction(action);
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.logReceive(id, itemID, action, oldNum, alter, newNum);
+			log.logReceive(id, itemId, action, oldNum, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | logReceive exception", playerId, action, e);
 		}
@@ -85,13 +85,13 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger settleReceive(long playerId, int itemID, long alter, long newNum) {
+	public OpLogger settleReceive(long playerId, int itemId, long alter, long newNum) {
 		try {
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.settleReceive(itemID, alter, newNum);
+			log.settleReceive(itemId, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | settleReceive exception", playerId, e);
 		}
@@ -115,14 +115,14 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logConsume(long playerId, long id, int itemID, Action action, long oldNum, long alter, long newNum) {
+	public OpLogger logConsume(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum) {
 		try {
 			action = this.transAction(action);
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.logConsume(id, itemID, action, oldNum, alter, newNum);
+			log.logConsume(id, itemId, action, oldNum, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | logConsume exception", playerId, action, e);
 		}
@@ -146,13 +146,13 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger settleConsume(long playerId, int itemID, long alter, long newNum) {
+	public OpLogger settleConsume(long playerId, int itemId, long alter, long newNum) {
 		try {
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.settleConsume(itemID, alter, newNum);
+			log.settleConsume(itemId, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | settleReceive exception", playerId, e);
 		}

@@ -9,7 +9,7 @@ import com.tny.game.data.cache.*;
  * @author : kgtny
  * @date : 2021/10/12 2:59 下午
  */
-public class AnyEntityIdConverter implements EntityIdConverter<AnyUnid, Any, String> {
+public class AnyEntityIdConverter implements EntityIdConverter<AnyId, Any, String> {
 
 	private final String head;
 
@@ -22,13 +22,13 @@ public class AnyEntityIdConverter implements EntityIdConverter<AnyUnid, Any, Str
 	}
 
 	@Override
-	public String keyToId(AnyUnid key) {
+	public String keyToId(AnyId key) {
 		return head + key.toUuid();
 	}
 
 	@Override
 	public String entityToId(Any object) {
-		return head + AnyUnid.formatUuid(object);
+		return head + AnyId.formatId(object);
 	}
 
 }

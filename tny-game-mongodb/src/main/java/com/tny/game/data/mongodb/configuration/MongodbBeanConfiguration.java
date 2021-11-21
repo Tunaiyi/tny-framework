@@ -47,14 +47,14 @@ public class MongodbBeanConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(EntityOnLoadService.class)
-	public EntityOnLoadService entityOnLoadService(ApplicationContext applicationContext) {
-		return new DefaultEntityOnLoadService(applicationContext);
+	@ConditionalOnMissingBean(EntityLoadedService.class)
+	public EntityLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
+		return new DefaultEntityLoadedService(applicationContext);
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(value = EntityConverter.class)
-	public EntityConverter jsonEntityConverter(EntityOnLoadService entityOnLoadService,
+	public EntityConverter jsonEntityConverter(EntityLoadedService entityOnLoadService,
 			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())

@@ -1,7 +1,8 @@
-package com.tny.game.basics.item.xml;
+package com.tny.game.basics.item.model;
 
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.xml.*;
 import com.tny.game.common.collection.map.*;
 import com.tny.game.common.result.*;
 import com.tny.game.expr.*;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class XMLDemandTest {
+class BaseDemandTest {
 
 	/**
 	 * 消耗物品在公式中的名字
@@ -45,7 +46,7 @@ class XMLDemandTest {
 	class TestDemandItemModel extends AbstractItemModel {
 
 		{
-			this.alias = XMLDemandTest.this.itemAlias;
+			this.alias = BaseDemandTest.this.itemAlias;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -72,8 +73,7 @@ class XMLDemandTest {
 		}
 
 		@Override
-		protected void init(ItemModelContext context) {
-			super.init(context);
+		protected void onItemInit(ItemModelContext context) {
 		}
 
 	}
@@ -94,9 +94,9 @@ class XMLDemandTest {
 
 	private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
-	private XMLDemand stuffDemand = new XMLDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
+	private BaseDemand stuffDemand = new BaseDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
 
-	private XMLDemand demand = new XMLDemand("pl$player", null, this.demandType,
+	private BaseDemand demand = new BaseDemand("pl$player", null, this.demandType,
 			"pl$player != null ? pl$player.level : 0",
 			"10",
 			"pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE, exprHolderFactory);
@@ -122,7 +122,7 @@ class XMLDemandTest {
 	@Test
 	void testGetDemandType() {
 		assertEquals(this.demandType, this.demand.getDemandType());
-		assertEquals(XMLDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
+		assertEquals(BaseDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
 	}
 
 	private MapRef<String, Object> ref = new MapRef<String, Object>() {

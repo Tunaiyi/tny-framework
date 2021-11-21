@@ -9,19 +9,19 @@ import com.tny.game.data.mongodb.*;
  * @author : kgtny
  * @date : 2021/9/29 4:59 下午
  */
-public class MongoTemplateStorageAccessorFactorySetting {
+public class MongoStorageAccessorFactorySetting {
 
-	private String dataSource = "";
+	private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
 
 	private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonEntityObjectConverter.class);
 
-	private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
+	private String dataSource = "";
 
 	public String getIdConverterFactory() {
 		return idConverterFactory;
 	}
 
-	public MongoTemplateStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
+	public MongoStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
 		this.idConverterFactory = idConverterFactory;
 		return this;
 	}
@@ -30,7 +30,7 @@ public class MongoTemplateStorageAccessorFactorySetting {
 		return entityObjectConverter;
 	}
 
-	public MongoTemplateStorageAccessorFactorySetting setEntityObjectConverter(String entityObjectConverter) {
+	public MongoStorageAccessorFactorySetting setEntityObjectConverter(String entityObjectConverter) {
 		this.entityObjectConverter = entityObjectConverter;
 		return this;
 	}
@@ -39,7 +39,7 @@ public class MongoTemplateStorageAccessorFactorySetting {
 		return dataSource;
 	}
 
-	public MongoTemplateStorageAccessorFactorySetting setDataSource(String dataSource) {
+	public MongoStorageAccessorFactorySetting setDataSource(String dataSource) {
 		this.dataSource = dataSource;
 		return this;
 	}

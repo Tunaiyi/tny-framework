@@ -27,8 +27,8 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 	}
 
 	@Override
-	public <IM extends Model> IM getModel(int itemID) {
-		return (IM)this.idModel.get(itemID);
+	public <IM extends Model> IM getModel(int itemId) {
+		return (IM)this.idModel.get(itemId);
 	}
 
 	@Override

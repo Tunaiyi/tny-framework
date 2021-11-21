@@ -2,6 +2,7 @@ package com.tny.game.data.configuration.manager;
 
 import com.tny.game.boot.registrar.*;
 import com.tny.game.boot.utils.*;
+import com.tny.game.common.reflect.*;
 import com.tny.game.common.type.*;
 import com.tny.game.data.*;
 import com.tny.game.data.cache.*;
@@ -59,9 +60,17 @@ public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigura
 			}
 			EntityCacheManager<?, ?> entityCacheManager = entityCacheManagerFactory.createCache(keyClass, scheme.getEntityClass());
 
+			//			entityCacheManager.getClass()
+
+			System.out.println(entityCacheManager.getClass());
+			for (Class<?> c : ReflectAide.getComponentType(entityCacheManager.getClass(), EntityCacheManager.class)) {
+				System.out.println("T " + c);
+			}
+
+			Class<EntityCacheManager<?, ?>> managerClass = as(entityCacheManager.getClass());
 			String managerBeanName = BeanNameUtils.lowerCamelName(objectClass.getSimpleName() + EntityCacheManager.class.getSimpleName());
 			registry.registerBeanDefinition(managerBeanName, BeanDefinitionBuilder
-					.genericBeanDefinition(EntityCacheManager.class, () -> entityCacheManager)
+					.genericBeanDefinition(managerClass, () -> entityCacheManager)
 					.addPropertyValue("cache", objectCache)
 					.addPropertyValue("keyMaker", keyMaker)
 					.addPropertyValue("storage", objectStorage)

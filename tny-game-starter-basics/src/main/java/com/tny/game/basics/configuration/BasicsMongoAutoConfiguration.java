@@ -38,14 +38,14 @@ public class BasicsMongoAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(EntityOnLoadService.class)
-	EntityOnLoadService defaultEntityOnLoadService(ApplicationContext applicationContext) {
-		return new DefaultEntityOnLoadService(applicationContext);
+	@ConditionalOnMissingBean(EntityLoadedService.class)
+	EntityLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
+		return new DefaultEntityLoadedService(applicationContext);
 	}
 
 	@Bean
 	GameJsonEntityObjectConverter gameJsonEntityObjectConverter(
-			EntityOnLoadService entityOnLoadService,
+			EntityLoadedService entityOnLoadService,
 			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())

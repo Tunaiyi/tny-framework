@@ -18,7 +18,7 @@ public class AwardDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("条件相关的itemID")
+	@VarDoc("条件相关的itemId")
 	@ProtoExField(1)
 	@JsonProperty
 	private int itemId;
@@ -83,13 +83,13 @@ public class AwardDTO implements Serializable {
 		return dto;
 	}
 
-	public static AwardDTO attr2DTO(int itemID, ItemType type, int number) {
-		return attr2DTO(itemID, type, number, true);
+	public static AwardDTO attr2DTO(int itemId, ItemType type, int number) {
+		return attr2DTO(itemId, type, number, true);
 	}
 
-	public static AwardDTO attr2DTO(int itemID, ItemType type, int number, boolean valid) {
+	public static AwardDTO attr2DTO(int itemId, ItemType type, int number, boolean valid) {
 		AwardDTO dto = new AwardDTO();
-		dto.itemId = itemID;
+		dto.itemId = itemId;
 		dto.number = number;
 		dto.valid = valid;
 		return dto;

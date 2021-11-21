@@ -9,7 +9,7 @@ import java.util.*;
  * @param <SO>
  * @author KGTny
  */
-public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> {
+public abstract class GameSaveByOtherManager<O, SO> extends GameManager<O> {
 
 	protected GameSaveByOtherManager(Class<? extends O> entityClass) {
 		super(entityClass);

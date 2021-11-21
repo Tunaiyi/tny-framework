@@ -11,9 +11,20 @@ import com.tny.game.data.cache.*;
  */
 public class RedissonStorageAccessorFactorySetting {
 
+	private String dataSource;
+
 	private String tableHead;
 
 	private String idConverterFactory = BeanNameUtils.lowerCamelName(EntityKeyMakerIdConverterFactory.class);
+
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public RedissonStorageAccessorFactorySetting setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+		return this;
+	}
 
 	public String getTableHead() {
 		return tableHead;

@@ -24,7 +24,7 @@ public class DynamicEntityCacheManagerFactory {
 	private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
 
 	public <K extends Comparable<?>, O, R extends EntityCacheManager<K, O>> R createCache(Class<K> keyClass, Class<O> objectClass) {
-		Class<?> managerClass = DynamicEntityCacheMananger.class;
+		Class<?> managerClass = EntityCacheManager.class;
 		// 检测是否存在 redisClass
 		if (!CLASSES.contains(managerClass)) {
 			synchronized (CLASSES) {
@@ -53,7 +53,7 @@ public class DynamicEntityCacheManagerFactory {
 				ClassType objectClassType = new ClassType(objectClass.getName());
 				TypeArgument objectClassTypeArgument = new TypeArgument(objectClassType);
 				ClassType superClassType = new ClassType(managerClass.getName(), new TypeArgument[]{keyClassTypeArgument, objectClassTypeArgument});
-				ClassSignature signature = new ClassSignature(null, null, new ClassType[]{superClassType});
+				ClassSignature signature = new ClassSignature(null, superClassType, new ClassType[]{});
 				ctClass.setGenericSignature(signature.encode());
 
 				CtConstructor ctConstructor = new CtConstructor(new CtClass[]{}, ctClass);

@@ -17,11 +17,11 @@ public class JsonEntityObjectConverter extends JsonEntityConverter implements En
 		super(objectMapper);
 	}
 
-	public JsonEntityObjectConverter(EntityOnLoadService objectOnLoadService) {
+	public JsonEntityObjectConverter(EntityLoadedService objectOnLoadService) {
 		super(objectOnLoadService);
 	}
 
-	public JsonEntityObjectConverter(EntityOnLoadService objectOnLoadService, ObjectMapper objectMapper) {
+	public JsonEntityObjectConverter(EntityLoadedService objectOnLoadService, ObjectMapper objectMapper) {
 		super(objectOnLoadService, objectMapper);
 	}
 

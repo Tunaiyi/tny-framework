@@ -5,14 +5,16 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.data.*;
-import com.tny.game.data.accessor.*;
 import com.tny.game.data.mongodb.utils.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bson.Document;
 import org.slf4j.*;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import static com.tny.game.data.mongodb.utils.QueryUtils.*;
 
@@ -22,13 +24,13 @@ import static com.tny.game.data.mongodb.utils.QueryUtils.*;
  * @author : kgtny
  * @date : 2021/10/11 3:07 下午
  */
-public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements StorageAccessor<K, O> {
+public class MongoClientStorageAccessor<K extends Comparable<?>, O> extends MongoStorageAccessor<K, O> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MongoClientStorageAccessor.class);
 
 	private final MongoDatabase database;
 
-	private final Class<O> entityClass;
+	private final MongoTemplate mongoTemplate;
 
 	private final EntityObjectConverter entityObjectConverter;
 
@@ -36,17 +38,72 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> implements S
 
 	private final ThreadLocal<List<WriteModel<? extends Document>>> bulkOperations;
 
+	private String collectionName;
+
 	public MongoClientStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityObjectConverter entityObjectConverter,
-			MongoDatabase database) {
-		this.entityClass = entityClass;
+			MongoTemplate mongoTemplate, String dataSource) {
+		super(entityClass, dataSource);
 		this.idConvertor = idConverter;
 		this.entityObjectConverter = entityObjectConverter;
-		this.database = database;
+		this.mongoTemplate = mongoTemplate;
+		MongoDatabaseFactory factory = mongoTemplate.getMongoDatabaseFactory();
+		this.database = factory.getMongoDatabase();
 		this.bulkOperations = ThreadLocal.withInitial(LinkedList::new);
 	}
 
-	private MongoCollection<Document> collection() {
+	private String collectionName() {
+		if (collectionName != null) {
+			return collectionName;
+		}
+		return collectionName = mongoTemplate.getCollectionName(entityClass);
+	}
+
+	protected MongoCollection<Document> collection() {
 		return database.getCollection(entityClass.getSimpleName());
+
+	}
+
+	@Override
+	public <T> List<T> find(Map<String, Object> findValue, Class<T> returnClass) {
+		MongoCollection<Document> collection = collection();
+		Criteria criteria = null;
+		for (Entry<String, Object> entry : findValue.entrySet()) {
+			if (criteria == null) {
+				criteria = Criteria.where(entry.getKey()).is(entry.getValue());
+			} else {
+				criteria.and(entry.getKey()).is(entry.getValue());
+			}
+		}
+		if (criteria == null) {
+			return findAll(returnClass);
+		}
+		List<T> objects = new ArrayList<>();
+		FindIterable<Document> documents = collection.find(Query.query(criteria).getQueryObject());
+		for (Document document : documents) {
+			objects.add(entityObjectConverter.convertToRead(document, returnClass));
+		}
+		return objects;
+	}
+
+	@Override
+	public <T> List<T> findAll(Class<T> returnClass) {
+		MongoCollection<Document> collection = collection();
+		FindIterable<Document> documents = collection.find();
+		List<T> objects = new ArrayList<>();
+		for (Document document : documents) {
+			objects.add(entityObjectConverter.convertToRead(document, returnClass));
+		}
+		return objects;
+	}
+
+	@Override
+	public List<O> find(Map<String, Object> findValue) {
+		return find(findValue, this.entityClass);
+	}
+
+	@Override
+	public List<O> findAll() {
+		return findAll(this.entityClass);
 	}
 
 	@Override

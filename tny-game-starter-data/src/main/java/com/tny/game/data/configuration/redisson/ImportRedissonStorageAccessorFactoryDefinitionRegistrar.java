@@ -9,6 +9,8 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
 
+import static com.tny.game.boot.utils.BeanNameUtils.*;
+
 /**
  * <p>
  *
@@ -20,7 +22,7 @@ public class ImportRedissonStorageAccessorFactoryDefinitionRegistrar extends Imp
 
 	private void registerRedissonStorageAccessorFactory(
 			BeanDefinitionRegistry registry, RedissonStorageAccessorFactorySetting setting, String beanName) {
-		RedissonStorageAccessorFactory factory = new RedissonStorageAccessorFactory(setting.getTableHead());
+		RedissonStorageAccessorFactory factory = new RedissonStorageAccessorFactory(setting.getDataSource(), setting.getTableHead());
 		registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
 				.genericBeanDefinition(RedissonStorageAccessorFactory.class, () -> factory)
 				.addPropertyReference("entityIdConverterFactory", setting.getIdConverterFactory())
@@ -37,7 +39,10 @@ public class ImportRedissonStorageAccessorFactoryDefinitionRegistrar extends Imp
 		if (defaultSetting != null) {
 			registerRedissonStorageAccessorFactory(registry, defaultSetting, RedissonStorageAccessorFactory.ACCESSOR_NAME);
 		}
-		properties.getAccessors().forEach((name, setting) -> registerRedissonStorageAccessorFactory(registry, setting, name));
+		properties.getAccessors().forEach((name, setting) -> {
+			setting.setDataSource(name);
+			registerRedissonStorageAccessorFactory(registry, setting, nameOf(name, RedissonStorageAccessorFactory.class));
+		});
 	}
 
 }

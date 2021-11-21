@@ -21,10 +21,13 @@ public class RedissonStorageAccessorFactory implements StorageAccessorFactory {
 
 	private String tableHead;
 
+	private String dataSource;
+
 	private EntityIdConverterFactory entityIdConverterFactory;
 
-	public RedissonStorageAccessorFactory(String tableHead) {
+	public RedissonStorageAccessorFactory(String dataSource, String tableHead) {
 		this.tableHead = ifNull(tableHead, "");
+		this.dataSource = dataSource;
 	}
 
 	@Override
@@ -33,11 +36,16 @@ public class RedissonStorageAccessorFactory implements StorageAccessorFactory {
 		TypedRedisson<?> redisson = RedissonFactory.createTypedRedisson(entityClass);
 		String tableKey = StringUtils.isEmpty(tableHead) ? entityClass.getSimpleName() : tableHead + ":" + entityClass.getSimpleName();
 		EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
-		return as(new RedissonStorageAccessor<>(tableKey, idConverter, as(redisson)));
+		return as(new RedissonStorageAccessor<>(dataSource, tableKey, idConverter, as(redisson)));
 	}
 
 	public RedissonStorageAccessorFactory setTableHead(String tableHead) {
 		this.tableHead = tableHead;
+		return this;
+	}
+
+	public RedissonStorageAccessorFactory setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 		return this;
 	}
 

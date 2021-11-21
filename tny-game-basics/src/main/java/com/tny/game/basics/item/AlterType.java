@@ -171,11 +171,11 @@ public enum AlterType {
 
 	public abstract boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum);
 
-	public Number consume(CountableStuff<?, ?> stuff, Number alertNum) {
+	public Number deduct(CountableStuff<?, ?> stuff, Number alertNum) {
 		return this.consume(stuff.getPlayerId(), stuff.getModel(), stuff.getNumber(), alertNum);
 	}
 
-	public Number receive(CountableStuff<?, ?> stuff, Number alertNum) {
+	public Number reward(CountableStuff<?, ?> stuff, Number alertNum) {
 		return this.receive(stuff.getPlayerId(), stuff.getModel(), stuff.getNumberLimit(), stuff.getNumber(), alertNum);
 	}
 

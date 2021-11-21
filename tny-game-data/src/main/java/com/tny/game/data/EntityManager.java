@@ -13,7 +13,17 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	 * @param id      id
 	 * @param creator 实体工厂
 	 */
-	E loadEntity(K id, EntityCreator<K, E> creator);
+	default E loadEntity(K id, EntityCreator<K, E> creator) {
+		return loadEntity(id, creator, null);
+	}
+
+	/**
+	 * 加载, 如果没有则创建并插入
+	 *
+	 * @param id      id
+	 * @param creator 实体工厂
+	 */
+	E loadEntity(K id, EntityCreator<K, E> creator, EntityOnLoad<K, E> load);
 
 	/**
 	 * 获取指定id的实体
@@ -21,7 +31,17 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	 * @param id id
 	 * @return 返回获取实体
 	 */
-	E getEntity(K id);
+	default E getEntity(K id) {
+		return getEntity(id, null);
+	}
+
+	/**
+	 * 获取指定id的实体
+	 *
+	 * @param id id
+	 * @return 返回获取实体
+	 */
+	E getEntity(K id, EntityOnLoad<K, E> onLoad);
 
 	/**
 	 * 批量获取实体
@@ -30,9 +50,19 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	 * @return 返回 key
 	 */
 	default List<E> getEntities(Collection<K> keys) {
+		return getEntities(keys, null);
+	}
+
+	/**
+	 * 批量获取实体
+	 *
+	 * @param keys 指定 key 列表
+	 * @return 返回 key
+	 */
+	default List<E> getEntities(Collection<K> keys, EntityOnLoad<K, E> onLoad) {
 		List<E> entities = new ArrayList<>();
 		for (K key : keys) {
-			E value = getEntity(key);
+			E value = getEntity(key, onLoad);
 			if (value != null) {
 				entities.add(value);
 			}

@@ -1,4 +1,4 @@
-package com.tny.game.basics.item.xml;
+package com.tny.game.basics.item.model;
 
 import com.tny.game.basics.exception.*;
 import com.tny.game.basics.item.behavior.*;
@@ -10,7 +10,7 @@ import com.tny.game.expr.*;
  *
  * @author KGTny
  */
-public class XMLDemand extends AbstractDemand {
+public class BaseDemand extends AbstractDemand {
 
 	public enum TradeDemandType implements DemandType {
 
@@ -53,10 +53,10 @@ public class XMLDemand extends AbstractDemand {
 
 	}
 
-	public XMLDemand() {
+	public BaseDemand() {
 	}
 
-	protected XMLDemand(String itemAlias, String name, DemandType demandType, String current, String expect, String fx,
+	public BaseDemand(String itemAlias, String name, DemandType demandType, String current, String expect, String fx,
 			ExprHolderFactory exprHolderFactory) {
 		this.itemAlias = itemAlias;
 		this.name = name;
@@ -66,7 +66,7 @@ public class XMLDemand extends AbstractDemand {
 		this.fx = exprHolderFactory.create(fx);
 	}
 
-	protected XMLDemand(String itemAlias, String name, String expect, ExprHolderFactory exprHolderFactory) {
+	public BaseDemand(String itemAlias, String name, String expect, ExprHolderFactory exprHolderFactory) {
 		this.itemAlias = itemAlias;
 		this.name = name;
 		this.expect = exprHolderFactory.create(expect);

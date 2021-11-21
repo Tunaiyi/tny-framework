@@ -12,7 +12,7 @@ public class JsonEntityConverter extends AbstractEntityConverter {
 	private final ObjectMapper objectMapper;
 
 	public JsonEntityConverter() {
-		this(new NoopEntityOnLoadService(), ObjectMapperFactory.createMapper());
+		this(new NoopEntityLoadedService(), ObjectMapperFactory.createMapper());
 	}
 
 	public JsonEntityConverter(ObjectMapper objectMapper) {
@@ -20,11 +20,11 @@ public class JsonEntityConverter extends AbstractEntityConverter {
 		this.objectMapper = objectMapper;
 	}
 
-	public JsonEntityConverter(EntityOnLoadService objectOnLoadService) {
+	public JsonEntityConverter(EntityLoadedService objectOnLoadService) {
 		this(objectOnLoadService, ObjectMapperFactory.defaultMapper());
 	}
 
-	public JsonEntityConverter(EntityOnLoadService objectOnLoadService, ObjectMapper objectMapper) {
+	public JsonEntityConverter(EntityLoadedService objectOnLoadService, ObjectMapper objectMapper) {
 		super(objectOnLoadService);
 		this.objectMapper = objectMapper;
 	}

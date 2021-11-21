@@ -4,11 +4,13 @@ import com.google.common.collect.*;
 import com.tny.game.basics.exception.*;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.behavior.simple.*;
+import com.tny.game.basics.item.model.BaseDemand.*;
+import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.item.xml.*;
-import com.tny.game.basics.item.xml.XMLDemand.*;
 import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
+import org.apache.commons.lang3.builder.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -21,7 +23,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  *
  * @author KGTny
  */
-public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
+public abstract class AbstractItemModel extends BaseModel<ItemModelContext> implements ItemModel, ItemsImportKey {
 
 	/**
 	 * 事物模型id
@@ -72,10 +74,6 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 	 * 能治值
 	 */
 	protected volatile ExprHolder demandFormulaHolder;
-
-	protected Set<Object> tags;
-
-	protected boolean init = false;
 
 	@Override
 	public int getId() {
@@ -562,37 +560,6 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 		return abilitySet;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.id;
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		ItemModel other = (ItemModel)obj;
-		if (this.id != other.getId()) {
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	public Expr currentFormula() {
 		if (this.currentFormulaHolder == null) {
@@ -619,7 +586,8 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 		return DEMAND_FORMULA;
 	}
 
-	protected void init(ItemModelContext context) {
+	@Override
+	protected void doInit(ItemModelContext context) {
 		this.context = context;
 		if (this.attrAliasSet == null) {
 			this.attrAliasSet = ImmutableSet.of();
@@ -627,10 +595,6 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 
 		if (this.abilityMap == null) {
 			this.abilityMap = ImmutableMap.of();
-		}
-
-		if (this.tags == null) {
-			this.tags = ImmutableSet.of();
 		}
 
 		this.attrAliasSet = ImmutableSet.copyOf(this.attrAliasSet);
@@ -649,13 +613,32 @@ public abstract class AbstractItemModel implements ItemModel, ItemsImportKey {
 		if (this.behaviorPlanMap == null) {
 			this.behaviorPlanMap = new EmptyImmutableMap<>();
 		}
-		doInit(context);
+		onItemInit(context);
 		this.behaviorPlanMap = ImmutableMap.copyOf(this.behaviorPlanMap);
 		this.actionBehaviorPlanMap = ImmutableMap.copyOf(this.actionBehaviorPlanMap);
-		this.init = true;
 	}
 
-	protected void doInit(ItemModelContext context) {
+	protected void onItemInit(ItemModelContext context) {
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof AbstractItemModel)) {
+			return false;
+		}
+
+		AbstractItemModel that = (AbstractItemModel)o;
+
+		return new EqualsBuilder().append(getId(), that.getId()).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37).append(getId()).toHashCode();
 	}
 
 	/*

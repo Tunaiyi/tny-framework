@@ -13,16 +13,16 @@ public abstract class AbstractEntityConverter implements EntityConverter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityConverter.class);
 
-	private final EntityOnLoadService objectOnLoadService;
+	private final EntityLoadedService objectOnLoadService;
 
 	private static final ProcessWatcher NET_TRACE_ALL_WATCHER = ProcessWatcher
 			.of(EntityConverter.class, TrackPrintOption.CLOSE).schedule(15, TimeUnit.SECONDS);
 
 	public AbstractEntityConverter() {
-		this(new NoopEntityOnLoadService());
+		this(new NoopEntityLoadedService());
 	}
 
-	public AbstractEntityConverter(EntityOnLoadService objectOnLoadService) {
+	public AbstractEntityConverter(EntityLoadedService objectOnLoadService) {
 		this.objectOnLoadService = objectOnLoadService;
 	}
 

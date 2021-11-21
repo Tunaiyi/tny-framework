@@ -22,16 +22,14 @@ import org.springframework.context.annotation.*;
  * @date : 2021/9/17 5:29 下午
  */
 @Configuration
-@ConditionalOnClass(MongoTemplateStorageAccessorFactory.class)
+@ConditionalOnClass(MongoClientStorageAccessorFactory.class)
 @AutoConfigureAfter({MongodbAutoConfiguration.class})
 @AutoConfigureBefore(DataAutoConfiguration.class)
 @Import({
-		ImportMongoClientStorageAccessorFactoryDefinitionRegistrar.class,
-		ImportMongoTemplateStorageAccessorFactoryDefinitionRegistrar.class
+		ImportMongoStorageAccessorFactoryDefinitionRegistrar.class,
 })
 @EnableConfigurationProperties({
-		MongoClientStorageAccessorFactoryProperties.class,
-		MongoTemplateStorageAccessorFactoryProperties.class
+		MongoStorageAccessorFactoryProperties.class,
 })
 @ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
 public class MongoStorageAutoConfiguration {
@@ -45,7 +43,7 @@ public class MongoStorageAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(JsonEntityObjectConverter.class)
 	JsonEntityObjectConverter jsonEntityObjectConverter(
-			EntityOnLoadService entityOnLoadService,
+			EntityLoadedService entityOnLoadService,
 			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())

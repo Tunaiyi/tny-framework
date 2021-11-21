@@ -54,6 +54,11 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	}
 
 	@Override
+	public String getDataSource() {
+		return accessor.getDataSource();
+	}
+
+	@Override
 	public O get(K key) {
 		Lock lock = locker.lock(key);
 		try {
@@ -86,6 +91,26 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	public boolean delete(K key, O object) {
 		operate(key, object, StorageAction.DELETE);
 		return true;
+	}
+
+	@Override
+	public <T> List<T> find(Map<String, Object> findValue, Class<T> returnClass) {
+		return accessor.find(findValue, returnClass);
+	}
+
+	@Override
+	public <T> List<T> findAll(Class<T> returnClass) {
+		return accessor.findAll(returnClass);
+	}
+
+	@Override
+	public List<O> find(Map<String, Object> findValue) {
+		return accessor.find(findValue);
+	}
+
+	@Override
+	public List<O> findAll() {
+		return accessor.findAll();
 	}
 
 	@Override

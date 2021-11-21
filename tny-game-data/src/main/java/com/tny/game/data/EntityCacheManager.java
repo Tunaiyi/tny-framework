@@ -49,12 +49,24 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 		this.locker = locker;
 	}
 
+	public ObjectCache<K, O> getCache() {
+		return cache;
+	}
+
+	public ObjectStorage<K, O> getStorage() {
+		return storage;
+	}
+
+	public String getDataSource() {
+		return storage.getDataSource();
+	}
+
 	private K idOf(O object) {
 		return this.keyMaker.make(object);
 	}
 
 	@Override
-	public O loadEntity(K id, EntityCreator<K, O> creator) {
+	public O loadEntity(K id, EntityCreator<K, O> creator, EntityOnLoad<K, O> onLoad) {
 		Lock lock = this.locker.lock(id);
 		O object;
 		try {
@@ -66,7 +78,13 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 			if (object == null) {
 				object = creator.create(id);
 			}
+			if (object == null) {
+				return null;
+			}
 			this.storage.insert(id, object);
+			if (onLoad != null) {
+				onLoad.onLoad(id, object);
+			}
 			this.cache.put(id, object);
 			return object;
 		} catch (Throwable e) {
@@ -79,7 +97,7 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 	}
 
 	@Override
-	public O getEntity(K id) {
+	public O getEntity(K id, EntityOnLoad<K, O> onLoad) {
 		Lock lock = this.locker.lock(id);
 		O object;
 		try {
@@ -90,6 +108,9 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 			object = this.storage.get(id);
 			if (object == null) {
 				return null;
+			}
+			if (onLoad != null) {
+				onLoad.onLoad(id, object);
 			}
 			this.cache.put(id, object);
 		} catch (Throwable e) {
@@ -176,22 +197,22 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 		return true;
 	}
 
-	protected EntityCacheManager<K, O> setCache(ObjectCache<K, O> cache) {
+	public EntityCacheManager<K, O> setCache(ObjectCache<K, O> cache) {
 		this.cache = cache;
 		return this;
 	}
 
-	protected EntityCacheManager<K, O> setStorage(ObjectStorage<K, O> storage) {
+	public EntityCacheManager<K, O> setStorage(ObjectStorage<K, O> storage) {
 		this.storage = storage;
 		return this;
 	}
 
-	protected EntityCacheManager<K, O> setKeyMaker(EntityKeyMaker<K, O> keyMaker) {
+	public EntityCacheManager<K, O> setKeyMaker(EntityKeyMaker<K, O> keyMaker) {
 		this.keyMaker = keyMaker;
 		return this;
 	}
 
-	protected EntityCacheManager<K, O> setCurrentLevel(int currentLevel) {
+	public EntityCacheManager<K, O> setCurrentLevel(int currentLevel) {
 		this.locker = new HashObjectLocker<>(currentLevel);
 		return this;
 	}

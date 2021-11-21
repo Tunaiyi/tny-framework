@@ -1,4 +1,4 @@
-package com.tny.game.basics.item.xml;
+package com.tny.game.basics.item.model;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.basics.item.*;
@@ -11,12 +11,12 @@ import java.util.List;
  *
  * @author KGTny
  */
-public abstract class XMLItemModel extends AbstractItemModel {
+public abstract class BaseItemModel extends AbstractItemModel {
 
 	/**
 	 * 行为列表
 	 */
-	protected List<XMLBehaviorPlan> behaviorPlanList;
+	protected List<BaseBehaviorPlan> behaviorPlanList;
 
 	protected String currentFormula;
 
@@ -40,22 +40,18 @@ public abstract class XMLItemModel extends AbstractItemModel {
 		return this.demandFormula == null ? super.getDemandFormula() : this.demandFormula;
 	}
 
-	protected void doInit(ItemModelContext context) {
-        if (this.behaviorPlanList == null) {
-            this.behaviorPlanList = ImmutableList.of();
-        }
+	@Override
+	protected void onItemInit(ItemModelContext context) {
+		if (this.behaviorPlanList == null) {
+			this.behaviorPlanList = ImmutableList.of();
+		}
 		this.behaviorPlanList = ImmutableList.copyOf(this.behaviorPlanList);
-		for (XMLBehaviorPlan behaviorPlan : this.behaviorPlanList) {
+		for (BaseBehaviorPlan behaviorPlan : this.behaviorPlanList) {
 			behaviorPlan.init(this, context);
 			this.behaviorPlanMap.put(behaviorPlan.getBehavior(), behaviorPlan);
 			for (Action action : behaviorPlan.getActionPlanMap().keySet())
 				this.actionBehaviorPlanMap.put(action, behaviorPlan);
 		}
-	}
-
-	@Override
-	protected void init(ItemModelContext context) {
-		super.init(context);
 	}
 
 }

@@ -11,29 +11,14 @@ import java.util.*;
  * @param <S>
  * @author KGTny
  */
-public abstract class Owner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<SM>> implements StuffOwner<IM, S> {
-
-	/**
-	 * 玩家id
-	 */
-	//	@CacheID(index = 0)
-	protected long playerId;
-
-	/**
-	 * 模型
-	 */
-	protected IM model;
+public abstract class AbstractStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<SM>>
+		extends BaseStuffOwner<IM, SM, S> implements StuffOwner<IM, S> {
 
 	/**
 	 * 拥有的item模型
 	 */
 	//	@Link(name = "itemCollection", ignore = true, ignoreOperation = { Operation.SAVE, Operation.DELETE, Operation.UPDATE })
 	protected Map<Long, S> itemMap = new CopyOnWriteMap<>();
-
-	@Override
-	public long getPlayerId() {
-		return this.playerId;
-	}
 
 	@Override
 	public S getItemById(long id) {
@@ -45,11 +30,6 @@ public abstract class Owner<IM extends ItemModel, SM extends ItemModel, S extend
 		return this.itemMap.get((long)itemId);
 	}
 
-	@Override
-	public ItemType getItemType() {
-		return this.model.getItemType();
-	}
-
 	protected Collection<S> getItemCollection() {
 		return Collections.unmodifiableCollection(this.itemMap.values());
 	}
@@ -58,10 +38,6 @@ public abstract class Owner<IM extends ItemModel, SM extends ItemModel, S extend
 		this.itemMap.clear();
 		for (S stuff : collection)
 			this.itemMap.put(stuff.getId(), stuff);
-	}
-
-	protected void setPlayerId(long playerId) {
-		this.playerId = playerId;
 	}
 
 }

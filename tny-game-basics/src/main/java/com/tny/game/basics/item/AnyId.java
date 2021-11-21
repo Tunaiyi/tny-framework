@@ -12,55 +12,55 @@ import java.util.stream.Collectors;
  * @author : kgtny
  * @date : 2021/10/15 4:50 上午
  */
-public class AnyUnid implements Comparable<AnyUnid> {
+public class AnyId implements Comparable<AnyId> {
 
 	/**
 	 * 玩家id
 	 */
-	private final long playerId;
+	private long playerId;
 
 	/**
 	 * item 对象 id
 	 */
-	private final long id;
+	private long id;
 
-	public static AnyUnid uidOf(Any item) {
-		return new AnyUnid(item);
+	public static AnyId idOf(Any item) {
+		return new AnyId(item);
 	}
 
-	public static AnyUnid uidOf(long playerId) {
-		return new AnyUnid(playerId, playerId);
+	public static AnyId idOf(long playerId) {
+		return new AnyId(playerId, playerId);
 	}
 
-	public static AnyUnid uidOf(long playerId, long id) {
-		return new AnyUnid(playerId, id);
+	public static AnyId idOf(long playerId, long id) {
+		return new AnyId(playerId, id);
 	}
 
-	public static Collection<AnyUnid> uidsOf(Collection<? extends Item<?>> items) {
-		return items.stream().map(AnyUnid::uidOf).collect(Collectors.toList());
+	public static Collection<AnyId> idsOf(Collection<? extends Item<?>> items) {
+		return items.stream().map(AnyId::idOf).collect(Collectors.toList());
 	}
 
-	public static AnyUnid parseUuid(String unid) {
-		String[] values = StringUtils.split(unid, "-");
+	public static AnyId parseId(String anyId) {
+		String[] values = StringUtils.split(anyId, "-");
 		long playerId = Long.parseUnsignedLong(values[0], 32);
 		if (values.length == 1) {
-			return new AnyUnid(playerId, playerId);
+			return new AnyId(playerId, playerId);
 		}
 		long id = Long.parseUnsignedLong(values[1], 32);
-		return new AnyUnid(playerId, id);
+		return new AnyId(playerId, id);
 	}
 
 	/**
 	 * @return 转化为 String 的 uid
 	 */
-	public static String formatUuid(Any any) {
-		return formatUuid(any.getPlayerId(), any.getId());
+	public static String formatId(Any any) {
+		return formatId(any.getPlayerId(), any.getId());
 	}
 
 	/**
 	 * @return 转化为 String 的 uid
 	 */
-	public static String formatUuid(long playerId, long id) {
+	public static String formatId(long playerId, long id) {
 		String tail = Long.toUnsignedString(id, 32);
 		if (playerId == id) {
 			return String.valueOf(playerId);
@@ -68,12 +68,15 @@ public class AnyUnid implements Comparable<AnyUnid> {
 		return playerId + "-" + tail;
 	}
 
-	private AnyUnid(Any any) {
+	public AnyId() {
+	}
+
+	private AnyId(Any any) {
 		this.id = any.getId();
 		this.playerId = any.getPlayerId();
 	}
 
-	private AnyUnid(long playerId, long id) {
+	private AnyId(long playerId, long id) {
 		this.playerId = playerId;
 		this.id = id;
 	}
@@ -96,7 +99,7 @@ public class AnyUnid implements Comparable<AnyUnid> {
 	 * @return 转化为 String 的 uid
 	 */
 	public String toUuid() {
-		return formatUuid(this.playerId, this.id);
+		return formatId(this.playerId, this.id);
 	}
 
 	@Override
@@ -105,11 +108,11 @@ public class AnyUnid implements Comparable<AnyUnid> {
 			return true;
 		}
 
-		if (!(o instanceof AnyUnid)) {
+		if (!(o instanceof AnyId)) {
 			return false;
 		}
 
-		AnyUnid itemKey = (AnyUnid)o;
+		AnyId itemKey = (AnyId)o;
 
 		return new EqualsBuilder().append(getPlayerId(), itemKey.getPlayerId())
 				.append(getId(), itemKey.getId())
@@ -127,7 +130,7 @@ public class AnyUnid implements Comparable<AnyUnid> {
 	}
 
 	@Override
-	public int compareTo(AnyUnid o) {
+	public int compareTo(AnyId o) {
 		long value = this.playerId - o.playerId;
 		if (value != 0) {
 			return value > 0 ? 1 : 0;

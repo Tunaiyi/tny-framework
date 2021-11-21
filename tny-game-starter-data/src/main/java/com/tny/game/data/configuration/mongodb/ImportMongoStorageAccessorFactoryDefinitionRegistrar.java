@@ -5,7 +5,7 @@ import com.tny.game.data.mongodb.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import javax.annotation.Nonnull;
 
@@ -17,35 +17,37 @@ import static com.tny.game.boot.utils.BeanNameUtils.*;
  * @author : kgtny
  * @date : 2021/9/17 5:42 下午
  */
-public class ImportMongoClientStorageAccessorFactoryDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
+public class ImportMongoStorageAccessorFactoryDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
 	private void registerMongoClientStorageAccessorFactory(
-			BeanDefinitionRegistry registry, MongoClientStorageAccessorFactorySetting setting, String beanName) {
-		MongoClientStorageAccessorFactory factory = new MongoClientStorageAccessorFactory();
+			BeanDefinitionRegistry registry, MongoStorageAccessorFactorySetting setting, String beanName) {
+		MongoClientStorageAccessorFactory factory = new MongoClientStorageAccessorFactory(setting.getDataSource());
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.genericBeanDefinition(MongoClientStorageAccessorFactory.class, () -> factory);
 		builder.addPropertyReference("entityIdConverterFactory", setting.getIdConverterFactory());
 		builder.addPropertyReference("entityObjectConverter", setting.getEntityObjectConverter());
 		if (StringUtils.isBlank(setting.getDataSource())) {
-			builder.addAutowiredProperty("databaseFactory");
+			builder.addAutowiredProperty("mongoTemplate");
 		} else {
-			builder.addPropertyReference("databaseFactory", nameOf(setting.getDataSource(), MongoDatabaseFactory.class));
+			builder.addPropertyReference("mongoTemplate", nameOf(setting.getDataSource(), MongoTemplate.class));
 		}
 		registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
 	}
 
 	@Override
 	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-		MongoClientStorageAccessorFactoryProperties properties = loadProperties(MongoClientStorageAccessorFactoryProperties.class);
+		MongoStorageAccessorFactoryProperties properties = loadProperties(MongoStorageAccessorFactoryProperties.class);
 		if (!properties.isEnable()) {
 			return;
 		}
-		MongoClientStorageAccessorFactorySetting defaultSetting = properties.getAccessor();
+		MongoStorageAccessorFactorySetting defaultSetting = properties.getAccessor();
 		if (defaultSetting != null) {
 			registerMongoClientStorageAccessorFactory(registry, defaultSetting, MongoClientStorageAccessorFactory.ACCESSOR_NAME);
 		}
-		properties.getAccessors().forEach((name, setting) ->
-				registerMongoClientStorageAccessorFactory(registry, setting, nameOf(name, MongoClientStorageAccessorFactory.class)));
+		properties.getAccessors().forEach((name, setting) -> {
+			setting.setDataSource(name);
+			registerMongoClientStorageAccessorFactory(registry, setting, nameOf(name, MongoClientStorageAccessorFactory.class));
+		});
 	}
 
 }

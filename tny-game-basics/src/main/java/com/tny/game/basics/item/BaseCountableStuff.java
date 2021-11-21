@@ -23,17 +23,17 @@ public abstract class BaseCountableStuff<SM extends StuffModel<N>, N extends Num
 		return alterType.overLowerLimit(this, receiveNum);
 	}
 
-	protected abstract void consume(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+	protected abstract void deduct(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
-	protected abstract void receive(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+	protected abstract void reward(Action action, TradeItem<SM> tradeItem, Attributes attributes);
 
 	protected abstract void setNumber(N number);
 
-	protected AlterType getReceiveAlterType(TradeItem<SM> item) {
+	protected AlterType getRewardAlterType(TradeItem<SM> item) {
 		return item.getAlertType();
 	}
 
-	protected AlterType getConsumeAlterType(TradeItem<SM> item) {
+	protected AlterType getDeductAlterType(TradeItem<SM> item) {
 		return item.getAlertType();
 	}
 
@@ -45,7 +45,7 @@ public abstract class BaseCountableStuff<SM extends StuffModel<N>, N extends Num
 	 * @param current
 	 * @param action
 	 */
-	protected abstract void postConsume(N alter, N oldNumber, N current, Action action, Attributes attributes);
+	protected abstract void postDeduct(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
 	/**
 	 * 执行增加
@@ -55,6 +55,6 @@ public abstract class BaseCountableStuff<SM extends StuffModel<N>, N extends Num
 	 * @param current
 	 * @param action
 	 */
-	protected abstract void postReceive(N alter, N oldNumber, N current, Action action, Attributes attributes);
+	protected abstract void postReward(N alter, N oldNumber, N current, Action action, Attributes attributes);
 
 }
