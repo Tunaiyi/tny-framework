@@ -124,7 +124,7 @@ public class ObjectAide {
 		if (source instanceof String) {
 			value = EnumAide.ofName(clazz, as(source));
 		}
-		if (value == null && EnumIdentifiable.class.isAssignableFrom(clazz)) {
+		if (value == null && Enumerable.class.isAssignableFrom(clazz)) {
 			value = as(EnumAide.of(as(clazz), source));
 		}
 		return value;

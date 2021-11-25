@@ -8,7 +8,7 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface Behavior extends EnumIdentifiable<Integer> {
+public interface Behavior extends Enumerable<Integer> {
 
 	/**
 	 * 获取模块类型

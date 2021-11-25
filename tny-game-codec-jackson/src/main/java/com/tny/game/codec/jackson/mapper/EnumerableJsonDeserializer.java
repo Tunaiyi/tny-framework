@@ -15,20 +15,20 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 16/8/12.
  */
-public class EnumIDJsonDeserializer<T extends Enum<T> & EnumIdentifiable<ID>, ID> extends JsonDeserializer<T> implements ContextualDeserializer {
+public class EnumerableJsonDeserializer<T extends Enum<T> & Enumerable<ID>, ID> extends JsonDeserializer<T> implements ContextualDeserializer {
 
 	private Class<T> enumClass;
 
 	private Class<ID> idClass;
 
-	public EnumIDJsonDeserializer() {
+	public EnumerableJsonDeserializer() {
 	}
 
-	private EnumIDJsonDeserializer(JavaType type) {
+	private EnumerableJsonDeserializer(JavaType type) {
 		this.enumClass = as(type.getRawClass());
-		Asserts.checkArgument(EnumIdentifiable.class.isAssignableFrom(this.enumClass),
-				"Class {} not extends {}", this.enumClass, EnumIdentifiable.class);
-		List<Class<?>> idClasses = ReflectAide.getComponentType(this.enumClass, EnumIdentifiable.class);
+		Asserts.checkArgument(Enumerable.class.isAssignableFrom(this.enumClass),
+				"Class {} not extends {}", this.enumClass, Enumerable.class);
+		List<Class<?>> idClasses = ReflectAide.getComponentType(this.enumClass, Enumerable.class);
 		this.idClass = as(idClasses.get(0));
 	}
 
@@ -64,7 +64,7 @@ public class EnumIDJsonDeserializer<T extends Enum<T> & EnumIdentifiable<ID>, ID
 	@Override
 	public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) {
 		JavaType type = ctxt.getContextualType() != null ? ctxt.getContextualType() : property.getMember().getType();
-		return new EnumIDJsonDeserializer<>(type);
+		return new EnumerableJsonDeserializer<>(type);
 	}
 
 }

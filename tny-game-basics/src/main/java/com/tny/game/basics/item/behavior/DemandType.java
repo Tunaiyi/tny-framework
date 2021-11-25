@@ -17,27 +17,27 @@ import com.tny.game.common.result.*;
  *
  * @author KGTny
  */
-public interface DemandType extends EnumIdentifiable<Integer> {
+public interface DemandType extends Enumerable<Integer> {
 
-    /**
-     * 条件类型
-     *
-     * @return
-     */
-    Integer getId();
+	/**
+	 * 条件类型
+	 *
+	 * @return
+	 */
+	Integer getId();
 
-    /**
-     * 是否是costDemand
-     *
-     * @return
-     */
-    boolean isCost();
+	/**
+	 * 是否是costDemand
+	 *
+	 * @return
+	 */
+	boolean isCost();
 
-    /**
-     * 返回错误码
-     *
-     * @return
-     */
-    ResultCode getResultCode();
+	/**
+	 * 返回错误码
+	 *
+	 * @return
+	 */
+	ResultCode getResultCode();
 
 }

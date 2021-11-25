@@ -75,7 +75,7 @@ public enum LangTypeFormatter implements TypeFormatter {
 	private static String cshapFormat(Type type, boolean formatEnum) {
 		if (type instanceof Class) {
 			Class<?> javaType = (Class<?>)type;
-			if (EnumIdentifiable.class.isAssignableFrom(javaType)) {
+			if (Enumerable.class.isAssignableFrom(javaType)) {
 				return "int";
 			} else if (formatEnum && (javaType.isEnum() || String.class.isAssignableFrom(javaType))) {
 				return "string";

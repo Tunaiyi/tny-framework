@@ -36,6 +36,12 @@ public class BasicsObjectMapperCustomizer implements ObjectMapperCustomizer {
 			module.addSerializer(modelClass, serializer);
 			module.addDeserializer(as(modelClass), deserializer);
 		}
+		module.addSerializer(ItemModel.class, serializer);
+		module.addDeserializer(as(ItemModel.class), deserializer);
+		
+		module.addSerializer(StuffModel.class, serializer);
+		module.addDeserializer(as(StuffModel.class), deserializer);
+
 		module.addSerializer(DefaultItemModel.class, serializer);
 		module.addDeserializer(as(DefaultItemModel.class), deserializer);
 

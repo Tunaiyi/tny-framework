@@ -16,7 +16,7 @@ import static com.tny.game.net.relay.RelayCodecConstants.*;
  * @author : kgtny
  * @date : 2021/3/1 3:04 上午
  */
-public enum RelayPacketType implements EnumIdentifiable<Byte> {
+public enum RelayPacketType implements Enumerable<Byte> {
 
 	LINK_OPENING(RELAY_PACKET_TYPE_LINK_OPENING,
 			LinkOpenPacket.class, LinkOpenArguments.class,

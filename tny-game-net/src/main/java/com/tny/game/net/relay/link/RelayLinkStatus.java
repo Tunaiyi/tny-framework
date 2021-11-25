@@ -8,7 +8,7 @@ import com.tny.game.common.enums.*;
  * @author : kgtny
  * @date : 2021/3/2 3:36 下午
  */
-public enum RelayLinkStatus implements EnumIdentifiable<Integer> {
+public enum RelayLinkStatus implements Enumerable<Integer> {
 
 	/**
 	 * 初始化

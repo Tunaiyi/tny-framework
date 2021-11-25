@@ -15,7 +15,7 @@ public class EnumAide {
 
 	private static final Map<Class<?>, Map<String, Object>> enumMap = new ConcurrentHashMap<>();
 
-	public static <I, E extends EnumIdentifiable<I>> E check(Class<E> enumClass, I id) {
+	public static <I, E extends Enumerable<I>> E check(Class<E> enumClass, I id) {
 		return Asserts.checkNotNull(of(enumClass, id),
 				"ID 为 {} 的 {} 枚举实例不存在", id, enumClass);
 	}
@@ -49,7 +49,7 @@ public class EnumAide {
 		return null;
 	}
 
-	public static <I, E extends EnumIdentifiable<I>> E of(Class<E> enumClass, I id) {
+	public static <I, E extends Enumerable<I>> E of(Class<E> enumClass, I id) {
 		for (E e : enumClass.getEnumConstants()) {
 			if (e.getId().equals(id)) {
 				return e;

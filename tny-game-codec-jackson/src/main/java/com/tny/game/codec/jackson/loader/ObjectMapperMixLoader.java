@@ -37,12 +37,12 @@ public class ObjectMapperMixLoader {
 	}
 
 	@ClassSelectorProvider
-	static ClassSelector mixEnumIdentifiableSelector() {
+	static ClassSelector mixEnumerableSelector() {
 		return ClassSelector.create()
-				.addFilter(SubOfClassFilter.ofInclude(EnumIdentifiable.class))
+				.addFilter(SubOfClassFilter.ofInclude(Enumerable.class))
 				.setHandler(createHandler((module, classes) -> classes.stream()
 						.filter(Class::isEnum)
-						.forEach(enumClass -> module.setMixInAnnotation(enumClass, EnumIdentifiableMix.class))));
+						.forEach(enumClass -> module.setMixInAnnotation(enumClass, EnumerableMix.class))));
 	}
 
 	@ClassSelectorProvider

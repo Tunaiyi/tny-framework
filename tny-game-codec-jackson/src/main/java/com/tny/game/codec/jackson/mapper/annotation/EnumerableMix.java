@@ -9,8 +9,8 @@ import com.tny.game.codec.jackson.mapper.*;
  * @author Kun Yang
  * @date 2019-11-01 12:12
  */
-@JsonSerialize(using = EnumIDJsonSerializer.class)
-@JsonDeserialize(using = EnumIDJsonDeserializer.class)
-public interface EnumIdentifiableMix {
+@JsonSerialize(using = EnumerableJsonSerializer.class)
+@JsonDeserialize(using = EnumerableJsonDeserializer.class)
+public interface EnumerableMix {
 
 }

@@ -2,7 +2,7 @@ package com.tny.game.net.command;
 
 import com.tny.game.common.enums.*;
 
-public enum CertificateStatus implements EnumIdentifiable<Integer> {
+public enum CertificateStatus implements Enumerable<Integer> {
 
 	/**
 	 * 无效的

@@ -7,7 +7,7 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface ItemType extends EnumIdentifiable<Integer> {
+public interface ItemType extends Enumerable<Integer> {
 
 	int ID_TAIL_SIZE = 1000000;
 

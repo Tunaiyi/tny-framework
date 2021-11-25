@@ -8,39 +8,39 @@ import com.tny.game.common.enums.*;
  * @author: Kun Yang
  * @date: 2018-10-08 11:49
  */
-public enum TunnelStatus implements EnumIdentifiable<Integer> {
+public enum TunnelStatus implements Enumerable<Integer> {
 
-    /**
-     * 初始化
-     **/
-    INIT(1),
+	/**
+	 * 初始化
+	 **/
+	INIT(1),
 
-    /**
-     * 连接
-     **/
-    OPEN(2),
+	/**
+	 * 连接
+	 **/
+	OPEN(2),
 
-    /**
-     * 挂起
-     */
-    SUSPEND(3),
+	/**
+	 * 挂起
+	 */
+	SUSPEND(3),
 
-    /**
-     * 关闭
-     **/
-    CLOSED(4);
+	/**
+	 * 关闭
+	 **/
+	CLOSED(4);
 
-    //
+	//
 
-    private final int id;
+	private final int id;
 
-    TunnelStatus(int id) {
-        this.id = id;
-    }
+	TunnelStatus(int id) {
+		this.id = id;
+	}
 
-    @Override
-    public Integer getId() {
-        return this.id;
-    }
+	@Override
+	public Integer getId() {
+		return this.id;
+	}
 
 }

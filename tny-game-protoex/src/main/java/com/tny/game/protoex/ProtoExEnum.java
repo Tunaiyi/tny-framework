@@ -7,21 +7,21 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface ProtoExEnum extends EnumIdentifiable<Integer> {
+public interface ProtoExEnum extends Enumerable<Integer> {
 
-    /**
-     * 枚举ID
-     *
-     * @return
-     */
-    @Override
-    Integer getId();
+	/**
+	 * 枚举ID
+	 *
+	 * @return
+	 */
+	@Override
+	Integer getId();
 
-    /**
-     * 枚举名字
-     *
-     * @return
-     */
-    String name();
+	/**
+	 * 枚举名字
+	 *
+	 * @return
+	 */
+	String name();
 
 }

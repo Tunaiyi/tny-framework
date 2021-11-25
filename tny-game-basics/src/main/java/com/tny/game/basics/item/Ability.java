@@ -7,7 +7,6 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface Ability extends EnumIdentifiable<Integer> {
-
+public interface Ability extends Enumerable<Integer> {
 
 }
