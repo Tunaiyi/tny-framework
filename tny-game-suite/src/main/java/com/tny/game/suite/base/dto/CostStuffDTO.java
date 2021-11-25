@@ -11,36 +11,37 @@ import com.tny.game.suite.*;
 @DTODoc("消耗物品DTO")
 public class CostStuffDTO {
 
-    @VarDoc("id")
-    @ProtoExField(3)
-    private long id;
+	@VarDoc("id")
+	@ProtoExField(3)
+	private long id;
 
-    @VarDoc("itemId")
-    @ProtoExField(1)
-    private int itemId;
+	@VarDoc("modelId")
+	@ProtoExField(1)
+	private int modelId;
 
-    @VarDoc("数量")
-    @ProtoExField(2)
-    private int number;
+	@VarDoc("数量")
+	@ProtoExField(2)
+	private int number;
 
-    public int getItemId() {
-        return itemId;
-    }
+	public int getModelId() {
+		return modelId;
+	}
 
-    public int getNumber() {
-        return number;
-    }
+	public int getNumber() {
+		return number;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(id);
-        buffer.append(itemId);
-        buffer.append(number);
-        return buffer.toString();
-    }
+	@Override
+	public String toString() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(id);
+		buffer.append(modelId);
+		buffer.append(number);
+		return buffer.toString();
+	}
+
 }

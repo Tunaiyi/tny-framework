@@ -21,40 +21,40 @@ import static com.tny.game.common.collection.CollectionAide.*;
  */
 public class JacksonObjectCodecFactory extends AbstractObjectCodecFactory {
 
-    private final ObjectMapper mapper;
+	private final ObjectMapper mapper;
 
-    private static final Collection<MimeType> DEFAULT_MIME_TYPES = ImmutableList
-            .copyOf(MimeTypeAide.asList(JsonMimeType.JSON, JsonMimeType.JSON_WILDCARD));
+	private static final Collection<MimeType> DEFAULT_MIME_TYPES = ImmutableList
+			.copyOf(MimeTypeAide.asList(JsonMimeType.JSON, JsonMimeType.JSON_WILDCARD));
 
-    public JacksonObjectCodecFactory() {
-        this(null, null);
-    }
+	public JacksonObjectCodecFactory() {
+		this(null, null);
+	}
 
-    public JacksonObjectCodecFactory(ObjectMapper mapper) {
-        this(null, mapper);
-    }
+	public JacksonObjectCodecFactory(ObjectMapper mapper) {
+		this(null, mapper);
+	}
 
-    public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes) {
-        this(supportMimeTypes, null);
-    }
+	public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes) {
+		this(supportMimeTypes, null);
+	}
 
-    public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes, ObjectMapper mapper) {
-        super(ifEmpty(supportMimeTypes, DEFAULT_MIME_TYPES));
-        if (mapper != null) {
-            this.mapper = mapper;
-        } else {
-            this.mapper = ObjectMapperFactory.createMapper()
-                    .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
-                    .setVisibility(PropertyAccessor.SETTER, Visibility.ANY)
-                    .setVisibility(PropertyAccessor.GETTER, Visibility.NONE)
-                    .setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
-        }
-    }
+	public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes, ObjectMapper mapper) {
+		super(ifEmpty(supportMimeTypes, DEFAULT_MIME_TYPES));
+		if (mapper != null) {
+			this.mapper = mapper;
+		} else {
+			this.mapper = ObjectMapperFactory.createMapper()
+					.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+					.setVisibility(PropertyAccessor.SETTER, Visibility.ANY)
+					.setVisibility(PropertyAccessor.GETTER, Visibility.NONE)
+					.setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
+		}
+	}
 
-    @Override
-    public <T> ObjectCodec<T> createCodec(Type clazz) {
-        JavaType type = this.mapper.getTypeFactory().constructType(clazz);
-        return new JacksonObjectCodec<>(type, this.mapper);
-    }
+	@Override
+	public <T> ObjectCodec<T> createCodec(Type clazz) {
+		JavaType type = this.mapper.getTypeFactory().constructType(clazz);
+		return new JacksonObjectCodec<>(type, this.mapper);
+	}
 
 }

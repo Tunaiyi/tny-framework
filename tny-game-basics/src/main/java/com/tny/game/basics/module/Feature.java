@@ -2,7 +2,7 @@ package com.tny.game.basics.module;
 
 import com.tny.game.common.enums.*;
 
-import java.util.*;
+import java.util.Collection;
 
 public interface Feature extends EnumIdentifiable<Integer> {
 
@@ -15,7 +15,5 @@ public interface Feature extends EnumIdentifiable<Integer> {
 	boolean isValid();
 
 	boolean isHasHandler();
-
-	Optional<Feature> getParent();
 
 }

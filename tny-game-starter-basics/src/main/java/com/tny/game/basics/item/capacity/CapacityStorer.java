@@ -56,12 +56,12 @@ public interface CapacityStorer extends CapacityVisitor {
 	/**
 	 * 存储指定supply (复制)
 	 *
-	 * @param id     supply所属ID
-	 * @param itemId supply所属ItemID
-	 * @param supply supply
+	 * @param id      supply所属ID
+	 * @param modelId supply所属modelId
+	 * @param supply  supply
 	 */
-	default void saveSupplier(CapacitySupplierType type, long id, int itemId, CapacitySupply supply) {
-		saveSupplier(type, id, itemId, supply, 0);
+	default void saveSupplier(CapacitySupplierType type, long id, int modelId, CapacitySupply supply) {
+		saveSupplier(type, id, modelId, supply, 0);
 	}
 
 	/**
@@ -106,11 +106,11 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * 存储supplier (复制)
 	 *
 	 * @param id        supplier ID
-	 * @param itemId    supplier ItemID
+	 * @param modelId   supplier ItemID
 	 * @param suppliers 依赖列表
 	 */
-	default void saveComboSupplier(CapacitySupplierType type, long id, int itemId, Collection<? extends CapacitySupplier> suppliers) {
-		saveComboSupplier(type, id, itemId, suppliers, 0);
+	default void saveComboSupplier(CapacitySupplierType type, long id, int modelId, Collection<? extends CapacitySupplier> suppliers) {
+		saveComboSupplier(type, id, modelId, suppliers, 0);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * @param suppliers 依赖列表
 	 */
 	default <S extends CapacitySupplier & Item<?>> void saveComboSupplier(S item, Collection<? extends CapacitySupplier> suppliers) {
-		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), suppliers, 0);
+		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getModelId(), suppliers, 0);
 	}
 
 	/**
@@ -157,14 +157,14 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * 存储指定supply (复制)
 	 *
 	 * @param id       supply所属ID
-	 * @param itemId   supply所属ItemID
+	 * @param modelId  supply所属ItemID
 	 * @param supply   supply
 	 * @param expireAt 失效时间
 	 *                 >0是到期失效,
 	 *                 <0时永久有效,
 	 *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
-	void saveSupplier(CapacitySupplierType type, long id, int itemId, CapacitySupply supply, long expireAt);
+	void saveSupplier(CapacitySupplierType type, long id, int modelId, CapacitySupply supply, long expireAt);
 
 	/**
 	 * 存储指定supply (复制)
@@ -191,7 +191,7 @@ public interface CapacityStorer extends CapacityVisitor {
 	 *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
 	default <S extends CapacitySupplier & Item<?>> void saveSupplier(S item, CapacitySupply supply, long expireAt) {
-		this.saveSupplier(item.getSupplierType(), item.getId(), item.getItemId(), supply, expireAt);
+		this.saveSupplier(item.getSupplierType(), item.getId(), item.getModelId(), supply, expireAt);
 	}
 
 	/**
@@ -222,14 +222,14 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * 存储supplier (复制)
 	 *
 	 * @param id        supply所属ID
-	 * @param itemId    supply所属ItemID
+	 * @param modelId   supply所属ItemID
 	 * @param suppliers 依赖列表
 	 * @param expireAt  失效时间
 	 *                  >0是到期失效,
 	 *                  <0时永久有效,
 	 *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
-	void saveComboSupplier(CapacitySupplierType type, long id, int itemId, Collection<? extends CapacitySupplier> suppliers, long expireAt);
+	void saveComboSupplier(CapacitySupplierType type, long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long expireAt);
 
 	/**
 	 * 存储指定supply (复制)
@@ -255,7 +255,7 @@ public interface CapacityStorer extends CapacityVisitor {
 	 *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
 	default <S extends ComboCapacitySupplier & Item<?>> void saveComboSupplier(S item, long expireAt) {
-		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), item.dependSuppliers(), expireAt);
+		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getModelId(), item.dependSuppliers(), expireAt);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public interface CapacityStorer extends CapacityVisitor {
 	 *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
 	default <S extends CapacitySupplier & Item<?>> void saveComboSupplier(S item, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getItemId(), suppliers, expireAt);
+		this.saveComboSupplier(item.getSupplierType(), item.getId(), item.getModelId(), suppliers, expireAt);
 	}
 
 	/**
@@ -360,12 +360,12 @@ public interface CapacityStorer extends CapacityVisitor {
 	/**
 	 * 存储指定grather (复制)
 	 *
-	 * @param id     grather所属ID
-	 * @param itemId grather所属ItemID
-	 * @param gather grather
+	 * @param id      grather所属ID
+	 * @param modelId grather所属ItemID
+	 * @param gather  grather
 	 */
-	default void saveGoal(long id, int itemId, CapacityGather gather) {
-		saveGoal(id, itemId, gather, 0);
+	default void saveGoal(long id, int modelId, CapacityGather gather) {
+		saveGoal(id, modelId, gather, 0);
 	}
 
 	/**
@@ -381,11 +381,11 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * 存储goals (复制)
 	 *
 	 * @param id        目标ID
-	 * @param itemId    目标ItemID
+	 * @param modelId   目标ItemID
 	 * @param suppliers 提供器列表
 	 */
-	default void saveGoal(long id, int itemId, Collection<? extends CapacitySupplier> suppliers) {
-		saveGoal(id, itemId, suppliers, 0);
+	default void saveGoal(long id, int modelId, Collection<? extends CapacitySupplier> suppliers) {
+		saveGoal(id, modelId, suppliers, 0);
 	}
 
 	/**
@@ -432,27 +432,27 @@ public interface CapacityStorer extends CapacityVisitor {
 	 * 存储指定grather (复制)
 	 *
 	 * @param id       grather所属ID
-	 * @param itemId   grather所属ItemID
+	 * @param modelId  grather所属ItemID
 	 * @param gather   grather
 	 * @param expireAt 失效时间
 	 *                 >0是到期失效,
 	 *                 <0时永久有效,
 	 *                 =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
-	void saveGoal(long id, int itemId, CapacityGather gather, long expireAt);
+	void saveGoal(long id, int modelId, CapacityGather gather, long expireAt);
 
 	/**
 	 * 存储goals (复制)
 	 *
 	 * @param id        目标ID
-	 * @param itemId    目标ItemID
+	 * @param modelId   目标ItemID
 	 * @param suppliers 提供器列表
 	 * @param expireAt  失效时间
 	 *                  >0是到期失效,
 	 *                  <0时永久有效,
 	 *                  =0时更具对象是否实现ExpireCapacitiable, 如果有则以其getExpireAt为失效时间, 否则为-1
 	 */
-	void saveGoal(long id, int itemId, Collection<? extends CapacitySupplier> suppliers, long expireAt);
+	void saveGoal(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long expireAt);
 
 	/**
 	 * 存储指定grather (复制)

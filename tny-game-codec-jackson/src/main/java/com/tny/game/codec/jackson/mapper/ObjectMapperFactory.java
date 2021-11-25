@@ -2,11 +2,9 @@ package com.tny.game.codec.jackson.mapper;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.tny.game.common.lifecycle.annotation.*;
-import com.tny.game.scanner.*;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,15 +18,41 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @AsLifecycle(order = Integer.MAX_VALUE)
 public class ObjectMapperFactory {
 
-	private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
+	private static final ObjectMapperFactory FACTORY = new ObjectMapperFactory()
+			.addCustomizer((m) -> {
+				m.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
+				m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				m.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+						.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+						.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+			});
 
-	private static final List<Module> modules = new CopyOnWriteArrayList<>();
+	private static volatile ObjectMapper defaultMapper;
+
+	private static final List<Module> GLOBAL_MODULES = new CopyOnWriteArrayList<>();
+
+	private final List<Module> modules = new CopyOnWriteArrayList<>();
+
+	private final List<ObjectMapperCustomizer> customizers = new CopyOnWriteArrayList<>();
+
+	public static ObjectMapper createMapper() {
+		return FACTORY.create();
+	}
 
 	/**
 	 * @return 默认json mapper
 	 */
 	public static ObjectMapper defaultMapper() {
-		return DEFAULT_MAPPER;
+		if (defaultMapper != null) {
+			return defaultMapper;
+		}
+		synchronized (ObjectMapperFactory.class) {
+			if (defaultMapper != null) {
+				return defaultMapper;
+			}
+			defaultMapper = FACTORY.create();
+		}
+		return defaultMapper;
 	}
 
 	/**
@@ -36,60 +60,62 @@ public class ObjectMapperFactory {
 	 *
 	 * @param module module
 	 */
-	public static void registerModule(Module module) {
-		modules.add(module);
+	public static void registerGlobalModule(Module module) {
+		GLOBAL_MODULES.add(module);
 	}
 
 	@StaticInit
 	private static void init() {
-		DEFAULT_MAPPER.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
-		DEFAULT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		DEFAULT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
-				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
-		mapperExtension(DEFAULT_MAPPER);
+		defaultMapper();
 	}
 
-	public static ObjectMapper mapperExtension(ObjectMapper mapper) {
-		registerModule(mapper);
-		return mapper;
-	}
-
-	public static ObjectMapper createMapper() {
+	public ObjectMapper create() {
 		ObjectMapper mapper = new ObjectMapper();
-		mapperExtension(mapper);
+		mapperGlobalExtension(mapper);
+		mapper.registerModules(modules);
+		for (ObjectMapperCustomizer customizer : customizers) {
+			customizer.customize(mapper);
+		}
 		return mapper;
 	}
 
-	private static void registerModule(ObjectMapper mapper) {
-		registerModule(new ExtensionModule());
-		registerModule(new GuavaModule());
-		registerModule(new Jdk8Module());
-		mapper.registerModules(modules);
+	private void mapperGlobalExtension(ObjectMapper mapper) {
+		registerGlobalModule(new ExtensionModule());
+		registerGlobalModule(new GuavaModule());
+		registerGlobalModule(new Jdk8Module());
+		mapper.registerModules(GLOBAL_MODULES);
 	}
 
-	/**
-	 * 创建一个自动注册的Module 的类扫描 handler
-	 *
-	 * @param handler 处理器
-	 * @return 返回
-	 */
-	public static ClassSelectedHandler createHandler(AutoRegisterClassSelectedHandler handler) {
-		return handler;
+	public ObjectMapperFactory addCustomizer(ObjectMapperCustomizer customizer) {
+		customizers.add(customizer);
+		return this;
 	}
 
-	@FunctionalInterface
-	public interface AutoRegisterClassSelectedHandler extends ClassSelectedHandler {
+	public ObjectMapperFactory addCustomizers(Collection<ObjectMapperCustomizer> customizers) {
+		this.customizers.addAll(customizers);
+		return this;
+	}
 
-		@Override
-		default void selected(Collection<Class<?>> classes) {
-			SimpleModule module = new SimpleModule();
-			doSelected(module, classes);
-			ObjectMapperFactory.registerModule(module);
-		}
+	public ObjectMapperFactory addCustomizers(ObjectMapperCustomizer... customizers) {
+		for (ObjectMapperCustomizer customizer : customizers)
+			addCustomizers(customizer);
+		return this;
+	}
 
-		void doSelected(SimpleModule mapper, Collection<Class<?>> classes);
+	public ObjectMapperFactory addModule(Module module) {
+		modules.add(module);
+		return this;
+	}
 
+	public ObjectMapperFactory addModule(Collection<? extends Module> modules) {
+		this.modules.addAll(modules);
+		return this;
+	}
+
+	public ObjectMapperFactory addModules(Module... modules) {
+		for (Module customizer : modules)
+			addModule(customizer);
+		return this;
 	}
 
 }

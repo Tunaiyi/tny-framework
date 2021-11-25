@@ -10,6 +10,7 @@ import java.util.stream.Stream;
  * 并发读取Manager
  * Created by Kun Yang on 16/4/22.
  */
+@Deprecated
 public abstract class ParallelLoadGameCacheManager<O> extends GameCacheManager<O> {
 
 	private final int groupSize;

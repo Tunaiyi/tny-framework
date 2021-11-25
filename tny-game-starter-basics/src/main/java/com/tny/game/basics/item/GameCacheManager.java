@@ -24,8 +24,13 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	}
 
 	@Override
+	protected O get(AnyId anyId) {
+		return this.entityManager.getEntity(anyId, onLoad);
+	}
+
+	@Override
 	protected O get(long playerId) {
-		AnyId unid = AnyId.idOf(playerId, playerId);
+		AnyId unid = AnyId.idOf(playerId);
 		return this.entityManager.getEntity(unid, onLoad);
 	}
 
@@ -36,19 +41,21 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	}
 
 	@Override
-	protected Collection<O> getAll(long playerId, Collection<Long> ids) {
-		List<AnyId> keys = ids.stream()
-				.map(id -> AnyId.idOf(playerId, id))
-				.collect(Collectors.toList());
+	protected List<O> find(Map<String, Object> query) {
+		return this.entityManager.find(query, onLoad);
+	}
+
+	@Override
+	protected List<O> findAll() {
+		return this.entityManager.findAll(onLoad);
+	}
+
+	protected Collection<O> getByKeys(Collection<AnyId> keys) {
 		return this.entityManager.getEntities(keys, onLoad);
 	}
 
 	protected Collection<O> getByKeys(AnyId... keys) {
 		return this.entityManager.getEntities(Arrays.asList(keys), onLoad);
-	}
-
-	protected Collection<O> getByKeys(Collection<AnyId> keys) {
-		return this.entityManager.getEntities(keys, onLoad);
 	}
 
 	protected O getByKey(long playerId, long id) {
@@ -64,32 +71,6 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 		ObjectStorage<AnyId, O> storage = entityManager.getStorage();
 		return storage.findAll(AnyId.class);
 	}
-
-	//	private O onLoad(O o) {
-	//		if (o == null || this.onLoad == null) {
-	//			return o;
-	//		}
-	//		try {
-	//			this.onLoad.accept(o);
-	//		} catch (Throwable e) {
-	//			LOGGER.error("", e);
-	//		}
-	//		return o;
-	//	}
-
-	//	private Collection<O> onLoad(Collection<O> os) {
-	//		if (os == null || os.isEmpty() || this.onLoad == null) {
-	//			return os;
-	//		}
-	//		for (O o : os) {
-	//			try {
-	//				this.onLoad.accept(o);
-	//			} catch (Throwable e) {
-	//				LOGGER.error("", e);
-	//			}
-	//		}
-	//		return os;
-	//	}
 
 	@Override
 	public boolean save(O item) {

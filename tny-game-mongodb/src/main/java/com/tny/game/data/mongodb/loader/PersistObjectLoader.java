@@ -1,6 +1,5 @@
 package com.tny.game.data.mongodb.loader;
 
-import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
@@ -9,6 +8,8 @@ import org.slf4j.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
+
+import static com.tny.game.codec.jackson.mapper.AutoRegisterModuleClassesHandler.*;
 
 /**
  * <p>
@@ -26,7 +27,7 @@ public final class PersistObjectLoader {
 	static ClassSelector mixDocumentSelector() {
 		return ClassSelector.create()
 				.addFilter(AnnotationClassFilter.ofInclude(Document.class))
-				.setHandler(ObjectMapperFactory.createHandler((module, classes) ->
+				.setHandler(createHandler((module, classes) ->
 						//							module.setMixInAnnotation(docClass, MongoIdMix.class);
 						CONVERTER_CLASSES.addAll(classes)));
 	}

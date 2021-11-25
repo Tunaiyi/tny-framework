@@ -2,8 +2,12 @@ package com.tny.game.basics.configuration;
 
 import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.mapper.*;
+import com.tny.game.basics.persistent.*;
+import com.tny.game.basics.transaction.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.mvel.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -14,7 +18,7 @@ import java.util.Optional;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
 		DefaultItemModelProperties.class,
 })
@@ -44,6 +48,23 @@ public class BasicsAutoConfiguration {
 	}
 
 	@Bean
+	ItemModelJsonSerializer itemModelJsonSerializer() {
+		return new ItemModelJsonSerializer();
+	}
+
+	@Bean
+	@ConditionalOnBean(GameExplorer.class)
+	ItemModelJsonDeserializer itemModelJsonDeserializer(GameExplorer gameExplorer) {
+		return new ItemModelJsonDeserializer(gameExplorer);
+	}
+
+	@Bean
+	BasicsObjectMapperCustomizer gameBasiceObjectMapperCustomizer(
+			ItemModelJsonSerializer serializer, ItemModelJsonDeserializer deserializer) {
+		return new BasicsObjectMapperCustomizer(serializer, deserializer);
+	}
+
+	@Bean
 	public AnyEntityKeyMakerFactory anyEntityKeyMakerFactory() {
 		return new AnyEntityKeyMakerFactory();
 	}
@@ -51,6 +72,16 @@ public class BasicsAutoConfiguration {
 	@Bean
 	public AnyEntityIdConverterFactory anyEntityIdConverterFactory() {
 		return new AnyEntityIdConverterFactory();
+	}
+
+	@Bean
+	public AutoManageAdvice autoManageAdvice(GameExplorer gameExplorer) {
+		return AutoManageAdvice.init(gameExplorer);
+	}
+
+	@Bean
+	public MessageCommandTransactionHandler messageCommandTransactionHandler() {
+		return new MessageCommandTransactionHandler();
 	}
 
 }

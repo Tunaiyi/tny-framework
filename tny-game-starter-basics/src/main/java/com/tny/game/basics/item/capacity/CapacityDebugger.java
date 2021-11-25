@@ -92,7 +92,7 @@ public class CapacityDebugger {
 	}
 
 	private void appendObject(StringBuilder builder, CapacityObject object, CapacityObjectType objectType) {
-		ItemModel model = this.gameExplorer.getModel(object.getItemId());
+		ItemModel model = this.gameExplorer.getModel(object.getModelId());
 		builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(),
 				object.getId()));
 	}

@@ -10,6 +10,6 @@ public interface CapacityObject extends Any {
 	/**
 	 * @return 获取能力提供者ID
 	 */
-	int getItemId();
+	int getModelId();
 
 }

@@ -2,6 +2,7 @@ package com.tny.game.codec.jackson.mapper;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.tny.game.common.result.*;
 
 import java.time.Instant;
 
@@ -13,13 +14,14 @@ import java.time.Instant;
  */
 public class ExtensionModule extends SimpleModule {
 
-    public ExtensionModule() {
-        extensionModule(this, Instant.class, InstantJsonSerializer.getDefault(), InstantJsonDeserializer.getDefault());
-    }
+	public ExtensionModule() {
+		extensionModule(Instant.class, InstantJsonSerializer.getDefault(), InstantJsonDeserializer.getDefault());
+		extensionModule(ResultCode.class, ResultCodeJsonSerializer.getDefault(), ResultCodeJsonDeserializer.getDefault());
+	}
 
-    private <T> void extensionModule(SimpleModule module, Class<T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer) {
-        module.addSerializer(clazz, serializer);
-        module.addDeserializer(clazz, deserializer);
-    }
+	public <T> void extensionModule(Class<T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer) {
+		this.addSerializer(clazz, serializer);
+		this.addDeserializer(clazz, deserializer);
+	}
 
 }

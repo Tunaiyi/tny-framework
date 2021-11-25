@@ -19,7 +19,7 @@ public class DemandResult {
 	private long id;
 
 	/**
-	 * 条件相关的itemId
+	 * 条件相关的model
 	 */
 	private ItemModel itemModel;
 
@@ -53,11 +53,11 @@ public class DemandResult {
 		this.currentValue = currentValue;
 		this.expectValue = expectValue;
 		this.satisfy = satisfy;
-        if (paramMap == null) {
-            this.paramMap = Collections.emptyMap();
-        } else {
-            this.paramMap = paramMap;
-        }
+		if (paramMap == null) {
+			this.paramMap = Collections.emptyMap();
+		} else {
+			this.paramMap = paramMap;
+		}
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class DemandResult {
 	}
 
 	/**
-	 * @return 获取条件涉及的itemId
+	 * @return 获取条件涉及的modelId
 	 */
-	public int getItemId() {
+	public int getModelId() {
 		return itemModel.getId();
 	}
 
@@ -92,9 +92,9 @@ public class DemandResult {
 	 * @return 获取结果码
 	 */
 	public ResultCode getResultCode() {
-        if (satisfy) {
-            return ResultCode.SUCCESS;
-        }
+		if (satisfy) {
+			return ResultCode.SUCCESS;
+		}
 		return this.demandType.getResultCode();
 	}
 
@@ -103,12 +103,12 @@ public class DemandResult {
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> V getCurrentValue(Class<V> clazz) {
-        if (currentValue == null) {
-            return null;
-        }
-        if (clazz.isInstance(currentValue)) {
-            return (V)currentValue;
-        }
+		if (currentValue == null) {
+			return null;
+		}
+		if (clazz.isInstance(currentValue)) {
+			return (V)currentValue;
+		}
 		throw new ClassCastException(currentValue + "is not " + clazz + "instance");
 	}
 
@@ -117,18 +117,18 @@ public class DemandResult {
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> V getExpectValue(Class<V> clazz) {
-        if (expectValue == null) {
-            return null;
-        }
+		if (expectValue == null) {
+			return null;
+		}
 		return ObjectAide.as(expectValue, clazz);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <P> P getParam(DemandParam param, Class<P> clazz) {
 		Object value = this.paramMap.get(param);
-        if (param == null) {
-            return null;
-        }
+		if (param == null) {
+			return null;
+		}
 		return ObjectAide.as(value, clazz);
 	}
 
@@ -151,7 +151,7 @@ public class DemandResult {
 
 	@Override
 	public String toString() {
-		return "DemandResult [itemId=" + getItemId() + ", demandType=" + demandType + ", currentValue=" + currentValue
+		return "DemandResult [modelId=" + getModelId() + ", demandType=" + demandType + ", currentValue=" + currentValue
 				+ ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
 	}
 

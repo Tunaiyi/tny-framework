@@ -3,13 +3,17 @@ package com.tny.game.basics.item;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.context.*;
 
-public abstract class CountableLongStuff<SM extends StuffModel<Long>> extends BaseCountableStuff<SM, Long> {
+public abstract class CountableLongStuff<SM extends CountableStuffModel> extends BaseCountableStuff<SM, Long> {
 
 	protected long number;
 
 	@Override
 	public Long getNumberLimit() {
-		return this.model.countNumberLimit(this);
+		Number number = this.model.countNumberLimit(this);
+		if (number == null) {
+			return null;
+		}
+		return number.longValue();
 	}
 
 	@Override

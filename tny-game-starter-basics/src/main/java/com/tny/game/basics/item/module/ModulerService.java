@@ -20,7 +20,7 @@ public abstract class ModulerService implements AppPrepareStart, ApplicationCont
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(BasicsLoggerNames.MODULE);
 
-	private final Map<Moduler, BaseModulerHandler<?, ?>> handlerMap = new HashMap<>();
+	private final Map<Moduler, ModulerHandler> handlerMap = new HashMap<>();
 
 	private final FeatureLauncherManager featureLauncherManager;
 
@@ -93,7 +93,7 @@ public abstract class ModulerService implements AppPrepareStart, ApplicationCont
 	protected void doLoadModule(final FeatureLauncher launcher, final Moduler module) {
 		try {
 			if (module.isValid() && launcher.isModuleOpened(module)) {
-				BaseModulerHandler<?, ?> moduleHandler = this.handlerMap.get(module);
+				ModulerHandler moduleHandler = this.handlerMap.get(module);
 				moduleHandler.loadModule(launcher);
 			}
 		} catch (Throwable e) {
@@ -162,9 +162,9 @@ public abstract class ModulerService implements AppPrepareStart, ApplicationCont
 
 	@Override
 	public void prepareStart() {
-		Collection<BaseModulerHandler<?, ?>> collection = as(this.applicationContext.getBeansOfType(BaseModulerHandler.class).values());
-		List<BaseModulerHandler<?, ?>> moduleList = new ArrayList<>(collection);
-		for (BaseModulerHandler<?, ?> module : moduleList) {
+		Collection<ModulerHandler> collection = as(this.applicationContext.getBeansOfType(ModulerHandler.class).values());
+		List<ModulerHandler> moduleList = new ArrayList<>(collection);
+		for (ModulerHandler module : moduleList) {
 			this.handlerMap.put(module.getModule(), module);
 		}
 		for (Moduler module : Modulers.all()) {

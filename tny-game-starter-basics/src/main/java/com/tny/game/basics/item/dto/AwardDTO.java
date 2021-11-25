@@ -18,10 +18,10 @@ public class AwardDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("条件相关的itemId")
+	@VarDoc("条件相关的modelId")
 	@ProtoExField(1)
 	@JsonProperty
-	private int itemId;
+	private int modelId;
 
 	// @VarDoc("条件相关的ItemType")
 	// @ProtoExField(2)
@@ -39,11 +39,11 @@ public class AwardDTO implements Serializable {
 	private boolean valid;
 
 	public static AwardDTO tradeItem2DTO(DealItem<?> item) {
-		return dealedItem2DTO(item);
+		return dealItem2DTO(item);
 	}
 
 	public static AwardDTO tradeItem2DTO(TradeItem<?> item) {
-		AwardDTO dto = dealedItem2DTO(item);
+		AwardDTO dto = dealItem2DTO(item);
 		dto.valid = item.isValid();
 		return dto;
 	}
@@ -53,7 +53,7 @@ public class AwardDTO implements Serializable {
 			AwardDTO award = awardMap.get(tradItem.getItemModel().getId());
 			if (award == null) {
 				award = tradeItem2DTO(tradItem);
-				awardMap.put(award.itemId, award);
+				awardMap.put(award.modelId, award);
 			} else {
 				award.alterNumber(tradItem.getNumber().longValue());
 			}
@@ -69,27 +69,27 @@ public class AwardDTO implements Serializable {
 		}
 	}
 
-	public static void mergeAward(Map<Integer, AwardDTO> awardMap, Collection<TradeItem<ItemModel>> tradItems) {
+	public static void mergeAward(Map<Integer, AwardDTO> awardMap, Collection<TradeItem<StuffModel>> tradItems) {
 		for (TradeItem<?> tradItem : tradItems) {
 			mergeAward(awardMap, tradItem);
 		}
 	}
 
-	public static AwardDTO dealedItem2DTO(DealItem<?> dealedItem) {
+	public static AwardDTO dealItem2DTO(DealItem<?> dealItem) {
 		AwardDTO dto = new AwardDTO();
-		dto.itemId = dealedItem.getItemModel().getId();
-		dto.number = dealedItem.getNumber().longValue();
+		dto.modelId = dealItem.getItemModel().getId();
+		dto.number = dealItem.getNumber().longValue();
 		dto.valid = true;
 		return dto;
 	}
 
-	public static AwardDTO attr2DTO(int itemId, ItemType type, int number) {
-		return attr2DTO(itemId, type, number, true);
+	public static AwardDTO attr2DTO(int modelId, ItemType type, int number) {
+		return attr2DTO(modelId, type, number, true);
 	}
 
-	public static AwardDTO attr2DTO(int itemId, ItemType type, int number, boolean valid) {
+	public static AwardDTO attr2DTO(int modelId, ItemType type, int number, boolean valid) {
 		AwardDTO dto = new AwardDTO();
-		dto.itemId = itemId;
+		dto.modelId = modelId;
 		dto.number = number;
 		dto.valid = valid;
 		return dto;
@@ -99,8 +99,8 @@ public class AwardDTO implements Serializable {
 		this.number += alterNum;
 	}
 
-	public int getItemId() {
-		return itemId;
+	public int getModelId() {
+		return modelId;
 	}
 
 	public long getNumber() {

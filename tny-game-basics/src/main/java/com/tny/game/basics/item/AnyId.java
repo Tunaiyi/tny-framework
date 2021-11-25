@@ -29,7 +29,7 @@ public class AnyId implements Comparable<AnyId> {
 	}
 
 	public static AnyId idOf(long playerId) {
-		return new AnyId(playerId, playerId);
+		return new AnyId(playerId, 0);
 	}
 
 	public static AnyId idOf(long playerId, long id) {
@@ -44,7 +44,7 @@ public class AnyId implements Comparable<AnyId> {
 		String[] values = StringUtils.split(anyId, "-");
 		long playerId = Long.parseUnsignedLong(values[0], 32);
 		if (values.length == 1) {
-			return new AnyId(playerId, playerId);
+			return new AnyId(playerId, 0);
 		}
 		long id = Long.parseUnsignedLong(values[1], 32);
 		return new AnyId(playerId, id);
@@ -62,7 +62,7 @@ public class AnyId implements Comparable<AnyId> {
 	 */
 	public static String formatId(long playerId, long id) {
 		String tail = Long.toUnsignedString(id, 32);
-		if (playerId == id) {
+		if (id == 0) {
 			return String.valueOf(playerId);
 		}
 		return playerId + "-" + tail;

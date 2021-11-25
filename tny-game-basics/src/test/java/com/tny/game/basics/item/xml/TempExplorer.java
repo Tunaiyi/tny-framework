@@ -27,8 +27,8 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 	}
 
 	@Override
-	public <IM extends Model> IM getModel(int itemId) {
-		return (IM)this.idModel.get(itemId);
+	public <IM extends Model> IM getModel(int modelId) {
+		return (IM)this.idModel.get(modelId);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 	}
 
 	@Override
-	public <I extends Entity<?>> I getItem(long playerId, int id) {
+	public <I extends Entity<?>> I getItem(long playerId, int modelId) {
 		return null;
 	}
 

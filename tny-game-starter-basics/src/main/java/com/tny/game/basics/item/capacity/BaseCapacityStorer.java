@@ -125,10 +125,10 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public void saveSupplier(CapacitySupplierType type, long id, int itemId, CapacitySupply supply, long timeoutAt) {
+	public void saveSupplier(CapacitySupplierType type, long id, int modelId, CapacitySupply supply, long timeoutAt) {
 		StoreCapacitySupplier saved;
 		suppliersMap(id)
-				.put(id, saved = supplier2Save(type, id, itemId, supply, timeoutAt));
+				.put(id, saved = supplier2Save(type, id, modelId, supply, timeoutAt));
 		ON_SAVE_SUPPLIER.notify(this, singleton(saved));
 	}
 
@@ -151,10 +151,11 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public void saveComboSupplier(CapacitySupplierType type, long id, int itemId, Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
+	public void saveComboSupplier(CapacitySupplierType type, long id, int modelId, Collection<? extends CapacitySupplier> suppliers,
+			long timeoutAt) {
 		StoreCapacitySupplier saved;
 		suppliersMap(id)
-				.put(id, saved = comboSupplier2Save(type, id, itemId, suppliers, timeoutAt));
+				.put(id, saved = comboSupplier2Save(type, id, modelId, suppliers, timeoutAt));
 		ON_SAVE_SUPPLIER.notify(this, singleton(saved));
 	}
 
@@ -209,18 +210,18 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public void saveGoal(long id, int itemId, CapacityGather gather, long timeoutAt) {
+	public void saveGoal(long id, int modelId, CapacityGather gather, long timeoutAt) {
 		StoreCapacityGoal saved;
 		goalsMap(id)
-				.put(id, saved = goal2Save(id, itemId, gather, timeoutAt));
+				.put(id, saved = goal2Save(id, modelId, gather, timeoutAt));
 		ON_SAVE_GOAL.notify(this, singleton(saved));
 	}
 
 	@Override
-	public void saveGoal(long id, int itemId, Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
+	public void saveGoal(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
 		StoreCapacityGoal saved;
 		goalsMap(id)
-				.put(id, saved = goal2Save(id, itemId, suppliers, timeoutAt));
+				.put(id, saved = goal2Save(id, modelId, suppliers, timeoutAt));
 		ON_SAVE_GOAL.notify(this, singleton(saved));
 	}
 
@@ -295,12 +296,12 @@ public class BaseCapacityStorer implements CapacityStorer {
 		return StoreCapacityGoal.saveByGoal(goal, this, expireAt);
 	}
 
-	private StoreCapacityGoal goal2Save(long id, int itemId, CapacityGather gather, long expireAt) {
-		return StoreCapacityGoal.saveByGather(id, itemId, gather, this, expireAt);
+	private StoreCapacityGoal goal2Save(long id, int modelId, CapacityGather gather, long expireAt) {
+		return StoreCapacityGoal.saveByGather(id, modelId, gather, this, expireAt);
 	}
 
-	private StoreCapacityGoal goal2Save(long id, int itemId, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-		return StoreCapacityGoal.saveBySuppliers(id, itemId, suppliers.stream(), this, expireAt);
+	private StoreCapacityGoal goal2Save(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
+		return StoreCapacityGoal.saveBySuppliers(id, modelId, suppliers.stream(), this, expireAt);
 	}
 
 	private StoreCapacitySupplier supplier2Save(CapacitySupplier supplier, long expireAt) {
@@ -311,13 +312,14 @@ public class BaseCapacityStorer implements CapacityStorer {
 		}
 	}
 
-	private StoreCapacitySupplier supplier2Save(CapacitySupplierType type, long id, int itemId, CapacitySupply supply, long expireAt) {
-		return StoreCapacitySupplier.saveBySupply(type, id, itemId, this.getPlayerId(), supply, expireAt);
+	private StoreCapacitySupplier supplier2Save(CapacitySupplierType type, long id, int modelId, CapacitySupply supply, long expireAt) {
+		return StoreCapacitySupplier.saveBySupply(type, id, modelId, this.getPlayerId(), supply, expireAt);
 	}
 
-	private StoreCapacitySupplier comboSupplier2Save(CapacitySupplierType type, long id, int itemId, Collection<? extends CapacitySupplier> supplier,
+	private StoreCapacitySupplier comboSupplier2Save(CapacitySupplierType type, long id, int modelId,
+			Collection<? extends CapacitySupplier> supplier,
 			long expireAt) {
-		return StoreCapacitySupplier.saveByDependSuppliers(type, id, itemId, supplier.stream(), this, expireAt);
+		return StoreCapacitySupplier.saveByDependSuppliers(type, id, modelId, supplier.stream(), this, expireAt);
 	}
 
 	private String key(long id) {

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.*;
  * @author : kgtny
  * @date : 2021/9/17 5:29 下午
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedissonStorageAccessorFactory.class)
 @AutoConfigureBefore(DataAutoConfiguration.class)
 @Import({

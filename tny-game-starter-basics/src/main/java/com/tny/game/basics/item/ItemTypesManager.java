@@ -5,8 +5,8 @@ import java.util.Set;
 /**
  * Created by Kun Yang on 2018/1/4.
  */
-public interface ItemTypeManageable {
+public interface ItemTypesManager {
 
-    Set<ItemType> manageTypes();
+	Set<ItemType> manageTypes();
 
 }

@@ -66,8 +66,8 @@ public class ItemTypes extends ClassImporter {
 		return holder;
 	}
 
-	public static <T extends ItemType> T ofItemId(int itemId) {
-		int typeId = itemId / ID_TAIL_SIZE * ID_TAIL_SIZE;
+	public static <T extends ItemType> T ofModelId(int modelId) {
+		int typeId = modelId / ID_TAIL_SIZE * ID_TAIL_SIZE;
 		return check(typeId);
 	}
 

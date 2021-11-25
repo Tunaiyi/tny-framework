@@ -20,9 +20,16 @@ public abstract class BaseUpdater<I extends Item<?>> implements Updater<I> {
 
 	protected OnReset<I> onReset;
 
+	protected BaseUpdater() {
+	}
+
 	protected BaseUpdater(I item, int level) {
 		this.item = item;
 		this.level = level;
+	}
+
+	protected void bind(I item) {
+		this.setItem(item);
 	}
 
 	@Override
@@ -72,17 +79,17 @@ public abstract class BaseUpdater<I extends Item<?>> implements Updater<I> {
 		return this;
 	}
 
-	protected BaseUpdater<I> setOnPreUpgrade(OnPreUpgrade<I> onPreUpgrade) {
+	protected BaseUpdater<I> withOnPreUpgrade(OnPreUpgrade<I> onPreUpgrade) {
 		this.onPreUpgrade = onPreUpgrade;
 		return this;
 	}
 
-	protected BaseUpdater<I> setOnUpgrade(OnUpgrade<I> onUpgrade) {
+	protected BaseUpdater<I> withOnUpgrade(OnUpgrade<I> onUpgrade) {
 		this.onUpgrade = onUpgrade;
 		return this;
 	}
 
-	protected BaseUpdater<I> setOnReset(OnReset<I> onReset) {
+	protected BaseUpdater<I> withOnReset(OnReset<I> onReset) {
 		this.onReset = onReset;
 		return this;
 	}

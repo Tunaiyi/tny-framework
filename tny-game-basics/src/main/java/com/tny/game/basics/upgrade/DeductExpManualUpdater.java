@@ -10,6 +10,11 @@ import com.tny.game.basics.item.behavior.*;
  */
 public abstract class DeductExpManualUpdater<I extends Item<?>, EM extends ExpModel> extends BaseExpUpdater<I, EM> {
 
+	protected DeductExpManualUpdater(ExpType expType) {
+		super(expType);
+		this.setUpgradeOnMax(false);
+	}
+
 	protected DeductExpManualUpdater(I item, int level, ExpType expType, long exp) {
 		super(item, level, expType, exp, false);
 	}

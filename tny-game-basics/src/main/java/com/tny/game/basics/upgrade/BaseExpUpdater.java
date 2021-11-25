@@ -28,6 +28,10 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 
 	private OnPreReceiveExp<I, EM> onPreReceiveExp;
 
+	protected BaseExpUpdater(ExpType expType) {
+		this.expType = expType;
+	}
+
 	public BaseExpUpdater(I item, int level, ExpType expType, long exp, boolean upgradeOnMax) {
 		super(item, level);
 		this.expType = expType;
@@ -123,12 +127,12 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
 		return this;
 	}
 
-	protected BaseExpUpdater<I, EM> setOnReceiveExp(OnReceiveExp<I, EM> onReceiveExp) {
+	protected BaseExpUpdater<I, EM> withOnReceiveExp(OnReceiveExp<I, EM> onReceiveExp) {
 		this.onReceiveExp = onReceiveExp;
 		return this;
 	}
 
-	protected BaseExpUpdater<I, EM> setOnPreReceiveExp(OnPreReceiveExp<I, EM> onPreReceiveExp) {
+	protected BaseExpUpdater<I, EM> withOnPreReceiveExp(OnPreReceiveExp<I, EM> onPreReceiveExp) {
 		this.onPreReceiveExp = onPreReceiveExp;
 		return this;
 	}

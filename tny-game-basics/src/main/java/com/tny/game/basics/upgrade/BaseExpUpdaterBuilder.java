@@ -45,8 +45,8 @@ public abstract class BaseExpUpdaterBuilder<
 	@Override
 	protected void postInit(U updater) {
 		updater.setExp(this.exp)
-				.setOnPreReceiveExp(onPreReceiveExp)
-				.setOnReceiveExp(onReceiveExp);
+				.withOnPreReceiveExp(onPreReceiveExp)
+				.withOnReceiveExp(onReceiveExp);
 		postInitUpdater(updater);
 	}
 

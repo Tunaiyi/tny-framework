@@ -5,19 +5,8 @@ package com.tny.game.basics.item;
  *
  * @author KGTny
  */
-public interface StuffModel<N extends Number> extends ItemModel {
+public interface StuffModel extends ItemModel {
 
-	/**
-	 * @return 是否有数量限制 <br>
-	 */
-	boolean isNumberLimit();
-
-	/**
-	 * 数量上线 <br>
-	 *
-	 * @param stuff 计算参数
-	 * @return -1 表示无限制
-	 */
-	N countNumberLimit(Stuff<?> stuff);
+	ItemType getOwnerType();
 
 }

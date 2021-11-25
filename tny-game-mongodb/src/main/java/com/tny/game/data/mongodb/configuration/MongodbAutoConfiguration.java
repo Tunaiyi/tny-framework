@@ -6,7 +6,7 @@ import org.springframework.context.annotation.*;
 /**
  * <p>ConfigurationPropertiesBindingPostProcessor
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({
 		ImportConverterBeanDefinitionRegistrar.class,
 		MongodbBeanConfiguration.class,

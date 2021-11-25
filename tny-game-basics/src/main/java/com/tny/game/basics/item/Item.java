@@ -176,7 +176,7 @@ public interface Item<M extends ItemModel> extends Entity<M> {
 
 	@SuppressWarnings("unchecked")
 	default Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClass) {
-		return this.getModel().getOwnAbilityBy(abilityClass);
+		return this.getModel().getAbilityTypes(abilityClass);
 	}
 
 	default ActionResult getActionResult(Action action, Object... attributes) {

@@ -6,6 +6,6 @@ package com.tny.game.basics.item;
  * @param <IM>
  * @author KGTny
  */
-public interface Stuff<IM extends ItemModel> extends Item<IM> {
+public interface Stuff<IM extends StuffModel> extends Item<IM> {
 
 }

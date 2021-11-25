@@ -18,33 +18,33 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
 		}
 		return saveBySuppliers(
 				goal.getId(),
-				goal.getItemId(),
+				goal.getModelId(),
 				goal.suppliersStream(),
 				visitor,
 				ExpireCapable.expireAtOf(goal, expireAt));
 	}
 
-	static StoreCapacityGoal saveByGather(long id, int itemId, CapacityGather gather, CapacityVisitor visitor, long expireAt) {
+	static StoreCapacityGoal saveByGather(long id, int modelId, CapacityGather gather, CapacityVisitor visitor, long expireAt) {
 		return new StoreByCopyCapacityGoal(
-				id, itemId,
+				id, modelId,
 				gather.suppliersStream()
 						.filter(CapacitySupplier::isSupplying),
 				visitor,
 				ExpireCapable.expireAtOf(gather, expireAt));
 	}
 
-	static StoreCapacityGoal saveBySuppliers(long id, int itemId, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor,
+	static StoreCapacityGoal saveBySuppliers(long id, int modelId, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor,
 			long expireAt) {
 		return new StoreByCopyCapacityGoal(
-				id, itemId,
+				id, modelId,
 				suppliers.filter(CapacitySupplier::isSupplying),
 				visitor,
 				expireAt > 0 ? expireAt : -1);
 	}
 
-	static StoreCapacityGoal saveBySupplierIDs(long id, int itemId, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor,
+	static StoreCapacityGoal saveBySupplierIDs(long id, int modelId, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor,
 			long expireAt) {
-		return new StoreByCopyCapacityGoal(id, itemId, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
+		return new StoreByCopyCapacityGoal(id, modelId, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
 	}
 
 	void expireAt(long at);

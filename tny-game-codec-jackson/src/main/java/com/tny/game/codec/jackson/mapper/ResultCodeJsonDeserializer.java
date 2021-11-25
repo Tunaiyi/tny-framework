@@ -11,9 +11,15 @@ import java.io.IOException;
  */
 public class ResultCodeJsonDeserializer extends JsonDeserializer<ResultCode> {
 
-    @Override
-    public ResultCode deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        return ResultCodes.of(parser.getIntValue());
-    }
+	private static final ResultCodeJsonDeserializer INSTANT = new ResultCodeJsonDeserializer();
+
+	public static ResultCodeJsonDeserializer getDefault() {
+		return INSTANT;
+	}
+
+	@Override
+	public ResultCode deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		return ResultCodes.of(parser.getIntValue());
+	}
 
 }

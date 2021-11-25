@@ -12,7 +12,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/11/17 4:16 下午
  */
-public class GameStuffOwnerService<SM extends ItemModel, S extends Stuff<SM>, O
+public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
 		extends BaseStuffOwner<?, SM, S>>
 		implements PrimaryStuffService<SM> {
 
@@ -24,8 +24,8 @@ public class GameStuffOwnerService<SM extends ItemModel, S extends Stuff<SM>, O
 		this.stuffOwnerExplorer = stuffOwnerExplorer;
 	}
 
-	private O getOwner(Warehouse warehouse, ItemType stuffType) {
-		return warehouse.loadOwner(stuffType, (w, type) -> stuffOwnerExplorer.getOwner(w.getPlayerId(), type.getId()));
+	private O getOwner(Warehouse warehouse, ItemType ownerType) {
+		return warehouse.loadOwner(ownerType, (w, type) -> stuffOwnerExplorer.getOwner(w.getPlayerId(), ownerType));
 	}
 
 	@Override
@@ -37,8 +37,8 @@ public class GameStuffOwnerService<SM extends ItemModel, S extends Stuff<SM>, O
 				return true;
 			}
 			if (owner instanceof CountableStuffOwner) {
-				CountableStuffOwner<?, SM, S> countableStuffOwner = as(owner);
-				return countableStuffOwner.isOverflow(model, check, number);
+				CountableStuffOwner<?, ?, S> countableStuffOwner = as(owner);
+				return countableStuffOwner.isOverflow(as(model), check, number);
 			} else {
 				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), CountableStuffOwner.class);
 			}
@@ -57,8 +57,8 @@ public class GameStuffOwnerService<SM extends ItemModel, S extends Stuff<SM>, O
 				return true;
 			}
 			if (owner instanceof CountableStuffOwner) {
-				CountableStuffOwner<?, SM, S> countableStuffOwner = as(owner);
-				return countableStuffOwner.isNotEnough(model, check, number);
+				CountableStuffOwner<?, ?, S> countableStuffOwner = as(owner);
+				return countableStuffOwner.isNotEnough(as(model), check, number);
 			} else {
 				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), CountableStuffOwner.class);
 			}
@@ -73,8 +73,9 @@ public class GameStuffOwnerService<SM extends ItemModel, S extends Stuff<SM>, O
 		if (!tradeItem.isValid()) {
 			return;
 		}
-		ItemModel model = tradeItem.getItemModel();
+		StuffModel model = tradeItem.getItemModel();
 		try {
+			ItemType itemType = model.getOwnerType();
 			O owner = this.getOwner(warehouse, model.getItemType());
 			if (owner != null) {
 				synchronized (owner) {

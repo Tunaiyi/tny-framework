@@ -11,7 +11,7 @@ import java.util.*;
  * @param <S>
  * @author KGTny
  */
-public abstract class AbstractStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<SM>>
+public abstract class AbstractStuffOwner<IM extends ItemModel, SM extends StuffModel, S extends Stuff<SM>>
 		extends BaseStuffOwner<IM, SM, S> implements StuffOwner<IM, S> {
 
 	/**
@@ -26,8 +26,8 @@ public abstract class AbstractStuffOwner<IM extends ItemModel, SM extends ItemMo
 	}
 
 	@Override
-	public S getItemByItemId(int itemId) {
-		return this.itemMap.get((long)itemId);
+	public S getItemByModelId(int modelId) {
+		return this.itemMap.get((long)modelId);
 	}
 
 	protected Collection<S> getItemCollection() {

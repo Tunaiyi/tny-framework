@@ -35,14 +35,14 @@ public interface OpLogger {
 	/**
 	 * @param playerId 玩家ID
 	 * @param id       Item 的ID
-	 * @param itemId   记录ItemItemID 记录Item对象
+	 * @param modelId  记录Item的模型 id 记录Item对象
 	 * @param action   记录原因(操作Action)
 	 * @param oldNum   改变前的值
 	 * @param alter    改变数量
 	 * @param newNum   当前值
 	 * @return 返回Logger
 	 */
-	OpLogger logReceive(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum);
+	OpLogger logReceive(long playerId, long id, int modelId, Action action, long oldNum, long alter, long newNum);
 
 	/**
 	 * @param item   记录Item对象
@@ -69,14 +69,14 @@ public interface OpLogger {
 	/**
 	 * @param playerId 玩家ID
 	 * @param id       Item 的ID
-	 * @param itemId   记录ItemItemID 记录Item对象
+	 * @param modelId  记录Item的模型 id 记录Item对象
 	 * @param action   记录原因(操作Action)
 	 * @param oldNum   改变前的值
 	 * @param alter    改变数量
 	 * @param newNum   当前值
 	 * @return 返回Logger
 	 */
-	OpLogger logConsume(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum);
+	OpLogger logConsume(long playerId, long id, int modelId, Action action, long oldNum, long alter, long newNum);
 
 	/**
 	 * Item获得结算
@@ -103,7 +103,7 @@ public interface OpLogger {
 	 * Item获得结算
 	 *
 	 * @param playerId 玩家ID
-	 * @param itemId   记录ItemItemID 记录Item对象
+	 * @param itemId   记录Item的模型 id 记录Item对象
 	 * @param alter    改变数量
 	 * @param newNum   当前值
 	 * @return 返回Logger
@@ -135,7 +135,7 @@ public interface OpLogger {
 	 * Item消耗结算
 	 *
 	 * @param playerId 玩家ID
-	 * @param itemId   记录ItemItemID 记录Item对象
+	 * @param itemId   记录Item的模型 id 记录Item对象
 	 * @param alter    改变数量
 	 * @param newNum   当前值
 	 * @return 返回Logger

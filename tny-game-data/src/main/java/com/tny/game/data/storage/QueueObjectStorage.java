@@ -94,8 +94,8 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	}
 
 	@Override
-	public <T> List<T> find(Map<String, Object> findValue, Class<T> returnClass) {
-		return accessor.find(findValue, returnClass);
+	public <T> List<T> find(Map<String, Object> query, Class<T> returnClass) {
+		return accessor.find(query, returnClass);
 	}
 
 	@Override

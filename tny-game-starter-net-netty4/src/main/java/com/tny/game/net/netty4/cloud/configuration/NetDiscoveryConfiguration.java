@@ -10,7 +10,7 @@ import org.springframework.context.annotation.*;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ServiceRegistry.class)
 public class NetDiscoveryConfiguration {
 

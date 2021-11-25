@@ -5,7 +5,7 @@ package com.tny.game.basics.item;
  *
  * @param <I> ItemModel类型
  */
-public interface TradeItem<I extends ItemModel> extends DealItem<I> {
+public interface TradeItem<I extends StuffModel> extends DealItem<I> {
 
 	AlterType getAlertType();
 

@@ -21,7 +21,7 @@ import org.springframework.context.annotation.*;
  * @author : kgtny
  * @date : 2021/9/17 5:29 下午
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(MongoClientStorageAccessorFactory.class)
 @AutoConfigureAfter({MongodbAutoConfiguration.class})
 @AutoConfigureBefore(DataAutoConfiguration.class)
@@ -44,7 +44,7 @@ public class MongoStorageAutoConfiguration {
 	@ConditionalOnMissingBean(JsonEntityObjectConverter.class)
 	JsonEntityObjectConverter jsonEntityObjectConverter(
 			EntityLoadedService entityOnLoadService,
-			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
+			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
 				.setAnnotationIntrospector(new MongoIdIntrospector())

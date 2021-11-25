@@ -34,7 +34,7 @@ public class ActionResultDTO implements Serializable {
 
 	}
 
-	public static ActionResultDTO costTradeItemList2DTO(Collection<TradeItem<ItemModel>> tradeItemList) {
+	public static ActionResultDTO costTradeItemList2DTO(Collection<TradeItem<StuffModel>> tradeItemList) {
 		ActionResultDTO dto = new ActionResultDTO();
 		dto.demandResults = tradeItemList.stream()
 				.map(tradeItem -> DemandResultDTO

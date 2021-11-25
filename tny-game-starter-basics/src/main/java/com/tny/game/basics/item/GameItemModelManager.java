@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class GameItemModelManager<IM extends ItemModel> extends GameModelManager<IM> implements ItemTypeManageable {
+public abstract class GameItemModelManager<IM extends ItemModel> extends GameModelManager<IM> implements ItemTypesManager {
 
 	private volatile Set<ItemType> itemTypes = ImmutableSet.of();
 

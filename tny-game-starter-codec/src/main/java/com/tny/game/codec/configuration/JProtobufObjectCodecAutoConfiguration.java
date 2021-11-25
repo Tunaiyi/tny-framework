@@ -10,14 +10,14 @@ import org.springframework.context.annotation.*;
  * @author : kgtny
  * @date : 2021/7/23 8:58 下午
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ProtobufObjectCodecFactory.class)
 public class JProtobufObjectCodecAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean(ProtobufObjectCodecFactory.class)
-    public ProtobufObjectCodecFactory protobufObjectCodecorFactory() {
-        return new ProtobufObjectCodecFactory();
-    }
+	@Bean
+	@ConditionalOnMissingBean(ProtobufObjectCodecFactory.class)
+	public ProtobufObjectCodecFactory protobufObjectCodecorFactory() {
+		return new ProtobufObjectCodecFactory();
+	}
 
 }

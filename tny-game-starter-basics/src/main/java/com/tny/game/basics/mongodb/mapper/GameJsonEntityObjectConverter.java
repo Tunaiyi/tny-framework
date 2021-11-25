@@ -23,7 +23,11 @@ public class GameJsonEntityObjectConverter extends JsonEntityObjectConverter {
 		if (targetClass == Document.class) {
 			Document document = (Document)value;
 			if (source instanceof Any) {
+				Any any = (Any)source;
 				document.put("_id", id);
+				if (!document.containsKey("id")) {
+					document.put("id", any.getId());
+				}
 			}
 		}
 		return value;

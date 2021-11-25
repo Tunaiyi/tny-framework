@@ -23,9 +23,8 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapable implements Sto
 		return supplier.getId();
 	}
 
-	@Override
-	public int getItemId() {
-		return supplier.getItemId();
+	public int getModelId() {
+		return supplier.getModelId();
 	}
 
 	@Override
@@ -72,8 +71,8 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapable implements Sto
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", supplier.getId())
-				.add("itemId", supplier.getItemId())
-				.add("name", ItemModels.name(supplier.getItemId()))
+				.add("modelId", supplier.getModelId())
+				.add("name", ItemModels.name(supplier.getModelId()))
 				.toString();
 	}
 

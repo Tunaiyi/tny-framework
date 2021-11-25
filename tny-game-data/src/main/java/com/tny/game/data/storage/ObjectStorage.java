@@ -22,11 +22,11 @@ public interface ObjectStorage<K extends Comparable<?>, O> {
 	/**
 	 * 按索引字段查找
 	 *
-	 * @param findValue   索引调节
+	 * @param query       索引调节
 	 * @param returnClass 返回类型
 	 * @return 返回查找信息
 	 */
-	<T> List<T> find(Map<String, Object> findValue, Class<T> returnClass);
+	<T> List<T> find(Map<String, Object> query, Class<T> returnClass);
 
 	/**
 	 * 查找所有

@@ -12,7 +12,7 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BasicsFeatureProperties.class)
 @ConditionalOnProperty(name = BASICS_FEATURE_MANAGER_ENABLE, havingValue = "true")
 public class BasicsFeatureConfiguration {

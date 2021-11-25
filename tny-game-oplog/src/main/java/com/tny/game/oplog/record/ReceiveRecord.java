@@ -41,8 +41,8 @@ public class ReceiveRecord implements StuffTradeLog {
 	}
 
 	public ReceiveRecord(StuffTradeLog log) {
-		this.rid = log.getId() == log.getItemId() ? null : log.getId();
-		this.riid = log.getItemId();
+		this.rid = log.getId() == log.getModelId() ? null : log.getId();
+		this.riid = log.getModelId();
 		this.ronum = log.getOldNum();
 		this.rnnum = log.getNewNum();
 		this.ralter = log.getAlterNum();
@@ -54,7 +54,7 @@ public class ReceiveRecord implements StuffTradeLog {
 	}
 
 	@Override
-	public int getItemId() {
+	public int getModelId() {
 		return this.riid;
 	}
 
@@ -74,9 +74,9 @@ public class ReceiveRecord implements StuffTradeLog {
 	}
 
 	public long getNum() {
-        if (this.ralter == null) {
-            return this.rnnum - this.ronum;
-        }
+		if (this.ralter == null) {
+			return this.rnnum - this.ronum;
+		}
 		return this.ralter;
 	}
 

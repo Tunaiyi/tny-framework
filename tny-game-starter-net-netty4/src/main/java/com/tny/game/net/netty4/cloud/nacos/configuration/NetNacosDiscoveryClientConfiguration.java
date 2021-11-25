@@ -14,7 +14,7 @@ import org.springframework.context.annotation.*;
  * @author : kgtny
  * @date : 2021/9/10 1:29 下午
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(NacosDiscoveryProperties.class)
 @AutoConfigureAfter(NacosDiscoveryAutoConfiguration.class)
 public class NetNacosDiscoveryClientConfiguration {

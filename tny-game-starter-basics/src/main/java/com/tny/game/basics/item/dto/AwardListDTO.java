@@ -28,12 +28,12 @@ public class AwardListDTO implements Serializable {
 		return awardList == null || awardList.isEmpty();
 	}
 
-	public static AwardListDTO dealedResult2DTO(DealResult dealedResult) {
+	public static AwardListDTO dealResult2DTO(DealResult dealResult) {
 		AwardListDTO dto = new AwardListDTO();
 		List<AwardDTO> awardList = new ArrayList<>();
-		for (DealItem<?> dealedItem : dealedResult.getDealItemList()) {
+		for (DealItem<?> dealedItem : dealResult.getDealItemList()) {
 			if (dealedItem.getNumber().longValue() > 0) {
-				awardList.add(AwardDTO.dealedItem2DTO(dealedItem));
+				awardList.add(AwardDTO.dealItem2DTO(dealedItem));
 			}
 		}
 		dto.awardList = awardList;
@@ -52,7 +52,7 @@ public class AwardListDTO implements Serializable {
 		AwardListDTO dto = new AwardListDTO();
 		List<AwardDTO> awardList = new ArrayList<>();
 		for (AwardDetail detail : awardDetail) {
-			for (TradeItem<ItemModel> entry : detail.getAllTradeItemList())
+			for (TradeItem<?> entry : detail.getAllTradeItemList())
 				awardList.add(AwardDTO.tradeItem2DTO(entry));
 		}
 		dto.awardList = awardList;
@@ -71,7 +71,7 @@ public class AwardListDTO implements Serializable {
 		return dto;
 	}
 
-	public static AwardListDTO dealedItemList2DTO(Collection<? extends DealItem<?>> tradeItemList) {
+	public static AwardListDTO dealItemList2DTO(Collection<? extends DealItem<?>> tradeItemList) {
 		AwardListDTO dto = new AwardListDTO();
 		List<AwardDTO> awardList = new ArrayList<>();
 		for (DealItem<?> entry : tradeItemList) {
@@ -87,7 +87,7 @@ public class AwardListDTO implements Serializable {
 		AwardListDTO dto = new AwardListDTO();
 		List<AwardDTO> awardList = new ArrayList<>();
 		for (TradeInfo trade : tradeList) {
-			for (TradeItem<ItemModel> entry : trade.getAllTradeItem())
+			for (TradeItem<?> entry : trade.getAllTradeItem())
 				awardList.add(AwardDTO.tradeItem2DTO(entry));
 		}
 		dto.awardList = awardList;
@@ -96,19 +96,19 @@ public class AwardListDTO implements Serializable {
 
 	public static AwardListDTO awardList2DTO(AwardList awardList) {
 		List<AwardDetail> detailsList = awardList.getAwardDetailList();
-		Collection<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
+		Collection<TradeItem<?>> tradeItemList = new ArrayList<>();
 		for (AwardDetail detail : detailsList) {
 			tradeItemList.addAll(detail.getAllTradeItemList());
 		}
 		return tradeItemList2DTO(tradeItemList);
 	}
 
-	public static AwardListDTO dealedItems2DTO(List<DealItem<?>> awardTrade) {
-		return dealedItemList2DTO(awardTrade);
+	public static AwardListDTO dealItems2DTO(List<DealItem<?>> awardTrade) {
+		return dealItemList2DTO(awardTrade);
 	}
 
 	public static AwardListDTO awardList2DTO(Trade countTradeAward) {
-		Collection<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
+		Collection<TradeItem<?>> tradeItemList = new ArrayList<>();
 		tradeItemList.addAll(countTradeAward.getAllTradeItem());
 		return tradeItemList2DTO(tradeItemList);
 	}

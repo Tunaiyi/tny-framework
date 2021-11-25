@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({
 		ImportRpcServiceDefinitionRegistrar.class,
 		ImportRpcConnectorDefinitionRegistrar.class

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.*;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BasicsCapacityModuleProperties.class)
 @ConditionalOnProperty(name = BasicsPropertiesConstants.BASICS_CAPACITY_MODULE_ENABLE, havingValue = "true")
 public class BasicsCapacityModuleConfiguration {

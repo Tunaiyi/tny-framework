@@ -1,6 +1,6 @@
 package com.tny.game.basics.item;
 
-public interface CountableStuff<IM extends ItemModel, N extends Number> extends Stuff<IM> {
+public interface CountableStuff<IM extends CountableStuffModel, N extends Number> extends Stuff<IM> {
 
 	int UNLIMITED = -1;
 

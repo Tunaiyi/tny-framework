@@ -10,7 +10,7 @@ import java.util.Set;
  * @author : kgtny
  * @date : 2021/11/17 4:16 下午
  */
-public abstract class BaseStuffService<SM extends ItemModel> implements StuffService<SM> {
+public abstract class BaseStuffService<SM extends StuffModel> implements StuffService<SM> {
 
 	private final Set<ItemType> stuffItemTypes;
 

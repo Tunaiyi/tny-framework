@@ -8,6 +8,8 @@ import com.tny.game.expr.*;
 
 import java.util.Map;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * 事物执行行为操作的条件
  *
@@ -111,7 +113,7 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
 		Object expect = this.expect != null ? this.expect.createExpr().putAll(attributeMap).execute(Object.class) : null;
 		boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
 		if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE) {
-			return new CostDemandResult(id, demandModel, this.demandType, current, expect, satisfy, this.alertType, paramMap);
+			return new CostDemandResult(id, as(demandModel), this.demandType, current, expect, satisfy, this.alertType, paramMap);
 		} else {
 			return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
 		}

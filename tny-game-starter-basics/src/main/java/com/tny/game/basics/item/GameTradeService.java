@@ -25,7 +25,7 @@ public class GameTradeService implements TradeService {
 
 	private final WarehouseManager warehouseManager;
 
-	private final Map<ItemType, StuffService<?>> serviceMap = ImmutableMap.of();
+	private final Map<ItemType, StuffService<?>> serviceMap;
 
 	public GameTradeService(WarehouseManager warehouseManager, PrimaryStuffService<?> primaryService, List<StuffService<?>> services) {
 		this.warehouseManager = warehouseManager;
@@ -40,6 +40,7 @@ public class GameTradeService implements TradeService {
 				}
 			}
 		}
+		this.serviceMap = ImmutableMap.copyOf(serviceMap);
 	}
 
 	@Override
@@ -81,28 +82,26 @@ public class GameTradeService implements TradeService {
 		if (warehouse == null) {
 			return ItemResultCode.ROLE_NO_EXIST;
 		}
-		for (TradeItem<ItemModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
 			if (!(item.getItemModel() instanceof StuffModel)) {
 				continue;
 			}
-			StuffModel<?> stuffModel = item.getItemModel();
-			if (stuffModel.isNumberLimit()) {
-				StuffService<StuffModel<?>> service = stuffService(stuffModel.getItemType());
-				if (award) {
-					if (service.isOverflow(warehouse, stuffModel, AlterType.CHECK, item.getNumber())) {
-						return ItemResultCode.FULL_NUMBER;
-					}
-				} else {
-					if (service.isNotEnough(warehouse, stuffModel, AlterType.CHECK, item.getNumber())) {
-						return ItemResultCode.LACK_NUMBER;
-					}
+			StuffModel stuffModel = item.getItemModel();
+			StuffService<StuffModel> service = stuffService(stuffModel.getItemType());
+			if (award) {
+				if (service.isOverflow(warehouse, stuffModel, AlterType.CHECK, item.getNumber())) {
+					return ItemResultCode.FULL_NUMBER;
+				}
+			} else {
+				if (service.isNotEnough(warehouse, stuffModel, AlterType.CHECK, item.getNumber())) {
+					return ItemResultCode.LACK_NUMBER;
 				}
 			}
 		}
 		return ResultCode.SUCCESS;
 	}
 
-	private <T extends ItemModel> StuffService<T> stuffService(ItemType itemType) {
+	private <T extends StuffModel> StuffService<T> stuffService(ItemType itemType) {
 		if (serviceMap.isEmpty()) {
 			return as(primaryService);
 		}
@@ -115,35 +114,35 @@ public class GameTradeService implements TradeService {
 
 	private void deduct(Warehouse warehouse, Trade trade, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		for (TradeItem<ItemModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
 			this.doDeduct(warehouse, item, trade.getAction(), attributes);
 		}
 		TradeEvents.CONSUME_EVENT.notify(warehouse, trade, attributes);
 	}
 
-	private void doDeduct(Warehouse warehouse, TradeItem<ItemModel> item, Action action, Attributes attributes) {
+	private void doDeduct(Warehouse warehouse, TradeItem<StuffModel> item, Action action, Attributes attributes) {
 		if (!(item.getItemModel() instanceof StuffModel)) {
 			return;
 		}
 		ItemModel stuffModel = item.getItemModel();
-		StuffService<ItemModel> service = stuffService(stuffModel.getItemType());
+		StuffService<StuffModel> service = stuffService(stuffModel.getItemType());
 		service.deduct(warehouse, item, action, attributes);
 	}
 
 	private void reward(Warehouse warehouse, Trade trade, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		for (TradeItem<ItemModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
 			this.doReward(warehouse, item, trade.getAction(), attributes);
 		}
 		TradeEvents.REWARD_EVENT.notify(warehouse, trade, attributes);
 	}
 
-	private void doReward(Warehouse warehouse, TradeItem<ItemModel> item, Action action, Attributes attributes) {
+	private void doReward(Warehouse warehouse, TradeItem<StuffModel> item, Action action, Attributes attributes) {
 		if (!(item.getItemModel() instanceof StuffModel)) {
 			return;
 		}
 		ItemModel stuffModel = item.getItemModel();
-		StuffService<ItemModel> service = stuffService(stuffModel.getItemType());
+		StuffService<StuffModel> service = stuffService(stuffModel.getItemType());
 		service.reward(warehouse, item, action, attributes);
 	}
 

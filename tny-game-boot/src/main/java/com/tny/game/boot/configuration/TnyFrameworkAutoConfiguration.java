@@ -10,7 +10,7 @@ import org.springframework.context.annotation.*;
  * @author : kgtny
  * @date : 2021/7/15 8:55 下午
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 //@Import(ImportEventListenerBeanDefinitionRegistrar.class)
 public class TnyFrameworkAutoConfiguration {
 

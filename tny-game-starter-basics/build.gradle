@@ -8,6 +8,7 @@ dependencies {
     annotationProcessor libs.spring_boot_configuration_processor
 
     api libs.spring_boot_autoconfigure
+    api libs.aspectjrt
 
     api project(":tny-game-basics")
     api project(":tny-game-doc")

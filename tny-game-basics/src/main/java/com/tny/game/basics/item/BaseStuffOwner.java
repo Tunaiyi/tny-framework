@@ -6,7 +6,7 @@ import com.tny.game.common.context.*;
 /**
  * Created by Kun Yang on 16/1/28.
  */
-public abstract class BaseStuffOwner<IM extends ItemModel, SM extends ItemModel, S extends Stuff<?>>
+public abstract class BaseStuffOwner<IM extends ItemModel, SM extends StuffModel, S extends Stuff<?>>
 		extends BaseItem<IM>
 		implements StuffOwner<IM, S> {
 

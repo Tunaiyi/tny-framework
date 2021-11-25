@@ -13,7 +13,7 @@ import java.util.List;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "tny.net.filter.words.enable", havingValue = "true")
 @EnableConfigurationProperties(TextFilterProperties.class)
 public class TextFilterAutoConfiguration {

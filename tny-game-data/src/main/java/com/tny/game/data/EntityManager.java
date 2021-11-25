@@ -8,6 +8,42 @@ import java.util.*;
 public interface EntityManager<K extends Comparable<?>, E> {
 
 	/**
+	 * 按索引字段查找实体类
+	 *
+	 * @param query 查询字段
+	 * @return 返回查找信息
+	 */
+	default List<E> find(Map<String, Object> query) {
+		return find(query, null);
+	}
+
+	/**
+	 * 按索引字段查找实体类
+	 *
+	 * @param query  查询字段
+	 * @param onLoad 加载回调
+	 * @return 返回查找信息
+	 */
+	List<E> find(Map<String, Object> query, EntityOnLoad<K, E> onLoad);
+
+	/**
+	 * 查找所有实体类
+	 *
+	 * @param onLoad 加载回调
+	 * @return 返回查找信息
+	 */
+	List<E> findAll(EntityOnLoad<K, E> onLoad);
+
+	/**
+	 * 查找所有实体类
+	 *
+	 * @return 返回查找信息
+	 */
+	default List<E> findAll() {
+		return findAll(null);
+	}
+
+	/**
 	 * 加载, 如果没有则创建并插入
 	 *
 	 * @param id      id
@@ -21,6 +57,7 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	 * 加载, 如果没有则创建并插入
 	 *
 	 * @param id      id
+	 * @param onLoad  加载回调
 	 * @param creator 实体工厂
 	 */
 	E loadEntity(K id, EntityCreator<K, E> creator, EntityOnLoad<K, E> load);
@@ -38,7 +75,8 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	/**
 	 * 获取指定id的实体
 	 *
-	 * @param id id
+	 * @param id     id
+	 * @param onLoad 加载回调
 	 * @return 返回获取实体
 	 */
 	E getEntity(K id, EntityOnLoad<K, E> onLoad);

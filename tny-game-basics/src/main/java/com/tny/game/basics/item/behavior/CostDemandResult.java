@@ -11,15 +11,23 @@ import java.util.Map;
  */
 public class CostDemandResult extends DemandResult {
 
-    private AlterType alterType;
+	private AlterType alterType;
 
-    public CostDemandResult(long id, ItemModel itemModel, DemandType demandType, Object currentValue, Object expectValue, boolean satisfy,
-            AlterType alterType, Map<DemandParam, Object> paramMap) {
-        super(id, itemModel, demandType, currentValue, expectValue, satisfy, paramMap);
-        this.alterType = alterType;
-    }
+	private StuffModel stuffModel;
 
-    public AlterType getAlterType() {
-        return alterType;
-    }
+	public CostDemandResult(long id, StuffModel stuffModel, DemandType demandType, Object currentValue, Object expectValue, boolean satisfy,
+			AlterType alterType, Map<DemandParam, Object> paramMap) {
+		super(id, stuffModel, demandType, currentValue, expectValue, satisfy, paramMap);
+		this.alterType = alterType;
+		this.stuffModel = stuffModel;
+	}
+
+	public AlterType getAlterType() {
+		return alterType;
+	}
+
+	public StuffModel getStuffModel() {
+		return stuffModel;
+	}
+
 }

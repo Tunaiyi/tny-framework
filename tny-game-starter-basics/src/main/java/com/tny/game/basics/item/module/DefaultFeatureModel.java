@@ -19,6 +19,8 @@ public class DefaultFeatureModel extends BaseModel<Object> implements FeatureMod
 
 	private Feature feature;
 
+	private Feature parent;
+
 	private int openLevel;
 
 	private Version openVersion;
@@ -59,7 +61,7 @@ public class DefaultFeatureModel extends BaseModel<Object> implements FeatureMod
 
 	@Override
 	public Optional<Feature> getParent() {
-		return this.feature.getParent();
+		return Optional.ofNullable(parent);
 	}
 
 	@Override

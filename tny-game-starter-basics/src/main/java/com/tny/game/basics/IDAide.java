@@ -57,7 +57,7 @@ public class IDAide {
 	 * @param index    索引
 	 * @return 返回 item id
 	 */
-	public static long createItemId(ItemType itemType, long index) {
+	public static long createModelId(ItemType itemType, long index) {
 		return itemType.getId() * ITEM_ID_OFFSET + index;
 	}
 

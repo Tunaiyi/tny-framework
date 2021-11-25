@@ -1,6 +1,6 @@
-package com.tny.game.basics.mongodb.mapper;
+package com.tny.game.basics.item.mapper;
 
-import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.tny.game.basics.item.*;
 
@@ -22,12 +22,16 @@ public class ItemModelJsonDeserializer extends JsonDeserializer<ItemModel> {
 	}
 
 	@Override
-	public ItemModel deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		Object object = p.getCurrentValue();
-		if (object == null) {
-			return null;
+	public ItemModel deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+		switch (p.getCurrentToken()) {
+			case VALUE_STRING:
+			case VALUE_NUMBER_INT:
+			case VALUE_NUMBER_FLOAT:
+				return gameExplorer.getModel(p.getValueAsInt());
+			case VALUE_NULL:
+				return null;
 		}
-		return gameExplorer.getModel(p.getIntValue());
+		return null;
 	}
 
 }

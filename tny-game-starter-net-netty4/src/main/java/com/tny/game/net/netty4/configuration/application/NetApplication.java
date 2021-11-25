@@ -1,7 +1,6 @@
 package com.tny.game.net.netty4.configuration.application;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.boot.transaction.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.telnet.*;
 import org.apache.commons.lang3.StringUtils;
@@ -47,47 +46,42 @@ public class NetApplication {
 	}
 
 	public NetApplication start() throws Throwable {
-		TransactionManager.open();
-		try {
-			// processor.setApplicationContext(this.appContext);
-			//per initServer
-			this.startAt = Instant.now();
-			runPoint(this.beforeInitServer);
-			this.servers = this.initApplication();
-			//            ApplicationLifecycleProcessor.loadHandler(this.applicationContext);
-			runPoint(this.afterInitServer);
-			//post initServer
+		// processor.setApplicationContext(this.appContext);
+		//per initServer
+		this.startAt = Instant.now();
+		runPoint(this.beforeInitServer);
+		this.servers = this.initApplication();
+		//            ApplicationLifecycleProcessor.loadHandler(this.applicationContext);
+		runPoint(this.afterInitServer);
+		//post initServer
 
-			//            this.processor.onPrepareStart(false);
-			LOG.info("服务器启动服务器!");
+		//            this.processor.onPrepareStart(false);
+		LOG.info("服务器启动服务器!");
 
-			// per start
-			runPoint(this.beforeStartServer);
-			this.servers.forEach(ServerGuide::open);
-			runPoint(this.afterStartServer);
+		// per start
+		runPoint(this.beforeStartServer);
+		this.servers.forEach(ServerGuide::open);
+		runPoint(this.afterStartServer);
 
-			// if (this.applicationContext.getBeanNamesForType(TelnetServer.class).length > 0) {
-			//     TelnetServer telnetServer = this.applicationContext.getBean(TelnetServer.class);
-			//     if (telnetServer != null)
-			//         telnetServer.start();
-			// }
-			//            this.processor.onPostStart(false);
-			//            ShutdownHook.register(() -> this.servers.forEach(guide -> {
-			//                TransactionManager.open();
-			//                try {
-			//                    guide.close();
-			//                } catch (Throwable throwable) {
-			//                    LOG.error("ShutdownHook handle close", throwable);
-			//                } finally {
-			//                    TransactionManager.close();
-			//                }
-			//            }));
-			// complete
-			runPoint(this.complete);
-			LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - this.startAt.toEpochMilli());
-		} finally {
-			TransactionManager.close();
-		}
+		// if (this.applicationContext.getBeanNamesForType(TelnetServer.class).length > 0) {
+		//     TelnetServer telnetServer = this.applicationContext.getBean(TelnetServer.class);
+		//     if (telnetServer != null)
+		//         telnetServer.start();
+		// }
+		//            this.processor.onPostStart(false);
+		//            ShutdownHook.register(() -> this.servers.forEach(guide -> {
+		//                TransactionManager.open();
+		//                try {
+		//                    guide.close();
+		//                } catch (Throwable throwable) {
+		//                    LOG.error("ShutdownHook handle close", throwable);
+		//                } finally {
+		//                    TransactionManager.close();
+		//                }
+		//            }));
+		// complete
+		runPoint(this.complete);
+		LOG.info("服务启动完成!! | 耗时 {}", System.currentTimeMillis() - this.startAt.toEpochMilli());
 		return this;
 	}
 
@@ -101,13 +95,10 @@ public class NetApplication {
 
 	public void close() {
 		this.servers.forEach(guide -> {
-			TransactionManager.open();
 			try {
 				guide.close();
 			} catch (Throwable throwable) {
 				LOG.error("ShutdownHook handle close", throwable);
-			} finally {
-				TransactionManager.close();
 			}
 		});
 	}

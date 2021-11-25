@@ -59,9 +59,9 @@ public abstract class BaseUpdaterBuilder<I extends Item<?>, U extends BaseUpdate
 	private void init(U updater) {
 		updater.setLevel(this.level)
 				.setItem(this.item)
-				.setOnPreUpgrade(onPreUpgrade)
-				.setOnUpgrade(onUpgrade)
-				.setOnReset(onReset);
+				.withOnPreUpgrade(onPreUpgrade)
+				.withOnUpgrade(onUpgrade)
+				.withOnReset(onReset);
 	}
 
 	protected void postInit(U updater) {

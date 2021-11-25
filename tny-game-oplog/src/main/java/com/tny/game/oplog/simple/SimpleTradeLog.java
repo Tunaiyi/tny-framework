@@ -7,7 +7,7 @@ public class SimpleTradeLog implements StuffTradeLog {
 
 	private long id;
 
-	private int itemId;
+	private int modelId;
 
 	private long oldNum;
 
@@ -18,16 +18,16 @@ public class SimpleTradeLog implements StuffTradeLog {
 	public SimpleTradeLog(Item<?> item, OpTradeType tradeType, long oldNumber, long alter, long newNumber) {
 		super();
 		this.id = item.getId();
-		this.itemId = item.getModelId();
+		this.modelId = item.getModelId();
 		this.oldNum = oldNumber;
 		this.newNum = newNumber;
 		this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
 	}
 
-	public SimpleTradeLog(long id, int itemId, OpTradeType tradeType, long oldNum, long alter, long newNum) {
+	public SimpleTradeLog(long id, int modelId, OpTradeType tradeType, long oldNum, long alter, long newNum) {
 		super();
 		this.id = id;
-		this.itemId = itemId;
+		this.modelId = modelId;
 		this.oldNum = oldNum;
 		this.newNum = newNum;
 		this.alter = tradeType == OpTradeType.CONSUME ? -1 * alter : alter;
@@ -49,8 +49,8 @@ public class SimpleTradeLog implements StuffTradeLog {
 	}
 
 	@Override
-	public int getItemId() {
-		return this.itemId;
+	public int getModelId() {
+		return this.modelId;
 	}
 
 	@Override

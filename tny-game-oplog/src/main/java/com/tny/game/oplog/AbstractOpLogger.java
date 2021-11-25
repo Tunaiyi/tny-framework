@@ -54,14 +54,14 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logReceive(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum) {
+	public OpLogger logReceive(long playerId, long id, int modelId, Action action, long oldNum, long alter, long newNum) {
 		try {
 			action = this.transAction(action);
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.logReceive(id, itemId, action, oldNum, alter, newNum);
+			log.logReceive(id, modelId, action, oldNum, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | logReceive exception", playerId, action, e);
 		}
@@ -115,14 +115,14 @@ public abstract class AbstractOpLogger implements OpLogger {
 	}
 
 	@Override
-	public OpLogger logConsume(long playerId, long id, int itemId, Action action, long oldNum, long alter, long newNum) {
+	public OpLogger logConsume(long playerId, long id, int modelId, Action action, long oldNum, long alter, long newNum) {
 		try {
 			action = this.transAction(action);
 			UserOpLog log = this.getUserLogger(playerId);
 			if (log == null) {
 				return this;
 			}
-			log.logConsume(id, itemId, action, oldNum, alter, newNum);
+			log.logConsume(id, modelId, action, oldNum, alter, newNum);
 		} catch (Exception e) {
 			LOGGER.error("{} | {} | logConsume exception", playerId, action, e);
 		}

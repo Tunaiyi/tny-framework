@@ -1,7 +1,6 @@
 package com.tny.game.basics.item;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.basics.item.annotation.*;
 import com.tny.game.common.lifecycle.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
@@ -10,7 +9,6 @@ import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.*;
 
-import static com.tny.game.basics.item.ItemType.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -18,8 +16,6 @@ import static com.tny.game.common.utils.StringAide.*;
 public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExplorer, ApplicationContextAware, AppPrepareStart {
 
 	private Map<Class<?>, GameManager<Object>> managerMap = ImmutableMap.of();
-
-	private Map<ItemType, GameManager<Object>> typeStorageManagerMap = ImmutableMap.of();
 
 	private Map<ItemType, GameManager<Object>> typeManagerMap = ImmutableMap.of();
 
@@ -40,8 +36,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <IM extends Model> IM getModel(int itemId) {
-		return (IM)this.getModelManager(itemId).getModel(itemId);
+	public <IM extends Model> IM getModel(int modelId) {
+		return (IM)this.getModelManager(modelId).getModel(modelId);
 	}
 
 	@Override
@@ -55,9 +51,9 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <I extends Entity<?>> I getItem(long playerId, int itemId) {
-		GameManager<Object> manager = this.getItemManager(itemId);
-		return (I)manager.get(playerId, itemId);
+	public <I extends Entity<?>> I getItem(long playerId, int modelId) {
+		GameManager<Object> manager = this.getItemManager(modelId);
+		return (I)manager.get(playerId, modelId);
 	}
 
 	@Override
@@ -148,16 +144,16 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> O getOwner(long playerId, int itemId) {
-		GameManager<Object> manager = this.getOwnerManager(itemId);
+	public <O extends StuffOwner<?, ?>> O getOwner(long playerId, ItemType ownerType) {
+		GameManager<Object> manager = this.getOwnerManager(ownerType);
 		return (O)manager.get(playerId);
 	}
 
 	@Override
-	public boolean insertStorage(StuffOwner<?, ?>... ownerArray) {
+	public boolean insertOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
 			if (manager.insert(owner)) {
 				continue;
 			}
@@ -167,11 +163,11 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> Collection<O> insertStorage(
+	public <O extends StuffOwner<?, ?>> Collection<O> insertOwner(
 			Collection<O> ownerCollection) {
 		Collection<O> fail = new LinkedList<>();
 		for (O owner : ownerCollection) {
-			if (this.insertStorage(owner)) {
+			if (this.insertOwner(owner)) {
 				continue;
 			}
 			fail.add(owner);
@@ -180,10 +176,10 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public boolean updateStorage(StuffOwner<?, ?>... ownerArray) {
+	public boolean updateOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
 			if (manager.update(owner)) {
 				continue;
 			}
@@ -193,11 +189,11 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> Collection<O> updateStorage(
+	public <O extends StuffOwner<?, ?>> Collection<O> updateOwner(
 			Collection<O> ownerCollection) {
 		Collection<O> fail = new LinkedList<>();
 		for (O owner : ownerCollection) {
-			if (this.updateStorage(owner)) {
+			if (this.updateOwner(owner)) {
 				continue;
 			}
 			fail.add(owner);
@@ -206,10 +202,10 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public boolean saveStorage(StuffOwner<?, ?>... ownerArray) {
+	public boolean saveOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
 			if (!manager.save(owner)) {
 				result = false;
 			}
@@ -218,10 +214,10 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> Collection<O> saveStorage(Collection<O> ownerCollection) {
+	public <O extends StuffOwner<?, ?>> Collection<O> saveOwner(Collection<O> ownerCollection) {
 		Collection<O> fail = new LinkedList<>();
 		for (O owner : ownerCollection) {
-			if (this.saveStorage(owner)) {
+			if (this.saveOwner(owner)) {
 				continue;
 			}
 			fail.add(owner);
@@ -230,31 +226,30 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	@Override
-	public void deleteStorage(StuffOwner<?, ?>... ownerArray) {
+	public void deleteOwner(StuffOwner<?, ?>... ownerArray) {
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getModelId());
+			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
 			manager.delete(owner);
 		}
 	}
 
 	@Override
-	public <O extends StuffOwner<?, ?>> void deleteStorage(Collection<O> ownerCollection) {
+	public <O extends StuffOwner<?, ?>> void deleteOwner(Collection<O> ownerCollection) {
 		for (O owner : ownerCollection) {
-			this.deleteStorage(owner);
+			this.deleteOwner(owner);
 		}
 	}
 
-	private GameManager<Object> getOwnerManager(int itemId) {
-		ItemType itemType = ItemTypes.ofItemId(itemId);
-		GameManager<Object> manager = this.typeStorageManagerMap.get(itemType);
+	private GameManager<Object> getOwnerManager(ItemType itemType) {
+		GameManager<Object> manager = this.managerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的owner manager 为null", itemType));
 		}
 		return manager;
 	}
 
-	private GameManager<Object> getItemManager(int itemId) {
-		ItemType itemType = ItemTypes.ofItemId(itemId);
+	private GameManager<Object> getItemManager(int modelId) {
+		ItemType itemType = ItemTypes.ofModelId(modelId);
 		GameManager<Object> manager = this.typeManagerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的item manager 为null", itemType));
@@ -262,8 +257,8 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		return manager;
 	}
 
-	private ModelManager<Model> getModelManager(int itemId) {
-		ItemType itemType = ItemTypes.ofItemId(itemId);
+	private ModelManager<Model> getModelManager(int modelId) {
+		ItemType itemType = ItemTypes.ofModelId(modelId);
 		return this.getModelManager(itemType);
 	}
 
@@ -299,12 +294,10 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		Map<String, GameManager> map = this.applicationContext.getBeansOfType(GameManager.class);
 		Map<Class<?>, GameManager<Object>> managerMap = new HashMap<>();
 		Map<ItemType, GameManager<Object>> typeManagerMap = new HashMap<>();
-		Map<ItemType, GameManager<Object>> typeStorageManagerMap = new HashMap<>();
 		Map<ItemType, ModelManager<Model>> modelManagerMap = new HashMap<>();
 		for (GameManager<Object> manager : map.values()) {
 			putManager(typeManagerMap, manager);
 			putManager(managerMap, manager.getClass(), manager);
-			putOwnManager(typeStorageManagerMap, manager);
 		}
 		Map<String, ModelManager> modelMap = this.applicationContext.getBeansOfType(ModelManager.class);
 		for (ModelManager<Model> manager : modelMap.values()) {
@@ -312,26 +305,23 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		}
 		this.managerMap = ImmutableMap.copyOf(managerMap);
 		this.typeManagerMap = ImmutableMap.copyOf(typeManagerMap);
-		this.typeStorageManagerMap = ImmutableMap.copyOf(typeStorageManagerMap);
 		this.typeModelManagerMap = ImmutableMap.copyOf(modelManagerMap);
 	}
 
 	private <M> void putManager(Map<ItemType, M> managerMap, M manager) {
-		Class<?> mClass = manager.getClass();
-		ManageItemType manageItemType = mClass.getAnnotation(ManageItemType.class);
-		if (manageItemType != null) {
-			for (int id : manageItemType.value()) {
-				if (id / ID_TAIL_SIZE == 0) {
-					id *= ID_TAIL_SIZE;
-				}
-				putManager(managerMap, ItemTypes.check(id), manager);
-			}
+		Set<ItemType> types = manageItemTypes(manager);
+		for (ItemType type : types) {
+			putManager(managerMap, type, manager);
 		}
-		if (manager instanceof ItemTypeManageable) {
-			ItemTypeManageable manageable = as(manager);
-			for (ItemType itemType : manageable.manageTypes())
-				putManager(managerMap, itemType, manager);
+	}
+
+	private Set<ItemType> manageItemTypes(Object manager) {
+		Set<ItemType> managerItemTypes = new HashSet<>();
+		if (manager instanceof ItemTypesManager) {
+			ItemTypesManager manage = as(manager);
+			managerItemTypes.addAll(manage.manageTypes());
 		}
+		return managerItemTypes;
 	}
 
 	public Set<ItemType> getManageItemTypes(GameManager<?> manager) {
@@ -340,37 +330,6 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
 	public Set<ItemType> getManageItemTypes(ModelManager<?> manager) {
 		return manageItemTypes(manager);
-	}
-
-	private Set<ItemType> manageItemTypes(Object manager) {
-		Set<ItemType> managerItemTypes = new HashSet<>();
-		ManageItemType manageItemType = manager.getClass().getAnnotation(ManageItemType.class);
-		if (manageItemType != null) {
-			for (int id : manageItemType.value()) {
-				if (id / ID_TAIL_SIZE == 0) {
-					id *= ID_TAIL_SIZE;
-				}
-				managerItemTypes.add(ItemTypes.check(id));
-			}
-		}
-		if (manager instanceof ItemTypeManageable) {
-			ItemTypeManageable manageable = as(manager);
-			managerItemTypes.addAll(manageable.manageTypes());
-		}
-		return managerItemTypes;
-	}
-
-	private <M> void putOwnManager(Map<ItemType, M> managerMap, M manager) {
-		Class<?> mClass = manager.getClass();
-		OwnItemType ownItemType = mClass.getAnnotation(OwnItemType.class);
-		if (ownItemType != null) {
-			for (int id : ownItemType.value()) {
-				if (id / ID_TAIL_SIZE == 0) {
-					id *= ID_TAIL_SIZE;
-				}
-				putManager(managerMap, ItemTypes.check(id), manager);
-			}
-		}
 	}
 
 	private <K, M> void putManager(Map<K, M> managerMap, K itemType, M manager) {

@@ -13,7 +13,7 @@ public class TradeStuffDTO {
 
 	@ProtoExField(1)
 	@VarDoc("物品ID")
-	public int itemId;
+	public int modelId;
 
 	@ProtoExField(2)
 	@VarDoc("物品数量")
@@ -25,7 +25,7 @@ public class TradeStuffDTO {
 
 	public static TradeStuffDTO stuff2DTO(TradeStuff stuff) {
 		TradeStuffDTO dto = new TradeStuffDTO();
-		dto.itemId = stuff.getItemId();
+		dto.modelId = stuff.getModelId();
 		dto.number = stuff.getNumber();
 		dto.alterType = stuff.getAlterType();
 		return dto;
@@ -35,16 +35,16 @@ public class TradeStuffDTO {
 		return stuffList.stream().map(TradeStuffDTO::stuff2DTO).collect(Collectors.toList());
 	}
 
-	public int getItemId() {
-		return this.itemId;
+	public int getModelId() {
+		return this.modelId;
 	}
 
 	public long getNumber() {
 		return this.number;
 	}
 
-	public void setItemId(int itemId) {
-		this.itemId = itemId;
+	public void setModelId(int modelId) {
+		this.modelId = modelId;
 	}
 
 	public void setNumber(long number) {
@@ -61,7 +61,7 @@ public class TradeStuffDTO {
 
 	@Override
 	public String toString() {
-		return "itemId = " + itemId + " number = " + number + " alterType = " + alterType;
+		return "modelId = " + modelId + " number = " + number + " alterType = " + alterType;
 	}
 
 }

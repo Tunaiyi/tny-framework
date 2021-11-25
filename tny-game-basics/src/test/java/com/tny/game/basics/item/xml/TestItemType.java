@@ -4,25 +4,24 @@ import com.tny.game.basics.item.*;
 
 public enum TestItemType implements ItemType {
 
-    PLAYER,
+	PLAYER,
 
-    //
-    ;
+	//
+	;
 
+	@Override
+	public Integer getId() {
+		return 0;
+	}
 
-    @Override
-    public Integer getId() {
-        return 0;
-    }
+	@Override
+	public String getAliasHead() {
+		return null;
+	}
 
-    @Override
-    public String getAliasHead() {
-        return null;
-    }
-
-    @Override
-    public String getDesc() {
-        return null;
-    }
+	@Override
+	public String getDesc() {
+		return null;
+	}
 
 }

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static com.tny.game.codec.jackson.mapper.ObjectMapperFactory.*;
+import static com.tny.game.codec.jackson.mapper.AutoRegisterModuleClassesHandler.*;
 
 /**
  * <p>

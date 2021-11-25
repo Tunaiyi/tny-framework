@@ -37,11 +37,11 @@ public class CollectionTrade implements Trade {
 		this.collectItem(tradeItemList);
 	}
 
-	public void collectItem(ItemModel model, Number number) {
+	public void collectItem(StuffModel model, Number number) {
 		this.collectItem(new SimpleTradeItem<>(model, number));
 	}
 
-	public void collectItem(ItemModel model, Number number, AlterType alertType) {
+	public void collectItem(StuffModel model, Number number, AlterType alertType) {
 		this.collectItem(new SimpleTradeItem<>(model, number, alertType));
 	}
 
@@ -77,21 +77,21 @@ public class CollectionTrade implements Trade {
 	}
 
 	@Override
-	public Number getNumber(ItemModel model) {
-		TradeItem<ItemModel> tradeItem = this.tradeMap.get(model.getId());
-        if (tradeItem == null) {
-            return 0;
-        }
+	public Number getNumber(StuffModel model) {
+		TradeItem<StuffModel> tradeItem = this.tradeMap.get(model.getId());
+		if (tradeItem == null) {
+			return 0;
+		}
 		return tradeItem.getNumber();
 	}
 
 	@Override
-	public boolean isNeedTrade(ItemModel model) {
+	public boolean isNeedTrade(StuffModel model) {
 		return NumberAide.greater(this.getNumber(model), 0);
 	}
 
 	@Override
-	public List<TradeItem<ItemModel>> getAllTradeItem() {
+	public List<TradeItem<StuffModel>> getAllTradeItem() {
 		return new ArrayList<>(this.tradeMap.values());
 	}
 
@@ -101,14 +101,14 @@ public class CollectionTrade implements Trade {
 	}
 
 	@Override
-	public Collection<TradeItem<ItemModel>> getTradeItemBy(ItemType... itemType) {
+	public Collection<TradeItem<StuffModel>> getTradeItemBy(ItemType... itemType) {
 		return this.getTradeItemBy(Arrays.asList(itemType));
 	}
 
 	@Override
-	public Collection<TradeItem<ItemModel>> getTradeItemBy(Collection<ItemType> itemType) {
-		List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
-		for (TradeItem<ItemModel> tradeItem : this.getAllTradeItem()) {
+	public Collection<TradeItem<StuffModel>> getTradeItemBy(Collection<ItemType> itemType) {
+		List<TradeItem<StuffModel>> tradeItemList = new ArrayList<>();
+		for (TradeItem<StuffModel> tradeItem : this.getAllTradeItem()) {
 			if (tradeItem.getItemModel().getItemType() == itemType) {
 				tradeItemList.add(tradeItem);
 			}
@@ -118,12 +118,12 @@ public class CollectionTrade implements Trade {
 
 	@Override
 	public boolean has(ItemType... itemTypes) {
-		for (TradeItem<ItemModel> tradeItem : this.tradeMap.values()) {
+		for (TradeItem<StuffModel> tradeItem : this.tradeMap.values()) {
 			ItemType type = tradeItem.getItemModel().getItemType();
 			for (ItemType itemType : itemTypes) {
-                if (itemType == type) {
-                    return true;
-                }
+				if (itemType == type) {
+					return true;
+				}
 			}
 		}
 		return false;

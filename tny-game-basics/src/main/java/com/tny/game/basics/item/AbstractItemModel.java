@@ -548,7 +548,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Set<Ability> getOwnAbilityBy(Class<? extends Ability>... abilityClasses) {
+	public Set<Ability> getAbilityTypes(Class<? extends Ability>... abilityClasses) {
 		Set<Ability> abilitySet = new HashSet<>();
 		for (Ability ability : this.abilityMap.keySet()) {
 			for (Class<? extends Ability> clazz : abilityClasses) {

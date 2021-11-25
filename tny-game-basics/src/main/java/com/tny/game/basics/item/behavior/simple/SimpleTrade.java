@@ -14,7 +14,7 @@ public class SimpleTrade implements Trade {
 
 	protected TradeType tradeType;
 
-	protected List<TradeItem<ItemModel>> tradeItemList = new ArrayList<>();
+	protected List<TradeItem<StuffModel>> tradeItemList = new ArrayList<>();
 
 	public SimpleTrade(Action action, TradeType tradeType) {
 		this.action = action;
@@ -27,20 +27,11 @@ public class SimpleTrade implements Trade {
 		this.tradeType = tradeType;
 		if (tradeItemList != null && tradeItemList.length > 0) {
 			for (TradeItem<?> item : tradeItemList) {
-                if (greater(item.getNumber(), 0)) {
-                    this.tradeItemList.add((TradeItem<ItemModel>)item);
-                }
+				if (greater(item.getNumber(), 0)) {
+					this.tradeItemList.add((TradeItem<StuffModel>)item);
+				}
 			}
 		}
-		//		this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
-	}
-
-	public void addIteam(ItemModel itemModel, Number number, AlterType alertType) {
-		this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number, alertType));
-	}
-
-	public void addIteam(ItemModel itemModel, Number number) {
-		this.tradeItemList.add(new SimpleTradeItem<>(itemModel, number));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -48,7 +39,7 @@ public class SimpleTrade implements Trade {
 		this.action = action;
 		this.tradeType = tradeType;
 		if (tradeItemList != null && tradeItemList.size() > 0) {
-			this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<ItemModel>)item)
+			this.tradeItemList.addAll(tradeItemList.stream().filter(item -> greater(item.getNumber(), 0)).map(item -> (TradeItem<StuffModel>)item)
 					.collect(Collectors.toList()));
 		}
 		this.tradeItemList = Collections.unmodifiableList(this.tradeItemList);
@@ -59,7 +50,7 @@ public class SimpleTrade implements Trade {
 		this.action = info.getAction();
 		this.tradeType = info.getTradeType();
 		this.tradeItemList = new ArrayList<>(info.getAllTradeItem());
-		Collection<TradeItem<ItemModel>> tradeItems = info.getAllTradeItem();
+		Collection<TradeItem<StuffModel>> tradeItems = info.getAllTradeItem();
 		if (tradeItems != null && tradeItems.size() > 0) {
 			this.tradeItemList.addAll(tradeItems.stream().filter(item -> greater(item.getNumber(), 0)).collect(Collectors.toList()));
 		}
@@ -72,18 +63,18 @@ public class SimpleTrade implements Trade {
 	}
 
 	@Override
-	public Number getNumber(ItemModel model) {
+	public Number getNumber(StuffModel model) {
 		Number number = 0;
-		for (TradeItem<ItemModel> item : this.tradeItemList) {
-            if (item.getItemModel().equals(model)) {
-                number = add(number, item.getNumber());
-            }
+		for (TradeItem<StuffModel> item : this.tradeItemList) {
+			if (item.getItemModel().equals(model)) {
+				number = add(number, item.getNumber());
+			}
 		}
 		return number;
 	}
 
 	@Override
-	public boolean isNeedTrade(ItemModel model) {
+	public boolean isNeedTrade(StuffModel model) {
 		return greater(this.getNumber(model), 0);
 	}
 
@@ -93,7 +84,7 @@ public class SimpleTrade implements Trade {
 	}
 
 	@Override
-	public List<TradeItem<ItemModel>> getAllTradeItem() {
+	public List<TradeItem<StuffModel>> getAllTradeItem() {
 		return Collections.unmodifiableList(this.tradeItemList);
 	}
 
@@ -105,20 +96,20 @@ public class SimpleTrade implements Trade {
 	@Override
 	public boolean isEmpty() {
 		for (TradeItem<?> item : this.tradeItemList)
-            if (greater(item.getNumber(), 0)) {
-                return false;
-            }
+			if (greater(item.getNumber(), 0)) {
+				return false;
+			}
 		return true;
 	}
 
 	@Override
-	public Collection<TradeItem<ItemModel>> getTradeItemBy(ItemType... itemType) {
+	public Collection<TradeItem<StuffModel>> getTradeItemBy(ItemType... itemType) {
 		return this.getTradeItemBy(Arrays.asList(itemType));
 	}
 
 	@Override
-	public Collection<TradeItem<ItemModel>> getTradeItemBy(Collection<ItemType> itemType) {
-		List<TradeItem<ItemModel>> tradeItemList = this.getAllTradeItem().stream()
+	public Collection<TradeItem<StuffModel>> getTradeItemBy(Collection<ItemType> itemType) {
+		List<TradeItem<StuffModel>> tradeItemList = this.getAllTradeItem().stream()
 				.filter(tradeItem -> itemType.contains(tradeItem.getItemModel().getItemType()))
 				.collect(Collectors.toList());
 		return tradeItemList;
@@ -126,12 +117,12 @@ public class SimpleTrade implements Trade {
 
 	@Override
 	public boolean has(ItemType... itemTypes) {
-		for (TradeItem<ItemModel> tradeItem : this.tradeItemList) {
+		for (TradeItem<StuffModel> tradeItem : this.tradeItemList) {
 			ItemType type = tradeItem.getItemModel().getItemType();
 			for (ItemType itemType : itemTypes) {
-                if (itemType == type) {
-                    return true;
-                }
+				if (itemType == type) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -13,29 +13,29 @@ import java.lang.reflect.*;
  */
 public class ItemModelProxyHandler implements MethodInterceptor, InvocationHandler {
 
-    public volatile ItemModel itemModel;
+	public volatile ItemModel itemModel;
 
-    public ItemModelProxyHandler(ItemModel itemModel) {
-        super();
-        this.itemModel = itemModel;
-    }
+	public ItemModelProxyHandler(ItemModel itemModel) {
+		super();
+		this.itemModel = itemModel;
+	}
 
-    public int getItemId() {
-        return this.itemModel.getId();
-    }
+	public int getModelId() {
+		return this.itemModel.getId();
+	}
 
-    public void setModel(ItemModel itemModel) {
-        this.itemModel = itemModel;
-    }
+	public void setModel(ItemModel itemModel) {
+		this.itemModel = itemModel;
+	}
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return method.invoke(itemModel, args);
-    }
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		return method.invoke(itemModel, args);
+	}
 
-    @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        return proxy.invoke(itemModel, args);
-    }
+	@Override
+	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+		return proxy.invoke(itemModel, args);
+	}
 
 }

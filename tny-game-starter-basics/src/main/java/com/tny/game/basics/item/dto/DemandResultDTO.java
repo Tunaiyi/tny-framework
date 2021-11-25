@@ -18,9 +18,9 @@ public class DemandResultDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("条件相关的itemId")
+	@VarDoc("条件相关的modelId")
 	@ProtoExField(1)
-	protected int itemId;
+	protected int modelId;
 
 	@VarDoc("条件相关的item类型")
 	@ProtoExField(2)
@@ -57,8 +57,8 @@ public class DemandResultDTO implements Serializable {
 
 	protected static void setDTO(DemandResultDTO dto, DemandResult result) {
 		dto.id = result.getId();
-		dto.itemId = result.getItemId();
-		dto.itemType = ItemTypes.ofItemId(result.getItemId()).getId();
+		dto.modelId = result.getModelId();
+		dto.itemType = ItemTypes.ofModelId(result.getModelId()).getId();
 		dto.demandType = result.getDemandType().getId();
 		//        dto.currentValue = result.getCurrentValue(Long.class);
 		dto.expectValue = result.getExpectValue(Long.class);
@@ -66,34 +66,34 @@ public class DemandResultDTO implements Serializable {
 	}
 
 	public static List<DemandResultDTO> tradeInfo2DTOList(TradeInfo trade) {
-		Collection<TradeItem<ItemModel>> tradeItemList = trade.getAllTradeItem();
+		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItem();
 		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItem().size());
-		for (TradeItem<ItemModel> item : tradeItemList) {
+		for (TradeItem<StuffModel> item : tradeItemList) {
 			list.add(itemModel2DTO(trade.getTradeType(), item.getItemModel(), item.getNumber()));
 		}
 		return list;
 	}
 
 	public static List<DemandResultDTO> trade2DTOList(Trade trade) {
-		Collection<TradeItem<ItemModel>> tradeItemList = trade.getAllTradeItem();
+		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItem();
 		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItem().size());
-		for (TradeItem<ItemModel> item : tradeItemList) {
+		for (TradeItem<StuffModel> item : tradeItemList) {
 			list.add(itemModel2DTO(trade.getTradeType(), item.getItemModel(), item.getNumber()));
 		}
 		return list;
 	}
 
-	public static List<DemandResultDTO> trade2DTOList(TradeType tradeType, Collection<TradeItem<ItemModel>> tradeItemList) {
+	public static List<DemandResultDTO> trade2DTOList(TradeType tradeType, Collection<TradeItem<StuffModel>> tradeItemList) {
 		List<DemandResultDTO> list = new ArrayList<>(tradeItemList.size());
-		for (TradeItem<ItemModel> item : tradeItemList) {
+		for (TradeItem<StuffModel> item : tradeItemList) {
 			list.add(itemModel2DTO(tradeType, item.getItemModel(), item.getNumber()));
 		}
 		return list;
 	}
 
-	public static DemandResultDTO tradeItem2DTO(TradeType tradeType, TradeItem<ItemModel> tradeItem) {
+	public static DemandResultDTO tradeItem2DTO(TradeType tradeType, TradeItem<StuffModel> tradeItem) {
 		DemandResultDTO dto = new DemandResultDTO();
-		dto.itemId = tradeItem.getItemModel().getId();
+		dto.modelId = tradeItem.getItemModel().getId();
 		dto.itemType = tradeItem.getItemModel().getItemType().getId();
 		dto.expectValue = tradeItem.getNumber().longValue();
 		dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
@@ -102,7 +102,7 @@ public class DemandResultDTO implements Serializable {
 
 	public static DemandResultDTO itemModel2DTO(TradeType tradeType, ItemModel itemModel, Number number) {
 		DemandResultDTO dto = new DemandResultDTO();
-		dto.itemId = itemModel.getId();
+		dto.modelId = itemModel.getId();
 		dto.itemType = itemModel.getItemType().getId();
 		dto.expectValue = number.longValue();
 		dto.demandType = (tradeType == TradeType.COST ? TradeDemandType.COST_DEMAND_GE : TradeDemandType.RECV_DEMAND).getId();
@@ -111,7 +111,7 @@ public class DemandResultDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DemandResultDTO [itemId=" + this.itemId + ", demandType="
+		return "DemandResultDTO [modelId=" + this.modelId + ", demandType="
 				+ this.demandType + ", expectValue=" + this.expectValue + "]";
 	}
 

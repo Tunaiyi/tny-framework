@@ -6,6 +6,7 @@ import com.tny.game.data.exception.*;
 import com.tny.game.data.storage.*;
 import org.slf4j.*;
 
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -63,6 +64,53 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 
 	private K idOf(O object) {
 		return this.keyMaker.make(object);
+	}
+
+	@Override
+	public List<O> find(Map<String, Object> query, EntityOnLoad<K, O> onLoad) {
+		List<O> entities = new ArrayList<>();
+		List<O> findList = storage.find(query);
+		for (O entity : findList) {
+			O value = addCache(entity, onLoad);
+			if (value != null) {
+				entities.add(value);
+			}
+		}
+		return entities;
+	}
+
+	@Override
+	public List<O> findAll(EntityOnLoad<K, O> onLoad) {
+		List<O> entities = new ArrayList<>();
+		List<O> findList = storage.findAll();
+		for (O entity : findList) {
+			O value = addCache(entity, onLoad);
+			if (value != null) {
+				entities.add(value);
+			}
+		}
+		return entities;
+	}
+
+	private O addCache(O entity, EntityOnLoad<K, O> onLoad) {
+		K id = idOf(entity);
+		Lock lock = this.locker.lock(id);
+		lock.unlock();
+		try {
+			O object = this.cache.get(idOf(entity));
+			if (object != null) {
+				return object;
+			} else {
+				if (onLoad != null) {
+					onLoad.onLoad(null, entity);
+				}
+				this.cache.put(id, entity);
+				return entity;
+			}
+		} catch (Throwable e) {
+			LOGGER.error("", e);
+			throw new EntityCacheException("load exception", e);
+		}
 	}
 
 	@Override

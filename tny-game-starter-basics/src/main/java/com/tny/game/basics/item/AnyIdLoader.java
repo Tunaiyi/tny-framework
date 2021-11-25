@@ -8,7 +8,7 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/18 5:11 下午
  */
-public interface ItemIdLoader<I> {
+public interface AnyIdLoader<I> {
 
 	List<AnyId> findIdList(Class<I> itemClass, long player);
 

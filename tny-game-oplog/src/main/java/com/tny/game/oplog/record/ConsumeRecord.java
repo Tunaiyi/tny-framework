@@ -41,8 +41,8 @@ public class ConsumeRecord implements StuffTradeLog {
 	}
 
 	public ConsumeRecord(StuffTradeLog log) {
-		this.cid = log.getId() == log.getItemId() ? null : log.getId();
-		this.ciid = log.getItemId();
+		this.cid = log.getId() == log.getModelId() ? null : log.getId();
+		this.ciid = log.getModelId();
 		this.conum = log.getOldNum();
 		this.cnnum = log.getNewNum();
 		this.calter = log.getAlterNum();
@@ -54,7 +54,7 @@ public class ConsumeRecord implements StuffTradeLog {
 	}
 
 	@Override
-	public int getItemId() {
+	public int getModelId() {
 		return this.ciid;
 	}
 
@@ -74,9 +74,9 @@ public class ConsumeRecord implements StuffTradeLog {
 	}
 
 	public long getNum() {
-        if (this.calter == null) {
-            return this.cnnum - this.conum;
-        }
+		if (this.calter == null) {
+			return this.cnnum - this.conum;
+		}
 		return this.calter;
 	}
 

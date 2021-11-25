@@ -71,34 +71,21 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 		return this.awardList;
 	}
 
-	//    @Override
-	//    public int compareTo(Probability o) {
-	//        int value = o.getPriority() - this.priority;
-	//        if (value == 0)
-	//            return this.getProbability() - o.getProbability();
-	//        return value;
-	//    }
-
-	//    @Override
-	//    public int getPriority() {
-	//        return this.priority;
-	//    }
-
 	@Override
-	public Set<ItemModel> getAwardSet(Map<String, Object> attributeMap) {
+	public Set<StuffModel> getAwardSet(Map<String, Object> attributeMap) {
 		return new HashSet<>(this.getAwardAliasModelMap(attributeMap).values());
 	}
 
 	@Override
-	public List<TradeItem<ItemModel>> countAwardResult(long playerId, Action action, boolean merge, Map<String, Object> attributeMap) {
+	public List<TradeItem<StuffModel>> countAwardResult(long playerId, Action action, boolean merge, Map<String, Object> attributeMap) {
 		return this.countAwardNumber(merge, attributeMap);
 	}
 
-	private Map<String, ItemModel> getAwardAliasModelMap(Map<String, Object> attributeMap) {
-		Map<String, ItemModel> map = new HashMap<>();
+	private Map<String, StuffModel> getAwardAliasModelMap(Map<String, Object> attributeMap) {
+		Map<String, StuffModel> map = new HashMap<>();
 		ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
 		for (Award award : this.awardList) {
-			ItemModel model = itemModelExplorer.getModelByAlias(award.getItemAlias(attributeMap));
+			StuffModel model = itemModelExplorer.getModelByAlias(award.getItemAlias(attributeMap));
 			map.put(model.getAlias(), model);
 		}
 		return Collections.unmodifiableMap(map);
@@ -112,22 +99,22 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 	}
 
 	public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
-        if (this.drawNumber == null) {
-            return awardNum;
-        }
+		if (this.drawNumber == null) {
+			return awardNum;
+		}
 		Integer drawNumber = this.drawNumber.createExpr().putAll(attributeMap).execute(Integer.class);
-        if (drawNumber == null) {
-            drawNumber = -1;
-        }
+		if (drawNumber == null) {
+			drawNumber = -1;
+		}
 		return drawNumber <= 0 ? awardNum : Math.min(drawNumber, awardNum);
 	}
 
 	@Override
 	public int getNumber(Map<String, Object> attributeMap) {
 		Integer awardNum = this.number.createExpr().putAll(attributeMap).execute(Integer.class);
-        if (awardNum == null) {
-            awardNum = 1;
-        }
+		if (awardNum == null) {
+			awardNum = 1;
+		}
 		return awardNum;
 	}
 
@@ -137,8 +124,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 	}
 
 	@Override
-	public List<TradeItem<ItemModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap) {
-		List<TradeItem<ItemModel>> itemList = new ArrayList<>();
+	public List<TradeItem<StuffModel>> countAwardNumber(boolean merge, Map<String, Object> attributeMap) {
+		List<TradeItem<StuffModel>> itemList = new ArrayList<>();
 		List<Award> awardList = this.randomer.random(this, attributeMap);
 		// 需要奖励数量
 		int number = awardList.size();
@@ -147,25 +134,25 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 		Map<Integer, CollectionTradeItem> itemMap = null;
 		ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
 		for (Award award : awardList) {
-            if (number <= 0) {
-                break;
-            }
+			if (number <= 0) {
+				break;
+			}
 			String awModelAlias = award.getItemAlias(attributeMap);
-			ItemModel awardModel = itemModelExplorer.getModelByAlias(awModelAlias);
-            if (awardModel == null) {
-                continue;
-            }
+			StuffModel awardModel = itemModelExplorer.getModelByAlias(awModelAlias);
+			if (awardModel == null) {
+				continue;
+			}
 			// drawNumber > 0 => 有效的作为奖励发放, 无效的作为显示, 如抽奖 number个抽drawNumber个
-			TradeItem<ItemModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
+			TradeItem<StuffModel> tradeItem = award.createTradeItem(drawNumber > 0, awardModel, attributeMap);
 			if (tradeItem != null) {
 				number--;
 				drawNumber--;
 				if (merge) {
-                    if (itemMap == null) {
-                        itemMap = new HashMap<>();
-                    }
-					int itemId = awardModel.getId();
-					CollectionTradeItem current = itemMap.get(itemId);
+					if (itemMap == null) {
+						itemMap = new HashMap<>();
+					}
+					int modelId = awardModel.getId();
+					CollectionTradeItem current = itemMap.get(modelId);
 					if (current == null) {
 						current = new CollectionTradeItem(tradeItem);
 						itemMap.put(tradeItem.getItemModel().getId(), current);
@@ -183,21 +170,21 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 
 	public void init(ItemModelContext context) {
 		this.context = context;
-        if (this.randomer == null) {
-            this.randomer = AllRandomCreatorFactory.<AwardGroup, Award>getInstance().getRandomCreator();
-        }
+		if (this.randomer == null) {
+			this.randomer = AllRandomCreatorFactory.<AwardGroup, Award>getInstance().getRandomCreator();
+		}
 		for (Award award : this.awardList) {
-            if (award instanceof AbstractAward) {
-                ((AbstractAward)award).init();
-            }
+			if (award instanceof AbstractAward) {
+				((AbstractAward)award).init();
+			}
 		}
 		ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
-        if (this.number == null) {
-            this.number = exprHolderFactory.create("1");
-        }
-        if (this.drawNumber == null) {
-            this.drawNumber = exprHolderFactory.create("-1");
-        }
+		if (this.number == null) {
+			this.number = exprHolderFactory.create("1");
+		}
+		if (this.drawNumber == null) {
+			this.drawNumber = exprHolderFactory.create("-1");
+		}
 		//		if (this.createType == null)
 		//			this.createType = AwardCreateType.ABSOLUTE;
 		//        Collections.sort(this.awardList);

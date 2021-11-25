@@ -16,7 +16,7 @@ import java.util.List;
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(NacosServiceRegistry.class)
 @AutoConfigureAfter(NacosServiceRegistryAutoConfiguration.class)
 @AutoConfigureBefore(NetDiscoveryConfiguration.class)

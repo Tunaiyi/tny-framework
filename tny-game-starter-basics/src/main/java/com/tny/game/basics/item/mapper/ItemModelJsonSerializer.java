@@ -1,4 +1,4 @@
-package com.tny.game.basics.mongodb.mapper;
+package com.tny.game.basics.item.mapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;

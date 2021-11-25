@@ -5,7 +5,7 @@ import com.tny.game.basics.item.behavior.*;
 
 import java.util.*;
 
-public class SimpleDealItem<I extends ItemModel> implements DealItem<I> {
+public class SimpleDealItem<I extends StuffModel> implements DealItem<I> {
 
 	private I itemModel;
 

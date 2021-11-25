@@ -108,7 +108,7 @@ class BaseDemandTest {
 	}
 
 	@Test
-	void testGetItemId() {
+	void testGetModelId() {
 		assertEquals(this.itemAlias, this.demand.getItemAlias(new HashMap<>()));
 		assertEquals(this.itemAlias, this.stuffDemand.getItemAlias(new HashMap<>()));
 	}

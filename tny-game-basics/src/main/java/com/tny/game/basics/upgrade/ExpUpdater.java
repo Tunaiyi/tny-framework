@@ -13,7 +13,7 @@ public interface ExpUpdater<I extends Item<?>> extends Updater<I> {
 		return this.getExp() > 0 || Updater.super.isPromoted();
 	}
 
-	default long getUpgradeItemId() {
+	default long getUpgradeModelId() {
 		return item().getId();
 	}
 

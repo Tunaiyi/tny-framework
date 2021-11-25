@@ -25,7 +25,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>ConfigurationPropertiesBindingPostProcessor
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class MongodbBeanConfiguration {
 
 	@Bean
@@ -55,7 +55,7 @@ public class MongodbBeanConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(value = EntityConverter.class)
 	public EntityConverter jsonEntityConverter(EntityLoadedService entityOnLoadService,
-			ObjectProvider<JsonEntityConverterMapperCustomizer> mapperCustomizers) {
+			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
 				.setAnnotationIntrospector(new MongoIdIntrospector())

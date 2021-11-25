@@ -16,7 +16,7 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 
 	private long id;
 
-	private int itemId;
+	private int modelId;
 
 	private CapacitySupplierType type;
 
@@ -26,11 +26,11 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 
 	private Set<CapacityGroup> groups;
 
-	StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemId, Stream<Long> suppliers, Stream<CapacityGroup> groups,
+	StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int modelId, Stream<Long> suppliers, Stream<CapacityGroup> groups,
 			CapacityVisitor visitor, long expireAt) {
 		super(expireAt);
 		this.id = id;
-		this.itemId = itemId;
+		this.modelId = modelId;
 		this.type = type;
 		ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
 		suppliers.forEach(suppliersBuilder::add);
@@ -41,11 +41,11 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 		this.visitor = visitor;
 	}
 
-	StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int itemId, Stream<? extends CapacitySupplier> suppliers,
+	StoreByCopyComboCapacitySupplier(CapacitySupplierType type, long id, int modelId, Stream<? extends CapacitySupplier> suppliers,
 			CapacityVisitor visitor, long expireAt) {
 		super(expireAt);
 		this.id = id;
-		this.itemId = itemId;
+		this.modelId = modelId;
 		this.type = type;
 		ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
 		ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
@@ -64,8 +64,8 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 	}
 
 	@Override
-	public int getItemId() {
-		return itemId;
+	public int getModelId() {
+		return modelId;
 	}
 
 	@Override
@@ -159,8 +159,8 @@ public class StoreByCopyComboCapacitySupplier extends BaseStoreCapacitiable impl
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
-				.add("itemId", itemId)
-				.add("name", ItemModels.name(itemId))
+				.add("itemId", modelId)
+				.add("name", ItemModels.name(modelId))
 				.add("suppliers", suppliers)
 				.toString();
 	}

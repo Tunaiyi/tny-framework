@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @param <I> ItemModel类型
  */
-public interface DealItem<I extends ItemModel> {
+public interface DealItem<I extends StuffModel> {
 
 	<SI extends I> SI getItemModel();
 

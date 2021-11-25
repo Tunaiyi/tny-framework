@@ -11,111 +11,116 @@ import java.util.*;
 
 public class XMLAwardPlanTest {
 
-    int NUMBER;
+	int NUMBER;
 
-    RandomCreator<AwardPlan, AwardGroup> randomer = (group, attributeMap) -> {
-        for (AwardGroup p : group.probabilities())
-            if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap))
-                return Collections.singletonList(p);
-        return null;
-    };
+	RandomCreator<AwardPlan, AwardGroup> randomer = (group, attributeMap) -> {
+		for (AwardGroup p : group.probabilities())
+			if (XMLAwardPlanTest.this.NUMBER < p.getProbability(attributeMap)) {
+				return Collections.singletonList(p);
+			}
+		return null;
+	};
 
-    class TeatAward implements Award {
+	class TeatAward implements Award {
 
-        private String alias;
+		private String alias;
 
-        private TeatAward(String alias) {
-            super();
-            this.alias = alias;
-        }
+		private TeatAward(String alias) {
+			super();
+			this.alias = alias;
+		}
 
-        @Override
-        public Number countNumber(ItemModel model, Map<String, Object> attributes) {
-            return 10;
-        }
+		@Override
+		public Number countNumber(ItemModel model, Map<String, Object> attributes) {
+			return 10;
+		}
 
-        @Override
-        public AlterType getAlterType() {
-            return null;
-        }
+		@Override
+		public AlterType getAlterType() {
+			return null;
+		}
 
-        @Override
-        public TradeItem<ItemModel> createTradeItem(boolean valid, ItemModel awardModel, Map<String, Object> attributeMap) {
-            return null;
-        }
+		@Override
+		public TradeItem<StuffModel> createTradeItem(boolean valid, StuffModel awardModel, Map<String, Object> attributeMap) {
+			return null;
+		}
 
-        @Override
-        public int getProbability(Map<String, Object> attributeMap) {
-            return 0;
-        }
+		@Override
+		public int getProbability(Map<String, Object> attributeMap) {
+			return 0;
+		}
 
-        //        @Override
-        //        public int compareTo(Probability o) {
-        //            return 0;
-        //        }
+		//        @Override
+		//        public int compareTo(Probability o) {
+		//            return 0;
+		//        }
 
-        @Override
-        public String getItemAlias(Map<String, Object> attributeMap) {
-            return this.alias;
-        }
+		@Override
+		public String getItemAlias(Map<String, Object> attributeMap) {
+			return this.alias;
+		}
 
-    }
+	}
 
-    String alias1 = "item1";
-    String alias2 = "item2";
-    ItemModel award1 = new TestAwardModel(this.alias1);
-    ItemModel award2 = new TestAwardModel(this.alias2);
+	String alias1 = "item1";
 
-    TempExplorer explorer = new TempExplorer(this.award1, this.award2);
+	String alias2 = "item2";
 
-    private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+	ItemModel award1 = new TestAwardModel(this.alias1);
 
-    private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
+	ItemModel award2 = new TestAwardModel(this.alias2);
 
-    class TestAwardGroup extends SimpleAwardGroup {
+	TempExplorer explorer = new TempExplorer(this.award1, this.award2);
 
-        private int probability;
+	private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
-        private TestAwardGroup(int id, int probability, ItemModelContext context, Award... awards) {
-            super();
-            this.probability = probability;
-            this.awardList = new ArrayList<>();
-            for (Award award : awards)
-                this.awardList.add(award);
-            this.context = context;
-        }
+	private ItemModelContext context = new DefaultItemModelContext(explorer, explorer, exprHolderFactory);
 
-        @Override
-        public int getProbability(Map<String, Object> attributeMap) {
-            return probability;
-        }
-    }
+	class TestAwardGroup extends SimpleAwardGroup {
 
-    TreeSet<AwardGroup> treeSet = new TreeSet<AwardGroup>();
+		private int probability;
 
-    {
-        this.treeSet.add(new TestAwardGroup(1, 30, context, new TeatAward(this.alias1)));
-        this.treeSet.add(new TestAwardGroup(2, 100, context, new TeatAward(this.alias2)));
-    }
+		private TestAwardGroup(int id, int probability, ItemModelContext context, Award... awards) {
+			super();
+			this.probability = probability;
+			this.awardList = new ArrayList<>();
+			for (Award award : awards)
+				this.awardList.add(award);
+			this.context = context;
+		}
 
-    AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);
+		@Override
+		public int getProbability(Map<String, Object> attributeMap) {
+			return probability;
+		}
 
-    //    @Test
-    //    public void testCreateTradeResult() {
-    //        this.NUMBER = 1;
-    //        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-    //        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-    //        this.NUMBER = 30;
-    //        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-    //        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
-    //        this.NUMBER = 100;
-    //        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
-    //        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
-    //        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
-    //    }
+	}
 
-    public static void main(String[] args) {
-        System.out.println(Integer.MAX_VALUE);
-    }
+	TreeSet<AwardGroup> treeSet = new TreeSet<AwardGroup>();
+
+	{
+		this.treeSet.add(new TestAwardGroup(1, 30, context, new TeatAward(this.alias1)));
+		this.treeSet.add(new TestAwardGroup(2, 100, context, new TeatAward(this.alias2)));
+	}
+
+	AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);
+
+	//    @Test
+	//    public void testCreateTradeResult() {
+	//        this.NUMBER = 1;
+	//        Trade result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+	//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+	//        this.NUMBER = 30;
+	//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+	//        Assert.assertTrue(result.getNumber(this.award1).intValue() > 0);
+	//        this.NUMBER = 100;
+	//        result = this.awardPlan.createTrade(100, TestAction.GOLD_UPGRADE, null);
+	//        Assert.assertFalse(result.getNumber(this.award1).intValue() > 0);
+	//        Assert.assertFalse(result.getNumber(this.award2).intValue() > 0);
+	//    }
+
+	public static void main(String[] args) {
+		System.out.println(Integer.MAX_VALUE);
+	}
 
 }

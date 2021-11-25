@@ -15,16 +15,16 @@ public class CostStuffDTO {
 	@ProtoExField(3)
 	private long id;
 
-	@VarDoc("itemId")
+	@VarDoc("modelId")
 	@ProtoExField(1)
-	private int itemId;
+	private int modelId;
 
 	@VarDoc("数量")
 	@ProtoExField(2)
 	private int number;
 
-	public int getItemId() {
-		return itemId;
+	public int getModelId() {
+		return modelId;
 	}
 
 	public int getNumber() {
@@ -39,7 +39,7 @@ public class CostStuffDTO {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append(id);
-		buffer.append(itemId);
+		buffer.append(modelId);
 		buffer.append(number);
 		return buffer.toString();
 	}

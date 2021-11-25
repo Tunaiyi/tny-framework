@@ -7,12 +7,12 @@ import org.slf4j.*;
 import java.util.*;
 
 /**
- * 存储当前存储的Item存储在一个Storage上的Manager
+ * 存储当前存储的Item存储在一个Owner上的Manager
  *
  * @param <O>
  * @author KGTny
  */
-public abstract class GameStuffOwnerManager<O> extends GameCacheManager<O> {
+public abstract class GameStuffOwnerManager<O extends StuffOwner<?, ?>> extends GameCacheManager<O> implements StuffOwnerManger<O> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameStuffOwnerManager.class);
 
@@ -21,14 +21,14 @@ public abstract class GameStuffOwnerManager<O> extends GameCacheManager<O> {
 	private final ItemType itemType;
 
 	/**
-	 * @param entityClass      Storage类
+	 * @param entityClass      Owner类
 	 * @param itemType         itemType
-	 * @param otherSaveClasses 通过Storage持久化的其他对象Class
-	 *                         如 AStorage class 管理 BItem, AItem持久化于AStorage
-	 *                         可通过 配置AItem class @{@link com.tny.game.suite.auto.persistent.annotation.AutoDBBy} manager = AStorageManager.class
-	 *                         通过AStorageManager 自动持久化
+	 * @param otherSaveClasses 通过Owner持久化的其他对象Class
+	 *                         如 AOwner class 管理 BItem, AItem持久化于AOwner
+	 *                         可通过 配置AItem class @{@link com.tny.game.basics.persistent.annotation.Modifiable} manager = AOwnerManager.class
+	 *                         通过AOwnerManager 自动持久化
 	 */
-	protected GameStuffOwnerManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager, ItemType itemType,
+	protected GameStuffOwnerManager(Class<? extends O> entityClass, ItemType itemType, EntityCacheManager<AnyId, O> manager,
 			Class<?>... otherSaveClasses) {
 		super(entityClass, manager);
 		this.itemType = itemType;
@@ -36,18 +36,23 @@ public abstract class GameStuffOwnerManager<O> extends GameCacheManager<O> {
 	}
 
 	/**
-	 * @param entityClass      Storage类
+	 * @param entityClass      Owner类
 	 * @param itemType         itemType
-	 * @param otherSaveClasses 通过Storage持久化的其他对象Class
-	 *                         如 AStorage class 管理 BItem, AItem持久化于AStorage
-	 *                         可通过 配置AItem class @{@link com.tny.game.suite.auto.persistent.annotation.AutoDBBy} manager = AStorageManager.class
-	 *                         通过AStorageManager 自动持久化
+	 * @param otherSaveClasses 通过Owner持久化的其他对象Class
+	 *                         如 AOwner class 管理 BItem, AItem持久化于AOwner
+	 *                         可通过 配置AItem class @{@link com.tny.game.basics.persistent.annotation.Modifiable} manager = AOwnerManager.class
+	 *                         通过AOwnerManager 自动持久化
 	 */
-	protected GameStuffOwnerManager(Class<? extends O> entityClass, EntityCacheManager<AnyId, O> manager, ItemType itemType,
+	protected GameStuffOwnerManager(Class<? extends O> entityClass, ItemType itemType, EntityCacheManager<AnyId, O> manager,
 			Collection<? extends Class<?>> otherSaveClasses) {
 		super(entityClass, manager);
 		this.itemType = itemType;
 		this.saveItemClasses = otherSaveClasses.toArray(this.saveItemClasses);
+	}
+
+	@Override
+	public ItemType getOwnerItemType() {
+		return itemType;
 	}
 
 	public O getOwner(long playerId) {

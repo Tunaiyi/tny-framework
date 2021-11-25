@@ -39,9 +39,9 @@ public class CapacitySupplierDTO {
 	@ProtoExField(6)
 	private boolean goal;
 
-	@VarDoc("提供者itemId")
+	@VarDoc("提供者modelId")
 	@ProtoExField(7)
-	private int itemId;
+	private int modelId;
 
 	@VarDoc("能力值组")
 	@ProtoExField(8)
@@ -62,7 +62,7 @@ public class CapacitySupplierDTO {
 	public static CapacitySupplierDTO supplier2DTO(CapacitySupplier supplier) {
 		CapacitySupplierDTO dto = new CapacitySupplierDTO();
 		dto.id = supplier.getId();
-		dto.itemId = supplier.getItemId();
+		dto.modelId = supplier.getModelId();
 		if (supplier instanceof ComboCapacitySupplier) {
 			initComboSupplier(dto, as(supplier));
 		} else {
@@ -93,7 +93,7 @@ public class CapacitySupplierDTO {
 	public static CapacitySupplierDTO supplier2RemoveDTO(CapacitySupplier supplier) {
 		CapacitySupplierDTO dto = new CapacitySupplierDTO();
 		dto.id = supplier.getId();
-		dto.itemId = supplier.getItemId();
+		dto.modelId = supplier.getModelId();
 		dto.capacities = ImmutableList.of();
 		dto.dependSuppliers = ImmutableList.of();
 		dto.capacityGroups = ImmutableSet.of();

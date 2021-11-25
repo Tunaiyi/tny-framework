@@ -11,7 +11,7 @@ import java.util.Set;
  * @author : kgtny
  * @date : 2021/10/20 1:11 上午
  */
-public interface StuffService<SM extends ItemModel> {
+public interface StuffService<SM extends StuffModel> {
 
 	/**
 	 * @return 处理商品类型

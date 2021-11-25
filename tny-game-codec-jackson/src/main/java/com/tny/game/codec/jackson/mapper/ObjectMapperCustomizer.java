@@ -1,4 +1,4 @@
-package com.tny.game.data.mongodb;
+package com.tny.game.codec.jackson.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author : kgtny
  * @date : 2021/10/19 12:29 下午
  */
-public interface JsonEntityConverterMapperCustomizer {
+public interface ObjectMapperCustomizer {
 
 	void customize(ObjectMapper mapper);
 
