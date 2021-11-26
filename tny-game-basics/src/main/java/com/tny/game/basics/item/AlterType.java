@@ -121,7 +121,7 @@ public enum AlterType {
 			this.overUpperLimit(model, limit, number, alertNum);
 			Number countNumber = number;
 			countNumber = add(countNumber, alertNum);
-			countNumber = greater(limit, CountableStuff.UNLIMITED) && greater(countNumber, limit) ? limit : countNumber;
+			countNumber = greater(limit, MultipleStuff.UNLIMITED) && greater(countNumber, limit) ? limit : countNumber;
 			Number result = sub(countNumber, number);
 			return lessEqual(result, 0) ? NumberAide.as(0, number) : result;
 		}
@@ -171,19 +171,19 @@ public enum AlterType {
 
 	public abstract boolean overUpperLimit(ItemModel model, Number limit, Number number, Number alertNum);
 
-	public Number deduct(CountableStuff<?, ?> stuff, Number alertNum) {
+	public Number deduct(MultipleStuff<?, ?> stuff, Number alertNum) {
 		return this.consume(stuff.getPlayerId(), stuff.getModel(), stuff.getNumber(), alertNum);
 	}
 
-	public Number reward(CountableStuff<?, ?> stuff, Number alertNum) {
+	public Number reward(MultipleStuff<?, ?> stuff, Number alertNum) {
 		return this.receive(stuff.getPlayerId(), stuff.getModel(), stuff.getNumberLimit(), stuff.getNumber(), alertNum);
 	}
 
-	public boolean overLowerLimit(CountableStuff<?, ?> stuff, Number alertNum) {
+	public boolean overLowerLimit(MultipleStuff<?, ?> stuff, Number alertNum) {
 		return this.overLowerLimit(stuff.getModel(), stuff.getNumber(), alertNum);
 	}
 
-	public boolean overUpperLimit(CountableStuff<?, ?> stuff, Number alertNum) {
+	public boolean overUpperLimit(MultipleStuff<?, ?> stuff, Number alertNum) {
 		return this.overUpperLimit(stuff.getModel(), stuff.getNumberLimit(), stuff.getNumber(), alertNum);
 	}
 }

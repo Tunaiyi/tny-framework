@@ -3,6 +3,8 @@ package com.tny.game.basics.item;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.context.*;
 
+import java.util.Collection;
+
 /**
  * Created by Kun Yang on 16/1/28.
  */
@@ -27,5 +29,12 @@ public abstract class BaseStuffOwner<IM extends ItemModel, SM extends StuffModel
 	 * @param attributes 参数
 	 */
 	protected abstract void reward(TradeItem<SM> tradeItem, Action action, Attributes attributes);
+
+	/**
+	 * 添加 Item
+	 *
+	 * @param stuffs
+	 */
+	protected abstract void setStuffs(Collection<S> stuffs);
 
 }

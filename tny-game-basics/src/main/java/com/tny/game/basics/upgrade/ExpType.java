@@ -5,6 +5,6 @@ import com.tny.game.common.enums.*;
 /**
  * 经验类型
  */
-public interface ExpType extends Enumerable<Integer> {
+public interface ExpType extends IntEnumerable {
 
 }

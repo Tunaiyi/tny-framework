@@ -7,7 +7,9 @@ import java.util.*;
 
 import static com.tny.game.common.number.NumberAide.*;
 
-public class CollectionTradeItem implements TradeItem<StuffModel> {
+public class CollectTradeItem implements TradeItem<StuffModel> {
+
+	private long id;
 
 	private AlterType alertType;
 
@@ -17,10 +19,11 @@ public class CollectionTradeItem implements TradeItem<StuffModel> {
 
 	private boolean valid;
 
-	private Map<DemandParam, Object> paramMap = new HashMap<DemandParam, Object>();
+	private Map<DemandParam, Object> paramMap = new HashMap<>();
 
-	public CollectionTradeItem(TradeItem<?> item) {
+	public CollectTradeItem(TradeItem<?> item) {
 		super();
+		this.id = item.getId();
 		this.itemModel = item.getItemModel();
 		this.number = item.getNumber();
 		this.alertType = item.getAlertType();
@@ -53,6 +56,11 @@ public class CollectionTradeItem implements TradeItem<StuffModel> {
 	@SuppressWarnings("unchecked")
 	public <SI extends StuffModel> SI getItemModel() {
 		return (SI)this.itemModel;
+	}
+
+	@Override
+	public long getId() {
+		return 0;
 	}
 
 	@Override

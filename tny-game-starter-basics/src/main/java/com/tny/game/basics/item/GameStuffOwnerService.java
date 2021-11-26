@@ -12,7 +12,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/11/17 4:16 下午
  */
-public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
+public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<? extends SM>, O
 		extends BaseStuffOwner<?, SM, S>>
 		implements PrimaryStuffService<SM> {
 
@@ -36,11 +36,11 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
 				LOGGER.warn("{}玩家没有 {} Owner对象", warehouse.getPlayerId(), model.getItemType());
 				return true;
 			}
-			if (owner instanceof CountableStuffOwner) {
-				CountableStuffOwner<?, ?, S> countableStuffOwner = as(owner);
-				return countableStuffOwner.isOverflow(as(model), check, number);
+			if (owner instanceof MultipleStuffOwner) {
+				MultipleStuffOwner<?, ?, ?> multipleStuffOwner = as(owner);
+				return multipleStuffOwner.isOverflow(as(model), check, number);
 			} else {
-				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), CountableStuffOwner.class);
+				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), MultipleStuffOwner.class);
 			}
 		} catch (Throwable e) {
 			LOGGER.error("{}玩家 consume {} - {}", warehouse.getPlayerId(), model.getItemType(), model.getId(), e);
@@ -56,11 +56,11 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
 				LOGGER.warn("{}玩家没有 {} Owner对象", warehouse.getPlayerId(), model.getItemType());
 				return true;
 			}
-			if (owner instanceof CountableStuffOwner) {
-				CountableStuffOwner<?, ?, S> countableStuffOwner = as(owner);
+			if (owner instanceof MultipleStuffOwner) {
+				MultipleStuffOwner<?, ?, ?> countableStuffOwner = as(owner);
 				return countableStuffOwner.isNotEnough(as(model), check, number);
 			} else {
-				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), CountableStuffOwner.class);
+				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), MultipleStuffOwner.class);
 			}
 		} catch (Throwable e) {
 			LOGGER.error("{}玩家 consume {} - {}", warehouse.getPlayerId(), model.getItemType(), model.getId(), e);
@@ -76,7 +76,7 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
 		StuffModel model = tradeItem.getItemModel();
 		try {
 			ItemType itemType = model.getOwnerType();
-			O owner = this.getOwner(warehouse, model.getItemType());
+			O owner = this.getOwner(warehouse, model.getOwnerType());
 			if (owner != null) {
 				synchronized (owner) {
 					owner.deduct(tradeItem, action, attributes);
@@ -94,9 +94,9 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<SM>, O
 		if (!tradeItem.isValid()) {
 			return;
 		}
-		ItemModel model = tradeItem.getItemModel();
+		StuffModel model = tradeItem.getItemModel();
 		try {
-			O owner = this.getOwner(warehouse, model.getItemType());
+			O owner = this.getOwner(warehouse, model.getOwnerType());
 			if (owner != null) {
 				synchronized (owner) {
 					owner.reward(tradeItem, action, attributes);

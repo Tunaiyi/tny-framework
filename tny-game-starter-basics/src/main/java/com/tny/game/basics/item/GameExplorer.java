@@ -241,7 +241,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	}
 
 	private GameManager<Object> getOwnerManager(ItemType itemType) {
-		GameManager<Object> manager = this.managerMap.get(itemType);
+		GameManager<Object> manager = this.typeManagerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的owner manager 为null", itemType));
 		}

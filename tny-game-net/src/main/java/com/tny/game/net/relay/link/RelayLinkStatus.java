@@ -8,7 +8,7 @@ import com.tny.game.common.enums.*;
  * @author : kgtny
  * @date : 2021/3/2 3:36 下午
  */
-public enum RelayLinkStatus implements Enumerable<Integer> {
+public enum RelayLinkStatus implements IntEnumerable {
 
 	/**
 	 * 初始化
@@ -43,7 +43,7 @@ public enum RelayLinkStatus implements Enumerable<Integer> {
 	}
 
 	@Override
-	public Integer getId() {
+	public int id() {
 		return this.id;
 	}
 

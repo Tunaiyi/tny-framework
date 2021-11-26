@@ -10,7 +10,7 @@ public enum TestItemType implements ItemType {
 	;
 
 	@Override
-	public Integer getId() {
+	public int id() {
 		return 0;
 	}
 

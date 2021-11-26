@@ -5,7 +5,7 @@ package com.tny.game.basics.item;
  *
  * @author KGTny
  */
-public interface CountableStuffModel extends StuffModel {
+public interface MultipleStuffModel extends StuffModel {
 
 	/**
 	 * @return 是否有数量限制 <br>

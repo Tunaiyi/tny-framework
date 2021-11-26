@@ -33,7 +33,7 @@ class BaseDemandTest {
 		}
 
 		@Override
-		public Integer getId() {
+		public int id() {
 			return 0;
 		}
 
@@ -55,7 +55,7 @@ class BaseDemandTest {
 			return new ItemType() {
 
 				@Override
-				public Integer getId() {
+				public int id() {
 					return 0;
 				}
 

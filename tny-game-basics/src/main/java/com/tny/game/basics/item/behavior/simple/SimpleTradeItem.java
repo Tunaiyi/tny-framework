@@ -7,6 +7,8 @@ import java.util.*;
 
 public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 
+	private long id;
+
 	private AlterType alertType;
 
 	private I itemModel;
@@ -23,6 +25,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 
 	@SuppressWarnings("unchecked")
 	public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, DemandParamEntry<?>... entries) {
+		this.id = result.getId();
 		this.alertType = alertType;
 		this.itemModel = (I)result.getItemModel();
 		this.number = result.getExpectValue(Number.class);
@@ -38,21 +41,27 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 
 	@SuppressWarnings("unchecked")
 	public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, Map<DemandParam, Object> paramMap) {
+		this.id = result.getId();
 		this.alertType = alertType;
 		this.itemModel = (I)result.getItemModel();
 		this.number = result.getExpectValue(Number.class);
 		this.valid = valid;
-        if (paramMap != null) {
-            this.paramMap.putAll(paramMap);
-        }
+		if (paramMap != null) {
+			this.paramMap.putAll(paramMap);
+		}
 	}
 
-	public SimpleTradeItem(I itemModel, Number number, AlterType alertType, Map<DemandParam, Object> paramMap) {
-		this(itemModel, number, alertType, true, paramMap);
+	public SimpleTradeItem(long id, I itemModel, Number number, AlterType alertType, Map<DemandParam, Object> paramMap) {
+		this(id, itemModel, number, alertType, true, paramMap);
 	}
 
 	public SimpleTradeItem(I itemModel, Number number, AlterType alertType, boolean valid, Map<DemandParam, Object> paramMap) {
+		this(0, itemModel, number, alertType, valid, paramMap);
+	}
+
+	public SimpleTradeItem(long id, I itemModel, Number number, AlterType alertType, boolean valid, Map<DemandParam, Object> paramMap) {
 		super();
+		this.id = id;
 		this.itemModel = itemModel;
 		this.number = number;
 		this.alertType = alertType;
@@ -68,6 +77,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 
 	public SimpleTradeItem(TradeItem<I> item, Number number, boolean valid) {
 		super();
+		this.id = item.getId();
 		this.itemModel = item.getItemModel();
 		this.number = number;
 		this.alertType = item.getAlertType();
@@ -78,11 +88,20 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 	}
 
 	public SimpleTradeItem(I model, Number number, AlterType alertType) {
-		this(model, number, alertType, true);
+		this(0, model, number, alertType, true);
+	}
+
+	public SimpleTradeItem(long id, I model, Number number, AlterType alertType) {
+		this(id, model, number, alertType, true);
 	}
 
 	public SimpleTradeItem(I model, Number number, AlterType alertType, boolean valid) {
+		this(0, model, number, alertType, valid);
+	}
+
+	public SimpleTradeItem(long id, I model, Number number, AlterType alertType, boolean valid) {
 		super();
+		this.id = id;
 		this.itemModel = model;
 		this.number = number;
 		this.alertType = alertType;
@@ -94,7 +113,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 	}
 
 	public SimpleTradeItem(I model, Number number, boolean valid) {
-		this(model, number, AlterType.CHECK, valid);
+		this(0, model, number, AlterType.CHECK, valid);
 	}
 
 	@Override
@@ -114,6 +133,11 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 	}
 
 	@Override
+	public long getId() {
+		return 0;
+	}
+
+	@Override
 	public Number getNumber() {
 		return number;
 	}
@@ -122,9 +146,9 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
 	@SuppressWarnings("unchecked")
 	public <P> P getParam(DemandParam param) {
 		Object value = this.paramMap.get(param);
-        if (value == null) {
-            return null;
-        }
+		if (value == null) {
+			return null;
+		}
 		return (P)value;
 	}
 

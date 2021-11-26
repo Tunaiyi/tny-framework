@@ -47,7 +47,7 @@ public class BaseDemand extends AbstractDemand {
 		}
 
 		@Override
-		public Integer getId() {
+		public int id() {
 			return this.id;
 		}
 

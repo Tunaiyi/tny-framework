@@ -7,6 +7,8 @@ import java.util.*;
 
 public class SimpleDealItem<I extends StuffModel> implements DealItem<I> {
 
+	private long id;
+
 	private I itemModel;
 
 	private Number number;
@@ -20,6 +22,7 @@ public class SimpleDealItem<I extends StuffModel> implements DealItem<I> {
 	@SuppressWarnings("unchecked")
 	public SimpleDealItem(DemandResult result, DemandParamEntry<?>... entries) {
 		super();
+		this.id = result.getId();
 		this.itemModel = (I)result.getItemModel();
 		this.number = result.getExpectValue(Integer.class);
 		for (DemandParamEntry<?> entry : entries) {
@@ -43,6 +46,11 @@ public class SimpleDealItem<I extends StuffModel> implements DealItem<I> {
 		if (paramMap != null) {
 			this.paramMap.putAll(item.getParamMap());
 		}
+	}
+
+	@Override
+	public long getId() {
+		return id;
 	}
 
 	@Override

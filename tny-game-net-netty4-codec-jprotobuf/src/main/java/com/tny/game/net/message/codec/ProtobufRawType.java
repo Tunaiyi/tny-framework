@@ -24,7 +24,7 @@ final class ClassTypeMapHolder {
 
 }
 
-public enum ProtobufRawType implements Enumerable<Byte> {
+public enum ProtobufRawType implements ByteEnumerable {
 
 	NULL(PROTOBUF_RAW_TYPE_ID_NULL, null, (out, v) -> ObjectAide.noOps(), (in) -> null),
 
@@ -90,7 +90,7 @@ public enum ProtobufRawType implements Enumerable<Byte> {
 	}
 
 	@Override
-	public Byte getId() {
+	public byte id() {
 		return this.id;
 	}
 

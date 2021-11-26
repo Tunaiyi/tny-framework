@@ -2,10 +2,7 @@ package com.tny.game.basics.module;
 
 import com.tny.game.common.enums.*;
 
-public interface FeatureOpenMode<FM extends FeatureModel> extends Enumerable<Integer> {
-
-	@Override
-	Integer getId();
+public interface FeatureOpenMode<FM extends FeatureModel> extends IntEnumerable {
 
 	String name();
 

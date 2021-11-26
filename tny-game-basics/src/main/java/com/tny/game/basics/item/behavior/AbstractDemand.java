@@ -104,7 +104,6 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
 		if (alias == null) {
 			return null;
 		}
-		long id = 0;
 		ItemModel demandModel = this.getItemModel(alias);
 		this.setAttrMap(playerId, alias, attributeMap);
 		Map<DemandParam, Object> paramMap = this.countAndSetDemandParams($PARAMS, attributeMap);
@@ -113,9 +112,10 @@ public abstract class AbstractDemand extends DemandParamsObject implements Deman
 		Object expect = this.expect != null ? this.expect.createExpr().putAll(attributeMap).execute(Object.class) : null;
 		boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
 		if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE) {
-			return new CostDemandResult(id, as(demandModel), this.demandType, current, expect, satisfy, this.alertType, paramMap);
+			Number costId = (Number)attributeMap.getOrDefault(ItemModel.ATTRIBUTE_KEY_COST_ITEM_ID, 0L);
+			return new CostDemandResult(costId.longValue(), as(demandModel), this.demandType, current, expect, satisfy, this.alertType, paramMap);
 		} else {
-			return new DemandResult(id, demandModel, this.demandType, current, expect, satisfy, paramMap);
+			return new DemandResult(0L, demandModel, this.demandType, current, expect, satisfy, paramMap);
 		}
 	}
 

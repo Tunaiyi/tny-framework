@@ -11,29 +11,17 @@ import java.util.*;
  * @author KGTny
  */
 @SuppressWarnings("unchecked")
-public abstract class StuffOwnerBuilder<IM extends ItemModel, S extends Stuff<?>, O extends StuffOwner<IM, S>, B
-		extends StuffOwnerBuilder<IM, S, O, B>> {
-
-	/**
-	 * 玩家ID
-	 */
-	protected long playerId;
+public abstract class StuffOwnerBuilder<
+		IM extends ItemModel,
+		S extends Stuff<?>,
+		O extends BaseStuffOwner<IM, ?, S>,
+		B extends StuffOwnerBuilder<IM, S, O, B>>
+		extends ItemBuilder<O, IM, B> {
 
 	/**
 	 * 物品模型列表
 	 */
-	protected Set<S> itemSet = new HashSet<>();
-
-	/**
-	 * 设置玩家id
-	 *
-	 * @param playerId 玩家id
-	 * @return 返回storageBuilder对象
-	 */
-	public B setPlayerId(long playerId) {
-		this.playerId = playerId;
-		return (B)this;
-	}
+	private Set<S> itemSet = new HashSet<>();
 
 	/**
 	 * 添加item对象
@@ -63,13 +51,10 @@ public abstract class StuffOwnerBuilder<IM extends ItemModel, S extends Stuff<?>
 	 *
 	 * @return Storage对象
 	 */
-	public O build() {
-		AbstractStuffOwner<IM, ?, S> entity = createItemStorage();
-		entity.setPlayerId(this.playerId);
-		for (S item : this.itemSet) {
-			entity.itemMap.put(item.getId(), item);
-		}
-		return (O)entity;
+	public O createItem() {
+		O entity = createOwner();
+		entity.setStuffs(this.itemSet);
+		return entity;
 	}
 
 	/**
@@ -77,6 +62,6 @@ public abstract class StuffOwnerBuilder<IM extends ItemModel, S extends Stuff<?>
 	 *
 	 * @return
 	 */
-	protected abstract AbstractStuffOwner<IM, ?, S> createItemStorage();
+	protected abstract O createOwner();
 
 }

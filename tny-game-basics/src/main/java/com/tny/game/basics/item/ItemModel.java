@@ -12,6 +12,8 @@ import java.util.*;
  */
 public interface ItemModel extends Model {
 
+	String ATTRIBUTE_KEY_COST_ITEM_ID = "_costItemId";
+
 	/**
 	 * @return 事物类型
 	 */

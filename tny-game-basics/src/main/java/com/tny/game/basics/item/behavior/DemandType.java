@@ -17,14 +17,7 @@ import com.tny.game.common.result.*;
  *
  * @author KGTny
  */
-public interface DemandType extends Enumerable<Integer> {
-
-	/**
-	 * 条件类型
-	 *
-	 * @return
-	 */
-	Integer getId();
+public interface DemandType extends IntEnumerable {
 
 	/**
 	 * 是否是costDemand

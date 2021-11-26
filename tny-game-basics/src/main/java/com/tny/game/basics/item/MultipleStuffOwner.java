@@ -9,7 +9,7 @@ package com.tny.game.basics.item;
  * <p>
  * <br>
  */
-public interface CountableStuffOwner<IM extends ItemModel, SM extends CountableStuffModel, S extends Stuff<SM>>
+public interface MultipleStuffOwner<IM extends ItemModel, SM extends MultipleStuffModel, S extends Stuff<? extends SM>>
 		extends StuffOwner<IM, S> {
 
 	/**

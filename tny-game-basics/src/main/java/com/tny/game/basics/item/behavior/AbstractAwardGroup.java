@@ -131,7 +131,7 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 		int number = awardList.size();
 		// 抽中数, 一般number==drawNumber, 如果抽奖类型 number个抽drawNumber个. 并且要显示未抽中的物品,则drawNumber<=number
 		int drawNumber = getDrawNumber(number, attributeMap);
-		Map<Integer, CollectionTradeItem> itemMap = null;
+		Map<Integer, CollectTradeItem> itemMap = null;
 		ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
 		for (Award award : awardList) {
 			if (number <= 0) {
@@ -152,9 +152,9 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 						itemMap = new HashMap<>();
 					}
 					int modelId = awardModel.getId();
-					CollectionTradeItem current = itemMap.get(modelId);
+					CollectTradeItem current = itemMap.get(modelId);
 					if (current == null) {
-						current = new CollectionTradeItem(tradeItem);
+						current = new CollectTradeItem(tradeItem);
 						itemMap.put(tradeItem.getItemModel().getId(), current);
 						itemList.add(current);
 					} else {

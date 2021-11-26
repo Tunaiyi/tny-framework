@@ -4,7 +4,7 @@ import com.tny.game.common.enums.*;
 
 import java.util.Collection;
 
-public interface Feature extends Enumerable<Integer> {
+public interface Feature extends IntEnumerable {
 
 	String name();
 

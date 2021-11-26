@@ -23,7 +23,7 @@ public class StuffAlertException extends GameRuningException {
 		this.alertNumber = alert;
 	}
 
-	public StuffAlertException(ResultCode code, CountableStuff<?, ?> stuff, Number alert, Object... messages) {
+	public StuffAlertException(ResultCode code, MultipleStuff<?, ?> stuff, Number alert, Object... messages) {
 		this(code, stuff.getPlayerId(), stuff.getModel(), stuff.getNumber(), alert, messages);
 	}
 

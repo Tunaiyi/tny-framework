@@ -8,7 +8,7 @@ import com.tny.game.common.enums.*;
  * @author: Kun Yang
  * @date: 2018-10-08 11:49
  */
-public enum TunnelStatus implements Enumerable<Integer> {
+public enum TunnelStatus implements IntEnumerable {
 
 	/**
 	 * 初始化
@@ -39,7 +39,7 @@ public enum TunnelStatus implements Enumerable<Integer> {
 	}
 
 	@Override
-	public Integer getId() {
+	public int id() {
 		return this.id;
 	}
 

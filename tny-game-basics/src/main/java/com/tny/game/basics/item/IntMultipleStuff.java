@@ -3,29 +3,29 @@ package com.tny.game.basics.item;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.context.*;
 
-public abstract class CountableLongStuff<SM extends CountableStuffModel> extends BaseCountableStuff<SM, Long> {
+public abstract class IntMultipleStuff<SM extends MultipleStuffModel> extends BaseMultipleStuff<SM, Integer> {
 
-	protected long number;
+	protected int number;
 
 	@Override
-	public Long getNumberLimit() {
+	public Integer getNumberLimit() {
 		Number number = this.model.countNumberLimit(this);
 		if (number == null) {
 			return null;
 		}
-		return number.longValue();
+		return number.intValue();
 	}
 
 	@Override
-	public Long getNumber() {
+	public Integer getNumber() {
 		return this.number;
 	}
 
 	@Override
 	protected void deduct(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
-		long alter = this.getDeductAlterType(tradeItem).deduct(this, tradeItem.getNumber()).longValue();
+		int alter = this.getDeductAlterType(tradeItem).deduct(this, tradeItem.getNumber()).intValue();
 		if (alter > 0) {
-			long oldNumber = this.getNumber();
+			int oldNumber = this.getNumber();
 			this.number -= alter;
 			this.postDeduct(alter, oldNumber, this.number, action, attributes);
 		}
@@ -33,16 +33,16 @@ public abstract class CountableLongStuff<SM extends CountableStuffModel> extends
 
 	@Override
 	protected void reward(Action action, TradeItem<SM> tradeItem, Attributes attributes) {
-		long alter = this.getRewardAlterType(tradeItem).reward(this, tradeItem.getNumber()).longValue();
+		int alter = this.getRewardAlterType(tradeItem).reward(this, tradeItem.getNumber()).intValue();
 		if (alter > 0) {
-			long oldNumber = this.getNumber();
+			int oldNumber = this.getNumber();
 			this.number += alter;
 			this.postReward(alter, oldNumber, this.number, action, attributes);
 		}
 	}
 
 	@Override
-	protected void setNumber(Long number) {
+	protected void setNumber(Integer number) {
 		this.number = number;
 	}
 

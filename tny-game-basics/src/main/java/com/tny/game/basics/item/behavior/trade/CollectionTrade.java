@@ -13,7 +13,7 @@ public class CollectionTrade implements Trade {
 
 	private final TradeType tradeType;
 
-	private final Map<Integer, CollectionTradeItem> tradeMap;
+	private final Map<Integer, CollectTradeItem> tradeMap;
 
 	public CollectionTrade(Action action, TradeType tradeType) {
 		this.action = action;
@@ -51,11 +51,11 @@ public class CollectionTrade implements Trade {
 
 	private void collectItem(Collection<? extends TradeItem<?>> tradeItemCollection) {
 		for (TradeItem<?> tradeItem : tradeItemCollection) {
-			CollectionTradeItem item = this.tradeMap.get(tradeItem.getItemModel().getId());
+			CollectTradeItem item = this.tradeMap.get(tradeItem.getItemModel().getId());
 			if (item != null) {
 				item.collect(tradeItem);
 			} else {
-				this.tradeMap.put(tradeItem.getItemModel().getId(), new CollectionTradeItem(tradeItem));
+				this.tradeMap.put(tradeItem.getItemModel().getId(), new CollectTradeItem(tradeItem));
 			}
 		}
 	}

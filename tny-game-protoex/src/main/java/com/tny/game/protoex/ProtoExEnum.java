@@ -7,15 +7,7 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface ProtoExEnum extends Enumerable<Integer> {
-
-	/**
-	 * 枚举ID
-	 *
-	 * @return
-	 */
-	@Override
-	Integer getId();
+public interface ProtoExEnum extends IntEnumerable {
 
 	/**
 	 * 枚举名字

@@ -3,7 +3,7 @@ package com.tny.game.basics.item;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.context.*;
 
-public abstract class BaseCountableStuff<SM extends CountableStuffModel, N extends Number> extends BaseItem<SM> implements CountableStuff<SM, N> {
+public abstract class BaseMultipleStuff<SM extends MultipleStuffModel, N extends Number> extends BaseItem<SM> implements MultipleStuff<SM, N> {
 
 	@Override
 	public boolean isNumberLimit() {

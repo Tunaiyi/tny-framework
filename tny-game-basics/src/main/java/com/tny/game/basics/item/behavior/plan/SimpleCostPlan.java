@@ -32,8 +32,8 @@ public class SimpleCostPlan extends AbstractCostPlan {
 				continue;
 			}
 			CostDemandResult result = (CostDemandResult)demandResult;
-			itemList.add(new SimpleTradeItem<>(
-					result.getStuffModel(), result.getExpectValue(Number.class).intValue(), result.getAlterType(), demandResult.getParamMap()));
+			itemList.add(new SimpleTradeItem<>(result.getId(), result.getStuffModel(),
+					result.getExpectValue(Number.class).intValue(), result.getAlterType(), demandResult.getParamMap()));
 		}
 		return itemList;
 	}

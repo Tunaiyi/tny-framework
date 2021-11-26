@@ -8,14 +8,7 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface Action extends Enumerable<Integer> {
-
-	/**
-	 * 行为的操作ID
-	 *
-	 * @return
-	 */
-	Integer getId();
+public interface Action extends IntEnumerable {
 
 	/**
 	 * 所属行为

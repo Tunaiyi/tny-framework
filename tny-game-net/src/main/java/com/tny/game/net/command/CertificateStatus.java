@@ -2,7 +2,7 @@ package com.tny.game.net.command;
 
 import com.tny.game.common.enums.*;
 
-public enum CertificateStatus implements Enumerable<Integer> {
+public enum CertificateStatus implements IntEnumerable {
 
 	/**
 	 * 无效的
@@ -37,7 +37,7 @@ public enum CertificateStatus implements Enumerable<Integer> {
 	}
 
 	@Override
-	public Integer getId() {
+	public int id() {
 		return this.id;
 	}
 

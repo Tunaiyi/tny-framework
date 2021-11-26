@@ -13,6 +13,8 @@ public interface DealItem<I extends StuffModel> {
 
 	<SI extends I> SI getItemModel();
 
+	long getId();
+
 	Number getNumber();
 
 	Map<DemandParam, Object> getParamMap();

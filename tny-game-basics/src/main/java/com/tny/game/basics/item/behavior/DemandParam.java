@@ -7,6 +7,6 @@ import com.tny.game.common.enums.*;
  *
  * @author KGTny
  */
-public interface DemandParam extends Enumerable<Integer> {
+public interface DemandParam extends IntEnumerable {
 
 }

@@ -47,7 +47,7 @@ public interface Trade extends TradeInfo {
 						.map(i -> {
 							Number number = fun.apply(i);
 							if (number != null && number.doubleValue() > 0) {
-								return new SimpleTradeItem<>(i.getItemModel(), number, i.getAlertType(), i.getParamMap());
+								return new SimpleTradeItem<>(i.getId(), i.getItemModel(), number, i.getAlertType(), i.getParamMap());
 							}
 							return null;
 						})
