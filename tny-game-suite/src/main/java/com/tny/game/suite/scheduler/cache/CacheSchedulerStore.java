@@ -14,23 +14,23 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({SCHEDULER_CACHE, GAME})
 public class CacheSchedulerStore implements SchedulerStore {
 
-    @Resource
-    protected AsyncCache cache;
+	@Resource
+	protected AsyncCache cache;
 
-    private static String getKey(Object id) {
-        return CacheSchedulerBackup.BACK_UP_KEY + id;
-    }
+	private static String getKey(Object id) {
+		return CacheSchedulerBackup.BACK_UP_KEY + id;
+	}
 
-    @Override
-    public void save(TimeTaskScheduler timeTaskScheduler) {
-        CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
-                getKey(IDAide.getSystemId()), timeTaskScheduler);
-        this.cache.setObject(cacheSchedulerBackup);
-    }
+	@Override
+	public void save(TimeTaskScheduler timeTaskScheduler) {
+		CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup(
+				getKey(IDAide.getSystemId()), timeTaskScheduler);
+		this.cache.setObject(cacheSchedulerBackup);
+	}
 
-    @Override
-    public SchedulerBackup load() {
-        return this.cache.getObject(CacheSchedulerBackup.class, getKey(IDAide.getSystemId()));
-    }
+	@Override
+	public SchedulerBackup load() {
+		return this.cache.getObject(CacheSchedulerBackup.class, getKey(IDAide.getSystemId()));
+	}
 
 }

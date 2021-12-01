@@ -1,28 +1,18 @@
-package com.tny.game.common.scheduler;
+package com.tny.game.common;
 
+import com.tny.game.common.scheduler.*;
 import org.quartz.*;
 import org.quartz.impl.triggers.*;
 
-import java.text.ParseException;
 import java.util.*;
 
 /**
- * @author KGTny
- * @ClassName: TimeTaskHolder
- * @Description: 时间任务
- * @date 2011-10-28 下午3:50:29
  * <p>
- * <p>
- * <br>
+ *
+ * @author : kgtny
+ * @date : 2021/11/30 12:10 下午
  */
-class TimeTaskModel implements Comparable<TimeTaskModel> {
-
-	/**
-	 * 初始化建筑位置
-	 *
-	 * @uml.property name="timeExpression"
-	 */
-	private String timeExpression;
+public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
 
 	/**
 	 * 处理器名称列表
@@ -30,7 +20,7 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
 	 * @uml.property name="handlerList"
 	 */
 
-	private List<String> handlerList = new ArrayList<>();
+	private List<String> handlerList;
 
 	/**
 	 * 触发器
@@ -45,24 +35,19 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
 	 */
 	private long fireTime;
 
-	TimeTaskModel() {
-	}
+	private TimeTaskScheme scheme;
 
-	public TimeTaskModel(String timeExpression) {
-		this.timeExpression = timeExpression;
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void setStopTime(long stopTime) throws ParseException {
+	public TimeTaskTrigger(TimeTaskScheme scheme, long stopTime) {
+		this.scheme = scheme;
 		Date start = stopTime > 0 ? new Date(stopTime) : new Date();
 		this.trigger = (AbstractTrigger<CronTrigger>)TriggerBuilder.newTrigger()
 				.startAt(start)
-				.withSchedule(CronScheduleBuilder.cronSchedule(this.timeExpression))
+				.withSchedule(CronScheduleBuilder.cronSchedule(scheme.getCron()))
 				.build();
 		CronTriggerImpl cronTrigger = (CronTriggerImpl)this.trigger;
 		cronTrigger.setNextFireTime(start);
-		cronTrigger.triggered(null);
-		this.fireTime = this.trigger.getNextFireTime().getTime();
+		this.handlerList = new ArrayList<>(scheme.getTasks());
+		this.trigger();
 	}
 
 	/**
@@ -78,8 +63,8 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
 	 *
 	 * @return 返回下次执行时间
 	 */
-	public Date nextFireTime() {
-		return new Date(this.fireTime);
+	public long nextFireTime() {
+		return this.fireTime;
 	}
 
 	/**
@@ -92,15 +77,15 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
 	}
 
 	@Override
-	public int compareTo(TimeTaskModel o) {
+	public int compareTo(TimeTaskTrigger o) {
 		long value = this.fireTime - o.fireTime;
 		return value > 0 ? 1 : -1;
 	}
 
 	@Override
 	public String toString() {
-		return "\nTimeTaskModel [timeExpression=" + this.timeExpression + ", handlerList=" + this.handlerList +
-				", trigger=" + this.fireTime + " - " + this.nextFireTime() + "]\n";
+		return "\nTimeTaskModel [cron=" + scheme.getCron() + ", handlerList=" + this.handlerList +
+				", trigger=" + this.fireTime + " - " + new Date(this.nextFireTime()) + "]\n";
 	}
 
 }

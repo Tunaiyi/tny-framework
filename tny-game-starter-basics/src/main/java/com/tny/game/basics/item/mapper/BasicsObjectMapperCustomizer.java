@@ -8,6 +8,7 @@ import com.tny.game.basics.loader.*;
 import com.tny.game.basics.module.*;
 import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.common.result.*;
+import com.tny.game.common.scheduler.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -38,7 +39,7 @@ public class BasicsObjectMapperCustomizer implements ObjectMapperCustomizer {
 		}
 		module.addSerializer(ItemModel.class, serializer);
 		module.addDeserializer(as(ItemModel.class), deserializer);
-		
+
 		module.addSerializer(StuffModel.class, serializer);
 		module.addDeserializer(as(StuffModel.class), deserializer);
 
@@ -74,6 +75,9 @@ public class BasicsObjectMapperCustomizer implements ObjectMapperCustomizer {
 
 		module.addSerializer(FeatureOpenMode.class, new IdObjectSerializer<>(FeatureOpenMode::getId));
 		module.addDeserializer(FeatureOpenMode.class, new IdObjectDeserializer<>(FeatureOpenModes::of));
+
+		module.addSerializer(TaskReceiverType.class, new IdObjectSerializer<>(TaskReceiverType::getId));
+		module.addDeserializer(TaskReceiverType.class, new IdObjectDeserializer<>(TaskReceiverTypes::of));
 
 		mapper.registerModule(module);
 	}

@@ -3,7 +3,7 @@ package com.tny.game.basics.item.capacity;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 
-import static com.tny.game.basics.GameClassLoader.*;
+import static com.tny.game.scanner.selector.EnumClassSelector.*;
 
 /**
  * <p>
@@ -13,9 +13,9 @@ import static com.tny.game.basics.GameClassLoader.*;
  */
 public class CapacityEnumClassLoader {
 
-    @ClassSelectorProvider
-    static ClassSelector capacitiesSelector() {
-        return createSelector(Capacity.class, Capacities::register);
-    }
+	@ClassSelectorProvider
+	static ClassSelector capacitiesSelector() {
+		return createSelector(Capacity.class, Capacities::register);
+	}
 
 }

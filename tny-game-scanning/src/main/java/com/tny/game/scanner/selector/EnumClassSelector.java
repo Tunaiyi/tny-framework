@@ -1,4 +1,4 @@
-package com.tny.game.basics;
+package com.tny.game.scanner.selector;
 
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.*;
@@ -8,17 +8,15 @@ import org.slf4j.*;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/7/25 9:46 下午
  */
-public class GameClassLoader {
+public class EnumClassSelector {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(GameClassLoader.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(EnumClassSelector.class);
 
 	@SuppressWarnings("unchecked")
 	public static <E, A extends Enum<A>> ClassSelector createSelector(Class<E> type, Consumer<E> handler) {
@@ -27,7 +25,7 @@ public class GameClassLoader {
 				.setHandler((classes) -> classes.forEach(codeClass -> {
 					if (codeClass.isEnum()) {
 						List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
-						enumList.forEach(v -> handler.accept(as(v)));
+						enumList.forEach(v -> handler.accept((E)v));
 					}
 					LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
 				}));

@@ -1,6 +1,6 @@
 package com.tny.game.common.scheduler;
 
-
+import com.tny.game.common.*;
 import com.tny.game.common.utils.*;
 
 import java.io.Serializable;
@@ -9,61 +9,65 @@ import java.util.*;
 
 public class TimeTask implements Comparable<TimeTask>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * @uml.property name="executeTime"
-     */
-    private long executeTime;
+	/**
+	 * @uml.property name="executeTime"
+	 */
+	private long executeTime;
 
-    /**
-     * @uml.property name="handlerList"
-     */
-    private List<String> handlerList = new ArrayList<>();
+	/**
+	 * @uml.property name="handlerList"
+	 */
+	private List<String> handlerList = new ArrayList<>();
 
-    protected TimeTask(TimeTaskModel holder) {
-        this.executeTime = holder.nextFireTime().getTime() / 1000 * 1000;
-        this.addTaskHandler(holder);
-    }
+	public TimeTask() {
+	}
 
-    public TimeTask(List<String> handlerList, long executeTime) {
-        this.executeTime = executeTime;
-        this.handlerList.addAll(handlerList);
-    }
+	protected TimeTask(TimeTaskTrigger holder) {
+		this.executeTime = holder.nextFireTime() / 1000 * 1000;
+		this.addTaskHandler(holder);
+	}
 
-    /**
-     * @return
-     * @uml.property name="executeTime"
-     */
-    public long getExecuteTime() {
-        return this.executeTime;
-    }
+	public TimeTask(List<String> handlerList, long executeTime) {
+		this.executeTime = executeTime;
+		this.handlerList.addAll(handlerList);
+	}
 
-    public List<String> getHandlerList() {
-        return Collections.unmodifiableList(this.handlerList);
-    }
+	/**
+	 * @return
+	 * @uml.property name="executeTime"
+	 */
+	public long getExecuteTime() {
+		return this.executeTime;
+	}
 
-    protected void addTaskHandler(TimeTaskModel taskModel) {
-        this.handlerList.addAll(taskModel.getHandlerList());
-    }
+	public List<String> getHandlerList() {
+		return Collections.unmodifiableList(this.handlerList);
+	}
 
-    @Override
-    public int compareTo(TimeTask handler) {
-        long value = handler.executeTime - this.executeTime;
-        if (value == 0L)
-            return 0;
-        return value < 0L ? -1 : 1;
-    }
+	protected void addTaskHandler(TimeTaskTrigger taskModel) {
+		this.handlerList.addAll(taskModel.getHandlerList());
+	}
 
-    @Override
-    public String toString() {
-        return "\nTimeTaskHandlerHolder [executeTime=" +
-               DateTimeAide.DATE_TIME_FORMAT.format(Instant.ofEpochMilli(this.executeTime))
-               + ", handlerList=" + this.handlerList + "]\n";
-    }
+	@Override
+	public int compareTo(TimeTask handler) {
+		long value = handler.executeTime - this.executeTime;
+		if (value == 0L) {
+			return 0;
+		}
+		return value < 0L ? -1 : 1;
+	}
 
-    public int size() {
-        return this.handlerList.size();
-    }
+	@Override
+	public String toString() {
+		return "\nTimeTaskHandlerHolder [executeTime=" +
+				DateTimeAide.DATE_TIME_FORMAT.format(Instant.ofEpochMilli(this.executeTime))
+				+ ", handlerList=" + this.handlerList + "]\n";
+	}
+
+	public int size() {
+		return this.handlerList.size();
+	}
 
 }

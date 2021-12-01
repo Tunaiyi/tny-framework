@@ -4,7 +4,7 @@ import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import org.slf4j.*;
 
-import static com.tny.game.basics.GameClassLoader.*;
+import static com.tny.game.scanner.selector.EnumClassSelector.*;
 
 /**
  * <p>

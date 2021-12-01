@@ -14,16 +14,19 @@ import java.util.*;
  */
 public interface TimeTaskHandlerHolder {
 
-    /**
-     * 获取任务处理器 <br>
-     *
-     * @param name 处理器名称
-     * @return 返回处理器, 没有则返回null
-     */
-    public List<TimeTaskHandler> getHandlerList(Object group, Collection<String> nameColl);
+	/**
+	 * 获取任务处理器 <br>
+	 *
+	 * @return 返回处理器, 没有则返回null
+	 */
+	List<TimeTaskHandler> getHandlerList(TaskReceiverType group, Collection<String> nameColl);
 
-    public TimeTaskHandler getHandler(String handlerName);
-
-    public void init();
+	/**
+	 * 获取处理器
+	 *
+	 * @param handlerName 处理器名字
+	 * @return
+	 */
+	TimeTaskHandler getHandler(String handlerName);
 
 }

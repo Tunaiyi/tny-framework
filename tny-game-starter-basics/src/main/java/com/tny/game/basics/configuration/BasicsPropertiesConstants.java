@@ -12,6 +12,10 @@ public class BasicsPropertiesConstants {
 
 	public static final String BASICS_FEATURE_MANAGER = "tny.game.basics.feature-manager";
 
+	public static final String BASICS_TIME_TASK = "tny.game.basics.time-task";
+
+	public static final String BASICS_TIME_TASK_ENABLE = "tny.game.basics.time-task.enable";
+
 	public static final String BASICS_FEATURE_MANAGER_ENABLE = "tny.game.basics.feature-manager.enable";
 
 	public static final String BASICS_CAPACITY_MODULE = "tny.game.basics.capacity-module";
