@@ -62,10 +62,6 @@ public abstract class ParallelLoadGameCacheManager<O> extends GameCacheManager<O
 		return get(keys, parallelism);
 	}
 
-	protected List<O> get(Collection<AnyId> keys) {
-		return get(keys, false);
-	}
-
 	protected List<O> get(Collection<AnyId> keys, boolean parallelism) {
 		if (parallelism) {
 			return forkJoinPool.submit(() -> doGet(keys, true)).join();

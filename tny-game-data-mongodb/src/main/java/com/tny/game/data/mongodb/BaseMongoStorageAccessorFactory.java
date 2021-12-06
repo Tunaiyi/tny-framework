@@ -18,7 +18,7 @@ public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFact
 
 	protected EntityIdConverterFactory entityIdConverterFactory;
 
-	protected EntityObjectConverter entityObjectConverter;
+	protected MongoEntityConverter entityObjectConverter;
 
 	protected MongoTemplate mongoTemplate;
 
@@ -26,7 +26,7 @@ public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFact
 		this.dataSource = dataSource;
 	}
 
-	public BaseMongoStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory, EntityObjectConverter entityObjectConverter,
+	public BaseMongoStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory, MongoEntityConverter entityObjectConverter,
 			MongoTemplate mongoTemplate, String dataSource) {
 		this.dataSource = dataSource;
 		this.entityIdConverterFactory = entityIdConverterFactory;
@@ -47,7 +47,7 @@ public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFact
 		return this;
 	}
 
-	public BaseMongoStorageAccessorFactory setEntityObjectConverter(EntityObjectConverter entityObjectConverter) {
+	public BaseMongoStorageAccessorFactory setEntityObjectConverter(MongoEntityConverter entityObjectConverter) {
 		this.entityObjectConverter = entityObjectConverter;
 		return this;
 	}

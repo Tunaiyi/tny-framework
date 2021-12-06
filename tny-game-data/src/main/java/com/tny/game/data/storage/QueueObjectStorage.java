@@ -76,6 +76,31 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 	}
 
 	@Override
+	public List<O> get(List<K> keys) {
+		List<K> missing = new ArrayList<>();
+		List<O> returnList = new ArrayList<>();
+		for (K key : keys) {
+			Lock lock = locker.lock(key);
+			try {
+				StorageEntry<K, O> entry = this.entriesMap.get(key);
+				if (entry != null) {
+					if (!entry.isDelete()) {
+						returnList.add(entry.getValue());
+					}
+					// 已删除 无需再查库
+				} else {
+					missing.add(key);
+				}
+			} finally {
+				locker.unlock(key, lock);
+			}
+		}
+		List<O> newList = this.accessor.get(keys);
+		returnList.addAll(newList);
+		return returnList;
+	}
+
+	@Override
 	public boolean insert(K key, O object) {
 		operate(key, object, StorageAction.INSERT);
 		return true;

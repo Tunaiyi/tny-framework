@@ -16,11 +16,11 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class UpdatableRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID> implements UpdatableRepository<T, ID> {
 
-	protected MongoOperations mongoOperations;
+	private MongoOperations mongoOperations;
 
-	protected MongoEntityInformation<T, ID> metadata;
+	private MongoEntityInformation<T, ID> metadata;
 
-	protected EntityConverter entityConverter;
+	private MongoDocumentMapper entityConverter;
 
 	protected Class<T> clazz;
 
@@ -30,7 +30,7 @@ public class UpdatableRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID>
 	 * @param metadata        must not be {@literal null}.
 	 * @param mongoOperations must not be {@literal null}.
 	 */
-	public UpdatableRepositoryImpl(MongoEntityInformation<T, ID> metadata, MongoOperations mongoOperations, EntityConverter entityConverter) {
+	public UpdatableRepositoryImpl(MongoEntityInformation<T, ID> metadata, MongoOperations mongoOperations, MongoDocumentMapper entityConverter) {
 		super(metadata, mongoOperations);
 		this.metadata = metadata;
 		this.mongoOperations = mongoOperations;
@@ -42,12 +42,12 @@ public class UpdatableRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID>
 		return this.mongoOperations;
 	}
 
-	private EntityConverter converter() {
+	private MongoDocumentMapper converter() {
 		return entityConverter;
 	}
 
 	private <T> Document toDocument(T entity) {
-		return this.converter().convert(entity, Document.class);
+		return this.converter().toDocument(entity);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class UpdatableRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID>
 
 	@Override
 	public T findAndUpdate(Query query, T entity) {
-		Document entityDocument = this.converter().convert(entity, Document.class);
+		Document entityDocument = this.converter().toDocument(entity);
 		if (MongoUtils.isIDNullValue(entityDocument)) {
 			entityDocument.remove("_id");
 		}
@@ -115,7 +115,7 @@ public class UpdatableRepositoryImpl<T, ID> extends SimpleMongoRepository<T, ID>
 	// }
 
 	@Autowired(required = false)
-	private void setEntityConverter(EntityConverter entityConverter) {
+	private void setEntityConverter(MongoDocumentMapper entityConverter) {
 		this.entityConverter = entityConverter;
 	}
 

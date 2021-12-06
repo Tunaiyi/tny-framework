@@ -22,4 +22,8 @@ public interface ItemType extends IntEnumerable {
 		return getId() / ID_TAIL_SIZE;
 	}
 
+	default long createItemId(int index) {
+		return Long.parseLong(this.getIdHead() + "" + index);
+	}
+
 }

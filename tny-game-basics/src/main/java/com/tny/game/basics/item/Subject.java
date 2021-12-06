@@ -4,7 +4,7 @@ import com.tny.game.common.tag.*;
 
 import java.util.Set;
 
-public interface Entity<M extends Model> extends Any, Taggable {
+public interface Subject<M extends Model> extends Any, Taggable {
 
 	/**
 	 * @return 获取对象别名

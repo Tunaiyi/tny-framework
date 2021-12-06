@@ -15,6 +15,8 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
+import java.util.stream.Collectors;
+
 /**
  * <p>
  *
@@ -41,9 +43,9 @@ public class MongoStorageAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(JsonEntityObjectConverter.class)
-	JsonEntityObjectConverter jsonEntityObjectConverter(
-			EntityLoadedService entityOnLoadService,
+	@ConditionalOnMissingBean(JsonMongoEntityConverter.class)
+	JsonMongoEntityConverter jsonEntityObjectConverter(
+			ObjectProvider<MongoDocumentEnhance<?>> enhances,
 			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
@@ -54,7 +56,7 @@ public class MongoStorageAutoConfiguration {
 				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
 				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
 		mapperCustomizers.forEach((action) -> action.customize(mapper));
-		return new JsonEntityObjectConverter(entityOnLoadService, mapper);
+		return new JsonMongoEntityConverter(mapper, enhances.stream().collect(Collectors.toList()));
 	}
 
 }

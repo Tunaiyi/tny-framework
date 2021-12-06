@@ -21,6 +21,14 @@ public abstract class GettableManager<O> implements Manager<O> {
 	protected abstract O get(AnyId anyId);
 
 	/**
+	 * 批量获取玩家的对象
+	 *
+	 * @param anyIdList 对象 id 列表
+	 * @return 返回对象
+	 */
+	protected abstract List<O> get(Collection<AnyId> anyIdList);
+
+	/**
 	 * 获取玩家的对象
 	 *
 	 * @param playerId 玩家id

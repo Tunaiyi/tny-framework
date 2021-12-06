@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.tny.game.common.enums.*;
-import com.tny.game.common.reflect.*;
-import com.tny.game.common.utils.*;
+import org.springframework.core.ResolvableType;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -26,10 +24,19 @@ public class EnumerableJsonDeserializer<T extends Enum<T> & Enumerable<ID>, ID> 
 
 	private EnumerableJsonDeserializer(JavaType type) {
 		this.enumClass = as(type.getRawClass());
-		Asserts.checkArgument(Enumerable.class.isAssignableFrom(this.enumClass),
-				"Class {} not extends {}", this.enumClass, Enumerable.class);
-		List<Class<?>> idClasses = ReflectAide.getComponentType(this.enumClass, Enumerable.class);
-		this.idClass = as(idClasses.get(0));
+		this.idClass = as(ResolvableType.forClass(Enumerable.class, this.enumClass).resolveGeneric());
+		//		if (IntEnumerable.class.isAssignableFrom(this.enumClass)) {
+		//			this.idClass = as(Integer.class);
+		//		} else if (LongEnumerable.class.isAssignableFrom(this.enumClass)) {
+		//			this.idClass = as(Long.class);
+		//		} else if (ByteEnumerable.class.isAssignableFrom(this.enumClass)) {
+		//			this.idClass = as(Byte.class);
+		//		} else {
+		//			Asserts.checkArgument(Enumerable.class.isAssignableFrom(this.enumClass),
+		//					"Class {} not extends {}", this.enumClass, Enumerable.class);
+		//			List<Class<?>> idClasses = ReflectAide.getComponentType(this.enumClass, Enumerable.class);
+		//			this.idClass = as(idClasses.get(0));
+		//		}
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class BaseSingleStuffOwner<IM extends ItemModel, SM extends StuffModel, S extends Stuff<? extends SM>>
 		extends BaseStuffOwner<IM, SM, S> implements StuffOwner<IM, S> {
-	
+
 	/**
 	 * Id 索引计数器
 	 */
@@ -31,7 +31,7 @@ public abstract class BaseSingleStuffOwner<IM extends ItemModel, SM extends Stuf
 	protected abstract Map<Long, S> stuffMap();
 
 	protected long createStuffId(SM model) {
-		return Long.parseLong(model.getItemType().getId() / ItemType.ID_TAIL_SIZE + "" + this.idIndexCounter.getAndIncrement());
+		return model.getItemType().createItemId(this.idIndexCounter.getAndIncrement());
 	}
 
 	protected Collection<S> getAllStuffs() {

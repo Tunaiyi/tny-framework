@@ -10,7 +10,7 @@ import java.util.*;
  * @param <M>
  * @author KGTny
  */
-public interface Item<M extends ItemModel> extends Entity<M> {
+public interface Item<M extends ItemModel> extends Subject<M> {
 
 	/**
 	 * @return 全局唯一id

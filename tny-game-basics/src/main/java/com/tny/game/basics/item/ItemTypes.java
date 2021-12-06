@@ -68,7 +68,53 @@ public class ItemTypes extends ClassImporter {
 
 	public static <T extends ItemType> T ofModelId(int modelId) {
 		int typeId = modelId / ID_TAIL_SIZE * ID_TAIL_SIZE;
-		return check(typeId);
+		return of(typeId);
+	}
+
+	public static <T extends ItemType> T ofItemlId(long id) {
+		if (id < 10000L) {
+			return ofModelId((int)id);
+		}
+		if (id < 100000L) {
+			return ofModelId((int)(id / 10L));
+		}
+		if (id < 1000000L) {
+			return ofModelId((int)(id / 100L));
+		}
+		if (id < 10000000L) {
+			return ofModelId((int)(id / 1000L));
+		}
+		if (id < 100000000L) {
+			return ofModelId((int)(id / 10000L));
+		}
+		if (id < 1000000000L) {
+			return ofModelId((int)(id / 100000L));
+		}
+		if (id < 10000000000L) {
+			return ofModelId((int)(id / 1000000L));
+		}
+		if (id < 100000000000L) {
+			return ofModelId((int)(id / 10000000L));
+		}
+		if (id < 1000000000000L) {
+			return ofModelId((int)(id / 100000000L));
+		}
+		if (id < 10000000000000L) {
+			return ofModelId((int)(id / 1000000000L));
+		}
+		if (id < 100000000000000L) {
+			return ofModelId((int)(id / 10000000000L));
+		}
+		if (id < 1000000000000000L) {
+			return ofModelId((int)(id / 100000000000L));
+		}
+		if (id < 10000000000000000L) {
+			return ofModelId((int)(id / 1000000000000L));
+		}
+		if (id < 100000000000000000L) {
+			return ofModelId((int)(id / 10000000000000L));
+		}
+		return ofModelId((int)(id / 100000000000000L));
 	}
 
 }

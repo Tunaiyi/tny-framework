@@ -13,7 +13,7 @@ public class MongoStorageAccessorFactorySetting {
 
 	private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
 
-	private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonEntityObjectConverter.class);
+	private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonMongoEntityConverter.class);
 
 	private String dataSource = "";
 

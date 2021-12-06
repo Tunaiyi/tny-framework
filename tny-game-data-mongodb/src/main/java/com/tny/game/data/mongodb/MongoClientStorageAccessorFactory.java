@@ -21,7 +21,7 @@ public class MongoClientStorageAccessorFactory extends BaseMongoStorageAccessorF
 	}
 
 	public MongoClientStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory,
-			EntityObjectConverter entityObjectConverter, MongoTemplate mongoTemplate, String dataSource) {
+			MongoEntityConverter entityObjectConverter, MongoTemplate mongoTemplate, String dataSource) {
 		super(entityIdConverterFactory, entityObjectConverter, mongoTemplate, dataSource);
 	}
 

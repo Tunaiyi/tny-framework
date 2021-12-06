@@ -11,6 +11,8 @@ public interface ObjectStorage<K extends Comparable<?>, O> {
 
 	O get(K id);
 
+	List<O> get(List<K> id);
+
 	boolean insert(K id, O object);
 
 	boolean update(K id, O object);

@@ -82,6 +82,25 @@ public interface EntityManager<K extends Comparable<?>, E> {
 	E getEntity(K id, EntityOnLoad<K, E> onLoad);
 
 	/**
+	 * 批量获取指定id的实体
+	 *
+	 * @param id id列表
+	 * @return 返回获取实体
+	 */
+	default List<E> getEntities(List<K> id) {
+		return getEntities(id, null);
+	}
+
+	/**
+	 * 批量获取指定id的实体
+	 *
+	 * @param idList id列表
+	 * @param onLoad 加载回调
+	 * @return 返回获取实体
+	 */
+	List<E> getEntities(List<K> idList, EntityOnLoad<K, E> onLoad);
+
+	/**
 	 * 批量获取实体
 	 *
 	 * @param keys 指定 key 列表

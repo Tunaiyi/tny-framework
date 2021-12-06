@@ -7,7 +7,6 @@ import com.tny.game.basics.persistent.*;
 import com.tny.game.basics.transaction.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.mvel.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -53,7 +52,6 @@ public class BasicsAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnBean(GameExplorer.class)
 	ItemModelJsonDeserializer itemModelJsonDeserializer(GameExplorer gameExplorer) {
 		return new ItemModelJsonDeserializer(gameExplorer);
 	}
@@ -62,6 +60,16 @@ public class BasicsAutoConfiguration {
 	BasicsObjectMapperCustomizer gameBasiceObjectMapperCustomizer(
 			ItemModelJsonSerializer serializer, ItemModelJsonDeserializer deserializer) {
 		return new BasicsObjectMapperCustomizer(serializer, deserializer);
+	}
+
+	@Bean
+	ItemJsonDeserializer itemJsonDeserializer(GameExplorer gameExplorer) {
+		return new ItemJsonDeserializer(gameExplorer);
+	}
+
+	@Bean
+	ItemJsonSerializer itemJsonSerializer() {
+		return new ItemJsonSerializer();
 	}
 
 	@Bean

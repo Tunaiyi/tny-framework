@@ -1,9 +1,8 @@
-package com.tny.game.basics;
+package com.tny.game.basics.item;
 
 import com.google.common.collect.*;
-import com.tny.game.basics.item.*;
 
-public class IDAide {
+public class ItemAide {
 
 	private static final long PLAYER_ID_OFFSET = 10000000000L;
 
@@ -57,13 +56,8 @@ public class IDAide {
 	 * @param index    索引
 	 * @return 返回 item id
 	 */
-	public static long createModelId(ItemType itemType, long index) {
+	public static long createItemId(ItemType itemType, long index) {
 		return itemType.getId() * ITEM_ID_OFFSET + index;
-	}
-
-	public static void main(String[] args) {
-		//		2147483647
-		System.out.println(Integer.MAX_VALUE);
 	}
 
 }

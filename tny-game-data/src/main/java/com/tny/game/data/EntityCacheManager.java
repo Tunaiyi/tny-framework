@@ -171,6 +171,42 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
 	}
 
 	@Override
+	public List<O> getEntities(List<K> idList, EntityOnLoad<K, O> onLoad) {
+		List<O> entities = new ArrayList<>();
+		List<K> missing = new ArrayList<>();
+		for (K id : idList) {
+			O object = this.cache.get(id);
+			if (object != null) {
+				entities.add(object);
+			} else {
+				missing.add(id);
+			}
+		}
+		List<O> findList = this.storage.get(missing);
+		for (O object : findList) {
+			K id = idOf(object);
+			Lock lock = this.locker.lock(id);
+			try {
+				O exist = this.cache.get(id);
+				if (exist != null) {
+					entities.add(exist);
+				} else {
+					if (onLoad != null) {
+						onLoad.onLoad(id, object);
+					}
+					this.cache.put(id, object);
+				}
+			} catch (Throwable e) {
+				LOGGER.error("", e);
+				throw new EntityCacheException("load exception", e);
+			} finally {
+				this.locker.unlock(id, lock);
+			}
+		}
+		return entities;
+	}
+
+	@Override
 	public boolean insertEntity(O object) {
 		K id = idOf(object);
 		Lock lock = this.locker.lock(id);

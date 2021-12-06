@@ -1,6 +1,6 @@
 package com.tny.game.data.mongodb.configuration;
 
-import com.tny.game.data.mongodb.configuration.PersistObjectConverterFactory.*;
+import com.tny.game.data.mongodb.configuration.MongoEntityConverterFactory.*;
 import com.tny.game.data.mongodb.loader.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -31,7 +31,7 @@ public class ImportConverterBeanDefinitionRegistrar implements ImportBeanDefinit
 	}
 
 	private void register(BeanDefinitionRegistry registry, Class<?> entityClass, ConverterType converterType) {
-		Converter<?, ?> converter = PersistObjectConverterFactory.createConverter(entityClass, converterType);
+		Converter<?, ?> converter = MongoEntityConverterFactory.createConverter(entityClass, converterType);
 		Class<Converter<?, ?>> clazz = as(converter.getClass());
 		registry.registerBeanDefinition(clazz.getSimpleName(),
 				BeanDefinitionBuilder.genericBeanDefinition(clazz, () -> converter)

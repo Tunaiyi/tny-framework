@@ -47,47 +47,52 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 	}
 
 	@Override
-	public <I extends Entity<?>> I getItem(long playerId, int modelId) {
+	public <I extends Subject<?>> I getItem(long playerId, int modelId) {
 		return null;
 	}
 
 	@Override
-	public boolean insertItem(Entity<?>[] items) {
+	public <I extends Subject<?>> I getItem(AnyId anyId) {
+		return null;
+	}
+
+	@Override
+	public boolean insertItem(Subject<?>[] items) {
 		return false;
 	}
 
 	@Override
-	public <I extends Entity<?>> Collection<I> insertItem(Collection<I> itemCollection) {
+	public <I extends Subject<?>> Collection<I> insertItem(Collection<I> itemCollection) {
 		return null;
 	}
 
 	@Override
-	public boolean updateItem(Entity<?>[] items) {
+	public boolean updateItem(Subject<?>[] items) {
 		return false;
 	}
 
 	@Override
-	public <I extends Entity<?>> Collection<I> updateItem(Collection<I> itemCollection) {
+	public <I extends Subject<?>> Collection<I> updateItem(Collection<I> itemCollection) {
 		return null;
 	}
 
 	@Override
-	public boolean saveItem(Entity<?>[] items) {
+	public boolean saveItem(Subject<?>[] items) {
 		return false;
 	}
 
 	@Override
-	public <I extends Entity<?>> Collection<I> saveItem(Collection<I> itemCollection) {
+	public <I extends Subject<?>> Collection<I> saveItem(Collection<I> itemCollection) {
 		return null;
 	}
 
 	@Override
-	public void deleteItem(Entity<?>... items) {
+	public void deleteItem(Subject<?>... items) {
 
 	}
 
 	@Override
-	public <I extends Entity<?>> void deleteItem(Collection<I> itemCollection) {
+	public <I extends Subject<?>> void deleteItem(Collection<I> itemCollection) {
 
 	}
 

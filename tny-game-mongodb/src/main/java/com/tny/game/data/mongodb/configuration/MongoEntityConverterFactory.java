@@ -1,6 +1,6 @@
 package com.tny.game.data.mongodb.configuration;
 
-import com.tny.game.data.mongodb.EntityConverter;
+import com.tny.game.data.mongodb.*;
 import com.tny.game.data.mongodb.exception.*;
 import com.tny.game.data.mongodb.loader.*;
 import javassist.*;
@@ -18,9 +18,9 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * <p>
  */
-public class PersistObjectConverterFactory {
+public class MongoEntityConverterFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PersistObjectConverterFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MongoEntityConverterFactory.class);
 
 	private static final ClassPool classPool = ClassPool.getDefault();
 
@@ -52,10 +52,10 @@ public class PersistObjectConverterFactory {
 	 * @param type         转换器类型
 	 * @return 返回转换器
 	 */
-	static <S, T> Converter<S, T> createConverter(Class<?> persistClass, ConverterType type, EntityConverter converter) {
+	static <S, T> Converter<S, T> createConverter(Class<?> persistClass, ConverterType type, MongoDocumentConverter converter) {
 		Class<?> proxyClass = createClass(persistClass, type);
 		try {
-			return as(proxyClass.getConstructor(EntityConverter.class).newInstance(converter));
+			return as(proxyClass.getConstructor(MongoDocumentConverter.class).newInstance(converter));
 		} catch (Exception e) {
 			throw new GenerateConverterException(format("实例化 {} PersistObjectLoader 异常", persistClass), e);
 		}
@@ -77,7 +77,7 @@ public class PersistObjectConverterFactory {
 				// .getName() + ", " + targetClass.getName() + ">").encode());
 				ctClass.addInterface(converterInterface);
 
-				CtClass converterClass = classPool.get(EntityConverter.class.getName());
+				CtClass converterClass = classPool.get(MongoDocumentConverter.class.getName());
 				CtField ctField = new CtField(converterClass, "converter", ctClass);
 				ctField.setModifiers(Modifier.PRIVATE);
 				ctClass.addField(ctField);
@@ -116,7 +116,8 @@ public class PersistObjectConverterFactory {
 				ctClass.addMethod(convertMethod);
 
 				CtMethod setObjectConverterMethod = CtNewMethod
-						.make(format("public void setObjectConverter({} source){return this.converter = $1;}", EntityConverter.class.getName()),
+						.make(format("public void setObjectConverter({} source){return this.converter = $1;}",
+										MongoDocumentConverter.class.getName()),
 								ctClass);
 				convertMethod.setModifiers(Modifier.PUBLIC);
 				ctClass.addMethod(setObjectConverterMethod);

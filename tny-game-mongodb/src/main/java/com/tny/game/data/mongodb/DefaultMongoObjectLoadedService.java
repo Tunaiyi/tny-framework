@@ -15,13 +15,13 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2020/11/4 4:24 下午
  */
-public class DefaultEntityLoadedService implements EntityLoadedService, AppPrepareStart {
+public class DefaultMongoObjectLoadedService implements MongoObjectLoadedService, AppPrepareStart {
 
 	private final ApplicationContext applicationContext;
 
-	private volatile Map<Class<?>, EntityLoaded<?>> onLoadMap = ImmutableMap.of();
+	private volatile Map<Class<?>, MongoObjectLoaded<?>> onLoadMap = ImmutableMap.of();
 
-	public DefaultEntityLoadedService(ApplicationContext applicationContext) {
+	public DefaultMongoObjectLoadedService(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
@@ -35,7 +35,7 @@ public class DefaultEntityLoadedService implements EntityLoadedService, AppPrepa
 		if (object == null) {
 			return null;
 		}
-		EntityLoaded<T> objectOnLoad = as(onLoadMap.get(object.getClass()));
+		MongoObjectLoaded<T> objectOnLoad = as(onLoadMap.get(object.getClass()));
 		if (objectOnLoad == null) {
 			return object;
 		}
@@ -44,8 +44,8 @@ public class DefaultEntityLoadedService implements EntityLoadedService, AppPrepa
 
 	@Override
 	public void prepareStart() {
-		Map<Class<?>, EntityLoaded<?>> onLoadMap = as(
-				SpringBeanUtils.beanMapOfType(applicationContext, EntityLoaded.class, EntityLoaded::getLoadClass));
+		Map<Class<?>, MongoObjectLoaded<?>> onLoadMap = as(
+				SpringBeanUtils.beanMapOfType(applicationContext, MongoObjectLoaded.class, MongoObjectLoaded::getLoadClass));
 		this.onLoadMap = ImmutableMap.copyOf(onLoadMap);
 	}
 

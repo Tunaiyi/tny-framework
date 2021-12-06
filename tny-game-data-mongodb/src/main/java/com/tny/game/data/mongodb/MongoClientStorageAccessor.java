@@ -32,7 +32,7 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> extends Mong
 
 	private final MongoTemplate mongoTemplate;
 
-	private final EntityObjectConverter entityObjectConverter;
+	private final MongoEntityConverter entityObjectConverter;
 
 	private final EntityIdConverter<K, O, ?> idConvertor;
 
@@ -40,7 +40,7 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> extends Mong
 
 	private String collectionName;
 
-	public MongoClientStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, EntityObjectConverter entityObjectConverter,
+	public MongoClientStorageAccessor(Class<O> entityClass, EntityIdConverter<K, O, ?> idConverter, MongoEntityConverter entityObjectConverter,
 			MongoTemplate mongoTemplate, String dataSource) {
 		super(entityClass, dataSource);
 		this.idConvertor = idConverter;
@@ -264,7 +264,7 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> extends Mong
 
 	private Document toDocument(O entity) {
 		Object id = entityToId(entity);
-		return this.entityObjectConverter.convertToWrite(id, entity, Document.class);
+		return this.entityObjectConverter.convertToWrite(id, entity);
 	}
 
 	private Object keyToId(K key) {

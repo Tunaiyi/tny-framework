@@ -29,6 +29,11 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	}
 
 	@Override
+	protected List<O> get(Collection<AnyId> anyIdList) {
+		return this.entityManager.getEntities(anyIdList, onLoad);
+	}
+
+	@Override
 	protected O get(long playerId) {
 		AnyId unid = AnyId.idOf(playerId);
 		return this.entityManager.getEntity(unid, onLoad);

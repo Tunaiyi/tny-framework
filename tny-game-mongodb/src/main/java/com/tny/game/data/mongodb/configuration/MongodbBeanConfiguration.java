@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -47,14 +48,15 @@ public class MongodbBeanConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(EntityLoadedService.class)
-	public EntityLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
-		return new DefaultEntityLoadedService(applicationContext);
+	@ConditionalOnMissingBean(MongoObjectLoadedService.class)
+	public MongoObjectLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
+		return new DefaultMongoObjectLoadedService(applicationContext);
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(value = EntityConverter.class)
-	public EntityConverter jsonEntityConverter(EntityLoadedService entityOnLoadService,
+	@ConditionalOnMissingBean(value = MongoDocumentMapper.class)
+	public MongoDocumentMapper jsonMongoDocumentMapper(
+			ObjectProvider<MongoDocumentEnhance<?>> enhances,
 			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();
 		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
@@ -65,7 +67,7 @@ public class MongodbBeanConfiguration {
 				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
 				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
 		mapperCustomizers.forEach((action) -> action.customize(mapper));
-		return new JsonEntityConverter(entityOnLoadService, mapper);
+		return new JsonMongoDocumentConverter(mapper, enhances.stream().collect(Collectors.toList()));
 	}
 
 }
