@@ -57,6 +57,12 @@ public class RemoteRelayAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(NoopServeNodeClient.class)
+	public NoopServeNodeClient serveNodeClient() {
+		return new NoopServeNodeClient();
+	}
+
+	@Bean
 	public RemoteRelayServeNodeWatchService remoteRelayServeNodeWatchService(
 			ServeNodeClient serveNodeClient, NetRemoteRelayExplorer remoteRelayExplorer) {
 		return new RemoteRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);

@@ -58,6 +58,7 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 		ByteBuf bodyBuffer = null;
 		MemoryAllotCounter counter = this.counter();
 		int allotSize = -1;
+		int actualSize = 0;
 		try {
 			// 写入 Option
 			byte option = message.getMode().getType().getOption();
@@ -110,6 +111,8 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 			// 写入 number
 			NettyVarIntCoder.writeVarInt32(number, out);
 			logger.debug("out payloadIndex start {}", out.writerIndex());
+
+			actualSize = bodyBuffer.readableBytes();
 			// 写入包体长度 包体
 			wasteWriter.write(out, bodyBuffer);
 			logger.debug("out payloadIndex end {}", out.writerIndex());
@@ -119,8 +122,7 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 			}
 		} finally {
 			if (bodyBuffer != null && allotSize > 0) {
-				int size = bodyBuffer.readableBytes();
-				counter.recode(allotSize, size);
+				counter.recode(allotSize, actualSize);
 				ReferenceCountUtil.release(bodyBuffer);
 			}
 		}

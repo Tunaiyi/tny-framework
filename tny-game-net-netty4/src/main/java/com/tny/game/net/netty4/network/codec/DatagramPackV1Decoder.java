@@ -48,7 +48,7 @@ public class DatagramPackV1Decoder extends DatagramPackV1Codec implements Datagr
 			in.readBytes(magics);
 			if (!isMagic(magics)) {
 				in.skipBytes(in.readableBytes());
-				throw CodecException.causeDecodeError("illegal magics");
+				throw NetCodecException.causeDecodeError("illegal magics");
 			}
 			option = in.readByte();
 			if (isOption(option, DATA_PACK_OPTION_MESSAGE_TYPE_MASK, DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING)) {
@@ -60,7 +60,7 @@ public class DatagramPackV1Decoder extends DatagramPackV1Codec implements Datagr
 			payloadLength = NettyVarIntCoder.readFixed32(in);
 			if (payloadLength > config.getMaxPayloadLength()) {
 				in.skipBytes(in.readableBytes());
-				throw CodecException.causeDecodeError("decode message failed, because payloadLength {} > maxPayloadLength {}",
+				throw NetCodecException.causeDecodeError("decode message failed, because payloadLength {} > maxPayloadLength {}",
 						payloadLength, config.getMaxPayloadLength());
 			}
 			marker.record(option, payloadLength);
@@ -96,15 +96,15 @@ public class DatagramPackV1Decoder extends DatagramPackV1Codec implements Datagr
 			packageContext.goToAndCheck(number);
 			boolean verifyEnable = isOption(option, DATA_PACK_OPTION_VERIFY, DATA_PACK_OPTION_VERIFY);
 			if (config.isVerifyEnable() && !verifyEnable) {
-				throw CodecException.causeDecodeError("packet need verify!");
+				throw NetCodecException.causeDecodeError("packet need verify!");
 			}
 			boolean encryptEnable = isOption(option, DATA_PACK_OPTION_ENCRYPT, DATA_PACK_OPTION_ENCRYPT);
 			if (config.isEncryptEnable() && !encryptEnable) {
-				throw CodecException.causeDecodeError("packet need encrypt!");
+				throw NetCodecException.causeDecodeError("packet need encrypt!");
 			}
 			boolean wasteBytesEnable = isOption(option, DATA_PACK_OPTION_WASTE_BYTES, DATA_PACK_OPTION_WASTE_BYTES);
 			if (config.isWasteBytesEnable() && !wasteBytesEnable) {
-				throw CodecException.causeDecodeError("packet need waste bytes!");
+				throw NetCodecException.causeDecodeError("packet need waste bytes!");
 			}
 			//        // 检测时间
 			//        packager.checkPacketTime(time);
@@ -131,7 +131,7 @@ public class DatagramPackV1Decoder extends DatagramPackV1Codec implements Datagr
 				byte[] verifyCode = new byte[verifyLength];
 				in.readBytes(verifyCode);
 				if (this.verifier.verify(packageContext, bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes(), verifyCode)) {
-					throw CodecException.causeVerify("packet verify failed");
+					throw NetCodecException.causeVerify("packet verify failed");
 				}
 			}
 			return this.messageCodec.decode(bodyBuffer, as(tunnel.getMessageFactory()));

@@ -3,7 +3,6 @@ package com.tny.game.net.message.codec;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.netty4.network.*;

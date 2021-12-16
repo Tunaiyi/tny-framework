@@ -1,15 +1,14 @@
-package com.tny.game.net.endpoint;
+package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 import java.util.Collection;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContext implements SendContext, MessageContent {
+public abstract class MessageContext implements MessageReceipt, MessageContent {
 
 	/**
 	 * @return 获取结果码
@@ -28,6 +27,8 @@ public abstract class MessageContext implements SendContext, MessageContent {
 
 	public abstract MessageContext willWriteFuture(Collection<WriteMessageListener> listeners);
 
+	public abstract MessageWriteAwaiter getWriteAwaiter();
+
 	/**
 	 * 取消
 	 *
@@ -38,16 +39,6 @@ public abstract class MessageContext implements SendContext, MessageContent {
 	/**
 	 * 取消
 	 */
-	protected abstract void fail(Throwable throwable);
-
-	public abstract WriteMessageFuture getWriteMessageFuture();
-
-	protected abstract void setWriteMessagePromise(WriteMessagePromise writePromise);
-
-	protected abstract void setRespondFuture(RespondFuture respondFuture);
-
-	protected abstract boolean isNeedWriteFuture();
-
-	protected abstract boolean isNeedResponseFuture();
+	public abstract void cancel(Throwable throwable);
 
 }

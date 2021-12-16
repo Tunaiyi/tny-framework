@@ -49,7 +49,7 @@ public class RelayPackV1Decoder implements RelayPackDecoder, RelayPackCodec {
 		final byte[] magics = MAGICS_LOCAL.get();
 		in.readBytes(magics);
 		if (!isMagic(magics)) {
-			throw CodecException.causeDecodeError("illegal relay magics");
+			throw NetCodecException.causeDecodeError("illegal relay magics");
 		}
 		int packetLength = NettyVarIntCoder.readFixed32(in);
 		if (in.readableBytes() < packetLength) {
@@ -73,12 +73,12 @@ public class RelayPackV1Decoder implements RelayPackDecoder, RelayPackCodec {
 				arguments = relayPacketArgumentsCodecService.decode(ctx, packetBody, relayType);
 				return relayType.createPacket(id, arguments, time);
 			} catch (Exception e) {
-				throw CodecException.causeDecodeError(e, "decode {} exception", argumentsClass);
+				throw NetCodecException.causeDecodeError(e, "decode {} exception", argumentsClass);
 			} finally {
 				ReferenceCountUtil.release(packetBody);
 			}
 		} else {
-			throw CodecException.causeDecodeError("packetLength is null");
+			throw NetCodecException.causeDecodeError("packetLength is null");
 		}
 	}
 

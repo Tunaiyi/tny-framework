@@ -70,7 +70,7 @@ public class DataPackageContext {
 
 	public void checkPacketTime(long time) {
 		if (time <= 0) {
-			throw CodecException.causeTimeout("illegal package time {}", time);
+			throw NetCodecException.causeTimeout("illegal package time {}", time);
 		}
 		if (this.remoteTime == 0) {
 			this.remoteTime = time;
@@ -82,7 +82,7 @@ public class DataPackageContext {
 		}
 		long remoteTime = this.remoteTime + (System.currentTimeMillis() - this.localTime);
 		if (Math.abs(remoteTime - time) > timeout) {
-			throw CodecException.causeTimeout("remote time is {}, packet time is {}, already timeout", remoteTime, time);
+			throw NetCodecException.causeTimeout("remote time is {}, packet time is {}, already timeout", remoteTime, time);
 		}
 	}
 
@@ -105,11 +105,11 @@ public class DataPackageContext {
 	 */
 	public void goToAndCheck(int number) {
 		if (this.packetNumber >= number) {
-			throw CodecException.causeDecodeError("id " + number + " is handled!");
+			throw NetCodecException.causeDecodeError("id " + number + " is handled!");
 		}
 		long maxSkipNumber = this.config.getSkipNumberStep();
 		if (number - this.packetNumber > maxSkipNumber) {
-			throw CodecException.causeDecodeError("id " + number + " is illegal!");
+			throw NetCodecException.causeDecodeError("id " + number + " is illegal!");
 		}
 		while (this.packetNumber < number) {
 			if (this.random != null) {

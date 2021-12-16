@@ -8,7 +8,7 @@ tny:
     bootstrap:
       network:
         server:
-          name: game-server
+          name: game-service
           bind-address: 127.0.0.1:17800
           channel:
             #            maker:
@@ -25,7 +25,7 @@ tny:
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
-            tunnel-factory: "remoteRelayTunnelFactory"
+            tunnel-factory: "relayTunnelFactory"
             message-handler: "relayMessageHandler"
       relay:
         client:
@@ -37,14 +37,15 @@ tny:
     relay:
       cluster:
         serve-clusters:
-          - serve-name: "GameServer"
+          - service: "game-server"
+            discovery: false
             link-connection-size: 1
             instances:
               - id: 1
                 url: tcp://127.0.0.1:15800
       router:
         fixed-message-router:
-          serve-name: "GameServer"
+          service: "game-server"
     command:
       processor:
         disruptor:

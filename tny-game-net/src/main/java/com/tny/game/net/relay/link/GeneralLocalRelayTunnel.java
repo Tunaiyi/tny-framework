@@ -40,8 +40,8 @@ public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSessi
 	}
 
 	@Override
-	public WriteMessageFuture relay(Message message, boolean needPromise) {
-		WriteMessagePromise promise = needPromise ? this.createWritePromise() : null;
+	public MessageWriteAwaiter relay(Message message, boolean needPromise) {
+		MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
 		this.write(message, promise);
 		return promise;
 	}

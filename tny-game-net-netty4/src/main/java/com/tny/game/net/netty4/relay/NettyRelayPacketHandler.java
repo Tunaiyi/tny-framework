@@ -70,7 +70,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 					packetType.handle(this.relayPacketProcessor, transporter, packet);
 				}
 			} catch (NetGeneralException ex) {
-				if (ex.getCode().getType() == ResultCodeType.ERROR) {
+				if (ex.getCode().getLevel() == ResultLevel.ERROR) {
 					channel.close();
 					LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空", channel.localAddress(), channel.remoteAddress(), ex);
 				} else {

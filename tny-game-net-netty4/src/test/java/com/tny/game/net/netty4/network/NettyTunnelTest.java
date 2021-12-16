@@ -252,7 +252,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 		messages = TestMessages.createMessages(tunnel);
 		messages.write(tunnel, f -> {
 			assertTrue(f.isDone());
-			assertTrue(f.isSuccess());
+			assertFalse(f.isCompletedExceptionally());
 		});
 		assertTrue(CollectionUtils.containsAll(messages.getMessages(), channel.outboundMessages()));
 
@@ -263,7 +263,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 		channel.close();
 		messages.write(tunnel, f -> {
 			assertTrue(f.isDone());
-			assertFalse(f.isSuccess());
+			assertFalse(f.isCompletedExceptionally());
 		});
 		assertTrue(channel.outboundMessages().isEmpty());
 
@@ -274,7 +274,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 		T t1 = tunnel;
 		messages.messagesForEach(m -> {
 			try {
-				t1.write(m, new MockWriteMessagePromise());
+				t1.write(m, new MessageWriteAwaiter());
 				fail("write success");
 			} catch (TunnelException e) {
 				assertTrue(true);

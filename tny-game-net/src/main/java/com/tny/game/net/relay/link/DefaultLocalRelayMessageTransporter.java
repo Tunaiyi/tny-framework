@@ -44,12 +44,12 @@ public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessa
 	}
 
 	@Override
-	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
+	public MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException {
 		return link.relay(this.tunnel, message, promise);
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException {
+	public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException {
 		return link.relay(this.tunnel, maker, factory, context);
 	}
 
@@ -58,11 +58,6 @@ public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessa
 		if (this.tunnel == null) {
 			this.tunnel = (LocalRelayTunnel<UID>)tunnel;
 		}
-	}
-
-	@Override
-	public WriteMessagePromise createWritePromise() {
-		return link.createWritePromise();
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class CommandTaskBox {
 		this.executor = executor;
 	}
 
-	public boolean addMessage(NetTunnel<?> tunnel, Message message, Function<Message, RespondFuture> futureGetter) {
+	public boolean addMessage(NetTunnel<?> tunnel, Message message, Function<Message, MessageRespondAwaiter> futureGetter) {
 		if (this.closed) {
 			return false;
 		}
@@ -62,7 +62,7 @@ public class CommandTaskBox {
 				() -> {
 					RespondCommandTask respondCommandTask = null;
 					if (futureGetter != null) {
-						RespondFuture future = futureGetter.apply(message);
+						MessageRespondAwaiter future = futureGetter.apply(message);
 						if (future != null) {
 							respondCommandTask = new RespondCommandTask(message, future);
 						}

@@ -6,17 +6,17 @@ import com.tny.game.net.message.*;
 @Unit
 public class CommonMessageFactory implements MessageFactory {
 
-    public CommonMessageFactory() {
-    }
+	public CommonMessageFactory() {
+	}
 
-    @Override
-    public NetMessage create(long id, MessageContent subject) {
-        return new CommonMessage(new CommonMessageHead(id, subject), subject.bodyAs(Object.class));
-    }
+	@Override
+	public NetMessage create(long id, MessageContent subject) {
+		return new CommonMessage(new CommonMessageHead(id, subject), subject.getBody());
+	}
 
-    @Override
-    public NetMessage create(NetMessageHead head, Object body) {
-        return new CommonMessage(head, body);
-    }
+	@Override
+	public NetMessage create(NetMessageHead head, Object body) {
+		return new CommonMessage(head, body);
+	}
 
 }

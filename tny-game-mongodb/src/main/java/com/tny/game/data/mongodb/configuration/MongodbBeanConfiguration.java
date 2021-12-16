@@ -54,8 +54,8 @@ public class MongodbBeanConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(value = MongoDocumentMapper.class)
-	public MongoDocumentMapper jsonMongoDocumentMapper(
+	@ConditionalOnMissingBean(value = MongoDocumentConverter.class)
+	public MongoDocumentConverter jsonMongoDocumentMapper(
 			ObjectProvider<MongoDocumentEnhance<?>> enhances,
 			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();

@@ -42,12 +42,14 @@ tny:
     rpc:
       client:
         services:
-          - serveName: game-service
+          - service: game-service
+            discovery: false
             host: 127.0.0.1
             port: 16800
             username: game-client
 
   data:
+    enable: false
     object-storage:
       async-storage:
         enable: false

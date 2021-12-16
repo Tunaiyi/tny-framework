@@ -4,7 +4,6 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -51,7 +50,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 			if (cause instanceof ClosedChannelException) {
 				LOGGER.warn("[Tunnel] # {} # 客户端连接已断开 # {}", ClosedChannelException.class, cause.getMessage());
 			} else if (cause instanceof IOException) {
-				LOGGER.warn("[Tunnel] # {} # {}", IOException.class, cause.getMessage());
+				LOGGER.warn("[Tunnel] # {} # {}", IOException.class, cause.getMessage(), cause);
 			} else if (cause instanceof WriteTimeoutException) {
 				LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 写出数据超时, message: {}",
 						channel.remoteAddress(), channel.localAddress(), WriteTimeoutException.class, cause.getMessage());
@@ -70,13 +69,16 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 	}
 
 	private void handleResultCodeException(Channel channel, ResultCode code, Throwable cause) {
-		LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {}({})[{}], message:{}",
-				channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
-		if (code.getType() == ResultCodeType.ERROR) {
+		if (code.getLevel() == ResultLevel.ERROR) {
+			LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {}({})[{}], message:{}",
+					channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
 			NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
 			if (tunnel != null) {
-				TunnelAides.responseMessage(tunnel, MessageContexts.push(PUSH, code));
+				TunnelAide.responseMessage(tunnel, MessageContexts.push(PUSH, code));
 			}
+		} else {
+			LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}",
+					channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
 		}
 	}
 

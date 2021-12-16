@@ -30,17 +30,17 @@ public interface NetRelayTransporter extends RelayTransporter {
 	 * 写出数据
 	 *
 	 * @param packet  数据包
-	 * @param promise 写出Promise
-	 * @return 返回 WriteMessageFuture
+	 * @param awaiter 写出Promise
+	 * @return 返回 MessageWriteAwaiter
 	 */
-	WriteMessageFuture write(RelayPacket<?> packet, WriteMessagePromise promise);
+	MessageWriteAwaiter write(RelayPacket<?> packet, MessageWriteAwaiter awaiter);
 
 	/**
 	 * 写出数据
 	 *
 	 * @param maker 数据包构建器
-	 * @return 返回 WriteMessageFuture
+	 * @return 返回 MessageWriteAwaiter
 	 */
-	WriteMessageFuture write(RelayPacketMaker maker, WriteMessagePromise promise);
+	MessageWriteAwaiter write(RelayPacketMaker maker, MessageWriteAwaiter awaiter);
 
 }

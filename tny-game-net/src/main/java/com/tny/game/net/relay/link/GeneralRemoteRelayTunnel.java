@@ -40,8 +40,8 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	 */
 	private final RelayMessageRouter relayMessageRouter;
 
-	public GeneralRemoteRelayTunnel(long instanceId, long id, MessageTransporter<UID> transport,
-			NetworkContext context, RelayMessageRouter relayMessageRouter) {
+	public GeneralRemoteRelayTunnel(long instanceId, long id, MessageTransporter<UID> transport, NetworkContext context,
+			RelayMessageRouter relayMessageRouter) {
 		super(id, transport, context);
 		this.instanceId = instanceId;
 		this.relayMessageRouter = relayMessageRouter;
@@ -63,8 +63,8 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	}
 
 	@Override
-	public WriteMessageFuture relay(Message message, boolean needPromise) {
-		WriteMessagePromise promise = needPromise ? this.createWritePromise() : null;
+	public MessageWriteAwaiter relay(Message message, boolean needPromise) {
+		MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
 		String service = relayMessageRouter.route(this, message);
 		if (service == null) {
 			service = "-None";
@@ -75,9 +75,9 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 		} else {
 			ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
 			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, service);
-			TunnelAides.responseMessage(this, MessageContexts.push(Protocols.PUSH, code));
+			TunnelAide.responseMessage(this, MessageContexts.push(Protocols.PUSH, code));
 			if (promise != null) {
-				promise.failed(new NetGeneralException(code));
+				promise.completeExceptionally(new NetGeneralException(code));
 			}
 		}
 		return promise;

@@ -26,7 +26,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
 	 * @param messageContext 发送消息上下文
 	 * @return 返回发送上下文
 	 */
-	SendContext send(NetTunnel<UID> tunnel, MessageContext messageContext);
+	MessageReceipt send(NetTunnel<UID> tunnel, MessageContext messageContext);
 
 	/**
 	 * 分配生成消息

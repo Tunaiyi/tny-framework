@@ -141,7 +141,7 @@ public class NettyVarIntCoder {
 								return result;
 							}
 						}
-						throw CodecException.causeDecodeError("error varint");
+						throw NetCodecException.causeDecodeError("error varint");
 					}
 				}
 			}
@@ -160,7 +160,7 @@ public class NettyVarIntCoder {
 			}
 			shift += 7;
 		}
-		throw CodecException.causeDecodeError("error varint");
+		throw NetCodecException.causeDecodeError("error varint");
 	}
 
 	public static int readFixed32(ByteBuf buffer) {

@@ -118,7 +118,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
 		private void start() {
 			if (connector.isDiscovery()) {
-				serveNodeClient.subscribe(connector.getServeName(), this);
+				serveNodeClient.subscribe(connector.serviceName(), this);
 			} else {
 				RpcServiceSetting setting = connector.getSetting();
 				setting.url().ifPresent(this::connect);

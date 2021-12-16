@@ -74,7 +74,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		option = (byte)(option | (message.existBody() ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST : (byte)0));
 		int line = head.getLine();
 		if (line < MESSAGE_HEAD_OPTION_LINE_VALUE_MIN || line > MESSAGE_HEAD_OPTION_LINE_VALUE_MAX) {
-			throw CodecException.causeEncodeFailed("line is {}. line must {} <= line <= {}", line,
+			throw NetCodecException.causeEncodeFailed("line is {}. line must {} <= line <= {}", line,
 					MESSAGE_HEAD_OPTION_LINE_VALUE_MIN, MESSAGE_HEAD_OPTION_LINE_VALUE_MAX);
 		}
 		option = (byte)(option | line << MESSAGE_HEAD_OPTION_LINE_SHIFT);
@@ -105,7 +105,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 				bodyBody = messageBody;
 				ByteBuf data = messageBody.getBodyBytes();
 				if (data == null) {
-					throw CodecException.causeEncodeFailed("ByteBufMessageBody is released");
+					throw NetCodecException.causeEncodeFailed("ByteBufMessageBody is released");
 				}
 				NettyVarIntCoder.writeVarInt32(data.readableBytes(), buffer);
 				buffer.writeBytes(data);

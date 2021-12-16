@@ -23,7 +23,7 @@ public interface RelayTunnel<UID> extends Tunnel<UID> {
 	 * @param promise 发送应答对象
 	 * @return 返回等待对象
 	 */
-	WriteMessageFuture relay(Message message, boolean promise);
+	MessageWriteAwaiter relay(Message message, boolean promise);
 
 	//	/**
 	//	 * 异步发送消息
@@ -31,6 +31,6 @@ public interface RelayTunnel<UID> extends Tunnel<UID> {
 	//	 * @param messageContext 发送消息上下文
 	//	 * @return 返回发送上下文
 	//	 */
-	//	WriteMessageFuture relay(MessageContext messageContext);
+	//	MessageWriteAwaiter relay(MessageContext messageContext);
 
 }

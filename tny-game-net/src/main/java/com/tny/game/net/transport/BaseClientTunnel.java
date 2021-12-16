@@ -33,7 +33,7 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 			} catch (Exception e) {
 				this.disconnect();
 				//				throw new TunnelException(e, "{} failed to connect to server", this);
-				LOGGER.warn("{} open failed case : {}", this, e.getMessage());
+				LOGGER.warn("{} open failed case : {}", this, e.getMessage(), e);
 				return false;
 			}
 		}

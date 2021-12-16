@@ -47,7 +47,7 @@ public class RelayPackEncodeHandler extends MessageToByteEncoder<Object> impleme
 			}
 			return;
 		}
-		throw CodecException.causeEncodeFailed("can not encode {}", msg.getClass());
+		throw NetCodecException.causeEncodeFailed("can not encode {}", msg.getClass());
 	}
 
 }

@@ -52,7 +52,7 @@ public abstract class AbstractAttributes implements Attributes {
 		}
 	}
 
-	protected Map<AttrKey<?>, Object> getMap() {
+	private Map<AttrKey<?>, Object> getMap() {
 		if (this.attributeMap != null) {
 			return this.attributeMap;
 		} else {
@@ -122,27 +122,6 @@ public abstract class AbstractAttributes implements Attributes {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T setAttributeIfNoKey(AttrKey<? extends T> key, T value) {
-		Map<AttrKey<?>, Object> attributeMap = this.getMap();
-		Object current = attributeMap.get(key);
-		if (current != null) {
-			return (T)current;
-		}
-		this.writeLock();
-		try {
-			current = attributeMap.get(key);
-			if (current != null) {
-				return (T)current;
-			}
-			attributeMap.put(key, value);
-			return value;
-		} finally {
-			this.writeUnlock();
-		}
-	}
-
-	@Override
 	public void setAttribute(Map<AttrKey<?>, ?> map) {
 		if (map == null || map.isEmpty()) {
 			return;
@@ -153,11 +132,6 @@ public abstract class AbstractAttributes implements Attributes {
 		} finally {
 			this.writeUnlock();
 		}
-	}
-
-	@Override
-	public <T> T setAttributeIfNoKey(AttrEntry<T> entry) {
-		return this.setAttributeIfNoKey(entry.getKey(), entry.getValue());
 	}
 
 	@Override

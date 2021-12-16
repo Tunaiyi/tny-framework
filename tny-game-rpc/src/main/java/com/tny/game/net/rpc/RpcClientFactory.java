@@ -63,7 +63,7 @@ public class RpcClientFactory implements Serve {
 					.authRequest(user, appContext.getServerId(), id, setting.getPassword())
 					.willResponseFuture(3000L);
 			c.send(context);
-			context.getRespondFuture().get(12000, TimeUnit.MILLISECONDS);
+			context.respondFuture().get(12000, TimeUnit.MILLISECONDS);
 			return true;
 		};
 	}

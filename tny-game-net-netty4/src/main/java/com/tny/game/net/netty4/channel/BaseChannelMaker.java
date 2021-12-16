@@ -16,11 +16,11 @@ public abstract class BaseChannelMaker<C extends Channel> implements ChannelMake
 	public void initChannel(C channel) throws Exception {
 		ChannelPipeline channelPipeline = channel.pipeline();
 		for (ChannelPipelineChain chain : channelPipelineChains) {
-			chain.afterMake(channelPipeline);
+			chain.beforeMake(channelPipeline);
 		}
 		makeChannel(channel);
 		for (ChannelPipelineChain chain : channelPipelineChains) {
-			chain.beforeMake(channelPipeline);
+			chain.afterMake(channelPipeline);
 		}
 		this.postInitChannel(channel);
 	}

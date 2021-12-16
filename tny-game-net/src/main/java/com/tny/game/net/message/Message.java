@@ -14,52 +14,52 @@ import java.io.Serializable;
 
 public interface Message extends Serializable, MessageContent, MessageHead {
 
-    /**
-     * @return 获取消息 ID
-     */
-    @Override
-    default long getId() {
-        return this.getHead().getId();
-    }
+	/**
+	 * @return 获取消息 ID
+	 */
+	@Override
+	default long getId() {
+		return this.getHead().getId();
+	}
 
-    @Override
-    default int getLine() {
-        return this.getHead().getLine();
-    }
+	@Override
+	default int getLine() {
+		return this.getHead().getLine();
+	}
 
-    @Override
-    default MessageMode getMode() {
-        return getHead().getMode();
-    }
+	@Override
+	default MessageMode getMode() {
+		return getHead().getMode();
+	}
 
-    @Override
-    default long getToMessage() {
-        return this.getHead().getToMessage();
-    }
+	@Override
+	default long getToMessage() {
+		return this.getHead().getToMessage();
+	}
 
-    @Override
-    default int getCode() {
-        return this.getHead().getCode();
-    }
+	@Override
+	default int getCode() {
+		return this.getHead().getCode();
+	}
 
-    @Override
-    default int getProtocolId() {
-        return getHead().getProtocolId();
-    }
+	@Override
+	default int getProtocolId() {
+		return getHead().getProtocolId();
+	}
 
-    @Override
-    default long getTime() {
-        return getHead().getTime();
-    }
+	@Override
+	default long getTime() {
+		return getHead().getTime();
+	}
 
-    /**
-     * @return 获取消息头
-     */
-    MessageHead getHead();
+	/**
+	 * @return 获取消息头
+	 */
+	MessageHead getHead();
 
-    /**
-     * @return 获取请求属性
-     */
-    Attributes attributes();
+	/**
+	 * @return 获取请求属性
+	 */
+	Attributes attributes();
 
 }

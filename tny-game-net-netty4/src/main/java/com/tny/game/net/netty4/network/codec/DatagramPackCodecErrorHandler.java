@@ -39,7 +39,7 @@ public interface DatagramPackCodecErrorHandler {
 				if (exception instanceof ResultCodeException) {
 					code = ((ResultCodeException)exception).getCode();
 				}
-				if (code != null && code.getType() == ResultCodeType.ERROR) {
+				if (code != null && code.getLevel() == ResultLevel.ERROR) {
 					close = true;
 				}
 			}

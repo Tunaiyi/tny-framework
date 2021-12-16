@@ -44,7 +44,7 @@ public class MongoStorageAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(JsonMongoEntityConverter.class)
-	JsonMongoEntityConverter jsonEntityObjectConverter(
+	JsonMongoEntityConverter jsonMongoEntityConverter(
 			ObjectProvider<MongoDocumentEnhance<?>> enhances,
 			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
 		ObjectMapper mapper = ObjectMapperFactory.createMapper();

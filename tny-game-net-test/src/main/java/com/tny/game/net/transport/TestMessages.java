@@ -164,13 +164,13 @@ public class TestMessages {
 		send(sender, null);
 	}
 
-	public void send(Sender sender, Consumer<SendContext> check) {
+	public void send(Sender sender, Consumer<MessageReceipt> check) {
 		assertFalse(this.messages.isEmpty());
 		if (check == null) {
 			check = f -> {
 			};
 		}
-		Consumer<SendContext> consumer = check;
+		Consumer<MessageReceipt> consumer = check;
 		this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
 	}
 
@@ -178,13 +178,13 @@ public class TestMessages {
 		write(transport, null);
 	}
 
-	public void write(Transport transport, Consumer<WriteMessageFuture> check) {
+	public void write(Transport transport, Consumer<MessageWriteAwaiter> check) {
 		assertFalse(this.messages.isEmpty());
 		if (check == null) {
 			check = f -> {
 			};
 		}
-		final Consumer<WriteMessageFuture> consumer = check;
+		final Consumer<MessageWriteAwaiter> consumer = check;
 		this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
 	}
 	// public void sendSync(Sender<Long> sender, long timeout) {

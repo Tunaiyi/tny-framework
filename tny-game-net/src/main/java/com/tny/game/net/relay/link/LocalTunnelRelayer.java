@@ -2,7 +2,6 @@ package com.tny.game.net.relay.link;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.cluster.*;
@@ -37,17 +36,17 @@ public class LocalTunnelRelayer {
 		return service;
 	}
 
-	public WriteMessageFuture relay(RemoteRelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
+	public MessageWriteAwaiter relay(RemoteRelayTunnel<?> tunnel, Message message, MessageWriteAwaiter promise) {
 		RemoteRelayLink link = allot(tunnel);
 		if (link != null && link.isActive()) {
 			return link.relay(tunnel, message, promise);
 		} else {
 			ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
 			if (promise != null) {
-				promise.failed(new NetGeneralException(code));
+				promise.completeExceptionally(new NetGeneralException(code));
 			}
 			LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.service);
-			TunnelAides.responseMessage(tunnel, MessageContexts.push(Protocols.PUSH, code));
+			TunnelAide.responseMessage(tunnel, MessageContexts.push(Protocols.PUSH, code));
 		}
 		return promise;
 	}

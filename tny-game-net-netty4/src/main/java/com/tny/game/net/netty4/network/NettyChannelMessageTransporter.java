@@ -32,25 +32,32 @@ public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection 
 	}
 
 	@Override
-	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
-		ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
+	public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
+		ChannelPromise channelPromise = createChannelPromise(awaiter);
 		this.channel.writeAndFlush(message, channelPromise);
-		this.channel.closeFuture().addListener(f -> this.close());
-		return promise;
+		return awaiter;
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException {
-		WriteMessagePromise promise = as(context.getWriteMessageFuture());
-		ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
+	public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException {
+		MessageWriteAwaiter awaiter = context.getWriteAwaiter();
 		ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
 		this.channel.eventLoop()
 				.execute(() -> {
-					Message message = maker.allocate(factory, context);
-					this.channel.writeAndFlush(message, channelPromise);
+					Message message = null;
+					try {
+						message = maker.allocate(factory, context);
+					} catch (Throwable e) {
+						LOGGER.error("", e);
+						awaiter.completeExceptionally(e);
+					}
+					if (message != null) {
+						ChannelPromise channelPromise = createChannelPromise(awaiter);
+						this.channel.writeAndFlush(message, channelPromise);
+					}
 					tracer.done();
 				});
-		return promise;
+		return awaiter;
 	}
 
 	@Override
@@ -64,11 +71,6 @@ public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection 
 	@Override
 	public void bind(NetTunnel<UID> tunnel) {
 		this.channel.attr(TUNNEL).set(tunnel);
-	}
-
-	@Override
-	public WriteMessagePromise createWritePromise() {
-		return new NettyWriteMessagePromise();
 	}
 
 }

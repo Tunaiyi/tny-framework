@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.channel;
 
-import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -38,15 +37,10 @@ public abstract class NettyChannelConnection implements Connection {
 		this.channel = channel;
 	}
 
-	protected ChannelPromise checkAndCreateChannelPromise(WriteMessagePromise promise) {
+	protected ChannelPromise createChannelPromise(MessageWriteAwaiter awaiter) {
 		ChannelPromise channelPromise = this.channel.newPromise();
-		if (promise instanceof NettyWriteMessagePromise) {
-			NettyWriteMessagePromise messagePromise = (NettyWriteMessagePromise)promise;
-			if (!messagePromise.channelPromise(channelPromise)) {
-				messagePromise.failedAndThrow(new TunnelException("WriteMessageFuture {} is done", messagePromise));
-			}
-		} else if (promise != null) {
-			channelPromise.addListener(new NettyWriteMessageHandler(promise));
+		if (awaiter != null) {
+			channelPromise.addListener(new NettyWriteMessageHandler(awaiter));
 		}
 		return channelPromise;
 	}

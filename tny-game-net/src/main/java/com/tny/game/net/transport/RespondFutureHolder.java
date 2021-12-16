@@ -59,16 +59,16 @@ public class RespondFutureHolder {
 		}
 	}
 
-	private volatile ConcurrentMap<Long, RespondFuture> futureMap;
+	private volatile ConcurrentMap<Long, MessageRespondAwaiter> futureMap;
 
 	public void clearTimeOut() {
-		ConcurrentMap<Long, RespondFuture> futureMap = this.futureMap;
+		ConcurrentMap<Long, MessageRespondAwaiter> futureMap = this.futureMap;
 		if (futureMap == null) {
 			return;
 		}
-		for (Entry<Long, RespondFuture> entry : futureMap.entrySet()) {
+		for (Entry<Long, MessageRespondAwaiter> entry : futureMap.entrySet()) {
 			try {
-				RespondFuture future = entry.getValue();
+				MessageRespondAwaiter future = entry.getValue();
 				if (future.isDone() || (future.isTimeout() && future.cancel(true))) {
 					futureMap.remove(entry.getKey());
 				}
@@ -83,18 +83,18 @@ public class RespondFutureHolder {
 			return;
 		}
 		this.close = true;
-		ConcurrentMap<Long, RespondFuture> futureMap = this.futureMap;
+		ConcurrentMap<Long, MessageRespondAwaiter> futureMap = this.futureMap;
 		if (futureMap == null) {
 			return;
 		}
-		List<RespondFuture> futures;
+		List<MessageRespondAwaiter> futures;
 		if (!this.futureMap.isEmpty()) {
 			futures = ImmutableList.of();
 		} else {
 			futures = new ArrayList<>(this.futureMap.values());
 			this.futureMap.clear();
 		}
-		for (RespondFuture future : futures) {
+		for (MessageRespondAwaiter future : futures) {
 			try {
 				future.cancel(true);
 			} catch (Throwable e) {
@@ -103,7 +103,7 @@ public class RespondFutureHolder {
 		}
 	}
 
-	private ConcurrentMap<Long, RespondFuture> map() {
+	private ConcurrentMap<Long, MessageRespondAwaiter> map() {
 		if (this.futureMap != null) {
 			return this.futureMap;
 		}
@@ -116,29 +116,29 @@ public class RespondFutureHolder {
 		return this.futureMap;
 	}
 
-	public <M> RespondFuture getFuture(long messageId) {
-		ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+	public <M> MessageRespondAwaiter getFuture(long messageId) {
+		ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
 		if (map == null) {
 			return null;
 		}
 		return as(map.get(messageId));
 	}
 
-	public <M> RespondFuture pollFuture(long messageId) {
-		ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+	public <M> MessageRespondAwaiter pollFuture(long messageId) {
+		ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
 		if (map == null) {
 			return null;
 		}
 		return as(map.remove(messageId));
 	}
 
-	public void putFuture(long messageId, RespondFuture future) {
+	public void putFuture(long messageId, MessageRespondAwaiter future) {
 		if (future == null) {
 			return;
 		}
 		if (!this.close) {
-			ConcurrentMap<Long, RespondFuture> map = map();
-			RespondFuture oldFuture = map.put(messageId, future);
+			ConcurrentMap<Long, MessageRespondAwaiter> map = map();
+			MessageRespondAwaiter oldFuture = map.put(messageId, future);
 			if (oldFuture != null && !oldFuture.isDone()) {
 				oldFuture.cancel(true);
 			}
@@ -148,7 +148,7 @@ public class RespondFutureHolder {
 	}
 
 	public int size() {
-		ConcurrentMap<Long, RespondFuture> map = this.futureMap;
+		ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
 		if (map == null) {
 			return 0;
 		}

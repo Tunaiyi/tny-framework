@@ -93,14 +93,14 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 		}
 	}
 
-	private void putFuture(long messageId, RespondFuture respondFuture) {
+	private void putFuture(long messageId, MessageRespondAwaiter respondFuture) {
 		if (respondFuture == null) {
 			return;
 		}
 		futureHolder().putFuture(messageId, respondFuture);
 	}
 
-	private <M> RespondFuture pollFuture(Message message) {
+	private <M> MessageRespondAwaiter pollFuture(Message message) {
 		RespondFutureHolder respondFutureHolder = this.respondFutureHolder;
 		if (respondFutureHolder == null) {
 			return null;
@@ -169,11 +169,10 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public SendContext send(NetTunnel<UID> tunnel, MessageContext context) {
+	public MessageReceipt send(NetTunnel<UID> tunnel, MessageContext context) {
 		try {
-			tryCreateFuture(context);
 			if (this.isClosed()) {
-				context.fail(new EndpointCloseException(format("endpoint {} closed", this)));
+				context.cancel(new EndpointCloseException(format("endpoint {} closed", this)));
 				return context;
 			}
 			if (tunnel == null) {
@@ -204,7 +203,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 			return context;
 		} catch (Exception e) {
 			LOGGER.error("", e);
-			context.fail(e);
+			context.cancel(e);
 			throw new NetException(e);
 		}
 	}
@@ -261,7 +260,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public SendContext send(MessageContext messageContext) {
+	public MessageReceipt send(MessageContext messageContext) {
 		return this.send(null, messageContext);
 	}
 
@@ -299,34 +298,17 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	//			});
 	//		}
 	//		this.tryCreateFuture(context);
-	//		this.tunnel.write(message, as(context.getWriteMessageFuture()));
+	//		this.tunnel.write(message, as(context.getMessageWriteAwaiter()));
 	//	}
 
 	@Override
 	public NetMessage allocateMessage(MessageFactory messageFactory, MessageContext context) {
 		NetMessage message = messageFactory.create(allocateMessageId(), context);
-		this.tryCreateFuture(context);
-		RespondFuture respondFuture = context.getRespondFuture();
-		if (respondFuture != null) {
-			this.putFuture(message.getId(), respondFuture);
+		if (context instanceof RequestContext) {
+			this.putFuture(message.getId(), ((RequestContext)context).getResponseAwaiter());
 		}
 		this.sentMessageQueue.addMessage(message);
 		return message;
-	}
-
-	private void tryCreateFuture(MessageContext context) {
-		if (context.isNeedResponseFuture() || context.isNeedWriteFuture()) {
-			WriteMessagePromise promise = as(context.getWriteMessageFuture());
-			if (promise == null) {
-				promise = this.tunnel.createWritePromise();
-				context.setWriteMessagePromise(promise);
-			}
-			if (context.isNeedResponseFuture()) {
-				RespondFuture respondFuture = context.getRespondFuture();
-				context.setRespondFuture(respondFuture);
-				promise.setRespondFuture(respondFuture);
-			}
-		}
 	}
 
 	private long allocateMessageId() {

@@ -16,11 +16,11 @@ public interface MessageTransport extends Connection {
 	 * 发送消息
 	 *
 	 * @param message 消息
-	 * @param promise 写出等待对象
+	 * @param awaiter 写出等待对象
 	 * @return 返回promise
 	 * @throws NetException 写出异常
 	 */
-	WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException;
+	MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException;
 
 	/**
 	 * 发送消息
@@ -31,6 +31,6 @@ public interface MessageTransport extends Connection {
 	 * @return 返回promise
 	 * @throws NetException 写出异常
 	 */
-	WriteMessageFuture write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException;
+	MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException;
 
 }

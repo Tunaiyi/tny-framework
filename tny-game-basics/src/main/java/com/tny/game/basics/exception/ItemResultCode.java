@@ -35,12 +35,12 @@ public enum ItemResultCode implements ResultCode {
 
 	private final String message;
 
-	private final ResultCodeType type;
+	private final ResultLevel type;
 
 	ItemResultCode(int code, String message) {
 		this.code = code;
 		this.message = message;
-		this.type = ResultCodeType.GENERAL;
+		this.type = ResultLevel.GENERAL;
 		this.registerSelf();
 	}
 
@@ -50,7 +50,7 @@ public enum ItemResultCode implements ResultCode {
 	}
 
 	@Override
-	public ResultCodeType getType() {
+	public ResultLevel getLevel() {
 		return type;
 	}
 

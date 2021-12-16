@@ -15,9 +15,9 @@ public class RespondCommandTask implements CommandTask {
 
 	private final Message message;
 
-	private final RespondFuture respondFuture;
+	private final MessageRespondAwaiter respondFuture;
 
-	public RespondCommandTask(Message message, RespondFuture respondFuture) {
+	public RespondCommandTask(Message message, MessageRespondAwaiter respondFuture) {
 		this.message = message;
 		this.respondFuture = respondFuture;
 	}

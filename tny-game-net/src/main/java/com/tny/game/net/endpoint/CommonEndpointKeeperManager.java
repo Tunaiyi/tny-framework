@@ -57,9 +57,11 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getName(), name), setting));
 		}
 		if (defaultSessionKeeperSetting != null) {
+			sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
 			sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
 		}
 		if (defaultTerminalKeeperSetting != null) {
+			terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
 			terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
 		}
 		this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);

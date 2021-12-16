@@ -9,9 +9,9 @@ package com.tny.game.net.transport;
 @FunctionalInterface
 public interface WriteMessageListener {
 
-    /**
-     * 发送结速
-     */
-    void onWrite(WriteMessageFuture future);
+	/**
+	 * 发送结速
+	 */
+	void onWrite(MessageWriteAwaiter future);
 
 }

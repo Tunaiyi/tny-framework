@@ -1,11 +1,11 @@
 package com.tny.game.net.message.codec.protoex;
 
 import com.tny.game.net.codec.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.netty4.network.codec.*;
+import com.tny.game.net.transport.*;
 import com.tny.game.protoex.*;
 import io.netty.buffer.*;
 import org.junit.jupiter.api.*;

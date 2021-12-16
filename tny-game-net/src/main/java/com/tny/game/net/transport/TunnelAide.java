@@ -1,7 +1,6 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import org.slf4j.*;
 
@@ -11,9 +10,9 @@ import org.slf4j.*;
  * @author: Kun Yang
  * @date: 2018-10-16 15:55
  */
-public class TunnelAides {
+public class TunnelAide {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(TunnelAides.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(TunnelAide.class);
 
 	/**
 	 * 发送响应消息, 如果 code 为 Error, 则发送完后断开连接
@@ -34,9 +33,9 @@ public class TunnelAides {
 	 * @param tunnel  通道
 	 * @param context 消息信息上下文
 	 */
-	public static <UID> SendContext responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
+	public static <UID> MessageReceipt responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
 		ResultCode code = context.getResultCode();
-		if (code.getType() == ResultCodeType.ERROR) {
+		if (code.getLevel() == ResultLevel.ERROR) {
 			context.willWriteFuture(future -> tunnel.close());
 		}
 		return tunnel.send(context);

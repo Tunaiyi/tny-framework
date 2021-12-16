@@ -68,7 +68,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public SendContext send(NetTunnel<Long> tunnel, MessageContext messageContext) {
+	public MessageReceipt send(NetTunnel<Long> tunnel, MessageContext messageContext) {
 		this.sendQueue.add(messageContext);
 		return messageContext;
 	}
@@ -210,7 +210,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public SendContext send(MessageContext messageContext) {
+	public MessageReceipt send(MessageContext messageContext) {
 		return null;
 	}
 

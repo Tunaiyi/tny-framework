@@ -164,7 +164,7 @@ public class ObjectAide {
 			return as(source.toString());
 		}
 		if (!clazz.isAssignableFrom(source.getClass())) {
-			throw new ClassCastException(format("{} can not conver to {}", source.getClass(), clazz));
+			throw new ClassCastException(format("{} can not convert to {}", source.getClass(), clazz));
 		}
 		return as(source);
 	}

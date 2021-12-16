@@ -104,11 +104,11 @@ public class RpcInvoker {
 		RequestContext requestContext = createRequest(protocol(), params)
 				.willResponseFuture(timeout);
 		endpoint.send(requestContext);
-		RespondFuture future = requestContext.getRespondFuture();
+		MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
 		if (this.method.isAsync()) {
 			switch (this.method.getReturnMode()) {
 				case FUTURE:
-					return getReturnFuture(future);
+					return getReturnFuture(awaiter);
 				case VOID:
 				case RESULT:
 				case OBJECT:
@@ -117,7 +117,7 @@ public class RpcInvoker {
 		} else {
 			Message message;
 			try {
-				message = future.get(timeout, TimeUnit.MILLISECONDS);
+				message = awaiter.get(timeout, TimeUnit.MILLISECONDS);
 				switch (this.method.getReturnMode()) {
 					case RESULT:
 						return RpcResults.create(ResultCodes.of(message.getCode()), message.getBody());
@@ -134,8 +134,8 @@ public class RpcInvoker {
 		throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
 	}
 
-	private Object getReturnFuture(RespondFuture future) {
-		if (RespondFuture.class == this.method.getReturnClass()) {
+	private Object getReturnFuture(MessageRespondAwaiter future) {
+		if (MessageRespondAwaiter.class == this.method.getReturnClass()) {
 			return future;
 		}
 		DefaultRpcFuture<Object> rpcFuture = new DefaultRpcFuture<>();
@@ -175,9 +175,9 @@ public class RpcInvoker {
 		if (this.method.isAsync()) {
 			return;
 		}
-		WriteMessageFuture future = messageContext.getWriteMessageFuture();
+		MessageWriteAwaiter awaiter = messageContext.getWriteAwaiter();
 		try {
-			future.get(timeout, TimeUnit.MILLISECONDS);
+			awaiter.get(timeout, TimeUnit.MILLISECONDS);
 		} catch (Throwable e) {
 			handleException(e);
 		}

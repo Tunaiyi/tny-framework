@@ -32,11 +32,6 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public WriteMessagePromise createWritePromise() {
-		return new NettyWriteMessagePromise();
-	}
-
-	@Override
 	public void close() {
 		NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
 		if (link != null) {
@@ -46,17 +41,17 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public WriteMessageFuture write(RelayPacket<?> packet, WriteMessagePromise promise) {
-		ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
+	public MessageWriteAwaiter write(RelayPacket<?> packet, MessageWriteAwaiter awaiter) {
+		ChannelPromise channelPromise = createChannelPromise(awaiter);
 		this.channel.writeAndFlush(packet, channelPromise);
-		return promise;
+		return awaiter;
 	}
 
 	@Override
-	public WriteMessageFuture write(RelayPacketMaker maker, WriteMessagePromise promise) {
-		ChannelPromise channelPromise = checkAndCreateChannelPromise(promise);
+	public MessageWriteAwaiter write(RelayPacketMaker maker, MessageWriteAwaiter awaiter) {
+		ChannelPromise channelPromise = createChannelPromise(awaiter);
 		this.channel.eventLoop().execute(() -> this.channel.writeAndFlush(maker.make(), channelPromise));
-		return promise;
+		return awaiter;
 	}
 
 	@Override

@@ -11,21 +11,21 @@ public class NettyWriteMessageHandler implements ChannelFutureListener {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NettyWriteMessageHandler.class);
 
-	private final WriteMessagePromise promise;
+	private final MessageWriteAwaiter awaiter;
 
-	public NettyWriteMessageHandler(WriteMessagePromise promise) {
-		this.promise = promise;
+	public NettyWriteMessageHandler(MessageWriteAwaiter awaiter) {
+		this.awaiter = awaiter;
 	}
 
 	@Override
 	public void operationComplete(ChannelFuture future) {
 		synchronized (this) {
 			if (future.isSuccess()) {
-				this.promise.success();
+				this.awaiter.complete(null);
 			} else if (future.isCancelled()) {
-				this.promise.cancel(true);
+				this.awaiter.cancel(true);
 			} else if (future.cause() != null) {
-				this.promise.failed(future.cause());
+				this.awaiter.completeExceptionally(future.cause());
 			}
 		}
 	}

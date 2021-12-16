@@ -228,14 +228,14 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 				break;
 		}
 		if (context != null) {
-			TunnelAides.responseMessage(this.tunnel, context);
+			TunnelAide.responseMessage(this.tunnel, context);
 		}
 		if (relay && code.isSuccess()) {
 			this.relayTunnel.relay(message, false);
 			return;
 		}
-		if (code.getType() == ResultCodeType.ERROR) {
-			LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getType());
+		if (code.getLevel() == ResultLevel.ERROR) {
+			LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getLevel());
 			this.tunnel.close();
 		}
 	}

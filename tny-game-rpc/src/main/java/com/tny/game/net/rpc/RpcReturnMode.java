@@ -25,7 +25,7 @@ public enum RpcReturnMode {
 	 * Future 对象
 	 */
 	FUTURE(ImmutableSet.of(REQUEST),
-			ImmutableSet.of(RespondFuture.class, Future.class, CompletionStage.class, CompletableFuture.class, RpcFuture.class),
+			ImmutableSet.of(MessageRespondAwaiter.class, Future.class, CompletionStage.class, CompletableFuture.class, RpcFuture.class),
 			RpcReturnMode::genericBodyClass,
 			// INFO 调用方式
 			/*默认*/ASYNC),

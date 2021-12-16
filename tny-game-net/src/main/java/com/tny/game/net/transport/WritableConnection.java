@@ -8,11 +8,4 @@ package com.tny.game.net.transport;
  */
 public interface WritableConnection extends Connection {
 
-	/**
-	 * 创建写出应答对象
-	 *
-	 * @return 返回写出应答对象
-	 */
-	WriteMessagePromise createWritePromise();
-
 }

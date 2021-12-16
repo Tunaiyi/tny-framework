@@ -1,7 +1,5 @@
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.transport.*;
-
 import java.net.InetSocketAddress;
 
 /**
@@ -63,13 +61,6 @@ public interface RelayLink {
 	 * @return 返回本地地址
 	 */
 	InetSocketAddress getLocalAddress();
-
-	/**
-	 * 创建发送答应对象
-	 *
-	 * @return 发送答应对象
-	 */
-	WriteMessagePromise createWritePromise();
 
 	/**
 	 * 关闭

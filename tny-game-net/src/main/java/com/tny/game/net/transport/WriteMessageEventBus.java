@@ -44,7 +44,7 @@ public class WriteMessageEventBus {
 		listeners().addAll(listeners);
 	}
 
-	public void fireListeners(WriteMessageFuture future) {
+	public void fireListeners(MessageWriteAwaiter future) {
 		List<WriteMessageListener> listeners = this.listeners;
 		if (listeners != null) {
 			for (WriteMessageListener listener : listeners) {
@@ -54,7 +54,7 @@ public class WriteMessageEventBus {
 		}
 	}
 
-	private void fireListener(WriteMessageListener listener, WriteMessageFuture future) {
+	private void fireListener(WriteMessageListener listener, MessageWriteAwaiter future) {
 		try {
 			listener.onWrite(future);
 		} catch (Throwable e) {

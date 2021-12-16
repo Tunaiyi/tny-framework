@@ -5,8 +5,6 @@ import com.tny.game.common.type.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 
-import java.util.Optional;
-
 /**
  * <p>
  *
@@ -105,11 +103,6 @@ public class RelayMessage implements NetMessage {
 	}
 
 	@Override
-	public <T> Optional<T> bodyIf(Class<T> clazz) {
-		return message.bodyIf(clazz);
-	}
-
-	@Override
 	public MessageType getType() {
 		return message.getType();
 	}
@@ -120,13 +113,8 @@ public class RelayMessage implements NetMessage {
 	}
 
 	@Override
-	public boolean isOwn(MessageHead head) {
-		return message.isOwn(head);
-	}
-
-	@Override
-	public boolean isOwn(MessageContent subject) {
-		return message.isOwn(subject);
+	public boolean isOwn(Protocol protocol) {
+		return message.isOwn(protocol);
 	}
 
 	public void release() {

@@ -12,7 +12,7 @@ import com.tny.game.net.transport.*;
  */
 public class RpcMessageFuture extends WrapperStageFuture<Message> implements RpcFuture<Message> {
 
-	protected RpcMessageFuture(RespondFuture future) {
+	protected RpcMessageFuture(MessageRespondAwaiter future) {
 		super(future);
 	}
 

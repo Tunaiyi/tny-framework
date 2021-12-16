@@ -1,7 +1,5 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.endpoint.*;
-
 /**
  * <p>
  *
@@ -16,6 +14,6 @@ public interface Sender {
 	 * @param messageContext 发送消息上下文
 	 * @return 返回发送上下文
 	 */
-	SendContext send(MessageContext messageContext);
+	MessageReceipt send(MessageContext messageContext);
 
 }

@@ -2,6 +2,7 @@ package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.util.concurrent.FastThreadLocalThread;
 

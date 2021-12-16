@@ -17,19 +17,10 @@ public interface Protocol {
 	/**
 	 * 指定消息是否是属于此协议
 	 *
-	 * @param head 消息头
+	 * @param protocol 消息头
 	 */
-	default boolean isOwn(MessageHead head) {
-		return this.getProtocolId() == head.getProtocolId();
-	}
-
-	/**
-	 * 指定消息是否是属于此协议
-	 *
-	 * @param subject 消息
-	 */
-	default boolean isOwn(MessageContent subject) {
-		return this.getProtocolId() == subject.getProtocolId();
+	default boolean isOwn(Protocol protocol) {
+		return this.getProtocolId() == protocol.getProtocolId();
 	}
 
 }

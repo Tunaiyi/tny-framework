@@ -1,7 +1,5 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.net.endpoint.*;
-
 /**
  * Created by Kun Yang on 2017/2/16.
  */
@@ -15,9 +13,11 @@ public abstract class RequestContext extends MessageContext {
 	public abstract RequestContext setBody(Object body);
 
 	public RequestContext willResponseFuture() {
-		return willResponseFuture(RespondFuture.DEFAULT_FUTURE_TIMEOUT);
+		return willResponseFuture(MessageRespondAwaiter.DEFAULT_FUTURE_TIMEOUT);
 	}
 
 	public abstract RequestContext willResponseFuture(long timeoutMills);
+
+	public abstract MessageRespondAwaiter getResponseAwaiter();
 
 }

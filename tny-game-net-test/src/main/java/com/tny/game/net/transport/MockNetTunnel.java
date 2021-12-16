@@ -131,31 +131,26 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public WriteMessagePromise createWritePromise() {
-		return new MockWriteMessagePromise();
-	}
-
-	@Override
 	public NetBootstrapContext getContext() {
 		return this.context;
 	}
 
 	@Override
-	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
+	public MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException {
 		if (promise == null) {
-			promise = createWritePromise();
+			promise = new MessageWriteAwaiter();
 		}
 		if (this.writeSuccess) {
 			this.writeTimes++;
-			promise.success();
+			promise.complete(null);
 		} else {
-			promise.failed(new RuntimeException());
+			promise.completeExceptionally(new RuntimeException());
 		}
 		return promise;
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator allocator, MessageContext context) throws NetException {
+	public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
 		return null;
 	}
 
@@ -197,7 +192,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public SendContext send(MessageContext messageContext) {
+	public MessageReceipt send(MessageContext messageContext) {
 		return this.endpoint.send(this, messageContext);
 	}
 

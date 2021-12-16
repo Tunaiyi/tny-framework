@@ -6,13 +6,13 @@ import com.tny.game.common.utils.*;
 public enum BasicResultCode implements ResultCode {
 
 	// 系统错误 用户登录相关
-	AUTH_USER_LOGIN_ERROR_SID(2000, "登录服务器ID错误", ResultCodeType.ERROR),
-	AUTH_USER_IS_FULL(2001, "登录服务器ID错误", ResultCodeType.ERROR),
-	AUTH_SERVER_IS_OFFLINE(2002, "服务器正在维护请稍后再试", ResultCodeType.ERROR),
-	AUTH_NO_TICKET(2003, "登陆票据不存在", ResultCodeType.ERROR),
-	AUTH_ERROR(2004, "登陆认证错误", ResultCodeType.ERROR),
-	AUTH_NO_ACCOUNT(2005, "登陆认证账号不存在", ResultCodeType.ERROR),
-	AUTH_TICKET_TIMEOUT(2006, "登陆票据超时", ResultCodeType.ERROR),
+	AUTH_USER_LOGIN_ERROR_SID(2000, "登录服务器ID错误", ResultLevel.ERROR),
+	AUTH_USER_IS_FULL(2001, "登录服务器ID错误", ResultLevel.ERROR),
+	AUTH_SERVER_IS_OFFLINE(2002, "服务器正在维护请稍后再试", ResultLevel.ERROR),
+	AUTH_NO_TICKET(2003, "登陆票据不存在", ResultLevel.ERROR),
+	AUTH_ERROR(2004, "登陆认证错误", ResultLevel.ERROR),
+	AUTH_NO_ACCOUNT(2005, "登陆认证账号不存在", ResultLevel.ERROR),
+	AUTH_TICKET_TIMEOUT(2006, "登陆票据超时", ResultLevel.ERROR),
 
 	ITEM_WAREHOUSE_NO_EXIST(2010, "目标不存在"),
 	ITEM_WAREHOUSE_TRADE_FAILED(2011, "交易失败"),
@@ -31,13 +31,13 @@ public enum BasicResultCode implements ResultCode {
 
 	private final String message;
 
-	private final ResultCodeType type;
+	private final ResultLevel type;
 
 	BasicResultCode(int code, String message) {
-		this(code, message, ResultCodeType.GENERAL);
+		this(code, message, ResultLevel.GENERAL);
 	}
 
-	BasicResultCode(int code, String message, ResultCodeType type) {
+	BasicResultCode(int code, String message, ResultLevel type) {
 		this.code = code;
 		this.message = message;
 		this.type = type;
@@ -51,7 +51,7 @@ public enum BasicResultCode implements ResultCode {
 	}
 
 	@Override
-	public ResultCodeType getType() {
+	public ResultLevel getLevel() {
 		return this.type;
 	}
 

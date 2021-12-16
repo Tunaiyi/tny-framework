@@ -13,8 +13,6 @@ import org.slf4j.*;
 import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-
 /**
  * <p>
  *
@@ -148,22 +146,22 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	}
 
 	@Override
-	public WriteMessageFuture relay(RelayTunnel<?> tunnel, Message message, WriteMessagePromise promise) {
-		return this.transporter.write(new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), message), promise);
+	public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, Message message, MessageWriteAwaiter awaiter) {
+		return this.transporter.write(new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), message), awaiter);
 	}
 
 	@Override
-	public WriteMessageFuture relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContext context) {
+	public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContext context) {
 		return this.transporter.write(
 				() -> new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), allocator.allocate(factory, context)),
-				as(context.getWriteMessageFuture(), WriteMessagePromise.class));
+				context.getWriteAwaiter());
 	}
 
 	@Override
-	public <P extends RelayPacket<A>, A extends RelayPacketArguments> WriteMessageFuture write(RelayPacketFactory<P, A> factory, A arguments,
+	public <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteAwaiter write(RelayPacketFactory<P, A> factory, A arguments,
 			boolean promise) {
 		return this.transporter.write(factory.createPacket(createPacketId(), arguments, System.currentTimeMillis()),
-				promise ? this.transporter.createWritePromise() : null);
+				promise ? new MessageWriteAwaiter() : null);
 	}
 
 	@Override
@@ -174,11 +172,6 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	@Override
 	public void pong() {
 		this.transporter.write(LinkHeartBeatPacket.pong(createPacketId()), null);
-	}
-
-	@Override
-	public WriteMessagePromise createWritePromise() {
-		return this.transporter.createWritePromise();
 	}
 
 	@Override

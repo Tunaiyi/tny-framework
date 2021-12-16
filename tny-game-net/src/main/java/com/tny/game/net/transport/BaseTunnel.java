@@ -7,8 +7,6 @@ import com.tny.game.net.message.*;
 
 import java.net.InetSocketAddress;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-
 /**
  * Created by Kun Yang on 2017/3/28.
  */
@@ -61,14 +59,14 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 	}
 
 	@Override
-	public WriteMessageFuture write(Message message, WriteMessagePromise promise) throws NetException {
-		this.checkAvailable(promise);
-		return this.transporter.write(message, promise);
+	public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
+		this.checkAvailable(awaiter);
+		return this.transporter.write(message, awaiter);
 	}
 
 	@Override
-	public WriteMessageFuture write(MessageAllocator allocator, MessageContext context) throws NetException {
-		WriteMessagePromise promise = as(context.getWriteMessageFuture());
+	public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
+		MessageWriteAwaiter promise = context.getWriteAwaiter();
 		this.checkAvailable(promise);
 		return this.transporter.write(allocator, this.getMessageFactory(), context);
 	}
@@ -112,18 +110,13 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 		transporter.close();
 	}
 
-	private void checkAvailable(WriteMessagePromise promise) {
+	private void checkAvailable(MessageWriteAwaiter awaiter) {
 		if (!this.isActive()) {
 			this.onWriteUnavailable();
-			if (promise != null) {
-				promise.failedAndThrow(new TunnelDisconnectException("{} is disconnect", this));
+			if (awaiter != null) {
+				awaiter.completeExceptionally(new TunnelDisconnectException("{} is disconnect", this));
 			}
 		}
-	}
-
-	@Override
-	public WriteMessagePromise createWritePromise() {
-		return this.transporter.createWritePromise();
 	}
 
 	//	protected AbstractTunnel<UID, E> setNetTransport(T transport) {
