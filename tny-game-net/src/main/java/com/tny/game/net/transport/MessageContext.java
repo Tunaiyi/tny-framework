@@ -3,12 +3,10 @@ package com.tny.game.net.transport;
 import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
 
-import java.util.Collection;
-
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContext implements MessageReceipt, MessageContent {
+public abstract class MessageContext implements SendReceipt, MessageContent {
 
 	/**
 	 * @return 获取结果码
@@ -19,14 +17,20 @@ public abstract class MessageContext implements MessageReceipt, MessageContent {
 	 * @param body 设置 Message Body
 	 * @return 返回 context 自身
 	 */
-	public abstract MessageContext setBody(Object body);
+	public abstract MessageContext withBody(Object body);
 
-	public abstract MessageContext willWriteFuture();
+	/**
+	 * 设置写出等待对象
+	 *
+	 * @return 返回 context 自身
+	 */
+	public abstract MessageContext willWriteAwaiter();
 
-	public abstract MessageContext willWriteFuture(WriteMessageListener listener);
-
-	public abstract MessageContext willWriteFuture(Collection<WriteMessageListener> listeners);
-
+	/**
+	 * 获取写出等待对象
+	 *
+	 * @return 返回 context 自身
+	 */
 	public abstract MessageWriteAwaiter getWriteAwaiter();
 
 	/**

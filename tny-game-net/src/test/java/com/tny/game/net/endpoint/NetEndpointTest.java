@@ -176,7 +176,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 		MockNetTunnel t1 = object.getTunnel();
 		messages = createMessages(e0);
 		messages.requestContextsForEach(c -> {
-			c.willResponseFuture().willWriteFuture();
+			c.willRespondAwaiter().willWriteAwaiter();
 			e1.allocateMessage(t1.getMessageFactory(), c);
 		});
 		assertEquals(messages.getMessageSize(), t0.getWriteTimes());

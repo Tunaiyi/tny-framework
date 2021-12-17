@@ -61,9 +61,9 @@ public class RpcClientFactory implements Serve {
 			String user = StringAide.ifBlank(setting.getUsername(), appContext.getAppType());
 			RequestContext context = RpcAuthMessageContexts
 					.authRequest(user, appContext.getServerId(), id, setting.getPassword())
-					.willResponseFuture(3000L);
+					.willRespondAwaiter(3000L);
 			c.send(context);
-			context.respondFuture().get(12000, TimeUnit.MILLISECONDS);
+			context.respond().get(12000, TimeUnit.MILLISECONDS);
 			return true;
 		};
 	}

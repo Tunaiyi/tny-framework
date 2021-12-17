@@ -61,7 +61,7 @@ public class RespondFutureHolder {
 
 	private volatile ConcurrentMap<Long, MessageRespondAwaiter> futureMap;
 
-	public void clearTimeOut() {
+	private void clearTimeOut() {
 		ConcurrentMap<Long, MessageRespondAwaiter> futureMap = this.futureMap;
 		if (futureMap == null) {
 			return;

@@ -102,7 +102,7 @@ public class RpcInvoker {
 
 	private Object request(Endpoint<?> endpoint, long timeout, Object... params) {
 		RequestContext requestContext = createRequest(protocol(), params)
-				.willResponseFuture(timeout);
+				.willRespondAwaiter(timeout);
 		endpoint.send(requestContext);
 		MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
 		if (this.method.isAsync()) {
@@ -170,7 +170,7 @@ public class RpcInvoker {
 		List<Integer> parameterIndexes = method.getParameterIndexes();
 		MessageContext messageContext = MessageContexts
 				.push(protocol())
-				.setBody(parameterIndexes.size() == 0 ? null : params[parameterIndexes.get(0)]);
+				.withBody(parameterIndexes.size() == 0 ? null : params[parameterIndexes.get(0)]);
 		endpoint.send(messageContext);
 		if (this.method.isAsync()) {
 			return;

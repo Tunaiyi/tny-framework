@@ -192,7 +192,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public MessageReceipt send(MessageContext messageContext) {
+	public SendReceipt send(MessageContext messageContext) {
 		return this.endpoint.send(this, messageContext);
 	}
 

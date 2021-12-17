@@ -7,9 +7,6 @@ import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import org.apache.commons.collections4.CollectionUtils;
-
-import java.util.*;
 
 import static com.tny.game.net.message.MessageAide.*;
 
@@ -18,10 +15,6 @@ import static com.tny.game.net.message.MessageAide.*;
  * Created by Kun Yang on 2017/2/16.
  */
 public class MessageContexts {
-
-	public static MessageContext createContext() {
-		return new DefaultMessageContext();
-	}
 
 	/**
 	 * 创建推送消息上下文
@@ -56,7 +49,7 @@ public class MessageContexts {
 	public static MessageContext push(Protocol protocol, Object body) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
-				.setBody(body);
+				.withBody(body);
 		return context;
 	}
 
@@ -71,7 +64,7 @@ public class MessageContexts {
 	public static MessageContext push(Protocol protocol, ResultCode code, Object body) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.PUSH, protocol, code)
-				.setBody(body);
+				.withBody(body);
 		return context;
 	}
 
@@ -97,7 +90,7 @@ public class MessageContexts {
 	public static RequestContext request(Protocol protocol, Object body) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-				.setBody(body);
+				.withBody(body);
 		return context;
 	}
 
@@ -111,7 +104,7 @@ public class MessageContexts {
 	public static RequestContext requestParams(Protocol protocol, Object... requestParams) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-				.setBody(new MessageParamList(requestParams));
+				.withBody(new MessageParamList(requestParams));
 		return context;
 	}
 
@@ -151,7 +144,7 @@ public class MessageContexts {
 	public static MessageContext respond(Protocol protocol, Object body, long toMessage) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
-				.setBody(body);
+				.withBody(body);
 		return context;
 	}
 
@@ -167,7 +160,7 @@ public class MessageContexts {
 	public static MessageContext respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.RESPONSE, protocol, code, toMessage)
-				.setBody(body);
+				.withBody(body);
 		return context;
 	}
 
@@ -182,17 +175,6 @@ public class MessageContexts {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.RESPONSE, respondHead, code, respondHead.getId());
 		return context;
-	}
-
-	/**
-	 * 创建响应消息上下文
-	 *
-	 * @param code           消息结果码
-	 * @param respondMessage 响应的请求消息
-	 * @return 创建的消息上下文
-	 */
-	public static MessageContext respond(ResultCode code, Message respondMessage) {
-		return respond(code, respondMessage.getHead());
 	}
 
 	private static class DefaultMessageContext extends RequestContext {
@@ -218,8 +200,6 @@ public class MessageContexts {
 		 * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
 		 */
 		private volatile MessageWriteAwaiter writeAwaiter;
-
-		private volatile List<WriteMessageListener> listeners;
 
 		private DefaultMessageContext() {
 		}
@@ -290,7 +270,7 @@ public class MessageContexts {
 		}
 
 		@Override
-		public RequestContext setBody(Object body) {
+		public RequestContext withBody(Object body) {
 			if (this.body != null) {
 				throw new IllegalArgumentException("body is exist");
 			}
@@ -319,7 +299,7 @@ public class MessageContexts {
 		}
 
 		@Override
-		public RequestContext willResponseFuture(long timeoutMills) {
+		public RequestContext willRespondAwaiter(long timeoutMills) {
 			if (this.mode == MessageMode.REQUEST) {
 				this.respondAwaiter = new MessageRespondAwaiter(timeoutMills);
 			}
@@ -327,26 +307,8 @@ public class MessageContexts {
 		}
 
 		@Override
-		public RequestContext willWriteFuture() {
+		public RequestContext willWriteAwaiter() {
 			this.writeAwaiter = new MessageWriteAwaiter();
-			return this;
-		}
-
-		@Override
-		public MessageContext willWriteFuture(WriteMessageListener listener) {
-			if (listener != null) {
-				this.writeAwaiter = new MessageWriteAwaiter();
-				listeners().add(listener);
-			}
-			return this;
-		}
-
-		@Override
-		public MessageContext willWriteFuture(Collection<WriteMessageListener> listeners) {
-			if (CollectionUtils.isNotEmpty(listeners)) {
-				this.writeAwaiter = new MessageWriteAwaiter();
-				listeners().addAll(listeners);
-			}
 			return this;
 		}
 
@@ -360,19 +322,6 @@ public class MessageContexts {
 			return this.respondAwaiter;
 		}
 
-		private List<WriteMessageListener> listeners() {
-			if (this.listeners != null) {
-				return this.listeners;
-			}
-			synchronized (this) {
-				if (this.listeners != null) {
-					return this.listeners;
-				}
-				this.listeners = new LinkedList<>();
-			}
-			return this.listeners;
-		}
-
 		@Override
 		public boolean isRespondAwaitable() {
 			return this.respondAwaiter != null;
@@ -384,12 +333,12 @@ public class MessageContexts {
 		}
 
 		@Override
-		public StageFuture<Message> respondFuture() {
+		public StageFuture<Message> respond() {
 			return this.respondAwaiter;
 		}
 
 		@Override
-		public StageFuture<Void> writeFuture() {
+		public StageFuture<Void> written() {
 			return this.writeAwaiter;
 		}
 

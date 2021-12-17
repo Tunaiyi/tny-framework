@@ -10,13 +10,24 @@ public abstract class RequestContext extends MessageContext {
 	 * @return 返回 context 自身
 	 */
 	@Override
-	public abstract RequestContext setBody(Object body);
+	public abstract RequestContext withBody(Object body);
 
-	public RequestContext willResponseFuture() {
-		return willResponseFuture(MessageRespondAwaiter.DEFAULT_FUTURE_TIMEOUT);
+	/**
+	 * 设置响应等待者
+	 *
+	 * @return
+	 */
+	public RequestContext willRespondAwaiter() {
+		return willRespondAwaiter(MessageRespondAwaiter.DEFAULT_FUTURE_TIMEOUT);
 	}
 
-	public abstract RequestContext willResponseFuture(long timeoutMills);
+	/**
+	 * 设置响应等待者
+	 *
+	 * @param timeoutMills 超时时间
+	 * @return
+	 */
+	public abstract RequestContext willRespondAwaiter(long timeoutMills);
 
 	public abstract MessageRespondAwaiter getResponseAwaiter();
 

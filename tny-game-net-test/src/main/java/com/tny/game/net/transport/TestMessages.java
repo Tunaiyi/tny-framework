@@ -164,13 +164,13 @@ public class TestMessages {
 		send(sender, null);
 	}
 
-	public void send(Sender sender, Consumer<MessageReceipt> check) {
+	public void send(Sender sender, Consumer<SendReceipt> check) {
 		assertFalse(this.messages.isEmpty());
 		if (check == null) {
 			check = f -> {
 			};
 		}
-		Consumer<MessageReceipt> consumer = check;
+		Consumer<SendReceipt> consumer = check;
 		this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
 	}
 

@@ -169,7 +169,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public MessageReceipt send(NetTunnel<UID> tunnel, MessageContext context) {
+	public SendReceipt send(NetTunnel<UID> tunnel, MessageContext context) {
 		try {
 			if (this.isClosed()) {
 				context.cancel(new EndpointCloseException(format("endpoint {} closed", this)));
@@ -196,10 +196,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 						break;
 				}
 			}
-			//            this.eventsBox.addOutputEvent(new EndpointSendEvent<>(tunnel, context));
-			//            this.eventHandler.onOutput(this.eventsBox, this);
 			tunnel.write(this::allocateMessage, context);
-			//            this.eventHandler.onOutputEvent(this, new EndpointSendEvent<>(tunnel, context));
 			return context;
 		} catch (Exception e) {
 			LOGGER.error("", e);
@@ -260,7 +257,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
-	public MessageReceipt send(MessageContext messageContext) {
+	public SendReceipt send(MessageContext messageContext) {
 		return this.send(null, messageContext);
 	}
 

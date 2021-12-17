@@ -139,12 +139,12 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	}
 
 	@Override
-	public MessageReceipt send(MessageContext messageContext) {
+	public SendReceipt send(MessageContext messageContext) {
 		return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
 				() -> doSend(messageContext));
 	}
 
-	private MessageReceipt doSend(MessageContext messageContext) {
+	private SendReceipt doSend(MessageContext messageContext) {
 		return this.endpoint.send(this, messageContext);
 	}
 

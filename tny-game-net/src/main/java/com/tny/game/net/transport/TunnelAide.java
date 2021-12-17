@@ -33,12 +33,18 @@ public class TunnelAide {
 	 * @param tunnel  通道
 	 * @param context 消息信息上下文
 	 */
-	public static <UID> MessageReceipt responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
+	public static <UID> SendReceipt responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
 		ResultCode code = context.getResultCode();
 		if (code.getLevel() == ResultLevel.ERROR) {
-			context.willWriteFuture(future -> tunnel.close());
+			if (!context.isWriteAwaitable()) {
+				context.willWriteAwaiter();
+			}
 		}
-		return tunnel.send(context);
+		SendReceipt receipt = tunnel.send(context);
+		if (receipt != null) {
+			receipt.written().thenRun(tunnel::close);
+		}
+		return receipt;
 	}
 
 }
