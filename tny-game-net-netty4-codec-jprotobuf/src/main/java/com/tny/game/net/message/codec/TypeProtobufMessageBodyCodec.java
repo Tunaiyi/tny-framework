@@ -108,12 +108,11 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
 		} else {
 			MemoryAllotCounter counter = this.counter();
 			ObjectCodec<Object> codec = this.codecFactory.createCodec(null);
-			int allotSize = counter.allot();
-			ByteBuf objectBuf = allocator.heapBuffer(allotSize);
+			ByteBuf objectBuf = allocator.heapBuffer(counter.allot());
 			try (ByteBufOutputStream objectOutput = new ByteBufOutputStream(objectBuf)) {
 				codec.encode(object, objectOutput);
 				int size = objectBuf.readableBytes();
-				counter.recode(allotSize, size);
+				counter.recode(size);
 				ByteBuffer objectBuffer = objectBuf.nioBuffer();
 				output.writeBytes(objectBuffer.array(), objectBuffer.arrayOffset(), size);
 			} finally {

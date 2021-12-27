@@ -16,7 +16,7 @@ public abstract class BaseModulerHandler<M extends Moduler, C> implements Module
 		return this.moduleType;
 	}
 
-	public abstract C loadContext(FeatureLauncher launcher, C context);
+	public abstract void loadContext(FeatureLauncher launcher, C context);
 
 	@Override
 	public void removeModule(FeatureLauncher launcher) {

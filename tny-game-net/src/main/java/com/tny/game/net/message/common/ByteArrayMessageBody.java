@@ -6,7 +6,7 @@ package com.tny.game.net.message.common;
  * @author: Kun Yang
  * @date: 2018-10-18 16:37
  */
-public class OctetArrayMessageBody implements OctetMessageBody {
+public class ByteArrayMessageBody implements OctetMessageBody {
 
 	/**
 	 * 消息体字节
@@ -18,7 +18,7 @@ public class OctetArrayMessageBody implements OctetMessageBody {
 	 */
 	private final boolean relay;
 
-	public OctetArrayMessageBody(byte[] bodyBytes, boolean relay) {
+	public ByteArrayMessageBody(byte[] bodyBytes, boolean relay) {
 		this.bodyBytes = bodyBytes;
 		this.relay = relay;
 	}
@@ -29,7 +29,7 @@ public class OctetArrayMessageBody implements OctetMessageBody {
 	}
 
 	@Override
-	public byte[] getBodyBytes() {
+	public byte[] getBody() {
 		return bodyBytes;
 	}
 

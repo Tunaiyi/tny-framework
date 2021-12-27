@@ -57,7 +57,6 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 	private void writePayload(DataPackageContext packager, Message message, ByteBuf out) throws Exception {
 		ByteBuf bodyBuffer = null;
 		MemoryAllotCounter counter = this.counter();
-		int allotSize = -1;
 		int actualSize = 0;
 		try {
 			// 写入 Option
@@ -77,8 +76,7 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 			NettyWasteWriter wasteWriter = new NettyWasteWriter(packager, config);
 			payloadLength += wasteWriter.getTotalWasteByteSize();
 			// 包头
-			allotSize = counter.allot();
-			bodyBuffer = out.alloc().buffer(allotSize);
+			bodyBuffer = out.alloc().buffer(counter.allot());
 			this.messageCodec.encode(as(message), bodyBuffer);
 			byte[] verifyCodeBytes = new byte[0];
 			if (config.isVerifyEnable()) {
@@ -121,10 +119,8 @@ public class DatagramPackV1Encoder extends DatagramPackV1Codec implements Datagr
 				out.writeBytes(verifyCodeBytes);
 			}
 		} finally {
-			if (bodyBuffer != null && allotSize > 0) {
-				counter.recode(allotSize, actualSize);
-				ReferenceCountUtil.release(bodyBuffer);
-			}
+			counter.recode(actualSize);
+			ReferenceCountUtil.release(bodyBuffer);
 		}
 	}
 

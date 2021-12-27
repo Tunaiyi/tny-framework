@@ -42,20 +42,21 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		int line = (byte)(option & MESSAGE_HEAD_OPTION_LINE_MASK);
 		line = line >> MESSAGE_HEAD_OPTION_LINE_SHIFT;
 		CommonMessageHead head = new CommonMessageHead(id, mode, line, protocol, code, toMessage, time);
-		if (CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST)) {
-			int length = NettyVarIntCoder.readVarInt32(buffer);
-			ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
-			if (this.messageRelayStrategy.isRelay(head)) {
-				// WARN 不释放, 等待转发后释放
-				buffer.readBytes(bodyBuff, length);
-				body = new ByteBufMessageBody(bodyBuff, true);
-			} else {
-				buffer.readBytes(bodyBuff, length);
-				try {
-					body = this.bodyCoder.decode(bodyBuff);
-				} finally {
-					ReferenceCountUtil.release(bodyBuff);
-				}
+		if (!CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST)) {
+			return messageFactory.create(head, null);
+		}
+
+		int length = NettyVarIntCoder.readVarInt32(buffer);
+		ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
+		buffer.readBytes(bodyBuff, length);
+		if (this.messageRelayStrategy.isRelay(head)) {
+			// WARN 不释放, 等待转发后释放
+			body = new ByteBufMessageBody(bodyBuff, true);
+		} else {
+			try {
+				body = this.bodyCoder.decode(bodyBuff);
+			} finally {
+				ReferenceCountUtil.release(bodyBuff);
 			}
 		}
 		return messageFactory.create(head, body);
@@ -63,7 +64,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 
 	@Override
 	public void encode(NetMessage message, ByteBuf buffer) throws Exception {
-		if (message.getMode().getType() != MESSAGE) {
+		if (message.getType() != MESSAGE) {
 			return;
 		}
 		//		ProtoExOutputStream stream = new ProtoExOutputStream(1024, 2 * 1024);
@@ -90,20 +91,19 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 	}
 
 	private void writeObject(ByteBuf buffer, Object object, MessageBodyCodec<Object> coder) throws Exception {
-		OctetMessageBody bodyBody = null;
+		OctetMessageBody releaseBody = null;
 		try {
 			if (object instanceof byte[]) {
 				write(buffer, (byte[])object);
-			} else if (object instanceof OctetArrayMessageBody) {
-				OctetArrayMessageBody arrayMessageBody = as(object);
-				byte[] data = arrayMessageBody.getBodyBytes();
-				bodyBody = arrayMessageBody;
-				NettyVarIntCoder.writeVarInt32(data.length, buffer);
+			} else if (object instanceof ByteArrayMessageBody) {
+				ByteArrayMessageBody arrayMessageBody = as(object);
+				releaseBody = arrayMessageBody;
+				byte[] data = arrayMessageBody.getBody();
 				write(buffer, data);
 			} else if (object instanceof ByteBufMessageBody) {
 				ByteBufMessageBody messageBody = (ByteBufMessageBody)object;
-				bodyBody = messageBody;
-				ByteBuf data = messageBody.getBodyBytes();
+				releaseBody = messageBody;
+				ByteBuf data = messageBody.getBody();
 				if (data == null) {
 					throw NetCodecException.causeEncodeFailed("ByteBufMessageBody is released");
 				}
@@ -121,7 +121,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 				}
 			}
 		} finally {
-			OctetMessageBody.release(bodyBody);
+			OctetMessageBody.release(releaseBody);
 		}
 	}
 

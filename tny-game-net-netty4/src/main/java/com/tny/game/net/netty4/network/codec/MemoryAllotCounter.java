@@ -22,6 +22,8 @@ public class MemoryAllotCounter {
 
 	private int maxSize = 0;
 
+	private int allotSize = -1;
+
 	private int minSize = Integer.MAX_VALUE;
 
 	private long time = System.currentTimeMillis();
@@ -39,7 +41,10 @@ public class MemoryAllotCounter {
 		this.interval = interval;
 	}
 
-	public void recode(int allot, int useSize) {
+	public void recode(int useSize) {
+		if (allotSize < 0) {
+			return;
+		}
 		if (System.currentTimeMillis() > time) {
 			this.reset();
 		}
@@ -50,12 +55,13 @@ public class MemoryAllotCounter {
 		if (useSize < minSize) {
 			minSize = useSize;
 		}
-		this.deviationSize += Math.max(useSize - allot, 0);
+		this.deviationSize += Math.max(useSize - allotSize, 0);
 		this.count++;
+		this.allotSize = -1;
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug(
 					"MemoryAllotCounter 本次 分配 {} bytes 使用 {} bytes, 平均分配 {} bytes, 平均误差 {} bytes, 总分配 {} 次, 总分配 {} bytes, 最大 {} bytes, 最小 {} bytes",
-					allot, useSize, totalSize / count, deviationSize / count, count, totalSize, maxSize, minSize);
+					allotSize, useSize, totalSize / count, deviationSize / count, count, totalSize, maxSize, minSize);
 		}
 	}
 
@@ -63,7 +69,7 @@ public class MemoryAllotCounter {
 		if (count == 0) {
 			return initSize;
 		}
-		return Math.max((totalSize / count) * 2, initSize) + (this.deviationSize / count) * 2;
+		return allotSize = Math.max((totalSize / count) * 2, initSize) + (this.deviationSize / count) * 2;
 	}
 
 	private void reset() {

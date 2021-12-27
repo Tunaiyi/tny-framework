@@ -39,7 +39,7 @@ public class MessageCodecTest {
 		TestMsgObject body = new TestMsgObject(100, "I am test body!");
 		TestMsgObject attachment = new TestMsgObject(100, "I am test attachment!");
 		ByteBuf data;
-		OctetArrayMessageBody bodyBytes;
+		ByteArrayMessageBody bodyBytes;
 		// 正常解析 有 Body
 		NetMessage encodeMessage = createMessage(body, attachment);
 		data = ByteBufAllocator.DEFAULT.heapBuffer();
@@ -52,9 +52,9 @@ public class MessageCodecTest {
 		data.resetReaderIndex();
 		Message noDecodeBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
 		assertEquals(encodeMessage.getHead(), noDecodeBodyMessage.getHead());
-		bodyBytes = noDecodeBodyMessage.bodyAs(OctetArrayMessageBody.class);
+		bodyBytes = noDecodeBodyMessage.bodyAs(ByteArrayMessageBody.class);
 		assertNotNull(bodyBytes);
-		ProtoExReader bodyReader = new ProtoExReader(bodyBytes.getBodyBytes());
+		ProtoExReader bodyReader = new ProtoExReader(bodyBytes.getBody());
 		TestMsgObject realBody = bodyReader.readMessage(TestMsgObject.class);
 		assertEquals(encodeMessage.bodyAs(TestMsgObject.class), realBody);
 		// 正常解析 无 Body
@@ -68,7 +68,7 @@ public class MessageCodecTest {
 		// 不解析 Body, 无 Body
 		Message noDecodeBodyNoBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
 		assertEquals(encodeNoBodyMessage.getHead(), noDecodeBodyNoBodyMessage.getHead());
-		bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(OctetArrayMessageBody.class);
+		bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(ByteArrayMessageBody.class);
 		assertNull(bodyBytes);
 	}
 

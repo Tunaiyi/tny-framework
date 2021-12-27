@@ -53,14 +53,14 @@ public class GameClientApp {
 			ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
 			long userId = 1000;
 			AtomicInteger times = new AtomicInteger();
-			Client<Long> client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:17800"),
+			Client<Long> client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:18800"),
 					tunnel -> {
 						tunnel.setAccessId(4000);
 						String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
 						System.out.println("!!@   [发送] 请求 = " + message);
 						SendReceipt context = tunnel
 								.send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
-										.willRespondAwaiter(300000L));
+										.willRespondAwaiter(3000000L));
 						try {
 							Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
 							System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));

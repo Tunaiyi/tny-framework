@@ -25,7 +25,7 @@ public class GameClientLoginController {
 	@Rpc(CtrlerIDs.GAME_LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-	public void login(@MsgCode int code, @MsgBody UserLoginResultDTO dto) {
+	public void login(@MsgCode int code, @MsgBody LoginResultDTO dto) {
 		if (!ResultCodes.isSuccess(code)) {
 			LOGGER.info("Login failed : {}", code);
 		} else {

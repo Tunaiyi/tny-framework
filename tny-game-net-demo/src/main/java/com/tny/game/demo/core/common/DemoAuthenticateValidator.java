@@ -26,7 +26,7 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 
 	@Override
 	public Certificate<Long> validate(Tunnel<Long> tunnel, Message message, CertificateFactory<Long> factory)
-	throws CommandException, ValidationException {
+			throws CommandException, ValidationException {
 		Object value = message.bodyAs(Object.class);
 		if (value instanceof List) {
 			List paramList = as(value);
@@ -36,8 +36,8 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 			LoginDTO dto = as(value);
 			return factory.certificate(dto.getCertId(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
 		}
-		if (value instanceof UserLoginResultDTO) {
-			UserLoginResultDTO dto = as(value);
+		if (value instanceof LoginResultDTO) {
+			LoginResultDTO dto = as(value);
 			return factory.certificate(System.currentTimeMillis(), dto.getUserId(), Certificates.DEFAULT_USER_TYPE, Instant.now());
 		}
 		System.out.println(value);

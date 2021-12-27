@@ -10,16 +10,16 @@ import com.tny.game.codec.typeprotobuf.annotation.*;
  * @date : 2021/7/15 2:49 下午
  */
 @ProtobufClass
-@TypeProtobuf(10_00_0000)
-public class UserLoginResultDTO {
+@TypeProtobuf(1000_00_00)
+public class LoginResultDTO {
 
 	@Protobuf
 	private long userId;
 
-	public UserLoginResultDTO() {
+	public LoginResultDTO() {
 	}
 
-	public UserLoginResultDTO(long userId) {
+	public LoginResultDTO(long userId) {
 		this.userId = userId;
 	}
 

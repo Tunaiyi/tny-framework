@@ -19,8 +19,7 @@ public class DefaultModulerHandler extends BaseModulerHandler<Moduler, Object> {
 	}
 
 	@Override
-	public Object loadContext(FeatureLauncher launcher, Object o) {
-		return null;
+	public void loadContext(FeatureLauncher launcher, Object o) {
 	}
 
 }

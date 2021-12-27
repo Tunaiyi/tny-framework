@@ -42,7 +42,7 @@ public class ByteBufMessageBody implements OctetMessageBody {
 	}
 
 	@Override
-	public ByteBuf getBodyBytes() {
+	public ByteBuf getBody() {
 		return buffer;
 	}
 
