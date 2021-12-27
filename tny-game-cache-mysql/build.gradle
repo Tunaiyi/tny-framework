@@ -23,6 +23,6 @@ dependencies {
             project(":tny-game-cache"),
     )
     compile(libs.'jade') {
-        exclude group: 'com.tny.game', module: 'tny-game-common'
+        exclude group: 'com.tny.game'
     }
 }

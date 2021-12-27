@@ -8,7 +8,7 @@ ext.vers = [
         log4j  : '2.8.2',
         jackson: '2.8.6',
         jade   : '1.6.x-SNAPSHOT',
-        tny    : '3.1.x-SNAPSHOT',
+        tny    : '3.6.x-SNAPSHOT',
 
 ]
 
@@ -76,7 +76,7 @@ ext.libs = [
 
 
         'tny-game-common'       : "com.tny.game:tny-game-common:${vers.tny}",
-        'tny-game-common-mvel'       : "com.tny.game:tny-game-common-mvel:${vers.tny}",
+        'tny-game-common-mvel'  : "com.tny.game:tny-game-common-mvel:${vers.tny}",
         'tny-game-net'          : "com.tny.game:tny-game-net:${vers.tny}",
         'tny-game-base'         : "com.tny.game:tny-game-base:${vers.tny}",
         'tny-game-doc'          : "com.tny.game:tny-game-doc:${vers.tny}",

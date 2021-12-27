@@ -12,10 +12,13 @@ dependencies {
 
 buildscript {
     repositories {
-        mavenCentral()
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { url "https://maven.aliyun.com/repository/spring-plugin" }
+        maven { url "https://m2.tnydev.com/repository/maven-public" }
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
     }
 }
 

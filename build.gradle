@@ -53,10 +53,13 @@ subprojects {
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-    task createJavaProject << {
-        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    task createJavaProject {
+
+        doLast {
+            sourceSets*.java.srcDirs*.each { it.mkdirs() }
 //        sourceSets*.proto.srcDirs*.each { it.mkdirs() }
-        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+        }
     }
 
     task copyDependencies(type: Copy) {
@@ -97,9 +100,12 @@ subprojects {
 
     repositories {
         mavenLocal()        //使用本地仓库
-        maven {
-            url "http://maven.lingqugame.net/repository/maven-public/"
-        }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://m2.tnydev.com/repository/maven-public/" }
+        maven { url "https://maven.aliyun.com/repository/spring" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
         mavenCentral()
     }
 
