@@ -17,11 +17,12 @@ dependencies {
             libs.'commons-pool2',
 
             libs.'mysql-connector',
-            libs.'jade',
 
             'com.jolbox:bonecp:0.8.0.RELEASE',
 
             project(":tny-game-cache"),
     )
-
+    compile(libs.'jade') {
+        exclude module: 'tny-game-common'
+    }
 }
