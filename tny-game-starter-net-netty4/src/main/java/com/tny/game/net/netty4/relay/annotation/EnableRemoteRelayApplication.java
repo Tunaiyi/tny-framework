@@ -4,6 +4,7 @@ import com.tny.game.net.netty4.configuration.*;
 import com.tny.game.net.netty4.relay.cluster.*;
 import com.tny.game.net.netty4.relay.configuration.*;
 import com.tny.game.net.netty4.relay.guide.*;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,9 +18,11 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({
+@ImportAutoConfiguration({
 		NetAutoConfiguration.class,
 		RemoteRelayAutoConfiguration.class,
+})
+@Import({
 		ImportRelayBootstrapDefinitionRegistrar.class,
 		ImportRelayServeClusterBootstrapDefinitionRegistrar.class,
 })
