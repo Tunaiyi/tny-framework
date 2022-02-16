@@ -18,19 +18,19 @@ public class MessageCommandTransactionHandler implements MessageCommandListener 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MessageCommandTransactionHandler.class);
 
 	@Override
-	public void onExecuteStart(MessageCommand<? extends MessageCommandContext> context) {
+	public void onExecuteStart(MessageCommand command) {
 		TransactionManager.open();
 	}
 
 	@Override
-	public void onExecuteEnd(MessageCommand<? extends MessageCommandContext> context, Throwable cause) {
+	public void onExecuteEnd(MessageCommand command, Throwable cause) {
 		try {
 			TransactionManager.close();
 		} catch (Throwable e) {
 			try {
 				TransactionManager.rollback(e);
 			} catch (Throwable ex) {
-				LOGGER.warn("协议[{}] => 异常", context.getMessage().getProtocolId(), ex);
+				LOGGER.warn("协议[{}] => 异常", command.getMessage().getProtocolId(), ex);
 			}
 		}
 	}

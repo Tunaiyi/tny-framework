@@ -25,7 +25,7 @@ public interface MessageDispatcher {
 	 *
 	 * @param tunnel  通道
 	 * @param message 消息
-	 * @return
+	 * @return 分派的命令
 	 */
 	Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException;
 

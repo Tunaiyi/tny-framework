@@ -11,10 +11,10 @@ import com.tny.game.net.rpc.*;
  */
 public interface RpcAuthService {
 
-	DoneResult<RpcLinkerId> auth(String service, long serverId, long instance, String password);
+	DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password);
 
 	String createToken(String serviceName, RpcLinkerId id);
 
-	DoneResult<RpcToken> verify(String token);
+	DoneResult<RpcToken> verifyToken(String token);
 
 }

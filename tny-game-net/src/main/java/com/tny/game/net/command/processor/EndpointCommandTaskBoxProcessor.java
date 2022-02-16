@@ -1,6 +1,6 @@
 package com.tny.game.net.command.processor;
 
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 
 /**
  * <p>
@@ -8,7 +8,8 @@ import com.tny.game.net.endpoint.task.*;
  * @author : kgtny
  * @date : 2021/5/17 11:27 上午
  */
-public abstract class EndpointCommandTaskBoxProcessor<T extends CommandTaskBoxDriver> implements CommandTaskBoxProcessor {
+public abstract class EndpointCommandTaskBoxProcessor<T extends CommandTaskBoxDriver> implements CommandTaskBoxProcessor,
+		CommandTaskBoxDriverExecutor<T> {
 
 	private int busSpinTimes = 10;
 
@@ -26,24 +27,20 @@ public abstract class EndpointCommandTaskBoxProcessor<T extends CommandTaskBoxDr
 
 	protected abstract T createDriver(CommandTaskBox box);
 
-	protected abstract void process(T processor);
-
-	protected abstract void schedule(T processor);
-
-	public EndpointCommandTaskBoxProcessor<T> setBusSpinTimes(int busSpinTimes) {
+	public void setBusSpinTimes(int busSpinTimes) {
 		this.busSpinTimes = busSpinTimes;
-		return this;
 	}
 
-	public EndpointCommandTaskBoxProcessor<T> setYieldTimes(int yieldTimes) {
+	public void setYieldTimes(int yieldTimes) {
 		this.yieldTimes = yieldTimes;
-		return this;
 	}
 
+	@Override
 	public int getBusSpinTimes() {
 		return this.busSpinTimes;
 	}
 
+	@Override
 	public int getYieldTimes() {
 		return this.yieldTimes;
 	}

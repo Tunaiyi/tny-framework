@@ -1,7 +1,7 @@
 package com.tny.game.net.netty4.processor.disruptor;
 
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 import io.netty.util.*;
 
 /**

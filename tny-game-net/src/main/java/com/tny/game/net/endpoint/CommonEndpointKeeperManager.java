@@ -26,7 +26,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
 	private static final String DEFAULT_KEY = "default";
 
-	private final Map<String, EndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
+	private final Map<String, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
 	private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
@@ -41,6 +41,10 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 			EventBuses.of(EndpointKeeperCreateListener.class, EndpointKeeperCreateListener::onCreate);
 
 	public CommonEndpointKeeperManager() {
+		EndpointEventBuses buses = EndpointEventBuses.buses();
+		buses.onlineEvent().add(this::notifyEndpointOnline);
+		buses.offlineEvent().add(this::notifyEndpointOffline);
+		buses.closeEvent().add(this::notifyEndpointClose);
 	}
 
 	public CommonEndpointKeeperManager(
@@ -48,27 +52,28 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 			TerminalKeeperSetting defaultTerminalKeeperSetting,
 			Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
 			Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
+		this();
 		Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
 		Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
 		if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
-			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(StringAide.ifBlank(setting.getName(), name), setting));
+			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
 		}
 		if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
-			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getName(), name), setting));
+			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
 		}
 		if (defaultSessionKeeperSetting != null) {
 			sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
-			sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getName(), DEFAULT_KEY), defaultSessionKeeperSetting);
+			sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getUserType(), DEFAULT_KEY), defaultSessionKeeperSetting);
 		}
 		if (defaultTerminalKeeperSetting != null) {
 			terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
-			terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getName(), DEFAULT_KEY), defaultTerminalKeeperSetting);
+			terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getUserType(), DEFAULT_KEY), defaultTerminalKeeperSetting);
 		}
 		this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
 		this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
 	}
 
-	private EndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
+	private NetEndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
 		if (tunnelMode == TunnelMode.SERVER) {
 			SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
 			if (setting == null) {
@@ -84,19 +89,19 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 		}
 	}
 
-	private <E extends Endpoint<?>, EK extends EndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
+	private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
 			String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
 		Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
 		return factory.createKeeper(userType, setting);
 	}
 
 	@Override
-	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadOrCreate(String userType, TunnelMode tunnelMode) {
+	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(String userType, TunnelMode tunnelMode) {
 		EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
 		if (keeper != null) {
 			return as(keeper);
 		}
-		EndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
+		NetEndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
 		keeper = as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> newOne));
 		if (keeper == newOne) {
 			ON_CREATE.notify(keeper);
@@ -115,7 +120,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 	}
 
 	@Override
-	public <UID, K extends TerminalKeeper<UID>> Optional<K> getClientKeeper(String userType) {
+	public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(String userType) {
 		return this.getKeeper(userType, TerminalKeeper.class);
 	}
 
@@ -145,6 +150,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 			this.terminalFactoryMap
 					.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f));
 		});
+
 		//        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
 		//            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
 		//            this.sessionFactoryMap
@@ -155,6 +161,39 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 		//            this.terminalFactoryMap
 		//                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
 		//        });
+	}
+
+	private void notifyEndpointOnline(Endpoint<?> endpoint) {
+		if (!endpoint.isAuthenticated()) {
+			return;
+		}
+		String userType = endpoint.getUserType();
+		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+		if (keeper != null) {
+			keeper.notifyEndpointOnline(endpoint);
+		}
+	}
+
+	private void notifyEndpointOffline(Endpoint<?> endpoint) {
+		if (!endpoint.isAuthenticated()) {
+			return;
+		}
+		String userType = endpoint.getUserType();
+		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+		if (keeper != null) {
+			keeper.notifyEndpointOffline(endpoint);
+		}
+	}
+
+	private void notifyEndpointClose(Endpoint<?> endpoint) {
+		if (!endpoint.isAuthenticated()) {
+			return;
+		}
+		String userType = endpoint.getUserType();
+		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+		if (keeper != null) {
+			keeper.notifyEndpointClose(endpoint);
+		}
 	}
 
 }

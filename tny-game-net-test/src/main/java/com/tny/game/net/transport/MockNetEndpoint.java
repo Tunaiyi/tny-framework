@@ -2,11 +2,12 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.task.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -17,11 +18,11 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
 	private Certificate<Long> certificate;
 
-	private List<MessageContext> writeQueue = new ArrayList<>();
+	private final List<MessageContext> writeQueue = new ArrayList<>();
 
-	private List<MessageContext> sendQueue = new ArrayList<>();
+	private final List<MessageContext> sendQueue = new ArrayList<>();
 
-	private List<Message> receiveQueue = new ArrayList<>();
+	private final List<Message> receiveQueue = new ArrayList<>();
 
 	private EndpointStatus state;
 
@@ -56,7 +57,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	//	}
 
 	@Override
-	public NetMessage allocateMessage(MessageFactory messageFactory, MessageContext context) {
+	public NetMessage buildMessage(MessageFactory messageFactory, MessageContext context) {
 		this.writeQueue.add(context);
 		return null;
 	}
@@ -89,11 +90,6 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public RespondFutureHolder getRespondFutureHolder() {
-		return null;
-	}
-
-	@Override
 	public CommandTaskBox getCommandTaskBox() {
 		return null;
 	}
@@ -106,6 +102,11 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	@Override
 	public EndpointContext getContext() {
 		return null;
+	}
+
+	@Override
+	public boolean closeWhen(EndpointStatus status) {
+		return true;
 	}
 
 	@Override
@@ -189,8 +190,23 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 	}
 
 	@Override
-	public boolean isLogin() {
+	public boolean isAuthenticated() {
 		return this.certificate.isAuthenticated();
+	}
+
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		return null;
+	}
+
+	@Override
+	public InetSocketAddress getLocalAddress() {
+		return null;
+	}
+
+	@Override
+	public boolean isActive() {
+		return this.state == EndpointStatus.ONLINE;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.command.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -35,7 +35,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
 	 * @param context        发送内容
 	 * @return 返回创建消息
 	 */
-	NetMessage allocateMessage(MessageFactory messageFactory, MessageContext context);
+	NetMessage buildMessage(MessageFactory messageFactory, MessageContext context);
 
 	/**
 	 * 使用指定认证登陆
@@ -50,11 +50,6 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
 	 * @param tunnel 销毁通道
 	 */
 	void onUnactivated(NetTunnel<UID> tunnel);
-
-	/**
-	 * @return 获取RespondFuture管理器
-	 */
-	RespondFutureHolder getRespondFutureHolder();
 
 	/**
 	 * @return 消息盒子
@@ -72,5 +67,10 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
 	 * @return 获取EndpointContext上下文
 	 */
 	EndpointContext getContext();
+
+	/**
+	 * 关闭断开连接
+	 */
+	boolean closeWhen(EndpointStatus status);
 
 }

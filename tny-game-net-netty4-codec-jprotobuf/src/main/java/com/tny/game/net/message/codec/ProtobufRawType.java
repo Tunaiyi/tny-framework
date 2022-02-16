@@ -36,11 +36,11 @@ public enum ProtobufRawType implements ByteEnumerable {
 
 	//    SHORT_LIST(PROTOBUF_RAW_TYPE_ID_SHORT_LIST, short[].class, null, null),
 
-	INT(PROTOBUF_RAW_TYPE_ID_INT, Integer.class, ProtoExOutputStream::writeInt, ProtoExInputStream::readInt),
+	INT(PROTOBUF_RAW_TYPE_ID_INT, Integer.class, ProtoExOutputStream::writeUInt, ProtoExInputStream::readUInt),
 
 	//    INT_LIST(PROTOBUF_RAW_TYPE_ID_INT_LIST, int[].class, null, null),
 
-	LONG(PROTOBUF_RAW_TYPE_ID_LONG, Long.class, ProtoExOutputStream::writeLong, ProtoExInputStream::readLong),
+	LONG(PROTOBUF_RAW_TYPE_ID_LONG, Long.class, ProtoExOutputStream::writeULong, ProtoExInputStream::readULong),
 
 	//    LONG_LIST(PROTOBUF_RAW_TYPE_ID_LONG_LIST, long[].class, null, null),
 

@@ -14,7 +14,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
  */
 public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, TestGeneralClientTunnel, MockNettyClient> {
 
-	public static final NetIdGenerator ID_GENERATOR = new SimpleNetIdGenerator();
+	public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
 
 	private static final int CONNECT_TIMEOUT = 140;
 
@@ -55,7 +55,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
 	@Override
 	protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
-		return (EmbeddedChannel)((NettyChannelMessageTransporter<?>)tunnel.getTransporter()).getChannel();
+		return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
 	}
 	// @Override
 	// protected NettyClientTunnel<Long> createUnloginTunnel(SessionFactory<Long> sessionFactory, MessageBuilderFactory<Long>

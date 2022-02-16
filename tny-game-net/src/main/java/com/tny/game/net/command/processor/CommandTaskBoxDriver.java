@@ -3,15 +3,15 @@ package com.tny.game.net.command.processor;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 import org.slf4j.Logger;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.base.NetLogger.*;
-import static com.tny.game.net.endpoint.task.CommandTaskBoxConstants.*;
-import static com.tny.game.net.endpoint.task.CommandTaskBoxStatus.*;
+import static com.tny.game.net.command.task.CommandTaskBoxConstants.*;
+import static com.tny.game.net.command.task.CommandTaskBoxStatus.*;
 import static org.slf4j.LoggerFactory.*;
 
 /**
@@ -39,22 +39,22 @@ public class CommandTaskBoxDriver implements Runnable {
 	 */
 	private volatile Command currentCommand;
 
-	private final EndpointCommandTaskBoxProcessor<CommandTaskBoxDriver> processor;
+	private final CommandTaskBoxDriverExecutor<CommandTaskBoxDriver> executor;
 
 	private long commandStartTime = 0;
 
 	private int commandTickTimes = 0;
 
-	public CommandTaskBoxDriver(CommandTaskBox taskBox, EndpointCommandTaskBoxProcessor<?> processor) {
+	public CommandTaskBoxDriver(CommandTaskBox taskBox, CommandTaskBoxDriverExecutor<? extends CommandTaskBoxDriver> executor) {
 		this.taskBox = taskBox;
-		this.processor = as(processor);
+		this.executor = as(executor);
 	}
 
 	private boolean tickCommand() {
 		if (!doCommand(this.currentCommand)) {
 			this.commandTickTimes++;
 			this.executeStatus.set(DELAY_VALUE);
-			this.processor.schedule(this);
+			this.executor.schedule(this);
 			return false;
 		} else {
 			this.currentCommand = null;
@@ -69,14 +69,14 @@ public class CommandTaskBoxDriver implements Runnable {
 			return true;
 		}
 		int time = 0;
-		while (time < this.processor.getBusSpinTimes()) {
+		while (time < this.executor.getBusSpinTimes()) {
 			if (executeCommand(command)) {
 				return true;
 			}
 			time++;
 		}
 		time = 0;
-		while (time < this.processor.getYieldTimes()) {
+		while (time < this.executor.getYieldTimes()) {
 			if (executeCommand(command)) {
 				return true;
 			} else {
@@ -156,13 +156,13 @@ public class CommandTaskBoxDriver implements Runnable {
 		int currentState = this.executeStatus.get();
 		if (currentState != SUBMIT_VALUE && currentState != PROCESSING_VALUE
 				&& isCanRun() && this.executeStatus.compareAndSet(currentState, SUBMIT_VALUE)) {
-			this.processor.process(this);
+			this.executor.execute(this);
 		}
 	}
 
 	private void trySubmitWhen(CommandTaskBoxStatus status) {
 		if (isCanRun() && this.executeStatus.get() == status.getId() && this.executeStatus.compareAndSet(status.getId(), SUBMIT.getId())) {
-			this.processor.process(this);
+			this.executor.execute(this);
 		}
 	}
 

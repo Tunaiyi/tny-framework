@@ -8,13 +8,12 @@ import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Stream;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE extends E> implements EndpointKeeper<UID, E> {
+public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE extends E> implements NetEndpointKeeper<UID, E> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
@@ -29,51 +28,48 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 	/* 所有 endpoint */
 	private final String userType;
 
-	private final LongAdder version = new LongAdder();
-
 	private final Map<UID, NE> endpointMap = new ConcurrentHashMap<>();
 
 	protected AbstractEndpointKeeper(String userType) {
 		this.userType = userType;
-		EndpointEventBuses buses = EndpointEventBuses.buses();
-		buses.onlineEvent().add(this::notifyEndpointOnline);
-		buses.offlineEvent().add(this::notifyEndpointOffline);
-		buses.closeEvent().add(this::notifyEndpointClose);
 	}
 
-	protected void onEndpointOnline(Endpoint<?> endpoint) {
+	protected void onEndpointOnline(E endpoint) {
 
 	}
 
-	protected void onEndpointOffline(Endpoint<?> endpoint) {
+	protected void onEndpointOffline(E endpoint) {
 
 	}
 
-	protected void onEndpointClose(Endpoint<?> endpoint) {
+	protected void onEndpointClose(E endpoint) {
 
 	}
 
-	private void notifyEndpointOnline(Endpoint<?> endpoint) {
+	@Override
+	public void notifyEndpointOnline(Endpoint<?> endpoint) {
 		if (!this.getUserType().equals(endpoint.getUserType())) {
 			return;
 		}
-		this.onEndpointOnline(endpoint);
+		this.onEndpointOnline((E)endpoint);
 	}
 
-	private void notifyEndpointOffline(Endpoint<?> endpoint) {
+	@Override
+	public void notifyEndpointOffline(Endpoint<?> endpoint) {
 		if (!this.getUserType().equals(endpoint.getUserType())) {
 			return;
 		}
-		this.onEndpointOffline(endpoint);
+		this.onEndpointOffline((E)endpoint);
 	}
 
-	private void notifyEndpointClose(Endpoint<?> endpoint) {
+	@Override
+	public void notifyEndpointClose(Endpoint<?> endpoint) {
 		if (!this.getUserType().equals(endpoint.getUserType())) {
 			return;
 		}
 		NE netSession = as(endpoint);
 		if (this.removeEndpoint(netSession.getUserId(), netSession)) {
-			onEndpointClose(endpoint);
+			onEndpointClose((E)endpoint);
 		}
 	}
 
@@ -172,7 +168,6 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
 	protected boolean removeEndpoint(UID uid, NE existOne) {
 		if (this.endpointMap.remove(uid, existOne)) {
-			this.version.increment();
 			onRemoveSession.notify(this, existOne);
 			return true;
 		}

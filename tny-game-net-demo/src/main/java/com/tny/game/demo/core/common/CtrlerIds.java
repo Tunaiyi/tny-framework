@@ -6,7 +6,7 @@ package com.tny.game.demo.core.common;
  * @author: Kun Yang
  * @date: 2018-10-31 16:51
  */
-public interface CtrlerIDs {
+public interface CtrlerIds {
 
 	int LOGIN = 100;
 	int LOGIN$LOGIN = 100_01;
@@ -27,7 +27,7 @@ public interface CtrlerIDs {
 	int PLAYER$UPDATE = 201_03;
 	int PLAYER$DELETE = 201_04;
 
-	int GAME_LOGIN = 1000;
-	int GAME_LOGIN$LOGIN = 1000_01;
+	//	int GAME_LOGIN = 1000;
+	//	int GAME_LOGIN$LOGIN = 1000_01;
 
 }

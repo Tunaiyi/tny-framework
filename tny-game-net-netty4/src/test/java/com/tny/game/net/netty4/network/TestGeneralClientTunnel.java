@@ -16,12 +16,12 @@ public class TestGeneralClientTunnel extends GeneralClientTunnel<Long, MockNetty
 	}
 
 	@Override
-	protected AbstractTunnel<Long, MockNettyClient> setEndpoint(MockNettyClient endpoint) {
-		return super.setEndpoint(endpoint);
+	protected void setEndpoint(MockNettyClient endpoint) {
+		super.setEndpoint(endpoint);
 	}
 
 	@Override
-	protected MessageTransporter<Long> getTransporter() {
+	protected MessageTransporter getTransporter() {
 		return super.getTransporter();
 	}
 

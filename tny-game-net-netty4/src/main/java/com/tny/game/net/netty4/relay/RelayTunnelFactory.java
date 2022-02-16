@@ -24,7 +24,7 @@ public class RelayTunnelFactory implements NettyTunnelFactory {
 
 	@Override
 	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
-		MessageTransporter<T> transport = new NettyChannelMessageTransporter<>(channel);
+		MessageTransporter transport = new NettyChannelMessageTransporter(channel);
 		DoneResult<RemoteRelayTunnel<T>> result = remoteRelayExplorer.createTunnel(id, transport, context);
 		if (result.isFailure()) {
 			throw new NetGeneralException(result.getCode());

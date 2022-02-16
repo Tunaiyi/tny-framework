@@ -49,7 +49,7 @@ public abstract class EndpointTest<E extends NetEndpoint<Long>> extends Communic
 	@Test
 	public void isLogin() {
 		E loginSession = create().getEndpoint();
-		assertTrue(loginSession.isLogin());
+		assertTrue(loginSession.isAuthenticated());
 	}
 
 	@Test

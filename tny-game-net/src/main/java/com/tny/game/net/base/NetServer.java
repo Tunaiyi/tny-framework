@@ -12,7 +12,15 @@ import java.net.InetSocketAddress;
  */
 public interface NetServer extends Serve {
 
+	/**
+	 * @return 服务名
+	 */
 	String getName();
+
+	@Override
+	default String getService() {
+		return getName();
+	}
 
 	String getScheme();
 

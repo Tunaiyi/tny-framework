@@ -22,7 +22,7 @@ public class RemoteRelayPacketProcessor extends BaseRelayPacketProcessor {
 	}
 
 	@Override
-	public void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet) {
+	public void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet) {
 	}
 
 	@Override

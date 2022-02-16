@@ -16,32 +16,32 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author: Kun Yang
  * @date: 2018-09-18 10:58
  */
-public class RespondFutureHolder {
+public class RespondFutureMonitor {
 
-	private static final long INIT_DELAY = 20;
+	private static final long INIT_DELAY = 10;
 
-	private static final long PERIOD = 20;
+	private static final long PERIOD = 5;
 
-	private static final ConcurrentMap<Object, RespondFutureHolder> FUTURE_HOLDER_MAP = new MapMaker()
+	private static final ConcurrentMap<Object, RespondFutureMonitor> FUTURE_HOLDER_MAP = new MapMaker()
 			.concurrencyLevel(32)
 			.weakKeys()
 			.makeMap();
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(RespondFutureHolder.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(RespondFutureMonitor.class);
 
 	private volatile boolean close = false;
 
 	static {
 		Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
-				.scheduleAtFixedRate(RespondFutureHolder::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
+				.scheduleAtFixedRate(RespondFutureMonitor::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
 	}
 
-	public static RespondFutureHolder getHolder(Object object) {
-		return FUTURE_HOLDER_MAP.computeIfAbsent(object, k -> new RespondFutureHolder());
+	public static RespondFutureMonitor getHolder(Object object) {
+		return FUTURE_HOLDER_MAP.computeIfAbsent(object, k -> new RespondFutureMonitor());
 	}
 
 	public static void removeHolder(Object object) {
-		RespondFutureHolder holder = FUTURE_HOLDER_MAP.remove(object);
+		RespondFutureMonitor holder = FUTURE_HOLDER_MAP.remove(object);
 		if (holder == null) {
 			return;
 		}
@@ -49,9 +49,9 @@ public class RespondFutureHolder {
 	}
 
 	private static void clearTimeoutFuture() {
-		for (Entry<Object, RespondFutureHolder> entry : FUTURE_HOLDER_MAP.entrySet()) {
+		for (Entry<Object, RespondFutureMonitor> entry : FUTURE_HOLDER_MAP.entrySet()) {
 			try {
-				RespondFutureHolder holder = entry.getValue();
+				RespondFutureMonitor holder = entry.getValue();
 				holder.clearTimeOut();
 			} catch (Throwable e) {
 				LOGGER.error("", e);
@@ -88,7 +88,7 @@ public class RespondFutureHolder {
 			return;
 		}
 		List<MessageRespondAwaiter> futures;
-		if (!this.futureMap.isEmpty()) {
+		if (this.futureMap.isEmpty()) {
 			futures = ImmutableList.of();
 		} else {
 			futures = new ArrayList<>(this.futureMap.values());

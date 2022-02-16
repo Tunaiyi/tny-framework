@@ -13,7 +13,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
  */
 public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, TestGeneralServerTunnel, MockNetEndpoint> {
 
-	public static final NetIdGenerator ID_GENERATOR = new SimpleNetIdGenerator();
+	public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
 
 	@Override
 	protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
@@ -32,7 +32,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 	}
 
 	private TestGeneralServerTunnel newTunnel(boolean open) {
-		TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelMessageTransporter<>(mockChannel()),
+		TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelMessageTransporter(mockChannel()),
 				new NetBootstrapContext(null, null, null, new CommonMessageFactory(), null));
 		if (open) {
 			tunnel.open();
@@ -42,7 +42,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 
 	@Override
 	protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
-		return (EmbeddedChannel)((NettyChannelMessageTransporter<?>)tunnel.getTransporter()).getChannel();
+		return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
 	}
 
 }

@@ -249,6 +249,19 @@ public class BytesAide {
 		return builder.toString();
 	}
 
+	public static String join(byte[] bytesArrays, String link) {
+		StringBuilder builder = new StringBuilder();
+		int index = 0;
+		for (byte bytes : bytesArrays) {
+			if (index > 0) {
+				builder.append(link);
+			}
+			builder.append(bytes);
+			index++;
+		}
+		return builder.toString();
+	}
+
 	public static byte[] xor(byte[] data, byte[]... keyBytes) {
 		return xor(data, 0, data.length, keyBytes);
 	}

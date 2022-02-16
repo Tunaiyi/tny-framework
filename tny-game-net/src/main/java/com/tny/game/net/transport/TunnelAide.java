@@ -35,13 +35,14 @@ public class TunnelAide {
 	 */
 	public static <UID> SendReceipt responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
 		ResultCode code = context.getResultCode();
-		if (code.getLevel() == ResultLevel.ERROR) {
+		boolean close = code.getLevel() == ResultLevel.ERROR;
+		if (close) {
 			if (!context.isWriteAwaitable()) {
 				context.willWriteAwaiter();
 			}
 		}
 		SendReceipt receipt = tunnel.send(context);
-		if (receipt != null) {
+		if (close) {
 			receipt.written().thenRun(tunnel::close);
 		}
 		return receipt;

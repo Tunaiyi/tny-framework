@@ -33,7 +33,7 @@ public class RpcTokenValidator implements AuthenticateValidator<RpcLinkerId> {
 			throws CommandException, ValidationException {
 		String token = message.bodyAs(String.class);
 		try {
-			DoneResult<RpcToken> result = rpcAuthService.verify(token);
+			DoneResult<RpcToken> result = rpcAuthService.verifyToken(token);
 			if (result.isSuccess()) {
 				RpcToken rpcToken = result.get();
 				return factory.certificate(idCreator.createId(),

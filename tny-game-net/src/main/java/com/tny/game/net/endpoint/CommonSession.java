@@ -3,29 +3,16 @@ package com.tny.game.net.endpoint;
 import com.google.common.base.MoreObjects;
 import com.tny.game.net.command.*;
 import com.tny.game.net.transport.*;
-import org.slf4j.*;
 
 /**
  * 抽象Session
  * <p>
  * Created by Kun Yang on 2017/2/17.
  */
-public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSession<UID> {
+public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(CommonSession.class);
-
-	public CommonSession(SessionSetting setting, EndpointContext endpointContext) {
-		super(setting, endpointContext);
-	}
-
-	@Override
-	public Certificate<UID> getCertificate() {
-		return this.certificate;
-	}
-
-	@Override
-	public long getOfflineTime() {
-		return this.offlineTime;
+	public CommonSession(SessionSetting setting, Certificate<UID> certificate, EndpointContext endpointContext) {
+		super(setting, certificate, endpointContext);
 	}
 
 	@Override
@@ -39,6 +26,9 @@ public class CommonSession<UID> extends AbstractEndpoint<UID> implements NetSess
 			}
 			Tunnel<UID> currentTunnel = this.currentTunnel();
 			if (currentTunnel.isActive()) {
+				return;
+			}
+			if (isClosed()) {
 				return;
 			}
 			setOffline();

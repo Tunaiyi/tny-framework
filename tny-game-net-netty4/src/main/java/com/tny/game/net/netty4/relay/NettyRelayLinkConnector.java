@@ -50,7 +50,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 		}
 	}
 
-	private void onConnected(NetRelayTransporter transporter) {
+	private void onConnected(RelayTransporter transporter) {
 		if (status != RelayConnectorStatus.CONNECTING) {
 			transporter.close();
 			return;
@@ -70,7 +70,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 		}
 	}
 
-	private void onClose(NetRelayTransporter transporter) {
+	private void onClose(RelayTransporter transporter) {
 		if (status != RelayConnectorStatus.CLOSE) {
 			this.status = RelayConnectorStatus.DISCONNECT;
 			onReconnected();
@@ -82,7 +82,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 	}
 
 	@Override
-	public void complete(boolean result, URL url, NetRelayTransporter transporter, Throwable cause) {
+	public void complete(boolean result, URL url, RelayTransporter transporter, Throwable cause) {
 		if (this.status == RelayConnectorStatus.CLOSE) {
 			NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
 					instance.getServeName(), instance.getId(), this.linkKey);

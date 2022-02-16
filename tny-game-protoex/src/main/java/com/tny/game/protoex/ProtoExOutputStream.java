@@ -151,6 +151,14 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
 		}
 	}
 
+	public void writeUInt(final int value) {
+		this.doWriteVarInt32(value);
+	}
+
+	public void writeULong(final long value) {
+		this.doWriteVarInt64(value);
+	}
+
 	public void writeSignInt(final int value) {
 		this.doWriteSInt32(value);
 	}

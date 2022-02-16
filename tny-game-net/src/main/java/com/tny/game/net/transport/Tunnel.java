@@ -2,13 +2,11 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.endpoint.*;
 
-import java.net.InetSocketAddress;
-
 /**
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Communicator<UID> {
+public interface Tunnel<UID> extends Connection, Communicator<UID> {
 
 	/**
 	 * @return 通道 Id
@@ -26,11 +24,6 @@ public interface Tunnel<UID> extends Communicator<UID> {
 	TunnelMode getMode();
 
 	/**
-	 * @return 是否激活
-	 */
-	boolean isActive();
-
-	/**
 	 * @return 是否已经开启
 	 */
 	boolean isOpen();
@@ -39,16 +32,6 @@ public interface Tunnel<UID> extends Communicator<UID> {
 	 * @return 获取 Tunnel 状态
 	 */
 	TunnelStatus getStatus();
-
-	/**
-	 * @return 返回远程地址
-	 */
-	InetSocketAddress getRemoteAddress();
-
-	/**
-	 * @return 返回本地地址
-	 */
-	InetSocketAddress getLocalAddress();
 
 	/**
 	 * @return 获取绑定中断

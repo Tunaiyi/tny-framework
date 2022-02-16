@@ -28,11 +28,7 @@ public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetB
 	}
 
 	public String getServeName() {
-		return setting.getName();
-	}
-
-	public String getService() {
-		return setting.getService();
+		return setting.getServeName();
 	}
 
 	protected static boolean isEpoll() {

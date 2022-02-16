@@ -7,22 +7,22 @@ import com.tny.game.common.worker.command.*;
  */
 public class RunnableCommand extends BaseCommand {
 
-    private final Runnable runnable;
+	private final Runnable runnable;
 
-    public RunnableCommand(Runnable runnable) {
-        super("RunnableDispatcherCommand");
-        this.runnable = runnable;
-    }
+	public RunnableCommand(Runnable runnable) {
+		super("RunnableCommand");
+		this.runnable = runnable;
+	}
 
-    @Override
-    protected void action() {
-        this.runnable.run();
-    }
+	@Override
+	protected void action() {
+		this.runnable.run();
+	}
 
-    @Override
-    public String getName() {
-        return this.runnable.getClass().getCanonicalName();
-    }
+	@Override
+	public String getName() {
+		return this.runnable.getClass().getCanonicalName();
+	}
 
 }
 

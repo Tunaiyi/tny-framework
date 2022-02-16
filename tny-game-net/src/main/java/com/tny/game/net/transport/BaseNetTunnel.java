@@ -10,11 +10,11 @@ import java.net.InetSocketAddress;
 /**
  * Created by Kun Yang on 2017/3/28.
  */
-public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends MessageTransporter<UID>> extends AbstractTunnel<UID, E> {
+public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends MessageTransporter> extends AbstractNetTunnel<UID, E> {
 
 	protected volatile T transporter;
 
-	protected BaseTunnel(long id, T transporter, TunnelMode mode, NetworkContext context) {
+	protected BaseNetTunnel(long id, T transporter, TunnelMode mode, NetworkContext context) {
 		super(id, mode, context);
 		if (transporter != null) {
 			this.transporter = transporter;
@@ -22,7 +22,7 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 		}
 	}
 
-	protected MessageTransporter<UID> getTransporter() {
+	protected MessageTransporter getTransporter() {
 		return this.transporter;
 	}
 
@@ -60,15 +60,19 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 
 	@Override
 	public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
-		this.checkAvailable(awaiter);
-		return this.transporter.write(message, awaiter);
+		if (this.checkAvailable(awaiter)) {
+			return this.transporter.write(message, awaiter);
+		}
+		return awaiter;
 	}
 
 	@Override
 	public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
 		MessageWriteAwaiter promise = context.getWriteAwaiter();
-		this.checkAvailable(promise);
-		return this.transporter.write(allocator, this.getMessageFactory(), context);
+		if (this.checkAvailable(promise)) {
+			return this.transporter.write(allocator, this.getMessageFactory(), context);
+		}
+		return promise;
 	}
 
 	@Override
@@ -106,28 +110,21 @@ public abstract class BaseTunnel<UID, E extends NetEndpoint<UID>, T extends Mess
 		}
 	}
 
-	protected void doCloseTransport(T transporter) {
-		transporter.close();
-	}
-
-	private void checkAvailable(MessageWriteAwaiter awaiter) {
+	private boolean checkAvailable(MessageWriteAwaiter awaiter) {
 		if (!this.isActive()) {
 			this.onWriteUnavailable();
 			if (awaiter != null) {
 				awaiter.completeExceptionally(new TunnelDisconnectException("{} is disconnect", this));
 			}
+			return false;
 		}
+		return true;
 	}
 
 	//	protected AbstractTunnel<UID, E> setNetTransport(T transport) {
 	//		this.transporter = transport;
 	//		return this;
 	//	}
-
-	protected AbstractTunnel<UID, E> setEndpoint(E endpoint) {
-		this.endpoint = endpoint;
-		return this;
-	}
 
 	@Override
 	public String toString() {

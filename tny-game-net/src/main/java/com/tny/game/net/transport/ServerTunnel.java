@@ -2,29 +2,27 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.task.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.task.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class BaseServerTunnel<UID, E extends NetSession<UID>, T extends MessageTransporter<UID>> extends BaseTunnel<UID, E, T> {
+public class ServerTunnel<UID, E extends NetSession<UID>, T extends MessageTransporter> extends BaseNetTunnel<UID, E, T> {
 
-	public BaseServerTunnel(long id, T transporter, NetworkContext context) {
+	public ServerTunnel(long id, T transporter, NetworkContext context) {
 		super(id, transporter, TunnelMode.SERVER, context);
-		AnonymityEndpoint<UID> endpoint = new AnonymityEndpoint<>(context);
-		endpoint.setTunnel(this);
-		this.bind(endpoint);
+		this.bind(new AnonymityEndpoint<>(context.getCertificateFactory(), context, this));
 	}
 
 	@Override
-	protected boolean bindEndpoint(NetEndpoint<UID> endpoint) {
+	protected boolean replaceEndpoint(NetEndpoint<UID> newEndpoint) {
 		Certificate<UID> certificate = this.getCertificate();
 		if (!certificate.isAuthenticated()) {
 			CommandTaskBox commandTaskBox = this.endpoint.getCommandTaskBox();
-			this.endpoint = as(endpoint);
+			this.endpoint = as(newEndpoint);
 			this.endpoint.takeOver(commandTaskBox);
 			return true;
 		}

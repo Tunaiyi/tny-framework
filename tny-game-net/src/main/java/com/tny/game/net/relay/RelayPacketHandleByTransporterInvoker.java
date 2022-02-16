@@ -13,6 +13,6 @@ import com.tny.game.net.relay.packet.*;
 @FunctionalInterface
 public interface RelayPacketHandleByTransporterInvoker<D extends RelayPacket<?>> {
 
-	void invoke(RelayPacketProcessor handler, NetRelayTransporter transporter, D datagram) throws InvokeHandlerException;
+	void invoke(RelayPacketProcessor handler, RelayTransporter transporter, D datagram) throws InvokeHandlerException;
 
 }

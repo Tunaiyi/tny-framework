@@ -11,7 +11,7 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class CommonLocalRelayLink extends BaseRelayLink implements LocalRelayLink {
 
-	public CommonLocalRelayLink(NetRelayTransporter transporter, String service, long instanceId, String key) {
+	public CommonLocalRelayLink(RelayTransporter transporter, String service, long instanceId, String key) {
 		super(key, service, instanceId, transporter);
 	}
 

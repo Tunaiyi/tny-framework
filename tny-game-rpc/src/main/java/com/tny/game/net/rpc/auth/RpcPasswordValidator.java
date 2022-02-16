@@ -43,7 +43,7 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcLinkerId> 
 		long serverId = getServerIdParam(paramList);
 		long instanceId = getInstanceIdParam(paramList);
 		String password = getPasswordParam(paramList);
-		DoneResult<RpcLinkerId> result = rpcAuthService.auth(service, serverId, instanceId, password);
+		DoneResult<RpcLinkerId> result = rpcAuthService.authenticate(service, serverId, instanceId, password);
 		if (result.isSuccess()) {
 			return factory.certificate(idCreator.createId(), result.get(), service, Instant.now());
 		}

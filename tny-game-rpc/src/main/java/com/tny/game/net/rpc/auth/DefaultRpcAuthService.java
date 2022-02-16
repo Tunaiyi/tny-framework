@@ -27,7 +27,7 @@ public class DefaultRpcAuthService implements RpcAuthService {
 	}
 
 	@Override
-	public DoneResult<RpcLinkerId> auth(String service, long serverId, long instance, String password) {
+	public DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password) {
 		if (rpcUserPasswordManager.auth(service, serverId, instance, password)) {
 			return DoneResults.success(new RpcLinkerId(service, serverId, instance));
 		}
@@ -45,7 +45,7 @@ public class DefaultRpcAuthService implements RpcAuthService {
 	}
 
 	@Override
-	public DoneResult<RpcToken> verify(String token) {
+	public DoneResult<RpcToken> verifyToken(String token) {
 		try {
 			RpcToken rpcToken = objectMapper.readValue(token, RpcToken.class);
 			return DoneResults.success(rpcToken);

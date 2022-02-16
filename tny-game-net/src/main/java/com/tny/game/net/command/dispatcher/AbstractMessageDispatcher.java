@@ -81,7 +81,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 	 *
 	 * @param objects 控制器对象列表
 	 */
-	protected void addController(Collection<Object> objects) {
+	protected void addControllers(Collection<Object> objects) {
 		objects.forEach(this::addController);
 	}
 
@@ -93,7 +93,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
 	protected void addController(Object object) {
 		Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
 		final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
-		for (MethodControllerHolder controller : holder.getControllers()) {
+		for (MethodControllerHolder controller : holder.getMethodControllers()) {
 			Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getProtocol(), k -> new CopyOnWriteMap<>());
 			for (MessageMode mode : controller.getMessageModes()) {
 				MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);

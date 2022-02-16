@@ -8,6 +8,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.CodecConstants.*;
@@ -15,6 +16,8 @@ import static com.tny.game.net.message.MessageType.*;
 
 @Unit
 public class DefaultNettyMessageCodec implements NettyMessageCodec {
+
+	public static final Logger LOGGER = LoggerFactory.getLogger(DefaultNettyMessageCodec.class);
 
 	private final MessageBodyCodec<Object> bodyCoder;
 
@@ -86,11 +89,11 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		NettyVarIntCoder.writeVarInt64(head.getTime(), buffer);
 		if (message.existBody()) {
 			Object body = message.bodyAs(Object.class);
-			writeObject(buffer, body, this.bodyCoder);
+			writeObject(buffer, head, body, this.bodyCoder);
 		}
 	}
 
-	private void writeObject(ByteBuf buffer, Object object, MessageBodyCodec<Object> coder) throws Exception {
+	private void writeObject(ByteBuf buffer, MessageHead head, Object object, MessageBodyCodec<Object> coder) throws Exception {
 		OctetMessageBody releaseBody = null;
 		try {
 			if (object instanceof byte[]) {

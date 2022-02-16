@@ -11,6 +11,7 @@ import org.apache.commons.lang3.builder.*;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -58,7 +59,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	/**
 	 * 转发发送器
 	 */
-	protected final NetRelayTransporter transporter;
+	protected final RelayTransporter transporter;
 
 	/**
 	 * 转发关掉事件
@@ -70,7 +71,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 	 */
 	private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-	public BaseRelayLink(String key, String service, long instanceId, NetRelayTransporter transporter) {
+	public BaseRelayLink(String key, String service, long instanceId, RelayTransporter transporter) {
 		this.key = key;
 		this.service = service;
 		this.instanceId = instanceId;
@@ -120,9 +121,14 @@ public abstract class BaseRelayLink implements NetRelayLink {
 		return this.transporter.getLocalAddress();
 	}
 
+	//	@Override
+	//	public RelayTransporter getTransporter() {
+	//		return transporter;
+	//	}
+
 	@Override
-	public RelayTransporter getTransporter() {
-		return transporter;
+	public boolean isCurrentTransporter(RelayTransporter transporter) {
+		return Objects.equals(this.transporter, transporter);
 	}
 
 	@Override

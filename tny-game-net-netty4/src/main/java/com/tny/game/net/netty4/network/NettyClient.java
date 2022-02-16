@@ -21,7 +21,7 @@ import static com.tny.game.net.utils.NetConfigs.*;
 /**
  * Created by Kun Yang on 2018/8/28.
  */
-public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
+public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
 
 	private static final TunnelConnectExecutor EXECUTOR_SERVICE = new ScheduledTunnelConnectExecutor(
 			Executors.newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect")));
@@ -37,8 +37,8 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	private final NetIdGenerator idGenerator;
 
 	public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url, PostConnect<UID> postConnect,
-			EndpointContext endpointContext) {
-		super(null, endpointContext);
+			Certificate<UID> certificate, NetworkContext context) {
+		super(null, certificate, context);
 		this.url = url;
 		this.idGenerator = idGenerator;
 		this.guide = guide;
@@ -84,11 +84,6 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 				.map(Long::parseLong)
 				.filter(i -> i > 0)
 				.collect(Collectors.toList());
-	}
-
-	@Override
-	public Certificate<UID> getCertificate() {
-		return this.certificate;
 	}
 
 	private ClientConnectFuture<UID> checkPreOpen() {
@@ -142,11 +137,6 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	}
 
 	@Override
-	protected NetTunnel<UID> currentTunnel() {
-		return this.tunnel;
-	}
-
-	@Override
 	protected void prepareClose() {
 		TunnelConnector connector = this.connector;
 		if (connector != null) {
@@ -155,9 +145,9 @@ public class NettyClient<UID> extends AbstractEndpoint<UID> implements NettyTerm
 	}
 
 	@Override
-	public MessageTransporter<UID> connect() throws NetException {
+	public MessageTransporter connect() throws NetException {
 		Channel channel = this.guide.connect(this.url, getConnectTimeout());
-		return new NettyChannelMessageTransporter<>(channel);
+		return new NettyChannelMessageTransporter(channel);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class DemoAuthenticateValidator implements AuthenticateValidator<Long> {
 			throws CommandException, ValidationException {
 		Object value = message.bodyAs(Object.class);
 		if (value instanceof List) {
-			List paramList = as(value);
+			List<Object> paramList = as(value);
 			return factory.certificate(as(paramList.get(0)), as(paramList.get(1)), Certificates.DEFAULT_USER_TYPE, Instant.now());
 		}
 		if (value instanceof LoginDTO) {

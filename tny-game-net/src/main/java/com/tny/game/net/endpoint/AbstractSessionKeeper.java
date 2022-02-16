@@ -32,22 +32,20 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 	}
 
 	@Override
-	protected void onEndpointOnline(Endpoint<?> session) {
-		NetSession<UID> netSession = as(session);
-		this.offlineSessionQueue.remove(netSession);
+	protected void onEndpointOnline(Session<UID> session) {
+		this.offlineSessionQueue.remove(session);
 	}
 
 	@Override
-	protected void onEndpointOffline(Endpoint<?> session) {
-		if (session.isLogin() && session.isOffline()) {
+	protected void onEndpointOffline(Session<UID> session) {
+		if (session.isAuthenticated() && session.isOffline()) {
 			this.offlineSessionQueue.add(as(session));
 		}
 	}
 
 	@Override
-	protected void onEndpointClose(Endpoint<?> session) {
-		NetSession<UID> netSession = as(session);
-		this.offlineSessionQueue.remove(netSession);
+	protected void onEndpointClose(Session<UID> session) {
+		this.offlineSessionQueue.remove(session);
 	}
 
 	/**
@@ -65,8 +63,10 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 							closeSession = session;
 						} else if (session.isOffline() && session.getOfflineTime() + this.setting.getOfflineCloseDelay() < now) {
 							LOG.info("移除下线超时的 OfflineSession userId : {}", session.getUserId());
-							session.close();
-							closeSession = session;
+							session.closeWhen(EndpointStatus.OFFLINE);
+							if (session.isClosed()) {
+								closeSession = session;
+							}
 						}
 						if (closeSession != null) {
 							this.removeEndpoint(closeSession.getUserId(), closeSession);
@@ -82,13 +82,13 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 		if (maxSize > 0) {
 			int size = this.offlineSessionQueue.size() - maxSize;
 			for (int i = 0; i < size; i++) {
-				Session<UID> session = this.offlineSessionQueue.poll();
+				NetSession<UID> session = this.offlineSessionQueue.poll();
 				if (session == null) {
 					continue;
 				}
 				try {
-					LOG.info("关闭第{}个 超过{}数量的OfflineSession {}", i, size, session.getUserId());
-					session.close();
+					boolean result = session.closeWhen(EndpointStatus.OFFLINE);
+					LOG.info("关闭第{}个 超过{}数量的OfflineSession {} : 结果 {}", i, size, session.getUserId(), result);
 				} catch (Throwable e) {
 					LOG.error("clear {} overmuch offline session exception", session.getUserId(), e);
 				}

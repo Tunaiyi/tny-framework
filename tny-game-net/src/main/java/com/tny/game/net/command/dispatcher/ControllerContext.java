@@ -11,10 +11,13 @@ package com.tny.game.net.command.dispatcher;
  * <br>
  */
 public class ControllerContext {
+
 	//	private static final String SYSTEM_THREAD_CONTROLLER = "SysThreadController";
 	//	private static final String SYSTEM_THREAD_HANDLER = "SysThreadHandler";
-	private static final ThreadLocal<ControllerContext> local = new ThreadLocal<>();
+	private static final ThreadLocal<ControllerContext> CONTEXT = new ThreadLocal<>();
+
 	private int protocol;
+
 	private Thread thread;
 
 	private ControllerContext() {
@@ -30,21 +33,21 @@ public class ControllerContext {
 	 *
 	 * @return
 	 */
-	public static <ID> ControllerContext getCurrent() {
-		ControllerContext info = local.get();
+	public static ControllerContext getCurrent() {
+		ControllerContext info = CONTEXT.get();
 		if (info == null) {
 			info = new ControllerContext();
 			info.protocol = 0;
-			local.set(info);
+			CONTEXT.set(info);
 		}
 		return info;
 	}
 
-	static <ID> void setCurrent(int protocol) {
-		ControllerContext info = local.get();
+	static void setCurrent(int protocol) {
+		ControllerContext info = CONTEXT.get();
 		if (info == null) {
 			info = new ControllerContext();
-			local.set(info);
+			CONTEXT.set(info);
 		}
 		info.protocol = protocol;
 	}
@@ -63,7 +66,8 @@ public class ControllerContext {
 		return this.protocol;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "ControllerInfo [getProtocol()=" + this.getProtocol() + "]";
 	}
 

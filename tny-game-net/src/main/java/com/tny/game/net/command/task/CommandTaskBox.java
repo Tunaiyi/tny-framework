@@ -1,16 +1,13 @@
-package com.tny.game.net.endpoint.task;
+package com.tny.game.net.command.task;
 
 import com.tny.game.common.concurrent.utils.*;
-import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.StampedLock;
-import java.util.function.*;
+import java.util.function.Supplier;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static org.slf4j.LoggerFactory.*;
@@ -35,8 +32,6 @@ public class CommandTaskBox {
 	 */
 	private final CommandTaskBoxProcessor executor;
 
-	private final MessageDispatcher messageDispatcher;
-
 	/**
 	 * 命令任务队列
 	 */
@@ -49,31 +44,8 @@ public class CommandTaskBox {
 
 	private Object attachment;
 
-	public CommandTaskBox(MessageDispatcher messageDispatcher, CommandTaskBoxProcessor executor) {
-		this.messageDispatcher = messageDispatcher;
+	public CommandTaskBox(CommandTaskBoxProcessor executor) {
 		this.executor = executor;
-	}
-
-	public boolean addMessage(NetTunnel<?> tunnel, Message message, Function<Message, MessageRespondAwaiter> futureGetter) {
-		if (this.closed) {
-			return false;
-		}
-		return StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
-				() -> {
-					RespondCommandTask respondCommandTask = null;
-					if (futureGetter != null) {
-						MessageRespondAwaiter future = futureGetter.apply(message);
-						if (future != null) {
-							respondCommandTask = new RespondCommandTask(message, future);
-						}
-					}
-					MessageCommandTask<?> messageCommandTask = new MessageCommandTask<>(tunnel, message, this.messageDispatcher);
-					if (respondCommandTask == null) {
-						return this.addAndSubmit(messageCommandTask);
-					} else {
-						return this.addAndSubmit(respondCommandTask, messageCommandTask);
-					}
-				});
 	}
 
 	public boolean addTask(CommandTask task) {
@@ -177,6 +149,16 @@ public class CommandTaskBox {
 				}
 			}
 			return as(this.attachment);
+		}
+		return null;
+	}
+
+	public <T> T setAttachment(CommandTaskBoxProcessor executor, Supplier<T> attachmentCreator) {
+		if (this.executor == executor) {
+			synchronized (this) {
+				this.attachment = attachmentCreator.get();
+				return as(this.attachment);
+			}
 		}
 		return null;
 	}

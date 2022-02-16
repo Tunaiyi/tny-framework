@@ -19,13 +19,13 @@ public class DefaultCertificateFactory<UID> implements CertificateFactory<UID> {
 	}
 
 	@Override
-	public Certificate<UID> certificate(long id, UID userID, String userType, Instant authenticateAt) {
-		return Certificates.createAuthenticated(id, userID, userType, authenticateAt, false);
+	public Certificate<UID> certificate(long id, UID userId, String userType, Instant authenticateAt) {
+		return Certificates.createAuthenticated(id, userId, userType, authenticateAt, false);
 	}
 
 	@Override
-	public Certificate<UID> renewCertificate(long id, UID userID, String userType, Instant authenticateAt) {
-		return Certificates.createAuthenticated(id, userID, userType, authenticateAt, true);
+	public Certificate<UID> renewCertificate(long id, UID userId, String userType, Instant authenticateAt) {
+		return Certificates.createAuthenticated(id, userId, userType, authenticateAt, true);
 	}
 
 }

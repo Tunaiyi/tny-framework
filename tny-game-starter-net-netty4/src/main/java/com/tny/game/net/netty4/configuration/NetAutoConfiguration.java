@@ -107,7 +107,7 @@ public class NetAutoConfiguration {
 
 	@Bean
 	public NetIdGenerator defaultNetIdGenerator() {
-		return new SimpleNetIdGenerator();
+		return new AutoIncrementIdGenerator();
 	}
 
 	@Bean

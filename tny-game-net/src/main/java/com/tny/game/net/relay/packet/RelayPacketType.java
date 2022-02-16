@@ -121,7 +121,7 @@ public enum RelayPacketType implements ByteEnumerable {
 		}
 	}
 
-	public void handle(RelayPacketProcessor handler, NetRelayTransporter transporter, RelayPacket<?> packet) throws InvokeHandlerException {
+	public void handle(RelayPacketProcessor handler, RelayTransporter transporter, RelayPacket<?> packet) throws InvokeHandlerException {
 		if (packet == null) {
 			throw new NullPointerException(format("invoke {} handler error, datagram is null", this));
 		}

@@ -8,9 +8,9 @@ import com.tny.game.net.transport.*;
  * @author: Kun Yang
  * @date: 2018-10-08 16:03
  */
-public interface TunnelUnactivatedListener<UID> {
+@FunctionalInterface
+public interface TunnelUnactivatedListener<UID> extends TunnelListener {
 
-	default void onUnactivated(Tunnel<UID> tunnel) {
-	}
+	void onUnactivated(Tunnel<UID> tunnel);
 
 }

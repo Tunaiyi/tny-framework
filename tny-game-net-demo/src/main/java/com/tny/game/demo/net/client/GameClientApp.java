@@ -59,7 +59,7 @@ public class GameClientApp {
 						String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
 						System.out.println("!!@   [发送] 请求 = " + message);
 						SendReceipt context = tunnel
-								.send(MessageContexts.<Long>requestParams(Protocols.protocol(CtrlerIDs.LOGIN$LOGIN), 888888L, userId)
+								.send(MessageContexts.requestParams(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
 										.willRespondAwaiter(3000000L));
 						try {
 							Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
@@ -102,7 +102,7 @@ public class GameClientApp {
 				} else if (cmd.startsWith("@delay ")) {
 					String message = cmds[1];
 					long delay = Long.parseLong(cmds[2]);
-					send(client, Protocols.protocol(CtrlerIDs.SPEAK$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
+					send(client, Protocols.protocol(CtrlerIds.SPEAK$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
 				} else if (cmd.startsWith("@test ")) {
 					String message = cmds[1];
 					test(client, message, true);
@@ -111,21 +111,21 @@ public class GameClientApp {
 					long playerId = Long.parseLong(cmds[2]);
 					switch (op) {
 						case "g":
-							send(client, Protocols.protocol(CtrlerIDs.PLAYER$GET), PlayerDTO.class, 3000, playerId);
+							send(client, Protocols.protocol(CtrlerIds.PLAYER$GET), PlayerDTO.class, 3000, playerId);
 							break;
 						case "d":
-							send(client, Protocols.protocol(CtrlerIDs.PLAYER$DELETE), PlayerDTO.class, 3000, playerId);
+							send(client, Protocols.protocol(CtrlerIds.PLAYER$DELETE), PlayerDTO.class, 3000, playerId);
 							break;
 						case "a":
-							send(client, Protocols.protocol(CtrlerIDs.PLAYER$ADD), PlayerDTO.class, 3000, playerId, cmds[3],
+							send(client, Protocols.protocol(CtrlerIds.PLAYER$ADD), PlayerDTO.class, 3000, playerId, cmds[3],
 									Integer.parseInt(cmds[4]));
 							break;
 						case "u":
-							send(client, Protocols.protocol(CtrlerIDs.PLAYER$UPDATE), PlayerDTO.class, 3000, playerId, cmds[3],
+							send(client, Protocols.protocol(CtrlerIds.PLAYER$UPDATE), PlayerDTO.class, 3000, playerId, cmds[3],
 									Integer.parseInt(cmds[4]));
 							break;
 						case "s":
-							send(client, Protocols.protocol(CtrlerIDs.PLAYER$SAVE), PlayerDTO.class, 3000, playerId, cmds[3],
+							send(client, Protocols.protocol(CtrlerIds.PLAYER$SAVE), PlayerDTO.class, 3000, playerId, cmds[3],
 									Integer.parseInt(cmds[4]));
 							break;
 					}
@@ -191,7 +191,7 @@ public class GameClientApp {
 	}
 
 	private static void send(Client<Long> client, String content, boolean wait) {
-		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIDs.SPEAK$SAY), content);
+		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
 		if (wait) {
 			RpcResult<SayContentDTO> result = speakService.say(content);
 			LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
@@ -202,7 +202,7 @@ public class GameClientApp {
 
 	private static void test(Client<Long> client, String content, boolean wait) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIDs.SPEAK$TEST),
+		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIds.SPEAK$TEST),
 				(byte)random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
 				(short)random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
 				random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE),
@@ -211,6 +211,16 @@ public class GameClientApp {
 				random.nextDouble(Double.MIN_VALUE, Double.MAX_VALUE),
 				random.nextInt(2) == 1,
 				content);
+		//		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIds.SPEAK$TEST),
+		//				(byte)22,
+		//				(short)-11163,
+		//				-593234928,
+		//				7561557239560349744L,
+		//				0.24013591F,
+		//				8.104598623440516E306,
+		//				false,
+		//				"jdsaf");
+		System.out.println(messageContent.bodyAs(Object.class));
 		if (wait) {
 			SendReceipt context = client.send(messageContent.willRespondAwaiter(300000L));
 			try {

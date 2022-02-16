@@ -120,7 +120,7 @@ public class RpcInvoker {
 				message = awaiter.get(timeout, TimeUnit.MILLISECONDS);
 				switch (this.method.getReturnMode()) {
 					case RESULT:
-						return RpcResults.create(ResultCodes.of(message.getCode()), message.getBody());
+						return RpcResults.result(ResultCodes.of(message.getCode()), message.getBody());
 					case OBJECT:
 						return getReturnObject(message);
 					case VOID:
@@ -155,7 +155,7 @@ public class RpcInvoker {
 			case MESSAGE_HEAD:
 				return message;
 			case RESULT:
-				return RpcResults.create(ResultCodes.of(message.getCode()), message.getBody());
+				return RpcResults.result(ResultCodes.of(message.getCode()), message.getBody());
 			case BODY:
 				return message.getBody();
 			case RESULT_CODE_ID:

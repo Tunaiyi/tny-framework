@@ -4,6 +4,7 @@ import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
@@ -16,7 +17,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
-import java.rmi.server.UID;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,7 +61,8 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 	@Override
 	public <UID> Client<UID> client(URL url, PostConnect<UID> connect) {
 		NetworkContext context = this.getContext();
-		return new NettyClient<>(this, this.idGenerator, url, connect, context);
+		CertificateFactory<UID> certificateFactory = context.getCertificateFactory();
+		return new NettyClient<>(this, this.idGenerator, url, connect, certificateFactory.anonymous(), context);
 	}
 
 	private Bootstrap getBootstrap() {

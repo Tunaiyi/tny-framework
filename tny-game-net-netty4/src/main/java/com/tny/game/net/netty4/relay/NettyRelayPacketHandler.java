@@ -66,7 +66,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 					NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
 					packetType.handle(this.relayPacketProcessor, link, packet);
 				} else if (packetType.isHandleByTransporter()) { // transporter 处理
-					NetRelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
+					RelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
 					packetType.handle(this.relayPacketProcessor, transporter, packet);
 				}
 			} catch (NetGeneralException ex) {

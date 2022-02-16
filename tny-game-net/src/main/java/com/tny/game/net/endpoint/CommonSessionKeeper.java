@@ -56,7 +56,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 			}
 		}
 		NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
-		NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext());
+		NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext(), newTunnel.getCertificateFactory());
 		if (oldSession != null) {
 			if (!oldSession.isClosed()) {
 				oldSession.close();

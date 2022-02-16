@@ -6,7 +6,6 @@ import com.tny.game.common.runtime.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -15,7 +14,6 @@ import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-import javax.xml.bind.ValidationException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.*;
 
@@ -25,7 +23,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  */
-public abstract class MessageCommand<C extends MessageCommandContext> implements Command {
+public abstract class MessageCommand implements Command {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MessageCommand.class);
 
@@ -33,7 +31,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 
 	private boolean start = false;
 
-	protected C commandContext;
+	protected MessageCommandContext commandContext;
 
 	protected NetTunnel<Object> tunnel;
 
@@ -55,7 +53,7 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 		return this.dispatcherContext.getAppContext().getScopeType();
 	}
 
-	protected MessageCommand(C commandContext, NetTunnel<?> tunnel, Message message,
+	protected MessageCommand(MessageCommandContext commandContext, NetTunnel<?> tunnel, Message message,
 			MessageDispatcherContext dispatcherContext, EndpointKeeperManager endpointKeeperManager, boolean relay) {
 		this.tunnel = as(tunnel);
 		this.message = as(message);
@@ -84,27 +82,6 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 	@Override
 	public boolean isDone() {
 		return this.commandContext.isDone();
-	}
-
-	/**
-	 * 身份认证
-	 */
-	protected void authenticate(AuthenticateValidator<Object> validator, CertificateFactory<Object> certificateFactory)
-			throws CommandException, ValidationException {
-		if (this.tunnel.isLogin()) {
-			return;
-		}
-		if (validator == null) {
-			return;
-		}
-		DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
-		Certificate<Object> certificate = validator.validate(this.tunnel, this.message, certificateFactory);
-		// 是否需要做登录校验,判断是否已经登录
-		if (certificate != null && certificate.isAuthenticated()) {
-			EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
-					.loadOrCreate(certificate.getUserType(), this.tunnel.getMode());
-			endpointKeeper.online(certificate, this.tunnel);
-		}
 	}
 
 	/**
@@ -232,11 +209,6 @@ public abstract class MessageCommand<C extends MessageCommandContext> implements
 		}
 		if (relay && code.isSuccess()) {
 			this.relayTunnel.relay(message, false);
-			return;
-		}
-		if (code.getLevel() == ResultLevel.ERROR) {
-			LOGGER.error("code {}({}) {} error, close tunnel", code, code.getCode(), code.getLevel());
-			this.tunnel.close();
 		}
 	}
 

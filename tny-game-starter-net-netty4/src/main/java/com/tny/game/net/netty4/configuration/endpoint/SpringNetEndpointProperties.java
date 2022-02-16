@@ -40,7 +40,7 @@ public class SpringNetEndpointProperties {
 
 	public SpringNetEndpointProperties setSessionKeeperSettings(
 			Map<String, SpringNetSessionKeeperSetting> sessionKeeperSettings) {
-		sessionKeeperSettings.forEach((name, setting) -> setting.setName(StringAide.ifBlank(setting.getName(), name)));
+		sessionKeeperSettings.forEach((name, setting) -> setting.setName(StringAide.ifBlank(setting.getUserType(), name)));
 		this.sessionKeeperSettings = ImmutableMap.copyOf(sessionKeeperSettings);
 		return this;
 	}
@@ -60,7 +60,7 @@ public class SpringNetEndpointProperties {
 	}
 
 	public SpringNetEndpointProperties setTerminalKeeperSettings(Map<String, SpringNetTerminalKeeperSetting> terminalKeeperSettings) {
-		terminalKeeperSettings.forEach((name, setting) -> setting.setName(StringAide.ifBlank(setting.getName(), name)));
+		terminalKeeperSettings.forEach((name, setting) -> setting.setName(StringAide.ifBlank(setting.getUserType(), name)));
 		this.terminalKeeperSettings = ImmutableMap.copyOf(terminalKeeperSettings);
 		return this;
 	}

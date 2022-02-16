@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * @author : kgtny
  * @date : 2021/5/21 3:05 下午
  */
-public class NettyChannelRelayTransporter extends NettyChannelConnection implements NetRelayTransporter {
+public class NettyChannelRelayTransporter extends NettyChannelConnection implements RelayTransporter {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
 
@@ -32,7 +32,7 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public void close() {
+	protected void doClose() {
 		NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
 		if (link != null) {
 			link.disconnect();
@@ -65,7 +65,7 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 	}
 
 	@Override
-	public void addCloseListener(Consumer<NetRelayTransporter> onClose) {
+	public void addCloseListener(Consumer<RelayTransporter> onClose) {
 		this.channel.closeFuture().addListener((f) -> onClose.accept(this));
 	}
 

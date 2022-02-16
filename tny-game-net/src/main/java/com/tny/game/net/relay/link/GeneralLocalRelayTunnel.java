@@ -13,15 +13,15 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/3/3 12:02 下午
  */
-public class GeneralLocalRelayTunnel<UID> extends BaseServerTunnel<UID, NetSession<UID>, MessageTransporter<UID>> implements LocalRelayTunnel<UID> {
+public class GeneralLocalRelayTunnel<UID> extends ServerTunnel<UID, NetSession<UID>, MessageTransporter> implements LocalRelayTunnel<UID> {
 
 	private final long instanceId;
 
 	private final InetSocketAddress remoteAddress;
 
-	private final LocalRelayMessageTransporter<UID> transporter;
+	private final LocalRelayMessageTransporter transporter;
 
-	public GeneralLocalRelayTunnel(long instanceId, long id, LocalRelayMessageTransporter<UID> transporter,
+	public GeneralLocalRelayTunnel(long instanceId, long id, LocalRelayMessageTransporter transporter,
 			InetSocketAddress remoteAddress, NetworkContext context) {
 		super(id, transporter, context);
 		this.transporter = transporter;

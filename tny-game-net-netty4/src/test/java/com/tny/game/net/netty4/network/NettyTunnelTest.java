@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends BaseTunnel<Long, E, ?>, ME extends MockNetEndpoint>
+public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends BaseNetTunnel<Long, E, ?>, ME extends MockNetEndpoint>
 		extends NetTunnelTest<T, ME> {
 
 	protected EmbeddedChannel mockChannel() {
@@ -41,7 +41,6 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 		assertNotNull(tunnel.getLocalAddress());
 	}
 
-	@Override
 	@Test
 	public void isClosed() {
 		T tunnel = createBindTunnel();
@@ -65,16 +64,16 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 			endpoint = object.getEndpoint();
 			endpoint.online(createLoginCert(), tunnel);
 			assertTrue(tunnel.bind(endpoint));
-			assertTrue(tunnel.isLogin());
+			assertTrue(tunnel.isAuthenticated());
 		} else {
 			endpoint = createEndpoint();
 			assertTrue(tunnel.bind(endpoint));
-			assertTrue(tunnel.isLogin());
+			assertTrue(tunnel.isAuthenticated());
 		}
 
 		// 重复绑定 同一终端
 		assertTrue(tunnel.bind(endpoint));
-		assertTrue(tunnel.isLogin());
+		assertTrue(tunnel.isAuthenticated());
 
 		// 重复绑定 不同终端
 		endpoint = createEndpoint();

@@ -1,6 +1,5 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.common.context.*;
 import com.tny.game.net.command.*;
 
 /**
@@ -28,21 +27,6 @@ public interface Communicator<UID> {
 	/**
 	 * @return 是否登陆认证
 	 */
-	boolean isLogin();
-
-	/**
-	 * @return 是否关闭终端
-	 */
-	boolean isClosed();
-
-	/**
-	 * 关闭终端
-	 */
-	boolean close();
-
-	/**
-	 * @return 获取会话属性
-	 */
-	Attributes attributes();
+	boolean isAuthenticated();
 
 }

@@ -4,7 +4,7 @@ import com.tny.game.common.concurrent.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 
 import java.util.Set;
 import java.util.concurrent.*;
@@ -15,16 +15,6 @@ import java.util.concurrent.*;
 public class ForkJoinEndpointCommandTaskBoxProcessor extends EndpointCommandTaskBoxProcessor<CommandTaskBoxDriver> implements AppPrepareStart {
 
 	private static final Set<CommandTaskBoxDriver> SCHEDULED_PROCESSORS = new ConcurrentHashSet<>();
-
-	/**
-	 * 间歇时间
-	 */
-	private static final int DEFAULT_NEXT_INTERVAL = 8;
-
-	/**
-	 * 间歇时间
-	 */
-	private static final int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
 
 	private final ForkJoinEndpointCommandTaskProcessorSetting setting;
 
@@ -68,13 +58,13 @@ public class ForkJoinEndpointCommandTaskBoxProcessor extends EndpointCommandTask
 	}
 
 	@Override
-	protected void process(CommandTaskBoxDriver processor) {
-		this.executorService.execute(processor);
+	public void execute(CommandTaskBoxDriver driver) {
+		this.executorService.execute(driver);
 	}
 
 	@Override
-	protected void schedule(CommandTaskBoxDriver processor) {
-		SCHEDULED_PROCESSORS.add(processor);
+	public void schedule(CommandTaskBoxDriver driver) {
+		SCHEDULED_PROCESSORS.add(driver);
 	}
 
 }

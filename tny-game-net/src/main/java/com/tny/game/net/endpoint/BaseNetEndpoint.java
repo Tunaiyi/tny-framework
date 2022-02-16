@@ -3,12 +3,13 @@ package com.tny.game.net.endpoint;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
@@ -20,9 +21,9 @@ import static com.tny.game.net.endpoint.EndpointEventBuses.*;
 /**
  * <p>
  */
-public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> implements NetEndpoint<UID> {
+public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> implements NetEndpoint<UID> {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(AbstractEndpoint.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(BaseNetEndpoint.class);
 
 	/* 终端 ID */
 	private final long id;
@@ -51,7 +52,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	private final MessageQueue<UID> sentMessageQueue;
 
 	/* 响应 future 管理器 */
-	private volatile RespondFutureHolder respondFutureHolder;
+	private volatile RespondFutureMonitor respondFutureMonitor;
 
 	/* 离线时间 */
 	protected volatile long offlineTime;
@@ -62,13 +63,12 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	/* 发送消息过滤器 */
 	private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
-	protected AbstractEndpoint(SessionSetting setting, EndpointContext context) {
+	protected BaseNetEndpoint(SessionSetting setting, Certificate<UID> certificate, EndpointContext context) {
 		this.id = NetAide.newEndpointId();
 		this.state = EndpointStatus.INIT;
 		this.context = context;
-		CertificateFactory<UID> certificateFactory = context.getCertificateFactory();
-		this.certificate = certificateFactory.anonymous();
-		this.commandTaskBox = new CommandTaskBox(context.getMessageDispatcher(), context.getCommandTaskProcessor());
+		this.certificate = certificate;
+		this.commandTaskBox = new CommandTaskBox(context.getCommandTaskProcessor());
 		if (setting != null) {
 			this.sentMessageQueue = new MessageQueue<>(setting.getSendMessageCachedSize());
 		} else {
@@ -81,15 +81,20 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 		return this.context;
 	}
 
-	private RespondFutureHolder futureHolder() {
-		if (this.respondFutureHolder != null) {
-			return this.respondFutureHolder;
+	@Override
+	public Certificate<UID> getCertificate() {
+		return this.certificate;
+	}
+
+	private RespondFutureMonitor respondFutureMonitor() {
+		if (this.respondFutureMonitor != null) {
+			return this.respondFutureMonitor;
 		}
 		synchronized (this) {
-			if (this.respondFutureHolder != null) {
-				return this.respondFutureHolder;
+			if (this.respondFutureMonitor != null) {
+				return this.respondFutureMonitor;
 			}
-			return this.respondFutureHolder = RespondFutureHolder.getHolder(this);
+			return this.respondFutureMonitor = RespondFutureMonitor.getHolder(this);
 		}
 	}
 
@@ -97,11 +102,11 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 		if (respondFuture == null) {
 			return;
 		}
-		futureHolder().putFuture(messageId, respondFuture);
+		respondFutureMonitor().putFuture(messageId, respondFuture);
 	}
 
 	private <M> MessageRespondAwaiter pollFuture(Message message) {
-		RespondFutureHolder respondFutureHolder = this.respondFutureHolder;
+		RespondFutureMonitor respondFutureHolder = this.respondFutureMonitor;
 		if (respondFutureHolder == null) {
 			return null;
 		}
@@ -109,11 +114,6 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 			return respondFutureHolder.pollFuture(message.getToMessage());
 		}
 		return null;
-	}
-
-	@Override
-	public RespondFutureHolder getRespondFutureHolder() {
-		return this.respondFutureHolder;
 	}
 
 	@Override
@@ -157,15 +157,11 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 					break;
 			}
 		}
-		//        RespondFuture<UID> future = pollFuture(message);
-		//        if (future != null) {
-		//            this.commandTaskBox.addTask(new RespondCommandTask<>(message, future));
-		//        }
-		return this.commandTaskBox.addMessage(tunnel, message, this::pollFuture);
-		//        this.eventsBox.addInputEvent(new EndpointReceiveEvent<>(tunnel, message, future));
-		//        this.eventHandler.onInput(this.eventsBox, this);
-		//        this.eventHandler.onInputEvent(this, new EndpointReceiveEvent<>(tunnel, message, future));
-		//        return true;
+		MessageRespondAwaiter awaiter = this.pollFuture(message);
+		if (awaiter != null) {
+			this.commandTaskBox.addTask(new RespondCommandTask(message, awaiter));
+		}
+		return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message, this.context.getMessageDispatcher()));
 	}
 
 	@Override
@@ -196,7 +192,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 						break;
 				}
 			}
-			tunnel.write(this::allocateMessage, context);
+			tunnel.write(this::buildMessage, context);
 			return context;
 		} catch (Exception e) {
 			LOGGER.error("", e);
@@ -299,7 +295,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	//	}
 
 	@Override
-	public NetMessage allocateMessage(MessageFactory messageFactory, MessageContext context) {
+	public NetMessage buildMessage(MessageFactory messageFactory, MessageContext context) {
 		NetMessage message = messageFactory.create(allocateMessageId(), context);
 		if (context instanceof RequestContext) {
 			this.putFuture(message.getId(), ((RequestContext)context).getResponseAwaiter());
@@ -332,7 +328,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 		return this.offlineTime;
 	}
 
-	protected void setOnline() {
+	private void setOnline() {
 		this.offlineTime = 0;
 		this.state = EndpointStatus.ONLINE;
 		buses().onlineEvent().notify(this);
@@ -344,10 +340,32 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 		buses().offlineEvent().notify(this);
 	}
 
-	protected void setClose() {
+	private void setClose() {
 		this.state = EndpointStatus.CLOSE;
 		this.destroyFutureHolder();
 		buses().closeEvent().notify(this);
+	}
+
+	private void destroyFutureHolder() {
+		RespondFutureMonitor.removeHolder(this);
+	}
+
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		NetTunnel<UID> tunnel = this.tunnel;
+		return tunnel == null ? null : tunnel.getRemoteAddress();
+	}
+
+	@Override
+	public InetSocketAddress getLocalAddress() {
+		NetTunnel<UID> tunnel = this.tunnel;
+		return tunnel == null ? null : tunnel.getLocalAddress();
+	}
+
+	@Override
+	public boolean isActive() {
+		NetTunnel<UID> tunnel = this.tunnel;
+		return tunnel != null && tunnel.isActive();
 	}
 
 	@Override
@@ -379,7 +397,13 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 
 	@Override
 	public void offline() {
+		if (isClosed()) {
+			return;
+		}
 		synchronized (this) {
+			if (isClosed()) {
+				return;
+			}
 			NetTunnel<UID> tunnel = currentTunnel();
 			if (!tunnel.isClosed()) {
 				tunnel.close();
@@ -397,6 +421,19 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 	}
 
 	@Override
+	public boolean closeWhen(EndpointStatus status) {
+		if (this.state != status) {
+			return false;
+		}
+		synchronized (this) {
+			if (this.state != status) {
+				return false;
+			}
+			return this.close();
+		}
+	}
+
+	@Override
 	public boolean close() {
 		if (this.state == EndpointStatus.CLOSE) {
 			return false;
@@ -408,7 +445,7 @@ public abstract class AbstractEndpoint<UID> extends AbstractCommunicator<UID> im
 			this.offline();
 			this.prepareClose();
 			this.setClose();
-			this.prepareClose();
+			this.postClose();
 			return true;
 		}
 	}

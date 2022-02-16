@@ -25,7 +25,7 @@ public interface RelayClientGuide {
 	 * @param url url
 	 * @return 返回客户端
 	 */
-	default NetRelayTransporter connect(URL url) {
+	default RelayTransporter connect(URL url) {
 		return connect(url, -1);
 	}
 
@@ -33,7 +33,7 @@ public interface RelayClientGuide {
 	 * @param url url
 	 * @return 返回客户端
 	 */
-	NetRelayTransporter connect(URL url, long timeout);
+	RelayTransporter connect(URL url, long timeout);
 
 	/**
 	 * @param url url

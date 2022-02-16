@@ -17,7 +17,7 @@ public class CommonRemoteRelayLink extends BaseRelayLink implements RemoteRelayL
 
 	private final NetRemoteServeInstance serveInstance;
 
-	public CommonRemoteRelayLink(String key, NetRemoteServeInstance serveInstance, NetRelayTransporter transporter) {
+	public CommonRemoteRelayLink(String key, NetRemoteServeInstance serveInstance, RelayTransporter transporter) {
 		super(key, serveInstance.serviceName(), serveInstance.getId(), transporter);
 		this.serveInstance = serveInstance;
 	}

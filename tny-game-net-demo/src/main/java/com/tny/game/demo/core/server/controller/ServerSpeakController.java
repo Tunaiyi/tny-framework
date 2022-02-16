@@ -24,19 +24,19 @@ import java.util.concurrent.ThreadLocalRandom;
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class ServerSpeakController {
 
-	@Rpc(CtrlerIDs.SPEAK$SAY)
+	@Rpc(CtrlerIds.SPEAK$SAY)
 	public SayContentDTO say(Endpoint<Long> endpoint, @MsgParam String message) {
 		endpoint.send(MessageContexts
-				.push(Protocols.protocol(CtrlerIDs.SPEAK$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
+				.push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
 		return new SayContentDTO(endpoint.getId(), "respond " + message);
 	}
 
-	@Rpc(CtrlerIDs.SPEAK$SAY_FOR_RPC)
-	public SayContentDTO say(@UserID RpcLinkerId id, @MsgParam String message) {
+	@Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
+	public SayContentDTO say(@UserId RpcLinkerId id, @MsgParam String message) {
 		return new SayContentDTO(id.getId(), "respond " + message);
 	}
 
-	@Rpc(CtrlerIDs.SPEAK$TEST)
+	@Rpc(CtrlerIds.SPEAK$TEST)
 	public SayContentDTO test(Endpoint<Long> endpoint,
 			@MsgParam byte byteValue,
 			@MsgParam short shortValue,
@@ -55,11 +55,11 @@ public class ServerSpeakController {
 				"\nbooleanValue:" + booleanValue +
 				"\nmessage:" + message;
 		endpoint.send(MessageContexts
-				.push(Protocols.protocol(CtrlerIDs.SPEAK$PUSH), content));
+				.push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), content));
 		return new SayContentDTO(endpoint.getId(), "test result: " + content);
 	}
 
-	@Rpc(CtrlerIDs.SPEAK$DELAY_SAY)
+	@Rpc(CtrlerIds.SPEAK$DELAY_SAY)
 	public Wait<SayContentDTO> delaySay(Endpoint<Long> endpoint, @MsgParam String message, @MsgParam long delay) {
 		long timeout = System.currentTimeMillis() + delay;
 		return new Wait<SayContentDTO>() {

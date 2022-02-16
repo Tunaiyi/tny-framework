@@ -62,16 +62,18 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
 	}
 
 	@Override
-	public AuthenticateValidator<?> getValidator(Object protocol, Class<? extends AuthenticateValidator<?>> validatorClass) {
+	public AuthenticateValidator<?> getValidator(Class<? extends AuthenticateValidator<?>> validatorClass) {
 		AuthenticateValidator<Object> validator = null;
 		if (validatorClass != null) {
 			validator = as(this.authValidators.get(validatorClass));
 			Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
 		}
-		if (validator == null) {
-			validator = as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
-		}
 		return validator;
+	}
+
+	@Override
+	public AuthenticateValidator<?> getValidator(Object protocol) {
+		return ObjectAide.<AuthenticateValidator<Object>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
 	}
 
 	@Override

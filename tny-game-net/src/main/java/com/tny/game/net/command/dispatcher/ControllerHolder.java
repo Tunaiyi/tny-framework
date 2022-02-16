@@ -34,12 +34,12 @@ public abstract class ControllerHolder {
 	/**
 	 * 执行前插件
 	 */
-	protected List<ControllerPluginHolder> beforePlugins;
+	protected List<CommandPluginHolder> beforePlugins;
 
 	/**
 	 * 执行后插件
 	 */
-	protected List<ControllerPluginHolder> afterPlugins;
+	protected List<CommandPluginHolder> afterPlugins;
 
 	/**
 	 * 用户组名称列表
@@ -81,11 +81,11 @@ public abstract class ControllerHolder {
 		}
 		if (beforePlugins != null) {
 			this.beforePlugins = this
-					.initPlugins(context, Arrays.asList(beforePlugins), exprHolderFactory, BeforePlugin::value, ControllerPluginHolder::new);
+					.initPlugins(context, Arrays.asList(beforePlugins), exprHolderFactory, BeforePlugin::value, CommandPluginHolder::new);
 		}
 		if (afterPlugins != null) {
 			this.afterPlugins = this
-					.initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, ControllerPluginHolder::new);
+					.initPlugins(context, Arrays.asList(afterPlugins), exprHolderFactory, AfterPlugin::value, CommandPluginHolder::new);
 		}
 	}
 
@@ -100,13 +100,13 @@ public abstract class ControllerHolder {
 	}
 
 	@SuppressWarnings({"rawtypes"})
-	private <A extends Annotation> ImmutableList<ControllerPluginHolder> initPlugins(MessageDispatcherContext context,
+	private <A extends Annotation> ImmutableList<CommandPluginHolder> initPlugins(MessageDispatcherContext context,
 			final Collection<? extends A> pluginAnnotations,
 			ExprHolderFactory exprHolderFactory,
 			Function<A, Class<? extends CommandPlugin>> pluginClassGetter,
 			ControllerPluginHolderConstructor<A> holderFactory,
-			ControllerPluginHolder... defaultHolders) {
-		List<ControllerPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
+			CommandPluginHolder... defaultHolders) {
+		List<CommandPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
 		for (A pluginAnnotation : pluginAnnotations) {
 			Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
 			final CommandPlugin<?, ?> plugin = context.getPlugin(as(pluginClass));
@@ -118,7 +118,7 @@ public abstract class ControllerHolder {
 
 	private interface ControllerPluginHolderConstructor<T> {
 
-		ControllerPluginHolder create(ControllerHolder controller, CommandPlugin<?, ?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
+		CommandPluginHolder create(ControllerHolder controller, CommandPlugin<?, ?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
 
 	}
 
@@ -149,39 +149,18 @@ public abstract class ControllerHolder {
 		return this.scopes == null || this.scopes.isEmpty() || this.scopes.contains(scope);
 	}
 
-	protected abstract List<ControllerPluginHolder> getControllerBeforePlugins();
+	protected abstract List<CommandPluginHolder> getControllerBeforePlugins();
 
-	protected abstract List<ControllerPluginHolder> getControllerAfterPlugins();
+	protected abstract List<CommandPluginHolder> getControllerAfterPlugins();
 
 	public abstract String getName();
 
 	public abstract <A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
-	public abstract <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass);
-
-	/**
-	 * 获取某方上参数指定注解类型的注解列表
-	 *
-	 * @param clazz 指定的注解类型
-	 * @return 注解列表 ( @A int a, int b, @A int c, @B int d) <br/>
-	 * 获取 @A : [@A, null, @A, null] <br/>
-	 * 获取 @B : [null, null, null, @B]
-	 */
-	public abstract <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz);
-
-	/**
-	 * 获取某个参数上的注解列表
-	 *
-	 * @param index 参数位置索引
-	 * @return 返回指定参数的注解列表 ( @A @B int a, int b, @A int C) 获取 0 : [@A, @B] 获取 1
-	 * : [] 获取 2 : [@A]
-	 */
-	public abstract List<Annotation> getParamAnnotationsByIndex(int index);
+	public abstract <A extends Annotation> List<A> getAnnotations(Class<A> annotationClass);
 
 	public Set<MessageMode> getMessageModes() {
 		return this.messageModes;
 	}
-
-	public abstract boolean isParamsAnnotationExist(Class<? extends Annotation> clazz);
 
 }

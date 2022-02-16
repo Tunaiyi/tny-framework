@@ -36,9 +36,12 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
 	void openTunnel(RelayTunnel<?> tunnel);
 
 	/**
-	 * @return 获取转发送器 id
+	 * 判断指定的 transporter 是否是当前通道的 transporter
+	 *
+	 * @param transporter 判断的transporter
+	 * @return 如果是返回 true, 否则返回 false
 	 */
-	RelayTransporter getTransporter();
+	boolean isCurrentTransporter(RelayTransporter transporter);
 
 	/**
 	 * 发送转发数据包

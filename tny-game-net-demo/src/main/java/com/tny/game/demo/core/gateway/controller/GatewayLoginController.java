@@ -23,7 +23,7 @@ public class GatewayLoginController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayLoginController.class);
 
 	@RelayTo
-	@Rpc(CtrlerIDs.LOGIN$LOGIN)
+	@Rpc(CtrlerIds.LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
 	public void login(Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {

@@ -17,9 +17,9 @@ import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends AbstractCommunicator<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends AbstractCommunicator<UID> implements NetTunnel<UID> {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(AbstractTunnel.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
 	protected volatile TunnelStatus status = TunnelStatus.INIT;
 
@@ -35,12 +35,13 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	/* 会话终端 */
 	protected volatile E endpoint;
 
+	/* 上下文 */
 	private final NetworkContext context;
 
 	/* endpoint 锁 */
 	private final StampedLock endpointLock = new StampedLock();
 
-	protected AbstractTunnel(long id, TunnelMode mode, NetworkContext context) {
+	protected AbstractNetTunnel(long id, TunnelMode mode, NetworkContext context) {
 		this.id = id;
 		this.mode = mode;
 		this.context = context;
@@ -72,7 +73,7 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 	}
 
 	@Override
-	public boolean isLogin() {
+	public boolean isAuthenticated() {
 		return getCertificate().isAuthenticated();
 	}
 
@@ -116,6 +117,10 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 		return this.endpoint;
 	}
 
+	protected void setEndpoint(E endpoint) {
+		this.endpoint = endpoint;
+	}
+
 	@Override
 	public NetworkContext getContext() {
 		return this.context;
@@ -126,7 +131,7 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 		return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, () -> doReceive(message));
 	}
 
-	protected boolean doReceive(Message message) {
+	private boolean doReceive(Message message) {
 		E endpoint = this.endpoint;
 		while (true) {
 			if (endpoint.isClosed()) {
@@ -165,12 +170,12 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 				return true;
 			} else {
 				return StampedLockAide.supplyInWriteLock(this.endpointLock,
-						() -> bindEndpoint(endpoint));
+						() -> replaceEndpoint(endpoint));
 			}
 		}
 	}
 
-	protected abstract boolean bindEndpoint(NetEndpoint<UID> endpoint);
+	protected abstract boolean replaceEndpoint(NetEndpoint<UID> endpoint);
 
 	@Override
 	public boolean open() {
@@ -191,9 +196,9 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 				return false;
 			}
 			this.status = TunnelStatus.OPEN;
+			buses().activateEvent().notify(this);
 			this.onOpened();
 		}
-		buses().activateEvent().notify(this);
 		return true;
 	}
 
@@ -206,13 +211,13 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 			}
 			this.onDisconnect();
 			this.doDisconnect();
-			this.onDisconnected();
 			this.status = TunnelStatus.SUSPEND;
 			endpoint = this.endpoint;
-		}
-		buses().unactivatedEvent().notify(this);
-		if (endpoint != null) {
-			endpoint.onUnactivated(this);
+			buses().unactivatedEvent().notify(this);
+			if (endpoint != null) {
+				endpoint.onUnactivated(this);
+			}
+			this.onDisconnected();
 		}
 	}
 
@@ -229,12 +234,12 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 			this.status = TunnelStatus.CLOSED;
 			this.onClose();
 			this.doDisconnect();
-			this.onClosed();
 			endpoint = this.endpoint;
-		}
-		buses().closeEvent().notify(this);
-		if (endpoint != null) {
-			endpoint.onUnactivated(this);
+			buses().closeEvent().notify(this);
+			if (endpoint != null) {
+				endpoint.onUnactivated(this);
+			}
+			this.onClosed();
 		}
 		return true;
 	}
@@ -258,10 +263,10 @@ public abstract class AbstractTunnel<UID, E extends NetEndpoint<UID>> extends Ab
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof AbstractTunnel)) {
+		if (!(o instanceof AbstractNetTunnel)) {
 			return false;
 		}
-		AbstractTunnel<?, ?> that = (AbstractTunnel<?, ?>)o;
+		AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>)o;
 		return this.id == that.id;
 	}
 

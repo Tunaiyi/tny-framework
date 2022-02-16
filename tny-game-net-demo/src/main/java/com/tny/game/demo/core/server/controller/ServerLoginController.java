@@ -26,7 +26,7 @@ public class ServerLoginController {
 
 	private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
 
-	@Rpc(CtrlerIDs.LOGIN$LOGIN)
+	@Rpc(CtrlerIds.LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
 	public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {

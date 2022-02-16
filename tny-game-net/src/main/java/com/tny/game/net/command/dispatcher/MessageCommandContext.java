@@ -7,24 +7,24 @@ import com.tny.game.net.command.*;
 /**
  * <p>
  */
-public abstract class MessageCommandContext {
-
-	protected String name;
+public class MessageCommandContext {
 
 	private final MessageCommandPromise promise;
 
+	protected MethodControllerHolder controller;
+
 	private boolean intercept = false;
 
-	public MessageCommandContext(String name) {
-		this.name = name;
-		this.promise = new MessageCommandPromise(name);
+	public MessageCommandContext(MethodControllerHolder controller) {
+		this.controller = controller;
+		this.promise = new MessageCommandPromise(getName());
 	}
 
 	/**
 	 * @return 获取名字
 	 */
 	public String getName() {
-		return this.name;
+		return this.controller.getName();
 	}
 
 	/**
@@ -32,6 +32,10 @@ public abstract class MessageCommandContext {
 	 */
 	public Object getResult() {
 		return this.promise.getResult();
+	}
+
+	public MethodControllerHolder getController() {
+		return this.controller;
 	}
 
 	protected MessageCommandPromise getPromise() {
@@ -89,7 +93,7 @@ public abstract class MessageCommandContext {
 	 * @param body 消息体
 	 */
 	public void setResult(ResultCode code, Object body) {
-		this.promise.setResult(RpcResults.create(code, body));
+		this.promise.setResult(RpcResults.result(code, body));
 	}
 
 	/**

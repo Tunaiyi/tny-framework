@@ -72,12 +72,10 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
 		this.runSize = 0;
 		C cmd = currentRunQueue.poll();
 		while (cmd != null) {
-			if (cmd.isWork()) {
-				executeCommand(cmd);
-				this.runSize++;
-				if (!cmd.isDone()) {
-					this.queue.add(cmd);
-				}
+			executeCommand(cmd);
+			this.runSize++;
+			if (!cmd.isDone()) {
+				this.queue.add(cmd);
 			}
 			cmd = currentRunQueue.poll();
 		}

@@ -8,8 +8,8 @@ package com.tny.game.net.endpoint;
  */
 public interface EndpointKeeperSetting {
 
-    String getName();
+	String getUserType();
 
-    String getKeeperFactory();
+	String getKeeperFactory();
 
 }

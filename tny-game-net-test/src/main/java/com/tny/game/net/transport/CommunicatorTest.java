@@ -14,14 +14,14 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
 
 	protected static Long uid = 100L;
 
-	protected static Long unloginUid = null;
+	private static final Long UNAUTHENTICATED_UID = null;
 
 	protected static String userGroup = Certificates.DEFAULT_USER_TYPE;
 
 	protected static Long certificateId = System.currentTimeMillis();
 
 	protected Certificate<Long> createUnLoginCert() {
-		return Certificates.createUnauthenticated(unloginUid);
+		return Certificates.createUnauthenticated(UNAUTHENTICATED_UID);
 	}
 
 	protected Certificate<Long> createLoginCert() {
@@ -49,14 +49,14 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
 		assertEquals(userGroup, loginCommunicator.getUserType());
 	}
 
-	@Test
-	public void isClosed() {
-		C loginCommunicator = createNetter(createLoginCert());
-		assertFalse(loginCommunicator.isClosed());
-		loginCommunicator.close();
-		assertTrue(loginCommunicator.isClosed());
-		loginCommunicator.close();
-		assertTrue(loginCommunicator.isClosed());
-	}
+	//	@Test
+	//	public void isClosed() {
+	//		C loginCommunicator = createNetter(createLoginCert());
+	//		assertFalse(loginCommunicator.isClosed());
+	//		loginCommunicator.close();
+	//		assertTrue(loginCommunicator.isClosed());
+	//		loginCommunicator.close();
+	//		assertTrue(loginCommunicator.isClosed());
+	//	}
 
 }

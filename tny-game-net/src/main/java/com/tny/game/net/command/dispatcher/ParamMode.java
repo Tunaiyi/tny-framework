@@ -3,7 +3,7 @@ package com.tny.game.net.command.dispatcher;
 /**
  * Created by Kun Yang on 2017/2/24.
  */
-public enum ParamType {
+public enum ParamMode {
 
 	NONE,
 

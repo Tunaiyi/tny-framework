@@ -1,5 +1,6 @@
 package com.tny.game.net.relay.link;
 
+import com.tny.game.common.context.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -13,9 +14,9 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/8/24 1:02 下午
  */
-public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessageTransporter<UID> {
+public class DefaultLocalRelayMessageTransporter extends AttributesHolder implements LocalRelayMessageTransporter {
 
-	private LocalRelayTunnel<UID> tunnel;
+	private LocalRelayTunnel<?> tunnel;
 
 	private volatile LocalRelayLink link;
 
@@ -39,8 +40,14 @@ public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessa
 	}
 
 	@Override
-	public void close() {
+	public boolean isClosed() {
+		return tunnel.isClosed();
+	}
+
+	@Override
+	public boolean close() {
 		link.closeTunnel(tunnel);
+		return true;
 	}
 
 	@Override
@@ -54,9 +61,9 @@ public class DefaultLocalRelayMessageTransporter<UID> implements LocalRelayMessa
 	}
 
 	@Override
-	public void bind(NetTunnel<UID> tunnel) {
+	public void bind(NetTunnel<?> tunnel) {
 		if (this.tunnel == null) {
-			this.tunnel = (LocalRelayTunnel<UID>)tunnel;
+			this.tunnel = (LocalRelayTunnel<?>)tunnel;
 		}
 	}
 

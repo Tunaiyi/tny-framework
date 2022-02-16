@@ -10,6 +10,8 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
 
+import java.rmi.server.UID;
+
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.netty4.network.NettyNetAttrKeys.*;
 
@@ -19,7 +21,7 @@ import static com.tny.game.net.netty4.network.NettyNetAttrKeys.*;
  * @author : kgtny
  * @date : 2021/5/19 2:26 下午
  */
-public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection implements MessageTransporter<UID> {
+public class NettyChannelMessageTransporter extends NettyChannelConnection implements MessageTransporter {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
 
@@ -61,7 +63,7 @@ public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection 
 	}
 
 	@Override
-	public void close() {
+	protected void doClose() {
 		NetTunnel<UID> tunnel = as(this.channel.attr(TUNNEL).getAndSet(null));
 		if (tunnel != null && (tunnel.isOpen() || tunnel.isActive())) {
 			tunnel.disconnect();
@@ -69,7 +71,7 @@ public class NettyChannelMessageTransporter<UID> extends NettyChannelConnection 
 	}
 
 	@Override
-	public void bind(NetTunnel<UID> tunnel) {
+	public void bind(NetTunnel<?> tunnel) {
 		this.channel.attr(TUNNEL).set(tunnel);
 	}
 

@@ -5,7 +5,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.endpoint.task.*;
+import com.tny.game.net.command.task.*;
 import io.netty.util.HashedWheelTimer;
 import org.slf4j.*;
 
@@ -89,26 +89,26 @@ public class DisruptorEndpointCommandTaskBoxProcessor extends EndpointCommandTas
 	}
 
 	@Override
-	protected void process(TimerCommandTaskBoxDriver trigger) {
+	public void execute(TimerCommandTaskBoxDriver driver) {
 		long sequence = this.boxProcessorBuffer.next();
 		try {
 			BufferItem<CommandTaskBoxDriver> item = this.boxProcessorBuffer.get(sequence);
-			item.setItem(trigger);
+			item.setItem(driver);
 		} finally {
 			this.boxProcessorBuffer.publish(sequence);
 		}
 	}
 
 	@Override
-	protected void schedule(TimerCommandTaskBoxDriver processor) {
-		int times = processor.getCommandTickTimes();
+	public void schedule(TimerCommandTaskBoxDriver driver) {
+		int times = driver.getCommandTickTimes();
 		long delay;
 		if (times < this.commandTickTimeList.length) {
 			delay = this.commandTickTimeList[times];
 		} else {
 			delay = this.lastCommandTickTime();
 		}
-		TIMER.newTimeout(processor, delay, TimeUnit.MILLISECONDS);
+		TIMER.newTimeout(driver, delay, TimeUnit.MILLISECONDS);
 	}
 
 	private long lastCommandTickTime() {

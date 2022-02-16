@@ -13,14 +13,14 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
 	/**
-	 * 启动器名字
+	 * 服务名
 	 */
 	private String name;
 
 	/**
-	 * 服务名, 如果没有定义则使用 name
+	 * 服务发现: 服务名
 	 */
-	private String service;
+	private String serveName;
 
 	/**
 	 * 消息分发起名气
@@ -69,12 +69,12 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 	}
 
 	@Override
-	public String getService() {
-		return service;
+	public String getServeName() {
+		return serveName;
 	}
 
 	public String serviceName() {
-		return ifBlank(service, this.name);
+		return ifBlank(this.name, serveName);
 	}
 
 	public CommonNetBootstrapSetting setName(String name) {
@@ -84,8 +84,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 		return this;
 	}
 
-	public CommonNetBootstrapSetting setService(String service) {
-		this.service = service;
+	public CommonNetBootstrapSetting setServeName(String serveName) {
+		this.serveName = serveName;
 		return this;
 	}
 

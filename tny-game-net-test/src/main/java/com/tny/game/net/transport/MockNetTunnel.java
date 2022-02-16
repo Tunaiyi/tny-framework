@@ -170,8 +170,8 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 	}
 
 	@Override
-	public boolean isLogin() {
-		return this.endpoint.isLogin();
+	public boolean isAuthenticated() {
+		return this.endpoint.isAuthenticated();
 	}
 
 	@Override

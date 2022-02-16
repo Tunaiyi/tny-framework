@@ -19,13 +19,13 @@ import static com.tny.game.net.base.NetLogger.*;
 /**
  * <p>
  */
-public class ControllerMessageCommand extends MessageCommand<ControllerMessageCommandContext> {
+public class ControllerMessageCommand extends MessageCommand {
 
 	private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
 	protected ControllerMessageCommand(NetTunnel<?> tunnel, MethodControllerHolder methodHolder,
 			Message message, MessageDispatcherContext context, EndpointKeeperManager endpointKeeperManager) {
-		super(new ControllerMessageCommandContext(methodHolder), tunnel, message, context, endpointKeeperManager,
+		super(new MessageCommandContext(methodHolder), tunnel, message, context, endpointKeeperManager,
 				methodHolder.getMethodAnnotation(RelayTo.class) != null);
 	}
 
@@ -68,7 +68,7 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 			return;
 		}
 		DISPATCHER_LOG.debug("Controller [{}] 检测已登陆认证", this.getName());
-		if (controller.isAuth() && !this.tunnel.isLogin()) {
+		if (controller.isAuth() && !this.tunnel.isAuthenticated()) {
 			DISPATCHER_LOG.error("Controller [{}] 用户未登陆", this.getName());
 			this.commandContext.doneAndIntercept(NetResultCode.NO_LOGIN);
 			return;
@@ -105,15 +105,43 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 	 * 身份认证
 	 */
 	private void checkAuthenticate(MethodControllerHolder controller) throws CommandException, ValidationException {
-		if (!this.tunnel.isLogin()) {
-			AuthenticateValidator<Object> validator = as(
-					this.dispatcherContext.getValidator(this.message.getProtocolId(), controller.getAuthValidator()));
+		if (!this.tunnel.isAuthenticated()) {
+			AuthenticateValidator<Object> validator = findValidator(controller);
 			if (validator == null) {
 				return;
 			}
 			CertificateFactory<Object> certificateFactory = as(this.tunnel.getCertificateFactory());
 			DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
 			authenticate(validator, certificateFactory);
+		}
+	}
+
+	private AuthenticateValidator<Object> findValidator(MethodControllerHolder controller) {
+		AuthenticateValidator<Object> validator = as(this.dispatcherContext.getValidator(controller.getAuthValidator()));
+		if (validator != null) {
+			return validator;
+		}
+		return as(this.dispatcherContext.getValidator(message.getProtocolId()));
+	}
+
+	/**
+	 * 身份认证
+	 */
+	private void authenticate(AuthenticateValidator<Object> validator, CertificateFactory<Object> certificateFactory)
+			throws CommandException, ValidationException {
+		if (this.tunnel.isAuthenticated()) {
+			return;
+		}
+		if (validator == null) {
+			return;
+		}
+		DISPATCHER_LOG.debug("Controller [{}] 开始进行登陆认证", getName());
+		Certificate<Object> certificate = validator.validate(this.tunnel, this.message, certificateFactory);
+		// 是否需要做登录校验,判断是否已经登录
+		if (certificate != null && certificate.isAuthenticated()) {
+			EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
+					.loadEndpoint(certificate.getUserType(), this.tunnel.getMode());
+			endpointKeeper.online(certificate, this.tunnel);
 		}
 	}
 
@@ -125,7 +153,7 @@ public class ControllerMessageCommand extends MessageCommand<ControllerMessageCo
 		MethodControllerHolder controller = this.commandContext.getController();
 		if (controller != null) {
 			ProcessTracer tracer = MESSAGE_EXE_INVOKE_AFTER_PLUGINS_WATCHER.trace();
-			DISPATCHER_LOG.debug("Controller [{}] 执行AftertPlugins", getName());
+			DISPATCHER_LOG.debug("Controller [{}] 执行AfterPlugins", getName());
 			controller.afterInvoke(this.tunnel, this.message, this.commandContext);
 			DISPATCHER_LOG.debug("Controller [{}] 处理Message完成!", getName());
 			tracer.done();

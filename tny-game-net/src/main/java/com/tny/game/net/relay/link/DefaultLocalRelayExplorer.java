@@ -7,8 +7,7 @@ import com.tny.game.net.relay.packet.arguments.*;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
-import java.rmi.server.UID;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,10 +24,10 @@ public class DefaultLocalRelayExplorer extends BaseRelayExplorer<LocalRelayTunne
 	private final Map<String, LocalRelayLink> linkMap = new ConcurrentHashMap<>();
 
 	@Override
-	public void acceptOpenLink(NetRelayTransporter transporter, String service, long instance, String key) {
+	public void acceptOpenLink(RelayTransporter transporter, String service, long instance, String key) {
 		CommonLocalRelayLink link = new CommonLocalRelayLink(transporter, service, instance, key);
 		LocalRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
-		if (relayLink != null && !Objects.equals(relayLink.getTransporter(), transporter)) {
+		if (relayLink != null && !relayLink.isCurrentTransporter(transporter)) {
 			link.openOnFailure();
 		} else {
 			link.open();
@@ -43,7 +42,7 @@ public class DefaultLocalRelayExplorer extends BaseRelayExplorer<LocalRelayTunne
 			LOGGER.warn("acceptConnectTunnel link[{}] 不存在", link.getId());
 			return;
 		}
-		LocalRelayMessageTransporter<UID> transporter = new DefaultLocalRelayMessageTransporter<>(relayLink);
+		LocalRelayMessageTransporter transporter = new DefaultLocalRelayMessageTransporter(relayLink);
 		LocalRelayTunnel<?> replayTunnel = new GeneralLocalRelayTunnel<>(
 				instanceId, tunnelId, transporter, new InetSocketAddress(host, port), networkContext);
 		putTunnel(replayTunnel);

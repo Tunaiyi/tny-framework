@@ -32,7 +32,7 @@ public class PlayerController implements AppPostStart {
 	@Resource
 	private EntityCacheManager<Long, DemoPlayer> entityCacheManager;
 
-	@Rpc(CtrlerIDs.PLAYER$GET)
+	@Rpc(CtrlerIds.PLAYER$GET)
 	public RpcResult<PlayerDTO> getPlayer(@MsgParam long playerId) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {
@@ -43,7 +43,7 @@ public class PlayerController implements AppPostStart {
 		}
 	}
 
-	@Rpc(CtrlerIDs.PLAYER$ADD)
+	@Rpc(CtrlerIds.PLAYER$ADD)
 	public RpcResult<PlayerDTO> addPlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		entityCacheManager.getEntity(playerId);
 		DemoPlayer player = new DemoPlayer(playerId, name, age);
@@ -55,7 +55,7 @@ public class PlayerController implements AppPostStart {
 		}
 	}
 
-	@Rpc(CtrlerIDs.PLAYER$UPDATE)
+	@Rpc(CtrlerIds.PLAYER$UPDATE)
 	public RpcResult<PlayerDTO> updatePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {
@@ -71,7 +71,7 @@ public class PlayerController implements AppPostStart {
 		return RpcResults.fail(ResultCode.FAILURE);
 	}
 
-	@Rpc(CtrlerIDs.PLAYER$SAVE)
+	@Rpc(CtrlerIds.PLAYER$SAVE)
 	public RpcResult<PlayerDTO> savePlayer(@MsgParam long playerId, @MsgParam String name, @MsgParam int age) {
 		DemoPlayer player = null;
 		for (int id = 0; id < 500000; id++) {
@@ -83,7 +83,7 @@ public class PlayerController implements AppPostStart {
 		return RpcResults.success(new PlayerDTO(player));
 	}
 
-	@Rpc(CtrlerIDs.PLAYER$DELETE)
+	@Rpc(CtrlerIds.PLAYER$DELETE)
 	public RpcResult<PlayerDTO> deletePlayer(@MsgParam long playerId) {
 		DemoPlayer player = entityCacheManager.getEntity(playerId);
 		if (player != null) {

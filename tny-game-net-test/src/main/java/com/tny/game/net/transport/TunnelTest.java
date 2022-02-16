@@ -49,9 +49,9 @@ public abstract class TunnelTest<T extends Tunnel<Long>> extends CommunicatorTes
 	@Test
 	public void isLogin() {
 		T loginTunnel = createBindTunnel();
-		assertTrue(loginTunnel.isLogin());
+		assertTrue(loginTunnel.isAuthenticated());
 		T unloginTunnel = createUnbindTunnel();
-		assertFalse(unloginTunnel.isLogin());
+		assertFalse(unloginTunnel.isAuthenticated());
 	}
 
 	private void assertMessageMode(T tunnel, BiConsumer<T, MessageMode[]> setModes,

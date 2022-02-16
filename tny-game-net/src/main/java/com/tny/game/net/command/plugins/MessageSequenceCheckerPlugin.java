@@ -16,7 +16,7 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
 
 	@Override
 	public void doExecute(Tunnel<Object> tunnel, Message message, MessageCommandContext context) {
-		if (!tunnel.isLogin()) {
+		if (!tunnel.isAuthenticated()) {
 			return;
 		}
 		Endpoint<Object> endpoint = tunnel.getEndpoint();

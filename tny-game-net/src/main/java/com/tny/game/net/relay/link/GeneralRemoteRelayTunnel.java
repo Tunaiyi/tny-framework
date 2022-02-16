@@ -18,7 +18,7 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/8/16 8:00 下午
  */
-public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSession<UID>, MessageTransporter<UID>> implements RemoteRelayTunnel<UID> {
+public class GeneralRemoteRelayTunnel<UID> extends ServerTunnel<UID, NetSession<UID>, MessageTransporter> implements RemoteRelayTunnel<UID> {
 
 	/**
 	 * 当前服务器的服务实例 id
@@ -40,7 +40,7 @@ public class GeneralRemoteRelayTunnel<UID> extends BaseServerTunnel<UID, NetSess
 	 */
 	private final RelayMessageRouter relayMessageRouter;
 
-	public GeneralRemoteRelayTunnel(long instanceId, long id, MessageTransporter<UID> transport, NetworkContext context,
+	public GeneralRemoteRelayTunnel(long instanceId, long id, MessageTransporter transport, NetworkContext context,
 			RelayMessageRouter relayMessageRouter) {
 		super(id, transport, context);
 		this.instanceId = instanceId;

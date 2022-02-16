@@ -40,7 +40,7 @@ public class TunnelRelayArgumentsCodecor implements RelayPacketArgumentsCodecor<
 
 	@Override
 	public TunnelRelayArguments decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception {
-		NetRelayTransporter transporter = ctx.channel().attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
+		RelayTransporter transporter = ctx.channel().attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
 		NetworkContext context = transporter.getContext();
 		long instanceId = NettyVarIntCoder.readFixed64(out);
 		long tunnelId = NettyVarIntCoder.readFixed64(out);

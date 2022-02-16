@@ -1,4 +1,4 @@
-package com.tny.game.net.endpoint.task;
+package com.tny.game.net.command.task;
 
 import com.tny.game.common.worker.command.*;
 
@@ -10,6 +10,6 @@ import com.tny.game.common.worker.command.*;
  */
 public interface CommandTask {
 
-    Command createCommand();
+	Command createCommand();
 
 }

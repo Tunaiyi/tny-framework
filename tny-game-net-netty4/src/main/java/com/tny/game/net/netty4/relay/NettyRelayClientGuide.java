@@ -74,7 +74,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 	}
 
 	@Override
-	public NetRelayTransporter connect(URL url, long connectTimeout) throws NetException {
+	public RelayTransporter connect(URL url, long connectTimeout) throws NetException {
 		Asserts.checkNotNull(url, "url is null");
 		ChannelFuture channelFuture = null;
 		try {
@@ -159,7 +159,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 		return false;
 	}
 
-	private NetRelayTransporter createNetRelayLink(Channel channel) {
+	private RelayTransporter createNetRelayLink(Channel channel) {
 		return new NettyChannelRelayTransporter(channel, this.getContext());
 	}
 

@@ -23,7 +23,11 @@ public class ClientLoginController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientLoginController.class);
 
-	@Rpc(CtrlerIDs.LOGIN$LOGIN)
+	public ClientLoginController() {
+		System.out.println();
+	}
+
+	@RpcResponse(CtrlerIds.LOGIN$LOGIN)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
 	public void login(@MsgCode int code, @MsgBody LoginDTO dto) {
@@ -34,13 +38,13 @@ public class ClientLoginController {
 		}
 	}
 
-	@Rpc(CtrlerIDs.SPEAK$PUSH)
+	@RpcPush(CtrlerIds.SPEAK$PUSH)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	public void pushMessage(Tunnel<Long> tunnel, @MsgBody String message) {
-		//        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
+		LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
 	}
 
-	@Rpc(CtrlerIDs.SPEAK$PING)
+	@Rpc(CtrlerIds.SPEAK$PING)
 	@BeforePlugin(SpringBootParamFilterPlugin.class)
 	public void pingMessage(Tunnel<Long> tunnel, @MsgBody String message) {
 		LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getUserId(), tunnel.getAccessId(), message);

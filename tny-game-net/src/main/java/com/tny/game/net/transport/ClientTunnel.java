@@ -9,11 +9,11 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTransporter<UID>> extends BaseTunnel<UID, E, T> {
+public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTransporter> extends BaseNetTunnel<UID, E, T> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseClientTunnel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTunnel.class);
 
-	public BaseClientTunnel(long id, NetworkContext context) {
+	public ClientTunnel(long id, NetworkContext context) {
 		super(id, null, TunnelMode.CLIENT, context);
 	}
 
@@ -52,7 +52,7 @@ public class BaseClientTunnel<UID, E extends NetTerminal<UID>, T extends Message
 	}
 
 	@Override
-	protected boolean bindEndpoint(NetEndpoint<UID> endpoint) {
+	protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
 		return this.endpoint == endpoint;
 	}
 

@@ -16,7 +16,7 @@ public class ServerTunnelFactory implements NettyTunnelFactory {
 
 	@Override
 	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
-		MessageTransporter<T> transport = new NettyChannelMessageTransporter<>(channel);
+		MessageTransporter transport = new NettyChannelMessageTransporter(channel);
 		return new GeneralServerTunnel<>(id, transport, context); // 创建 Tunnel 已经transport.bind
 	}
 

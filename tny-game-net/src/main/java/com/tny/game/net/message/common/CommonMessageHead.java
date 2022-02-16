@@ -124,6 +124,15 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 	}
 
 	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("id", id)
+				.append("mode", mode)
+				.append("protocol", protocol)
+				.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(17, 37)
 				.append(getId())

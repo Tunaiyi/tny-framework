@@ -11,8 +11,12 @@ public class CommonTerminalKeeperSetting implements TerminalKeeperSetting {
 
 	private String keeperFactory = defaultName(TerminalKeeperFactory.class);
 
-	@Override
 	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getUserType() {
 		return this.name;
 	}
 

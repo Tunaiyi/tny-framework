@@ -1,10 +1,12 @@
 package com.tny.game.net.netty4.channel;
 
+import com.tny.game.common.context.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.*;
 
@@ -14,9 +16,15 @@ import static java.lang.String.*;
  * @author : kgtny
  * @date : 2021/5/21 3:46 下午
  */
-public abstract class NettyChannelConnection implements Connection {
+public abstract class NettyChannelConnection extends AttributesHolder implements Connection {
 
 	protected Channel channel;
+
+	private final AtomicBoolean close = new AtomicBoolean(false);
+
+	protected NettyChannelConnection(Channel channel) {
+		this.channel = channel;
+	}
 
 	@Override
 	public InetSocketAddress getRemoteAddress() {
@@ -33,8 +41,24 @@ public abstract class NettyChannelConnection implements Connection {
 		return this.channel.isActive();
 	}
 
-	protected NettyChannelConnection(Channel channel) {
-		this.channel = channel;
+	@Override
+	public boolean isClosed() {
+		return close.get();
+	}
+
+	@Override
+	public boolean close() {
+		if (close.get()) {
+			return false;
+		}
+		if (close.compareAndSet(true, false)) {
+			this.doClose();
+			return true;
+		}
+		return false;
+	}
+
+	protected void doClose() {
 	}
 
 	protected ChannelPromise createChannelPromise(MessageWriteAwaiter awaiter) {

@@ -3,22 +3,17 @@ package com.tny.game.net.command.dispatcher;
 import com.google.common.collect.*;
 import com.tny.game.common.number.*;
 import com.tny.game.common.reflect.*;
-import com.tny.game.common.result.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.auth.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -58,12 +53,12 @@ public final class MethodControllerHolder extends ControllerHolder {
 	/**
 	 * 参数注解列表
 	 */
-	private final Map<Class<?>, List<Annotation>> paramAnnotationsMap;
+	private final Map<Class<?>, List<Annotation>> indexParamAnnotationsMap;
 
 	/**
 	 * 方法注解
 	 */
-	private Map<Class<?>, Annotation> methodAnnotationMap;
+	private final AnnotationHolder methodAnnotationHolder;
 
 	/**
 	 * 返回类型
@@ -73,12 +68,12 @@ public final class MethodControllerHolder extends ControllerHolder {
 	/**
 	 * 执行list
 	 */
-	private PluginContext beforeContext;
+	private PluginChain beforeContext;
 
 	/**
 	 * 执行list
 	 */
-	private PluginContext afterContext;
+	private PluginChain afterContext;
 
 	/**
 	 * 控制器操作配置
@@ -127,8 +122,8 @@ public final class MethodControllerHolder extends ControllerHolder {
 			}
 			nameBuilder.append(")");
 			this.name = nameBuilder.toString();
-			this.initMethodAnnotation(method.getJavaMethod().getAnnotations());
-			Map<Class<?>, List<Annotation>> annotationsMap = new HashMap<>();
+			this.methodAnnotationHolder = new AnnotationHolder(method.getJavaMethod().getAnnotations());
+			Map<Class<?>, List<Annotation>> indexParamAnnotationsMap = new HashMap<>();
 			Set<Class<?>> annotationClassSet = new HashSet<>();
 			for (Annotation[] paramAnnotations : parameterAnnotations) {
 				for (Annotation paramAnnotation : paramAnnotations) {
@@ -149,26 +144,19 @@ public final class MethodControllerHolder extends ControllerHolder {
 					}
 					indexAnnotationList.add(select);
 				}
-				annotationsMap.put(clazz, Collections.unmodifiableList(indexAnnotationList));
+				indexParamAnnotationsMap.put(clazz, Collections.unmodifiableList(indexAnnotationList));
 			}
-			this.paramAnnotationsMap = ImmutableMap.copyOf(annotationsMap);
+			this.indexParamAnnotationsMap = ImmutableMap.copyOf(indexParamAnnotationsMap);
 			this.paramDescriptions = ImmutableList.copyOf(paramDescriptions);
-			for (ControllerPluginHolder plugin : this.getControllerBeforePlugins())
+			for (CommandPluginHolder plugin : this.getControllerBeforePlugins())
 				this.beforeContext = this.putPlugin(this.beforeContext, plugin);
-			for (ControllerPluginHolder plugin : this.getControllerAfterPlugins())
+			for (CommandPluginHolder plugin : this.getControllerAfterPlugins())
 				this.afterContext = this.putPlugin(this.afterContext, plugin);
 			this.returnType = method.getReturnType();
 			this.setMessageModes(rpcProfile.getModeSet());
 		} catch (Exception e) {
 			throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
 		}
-	}
-
-	private void initMethodAnnotation(Annotation[] annotations) {
-		Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
-		for (Annotation annotation : annotations)
-			annotationMap.put(annotation.annotationType(), annotation);
-		this.methodAnnotationMap = Collections.unmodifiableMap(annotationMap);
 	}
 
 	@Override
@@ -187,11 +175,11 @@ public final class MethodControllerHolder extends ControllerHolder {
 		return this.paramDescriptions.size();
 	}
 
-	private PluginContext putPlugin(PluginContext context, ControllerPluginHolder plugin) {
+	private PluginChain putPlugin(PluginChain context, CommandPluginHolder plugin) {
 		if (context == null) {
-			context = new PluginContext(plugin);
+			context = new PluginChain(plugin);
 		}
-		context.setNext(new PluginContext(plugin));
+		context.append(new PluginChain(plugin));
 		return context;
 	}
 
@@ -264,35 +252,15 @@ public final class MethodControllerHolder extends ControllerHolder {
 	}
 
 	@Override
-	protected List<ControllerPluginHolder> getControllerBeforePlugins() {
+	protected List<CommandPluginHolder> getControllerBeforePlugins() {
 		return this.beforePlugins != null && !this.beforePlugins.isEmpty() ? Collections.unmodifiableList(this.beforePlugins)
 				: this.classController.getControllerBeforePlugins();
 	}
 
 	@Override
-	protected List<ControllerPluginHolder> getControllerAfterPlugins() {
+	protected List<CommandPluginHolder> getControllerAfterPlugins() {
 		return this.afterPlugins != null && !this.afterPlugins.isEmpty() ? Collections.unmodifiableList(this.afterPlugins)
 				: this.classController.getControllerAfterPlugins();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <A extends Annotation> List<A> getParamsAnnotationsByType(Class<A> clazz) {
-		List<Annotation> annotations = this.paramAnnotationsMap.get(clazz);
-		if (annotations == null) {
-			return new ArrayList<>();
-		}
-		return (List<A>)annotations;
-	}
-
-	@Override
-	public boolean isParamsAnnotationExist(Class<? extends Annotation> clazz) {
-		return this.paramAnnotationsMap.containsKey(clazz);
-	}
-
-	@Override
-	public List<Annotation> getParamAnnotationsByIndex(int index) {
-		return this.paramDescriptions.get(index).getParamAnnotations();
 	}
 
 	@Override
@@ -301,13 +269,33 @@ public final class MethodControllerHolder extends ControllerHolder {
 	}
 
 	@Override
+	public <A extends Annotation> List<A> getAnnotations(Class<A> annotationClass) {
+		return this.classController.getAnnotations(annotationClass);
+	}
+
 	@SuppressWarnings("unchecked")
+	public <A extends Annotation> List<A> getAnnotationsOfParametersByType(Class<A> clazz) {
+		List<Annotation> annotations = this.indexParamAnnotationsMap.get(clazz);
+		if (annotations == null) {
+			return new ArrayList<>();
+		}
+		return (List<A>)annotations;
+	}
+
+	public List<Annotation> getParamAnnotationsByIndex(int index) {
+		return this.paramDescriptions.get(index).getAnnotations();
+	}
+
 	public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
-		return (A)this.methodAnnotationMap.get(annotationClass);
+		return methodAnnotationHolder.getAnnotation(annotationClass);
+	}
+
+	public <A extends Annotation> List<A> getMethodAnnotations(Class<A> annotationClass) {
+		return methodAnnotationHolder.getAnnotations(annotationClass);
 	}
 
 	public Set<Class<?>> getParamAnnotationClass() {
-		return this.paramAnnotationsMap.keySet();
+		return this.indexParamAnnotationsMap.keySet();
 	}
 
 	public Class<?> getReturnType() {
@@ -331,7 +319,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 		this.beforeContext.execute(tunnel, message, context);
 	}
 
-	void afterInvoke(Tunnel<?> tunnel, Message message, ControllerMessageCommandContext context) {
+	void afterInvoke(Tunnel<?> tunnel, Message message, MessageCommandContext context) {
 		if (this.afterContext == null) {
 			return;
 		}
@@ -341,200 +329,6 @@ public final class MethodControllerHolder extends ControllerHolder {
 	@Override
 	public String toString() {
 		return "MethodHolder [" + getControllerClass() + "." + getName() + "]";
-	}
-
-	private static class ParamDescription {
-
-		/* body 为List时 索引 */
-		private int index;
-
-		/* body 为Map时 key */
-		private String name;
-
-		private ExprHolder formula;
-
-		private ParamType paramType = ParamType.NONE;
-
-		/* 参数类型 */
-		private final Class<?> paramClass;
-
-		private boolean require;
-
-		private final List<Annotation> paramAnnotations;
-
-		private final MethodControllerHolder holder;
-
-		private ParamDescription(MethodControllerHolder holder, Class<?> paramClass, List<Annotation> paramAnnotations,
-				LocalNum<Integer> indexCounter,
-				ExprHolderFactory exprHolderFactory) {
-			this.holder = holder;
-			this.paramClass = paramClass;
-			this.paramAnnotations = paramAnnotations;
-			this.require = true;
-			this.paramType = ParamType.ENDPOINT;
-			if (NetBootstrapSetting.class.isAssignableFrom(this.paramClass)) {
-				this.paramType = ParamType.SETTING;
-			} else if (paramClass == Endpoint.class) {
-				this.paramType = ParamType.ENDPOINT;
-			} else if (paramClass == Session.class) {
-				this.paramType = ParamType.SESSION;
-			} else if (paramClass == Tunnel.class) {
-				this.paramType = ParamType.TUNNEL;
-			} else if (paramClass == RelayTunnel.class) {
-				this.paramType = ParamType.RELAY_TUNNEL;
-			} else if (paramClass == Message.class) {
-				this.paramType = ParamType.MESSAGE;
-			} else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
-				this.paramType = ParamType.CODE;
-			} else {
-				if (this.paramAnnotations.isEmpty()) {
-					this.index = indexCounter.intValue();
-					indexCounter.add(1);
-					this.paramType = ParamType.INDEX_PARAM;
-				} else {
-					for (Annotation annotation : this.paramAnnotations) {
-						if (annotation.annotationType() == MsgBody.class) {
-							this.paramType = ParamType.BODY;
-							this.require = ((MsgBody)annotation).require();
-						} else if (annotation.annotationType() == MsgParam.class) {
-							/* 参数注解 */
-							MsgParam msgParam = (MsgParam)annotation;
-							this.require = msgParam.require();
-							if (StringUtils.isNoneBlank(msgParam.value())) {
-								this.name = msgParam.value();
-								this.formula = exprHolderFactory.create("_body." + this.name.trim());
-								this.paramType = ParamType.KEY_PARAM;
-							} else {
-								if (msgParam.index() >= 0) {
-									this.index = msgParam.index();
-								} else {
-									this.index = indexCounter.intValue();
-									indexCounter.add(1);
-								}
-								this.paramType = ParamType.INDEX_PARAM;
-							}
-						} else if (annotation.annotationType() == UserID.class) {
-							this.paramType = ParamType.UserID;
-						} else if (annotation.annotationType() == MsgCode.class) {
-							if (paramClass == Integer.class || paramClass == int.class) {
-								this.paramType = ParamType.CODE_NUM;
-							} else if (ResultCode.class.isAssignableFrom(this.paramClass)) {
-								this.paramType = ParamType.CODE;
-							} else {
-								throw new IllegalArgumentException(format("{} 类型参数只能是 {} {} {}, 无法为 {}",
-										MsgCode.class, Integer.class, int.class, ResultCode.class));
-							}
-						}
-					}
-				}
-			}
-		}
-
-		private Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
-			boolean require = this.require;
-			if (body == null) {
-				body = message.bodyAs(Object.class);
-			}
-			MessageHead head = message.getHead();
-			Object value = null;
-			switch (this.paramType) {
-				case MESSAGE:
-					value = message;
-					break;
-				case ENDPOINT: {
-					value = tunnel.getEndpoint();
-					break;
-				}
-				case SESSION: {
-					value = tunnel.getEndpoint();
-					if (value instanceof Session) {
-						break;
-					}
-					throw new NullPointerException(format("{} session is null", tunnel));
-				}
-				case CLIENT: {
-					value = tunnel.getEndpoint();
-					if (value instanceof Client) {
-						break;
-					}
-					throw new NullPointerException(format("{} session is null", tunnel));
-				}
-				case TUNNEL:
-					value = tunnel;
-					break;
-				case RELAY_TUNNEL:
-					if (tunnel instanceof RelayTunnel) {
-						value = tunnel;
-					} else {
-						throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 并非可转发通道 RelayTunnel", tunnel));
-					}
-					break;
-				case SETTING:
-					NetworkContext context = tunnel.getContext();
-					value = context.getSetting();
-					break;
-				case BODY:
-					value = body;
-					break;
-				case UserID:
-					value = tunnel.getUserId();
-					break;
-				case INDEX_PARAM:
-					try {
-						if (body == null) {
-							if (require) {
-								throw new NullPointerException(format("{} 收到消息体为 null"));
-							} else {
-								break;
-							}
-						}
-						if (body instanceof List) {
-							value = ((List<?>)body).get(this.index);
-						} else if (body.getClass().isArray()) {
-							value = Array.get(body, this.index);
-						} else {
-							throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
-									format("{} 收到消息体为 {}, 不可通过index获取", this.holder, body.getClass()));
-						}
-					} catch (CommandException e) {
-						throw e;
-					} catch (Throwable e) {
-						throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 调用异常", this.holder), e);
-					}
-					break;
-				case KEY_PARAM:
-					if (body == null) {
-						if (require) {
-							throw new NullPointerException(format("{} 收到消息体为 null"));
-						} else {
-							break;
-						}
-					}
-					if (body instanceof Map) {
-						value = ((Map<?, ?>)body).get(this.name);
-					} else {
-						value = this.formula.createExpr()
-								.put("_body", body)
-								.execute(this.paramClass);
-					}
-					break;
-				case CODE:
-					value = ResultCodes.of(head.getCode());
-					break;
-				case CODE_NUM:
-					value = head.getCode();
-					break;
-			}
-			if (value != null && !this.paramClass.isInstance(value)) {
-				value = ObjectAide.convertTo(value, this.paramClass);
-			}
-			return value;
-		}
-
-		private List<Annotation> getParamAnnotations() {
-			return this.paramAnnotations;
-		}
-
 	}
 
 }

@@ -123,6 +123,14 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
 		return this.doReadRawVarInt32();
 	}
 
+	public int readUInt() {
+		return this.doReadRawVarInt32();
+	}
+
+	public long readULong() {
+		return this.doReadRawVarInt64();
+	}
+
 	public int readSignInt() {
 		return this.doReadSInt32();
 	}

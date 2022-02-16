@@ -38,7 +38,7 @@ public interface RemoteRelayExplorer extends RelayExplorer<RemoteRelayTunnel<?>>
 	 * @param context   网络上下文
 	 * @return 返回创建的管道
 	 */
-	<D> DoneResult<RemoteRelayTunnel<D>> createTunnel(long id, MessageTransporter<D> transport, NetworkContext context);
+	<D> DoneResult<RemoteRelayTunnel<D>> createTunnel(long id, MessageTransporter transport, NetworkContext context);
 
 	/**
 	 * 为通讯管道分配指定的集群转发连接

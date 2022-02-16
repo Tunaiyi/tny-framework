@@ -62,7 +62,7 @@ public class RpcResults {
 	 * @param body 消息体
 	 * @return 返回结果
 	 */
-	public static <T> RpcResult<T> create(ResultCode code, Object body) {
+	public static <T> RpcResult<T> result(ResultCode code, Object body) {
 		return new RpcResultImpl<>(code, body);
 	}
 

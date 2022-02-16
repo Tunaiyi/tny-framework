@@ -21,8 +21,12 @@ public class CommonSessionKeeperSetting implements SessionKeeperSetting {
 
 	private String keeperFactory = defaultName(SessionKeeperFactory.class);
 
-	@Override
 	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getUserType() {
 		return this.name;
 	}
 

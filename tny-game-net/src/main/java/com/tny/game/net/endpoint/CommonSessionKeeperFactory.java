@@ -13,7 +13,7 @@ public class CommonSessionKeeperFactory<UID> implements SessionKeeperFactory<UID
 	}
 
 	@Override
-	public SessionKeeper<UID> createKeeper(String userType, SessionKeeperSetting setting) {
+	public NetEndpointKeeper<UID, Session<UID>> createKeeper(String userType, SessionKeeperSetting setting) {
 		SessionFactory<UID, NetSession<UID>, SessionSetting> sessionFactory = UnitLoader.getLoader(SessionFactory.class)
 				.checkUnit(setting.getSessionFactory());
 		return new CommonSessionKeeper<>(userType, sessionFactory, setting);

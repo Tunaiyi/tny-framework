@@ -1,5 +1,7 @@
 package com.tny.game.net.transport;
 
+import com.tny.game.common.context.*;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -26,8 +28,18 @@ public interface Connection {
 	boolean isActive();
 
 	/**
+	 * @return 是否关闭终端
+	 */
+	boolean isClosed();
+
+	/**
 	 * 关闭断开连接
 	 */
-	void close();
+	boolean close();
+
+	/**
+	 * @return 获取会话属性
+	 */
+	Attributes attributes();
 
 }

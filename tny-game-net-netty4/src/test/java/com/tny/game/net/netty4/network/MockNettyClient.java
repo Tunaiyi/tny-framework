@@ -31,8 +31,8 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long
 	}
 
 	@Override
-	public MessageTransporter<Long> connect() {
-		return new NettyChannelMessageTransporter<>(new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
+	public MessageTransporter connect() {
+		return new NettyChannelMessageTransporter(new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
 	}
 
 	@Override

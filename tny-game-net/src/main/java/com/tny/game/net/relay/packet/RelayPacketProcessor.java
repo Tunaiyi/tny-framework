@@ -10,7 +10,7 @@ import com.tny.game.net.relay.link.*;
  */
 public interface RelayPacketProcessor {
 
-	void onLinkOpen(NetRelayTransporter transporter, LinkOpenPacket packet);
+	void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet);
 
 	void onLinkOpened(NetRelayLink link, LinkOpenedPacket packet);
 

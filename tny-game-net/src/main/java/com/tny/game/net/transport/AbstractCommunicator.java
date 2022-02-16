@@ -13,10 +13,6 @@ public abstract class AbstractCommunicator<UID> extends AttributesHolder impleme
 	protected AbstractCommunicator() {
 	}
 
-	protected void destroyFutureHolder() {
-		RespondFutureHolder.removeHolder(this);
-	}
-
 	@Override
 	public UID getUserId() {
 		return getCertificate().getUserId();
@@ -28,7 +24,7 @@ public abstract class AbstractCommunicator<UID> extends AttributesHolder impleme
 	}
 
 	@Override
-	public boolean isLogin() {
+	public boolean isAuthenticated() {
 		return this.getCertificate().isAuthenticated();
 	}
 

@@ -15,8 +15,8 @@ public interface CertificateFactory<UID> {
 
 	Certificate<UID> anonymous();
 
-	Certificate<UID> certificate(long id, UID userID, String userType, Instant authenticateAt);
+	Certificate<UID> certificate(long id, UID userId, String userType, Instant authenticateAt);
 
-	Certificate<UID> renewCertificate(long id, UID userID, String userType, Instant authenticateAt);
+	Certificate<UID> renewCertificate(long id, UID userId, String userType, Instant authenticateAt);
 
 }
