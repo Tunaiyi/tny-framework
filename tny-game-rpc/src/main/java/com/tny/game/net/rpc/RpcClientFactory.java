@@ -38,10 +38,6 @@ public class RpcClientFactory implements Serve {
 		return setting;
 	}
 
-	public String getS() {
-		return setting.serviceName();
-	}
-
 	@Override
 	public String getServeName() {
 		return setting.getServeName();

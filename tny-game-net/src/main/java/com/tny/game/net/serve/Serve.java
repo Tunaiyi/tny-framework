@@ -27,4 +27,11 @@ public interface Serve {
 		return ifBlank(this.getService(), this.getServeName());
 	}
 
+	/**
+	 * @return 获取服务名(获取服务名 未设置则返回ServeName)
+	 */
+	default String discoverService() {
+		return ifBlank(this.getServeName(), this.getService());
+	}
+
 }

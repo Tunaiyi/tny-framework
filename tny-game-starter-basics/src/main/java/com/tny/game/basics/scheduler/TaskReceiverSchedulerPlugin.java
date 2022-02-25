@@ -7,9 +7,7 @@ import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);

@@ -70,7 +70,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
 				host = defaultDiscoveryProperties.getIp();
 			}
 		}
-		LocalServeNode node = new LocalServeNode(netAppContext, guide.getServeName(), guide.serviceName(), guide.getScheme(), host, port);
+		LocalServeNode node = new LocalServeNode(netAppContext, guide.discoverService(), guide.serviceName(), guide.getScheme(), host, port);
 		for (LocalServerNodeCustomizer customizer : localServerNodeCustomizers) {
 			customizer.customize(node);
 		}
@@ -94,7 +94,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
 
 			NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
 			copyProperties(defaultDiscoveryProperties, properties);
-			properties.setService(node.getServeName());
+			properties.setService(node.discoverService());
 			properties.setIp(node.getHost());
 			properties.setPort(node.getPort());
 			properties.setMetadata(metadata);

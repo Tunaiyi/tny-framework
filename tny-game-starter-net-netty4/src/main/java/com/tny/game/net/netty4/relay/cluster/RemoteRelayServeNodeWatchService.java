@@ -55,11 +55,11 @@ public class RemoteRelayServeNodeWatchService implements AppPrepareStart, AppClo
 		private final RemoteServeCluster cluster;
 
 		private void start() {
-			serveNodeClient.subscribe(cluster.getServeName(), this);
+			serveNodeClient.subscribe(cluster.discoverService(), this);
 		}
 
 		private void stop() {
-			serveNodeClient.unsubscribe(cluster.getServeName(), this);
+			serveNodeClient.unsubscribe(cluster.discoverService(), this);
 		}
 
 		private ServeInstanceWatcher(RemoteServeCluster cluster) {
