@@ -16,7 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
     }
 }
 
@@ -36,9 +36,17 @@ jar {
 }
 
 protobuf {
-    protoc {
-        artifact = 'com.google.protobuf:protoc:3.8.0'
+    protobuf {
+        protoc {
+            // for apple m1, please add protoc_platform=osx-x86_64 in $HOME/.gradle/gradle.properties
+            if (project.hasProperty('protoc_platform')) {
+                artifact = "com.google.protobuf:protoc:3.13.0:${protoc_platform}"
+            } else {
+                artifact = "com.google.protobuf:protoc:3.13.0"
+            }
+        }
     }
+
 
     generateProtoTasks.generatedFilesBaseDir = file('src')
 

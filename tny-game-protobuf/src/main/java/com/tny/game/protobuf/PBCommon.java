@@ -20,76 +20,91 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 intValue = 1;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 1;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 2;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 2;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 3;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 3;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 4;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 4;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 5;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 5;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 7;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 7;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code CommonEntryProto}
    */
-  public  static final class CommonEntryProto extends
+  public static final class CommonEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:CommonEntryProto)
       CommonEntryProtoOrBuilder {
@@ -207,13 +222,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 1;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int32 intValue = 1;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -222,13 +241,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 2;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int64 longValue = 2;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -237,13 +260,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 3;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional float floatValue = 3;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -252,13 +279,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 4;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional double doubleValue = 4;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -267,13 +298,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 5;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional bool booleanValue = 5;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -282,13 +317,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -305,7 +344,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 6;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -324,13 +365,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 7;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 7;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -809,18 +854,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 1;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int32 intValue = 1;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 1;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000001;
@@ -830,6 +881,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -841,18 +893,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 2;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int64 longValue = 2;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 2;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000002;
@@ -862,6 +920,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -873,18 +932,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 3;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional float floatValue = 3;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 3;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000004;
@@ -894,6 +959,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -905,18 +971,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 4;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional double doubleValue = 4;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 4;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000008;
@@ -926,6 +998,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -937,18 +1010,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 5;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional bool booleanValue = 5;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 5;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000010;
@@ -958,6 +1037,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -969,12 +1049,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 6;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional string stringValue = 6;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -992,6 +1074,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 6;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -1008,6 +1091,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 6;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -1021,6 +1106,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1030,6 +1116,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 6;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -1045,18 +1133,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 7;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 7;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 7;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -1069,6 +1163,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -1135,85 +1230,102 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional int32 key = 1;</code>
+     * @return The key.
      */
     int getKey();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code IntEntryProto}
    */
-  public  static final class IntEntryProto extends
+  public static final class IntEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IntEntryProto)
       IntEntryProtoOrBuilder {
@@ -1336,13 +1448,17 @@ public final class PBCommon {
     private int key_;
     /**
      * <code>optional int32 key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int32 key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public int getKey() {
       return key_;
     }
@@ -1351,13 +1467,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -1366,13 +1486,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -1381,13 +1505,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -1396,13 +1524,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -1411,13 +1543,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -1426,13 +1562,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -1449,7 +1589,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -1468,13 +1610,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -1978,18 +2124,24 @@ public final class PBCommon {
       private int key_ ;
       /**
        * <code>optional int32 key = 1;</code>
+       * @return Whether the key field is set.
        */
+      @java.lang.Override
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int32 key = 1;</code>
+       * @return The key.
        */
+      @java.lang.Override
       public int getKey() {
         return key_;
       }
       /**
        * <code>optional int32 key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(int value) {
         bitField0_ |= 0x00000001;
@@ -1999,6 +2151,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -2010,18 +2163,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -2031,6 +2190,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -2042,18 +2202,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -2063,6 +2229,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -2074,18 +2241,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -2095,6 +2268,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -2106,18 +2280,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -2127,6 +2307,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -2138,18 +2319,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -2159,6 +2346,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -2170,12 +2358,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -2193,6 +2383,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -2209,6 +2400,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -2222,6 +2415,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -2231,6 +2425,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -2246,18 +2442,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -2270,6 +2472,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -2336,90 +2539,108 @@ public final class PBCommon {
 
     /**
      * <code>optional string key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional string key = 1;</code>
+     * @return The key.
      */
     java.lang.String getKey();
     /**
      * <code>optional string key = 1;</code>
+     * @return The bytes for key.
      */
     com.google.protobuf.ByteString
         getKeyBytes();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code StringEntryProto}
    */
-  public  static final class StringEntryProto extends
+  public static final class StringEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:StringEntryProto)
       StringEntryProtoOrBuilder {
@@ -2544,13 +2765,17 @@ public final class PBCommon {
     private volatile java.lang.Object key_;
     /**
      * <code>optional string key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional string key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public java.lang.String getKey() {
       java.lang.Object ref = key_;
       if (ref instanceof java.lang.String) {
@@ -2567,7 +2792,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string key = 1;</code>
+     * @return The bytes for key.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getKeyBytes() {
       java.lang.Object ref = key_;
@@ -2586,13 +2813,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -2601,13 +2832,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -2616,13 +2851,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -2631,13 +2870,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -2646,13 +2889,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -2661,13 +2908,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -2684,7 +2935,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -2703,13 +2956,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -3214,12 +3471,14 @@ public final class PBCommon {
       private java.lang.Object key_ = "";
       /**
        * <code>optional string key = 1;</code>
+       * @return Whether the key field is set.
        */
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional string key = 1;</code>
+       * @return The key.
        */
       public java.lang.String getKey() {
         java.lang.Object ref = key_;
@@ -3237,6 +3496,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string key = 1;</code>
+       * @return The bytes for key.
        */
       public com.google.protobuf.ByteString
           getKeyBytes() {
@@ -3253,6 +3513,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(
           java.lang.String value) {
@@ -3266,6 +3528,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -3275,6 +3538,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string key = 1;</code>
+       * @param value The bytes for key to set.
+       * @return This builder for chaining.
        */
       public Builder setKeyBytes(
           com.google.protobuf.ByteString value) {
@@ -3290,18 +3555,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -3311,6 +3582,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -3322,18 +3594,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -3343,6 +3621,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -3354,18 +3633,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -3375,6 +3660,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -3386,18 +3672,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -3407,6 +3699,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -3418,18 +3711,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -3439,6 +3738,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -3450,12 +3750,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -3473,6 +3775,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -3489,6 +3792,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -3502,6 +3807,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -3511,6 +3817,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -3526,18 +3834,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -3550,6 +3864,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -3616,85 +3931,102 @@ public final class PBCommon {
 
     /**
      * <code>optional int64 key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional int64 key = 1;</code>
+     * @return The key.
      */
     long getKey();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code LongEntryProto}
    */
-  public  static final class LongEntryProto extends
+  public static final class LongEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:LongEntryProto)
       LongEntryProtoOrBuilder {
@@ -3817,13 +4149,17 @@ public final class PBCommon {
     private long key_;
     /**
      * <code>optional int64 key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public long getKey() {
       return key_;
     }
@@ -3832,13 +4168,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -3847,13 +4187,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -3862,13 +4206,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -3877,13 +4225,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -3892,13 +4244,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -3907,13 +4263,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -3930,7 +4290,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -3949,13 +4311,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -4460,18 +4826,24 @@ public final class PBCommon {
       private long key_ ;
       /**
        * <code>optional int64 key = 1;</code>
+       * @return Whether the key field is set.
        */
+      @java.lang.Override
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 key = 1;</code>
+       * @return The key.
        */
+      @java.lang.Override
       public long getKey() {
         return key_;
       }
       /**
        * <code>optional int64 key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(long value) {
         bitField0_ |= 0x00000001;
@@ -4481,6 +4853,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -4492,18 +4865,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -4513,6 +4892,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -4524,18 +4904,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -4545,6 +4931,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -4556,18 +4943,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -4577,6 +4970,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -4588,18 +4982,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -4609,6 +5009,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -4620,18 +5021,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -4641,6 +5048,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -4652,12 +5060,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -4675,6 +5085,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -4691,6 +5102,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -4704,6 +5117,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -4713,6 +5127,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -4728,18 +5144,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -4752,6 +5174,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -4818,85 +5241,102 @@ public final class PBCommon {
 
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
     float getKey();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code FloatEntryProto}
    */
-  public  static final class FloatEntryProto extends
+  public static final class FloatEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:FloatEntryProto)
       FloatEntryProtoOrBuilder {
@@ -5019,13 +5459,17 @@ public final class PBCommon {
     private float key_;
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public float getKey() {
       return key_;
     }
@@ -5034,13 +5478,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -5049,13 +5497,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -5064,13 +5516,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -5079,13 +5535,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -5094,13 +5554,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -5109,13 +5573,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -5132,7 +5600,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -5151,13 +5621,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -5663,18 +6137,24 @@ public final class PBCommon {
       private float key_ ;
       /**
        * <code>optional float key = 1;</code>
+       * @return Whether the key field is set.
        */
+      @java.lang.Override
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return The key.
        */
+      @java.lang.Override
       public float getKey() {
         return key_;
       }
       /**
        * <code>optional float key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(float value) {
         bitField0_ |= 0x00000001;
@@ -5684,6 +6164,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -5695,18 +6176,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -5716,6 +6203,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -5727,18 +6215,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -5748,6 +6242,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -5759,18 +6254,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -5780,6 +6281,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -5791,18 +6293,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -5812,6 +6320,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -5823,18 +6332,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -5844,6 +6359,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -5855,12 +6371,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -5878,6 +6396,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -5894,6 +6413,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -5907,6 +6428,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -5916,6 +6438,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -5931,18 +6455,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -5955,6 +6485,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -6021,85 +6552,102 @@ public final class PBCommon {
 
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
     float getKey();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code DoubleEntryProto}
    */
-  public  static final class DoubleEntryProto extends
+  public static final class DoubleEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:DoubleEntryProto)
       DoubleEntryProtoOrBuilder {
@@ -6222,13 +6770,17 @@ public final class PBCommon {
     private float key_;
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public float getKey() {
       return key_;
     }
@@ -6237,13 +6789,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -6252,13 +6808,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -6267,13 +6827,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -6282,13 +6846,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -6297,13 +6865,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -6312,13 +6884,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -6335,7 +6911,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -6354,13 +6932,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -6866,18 +7448,24 @@ public final class PBCommon {
       private float key_ ;
       /**
        * <code>optional float key = 1;</code>
+       * @return Whether the key field is set.
        */
+      @java.lang.Override
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return The key.
        */
+      @java.lang.Override
       public float getKey() {
         return key_;
       }
       /**
        * <code>optional float key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(float value) {
         bitField0_ |= 0x00000001;
@@ -6887,6 +7475,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -6898,18 +7487,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -6919,6 +7514,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -6930,18 +7526,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -6951,6 +7553,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -6962,18 +7565,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -6983,6 +7592,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -6994,18 +7604,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -7015,6 +7631,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -7026,18 +7643,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -7047,6 +7670,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -7058,12 +7682,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -7081,6 +7707,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -7097,6 +7724,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -7110,6 +7739,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -7119,6 +7749,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -7134,18 +7766,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -7158,6 +7796,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -7224,85 +7863,102 @@ public final class PBCommon {
 
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
     boolean hasKey();
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
     float getKey();
 
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
     boolean hasIntValue();
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
     int getIntValue();
 
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
     boolean hasLongValue();
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
     long getLongValue();
 
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
     boolean hasFloatValue();
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
     float getFloatValue();
 
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
     boolean hasDoubleValue();
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
     double getDoubleValue();
 
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
     boolean hasBooleanValue();
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
     boolean getBooleanValue();
 
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
     boolean hasStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
     java.lang.String getStringValue();
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
     com.google.protobuf.ByteString
         getStringValueBytes();
 
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
     boolean hasBytesValue();
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
     com.google.protobuf.ByteString getBytesValue();
   }
   /**
    * Protobuf type {@code BooleanEntryProto}
    */
-  public  static final class BooleanEntryProto extends
+  public static final class BooleanEntryProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:BooleanEntryProto)
       BooleanEntryProtoOrBuilder {
@@ -7425,13 +8081,17 @@ public final class PBCommon {
     private float key_;
     /**
      * <code>optional float key = 1;</code>
+     * @return Whether the key field is set.
      */
+    @java.lang.Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional float key = 1;</code>
+     * @return The key.
      */
+    @java.lang.Override
     public float getKey() {
       return key_;
     }
@@ -7440,13 +8100,17 @@ public final class PBCommon {
     private int intValue_;
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return Whether the intValue field is set.
      */
+    @java.lang.Override
     public boolean hasIntValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 intValue = 2;</code>
+     * @return The intValue.
      */
+    @java.lang.Override
     public int getIntValue() {
       return intValue_;
     }
@@ -7455,13 +8119,17 @@ public final class PBCommon {
     private long longValue_;
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return Whether the longValue field is set.
      */
+    @java.lang.Override
     public boolean hasLongValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 longValue = 3;</code>
+     * @return The longValue.
      */
+    @java.lang.Override
     public long getLongValue() {
       return longValue_;
     }
@@ -7470,13 +8138,17 @@ public final class PBCommon {
     private float floatValue_;
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return Whether the floatValue field is set.
      */
+    @java.lang.Override
     public boolean hasFloatValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float floatValue = 4;</code>
+     * @return The floatValue.
      */
+    @java.lang.Override
     public float getFloatValue() {
       return floatValue_;
     }
@@ -7485,13 +8157,17 @@ public final class PBCommon {
     private double doubleValue_;
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return Whether the doubleValue field is set.
      */
+    @java.lang.Override
     public boolean hasDoubleValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double doubleValue = 5;</code>
+     * @return The doubleValue.
      */
+    @java.lang.Override
     public double getDoubleValue() {
       return doubleValue_;
     }
@@ -7500,13 +8176,17 @@ public final class PBCommon {
     private boolean booleanValue_;
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return Whether the booleanValue field is set.
      */
+    @java.lang.Override
     public boolean hasBooleanValue() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional bool booleanValue = 6;</code>
+     * @return The booleanValue.
      */
+    @java.lang.Override
     public boolean getBooleanValue() {
       return booleanValue_;
     }
@@ -7515,13 +8195,17 @@ public final class PBCommon {
     private volatile java.lang.Object stringValue_;
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return Whether the stringValue field is set.
      */
+    @java.lang.Override
     public boolean hasStringValue() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The stringValue.
      */
+    @java.lang.Override
     public java.lang.String getStringValue() {
       java.lang.Object ref = stringValue_;
       if (ref instanceof java.lang.String) {
@@ -7538,7 +8222,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string stringValue = 7;</code>
+     * @return The bytes for stringValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getStringValueBytes() {
       java.lang.Object ref = stringValue_;
@@ -7557,13 +8243,17 @@ public final class PBCommon {
     private com.google.protobuf.ByteString bytesValue_;
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return Whether the bytesValue field is set.
      */
+    @java.lang.Override
     public boolean hasBytesValue() {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional bytes bytesValue = 8;</code>
+     * @return The bytesValue.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getBytesValue() {
       return bytesValue_;
     }
@@ -8069,18 +8759,24 @@ public final class PBCommon {
       private float key_ ;
       /**
        * <code>optional float key = 1;</code>
+       * @return Whether the key field is set.
        */
+      @java.lang.Override
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return The key.
        */
+      @java.lang.Override
       public float getKey() {
         return key_;
       }
       /**
        * <code>optional float key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
        */
       public Builder setKey(float value) {
         bitField0_ |= 0x00000001;
@@ -8090,6 +8786,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float key = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -8101,18 +8798,24 @@ public final class PBCommon {
       private int intValue_ ;
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return Whether the intValue field is set.
        */
+      @java.lang.Override
       public boolean hasIntValue() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return The intValue.
        */
+      @java.lang.Override
       public int getIntValue() {
         return intValue_;
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @param value The intValue to set.
+       * @return This builder for chaining.
        */
       public Builder setIntValue(int value) {
         bitField0_ |= 0x00000002;
@@ -8122,6 +8825,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 intValue = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIntValue() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -8133,18 +8837,24 @@ public final class PBCommon {
       private long longValue_ ;
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return Whether the longValue field is set.
        */
+      @java.lang.Override
       public boolean hasLongValue() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return The longValue.
        */
+      @java.lang.Override
       public long getLongValue() {
         return longValue_;
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @param value The longValue to set.
+       * @return This builder for chaining.
        */
       public Builder setLongValue(long value) {
         bitField0_ |= 0x00000004;
@@ -8154,6 +8864,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 longValue = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLongValue() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -8165,18 +8876,24 @@ public final class PBCommon {
       private float floatValue_ ;
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return Whether the floatValue field is set.
        */
+      @java.lang.Override
       public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return The floatValue.
        */
+      @java.lang.Override
       public float getFloatValue() {
         return floatValue_;
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @param value The floatValue to set.
+       * @return This builder for chaining.
        */
       public Builder setFloatValue(float value) {
         bitField0_ |= 0x00000008;
@@ -8186,6 +8903,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional float floatValue = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloatValue() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -8197,18 +8915,24 @@ public final class PBCommon {
       private double doubleValue_ ;
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return Whether the doubleValue field is set.
        */
+      @java.lang.Override
       public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return The doubleValue.
        */
+      @java.lang.Override
       public double getDoubleValue() {
         return doubleValue_;
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @param value The doubleValue to set.
+       * @return This builder for chaining.
        */
       public Builder setDoubleValue(double value) {
         bitField0_ |= 0x00000010;
@@ -8218,6 +8942,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional double doubleValue = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDoubleValue() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -8229,18 +8954,24 @@ public final class PBCommon {
       private boolean booleanValue_ ;
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return Whether the booleanValue field is set.
        */
+      @java.lang.Override
       public boolean hasBooleanValue() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return The booleanValue.
        */
+      @java.lang.Override
       public boolean getBooleanValue() {
         return booleanValue_;
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @param value The booleanValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBooleanValue(boolean value) {
         bitField0_ |= 0x00000020;
@@ -8250,6 +8981,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool booleanValue = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBooleanValue() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -8261,12 +8993,14 @@ public final class PBCommon {
       private java.lang.Object stringValue_ = "";
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return Whether the stringValue field is set.
        */
       public boolean hasStringValue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The stringValue.
        */
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
@@ -8284,6 +9018,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return The bytes for stringValue.
        */
       public com.google.protobuf.ByteString
           getStringValueBytes() {
@@ -8300,6 +9035,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValue(
           java.lang.String value) {
@@ -8313,6 +9050,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringValue() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -8322,6 +9060,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string stringValue = 7;</code>
+       * @param value The bytes for stringValue to set.
+       * @return This builder for chaining.
        */
       public Builder setStringValueBytes(
           com.google.protobuf.ByteString value) {
@@ -8337,18 +9077,24 @@ public final class PBCommon {
       private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return Whether the bytesValue field is set.
        */
+      @java.lang.Override
       public boolean hasBytesValue() {
         return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return The bytesValue.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getBytesValue() {
         return bytesValue_;
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @param value The bytesValue to set.
+       * @return This builder for chaining.
        */
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -8361,6 +9107,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bytes bytesValue = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBytesValue() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -8427,44 +9174,52 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return Whether the itemId field is set.
      */
     boolean hasItemId();
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return The itemId.
      */
     int getItemId();
 
     /**
      * <code>optional int64 number = 2;</code>
+     * @return Whether the number field is set.
      */
     boolean hasNumber();
     /**
      * <code>optional int64 number = 2;</code>
+     * @return The number.
      */
     long getNumber();
 
     /**
      * <code>optional int32 alterType = 3;</code>
+     * @return Whether the alterType field is set.
      */
     boolean hasAlterType();
     /**
      * <code>optional int32 alterType = 3;</code>
+     * @return The alterType.
      */
     int getAlterType();
 
     /**
      * <code>optional bool valid = 4;</code>
+     * @return Whether the valid field is set.
      */
     boolean hasValid();
     /**
      * <code>optional bool valid = 4;</code>
+     * @return The valid.
      */
     boolean getValid();
   }
   /**
    * Protobuf type {@code TradeItemProto}
    */
-  public  static final class TradeItemProto extends
+  public static final class TradeItemProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:TradeItemProto)
       TradeItemProtoOrBuilder {
@@ -8564,13 +9319,17 @@ public final class PBCommon {
     private int itemId_;
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return Whether the itemId field is set.
      */
+    @java.lang.Override
     public boolean hasItemId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return The itemId.
      */
+    @java.lang.Override
     public int getItemId() {
       return itemId_;
     }
@@ -8579,13 +9338,17 @@ public final class PBCommon {
     private long number_;
     /**
      * <code>optional int64 number = 2;</code>
+     * @return Whether the number field is set.
      */
+    @java.lang.Override
     public boolean hasNumber() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int64 number = 2;</code>
+     * @return The number.
      */
+    @java.lang.Override
     public long getNumber() {
       return number_;
     }
@@ -8594,13 +9357,17 @@ public final class PBCommon {
     private int alterType_;
     /**
      * <code>optional int32 alterType = 3;</code>
+     * @return Whether the alterType field is set.
      */
+    @java.lang.Override
     public boolean hasAlterType() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int32 alterType = 3;</code>
+     * @return The alterType.
      */
+    @java.lang.Override
     public int getAlterType() {
       return alterType_;
     }
@@ -8609,13 +9376,17 @@ public final class PBCommon {
     private boolean valid_;
     /**
      * <code>optional bool valid = 4;</code>
+     * @return Whether the valid field is set.
      */
+    @java.lang.Override
     public boolean hasValid() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional bool valid = 4;</code>
+     * @return The valid.
      */
+    @java.lang.Override
     public boolean getValid() {
       return valid_;
     }
@@ -9014,18 +9785,24 @@ public final class PBCommon {
       private int itemId_ ;
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return Whether the itemId field is set.
        */
+      @java.lang.Override
       public boolean hasItemId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return The itemId.
        */
+      @java.lang.Override
       public int getItemId() {
         return itemId_;
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @param value The itemId to set.
+       * @return This builder for chaining.
        */
       public Builder setItemId(int value) {
         bitField0_ |= 0x00000001;
@@ -9035,6 +9812,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearItemId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -9046,18 +9824,24 @@ public final class PBCommon {
       private long number_ ;
       /**
        * <code>optional int64 number = 2;</code>
+       * @return Whether the number field is set.
        */
+      @java.lang.Override
       public boolean hasNumber() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @return The number.
        */
+      @java.lang.Override
       public long getNumber() {
         return number_;
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @param value The number to set.
+       * @return This builder for chaining.
        */
       public Builder setNumber(long value) {
         bitField0_ |= 0x00000002;
@@ -9067,6 +9851,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearNumber() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -9078,18 +9863,24 @@ public final class PBCommon {
       private int alterType_ ;
       /**
        * <code>optional int32 alterType = 3;</code>
+       * @return Whether the alterType field is set.
        */
+      @java.lang.Override
       public boolean hasAlterType() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int32 alterType = 3;</code>
+       * @return The alterType.
        */
+      @java.lang.Override
       public int getAlterType() {
         return alterType_;
       }
       /**
        * <code>optional int32 alterType = 3;</code>
+       * @param value The alterType to set.
+       * @return This builder for chaining.
        */
       public Builder setAlterType(int value) {
         bitField0_ |= 0x00000004;
@@ -9099,6 +9890,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 alterType = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearAlterType() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -9110,18 +9902,24 @@ public final class PBCommon {
       private boolean valid_ ;
       /**
        * <code>optional bool valid = 4;</code>
+       * @return Whether the valid field is set.
        */
+      @java.lang.Override
       public boolean hasValid() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional bool valid = 4;</code>
+       * @return The valid.
        */
+      @java.lang.Override
       public boolean getValid() {
         return valid_;
       }
       /**
        * <code>optional bool valid = 4;</code>
+       * @param value The valid to set.
+       * @return This builder for chaining.
        */
       public Builder setValid(boolean value) {
         bitField0_ |= 0x00000008;
@@ -9131,6 +9929,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional bool valid = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearValid() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -9197,10 +9996,12 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 action = 1;</code>
+     * @return Whether the action field is set.
      */
     boolean hasAction();
     /**
      * <code>optional int32 action = 1;</code>
+     * @return The action.
      */
     int getAction();
 
@@ -9230,17 +10031,19 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 tradeType = 3;</code>
+     * @return Whether the tradeType field is set.
      */
     boolean hasTradeType();
     /**
      * <code>optional int32 tradeType = 3;</code>
+     * @return The tradeType.
      */
     int getTradeType();
   }
   /**
    * Protobuf type {@code TradeProto}
    */
-  public  static final class TradeProto extends
+  public static final class TradeProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:TradeProto)
       TradeProtoOrBuilder {
@@ -9343,13 +10146,17 @@ public final class PBCommon {
     private int action_;
     /**
      * <code>optional int32 action = 1;</code>
+     * @return Whether the action field is set.
      */
+    @java.lang.Override
     public boolean hasAction() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int32 action = 1;</code>
+     * @return The action.
      */
+    @java.lang.Override
     public int getAction() {
       return action_;
     }
@@ -9359,12 +10166,14 @@ public final class PBCommon {
     /**
      * <code>repeated .TradeItemProto item = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<com.tny.game.protobuf.PBCommon.TradeItemProto> getItemList() {
       return item_;
     }
     /**
      * <code>repeated .TradeItemProto item = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.tny.game.protobuf.PBCommon.TradeItemProtoOrBuilder> 
         getItemOrBuilderList() {
       return item_;
@@ -9372,18 +10181,21 @@ public final class PBCommon {
     /**
      * <code>repeated .TradeItemProto item = 2;</code>
      */
+    @java.lang.Override
     public int getItemCount() {
       return item_.size();
     }
     /**
      * <code>repeated .TradeItemProto item = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.TradeItemProto getItem(int index) {
       return item_.get(index);
     }
     /**
      * <code>repeated .TradeItemProto item = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.TradeItemProtoOrBuilder getItemOrBuilder(
         int index) {
       return item_.get(index);
@@ -9393,13 +10205,17 @@ public final class PBCommon {
     private int tradeType_;
     /**
      * <code>optional int32 tradeType = 3;</code>
+     * @return Whether the tradeType field is set.
      */
+    @java.lang.Override
     public boolean hasTradeType() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 tradeType = 3;</code>
+     * @return The tradeType.
      */
+    @java.lang.Override
     public int getTradeType() {
       return tradeType_;
     }
@@ -9801,18 +10617,24 @@ public final class PBCommon {
       private int action_ ;
       /**
        * <code>optional int32 action = 1;</code>
+       * @return Whether the action field is set.
        */
+      @java.lang.Override
       public boolean hasAction() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int32 action = 1;</code>
+       * @return The action.
        */
+      @java.lang.Override
       public int getAction() {
         return action_;
       }
       /**
        * <code>optional int32 action = 1;</code>
+       * @param value The action to set.
+       * @return This builder for chaining.
        */
       public Builder setAction(int value) {
         bitField0_ |= 0x00000001;
@@ -9822,6 +10644,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 action = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearAction() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -10073,18 +10896,24 @@ public final class PBCommon {
       private int tradeType_ ;
       /**
        * <code>optional int32 tradeType = 3;</code>
+       * @return Whether the tradeType field is set.
        */
+      @java.lang.Override
       public boolean hasTradeType() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int32 tradeType = 3;</code>
+       * @return The tradeType.
        */
+      @java.lang.Override
       public int getTradeType() {
         return tradeType_;
       }
       /**
        * <code>optional int32 tradeType = 3;</code>
+       * @param value The tradeType to set.
+       * @return This builder for chaining.
        */
       public Builder setTradeType(int value) {
         bitField0_ |= 0x00000004;
@@ -10094,6 +10923,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 tradeType = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearTradeType() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -10160,26 +10990,30 @@ public final class PBCommon {
 
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return Whether the itemId field is set.
      */
     boolean hasItemId();
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return The itemId.
      */
     int getItemId();
 
     /**
      * <code>optional int64 number = 2;</code>
+     * @return Whether the number field is set.
      */
     boolean hasNumber();
     /**
      * <code>optional int64 number = 2;</code>
+     * @return The number.
      */
     long getNumber();
   }
   /**
    * Protobuf type {@code StuffProto}
    */
-  public  static final class StuffProto extends
+  public static final class StuffProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:StuffProto)
       StuffProtoOrBuilder {
@@ -10269,13 +11103,17 @@ public final class PBCommon {
     private int itemId_;
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return Whether the itemId field is set.
      */
+    @java.lang.Override
     public boolean hasItemId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int32 itemId = 1;</code>
+     * @return The itemId.
      */
+    @java.lang.Override
     public int getItemId() {
       return itemId_;
     }
@@ -10284,13 +11122,17 @@ public final class PBCommon {
     private long number_;
     /**
      * <code>optional int64 number = 2;</code>
+     * @return Whether the number field is set.
      */
+    @java.lang.Override
     public boolean hasNumber() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int64 number = 2;</code>
+     * @return The number.
      */
+    @java.lang.Override
     public long getNumber() {
       return number_;
     }
@@ -10638,18 +11480,24 @@ public final class PBCommon {
       private int itemId_ ;
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return Whether the itemId field is set.
        */
+      @java.lang.Override
       public boolean hasItemId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return The itemId.
        */
+      @java.lang.Override
       public int getItemId() {
         return itemId_;
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @param value The itemId to set.
+       * @return This builder for chaining.
        */
       public Builder setItemId(int value) {
         bitField0_ |= 0x00000001;
@@ -10659,6 +11507,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int32 itemId = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearItemId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -10670,18 +11519,24 @@ public final class PBCommon {
       private long number_ ;
       /**
        * <code>optional int64 number = 2;</code>
+       * @return Whether the number field is set.
        */
+      @java.lang.Override
       public boolean hasNumber() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @return The number.
        */
+      @java.lang.Override
       public long getNumber() {
         return number_;
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @param value The number to set.
+       * @return This builder for chaining.
        */
       public Builder setNumber(long value) {
         bitField0_ |= 0x00000002;
@@ -10691,6 +11546,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 number = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearNumber() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -10757,10 +11613,12 @@ public final class PBCommon {
 
     /**
      * <code>optional uint64 executTime = 1;</code>
+     * @return Whether the executTime field is set.
      */
     boolean hasExecutTime();
     /**
      * <code>optional uint64 executTime = 1;</code>
+     * @return The executTime.
      */
     long getExecutTime();
 
@@ -10770,6 +11628,7 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @return A list containing the handlerList.
      */
     java.util.List<java.lang.String>
         getHandlerListList();
@@ -10779,6 +11638,7 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @return The count of handlerList.
      */
     int getHandlerListCount();
     /**
@@ -10787,6 +11647,8 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @param index The index of the element to return.
+     * @return The handlerList at the given index.
      */
     java.lang.String getHandlerList(int index);
     /**
@@ -10795,27 +11657,33 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the handlerList at the given index.
      */
     com.google.protobuf.ByteString
         getHandlerListBytes(int index);
 
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @return A list containing the handlers.
      */
     java.util.List<java.lang.Integer> getHandlersList();
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @return The count of handlers.
      */
     int getHandlersCount();
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @param index The index of the element to return.
+     * @return The handlers at the given index.
      */
     int getHandlers(int index);
   }
   /**
    * Protobuf type {@code TimeTaskProto}
    */
-  public  static final class TimeTaskProto extends
+  public static final class TimeTaskProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:TimeTaskProto)
       TimeTaskProtoOrBuilder {
@@ -10938,13 +11806,17 @@ public final class PBCommon {
     private long executTime_;
     /**
      * <code>optional uint64 executTime = 1;</code>
+     * @return Whether the executTime field is set.
      */
+    @java.lang.Override
     public boolean hasExecutTime() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional uint64 executTime = 1;</code>
+     * @return The executTime.
      */
+    @java.lang.Override
     public long getExecutTime() {
       return executTime_;
     }
@@ -10957,6 +11829,7 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @return A list containing the handlerList.
      */
     public com.google.protobuf.ProtocolStringList
         getHandlerListList() {
@@ -10968,6 +11841,7 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @return The count of handlerList.
      */
     public int getHandlerListCount() {
       return handlerList_.size();
@@ -10978,6 +11852,8 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @param index The index of the element to return.
+     * @return The handlerList at the given index.
      */
     public java.lang.String getHandlerList(int index) {
       return handlerList_.get(index);
@@ -10988,6 +11864,8 @@ public final class PBCommon {
      * </pre>
      *
      * <code>repeated string handlerList = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the handlerList at the given index.
      */
     public com.google.protobuf.ByteString
         getHandlerListBytes(int index) {
@@ -10998,19 +11876,24 @@ public final class PBCommon {
     private com.google.protobuf.Internal.IntList handlers_;
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @return A list containing the handlers.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Integer>
         getHandlersList() {
       return handlers_;
     }
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @return The count of handlers.
      */
     public int getHandlersCount() {
       return handlers_.size();
     }
     /**
      * <code>repeated int32 handlers = 3;</code>
+     * @param index The index of the element to return.
+     * @return The handlers at the given index.
      */
     public int getHandlers(int index) {
       return handlers_.getInt(index);
@@ -11403,18 +12286,24 @@ public final class PBCommon {
       private long executTime_ ;
       /**
        * <code>optional uint64 executTime = 1;</code>
+       * @return Whether the executTime field is set.
        */
+      @java.lang.Override
       public boolean hasExecutTime() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional uint64 executTime = 1;</code>
+       * @return The executTime.
        */
+      @java.lang.Override
       public long getExecutTime() {
         return executTime_;
       }
       /**
        * <code>optional uint64 executTime = 1;</code>
+       * @param value The executTime to set.
+       * @return This builder for chaining.
        */
       public Builder setExecutTime(long value) {
         bitField0_ |= 0x00000001;
@@ -11424,6 +12313,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional uint64 executTime = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearExecutTime() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -11445,6 +12335,7 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @return A list containing the handlerList.
        */
       public com.google.protobuf.ProtocolStringList
           getHandlerListList() {
@@ -11456,6 +12347,7 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @return The count of handlerList.
        */
       public int getHandlerListCount() {
         return handlerList_.size();
@@ -11466,6 +12358,8 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param index The index of the element to return.
+       * @return The handlerList at the given index.
        */
       public java.lang.String getHandlerList(int index) {
         return handlerList_.get(index);
@@ -11476,6 +12370,8 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the handlerList at the given index.
        */
       public com.google.protobuf.ByteString
           getHandlerListBytes(int index) {
@@ -11487,6 +12383,9 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The handlerList to set.
+       * @return This builder for chaining.
        */
       public Builder setHandlerList(
           int index, java.lang.String value) {
@@ -11504,6 +12403,8 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param value The handlerList to add.
+       * @return This builder for chaining.
        */
       public Builder addHandlerList(
           java.lang.String value) {
@@ -11521,6 +12422,8 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param values The handlerList to add.
+       * @return This builder for chaining.
        */
       public Builder addAllHandlerList(
           java.lang.Iterable<java.lang.String> values) {
@@ -11536,6 +12439,7 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHandlerList() {
         handlerList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -11549,6 +12453,8 @@ public final class PBCommon {
        * </pre>
        *
        * <code>repeated string handlerList = 2;</code>
+       * @param value The bytes of the handlerList to add.
+       * @return This builder for chaining.
        */
       public Builder addHandlerListBytes(
           com.google.protobuf.ByteString value) {
@@ -11570,6 +12476,7 @@ public final class PBCommon {
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @return A list containing the handlers.
        */
       public java.util.List<java.lang.Integer>
           getHandlersList() {
@@ -11578,18 +12485,24 @@ public final class PBCommon {
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @return The count of handlers.
        */
       public int getHandlersCount() {
         return handlers_.size();
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @param index The index of the element to return.
+       * @return The handlers at the given index.
        */
       public int getHandlers(int index) {
         return handlers_.getInt(index);
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The handlers to set.
+       * @return This builder for chaining.
        */
       public Builder setHandlers(
           int index, int value) {
@@ -11600,6 +12513,8 @@ public final class PBCommon {
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @param value The handlers to add.
+       * @return This builder for chaining.
        */
       public Builder addHandlers(int value) {
         ensureHandlersIsMutable();
@@ -11609,6 +12524,8 @@ public final class PBCommon {
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @param values The handlers to add.
+       * @return This builder for chaining.
        */
       public Builder addAllHandlers(
           java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -11620,6 +12537,7 @@ public final class PBCommon {
       }
       /**
        * <code>repeated int32 handlers = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHandlers() {
         handlers_ = emptyIntList();
@@ -11686,49 +12604,58 @@ public final class PBCommon {
 
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return Whether the playerId field is set.
      */
     boolean hasPlayerId();
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return The playerId.
      */
     long getPlayerId();
 
     /**
      * <code>optional string group = 2;</code>
+     * @return Whether the group field is set.
      */
     boolean hasGroup();
     /**
      * <code>optional string group = 2;</code>
+     * @return The group.
      */
     java.lang.String getGroup();
     /**
      * <code>optional string group = 2;</code>
+     * @return The bytes for group.
      */
     com.google.protobuf.ByteString
         getGroupBytes();
 
     /**
      * <code>optional uint64 lastHandlerTime = 3;</code>
+     * @return Whether the lastHandlerTime field is set.
      */
     boolean hasLastHandlerTime();
     /**
      * <code>optional uint64 lastHandlerTime = 3;</code>
+     * @return The lastHandlerTime.
      */
     long getLastHandlerTime();
 
     /**
      * <code>optional uint64 actualLastHandlerTime = 4;</code>
+     * @return Whether the actualLastHandlerTime field is set.
      */
     boolean hasActualLastHandlerTime();
     /**
      * <code>optional uint64 actualLastHandlerTime = 4;</code>
+     * @return The actualLastHandlerTime.
      */
     long getActualLastHandlerTime();
   }
   /**
    * Protobuf type {@code TaskReceiverProto}
    */
-  public  static final class TaskReceiverProto extends
+  public static final class TaskReceiverProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:TaskReceiverProto)
       TaskReceiverProtoOrBuilder {
@@ -11830,13 +12757,17 @@ public final class PBCommon {
     private long playerId_;
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return Whether the playerId field is set.
      */
+    @java.lang.Override
     public boolean hasPlayerId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return The playerId.
      */
+    @java.lang.Override
     public long getPlayerId() {
       return playerId_;
     }
@@ -11845,13 +12776,17 @@ public final class PBCommon {
     private volatile java.lang.Object group_;
     /**
      * <code>optional string group = 2;</code>
+     * @return Whether the group field is set.
      */
+    @java.lang.Override
     public boolean hasGroup() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional string group = 2;</code>
+     * @return The group.
      */
+    @java.lang.Override
     public java.lang.String getGroup() {
       java.lang.Object ref = group_;
       if (ref instanceof java.lang.String) {
@@ -11868,7 +12803,9 @@ public final class PBCommon {
     }
     /**
      * <code>optional string group = 2;</code>
+     * @return The bytes for group.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getGroupBytes() {
       java.lang.Object ref = group_;
@@ -11887,13 +12824,17 @@ public final class PBCommon {
     private long lastHandlerTime_;
     /**
      * <code>optional uint64 lastHandlerTime = 3;</code>
+     * @return Whether the lastHandlerTime field is set.
      */
+    @java.lang.Override
     public boolean hasLastHandlerTime() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional uint64 lastHandlerTime = 3;</code>
+     * @return The lastHandlerTime.
      */
+    @java.lang.Override
     public long getLastHandlerTime() {
       return lastHandlerTime_;
     }
@@ -11902,13 +12843,17 @@ public final class PBCommon {
     private long actualLastHandlerTime_;
     /**
      * <code>optional uint64 actualLastHandlerTime = 4;</code>
+     * @return Whether the actualLastHandlerTime field is set.
      */
+    @java.lang.Override
     public boolean hasActualLastHandlerTime() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional uint64 actualLastHandlerTime = 4;</code>
+     * @return The actualLastHandlerTime.
      */
+    @java.lang.Override
     public long getActualLastHandlerTime() {
       return actualLastHandlerTime_;
     }
@@ -12309,18 +13254,24 @@ public final class PBCommon {
       private long playerId_ ;
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return Whether the playerId field is set.
        */
+      @java.lang.Override
       public boolean hasPlayerId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return The playerId.
        */
+      @java.lang.Override
       public long getPlayerId() {
         return playerId_;
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
        */
       public Builder setPlayerId(long value) {
         bitField0_ |= 0x00000001;
@@ -12330,6 +13281,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearPlayerId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -12341,12 +13293,14 @@ public final class PBCommon {
       private java.lang.Object group_ = "";
       /**
        * <code>optional string group = 2;</code>
+       * @return Whether the group field is set.
        */
       public boolean hasGroup() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional string group = 2;</code>
+       * @return The group.
        */
       public java.lang.String getGroup() {
         java.lang.Object ref = group_;
@@ -12364,6 +13318,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string group = 2;</code>
+       * @return The bytes for group.
        */
       public com.google.protobuf.ByteString
           getGroupBytes() {
@@ -12380,6 +13335,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string group = 2;</code>
+       * @param value The group to set.
+       * @return This builder for chaining.
        */
       public Builder setGroup(
           java.lang.String value) {
@@ -12393,6 +13350,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional string group = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearGroup() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -12402,6 +13360,8 @@ public final class PBCommon {
       }
       /**
        * <code>optional string group = 2;</code>
+       * @param value The bytes for group to set.
+       * @return This builder for chaining.
        */
       public Builder setGroupBytes(
           com.google.protobuf.ByteString value) {
@@ -12417,18 +13377,24 @@ public final class PBCommon {
       private long lastHandlerTime_ ;
       /**
        * <code>optional uint64 lastHandlerTime = 3;</code>
+       * @return Whether the lastHandlerTime field is set.
        */
+      @java.lang.Override
       public boolean hasLastHandlerTime() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional uint64 lastHandlerTime = 3;</code>
+       * @return The lastHandlerTime.
        */
+      @java.lang.Override
       public long getLastHandlerTime() {
         return lastHandlerTime_;
       }
       /**
        * <code>optional uint64 lastHandlerTime = 3;</code>
+       * @param value The lastHandlerTime to set.
+       * @return This builder for chaining.
        */
       public Builder setLastHandlerTime(long value) {
         bitField0_ |= 0x00000004;
@@ -12438,6 +13404,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional uint64 lastHandlerTime = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLastHandlerTime() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -12449,18 +13416,24 @@ public final class PBCommon {
       private long actualLastHandlerTime_ ;
       /**
        * <code>optional uint64 actualLastHandlerTime = 4;</code>
+       * @return Whether the actualLastHandlerTime field is set.
        */
+      @java.lang.Override
       public boolean hasActualLastHandlerTime() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional uint64 actualLastHandlerTime = 4;</code>
+       * @return The actualLastHandlerTime.
        */
+      @java.lang.Override
       public long getActualLastHandlerTime() {
         return actualLastHandlerTime_;
       }
       /**
        * <code>optional uint64 actualLastHandlerTime = 4;</code>
+       * @param value The actualLastHandlerTime to set.
+       * @return This builder for chaining.
        */
       public Builder setActualLastHandlerTime(long value) {
         bitField0_ |= 0x00000008;
@@ -12470,6 +13443,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional uint64 actualLastHandlerTime = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearActualLastHandlerTime() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -12536,10 +13510,12 @@ public final class PBCommon {
 
     /**
      * <code>optional int64 stopTime = 1;</code>
+     * @return Whether the stopTime field is set.
      */
     boolean hasStopTime();
     /**
      * <code>optional int64 stopTime = 1;</code>
+     * @return The stopTime.
      */
     long getStopTime();
 
@@ -12604,7 +13580,7 @@ public final class PBCommon {
   /**
    * Protobuf type {@code SchedulerBackupProto}
    */
-  public  static final class SchedulerBackupProto extends
+  public static final class SchedulerBackupProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:SchedulerBackupProto)
       SchedulerBackupProtoOrBuilder {
@@ -12727,13 +13703,17 @@ public final class PBCommon {
     private long stopTime_;
     /**
      * <code>optional int64 stopTime = 1;</code>
+     * @return Whether the stopTime field is set.
      */
+    @java.lang.Override
     public boolean hasStopTime() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 stopTime = 1;</code>
+     * @return The stopTime.
      */
+    @java.lang.Override
     public long getStopTime() {
       return stopTime_;
     }
@@ -12743,12 +13723,14 @@ public final class PBCommon {
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<com.tny.game.protobuf.PBCommon.TimeTaskProto> getTimeTaskQueueList() {
       return timeTaskQueue_;
     }
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.tny.game.protobuf.PBCommon.TimeTaskProtoOrBuilder> 
         getTimeTaskQueueOrBuilderList() {
       return timeTaskQueue_;
@@ -12756,18 +13738,21 @@ public final class PBCommon {
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
+    @java.lang.Override
     public int getTimeTaskQueueCount() {
       return timeTaskQueue_.size();
     }
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.TimeTaskProto getTimeTaskQueue(int index) {
       return timeTaskQueue_.get(index);
     }
     /**
      * <code>repeated .TimeTaskProto timeTaskQueue = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.TimeTaskProtoOrBuilder getTimeTaskQueueOrBuilder(
         int index) {
       return timeTaskQueue_.get(index);
@@ -12803,6 +13788,7 @@ public final class PBCommon {
      * <code>map&lt;int32, string&gt; handlers = 3;</code>
      */
 
+    @java.lang.Override
     public boolean containsHandlers(
         int key) {
       
@@ -12811,6 +13797,7 @@ public final class PBCommon {
     /**
      * Use {@link #getHandlersMap()} instead.
      */
+    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, java.lang.String> getHandlers() {
       return getHandlersMap();
@@ -12818,6 +13805,7 @@ public final class PBCommon {
     /**
      * <code>map&lt;int32, string&gt; handlers = 3;</code>
      */
+    @java.lang.Override
 
     public java.util.Map<java.lang.Integer, java.lang.String> getHandlersMap() {
       return internalGetHandlers().getMap();
@@ -12825,6 +13813,7 @@ public final class PBCommon {
     /**
      * <code>map&lt;int32, string&gt; handlers = 3;</code>
      */
+    @java.lang.Override
 
     public java.lang.String getHandlersOrDefault(
         int key,
@@ -12837,6 +13826,7 @@ public final class PBCommon {
     /**
      * <code>map&lt;int32, string&gt; handlers = 3;</code>
      */
+    @java.lang.Override
 
     public java.lang.String getHandlersOrThrow(
         int key) {
@@ -13271,18 +14261,24 @@ public final class PBCommon {
       private long stopTime_ ;
       /**
        * <code>optional int64 stopTime = 1;</code>
+       * @return Whether the stopTime field is set.
        */
+      @java.lang.Override
       public boolean hasStopTime() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 stopTime = 1;</code>
+       * @return The stopTime.
        */
+      @java.lang.Override
       public long getStopTime() {
         return stopTime_;
       }
       /**
        * <code>optional int64 stopTime = 1;</code>
+       * @param value The stopTime to set.
+       * @return This builder for chaining.
        */
       public Builder setStopTime(long value) {
         bitField0_ |= 0x00000001;
@@ -13292,6 +14288,7 @@ public final class PBCommon {
       }
       /**
        * <code>optional int64 stopTime = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStopTime() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -13570,6 +14567,7 @@ public final class PBCommon {
        * <code>map&lt;int32, string&gt; handlers = 3;</code>
        */
 
+      @java.lang.Override
       public boolean containsHandlers(
           int key) {
         
@@ -13578,6 +14576,7 @@ public final class PBCommon {
       /**
        * Use {@link #getHandlersMap()} instead.
        */
+      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.Integer, java.lang.String> getHandlers() {
         return getHandlersMap();
@@ -13585,6 +14584,7 @@ public final class PBCommon {
       /**
        * <code>map&lt;int32, string&gt; handlers = 3;</code>
        */
+      @java.lang.Override
 
       public java.util.Map<java.lang.Integer, java.lang.String> getHandlersMap() {
         return internalGetHandlers().getMap();
@@ -13592,6 +14592,7 @@ public final class PBCommon {
       /**
        * <code>map&lt;int32, string&gt; handlers = 3;</code>
        */
+      @java.lang.Override
 
       public java.lang.String getHandlersOrDefault(
           int key,
@@ -13604,6 +14605,7 @@ public final class PBCommon {
       /**
        * <code>map&lt;int32, string&gt; handlers = 3;</code>
        */
+      @java.lang.Override
 
       public java.lang.String getHandlersOrThrow(
           int key) {

@@ -235,7 +235,7 @@ ext.libs = [
 //        tny_protoex                              : "com.tny.game:tny-game-protoex:$vers.tny_framework",
 
         protobuf_java                            : "com.google.protobuf:protobuf-java:3.8.0",
-        jprotobuf                                : "com.baidu:jprotobuf:2.4.9",
+        jprotobuf                                : "com.baidu:jprotobuf:2.4.14",
         jprotobuf_precompile_plugin_gradle       : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.0",
 
         swagger_models                           : "io.swagger.core.v3:swagger-models:$vers.swagger_v3",

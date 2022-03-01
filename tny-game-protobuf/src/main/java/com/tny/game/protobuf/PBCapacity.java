@@ -20,46 +20,56 @@ public final class PBCapacity {
 
     /**
      * <code>optional int64 id = 1;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
      * <code>optional int64 id = 1;</code>
+     * @return The id.
      */
     long getId();
 
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return Whether the itemId field is set.
      */
     boolean hasItemId();
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return The itemId.
      */
     int getItemId();
 
     /**
      * <code>optional int32 type = 3;</code>
+     * @return Whether the type field is set.
      */
     boolean hasType();
     /**
      * <code>optional int32 type = 3;</code>
+     * @return The type.
      */
     int getType();
 
     /**
      * <code>optional bool combo = 4;</code>
+     * @return Whether the combo field is set.
      */
     boolean hasCombo();
     /**
      * <code>optional bool combo = 4;</code>
+     * @return The combo.
      */
     boolean getCombo();
 
     /**
      * <code>optional int64 expireAt = 5;</code>
+     * @return Whether the expireAt field is set.
      */
     boolean hasExpireAt();
     /**
      * <code>optional int64 expireAt = 5;</code>
+     * @return The expireAt.
      */
     long getExpireAt();
 
@@ -89,34 +99,42 @@ public final class PBCapacity {
 
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @return A list containing the suppliers.
      */
     java.util.List<java.lang.Long> getSuppliersList();
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @return The count of suppliers.
      */
     int getSuppliersCount();
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @param index The index of the element to return.
+     * @return The suppliers at the given index.
      */
     long getSuppliers(int index);
 
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return A list containing the group.
      */
     java.util.List<java.lang.Integer> getGroupList();
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return The count of group.
      */
     int getGroupCount();
     /**
      * <code>repeated int32 group = 8;</code>
+     * @param index The index of the element to return.
+     * @return The group at the given index.
      */
     int getGroup(int index);
   }
   /**
    * Protobuf type {@code CapacitySupplierProto}
    */
-  public  static final class CapacitySupplierProto extends
+  public static final class CapacitySupplierProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:CapacitySupplierProto)
       CapacitySupplierProtoOrBuilder {
@@ -284,13 +302,17 @@ public final class PBCapacity {
     private long id_;
     /**
      * <code>optional int64 id = 1;</code>
+     * @return Whether the id field is set.
      */
+    @java.lang.Override
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 id = 1;</code>
+     * @return The id.
      */
+    @java.lang.Override
     public long getId() {
       return id_;
     }
@@ -299,13 +321,17 @@ public final class PBCapacity {
     private int itemId_;
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return Whether the itemId field is set.
      */
+    @java.lang.Override
     public boolean hasItemId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return The itemId.
      */
+    @java.lang.Override
     public int getItemId() {
       return itemId_;
     }
@@ -314,13 +340,17 @@ public final class PBCapacity {
     private int type_;
     /**
      * <code>optional int32 type = 3;</code>
+     * @return Whether the type field is set.
      */
+    @java.lang.Override
     public boolean hasType() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int32 type = 3;</code>
+     * @return The type.
      */
+    @java.lang.Override
     public int getType() {
       return type_;
     }
@@ -329,13 +359,17 @@ public final class PBCapacity {
     private boolean combo_;
     /**
      * <code>optional bool combo = 4;</code>
+     * @return Whether the combo field is set.
      */
+    @java.lang.Override
     public boolean hasCombo() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional bool combo = 4;</code>
+     * @return The combo.
      */
+    @java.lang.Override
     public boolean getCombo() {
       return combo_;
     }
@@ -344,13 +378,17 @@ public final class PBCapacity {
     private long expireAt_;
     /**
      * <code>optional int64 expireAt = 5;</code>
+     * @return Whether the expireAt field is set.
      */
+    @java.lang.Override
     public boolean hasExpireAt() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional int64 expireAt = 5;</code>
+     * @return The expireAt.
      */
+    @java.lang.Override
     public long getExpireAt() {
       return expireAt_;
     }
@@ -360,12 +398,14 @@ public final class PBCapacity {
     /**
      * <code>repeated .IntEntryProto capacityMap = 6;</code>
      */
+    @java.lang.Override
     public java.util.List<com.tny.game.protobuf.PBCommon.IntEntryProto> getCapacityMapList() {
       return capacityMap_;
     }
     /**
      * <code>repeated .IntEntryProto capacityMap = 6;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.tny.game.protobuf.PBCommon.IntEntryProtoOrBuilder> 
         getCapacityMapOrBuilderList() {
       return capacityMap_;
@@ -373,18 +413,21 @@ public final class PBCapacity {
     /**
      * <code>repeated .IntEntryProto capacityMap = 6;</code>
      */
+    @java.lang.Override
     public int getCapacityMapCount() {
       return capacityMap_.size();
     }
     /**
      * <code>repeated .IntEntryProto capacityMap = 6;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.IntEntryProto getCapacityMap(int index) {
       return capacityMap_.get(index);
     }
     /**
      * <code>repeated .IntEntryProto capacityMap = 6;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCommon.IntEntryProtoOrBuilder getCapacityMapOrBuilder(
         int index) {
       return capacityMap_.get(index);
@@ -394,19 +437,24 @@ public final class PBCapacity {
     private com.google.protobuf.Internal.LongList suppliers_;
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @return A list containing the suppliers.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Long>
         getSuppliersList() {
       return suppliers_;
     }
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @return The count of suppliers.
      */
     public int getSuppliersCount() {
       return suppliers_.size();
     }
     /**
      * <code>repeated int64 suppliers = 7;</code>
+     * @param index The index of the element to return.
+     * @return The suppliers at the given index.
      */
     public long getSuppliers(int index) {
       return suppliers_.getLong(index);
@@ -416,19 +464,24 @@ public final class PBCapacity {
     private com.google.protobuf.Internal.IntList group_;
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return A list containing the group.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Integer>
         getGroupList() {
       return group_;
     }
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return The count of group.
      */
     public int getGroupCount() {
       return group_.size();
     }
     /**
      * <code>repeated int32 group = 8;</code>
+     * @param index The index of the element to return.
+     * @return The group at the given index.
      */
     public int getGroup(int index) {
       return group_.getInt(index);
@@ -979,18 +1032,24 @@ public final class PBCapacity {
       private long id_ ;
       /**
        * <code>optional int64 id = 1;</code>
+       * @return Whether the id field is set.
        */
+      @java.lang.Override
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @return The id.
        */
+      @java.lang.Override
       public long getId() {
         return id_;
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(long value) {
         bitField0_ |= 0x00000001;
@@ -1000,6 +1059,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1011,18 +1071,24 @@ public final class PBCapacity {
       private int itemId_ ;
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return Whether the itemId field is set.
        */
+      @java.lang.Override
       public boolean hasItemId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return The itemId.
        */
+      @java.lang.Override
       public int getItemId() {
         return itemId_;
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @param value The itemId to set.
+       * @return This builder for chaining.
        */
       public Builder setItemId(int value) {
         bitField0_ |= 0x00000002;
@@ -1032,6 +1098,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearItemId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1043,18 +1110,24 @@ public final class PBCapacity {
       private int type_ ;
       /**
        * <code>optional int32 type = 3;</code>
+       * @return Whether the type field is set.
        */
+      @java.lang.Override
       public boolean hasType() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int32 type = 3;</code>
+       * @return The type.
        */
+      @java.lang.Override
       public int getType() {
         return type_;
       }
       /**
        * <code>optional int32 type = 3;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
        */
       public Builder setType(int value) {
         bitField0_ |= 0x00000004;
@@ -1064,6 +1137,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int32 type = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1075,18 +1149,24 @@ public final class PBCapacity {
       private boolean combo_ ;
       /**
        * <code>optional bool combo = 4;</code>
+       * @return Whether the combo field is set.
        */
+      @java.lang.Override
       public boolean hasCombo() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional bool combo = 4;</code>
+       * @return The combo.
        */
+      @java.lang.Override
       public boolean getCombo() {
         return combo_;
       }
       /**
        * <code>optional bool combo = 4;</code>
+       * @param value The combo to set.
+       * @return This builder for chaining.
        */
       public Builder setCombo(boolean value) {
         bitField0_ |= 0x00000008;
@@ -1096,6 +1176,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional bool combo = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCombo() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1107,18 +1188,24 @@ public final class PBCapacity {
       private long expireAt_ ;
       /**
        * <code>optional int64 expireAt = 5;</code>
+       * @return Whether the expireAt field is set.
        */
+      @java.lang.Override
       public boolean hasExpireAt() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional int64 expireAt = 5;</code>
+       * @return The expireAt.
        */
+      @java.lang.Override
       public long getExpireAt() {
         return expireAt_;
       }
       /**
        * <code>optional int64 expireAt = 5;</code>
+       * @param value The expireAt to set.
+       * @return This builder for chaining.
        */
       public Builder setExpireAt(long value) {
         bitField0_ |= 0x00000010;
@@ -1128,6 +1215,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int64 expireAt = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearExpireAt() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -1385,6 +1473,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @return A list containing the suppliers.
        */
       public java.util.List<java.lang.Long>
           getSuppliersList() {
@@ -1393,18 +1482,24 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @return The count of suppliers.
        */
       public int getSuppliersCount() {
         return suppliers_.size();
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @param index The index of the element to return.
+       * @return The suppliers at the given index.
        */
       public long getSuppliers(int index) {
         return suppliers_.getLong(index);
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @param index The index to set the value at.
+       * @param value The suppliers to set.
+       * @return This builder for chaining.
        */
       public Builder setSuppliers(
           int index, long value) {
@@ -1415,6 +1510,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @param value The suppliers to add.
+       * @return This builder for chaining.
        */
       public Builder addSuppliers(long value) {
         ensureSuppliersIsMutable();
@@ -1424,6 +1521,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @param values The suppliers to add.
+       * @return This builder for chaining.
        */
       public Builder addAllSuppliers(
           java.lang.Iterable<? extends java.lang.Long> values) {
@@ -1435,6 +1534,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSuppliers() {
         suppliers_ = emptyLongList();
@@ -1452,6 +1552,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return A list containing the group.
        */
       public java.util.List<java.lang.Integer>
           getGroupList() {
@@ -1460,18 +1561,24 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return The count of group.
        */
       public int getGroupCount() {
         return group_.size();
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param index The index of the element to return.
+       * @return The group at the given index.
        */
       public int getGroup(int index) {
         return group_.getInt(index);
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param index The index to set the value at.
+       * @param value The group to set.
+       * @return This builder for chaining.
        */
       public Builder setGroup(
           int index, int value) {
@@ -1482,6 +1589,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param value The group to add.
+       * @return This builder for chaining.
        */
       public Builder addGroup(int value) {
         ensureGroupIsMutable();
@@ -1491,6 +1600,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param values The group to add.
+       * @return This builder for chaining.
        */
       public Builder addAllGroup(
           java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -1502,6 +1613,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearGroup() {
         group_ = emptyIntList();
@@ -1568,61 +1680,75 @@ public final class PBCapacity {
 
     /**
      * <code>optional int64 id = 1;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
      * <code>optional int64 id = 1;</code>
+     * @return The id.
      */
     long getId();
 
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return Whether the itemId field is set.
      */
     boolean hasItemId();
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return The itemId.
      */
     int getItemId();
 
     /**
      * <code>optional int64 expireAt = 3;</code>
+     * @return Whether the expireAt field is set.
      */
     boolean hasExpireAt();
     /**
      * <code>optional int64 expireAt = 3;</code>
+     * @return The expireAt.
      */
     long getExpireAt();
 
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @return A list containing the suppliers.
      */
     java.util.List<java.lang.Long> getSuppliersList();
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @return The count of suppliers.
      */
     int getSuppliersCount();
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @param index The index of the element to return.
+     * @return The suppliers at the given index.
      */
     long getSuppliers(int index);
 
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return A list containing the group.
      */
     java.util.List<java.lang.Integer> getGroupList();
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return The count of group.
      */
     int getGroupCount();
     /**
      * <code>repeated int32 group = 8;</code>
+     * @param index The index of the element to return.
+     * @return The group at the given index.
      */
     int getGroup(int index);
   }
   /**
    * Protobuf type {@code CapacityGoalProto}
    */
-  public  static final class CapacityGoalProto extends
+  public static final class CapacityGoalProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:CapacityGoalProto)
       CapacityGoalProtoOrBuilder {
@@ -1767,13 +1893,17 @@ public final class PBCapacity {
     private long id_;
     /**
      * <code>optional int64 id = 1;</code>
+     * @return Whether the id field is set.
      */
+    @java.lang.Override
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 id = 1;</code>
+     * @return The id.
      */
+    @java.lang.Override
     public long getId() {
       return id_;
     }
@@ -1782,13 +1912,17 @@ public final class PBCapacity {
     private int itemId_;
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return Whether the itemId field is set.
      */
+    @java.lang.Override
     public boolean hasItemId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional int32 itemId = 2;</code>
+     * @return The itemId.
      */
+    @java.lang.Override
     public int getItemId() {
       return itemId_;
     }
@@ -1797,13 +1931,17 @@ public final class PBCapacity {
     private long expireAt_;
     /**
      * <code>optional int64 expireAt = 3;</code>
+     * @return Whether the expireAt field is set.
      */
+    @java.lang.Override
     public boolean hasExpireAt() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional int64 expireAt = 3;</code>
+     * @return The expireAt.
      */
+    @java.lang.Override
     public long getExpireAt() {
       return expireAt_;
     }
@@ -1812,19 +1950,24 @@ public final class PBCapacity {
     private com.google.protobuf.Internal.LongList suppliers_;
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @return A list containing the suppliers.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Long>
         getSuppliersList() {
       return suppliers_;
     }
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @return The count of suppliers.
      */
     public int getSuppliersCount() {
       return suppliers_.size();
     }
     /**
      * <code>repeated int64 suppliers = 4;</code>
+     * @param index The index of the element to return.
+     * @return The suppliers at the given index.
      */
     public long getSuppliers(int index) {
       return suppliers_.getLong(index);
@@ -1834,19 +1977,24 @@ public final class PBCapacity {
     private com.google.protobuf.Internal.IntList group_;
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return A list containing the group.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Integer>
         getGroupList() {
       return group_;
     }
     /**
      * <code>repeated int32 group = 8;</code>
+     * @return The count of group.
      */
     public int getGroupCount() {
       return group_.size();
     }
     /**
      * <code>repeated int32 group = 8;</code>
+     * @param index The index of the element to return.
+     * @return The group at the given index.
      */
     public int getGroup(int index) {
       return group_.getInt(index);
@@ -2291,18 +2439,24 @@ public final class PBCapacity {
       private long id_ ;
       /**
        * <code>optional int64 id = 1;</code>
+       * @return Whether the id field is set.
        */
+      @java.lang.Override
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @return The id.
        */
+      @java.lang.Override
       public long getId() {
         return id_;
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(long value) {
         bitField0_ |= 0x00000001;
@@ -2312,6 +2466,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int64 id = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -2323,18 +2478,24 @@ public final class PBCapacity {
       private int itemId_ ;
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return Whether the itemId field is set.
        */
+      @java.lang.Override
       public boolean hasItemId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return The itemId.
        */
+      @java.lang.Override
       public int getItemId() {
         return itemId_;
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @param value The itemId to set.
+       * @return This builder for chaining.
        */
       public Builder setItemId(int value) {
         bitField0_ |= 0x00000002;
@@ -2344,6 +2505,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int32 itemId = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearItemId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -2355,18 +2517,24 @@ public final class PBCapacity {
       private long expireAt_ ;
       /**
        * <code>optional int64 expireAt = 3;</code>
+       * @return Whether the expireAt field is set.
        */
+      @java.lang.Override
       public boolean hasExpireAt() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int64 expireAt = 3;</code>
+       * @return The expireAt.
        */
+      @java.lang.Override
       public long getExpireAt() {
         return expireAt_;
       }
       /**
        * <code>optional int64 expireAt = 3;</code>
+       * @param value The expireAt to set.
+       * @return This builder for chaining.
        */
       public Builder setExpireAt(long value) {
         bitField0_ |= 0x00000004;
@@ -2376,6 +2544,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int64 expireAt = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearExpireAt() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -2393,6 +2562,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @return A list containing the suppliers.
        */
       public java.util.List<java.lang.Long>
           getSuppliersList() {
@@ -2401,18 +2571,24 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @return The count of suppliers.
        */
       public int getSuppliersCount() {
         return suppliers_.size();
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @param index The index of the element to return.
+       * @return The suppliers at the given index.
        */
       public long getSuppliers(int index) {
         return suppliers_.getLong(index);
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The suppliers to set.
+       * @return This builder for chaining.
        */
       public Builder setSuppliers(
           int index, long value) {
@@ -2423,6 +2599,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @param value The suppliers to add.
+       * @return This builder for chaining.
        */
       public Builder addSuppliers(long value) {
         ensureSuppliersIsMutable();
@@ -2432,6 +2610,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @param values The suppliers to add.
+       * @return This builder for chaining.
        */
       public Builder addAllSuppliers(
           java.lang.Iterable<? extends java.lang.Long> values) {
@@ -2443,6 +2623,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int64 suppliers = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSuppliers() {
         suppliers_ = emptyLongList();
@@ -2460,6 +2641,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return A list containing the group.
        */
       public java.util.List<java.lang.Integer>
           getGroupList() {
@@ -2468,18 +2650,24 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return The count of group.
        */
       public int getGroupCount() {
         return group_.size();
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param index The index of the element to return.
+       * @return The group at the given index.
        */
       public int getGroup(int index) {
         return group_.getInt(index);
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param index The index to set the value at.
+       * @param value The group to set.
+       * @return This builder for chaining.
        */
       public Builder setGroup(
           int index, int value) {
@@ -2490,6 +2678,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param value The group to add.
+       * @return This builder for chaining.
        */
       public Builder addGroup(int value) {
         ensureGroupIsMutable();
@@ -2499,6 +2689,8 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @param values The group to add.
+       * @return This builder for chaining.
        */
       public Builder addAllGroup(
           java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -2510,6 +2702,7 @@ public final class PBCapacity {
       }
       /**
        * <code>repeated int32 group = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearGroup() {
         group_ = emptyIntList();
@@ -2576,10 +2769,12 @@ public final class PBCapacity {
 
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return Whether the playerId field is set.
      */
     boolean hasPlayerId();
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return The playerId.
      */
     long getPlayerId();
 
@@ -2634,7 +2829,7 @@ public final class PBCapacity {
   /**
    * Protobuf type {@code CapacityStoreProto}
    */
-  public  static final class CapacityStoreProto extends
+  public static final class CapacityStoreProto extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:CapacityStoreProto)
       CapacityStoreProtoOrBuilder {
@@ -2745,13 +2940,17 @@ public final class PBCapacity {
     private long playerId_;
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return Whether the playerId field is set.
      */
+    @java.lang.Override
     public boolean hasPlayerId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>optional int64 playerId = 1;</code>
+     * @return The playerId.
      */
+    @java.lang.Override
     public long getPlayerId() {
       return playerId_;
     }
@@ -2761,12 +2960,14 @@ public final class PBCapacity {
     /**
      * <code>repeated .CapacitySupplierProto suppliers = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<com.tny.game.protobuf.PBCapacity.CapacitySupplierProto> getSuppliersList() {
       return suppliers_;
     }
     /**
      * <code>repeated .CapacitySupplierProto suppliers = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.tny.game.protobuf.PBCapacity.CapacitySupplierProtoOrBuilder> 
         getSuppliersOrBuilderList() {
       return suppliers_;
@@ -2774,18 +2975,21 @@ public final class PBCapacity {
     /**
      * <code>repeated .CapacitySupplierProto suppliers = 2;</code>
      */
+    @java.lang.Override
     public int getSuppliersCount() {
       return suppliers_.size();
     }
     /**
      * <code>repeated .CapacitySupplierProto suppliers = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCapacity.CapacitySupplierProto getSuppliers(int index) {
       return suppliers_.get(index);
     }
     /**
      * <code>repeated .CapacitySupplierProto suppliers = 2;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCapacity.CapacitySupplierProtoOrBuilder getSuppliersOrBuilder(
         int index) {
       return suppliers_.get(index);
@@ -2796,12 +3000,14 @@ public final class PBCapacity {
     /**
      * <code>repeated .CapacityGoalProto goals = 3;</code>
      */
+    @java.lang.Override
     public java.util.List<com.tny.game.protobuf.PBCapacity.CapacityGoalProto> getGoalsList() {
       return goals_;
     }
     /**
      * <code>repeated .CapacityGoalProto goals = 3;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.tny.game.protobuf.PBCapacity.CapacityGoalProtoOrBuilder> 
         getGoalsOrBuilderList() {
       return goals_;
@@ -2809,18 +3015,21 @@ public final class PBCapacity {
     /**
      * <code>repeated .CapacityGoalProto goals = 3;</code>
      */
+    @java.lang.Override
     public int getGoalsCount() {
       return goals_.size();
     }
     /**
      * <code>repeated .CapacityGoalProto goals = 3;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCapacity.CapacityGoalProto getGoals(int index) {
       return goals_.get(index);
     }
     /**
      * <code>repeated .CapacityGoalProto goals = 3;</code>
      */
+    @java.lang.Override
     public com.tny.game.protobuf.PBCapacity.CapacityGoalProtoOrBuilder getGoalsOrBuilder(
         int index) {
       return goals_.get(index);
@@ -3254,18 +3463,24 @@ public final class PBCapacity {
       private long playerId_ ;
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return Whether the playerId field is set.
        */
+      @java.lang.Override
       public boolean hasPlayerId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return The playerId.
        */
+      @java.lang.Override
       public long getPlayerId() {
         return playerId_;
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
        */
       public Builder setPlayerId(long value) {
         bitField0_ |= 0x00000001;
@@ -3275,6 +3490,7 @@ public final class PBCapacity {
       }
       /**
        * <code>optional int64 playerId = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearPlayerId() {
         bitField0_ = (bitField0_ & ~0x00000001);
