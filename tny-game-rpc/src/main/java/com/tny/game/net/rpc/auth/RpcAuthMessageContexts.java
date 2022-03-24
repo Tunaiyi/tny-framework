@@ -21,7 +21,7 @@ public class RpcAuthMessageContexts {
 	private static final int RPC_AUTH_PASSWORD_INDEX = 3;
 
 	public static RequestContext authRequest(String service, long serverId, long instance, String password) {
-		return MessageContexts.requestParams(
+		return MessageContexts.request(
 				Protocols.protocol(RpcProtocol.RPC_AUTH_$_AUTHENTICATE),
 				service, serverId, instance, password);
 	}

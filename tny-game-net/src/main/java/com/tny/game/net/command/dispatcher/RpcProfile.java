@@ -37,6 +37,10 @@ public class RpcProfile {
 		this.modeSet = ImmutableSet.copyOf(modeSet);
 	}
 
+	public Class<?> getRouter() {
+		return null;
+	}
+
 	public static RpcProfile of(Method method) {
 		RpcRequest rpcRequest = method.getAnnotation(RpcRequest.class);
 		if (rpcRequest != null) {

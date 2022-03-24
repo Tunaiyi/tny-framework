@@ -89,7 +89,7 @@ public class RpcInvoker {
 		switch (method.getMode()) {
 			case PUSH:
 				push(endpoint, timeout, params);
-				break;
+				return null;
 			case REQUEST:
 				return request(endpoint, timeout, params);
 		}
@@ -101,8 +101,7 @@ public class RpcInvoker {
 	}
 
 	private Object request(Endpoint<?> endpoint, long timeout, Object... params) {
-		RequestContext requestContext = createRequest(protocol(), params)
-				.willRespondAwaiter(timeout);
+		RequestContext requestContext = createRequest(protocol(), params).willRespondAwaiter(timeout);
 		endpoint.send(requestContext);
 		MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
 		if (this.method.isAsync()) {
@@ -143,7 +142,7 @@ public class RpcInvoker {
 			if (e != null) {
 				rpcFuture.completeExceptionally(e);
 			} else {
-				rpcFuture.complete(getReturnObject(message));
+				rpcFuture.complete(RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
 			}
 		});
 		return rpcFuture;
@@ -168,8 +167,7 @@ public class RpcInvoker {
 
 	private void push(Endpoint<?> endpoint, long timeout, Object... params) {
 		List<Integer> parameterIndexes = method.getParameterIndexes();
-		MessageContext messageContext = MessageContexts
-				.push(protocol())
+		MessageContext messageContext = MessageContexts.push(protocol())
 				.withBody(parameterIndexes.size() == 0 ? null : params[parameterIndexes.get(0)]);
 		endpoint.send(messageContext);
 		if (this.method.isAsync()) {
@@ -198,63 +196,36 @@ public class RpcInvoker {
 			case 0:
 				return MessageContexts.request(protocol);
 			case 1:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)]);
 			case 2:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)]);
 			case 3:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
 						params[parameterIndexes.get(2)]);
 			case 4:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
-						params[parameterIndexes.get(2)],
-						params[parameterIndexes.get(3)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
+						params[parameterIndexes.get(2)], params[parameterIndexes.get(3)]);
 			case 5:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
-						params[parameterIndexes.get(2)],
-						params[parameterIndexes.get(3)],
-						params[parameterIndexes.get(4)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
+						params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)]);
 			case 6:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
-						params[parameterIndexes.get(2)],
-						params[parameterIndexes.get(3)],
-						params[parameterIndexes.get(4)],
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
+						params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
 						params[parameterIndexes.get(5)]);
 			case 7:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
-						params[parameterIndexes.get(2)],
-						params[parameterIndexes.get(3)],
-						params[parameterIndexes.get(4)],
-						params[parameterIndexes.get(5)],
-						params[parameterIndexes.get(6)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
+						params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
+						params[parameterIndexes.get(5)], params[parameterIndexes.get(6)]);
 			case 8:
-				return MessageContexts.requestParams(protocol,
-						params[parameterIndexes.get(0)],
-						params[parameterIndexes.get(1)],
-						params[parameterIndexes.get(2)],
-						params[parameterIndexes.get(3)],
-						params[parameterIndexes.get(4)],
-						params[parameterIndexes.get(5)],
-						params[parameterIndexes.get(6)],
-						params[parameterIndexes.get(7)]);
+				return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
+						params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
+						params[parameterIndexes.get(5)], params[parameterIndexes.get(6)], params[parameterIndexes.get(7)]);
 			default:
 				Object[] paramArray = new Object[parameterIndexes.size()];
 				for (int i = 0; i < paramArray.length; i++) {
 					paramArray[i] = params[parameterIndexes.get(i)];
 				}
-				return MessageContexts.requestParams(protocol, paramArray);
+				return MessageContexts.request(protocol, paramArray);
 		}
 	}
 

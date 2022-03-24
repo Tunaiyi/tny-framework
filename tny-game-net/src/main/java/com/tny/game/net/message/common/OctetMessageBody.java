@@ -14,8 +14,6 @@ public interface OctetMessageBody {
 		}
 	}
 
-	boolean isRelay();
-
 	Object getBody();
 
 	void release();

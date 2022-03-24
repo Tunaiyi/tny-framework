@@ -102,6 +102,13 @@ public abstract class AbstractAttributes implements Attributes {
 
 	@Override
 	@SuppressWarnings("unchecked")
+	public <T> T setIfAbsent(AttrKey<? extends T> key, T value) {
+		Map<AttrKey<?>, Object> map = this.getMap();
+		return (T)map.putIfAbsent(key, value);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T removeAttribute(AttrKey<? extends T> key) {
 		this.writeLock();
 		try {

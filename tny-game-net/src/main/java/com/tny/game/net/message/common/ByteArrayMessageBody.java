@@ -13,19 +13,8 @@ public class ByteArrayMessageBody implements OctetMessageBody {
 	 */
 	private byte[] bodyBytes;
 
-	/**
-	 * 是否是转发
-	 */
-	private final boolean relay;
-
-	public ByteArrayMessageBody(byte[] bodyBytes, boolean relay) {
+	public ByteArrayMessageBody(byte[] bodyBytes) {
 		this.bodyBytes = bodyBytes;
-		this.relay = relay;
-	}
-
-	@Override
-	public boolean isRelay() {
-		return relay;
 	}
 
 	@Override

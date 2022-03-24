@@ -130,12 +130,12 @@ class TunnelConnector {
 	private void doReconnect() {
 		boolean stop = false;
 		try {
-			if (!checkNotReconnect()) {
+			if (checkNotReconnect()) {
 				return;
 			}
 			this.lock.lock();
 			try {
-				if (!checkNotReconnect()) {
+				if (checkNotReconnect()) {
 					return;
 				}
 				LOGGER.info("{} reconnect {} times", this.tunnel, this.times);

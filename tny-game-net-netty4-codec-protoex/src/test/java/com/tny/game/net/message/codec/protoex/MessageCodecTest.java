@@ -54,6 +54,7 @@ public class MessageCodecTest {
 		assertEquals(encodeMessage.getHead(), noDecodeBodyMessage.getHead());
 		bodyBytes = noDecodeBodyMessage.bodyAs(ByteArrayMessageBody.class);
 		assertNotNull(bodyBytes);
+
 		ProtoExReader bodyReader = new ProtoExReader(bodyBytes.getBody());
 		TestMsgObject realBody = bodyReader.readMessage(TestMsgObject.class);
 		assertEquals(encodeMessage.bodyAs(TestMsgObject.class), realBody);

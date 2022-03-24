@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.common.*;
 import com.tny.game.basics.loader.*;
 import com.tny.game.basics.module.*;
 import com.tny.game.codec.jackson.mapper.*;

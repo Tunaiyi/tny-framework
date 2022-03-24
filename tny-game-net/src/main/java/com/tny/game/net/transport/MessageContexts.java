@@ -71,37 +71,11 @@ public class MessageContexts {
 	/**
 	 * 创建请求消息上下文
 	 *
-	 * @param protocol 协议号
-	 * @return 创建的消息上下文
-	 */
-	public static RequestContext request(Protocol protocol) {
-		DefaultMessageContext context = new DefaultMessageContext();
-		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS);
-		return context;
-	}
-
-	/**
-	 * 创建请求消息上下文
-	 *
-	 * @param protocol 协议号
-	 * @param body     请求消息体
-	 * @return 创建的消息上下文
-	 */
-	public static RequestContext request(Protocol protocol, Object body) {
-		DefaultMessageContext context = new DefaultMessageContext();
-		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-				.withBody(body);
-		return context;
-	}
-
-	/**
-	 * 创建请求消息上下文
-	 *
 	 * @param protocol      协议号
 	 * @param requestParams 请求参数, Body 转为 List
 	 * @return 创建的消息上下文
 	 */
-	public static RequestContext requestParams(Protocol protocol, Object... requestParams) {
+	public static RequestContext request(Protocol protocol, Object... requestParams) {
 		DefaultMessageContext context = new DefaultMessageContext();
 		context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
 				.withBody(new MessageParamList(requestParams));

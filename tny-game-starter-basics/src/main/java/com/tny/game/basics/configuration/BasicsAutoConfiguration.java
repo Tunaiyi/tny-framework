@@ -2,6 +2,7 @@ package com.tny.game.basics.configuration;
 
 import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.common.*;
 import com.tny.game.basics.item.mapper.*;
 import com.tny.game.basics.persistent.*;
 import com.tny.game.basics.transaction.*;

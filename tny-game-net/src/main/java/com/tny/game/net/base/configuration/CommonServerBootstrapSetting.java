@@ -40,9 +40,11 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
 	}
 
 	public void setBindAddress(String address) {
-		this.bindAddressValue = address;
-		String[] hostPort = StringUtils.split(address, ":");
-		this.bindAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+		if (StringUtils.isNoneBlank(address)) {
+			this.bindAddressValue = address;
+			String[] hostPort = StringUtils.split(address, ":");
+			this.bindAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+		}
 	}
 
 	public String getServeAddress() {
@@ -50,9 +52,11 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
 	}
 
 	public void setServeAddress(String address) {
-		this.serveAddressValue = address;
-		String[] hostPort = StringUtils.split(address, ":");
-		this.serveAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+		if (StringUtils.isNoneBlank(address)) {
+			this.serveAddressValue = address;
+			String[] hostPort = StringUtils.split(address, ":");
+			this.serveAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+		}
 	}
 
 	public CommonServerBootstrapSetting setScheme(String scheme) {

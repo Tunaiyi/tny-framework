@@ -45,7 +45,7 @@ public class DataPacketV1CodecTest {
 	}
 
 	private Message craeteMessage(Object... params) {
-		return this.factory.create(1, MessageContexts.requestParams(
+		return this.factory.create(1, MessageContexts.request(
 				Protocols.protocol(100_199), params));
 	}
 

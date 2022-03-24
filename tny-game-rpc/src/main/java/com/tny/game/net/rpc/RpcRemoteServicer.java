@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.tny.game.net.endpoint.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +22,8 @@ public class RpcRemoteServicer {
 
 	private volatile List<RpcRemoteNode> orderRemoteNodes = ImmutableList.of();
 
+	private AtomicInteger version = new AtomicInteger(0);
+
 	public RpcRemoteServicer(String name) {
 		this.name = name;
 	}
@@ -31,6 +34,14 @@ public class RpcRemoteServicer {
 
 	public List<RpcRemoteNode> getOrderRemoteNodes() {
 		return orderRemoteNodes;
+	}
+
+	public int getVersion() {
+		return version.get();
+	}
+
+	private void updateVersion() {
+		version.incrementAndGet();
 	}
 
 	protected void addEndpoint(Endpoint<RpcLinkerId> endpoint) {
@@ -61,12 +72,15 @@ public class RpcRemoteServicer {
 	private void refreshNodes(RpcRemoteNode rpcNode) {
 		RpcRemoteNode currentNode = remoteNodeMap.get(rpcNode.getServerId());
 		if (currentNode == rpcNode) {
-			orderRemoteNodes = ImmutableList.sortedCopyOf(
-					Comparator.comparing(RpcRemoteNode::getServerId),
-					remoteNodeMap.values()
-							.stream()
-							.filter(RpcRemoteNode::isActive)
-							.collect(Collectors.toList()));
+			orderRemoteNodes = ImmutableList.sortedCopyOf(Comparator.comparing(RpcRemoteNode::getServerId),
+					remoteNodeMap.values().stream().filter(RpcRemoteNode::isActive).collect(Collectors.toList()));
+			this.updateVersion();
+		}
+	}
+
+	public static void main(String[] args) {
+		for (int i = 0; i < 10; i++) {
+			System.out.println(System.nanoTime() * 100 + ThreadLocalRandom.current().nextInt(100));
 		}
 	}
 

@@ -53,8 +53,8 @@ public abstract class MessageCommand implements Command {
 		return this.dispatcherContext.getAppContext().getScopeType();
 	}
 
-	protected MessageCommand(MessageCommandContext commandContext, NetTunnel<?> tunnel, Message message,
-			MessageDispatcherContext dispatcherContext, EndpointKeeperManager endpointKeeperManager, boolean relay) {
+	protected MessageCommand(MessageCommandContext commandContext, NetTunnel<?> tunnel, Message message, MessageDispatcherContext dispatcherContext,
+			EndpointKeeperManager endpointKeeperManager, boolean relay) {
 		this.tunnel = as(tunnel);
 		this.message = as(message);
 		this.dispatcherContext = dispatcherContext;
@@ -199,7 +199,8 @@ public abstract class MessageCommand implements Command {
 				}
 				break;
 			case REQUEST:
-				if (!relay || !voidable) {
+				//if (!relay || !voidable) {
+				if (!relay || !voidable) { // 如果转发并且返回值为 void, 表名由relay进行返回
 					context = MessageContexts.respond(this.message, code, body, this.message.getId());
 				}
 				break;
@@ -244,9 +245,7 @@ public abstract class MessageCommand implements Command {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("message", this.message)
-				.toString();
+		return MoreObjects.toStringHelper(this).add("message", this.message).toString();
 	}
 
 }

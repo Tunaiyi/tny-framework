@@ -44,13 +44,13 @@ class ClassesSelectorScheme {
         this.filters.add(filter)
     }
 
-    void filterAnnotation(Action<? extends AnnotationClassFilterSpec> action) {
+    void filterAnnotation(Action<AnnotationClassFilterSpec> action) {
         def spec = this.objectFactory.newInstance(AnnotationClassFilterSpec.class)
         action.execute(spec)
         filters.add(spec.filter())
     }
 
-    void filterSubClassOf(Action<? extends SubOfClassFilterSpec> action) {
+    void filterSubClassOf(Action<SubOfClassFilterSpec> action) {
         def spec = this.objectFactory.newInstance(SubOfClassFilterSpec.class)
         action.execute(spec)
         filters.add(spec.filter())

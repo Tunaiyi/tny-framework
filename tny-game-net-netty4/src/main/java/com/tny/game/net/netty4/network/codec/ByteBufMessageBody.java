@@ -19,26 +19,15 @@ public class ByteBufMessageBody implements OctetMessageBody {
 	 */
 	private ByteBuf buffer;
 
-	/**
-	 * 是否是转发
-	 */
-	private final boolean relay;
-
 	private final AtomicBoolean released = new AtomicBoolean(false);
 
-	public ByteBufMessageBody(ByteBuf buffer, boolean relay) {
+	public ByteBufMessageBody(ByteBuf buffer) {
 		this.buffer = buffer;
-		this.relay = relay;
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		this.release();
-	}
-
-	@Override
-	public boolean isRelay() {
-		return relay;
 	}
 
 	@Override

@@ -45,24 +45,29 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 		int line = (byte)(option & MESSAGE_HEAD_OPTION_LINE_MASK);
 		line = line >> MESSAGE_HEAD_OPTION_LINE_SHIFT;
 		CommonMessageHead head = new CommonMessageHead(id, mode, line, protocol, code, toMessage, time);
+		boolean relay = this.messageRelayStrategy.isRelay(head);
+		NetMessage message;
 		if (!CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST, MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST)) {
-			return messageFactory.create(head, null);
-		}
-
-		int length = NettyVarIntCoder.readVarInt32(buffer);
-		ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
-		buffer.readBytes(bodyBuff, length);
-		if (this.messageRelayStrategy.isRelay(head)) {
-			// WARN 不释放, 等待转发后释放
-			body = new ByteBufMessageBody(bodyBuff, true);
+			message = messageFactory.create(head, null);
 		} else {
-			try {
-				body = this.bodyCoder.decode(bodyBuff);
-			} finally {
-				ReferenceCountUtil.release(bodyBuff);
+			int length = NettyVarIntCoder.readVarInt32(buffer);
+			ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
+			buffer.readBytes(bodyBuff, length);
+
+			if (relay) {
+				// WARN 不释放, 等待转发后释放
+				body = new ByteBufMessageBody(bodyBuff);
+			} else {
+				try {
+					body = this.bodyCoder.decode(bodyBuff);
+				} finally {
+					ReferenceCountUtil.release(bodyBuff);
+				}
 			}
+			message = messageFactory.create(head, body);
 		}
-		return messageFactory.create(head, body);
+		message.relay(relay);
+		return message;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.tny.game.gradle.doc.plugin
 import com.tny.game.doc.LangTypeFormatter
 import com.tny.game.doc.TypeFormatter
 import com.tny.game.doc.controller.ModuleTableAttribute
+import com.tny.game.doc.enums.EnumTableAttribute
 import com.tny.game.doc.output.ExportTask
 import com.tny.game.doc.output.OutputType
 import com.tny.game.doc.table.TableAttributeFactory
@@ -199,6 +200,10 @@ class FileExportScheme {
 
     void serviceAttributeFactory() {
         this.attributeFactory = { new ModuleTableAttribute() }
+    }
+
+    void enumAttributeFactory() {
+        this.attributeFactory = { new EnumTableAttribute() }
     }
 
     void setAttributeFactory(TableAttributeFactory attributeFactory) {

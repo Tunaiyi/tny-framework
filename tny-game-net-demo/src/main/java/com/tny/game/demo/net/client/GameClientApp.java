@@ -59,7 +59,7 @@ public class GameClientApp {
 						String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
 						System.out.println("!!@   [发送] 请求 = " + message);
 						SendReceipt context = tunnel
-								.send(MessageContexts.requestParams(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
+								.send(MessageContexts.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
 										.willRespondAwaiter(3000000L));
 						try {
 							Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
@@ -145,14 +145,14 @@ public class GameClientApp {
 								break;
 							}
 							case "a": {
-								RpcFuture<RpcResult<SayContentDTO>> future = speakService.asyncSay(message);
+								RpcFuture<SayContentDTO> future = speakService.asyncSay(message);
 								RpcResult<SayContentDTO> result = future.get();
 								LOGGER.info("Async Call : RpcResult [ {}, {} ]", result.getResultCode(), result.get());
 								break;
 							}
 							case "ab": {
-								RpcFuture<SayContentDTO> future = speakService.asyncSayForBody(message);
-								SayContentDTO body = future.get();
+								RpcFuture<SayContentDTO> future = speakService.asyncSay(message);
+								SayContentDTO body = future.getBody();
 								LOGGER.info("Sync Call : Body [ {} ]", body);
 								break;
 							}
@@ -172,7 +172,7 @@ public class GameClientApp {
 	}
 
 	private static <T> T send(Client<Long> client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
-		RequestContext messageContent = MessageContexts.requestParams(protocol, params);
+		RequestContext messageContent = MessageContexts.request(protocol, params);
 		if (waitTimeout > 0) {
 			SendReceipt context = client.send(messageContent
 					.willRespondAwaiter(waitTimeout));
@@ -191,7 +191,7 @@ public class GameClientApp {
 	}
 
 	private static void send(Client<Long> client, String content, boolean wait) {
-		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
+		RequestContext messageContent = MessageContexts.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
 		if (wait) {
 			RpcResult<SayContentDTO> result = speakService.say(content);
 			LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
@@ -202,7 +202,7 @@ public class GameClientApp {
 
 	private static void test(Client<Long> client, String content, boolean wait) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		RequestContext messageContent = MessageContexts.requestParams(Protocols.protocol(CtrlerIds.SPEAK$TEST),
+		RequestContext messageContent = MessageContexts.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
 				(byte)random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
 				(short)random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
 				random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE),

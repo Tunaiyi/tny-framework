@@ -57,6 +57,15 @@ public interface Attributes {
 	<T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> supplier);
 
 	/**
+	 * 插入指定的 key 与 value, 如果key在返回存在的值, 不存在插入value并返回null
+	 *
+	 * @param key   指定key
+	 * @param value 默认值
+	 * @return 如果在返回存在的值, 不存在插入value并返回value
+	 */
+	<T> T setIfAbsent(AttrKey<? extends T> key, T value);
+
+	/**
 	 * 删除指定key的属性
 	 * <p>
 	 * <p>

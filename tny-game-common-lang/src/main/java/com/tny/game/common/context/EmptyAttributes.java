@@ -30,6 +30,11 @@ class EmptyAttributes implements Attributes {
 	}
 
 	@Override
+	public <T> T setIfAbsent(AttrKey<? extends T> key, T value) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public <T> T removeAttribute(AttrKey<? extends T> key) {
 		throw new UnsupportedOperationException();
 	}

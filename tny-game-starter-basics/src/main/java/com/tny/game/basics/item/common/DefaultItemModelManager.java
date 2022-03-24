@@ -1,5 +1,6 @@
-package com.tny.game.basics.item;
+package com.tny.game.basics.item.common;
 
+import com.tny.game.basics.item.*;
 import com.tny.game.common.concurrent.collection.*;
 
 import java.util.*;

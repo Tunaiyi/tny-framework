@@ -154,8 +154,8 @@ public class RpcMethod {
 		this.parameterIndexes = ImmutableList.copyOf(parameterIndexes);
 
 		if (!this.mode.checkParamsSize(this.parameterIndexes.size())) {
-			throw new IllegalArgumentException(format("{} mode 为 {}, 请求参数数量必须在 {} 到 {} 个之间",
-					method, mode, mode.getMinParamSizeLimit(), mode.getMaxParamSizeLimit()));
+			throw new IllegalArgumentException(
+					format("{} mode 为 {}, 请求参数数量必须在 {} 到 {} 个之间", method, mode, mode.getMinParamSizeLimit(), mode.getMaxParamSizeLimit()));
 		}
 
 		Class<?> bodyClass = returnMode.findBodyClass(method);
@@ -224,10 +224,7 @@ public class RpcMethod {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this)
-				.append("service", service)
-				.append("name", name)
-				.toString();
+		return new ToStringBuilder(this).append("service", service).append("name", name).toString();
 	}
 
 }

@@ -25,16 +25,16 @@ public class RelayMessage implements NetMessage {
 
 	public RelayMessage(NetMessage message) {
 		this.message = message;
-		Object body = message.getBody();
-		if (body instanceof OctetMessageBody) {
-			relay = ((OctetMessageBody)body).isRelay();
-		} else {
-			relay = false;
-		}
+		this.relay = message.isRelay();
 	}
 
+	@Override
 	public boolean isRelay() {
 		return relay;
+	}
+
+	@Override
+	public void relay(boolean value) {
 	}
 
 	@Override

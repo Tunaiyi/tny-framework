@@ -23,10 +23,6 @@ public interface SpeakRemoteService {
 	SayContentDTO sayForBody(String message);
 
 	@RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
-	RpcFuture<RpcResult<SayContentDTO>> asyncSay(String message);
-
-	@RpcBody
-	@RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
-	RpcFuture<SayContentDTO> asyncSayForBody(String message);
+	RpcFuture<SayContentDTO> asyncSay(String message);
 
 }

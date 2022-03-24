@@ -32,9 +32,9 @@ public class RelayNettyMessageHandler extends NettyMessageHandler {
 	@Override
 	public void channelRead(ChannelHandlerContext context, Object object) {
 		if (object instanceof NetMessage) {
-			RelayMessage message = new RelayMessage(as(object));
+			NetMessage message = (NetMessage)object;
 			if (message.isRelay()) {
-				relayMessage(context, message);
+				relayMessage(context, new RelayMessage(message));
 				return;
 			}
 		}
