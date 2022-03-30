@@ -25,7 +25,7 @@ public class CapacitySupplierListDTO {
 	public static CapacitySupplierListDTO suppliers2DTO(Stream<? extends CapacitySupplier> suppliers) {
 		CapacitySupplierListDTO dto = new CapacitySupplierListDTO();
 		dto.capacityItems = suppliers
-				.filter(CapacitySupplier::isSupplying)
+				.filter(CapacitySupplier::isWorking)
 				.map(CapacitySupplierDTO::supplier2DTO)
 				.collect(Collectors.toList());
 		return dto;

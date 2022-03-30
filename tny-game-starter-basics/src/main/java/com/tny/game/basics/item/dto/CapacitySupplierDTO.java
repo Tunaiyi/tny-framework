@@ -47,10 +47,10 @@ public class CapacitySupplierDTO {
 	@ProtoExField(8)
 	private Set<Integer> capacityGroups;
 
-	private static void initComboSupplier(CapacitySupplierDTO dto, ComboCapacitySupplier supplier) {
+	private static void initCompositeSupplier(CapacitySupplierDTO dto, CompositeCapacitySupplier supplier) {
 		Set<CapacityGroup> capacityGroups = new HashSet<>();
-		dto.dependSuppliers = supplier.dependSuppliers().stream()
-				.filter(CapacitySupplier::isSupplying)
+		dto.dependSuppliers = supplier.suppliers().stream()
+				.filter(CapacitySupplier::isWorking)
 				.peek(s -> capacityGroups.addAll(s.getAllCapacityGroups()))
 				.map(CapacitySupplier::getId)
 				.collect(Collectors.toList());
@@ -63,10 +63,10 @@ public class CapacitySupplierDTO {
 		CapacitySupplierDTO dto = new CapacitySupplierDTO();
 		dto.id = supplier.getId();
 		dto.modelId = supplier.getModelId();
-		if (supplier instanceof ComboCapacitySupplier) {
-			initComboSupplier(dto, as(supplier));
+		if (supplier instanceof CompositeCapacitySupplier) {
+			initCompositeSupplier(dto, as(supplier));
 		} else {
-			dto.capacities = supplier.getAllValues().entrySet().stream()
+			dto.capacities = supplier.getAllCapacities().entrySet().stream()
 					.map(entry -> CapacityDTO.value2DTO(entry.getKey(), entry.getValue()))
 					.collect(Collectors.toList());
 			dto.capacityGroups = supplier.getAllCapacityGroups().stream()

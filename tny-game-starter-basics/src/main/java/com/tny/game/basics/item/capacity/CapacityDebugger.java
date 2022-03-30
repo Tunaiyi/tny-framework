@@ -51,7 +51,7 @@ public class CapacityDebugger {
 
 	public void debugSupplier(long playerId, boolean recursive, Collection<Long> supplierIDs) {
 		StringBuilder builder = new StringBuilder();
-		CapacityStorer storer = this.capacityStorerManager.getStorer(playerId);
+		CapacityObjectStorer storer = this.capacityStorerManager.getStorer(playerId);
 		for (long id : supplierIDs) {
 			Optional<CapacitySupplier> supplierOpt = storer.findSupplier(id);
 			if (!supplierOpt.isPresent()) {
@@ -64,27 +64,27 @@ public class CapacityDebugger {
 		LOGGER.debug("\n{}", builder);
 	}
 
-	public void debugGoal(long playerId, long... goalIDs) {
-		debugGoal(playerId, true, goalIDs);
+	public void debugCapabler(long playerId, long... goalIDs) {
+		debugCapabler(playerId, true, goalIDs);
 	}
 
-	public void debugGoal(long playerId, boolean recursive, long... goalIDs) {
-		debugGoal(playerId, recursive, LongStream.of(goalIDs).boxed().collect(Collectors.toList()));
+	public void debugCapabler(long playerId, boolean recursive, long... goalIDs) {
+		debugCapabler(playerId, recursive, LongStream.of(goalIDs).boxed().collect(Collectors.toList()));
 	}
 
-	public void debugGoal(long playerId, Collection<Long> goalIDs) {
-		debugGoal(playerId, true, goalIDs);
+	public void debugCapabler(long playerId, Collection<Long> goalIDs) {
+		debugCapabler(playerId, true, goalIDs);
 	}
 
-	public void debugGoal(long playerId, boolean recursive, Collection<Long> goalIDs) {
+	public void debugCapabler(long playerId, boolean recursive, Collection<Long> goalIDs) {
 		StringBuilder builder = new StringBuilder();
-		CapacityStorer storer = this.capacityStorerManager.getStorer(playerId);
+		CapacityObjectStorer storer = this.capacityStorerManager.getStorer(playerId);
 		for (long id : goalIDs) {
-			Optional<CapacityGoal> supplierOpt = storer.findGoal(id);
+			Optional<Capabler> supplierOpt = storer.findCapabler(id);
 			if (!supplierOpt.isPresent()) {
-				builder.append(format("未找到Goal [{}]\b", id));
+				builder.append(format("未找到Capabler [{}]\b", id));
 			} else {
-				CapacityGoal goal = supplierOpt.get();
+				Capabler goal = supplierOpt.get();
 				appendFullObject(builder, "", recursive, goal, GOAL);
 			}
 		}
@@ -101,7 +101,7 @@ public class CapacityDebugger {
 		if (objectType == SUPPLIER && object instanceof CapacitySupplier) {
 			appendObject(builder.append(head), object, SUPPLIER);
 			CapacitySupplier supplier = as(object);
-			Map<Capacity, Number> capacities = supplier.getAllValues();
+			Map<Capacity, Number> capacities = supplier.getAllCapacities();
 			if (!capacities.isEmpty()) {
 				builder.append(head).append(INDENT).append("能力值参数 : ");
 				builder.append("\n");
@@ -111,16 +111,16 @@ public class CapacityDebugger {
 			} else {
 				builder.append("[空]\n");
 			}
-			if (supplier instanceof ComboCapacitySupplier) {
-				ComboCapacitySupplier comboSupplier = as(supplier);
+			if (supplier instanceof CompositeCapacitySupplier) {
+				CompositeCapacitySupplier comboSupplier = as(supplier);
 				builder.append(head).append(INDENT).append(format("Combo 关联 suppliers : "));
-				appendAllSupplier(builder, head, recursive, comboSupplier.dependSuppliers());
+				appendAllSupplier(builder, head, recursive, comboSupplier.suppliers());
 			}
 		}
-		if (objectType == GOAL && object instanceof CapacityGoal) {
+		if (objectType == GOAL && object instanceof Capabler) {
 			appendObject(builder.append(head), object, GOAL);
-			CapacityGoal goal = as(object);
-			builder.append(head).append(INDENT).append(format("Goal 关联 suppliers : "));
+			Capabler goal = as(object);
+			builder.append(head).append(INDENT).append(format("Capabler 关联 suppliers : "));
 			appendAllSupplier(builder, head, recursive, goal.suppliers());
 		}
 	}

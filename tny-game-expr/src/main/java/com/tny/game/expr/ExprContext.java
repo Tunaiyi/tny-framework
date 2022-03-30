@@ -20,8 +20,8 @@ public interface ExprContext {
 
     ExprContext importClassesAs(Map<String, Class<?>> aliasClassMap);
 
-    ExprContext put(String key, Object object);
+    ExprContext bind(String key, Object object);
 
-    ExprContext putAll(Map<String, Object> attributes);
+    ExprContext bindAll(Map<String, Object> attributes);
 
 }

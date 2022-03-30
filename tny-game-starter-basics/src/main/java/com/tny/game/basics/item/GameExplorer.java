@@ -162,15 +162,15 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
 	@Override
 	public <O extends StuffOwner<?, ?>> O getOwner(long playerId, ItemType ownerType) {
-		GameManager<Object> manager = this.getOwnerManager(ownerType);
-		return (O)manager.get(playerId);
+		StuffOwnerManger<O> manager = this.getOwnerManager(ownerType);
+		return manager.getOwner(playerId);
 	}
 
 	@Override
 	public boolean insertOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
+			StuffOwnerManger<StuffOwner<?, ?>> manager = this.getOwnerManager(owner.getItemType());
 			if (manager.insert(owner)) {
 				continue;
 			}
@@ -196,7 +196,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean updateOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
+			StuffOwnerManger<StuffOwner<?, ?>> manager = this.getOwnerManager(owner.getItemType());
 			if (manager.update(owner)) {
 				continue;
 			}
@@ -222,7 +222,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	public boolean saveOwner(StuffOwner<?, ?>... ownerArray) {
 		boolean result = true;
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
+			StuffOwnerManger<StuffOwner<?, ?>> manager = this.getOwnerManager(owner.getItemType());
 			if (!manager.save(owner)) {
 				result = false;
 			}
@@ -245,7 +245,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 	@Override
 	public void deleteOwner(StuffOwner<?, ?>... ownerArray) {
 		for (StuffOwner<?, ?> owner : ownerArray) {
-			GameManager<Object> manager = this.getOwnerManager(owner.getItemType());
+			StuffOwnerManger<StuffOwner<?, ?>> manager = this.getOwnerManager(owner.getItemType());
 			manager.delete(owner);
 		}
 	}
@@ -257,12 +257,16 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 		}
 	}
 
-	private GameManager<Object> getOwnerManager(ItemType itemType) {
+	private <O extends StuffOwner<?, ?>> StuffOwnerManger<O> getOwnerManager(ItemType itemType) {
 		GameManager<Object> manager = this.typeManagerMap.get(itemType);
 		if (manager == null) {
 			throw new NullPointerException(MessageFormat.format("获取 {0} 事物的owner manager 为null", itemType));
 		}
-		return manager;
+		if (manager instanceof StuffOwnerManger) {
+			return as(manager);
+		}
+		throw new IllegalArgumentException(MessageFormat.format("获取 {0} 事物的owner manager {} 未实现 {}",
+				itemType, manager.getClass(), StuffOwnerManger.class));
 	}
 
 	private GameManager<Object> getItemManager(int modelId) {

@@ -15,28 +15,28 @@ import static java.util.Collections.*;
  * <p>
  * Created by Kun Yang on 2017/7/18.
  */
-public class BaseCapacityStorer implements CapacityStorer {
+public class BaseCapacityStorer implements CapacityObjectStorer {
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacitySupplier>>
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
 			ON_SAVE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onSaveSupplier);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacitySupplier>>
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
 			ON_DELETE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onDeleteSupplier);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacitySupplier>>
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
 			ON_LINK_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onLinkSupplier);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacitySupplier>>
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
 			ON_EXPIRE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onExpireSupplier);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacityGoal>>
-			ON_SAVE_GOAL = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onSaveGoal);
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+			ON_SAVE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onSaveCapabler);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacityGoal>>
-			ON_DELETE_GOAL = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onDeleteGoal);
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+			ON_DELETE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onDeleteCapabler);
 
-	private static BindP1EventBus<CapacityStorerListener, CapacityStorer, Collection<ExpireCapacityGoal>>
-			ON_EXPIRE_GOAL = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onExpireGoal);
+	private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+			ON_EXPIRE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onExpireCapabler);
 
 	/**
 	 * 玩家ID
@@ -50,7 +50,7 @@ public class BaseCapacityStorer implements CapacityStorer {
 	private Map<String, CopyOnWriteMap<Long, StoreCapacitySupplier>> typeSuppliersMap
 			= new CopyOnWriteMap<>();
 
-	private Map<String, CopyOnWriteMap<Long, StoreCapacityGoal>> typeGoalsMap
+	private Map<String, CopyOnWriteMap<Long, StoreCapabler>> typeCapablerMap
 			= new CopyOnWriteMap<>();
 
 	@Override
@@ -64,20 +64,20 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public Optional<ComboCapacitySupplier> findComboSupplier(long id) {
+	public Optional<CompositeCapacitySupplier> findCompositeSupplier(long id) {
 		CapacitySupplier supplier = getSupplier(id);
 		if (supplier == null) {
 			return Optional.empty();
 		}
-		if (supplier instanceof ComboCapacitySupplier) {
+		if (supplier instanceof CompositeCapacitySupplier) {
 			return Optional.of(ObjectAide.as(supplier));
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<CapacityGoal> findGoal(long id) {
-		return Optional.ofNullable(getGoal(id));
+	public Optional<Capabler> findCapabler(long id) {
+		return Optional.ofNullable(getCapabler(id));
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public boolean isHasGoal(long id) {
-		return goalsMap(id).containsKey(id);
+	public boolean isHasCapabler(long id) {
+		return capablerMap(id).containsKey(id);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public void saveComboSupplier(CapacitySupplierType type, long id, int modelId, Collection<? extends CapacitySupplier> suppliers,
+	public void saveCompositeSupplier(CapacitySupplierType type, long id, int modelId, Collection<? extends CapacitySupplier> suppliers,
 			long timeoutAt) {
 		StoreCapacitySupplier saved;
 		suppliersMap(id)
@@ -202,86 +202,86 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public void saveGoal(CapacityGoal goal, long timeoutAt) {
-		StoreCapacityGoal saved;
-		goalsMap(goal.getId())
+	public void saveCapabler(Capabler goal, long timeoutAt) {
+		StoreCapabler saved;
+		capablerMap(goal.getId())
 				.put(goal.getId(), saved = goal2Save(goal, timeoutAt));
-		ON_SAVE_GOAL.notify(this, singleton(saved));
+		ON_SAVE_CAPABLER.notify(this, singleton(saved));
 	}
 
 	@Override
-	public void saveGoal(long id, int modelId, CapacityGather gather, long timeoutAt) {
-		StoreCapacityGoal saved;
-		goalsMap(id)
-				.put(id, saved = goal2Save(id, modelId, gather, timeoutAt));
-		ON_SAVE_GOAL.notify(this, singleton(saved));
+	public void saveCapabler(long id, int modelId, CapableComposition composition, long timeoutAt) {
+		StoreCapabler saved;
+		capablerMap(id)
+				.put(id, saved = goal2Save(id, modelId, composition, timeoutAt));
+		ON_SAVE_CAPABLER.notify(this, singleton(saved));
 	}
 
 	@Override
-	public void saveGoal(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
-		StoreCapacityGoal saved;
-		goalsMap(id)
+	public void saveCapabler(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long timeoutAt) {
+		StoreCapabler saved;
+		capablerMap(id)
 				.put(id, saved = goal2Save(id, modelId, suppliers, timeoutAt));
-		ON_SAVE_GOAL.notify(this, singleton(saved));
+		ON_SAVE_CAPABLER.notify(this, singleton(saved));
 	}
 
 	@Override
-	public void saveGoal(Collection<? extends CapacityGoal> goals, long timeoutAt) {
-		Map<String, Map<Long, StoreCapacityGoal>> map =
-				goals.stream().collect(Collectors.groupingBy(
+	public void saveCapabler(Collection<? extends Capabler> capablers, long timeoutAt) {
+		Map<String, Map<Long, StoreCapabler>> map =
+				capablers.stream().collect(Collectors.groupingBy(
 						g -> key(g.getId()),
 						Collectors.toMap(
-								CapacityGoal::getId,
+								Capabler::getId,
 								g -> goal2Save(g, timeoutAt))));
-		List<ExpireCapacityGoal> saved = new ArrayList<>();
+		List<ExpireCapabler> saved = new ArrayList<>();
 		map.forEach((k, m) -> {
 			goalsMap(k).putAll(m);
 			saved.addAll(m.values());
 		});
 		if (!saved.isEmpty()) {
-			ON_SAVE_GOAL.notify(this, saved);
+			ON_SAVE_CAPABLER.notify(this, saved);
 		}
 	}
 
 	@Override
-	public void expireAtGoal(long id, long expireAt) {
-		StoreCapacityGoal expire = goalsMap(id).get(id);
+	public void expireAtCapabler(long id, long expireAt) {
+		StoreCapabler expire = capablerMap(id).get(id);
 		if (expire != null) {
 			expire.expireAt(expireAt);
-			ON_EXPIRE_GOAL.notify(this, singleton(expire));
+			ON_EXPIRE_CAPABLER.notify(this, singleton(expire));
 		}
 	}
 
 	@Override
-	public void expireAtGoals(Collection<Long> ids, long expireAt) {
-		List<ExpireCapacityGoal> expired = ids.stream()
-				.map(id -> goalsMap(id).get(id))
+	public void expireAtCapablers(Collection<Long> ids, long expireAt) {
+		List<ExpireCapabler> expired = ids.stream()
+				.map(id -> capablerMap(id).get(id))
 				.filter(Objects::nonNull)
 				.peek(e -> e.expireAt(expireAt))
 				.collect(Collectors.toList());
 		if (!expired.isEmpty()) {
-			ON_EXPIRE_GOAL.notify(this, expired);
+			ON_EXPIRE_CAPABLER.notify(this, expired);
 		}
 	}
 
 	@Override
-	public void deleteGoalById(long id) {
-		StoreCapacityGoal goal = goalsMap(id).remove(id);
+	public void deleteCapablerById(long id) {
+		StoreCapabler goal = capablerMap(id).remove(id);
 		if (goal != null) {
-			ON_DELETE_GOAL.notify(this, singleton(goal));
+			ON_DELETE_CAPABLER.notify(this, singleton(goal));
 		}
 	}
 
 	@Override
-	public void deleteGoalsById(Collection<Long> goalIDs) {
+	public void deleteCapablersById(Collection<Long> goalIDs) {
 		Map<String, List<Long>> map = goalIDs.stream()
 				.collect(Collectors.groupingBy(this::key));
-		List<ExpireCapacityGoal> deleted = map.entrySet().stream()
+		List<ExpireCapabler> deleted = map.entrySet().stream()
 				.map(e -> goalsMap(e.getKey()).removeAll(e.getValue()))
 				.flatMap(Collection::stream)
 				.collect(Collectors.toList());
 		if (!deleted.isEmpty()) {
-			ON_EXPIRE_GOAL.notify(this, deleted);
+			ON_EXPIRE_CAPABLER.notify(this, deleted);
 		}
 	}
 
@@ -289,24 +289,24 @@ public class BaseCapacityStorer implements CapacityStorer {
 		return StoreCapacitySupplier.linkBySupplier(supplier, expireAt);
 	}
 
-	private StoreCapacityGoal goal2Save(CapacityGoal goal, long expireAt) {
-		if (goal instanceof StoreByCopyCapacityGoal) {
+	private StoreCapabler goal2Save(Capabler goal, long expireAt) {
+		if (goal instanceof StoreByCopyCapabler) {
 			return ObjectAide.as(goal);
 		}
-		return StoreCapacityGoal.saveByGoal(goal, this, expireAt);
+		return StoreCapabler.saveByCapabler(goal, this, expireAt);
 	}
 
-	private StoreCapacityGoal goal2Save(long id, int modelId, CapacityGather gather, long expireAt) {
-		return StoreCapacityGoal.saveByGather(id, modelId, gather, this, expireAt);
+	private StoreCapabler goal2Save(long id, int modelId, CapableComposition composition, long expireAt) {
+		return StoreCapabler.saveByComposition(id, modelId, composition, this, expireAt);
 	}
 
-	private StoreCapacityGoal goal2Save(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
-		return StoreCapacityGoal.saveBySuppliers(id, modelId, suppliers.stream(), this, expireAt);
+	private StoreCapabler goal2Save(long id, int modelId, Collection<? extends CapacitySupplier> suppliers, long expireAt) {
+		return StoreCapabler.saveBySuppliers(id, modelId, suppliers.stream(), this, expireAt);
 	}
 
 	private StoreCapacitySupplier supplier2Save(CapacitySupplier supplier, long expireAt) {
-		if (supplier instanceof ComboCapacitySupplier) {
-			return StoreCapacitySupplier.saveBySupplier(ObjectAide.as(supplier, ComboCapacitySupplier.class), this, expireAt);
+		if (supplier instanceof CompositeCapacitySupplier) {
+			return StoreCapacitySupplier.saveBySupplier(ObjectAide.as(supplier, CompositeCapacitySupplier.class), this, expireAt);
 		} else {
 			return StoreCapacitySupplier.saveBySupplier(supplier, expireAt);
 		}
@@ -330,16 +330,16 @@ public class BaseCapacityStorer implements CapacityStorer {
 		return this.typeSuppliersMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
 	}
 
-	private CopyOnWriteMap<Long, StoreCapacityGoal> goalsMap(String key) {
-		return this.typeGoalsMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
+	private CopyOnWriteMap<Long, StoreCapabler> goalsMap(String key) {
+		return this.typeCapablerMap.computeIfAbsent(key, k -> new CopyOnWriteMap<>());
 	}
 
 	private CopyOnWriteMap<Long, StoreCapacitySupplier> suppliersMap(long id) {
 		return this.typeSuppliersMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
 	}
 
-	private CopyOnWriteMap<Long, StoreCapacityGoal> goalsMap(long id) {
-		return this.typeGoalsMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
+	private CopyOnWriteMap<Long, StoreCapabler> capablerMap(long id) {
+		return this.typeCapablerMap.computeIfAbsent(key(id), k -> new CopyOnWriteMap<>());
 	}
 
 	private CapacitySupplier getSupplier(long id) {
@@ -353,15 +353,15 @@ public class BaseCapacityStorer implements CapacityStorer {
 		return supplier;
 	}
 
-	private CapacityGoal getGoal(long id) {
-		StoreCapacityGoal goal = goalsMap(id).get(id);
-		if (goal == null) {
+	private Capabler getCapabler(long id) {
+		StoreCapabler capabler = capablerMap(id).get(id);
+		if (capabler == null) {
 			return null;
 		}
-		if (goal.isExpire()) {
+		if (capabler.isExpire()) {
 			return null;
 		}
-		return goal;
+		return capabler;
 	}
 
 	protected BaseCapacityStorer setPlayerId(long playerId) {
@@ -376,8 +376,8 @@ public class BaseCapacityStorer implements CapacityStorer {
 	}
 
 	@Override
-	public Stream<CapacityGoal> getAllGoalsSteam() {
-		return this.typeGoalsMap.values().stream()
+	public Stream<Capabler> getAllCapablersSteam() {
+		return this.typeCapablerMap.values().stream()
 				.flatMap(goals -> goals.values().stream());
 	}
 
@@ -386,8 +386,8 @@ public class BaseCapacityStorer implements CapacityStorer {
 				.flatMap(suppliers -> suppliers.values().stream());
 	}
 
-	public Stream<StoreCapacityGoal> getStoreGoalsSteam() {
-		return this.typeGoalsMap.values().stream()
+	public Stream<StoreCapabler> getStoreCapablersSteam() {
+		return this.typeCapablerMap.values().stream()
 				.flatMap(goals -> goals.values().stream());
 	}
 
@@ -402,12 +402,12 @@ public class BaseCapacityStorer implements CapacityStorer {
 		return this;
 	}
 
-	protected BaseCapacityStorer addStoreGoals(Stream<StoreCapacityGoal> goals) {
-		Map<String, Map<Long, StoreCapacityGoal>> map =
+	protected BaseCapacityStorer addStoreCapablers(Stream<StoreCapabler> goals) {
+		Map<String, Map<Long, StoreCapabler>> map =
 				goals.collect(Collectors.groupingBy(
 						g -> key(g.getId()),
 						Collectors.toMap(
-								StoreCapacityGoal::getId,
+								StoreCapabler::getId,
 								ObjectAide::self)));
 		map.forEach((k, m) -> goalsMap(k).putAll(m));
 		return this;

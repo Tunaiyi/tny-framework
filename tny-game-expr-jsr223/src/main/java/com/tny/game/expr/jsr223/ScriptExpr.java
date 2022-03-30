@@ -30,7 +30,7 @@ public class ScriptExpr extends AbstractExpr {
         if (this.number == null) {
             this.expressionStr = expression;
             try {
-                this.script = ((Compilable)engine).compile(expression);
+                this.script = ((Compilable) engine).compile(expression);
             } catch (ScriptException e) {
                 throw new ExprException("编译 expression 异常", e);
             }
@@ -56,8 +56,11 @@ public class ScriptExpr extends AbstractExpr {
 
     @Override
     protected Object execute() throws Exception {
-        if (MapUtils.isNotEmpty(this.bindings)) {
-            return this.script.eval(this.bindings);
+        if (this.bindings == null && this.context.isHasBindings()) {
+            this.bindings = this.context.createBindings();
+        }
+        if (MapUtils.isNotEmpty(bindings)) {
+            return this.script.eval(bindings);
         } else {
             return this.script.eval();
         }

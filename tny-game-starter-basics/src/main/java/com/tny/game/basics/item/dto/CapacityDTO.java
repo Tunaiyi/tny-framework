@@ -34,7 +34,7 @@ public class CapacityDTO {
 	}
 
 	public static List<CapacityDTO> supplier2DTO(CapacitySupplier supplier) {
-		return supplier.getAllValues().entrySet().stream()
+		return supplier.getAllCapacities().entrySet().stream()
 				.map(entry -> value2DTO(entry.getKey(), entry.getValue()))
 				.collect(Collectors.toList());
 	}
@@ -42,7 +42,7 @@ public class CapacityDTO {
 	public static List<CapacityDTO> supplier2DTO(CapacitySupplier supplier, CapacityGroup group) {
 		return group.getCapacities().stream()
 				.map(cap -> {
-					Number value = supplier.getValue(cap);
+					Number value = supplier.getCapacity(cap);
 					if (value == null || value.intValue() == 0) {
 						return null;
 					}

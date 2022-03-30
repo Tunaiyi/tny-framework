@@ -24,7 +24,7 @@ public class GroovyExprHolderFactory extends ScriptExprHolderFactory {
         super(LAN, cacheGroupSize, GroovyExprContext::new);
     }
 
-    public static GroovyExprHolderFactory createFactroy() {
+    public static GroovyExprHolderFactory createFactory() {
         return new GroovyExprHolderFactory();
     }
 

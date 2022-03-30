@@ -74,6 +74,23 @@ ext.libs = [
         jackson_datatype_java8                   : "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
 
 
+
+        graalvm_js                               : "org.graalvm.js:js:${graalvmVersion}",
+        graalvm_js_scriptengine                  : "org.graalvm.js:js-scriptengine:${graalvmVersion}",
+        graalvm_js_launcher                      : "org.graalvm.js:js-launcher:${graalvmVersion}",
+        graalvm_sdk                              : "org.graalvm.sdk:graal-sdk:${graalvmVersion}",
+        graalvm_sdk_launcher_common              : "org.graalvm.sdk:launcher-common:${graalvmVersion}",
+        graalvm_regex                            : "org.graalvm.regex:regex:${graalvmVersion}",
+        graalvm_truffle_api                      : "org.graalvm.truffle:truffle-api:${graalvmVersion}",
+        graalvm_compiler                         : "org.graalvm.compiler:compiler:${graalvmVersion}",
+        graalvm_compiler_management              : "org.graalvm.compiler:compiler-management:${graalvmVersion}",
+
+        icu4j                                    : "com.ibm.icu:icu4j:${icu4jVersion}",
+
+        graalvm_tools_profiler                   : "org.graalvm.tools:profiler:${graalvmVersion}",
+        graalvm_tools_chromeinspector            : "org.graalvm.tools:chromeinspector:${graalvmVersion}",
+
+        
         fastjson                                 : "com.alibaba:fastjson:1.2.73",
         validation_api                           : "javax.validation:validation-api:2.0.1.Final",
 

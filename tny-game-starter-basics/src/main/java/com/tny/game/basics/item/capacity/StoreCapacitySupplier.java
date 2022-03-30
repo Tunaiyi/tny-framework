@@ -11,8 +11,9 @@ import java.util.stream.Stream;
  */
 public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
-	static StoreCapacitySupplier saveBySupply(CapacitySupplierType type, long id, int modelId, long playerId, CapacitySupply supply, long expireAt) {
-		return new StoreByCopyCapacitySupplier(type, id, modelId, playerId, supply.getAllValues(), supply.getAllCapacityGroups(),
+	static StoreCapacitySupplier saveBySupply(CapacitySupplierType type, long id, int modelId, long playerId, CapacitySupply supply,
+			long expireAt) {
+		return new StoreByCopyCapacitySupplier(type, id, modelId, playerId, supply.getAllCapacities(), supply.getAllCapacityGroups(),
 				ExpireCapable.expireAtOf(supply, expireAt));
 	}
 
@@ -27,7 +28,7 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 				supplier.getId(),
 				supplier.getModelId(),
 				supplier.getPlayerId(),
-				supplier.getAllValues(),
+				supplier.getAllCapacities(),
 				supplier.getAllCapacityGroups(),
 				ExpireCapable.expireAtOf(supplier, expireAt));
 	}
@@ -37,7 +38,7 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 		return new StoreByCopyCapacitySupplier(type, id, modelId, playerId, capacityMap, groups, expireAt > 0 ? expireAt : -1);
 	}
 
-	static StoreCapacitySupplier saveBySupplier(ComboCapacitySupplier supplier, CapacityVisitor visitor, long expireAt) {
+	static StoreCapacitySupplier saveBySupplier(CompositeCapacitySupplier supplier, CapacityObjectQuerier visitor, long expireAt) {
 		if (supplier instanceof StoreCapacitySupplier) {
 			if (expireAt == 0 || ((StoreCapacitySupplier)supplier).getExpireAt() == expireAt) {
 				return ObjectAide.as(supplier);
@@ -47,23 +48,23 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 				supplier.getSupplierType(),
 				supplier.getId(),
 				supplier.getModelId(),
-				supplier.dependSuppliersStream(),
+				supplier.suppliersStream(),
 				visitor,
 				ExpireCapable.expireAtOf(supplier, expireAt));
 	}
 
 	static StoreCapacitySupplier saveByDependSuppliers(CapacitySupplierType type, long id, int modelId, Stream<? extends CapacitySupplier> suppliers,
-			CapacityVisitor visitor, long expireAt) {
-		return new StoreByCopyComboCapacitySupplier(
+			CapacityObjectQuerier visitor, long expireAt) {
+		return new StoreByCopyCompositeCapacitySupplier(
 				type, id, modelId,
-				suppliers.filter(CapacitySupplier::isSupplying),
+				suppliers.filter(CapacitySupplier::isWorking),
 				visitor,
 				expireAt > 0 ? expireAt : -1);
 	}
 
 	static StoreCapacitySupplier saveByDependSupplierIDs(CapacitySupplierType type, long id, int modelId, Stream<Long> suppliers,
-			Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
-		return new StoreByCopyComboCapacitySupplier(type, id, modelId, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
+			Stream<CapacityGroup> groups, CapacityObjectQuerier visitor, long expireAt) {
+		return new StoreByCopyCompositeCapacitySupplier(type, id, modelId, suppliers, groups, visitor, expireAt > 0 ? expireAt : -1);
 	}
 
 	static StoreCapacitySupplier linkBySupplier(CapacitySupplier supplier, long expireAt) {

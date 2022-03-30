@@ -26,8 +26,7 @@ public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory 
 
     public ScriptExprHolderFactory(String lan, int cacheGroupSize, Function<ScriptEngine, ScriptExprContext> contextCreator) {
         super(cacheGroupSize);
-        final ScriptEngineManager factory = new ScriptEngineManager();
-        this.engine = factory.getEngineByName(lan);
+        this.engine = createEngine(lan);
         this.context = contextCreator.apply(this.engine);
         this.context.importStaticClasses(
                 CollectionAide.class,
@@ -37,6 +36,11 @@ public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory 
                 MathAide.class,
                 NumberAide.class,
                 DateTimeAide.class);
+    }
+
+    protected ScriptEngine createEngine(String lan) {
+        final ScriptEngineManager factory = new ScriptEngineManager();
+        return factory.getEngineByName(lan);
     }
 
     @Override

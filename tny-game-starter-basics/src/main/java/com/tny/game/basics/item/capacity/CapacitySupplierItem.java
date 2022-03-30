@@ -6,33 +6,17 @@ import com.tny.game.basics.item.*;
  * Item能力值提供器
  * Created by Kun Yang on 16/3/12.
  */
-public abstract class CapacitySupplierItem<IM extends CapacityItemModel> extends BaseItem<IM> implements CapacitySupplier {
-
-	protected InnerCapacitySupply capacitySupply;
+public abstract class CapacitySupplierItem<IM extends CapacitySupplierItemModel> extends BaseItem<IM> implements CapacitySupplier {
 
 	@Override
-	protected void setModel(IM model) {
-		super.setModel(model);
-		this.capacitySupply = new DefaultCapacitySupply(this);
+	public CapacitySupplierType getSupplierType() {
+		return model.getSupplierType();
 	}
 
-	public CapacitySupply supply() {
-		return this.capacitySupply;
-	}
+	protected abstract void refresh();
 
-	@Override
-	public abstract long getId();
+	protected abstract void invalid();
 
-	protected void refresh() {
-		this.capacitySupply.refresh(this);
-	}
-
-	protected void invalid() {
-		this.capacitySupply.refresh(this);
-	}
-
-	protected void effect() {
-		this.capacitySupply.effect(this);
-	}
+	protected abstract void effect();
 
 }

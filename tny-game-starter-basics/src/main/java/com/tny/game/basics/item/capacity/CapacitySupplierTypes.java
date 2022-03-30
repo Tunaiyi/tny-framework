@@ -9,25 +9,25 @@ import java.util.Collection;
  */
 public class CapacitySupplierTypes {
 
-    protected static EnumeratorHolder<CapacitySupplierType> holder = new EnumeratorHolder<>();
+	protected static EnumeratorHolder<CapacitySupplierType> holder = new EnumeratorHolder<>();
 
-    private CapacitySupplierTypes() {
-    }
+	private CapacitySupplierTypes() {
+	}
 
-    static void register(CapacitySupplierType value) {
-        holder.register(value);
-    }
+	static void register(CapacitySupplierType value) {
+		holder.register(value);
+	}
 
-    public static <T extends CapacitySupplierType> T of(String key) {
-        return holder.check(key, "获取 {} CapacitySupplyType 不存在", key);
-    }
+	public static <T extends CapacitySupplierType> T of(String key) {
+		return holder.check(key, "获取 {} CapacitySupplierType 不存在", key);
+	}
 
-    public static <T extends CapacitySupplierType> T of(int id) {
-        return holder.check(id, "获取 ID为 {} 的 CapacitySupplyType 不存在", id);
-    }
+	public static <T extends CapacitySupplierType> T of(int id) {
+		return holder.check(id, "获取 ID为 {} 的 CapacitySupplierType 不存在", id);
+	}
 
-    public static Collection<CapacitySupplierType> getAll() {
-        return holder.allValues();
-    }
+	public static Collection<CapacitySupplierType> getAll() {
+		return holder.allValues();
+	}
 
 }

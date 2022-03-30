@@ -55,19 +55,19 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 	}
 
 	@Override
-	public boolean isHasValue(Capacity capacity) {
-		if (!this.isSupplying()) {
+	public boolean isHasCapacity(Capacity capacity) {
+		if (!this.isWorking()) {
 			return false;
 		}
-		return getAllValues().containsKey(capacity);
+		return getAllCapacities().containsKey(capacity);
 	}
 
 	@Override
-	public Number getValue(Capacity capacity, Number defaultValue) {
-		if (!this.isSupplying()) {
+	public Number getCapacity(Capacity capacity, Number defaultValue) {
+		if (!this.isWorking()) {
 			return defaultValue;
 		}
-		Number number = getAllValues().get(capacity);
+		Number number = getAllCapacities().get(capacity);
 		return number == null ? defaultValue : number;
 	}
 
@@ -77,13 +77,13 @@ public class StoreByCopyCapacitySupplier extends BaseStoreCapable implements Sto
 	}
 
 	@Override
-	public Number getValue(Capacity capacity) {
-		return getValue(capacity, null);
+	public Number getCapacity(Capacity capacity) {
+		return getCapacity(capacity, null);
 	}
 
 	@Override
-	public Map<Capacity, Number> getAllValues() {
-		if (!this.isSupplying()) {
+	public Map<Capacity, Number> getAllCapacities() {
+		if (!this.isWorking()) {
 			return ImmutableMap.of();
 		}
 		return this.capacityMap;

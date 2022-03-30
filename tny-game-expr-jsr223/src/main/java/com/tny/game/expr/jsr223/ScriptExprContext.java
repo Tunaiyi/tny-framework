@@ -17,6 +17,8 @@ public abstract class ScriptExprContext implements ExprContext {
 
     private Map<String, Class<?>> importAliasClasses = new HashMap<>();
 
+    private Map<String, Object> bindings = new HashMap<>();
+
     private String importCode;
 
     private ScriptEngine engine;
@@ -29,19 +31,36 @@ public abstract class ScriptExprContext implements ExprContext {
     }
 
     Bindings createBindings() {
-        return this.engine.createBindings();
+        Bindings bindings = this.engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        if (this.bindings != null && !this.bindings.isEmpty()) {
+            bindings.putAll(this.bindings);
+        }
+        return bindings;
     }
 
     @Override
-    public ExprContext put(String key, Object object) {
-        this.engine.getBindings(ScriptContext.ENGINE_SCOPE).put(key, object);
+    public ExprContext bind(String key, Object object) {
+        bindings.put(key, object);
+        // Bindings bindings = this.engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        // if (!bindings.isEmpty()) {
+        //     bindings.putAll(this.bindings);
+        // }
+        // bindings.put(key, object);
         return this;
     }
 
     @Override
-    public ExprContext putAll(Map<String, Object> attributes) {
-        this.engine.getBindings(ScriptContext.ENGINE_SCOPE).putAll(attributes);
+    public ExprContext bindAll(Map<String, Object> attributes) {
+        // Bindings bindings = this.engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        // if (!bindings.isEmpty()) {
+        //     bindings.putAll(this.bindings);
+        // }
+        bindings.putAll(attributes);
         return this;
+    }
+
+    public boolean isHasBindings() {
+        return bindings != null && !bindings.isEmpty();
     }
 
     // public ScriptImportContext(ScriptImportContext context) {

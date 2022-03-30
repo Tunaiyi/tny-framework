@@ -7,13 +7,13 @@ import com.tny.game.basics.item.capacity.*;
  */
 public interface CapacityListener {
 
-    default void onChange(CapacitySupply source, CapacitySupplier owner) {
-    }
+	default void onChange(CapacitySupply source, CapacitySupplier owner) {
+	}
 
-    default void onInvalid(CapacitySupply source, CapacitySupplier owner) {
-    }
+	default void onInvalid(CapacitySupply source, CapacitySupplier owner) {
+	}
 
-    default void onEffect(CapacitySupply source, CapacitySupplier owner) {
-    }
+	default void onEffect(CapacitySupply source, CapacitySupplier owner) {
+	}
 
 }

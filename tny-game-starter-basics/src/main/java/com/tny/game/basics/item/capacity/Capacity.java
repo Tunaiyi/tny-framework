@@ -9,7 +9,7 @@ import com.tny.game.doc.annotation.*;
 @ClassDoc("游戏能力值")
 public interface Capacity extends Ability {
 
-	CapacityValueType getValueType();
+	CapacityUsage getUsage();
 
 	CapacityGroup getGroup();
 
@@ -17,24 +17,20 @@ public interface Capacity extends Ability {
 		return 0;
 	}
 
-	default Number getBaseCapacity(Number baseValue, CapacityGather gather) {
-		return CapacityUtils.countCapacity(baseValue, gather, this);
+	Number countCapacity(Number baseValue, CapacitySettler settler);
+
+	default Number countFinalCapacity(Item<?> item, Ability ability, CapacitySettler settler) {
+		return this.countFinalCapacity(item.getAbility(getDefault(), ability), settler);
 	}
 
-	default Number countFinalCapacity(Item<?> item, Ability ability, CapacityGather gather) {
-		return this.countFinalCapacity(item.getAbility(getDefault(), ability), gather);
+	default Number countFinalCapacity(long playerId, ItemModel model, Ability ability, CapacitySettler settler) {
+		return this.countFinalCapacity(model.getAbility(playerId, getDefault(), ability), settler);
 	}
 
-	default Number countFinalCapacity(long playerId, ItemModel model, Ability ability, CapacityGather gather) {
-		return this.countFinalCapacity(model.getAbility(playerId, getDefault(), ability), gather);
+	default Number countFinalCapacity(CapacitySettler settler) {
+		return this.countFinalCapacity(0, settler);
 	}
 
-	Number countFinalCapacity(CapacitySupplier supplier);
-
-	default Number countFinalCapacity(CapacityGather gather) {
-		return this.countFinalCapacity(0, gather);
-	}
-
-	Number countFinalCapacity(Number baseValue, CapacityGather gather);
+	Number countFinalCapacity(Number baseValue, CapacitySettler settler);
 
 }

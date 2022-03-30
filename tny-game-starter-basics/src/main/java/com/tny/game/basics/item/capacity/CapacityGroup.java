@@ -11,8 +11,4 @@ public interface CapacityGroup extends IntEnumerable {
 
 	List<Capacity> getCapacities();
 
-	default void registerSelf() {
-		Capacities.register(this);
-	}
-
 }

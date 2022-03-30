@@ -28,12 +28,6 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 		return this.entityManager.getEntity(anyId, onLoad);
 	}
 
-	@Override
-	protected List<O> get(Collection<AnyId> anyIdList) {
-		return this.entityManager.getEntities(anyIdList, onLoad);
-	}
-
-	@Override
 	protected O get(long playerId) {
 		AnyId unid = AnyId.idOf(playerId);
 		return this.entityManager.getEntity(unid, onLoad);
@@ -43,6 +37,11 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 	protected O get(long playerId, long id) {
 		AnyId unid = AnyId.idOf(playerId, id);
 		return this.entityManager.getEntity(unid, onLoad);
+	}
+
+	@Override
+	protected List<O> get(Collection<AnyId> anyIdList) {
+		return this.entityManager.getEntities(anyIdList, onLoad);
 	}
 
 	@Override

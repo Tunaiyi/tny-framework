@@ -24,7 +24,7 @@ public class LuajExprHolderFactory extends ScriptExprHolderFactory {
         super(LAN, cacheGroupSize, LuajExprContext::new);
     }
 
-    public static LuajExprHolderFactory createFactroy() {
+    public static LuajExprHolderFactory createFactory() {
         return new LuajExprHolderFactory();
     }
 

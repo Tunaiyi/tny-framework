@@ -18,4 +18,9 @@ public class CapacityEnumClassLoader {
 		return createSelector(Capacity.class, Capacities::register);
 	}
 
+	@ClassSelectorProvider
+	static ClassSelector capacityGroupSelector() {
+		return createSelector(CapacityGroup.class, Capacities::register);
+	}
+
 }

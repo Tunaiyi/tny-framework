@@ -5,33 +5,28 @@ package com.tny.game.basics.item;
  *
  * @author KGTny
  */
-public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends BaseStuffOwner<?, ?, S>> extends GameSaveByOtherManager<S, O> {
+public abstract class GameSaveByOwnerManager<S extends Stuff<?>, O extends BaseStuffOwner<?, ?, S>>
+		extends GameSaveByHostManager<S, O, GameStuffOwnerManager<O>> {
 
 	protected GameSaveByOwnerManager(Class<? extends S> entityClass) {
 		super(entityClass);
 	}
 
 	@Override
-	protected O getSaveObject(S item) {
-		GameManager<O> manager = manager();
-		return manager.get(item.getPlayerId());
-	}
-
-	protected O getSaveObject(long playerId) {
-		GameManager<O> manager = manager();
-		return manager.get(playerId);
+	protected O findHost(long playerId, long id) {
+		GameStuffOwnerManager<O> manager = manager();
+		return manager.getOwner(playerId);
 	}
 
 	@Override
-	protected S get(long playerId, long id) {
-		O owner = this.getSaveObject(playerId);
-		return owner.getItemById(id);
+	protected O itemToHost(S item) {
+		GameStuffOwnerManager<O> manager = manager();
+		return manager.getOwner(item.getPlayerId());
 	}
 
 	@Override
-	protected S getInstance(long playerId, Object... object) {
-		O owner = this.getSaveObject(playerId);
-		return owner.getItemById((long)object[0]);
+	protected S hostToItem(O host, long id) {
+		return host.getItemById(id);
 	}
 
 }

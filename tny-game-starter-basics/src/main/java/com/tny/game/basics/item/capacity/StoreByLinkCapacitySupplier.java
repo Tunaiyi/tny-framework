@@ -38,13 +38,13 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapable implements Sto
 	}
 
 	@Override
-	public boolean isHasValue(Capacity capacity) {
-		return supplier.isHasValue(capacity);
+	public boolean isHasCapacity(Capacity capacity) {
+		return supplier.isHasCapacity(capacity);
 	}
 
 	@Override
-	public Number getValue(Capacity capacity, Number defaultValue) {
-		return supplier.getValue(capacity, defaultValue);
+	public Number getCapacity(Capacity capacity, Number defaultValue) {
+		return supplier.getCapacity(capacity, defaultValue);
 	}
 
 	@Override
@@ -53,13 +53,13 @@ public class StoreByLinkCapacitySupplier extends BaseStoreCapable implements Sto
 	}
 
 	@Override
-	public Number getValue(Capacity capacity) {
-		return getValue(capacity, null);
+	public Number getCapacity(Capacity capacity) {
+		return getCapacity(capacity, null);
 	}
 
 	@Override
-	public Map<Capacity, Number> getAllValues() {
-		return supplier.getAllValues();
+	public Map<Capacity, Number> getAllCapacities() {
+		return supplier.getAllCapacities();
 	}
 
 	@Override

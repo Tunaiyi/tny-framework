@@ -55,6 +55,7 @@ public abstract class GameStuffOwnerManager<O extends StuffOwner<?, ?>> extends 
 		return itemType;
 	}
 
+	@Override
 	public O getOwner(long playerId) {
 		if (playerId == 0L) {
 			return null;

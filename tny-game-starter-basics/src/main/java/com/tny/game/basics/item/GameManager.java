@@ -2,7 +2,7 @@ package com.tny.game.basics.item;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public abstract class GameManager<O> extends GettableManager<O> {
+public abstract class GameManager<O> extends QueryManager<O> {
 
 	protected final Class<O> entityClass;
 
