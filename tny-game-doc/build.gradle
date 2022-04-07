@@ -17,6 +17,7 @@ dependencies {
     api libs.xstream
     api project(":tny-game-doc-annotation")
     api project(":tny-game-common-lang")
+    api project(":tny-game-rpc")
     api project(":tny-game-scanning")
     api project(":tny-game-expr-mvel")
     api libs.jackson_core

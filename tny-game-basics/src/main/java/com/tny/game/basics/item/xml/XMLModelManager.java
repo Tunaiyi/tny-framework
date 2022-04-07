@@ -10,7 +10,7 @@ import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.behavior.plan.*;
 import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.log.*;
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.io.config.*;
@@ -51,7 +51,7 @@ public abstract class XMLModelManager<M extends Model> extends BaseModelManager<
 	/**
 	 * 模型代理处理器Map
 	 */
-	protected Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
+	private Map<Integer, WrapperProxy<M>> handlerMap = new CopyOnWriteMap<>();
 
 	private final Set<Class<? extends Enum<?>>> enumClassSet = new HashSet<>();
 
@@ -63,7 +63,7 @@ public abstract class XMLModelManager<M extends Model> extends BaseModelManager<
 			Option.class,
 			DemandParam.class,
 			Feature.class,
-			Moduler.class,
+			Mould.class,
 			FeatureOpenMode.class
 	};
 
@@ -144,6 +144,56 @@ public abstract class XMLModelManager<M extends Model> extends BaseModelManager<
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
 			throws IOException, InstantiationException, IllegalAccessException {
+
+		RunChecker.trace(this.getClass());
+		Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
+		Map<Integer, M> modelMap = new HashMap<>();
+		Map<String, M> modelAliasMap = new HashMap<>();
+
+		List<M> rawList = loadAllModels(path, inputStream);
+		List<M> models = new ArrayList<>();
+		ItemModelContext context = context();
+		for (M model : rawList) {
+			this.initModel(context, model);
+			WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
+			if (wrapperModel == null) {
+				wrapperModel = WrapperProxyFactory.createWrapper(model);
+				M proxyModel = wrapperModel.get$Wrapper();
+				handlerMap.put(model.getId(), wrapperModel);
+				modelMap.put(proxyModel.getId(), proxyModel);
+				if (proxyModel.getAlias() != null) {
+					M old = modelAliasMap.putIfAbsent(proxyModel.getAlias(), proxyModel);
+					if (old != null) {
+						throw new IllegalArgumentException(format("{} {} 与 {} 相同的别名", this.modelClass, model.getId(), old.getId()));
+					}
+				}
+			} else {
+				wrapperModel.set$Proxied(model);
+			}
+			models.add(wrapperModel.get$Wrapper());
+			ItemModels.register(wrapperModel.get$Wrapper());
+		}
+		if (!handlerMap.isEmpty()) {
+			this.handlerMap.putAll(handlerMap);
+		}
+		if (!modelMap.isEmpty()) {
+			this.modelMap.putAll(modelMap);
+		}
+		if (!modelAliasMap.isEmpty()) {
+			this.modelAliasMap.putAll(modelAliasMap);
+		}
+		this.parseComplete(models);
+		synchronized (this) {
+			this.parseAllComplete();
+			if (reload) {
+				this.reloadAllComplete();
+			}
+		}
+		LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
+				RunChecker.end(this.getClass()).costTime());
+	}
+
+	protected List<M> loadAllModels(String path, InputStream inputStream) {
 		LOGGER.info("# {} 创建 {} xstream 对象 ", this.getClass().getName(), this.modelClass.getName());
 		XStream xStream = createXStream();
 		xStream.allowTypesByRegExp(new String[]{".*"});
@@ -173,8 +223,6 @@ public abstract class XMLModelManager<M extends Model> extends BaseModelManager<
 				return true;
 			}
 		});
-
-		RunChecker.trace(this.getClass());
 
 		xStream.autodetectAnnotations(true);
 		String2Formula exprHolderConverter = new String2Formula(this.context().getExprHolderFactory());
@@ -241,55 +289,11 @@ public abstract class XMLModelManager<M extends Model> extends BaseModelManager<
 		}
 
 		LOGGER.info("#itemModelManager# 解析 <{}> xml ......", path);
-		List<? extends M> list = this.parseModel(xStream, inputStream);
+		List<M> list = this.parseModel(xStream, inputStream);
 		LOGGER.info("#itemModelManager# 解析 <{}> xml 完成! ", path);
 
 		LOGGER.info("#itemModelManager# 装载 <{}> model [{}] ......", path, this.modelClass.getName());
-		List<M> models = new ArrayList<>();
-
-		Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
-		Map<Integer, M> modelMap = new HashMap<>();
-		Map<String, M> modelAliasMap = new HashMap<>();
-
-		ItemModelContext context = context();
-		for (M model : list) {
-			this.initModel(context, model);
-			WrapperProxy<M> wrapperModel = this.handlerMap.get(model.getId());
-			if (wrapperModel == null) {
-				wrapperModel = WrapperProxyFactory.createWrapper(model);
-				M proxyModel = wrapperModel.get$Wrapper();
-				handlerMap.put(model.getId(), wrapperModel);
-				modelMap.put(proxyModel.getId(), proxyModel);
-				if (proxyModel.getAlias() != null) {
-					M old = modelAliasMap.putIfAbsent(proxyModel.getAlias(), proxyModel);
-					if (old != null) {
-						throw new IllegalArgumentException(format("{} {} 与 {} 相同的别名", this.modelClass, model.getId(), old.getId()));
-					}
-				}
-			} else {
-				wrapperModel.set$Proxied(model);
-			}
-			models.add(wrapperModel.get$Wrapper());
-			ItemModels.register(wrapperModel.get$Wrapper());
-		}
-		if (!handlerMap.isEmpty()) {
-			this.handlerMap.putAll(handlerMap);
-		}
-		if (!modelMap.isEmpty()) {
-			this.modelMap.putAll(modelMap);
-		}
-		if (!modelAliasMap.isEmpty()) {
-			this.modelAliasMap.putAll(modelAliasMap);
-		}
-		this.parseComplete(models);
-		synchronized (this) {
-			this.parseAllComplete();
-			if (reload) {
-				this.reloadAllComplete();
-			}
-		}
-		LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
-				RunChecker.end(this.getClass()).costTime());
+		return list;
 	}
 
 	@SuppressWarnings({"unchecked"})

@@ -6,7 +6,7 @@ import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.common.*;
 import com.tny.game.basics.loader.*;
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.scheduler.*;
@@ -68,8 +68,8 @@ public class BasicsObjectMapperCustomizer implements ObjectMapperCustomizer {
 		module.addSerializer(ResultCode.class, new IdObjectSerializer<>(ResultCode::getCode));
 		module.addDeserializer(ResultCode.class, new IdObjectDeserializer<>(ResultCodes::of));
 
-		module.addSerializer(Moduler.class, new IdObjectSerializer<>(Moduler::getId));
-		module.addDeserializer(Moduler.class, new IdObjectDeserializer<>(Modulers::of));
+		module.addSerializer(Mould.class, new IdObjectSerializer<>(Mould::getId));
+		module.addDeserializer(Mould.class, new IdObjectDeserializer<>(Moulds::of));
 
 		module.addSerializer(Feature.class, new IdObjectSerializer<>(Feature::getId));
 		module.addDeserializer(Feature.class, new IdObjectDeserializer<>(Features::of));

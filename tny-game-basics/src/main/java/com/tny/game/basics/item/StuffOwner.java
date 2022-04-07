@@ -15,6 +15,11 @@ import java.util.List;
  */
 public interface StuffOwner<M extends ItemModel, S extends Stuff<?>> extends Item<M> {
 
+	@Override
+	default long getId() {
+		return this.getItemType().getId();
+	}
+
 	/**
 	 * 获取某事物的信息 <br>
 	 *

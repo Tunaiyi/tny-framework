@@ -19,12 +19,12 @@ public class AnyEntityIdConverter implements EntityIdConverter<AnyId, Any, Strin
 
 	@Override
 	public String keyToId(AnyId key) {
-		return converter.anyId2Id(key);
+		return converter.anyId2Key(key);
 	}
 
 	@Override
 	public String entityToId(Any object) {
-		return converter.any2Id(object);
+		return converter.any2Key(object);
 	}
 
 }

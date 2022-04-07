@@ -16,7 +16,7 @@ public abstract class ContainerCapacitySupplierItem<IM extends CapacitySupplierI
 	}
 
 	private void initContainer() {
-		if (this.container != null) {
+		if (this.container == null) {
 			this.container = createContainer();
 		}
 	}

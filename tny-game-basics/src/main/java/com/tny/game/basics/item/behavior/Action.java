@@ -1,6 +1,6 @@
 package com.tny.game.basics.item.behavior;
 
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 import com.tny.game.common.enums.*;
 
 /**

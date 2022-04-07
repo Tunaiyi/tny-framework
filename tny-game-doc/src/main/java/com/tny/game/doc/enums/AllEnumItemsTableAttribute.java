@@ -3,6 +3,7 @@ package com.tny.game.doc.enums;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
 import com.tny.game.doc.table.*;
@@ -48,7 +49,7 @@ public class AllEnumItemsTableAttribute implements TableAttribute {
 
 	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
 		try {
 			EnumConfiger configer = this.enumConfigClass.newInstance();
 			configer.setEnumDocHolder(EnumDocHolder.create((Class<Enum>)clazz), typeFormatter);

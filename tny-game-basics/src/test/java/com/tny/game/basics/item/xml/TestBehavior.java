@@ -1,7 +1,7 @@
 package com.tny.game.basics.item.xml;
 
 import com.tny.game.basics.item.behavior.*;
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 
 public enum TestBehavior implements Behavior {
 

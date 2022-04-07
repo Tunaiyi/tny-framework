@@ -1,7 +1,5 @@
 package com.tny.game.doc.annotation;
 
-import com.thoughtworks.xstream.mapper.Mapper.Null;
-
 import java.lang.annotation.*;
 
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
@@ -9,12 +7,12 @@ import java.lang.annotation.*;
 @Documented
 public @interface FunDoc {
 
-    String des();
+	String des();
 
-    String text() default "";
+	String text() default "";
 
-    Class<?> returnType() default Null.class;
+	Class<?> returnType() default Object.class;
 
-    String returnDes() default "";
+	String returnDes() default "";
 
 }

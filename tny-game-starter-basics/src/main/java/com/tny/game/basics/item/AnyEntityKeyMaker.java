@@ -18,7 +18,7 @@ public class AnyEntityKeyMaker implements EntityKeyMaker<AnyId, Any> {
 
 	@Override
 	public AnyId make(Any object) {
-		return converter.object2AnyId(object);
+		return converter.any2AnyId(object);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.tny.game.doc.enums;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
 import com.tny.game.doc.table.*;
@@ -29,7 +30,7 @@ public class EnumTableAttribute implements TableAttribute {
 
 	@Override
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
 		this.enumeration = new EnumConfiger();
 		this.enumeration.setEnumDocHolder(create((Class<Enum>)clazz), typeFormatter);
 		this.exportHolder = ExportHolder.create(clazz);

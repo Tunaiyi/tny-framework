@@ -1,5 +1,6 @@
 package com.tny.game.doc.output;
 
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.table.*;
 import org.apache.commons.io.IOUtils;
@@ -33,8 +34,6 @@ public class ExportTask {
 	private String outputFileTail;
 
 	private TableAttributeFactory attributeFactory;
-
-	private final Map<String, OutputScheme> outputSchemeMap = new ConcurrentHashMap<>();
 
 	public ExportTask setDesc(String desc) {
 		this.desc = desc;
@@ -86,13 +85,15 @@ public class ExportTask {
 
 	public void export(Collection<Class<?>> classes, OutputType type) throws IOException {
 		Set<Class<?>> tempSet = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
+		Map<String, OutputScheme> outputSchemeMap = new ConcurrentHashMap<>();
+		Attributes attributes = ContextAttributes.create();
 		tempSet.addAll(classes);
 		if (tempSet.isEmpty()) {
 			LOGGER.info("ExportTask {} : 包下未找到符合的类", desc);
 			return;
 		}
 		for (Class<?> clazz : tempSet) {
-			addToOutputScheme(clazz);
+			addToOutputScheme(clazz, outputSchemeMap, attributes);
 		}
 		Exporter exporter = type.create();
 		int count = 0;
@@ -139,12 +140,12 @@ public class ExportTask {
 		return true;
 	}
 
-	private void addToOutputScheme(Class<?> clazz) {
+	private void addToOutputScheme(Class<?> clazz, Map<String, OutputScheme> outputSchemeMap, Attributes attributes) {
 		File template = templateFileResolver.resolve(clazz);
 		File output = outputFileResolver.resolve(clazz);
 		String tasKey = schemeKey(template, output);
-		OutputScheme scheme = this.outputSchemeMap.computeIfAbsent(tasKey, k -> new OutputScheme(template, output, attributeFactory.create()));
-		scheme.putAttribute(clazz, formatter);
+		OutputScheme scheme = outputSchemeMap.computeIfAbsent(tasKey, k -> new OutputScheme(template, output, attributeFactory.create()));
+		scheme.putAttribute(clazz, formatter, attributes);
 	}
 
 	private String schemeKey(File template, File output) {

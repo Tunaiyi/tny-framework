@@ -90,7 +90,7 @@ ext.libs = [
         graalvm_tools_profiler                   : "org.graalvm.tools:profiler:${graalvmVersion}",
         graalvm_tools_chromeinspector            : "org.graalvm.tools:chromeinspector:${graalvmVersion}",
 
-        
+
         fastjson                                 : "com.alibaba:fastjson:1.2.73",
         validation_api                           : "javax.validation:validation-api:2.0.1.Final",
 

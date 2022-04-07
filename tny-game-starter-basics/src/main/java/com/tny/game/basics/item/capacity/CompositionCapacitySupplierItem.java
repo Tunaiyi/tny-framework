@@ -5,14 +5,19 @@ import java.util.Collection;
 public abstract class CompositionCapacitySupplierItem<IM extends CapacitySupplierItemModel>
 		extends CapacitySupplierItem<IM> implements CompositionCapacitySupplier {
 
-	private transient CapacitySupplierComposition composition;
+	private final transient CapacitySupplierComposition composition;
 
 	protected CompositionCapacitySupplierItem() {
-		super();
+		this(new DefaultCapacitySupplierComposition());
 	}
 
 	protected CompositionCapacitySupplierItem(CapacitySupplierComposition composition) {
 		this.composition = composition;
+	}
+
+	@Override
+	public CapacitySupplierComposition composition() {
+		return composition;
 	}
 
 	protected void accept(CapacitySupplier supplier) {
@@ -33,6 +38,21 @@ public abstract class CompositionCapacitySupplierItem<IM extends CapacitySupplie
 
 	protected void clear() {
 		this.composition.clear();
+	}
+
+	@Override
+	protected void refresh() {
+
+	}
+
+	@Override
+	protected void invalid() {
+
+	}
+
+	@Override
+	protected void effect() {
+
 	}
 
 }

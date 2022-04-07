@@ -19,9 +19,9 @@ gradlePlugin {
 //}
 
 dependencies {
-//    groovy localGroovy()
-
-//            gradleApi(),
+    api gradleApi()
+    api localGroovy()
+    api 'com.funs.game:tools-template:0.0.1-SNAPSHOT'
 //            libs.'groovy-all',
 //    api project(":tny-game-net")
     api(project(":tny-game-doc")) {
@@ -31,6 +31,7 @@ dependencies {
     api project(":tny-game-common-lang")
     api project(":tny-game-scanning")
     api libs.commons_io
+    api "org.springframework:spring-core:5.3.18"
     api libs.jackson_core
     api libs.jackson_databind
     api libs.jackson_annotations

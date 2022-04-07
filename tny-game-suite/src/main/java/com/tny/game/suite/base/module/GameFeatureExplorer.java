@@ -1,7 +1,7 @@
 package com.tny.game.suite.base.module;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 import com.tny.game.common.utils.*;
 
 import java.util.Set;

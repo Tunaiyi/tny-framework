@@ -1,5 +1,7 @@
 package com.tny.game.gradle.doc.plugin
 
+import com.tny.game.gradle.doc.plugin.tools.anygenerator.AnyGeneratorPluginExtension
+import com.tny.game.gradle.doc.plugin.tools.template.ToolsTemplatePluginExtension
 import org.gradle.api.Plugin
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaPlugin
@@ -17,13 +19,17 @@ class TnyGamePlugin implements Plugin<ProjectInternal> {
     void apply(ProjectInternal project) {
         project.logger.info("init AnyGeneratorPlugin")
         project.getPluginManager().apply(JavaPlugin.class)
-        AnyGeneratorPluginExtension extension = project.extensions.create("anyGenerator", AnyGeneratorPluginExtension.class, project)
-//        anyGeneratorExtension.extendTask(project)
+        AnyGeneratorPluginExtension anyGeneratorExtension = project.extensions.create("anyGenerator", AnyGeneratorPluginExtension.class, project)
+        ToolsTemplatePluginExtension toolsTemplateExtension = project.extensions.create("toolsTemplate", ToolsTemplatePluginExtension.class, project)
         project.afterEvaluate {
-            project.logger.info("AnyGenerateScheme size : ${extension.schemes.size()}")
-            extension.extendTask(project)
+            project.logger.info("AnyGenerateScheme size : ${anyGeneratorExtension.schemes.size()}")
+            anyGeneratorExtension.extendTask(project)
             project.logger.info("init AnyGeneratorPlugin finished")
+            toolsTemplateExtension.extendTask(project)
+            project.logger.info("init ToolsTemplatePlugin finished")
+
         }
+
     }
 
 }

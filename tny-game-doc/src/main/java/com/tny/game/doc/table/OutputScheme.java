@@ -1,5 +1,6 @@
 package com.tny.game.doc.table;
 
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 
 import java.io.File;
@@ -41,9 +42,9 @@ public class OutputScheme {
 		return classes;
 	}
 
-	public void putAttribute(Class<?> clazz, TypeFormatter formatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter formatter, Attributes context) {
 		this.classes.add(clazz);
-		this.attribute.putAttribute(clazz, formatter);
+		this.attribute.putAttribute(clazz, formatter, context);
 	}
 
 }

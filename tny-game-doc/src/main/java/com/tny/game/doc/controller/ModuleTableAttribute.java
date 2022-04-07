@@ -2,6 +2,7 @@ package com.tny.game.doc.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
 import com.tny.game.doc.table.*;
@@ -26,7 +27,7 @@ public class ModuleTableAttribute implements TableAttribute {
 	}
 
 	@Override
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
 		this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
 		this.exportHolder = ExportHolder.create(clazz);
 	}

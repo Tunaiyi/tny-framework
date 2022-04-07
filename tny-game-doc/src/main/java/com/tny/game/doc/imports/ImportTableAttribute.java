@@ -2,6 +2,7 @@ package com.tny.game.doc.imports;
 
 import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.table.*;
 
@@ -24,7 +25,7 @@ public class ImportTableAttribute implements TableAttribute {
 	}
 
 	@Override
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
 		this.importList.importList.add(new ImportDto(clazz));
 	}
 

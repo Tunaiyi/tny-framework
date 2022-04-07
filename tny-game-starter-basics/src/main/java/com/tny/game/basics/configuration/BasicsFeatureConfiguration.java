@@ -1,7 +1,7 @@
 package com.tny.game.basics.configuration;
 
-import com.tny.game.basics.item.module.*;
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.item.mould.*;
+import com.tny.game.basics.mould.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
@@ -25,9 +25,9 @@ public class BasicsFeatureConfiguration {
 
 	@Bean
 	@ConditionalOnBean({FeatureLauncherManager.class})
-	@ConditionalOnMissingBean(ModulerService.class)
-	public ModulerService moduleService(FeatureLauncherManager featureLauncherManager) {
-		return new DefaultModulerService(featureLauncherManager);
+	@ConditionalOnMissingBean(MouldService.class)
+	public MouldService moduleService(FeatureLauncherManager featureLauncherManager) {
+		return new DefaultMouldService(featureLauncherManager);
 	}
 
 	@Bean
@@ -35,7 +35,7 @@ public class BasicsFeatureConfiguration {
 	@ConditionalOnMissingBean(FeatureService.class)
 	public FeatureService featureService(
 			FeatureLauncherManager featureLauncherManager,
-			ModulerService moduleService,
+			MouldService moduleService,
 			FeatureModelManager<? extends FeatureModel> featureModelManager) {
 		return new DefaultFeatureService(featureLauncherManager, moduleService, featureModelManager);
 	}

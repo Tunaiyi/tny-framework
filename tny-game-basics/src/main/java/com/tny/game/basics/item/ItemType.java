@@ -26,4 +26,8 @@ public interface ItemType extends IntEnumerable {
 		return Long.parseLong(this.getIdHead() + "" + index);
 	}
 
+	default String alisaOf(String alisa) {
+		return getIdHead() + "$" + alisa;
+	}
+
 }

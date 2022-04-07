@@ -29,34 +29,37 @@ public class AnyIdConverter {
 		if (single != null) {
 			this.single = single.value();
 		} else {
-			if (StuffOwner.class.isAssignableFrom(entityClass)) {
-				this.single = true;
-			} else if (Stuff.class.isAssignableFrom(entityClass)) {
-				this.single = false;
-			} else if (Item.class.isAssignableFrom(entityClass)) {
-				this.single = true;
-			} else {
-				this.single = false;
-			}
+			//			if (StuffOwner.class.isAssignableFrom(entityClass)) {
+			//				this.single = true;
+			//			} else if (Stuff.class.isAssignableFrom(entityClass)) {
+			//				this.single = false;
+			//			} else if (Item.class.isAssignableFrom(entityClass)) {
+			//				this.single = true;
+			//			} else {
+			this.single = false;
+			//			}
 		}
 
 	}
 
-	public String anyId2Id(AnyId key) {
+	public String anyId2Key(AnyId key) {
 		if (single) {
 			return idHeader + AnyId.formatId(key.getPlayerId(), 0);
 		}
 		return idHeader + key.toUuid();
 	}
 
-	public String any2Id(Any object) {
+	public String any2Key(Any object) {
 		if (single) {
 			return idHeader + AnyId.formatId(object.getPlayerId(), 0);
 		}
 		return idHeader + AnyId.formatId(object);
 	}
 
-	public AnyId object2AnyId(Any object) {
+	public AnyId any2AnyId(Any object) {
+		if (single) {
+			return AnyId.idOf(object);
+		}
 		return AnyId.idOf(object.getPlayerId(), object.getId());
 	}
 

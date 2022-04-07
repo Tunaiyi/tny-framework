@@ -10,10 +10,10 @@ import java.util.Collection;
  */
 public abstract class CompositionCapablerItem<IM extends ItemModel> extends BaseCapablerItem<IM> implements CompositionCapabler {
 
-	private transient CapacitySupplierComposition composition;
+	private final transient CapacitySupplierComposition composition;
 
 	protected CompositionCapablerItem() {
-		super();
+		this(new DefaultCapacitySupplierComposition());
 	}
 
 	protected CompositionCapablerItem(CapacitySupplierComposition composition) {

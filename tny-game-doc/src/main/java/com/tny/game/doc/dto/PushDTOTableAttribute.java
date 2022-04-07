@@ -2,6 +2,7 @@ package com.tny.game.doc.dto;
 
 import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.collection.map.*;
+import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.table.*;
 
@@ -55,7 +56,7 @@ public class PushDTOTableAttribute implements TableAttribute {
 	}
 
 	@Override
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
 		PushDTOInfo info = PushDTOInfo.create(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
 		if (info != null) {
 			this.pushDTOList.pushDTOList.add(info);

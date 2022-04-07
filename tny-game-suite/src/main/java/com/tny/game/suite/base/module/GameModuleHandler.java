@@ -1,6 +1,6 @@
 package com.tny.game.suite.base.module;
 
-import com.tny.game.basics.module.*;
+import com.tny.game.basics.mould.*;
 
 public abstract class GameModuleHandler<M extends Module, DTO> implements ModuleHandler {
 

@@ -10,7 +10,7 @@ public interface BasicsLoggerNames {
 	String SERVER = "server";
 	String SERVICE = "service";
 	String CONTROLLER = "controller";
-	String MODULE = "module";
+	String MOULD = "mould";
 	String LOGIN = "login";
 
 }

@@ -6,14 +6,11 @@ import com.tny.game.doc.holder.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tny.game.common.utils.StringAide.*;
 
 @XStreamAlias("dto")
 public class DTOConfig implements Comparable<DTOConfig> {
-
-	private static final Map<Object, DTOConfig> configMap = new ConcurrentHashMap<>();
 
 	@XStreamAsAttribute
 	private String superClassName;
@@ -50,31 +47,7 @@ public class DTOConfig implements Comparable<DTOConfig> {
 
 	}
 
-	public static DTOConfig create(DTODocHolder holder, TypeFormatter typeFormatter) {
-		Object id = holder.getId();
-		if (id != null) {
-			DTOConfig configer = configMap.get(holder.getId());
-			DTOConfig old;
-			if (configer != null) {
-				if (configer.getClassName().equals(holder.getEntityClass().getSimpleName())) {
-					return configer;
-				}
-				throw new IllegalArgumentException(format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
-			} else {
-				configer = new DTOConfig(holder, typeFormatter);
-				old = configMap.putIfAbsent(configer.getId(), configer);
-				if (old != null) {
-					throw new IllegalArgumentException(
-							format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
-				} else {
-					return configer;
-				}
-			}
-		}
-		throw new IllegalArgumentException(format("{} id 不存在", holder.getEntityClass()));
-	}
-
-	private DTOConfig(DTODocHolder holder, TypeFormatter typeFormatter) {
+	public DTOConfig(DTODocHolder holder, TypeFormatter typeFormatter) {
 		super();
 		this.className = holder.getEntityClass().getSimpleName();
 		this.packageName = holder.getEntityClass().getPackage().getName();

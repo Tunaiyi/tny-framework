@@ -92,7 +92,7 @@ configure(gradleProjects) {
 
     dependencies {
         api gradleApi()
-//        api localGroovy()
+        api localGroovy()
 //            compile 'com.intellij:forms_rt:7.0.3'
 //            compile 'org.hidetake:gradle-ssh-plugin:2.9.0'
 //            compile 'org.ajoberstar:grgit:2.2.0'

@@ -45,11 +45,11 @@ public abstract class SingleItemModelManager<IM extends ItemModel> extends GameI
 			throw new IllegalArgumentException(format("{} model 列表数量多于1"));
 		}
 		model = models.get(0);
-		doParseComplete(model);
+		parseComplete(model);
 		super.parseComplete(models);
 	}
 
-	protected void doParseComplete(IM model) {
+	protected void parseComplete(IM model) {
 	}
 
 	public IM getModel() {

@@ -60,7 +60,7 @@ public abstract class GameStuffOwnerManager<O extends StuffOwner<?, ?>> extends 
 		if (playerId == 0L) {
 			return null;
 		}
-		return this.get(playerId);
+		return this.get(playerId, itemType.getId());
 	}
 
 	@Override
