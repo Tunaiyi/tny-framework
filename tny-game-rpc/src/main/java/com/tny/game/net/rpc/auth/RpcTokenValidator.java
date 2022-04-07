@@ -9,7 +9,6 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
-import javax.xml.bind.ValidationException;
 import java.time.Instant;
 
 import static com.tny.game.common.utils.StringAide.*;

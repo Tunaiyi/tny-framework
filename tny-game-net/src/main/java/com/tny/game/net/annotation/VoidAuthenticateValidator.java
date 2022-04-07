@@ -6,8 +6,6 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
-import javax.xml.bind.ValidationException;
-
 /**
  * <p>
  *

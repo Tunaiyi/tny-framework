@@ -11,8 +11,6 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-import javax.xml.bind.ValidationException;
-
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.base.NetLogger.*;
 

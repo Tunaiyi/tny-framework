@@ -8,7 +8,6 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.ValidationException;
 import java.time.Instant;
 import java.util.List;
 
