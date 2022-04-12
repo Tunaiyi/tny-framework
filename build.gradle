@@ -29,10 +29,10 @@ configure(allprojects) {
     dependencyManagement {
 
         imports {
+            mavenBom(libs.jackson_bom)
             mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
             mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}"
-            mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
             mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
 
         }
@@ -46,8 +46,6 @@ configure(allprojects) {
             dependency libs.commons_lang
             dependency libs.commons_lang3
             dependency libs.commons_pool2
-            dependency libs.rocketmq_spring_boot_starter
-            dependency libs.nimbus_oauth2_oidc_sdk
             dependency libs.javassist
             dependency libs.guava
             dependency libs.okio

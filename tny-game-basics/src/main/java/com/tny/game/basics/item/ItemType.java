@@ -27,7 +27,7 @@ public interface ItemType extends IntEnumerable {
 	}
 
 	default String alisaOf(String alisa) {
-		return getIdHead() + "$" + alisa;
+		return getAliasHead() + "$" + alisa;
 	}
 
 }

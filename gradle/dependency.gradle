@@ -26,7 +26,7 @@ ext.vers = [
         httpclient                          : "4.5.12",
         aspectj                             : "1.9.7",
         redisson                            : "3.16.0",
-
+        jackson                             : "2.13.2",
 //        tny_framework                       : "4.2.x-SNAPSHOT",
 
         poi                                 : "4.1.2",
@@ -64,7 +64,7 @@ ext.libs = [
 
         json_smart                               : "net.minidev:json-smart:2.3",
         lang_tag                                 : "com.nimbusds:lang-tag:1.4.4",
-//        jackson_bom                              : "com.fasterxml.jackson:jackson-bom:${vers.jackson}",
+        jackson_bom                              : "com.fasterxml.jackson:jackson-bom:${vers.jackson}",
         jackson_core                             : "com.fasterxml.jackson.core:jackson-core",
         jackson_databind                         : "com.fasterxml.jackson.core:jackson-databind",
         jackson_annotations                      : "com.fasterxml.jackson.core:jackson-annotations",
